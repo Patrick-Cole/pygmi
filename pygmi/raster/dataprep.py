@@ -391,9 +391,9 @@ class DataMerge(QtWidgets.QDialog):
         self.rb_last = QtWidgets.QRadioButton('Last - copy last file over '
                                               'first file at overlap.')
         self.rb_min = QtWidgets.QRadioButton('Min - copy pixel wise minimum '
-                                             'at overlap')
+                                             'at overlap.')
         self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum '
-                                             'at overlap')
+                                             'at overlap.')
         self.rb_median = QtWidgets.QRadioButton('Median - shift last file to '
                                                 'median '
                                                 'overlap value and copy over '
@@ -440,9 +440,9 @@ class DataMerge(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle('Dataset Merge')
+        self.setWindowTitle('Dataset Mosaic')
 
-        gb_merge_method = QtWidgets.QGroupBox('Merge method')
+        gb_merge_method = QtWidgets.QGroupBox('Mosiac method')
         gl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
 
         gl_merge_method.addWidget(self.rb_median)
@@ -791,7 +791,6 @@ class DataMerge(QtWidgets.QDialog):
                     nodata = -99999
 
                 tmpdat = i2.data-mval
-                # breakpoint()
                 tmpdat = tmpdat.filled(nodata)
                 tmpdat = np.ma.masked_equal(tmpdat, nodata)
 
@@ -828,159 +827,11 @@ class DataMerge(QtWidgets.QDialog):
             outdat[-1].nodata = nodata
 
             if self.bands_to_files.isChecked():
-                # odir = os.path.join(self.idir, 'merge')
-                # os.makedirs(odir, exist_ok=True)
-                # ofile = dataid+'.tif'
-                # ofile = ofile.replace(' ', '_')
-                # ofile = ofile.replace(',', '_')
-                # ofile = ofile.replace('*', 'mult')
-                # ofile = os.path.join(odir, ofile)
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
-
-                # import matplotlib.pyplot as plt
-                # vmin = mosaic.mean()-2*mosaic.std()
-                # vmax = mosaic.mean()+2*mosaic.std()
-                # plt.figure(dpi=150)
-                # plt.title(dataid)
-                # plt.imshow(mosaic, vmin=vmin, vmax=vmax, extent=outdat[-1].extent)
-                # plt.colorbar()
-                # plt.show()
 
                 del outdat
                 del mosaic
                 outdat = []
-
-        self.outdata['Raster'] = outdat
-
-        return True
-
-    def merge_different_old(self):
-        """
-        Merge files with different numbers of bands and/or band order.
-
-        This uses more memory, but is flexible.
-
-        Returns
-        -------
-        bool
-            Success of routine.
-
-        """
-        # The next line is only to avoid circular dependancies with merge
-        # function.
-
-        from pygmi.raster.iodefs import get_raster
-
-        indata = []
-        if 'Raster' in self.indata:
-            for i in self.indata['Raster']:
-                indata.append(i)
-
-        if self.idir is not None:
-            ifiles = []
-            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
-                ifiles += glob.glob(os.path.join(self.idir, ftype))
-
-            for ifile in self.piter(ifiles):
-                indata += get_raster(ifile, piter=iter)
-
-        if indata is None:
-            self.showprocesslog('No input datasets')
-            return False
-
-        # Get projection information
-        wkt = []
-        for i in indata:
-            if i.crs is None:
-                self.showprocesslog(f'{i.dataid} has no projection. '
-                                    'Please assign one.')
-                return False
-
-            wkt.append(i.crs.to_wkt())
-            nodata = i.nodata
-
-        wkt = list(set(wkt))
-
-        if len(wkt) > 1:
-            self.showprocesslog('Error: Mismatched input projections')
-            return False
-
-        crs = indata[0].crs
-
-        # Start Merge
-        bandlist = []
-        hasfloatdtype = False
-        for i in indata:
-            bandlist.append(i.dataid)
-            if np.issubdtype(i.data.dtype, np.floating):
-                hasfloatdtype = True
-        bandlist = list(set(bandlist))
-
-        outdat = []
-        for dataid in bandlist:
-            self.showprocesslog('Extracting '+dataid+'...')
-            ifiles = []
-            for i in self.piter(indata):
-                if i.dataid != dataid:
-                    continue
-
-                if self.forcetype is not None:
-                    i.data = i.data.astype(self.forcetype)
-
-                if self.shift_to_median.isChecked():
-                    mval = np.ma.median(i.data)
-                else:
-                    mval = 0
-
-                trans = rasterio.transform.from_origin(i.extent[0],
-                                                       i.extent[3],
-                                                       i.xdim, i.ydim)
-
-                tmpfile = os.path.join(tempfile.gettempdir(),
-                                       os.path.basename(i.filename))
-                tmpfile = tmpfile[:-4]+'_'+i.dataid+'.tif'
-                tmpfile = tmpfile.replace('*', 'mult')
-                tmpfile = tmpfile.replace(r'/', 'div')
-
-                raster = rasterio.open(tmpfile, 'w', driver='GTiff',
-                                       height=i.data.shape[0],
-                                       width=i.data.shape[1], count=1,
-                                       dtype=i.data.dtype,
-                                       transform=trans)
-
-                if hasfloatdtype:
-                    nodata = 1.0e+20
-                    tmpdat = i.data.astype(float)
-
-                else:
-                    nodata = -99999
-                    tmpdat = i.data.astype(int)
-
-                tmpdat = i.data-mval
-                tmpdat = tmpdat.filled(nodata)
-                tmpdat = np.ma.masked_equal(tmpdat, nodata)
-
-                raster.write(tmpdat, 1)
-                raster.write_mask(~i.data.mask)
-                raster.close()
-                ifiles.append(tmpfile)
-
-            if len(ifiles) < 2:
-                self.showprocesslog('Too few bands of name '+dataid)
-
-            self.showprocesslog('Merging '+dataid+'...')
-            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
-                                                  method=self.method)
-            for j in ifiles:
-                os.remove(j)
-
-            mosaic = mosaic.squeeze()
-            mosaic = np.ma.masked_equal(mosaic, nodata)
-            mosaic = mosaic + mval
-            outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
-            outdat[-1].set_transform(transform=otrans)
-            outdat[-1].crs = crs
-            outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
 

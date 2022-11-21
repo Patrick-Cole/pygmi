@@ -992,7 +992,7 @@ def _testfn3():
 
     rcParams['figure.dpi'] = 150
 
-    idir = r'c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
+    idir = r'e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\full'
 
     app = QtWidgets.QApplication(sys.argv)
 

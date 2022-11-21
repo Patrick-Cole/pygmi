@@ -829,7 +829,7 @@ class ExportBatch(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.exportbatch')
         label_ofilt = QtWidgets.QLabel('Output Format:')
         label_red = QtWidgets.QLabel('Red Band:')
         label_green = QtWidgets.QLabel('Green Band:')
@@ -2466,8 +2466,8 @@ def _testfn3():
     """Test routine."""
     import sys
 
-    idir = r'c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
-    odir = r'd:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\12_8_3'
+    idir = r'e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\full'
+    # odir = r'd:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\12_8_3'
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -2479,7 +2479,7 @@ def _testfn3():
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
-    tmp2.odir.setText(odir)
+    # tmp2.odir.setText(odir)
     tmp2.run()
 
 
@@ -2501,4 +2501,5 @@ def _testfindbadfiles():
 
 
 if __name__ == "__main__":
-    _testfindbadfiles()
+    _testfn3()
+    # _testfindbadfiles()

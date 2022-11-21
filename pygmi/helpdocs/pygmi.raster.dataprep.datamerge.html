@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<h1>Data Merge</h1>
+		<h1>Dataset Mosaic</h1>
 		<p>This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.</p> 
 		<p>If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower. If files being merged have z values which are offset, the user can select to shift the bands to their respective mean value prior to merge to minimise this. In this case the slower merge will result.</p>
-		<h2>Options</h2>
+		<h2>General Options</h2>
 		<ul>
 			<li>Batch directory - location of files to be merged.</li>
-			<li>Merge by band labels, since band order may differ, or input files have different numbers of bands. - unchecked by default.</li>
-			<li>Shift bands to mean value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.'</li>
+			<li>Shapefile for boundary - This is an optional location for a shapefile to be used to cut the merge to a specific boundary.</li>
+			<li>Merge by band labels, since band order may differ, or input files have different numbers of bands. - checked by default.</li>
+			<li>Shift bands to median value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.</li>
+			<li>Save each band separately in a merge directory - this is useful when the resultant merge is too large.</li>
+		</ul>
+		<h2>Mosaic Method</h2>
+		<ul>
+			<li>Median - shift last file to median overlap value and copy over first file at overlap.</li>
+			<li>First - copy first file over last file at overlap.</li>
+			<li>Last - copy last file over first file at overlap.</li>
+			<li>Min - copy pixel wise minimum at overlap.</li>
+			<li>Max - copy pixel wise maximum at overlap.</li>
 		</ul>
 	</body>
 </html>

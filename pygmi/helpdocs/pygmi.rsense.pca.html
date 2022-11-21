@@ -3,10 +3,12 @@
 	<body>
 		<h1>Principal Component Analysis</h1>
 		<p>This module performs Principal Component Analysis (PCA) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.</p>
+		<p>The PCA module is also capable of accepting raster lists, so that batch PCA can be performed. In such a case, the user has the option to fit the PCA model to all files first, before translating the data to PCA space. This allows adjacent datasets to be mosaiced seamlessly, because the same model is applied to all input data.</p>
 		<h2>Options</h2>
 		<ul>
 			<li>Forward Transform Only - This outputs the forward transformed data with a preset number of components.</li>
 			<li>Number of components - Number of components used.</li>
+			<li>Fit PCA to all files - used to obtain a common PCA model over a number of files</li>
 		</ul>
 		<h2>References</h2>
 		<p>Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011</p>
