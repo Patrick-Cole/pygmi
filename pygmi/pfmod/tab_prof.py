@@ -1678,8 +1678,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             width *= self.mywidth
             height *= self.mywidth
 
-            if curaxes == self.axes:
-                width *= 10
+            # if curaxes == self.axes:
+            #     width *= 10
             width = int(np.ceil(width))
             height = int(np.ceil(height))
 
