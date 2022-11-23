@@ -113,6 +113,10 @@ class ModestImage(mi.AxesImage):
         """
         if doshade is True:
             self.shade = [cell, theta, phi, alpha]
+            if self._A.ndim == 2:
+                tmp = np.ma.stack([self._A, self._A])
+                tmp = np.moveaxis(tmp, 0, -1)
+                self.set_data(tmp)
         else:
             self.shade = None
 
@@ -713,7 +717,9 @@ def norm255(dat):
 def imshow(axes, X, cmap=None, norm=None, aspect=None,
            interpolation=None, alpha=None, vmin=None, vmax=None,
            origin=None, extent=None, shape=None, filternorm=1,
-           filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
+           filterrad=4.0, imlim=None, resample=None, url=None,
+           suncell=None, suntheta=None, sunphi=None, sunalpha=None,
+           **kwargs):
     """
     Similar to matplotlib's imshow command, but produces a ModestImage.
 
@@ -734,6 +740,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
 
     im.set_data(X)
     im.set_alpha(alpha)
+
+
     axes._set_artist_props(im)
 
     axes.format_coord = lambda x, y: f'x = {x:,.5f}, y = {y:,.5f}'
@@ -747,6 +755,11 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         im.set_clim(vmin, vmax)
     elif norm is None:
         im.autoscale_None()
+
+
+    if suncell is not None:
+        im.set_shade(True, suncell, suntheta, sunphi, sunalpha)
+
 
     im.set_url(url)
 
@@ -834,17 +847,18 @@ def _testfn():
     from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
     from IPython import get_ipython
-    get_ipython().magic('matplotlib qt5')
+    # get_ipython().magic('matplotlib qt5')
 
     ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
     ifile = r'd:\workdata\testdata.hdr'
+    ifile =  r"D:\DEM\20221117_raw_dsm\lo23\3122C\raw_dsm_3122CA_1.tif"
 
     pbar = ProgressBarText()
 
     data = get_raster(ifile, piter=pbar.iter)
 
-    cdat = data[1].data
-    extent = data[1].extent
+    cdat = data[0].data
+    extent = data[0].extent
 
     f = plt.figure()
     ax = f.add_subplot(121)

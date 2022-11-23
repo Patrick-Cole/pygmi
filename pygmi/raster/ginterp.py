@@ -1853,7 +1853,7 @@ def aspect2(data):
     return [adeg, dzdx, dzdy]
 
 
-def currentshader(data, cell, theta, phi, alpha):
+def currentshader(data, cell=1., theta=np.pi/4., phi=-np.pi/4., alpha=1.0):
     """
     Blinn shader - used for sun shading.
 
@@ -1874,6 +1874,12 @@ def currentshader(data, cell, theta, phi, alpha):
     -------
     R : numpy array
         array containing the shaded results.
+
+        self.phi = -np.pi/4.
+        self.theta = np.pi/4.
+        self.cell = 100.
+        self.alpha = .0
+
 
     """
     asp = aspect2(data)

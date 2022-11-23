@@ -27,6 +27,7 @@
 import tempfile
 import math
 import os
+import sys
 import glob
 import copy
 from collections import Counter
@@ -2888,6 +2889,26 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
     bounds = gdf.geometry.iloc[0].bounds
 
     return bounds
+
+
+def data_merge(idir, sfile='', singleband=False):
+    """Test Merge."""
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = DataMerge()
+    DM.idir = idir
+    DM.idirlist.setText(idir)
+    DM.sfile.setText(sfile)
+    DM.singleband = singleband
+    DM.rb_median.setChecked(True)
+    DM.forcetype = np.float32
+
+    DM.settings(True)
+
+    dat = DM.outdata['Raster']
+
+    return dat
+
 
 def _testdown():
     """Continuation testing routine."""

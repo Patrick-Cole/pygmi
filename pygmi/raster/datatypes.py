@@ -232,3 +232,28 @@ class Data():
                                    nodata=self.nodata)
         raster.write(self.data, 1)
         return raster
+
+    def get_vmin_vmax(self, std=2.5):
+        """
+        Get vmin and vmax for use in imshow.
+
+        Parameters
+        ----------
+        std : float, optional
+            Multiplier for standard devations to include about mean.
+            The default is 2.5.
+
+        Returns
+        -------
+        vmin : TYPE
+            DESCRIPTION.
+        vmax : TYPE
+            DESCRIPTION.
+
+        """
+        mean = self.data.mean()
+        std = self.data.std()
+        vmin = mean-2*std
+        vmax = mean+2*std
+
+        return vmin, vmax
