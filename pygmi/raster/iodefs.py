@@ -797,16 +797,17 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                     nval = dat[-1].data.max()
                 # showprocesslog(f'Adjusting null value to {nval}')
 
-            if ext == 'ers' and nval == -1.0e+32:
+            if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
 
     # Note that because the data is stored in a masked array, the array ends up
     # being double the size that it was on the disk.
 
-            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-            dat[-1].data = dat[-1].data.filled(nval)
-            dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
-            dat[-1].data.set_fill_value(nval)
+            if metaonly is False:
+                dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                dat[-1].data = dat[-1].data.filled(nval)
+                dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
+                dat[-1].data.set_fill_value(nval)
 
             # dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
             #                      (dat[-1].data == nval))
