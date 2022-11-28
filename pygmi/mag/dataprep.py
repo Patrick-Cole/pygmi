@@ -680,7 +680,7 @@ def rtp(data, I_deg, D_deg):
 def _testfn_rtp():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
-    from matplotlib import cm
+    from matplotlib import colormaps
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
@@ -697,11 +697,11 @@ def _testfn_rtp():
     # Calculate the field
 
     magval = lmod.griddata['Calculated Magnetics'].data
-    plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    plt.imshow(magval, cmap=colormaps['jet'])
     plt.show()
 
     dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
-    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
+    plt.imshow(dat2.data, cmap=colormaps['jet'])
     plt.show()
 
 

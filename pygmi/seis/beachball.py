@@ -33,7 +33,7 @@ import os
 import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets
-import matplotlib.cm as cm
+from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -55,7 +55,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         # figure stuff
         self.htype = 'Linear'
-        self.cbar = cm.get_cmap('jet')
+        self.cbar = colormaps['jet']
         self.data = []
         self.gmode = None
         self.argb = [None, None, None]

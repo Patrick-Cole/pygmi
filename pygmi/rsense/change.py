@@ -34,6 +34,7 @@ from osgeo import gdal, osr, ogr
 from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+from matplotlib import colormaps
 import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -529,7 +530,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dtmp = (green-nir)/(green+nir)
             self.im1.set_clim(-1, 1)
             self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(plt.cm.get_cmap('PiYG_r'))
+            self.im1.set_cmap(colormaps['PiYG_r'])
         elif self.manip == 'NDVI':
             if self.cbar is None:
                 self.cbar = self.figure.colorbar(self.im1, format=frm)
@@ -540,7 +541,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dtmp = (nir-red)/(nir+red)
             self.im1.set_clim(-1, 1)
             self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(plt.cm.get_cmap('PiYG'))
+            self.im1.set_cmap(colormaps('PiYG'))
         else:
             if self.cbar is not None:
                 self.cbar.remove()

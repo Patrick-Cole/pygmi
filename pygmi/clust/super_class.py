@@ -31,7 +31,7 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib import cm
+from matplotlib import colormaps
 from matplotlib.artist import Artist
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
@@ -93,7 +93,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.subplot = self.figure.add_subplot(111)
 
         self.csp = imshow(self.subplot, dat.data, extent=dat.extent,
-                          cmap=cm.get_cmap('jet'))
+                          cmap=colormaps['jet'])
         axes = self.figure.gca()
 
         if dat.crs is not None:

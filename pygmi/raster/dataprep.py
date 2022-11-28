@@ -658,7 +658,6 @@ class DataMerge(QtWidgets.QDialog):
 
         from pygmi.raster.iodefs import get_raster, export_raster
 
-
         indata = []
         if 'Raster' in self.indata:
             for i in self.indata['Raster']:
@@ -2767,6 +2766,7 @@ def trim_raster(olddata):
 
     return olddata
 
+
 def cut_raster_basic(data, ifile, pprint=print):
     """Cuts a raster dataset.
 
@@ -2824,8 +2824,8 @@ def cut_raster_basic(data, ifile, pprint=print):
         dext = idata.bounds
         lext = poly.bounds
 
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
-                (dext[1] > lext[3]) or (dext[3] < lext[1])):
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
+                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
             pprint('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
@@ -3043,7 +3043,7 @@ def _testgrid():
 def _testfft():
     """Test FFT."""
     import matplotlib.pyplot as plt
-    from matplotlib import cm
+    from matplotlib import colormaps
     import scipy
     from IPython import get_ipython
     from pygmi.raster.iodefs import get_raster
@@ -3054,7 +3054,7 @@ def _testfft():
     data = get_raster(ifile)[0]
 
     # quick model
-    plt.imshow(data.data, cmap=cm.get_cmap('jet'), vmin=-500, vmax=500)
+    plt.imshow(data.data, cmap=colormaps['jet'], vmin=-500, vmax=500)
     plt.colorbar()
     plt.show()
 
@@ -3104,7 +3104,6 @@ def _testfft():
 
 def _testmerge():
     """Test Merge."""
-    import sys
     from pygmi.raster.iodefs import export_raster
 
     app = QtWidgets.QApplication(sys.argv)
@@ -3146,7 +3145,6 @@ def _testmerge():
 
 def _testreproj():
     """Test Reprojection."""
-    import sys
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
@@ -3177,7 +3175,6 @@ def _testreproj():
 
 def _testcut():
     """Test Reprojection."""
-    import sys
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
@@ -3211,7 +3208,6 @@ def _testcut():
 
 def _testprof():
     """Test Reprojection."""
-    import sys
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
@@ -3280,11 +3276,9 @@ def _testlstack():
 
 def _testcut2():
     """Test Reprojection."""
-    import sys
     from pygmi.raster.iodefs import get_raster, export_raster
-    import matplotlib.pyplot as plt
 
-    sfile  = r"D:\hypercut\shape\Areas_utm33s_east.shp"
+    sfile = r"D:\hypercut\shape\Areas_utm33s_east.shp"
     ifilt = r"D:\hypercut\*.hdr"
     odir = r"D:\hypercut\cut"
 
@@ -3349,8 +3343,6 @@ def _testnewnull():
 
 def _testlower():
     """Lowers resolution."""
-    import matplotlib.pyplot as plt
-    from pygmi.raster.modest_image import imshow
     from pygmi.raster.iodefs import get_raster
     from pygmi.raster.iodefs import export_raster
 

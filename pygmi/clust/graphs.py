@@ -26,7 +26,7 @@
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from matplotlib import cm
+from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -74,7 +74,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         cdat = data1.data
-        csp = imshow(self.axes, cdat, cmap=cm.get_cmap('jet'),
+        csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
                      extent=data1.extent)
 
         vals = np.unique(cdat)
@@ -180,7 +180,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
-                       extent=data1.extent, cmap=cm.get_cmap('jet'),
+                       extent=data1.extent, cmap=colormaps['jet'],
                        vmin=0., vmax=1.)
 
         self.figure.colorbar(rdata)

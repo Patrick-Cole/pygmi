@@ -36,7 +36,7 @@ menu. The following are supported:
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from matplotlib import cm
+from matplotlib import cm, colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -133,7 +133,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=cm.get_cmap(cmap), interpolation='nearest')
+                       cmap=colormaps[cmap], interpolation='nearest')
 
         if not data1.isrgb:
             rdata.set_clim_std(2.5)
@@ -236,7 +236,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        cmap = cm.get_cmap(cmap)
+        cmap = colormaps[cmap]
 
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 

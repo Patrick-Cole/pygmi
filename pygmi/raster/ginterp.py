@@ -133,7 +133,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # figure stuff
         self.htype = 'Linear'
         self.hstype = 'Linear'
-        self.cbar = cm.get_cmap('jet')
+        self.cbar = colormaps['jet']
         self.newcmp = self.cbar
         self.fullhist = False
         self.data = []
@@ -458,7 +458,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if hno == 0:
             bincol = self.newcmp(binave)
         else:
-            bincol = cm.get_cmap('gray')(binave)
+            bincol = colormaps['gray'](binave)
 
         for j, _ in enumerate(patches):
             patches[j].set_color(bincol[j])
@@ -884,7 +884,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.setupui()
 
         txt = str(self.cbox_cbar.currentText())
-        self.mmc.cbar = cm.get_cmap(txt)
+        self.mmc.cbar = colormaps[txt]
 
         self.setFocus()
 
@@ -1105,7 +1105,7 @@ class PlotInterp(QtWidgets.QDialog):
 
         """
         txt = str(self.cbox_cbar.currentText())
-        self.mmc.cbar = cm.get_cmap(txt)
+        self.mmc.cbar = colormaps[txt]
         self.mmc.update_graph()
 
     def change_dtype(self):
@@ -1648,7 +1648,7 @@ class PlotInterp(QtWidgets.QDialog):
         # Section for colorbars
         if 'Ternary' not in dtype:
             txt = str(self.cbox_cbar.currentText())
-            cmap = cm.get_cmap(txt)
+            cmap = colormaps[txt]
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
             # Horizontal Bar
@@ -1992,7 +1992,7 @@ def histeq(img, nbr_bins=32768):
     return im2
 
 
-def img2rgb(img, cbar=cm.get_cmap('jet')):
+def img2rgb(img, cbar=colormaps['jet']):
     """
     Image to RGB.
 

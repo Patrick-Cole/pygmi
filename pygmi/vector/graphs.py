@@ -29,7 +29,7 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from scipy.stats import median_abs_deviation
 import matplotlib.collections as mc
-from matplotlib import cm
+from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -279,7 +279,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         if is_numeric_dtype(zdata):
-            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=cm.get_cmap('jet'))
+            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=colormaps['jet'])
         else:
             return
 
@@ -523,7 +523,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
-        Set1 = cm.get_cmap('Set1')
+        Set1 = colormaps['Set1']
         bcols = Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 

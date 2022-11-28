@@ -42,7 +42,7 @@ from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
 from numba import jit, prange
-from matplotlib import cm
+from matplotlib import colormaps
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -1247,7 +1247,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
         clrtmp = np.array([0])
     else:
         clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
-    clrtmp = cm.get_cmap('jet')(clrtmp)[:, :-1]
+    clrtmp = colormaps['jet'](clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)
     clrtmp = clrtmp.tolist()
@@ -1587,7 +1587,7 @@ def _testfn():
 
     # magval = lmod.griddata['Calculated Magnetics'].data
 
-    # plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    # plt.imshow(magval, cmap=colormaps['jet'])
     # plt.show()
 
 

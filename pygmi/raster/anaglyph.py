@@ -27,12 +27,11 @@
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 import numpy as np
-from matplotlib import cm
+from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib import collections as mc
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
-from matplotlib.pyplot import colormaps
 
 from pygmi.misc import frm
 
@@ -158,7 +157,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def update_raster(self, data1, scale=7, rotang=10, atype='dubois',
-                      cmap=cm.get_cmap('jet'), shade=False):
+                      cmap=colormaps['jet'], shade=False):
         """
         Update the raster plot.
 
@@ -198,7 +197,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.update_colors(shade, cmap, atype)
 
-    def update_colors(self, doshade=False, cmap=cm.get_cmap('jet'),
+    def update_colors(self, doshade=False, cmap=colormaps['jet'],
                       atype='dubois'):
         """
         Update colors.
@@ -403,7 +402,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         """
         i = self.combobox1.currentIndex()
         txt = str(self.cbox_cbar.currentText())
-        cbar = cm.get_cmap(txt)
+        cbar = colormaps[txt]
         shade = self.doshade.isChecked()
         scale = self.slider_scale.value()
         rotang = self.slider_angle.value()
@@ -427,7 +426,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
         """
         txt = str(self.cbox_cbar.currentText())
-        cbar = cm.get_cmap(txt)
+        cbar = colormaps[txt]
         shade = self.doshade.isChecked()
 
         self.mmc.update_colors(atype=self.combobox2.currentText(),
@@ -508,7 +507,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
 
 def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
-             cmap=cm.get_cmap('terrain')):
+             cmap=colormaps['terrain']):
     """
     Perform Sunshading on data.
 

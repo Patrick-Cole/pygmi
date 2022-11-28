@@ -27,7 +27,7 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
-from matplotlib import cm
+from matplotlib import colormaps
 from matplotlib.artist import Artist
 from matplotlib.patches import Polygon
 from matplotlib.lines import Line2D
@@ -153,7 +153,7 @@ class GraphHist(FigureCanvasQTAgg):
         self.axscatter.get_yaxis().set_visible(False)
 
         self.csp = self.axscatter.imshow(xymahist.T, interpolation='nearest',
-                                         cmap=cm.get_cmap('jet'),
+                                         cmap=colormaps['jet'],
                                          aspect='auto')
 
         self.csp.set_clim(xymahist.min(), xymahist.max())
@@ -296,7 +296,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
+        self.csp = self.subplot.imshow(dat.data, cmap=colormaps['jet'])
         self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()

@@ -34,7 +34,7 @@ from scipy import interpolate
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.figure import Figure
-from matplotlib import cm
+from matplotlib import colormaps
 from osgeo import osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
@@ -1522,7 +1522,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(fig)
 
         self.lmod1 = parent.lmod1
-        self.cbar = cm.get_cmap('jet')
+        self.cbar = colormaps['jet']
         self.curmodel = 0
         self.mywidth = 1
         self.xold = None

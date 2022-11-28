@@ -37,7 +37,7 @@ from math import pi
 import numpy as np
 
 from PyQt5 import QtWidgets
-from matplotlib import cm
+from matplotlib import cm, colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -78,7 +78,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.Y = None
         self.Z = None
         self.depths = None
-        self.cbar = cm.get_cmap('jet')
+        self.cbar = colormaps['jet']
         if parent is None:
             self.showprocesslog = print
         else:
@@ -212,7 +212,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
         self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
 
-        cmap = cm.get_cmap(txt)
+        cmap = colormaps[txt]
         cmap2 = np.array([cmap(i) for i in range(cmap.N)])
         low = int(cmap.N*(45/180))
         high = int(cmap.N*(135/180))

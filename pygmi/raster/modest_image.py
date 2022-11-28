@@ -14,7 +14,7 @@ import numexpr as ne
 from scipy import ndimage
 
 from matplotlib import rcParams
-from matplotlib import cm
+from matplotlib import colormaps
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 from matplotlib import cbook
@@ -631,7 +631,7 @@ def histeq(img, nbr_bins=32768):
     return im2
 
 
-def img2rgb(img, cbar=cm.get_cmap('jet')):
+def img2rgb(img, cbar=colormaps['jet']):
     """
     Image to RGB.
 
