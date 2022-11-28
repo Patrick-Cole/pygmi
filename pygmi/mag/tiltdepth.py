@@ -37,7 +37,8 @@ from math import pi
 import numpy as np
 
 from PyQt5 import QtWidgets
-from matplotlib import cm, colormaps
+from matplotlib.colors import ListedColormap
+from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -134,7 +135,7 @@ class TiltDepth(QtWidgets.QDialog):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
-        tmp = sorted(cm.datad.keys())
+        tmp = sorted(colormaps.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
 
@@ -218,7 +219,7 @@ class TiltDepth(QtWidgets.QDialog):
         high = int(cmap.N*(135/180))
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
-        cmap3 = cm.colors.ListedColormap(cmap2)
+        cmap3 = ListedColormap(cmap2)
         ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
 
         if self.x0 is not None:

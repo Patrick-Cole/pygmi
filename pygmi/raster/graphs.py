@@ -36,7 +36,7 @@ menu. The following are supported:
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from matplotlib import cm, colormaps
+from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -78,7 +78,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        cmap = cm.viridis
+        cmap = colormaps['viridis']
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)

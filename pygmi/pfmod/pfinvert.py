@@ -1019,7 +1019,8 @@ def _testfn():
     norm = mpl.colors.Normalize(vmin=np.min(true_model),
                                 vmax=np.max(true_model))
     cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.cm.viridis, format="%.1e")
+                                     cmap=mpl.colormaps['viridis'],
+                                     format="%.1e")
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1043,7 +1044,8 @@ def _testfn():
     norm = mpl.colors.Normalize(vmin=np.min(recovered_model),
                                 vmax=np.max(recovered_model))
     cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.cm.viridis, format="%.1e")
+                                     cmap=mpl.colormaps['viridis'],
+                                     format="%.1e")
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1167,7 +1169,8 @@ def _testfn2():
     norm = mpl.colors.Normalize(vmin=np.min(true_model),
                                 vmax=np.max(true_model))
     cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.cm.viridis, format="%.1e")
+                                     cmap=mpl.colormaps['viridis'],
+                                     format="%.1e")
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1191,7 +1194,8 @@ def _testfn2():
     norm = mpl.colors.Normalize(vmin=np.min(recovered_model),
                                 vmax=np.max(recovered_model))
     cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.cm.viridis, format="%.1e")
+                                     cmap=mpl.colormaps['viridis'],
+                                     format="%.1e")
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 

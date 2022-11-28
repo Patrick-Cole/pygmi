@@ -172,7 +172,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         atype : str, optional
             Anaglyph type. The default is 'dubois'.
         cmap : matplotlib.colors.LinearSegmentedColormap, optional
-            Matplotlib colormap. The default is cm.jet.
+            Matplotlib colormap. The default is jet.
         shade : bool, optional
             Option to choose sunshading. The default is False.
 
@@ -207,7 +207,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         doshade : bool, optional
             Option to choose sunshading. The default is False.
         cmap : matplotlib.colors.LinearSegmentedColormap, optional
-            Matplotlib colormap. The default is cm.jet.
+            Matplotlib colormap. The default is jet.
         atype : str, optional
             Anaglyph type. The default is 'dubois'.
 
