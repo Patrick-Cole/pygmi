@@ -191,8 +191,8 @@ class GraphHist(FigureCanvasQTAgg):
         yptp = self.ycoord.ptp()
         xstep = xptp / 50
         ystep = yptp / 50
-        self.xcoord /= xstep
-        self.ycoord /= ystep
+        self.xcoord = self.xcoord/xstep
+        self.ycoord = self.ycoord/ystep
         self.xcoord = self.xcoord.astype(int)
         self.ycoord = self.ycoord.astype(int)
 
@@ -378,7 +378,7 @@ class PolygonInteractor(QtCore.QObject):
 
     showverts = True
     epsilon = 5
-    polyi_changed = QtCore.pyqtSignal(list)  #: polygon changed signal.
+    polyi_changed = QtCore.pyqtSignal()  #: polygon changed signal.
 
     def __init__(self, axtmp, pntxy):
         super().__init__()
@@ -389,6 +389,7 @@ class PolygonInteractor(QtCore.QObject):
         self.poly.set_alpha(0.5)
         self.pntxy = pntxy
         self.ishist = True
+        self.polymask = None
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
 
         xtmp, ytmp = list(zip(*self.poly.xy))
@@ -589,8 +590,9 @@ class PolygonInteractor(QtCore.QObject):
         None.
 
         """
-        polymask = Path(self.poly.xy).contains_points(self.pntxy)
-        self.polyi_changed.emit(polymask.tolist())
+        self.polymask = Path(self.poly.xy).contains_points(self.pntxy)
+        self.polyi_changed.emit()
+
 
     def motion_notify_callback(self, event):
         """
@@ -685,7 +687,7 @@ class ScatterPlot(QtWidgets.QDialog):
         group_map = QtWidgets.QGroupBox('Map Settings')
         grid_right = QtWidgets.QGridLayout(group_map)
 
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Scatter Plot Tool')
 
         lbl_combo_left = QtWidgets.QLabel('X Data Band:')
         lbl_combo2_left = QtWidgets.QLabel('Y Data Band:')
@@ -760,7 +762,8 @@ class ScatterPlot(QtWidgets.QDialog):
         if gstmp != self.c[0]:
             self.c[0] = gstmp
             self.hist.update_graph(clearaxis=True)
-            self.map.polyi.update_plots()
+            self.on_cp_dpoly()
+            # self.map.polyi.update_plots()
 
     def on_cp_combo2(self):
         """
@@ -775,7 +778,8 @@ class ScatterPlot(QtWidgets.QDialog):
         if gstmp != self.c[1]:
             self.c[1] = gstmp
             self.hist.update_graph(clearaxis=True)
-            self.map.polyi.update_plots()
+            self.on_cp_dpoly()
+            # self.map.polyi.update_plots()
 
     def on_cp_combo3(self):
         """
@@ -788,7 +792,8 @@ class ScatterPlot(QtWidgets.QDialog):
         """
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
-        self.map.polyi.update_plots()
+        self.on_cp_dpoly()
+        # self.map.polyi.update_plots()
 
     def on_map_combo(self):
         """
@@ -801,7 +806,8 @@ class ScatterPlot(QtWidgets.QDialog):
         """
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
-        self.hist.polyi.update_plots()
+        # self.on_map_dpoly()
+        # self.hist.polyi.update_plots()
 
     def on_map_combo2(self):
         """
@@ -814,7 +820,7 @@ class ScatterPlot(QtWidgets.QDialog):
         """
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
-        self.hist.polyi.update_plots()
+        # self.hist.polyi.update_plots()
 
     def settings(self, nodialog=False):
         """
@@ -886,6 +892,9 @@ class ScatterPlot(QtWidgets.QDialog):
         self.hist.update_graph(clearaxis=True)
         self.map.update_graph()
 
+        self.exec_()
+
+
         return True
 
     def loadproj(self, projdata):
@@ -919,27 +928,22 @@ class ScatterPlot(QtWidgets.QDialog):
 
         return projdata
 
-    def update_map(self, polymask):
+    def update_map(self):
         """
         Update map.
-
-        Parameters
-        ----------
-        polymask : numpy array
-            Polygon mask.
 
         Returns
         -------
         None.
 
         """
-        if max(polymask) is False:
+        polymask = self.hist.polyi.polymask
+        if polymask.max() is False:
             return
 
         mtmp = self.map_combo.currentIndex()
         mask = self.indata['Raster'][mtmp].data.mask
 
-        polymask = np.array(polymask)
         polymask.shape = mask.shape
         polymask = np.logical_or(~polymask, mask)
 
@@ -948,24 +952,19 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map.csp.changed()
         self.map.figure.canvas.draw()
 
-    def update_hist(self, polymask):
+    def update_hist(self):
         """
         Update histogram.
-
-        Parameters
-        ----------
-        polymask : numpy array
-            Polygon mask.
 
         Returns
         -------
         None.
 
         """
-        if max(polymask) is False:
+        polymask = self.map.polyi.polymask
+        if polymask.max() is False:
             return
 
-        polymask = np.array(polymask)
         dattmp = self.hist.csp.get_array()
         atmp = np.array([self.hist.xcoord[polymask],
                          self.hist.ycoord[polymask]]).T
@@ -1017,3 +1016,28 @@ def dist_point_to_segment(p, s0, s1):
     pb = s0 + b*v
 
     return np.linalg.norm(p - pb)
+
+
+def _testfn():
+    import sys
+    from pygmi.raster.iodefs import get_raster
+
+    ifile1 = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile2 = r"D:\Workdata\PyGMI Test Data\Classification\export_classes.tif"
+
+    dat1 = get_raster(ifile1)
+    dat2 = get_raster(ifile2)
+    dat = dat1+dat2
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = ScatterPlot()
+    DM.indata['Raster'] = dat
+    DM.indata['Cluster'] = dat2
+    DM.settings()
+
+    aaa=1
+
+
+if __name__ == "__main__":
+    _testfn()
