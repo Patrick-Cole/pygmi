@@ -170,7 +170,7 @@ class TDEM1D(QtWidgets.QDialog):
         self.combobalt = QtWidgets.QComboBox()
         self.loopturns = QtWidgets.QLineEdit('1.0')
         self.loopcurrent = QtWidgets.QLineEdit('1.0')
-        self.mu = QtWidgets.QLineEdit('1.2566370614359173e-06')
+        self.mu = QtWidgets.QLineEdit('1.25663706212e-06')
         self.txarea = QtWidgets.QLineEdit('313.98')
         self.txofftime = QtWidgets.QLineEdit('0.0100286')
         self.txrampoff1 = QtWidgets.QLineEdit('0.01')
@@ -716,8 +716,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     # Load in line data
-    filename = r'd:\Workdata\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
-    wfile = r'd:\Workdata\EM\wtimes.txt'
+    filename = r'D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
+    wfile = r'D:\Workdata\PyGMI Test Data\EM\wtimes.txt'
 
     IO = ImportLineData()
     IO.filt = 'Tab Delimited (*.txt)'
