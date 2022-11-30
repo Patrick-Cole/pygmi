@@ -767,9 +767,12 @@ class MagInvert(QtWidgets.QDialog):
         declination = self.dsb_hdec.value()
         strength = self.dsb_hint.value()
 
-        inducing_field = (strength, inclination, declination)
-        source_field = magnetics.sources.SourceField(
-            receiver_list=receiver_list, parameters=inducing_field)
+        # inducing_field = (strength, inclination, declination)
+        # source_field = magnetics.sources.SourceField(
+        #     receiver_list=receiver_list, parameters=inducing_field)
+        source_field = magnetics.UniformBackgroundField(
+            receiver_list=receiver_list, amplitude=strength,
+            inclination=inclination, declination=declination)
 
         # Define the survey, data and tensor mesh
         survey = magnetics.survey.Survey(source_field)
@@ -808,22 +811,17 @@ class MagInvert(QtWidgets.QDialog):
         # Define the Physics
         simulation = magnetics.simulation.Simulation3DIntegral(
             survey=survey, mesh=mesh, model_type="scalar", chiMap=model_map,
-            actInd=ind_active)
+            ind_active=ind_active)
 
         # Define Inverse Problem
         dmis = data_misfit.L2DataMisfit(data=data_object,
                                         simulation=simulation)
-        reg = regularization.Sparse(mesh, indActive=ind_active,
-                                    mapping=model_map, mref=starting_model,
-                                    gradientType="total", alpha_s=1, alpha_x=1,
-                                    alpha_y=1, alpha_z=1)
-        # reg = regularization.Tikhonov(mesh, indActive=ind_active,
-        #                             mapping=model_map, mref=starting_model,
-        #                             alpha_s=1, alpha_x=1,
-        #                             alpha_y=1, alpha_z=1)
-        reg.norms = np.c_[0, 2, 2, 2]
+        reg = regularization.Sparse(mesh, active_cells=ind_active,
+                                    mapping=model_map, reference_model=starting_model,
+                                    gradient_type="total")
+        reg.norms = [0, 0, 0, 0]
 
-        opt = optimization.ProjectedGNCG(maxIter=10, lower=0.0, upper=1.0,
+        opt = optimization.ProjectedGNCG(maxIter=20, lower=0.0, upper=1.0,
                                          maxIterLS=20, maxIterCG=10,
                                          tolCG=1e-3)
         inv_prob = inverse_problem.BaseInvProblem(dmis, reg, opt)
@@ -900,7 +898,7 @@ class MagInvert(QtWidgets.QDialog):
         for i2 in range(cnt):
             susc[i2] = X[cfit.labels_ == i2].mean()
             inputliths[i2] = str(susc[i2])
-            print(i2, susc[i2])
+            # print(i2, susc[i2])
 
         bsusc = np.min(susc)
         bindx = np.nonzero(susc == bsusc)[0][0]
@@ -952,8 +950,8 @@ def _testfn():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    mfile = r"d:\Workdata\MagInv\mag.tif"
-    dfile = r"d:\Workdata\MagInv\dem.tif"
+    mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\mag.tif"
+    dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\dem.tif"
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)

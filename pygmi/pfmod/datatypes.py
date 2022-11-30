@@ -228,7 +228,7 @@ class LithModel():
 
                 if (0 <= ycrd2 < grows and 0 <= xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]
-                    if (curgrid.data.mask[ycrd2, xcrd2] or
+                    if (np.ma.getmaskarray(curgrid.data)[ycrd2, xcrd2] or
                             np.isnan(alt) or alt == curgrid.nodata):
                         alt = curgrid.data.mean()
                     k_2 = int((utlz - alt) / self.d_z)
