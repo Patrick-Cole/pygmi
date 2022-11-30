@@ -2,6 +2,38 @@
 Changelog
 =========
 
+v3.2.6.0, 30 November 2022
+--------------------------
+*Updated SimPEG inversion calls according to the new API
+*Changed default mu to accommodate new api warning.
+*Fixed a speed issue with the scatter plot tool.
+*Replaced cm with colormaps because of Matplotlib API change
+*In API, added data merge
+*In API, added vmin and vmax calculation in data class
+*Modestimage can now generate sunshading from api call
+*Fixed a bug with the cursor size on 3D modelling
+*Update to help files
+*Bugfix - merge to median
+*Fixed bug with vmin and vmax setting
+*Bugfix - fixed a bug when deleting a dataset connected to the modeller, and then connecting new data  might cause a crash when re-entering the modeller.
+*PCA fit list bugfix
+*PCA - added fitting to list of files
+*Mosaic - changed mean option to median
+*Bugfix passing float instead of int
+*Condition indices now have a 'Landsat (All)' option
+*Expansion of raster merge capabilities for large files.
+*Get_data will try to regular import if Landsat import fails.
+*Fixed a bug when converting B3A in ratios
+*Changed label from Landsat Composite to Landsat Temporal Composite
+*API for import raster now allows bounds in coordinates
+*Raster file list now has an export option.
+*MNF and PCA calculations now accept remote sensing formats.
+*Added new ratio - NMDI
+*Ratios - improved calculations for round off error.
+*Ratios - added ability to use sentinel 8A
+*Added mean and standard deviation to equation editor for pixel mean and pixel standard deviation.
+*Added some tests to cluster.py
+
 v3.2.5.12, 24 August 2022
 -------------------------
 *Fixed a bug where gravity profiles exported from the 3D model had incorrect values.
