@@ -59,6 +59,12 @@ class MenuWidget():
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
+        self.action_import_genfps = QtWidgets.QAction('Import Generic FPS')
+        self.menu.addAction(self.action_import_genfps)
+        self.action_import_genfps.triggered.connect(self.import_genfps)
+
+        self.menu.addSeparator()
+
         self.action_check_desc = QtWidgets.QAction('Correct SEISAN Type 3'
                                                    ' Descriptions')
         self.menu.addAction(self.action_check_desc)
@@ -67,10 +73,6 @@ class MenuWidget():
         self.action_filter_seisan = QtWidgets.QAction('Filter SEISAN Data')
         self.menu.addAction(self.action_filter_seisan)
         self.action_filter_seisan.triggered.connect(self.filter_seisan)
-
-        self.action_import_genfps = QtWidgets.QAction('Import Generic FPS')
-        self.menu.addAction(self.action_import_genfps)
-        self.action_import_genfps.triggered.connect(self.import_genfps)
 
         self.menu.addSeparator()
 
