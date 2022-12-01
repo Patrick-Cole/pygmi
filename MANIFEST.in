@@ -5,6 +5,5 @@ include *.rst
 include pygmi/mag/IGRF13.COF
 include pygmi/raster/gcs.csv
 include pygmi/raster/pcs.csv
-include pygmi/bholes/logplot.xlsx
-recursive-include pygmi *.py *.png *.ico *.svg *.html
+recursive-include pygmi *.py *.png *.ico *.html
 

@@ -402,18 +402,18 @@ class DataMerge(QtWidgets.QDialog):
 
         self.idirlist = QtWidgets.QLineEdit('')
         self.sfile = QtWidgets.QLineEdit('')
-        self.files_diff = QtWidgets.QCheckBox('Merge by band labels, '
+        self.files_diff = QtWidgets.QCheckBox('Mosaic by band labels, '
                                               'since band order may differ, '
                                               'or input files have different '
                                               'numbers of bands or '
                                               'nodata values.')
         self.shift_to_median = QtWidgets.QCheckBox('Shift bands to median '
-                                                   'value before merge. May '
-                                                   'allow for cleaner merge '
+                                                   'value before mosaic. May '
+                                                   'allow for cleaner mosaic '
                                                    'if datasets are offset.')
 
         self.bands_to_files = QtWidgets.QCheckBox('Save each band separately '
-                                                  'in a "merge" subdirectory.')
+                                                  'in a "mosaic" subdirectory.')
         self.forcetype = None
         self.singleband = False
         self.setupui()
@@ -719,7 +719,7 @@ class DataMerge(QtWidgets.QDialog):
             self.showprocesslog('Extracting '+dataid+'...')
 
             if self.bands_to_files.isChecked():
-                odir = os.path.join(self.idir, 'merge')
+                odir = os.path.join(self.idir, 'mosaic')
                 os.makedirs(odir, exist_ok=True)
                 ofile = dataid+'.tif'
                 ofile = ofile.replace(' ', '_')
@@ -805,7 +805,7 @@ class DataMerge(QtWidgets.QDialog):
                 self.showprocesslog('Too few bands of name '+dataid)
                 continue
 
-            self.showprocesslog('Merging '+dataid+'...')
+            self.showprocesslog('Mosaicing '+dataid+'...')
 
             with rasterio.Env(CPL_DEBUG=True):
                 mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
@@ -839,7 +839,7 @@ class DataMerge(QtWidgets.QDialog):
 
     def merge_same(self):
         """
-        Merge files with same numbers of bands and band order.
+        Mosaic files with same numbers of bands and band order.
 
         This uses much less memory, but is less flexible.
 

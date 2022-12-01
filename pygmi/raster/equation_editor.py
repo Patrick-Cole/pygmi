@@ -241,7 +241,7 @@ class EquationEditor(QtWidgets.QDialog):
 
     def std(self, eq, localdict):
         """
-        Get std dev pixel value of all input bands.
+        Get standard deviation pixel value of all input bands.
 
         Parameters
         ----------

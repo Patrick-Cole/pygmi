@@ -86,7 +86,7 @@ class LandsatComposite(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.landsat_composite')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
         label_tday = QtWidgets.QLabel('Target Day:')

@@ -106,7 +106,7 @@ class MenuWidget():
         self.menu.addAction(self.action_lstack)
         self.action_lstack.triggered.connect(self.lstack)
 
-        self.action_merge = QtWidgets.QAction('Merge (Mosaic)')
+        self.action_merge = QtWidgets.QAction('Dataset Mosaic')
         self.menu.addAction(self.action_merge)
         self.action_merge.triggered.connect(self.merge)
 

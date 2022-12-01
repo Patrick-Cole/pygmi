@@ -240,7 +240,7 @@ class Data():
         Parameters
         ----------
         std : float, optional
-            Multiplier for standard devations to include about mean.
+            Multiplier for standard deviations to include about mean.
             The default is 2.5.
 
         Returns
