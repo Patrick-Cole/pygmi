@@ -1,10 +1,20 @@
 References
 ----------
 
-Haest, M. Cudahy, T., Laukamp, C., and Gregory S., (2012) ‘Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the Rocklea channel iron deposit in Western Australia’, Economic Geology, 107(2), pp. 209–228. doi: 10.2113/econgeo.107.2.209.
+Berman, M., Phatak, A., & Traylen, A., 2012, Some invariance properties of the minimum noise fraction transform. Chemometrics and Intelligent Laboratory Systems, 117, 189-199.
 
-Kalinowski, A., Oliver, S., 2004. ASTER Mineral Index Processing Manual. Remote Sensing Applications, Geoscience Australia, 36 pp.
+Green, A., Berman, M., Switzer, P., Craig, M., 1988, A transformation for ordering multispectral data in terms of image quality with implications for noise removal. IEEE Transactions on Geoscience and Remote Sensing, 26, 65-74.
 
-McFEETERS, S. K., 1996 The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features, International Journal of Remote Sensing, 17:7, 1425-1432, https://doi.org/10.1080/01431169608948714
+Haest, M. Cudahy, T., Laukamp, C., Gregory S., 2012, ‘Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the Rocklea channel iron deposit in Western Australia’, Economic Geology, 107(2), pp. 209–228. doi: 10.2113/econgeo.107.2.209.
+
+Ientilucci, E., 2003, Comparison and Usage of Principal Component Analysis (PCA) and Noise Adjusted Principal Component (NAPC) Analysis or Maximum Noise Fraction (MNF).
+
+Kalinowski, A., Oliver, S., 2004, ASTER Mineral Index Processing Manual. Remote Sensing Applications, Geoscience Australia, 36 pp.
+
+McFeeters, S.K., 1996, The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features, International Journal of Remote Sensing, 17:7, 1425-1432, https://doi.org/10.1080/01431169608948714
+
+Pedregosa et al., 2011, Scikit-learn: Machine Learning in Python, , JMLR 12, pp. 2825-2830
+
+Ross, D., Lim, J., Lin, R., Yang., M., 2008 Incremental Learning for Robust Visual Tracking, International Journal of Computer Vision, Volume 77, Issue 1-3, pp. 125-141
 
 Van der Meer, F.D., van der Werff, H.M.A., van Ruitenbeek, F.J.A., 2014. Potential of ESA’s Sentinel-2 for geological applications. Remote Sensing of Environment 148, 124–133. https://doi.org/10.1016/j.rse.2014.03.022

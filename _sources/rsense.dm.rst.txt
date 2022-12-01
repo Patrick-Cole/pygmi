@@ -78,6 +78,46 @@ Options:
 
 .. image:: _images/rsensecind.png
 
+Landsat Temporal Composite
+--------------------------
+This module creates a temporal composite from a list of Landsat scenes. The aim is to substitute data from multiple scenes over areas with clouds. 
+
+Options:
+
+* Batch Directory - This is a directory where all the eligible scenes can be found
+* Target Day - This is the optimal Julian day for the scenes. It can be the mean day, or the day of the best scene. Scenes closest to this day will be given preference.
+
+.. image:: _images/rsenseltc.png
+
+Principal Component Analysis
+----------------------------
+This module performs Principal Component Analysis (PCA) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.
+
+The PCA module is also capable of accepting raster lists, so that batch PCA can be performed. In such a case, the user has the option to fit the PCA model to all files first, before translating the data to PCA space. This allows adjacent datasets to be mosaiced seamlessly, because the same model is applied to all input data.
+
+Options:
+
+* Forward Transform Only - This outputs the forward transformed data with a preset number of components.
+* Number of components - Number of components used.
+* Fit PCA to all files - used to obtain a common PCA model over a number of files
+
+.. image:: _images/rsensepca1.png
+
+.. image:: _images/rsensepca2.png
+
+Minimum Noise Fraction
+----------------------
+This module performs Minimum Noise Fraction (MNF) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.
+
+Options:
+
+* Forward Transform Only - This outputs the forward transformed data with the specified number of components.
+* Number of components - Number of components used.
+* Noise estimated by average horizontal and vertical shift - This is the noise estimation as performed in ENVI.
+* Noise estimated by diagonal shift.
+* Noise estimated by local quadratic surface - Option recommended by Berman et al (2012), but slower.
+
+.. image:: _images/rsensemnf.png
 
 Hyperspectral Imaging
 ---------------------

@@ -4,9 +4,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3.2.5.9 documentation</title>
+    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3.2.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -14,6 +14,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="rsense.ref.html" />
@@ -161,6 +162,42 @@
 <li><p>Invert selection - convenience button to invert the condition indices selection.</p></li>
 </ul>
 <img alt="_images/rsensecind.png" src="_images/rsensecind.png" />
+</section>
+<section id="landsat-temporal-composite">
+<h2>Landsat Temporal Composite<a class="headerlink" href="#landsat-temporal-composite" title="Permalink to this heading">¶</a></h2>
+<p>This module creates a temporal composite from a list of Landsat scenes. The aim is to substitute data from multiple scenes over areas with clouds.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Batch Directory - This is a directory where all the eligible scenes can be found</p></li>
+<li><p>Target Day - This is the optimal Julian day for the scenes. It can be the mean day, or the day of the best scene. Scenes closest to this day will be given preference.</p></li>
+</ul>
+<img alt="_images/rsenseltc.png" src="_images/rsenseltc.png" />
+</section>
+<section id="principal-component-analysis">
+<h2>Principal Component Analysis<a class="headerlink" href="#principal-component-analysis" title="Permalink to this heading">¶</a></h2>
+<p>This module performs Principal Component Analysis (PCA) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.</p>
+<p>The PCA module is also capable of accepting raster lists, so that batch PCA can be performed. In such a case, the user has the option to fit the PCA model to all files first, before translating the data to PCA space. This allows adjacent datasets to be mosaiced seamlessly, because the same model is applied to all input data.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Forward Transform Only - This outputs the forward transformed data with a preset number of components.</p></li>
+<li><p>Number of components - Number of components used.</p></li>
+<li><p>Fit PCA to all files - used to obtain a common PCA model over a number of files</p></li>
+</ul>
+<img alt="_images/rsensepca1.png" src="_images/rsensepca1.png" />
+<img alt="_images/rsensepca2.png" src="_images/rsensepca2.png" />
+</section>
+<section id="minimum-noise-fraction">
+<h2>Minimum Noise Fraction<a class="headerlink" href="#minimum-noise-fraction" title="Permalink to this heading">¶</a></h2>
+<p>This module performs Minimum Noise Fraction (MNF) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Forward Transform Only - This outputs the forward transformed data with the specified number of components.</p></li>
+<li><p>Number of components - Number of components used.</p></li>
+<li><p>Noise estimated by average horizontal and vertical shift - This is the noise estimation as performed in ENVI.</p></li>
+<li><p>Noise estimated by diagonal shift.</p></li>
+<li><p>Noise estimated by local quadratic surface - Option recommended by Berman et al (2012), but slower.</p></li>
+</ul>
+<img alt="_images/rsensemnf.png" src="_images/rsensemnf.png" />
 </section>
 <section id="hyperspectral-imaging">
 <h2>Hyperspectral Imaging<a class="headerlink" href="#hyperspectral-imaging" title="Permalink to this heading">¶</a></h2>
@@ -334,7 +371,7 @@
       &copy;2022 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

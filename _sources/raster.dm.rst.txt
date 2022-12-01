@@ -138,29 +138,28 @@ Options:
 
 .. image:: _images/layerstack.png
 
-Dataset Merge
--------------
+Dataset Mosaic
+--------------
 
-This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.
+This will allow datasets to be mosaiced. The input is a directory which contains ONLY data to be mosaiced.
 
-If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower. If files being merged have z values which are offset, the user can select to shift the bands to their respective mean value prior to merge to minimise this. In this case the slower merge will result.
+If all files to be mosaiced have the same number of bands, in the same order (band name is not checked) then a fast mosaic will result. This is the default. Alternatively, the user can mosaic files with different numbers of bands, and only bands with common names will be mosaiced. This option is slower. If files being mosaiced have z values which are offset, the user can select to shift the bands to their respective median value prior to mosaic to minimise this. In this case a slower mosaic will result.
 
-Options:
+General Options:
 
-* Batch directory - location of files to be merged.
-* Merge by band labels, since band order may differ, or input files have different numbers of bands. - unchecked by default.
-* Shift bands to mean value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.
+* Batch directory - location of files to be mosaiced.
+* Shapefile for boundary - This is an optional location for a shapefile to be used to cut the merge to a specific boundary.
+* Mosaic by band labels, since band order may differ, or input files have different numbers of bands. - checked by default.
+* Shift bands to median value before mosaic. May allow for cleaner mosaic if datasets are offset - unchecked by default.
+* Save each band separately in a mosaic directory - this is useful when the resultant mosaic is too large.
 
-.. image:: _images/rastermerge.png
+Mosaic Method:
 
-Merge Method
-^^^^^^^^^^^^
-
+* Median - shift last file to median overlap value and copy over first file at overlap.
 * First - copy first file over last file at overlap.
 * Last - copy last file over first file at overlap.
 * Min - copy pixel wise minimum at overlap.
 * Max - copy pixel wise maximum at overlap.
-* Mean - shift last file to mean overlap value and copy over first file at overlap.
 
 Dataset Reprojection
 --------------------

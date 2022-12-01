@@ -4,9 +4,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pygmi.vector package &#8212; PyGMI 3.2.5.9 documentation</title>
+    <title>pygmi.vector package &#8212; PyGMI 3.2.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -14,6 +14,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quickstart module" href="quickstart.html" />
@@ -104,7 +105,7 @@
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -115,7 +116,7 @@
 <span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -126,7 +127,7 @@
 <span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -138,7 +139,7 @@
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -149,7 +150,7 @@
 <span class="sig-name descname"><span class="pre">dxy_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.dxy_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>When dxy is changed on the interface, this updates rows and columns.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -160,7 +161,7 @@
 <span class="sig-name descname"><span class="pre">grid_method_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.grid_method_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>When grid method is changed, this updated hidden controls.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -171,13 +172,13 @@
 <span class="sig-name descname"><span class="pre">loadproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -188,10 +189,10 @@
 <span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -202,13 +203,13 @@
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -219,7 +220,7 @@
 <span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -238,7 +239,7 @@
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -249,7 +250,7 @@
 <span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -260,7 +261,7 @@
 <span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -272,7 +273,7 @@
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -283,13 +284,13 @@
 <span class="sig-name descname"><span class="pre">loadproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -300,10 +301,10 @@
 <span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -314,13 +315,13 @@
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -331,7 +332,7 @@
 <span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -351,7 +352,7 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">ifile</span></span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -362,7 +363,7 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -373,7 +374,7 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -384,7 +385,7 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -395,13 +396,13 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">loadproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -412,10 +413,10 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -426,13 +427,13 @@ shapefile.</p>
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -445,7 +446,7 @@ shapefile.</p>
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">blanking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nullvalue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.blanking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blanks area further than a defined number of cells from input data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gdat</strong> (<em>numpy array</em>) – grid data to blank.</p></li>
 <li><p><strong>x</strong> (<em>numpy array</em>) – x coordinates.</p></li>
@@ -456,10 +457,10 @@ shapefile.</p>
 <li><p><strong>Nullvalue</strong> (<em>float</em>) – Null or nodata value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>mask</strong> – Mask to be used for blanking.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
@@ -471,16 +472,16 @@ shapefile.</p>
 <dd><p>Cuts a point dataset.</p>
 <p>Cut a point dataset using a shapefile.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<a class="reference internal" href="pygmi.raster.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI Dataset</p></li>
 <li><p><strong>ifile</strong> (<em>str</em>) – shapefile used to cut data</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>data</strong> – PyGMI Dataset</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="pygmi.raster.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
 </dd>
 </dl>
@@ -491,7 +492,7 @@ shapefile.</p>
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">quickgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numits=4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showprocesslog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.quickgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a quick grid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>numpy array</em>) – array of x coordinates</p></li>
 <li><p><strong>y</strong> (<em>numpy array</em>) – array of y coordinates</p></li>
@@ -502,10 +503,10 @@ will be calculated and used.</p></li>
 <li><p><strong>showprocesslog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>newz</strong> – M x N array of z values</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
@@ -525,7 +526,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -544,10 +545,10 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">button_release_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.button_release_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse button release callback.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Button release event.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -558,10 +559,10 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">motion_notify_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move mouse callback.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Motion notify event.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -572,13 +573,13 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">onpick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.onpick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Picker event.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Picker event.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Return TRUE if pick succeeded, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -589,10 +590,10 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">resizeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.resizeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize event.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -603,13 +604,13 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">update_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> (<em>numpy array</em>) – array of distances, for the x-axis</p></li>
 <li><p><strong>data</strong> (<em>numpy array</em>) – array of data to be plotted on the y-axis</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -620,7 +621,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">update_lmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ival</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uselabels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_lmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from line data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>Pandas dataframe</em>) – Line data</p></li>
 <li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key representing the line data channel to be plotted.</p></li>
@@ -628,7 +629,7 @@ will be calculated and used.</p></li>
 <li><p><strong>uselabels</strong> (<em>bool</em>) – boolean choice whether to use labels or not.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -639,14 +640,14 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">update_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the map from point data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xdata</strong> (<em>numpy array</em>) – 1D x-data array.</p></li>
 <li><p><strong>ydata</strong> (<em>numpy array</em>) – 1D y-data array.</p></li>
 <li><p><strong>zdata</strong> (<em>numpy array</em>) – 1D z-data array.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -657,7 +658,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">update_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_rose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the rose diagram plot using vector data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary. It should be ‘LineString’</p></li>
 <li><p><strong>rtype</strong> (<em>int</em>) – Rose diagram type. Can be either 0 or 1.</p></li>
@@ -665,7 +666,7 @@ will be calculated and used.</p></li>
 <li><p><strong>equal</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option for an equal area rose diagram. The default is False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -676,13 +677,13 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">update_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from vector data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary.</p></li>
 <li><p><strong>col</strong> (<em>str</em>) – Label for column to extract.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
@@ -700,7 +701,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLineMap.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -711,7 +712,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLineMap.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point to run class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -729,7 +730,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -740,7 +741,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change line number.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -751,7 +752,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point to run class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -769,7 +770,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -780,7 +781,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point to run class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -798,7 +799,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -809,7 +810,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point to run class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -827,7 +828,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -838,7 +839,7 @@ will be calculated and used.</p></li>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point to run class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -855,7 +856,7 @@ conventional histogram in that instead of summing elements of
 specific values, this allows the sum of weights/probabilities on a per
 element basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>numpy array</em>) – Input data</p></li>
 <li><p><strong>y</strong> (<em>numpy array</em>) – Input data weights. The default is None.</p></li>
@@ -864,7 +865,7 @@ element basis.</p>
 <li><p><strong>bins</strong> (<em>int</em>) – number of bins. The default is 10.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>hist</strong> (<em>numpy array</em>) – The values of the histogram</p></li>
 <li><p><strong>bin_edges</strong> (<em>numpy array</em>) – bin edges of the histogram</p></li>
@@ -880,14 +881,14 @@ element basis.</p>
 <dd><p>Rotate a point counterclockwise by a given angle around a given origin.</p>
 <p>The angle should be given in radians.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>origin</strong> (<em>list</em>) – List containing origin point (ox, oy)</p></li>
 <li><p><strong>point</strong> (<em>list</em>) – List containing point to be rotated (px, py)</p></li>
 <li><p><strong>angle</strong> (<em>float</em>) – Angle in radians.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>qx</strong> (<em>float</em>) – Rotated x-coordinate.</p></li>
 <li><p><strong>qy</strong> (<em>float</em>) – Rotated y-coordinate.</p></li>
@@ -911,7 +912,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ExportLine.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -922,7 +923,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ExportLine.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -933,10 +934,10 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportLine.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run routine.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
@@ -954,7 +955,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ExportShapeData.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -965,7 +966,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ExportShapeData.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -976,10 +977,10 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportShapeData.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run routine.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
@@ -998,7 +999,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -1009,7 +1010,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -1020,7 +1021,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">ifile</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -1031,10 +1032,10 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">get_GXYZ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.get_GXYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Geosoft XYZ.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>df2</strong> – Pandas dataframe.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>DataFrame</p>
 </dd>
 </dl>
@@ -1045,13 +1046,13 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">get_delimited</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.get_delimited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a delimited line file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>delimiter</strong> (<em>str</em><em>, </em><em>optional</em>) – Delimiter type. The default is ‘,’.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>gdf</strong> – Pandas dataframe.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Dataframe</p>
 </dd>
 </dl>
@@ -1062,13 +1063,13 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">loadproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -1079,10 +1080,10 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -1093,13 +1094,13 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -1110,7 +1111,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
@@ -1128,7 +1129,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
 </dd>
 </dl>
@@ -1139,7 +1140,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
 </dd>
 </dl>
@@ -1150,7 +1151,7 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">ifile</span></span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -1161,13 +1162,13 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">loadproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -1178,10 +1179,10 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -1192,13 +1193,13 @@ element basis.</p>
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>True if successful, False otherwise.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
@@ -1222,7 +1223,7 @@ interface. Normal as well as context menus are defined here.</p>
 <span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
 </dd>
 </dl>
@@ -1316,13 +1317,13 @@ vol. 39, No. 1, pp. 39-48</p>
 <p>Calculates the b values based on the distance between the data point and
 the nearest node. Distances are expressed in units of cell.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>e5</strong> (<em>float</em>) – x distance error.</p></li>
 <li><p><strong>n5</strong> (<em>float</em>) – y distance error.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>b1</strong> (<em>float</em>) – b1 value.</p></li>
 <li><p><strong>b2</strong> (<em>float</em>) – b2 value.</p></li>
@@ -1341,16 +1342,16 @@ the nearest node. Distances are expressed in units of cell.</p>
 <dd><p>Minimum curvature smoothing.</p>
 <p>This routine smooths the data between fixed data nodes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
 <li><p><strong>ufixed</strong> (<em>numpy array</em>) – 2D grid of fixed node values.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>u</strong> – 2D grid of z values.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
@@ -1361,7 +1362,7 @@ the nearest node. Distances are expressed in units of cell.</p>
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">minc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showprocesslog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdist=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiters=100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.minc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimum Curvature Gridding.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>numpy array</em>) – 1D array with x coordinates.</p></li>
 <li><p><strong>y</strong> (<em>numpy array</em>) – 1D array with y coordinates.</p></li>
@@ -1373,10 +1374,10 @@ the nearest node. Distances are expressed in units of cell.</p>
 <li><p><strong>maxiters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations. The default is 100.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>u</strong> – 2D numpy array with gridding z values.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
@@ -1387,7 +1388,7 @@ the nearest node. Distances are expressed in units of cell.</p>
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">morg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.morg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Organise coordinates and calculate b values.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x2</strong> (<em>numpy array</em>) – 1D array with x coordinates.</p></li>
 <li><p><strong>y2</strong> (<em>numpy array</em>) – 1D array with y coordinates.</p></li>
@@ -1398,7 +1399,7 @@ the nearest node. Distances are expressed in units of cell.</p>
 <li><p><strong>cols</strong> (<em>int</em>) – Number of columns.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>coords</strong> (<em>list</em>) – List containing iint, jint, r and zval.</p></li>
 <li><p><strong>b</strong> (<em>list</em>) – List of b values.</p></li>
@@ -1413,7 +1414,7 @@ the nearest node. Distances are expressed in units of cell.</p>
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">off_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.off_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Node value calculation when data value is too far from node.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
 <li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
@@ -1422,10 +1423,10 @@ the nearest node. Distances are expressed in units of cell.</p>
 <li><p><strong>b</strong> (<em>list</em>) – List of b values for calculation.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – DESCRIPTION.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>TYPE</p>
 </dd>
 </dl>
@@ -1438,13 +1439,13 @@ the nearest node. Distances are expressed in units of cell.</p>
 <p>It is defined as:</p>
 <p>2*u[i, j]+u[i, j+2] + u[i+2, j] - 2*(u[i, j+1] + u[i+1, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1458,16 +1459,16 @@ the nearest node. Distances are expressed in units of cell.</p>
 <p>u[i-2, j] + u[i+2, j] + u[i, j+2] + u[i-1, j+1] + u[i+1, j+1] -
 4*(u[i-1, j] + u[i, j+1] + u[i+1, j]) + 7*u[i, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
 <li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1481,13 +1482,13 @@ the nearest node. Distances are expressed in units of cell.</p>
 <p>u[i, j+2] + u[i+1, j+1] + u[i-1, j+1] + u[i+2, j] - 2*u[i-1, j] -
 4*(u[i+1, j] + u[i, j+1]) + 6*u[i, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1501,13 +1502,13 @@ the nearest node. Distances are expressed in units of cell.</p>
 <p>u[i, j+2] + u[i+2, j] + u[i-1, j+1] + u[i+1, j-1] + 2*u[i+1, j+1] -
 8*(u[i, j+1] + u[i+1, j]) - 4*([i, j-1]+u[i-1, j]) + 18*u[i, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1522,17 +1523,17 @@ the nearest node. Distances are expressed in units of cell.</p>
 2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
 8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]) + 20*u[i, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
 <li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
 <li><p><strong>j</strong> (<em>int</em>) – Current Column.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1547,16 +1548,16 @@ the nearest node. Distances are expressed in units of cell.</p>
 2*(u[i-1, j+1] + u[i+1, j+1]) + u[i-1, j-1]+u[i+1, j-1] -
 8*([i-1, j]+u[i, j+1]+u[i+1, j]) - 4*u[i, j-1] + 19*u[i, j] = 0</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
 <li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1681,7 +1682,7 @@ the nearest node. Distances are expressed in units of cell.</p>
       &copy;2022 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
