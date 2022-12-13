@@ -29,9 +29,12 @@ import copy
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import matplotlib.path as mplPath
-from osgeo import osr, ogr
+# from osgeo import ogr
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
+import geopandas as gpd
+from pyproj import CRS, Transformer
+
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
@@ -60,14 +63,16 @@ class PointCut():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = parent.pbar
+        # self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         if parent is None:
             self.showprocesslog = print
+            self.pbar = None
         else:
             self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
 
     def settings(self, nodialog=False):
         """
@@ -92,7 +97,7 @@ class PointCut():
             self.showprocesslog('No point data')
             return False
 
-        nodialog = False
+        # nodialog = False
         if not nodialog:
             ext = 'Shape file (*.shp)'
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -111,7 +116,8 @@ class PointCut():
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-        self.pbar.to_max()
+        if self.pbar is not None:
+            self.pbar.to_max()
         self.outdata['Line'] = {key: data}
 
         return True
@@ -569,23 +575,12 @@ class DataReproj(QtWidgets.QDialog):
         # Input stuff
         orig_wkt = self.in_proj.wkt
 
-        orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
         # Output stuff
         targ_wkt = self.out_proj.wkt
 
-        targ = osr.SpatialReference()
-        targ.ImportFromWkt(targ_wkt)
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        x2, y2 = reprojxy(data.pygmiX, data.pygmiY, orig_wkt, targ_wkt)
 
-        # Set transformation
-        ctrans = osr.CoordinateTransformation(orig, targ)
-
-        dd = np.transpose([data.pygmiX, data.pygmiY])
-        xy = ctrans.TransformPoints(dd)
-        xy = np.array(xy)
+        xy = np.transpose([x2, y2])
 
         if np.inf in xy:
             self.showprocesslog('Note: inf values in reprojected results. '
@@ -709,33 +704,41 @@ def cut_point(data, ifile):
     data : Data
         PyGMI Dataset
     """
-    shapef = ogr.Open(ifile)
-    if shapef is None:
-        return None
-    lyr = shapef.GetLayer()
-    poly = lyr.GetNextFeature()
-    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-        shapef = None
-        return None
+    # shapef = ogr.Open(ifile)
+    # if shapef is None:
+    #     return None
+    # lyr = shapef.GetLayer()
+    # poly = lyr.GetNextFeature()
+    # if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+    #     shapef = None
+    #     return None
 
-    points = []
-    geom = poly.GetGeometryRef()
+    # points = []
+    # geom = poly.GetGeometryRef()
 
-    ifin = 0
-    imax = 0
-    if geom.GetGeometryName() == 'MULTIPOLYGON':
-        for i in range(geom.GetGeometryCount()):
-            geom.GetGeometryRef(i)
-            itmp = geom.GetGeometryRef(i)
-            itmp = itmp.GetGeometryRef(0).GetPointCount()
-            if itmp > imax:
-                imax = itmp
-                ifin = i
-        geom = geom.GetGeometryRef(ifin)
+    # ifin = 0
+    # imax = 0
+    # if geom.GetGeometryName() == 'MULTIPOLYGON':
+    #     for i in range(geom.GetGeometryCount()):
+    #         geom.GetGeometryRef(i)
+    #         itmp = geom.GetGeometryRef(i)
+    #         itmp = itmp.GetGeometryRef(0).GetPointCount()
+    #         if itmp > imax:
+    #             imax = itmp
+    #             ifin = i
+    #     geom = geom.GetGeometryRef(ifin)
 
-    pts = geom.GetGeometryRef(0)
-    for pnt in range(pts.GetPointCount()):
-        points.append((pts.GetX(pnt), pts.GetY(pnt)))
+    # pts = geom.GetGeometryRef(0)
+    # for pnt in range(pts.GetPointCount()):
+    #     points.append((pts.GetX(pnt), pts.GetY(pnt)))
+
+    gdf = gpd.read_file(ifile)
+    gdf = gdf[gdf.geometry != None]
+
+    if 'Polygon' in gdf.geom_type.iloc[0]:
+        dat = gdf.geometry.iloc[0]
+
+    points = list(dat.exterior.coords)
 
     bbpath = mplPath.Path(points)
 
@@ -744,7 +747,7 @@ def cut_point(data, ifile):
 
     data = data[chk]
 
-    shapef = None
+    # shapef = None
     return data
 
 
@@ -876,6 +879,45 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
     return gdat
 
 
+def reprojxy(x, y, iwkt, owkt):
+    """
+    Reproject x and y coordinates.
+
+    Parameters
+    ----------
+    x : numpy array or float
+        x coordinates
+    y : numpy array or float
+        y coordinates
+    iwkt : str, int
+        Input wkt description or EPSG code (int)
+    owkt : str, int
+        Output wkt description or EPSG code (int)
+
+    Returns
+    -------
+    xout : numpy array
+        x coordinates.
+    yout : numpy array
+        y coordinates.
+
+    """
+    if isinstance(iwkt, int):
+        crs_from = CRS.from_epsg(iwkt)
+    else:
+        crs_from = CRS.from_wkt(iwkt)
+
+    if isinstance(owkt, int):
+        crs_to = CRS.from_epsg(owkt)
+    else:
+        crs_to = CRS.from_wkt(owkt)
+
+    transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)
+    xout, yout = transformer.transform(x, y)
+
+    return xout, yout
+
+
 def _testfn():
     """Test routine."""
     import sys
@@ -884,23 +926,52 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
-    ifile = r'C:/Workdata/raster/Testing/SPECARCHIVE.XYZ'
+    ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\SPECARCHIVE.XYZ"
 
     IO = ImportLineData()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
-    DG = DataGrid()
-    DG.indata = IO.outdata
-    DG.settings()
+    # DG = DataGrid()
+    # DG.indata = IO.outdata
+    # DG.settings()
 
-    dat = DG.outdata['Raster'][0].data
+    # dat = DG.outdata['Raster'][0].data
 
-    plt.imshow(dat)
-    plt.show()
+    # plt.imshow(dat)
+    # plt.show()
+
+    DR = DataReproj()
+    DR.indata = IO.outdata
+    DR.settings()
+
+    breakpoint()
+
+
+def _testfn_pointcut():
+    """Test routine."""
+    import sys
+    from pygmi.vector.iodefs import ImportLineData
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
+    sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
+
+    IO = ImportLineData()
+    IO.ifile = ifile
+    IO.filt = 'Comma Delimited (*.csv)'
+    IO.settings(True)
+
+    DR = PointCut()
+    DR.indata = IO.outdata
+    DR.ifile = sfile
+    DR.settings(True)
+
+    breakpoint()
+
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_pointcut()

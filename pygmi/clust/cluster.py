@@ -508,12 +508,14 @@ def _testfn():
     dat.data = dat2
 
 
-def _testfn2():
+def _test_marinda():
     import sys
     import matplotlib.pyplot as plt
     from scipy.spatial.distance import cdist
     from pygmi.raster.iodefs import get_raster
 
+
+    # Import Data
     ifile = r"D:\Workdata\testdata.hdr"
 
     dat = get_raster(ifile)
@@ -523,6 +525,7 @@ def _testfn2():
         if i.dataid in ['k: 1', 'th: 1', 'u: 1']:
             dat2.append(i)
 
+    # Generate layers via cluster analysis
     app = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
@@ -533,6 +536,7 @@ def _testfn2():
 
     cdata = DM.outdata['Cluster']
 
+    # Get cluster centers
     centers = {}
     for dat in cdata:
         num = dat.metadata['Cluster']['no_clusters']
@@ -540,10 +544,12 @@ def _testfn2():
 
     icenter = sorted(list(centers.keys()))
 
+    # Master center is dataset with most classes..
     master = icenter[-1]
     dist = {}
     measure = 'euclidean'
 
+    # Relabel classes using class centers from 9 class dataset.
     for j in icenter:
         dist[j] = np.argmin(cdist(centers[master], centers[j], measure), 0)
         dist[j] = dist[j] + 1
@@ -556,20 +562,20 @@ def _testfn2():
             cdata2[-1][dat.data == i+1] = dist[cnum][i]
         cdata2[-1] = np.ma.masked_equal(cdata2[-1], 0)
 
-    # for dat in cdata2:
-    #     plt.figure(dpi=150)
-    #     num = np.ma.unique(dat).compressed().size
-    #     plt.title(f'Clusters: {num}')
-    #     plt.imshow(dat)
-    #     plt.show()
+    for dat in cdata2:
+        plt.figure(dpi=150)
+        num = np.ma.unique(dat).compressed().size
+        plt.title(f'Clusters: {num}')
+        plt.imshow(dat)
+        plt.show()
 
-    # plt.figure(dpi=150)
-    # for dat in cdata2:
-    #     num = np.ma.unique(dat).compressed().size
-    #     plt.title(f'Clusters: {num}')
-    #     plt.imshow(dat, alpha=0.25)
+    plt.figure(dpi=150)
+    for dat in cdata2:
+        num = np.ma.unique(dat).compressed().size
+        plt.title(f'Clusters: {num}')
+        plt.imshow(dat, alpha=0.25)
 
-    # plt.show()
+    plt.show()
 
     mdata = np.ma.mean(cdata2, 0)
     plt.figure(dpi=150)
@@ -577,6 +583,60 @@ def _testfn2():
     plt.colorbar()
     plt.show()
 
+    breakpoint()
+
+
+def _test_marinda2():
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.ginterp import norm2
+
+    # Import Data
+    ifile = r"D:\Workdata\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    dat2 = []
+    for i in dat:
+        if i.dataid in ['k: 1', 'th: 1', 'u: 1']:
+            dat2.append(i)
+
+    # Generate layers via cluster analysis
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Cluster()
+    DM.indata['Raster'] = dat2
+    DM.spinbox_maxclusters.setProperty('value', 7)
+
+    DM.settings()
+
+    cdata = DM.outdata['Cluster']
+
+    mask = cdata[0].data.mask
+    for dat in cdata:
+        mask = np.logical_or(mask, dat.data.mask)
+        dat.data = dat.data.filled()
+
+    rows, cols = cdata[0].data.shape
+
+    # Get cluster centers
+    colormap = np.ma.ones((rows, cols, 4))
+    colormap[:, :, 0] = norm2(cdata[0].data)
+    colormap[:, :, 1] = norm2(cdata[1].data)
+    colormap[:, :, 2] = norm2(cdata[2].data)
+    colormap[:, :, 3] = np.logical_not(mask)
+
+
+    # colormap[:, :, 3][colormap[:, :, 0]==0] = 0
+
+    plt.figure(dpi=150)
+    plt.imshow(colormap)
+    plt.colorbar()
+    plt.show()
+
+    breakpoint()
+
 
 if __name__ == "__main__":
-    _testfn2()
+    _test_marinda2()

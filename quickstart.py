@@ -36,7 +36,7 @@ from pygmi.main import main
 
 # warnings.simplefilter("default")
 
-# useful regex for find: \.(?!py)
+# useful regex for find: \.(?!py) in spyder.ini
 
 
 if __name__ == "__main__":

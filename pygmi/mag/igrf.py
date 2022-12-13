@@ -60,11 +60,11 @@ import copy
 from numba import jit
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import osr
 
 import pygmi.raster.dataprep as dp
 from pygmi import menu_default
 from pygmi.misc import ProgressBarText
+from pygmi.vector.dataprep import reprojxy
 
 
 class IGRF(QtWidgets.QDialog):
@@ -365,23 +365,6 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
 
     gh = np.zeros([4, MAXCOEFF])
 
-    if wkt is not None:
-        orig_wkt = wkt
-
-        orig = osr.SpatialReference()
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        if orig_wkt == '':
-            orig.SetWellKnownGeogCS('WGS84')
-        else:
-            orig.ImportFromWkt(orig_wkt)
-
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        ctrans = osr.CoordinateTransformation(orig, targ)
-
     with open(os.path.join(os.path.dirname(__file__), 'IGRF13.cof'),
               encoding='utf-8') as mdf:
         modbuff = mdf.readlines()
@@ -459,7 +442,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
             continue
 
         if wkt is not None:
-            longitude, latitude, _ = ctrans.TransformPoint(xdat[i], ydat[i])
+            longitude, latitude = reprojxy(xdat[i], ydat[i], wkt, 4326)
         else:
             longitude, latitude = xdat[i], ydat[i]
 
