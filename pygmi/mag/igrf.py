@@ -437,14 +437,21 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         nmax, gh = extrapsh(sdate+1, epoch[modelI], max1[modelI],
                             max2[modelI], 3, gh)
 
+    if wkt is not None:
+        xdat, ydat = reprojxy(xdat, ydat, wkt, 4326)
+
     for i in piter(range(xdat.size)):
         if igrf_F.mask[i]:
             continue
 
-        if wkt is not None:
-            longitude, latitude = reprojxy(xdat[i], ydat[i], wkt, 4326)
-        else:
-            longitude, latitude = xdat[i], ydat[i]
+        # if wkt is not None:
+        #     longitude, latitude = reprojxy(xdat[i], ydat[i], wkt, 4326)
+        # else:
+        #     longitude, latitude = xdat[i], ydat[i]
+
+        longitude, latitude = xdat[i], ydat[i]
+        # if xdat1[i]-longitude != 0 or ydat1[i]-latitude != 0:
+        #     print('broken')
 
         alt = altgrid[i]
 

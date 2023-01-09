@@ -31,13 +31,14 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
 import rasterio
-from rasterio.plot import plotting_extent
+# from rasterio.plot import plotting_extent
 from rasterio.windows import Window
 from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText, getinfo
+import pygmi.raster.lzrw1_kh as lzrw1
+from pygmi.misc import ProgressBarText
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -1119,8 +1120,10 @@ def get_geosoft(hfile):
 
         es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
         sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
-        ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
-        nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
+        # ne - number of elements per vector or ncols
+        ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol/ne
+        # nv - number of vectors or nrows
+        nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow/nv
         kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
 
         dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
@@ -1157,6 +1160,25 @@ def get_geosoft(hfile):
         elif es == 4:
             data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
             nval = -1.0E+32
+
+        elif es > 1024:
+            esb = es-1024
+            sig = np.fromfile(f, dtype=np.int32, count=1)[0]
+            comp_type = np.fromfile(f, dtype=np.int32, count=1)[0]
+            nb = np.fromfile(f, dtype=np.int32, count=1)[0]
+            vpb = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+            ob = np.fromfile(f, dtype=np.int64, count=nb)
+            cbs = np.fromfile(f, dtype=np.int32, count=nb)
+
+            for i in range(nb):
+                # breakpoint()
+                blk = f.read(cbs[i])
+                # breakpoint()
+                blk2 = lzrw1.decompress_chunk(blk)
+
+                breakpoint()
+
         else:
             return None
 
@@ -1691,18 +1713,22 @@ def _filespeedtest():
     ifile = r"D:\Sanral\Potchefstroom_VD_2020_2021JuneDec_stack.hdr"
 
 
+    ifile = r"D:\Workdata\people\minenhle\L5580_MC.grd"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geosoft\FCR2613 CGS Block 2&3 TMI.GRD"
+
+
     iraster = None
 
     getinfo('Start')
 
-    dataset = get_raster(ifile, iraster=iraster)
+    # dataset = get_raster(ifile, iraster=iraster)
+    dataset = get_geosoft(ifile)
 
-    # breakpoint()
 
-    # plt.figure(dpi=150)
-    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    # plt.colorbar()
-    # plt.show()
+    plt.figure(dpi=150)
+    plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    plt.colorbar()
+    plt.show()
 
     # for i in dataset:
     #     i.data = i.data*10000
