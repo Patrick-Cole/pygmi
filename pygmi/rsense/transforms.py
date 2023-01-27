@@ -612,7 +612,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter)
+    dat = lstack(dat, piter=piter, commonmask=True)
 
     for j in dat:
         x2d.append(j.data)
@@ -720,7 +720,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter)
+    dat = lstack(dat, piter=piter, commonmask=True)
 
     for j in dat:
         x2d.append(j.data)
@@ -823,7 +823,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
         x2d = []
         maskall = []
-        dat = lstack(dat, piter=piter)
+        dat = lstack(dat, piter=piter, commonmask=True)
 
         for j in dat:
             x2d.append(j.data)

@@ -273,6 +273,22 @@ class DataLayerStack(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'RasterFileList' in self.indata:
+            from pygmi.rsense.iodefs import get_data
+
+            ifiles = self.indata['RasterFileList']
+            self.showprocesslog('Warning: Layer stacking a file list assumes '
+                                'all datasets overlap in the same area')
+            self.indata['Raster'] = []
+            for ifile in ifiles:
+                self.showprocesslog('Processing '+os.path.basename(ifile))
+                dat = get_data(ifile, piter=self.piter,
+                               showprocesslog=self.showprocesslog,
+                               extscene='Bands Only')
+                for i in dat:
+                    i.data = i.data.astype(np.float32)
+                self.indata['Raster'] += dat
+
         if 'Raster' not in self.indata:
             self.showprocesslog('No Raster Data.')
             return False
@@ -732,10 +748,11 @@ class DataMerge(QtWidgets.QDialog):
                     continue
 
             ifiles = []
-
+            allmval = []
             for i in self.piter(indata):
                 if i.dataid != dataid and self.singleband is False:
                     continue
+                metadata = i.metadata
 
                 i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)
 
@@ -760,6 +777,7 @@ class DataMerge(QtWidgets.QDialog):
                     mval = np.ma.median(i2.data)
                 else:
                     mval = 0
+                allmval.append(mval)
 
                 if self.singleband is True:
                     i2.dataid = 'Band_1'
@@ -806,6 +824,7 @@ class DataMerge(QtWidgets.QDialog):
                 continue
 
             self.showprocesslog('Mosaicing '+dataid+'...')
+            # print(ifiles)
 
             with rasterio.Env(CPL_DEBUG=True):
                 mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
@@ -820,11 +839,12 @@ class DataMerge(QtWidgets.QDialog):
 
             mosaic = mosaic.squeeze()
             mosaic = np.ma.masked_equal(mosaic, nodata)
-            mosaic = mosaic + mval
+            mosaic = mosaic + np.median(allmval)
             outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
             outdat[-1].set_transform(transform=otrans)
             outdat[-1].crs = crs
             outdat[-1].nodata = nodata
+            outdat[-1].metadata = metadata
 
             if self.bands_to_files.isChecked():
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
@@ -832,6 +852,9 @@ class DataMerge(QtWidgets.QDialog):
                 del outdat
                 del mosaic
                 outdat = []
+
+        if bounds is not None:
+            outdat = cut_raster(outdat, self.sfile.text(), deepcopy=False)
 
         self.outdata['Raster'] = outdat
 
@@ -2346,7 +2369,7 @@ def cluster_to_raster(indata):
     return indata
 
 
-def cut_raster(data, ifile, pprint=print):
+def cut_raster(data, ifile, pprint=print, deepcopy=True):
     """Cuts a raster dataset.
 
     Cut a raster dataset using a shapefile.
@@ -2365,7 +2388,9 @@ def cut_raster(data, ifile, pprint=print):
     data : Data
         PyGMI Dataset
     """
-    data = copy.deepcopy(data)
+
+    if deepcopy is True:
+        data = copy.deepcopy(data)
 
     try:
         gdf = gpd.read_file(ifile)
@@ -2699,7 +2724,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
                                     mask=dat2[-1].data.mask)
 
         data.data = data.data + doffset
-        # breakpoint()
+
     if commonmask is True:
         for idat in piter(dat2):
             idat.data.mask = cmask
@@ -3119,6 +3144,10 @@ def _testmerge():
     # idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\Landsat_9\PCA"
     # ifilt = r"E:/WorkProjects/ST-2022-1355 Onshore Mapping/Niger/Landsat_9/RGB*/"
 
+
+    sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\Mining-areas.shp"
+    idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2021"
+
     # idirs = glob.glob(ifilt)
     idirs = [idir]
 
@@ -3175,7 +3204,7 @@ def _testreproj():
 
 def _testcut():
     """Test Reprojection."""
-    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
     sfile  = r"d:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
@@ -3184,26 +3213,39 @@ def _testcut():
     sfile = r"D:\Workdata\Janine\rsa_outline_utm35s.shp"
     ifile = r"D:\Workdata\Janine\oneband.tif"
 
+
+    sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\NRFproj\Mining-areas.shp"
+    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2016mosaic.tif"
+    ofile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2016mines.tif"
+
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    for i in dat:
+        i.data = i.data.astype(np.float32)
 
-    DM = DataCut()
-    DM.indata['Raster'] = dat
-    DM.ifile = sfile
-    DM.settings(nodialog=True)
 
-    plt.figure(dpi=150)
-    plt.imshow(DM.indata['Raster'][0].data,
-               extent=DM.indata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
+    dat = cut_raster(dat, sfile, deepcopy=False)
 
-    plt.figure(dpi=150)
-    plt.imshow(DM.outdata['Raster'][0].data,
-               extent=DM.outdata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
+    # app = QtWidgets.QApplication(sys.argv)
+
+    # DM = DataCut()
+    # DM.indata['Raster'] = dat
+    # DM.ifile = sfile
+    # DM.settings(nodialog=True)
+
+    export_raster(ofile, dat, compression='ZSTD')
+
+    # plt.figure(dpi=150)
+    # plt.imshow(DM.indata['Raster'][0].data,
+    #            extent=DM.indata['Raster'][0].extent)
+    # plt.colorbar()
+    # plt.show()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(DM.outdata['Raster'][0].data,
+    #            extent=DM.outdata['Raster'][0].extent)
+    # plt.colorbar()
+    # plt.show()
 
 
 def _testprof():
@@ -3361,5 +3403,27 @@ def _testlower():
         export_raster(ofile, dat, 'GTiff', compression='ZSTD')
 
 
+def _testcmask():
+    """Lowers resolution."""
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import export_raster
+
+    mfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019.tif"
+    mdataid = 'Band 1'
+    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019.tif"
+
+    mdat = get_raster(mfile, dataid=mdataid)
+    dat = get_raster(ifile)
+
+    mdat[0].dataid = 'mask'
+    datall = mdat+dat
+    datall = lstack(datall, commonmask=True)
+    datall.pop(0)
+    datall = trim_raster(datall)
+
+    ofile = ifile[:-4]+'m.tif'
+    export_raster(ofile, datall, 'GTiff', compression='ZSTD')
+
+
 if __name__ == "__main__":
-    _testmerge()
+    _testcmask()

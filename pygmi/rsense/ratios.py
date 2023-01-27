@@ -36,7 +36,7 @@ from pygmi import menu_default
 from pygmi.rsense import iodefs
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, getinfo
 
 
 class SatRatios(QtWidgets.QDialog):
@@ -270,6 +270,20 @@ class SatRatios(QtWidgets.QDialog):
                 continue
 
             datsml = []
+
+            if sensor == 'WorldView':
+                wvlabels = {'CoastalBlue': 'B1',
+                            'Blue': 'B2',
+                            'Green': 'B3',
+                            'Yellow': 'B4',
+                            'Red': 'B5',
+                            'RedEdge': 'B6',
+                            'NIR1': 'B7',
+                            'NIR2': 'B8'}
+                for i in dat:
+                    if i.dataid.split()[0] in wvlabels:
+                        i.dataid = wvlabels[i.dataid.split()[0]]
+
             for i in dat:
                 tmp = i.dataid.split()
                 txt = tmp[0]
@@ -279,9 +293,19 @@ class SatRatios(QtWidgets.QDialog):
 
                 if 'Band' not in txt and 'LST' not in txt:
                     continue
-                datsml.append(i)
+
+                formula = ','.join(rlist)
+                formula = re.sub(r'B(\d+)', r'Band\1', formula)
+
+                if txt in formula:
+                    datsml.append(i)
 
             dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
+
+            del flist
+            del ifile
+            del datsml
+            # del self.indata['Raster']
 
             datd = {}
             newmask = None
@@ -332,10 +356,17 @@ class SatRatios(QtWidgets.QDialog):
                 if len(formula.split(r'/')) == 2:
                     f1, f2 = formula.split(r'/')
                     a1 = ne.evaluate(f1, datd)
+                    a1 = a1.astype(np.float32)
                     a2 = ne.evaluate(f2, datd)
+                    a2 = a2.astype(np.float32)
+
+                    # del datd
 
                     a2[np.isclose(a2, 0.)] = 0.
                     ratio = a1/a2
+
+                    del a1
+                    del a2
                 else:
                     ratio = ne.evaluate(formula, datd)
 
@@ -351,8 +382,13 @@ class SatRatios(QtWidgets.QDialog):
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
 
-            ofile = ofile.split('.')[0] + '_ratio.tif'
             if datfin:
+                if len(datfin) == 1:
+                    ofile = (ofile.split('.')[0] + '_' +
+                             datfin[0].dataid.partition(' ')[-1] + '.tif')
+                else:
+                    ofile = ofile.split('.')[0] + '_ratio.tif'
+
                 self.showprocesslog('Exporting to '+ofile)
                 export_raster(ofile, datfin, 'GTiff', piter=self.piter)
                 self.outdata['Raster'] = datfin
@@ -413,7 +449,7 @@ class SatRatios(QtWidgets.QDialog):
         rlist += [r'B3/B2 Vegetation',
                   r'(B3-B2)/(B3+B2) NDVI',
                   r'(B3-B4)/(B3+B4) NDWI/NDMI water in leaves',
-                  r'(B1-B3)/(B1+B3) NDWI water bodies ',
+                  r'(B1-B3)/(B1+B3) NDWI water bodies',
                   r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI',
                   r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2',
                   r'(B3A-B4+B5)/(B3A+B4-B5) NMDI']
@@ -720,6 +756,19 @@ class ConditionIndices(QtWidgets.QDialog):
                 continue
 
             # Prepare for layer stacking
+            if sensor == 'WorldView':
+                wvlabels = {'CoastalBlue': 'B1',
+                            'Blue': 'B2',
+                            'Green': 'B3',
+                            'Yellow': 'B4',
+                            'Red': 'B5',
+                            'RedEdge': 'B6',
+                            'NIR1': 'B7',
+                            'NIR2': 'B8'}
+                for i in dat:
+                    if i.dataid.split()[0] in wvlabels:
+                        i.dataid = wvlabels[i.dataid.split()[0]]
+
             datsml = []
             for i in dat:
                 txt = i.dataid.split()[0]
@@ -734,9 +783,18 @@ class ConditionIndices(QtWidgets.QDialog):
                 i.data = i.data.filled(1e+20)
                 i.data = np.ma.masked_equal(i.data, 1e+20)
                 i.nodata = 1e+20
-                datsml.append(i)
+
+                formula = ','.join(rlist)
+                formula = re.sub(r'B(\d+)', r'Band\1', formula)
+
+                if txt in formula:
+                    datsml.append(i)
 
             dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
+
+            # del flist
+            # del ifile
+            del datsml
 
             # Correct band names
             datd = {}
@@ -1203,6 +1261,7 @@ def get_sentinel_list(flist):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
+    import winsound
 
     piter = ProgressBarText().iter
 
@@ -1210,9 +1269,13 @@ def _testfn():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
+    ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
+    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
+
+    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1229,6 +1292,8 @@ def _testfn():
         plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
+
+    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
 
 def _testfn2():
@@ -1329,4 +1394,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

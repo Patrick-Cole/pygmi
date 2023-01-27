@@ -1529,7 +1529,7 @@ class ExportData():
         return file_out
 
 
-def export_raster(ofile, dat, drv, envimeta='', piter=None,
+def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                   compression='NONE', bandsort=True, pprint=print):
     """
     Export to rasterio format.
@@ -1672,6 +1672,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             if 'WavelengthMin' in datai.metadata:
                 out.update_tags(i+1, WavelengthMin=str(datai.metadata['WavelengthMin']))
                 out.update_tags(i+1, WavelengthMax=str(datai.metadata['WavelengthMax']))
+            elif 'WavelengthMin' in datai.metadata['Raster']:
+                out.update_tags(i+1, WavelengthMin=str(datai.metadata['Raster']['WavelengthMin']))
+                out.update_tags(i+1, WavelengthMax=str(datai.metadata['Raster']['WavelengthMax']))
 
     if drv == 'ENVI':
         wout = ''

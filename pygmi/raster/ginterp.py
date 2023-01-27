@@ -1513,7 +1513,6 @@ class PlotInterp(QtWidgets.QDialog):
 
             # The function below normalizes as well.
             img = img2rgb(pseudo, self.mmc.cbar)
-
             pseudo = None
 
             img[:, :, 0] = img[:, :, 0]*snorm  # red

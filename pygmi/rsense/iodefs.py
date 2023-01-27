@@ -1419,14 +1419,13 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
     platform = dtree['isd']['TIL']['BANDID']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
-
     satbands = None
 
     if platform == 'P':
         satbands = {'1': [450, 800]}
         bnum2name = {0: 'BAND_P'}
 
-    if platform == 'Multi':
+    if platform == 'Multi' and 'WV' in satid:
         satbands = {'1': [400, 450],
                     '2': [450, 510],
                     '3': [510, 580],
@@ -1444,6 +1443,17 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
                      5: 'BAND_RE',
                      6: 'BAND_N',
                      7: 'BAND_N2'}
+
+    if platform == 'Multi' and 'GE' in satid:
+        satbands = {'1': [450, 510],
+                    '2': [510, 580],
+                    '3': [655, 690],
+                    '4': [780, 920]}
+
+        bnum2name = {0: 'BAND_B',
+                     1: 'BAND_G',
+                     2: 'BAND_R',
+                     3: 'BAND_N'}
 
     if satid == 'WV03':
         Esun = {'BAND_P': 1574.41,
@@ -1465,6 +1475,11 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
                 'BAND_RE': 1342.0695,
                 'BAND_N': 1069.7302,
                 'BAND_N2': 861.2866}
+    elif satid == 'GE01':
+        Esun = {'BAND_B': 1960.0,
+                'BAND_G': 1853.0,
+                'BAND_R': 1505.0,
+                'BAND_N': 1039.0}
 
     idir = os.path.dirname(ifilet)
 
@@ -1492,7 +1507,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+        bmeta['Raster']['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
 
     for tile in dtree['isd']['TIL']['TILE']:
         ifile = os.path.join(idir, tile['FILENAME'])
@@ -1526,7 +1541,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
         date = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
 
-        date = '2009-10-08T18:51:00.000000Z'
+        # date = '2009-10-08T18:51:00.000000Z'
 
         year = int(date[:4])
         month = int(date[5:7])
@@ -2446,23 +2461,7 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-
 def _testfn2():
-    """Test routine."""
-    from pygmi.raster.iodefs import export_raster
-
-    ifiles = glob.glob(r'D:\KZN Floods\*.zip')
-
-    for ifile in ifiles:
-        print(ifile)
-        dat = get_data(ifile, extscene='Sentinel-2 Bands Only')
-        for i in dat:
-            i.data = i.data.astype(np.float32)
-        ofile = ifile[:-4] + '.tif'
-        export_raster(ofile, dat, 'GTiff')
-
-
-def _testfn3():
     """Test routine."""
     import sys
 
@@ -2479,27 +2478,31 @@ def _testfn3():
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
-    # tmp2.odir.setText(odir)
     tmp2.run()
 
 
-    # export_batch(dat, odir, '', piter=ProgressBarText().iter)
+def _testfn3():
+    """Test routine."""
+    from pygmi.raster.iodefs import export_raster
+    idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019"
 
+    ifiles = glob.glob(idir+'//**/*.xml', recursive=True)
 
-def _testfindbadfiles():
-    """Find bad files."""
-    ifilt = r"\\172.16.7.17\Minerals_Energy\Remote_Sensing\Niger\ASTER\ASTER_band_ratios\Single_images\*.tif"
-
-    ifiles = glob.glob(ifilt)
+    ifiles = [i for i in ifiles if 'aux' not in i]
+    ifiles = [i for i in ifiles if 'MUL' in i]
 
     for ifile in ifiles:
-        try:
-            file = rasterio.open(ifile, driver='GTiff')
-            file.close()
-        except:
-            print(os.path.basename(ifile)+ ' is bad.')
+        print(os.path.basename(ifile))
+        ofile = os.path.basename(ifile)[:-4]+'.tif'
+        ofile = os.path.join(idir, ofile)
+
+        if os.path.exists(ofile):
+            continue
+
+        dat = get_data(ifile, extscene='WorldView')
+        export_raster(ofile, dat, compression='ZSTD')
+        # breakpoint()
 
 
 if __name__ == "__main__":
     _testfn3()
-    # _testfindbadfiles()
