@@ -3408,22 +3408,94 @@ def _testcmask():
     from pygmi.raster.iodefs import get_raster
     from pygmi.raster.iodefs import export_raster
 
-    mfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019.tif"
-    mdataid = 'Band 1'
-    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019.tif"
+    file2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2019diff\change_2019_time1_time2_stacked.hdr"
+    file2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2021diff\change_2021_time1_time2_stacked.hdr"
 
-    mdat = get_raster(mfile, dataid=mdataid)
-    dat = get_raster(ifile)
+    ofile2016 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2016.tif"
+    ofile2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2019.tif"
+    ofile2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2021.tif"
 
-    mdat[0].dataid = 'mask'
-    datall = mdat+dat
+    dat2019 = get_raster(file2019)
+    for i in dat2019:
+        i.nodata = 0.
+        i.data = np.ma.masked_equal(i.data, i.data[-1, -1])
+        i.data = np.ma.filled(i.data, 0.)
+        i.data = np.ma.masked_equal(i.data, 0.)
+
+    dat2019 = dat2019[8:]
+
+    dat2021 = get_raster(file2021)
+    for i in dat2021:
+        i.nodata = 0.
+        i.data = np.ma.masked_equal(i.data, i.data[-1, -1])
+        i.data = np.ma.filled(i.data, 0.)
+        i.data = np.ma.masked_equal(i.data, 0.)
+
+    dat2016 = dat2021[:8]
+    dat2021 = dat2021[8:]
+
+    datall = [dat2019[0]]+dat2021
     datall = lstack(datall, commonmask=True)
     datall.pop(0)
     datall = trim_raster(datall)
 
-    ofile = ifile[:-4]+'m.tif'
-    export_raster(ofile, datall, 'GTiff', compression='ZSTD')
+    export_raster(ofile2021, datall, 'GTiff', compression='ZSTD')
+    del dat2021
+
+    datall = [dat2019[0]]+dat2016
+    datall = lstack(datall, commonmask=True)
+    datall.pop(0)
+    datall = trim_raster(datall)
+
+    export_raster(ofile2016, datall, 'GTiff', compression='ZSTD')
+
+    datall = [dat2016[0]]+dat2019
+    datall = lstack(datall, commonmask=True)
+    datall.pop(0)
+    datall = trim_raster(datall)
+
+    export_raster(ofile2019, datall, 'GTiff', compression='ZSTD')
+
+
+def _teststd():
+    """Calculate Standard Devation."""
+    import copy
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import export_raster
+
+    ifile2016 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2016_ratio.tif"
+    ifile2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2019_ratio.tif"
+    ifile2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2021_ratio.tif"
+
+    ofile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_ratio_std.tif"
+
+    dat2016 = get_raster(ifile2016)
+    dat2019 = get_raster(ifile2019)
+    dat2021 = get_raster(ifile2021)
+    datstd = copy.deepcopy(dat2021)
+
+    dat = {}
+    for band in dat2016:
+        if band.dataid not in dat:
+            dat[band.dataid] = []
+        dat[band.dataid].append(band.data)
+
+    for band in dat2019:
+        if band.dataid not in dat:
+            dat[band.dataid] = []
+        dat[band.dataid].append(band.data)
+
+    for band in dat2021:
+        if band.dataid not in dat:
+            dat[band.dataid] = []
+        dat[band.dataid].append(band.data)
+
+    for band in datstd:
+        dstack = np.ma.array(dat[band.dataid])
+        band.data = dstack.std(0)
+
+    export_raster(ofile, datstd, 'GTiff', compression='ZSTD')
 
 
 if __name__ == "__main__":
-    _testcmask()
+    _teststd()
