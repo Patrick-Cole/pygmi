@@ -954,7 +954,6 @@ def _testfn2():
     extscene = None
 
     ifile = r'C:/Workdata/Remote Sensing/Landsat/LC09_L1TP_173080_20211110_20220119_02_T1.tar'
-
     # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
 
     dat = get_data(ifile, extscene=extscene)
@@ -963,6 +962,7 @@ def _testfn2():
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
     # tmp = PCA()
     tmp = MNF()
     tmp.indata['Raster'] = dat

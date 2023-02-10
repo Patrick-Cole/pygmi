@@ -37,7 +37,6 @@ from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
-import pygmi.raster.lzrw1_kh as lzrw1
 from pygmi.misc import ProgressBarText
 
 warnings.filterwarnings("ignore",
@@ -988,7 +987,6 @@ def get_bil_old(ifile, bands, cols, rows, dtype, piter, iraster=None):
     return datin
 
 
-
 def get_geopak(hfile):
     """
     Geopak Import.
@@ -1161,23 +1159,23 @@ def get_geosoft(hfile):
             data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
             nval = -1.0E+32
 
-        elif es > 1024:
-            esb = es-1024
-            sig = np.fromfile(f, dtype=np.int32, count=1)[0]
-            comp_type = np.fromfile(f, dtype=np.int32, count=1)[0]
-            nb = np.fromfile(f, dtype=np.int32, count=1)[0]
-            vpb = np.fromfile(f, dtype=np.int32, count=1)[0]
+        # elif es > 1024:
+        #     esb = es-1024
+        #     sig = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     comp_type = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     nb = np.fromfile(f, dtype=np.int32, count=1)[0]
+        #     vpb = np.fromfile(f, dtype=np.int32, count=1)[0]
 
-            ob = np.fromfile(f, dtype=np.int64, count=nb)
-            cbs = np.fromfile(f, dtype=np.int32, count=nb)
+        #     ob = np.fromfile(f, dtype=np.int64, count=nb)
+        #     cbs = np.fromfile(f, dtype=np.int32, count=nb)
 
-            for i in range(nb):
-                # breakpoint()
-                blk = f.read(cbs[i])
-                # breakpoint()
-                blk2 = lzrw1.decompress_chunk(blk)
+        #     for i in range(nb):
+        #         # breakpoint()
+        #         blk = f.read(cbs[i])
+        #         # breakpoint()
+        #         blk2 = lzrw1.decompress_chunk(blk)
 
-                breakpoint()
+        #         breakpoint()
 
         else:
             return None
@@ -1709,18 +1707,12 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
-    ifile = r"d:\Downloads\caldefo_o_unwrap_goldstein64_OrbAdj_FlatEarth-defo_raw11_ref20210226_dep20210322.pix"
     ifile = r"C:\WorkProjects\Script6c_disp\disp_data.tif"
-
-    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS_R1C1-014568829030_01_P001.TIF"
-    ifile = r"D:\Sanral\Potchefstroom_VD_2020_2021JuneDec_stack.hdr"
-
 
     ifile = r"D:\Workdata\people\minenhle\L5580_MC.grd"
     # ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geosoft\FCR2613 CGS Block 2&3 TMI.GRD"
 
-
-    iraster = None
+    # iraster = None
 
     getinfo('Start')
 

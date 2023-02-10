@@ -50,7 +50,6 @@ from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 from matplotlib import gridspec
-from matplotlib import cm
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg

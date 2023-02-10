@@ -869,7 +869,6 @@ class ExportBatch(QtWidgets.QDialog):
         gridlayout_main.addWidget(label_blue, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.blue, 5, 1, 1, 1)
 
-
         gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
 
@@ -1541,8 +1540,6 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
         date = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
 
-        # date = '2009-10-08T18:51:00.000000Z'
-
         year = int(date[:4])
         month = int(date[5:7])
         day = int(date[8:10])
@@ -2071,7 +2068,8 @@ def get_aster_hdf(ifile, piter=None):
             fext = dat[-1].dataid[4:].split()[0]
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+            bmeta['Raster']['wavelength'] = (satbands[fext][1] +
+                                             satbands[fext][1])/2
 
             if ptype == 'L1T' and 'ImageData' in ifile:
                 dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
@@ -2441,16 +2439,7 @@ def _testfn():
     ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
     extscene = 'None'
 
-
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00304252015211611_20180814030239_6200.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_08_00305212003085056_20180604061050_13463.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_08_00305212003085104_20180604061050_13460.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_L1T_00301282006085546_20150512232823_66673.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_L1T_00301302006084446_20150513000407_37833.hdf"
 
     dat = get_data(ifile, extscene=extscene)
 
@@ -2461,12 +2450,12 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
+
 def _testfn2():
     """Test routine."""
     import sys
 
     idir = r'e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\full'
-    # odir = r'd:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\12_8_3'
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -2483,7 +2472,6 @@ def _testfn2():
 
 def _testfn3():
     """Test routine."""
-    from pygmi.raster.iodefs import export_raster
     idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019"
 
     ifiles = glob.glob(idir+'//**/*.xml', recursive=True)
@@ -2501,7 +2489,6 @@ def _testfn3():
 
         dat = get_data(ifile, extscene='WorldView')
         export_raster(ofile, dat, compression='ZSTD')
-        # breakpoint()
 
 
 if __name__ == "__main__":

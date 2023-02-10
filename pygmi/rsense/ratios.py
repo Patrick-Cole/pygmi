@@ -36,7 +36,7 @@ from pygmi import menu_default
 from pygmi.rsense import iodefs
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText, getinfo
+from pygmi.misc import ProgressBarText
 
 
 class SatRatios(QtWidgets.QDialog):
@@ -1272,7 +1272,6 @@ def _testfn():
     ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
     ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
-
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
@@ -1302,7 +1301,6 @@ def _testfn2():
     import matplotlib.pyplot as plt
 
     ifiles = glob.glob(r'D:\VHI\*.tif')
-
     # ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1319,8 +1317,6 @@ def _testfn2():
         plt.colorbar()
         plt.title(i.dataid)
         plt.show()
-
-    breakpoint()
 
 
 def _testfn3():

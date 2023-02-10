@@ -429,7 +429,8 @@ class DataMerge(QtWidgets.QDialog):
                                                    'if datasets are offset.')
 
         self.bands_to_files = QtWidgets.QCheckBox('Save each band separately '
-                                                  'in a "mosaic" subdirectory.')
+                                                  'in a "mosaic" '
+                                                  'subdirectory.')
         self.forcetype = None
         self.singleband = False
         self.setupui()
@@ -573,6 +574,8 @@ class DataMerge(QtWidgets.QDialog):
             return False
 
         self.sfile.setText(sfile)
+
+        return True
 
     def settings(self, nodialog=False):
         """
@@ -758,8 +761,8 @@ class DataMerge(QtWidgets.QDialog):
 
                 if i2 is None:
                     continue
-                else:
-                    i2 = i2[0]
+
+                i2 = i2[0]
 
                 if i2.crs != crs:
                     src_height, src_width = i2.data.shape
@@ -2897,7 +2900,7 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
     gdf = gdf[gdf.geometry != None]
 
     if crs is not None:
-        gdf =  gdf.to_crs(crs)
+        gdf = gdf.to_crs(crs)
 
     if gdf.geom_type.iloc[0] == 'MultiPolygon':
         pprint('You have a MultiPolygon. Only the first Polygon '
@@ -3133,17 +3136,9 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    sfile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
-
-    # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
-    # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
-    # idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
-    idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\ratios_single_band_small_test"
-    # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
-
+    # sfile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
     # idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\Landsat_9\PCA"
     # ifilt = r"E:/WorkProjects/ST-2022-1355 Onshore Mapping/Niger/Landsat_9/RGB*/"
-
 
     sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\Mining-areas.shp"
     idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2021"
@@ -3206,13 +3201,6 @@ def _testcut():
     """Test Reprojection."""
     from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
-
-    sfile  = r"d:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
-    ifile = r"d:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers"
-
-    sfile = r"D:\Workdata\Janine\rsa_outline_utm35s.shp"
-    ifile = r"D:\Workdata\Janine\oneband.tif"
-
 
     sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\NRFproj\Mining-areas.shp"
     ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2016mosaic.tif"
@@ -3344,7 +3332,7 @@ def _testcut2():
 
         if gdf.geom_type.iloc[0] != 'Polygon':
             pprint('You need a polygon in that shape file')
-            return None
+            return
 
         bounds = gdf.geometry.iloc[0].bounds
 
@@ -3459,7 +3447,6 @@ def _testcmask():
 
 def _teststd():
     """Calculate Standard Devation."""
-    import copy
     from pygmi.raster.iodefs import get_raster
     from pygmi.raster.iodefs import export_raster
 
