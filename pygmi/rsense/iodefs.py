@@ -2041,7 +2041,8 @@ def get_aster_hdf(ifile, piter=None):
 
         dataset1 = rasterio.open(bfile)
         dataset = rasterio.vrt.WarpedVRT(dataset1)
-        crs = dataset1.gcps[-1]
+        # crs = dataset1.gcps[-1]
+        # breakpoint()
 
         dat.append(Data())
         dat[-1].data = dataset.read(1)
@@ -2055,7 +2056,7 @@ def get_aster_hdf(ifile, piter=None):
         dat[-1].dataid = bfile.split(':')[-1]
         dat[-1].nodata = nval
         dat[-1].set_transform(transform=dataset.transform)
-        dat[-1].crs = crs
+        dat[-1].crs = dataset.crs
         dat[-1].metadata['SolarElev'] = solarelev
         dat[-1].metadata['JulianDay'] = jdate
         dat[-1].metadata['CalendarDate'] = cdate
@@ -2183,9 +2184,8 @@ def get_aster_ged(ifile, piter=None):
 
             dat[i].dataid = bandid
             dat[i].nodata = nval
-            dat[i].crs = CRS.from_epsg(4326)  # WGS85 geodetic
+            dat[i].crs = CRS.from_epsg(4326)  # WGS84 geodetic
             dat[i].units = units
-
         dataset.close()
 
     for i in dat:
@@ -2432,14 +2432,17 @@ def _testfn():
 
     extscene = None
 
-    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    extscene = 'Hyperion'
+    # ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    # extscene = 'Hyperion'
 
-    ifile = r'C:/Workdata/Remote Sensing/ASTER/AST_07XT_00304132006083806_20180608052447_30254.hdf'
-    ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
+    # ifile = r'C:/Workdata/Remote Sensing/ASTER/AST_07XT_00304132006083806_20180608052447_30254.hdf'
+    # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
     extscene = 'None'
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf"
+    ifile = r"D:/Workdata/PyGMI Test Data/Remote Sensing/Import/ASTER/AST_09T_00309042002082052_20200518022902_19756.zip"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AG100.v003.-27.022.0001.h5"
+
 
     dat = get_data(ifile, extscene=extscene)
 
@@ -2450,6 +2453,7 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
+    breakpoint()
 
 def _testfn2():
     """Test routine."""
@@ -2492,4 +2496,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn()

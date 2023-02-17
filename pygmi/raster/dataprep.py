@@ -2919,7 +2919,7 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
     return bounds
 
 
-def data_merge(idir, sfile='', singleband=False):
+def data_merge(idir, sfile='', singleband=False, method='median', fdiff=True):
     """Test Merge."""
     app = QtWidgets.QApplication(sys.argv)
 
@@ -2928,9 +2928,15 @@ def data_merge(idir, sfile='', singleband=False):
     DM.idirlist.setText(idir)
     DM.sfile.setText(sfile)
     DM.singleband = singleband
-    DM.rb_median.setChecked(True)
     DM.forcetype = np.float32
 
+    if method == 'first':
+        DM.rb_first.setChecked(True)
+        DM.files_diff.setChecked(fdiff)
+    elif method == 'median':
+        DM.rb_median.setChecked(True)
+
+    DM.method_change()
     DM.settings(True)
 
     dat = DM.outdata['Raster']
