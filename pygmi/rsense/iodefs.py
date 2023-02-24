@@ -45,6 +45,7 @@ from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
 from natsort import natsorted
+import contextily as ctx
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
@@ -421,7 +422,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
         self.ifile = ''
         self.sfile = ''
         self.filt = ''
-        self.thres = 50
         self.indx = 0
 
         self.subdata = QtWidgets.QComboBox()
@@ -429,6 +429,15 @@ class ImportSentinel5P(QtWidgets.QDialog):
         self.lonmax = QtWidgets.QLineEdit('34')
         self.latmin = QtWidgets.QLineEdit('-35')
         self.latmax = QtWidgets.QLineEdit('-21')
+        self.qathres = QtWidgets.QLineEdit('50')
+        self.cclip = QtWidgets.QRadioButton('Clip using coordinates')
+        self.sclip = QtWidgets.QRadioButton('Clip using shapefile')
+        self.shpfile = QtWidgets.QLineEdit(self.sfile)
+        self.label_sfile = QtWidgets.QPushButton('Load shapefile')
+        self.label_lonmin = QtWidgets.QLabel('Minimum Longitude:')
+        self.label_lonmax = QtWidgets.QLabel('Maximum Longitude:')
+        self.label_latmin = QtWidgets.QLabel('Minimum Latitude:')
+        self.label_latmax = QtWidgets.QLabel('Maximum Latitude:')
 
         self.setupui()
 
@@ -445,37 +454,49 @@ class ImportSentinel5P(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.importsentinel5p')
         label_subdata = QtWidgets.QLabel('Product:')
-        label_lonmin = QtWidgets.QLabel('Minimum Longitude:')
-        label_lonmax = QtWidgets.QLabel('Maximum Longitude:')
-        label_latmin = QtWidgets.QLabel('Minimum Latitude:')
-        label_latmax = QtWidgets.QLabel('Maximum Latitude:')
+        label_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        self.cclip.setChecked(True)
+        self.label_sfile.hide()
+        self.shpfile.hide()
 
         self.setWindowTitle(r'Import Sentinel-5P Data')
 
         gridlayout_main.addWidget(label_subdata, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.subdata, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_lonmin, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.lonmin, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.cclip, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.sclip, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(label_lonmax, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.lonmax, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_lonmin, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.lonmin, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_latmin, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.latmin, 3, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_lonmax, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.lonmax, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_latmax, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.latmax, 4, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_latmin, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.latmin, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gridlayout_main.addWidget(self.label_latmax, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.latmax, 6, 1, 1, 1)
+
+        gridlayout_main.addWidget(self.label_sfile, 7, 0, 1, 1)
+        gridlayout_main.addWidget(self.shpfile, 7, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_qathres, 8, 0, 1, 1)
+        gridlayout_main.addWidget(self.qathres, 8, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 10, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 10, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
+        self.cclip.clicked.connect(self.clipchoice)
+        self.sclip.clicked.connect(self.clipchoice)
+        self.label_sfile.clicked.connect(self.loadshp)
 
     def settings(self, nodialog=False):
         """
@@ -542,6 +563,41 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         return True
 
+    def clipchoice(self):
+        """
+        Choose clip style.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.cclip.isChecked():
+            self.label_sfile.hide()
+            self.shpfile.hide()
+            self.lonmin.show()
+            self.lonmax.show()
+            self.latmin.show()
+            self.latmax.show()
+            self.label_lonmin.show()
+            self.label_lonmax.show()
+            self.label_latmin.show()
+            self.label_latmax.show()
+        else:
+            self.lonmin.hide()
+            self.lonmax.hide()
+            self.latmin.hide()
+            self.latmax.hide()
+            self.label_lonmin.hide()
+            self.label_lonmax.hide()
+            self.label_latmin.hide()
+            self.label_latmax.hide()
+            self.label_sfile.show()
+            self.shpfile.show()
+
+
+
+
     def loadproj(self, projdata):
         """
         Load project data into class.
@@ -563,6 +619,22 @@ class ImportSentinel5P(QtWidgets.QDialog):
         chk = self.settings(True)
 
         return chk
+
+    def loadshp(self):
+        """
+        Load shapefile filename.
+
+        Returns
+        -------
+        None.
+
+        """
+        ext = ('Shapefile (*.shp)')
+
+        self.sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        self.shpfile.setText(self.sfile)
 
     def saveproj(self):
         """
@@ -635,6 +707,12 @@ class ImportSentinel5P(QtWidgets.QDialog):
             geopandas dataframe.
 
         """
+        try:
+            thres = int(self.qathres.text())
+        except ValueError:
+            self.showprocesslog('Threshold text not an integer')
+            return None
+
         with rasterio.open(meta['latitude']) as dataset:
             lats = dataset.read(1)
 
@@ -658,7 +736,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
         lons = lons.flatten()
         pnts = np.transpose([lons, lats])
 
-        if self.sfile == '':
+        if self.cclip.isChecked():
             lonmin = float(self.lonmin.text())
             latmin = float(self.latmin.text())
             lonmax = float(self.lonmax.text())
@@ -696,8 +774,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
         pnts1 = pnts1[dat1 != 9.96921e+36]
         dat1 = dat1[dat1 != 9.96921e+36]
 
-        pnts1 = pnts1[qaval1 >= self.thres]
-        dat1 = dat1[qaval1 >= self.thres]
+        pnts1 = pnts1[qaval1 >= thres]
+        dat1 = dat1[qaval1 >= thres]
 
         df = pd.DataFrame({'lon': pnts1[:, 0], 'lat': pnts1[:, 1]})
         df['data'] = dat1
@@ -707,7 +785,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         gdf = gdf.set_crs("EPSG:4326")
 
-        if self.sfile != '':
+        if self.sclip.isChecked():
             gdf = gdf.clip(shp)
 
         if gdf.size == 0:
@@ -2444,14 +2522,32 @@ def _test5P():
     import sys
     import matplotlib.pyplot as plt
 
-    ifile = r"d:\Workdata\PyGMI Test Data\Sentinel-5P\S5P_OFFL_L2__AER_AI_20200522T115244_20200522T133414_13508_01_010302_20200524T014436.nc"
+    sfile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P\CCUS_Sept2021_25kmbuffer.shp"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P\S5P_OFFL_L2__CH4____20230111T102529_20230111T120700_27184_03_020400_20230113T024518.nc"
+
+    os.chdir(r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P")
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSentinel5P()
     tmp.ifile = ifile
-    tmp.settings(True)
+    tmp.settings()
 
-    tmp.outdata['Vector']['Point'].plot(column='data')
+    if 'Vector' not in tmp.outdata:
+        print('No data')
+        return
+
+    shp = gpd.read_file(sfile)
+    shp = shp.to_crs(4326)
+
+    plt.figure(dpi=150)
+    ax = plt.gca()
+    shp.plot(ax=ax, fc='none', ec='black')
+    try:
+        ctx.add_basemap(ax, crs=shp.crs, source=ctx.providers.OpenStreetMap.Mapnik)
+    except:
+        print('No internet')
+
+    tmp.outdata['Vector']['Point'].plot(ax=ax, column='data')
     plt.show()
 
 
@@ -2525,4 +2621,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _test5P()
