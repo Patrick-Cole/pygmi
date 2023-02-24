@@ -419,7 +419,10 @@ class ImportSentinel5P(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
+        self.sfile = ''
         self.filt = ''
+        self.thres = 50
+        self.indx = 0
 
         self.subdata = QtWidgets.QComboBox()
         self.lonmin = QtWidgets.QLineEdit('16')
@@ -506,18 +509,19 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         tmp = []
         for i in meta:
-            if i in ['latitude', 'longitude']:
+            if i in ['latitude', 'longitude', 'qa_value']:
                 continue
             tmp.append(i)
 
         self.subdata.clear()
         self.subdata.addItems(tmp)
-        self.subdata.setCurrentIndex(0)
+        self.subdata.setCurrentIndex(self.indx)
 
-        tmp = self.exec_()
+        if not nodialog:
+            tmp = self.exec_()
 
-        if tmp != 1:
-            return tmp
+            if tmp != 1:
+                return tmp
 
         try:
             _ = float(self.lonmin.text())
@@ -601,8 +605,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
                 continue
             if 'delta_time' in i:
                 continue
-            if 'qa_value' in i:
-                continue
+            # if 'qa_value' in i:
+            #     continue
             if 'precision' in i:
                 continue
 
@@ -637,6 +641,12 @@ class ImportSentinel5P(QtWidgets.QDialog):
         with rasterio.open(meta['longitude']) as dataset:
             lons = dataset.read(1)
 
+        with rasterio.open(meta['qa_value']) as dataset:
+            qaval = dataset.read(1)
+
+        with rasterio.open(meta['longitude']) as dataset:
+            lons = dataset.read(1)
+
         del meta['latitude']
         del meta['longitude']
 
@@ -648,10 +658,19 @@ class ImportSentinel5P(QtWidgets.QDialog):
         lons = lons.flatten()
         pnts = np.transpose([lons, lats])
 
-        lonmin = float(self.lonmin.text())
-        latmin = float(self.latmin.text())
-        lonmax = float(self.lonmax.text())
-        latmax = float(self.latmax.text())
+        if self.sfile == '':
+            lonmin = float(self.lonmin.text())
+            latmin = float(self.latmin.text())
+            lonmax = float(self.lonmax.text())
+            latmax = float(self.latmax.text())
+        else:
+            shp = gpd.read_file(self.sfile)
+            shp = shp.to_crs(4326)
+
+            lonmin = float(shp.bounds.minx)
+            lonmax = float(shp.bounds.maxx)
+            latmin = float(shp.bounds.miny)
+            latmax = float(shp.bounds.maxy)
 
         mask = ((lats > latmin) & (lats < latmax) & (lons < lonmax) &
                 (lons > lonmin))
@@ -664,19 +683,21 @@ class ImportSentinel5P(QtWidgets.QDialog):
             dat = dataset.read(1)
 
         dat1 = dat.flatten()
+        qaval1 = qaval.flatten()
 
         if mask.shape != dat1.shape:
             return None
 
         dat1 = dat1[mask]
         pnts1 = pnts[mask]
+        qaval1 = qaval1[mask]
 
+        qaval1 = qaval1[dat1 != 9.96921e+36]
         pnts1 = pnts1[dat1 != 9.96921e+36]
         dat1 = dat1[dat1 != 9.96921e+36]
 
-        if dat1.size == 0:
-            self.showprocesslog(idfile, 'is empty.')
-            return None
+        pnts1 = pnts1[qaval1 >= self.thres]
+        dat1 = dat1[qaval1 >= self.thres]
 
         df = pd.DataFrame({'lon': pnts1[:, 0], 'lat': pnts1[:, 1]})
         df['data'] = dat1
@@ -685,6 +706,14 @@ class ImportSentinel5P(QtWidgets.QDialog):
                            geometry=[Point(xy) for xy in zip(df.lon, df.lat)])
 
         gdf = gdf.set_crs("EPSG:4326")
+
+        if self.sfile != '':
+            gdf = gdf.clip(shp)
+
+        if gdf.size == 0:
+            self.showprocesslog(idfile, 'is empty.')
+            return None
+
 
         return gdf
 
