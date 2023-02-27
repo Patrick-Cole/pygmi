@@ -2,6 +2,19 @@
 Changelog
 =========
 
+v3.2.6.2, 24 February 2023
+--------------------------
+*Sentinel 5P import can now clip with shapefiles and allows a threshold parameter
+*Data merge function allows for more parameters.
+*ASTER import loads projection in line with latest rasterio
+*Fixed bug in worldview data import using wrong date.
+*Fixed incorrect wavelength calculation for worldview
+*Mosaic now keeps wavelength information.
+*Added GeoEye to Worldview import
+*Ratios can uses worldview data with descriptive  dataid
+*Update to rasterio in igrf
+*Made some updates to API to move from gdal to rasterio
+
 v3.2.6.0, 30 November 2022
 --------------------------
 *Updated SimPEG inversion calls according to the new API

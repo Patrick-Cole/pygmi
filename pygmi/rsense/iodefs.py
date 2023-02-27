@@ -595,9 +595,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
             self.label_sfile.show()
             self.shpfile.show()
 
-
-
-
     def loadproj(self, projdata):
         """
         Load project data into class.
@@ -791,7 +788,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
         if gdf.size == 0:
             self.showprocesslog(idfile, 'is empty.')
             return None
-
 
         return gdf
 
