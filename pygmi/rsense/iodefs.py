@@ -2539,7 +2539,8 @@ def _test5P():
     ax = plt.gca()
     shp.plot(ax=ax, fc='none', ec='black')
     try:
-        ctx.add_basemap(ax, crs=shp.crs, source=ctx.providers.OpenStreetMap.Mapnik)
+        ctx.add_basemap(ax, crs=shp.crs,
+                        source=ctx.providers.OpenStreetMap.Mapnik)
     except:
         print('No internet')
 
@@ -2553,17 +2554,8 @@ def _testfn():
 
     extscene = None
 
-    # ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    # extscene = 'Hyperion'
-
-    # ifile = r'C:/Workdata/Remote Sensing/ASTER/AST_07XT_00304132006083806_20180608052447_30254.hdf'
-    # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
-    extscene = 'None'
-
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf"
     ifile = r"D:/Workdata/PyGMI Test Data/Remote Sensing/Import/ASTER/AST_09T_00309042002082052_20200518022902_19756.zip"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AG100.v003.-27.022.0001.h5"
-
 
     dat = get_data(ifile, extscene=extscene)
 
@@ -2574,7 +2566,6 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-    breakpoint()
 
 def _testfn2():
     """Test routine."""

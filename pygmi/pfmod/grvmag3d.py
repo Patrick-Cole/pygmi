@@ -1005,7 +1005,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
 
-    for mlist in piter(lmod.lith_list.items()):
+    # These two lines are to eliminate background and improve time estimate.
+    lith_list = lmod.lith_list.copy()
+    del lith_list['Background']
+
+    for mlist in piter(lith_list.items()):
         if mlist[0] == 'Background':
             continue
         mijk = mlist[1].lith_index
@@ -1114,7 +1118,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     return lmod.griddata
 
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
                mijk):
     """
