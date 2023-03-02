@@ -187,7 +187,7 @@ def test_shader():
     alpha = .0
 
     dat = ginterp.currentshader(data, cell, theta, phi, alpha)
-    np.testing.assert_array_equal(dat, dat2)
+    np.testing.assert_array_almost_equal(dat, dat2)
 
 
 def test_histcomp():

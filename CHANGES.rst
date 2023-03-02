@@ -2,8 +2,9 @@
 Changelog
 =========
 
-v3.2.6.2, 24 February 2023
+v3.2.6.2, 28 February 2023
 --------------------------
+*Disabled parallel processing in grvmag3d to stop a numba bug crashing PyGMI
 *Sentinel 5P import can now clip with shapefiles and allows a threshold parameter
 *Data merge function allows for more parameters.
 *ASTER import loads projection in line with latest rasterio

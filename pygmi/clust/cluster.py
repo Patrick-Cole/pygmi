@@ -391,7 +391,7 @@ class Cluster(QtWidgets.QDialog):
                                            max_iter=self.max_iter,
                                            batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol,
+                cfit = skc.KMeans(n_clusters=i, tol=self.tol, n_init='auto',
                                   max_iter=self.max_iter).fit(X)
 
             elif self.cltype == 'DBSCAN':
