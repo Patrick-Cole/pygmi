@@ -3146,8 +3146,10 @@ def _testmerge():
     # idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\Landsat_9\PCA"
     # ifilt = r"E:/WorkProjects/ST-2022-1355 Onshore Mapping/Niger/Landsat_9/RGB*/"
 
-    sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\Mining-areas.shp"
-    idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2021"
+    # sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\Mining-areas.shp"
+    # idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2021"
+
+    idir = r'D:\Workdata\PyGMI Test Data\Raster\mosaic'
 
     # idirs = glob.glob(ifilt)
     idirs = [idir]
@@ -3157,7 +3159,7 @@ def _testmerge():
         DM = DataMerge()
         DM.idir = idir
         DM.idirlist.setText(idir)
-        DM.sfile.setText(sfile)
+        # DM.sfile.setText(sfile)
         # DM.singleband = True
 
         DM.forcetype = np.float32
@@ -3169,7 +3171,7 @@ def _testmerge():
 
         if dat:
             ofile = idir+'.tif'
-            export_raster(ofile, dat, 'GTiff', compression='ZSTD')
+            # export_raster(ofile, dat, 'GTiff', compression='ZSTD')
             del dat
 
 
@@ -3491,4 +3493,4 @@ def _teststd():
 
 
 if __name__ == "__main__":
-    _teststd()
+    _testmerge()

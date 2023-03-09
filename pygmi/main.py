@@ -1301,6 +1301,24 @@ class EmittingStream(QtCore.QObject):
 
 def main(nocgs=False):
     """Entry point for the PyGMI software."""
+    # Set environment variables.
+    if 'GDAL_DATA' not in os.environ:
+        import osgeo
+        gdalpath = os.path.join(osgeo.__path__[0], r'data\gdal')
+        if os.path.exists(gdalpath):
+            os.environ['GDAL_DATA'] = gdalpath
+        else:
+            print('GDAL_PATH not set.')
+
+    if 'PROJ_DATA' not in os.environ:
+        import pyproj
+        projpath = os.path.join(pyproj.__path__[0], r'proj_dir\share\proj')
+        if os.path.exists(projpath):
+            os.environ['PROJ_DATA'] = projpath
+        else:
+            print('PROJ_DATA not set.')
+
+    # Start program.
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
 

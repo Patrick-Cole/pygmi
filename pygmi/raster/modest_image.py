@@ -756,10 +756,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     elif norm is None:
         im.autoscale_None()
 
-
     if suncell is not None:
         im.set_shade(True, suncell, suntheta, sunphi, sunalpha)
-
 
     im.set_url(url)
 
@@ -767,7 +765,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     # to tightly fit the image, regardless of dataLim.
     im.set_extent(im.get_extent())
 
-    axes.images.append(im)
+    # axes.images.append(im)
+    axes.add_image(im)
     im._remove_method = lambda h: axes.images.remove(h)
 
     return im
@@ -851,7 +850,7 @@ def _testfn():
 
     ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
     ifile = r'd:\workdata\testdata.hdr'
-    ifile =  r"D:\DEM\20221117_raw_dsm\lo23\3122C\raw_dsm_3122CA_1.tif"
+    # ifile =  r"D:\DEM\20221117_raw_dsm\lo23\3122C\raw_dsm_3122CA_1.tif"
 
     pbar = ProgressBarText()
 

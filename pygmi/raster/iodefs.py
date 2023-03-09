@@ -27,6 +27,7 @@
 import warnings
 import os
 import copy
+import math
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
@@ -761,7 +762,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 dat[i].units = 'μm'
             elif unit.lower() == 'nanometers':
                 dat[i].units = 'nm'
-
             if nval is None:
                 nval = dataset.nodata
 
@@ -774,15 +774,16 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 xoff, yoff, xsize, ysize = iraster
                 dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
                                                                  xsize, ysize))
-
-            if dat[-1].data.dtype.kind == 'i':
-                if nval is None or np.isnan(nval):
-                    nval = 999999
-                    # showprocesslog(f'Adjusting null value to {nval}')
-                nval = int(nval)
-            elif dat[-1].data.dtype.kind == 'u':
+            print(dataset.meta['dtype'])
+            if 'uint' in dataset.meta['dtype']:
                 if nval is None or np.isnan(nval):
                     nval = 0
+                    # showprocesslog(f'Adjusting null value to {nval}')
+                nval = int(nval)
+
+            elif 'int' in dataset.meta['dtype']:
+                if nval is None or np.isnan(nval):
+                    nval = 999999
                     # showprocesslog(f'Adjusting null value to {nval}')
                 nval = int(nval)
             else:
@@ -1706,24 +1707,26 @@ def _filespeedtest():
     from pygmi.misc import getinfo
     print('Starting')
 
-    ifile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
-    ifile = r"C:\WorkProjects\Script6c_disp\disp_data.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\mosaic\Box1_rad_3band.ers"
 
-    ifile = r"D:\Workdata\people\minenhle\L5580_MC.grd"
     # ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geosoft\FCR2613 CGS Block 2&3 TMI.GRD"
 
     # iraster = None
 
     getinfo('Start')
 
-    # dataset = get_raster(ifile, iraster=iraster)
-    dataset = get_geosoft(ifile)
+    dataset = get_raster(ifile)
+    for dat in dataset:
+        dat.data = dat.data.astype(float)
+        dat.nodata = 0
+    export_raster(r'c:\workdata\temp.tif', dataset)
+    dataset = get_raster(r'c:\workdata\temp.tif')
 
 
-    plt.figure(dpi=150)
-    plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    plt.colorbar()
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    # plt.colorbar()
+    # plt.show()
 
     # for i in dataset:
     #     i.data = i.data*10000
