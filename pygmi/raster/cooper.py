@@ -179,7 +179,12 @@ class Gradients(QtWidgets.QDialog):
                 dxy = data[i].xdim
                 data[i].data = np.ma.array(vertical(data[i].data, xint=dxy))
                 data[i].data.mask = mask
+
             data[i].units = ''
+
+            mask = data[i].data.mask
+            data[i].data = data[i].data.filled(data[i].nodata)
+            data[i].data = np.ma.array(data[i].data, mask=mask)
 
         self.outdata['Raster'] = data
 
@@ -490,6 +495,11 @@ class Visibility2d(QtWidgets.QDialog):
             data2[-3].set_transform(xdim, xmin, ydim, ymax)
             data2[-2].set_transform(xdim, xmin, ydim, ymax)
             data2[-1].set_transform(xdim, xmin, ydim, ymax)
+
+            for i in [-3, -2, -1]:
+                mask = data2[i].data.mask
+                data2[i].data = data2[i].data.filled(data2[i].nodata)
+                data2[i].data = np.ma.array(data2[i].data, mask=mask)
 
         self.outdata['Raster'] = data2
         self.showprocesslog('Finished!')
