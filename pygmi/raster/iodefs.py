@@ -774,7 +774,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 xoff, yoff, xsize, ysize = iraster
                 dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
                                                                  xsize, ysize))
-            print(dataset.meta['dtype'])
+            # print(dataset.meta['dtype'])
             if 'uint' in dataset.meta['dtype']:
                 if nval is None or np.isnan(nval):
                     nval = 0

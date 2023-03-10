@@ -666,7 +666,7 @@ class SuperClass(QtWidgets.QDialog):
         if row == -1:
             return
 
-        self.df.loc[row] = None
+        self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
         xycoords = self.map.polyi.poly.xy
@@ -694,6 +694,8 @@ class SuperClass(QtWidgets.QDialog):
         if self.tablewidget.currentItem() is None or col != 0:
             return
 
+        if row not in self.df.index:
+            self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
     def onrowchange(self, current, previous):
@@ -751,7 +753,7 @@ class SuperClass(QtWidgets.QDialog):
         self.update_class_polys()
         self.map.polyi.new_poly([[1, 1]])
 
-        self.df.loc[row] = None
+        self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
         self.df.loc[row, 'geometry'] = Polygon([])
 
@@ -1171,10 +1173,10 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r'd:\Workdata\people\janinetest2\coal_12052020_pan.img'
+    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = iodefs.get_raster(ifile)
-    os.chdir(r'd:\Workdata\people\janinetest2')
+    # os.chdir(r'd:\Workdata\people\janinetest2')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data

@@ -389,6 +389,7 @@ class Cluster(QtWidgets.QDialog):
                 bsize = max(os.cpu_count()*256, 1024)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter,
+                                           n_init='auto',
                                            batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
                 cfit = skc.KMeans(n_clusters=i, tol=self.tol, n_init='auto',
@@ -473,39 +474,24 @@ class Cluster(QtWidgets.QDialog):
 
 def _testfn():
     import sys
-    import glob
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
-    ifiles = glob.glob(r'd:\Workdata\bugs\*.tif')
+    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
-    piter = ProgressBarText().iter
-
-    dat2 = []
-    for ifile in ifiles:
-        if 'class.tif' in ifile:
-            continue
-        print(ifile)
-        dat = get_raster(ifile, piter=piter)
-        for i in dat:
-            if 'wvl' not in i.dataid:
-                dat2.append(i)
-                print(i.data.mask.min())
+    dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    print('Merge')
     DM = Cluster()
-    DM.indata['Raster'] = dat2
-    DM.settings(True)
+    DM.indata['Raster'] = dat
+    DM.settings()
 
-    dat2 = np.ma.masked_equal(dat2, 0)
-    plt.imshow(dat2)
+    dat2 = DM.outdata['Raster']
+
+    plt.figure(dpi=150)
+    plt.imshow(dat2[0].data)
     plt.show()
-
-    dat = dat[0]
-    dat.dataid = 'simple class'
-    dat.data = dat2
 
 
 def _test_marinda():
@@ -513,7 +499,6 @@ def _test_marinda():
     import matplotlib.pyplot as plt
     from scipy.spatial.distance import cdist
     from pygmi.raster.iodefs import get_raster
-
 
     # Import Data
     ifile = r"D:\Workdata\testdata.hdr"
@@ -639,4 +624,4 @@ def _test_marinda2():
 
 
 if __name__ == "__main__":
-    _test_marinda2()
+    _testfn()
