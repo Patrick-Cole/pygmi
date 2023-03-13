@@ -29,6 +29,7 @@ import sys
 import copy
 import glob
 import platform
+from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -1432,10 +1433,11 @@ class Occam1D(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         if parent is None:
-            self.showprocesslog = print
+            self.showprocesslog = sys.stdout
         else:
-            self.showprocesslog = parent.showprocesslog
+            self.showprocesslog = parent.stdio_redirect
 
         self.indata = {}
         self.outdata = {}
@@ -1677,7 +1679,8 @@ class Occam1D(QtWidgets.QDialog):
         self.mmc.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
 
-        occam1d.Run(s1.startup_fn, occam_path, mode=mode)
+        with redirect_stdout(self.showprocesslog):
+            occam1d.Run(s1.startup_fn, occam_path, mode=mode)
 
         self.mmc.figure.set_facecolor('w')
 
