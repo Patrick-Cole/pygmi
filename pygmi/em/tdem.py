@@ -410,7 +410,8 @@ class TDEM1D(QtWidgets.QDialog):
         # reg.alpha_s = 1e-2
         # reg.alpha_x = 1.
 
-        reg = regularization.Tikhonov(regmesh, alpha_s=1e-2)
+        # reg = regularization.Tikhonov(regmesh, alpha_s=1e-2)
+        reg = regularization.WeightedLeastSquares(regmesh)
 
         # Optimization
         opt = optimization.InexactGaussNewton(maxIter=maxiter, LSshorten=0.5)
