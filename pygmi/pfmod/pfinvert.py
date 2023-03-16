@@ -703,7 +703,8 @@ class MagInvert(BasicModule):
         dat = [self.lmod1.griddata['Magnetic Dataset'],
                self.lmod1.griddata['DTM Dataset']]
 
-        dat = lstack(dat, masterid=0, commonmask=True)
+        dat = lstack(dat, masterid=0, commonmask=True, piter=self.piter,
+                     pprint=self.showprocesslog)
 
         mag = dat[0]
         dtm = dat[1]
@@ -1071,8 +1072,8 @@ def _testfn2():
     # ddat = copy.deepcopy(mdat)
     # ddat[0].data = ddat[0].data * 0.
 
-    mfile = r"c:\Workdata\MagInv\pcmagdem.tif"
-    dfile = r"c:\Workdata\MagInv\pcdem.tif"
+    mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcmagdem.tif"
+    dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcdem.tif"
 
     # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
     # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
@@ -1181,66 +1182,6 @@ def _testfn2():
                                      format="%.1e")
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
-
-    get_ipython().run_line_magic('matplotlib', 'Qt5')
-
-    tmp = MainWidget()
-    tmp.indata = DM.outdata
-    tmp.settings()
-
-
-def _testfn3():
-    """Test Function."""
-    import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.pfmod.pfmod import MainWidget
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
-
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-
-    mfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_mag.ers"
-    dfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_dtm.ers"
-
-    iraster = (0, 200, 50, 50)
-    iraster = None
-
-    mdat = get_raster(mfile, iraster=iraster)
-    ddat = get_raster(dfile, iraster=iraster)
-
-    # xoff, yoff, xcol, yrow = iraster
-
-    # etmp = mdat[0].extent
-    # xdim = mdat[0].xdim
-    # xmin = etmp[0]+xoff*xdim
-    # ydim = mdat[0].ydim
-    # ymax = etmp[3]-yoff*ydim
-
-    # mdat[0].set_transform(xdim, xmin, ydim, ymax)
-
-    # etmp = ddat[0].extent
-    # xdim = ddat[0].xdim
-    # xmin = etmp[0]+xoff*xdim
-    # ydim = ddat[0].ydim
-    # ymax = etmp[3]-yoff*ydim
-
-    # ddat[0].set_transform(xdim, xmin, ydim, ymax)
-
-    # plt.figure(dpi=150)
-    # plt.imshow(mdat[0].data)
-    # plt.show()
-
-    # dat = lstack(mdat+ddat, dxy=300)
-    dat = lstack(mdat+ddat, masterid=0, commonmask=True, dxy=600)
-
-    plt.figure(dpi=150)
-    plt.imshow(dat[0].data)
-    plt.show()
-
-    DM = MagInvert()
-    DM.indata['Raster'] = dat
-
-    DM.settings()
 
     get_ipython().run_line_magic('matplotlib', 'Qt5')
 
