@@ -35,16 +35,14 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from pandas.api.types import is_numeric_dtype
 
-from pygmi.misc import frm
+from pygmi.misc import frm, ContextModule
 
 
-class GraphWindow(QtWidgets.QDialog):
+class GraphWindow(ContextModule):
     """Graph Window - Main QT Dialog class for graphs."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -572,18 +570,12 @@ class PlotPoints(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
         self.spinbox.hide()
         self.label3.hide()
         self.combobox2.hide()
         self.label2.hide()
         self.xdata = None
         self.ydata = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -638,8 +630,6 @@ class PlotLines(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
         self.spinbox.hide()
         self.label3.hide()
         self.xcol = ''
@@ -726,8 +716,6 @@ class PlotLineMap(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
         self.combobox2.hide()
         self.label2.hide()
         self.checkbox.show()
@@ -794,8 +782,6 @@ class PlotRose(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
         self.combobox2.hide()
         self.label2.hide()
         self.spinbox.setValue(8)
@@ -851,8 +837,6 @@ class PlotVector(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
         self.label1.hide()
         self.combobox2.hide()
         self.label2.hide()

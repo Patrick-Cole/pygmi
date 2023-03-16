@@ -31,35 +31,18 @@ import matplotlib.pyplot as plt
 
 from pygmi import menu_default
 from pygmi.grav import iodefs
+from pygmi.misc import BasicModule
 
 
-class ProcessData(QtWidgets.QDialog):
+class ProcessData(BasicModule):
     """
     Process Gravity Data.
 
     This class processes gravity data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.dsb_null = QtWidgets.QDoubleSpinBox()
         self.dataid = QtWidgets.QComboBox()

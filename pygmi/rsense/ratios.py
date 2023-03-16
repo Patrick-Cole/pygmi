@@ -36,35 +36,14 @@ from pygmi import menu_default
 from pygmi.rsense import iodefs
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class SatRatios(QtWidgets.QDialog):
-    """
-    Calculate Satellite Ratios.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class SatRatios(BasicModule):
+    """Calculate Satellite Ratios."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
 
         self.combo_sensor = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
@@ -503,32 +482,12 @@ class SatRatios(QtWidgets.QDialog):
                 item.setText(' ' + item.text()[1:])
 
 
-class ConditionIndices(QtWidgets.QDialog):
-    """
-    Calculate Satellite Condition Indices.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class ConditionIndices(BasicModule):
+    """Calculate Satellite Condition Indices."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
 
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.bfile = None
 
         self.combo_index = QtWidgets.QComboBox()
@@ -742,7 +701,6 @@ class ConditionIndices(QtWidgets.QDialog):
         else:
             flist = [self.indata['Raster']]
 
-        ifile = ''
         for ifile in flist:
             if isinstance(ifile, str):
                 dat = iodefs.get_data(ifile,
@@ -1263,8 +1221,6 @@ def _testfn():
     import matplotlib.pyplot as plt
     import winsound
 
-    piter = ProgressBarText().iter
-
     extscene = None
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
@@ -1272,7 +1228,7 @@ def _testfn():
     ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
     ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
-    dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
+    dat = iodefs.get_data(ifile, extscene=extscene)
 
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 

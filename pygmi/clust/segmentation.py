@@ -32,37 +32,14 @@ from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 from pygmi import menu_default
+from pygmi.misc import BasicModule
 
 
-class ImageSeg(QtWidgets.QDialog):
-    """
-    Image Segmentation.
-
-    Attributes
-    ----------
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImageSeg(BasicModule):
+    """Image Segmentation."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.pbar = None
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.pbar = parent.pbar
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
 
         self.scale = QtWidgets.QLineEdit('1000')
         self.wcompact = QtWidgets.QLineEdit('0.5')

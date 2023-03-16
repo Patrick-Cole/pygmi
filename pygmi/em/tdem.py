@@ -40,7 +40,7 @@ from SimPEG.electromagnetics import time_domain
 import SimPEG.data as Sdata
 
 from pygmi import menu_default
-from pygmi.misc import QLabelVStack
+from pygmi.misc import QLabelVStack, BasicModule
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
@@ -121,29 +121,20 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class TDEM1D(QtWidgets.QDialog):
+class TDEM1D(BasicModule):
     """Occam 1D inversion."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.outdata = {}
         self.data = None
-        self.parent = parent
         self.cursoln = 0
         self.times = None
-
-        if parent is None:
-            self.showprocesslog = sys.stdout
-        else:
-            self.showprocesslog = self.parent.stdio_redirect
 
         self.setWindowTitle('TDEM 1D Inversion')
         helpdocs = menu_default.HelpButton('pygmi.em.tdem1d')
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
-        gbl = QtWidgets.QGridLayout()
         gbl = QLabelVStack()
 
         self.mmc1 = MyMplCanvas2(self)
@@ -432,7 +423,7 @@ class TDEM1D(QtWidgets.QDialog):
 
         # run the inversion
         try:
-            with redirect_stdout(self.showprocesslog):
+            with redirect_stdout(self.stdout_redirect):
                 mopt_sky = inv.run(m0)
         except Exception as e:
             QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),

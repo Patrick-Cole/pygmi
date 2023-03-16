@@ -38,10 +38,9 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 
-from pygmi.misc import frm
+from pygmi.misc import frm, BasicModule
 from pygmi import menu_default
 from pygmi.raster.iodefs import get_raster
-from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense import features
@@ -164,32 +163,12 @@ class GraphMap(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class AnalSpec(QtWidgets.QDialog):
-    """
-    Analyse spectra.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class AnalSpec(BasicModule):
+    """Analyse spectra."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
 
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.depthmarkers = {'Start': [0., 0., 0.]}
         self.nummarkers = 1
         self.depthfunc = None
@@ -552,33 +531,12 @@ class AnalSpec(QtWidgets.QDialog):
         return projdata
 
 
-class ProcFeatures(QtWidgets.QDialog):
-    """
-    Process Hyperspectral Features.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class ProcFeatures(BasicModule):
+    """Process Hyperspectral Features."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
 
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.product = {}
         self.ratio = {}
         self.feature = None

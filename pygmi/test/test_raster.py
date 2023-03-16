@@ -336,7 +336,7 @@ def test_io_ascii(smalldata):
     ofile = tempfile.gettempdir() + '\\iotest.asc'
 
     tmp = iodefs.ExportData(None)
-    tmp.ifile = ofile
+    tmp.ofile = ofile
     tmp.export_ascii([smalldata])
 
     dat2 = iodefs.get_ascii(ofile)
@@ -353,7 +353,7 @@ def test_io_xyz(smalldata):
     ofile = tempfile.gettempdir() + '\\iotest.xyz'
 
     tmp = iodefs.ExportData(None)
-    tmp.ifile = ofile
+    tmp.ofile = ofile
     tmp.export_ascii_xyz([smalldata])
 
     dat2 = iodefs.get_raster(ofile)

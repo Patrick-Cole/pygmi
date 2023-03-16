@@ -31,27 +31,14 @@ import numpy as np
 import scipy.signal as ssig
 
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class Smooth(QtWidgets.QDialog):
+class Smooth(BasicModule):
     """Smooth."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.label = QtWidgets.QLabel('X:')
         self.spinbox_x = QtWidgets.QSpinBox()

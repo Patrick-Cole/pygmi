@@ -38,37 +38,22 @@ from SimPEG import (maps, data, inverse_problem, data_misfit,
 import sklearn.cluster as skc
 
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText, ProgressBar
+from pygmi.misc import BasicModule
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.dataprep import lstack
 from pygmi.pfmod.grvmag3d import quick_model
 
 
-class MagInvert(QtWidgets.QDialog):
+class MagInvert(BasicModule):
     """MextDisplay - Widget class to call the main interface."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.parent = parent
         self.lmod1 = LithModel()
         self.lmod2 = LithModel()
-        self.pbar = ProgressBar()
+        # self.pbar = ProgressBar()
         self.inraster = {}
-        self.indata = {}
-        self.outdata = {}
         self.tmp = []
-
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        if parent is None:
-            self.stdout = sys.stdout
-        else:
-            self.stdout = self.parent.stdio_redirect
 
         self.combo_model = QtWidgets.QComboBox()
         self.combo_other = QtWidgets.QComboBox()
@@ -262,7 +247,7 @@ class MagInvert(QtWidgets.QDialog):
         gl_extent.addWidget(self.sb_classes, 9, 1, 1, 1)
 
         hlayout.addWidget(helpdocs)
-        hlayout.addWidget(self.pbar)
+        # hlayout.addWidget(self.pbar)
         hlayout.addWidget(buttonbox)
 
         # Assign to main layout
@@ -844,7 +829,7 @@ class MagInvert(QtWidgets.QDialog):
         inv = inversion.BaseInversion(inv_prob, directives_list)
 
         try:
-            with redirect_stdout(self.stdout):
+            with redirect_stdout(self.stdout_redirect):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
             self.showprocesslog('Error: '+str(e))

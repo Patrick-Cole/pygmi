@@ -44,7 +44,7 @@ from pygmi.pfmod import misc
 from pygmi import menu_default
 from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.iodefs import get_raster
-from pygmi.misc import frm
+from pygmi.misc import frm, BasicModule
 
 
 class ProfileDisplay(QtWidgets.QWidget):
@@ -622,6 +622,9 @@ class ProfileDisplay(QtWidgets.QWidget):
                     continue
 
                 data1 = copy.deepcopy(self.lmod1.griddata[i])
+                if data1.isrgb is True:
+                    # self.showprocesslog(f'Skipping RGB image {data1.dataid}')
+                    continue
                 if 'Calculated Gravity' in i:
                     data1.data = data1.data + self.lmod1.gregional
 
@@ -641,7 +644,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                     # ryyy2 = (d2tly-dtly+self.ryyy*data.ydim)/data1.ydim + 1
                     ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data1.ydim + 1
 
-                tmp = data1.data.filled(np.nan)
+                tmp = data1.data.astype(float).filled(np.nan)
                 data2[i] = ndimage.map_coordinates(tmp[::-1],
                                                    [ryyy2-0.5,
                                                     rxxx2-0.5],
@@ -2574,22 +2577,14 @@ class GaugeWidget(QtWidgets.QDial):
         painter.end()
 
 
-class ImportPicture(QtWidgets.QDialog):
+class ImportPicture(BasicModule):
     """Import Picture dialog."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-        self.parent = parent
         self.lmod = self.parent.lmod1
 
-        self.ifile = ''
-        self.indata = {}
-        self.outdata = {}
         self.grid = None
 
         self.dsb_x1 = QtWidgets.QDoubleSpinBox()

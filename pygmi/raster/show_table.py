@@ -28,8 +28,10 @@ from PyQt5 import QtWidgets
 import numpy as np
 import scipy.stats.mstats as st
 
+from pygmi.misc import ContextModule
 
-class BasicStats(QtWidgets.QDialog):
+
+class BasicStats(ContextModule):
     """Show a summary of basic stats."""
 
     def __init__(self, parent=None):
@@ -40,11 +42,9 @@ class BasicStats(QtWidgets.QDialog):
         self.pushbutton_save = QtWidgets.QPushButton('Save')
 
         self.setupui()
-        self.indata = {}
         self.bands = None
         self.cols = None
         self.data = None
-        self.parent = parent
 
     def setupui(self):
         """
@@ -184,26 +184,20 @@ def basicstats_calc(data):
     return bands, cols, dattmp
 
 
-class ClusterStats(QtWidgets.QDialog):
+class ClusterStats(ContextModule):
     """Show a summary of basic statistics."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.pushbutton_save = QtWidgets.QPushButton('Save')
 
         self.setupui()
-        self.indata = {}
         self.data = None
         self.cols = None
         self.bands = None
-        self.parent = parent
 
     def setupui(self):
         """

@@ -29,13 +29,13 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
+from pygmi.misc import ContextModule
 
-class GraphWindow(QtWidgets.QDialog):
+class GraphWindow(ContextModule):
     """Graph Window - Main QT Dialog class for graphs."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
@@ -284,8 +284,6 @@ class PlotPoints(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
 
     def change_band(self):
         """

@@ -33,6 +33,7 @@ import geopandas as gpd
 
 import pygmi.seis.datatypes as sdt
 from pygmi import menu_default
+from pygmi.misc import ContextModule, BasicModule
 
 
 def sform(strform, val, tmp, col1, col2=None, nval=-999):
@@ -132,18 +133,11 @@ def str2int(inp):
     return int(inp)
 
 
-class ImportSeisan():
+class ImportSeisan(BasicModule):
     """Import SEISAN Data."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
 
         idir = os.path.dirname(os.path.realpath(__file__))
         self.tfile = os.path.join(idir, r'descriptions.txt')
@@ -801,7 +795,7 @@ def read_record_type_p(i):
     return tmp
 
 
-class ImportGenericFPS():
+class ImportGenericFPS(BasicModule):
     """
     Import Generic Fault Plane Solution Data.
 
@@ -809,10 +803,7 @@ class ImportGenericFPS():
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -933,20 +924,14 @@ class ImportGenericFPS():
         return projdata
 
 
-class ExportSeisan():
+class ExportSeisan(ContextModule):
     """Export SEISAN Data."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
+
         self.lmod = None
         self.fobj = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -1441,20 +1426,14 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
 
-class ExportCSV():
+class ExportCSV(ContextModule):
     """Export SEISAN Data."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
+
         self.lmod = None
         self.fobj = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -1987,20 +1966,14 @@ class ExportCSV():
         return tmp
 
 
-class ExportSummary():
+class ExportSummary(ContextModule):
     """Export SEISAN Data."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
+
         self.lmod = None
         self.fobj = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -2141,28 +2114,15 @@ def mercalli(mag):
     return merc
 
 
-class FilterSeisan(QtWidgets.QDialog):
+class FilterSeisan(BasicModule):
     """
     Filter Data.
 
     This filters data using thresholds.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
 
         self.datlimits = None
 

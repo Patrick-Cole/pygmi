@@ -49,7 +49,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 
 from pygmi.raster.datatypes import Data
-from pygmi.misc import frm
+from pygmi.misc import frm, BasicModule
 from pygmi.raster.modest_image import imshow
 
 
@@ -437,30 +437,11 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.blit(self.ax.bbox)
 
 
-class SuperClass(QtWidgets.QDialog):
-    """
-    Main Supervised Classification Tool Routine.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class SuperClass(BasicModule):
+    """Main Supervised Classification Tool Routine."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.m1 = 0
         self.c = [0, 1, 0]
         self.m = [0, 0]

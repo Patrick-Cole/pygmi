@@ -42,7 +42,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 
-from pygmi.misc import frm
+from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
 
 
@@ -299,23 +299,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotCCoef(QtWidgets.QDialog):
-    """
-    Plot 2D Correlation Coefficients.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class PlotCCoef(ContextModule):
+    """Plot 2D Correlation Coefficients."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -357,23 +345,11 @@ class PlotCCoef(QtWidgets.QDialog):
         self.mmc.update_ccoef(data, dummy_mat)
 
 
-class PlotRaster(QtWidgets.QDialog):
-    """
-    Plot Raster Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class PlotRaster(ContextModule):
+    """Plot Raster Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -435,23 +411,11 @@ class PlotRaster(QtWidgets.QDialog):
             self.combobox1.addItem(i.dataid)
 
 
-class PlotSurface(QtWidgets.QDialog):
-    """
-    Plot Surface Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class PlotSurface(ContextModule):
+    """Plot Surface Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -513,23 +477,15 @@ class PlotSurface(QtWidgets.QDialog):
             self.change_band()
 
 
-class PlotScatter(QtWidgets.QDialog):
+class PlotScatter(ContextModule):
     """
-    Plot Hexbin Class. A Hexbin is a type of scatter plot which is raster.
+    Plot Hexbin Class.
 
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
+    A Hexbin is a type of scatter plot which is raster.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -600,23 +556,11 @@ class PlotScatter(QtWidgets.QDialog):
         self.combobox2.setCurrentIndex(1)
 
 
-class PlotHist(QtWidgets.QDialog):
-    """
-    Plot Histogram Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class PlotHist(ContextModule):
+    """Plot Histogram Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 

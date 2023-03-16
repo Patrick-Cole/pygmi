@@ -31,24 +31,16 @@ import numpy as np
 
 from pygmi import menu_default
 from pygmi.raster.ginterp import histeq
-
+from pygmi.misc import BasicModule
 
 warnings.simplefilter('always', RuntimeWarning)
 
 
-class Normalisation(QtWidgets.QDialog):
+class Normalisation(BasicModule):
     """Class Normalisation."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-        if parent is not None:
-            self.pbar = parent.pbar
-        else:
-            self.pbar = None
 
         self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
         self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  '

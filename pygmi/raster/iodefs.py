@@ -27,7 +27,6 @@
 import warnings
 import os
 import copy
-import math
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
@@ -38,34 +37,17 @@ from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
 
 
-class ComboBoxBasic(QtWidgets.QDialog):
-    """
-    A combobox to select data bands.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class BandSelect(ContextModule):
+    """A combobox to select data bands."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-        # create GUI
         self.setWindowTitle('Band Selection')
 
         self.vbox = QtWidgets.QVBoxLayout()
@@ -134,47 +116,15 @@ class ComboBoxBasic(QtWidgets.QDialog):
         return True
 
 
-class ImportData():
-    """
-    Import Data - Interfaces with rasterio routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportData(BasicModule):
+    """Import Data - Interfaces with rasterio routines."""
 
     def __init__(self, parent=None, ifile='', filt='', listimport=''):
-        # if 'ifile' in kwargs:
-        #     self.ifile = kwargs['ifile']
-        # else:
-        #     self.ifile = ''
-        # if 'filt' in kwargs:
-        #     self.filt = kwargs['ifile']
-        # else:
-        #     self.filt = ''
-        # if 'listimport' in kwargs:
-        #     self.listimport = kwargs['listimport']
-        # else:
-        #     self.listimport = False
+        super().__init__(parent)
 
         self.ifile = ifile
         self.filt = filt
         self.listimport = listimport
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
 
     def settings(self, nodialog=False):
         """
@@ -322,31 +272,11 @@ class ImportData():
         return projdata
 
 
-class ImportRGBData():
-    """
-    Import RGB Image - Interfaces with rasterio routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportRGBData(BasicModule):
+    """Import RGB Image - Interfaces with rasterio routines."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -1209,34 +1139,20 @@ def get_geosoft(hfile):
     return dat
 
 
-class ExportData():
+class ExportData(BasicModule):
     """
     Export Data.
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
+    ofile : str
+        output file name.
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
+        super().__init__(parent)
 
-        if parent is None:
-            self.piter = ProgressBarText().iter
-        else:
-            self.piter = parent.pbar.iter
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        self.ofile = ''
 
     def run(self):
         """
@@ -1284,14 +1200,12 @@ class ExportData():
                'ASCII XYZ (*.xyz);;'
                'ArcGIS BIL (*.bil)')
 
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+        self.ofile, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
-        if filename == '':
+        if self.ofile == '':
             self.parent.process_is_active(False)
             return False
-        os.chdir(os.path.dirname(filename))
-
-        self.ifile = str(filename)
+        os.chdir(os.path.dirname(self.ofile))
 
         self.showprocesslog('Export Data Busy...')
 
@@ -1305,25 +1219,25 @@ class ExportData():
         if filt == 'Surfer grid (*.grd)':
             self.export_surfer(data)
         if filt == 'ERDAS Imagine (*.img)':
-            export_raster(self.ifile, data, 'HFA', piter=self.piter)
+            export_raster(self.ofile, data, 'HFA', piter=self.piter)
         if filt == 'ERMapper (*.ers)':
-            export_raster(self.ifile, data, 'ERS', piter=self.piter)
+            export_raster(self.ofile, data, 'ERS', piter=self.piter)
         if filt == 'SAGA binary grid (*.sdat)':
             if len(data) > 1:
                 for i, dat in enumerate(data):
                     file_out = self.get_filename(dat, 'sdat')
                     export_raster(file_out, [dat], 'SAGA', piter=self.piter)
             else:
-                export_raster(self.ifile, data, 'SAGA', piter=self.piter)
+                export_raster(self.ofile, data, 'SAGA', piter=self.piter)
         if filt == 'GeoTiff (*.tif)':
-            export_raster(self.ifile, data, 'GTiff', piter=self.piter)
+            export_raster(self.ofile, data, 'GTiff', piter=self.piter)
         if filt == 'GeoTiff compressed using ZSTD (*.tif)':
-            export_raster(self.ifile, data, 'GTiff', piter=self.piter,
+            export_raster(self.ofile, data, 'GTiff', piter=self.piter,
                           compression='ZSTD')
         if filt == 'ENVI (*.hdr)':
-            export_raster(self.ifile, data, 'ENVI', piter=self.piter)
+            export_raster(self.ofile, data, 'ENVI', piter=self.piter)
         if filt == 'ArcGIS BIL (*.bil)':
-            export_raster(self.ifile, data, 'EHdr', piter=self.piter)
+            export_raster(self.ofile, data, 'EHdr', piter=self.piter)
 
         self.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
@@ -1348,7 +1262,7 @@ class ExportData():
                                 'filenames since you have a multiple band '
                                 'image')
 
-        file_out = self.ifile.rpartition('.')[0]+'.gxf'
+        file_out = self.ofile.rpartition('.')[0]+'.gxf'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'gxf')
@@ -1411,7 +1325,7 @@ class ExportData():
                                 'filenames since you have a multiple band '
                                 'image')
 
-        file_out = self.ifile.rpartition('.')[0] + '.grd'
+        file_out = self.ofile.rpartition('.')[0] + '.grd'
         for k0 in data:
             k = copy.deepcopy(k0)
             if len(data) > 1:
@@ -1441,7 +1355,7 @@ class ExportData():
                                 'filenames since you have a multiple band '
                                 'image')
 
-        file_out = self.ifile.rpartition('.')[0]+'.asc'
+        file_out = self.ofile.rpartition('.')[0]+'.asc'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'asc')
@@ -1485,7 +1399,7 @@ class ExportData():
                                 'filenames since you have a multiple band '
                                 'image')
 
-        file_out = self.ifile.rpartition('.')[0]+'.xyz'
+        file_out = self.ofile.rpartition('.')[0]+'.xyz'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'xyz')
@@ -1523,7 +1437,7 @@ class ExportData():
         file_band = file_band.replace('/', '')
         file_band = file_band.replace(':', '')
 
-        file_out = self.ifile.rpartition('.')[0]+'_'+file_band+'.'+ext
+        file_out = self.ofile.rpartition('.')[0]+'_'+file_band+'.'+ext
 
         return file_out
 
@@ -1600,7 +1514,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         dtype = np.float32
     elif drv == 'SAGA':
         tmpfile = tmp[0]+'.sdat'
-        data[0].nodata = -99999.0
+        nodata = -99999.0
     elif drv == 'HFA':
         tmpfile = tmp[0]+'.img'
     elif drv == 'ENVI':
@@ -1639,7 +1553,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             out.set_band_description(i+1, datai.dataid)
 
             dtmp = np.ma.array(datai.data)
-            dtmp.set_fill_value(datai.nodata)
+            dtmp.set_fill_value(nodata)
             dtmp = dtmp.filled()
 
             out.write(dtmp, i+1)

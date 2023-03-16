@@ -42,42 +42,20 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class CreateSceneList(QtWidgets.QDialog):
+class CreateSceneList(BasicModule):
     """
     Create Scene List.
 
     This class creates a list of scenes for use in change detection.
-
-    Attributes
-    ----------
-    piter : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.parent = parent
         self.indata = {'tmp': True}
-        self.outdata = {}
-        self.ifile = ''
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.shapefile = QtWidgets.QLineEdit('')
         self.scenefile = QtWidgets.QLineEdit('')
@@ -322,25 +300,11 @@ class CreateSceneList(QtWidgets.QDialog):
         self.scenefile.setText(directory)
 
 
-class LoadSceneList():
-    """
-    Load scene list.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class LoadSceneList(BasicModule):
+    """Load scene list."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -615,28 +579,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.parent.newdata(self.parent.curimage)
 
 
-class SceneViewer(QtWidgets.QDialog):
+class SceneViewer(BasicModule):
     """Scene Viewer."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
 
         self.df = None
-        if parent is None:
-            self.piter = ProgressBarText().iter
-        else:
-            self.piter = self.parent.pbar.iter
-
-        self.pbar = QtWidgets.QProgressBar()
+        self.pbar2 = QtWidgets.QProgressBar()
 
         self.setWindowTitle("View Change Data")
 
@@ -679,7 +629,7 @@ class SceneViewer(QtWidgets.QDialog):
         vlayout.addWidget(self.cb_use)
         vlayout.addLayout(hlayout2)
         vlayout.addLayout(hlayout)
-        vlayout.addWidget(self.pbar)
+        vlayout.addWidget(self.pbar2)
 
         self.curimage = 0
 
@@ -955,9 +905,9 @@ class SceneViewer(QtWidgets.QDialog):
 
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
-        self.pbar.setMinimum(0)
-        self.pbar.setValue(0)
-        self.pbar.setMaximum(dataset.RasterCount-1)
+        self.pbar2.setMinimum(0)
+        self.pbar2.setValue(0)
+        self.pbar2.setMaximum(dataset.RasterCount-1)
 
         gtr = dataset.GetGeoTransform()
         cols = dataset.RasterXSize
@@ -1027,7 +977,7 @@ class SceneViewer(QtWidgets.QDialog):
             dat.wkt = dataset.GetProjection()
             datall[i+1] = dat
 
-            self.pbar.setValue(i)
+            self.pbar2.setValue(i)
 
         if datall == {}:
             datall = None

@@ -35,6 +35,7 @@ from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
+from pygmi.misc import BasicModule
 
 class GraphHist(FigureCanvasQTAgg):
     """Graph Hist."""
@@ -628,33 +629,15 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.update()
 
 
-class ScatterPlot(QtWidgets.QDialog):
-    """
-    Main Graph Tool Routine.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class ScatterPlot(BasicModule):
+    """Main Graph Tool Routine."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.m1 = 0
         self.c = [0, 1, 0]
         self.m = [0, 0]
         self.dat_tmp = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
         self.map = GraphMap(self)
         self.hist = GraphHist(self)

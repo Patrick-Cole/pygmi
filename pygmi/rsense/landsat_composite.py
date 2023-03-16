@@ -33,42 +33,24 @@ from PyQt5 import QtWidgets, QtCore
 
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, BasicModule
 import pygmi.menu_default as menu_default
 
 
-class LandsatComposite(QtWidgets.QDialog):
+class LandsatComposite(BasicModule):
     """
     Landsat Composite Interface.
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine.
     idir : str
         Input directory.
-    ifile : str
-        Input file.
-    indata : dictionary
-        dictionary of input datasets.
-    outdata : dictionary
-        dictionary of output datasets.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ifile = ''
-        self.idir = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
 
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
+        self.idir = ''
 
         self.tday = QtWidgets.QSpinBox()
         self.idirlist = QtWidgets.QLineEdit('')

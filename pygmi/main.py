@@ -557,8 +557,6 @@ class MainWidget(QtWidgets.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
-        self.stdio_redirect = EmittingStream(self.showprocesslog)
-
         self.menubar = QtWidgets.QMenuBar()
 
         self.statusbar = QtWidgets.QStatusBar()
@@ -846,7 +844,7 @@ class MainWidget(QtWidgets.QMainWindow):
             iflag = item.settings()
             if iflag is False:
                 return None
-            if hasattr(item.my_class, 'ifile'):
+            if item.my_class.ifile != '':
                 ifile = os.path.basename(item.my_class.ifile)
                 if len(ifile) > len(item_name):
                     ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
@@ -1252,51 +1250,6 @@ class Startup(QtWidgets.QDialog):
         """Update the text on the dialog."""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
-
-
-class EmittingStream(QtCore.QObject):
-    """Class to intercept stdout for later use in a textbox."""
-
-    def __init__(self, textWritten):
-        self.textWritten = textWritten
-
-    def write(self, text):
-        """
-        Write text.
-
-        Parameters
-        ----------
-        text : str
-            Text to write.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.textWritten(str(text))
-
-    def flush(self):
-        """
-        Flush.
-
-        Returns
-        -------
-        None.
-
-        """
-
-    def fileno(self):
-        """
-        File number.
-
-        Returns
-        -------
-        int
-            Returns -1.
-
-        """
-        return -1
 
 
 def main(nocgs=False):

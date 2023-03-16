@@ -46,27 +46,22 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from pygmi.pfmod import misc
+from pygmi.misc import ContextModule
 
 
-class Mod3dDisplay(QtWidgets.QDialog):
+class Mod3dDisplay(ContextModule):
     """Widget class to call the main interface."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.parent = parent
         self.lmod1 = None
-        self.indata = {}
         self.outdata = self.indata
 
         if hasattr(parent, 'showtext'):
             self.showtext = parent.showtext
         else:
-            self.showtext = print
+            self.showtext = sys.stdout
 
         self.setWindowTitle('3D Model Display')
 

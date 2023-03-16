@@ -29,10 +29,11 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
 
+from pygmi.misc import BasicModule
 from pygmi.raster import dataprep
 
 
-class EquationEditor(QtWidgets.QDialog):
+class EquationEditor(BasicModule):
     """
     Equation Editor.
 
@@ -42,12 +43,6 @@ class EquationEditor(QtWidgets.QDialog):
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     equation : str
         string with the equation in it
     bands : dictionary
@@ -58,14 +53,6 @@ class EquationEditor(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.equation = None
         self.bands = {}
 

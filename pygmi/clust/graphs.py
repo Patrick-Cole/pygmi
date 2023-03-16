@@ -32,7 +32,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 
-from pygmi.misc import frm
+from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
 
 
@@ -200,21 +200,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtWidgets.QDialog):
-    """
-    Graph Window.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    """
+class GraphWindow(ContextModule):
+    """Graph Window."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.parent = parent
-
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
@@ -254,23 +244,12 @@ class GraphWindow(QtWidgets.QDialog):
 
 
 class PlotRaster(GraphWindow):
-    """
-    Plot Raster Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+    """Plot Raster Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
-        self.indata = {}
-        self.parent = parent
 
     def change_band(self):
         """
@@ -303,21 +282,10 @@ class PlotRaster(GraphWindow):
 
 
 class PlotMembership(GraphWindow):
-    """
-    Plot Fuzzy Membership data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+    """Plot Fuzzy Membership data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
 
     def change_band(self):
         """
@@ -370,27 +338,12 @@ class PlotMembership(GraphWindow):
 
 
 class PlotVRCetc(GraphWindow):
-    """
-    Plot VRC, NCE, OBJ and XBI.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+    """Plot VRC, NCE, OBJ and XBI."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.combobox2.hide()
         self.label2.hide()
-        self.parent = parent
-        self.indata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """

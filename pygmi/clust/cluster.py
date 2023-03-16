@@ -34,40 +34,14 @@ import sklearn.preprocessing as skp
 
 from pygmi.raster.datatypes import Data
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class Cluster(QtWidgets.QDialog):
-    """
-    Cluster Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class Cluster(BasicModule):
+    """Cluster Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
-        if parent is not None:
-            self.piter = parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
-
         self.combobox_alg = QtWidgets.QComboBox()
         self.spinbox_branchfac = QtWidgets.QSpinBox()
         self.spinbox_minsamples = QtWidgets.QSpinBox()
@@ -389,10 +363,10 @@ class Cluster(QtWidgets.QDialog):
                 bsize = max(os.cpu_count()*256, 1024)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter,
-                                           n_init='auto',
+                                           # n_init='auto',
                                            batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol, n_init='auto',
+                cfit = skc.KMeans(n_clusters=i, tol=self.tol, # n_init='auto',
                                   max_iter=self.max_iter).fit(X)
 
             elif self.cltype == 'DBSCAN':

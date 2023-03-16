@@ -41,9 +41,10 @@ from mtpy.core.mt import MT
 from mtpy.core.z import Z, Tipper
 
 from pygmi import menu_default
+from pygmi.misc import BasicModule, ContextModule
 
 
-class Metadata(QtWidgets.QDialog):
+class Metadata(ContextModule):
     """
     Edit Metadata.
 
@@ -55,27 +56,14 @@ class Metadata(QtWidgets.QDialog):
         band data
     bandid : dictionary
         dictionary of strings containing band names.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.indata = {}
-        self.outdata = {}
         self.banddata = {}
         self.dataid = {}
         self.oldtxt = ''
-        self.parent = parent
 
         self.combobox_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Station Name')
@@ -372,20 +360,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class StaticShiftEDI(QtWidgets.QDialog):
+class StaticShiftEDI(BasicModule):
     """Static shift EDI data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
         self.data = None
-        self.parent = parent
 
         self.setWindowTitle('Remove Static Shift')
         helpdocs = menu_default.HelpButton('pygmi.mt.static')
@@ -598,20 +578,12 @@ class StaticShiftEDI(QtWidgets.QDialog):
         return projdata
 
 
-class RotateEDI(QtWidgets.QDialog):
+class RotateEDI(BasicModule):
     """Rotate EDI data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
         self.data = None
-        self.parent = parent
 
         self.setWindowTitle('Rotate EDI data')
 
@@ -1085,20 +1057,12 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class EditEDI(QtWidgets.QDialog):
+class EditEDI(BasicModule):
     """Edit EDI Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
         self.data = None
-        self.parent = parent
 
         self.setWindowTitle('Mask and Interpolate')
         helpdocs = menu_default.HelpButton('pygmi.mt.edit')
@@ -1428,21 +1392,13 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class Occam1D(QtWidgets.QDialog):
+class Occam1D(BasicModule):
     """Occam 1D inversion."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        if parent is None:
-            self.showprocesslog = sys.stdout
-        else:
-            self.showprocesslog = parent.stdio_redirect
-
-        self.indata = {}
-        self.outdata = {}
         self.data = None
-        self.parent = parent
         self.cursoln = 0
 
         self.setWindowTitle('Occam 1D Inversion')
@@ -1633,53 +1589,53 @@ class Occam1D(QtWidgets.QDialog):
         else:
             os.makedirs(save_path)
 
-        d1 = occam1d.Data()
-        d1.write_data_file(edi_file=edi_file,
-                           mode=mode,
-                           save_path=save_path,
-                           res_err=parm['rerr'],
-                           phase_err=parm['perr'],
-                           res_errorfloor=parm['rerrflr'],
-                           phase_errorfloor=parm['perrflr'],
-                           remove_outofquadrant=parm['routq']
-                           )
+        with redirect_stdout(self.stdout_redirect):
+            d1 = occam1d.Data()
+            d1.write_data_file(edi_file=edi_file,
+                               mode=mode,
+                               save_path=save_path,
+                               res_err=parm['rerr'],
+                               phase_err=parm['perr'],
+                               res_errorfloor=parm['rerrflr'],
+                               phase_errorfloor=parm['perrflr'],
+                               remove_outofquadrant=parm['routq']
+                               )
 
-        m1 = occam1d.Model(target_depth=parm['tdepth'],
-                           n_layers=parm['nlayers'],
-                           bottom_layer=parm['blayer'],
-                           z1_layer=parm['z1layer'],
-                           air_layer_height=parm['alayer']
-                           )
-        m1.write_model_file(save_path=d1.save_path)
+            m1 = occam1d.Model(target_depth=parm['tdepth'],
+                               n_layers=parm['nlayers'],
+                               bottom_layer=parm['blayer'],
+                               z1_layer=parm['z1layer'],
+                               air_layer_height=parm['alayer']
+                               )
+            m1.write_model_file(save_path=d1.save_path)
 
-        s1 = occam1d.Startup(data_fn=d1.data_fn,
-                             model_fn=m1.model_fn,
-                             max_iter=parm['miter'],
-                             target_rms=parm['trms'])
+            s1 = occam1d.Startup(data_fn=d1.data_fn,
+                                 model_fn=m1.model_fn,
+                                 max_iter=parm['miter'],
+                                 target_rms=parm['trms'])
 
-        s1.write_startup_file()
+            s1.write_startup_file()
 
-        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
-        if platform.system() == 'Windows':
-            occam_path += '.exe'
+            occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
+            if platform.system() == 'Windows':
+                occam_path += '.exe'
 
-        if not os.path.exists(occam_path):
-            text = ('No Occam1D executable found. Please place it in the bin '
-                    'directory. You may need to obtain the source code from '
-                    'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
-                    'and compile it. It should be called occam1d for '
-                    'non-windows platforms and occam1d.exe for windows.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.Ok)
-            return
+            if not os.path.exists(occam_path):
+                text = ('No Occam1D executable found. Please place it in the bin '
+                        'directory. You may need to obtain the source code from '
+                        'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
+                        'and compile it. It should be called occam1d for '
+                        'non-windows platforms and occam1d.exe for windows.')
+                QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
+                                              QtWidgets.QMessageBox.Ok)
+                return
 
-        self.mmc.figure.clear()
-        self.mmc.figure.set_facecolor('r')
-        self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
-        self.mmc.figure.canvas.draw()
-        QtWidgets.QApplication.processEvents()
+            self.mmc.figure.clear()
+            self.mmc.figure.set_facecolor('r')
+            self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
+            self.mmc.figure.canvas.draw()
+            QtWidgets.QApplication.processEvents()
 
-        with redirect_stdout(self.showprocesslog):
             occam1d.Run(s1.startup_fn, occam_path, mode=mode)
 
         self.mmc.figure.set_facecolor('w')

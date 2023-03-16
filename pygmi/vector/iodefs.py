@@ -34,38 +34,18 @@ import pandas as pd
 import geopandas as gpd
 
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, BasicModule, ContextModule
 
 
-class ImportLineData(QtWidgets.QDialog):
+class ImportLineData(BasicModule):
     """
     Import Line Data.
 
     This class imports ASCII point data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
         self.filt = ''
 
         self.xchan = QtWidgets.QComboBox()
@@ -339,25 +319,11 @@ class ImportLineData(QtWidgets.QDialog):
         return gdf
 
 
-class ExportLine():
-    """
-    Export Line Data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class ExportLine(ContextModule):
+    """Export Line Data."""
 
     def __init__(self, parent=None):
-        self.parent = parent
-        self.indata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
 
     def run(self):
         """
@@ -394,25 +360,11 @@ class ExportLine():
         return True
 
 
-class ExportShapeData():
-    """
-    Export Line Data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
+class ExportShapeData(ContextModule):
+    """Export Line Data."""
 
     def __init__(self, parent=None):
-        self.parent = parent
-        self.indata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
 
     def run(self):
         """
@@ -450,29 +402,11 @@ class ExportShapeData():
         return True
 
 
-class ImportShapeData():
-    """
-    Import Shapefile Data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportShapeData(BasicModule):
+    """Import Shapefile Data."""
 
     def __init__(self, parent=None):
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """

@@ -33,20 +33,15 @@ from scipy import signal
 from pygmi import menu_default
 
 from pygmi.raster.datatypes import Data
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class Tilt1(QtWidgets.QDialog):
+class Tilt1(BasicModule):
     """
     Class used to gather information via a GUI, for function tilt1.
 
     Attributes
     ----------
-    parent : parent
-    indata : dictionary
-        PyGMI input data in a dictionary
-    outdata :
-        PyGMI input data in a dictionary
     azi : float
         directional filter azimuth in degrees from East
     smooth : int
@@ -56,16 +51,8 @@ class Tilt1(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.azi = 75
         self.smooth = 0
-
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.sb_azi = QtWidgets.QSpinBox()
         self.sb_s = QtWidgets.QSpinBox()
@@ -364,31 +351,11 @@ def vertical(data, npts=None, xint=1, order=1):
     return dz
 
 
-class RTP(QtWidgets.QDialog):
-    """
-    Perform Reduction to the Pole on Magnetic data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class RTP(BasicModule):
+    """Perform Reduction to the Pole on Magnetic data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()

@@ -49,41 +49,28 @@ from pygmi.raster.cooper import vertical
 from pygmi.raster.dataprep import lstack
 from pygmi.mag.dataprep import rtp
 from pygmi.vector.dataprep import quickgrid
-from pygmi.misc import frm, ProgressBar
+from pygmi.misc import frm, ProgressBar, BasicModule
 from pygmi import menu_default
 
 
-class TiltDepth(QtWidgets.QDialog):
+class TiltDepth(BasicModule):
     """
     Primary class for the Tilt Depth.
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     self.mmc : FigureCanvas
         main canvas containing the image
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.units = {}
         self.X = None
         self.Y = None
         self.Z = None
         self.depths = None
         self.cbar = colormaps['jet']
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
         self.x0 = None
         self.x1 = None

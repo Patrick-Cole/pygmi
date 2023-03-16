@@ -40,7 +40,7 @@ from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import mvis3d
 from pygmi import menu_default
 import pygmi.raster.dataprep as dp
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule, ContextModule
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
@@ -48,24 +48,14 @@ from pygmi.pfmod import datatypes
 sys.modules['datatypes'] = datatypes
 
 
-class ImportMod3D():
+class ImportMod3D(BasicModule):
     """Import Data."""
 
     def __init__(self, parent=None):
-        self.parent = parent
+        super().__init__(parent)
+
         self.lmod = LithModel()
-
-        self.ifile = ''
         self.filt = ''
-        self.indata = {}
-        self.outdata = {}
-
-        if parent is not None:
-            self.piter = parent.pbar.iter
-            self.showprocesslog = parent.showprocesslog
-        else:
-            self.piter = ProgressBarText().iter
-            self.showprocesslog = print
 
     def settings(self, nodialog=False):
         """
@@ -510,19 +500,14 @@ class ImportMod3D():
             lmod.lith_list[itxt].set_xyz12()
 
 
-class ExportMod3D():
+class ExportMod3D(ContextModule):
     """Export Data."""
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
+        super().__init__(parent)
+
+        self.ofile = ''
         self.lmod = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -538,18 +523,17 @@ class ExportMod3D():
             return
 
         for self.lmod in self.indata['Model3D']:
-            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
                 'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
-            if filename == '':
+            if self.ofile == '':
                 return
 
-            os.chdir(os.path.dirname(filename))
-            self.ifile = str(filename)
-            ext = filename[-3:]
+            os.chdir(os.path.dirname(self.ofile))
+            ext = self.ofile[-3:]
 
-            self.showprocesslog('Saving '+self.ifile+'...')
+            self.showprocesslog('Saving '+self.ofile+'...')
 
         # Pop up save dialog box
             if ext == 'npz':
@@ -570,16 +554,13 @@ class ExportMod3D():
         None.
 
         """
-        # Open file
-        filename = self.ifile
-
         # Construct output dictionary
         outdict = {}
         outdict = self.lmod2dict(outdict)
 
         # Save data
         try:
-            np.savez_compressed(filename, **outdict)
+            np.savez_compressed(self.ofile, **outdict)
             self.showprocesslog('Model save complete!')
         except:
             self.showprocesslog('ERROR! Model save failed!')

@@ -26,6 +26,7 @@
 
 
 import os
+import sys
 import copy
 import xml.etree.ElementTree as ET
 import glob
@@ -45,12 +46,12 @@ from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
 from natsort import natsorted
-import contextily as ctx
+# import contextily as ctx
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.raster.iodefs import get_raster, export_raster
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -153,31 +154,14 @@ K2 = [1735.337945, 1666.398761, 1585.420044, 1350.069147, 1271.221673]
 ESUN = [1848, 1549, 1114, 225.4, 86.63, 81.85, 74.85, 66.49, 59.85]
 
 
-class ImportData():
-    """
-    Import Data - Interfaces with rasterio routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportData(BasicModule):
+    """Import Data - Interfaces with rasterio routines."""
 
     def __init__(self, parent=None, extscene=None):
-        self.ifile = ''
+        super().__init__(parent)
+
         self.filt = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.extscene = extscene
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -268,7 +252,7 @@ class ImportData():
         return projdata
 
 
-class ImportBatch():
+class ImportBatch(BasicModule):
     """
     Batch Import Data Interface.
 
@@ -277,24 +261,14 @@ class ImportBatch():
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine.
     idir : str
         Input directory.
-    ifile : str
-        Input file.
-    indata : dictionary
-        dictionary of input datasets.
-    outdata : dictionary
-        dictionary of output datasets.
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
+        super().__init__(parent)
+
         self.idir = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
 
     def settings(self, nodialog=False):
         """
@@ -393,33 +367,12 @@ class ImportBatch():
         return projdata
 
 
-class ImportSentinel5P(QtWidgets.QDialog):
-    """
-    Import Sentinel 5P data to shapefile.
-
-    This class imports Sentinel 5P data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportSentinel5P(BasicModule):
+    """Import Sentinel 5P data to shapefile."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
         self.sfile = ''
         self.filt = ''
         self.indx = 0
@@ -792,25 +745,11 @@ class ImportSentinel5P(QtWidgets.QDialog):
         return gdf
 
 
-class ImportShapeData():
-    """
-    Import Shapefile Data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ImportShapeData(BasicModule):
+    """Import Shapefile Data."""
 
     def __init__(self, parent=None):
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -880,37 +819,11 @@ class ImportShapeData():
         return projdata
 
 
-class ExportBatch(QtWidgets.QDialog):
-    """
-    Export Raster File List.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class ExportBatch(ContextModule):
+    """Export Raster File List."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.ifile = ''
-
-        if parent is None:
-            self.piter = ProgressBarText().iter
-            self.showprocesslog = print
-            self.process_is_active = print
-        else:
-            self.piter = parent.pbar.iter
-            self.showprocesslog = parent.showprocesslog
-            self.process_is_active = parent.process_is_active
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
 
         self.ofilt = QtWidgets.QComboBox()
         self.odir = QtWidgets.QLineEdit('')

@@ -40,39 +40,19 @@ from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
+from pygmi.misc import BasicModule
 
 
-class PointCut():
+class PointCut(BasicModule):
     """
     Cut Data using shapefiles.
 
     This class cuts point datasets using a boundary defined by a polygon
     shapefile.
-
-    Attributes
-    ----------
-    ifile : str
-        input file name.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        # self.pbar = parent.pbar
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-            self.pbar = None
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.pbar = parent.pbar
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -159,32 +139,15 @@ class PointCut():
         return projdata
 
 
-class DataGrid(QtWidgets.QDialog):
+class DataGrid(BasicModule):
     """
     Grid Point Data.
 
     This class grids point data using a nearest neighbourhood technique.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.dxy = None
         self.dataid_text = None
 
@@ -487,32 +450,15 @@ class DataGrid(QtWidgets.QDialog):
         self.outdata['Line'] = self.indata['Line']
 
 
-class DataReproj(QtWidgets.QDialog):
+class DataReproj(BasicModule):
     """
     Reprojections.
 
     This class reprojects datasets using the rasterio routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.orig_wkt = None
         self.targ_wkt = None
 

@@ -26,12 +26,13 @@
 Misc is a collection of routines which can be used in PyGMI in general.
 """
 
+import sys
 import types
 import time
 import psutil
 import numpy as np
 from matplotlib import ticker
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 
 PBAR_STYLE = """
@@ -48,6 +49,206 @@ QProgressBar::chunk {
 """
 
 PTIME = None
+
+
+class EmittingStream(QtCore.QObject):
+    """Class to intercept stdout for later use in a textbox."""
+
+    def __init__(self, textWritten):
+        self.textWritten = textWritten
+
+    def write(self, text):
+        """
+        Write text.
+
+        Parameters
+        ----------
+        text : str
+            Text to write.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.textWritten(str(text))
+
+    def flush(self):
+        """
+        Flush.
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def fileno(self):
+        """
+        File number.
+
+        Returns
+        -------
+        int
+            Returns -1.
+
+        """
+        return -1
+
+
+class BasicModule(QtWidgets.QDialog):
+    """
+    Basic Module.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file, used in IO routines and to pass filename back to main.py
+    piter : iter
+        reference to a progress bar iterator.
+    pbar : progressbar
+        reference to a progress bar.
+    showprocesslog: stdout or alternative
+        reference to a way to view messages, normally stdout or a Qt text box.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.stdout_redirect = sys.stdout
+            self.showprocesslog = print
+            self.pbar = ProgressBarText()
+            self.process_is_active = print
+        else:
+            self.stdout_redirect = EmittingStream(parent.showprocesslog)
+            self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
+            self.process_is_active = parent.process_is_active
+
+        self.piter = self.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.ifile = ''
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        return True
+
+    def data_init(self):
+        """
+        Initialise Data.
+
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        return projdata
+
+
+class ContextModule(QtWidgets.QDialog):
+    """
+    Context Module.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    piter : iter
+        reference to a progress bar iterator.
+    pbar : progressbar
+        reference to a progress bar.
+    showprocesslog: stdout or alternative
+        reference to a way to view messages, normally stdout or a Qt text box.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.stdout_redirect = sys.stdout
+            self.showprocesslog = print
+            self.pbar = ProgressBarText()
+            self.process_is_active = print
+        else:
+            self.stdout_redirect = EmittingStream(parent.showprocesslog)
+            self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
+            self.process_is_active = parent.process_is_active
+
+        self.piter = self.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+
+    def run(self):
+        """
+        Run context menu item.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class QLabelVStack:
@@ -282,6 +483,10 @@ class ProgressBarText():
         # Print New Line on Complete
         if iteration == self.total:
             print()
+
+    def to_max(self):
+        """Set the progress to maximum."""
+        self.printprogressbar(self.total)
 
 
 def getinfo(txt=None, reset=False):

@@ -41,6 +41,8 @@ from matplotlib import patches
 from osgeo import ogr, osr
 import scipy.spatial.distance as sdist
 
+from pygmi.misc import BasicModule
+
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """Canvas for the actual plot."""
@@ -122,20 +124,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class BeachBall(QtWidgets.QDialog):
+class BeachBall(BasicModule):
     """Create shapefiles with beachballs."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.algorithm = 'FPFIT'
         self.nofps = False
         self.stype = 'Seis'

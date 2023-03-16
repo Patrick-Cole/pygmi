@@ -36,37 +36,16 @@ import matplotlib.pyplot as plt
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 from pygmi import menu_default
 
 
-class MNF(QtWidgets.QDialog):
-    """
-    Perform MNF Transform.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class MNF(BasicModule):
+    """Perform MNF Transform."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
 
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.ev = None
 
         self.sb_comps = QtWidgets.QSpinBox()
@@ -275,33 +254,12 @@ class MNF(QtWidgets.QDialog):
         return True
 
 
-class PCA(QtWidgets.QDialog):
-    """
-    Perform PCA Transform.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class PCA(BasicModule):
+    """Perform PCA Transform."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
 
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.ev = None
 
         self.sb_comps = QtWidgets.QSpinBox()
@@ -915,15 +873,13 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
 def _testfn():
     """Test routine."""
-    pbar = ProgressBarText()
-
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     ncmps = 10
 
     dat = get_data(ifile, extscene='Hyperion')
 
-    pmnf, _ = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
+    pmnf, _ = mnf_calc(dat, ncmps=ncmps, noisetxt='')
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()

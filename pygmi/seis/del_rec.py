@@ -30,20 +30,16 @@ from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
 
 from pygmi.seis import iodefs
+from pygmi.misc import BasicModule
 
 
-class DeleteRecord():
+class DeleteRecord(BasicModule):
     """Main form which does the GUI and the program."""
 
     def __init__(self, parent=None):
-        # Initialize Variables
-        self.parent = parent
+        super().__init__(parent)
+
         self.indata = {'tmp': True}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
         self.settings()
 
@@ -153,18 +149,11 @@ class DeleteRecord():
         self.showprocesslog('Completed!')
 
 
-class Quarry():
+class Quarry(BasicModule):
     """Main form which does the GUI and the program."""
 
     def __init__(self, parent=None):
-        # Initialize Variables
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
 
         self.events = []
         self.day = [10, 16]  # daytime start at 6am and ends at 7pm

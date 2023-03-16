@@ -148,9 +148,13 @@ class MenuWidget():
         context_menu['Raster'].addAction(self.action_basic_statistics)
         self.action_basic_statistics.triggered.connect(self.basic_stats)
 
-        self.action_show_raster_data = QtWidgets.QAction('Show Raster Data')
+        self.action_show_raster_data = QtWidgets.QAction('Show Raster Data (Simple)')
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
+
+        self.action_show_raster_data2 = QtWidgets.QAction('Show Raster Data (Advanced)')
+        context_menu['Raster'].addAction(self.action_show_raster_data2)
+        self.action_show_raster_data2.triggered.connect(self.show_raster_data2)
 
         self.action_show_anaglyph = QtWidgets.QAction('Show Anaglyph')
         context_menu['Raster'].addAction(self.action_show_anaglyph)
@@ -232,6 +236,10 @@ class MenuWidget():
         """Show raster data."""
         self.parent.launch_context_item(graphs.PlotRaster)
 
+    def show_raster_data2(self):
+        """Show raster data."""
+        self.parent.launch_context_item(ginterp.PlotInterp)
+
     def show_anaglyph(self):
         """Show anaglyph of raster data."""
         self.parent.launch_context_item(anaglyph.PlotAnaglyph)
@@ -280,4 +288,4 @@ class MenuWidget():
 
     def bandselect(self):
         """Select bands."""
-        self.parent.launch_context_item_indata(iodefs.ComboBoxBasic)
+        self.parent.launch_context_item_indata(iodefs.BandSelect)

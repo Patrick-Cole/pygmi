@@ -30,28 +30,18 @@ import mtpy.core.mt
 import numpy as np
 import pandas as pd
 
+from pygmi.misc import ContextModule, BasicModule
 
-class ImportLEMI417Data():
+
+class ImportLEMI417Data(BasicModule):
     """
     Import LEMI-417 ASCII MT Data.
 
     This is a class used to import LEMI-417 MT Data in ASCII format.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
     """
 
     def __init__(self, parent=None):
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -136,26 +126,20 @@ class ImportLEMI417Data():
         return projdata
 
 
-class ImportEDI():
+class ImportEDI(BasicModule):
     """
     Import Data.
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
+    ifilelist : list
+        list of input file names.
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
+        super().__init__(parent
+                         )
         self.ifilelist = []
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
 
     def settings(self, nodialog=False):
         """
@@ -262,29 +246,20 @@ def get_EDI(ifiles):
     return dat
 
 
-class ExportEDI():
+class ExportEDI(ContextModule):
     """
     Export Data.
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
+    ofile : str
+        output file name.
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
+        super().__init__(parent)
+
+        self.ofile = ''
 
     def run(self):
         """
@@ -307,16 +282,15 @@ class ExportEDI():
 
         ext = 'EDI (*.edi)'
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+        self.ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
 
-        if filename == '':
+        if self.ofile == '':
             self.parent.process_is_active(False)
             return False
-        os.chdir(os.path.dirname(filename))
+        os.chdir(os.path.dirname(self.ofile))
 
-        self.ifile = str(filename)
-        ext = filename[-3:]
+        ext = self.ofile[-3:]
 
         self.showprocesslog('Export Data Busy...')
 
@@ -342,8 +316,8 @@ class ExportEDI():
         None.
 
         """
-        savepath = os.path.dirname(self.ifile)
-        basename = os.path.basename(self.ifile)[:-4]
+        savepath = os.path.dirname(self.ofile)
+        basename = os.path.basename(self.ofile)[:-4]
         for i in dat:
             dat[i].write_mt_file(save_dir=savepath,
                                  fn_basename=basename+'_'+i,

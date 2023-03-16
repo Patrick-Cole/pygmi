@@ -31,6 +31,7 @@ import rasterio
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import data_reproject
+from pygmi.misc import BasicModule
 
 
 def update_lith_lw(lmod, lwidget):
@@ -262,33 +263,14 @@ class ProgressBar():
         QtCore.QCoreApplication.processEvents()
 
 
-class MergeMod3D(QtWidgets.QDialog):
-    """
-    Perform Merge of two models.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class MergeMod3D(BasicModule):
+    """Perform Merge of two models."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
         self.master = QtWidgets.QComboBox()
         self.slave = QtWidgets.QComboBox()
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
         self.setupui()
 

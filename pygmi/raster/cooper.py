@@ -35,20 +35,15 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, BasicModule
 
 
-class Gradients(QtWidgets.QDialog):
+class Gradients(BasicModule):
     """
     Class used to gather information via a GUI, for function gradients.
 
     Attributes
     ----------
-    parent : parent
-    indata : dictionary
-        PyGMI input data in a dictionary
-    outdata :
-        PyGMI input data in a dictionary
     azi : float
         Azimuth/filter direction (degrees)
     elev : float
@@ -59,20 +54,8 @@ class Gradients(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.azi = 45
         self.order = 1
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.sb_order = QtWidgets.QSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
@@ -361,17 +344,12 @@ def derivative_ratio(data, azi, order):
     return dr
 
 
-class Visibility2d(QtWidgets.QDialog):
+class Visibility2d(BasicModule):
     """
     Class used to gather information via a GUI, for function visibility2d.
 
     Attributes
     ----------
-    parent : parent
-    indata : dictionary
-        PyGMI input data in a dictionary
-    outdata :
-        PyGMI input data in a dictionary
     wsize : int
         window size, must be odd
     dh : float
@@ -380,21 +358,8 @@ class Visibility2d(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.wsize = 11
         self.dh = 10
-
-        if parent is not None:
-            self.piter = self.parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
 
         self.sb_dh = QtWidgets.QSpinBox()
         self.sb_wsize = QtWidgets.QSpinBox()
@@ -787,33 +752,18 @@ def vertical(data, npts=None, xint=1, order=1):
     return dz
 
 
-class AGC(QtWidgets.QDialog):
+class AGC(BasicModule):
     """
     Class used to gather information via a GUI, for function AGC.
 
     Attributes
     ----------
-    parent : parent
-    indata : dictionary
-        PyGMI input data in a dictionary
-    outdata :
-        PyGMI input data in a dictionary
     wsize : int
         window size, must be odd
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.wsize = 11
 
         self.sb_wsize = QtWidgets.QSpinBox()

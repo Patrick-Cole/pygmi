@@ -39,6 +39,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
+import contextily as ctx
+import pyproj
+
+from pygmi.misc import ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -47,7 +51,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Attributes
     ----------
-    axes : matplotlib subplot
+    axes : matplotlib axes
+        axes for matplotlib subplot
     parent : parent
         reference to the parent routine
     """
@@ -150,6 +155,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
+
+
+        try:
+            ctx.add_basemap(self.axes, crs=pyproj.CRS.from_epsg(4326),
+                            source=ctx.providers.OpenStreetMap.Mapnik)
+        except:
+            print('No internet')
+
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -566,19 +579,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtWidgets.QDialog):
-    """
-    Graph Window - The QDialog window which will contain our image.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    """
+class GraphWindow(ContextModule):
+    """Graph Window - The QDialog window which will contain our image."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
@@ -641,23 +646,14 @@ class PlotQC(GraphWindow):
         reference to GraphWindow's label2
     combobox2 : QComboBox
         reference to GraphWindow's combobox2
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         self.label2.hide()
         self.combobox2.hide()
-        self.indata = {}
-        self.parent = parent
         self.datd = None
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -928,7 +924,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r'D:\Workdata\seismology\collect1.out'
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Sesimology\collect1.out"
     tmp.settings(True)
 
     data = tmp.outdata['Seis']
@@ -990,4 +986,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

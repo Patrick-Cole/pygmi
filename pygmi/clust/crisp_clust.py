@@ -31,40 +31,14 @@ import numpy as np
 
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, BasicModule
 
 
-class CrispClust(QtWidgets.QDialog):
-    """
-    Crisp Cluster Class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class CrispClust(BasicModule):
+    """Crisp Cluster Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
-        if parent is not None:
-            self.piter = parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
-
         self.spinbox_maxclusters = QtWidgets.QSpinBox()
         self.combobox_alg = QtWidgets.QComboBox()
         self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()

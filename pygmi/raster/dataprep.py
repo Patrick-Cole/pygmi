@@ -45,40 +45,20 @@ from shapely.geometry import LineString, Polygon, box
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
 
 
-class DataCut():
+class DataCut(BasicModule):
     """
     Cut Data using shapefiles.
 
     This class cuts raster datasets using a boundary defined by a polygon
     shapefile.
-
-    Attributes
-    ----------
-    ifile : str
-        input file name.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-            self.pbar = None
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.pbar = parent.pbar
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -153,33 +133,16 @@ class DataCut():
         return projdata
 
 
-class DataLayerStack(QtWidgets.QDialog):
+class DataLayerStack(BasicModule):
     """
     Data Layer Stack.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.dxy = None
         self.piter = parent.pbar.iter
         self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
@@ -372,35 +335,16 @@ class DataLayerStack(QtWidgets.QDialog):
         self.outdata['Raster'] = dat
 
 
-class DataMerge(QtWidgets.QDialog):
+class DataMerge(BasicModule):
     """
     Data Merge.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.idir = None
         self.method = merge_median
         self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
@@ -950,34 +894,15 @@ class DataMerge(QtWidgets.QDialog):
         return True
 
 
-class DataReproj(QtWidgets.QDialog):
+class DataReproj(BasicModule):
     """
     Reprojections.
 
     This class reprojects datasets using the rasterio routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.orig_wkt = None
         self.targ_wkt = None
 
@@ -1139,35 +1064,15 @@ class DataReproj(QtWidgets.QDialog):
         return projdata
 
 
-class GetProf():
+class GetProf(BasicModule):
     """
     Get a Profile.
 
     This class extracts a profile from a raster dataset using a line shapefile.
-
-    Attributes
-    ----------
-    ifile : str
-        input file name.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
-        self.ifile = ''
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = ProgressBarText().iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
+        super().__init__(parent)
 
     def settings(self, nodialog=False):
         """
@@ -1408,7 +1313,7 @@ class GroupProj(QtWidgets.QWidget):
         self.label.setText(wkttmp)
 
 
-class Metadata(QtWidgets.QDialog):
+class Metadata(ContextModule):
     """
     Edit Metadata.
 
@@ -1421,27 +1326,13 @@ class Metadata(QtWidgets.QDialog):
         band data
     bandid : dictionary
         dictionary of strings containing band names.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
         self.banddata = {}
         self.dataid = {}
         self.oldtxt = ''
-        self.parent = parent
 
         self.combobox_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
@@ -1691,27 +1582,11 @@ class Metadata(QtWidgets.QDialog):
         return True
 
 
-class Continuation(QtWidgets.QDialog):
-    """
-    Perform upward and downward continuation on potential field data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class Continuation(BasicModule):
+    """Perform upward and downward continuation on potential field data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
         self.dataid = QtWidgets.QComboBox()
         self.continuation = QtWidgets.QComboBox()
         self.dsb_height = QtWidgets.QDoubleSpinBox()

@@ -63,11 +63,11 @@ import numpy as np
 
 import pygmi.raster.dataprep as dp
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 from pygmi.vector.dataprep import reprojxy
 
 
-class IGRF(QtWidgets.QDialog):
+class IGRF(BasicModule):
     """
     IGRF field calculation.
 
@@ -78,15 +78,6 @@ class IGRF(QtWidgets.QDialog):
     To do this, the input dataset must be reprojected from its local projection
     to degrees, where the IGRF correction will take place. This is done within
     this class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
 
     Parameters
     ----------
@@ -143,19 +134,7 @@ class IGRF(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
         self.wkt = None
-        if parent is None:
-            self.piter = ProgressBarText().iter
-        else:
-            self.piter = self.parent.pbar.iter
 
         self.dsb_alt = QtWidgets.QDoubleSpinBox()
         self.dateedit = QtWidgets.QDateEdit()

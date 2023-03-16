@@ -30,35 +30,18 @@ import numpy as np
 import pandas as pd
 
 from pygmi import menu_default
+from pygmi.misc import BasicModule
 
 
-class ImportCG5(QtWidgets.QDialog):
+class ImportCG5(BasicModule):
     """
     Import Line Data.
 
     This class imports ASCII point data.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
     """
 
     def __init__(self, parent):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
 
         self.df_cg5 = None
         self.df_gps = None

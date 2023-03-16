@@ -33,7 +33,7 @@ from matplotlib.figure import Figure
 from matplotlib import collections as mc
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
-from pygmi.misc import frm
+from pygmi.misc import frm, ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -276,21 +276,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotAnaglyph(QtWidgets.QDialog):
-    """
-    Graph Window - The QDialog window which will contain our image.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    """
+class PlotAnaglyph(ContextModule):
+    """Graph Window - The QDialog window which will contain our image."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.parent = parent
-        self.indata = {}
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Anaglyph (3D Image: Glasses Needed)')

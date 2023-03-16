@@ -59,8 +59,8 @@ from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
 from matplotlib.colors import ListedColormap
 
-from pygmi.raster import iodefs
-from pygmi.raster import dataprep
+from pygmi.misc import BasicModule
+from pygmi.raster import iodefs, dataprep
 from pygmi import menu_default
 from pygmi.raster.modest_image import imshow
 
@@ -818,7 +818,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotInterp(QtWidgets.QDialog):
+class PlotInterp(BasicModule):
     """
     The primary class for the raster data interpretation module.
 
@@ -830,12 +830,6 @@ class PlotInterp(QtWidgets.QDialog):
 
     Attributes
     ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     self.mmc : pygmi.raster.ginterp.MyMplCanvas, FigureCanvas
         main canvas containing the image
     self.msc : pygmi.raster.ginterp.MySunCanvas, FigureCanvas
@@ -844,16 +838,6 @@ class PlotInterp(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            self.piter = iter
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
         self.units = {}
 
         self.mmc = MyMplCanvas(self)
@@ -1335,12 +1319,20 @@ class PlotInterp(QtWidgets.QDialog):
         if 'Raster' not in self.indata:
             return
 
-        self.indata['Raster'] = dataprep.lstack(self.indata['Raster'])
+        # Get rid of RGB bands.
+        indata = []
+        for i in self.indata['Raster']:
+            if i.isrgb is True:
+                continue
+            indata.append(i)
 
+        indata = dataprep.lstack(indata, pprint=self.showprocesslog,
+                                 piter=self.piter)
+
+        # Add membership data.
         if 'Cluster' in self.indata:
-            data = self.indata['Cluster']
-            newdat = copy.copy(self.indata['Raster'])
-            for i in data:
+            newdat = copy.copy(indata)
+            for i in self.indata['Cluster']:
                 if 'memdat' not in i.metadata['Cluster']:
                     continue
                 for j, val in enumerate(i.metadata['Cluster']['memdat']):
@@ -1353,8 +1345,8 @@ class PlotInterp(QtWidgets.QDialog):
             data = newdat
             sdata = newdat
         else:
-            data = self.indata['Raster']
-            sdata = self.indata['Raster']
+            data = indata
+            sdata = indata
 
         for i in data:
             self.units[i.dataid] = i.units
@@ -1416,6 +1408,11 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.phi = phi
             self.mmc.theta = theta
             self.mmc.update_shade()
+
+    def run(self):
+        """Run the module as a context menu."""
+        self.data_init()
+        self.settings()
 
     def save_img(self):
         """

@@ -31,39 +31,14 @@ import numpy as np
 
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
-from pygmi.misc import ProgressBarText
+from pygmi.misc import BasicModule
 
 
-class FuzzyClust(QtWidgets.QDialog):
-    """
-    Fuzzy Clustering class.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
+class FuzzyClust(BasicModule):
+    """Fuzzy Clustering class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-
-        if parent is not None:
-            self.piter = parent.pbar.iter
-        else:
-            self.piter = ProgressBarText().iter
-
         self.combobox_alg = QtWidgets.QComboBox()
         self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
         self.doublespinbox_fuzzynessexp = QtWidgets.QDoubleSpinBox()

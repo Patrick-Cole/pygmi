@@ -64,35 +64,17 @@ Note, it will still be necessary for the end-user to compile the code.
 import os
 import functools
 from PyQt5 import QtWidgets, QtCore, QtGui
-# import pygmi.menu_default as menu_default
-# import mtpy.processing.birrp as MTbp
+
+from pygmi.misc import BasicModule
 
 
-class BIRRP(QtWidgets.QDialog):
-    """
-    Class to export config file for BIRRP .
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
+class BIRRP(BasicModule):
+    """Class to export config file for BIRRP."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
 
-        self.parent = parent
         self.indata = {'tmp': True}
-        self.outdata = {}
-        self.ifile = ''
 
         self.df_gps = None
 

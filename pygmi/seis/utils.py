@@ -28,34 +28,19 @@ import difflib
 import os
 from PyQt5 import QtWidgets, QtCore
 
+from pygmi.misc import BasicModule
 
-class CorrectDescriptions(QtWidgets.QDialog):
+
+class CorrectDescriptions(BasicModule):
     """
     Correct SEISAN descriptions.
 
     This compares the descriptions found in SEISAN type 3 lines to a custom
     list.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-        else:
-            self.showprocesslog = parent.showprocesslog
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
 
         idir = os.path.dirname(os.path.realpath(__file__))
         tfile = os.path.join(idir, r'descriptions.txt')
