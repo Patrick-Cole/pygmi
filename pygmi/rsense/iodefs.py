@@ -1694,10 +1694,31 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
 
     zipnames2 = [i for i in zipnames if i[-3:].lower() == 'tif']
 
+    # This section is to import the correct scale factors
+    # Pick first txt file since other should be readme.txt
+    header = [i for i in zipnames if '.txt' in i.lower()]
+
+    scale_vnir = 40.
+    scale_swir = 80.
+
+    if len(header) > 0:
+        hfile = header[0]
+
+        with open(os.path.join(idir, hfile)) as headerfile:
+            txt = headerfile.read()
+
+        txt = txt.split('\n')
+        scale_vnir = [i for i in txt if 'SCALING_FACTOR_VNIR' in i][0]
+        scale_swir = [i for i in txt if 'SCALING_FACTOR_SWIR' in i][0]
+
+        scale_vnir = float(scale_vnir.split(' = ')[-1])
+        scale_swir = float(scale_swir.split(' = ')[-1])
+
     showprocesslog('Importing Hyperion data...')
 
     nval = 0
     dat = []
+    maskall = None
     for ifile2 in piter(zipnames2):
         fext = ifile2.split('_')[1]
         bandno = int(fext[1:])
@@ -1719,6 +1740,11 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
 
         rtmp = dataset.read(1)
 
+        if bandno <= 70:
+            rtmp = rtmp / scale_vnir
+        else:
+            rtmp = rtmp / scale_swir
+
         dat.append(Data())
         dat[-1].data = rtmp
 
@@ -1727,6 +1753,11 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
         if dat[-1].data.mask.size == 1:
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
+
+        if maskall is None:
+            maskall = dat[-1].data.mask
+        else:
+            maskall = np.logical_and(maskall, dat[-1].data.mask)
 
         dat[-1].dataid = f'Band {bandno}: {wavelength[bandno-1]} nm'
         dat[-1].nodata = nval
@@ -1747,6 +1778,9 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
 
     if not dat:
         dat = None
+
+    for i in dat:
+        i.data.mask = maskall
 
     showprocesslog('Cleaning Extracted zip files...')
     for zfile in zipnames:

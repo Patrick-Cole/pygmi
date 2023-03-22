@@ -669,15 +669,13 @@ class ConditionIndices(BasicModule):
                                 'calculate.')
             return False
 
-        rlist = []
+        rlist2 = []
         if 'VCI' in rlist1 and 'EVI' in index:
-            rlist += [r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI']
+            rlist2 += [r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI']
         elif 'VCI' in rlist1 and 'NDVI' in index:
-            rlist += [r'(B3-B2)/(B3+B2) NDVI']
+            rlist2 += [r'(B3-B2)/(B3+B2) NDVI']
         elif 'VCI' in rlist1 and 'MSAVI2' in index:
-            rlist += [r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
-
-        # rlist = correct_bands(rlist, sensor)
+            rlist2 += [r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
 
         evi = []
         tci = []
@@ -726,6 +724,9 @@ class ConditionIndices(BasicModule):
                 for i in dat:
                     if i.dataid.split()[0] in wvlabels:
                         i.dataid = wvlabels[i.dataid.split()[0]]
+
+            bfile = os.path.basename(ifile)
+            rlist = correct_bands(rlist2, sensor, bfile)
 
             datsml = []
             for i in dat:
@@ -779,9 +780,9 @@ class ConditionIndices(BasicModule):
                     lst.append(i)
 
             # Calculate ratios
-            bfile = os.path.basename(ifile)
-            for i2 in self.piter(rlist):
-                i = correct_bands([i2], sensor, bfile)[0]
+            # bfile = os.path.basename(ifile)
+            for i in self.piter(rlist):
+                # i = correct_bands([i2], sensor, bfile)[0]
 
                 self.showprocesslog('Calculating '+i)
                 formula = i.split(' ')[0]
@@ -1256,8 +1257,7 @@ def _testfn2():
     import glob
     import matplotlib.pyplot as plt
 
-    ifiles = glob.glob(r'D:\VHI\*.tif')
-    # ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
+    ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1346,4 +1346,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

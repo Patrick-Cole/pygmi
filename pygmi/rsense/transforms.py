@@ -570,7 +570,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter, commonmask=True)
+    dat = lstack(dat, piter=piter, pprint=pprint, commonmask=True)
 
     for j in dat:
         x2d.append(j.data)
@@ -873,20 +873,21 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
 def _testfn():
     """Test routine."""
-    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     ncmps = 10
 
     dat = get_data(ifile, extscene='Hyperion')
 
-    pmnf, _ = mnf_calc(dat, ncmps=ncmps, noisetxt='')
+    pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
 
-    for i in [0, 5, 10, 13, 14, 15, 20, 25]:
+    for i, _ in enumerate(dat): #[0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
         vmin = dat[i].data.min()
 
         plt.figure(dpi=150)
         plt.title('█████████████████Old dat2 band'+str(i))
+        # plt.title(dat[i].dataid)
         plt.imshow(dat[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
@@ -965,4 +966,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn()
