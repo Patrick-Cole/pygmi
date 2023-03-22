@@ -121,7 +121,12 @@ class GraphMap(FigureCanvasQTAgg):
         ax1.plot(self.col, self.row, '+w')
 
         ax2 = self.figure.add_subplot(212)
-        prof = self.datarr[:, self.row, self.col]/self.refl
+
+        prof = []
+        for i in self.datarr:
+            prof.append(i[self.row, self.col])
+
+        prof = np.ma.stack(prof)/self.refl
 
         ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
         ax2.grid(True)
@@ -463,13 +468,10 @@ class AnalSpec(BasicModule):
         dat2 = []
         wvl = []
         for j in dat:
-            if self.chk_rot.isChecked():
-                dat2.append(j.data.T)
-            else:
-                dat2.append(j.data)
+            dat2.append(j.data)
             wvl.append(float(j.metadata['Raster']['wavelength']))
 
-        self.map.datarr = np.array(dat2)
+        self.map.datarr = dat2
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
@@ -1293,10 +1295,10 @@ def _testfn2():
     from pygmi.rsense.iodefs import get_data
     from pygmi.raster.dataprep import lstack
 
-    ifile = r'd:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
-    ifile = r"c:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    # ifile = r"c:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
-    data = get_data(ifile, extscene='Hyperion')
+    data = get_data(ifile)
 
     data = lstack(data)
 
