@@ -27,6 +27,9 @@ import json
 import sys
 import re
 import os
+import warnings
+
+warnings.filterwarnings('error')
 
 import numpy as np
 import numexpr as ne
@@ -352,7 +355,7 @@ class AnalSpec(BasicModule):
         ext = ('ENVI Spectral Library (*.sli)')
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
+            self.parent, 'Open File', '.', ext)
         if filename == '':
             return
 
@@ -463,7 +466,8 @@ class AnalSpec(BasicModule):
         dat = [i for _, i in sorted(zip(wavelengths, dat2))]
 
         if 'reflectance_scale_factor' in dat[0].metadata['Raster']:
-            self.map.refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
+            self.map.refl = float(
+                dat[0].metadata['Raster']['reflectance_scale_factor'])
 
         dat2 = []
         wvl = []
@@ -1018,12 +1022,14 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
 
         yhull = phull(yval)
         crem = yval/yhull
+
         imin = crem[i1a:i2a].argmin()
 
         if imin == 0 or imin == (i2a-i1a-1):
             dtmp[j] = 1. - crem[i1a:i2a][imin]
             ptmp[j] = xdat[i1a:i2a][imin]
             continue
+
         x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
 
         ptmp[j] = x
@@ -1062,6 +1068,9 @@ def cubic_calc(xdat, crem, imin):
     y2 = crem[imin]
     y3 = crem[imin+1]
 
+    x = x2
+    y = y2
+
     a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 +
           2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 +
           x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 -
@@ -1090,21 +1099,22 @@ def cubic_calc(xdat, crem, imin):
     d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
            x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
 
-    min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
-            -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+    if abs(d1) > 2.22e+16:
+        min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
+                -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+        for i in min1:
+            if x1 < i < x2:
+                x = i
+                y = a1+b1*x+c1*x**2+d1*x**3
 
-    min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
-            -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+    if abs(d2) > 2.22e+16:
+        min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
+                -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
 
-    for i in min1:
-        if x1 < i < x2:
-            x = i
-            y = a1+b1*x+c1*x**2+d1*x**3
-
-    for i in min2:
-        if x2 < i < x3:
-            x = i
-            y = a2+b2*x+c2*x**2+d2*x**3
+        for i in min2:
+            if x2 < i < x3:
+                x = i
+                y = a2+b2*x+c2*x**2+d2*x**3
 
     return x, y
 
@@ -1251,8 +1261,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r"d:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
-    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    # ifile = r"d:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
+    # ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
 
     xoff = 0
     yoff = 2000
@@ -1265,7 +1276,7 @@ def _testfn():
     iraster = None
 
     # data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data = get_data(ifile, extscene='Hyperion')
+    data = get_data(ifile)
 
     # data = get_raster(ifile, piter=pbar.iter)
 
@@ -1449,4 +1460,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
