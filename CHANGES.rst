@@ -4,6 +4,7 @@ Changelog
 
 v3.2.6.3, 27 March 2023
 -----------------------
+*Seisan import will not correct latitudes and longitudes to -180,180 and -90,90 
 *Fixed some errors in the minimum finding function.
 *Analyse spectra is more memory efficient
 *Sentinel 5P help updated
