@@ -924,7 +924,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Sesimology\collect1.out"
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Sesimology\collect2.out"
     tmp.settings(True)
 
     data = tmp.outdata['Seis']

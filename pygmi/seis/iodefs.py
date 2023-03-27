@@ -408,6 +408,11 @@ def read_record_type_1(i):
     tmp.type_of_magnitude_3 = i[75]
     tmp.magnitude_reporting_agency_3 = i[76:79]
 
+    # make sure coordinates have the correct range
+    tmp.longitude = ((tmp.longitude - 180) % 360) - 180
+    tmp.latitude = ((tmp.latitude - 90) % 180) - 90
+
+
     return tmp
 
 

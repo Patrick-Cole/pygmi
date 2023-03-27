@@ -2,8 +2,21 @@
 Changelog
 =========
 
-v3.2.6.2, 28 February 2023
---------------------------
+v3.2.6.3, 27 March 2023
+-----------------------
+*Fixed some errors in the minimum finding function.
+*Analyse spectra is more memory efficient
+*Sentinel 5P help updated
+*Hyperion import now imports to radiance.
+*Fixed a bug in condition indices
+*Progress bar for layer stack now displays correctly in mag inversion
+*Fixed a bug where RGB images would cause a crash in raster viewer or csv export in 3D modelling software.
+*MT occam has stdout redirected to main interface.
+*Inversion now uses weighted least squares regularization instead of Tikhonov (being depreciated in SimPEG)
+*Bugfix, fixed an null value bug in visibility and gradients
+*Fixed a possible bug with supervised classification and pandas
+*Fixed a bug causing modest_image code to break in Matplotlib 3.7
+*Fixed a bug causing a crash when reading a file's metadata only.
 *Disabled parallel processing in grvmag3d to stop a numba bug crashing PyGMI
 *Sentinel 5P import can now clip with shapefiles and allows a threshold parameter
 *Data merge function allows for more parameters.
