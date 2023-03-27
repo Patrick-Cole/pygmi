@@ -27,9 +27,6 @@ import json
 import sys
 import re
 import os
-import warnings
-
-warnings.filterwarnings('error')
 
 import numpy as np
 import numexpr as ne
