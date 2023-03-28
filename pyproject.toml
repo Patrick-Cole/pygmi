@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'pygmi'
+dynamic = ['version']
+authors = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
+description = 'Python Geoscience Modelling and Interpretation'
+readme = 'README.rst'
+requires-python = '>=3.7'
+license = {text = 'GNU General Public License v3 (GPLv3)'}
+keywords=['Geoscience', 'Geophysics', 'Magnetic', 'Gravity', 'Modelling',
+          'Interpretation', 'Remote Sensing']
+homepage = 'http://patrick-cole.github.io/pygmi/'
+documentation = 'https://patrick-cole.github.io/pygmi/wiki.html'
+repository =  'https://github.com/Patrick-Cole/pygmi/releases'
+
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Win32 (MS Windows)',
+    'Environment :: X11 Applications :: Qt',
+    'Intended Audience :: Education',
+    'Intended Audience :: End Users/Desktop',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Natural Language :: English',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX :: Linux',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering :: Mathematics',
+    'Topic :: Scientific/Engineering :: Physics',
+    'Topic :: Scientific/Engineering :: Image Processing',
+    'Topic :: Scientific/Engineering :: Visualization',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+
+dependencies = ['contextily',
+                'discretize',
+                'fiona',
+                'geopandas',
+                'llvmlite',
+                'matplotlib',
+                'mtpy',
+                'numba',
+                'numexpr',
+                'numpy',
+                'natsort',
+                'pandas',
+                'pillow',
+                'psutil',
+                'pyopengl',
+                'pyproj',
+                'PyQt5',
+                'pytest',
+                'rasterio',
+                'scikit-image',
+                'scikit-learn',
+                'scipy',
+                'shapely',
+                'SimPEG']
+
+[project.scripts]
+pygmi-cli = 'pygmi:main'
+
+[project.gui-scripts]
+pygmi-gui = 'pygmi:main'
+
+[tool.setuptools.packages.find]
+exclude=['docs', 'pygmi.cgs']
+
+[tool.setuptools.dynamic]
+version = {attr = 'pygmi.__version__'}

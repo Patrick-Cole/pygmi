@@ -6,4 +6,5 @@ include pygmi/mag/IGRF13.COF
 include pygmi/raster/gcs.csv
 include pygmi/raster/pcs.csv
 recursive-include pygmi *.py *.png *.ico *.html
+prune pygmi/cgs
 

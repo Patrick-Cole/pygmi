@@ -4,476 +4,475 @@ Changelog
 
 v3.2.6.3, 27 March 2023
 -----------------------
-*Seisan import will not correct latitudes and longitudes to -180,180 and -90,90 
-*Fixed some errors in the minimum finding function.
-*Analyse spectra is more memory efficient
-*Sentinel 5P help updated
-*Hyperion import now imports to radiance.
-*Fixed a bug in condition indices
-*Progress bar for layer stack now displays correctly in mag inversion
-*Fixed a bug where RGB images would cause a crash in raster viewer or csv export in 3D modelling software.
-*MT occam has stdout redirected to main interface.
-*Inversion now uses weighted least squares regularization instead of Tikhonov (being depreciated in SimPEG)
-*Bugfix, fixed an null value bug in visibility and gradients
-*Fixed a possible bug with supervised classification and pandas
-*Fixed a bug causing modest_image code to break in Matplotlib 3.7
-*Fixed a bug causing a crash when reading a file's metadata only.
-*Disabled parallel processing in grvmag3d to stop a numba bug crashing PyGMI
-*Sentinel 5P import can now clip with shapefiles and allows a threshold parameter
-*Data merge function allows for more parameters.
-*ASTER import loads projection in line with latest rasterio
-*Fixed bug in worldview data import using wrong date.
-*Fixed incorrect wavelength calculation for worldview
-*Mosaic now keeps wavelength information.
-*Added GeoEye to Worldview import
-*Ratios can uses worldview data with descriptive  dataid
-*Update to rasterio in igrf
-*Made some updates to API to move from gdal to rasterio
+* Seisan import will now correct latitudes and longitudes to -180,180 and -90,90
+* Fixed some errors in the minimum finding function.
+* Analyse spectra is more memory efficient
+* Sentinel 5P help updated
+* Hyperion import now imports to radiance.
+* Fixed a bug in condition indices
+* Progress bar for layer stack now displays correctly in mag inversion
+* Fixed a bug where RGB images would cause a crash in raster viewer or csv export in 3D modelling software.
+* MT occam has stdout redirected to main interface.
+* Inversion now uses weighted least squares regularization instead of Tikhonov (being depreciated in SimPEG)
+* Bugfix, fixed an null value bug in visibility and gradients
+* Fixed a possible bug with supervised classification and pandas
+* Fixed a bug causing modest_image code to break in Matplotlib 3.7
+* Fixed a bug causing a crash when reading a file's metadata only.
+* Disabled parallel processing in grvmag3d to stop a numba bug crashing PyGMI
+* Sentinel 5P import can now clip with shapefiles and allows a threshold parameter
+* Data merge function allows for more parameters.
+* ASTER import loads projection in line with latest rasterio
+* Fixed bug in worldview data import using wrong date.
+* Fixed incorrect wavelength calculation for worldview
+* Mosaic now keeps wavelength information.
+* Added GeoEye to Worldview import
+* Ratios can uses worldview data with descriptive  dataid
+* Update to rasterio in igrf
+* Made some updates to API to move from gdal to rasterio
 
 v3.2.6.0, 30 November 2022
 --------------------------
-*Updated SimPEG inversion calls according to the new API
-*Changed default mu to accommodate new api warning.
-*Fixed a speed issue with the scatter plot tool.
-*Replaced cm with colormaps because of Matplotlib API change
-*In API, added data merge
-*In API, added vmin and vmax calculation in data class
-*Modestimage can now generate sunshading from api call
-*Fixed a bug with the cursor size on 3D modelling
-*Update to help files
-*Bugfix - merge to median
-*Fixed bug with vmin and vmax setting
-*Bugfix - fixed a bug when deleting a dataset connected to the modeller, and then connecting new data  might cause a crash when re-entering the modeller.
-*PCA fit list bugfix
-*PCA - added fitting to list of files
-*Mosaic - changed mean option to median
-*Bugfix passing float instead of int
-*Condition indices now have a 'Landsat (All)' option
-*Expansion of raster merge capabilities for large files.
-*Get_data will try to regular import if Landsat import fails.
-*Fixed a bug when converting B3A in ratios
-*Changed label from Landsat Composite to Landsat Temporal Composite
-*API for import raster now allows bounds in coordinates
-*Raster file list now has an export option.
-*MNF and PCA calculations now accept remote sensing formats.
-*Added new ratio - NMDI
-*Ratios - improved calculations for round off error.
-*Ratios - added ability to use sentinel 8A
-*Added mean and standard deviation to equation editor for pixel mean and pixel standard deviation.
-*Added some tests to cluster.py
+* Updated SimPEG inversion calls according to the new API
+* Changed default mu to accommodate new api warning.
+* Fixed a speed issue with the scatter plot tool.
+* Replaced cm with colormaps because of Matplotlib API change
+* In API, added data merge
+* In API, added vmin and vmax calculation in data class
+* Modestimage can now generate sunshading from api call
+* Fixed a bug with the cursor size on 3D modelling
+* Update to help files
+* Bugfix - merge to median
+* Fixed bug with vmin and vmax setting
+* Bugfix - fixed a bug when deleting a dataset connected to the modeller, and then connecting new data  might cause a crash when re-entering the modeller.
+* PCA fit list bugfix
+* PCA - added fitting to list of files
+* Mosaic - changed mean option to median
+* Bugfix passing float instead of int
+* Condition indices now have a 'Landsat (All)' option
+* Expansion of raster merge capabilities for large files.
+* Get_data will try to regular import if Landsat import fails.
+* Fixed a bug when converting B3A in ratios
+* Changed label from Landsat Composite to Landsat Temporal Composite
+* API for import raster now allows bounds in coordinates
+* Raster file list now has an export option.
+* MNF and PCA calculations now accept remote sensing formats.
+* Added new ratio - NMDI
+* Ratios - improved calculations for round off error.
+* Ratios - added ability to use sentinel 8A
+* Added mean and standard deviation to equation editor for pixel mean and pixel standard deviation.
+* Added some tests to cluster.py
 
 v3.2.5.12, 24 August 2022
 -------------------------
-*Fixed a bug where gravity profiles exported from the 3D model had incorrect values.
-*Raster import can now import multiple files at once.
-*Fixed a bug where a crash occurred when sun shading was deselected.
+* Fixed a bug where gravity profiles exported from the 3D model had incorrect values.
+* Raster import can now import multiple files at once.
+* Fixed a bug where a crash occurred when sun shading was deselected.
 
 v3.2.5.9, 21 July 2022
 ----------------------
-*Removed GeoTIFF ZSTD export due to library issues.
-*Updates to help files.
-*Fixed spelling mistakes.
-*Removed redundant code.
-*Bugfix, scrollbars now match on main interface.
-*Bugfix, MNF forward transform bands now labelled correctly.
-*MNF and PCA will now output correct number of bands on inverse transform.
-*Band ratios and condition indices now includes Landsat 9 data.
-*Worldview Pan tile import bug fixed.
-*Worldview data import sped up.
-*Bugfix for crash when no land surface temperature data in condition indices.
-*Satellite import now sorts bands
-*Sentinel-2 import states band resolution to avoid duplicate band names.
-*Added a button to reset the light, so light direction is reset to new rotation.
-*MT edit EDI no longer crashes due to an error in the resize event.
-*Fixed a bug where Birch cluster analysis needed c-contiguous arrays.
-*Fixed a bug where some data entry points disappeared.
-*Crash in gradients fixed.
-*Ternary images can now display full histograms.
-*AGC test added
-*Thgrad test added
-*Vertical test added.
-*Landsat composite now allows for the target date to be manually set.
-*Small updates to code and comments.
-*Inversion tests
-*Bugfix for cursor width and height not being integers
-*Observed data minimum is now correct in pfmod, if null values are present.
-*In lstack, if masterid is True, and dxy is not null, dxy value will now be used.
-*Magnetic inversion now allows for custom numbers of classes.
-*Bugfix to mean mosaic
-*Fixed bug mosaicing with different nodata and dtype values.
-*Added Landsat composite
-*Layer stacking now checks extents in addition to rows and columns
-*Bugfix - spinbox setvalue now an integer.
-*MNF forward transform now allows custom number of components
-*Band sorting can be disabled for RGB images
-*Explained variance ratio added to PCA band names.
-*PCA added
-*Fixed bug where ternary images were showing strange colors when data was clipped
-*Raster Export will now sort the output bands, so that satellite data is in order.
-*Bugfix, RTP now puts projection into output.
-*Clustering is more memory efficient.
-*Mini batch k-means has been added.
-*New aster ratio added.
-*Sentinel-2 zip files are now accepted in batch processing
-*Cut raster will use first overlapping polygon in a multipolygon
-*Some MultiPolygon support has been added.
-*Fixed a bug which caused a crash if the text progressbar activates in a windows console.
-*Added 7/5, 6/2 and 7/3 Landsat 8 ratios to band ratio tool
-*Sentinel data is now recognized in the batch import by S2A and S2B prefixes.
-*Merge data will now merge based on shifting the last data to the mean overlap value.
+* Removed GeoTIFF ZSTD export due to library issues.
+* Updates to help files.
+* Fixed spelling mistakes.
+* Removed redundant code.
+* Bugfix, scrollbars now match on main interface.
+* Bugfix, MNF forward transform bands now labelled correctly.
+* MNF and PCA will now output correct number of bands on inverse transform.
+* Band ratios and condition indices now includes Landsat 9 data.
+* Worldview Pan tile import bug fixed.
+* Worldview data import sped up.
+* Bugfix for crash when no land surface temperature data in condition indices.
+* Satellite import now sorts bands
+* Sentinel-2 import states band resolution to avoid duplicate band names.
+* Added a button to reset the light, so light direction is reset to new rotation.
+* MT edit EDI no longer crashes due to an error in the resize event.
+* Fixed a bug where Birch cluster analysis needed c-contiguous arrays.
+* Fixed a bug where some data entry points disappeared.
+* Crash in gradients fixed.
+* Ternary images can now display full histograms.
+* AGC test added
+* Thgrad test added
+* Vertical test added.
+* Landsat composite now allows for the target date to be manually set.
+* Small updates to code and comments.
+* Inversion tests
+* Bugfix for cursor width and height not being integers
+* Observed data minimum is now correct in pfmod, if null values are present.
+* In lstack, if masterid is True, and dxy is not null, dxy value will now be used.
+* Magnetic inversion now allows for custom numbers of classes.
+* Bugfix to mean mosaic
+* Fixed bug mosaicing with different nodata and dtype values.
+* Added Landsat composite
+* Layer stacking now checks extents in addition to rows and columns
+* Bugfix - spinbox setvalue now an integer.
+* MNF forward transform now allows custom number of components
+* Band sorting can be disabled for RGB images
+* Explained variance ratio added to PCA band names.
+* PCA added
+* Fixed bug where ternary images were showing strange colors when data was clipped
+* Raster Export will now sort the output bands, so that satellite data is in order.
+* Bugfix, RTP now puts projection into output.
+* Clustering is more memory efficient.
+* Mini batch k-means has been added.
+* New aster ratio added.
+* Sentinel-2 zip files are now accepted in batch processing
+* Cut raster will use first overlapping polygon in a multipolygon
+* Some MultiPolygon support has been added.
+* Fixed a bug which caused a crash if the text progressbar activates in a windows console.
+* Added 7/5, 6/2 and 7/3 Landsat 8 ratios to band ratio tool
+* Sentinel data is now recognized in the batch import by S2A and S2B prefixes.
+* Merge data will now merge based on shifting the last data to the mean overlap value.
 
 v3.2.5.2, 22 April 2022
 -----------------------
-*Fixed a nodata value problem with magnetic inversion.
-*Fixed the import of some MODIS data types
-*Fixed a crash which occurs in seismology QA, when no data is found.
-*Changed the x labels to vertical orientation, to fit more in.
-*Bugfix to remove nodata from inversion.
-*Fixed a bug where 'Other' datasets were not included in a model merge, causing a crash
-*Fixed a bug where static shift was incorrectly applied when applying to all stations
-*Fixed bad reference to wkt in pfmod
-*Fixed a bug where null values could cause artifacts for second order tilt angle
-*Exploration seismics viewer removed.
-*All classes are now shown after loading a shapefile for supervised classification.
-*Gridding will now apply a blanking distance for all methods.
-*Fixed a bug causing a crash when using cut vector
-*Fixed bug where rows and columns displayed were zero on startup, with some data.
-*Hexbin plot will add data units, if defined.
-*Visibility now accepts windows from 5 an up only.
-*AGC has some null value issues fixed.
-*Batch file import and related condition index and ratio calculations now support  normal raster imports
-*Landsat import bugfix.
-*Ratio bugfix
-*Masks will be taken only from bands used in ratio
-*Added support for WV-3 and WV-2 tile import, as well as in ratios.
-*Updated Magnetic inversion.
-*Added magnetic inversion via the SimPEG library
-
-*Added support for Landsat 9.
-*Fixed a bug causing supervised classification to crash
-*Gravity processing will now calculate drift based on datetime, and not on the order found in CG-5 file.
-*GMT import now added to raster file imports
-*Reproject will use specified input projection, as opposed to what was defined in the input data.
-*Give more information for gravity drift
-*A local projection is now assigned to datasets without a projection, to avoid errors later.
-*Fixed a bug displaying too much information on Line Map.
-*Data export now adds statistics for ease of use in ArcGIS
-*Fixed misinterpretation of unicode strings in line data.
-*Added encoding to open statements
-*Layer stacking (API) now allows a master dataset to which all other layers are clipped.
-*Modelling will not correctly use the dem
-*Added space delimited text files
-*Fixed a bug causing vector reprojection to crash.
-*Long projection information will now wrap correctly
-*ENVI data import now correctly stores fwhm information
-*Correlation graph now has a color bar and improved numbering
-*2d correlation coefficient will now corrected take into account layers with differing mask.
-*Text will use complementary colors.
-*Layer stacking will us a common data type when data types of input bands are mixed.
-*Raster image display defaults to no interpolation to avoid incorrect interpolation of null values.
-*Modis import now import LULC layer.
-*Modis import update
-*Condition index now used a common mask between datasets, to avoid edge effects.
-*A null value of 1e=20 is also enforced.
-*Landsat level 2 science product images now convert DN to reflectance.
-*Condition indices have been moved to a new module, and the calculation has been corrected.
-*Equation editor now ensures that the output data type is the same as the input data type.
-*Bugfix - fixed a bug where the ratio list was not displaying on startup.
-*Updated error messages where no raster datasets are connected to a module or where there is no projection.
-*Bug fixed where analyze spectra could tried to create spectra outside of the image.
-*ASTER, Landsat and Sentinel-2 now store wavelength information properly
-*Analyze spectra will sort spectra beforehand, and advise stacking when necessary
-*Corrected wavelengths on hyperion import
-*Added support for Hyperion L1T data
+* Fixed a nodata value problem with magnetic inversion.
+* Fixed the import of some MODIS data types
+* Fixed a crash which occurs in seismology QA, when no data is found.
+* Changed the x labels to vertical orientation, to fit more in.
+* Bugfix to remove nodata from inversion.
+* Fixed a bug where 'Other' datasets were not included in a model merge, causing a crash
+* Fixed a bug where static shift was incorrectly applied when applying to all stations
+* Fixed bad reference to wkt in pfmod
+* Fixed a bug where null values could cause artifacts for second order tilt angle
+* Exploration seismics viewer removed.
+* All classes are now shown after loading a shapefile for supervised classification.
+* Gridding will now apply a blanking distance for all methods.
+* Fixed a bug causing a crash when using cut vector
+* Fixed bug where rows and columns displayed were zero on startup, with some data.
+* Hexbin plot will add data units, if defined.
+* Visibility now accepts windows from 5 an up only.
+* AGC has some null value issues fixed.
+* Batch file import and related condition index and ratio calculations now support  normal raster imports
+* Landsat import bugfix.
+* Ratio bugfix
+* Masks will be taken only from bands used in ratio
+* Added support for WV-3 and WV-2 tile import, as well as in ratios.
+* Updated Magnetic inversion.
+* Added magnetic inversion via the SimPEG library
+* Added support for Landsat 9.
+* Fixed a bug causing supervised classification to crash
+* Gravity processing will now calculate drift based on datetime, and not on the order found in CG-5 file.
+* GMT import now added to raster file imports
+* Reproject will use specified input projection, as opposed to what was defined in the input data.
+* Give more information for gravity drift
+* A local projection is now assigned to datasets without a projection, to avoid errors later.
+* Fixed a bug displaying too much information on Line Map.
+* Data export now adds statistics for ease of use in ArcGIS
+* Fixed misinterpretation of unicode strings in line data.
+* Added encoding to open statements
+* Layer stacking (API) now allows a master dataset to which all other layers are clipped.
+* Modelling will not correctly use the dem
+* Added space delimited text files
+* Fixed a bug causing vector reprojection to crash.
+* Long projection information will now wrap correctly
+* ENVI data import now correctly stores fwhm information
+* Correlation graph now has a color bar and improved numbering
+* 2d correlation coefficient will now corrected take into account layers with differing mask.
+* Text will use complementary colors.
+* Layer stacking will us a common data type when data types of input bands are mixed.
+* Raster image display defaults to no interpolation to avoid incorrect interpolation of null values.
+* Modis import now import LULC layer.
+* Modis import update
+* Condition index now used a common mask between datasets, to avoid edge effects.
+* A null value of 1e=20 is also enforced.
+* Landsat level 2 science product images now convert DN to reflectance.
+* Condition indices have been moved to a new module, and the calculation has been corrected.
+* Equation editor now ensures that the output data type is the same as the input data type.
+* Bugfix - fixed a bug where the ratio list was not displaying on startup.
+* Updated error messages where no raster datasets are connected to a module or where there is no projection.
+* Bug fixed where analyze spectra could tried to create spectra outside of the image.
+* ASTER, Landsat and Sentinel-2 now store wavelength information properly
+* Analyze spectra will sort spectra beforehand, and advise stacking when necessary
+* Corrected wavelengths on hyperion import
+* Added support for Hyperion L1T data
 
 v3.2.4.5, 14 January 2022
 -------------------------
-*Added a warning if data has no projection
-*Fixed a bug where the hyperbolic tilt angle had an invalid mask
-*Fixed a bug where pressing 'OK' in display metadata caused a crash.
+* Added a warning if data has no projection
+* Fixed a bug where the hyperbolic tilt angle had an invalid mask
+* Fixed a bug where pressing 'OK' in display metadata caused a crash.
 
 v3.2.4.4, 13 January 2022
 -------------------------
-*Minor bugfix for surfer 7 export
-*Layer stacking will now give an error if input data has no projection.
-*Fixed a bug in RTP where nan were generated in FFT preparation, resulting in no output.
-*ZSTD compression option added for exporting GeoTiffs
-*Surfer 7 export now replaces surfer 6 export.
-*Fixed a bug where ASTER hdf was not correctly retrieving coordinates.
-*Added longitude and latitude labels to plots, where necessary
-*Added code to convert PolygonZ to polygon type when cutting out a raster
-*Get raster now allows the nodata value to be specified
-*Amended f2160 feature
-*Fixed a bug where layer stacking with common mask changed the nodata value in a dataset to 1e+20
-*Added VCU calculation for Sentinel-2
-*Added invert selection to ratio dialog.
+* Minor bugfix for surfer 7 export
+* Layer stacking will now give an error if input data has no projection.
+* Fixed a bug in RTP where nan were generated in FFT preparation, resulting in no output.
+* ZSTD compression option added for exporting GeoTiffs
+* Surfer 7 export now replaces surfer 6 export.
+* Fixed a bug where ASTER hdf was not correctly retrieving coordinates.
+* Added longitude and latitude labels to plots, where necessary
+* Added code to convert PolygonZ to polygon type when cutting out a raster
+* Get raster now allows the nodata value to be specified
+* Amended f2160 feature
+* Fixed a bug where layer stacking with common mask changed the nodata value in a dataset to 1e+20
+* Added VCU calculation for Sentinel-2
+* Added invert selection to ratio dialog.
 
 v3.2.4.2, 03 November 2021
 --------------------------
-*Bugfix to model saving for changes
-*PyGMI now allows a user to continue from where they left off in 3D calculations
-*Fixed some bugs with new ratio calculations
-*Added VCI, EVI, TCI, VHI to ratios
-*Added EVI calculation for ratios
-*Fixed a bug with 3D model profile resizing.
-*Added code for nodata being wrong type
-*Added code when importing old models, to make grids more compatible
-*Bugfix for RGB images
-*Added option to filter out values less than 1 if final product is a ratio.
-*Fixed bugs caused by rasterio to 3D modelling
-*Fixed a bug with AGC grid boundary.
-*Fixed a bug importing 3D models
-*Changed clip percentage labels
-*Changed raster data interpretation to raster data display.
-*Updated sentinel 5p to rasterio
-*Update to raster cutting using polygons
-*Multiple profiles can be extracted from raster.
-*Sentinel-2 bugfix
-*Fixed some bugs with testing routines
-*Added import of ASTER GED data
-*Update ASTER import
-*Fixed a bug with reprojection when the input data has no projection
-*Updated modis, landsat and sentinel2 to rasterio
-*Changed  Data.nullvalue to Data.nodata
-*Fixed a bug with nodata values in new reprojection tool
-*Updated cut_raster to rasterio
-*Rasterio updates
-*Fixed masking on some ratios
-*Fixed new export to raster projection issue
+* Bugfix to model saving for changes
+* PyGMI now allows a user to continue from where they left off in 3D calculations
+* Fixed some bugs with new ratio calculations
+* Added VCI, EVI, TCI, VHI to ratios
+* Added EVI calculation for ratios
+* Fixed a bug with 3D model profile resizing.
+* Added code for nodata being wrong type
+* Added code when importing old models, to make grids more compatible
+* Bugfix for RGB images
+* Added option to filter out values less than 1 if final product is a ratio.
+* Fixed bugs caused by rasterio to 3D modelling
+* Fixed a bug with AGC grid boundary.
+* Fixed a bug importing 3D models
+* Changed clip percentage labels
+* Changed raster data interpretation to raster data display.
+* Updated sentinel 5p to rasterio
+* Update to raster cutting using polygons
+* Multiple profiles can be extracted from raster.
+* Sentinel-2 bugfix
+* Fixed some bugs with testing routines
+* Added import of ASTER GED data
+* Update ASTER import
+* Fixed a bug with reprojection when the input data has no projection
+* Updated modis, landsat and sentinel2 to rasterio
+* Changed  Data.nullvalue to Data.nodata
+* Fixed a bug with nodata values in new reprojection tool
+* Updated cut_raster to rasterio
+* Rasterio updates
+* Fixed masking on some ratios
+* Fixed new export to raster projection issue
 
 v3.2.4.1, 20 September 2021
 ---------------------------
-*Fixed a bug where layerstack was not loading properly.
+* Fixed a bug where layerstack was not loading properly.
 
 v3.2.4.0, 17 September 2021
 ---------------------------
-*Fixed bug with new IGRF data correction.
-*Minor bugs
-*Fixed a bug in merge tool when * is in band name
-*Scatterplot tool displays classes using discrete colorbar.
-*Membership maps now display between 0 and 1 only.
-*Ginterp now includes membership data.
-*Copy.copy has been converted to copy.deepcopy in some instances.
-*Merge/mosaic now writes to disk to avoid memory slow downs.
-*Fixed bug where masks could eliminate data for classification, if no data at that point in another layer.
-*Fixed a bug on exiting mosaic
-*Added a warning if no feature found in process fetures.
-*Fixed a bug with importing xyz models, not having background.
-*Comment corrections for headings
-*Faster calculation of std dev in standard raster display.
-*Large update to speed for ginterp with big images.
-*Added projection information to Sentinel  5P import.
-*Z value on  graphs fixed
-*Fixed some problems with modis import
-*Fixed geosoft xyz import
-*Fixed a bug in minc
-*Bugfix for display of z values when zoomed into raster modest image
-*Memory for MNF reduced on 1 step
-*Fixed bug with min and max merging
-*Merge tool has new options
-*Improved detection of minimum feature value.
-*IGRF code modified to allow for API calls and calculate faster
-*Batch export from process features now describes the mineral in the file name.
-*Updated help and option description.
-*Bugfix merge tool
-*Export raster will now export wavelengths and fwhm to ENVI, if present
-*Update to MNF help
-*MNF memory problem bugfix
-*Added MNF
-*Minimum curvature bugfix
-*Process features bug
-*Fixed a bug when importing bil files with nan values
-*Update processing features to allow for feature depth thresholds
-*Process features can now have new features added in features.py
-*Raster export will export wavelengths and reflectance scale factors, if available.
-*Any routine using hull removal is significantly faster, (e.g. feature processing)
-*Merge has been renames layer stack.
-*New merge module added to merge adjacent datasets (from rasterio)
-*Added text progressbars to all classes where necessary (for testing)
-*Merging can now have a common mask for all bands.
-*Scipy nearest neighbour replaces quickgrid, linear and cubic options added to gridding as well as minimum curvature
-*Fixed issue with merge assigning wrong nullvalue
-*Change to output IGRF bands only.
-*Added resampling of dtm to match magnetic data.
-*Fixed a bug when exporting geotiffs from ginterp.py
-*Allows for datatype to be set, eg to uint8.
-*Add sentinel 2 zip file functionality
-*Added an import for Sentinel 2 data, with bands only
-*Added AGC
-*Fixed a labelling bug after merge
-*Adds lower and upper clip functionality as well as display of clip values to histogram.
-*Added total horizontal gradient
+* Fixed bug with new IGRF data correction.
+* Minor bugs
+* Fixed a bug in merge tool when *  is in band name
+* Scatterplot tool displays classes using discrete colorbar.
+* Membership maps now display between 0 and 1 only.
+* Ginterp now includes membership data.
+* Copy.copy has been converted to copy.deepcopy in some instances.
+* Merge/mosaic now writes to disk to avoid memory slow downs.
+* Fixed bug where masks could eliminate data for classification, if no data at that point in another layer.
+* Fixed a bug on exiting mosaic
+* Added a warning if no feature found in process fetures.
+* Fixed a bug with importing xyz models, not having background.
+* Comment corrections for headings
+* Faster calculation of std dev in standard raster display.
+* Large update to speed for ginterp with big images.
+* Added projection information to Sentinel  5P import.
+* Z value on  graphs fixed
+* Fixed some problems with modis import
+* Fixed geosoft xyz import
+* Fixed a bug in minc
+* Bugfix for display of z values when zoomed into raster modest image
+* Memory for MNF reduced on 1 step
+* Fixed bug with min and max merging
+* Merge tool has new options
+* Improved detection of minimum feature value.
+* IGRF code modified to allow for API calls and calculate faster
+* Batch export from process features now describes the mineral in the file name.
+* Updated help and option description.
+* Bugfix merge tool
+* Export raster will now export wavelengths and fwhm to ENVI, if present
+* Update to MNF help
+* MNF memory problem bugfix
+* Added MNF
+* Minimum curvature bugfix
+* Process features bug
+* Fixed a bug when importing bil files with nan values
+* Update processing features to allow for feature depth thresholds
+* Process features can now have new features added in features.py
+* Raster export will export wavelengths and reflectance scale factors, if available.
+* Any routine using hull removal is significantly faster, (e.g. feature processing)
+* Merge has been renames layer stack.
+* New merge module added to merge adjacent datasets (from rasterio)
+* Added text progressbars to all classes where necessary (for testing)
+* Merging can now have a common mask for all bands.
+* Scipy nearest neighbour replaces quickgrid, linear and cubic options added to gridding as well as minimum curvature
+* Fixed issue with merge assigning wrong nullvalue
+* Change to output IGRF bands only.
+* Added resampling of dtm to match magnetic data.
+* Fixed a bug when exporting geotiffs from ginterp.py
+* Allows for datatype to be set, eg to uint8.
+* Add sentinel 2 zip file functionality
+* Added an import for Sentinel 2 data, with bands only
+* Added AGC
+* Fixed a labelling bug after merge
+* Adds lower and upper clip functionality as well as display of clip values to histogram.
+* Added total horizontal gradient
 
 v3.2.3.0, 01 June 2021
 ----------------------
-*Cluster - reports when no classes are found.
-*Segmentation - now has DBSCAN for grouping segments
-*Raster cut - will give a better error when the polygon is not overlapping the data
-*Added *.tiff as opposed to *.tif to imports
-*Fixed some display bugs with ginterp.
-*Fixed a big with integer datasets when smoothing
-*Fixed an issue where projection information was not save in supervised classification results
-*Started to use modest_image for some of the raster image displays
-*Fixed a bug on analyze spectra causing scale problems
-*Calculate metrics now allows for saving of metrics to excel
-*Fixed bug importing some class shapefiles
-*Fixed a bug causing ratios to break when using sentinel 2 data.
-*Fixed an issue causing some dataset units to be imported incorrectly
-*Import wavelengths for ASTER and Landsat data
-*Merge tool will now have progress bar when use in export.
-*S2 data will store wavelengths for use in ArcGIS
-*Remove commas from remote sensing band names to ensure ESRI compatibility
-*Vector reprojection now warns if inf values are output.
-*Change hexbin colormap to inferno
-*Added colormaps to show raster and show surface
-*Set histogram number of bins to 'sqrt' as opposed to a fixed 50 bins.
-*Simplified ENVI import
-*Added log option for y-axis of histogram.
-*Added export for SEISAN to xlsx and shp
-*Bugfix - fixed a bug displaying some point vector data.
-*Seismology - to beachball plot import and b value calculation
-*Updates to spelling and help files
-*Updates QC graphs to take into account weight 9 for record type 4
-*Fixed bugs importing some thermal aster data and L1T data
-*Hyperspectral analysis tool.
-*Project load bugfix
-*Added spectral interpretation tool.
-*Changed mosaic in equation editor to overlay grids.
-*Progress bar bugfix for RTP
-*Added 2.5 stddev to quick raster display.
-*Outlines of all polygons now remain on the map.
-*Confusion matrix display now has appropriate labels.
-*Shapefiles save and load class names
-*Fixed a bug which caused supervised classification to crash if a class was empty
-*Added equal area rose diagrams
-*Code to make sure only ENVI, ERS and EHdr  can use BIL routine
-*Added faster import for BIL binary files. (i.e. ENVI and ER Mapper)
-*Added drift rate curve to gravity QC
-*MT tipper graphs added
+* Cluster - reports when no classes are found.
+* Segmentation - now has DBSCAN for grouping segments
+* Raster cut - will give a better error when the polygon is not overlapping the data
+* Added *.tiff as opposed to * .tif to imports
+* Fixed some display bugs with ginterp.
+* Fixed a big with integer datasets when smoothing
+* Fixed an issue where projection information was not save in supervised classification results
+* Started to use modest_image for some of the raster image displays
+* Fixed a bug on analyze spectra causing scale problems
+* Calculate metrics now allows for saving of metrics to excel
+* Fixed bug importing some class shapefiles
+* Fixed a bug causing ratios to break when using sentinel 2 data.
+* Fixed an issue causing some dataset units to be imported incorrectly
+* Import wavelengths for ASTER and Landsat data
+* Merge tool will now have progress bar when use in export.
+* S2 data will store wavelengths for use in ArcGIS
+* Remove commas from remote sensing band names to ensure ESRI compatibility
+* Vector reprojection now warns if inf values are output.
+* Change hexbin colormap to inferno
+* Added colormaps to show raster and show surface
+* Set histogram number of bins to 'sqrt' as opposed to a fixed 50 bins.
+* Simplified ENVI import
+* Added log option for y-axis of histogram.
+* Added export for SEISAN to xlsx and shp
+* Bugfix - fixed a bug displaying some point vector data.
+* Seismology - to beachball plot import and b value calculation
+* Updates to spelling and help files
+* Updates QC graphs to take into account weight 9 for record type 4
+* Fixed bugs importing some thermal aster data and L1T data
+* Hyperspectral analysis tool.
+* Project load bugfix
+* Added spectral interpretation tool.
+* Changed mosaic in equation editor to overlay grids.
+* Progress bar bugfix for RTP
+* Added 2.5 stddev to quick raster display.
+* Outlines of all polygons now remain on the map.
+* Confusion matrix display now has appropriate labels.
+* Shapefiles save and load class names
+* Fixed a bug which caused supervised classification to crash if a class was empty
+* Added equal area rose diagrams
+* Code to make sure only ENVI, ERS and EHdr  can use BIL routine
+* Added faster import for BIL binary files. (i.e. ENVI and ER Mapper)
+* Added drift rate curve to gravity QC
+* MT tipper graphs added
 
 v3.2.2.4, 20 November 2020
 --------------------------
-*Fixed library installer problem in windows installer.
-*Added features to numpy_to_pygmi for convenience.
-*Added shapefile functionality to vector reprojection.
-*Update get raster to read sections of files.
+* Fixed library installer problem in windows installer.
+* Added features to numpy_to_pygmi for convenience.
+* Added shapefile functionality to vector reprojection.
+* Update get raster to read sections of files.
 
 v3.2.2.3, 10 November 2020
 --------------------------
-*Geophysical interpretation resizes window smoother.
-*Merge/resize tool will fill null values after resize.
-*Improved geophysics interpretation tool.
-*Fixed a bug where in some cases residual plots did not display data
-*Fixed a bug preventing PyGMI from running in Linux.
-*Updated install instructions for Anaconda
-*Export gdal routines now uses the progress bar
-*Fixed a bug preventing sentinel-2 data imported from ENVI files from having ratios calculated.
-*Geotiff output now has correct band names, especially for ternary images.
-*Fixed some bugs with showprocesslog calls
-*Updated ratios to accept data labelled Band 1, Band 2 etc using raster import.
-*For supervised classification, zoom tool and panning will no longer create polygon points
-*Fixed a bug in supervised classification where first point of new poly was on top left corner of grid.
-*Fixed a bug where only the edge of a polygon was used in class definitions
-*Reverted graph tool to plotting maps with matplotlib library instead of modestimage, because of bugs in zooming.
-*Custom profile will now show beginning and end of user coords as a +
-*Bugfix causing profiles with directions greater than 90 degrees to not work.
-*Added automatic detection of some x and y columns.
-*Made a change to gravity import allowing for e,w,s,n, in gps coords
-*Fixed some matplotlib issues due to API changes.
-*Changed method to call cm in Matplotlib
-*Changed library calls for matplotlib to be more compatible with pylint
-*Stopped using picker due to future matplotlib depreciation.
-*Fixed resize for picked features on line profile
-*Stopped redirecting stdout globally in favor of a more elegant approach
-*Fixed a scaling bug when viewing SEG-Y data.
-*Sentinel-2 import now divides DN by 10000
-*Comment update
-*Update to modis v6 import
-*TDEM additions
-*MODIS16 import
-*Change detection viewer now saves gif animations.
-*Changed FFT preparation padding to use a mach faster routine taking into account null values.
-*Added more bins for linear stretch in interpretation module.
-*Changed band labels for sentinel 2 import.
-*Added text toolbar class.
-*Added alpha channel support to RGB import.
+* Geophysical interpretation resizes window smoother.
+* Merge/resize tool will fill null values after resize.
+* Improved geophysics interpretation tool.
+* Fixed a bug where in some cases residual plots did not display data
+* Fixed a bug preventing PyGMI from running in Linux.
+* Updated install instructions for Anaconda
+* Export gdal routines now uses the progress bar
+* Fixed a bug preventing sentinel-2 data imported from ENVI files from having ratios calculated.
+* Geotiff output now has correct band names, especially for ternary images.
+* Fixed some bugs with showprocesslog calls
+* Updated ratios to accept data labelled Band 1, Band 2 etc using raster import.
+* For supervised classification, zoom tool and panning will no longer create polygon points
+* Fixed a bug in supervised classification where first point of new poly was on top left corner of grid.
+* Fixed a bug where only the edge of a polygon was used in class definitions
+* Reverted graph tool to plotting maps with matplotlib library instead of modestimage, because of bugs in zooming.
+* Custom profile will now show beginning and end of user coords as a +
+* Bugfix causing profiles with directions greater than 90 degrees to not work.
+* Added automatic detection of some x and y columns.
+* Made a change to gravity import allowing for e,w,s,n, in gps coords
+* Fixed some matplotlib issues due to API changes.
+* Changed method to call cm in Matplotlib
+* Changed library calls for matplotlib to be more compatible with pylint
+* Stopped using picker due to future matplotlib depreciation.
+* Fixed resize for picked features on line profile
+* Stopped redirecting stdout globally in favor of a more elegant approach
+* Fixed a scaling bug when viewing SEG-Y data.
+* Sentinel-2 import now divides DN by 10000
+* Comment update
+* Update to modis v6 import
+* TDEM additions
+* MODIS16 import
+* Change detection viewer now saves gif animations.
+* Changed FFT preparation padding to use a mach faster routine taking into account null values.
+* Added more bins for linear stretch in interpretation module.
+* Changed band labels for sentinel 2 import.
+* Added text toolbar class.
+* Added alpha channel support to RGB import.
 
 v3.2.1.1, 05 August 2020
 ----------------------
-*Added 99% linear stretch to geophysical interp.
-*Created a magnetic menu for modules which are magnetic only.
-*Updated more graphs to have thousands separator.
-*Updated modelling to allow for data grids with only one column.
-*Fixed extents issue with gridding data.
-*Fixes an issue if there is missing geometry in a shapefile.
-*Fixed some issues with axis labels on graphs
-*Fixed a bug causing incorrect stats for supervised classification if null values were in the dataset.
-*Added comma as thousands separator for raster and vector graphs
-*Added upward and downward continuation.
-*Added general orders to vertical derivative functions
-*Fixed a bug exporting null values for 32 bit float datasets.
-*Fixed a recent bug preventing saving of data from geophysical interpretation tool
-*Added units for some remote sensing imports (sentinel-2 and aster)
-*Added modest_image support for display raster option
-*Fixed a bug causing a crash in interpretation tool when receiving results from cluster analysis
-*Added crisp and fuzzy cluster analysis settings
-*Added image segmentation settings
-*Added export for shapefiles
-*Added saved proj settings for cluster analysis
-*Added color to point shapefile display
-*Fixed a bug displaying incorrect utm values in EDI metadata
-*Fixed the message displayed from DBSCAN cluster analysis
-*Fixed a bug causing cut vector files to not be plotted.
-*Fixed bug in band select
-*Fixed a bug exporting saga data, when dataset had multiple bands
-*Reorganised code.
-*Updates to project save.
-*Added project save and load.
-*Will save workflow but only certain modules have settings saved at this stage.
-*Delete key now deletes arrows or items
-*Tests updated to reflect recent fixes.
-*File imports will display filename in information
-*Band ratio labels replace divide sign with div, for ESRI compatibility
-*Bugfixes in ratio import with a single file.
-*Data class will store the filename of the dataset imported.
-*Changed description on surfer grids.
-*Fixed a bug which occurs for some padding of RTP datasets
-*Fixed a bug in RTP calculation
-*Alpha version of ratios
-*Fixed a bug where PyGMI would crash when double clicking on an arrow.
-*Added a mosaic function to the equation editor, for a simple mosaic of two datasets.
-*Moved importing of remote sensing data to remote sensing menu.
-*Started work on a ratio function (remote sensing), with batch capabilities
-*Undo custom window size
-*Added import for sentinel 5P data
-*Fixed bug which reset last lithology whenever background layer has changes applied.
-*Changes will no longer be applied automatically
-*Bugfix, profile add
-*Custom profile now correctly deletes, and reports if it is outside the model area
-*Fixed a bug with drawing lines.
-*Added save complete when saving model in modelling interface.
-*Fixed the odd sizing of the cursor, and related drawing of lithologies.
-*Improved listboxes for modelling and 3D display
-*Fixed an issue where a custom profile image was not being saved with a 3D model
-*Fixed a bug when reimporting a model with rgb image inside it.
-*Updated readme files
+* Added 99% linear stretch to geophysical interp.
+* Created a magnetic menu for modules which are magnetic only.
+* Updated more graphs to have thousands separator.
+* Updated modelling to allow for data grids with only one column.
+* Fixed extents issue with gridding data.
+* Fixes an issue if there is missing geometry in a shapefile.
+* Fixed some issues with axis labels on graphs
+* Fixed a bug causing incorrect stats for supervised classification if null values were in the dataset.
+* Added comma as thousands separator for raster and vector graphs
+* Added upward and downward continuation.
+* Added general orders to vertical derivative functions
+* Fixed a bug exporting null values for 32 bit float datasets.
+* Fixed a recent bug preventing saving of data from geophysical interpretation tool
+* Added units for some remote sensing imports (sentinel-2 and aster)
+* Added modest_image support for display raster option
+* Fixed a bug causing a crash in interpretation tool when receiving results from cluster analysis
+* Added crisp and fuzzy cluster analysis settings
+* Added image segmentation settings
+* Added export for shapefiles
+* Added saved proj settings for cluster analysis
+* Added color to point shapefile display
+* Fixed a bug displaying incorrect utm values in EDI metadata
+* Fixed the message displayed from DBSCAN cluster analysis
+* Fixed a bug causing cut vector files to not be plotted.
+* Fixed bug in band select
+* Fixed a bug exporting saga data, when dataset had multiple bands
+* Reorganised code.
+* Updates to project save.
+* Added project save and load.
+* Will save workflow but only certain modules have settings saved at this stage.
+* Delete key now deletes arrows or items
+* Tests updated to reflect recent fixes.
+* File imports will display filename in information
+* Band ratio labels replace divide sign with div, for ESRI compatibility
+* Bugfixes in ratio import with a single file.
+* Data class will store the filename of the dataset imported.
+* Changed description on surfer grids.
+* Fixed a bug which occurs for some padding of RTP datasets
+* Fixed a bug in RTP calculation
+* Alpha version of ratios
+* Fixed a bug where PyGMI would crash when double clicking on an arrow.
+* Added a mosaic function to the equation editor, for a simple mosaic of two datasets.
+* Moved importing of remote sensing data to remote sensing menu.
+* Started work on a ratio function (remote sensing), with batch capabilities
+* Undo custom window size
+* Added import for sentinel 5P data
+* Fixed bug which reset last lithology whenever background layer has changes applied.
+* Changes will no longer be applied automatically
+* Bugfix, profile add
+* Custom profile now correctly deletes, and reports if it is outside the model area
+* Fixed a bug with drawing lines.
+* Added save complete when saving model in modelling interface.
+* Fixed the odd sizing of the cursor, and related drawing of lithologies.
+* Improved listboxes for modelling and 3D display
+* Fixed an issue where a custom profile image was not being saved with a 3D model
+* Fixed a bug when reimporting a model with rgb image inside it.
+* Updated readme files
 
 v3.1.0, 24 March 2020
 ---------------------
-*Updates to gravity routines to report duplicated stations.
-*Fix bug where reprojected coordinates were not properly written to exported file for vector datasets.
-*Fixed incorrect label on RTP.
-*Fixed entry into scatter plot tool, and tool now correctly only displays selected parts of the histogram.
-*Disabled windows context help.
-*Maps will now have plain coordinates rather than scientific notation.
-*Fixed a bug with equation editor causing iall variable to not work properly.
-*Added occam1d warning for no executable.
-*Fixed a bug causing clipping in saved sunshaded images.
-*Fixed interpolation on model (caused by API change) Fixed a bug in drift correction for gravity.
-*Added reprojection of line data.
-*Unified Line and point data - they are now the same thing.
-*Adopted pandas and geopandas as point, line and shapefile format
-*Misc updates
+* Updates to gravity routines to report duplicated stations.
+* Fix bug where reprojected coordinates were not properly written to exported file for vector datasets.
+* Fixed incorrect label on RTP.
+* Fixed entry into scatter plot tool, and tool now correctly only displays selected parts of the histogram.
+* Disabled windows context help.
+* Maps will now have plain coordinates rather than scientific notation.
+* Fixed a bug with equation editor causing iall variable to not work properly.
+* Added occam1d warning for no executable.
+* Fixed a bug causing clipping in saved sunshaded images.
+* Fixed interpolation on model (caused by API change) Fixed a bug in drift correction for gravity.
+* Added reprojection of line data.
+* Unified Line and point data - they are now the same thing.
+* Adopted pandas and geopandas as point, line and shapefile format
+* Misc updates
 
 v3.0.2, 5 March 2020
 --------------------
