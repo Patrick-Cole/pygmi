@@ -1,7 +1,6 @@
-include *.txt
-include *.py
-include *.cfg
-include *.rst
+exclude pygmi_pypi.py
+exclude findlibs.py
+exclude builddocs.py
 include pygmi/mag/IGRF13.COF
 include pygmi/raster/gcs.csv
 include pygmi/raster/pcs.csv

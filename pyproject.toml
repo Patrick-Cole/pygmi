@@ -12,10 +12,6 @@ requires-python = '>=3.7'
 license = {text = 'GNU General Public License v3 (GPLv3)'}
 keywords=['Geoscience', 'Geophysics', 'Magnetic', 'Gravity', 'Modelling',
           'Interpretation', 'Remote Sensing']
-homepage = 'http://patrick-cole.github.io/pygmi/'
-documentation = 'https://patrick-cole.github.io/pygmi/wiki.html'
-repository =  'https://github.com/Patrick-Cole/pygmi/releases'
-
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Environment :: Win32 (MS Windows)',
@@ -60,14 +56,18 @@ dependencies = ['contextily',
                 'shapely',
                 'SimPEG']
 
+[project.urls]
+homepage = 'http://patrick-cole.github.io/pygmi/'
+documentation = 'https://patrick-cole.github.io/pygmi/wiki.html'
+repository =  'https://github.com/Patrick-Cole/pygmi.git'
+changelog = 'https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CHANGES.rst'
+
 [project.scripts]
 pygmi-cli = 'pygmi:main'
 
 [project.gui-scripts]
 pygmi-gui = 'pygmi:main'
-
-[tool.setuptools.packages.find]
-exclude=['docs', 'pygmi.cgs']
+pygmi = 'pygmi:main'
 
 [tool.setuptools.dynamic]
 version = {attr = 'pygmi.__version__'}
