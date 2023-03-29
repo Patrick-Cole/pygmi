@@ -29,7 +29,6 @@ import copy
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import matplotlib.path as mplPath
-# from osgeo import ogr
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 import geopandas as gpd

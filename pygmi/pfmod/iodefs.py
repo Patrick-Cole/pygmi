@@ -30,7 +30,7 @@ import re
 import zipfile
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import osr, ogr
+from osgeo import ogr
 import matplotlib.pyplot as plt
 import pandas as pd
 from rasterio.crs import CRS
@@ -44,6 +44,7 @@ from pygmi.misc import BasicModule, ContextModule
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
+from pygmi.vector.dataprep import reprojxy
 
 sys.modules['datatypes'] = datatypes
 
@@ -681,7 +682,7 @@ class ExportMod3D(ContextModule):
         stmp['lithname'] = ltmp
 
         head = 'X, Y, Z, Density, Susceptibility, Lithology Code, Lithology'
-        np.savetxt(self.ifile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
+        np.savetxt(self.ofile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
                    header=head)
 
         self.showprocesslog('csv export complete!')
@@ -726,23 +727,14 @@ class ExportMod3D(ContextModule):
         smooth = prjkmz.checkbox_smooth.isChecked()
 
         orig_wkt = prjkmz.proj.wkt
-        orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        res = reprojxy(xrng, yrng, orig_wkt, 4326)
 
-        prj = osr.CoordinateTransformation(orig, targ)
-
-        res = prj.TransformPoint(xrng[0], yrng[0])
-        lonwest, latsouth = res[0], res[1]
-        res = prj.TransformPoint(xrng[1], yrng[1])
-        loneast, latnorth = res[0], res[1]
+        lonwest, loneast = res[0]
+        latsouth, latnorth = res[1]
 
         # Get Save Name
-        filename = self.ifile
+        filename = self.ofile
 
         self.showprocesslog('kmz export starting...')
 
@@ -997,10 +989,8 @@ class ExportMod3D(ContextModule):
             for i in self.lmod.griddata:
                 x_1, x_2, y_1, y_2 = self.lmod.griddata[i].extent
 
-                res = prj.TransformPoint(x_1, y_1)
-                lonwest, latsouth = res[0], res[1]
-                res = prj.TransformPoint(x_2, y_2)
-                loneast, latnorth = res[0], res[1]
+                lonwest, latsouth = reprojxy(x_1, y_1, orig_wkt, 4326)
+                loneast, latnorth = reprojxy(x_2, y_2, orig_wkt, 4326)
 
                 dockml += (
                     '    <GroundOverlay>\r\n'
@@ -1114,7 +1104,7 @@ class ExportMod3D(ContextModule):
             if faces.size == 0:
                 continue
 
-            ifile = self.ifile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
+            ifile = self.ofile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
                                                lithtext)+'.shp'
             datasource = driver.CreateDataSource(ifile)
             layer = datasource.CreateLayer('Model',
