@@ -2,6 +2,10 @@
 Changelog
 =========
 
+v3.2.6.5, 29 March 2023
+-----------------------
+* Fixed a bug with some 3D model exports
+
 v3.2.6.3, 27 March 2023
 -----------------------
 * Seisan import will now correct latitudes and longitudes to -180,180 and -90,90
