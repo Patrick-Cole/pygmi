@@ -31,8 +31,9 @@ menu.
 
 import os
 import numpy as np
-from osgeo import ogr, osr
 from PyQt5 import QtWidgets, QtCore
+import geopandas as gpd
+from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
 from scipy.stats import linregress
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -776,6 +777,7 @@ class PlotQC(GraphWindow):
             True if successful, False otherwise.
 
         """
+
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -793,39 +795,15 @@ class PlotQC(GraphWindow):
             os.remove(tmp+'.prj')
             os.remove(tmp+'.dbf')
 
-        driver = ogr.GetDriverByName('ESRI Shapefile')
-        data_source = driver.CreateDataSource(ifile)
-
-        # create the spatial reference, WGS84
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG(4326)
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        # create the layer
-        layer = data_source.CreateLayer('Fault Plane Solution', srs,
-                                        ogr.wkbPolygon)
-
-        # Calculate BeachBall
         indata = self.mmc.ellipses
-        for pvert in indata:
-            # Create Geometry
-            outring = ogr.Geometry(ogr.wkbLinearRing)
-            for i in pvert:
-                outring.AddPoint(i[0], i[1])
+        geom = [Polygon(i) for i in indata]
 
-            poly = ogr.Geometry(ogr.wkbPolygon)
-            poly.AddGeometry(outring)
+        gdict = {'geometry': geom}
 
-            feature = ogr.Feature(layer.GetLayerDefn())
+        gdf = gpd.GeoDataFrame(gdict)
+        gdf = gdf.set_crs(4326)
 
-            feature.SetGeometry(poly)
-            # Create the feature in the layer (shapefile)
-            layer.CreateFeature(feature)
-            # Destroy the feature to free resources
-
-            feature.Destroy()
-
-        data_source.Destroy()
+        gdf.to_file(filename)
 
         return True
 
@@ -924,7 +902,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Sesimology\collect2.out"
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
     tmp.settings(True)
 
     data = tmp.outdata['Seis']

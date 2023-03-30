@@ -30,7 +30,8 @@ from xml.etree import ElementTree
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
-from osgeo import gdal, osr, ogr
+import geopandas as gpd
+from osgeo import gdal
 from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -1004,45 +1005,14 @@ def get_shape_coords(sfile, todegrees=False):
         Output coordinates.
 
     """
-    sr = osr.SpatialReference()
-    sr.ImportFromEPSG(32735)  # utm 35s
-    sr.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-    vec = ogr.Open(sfile)
-    layer = vec.GetLayer(0)
-
-    srdd = osr.SpatialReference()
-    srdd.ImportFromEPSG(4326)  # degrees
-    srdd.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-    coordtrans = osr.CoordinateTransformation(sr, srdd)
-
-    points = []
-    poly = layer.GetNextFeature()
-    geom = poly.GetGeometryRef()
-
-    ifin = 0
-    imax = 0
-    if geom.GetGeometryName() == 'MULTIPOLYGON':
-        for i in range(geom.GetGeometryCount()):
-            geom.GetGeometryRef(i)
-            itmp = geom.GetGeometryRef(i)
-            itmp = itmp.GetGeometryRef(0).GetPointCount()
-            if itmp > imax:
-                imax = itmp
-                ifin = i
-        geom = geom.GetGeometryRef(ifin)
-
-    pts = geom.GetGeometryRef(0)
-    for p in range(pts.GetPointCount()):
-        points.append((pts.GetX(p), pts.GetY(p)))
+    gdf = gpd.read_file(sfile)
+    gdf = gdf[gdf.geometry != None]
 
     if todegrees is True:
-        ddpoints = np.array(coordtrans.TransformPoints(points))
-        ddpoints = ddpoints[:, :2]
-    else:
-        ddpoints = np.array(points)
+        gdf = gdf.to_crs(epsg=4326)
 
+    ddpoints = np.array(gdf.geometry.loc[0].exterior.coords)
+    ddpoints = ddpoints[:, :2]
     return ddpoints
 
 
@@ -1083,8 +1053,8 @@ def get_kml_coords(kml):
 def _testfn():
     """Test routine."""
     import sys
-    sfile = r'd:\Work\Workdata\change\fl35.shp'
-    pdir = r'd:\Work\Workdata\change\Planet'
+    sfile = r'd:\Workdata\change\fl35.shp'
+    pdir = r'd:\Workdata\change\Planet'
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1118,4 +1088,4 @@ def _testanim():
 
 
 if __name__ == "__main__":
-    _testanim()
+    _testfn()

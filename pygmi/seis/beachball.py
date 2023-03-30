@@ -33,12 +33,15 @@ import os
 import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets
+import geopandas as gpd
+from shapely.geometry import Polygon
+from shapely.validation import make_valid
 from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib import patches
-from osgeo import ogr, osr
+# from osgeo import ogr, osr
 import scipy.spatial.distance as sdist
 
 from pygmi.misc import BasicModule
@@ -288,37 +291,17 @@ class BeachBall(BasicModule):
             os.remove(tmp+'.prj')
             os.remove(tmp+'.dbf')
 
-        driver = ogr.GetDriverByName('ESRI Shapefile')
-        data_source = driver.CreateDataSource(self.ifile)
-        data_source2 = driver.CreateDataSource(ifile_bnd)
-
-        # create the spatial reference, WGS84
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG(4326)
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        # create the layer
-        layer = data_source.CreateLayer('Fault Plane Solution', srs,
-                                        ogr.wkbPolygon)
-        layer.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn('Dip', ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn('Rake', ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn('Magnitude', ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn('Quadrant', ogr.OFTString))
-        layer.CreateField(ogr.FieldDefn('Depth', ogr.OFTReal))
-
-        layer2 = data_source2.CreateLayer('Fault Plane Solution Boundaries',
-                                          srs, ogr.wkbPolygon)
-
-        layer2.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn('Dip', ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn('Rake', ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn('Magnitude', ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn('Quadrant', ogr.OFTString))
-        layer2.CreateField(ogr.FieldDefn('Depth', ogr.OFTReal))
+        layer = {'Event': [],
+                 'Strike': [],
+                 'Dip': [],
+                 'Rake': [],
+                 'Magnitude': [],
+                 'Quadrant': [],
+                 'Depth': [],
+                 'geometry': []}
 
         # Calculate BeachBall
-        for idat in indata:
+        for i, idat in enumerate(indata):
             pxy = idat[:2]
             np1 = idat[3:-1]
             depth = idat[2]
@@ -330,48 +313,32 @@ class BeachBall(BasicModule):
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            # Create Geometry
-            outring = ogr.Geometry(ogr.wkbLinearRing)
-            for i in pvert1:
-                outring.AddPoint(i[0], i[1])
+            poly1 = make_valid(Polygon(pvert1))
+            poly0 = make_valid(Polygon(pvert0))
+            poly0 = poly0.difference(poly1)
 
-            innerring = ogr.Geometry(ogr.wkbLinearRing)
-            for i in pvert0:
-                innerring.AddPoint(i[0], i[1])
+            layer['geometry'].append(poly0)
+            layer['Event'].append(i)
+            layer['Strike'].append(np1[0])
+            layer['Dip'].append(np1[1])
+            layer['Rake'].append(np1[2])
+            layer['Magnitude'].append(idat[-1])
+            layer['Quadrant'].append('Compressional')
+            layer['Depth'].append(depth)
 
-            poly = ogr.Geometry(ogr.wkbPolygon)
-            poly.AddGeometry(outring)
+            layer['geometry'].append(poly1)
+            layer['Event'].append(i)
+            layer['Strike'].append(np1[0])
+            layer['Dip'].append(np1[1])
+            layer['Rake'].append(np1[2])
+            layer['Magnitude'].append(idat[-1])
+            layer['Quadrant'].append('Tensional')
+            layer['Depth'].append(depth)
 
-            poly1 = ogr.Geometry(ogr.wkbPolygon)
-            poly1.AddGeometry(innerring)
+        gdf = gpd.GeoDataFrame(layer)
+        gdf = gdf.set_crs(4326)
 
-            feature = ogr.Feature(layer.GetLayerDefn())
-
-            feature.SetField('Strike', np1[0])
-            feature.SetField('Dip', np1[1])
-            feature.SetField('Rake', np1[2])
-            feature.SetField('Magnitude', idat[-1])
-            feature.SetField('Quadrant', 'Compressional')
-            feature.SetField('Depth', depth)
-
-            feature.SetGeometry(poly)
-            # Create the feature in the layer (shapefile)
-            layer.CreateFeature(feature)
-            # Destroy the feature to free resources
-
-            feature2 = ogr.Feature(layer2.GetLayerDefn())
-            feature2.SetField('Quadrant', 'Tensional and Compressional')
-            feature2.SetField('Depth', depth)
-            feature2.SetGeometry(poly1)
-            # Create the feature in the layer (shapefile)
-            layer2.CreateFeature(feature2)
-            layer2.CreateFeature(feature)
-            # Destroy the feature to free resources
-            feature.Destroy()
-            feature2.Destroy()
-
-        data_source.Destroy()
-        data_source2.Destroy()
+        gdf.to_file(self.ifile)
 
         return True
 
