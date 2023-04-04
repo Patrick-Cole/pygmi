@@ -26,7 +26,6 @@
 
 import sys
 import os
-import re
 import zipfile
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -34,7 +33,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
 from rasterio.crs import CRS
-from shapely.geometry import Polygon, MultiPolygon
+from shapely.geometry import Polygon
 
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.pfmod import grvmag3d
@@ -535,9 +534,10 @@ class ExportMod3D(ContextModule):
             os.chdir(os.path.dirname(self.ofile))
             ext = self.ofile[-3:]
 
+            self.parent.process_is_active()
+
             self.showprocesslog('Saving '+self.ofile+'...')
 
-        # Pop up save dialog box
             if ext == 'npz':
                 self.savemodel()
             if ext == 'kmz':
@@ -546,6 +546,7 @@ class ExportMod3D(ContextModule):
                 self.mod3dtoshp()
             if ext == 'csv':
                 self.mod3dtocsv()
+            self.parent.process_is_active(False)
 
     def savemodel(self):
         """
@@ -1032,7 +1033,7 @@ class ExportMod3D(ContextModule):
 
         self.showprocesslog('kmz export complete!')
 
-    def mod3dtoshp(self):
+    def mod3dtoshp(self, nodialog=False):
         """
         Save the 3D model and grids in a shapefile file.
 
@@ -1056,123 +1057,17 @@ class ExportMod3D(ContextModule):
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
-        tmp = prjkmz.exec()
-
-        if tmp == 0:
-            return
-
-        smooth = prjkmz.checkbox_smooth.isChecked()
-
-        self.showprocesslog('shapefile export starting...')
-
-        # Move to 3d model tab to update the model stuff
-        if smooth is True:
-            self.showprocesslog('updating and smoothing 3d model...')
-        else:
-            self.showprocesslog('updating 3d model...')
-
-        mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
-        mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
-        mvis_3d.gdata = self.lmod.lith_index[::1, ::1, ::-1]
-        itmp = np.sort(np.unique(self.lmod.lith_index))
-        itmp = itmp[itmp > 0]
-        tmp = np.ones((255, 4))*255
-        for i in itmp:
-            tmp[i, :3] = self.lmod.mlut[i]
-        mvis_3d.lut = tmp
-        mvis_3d.update_model(smooth)
-
-        self.showprocesslog('creating shapefile file')
-
-        # driver = ogr.GetDriverByName('ESRI Shapefile')
-
-        # update colours
-        self.lmod.update_lith_list_reverse()
-
-        mvis_3d.update_for_kmz()
-
-        lkey = list(mvis_3d.faces.keys())
-        lkey.pop(lkey.index(0))
-
-        for lith in lkey:
-            lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
-            lithsusc = self.lmod.lith_list[lithtext].susc
-            lithdens = self.lmod.lith_list[lithtext].density
-            self.showprocesslog(' '+lithtext)
-
-            faces = np.array(mvis_3d.gfaces[lith])
-
-            if faces.size == 0:
-                continue
-
-            ifile = self.ofile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
-                                               lithtext)+'.shp'
-
-            layer = {'Lithology': [],
-                     'Susc': [],
-                     'Density': [],
-                     'geometry': []}
-
-            for f in faces:
-                layer['Lithology'].append(lithtext)
-                layer['Susc'].append(lithsusc)
-                layer['Density'].append(lithdens)
-
-                pverts = []
-                tmp = mvis_3d.gpoints[lith][f]
-                pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
-                pverts.append([tmp[1, 0], tmp[1, 1], tmp[1, 2]])
-                pverts.append([tmp[2, 0], tmp[2, 1], tmp[2, 2]])
-                pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
-                pverts = Polygon(pverts)
-                layer['geometry'].append(pverts)
-
-            gdf = gpd.GeoDataFrame(layer)
-            gdf = gdf.set_crs(prjkmz.proj.wkt)
-
-            gdf.to_file(ifile)
-
-        self.showprocesslog('shapefile export complete!')
-
-    def mod3dtoshp2(self, nodialog=False):
-        """
-        Save the 3D model and grids in a shapefile file.
-
-        Only the boundary of the area is in degrees. The actual coordinates
-        are still in meters.
-
-        Returns
-        -------
-        None.
-
-        """
-        mvis_3d = mvis3d.Mod3dDisplay()
-        mvis_3d.lmod1 = self.lmod
-
-        xrng = np.array(self.lmod.xrange, dtype=float)
-        yrng = np.array(self.lmod.yrange, dtype=float)
-        zrng = np.array(self.lmod.zrange, dtype=float)
-
-        if 'Raster' in self.indata:
-            wkt = self.indata['Raster'][0].crs.wkt
-        else:
-            wkt = ''
-        prjkmz = Exportkmz(wkt)
+        prjkmz.checkbox_smooth.hide()
 
         if nodialog is False:
             tmp = prjkmz.exec()
             if tmp == 0:
                 return
 
-        smooth = prjkmz.checkbox_smooth.isChecked()
-
-        self.showprocesslog('shapefile export starting...')
+        self.showprocesslog('Shapefile export starting...')
 
         # Move to 3d model tab to update the model stuff
-        if smooth is True:
-            self.showprocesslog('updating and smoothing 3d model...')
-        else:
-            self.showprocesslog('updating 3d model...')
+        self.showprocesslog('Updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -1183,9 +1078,9 @@ class ExportMod3D(ContextModule):
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
-        mvis_3d.update_model(smooth)
+        mvis_3d.update_model(False)
 
-        self.showprocesslog('creating shapefile file')
+        self.showprocesslog('creating polygons')
 
         # update colours
         self.lmod.update_lith_list_reverse()
@@ -1196,23 +1091,18 @@ class ExportMod3D(ContextModule):
         lkey.pop(lkey.index(0))
 
         gdf = {}
-        for lith in lkey:
+        for lith in self.piter(lkey):
             lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
             lithsusc = self.lmod.lith_list[lithtext].susc
             lithdens = self.lmod.lith_list[lithtext].density
 
-            # if 'Critical' not in lithtext:
-            #     continue
-
             self.showprocesslog(' '+lithtext)
+            QtWidgets.QApplication.processEvents()
 
             faces = np.array(mvis_3d.gfaces[lith])
 
             if faces.size == 0:
                 continue
-
-            # ifile = self.ofile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
-            #                                    lithtext)+'.shp'
 
             xfaces = []
             yfaces = []
@@ -1282,11 +1172,13 @@ class ExportMod3D(ContextModule):
 
             gdf[lithtext] = pd.concat(gdfxyz, ignore_index=True)
 
-            # gdf = groupby_multipoly(gdf, by='Lithology')
+        self.showprocesslog('Combining all lithologies...')
         gdf = pd.concat(gdf, ignore_index=True)
+
+        self.showprocesslog('Exporting to shapefile...')
         gdf.to_file(self.ofile)
 
-        self.showprocesslog('shapefile export complete!')
+        self.showprocesslog('Shapefile export complete!')
 
 
 class Exportkmz(QtWidgets.QDialog):
@@ -1390,33 +1282,13 @@ class MessageCombo(QtWidgets.QDialog):
         return self.master.currentText()
 
 
-def groupby_multipoly(df, by, aggfunc="first"):
-    data = df.drop(labels=df.geometry.name, axis=1)
-    aggregated_data = data.groupby(by=by).agg(aggfunc)
-
-    # Process spatial component
-    def merge_geometries(block):
-        return MultiPolygon(block.values)
-
-    g = df.groupby(by=by, group_keys=False)[df.geometry.name].agg(
-        merge_geometries
-    )
-
-    # Aggregate
-    aggregated_geometry = gpd.GeoDataFrame(g, geometry=df.geometry.name, crs=df.crs)
-    # Recombine
-    aggregated = aggregated_geometry.join(aggregated_data)
-    return aggregated
-
-
 def _testfn():
     """Test."""
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    print('Starting')
-
     ifile = r"d:\Workdata\modelling\small_upper.npz"
+    ifile = r"D:\Workdata\modelling\Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz"
     ofile = r"d:\Workdata\modelling\hope2.shp"
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1429,7 +1301,7 @@ def _testfn():
     EM.indata = DM.outdata
     EM.ofile = ofile
     EM.lmod = EM.indata['Model3D'][0]
-    EM.mod3dtoshp2(nodialog=True)
+    EM.mod3dtoshp(nodialog=False)
     # EM.exec()
 
 
