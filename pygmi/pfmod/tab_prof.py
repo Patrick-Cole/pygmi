@@ -35,7 +35,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import colormaps
-from osgeo import osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
 
@@ -45,6 +44,7 @@ from pygmi import menu_default
 from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import frm, BasicModule
+from pygmi.vector.dataprep import reprojxy
 
 
 class ProfileDisplay(QtWidgets.QWidget):
@@ -480,16 +480,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         data = self.parent.indata['Borehole']
 
-        orig = osr.SpatialReference()
-        orig.ImportFromEPSG(4326)  # WGS84 degrees
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        targ = osr.SpatialReference()
-        targ.ImportFromWkt(self.parent.indata['Raster'][0].crs.wkt)
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        prj = osr.CoordinateTransformation(orig, targ)
-
         for bnum in data:
             hdr = data[bnum]['header']
             log = data[bnum]['log']
@@ -499,8 +489,9 @@ class ProfileDisplay(QtWidgets.QWidget):
                 elev = float(hdr['Elevation'])
             except TypeError:
                 continue
-            res = prj.TransformPoint(lon, lat)
-            x, y = res[0], res[1]
+
+            x, y = reprojxy(lon, lat, 4326,
+                            self.parent.indata['Raster'][0].crs.wkt)
 
             if x < self.lmod1.xrange[0] or x > self.lmod1.xrange[1]:
                 continue
@@ -1428,7 +1419,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data2.xdim+1
             ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data2.ydim+1
 
-            pdtmp = data2.data.filled(np.nan)
+            pdtmp = data2.data.astype(float).filled(np.nan)
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(pdtmp[::-1],
                                                [ryyy2-0.5, rxxx2-0.5],

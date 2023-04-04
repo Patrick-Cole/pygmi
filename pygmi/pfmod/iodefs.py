@@ -30,10 +30,11 @@ import re
 import zipfile
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import ogr
 import matplotlib.pyplot as plt
 import pandas as pd
+import geopandas as gpd
 from rasterio.crs import CRS
+from shapely.geometry import Polygon, MultiPolygon
 
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.pfmod import grvmag3d
@@ -41,10 +42,10 @@ from pygmi.pfmod import mvis3d
 from pygmi import menu_default
 import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule, ContextModule
+from pygmi.vector.dataprep import reprojxy
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
-from pygmi.vector.dataprep import reprojxy
 
 sys.modules['datatypes'] = datatypes
 
@@ -1055,7 +1056,7 @@ class ExportMod3D(ContextModule):
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
-        tmp = prjkmz.exec_()
+        tmp = prjkmz.exec()
 
         if tmp == 0:
             return
@@ -1083,7 +1084,7 @@ class ExportMod3D(ContextModule):
 
         self.showprocesslog('creating shapefile file')
 
-        driver = ogr.GetDriverByName('ESRI Shapefile')
+        # driver = ogr.GetDriverByName('ESRI Shapefile')
 
         # update colours
         self.lmod.update_lith_list_reverse()
@@ -1106,47 +1107,184 @@ class ExportMod3D(ContextModule):
 
             ifile = self.ofile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
                                                lithtext)+'.shp'
-            datasource = driver.CreateDataSource(ifile)
-            layer = datasource.CreateLayer('Model',
-                                           geom_type=ogr.wkbMultiPolygon25D)
 
-            layer.CreateField(ogr.FieldDefn('Lithology', ogr.OFTString))
-            layer.CreateField(ogr.FieldDefn('Susc', ogr.OFTReal))
-            layer.CreateField(ogr.FieldDefn('Density', ogr.OFTReal))
-
-            points = mvis_3d.gpoints[lith]
+            layer = {'Lithology': [],
+                     'Susc': [],
+                     'Density': [],
+                     'geometry': []}
 
             for f in faces:
-                multipolygon = ogr.Geometry(ogr.wkbMultiPolygon25D)
-                tmp = points[f]
+                layer['Lithology'].append(lithtext)
+                layer['Susc'].append(lithsusc)
+                layer['Density'].append(lithdens)
 
-                ring1 = ogr.Geometry(ogr.wkbLinearRing)
-                ring1.AddPoint(tmp[0, 0], tmp[0, 1], tmp[0, 2])
-                ring1.AddPoint(tmp[1, 0], tmp[1, 1], tmp[1, 2])
-                ring1.AddPoint(tmp[2, 0], tmp[2, 1], tmp[2, 2])
-                ring1.AddPoint(tmp[0, 0], tmp[0, 1], tmp[0, 2])
+                pverts = []
+                tmp = mvis_3d.gpoints[lith][f]
+                pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
+                pverts.append([tmp[1, 0], tmp[1, 1], tmp[1, 2]])
+                pverts.append([tmp[2, 0], tmp[2, 1], tmp[2, 2]])
+                pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
+                pverts = Polygon(pverts)
+                layer['geometry'].append(pverts)
 
-                # Create polygon #1
-                poly1 = ogr.Geometry(ogr.wkbPolygon25D)
-                poly1.AddGeometry(ring1)
-                multipolygon.AddGeometry(poly1)
+            gdf = gpd.GeoDataFrame(layer)
+            gdf = gdf.set_crs(prjkmz.proj.wkt)
 
-                ring1 = None
-                poly1 = None
+            gdf.to_file(ifile)
 
-                feature = ogr.Feature(layer.GetLayerDefn())
-                feature.SetGeometry(multipolygon)
-                feature.SetField('Lithology', lithtext)
-                feature.SetField('Susc', lithsusc)
-                feature.SetField('Density', lithdens)
-                layer.CreateFeature(feature)
+        self.showprocesslog('shapefile export complete!')
 
-                multipolygon = None
+    def mod3dtoshp2(self, nodialog=False):
+        """
+        Save the 3D model and grids in a shapefile file.
 
-            # flush memory
-            layer = None
-            feature = None
-            datasource = None
+        Only the boundary of the area is in degrees. The actual coordinates
+        are still in meters.
+
+        Returns
+        -------
+        None.
+
+        """
+        mvis_3d = mvis3d.Mod3dDisplay()
+        mvis_3d.lmod1 = self.lmod
+
+        xrng = np.array(self.lmod.xrange, dtype=float)
+        yrng = np.array(self.lmod.yrange, dtype=float)
+        zrng = np.array(self.lmod.zrange, dtype=float)
+
+        if 'Raster' in self.indata:
+            wkt = self.indata['Raster'][0].crs.wkt
+        else:
+            wkt = ''
+        prjkmz = Exportkmz(wkt)
+
+        if nodialog is False:
+            tmp = prjkmz.exec()
+            if tmp == 0:
+                return
+
+        smooth = prjkmz.checkbox_smooth.isChecked()
+
+        self.showprocesslog('shapefile export starting...')
+
+        # Move to 3d model tab to update the model stuff
+        if smooth is True:
+            self.showprocesslog('updating and smoothing 3d model...')
+        else:
+            self.showprocesslog('updating 3d model...')
+
+        mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
+        mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
+        mvis_3d.gdata = self.lmod.lith_index[::1, ::1, ::-1]
+        itmp = np.sort(np.unique(self.lmod.lith_index))
+        itmp = itmp[itmp > 0]
+        tmp = np.ones((255, 4))*255
+        for i in itmp:
+            tmp[i, :3] = self.lmod.mlut[i]
+        mvis_3d.lut = tmp
+        mvis_3d.update_model(smooth)
+
+        self.showprocesslog('creating shapefile file')
+
+        # update colours
+        self.lmod.update_lith_list_reverse()
+
+        mvis_3d.update_for_kmz()
+
+        lkey = list(mvis_3d.faces.keys())
+        lkey.pop(lkey.index(0))
+
+        gdf = {}
+        for lith in lkey:
+            lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
+            lithsusc = self.lmod.lith_list[lithtext].susc
+            lithdens = self.lmod.lith_list[lithtext].density
+
+            # if 'Critical' not in lithtext:
+            #     continue
+
+            self.showprocesslog(' '+lithtext)
+
+            faces = np.array(mvis_3d.gfaces[lith])
+
+            if faces.size == 0:
+                continue
+
+            # ifile = self.ofile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
+            #                                    lithtext)+'.shp'
+
+            xfaces = []
+            yfaces = []
+            zfaces = []
+            badfaces = 0
+            for f in faces:
+                tmp = mvis_3d.gpoints[lith][f]
+                if np.unique(tmp[:, 0]).size == 1:
+                    xfaces.append(tmp)
+                elif np.unique(tmp[:, 1]).size == 1:
+                    yfaces.append(tmp)
+                elif np.unique(tmp[:, 2]).size == 1:
+                    zfaces.append(tmp)
+                else:
+                    badfaces += 1
+
+            gdfxyz = {}
+            for ifaces, faces in enumerate([xfaces, yfaces, zfaces]):
+                layer = {'Lithology': [],
+                         'Susc': [],
+                         'Density': [],
+                         'const': [],
+                         'geometry': []}
+
+                for tmp1 in faces:
+                    layer['Lithology'].append(lithtext)
+                    layer['Susc'].append(lithsusc)
+                    layer['Density'].append(lithdens)
+                    layer['const'].append(tmp1[0, ifaces])
+
+                    tmp = np.roll(tmp1, -(ifaces+1), axis=1)
+
+                    pverts = []
+                    pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
+                    pverts.append([tmp[1, 0], tmp[1, 1], tmp[1, 2]])
+                    pverts.append([tmp[2, 0], tmp[2, 1], tmp[2, 2]])
+                    pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
+                    pverts = Polygon(pverts)
+                    layer['geometry'].append(pverts)
+
+                ofaces = gpd.GeoDataFrame(layer)
+                ofaces = ofaces.dissolve(by='const', as_index=False,
+                                         sort=False)
+
+                ofaces = ofaces.explode(ignore_index=True)
+                ofaces = ofaces.set_crs(prjkmz.proj.wkt)
+
+                filt = ofaces.geometry.is_empty
+                ofaces = ofaces[~filt]
+
+                if ifaces == 2:
+                    gdfxyz[ifaces] = ofaces
+                    continue
+
+                coords = ofaces.geometry.apply(lambda geom:
+                                               np.array(geom.exterior.coords))
+
+                geom = []
+                for i in coords:
+                    tmp = np.roll(i, ifaces+1, axis=1)
+                    pverts = Polygon(tmp)
+                    geom.append(pverts)
+                ofaces['geometry'] = geom
+                ofaces.pop('const')
+
+                gdfxyz[ifaces] = ofaces
+
+            gdf[lithtext] = pd.concat(gdfxyz, ignore_index=True)
+
+            # gdf = groupby_multipoly(gdf, by='Lithology')
+        gdf = pd.concat(gdf, ignore_index=True)
+        gdf.to_file(self.ofile)
 
         self.showprocesslog('shapefile export complete!')
 
@@ -1252,6 +1390,25 @@ class MessageCombo(QtWidgets.QDialog):
         return self.master.currentText()
 
 
+def groupby_multipoly(df, by, aggfunc="first"):
+    data = df.drop(labels=df.geometry.name, axis=1)
+    aggregated_data = data.groupby(by=by).agg(aggfunc)
+
+    # Process spatial component
+    def merge_geometries(block):
+        return MultiPolygon(block.values)
+
+    g = df.groupby(by=by, group_keys=False)[df.geometry.name].agg(
+        merge_geometries
+    )
+
+    # Aggregate
+    aggregated_geometry = gpd.GeoDataFrame(g, geometry=df.geometry.name, crs=df.crs)
+    # Recombine
+    aggregated = aggregated_geometry.join(aggregated_data)
+    return aggregated
+
+
 def _testfn():
     """Test."""
     from IPython import get_ipython
@@ -1260,6 +1417,7 @@ def _testfn():
     print('Starting')
 
     ifile = r"d:\Workdata\modelling\small_upper.npz"
+    ofile = r"d:\Workdata\modelling\hope2.shp"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1267,14 +1425,12 @@ def _testfn():
     DM.ifile = ifile
     DM.settings(nodialog=True)
 
-    odata = DM.outdata['Raster']
-
-    for dat in odata:
-        plt.figure(dpi=150)
-        plt.title(dat.dataid)
-        plt.imshow(dat.data, extent=dat.extent)
-        plt.colorbar()
-        plt.show()
+    EM = ExportMod3D()
+    EM.indata = DM.outdata
+    EM.ofile = ofile
+    EM.lmod = EM.indata['Model3D'][0]
+    EM.mod3dtoshp2(nodialog=True)
+    # EM.exec()
 
 
 if __name__ == "__main__":
