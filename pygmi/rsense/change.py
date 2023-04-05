@@ -31,7 +31,6 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-from osgeo import gdal
 from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -44,6 +43,7 @@ from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
 from pygmi.misc import BasicModule
+from pygmi.raster.iodefs import get_raster
 
 
 class CreateSceneList(BasicModule):
@@ -131,7 +131,7 @@ class CreateSceneList(BasicModule):
 
         if not self.useall.isChecked():
             if sfile[-3:] == 'shp':
-                ddpoints = get_shape_coords(sfile)
+                ddpoints = get_shape_coords(sfile, True)
             else:
                 ddpoints = get_kml_coords(sfile)
             ddpoints2 = Polygon(ddpoints)
@@ -146,15 +146,11 @@ class CreateSceneList(BasicModule):
         flist = []
         nodates = False
         for ifile in self.piter(subfiles):
-            dataset = gdal.Open(str(ifile), gdal.GA_ReadOnly)
-            metadata = dataset.GetMetadata()
+            dattmp = get_raster(str(ifile), metaonly=True)
 
             if not self.useall.isChecked():
-                gtr = dataset.GetGeoTransform()
-                cols = dataset.RasterXSize
-                rows = dataset.RasterYSize
-                dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
-                dylim = (gtr[3]+gtr[5]*rows, gtr[3])
+                dxlim = dattmp[0].extent[:2]
+                dylim = dattmp[0].extent[2:]
 
                 coords = [[dxlim[0], dylim[0]],
                           [dxlim[0], dylim[1]],
@@ -163,15 +159,20 @@ class CreateSceneList(BasicModule):
                           [dxlim[0], dylim[0]]]
 
                 coords2 = Polygon(coords)
-                if not coords2.contains(ddpoints2):
+                gdf = gpd.GeoDataFrame(geometry=[coords2])
+                gdf = gdf.set_crs(dattmp[0].crs)
+                gdf = gdf.to_crs(epsg=4326)
+
+                gdf2 = gpd.GeoDataFrame(geometry=[ddpoints2])
+                gdf2 = gdf2.set_crs(4326)
+
+                if not gdf.intersects(ddpoints2).loc[0]:
                     continue
 
-            if 'TIFFTAG_DATETIME' not in metadata:
+            dt = dattmp[0].datetime
+            if dt is None:
                 dt = datetime.datetime(1900, 1, 1)
                 nodates = True
-            else:
-                dtimestr = metadata['TIFFTAG_DATETIME']
-                dt = datetime.datetime.strptime(dtimestr, '%Y:%m:%d %H:%M:%S')
 
             dtime.append(dt)
             flist.append(ifile)
@@ -453,7 +454,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         rtmp2 = (rtmp2-rtmp2.min())/rtmp2.ptp()
         rtmp3 = (rtmp3-rtmp3.min())/rtmp3.ptp()
 
-        alpha = np.logical_not(rtmp1 == 0.)
+        # alpha = np.logical_not(rtmp1 == 0.)
+        alpha = ~rtmp1.mask
 
         dtmp = np.array([rtmp1, rtmp2, rtmp3, alpha])
         dtmp = np.moveaxis(dtmp, 0, 2)
@@ -517,9 +519,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             green = np.ma.array(dat[self.bands[1]].data, mask=mask)
             blue = np.ma.array(dat[self.bands[0]].data, mask=mask)
 
-            red = histcomp(red, nbr_bins=10000, perc=2.)
-            green = histcomp(green, nbr_bins=10000, perc=2.)
-            blue = histcomp(blue, nbr_bins=10000, perc=2.)
+            red, _, _ = histcomp(red, nbr_bins=10000, perc=2.)
+            green, _, _ = histcomp(green, nbr_bins=10000, perc=2.)
+            blue, _, _ = histcomp(blue, nbr_bins=10000, perc=2.)
 
             red = norm255(red)
             green = norm255(green)
@@ -605,7 +607,9 @@ class SceneViewer(BasicModule):
         self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
 
         mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.slider = QtWidgets.QScrollBar(QtCore.Qt.Horizontal)
+        self.slider = MySlider()
+        self.slider.setOrientation(QtCore.Qt.Horizontal)
+
         self.button1 = QtWidgets.QPushButton('Start Capture')
         self.button2 = QtWidgets.QPushButton('Update Scene List File')
         self.button3 = QtWidgets.QPushButton('Next Scene')
@@ -904,19 +908,29 @@ class SceneViewer(BasicModule):
         datall = {}
         ifile = str(ifile)
 
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+        dataset = get_raster(ifile)
 
-        self.pbar2.setMinimum(0)
-        self.pbar2.setValue(0)
-        self.pbar2.setMaximum(dataset.RasterCount-1)
+        for i, band in enumerate(dataset):
+            datall[i+1] = band
+        # dx = dataset[0].xdim
+        # dy = dataset[0].ydim
+        dxlim = dataset[0].extent[:2]
+        dylim = dataset[0].extent[2:]
+        # rows, cols = dataset[0].data.shape
 
-        gtr = dataset.GetGeoTransform()
-        cols = dataset.RasterXSize
-        rows = dataset.RasterYSize
-        dx = abs(gtr[1])
-        dy = abs(gtr[5])
-        dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
-        dylim = (gtr[3]+gtr[5]*rows, gtr[3])
+        # # dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+        # self.pbar2.setMinimum(0)
+        # self.pbar2.setValue(0)
+        # self.pbar2.setMaximum(dataset.RasterCount-1)
+
+        # # gtr = dataset.GetGeoTransform()
+        # # cols = dataset.RasterXSize
+        # # rows = dataset.RasterYSize
+        # # dx = abs(gtr[1])
+        # # dy = abs(gtr[5])
+        # # dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
+        # # dylim = (gtr[3]+gtr[5]*rows, gtr[3])
 
         axes = self.canvas.ax1
 
@@ -924,68 +938,120 @@ class SceneViewer(BasicModule):
             axes.set_xlim(dxlim[0], dxlim[1])
             axes.set_ylim(dylim[0], dylim[1])
 
-        ext = (axes.transAxes.transform([(1, 1)]) -
-               axes.transAxes.transform([(0, 0)]))[0]
+        # ext = (axes.transAxes.transform([(1, 1)]) -
+        #        axes.transAxes.transform([(0, 0)]))[0]
 
-        xlim, ylim = axes.get_xlim(), axes.get_ylim()
+        # xlim, ylim = axes.get_xlim(), axes.get_ylim()
 
-        xoff = max(int((xlim[0]-dxlim[0])/dx), 0)
-        yoff = max(-int((ylim[1]-dylim[1])/dy), 0)
+        # xoff = max(int((xlim[0]-dxlim[0])/dx), 0)
+        # yoff = max(-int((ylim[1]-dylim[1])/dy), 0)
 
-        xoff1 = min(int((xlim[1]-dxlim[1])/dx), 0)
-        yoff1 = min(-int((ylim[0]-dylim[0])/dy), 0)
+        # xoff1 = min(int((xlim[1]-dxlim[1])/dx), 0)
+        # yoff1 = min(-int((ylim[0]-dylim[0])/dy), 0)
 
-        xsize = cols-xoff+xoff1
-        ysize = rows-yoff+yoff1
+        # xsize = cols-xoff+xoff1
+        # ysize = rows-yoff+yoff1
 
-        xdim = dx*xsize/int(ext[0])
-        ydim = dy*ysize/int(ext[1])
+        # xdim = dx*xsize/int(ext[0])
+        # ydim = dy*ysize/int(ext[1])
 
-        xbuf = min(xsize, int(ext[0]))
-        ybuf = min(ysize, int(ext[1]))
+        # xbuf = min(xsize, int(ext[0]))
+        # ybuf = min(ysize, int(ext[1]))
 
-        for i in range(dataset.RasterCount):
+        # for i in range(dataset.RasterCount):
 
-            rtmp = dataset.GetRasterBand(i+1)
-            nval = rtmp.GetNoDataValue()
-            bandid = rtmp.GetDescription()
-            if bandid == '':
-                bandid = 'Band '+str(i+1)
+        #     rtmp = dataset.GetRasterBand(i+1)
+        #     nval = rtmp.GetNoDataValue()
+        #     bandid = rtmp.GetDescription()
+        #     if bandid == '':
+        #         bandid = 'Band '+str(i+1)
 
-            dat = Data()
-            dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
+        #     dat = Data()
+        #     dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
 
-            if dat.data is None:
-                self.showprocesslog('Error: Dataset could not be read '
-                                    'properly')
+        #     if dat.data is None:
+        #         self.showprocesslog('Error: Dataset could not be read '
+        #                             'properly')
 
-            if dat.data.dtype.kind == 'i':
-                if nval is None:
-                    nval = 999999
-                nval = int(nval)
-            elif dat.data.dtype.kind == 'u':
-                if nval is None:
-                    nval = 0
-                nval = int(nval)
-            else:
-                if nval is None:
-                    nval = 1e+20
-                nval = float(nval)
+        #     if dat.data.dtype.kind == 'i':
+        #         if nval is None:
+        #             nval = 999999
+        #         nval = int(nval)
+        #     elif dat.data.dtype.kind == 'u':
+        #         if nval is None:
+        #             nval = 0
+        #         nval = int(nval)
+        #     else:
+        #         if nval is None:
+        #             nval = 1e+20
+        #         nval = float(nval)
 
-            dat.nodata = nval
-            dat.xdim = xdim
-            dat.ydim = ydim
-            dat.wkt = dataset.GetProjection()
-            datall[i+1] = dat
+        #     dat.nodata = nval
+        #     dat.xdim = xdim
+        #     dat.ydim = ydim
+        #     dat.wkt = dataset.GetProjection()
+        #     datall[i+1] = dat
 
-            self.pbar2.setValue(i)
+        #     self.pbar2.setValue(i)
 
         if datall == {}:
             datall = None
 
-        dataset = None
+        # dataset = None
 
         return datall
+
+
+class MySlider(QtWidgets.QSlider):
+    """
+    My Slider.
+
+    Custom class which allows clicking on a horizontal slider bar with slider
+    moving to click in a single step.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mousePressEvent(self, event):
+        """
+        Mouse press event.
+
+        Parameters
+        ----------
+        event : event
+            Event variable.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
+                                                               self.maximum(),
+                                                               event.x(),
+                                                               self.width()))
+
+    def mouseMoveEvent(self, event):
+        """
+        Mouse move event.
+
+        Jump to pointer position while moving.
+
+        Parameters
+        ----------
+        event : event
+            Event variable.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
+                                                               self.maximum(),
+                                                               event.x(),
+                                                               self.width()))
 
 
 def get_shape_coords(sfile, todegrees=False):
@@ -1011,7 +1077,11 @@ def get_shape_coords(sfile, todegrees=False):
     if todegrees is True:
         gdf = gdf.to_crs(epsg=4326)
 
-    ddpoints = np.array(gdf.geometry.loc[0].exterior.coords)
+    gdf = gdf.explode(index_parts=False)
+    coords = gdf.geometry.apply(lambda geom: np.array(geom.exterior.coords))
+
+    ddpoints = np.vstack(coords)
+
     ddpoints = ddpoints[:, :2]
     return ddpoints
 
@@ -1053,7 +1123,11 @@ def get_kml_coords(kml):
 def _testfn():
     """Test routine."""
     import sys
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
     sfile = r'd:\Workdata\change\fl35.shp'
+    sfile = r'd:\Workdata\change\Planet\area-dd.shp'
     pdir = r'd:\Workdata\change\Planet'
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1065,6 +1139,25 @@ def _testfn():
     CSL.settings(True)
 
     plt.show()
+
+
+def _testview():
+    """Test routine."""
+    import sys
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+    ifile = r'd:\Workdata\change\planet\paddock.xlsx'
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    LSL = LoadSceneList()
+    LSL.ifile = ifile
+    LSL.settings(True)
+
+    SV = SceneViewer()
+    SV.indata = LSL.outdata
+    SV.settings()
 
 
 def _testanim():
@@ -1088,4 +1181,4 @@ def _testanim():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testview()

@@ -27,6 +27,7 @@
 import warnings
 import os
 import copy
+import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
@@ -595,6 +596,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                                   'AXIS["Northing",NORTH]]')
 
     dmeta = {}
+    rdate = None
     with rasterio.open(ifile, driver=driver) as dataset:
         if dataset is None:
             return None
@@ -604,6 +606,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         gmeta = dataset.tags()
         istruct = dataset.tags(ns='IMAGE_STRUCTURE')
         driver = dataset.driver
+        if 'TIFFTAG_DATETIME' in gmeta:
+            dtimestr = gmeta['TIFFTAG_DATETIME']
+            rdate = datetime.datetime.strptime(dtimestr, '%Y:%m:%d %H:%M:%S')
 
         if driver == 'ENVI':
             dmeta = dataset.tags(ns='ENVI')
@@ -742,18 +747,27 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
             # dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
             #                      (dat[-1].data == nval))
+            if metaonly is True:
+                rows = dataset.height
+                cols = dataset.width
+            else:
+                rows = None
+                cols = None
 
             if newbounds is not None:
                 xmin, _, _, ymax = newbounds
                 xdim, ydim = dataset.res
-                dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster)
+                dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster,
+                                      rows=rows, cols=cols)
             else:
-                dat[-1].set_transform(transform=dataset.transform)
+                dat[-1].set_transform(transform=dataset.transform,
+                                      rows=rows, cols=cols)
 
             dat[-1].dataid = bandid
             dat[-1].nodata = nval
             dat[-1].filename = filename
             dat[-1].units = unit
+            dat[-1].datetime = rdate
 
             if driver == 'netCDF' and dataset.crs is None:
                 if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:

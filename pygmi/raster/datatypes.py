@@ -148,14 +148,16 @@ class Data():
         self.units = ''
         self.isrgb = False
         self.metadata = {'Cluster': {}, 'Raster': {}}
+        self.meta = {}
         self.filename = ''
         self.transform = None
         self.crs = None
+        self.datetime = None
 
         self.set_transform(1, 0, 1, 0)
 
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
-                      transform=None, iraster=None):
+                      transform=None, iraster=None, rows=None, cols=None):
         """
         Set the transform.
 
@@ -197,8 +199,10 @@ class Data():
             xoff, yoff, _, _ = iraster
 
         # get rows and cols this way because RGB images have three dims
-        rows = self.data.shape[0]
-        cols = self.data.shape[1]
+        if rows is None:
+            rows = self.data.shape[0]
+        if cols is None:
+            cols = self.data.shape[1]
 
         left = xmin + xoff*xdim
         top = ymax - yoff*ydim
