@@ -281,8 +281,8 @@ class SatRatios(BasicModule):
 
             dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
 
-            del flist
-            del ifile
+            # del flist
+            # del ifile
             del datsml
             # del self.indata['Raster']
 
