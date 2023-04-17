@@ -1135,7 +1135,7 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
         dat = get_aster_zip(ifile, piter, showprocesslog, metaonly)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
         dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata,
-                          tnames=tnames)
+                          tnames=tnames, metaonly=metaonly)
         if dat is None and '.tar' not in ifile:
             dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
                              tnames=tnames)
@@ -1279,7 +1279,7 @@ def get_modisv6(ifile, piter=None):
 
 
 def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
-                tnames=None):
+                tnames=None, metaonly=False):
     """
     Get Landsat Data.
 
@@ -1394,11 +1394,11 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
             showprocesslog('Problem with band '+fext)
             continue
 
-        rtmp = dataset.read(1)
-
         dat.append(Data())
-        dat[-1].data = rtmp
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+
+        if metaonly is False:
+            dat[-1].data = dataset.read(1)
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
 
         nval = 0
         if fext in ['QA_PIXEL', 'SR_QA_AEROSOL']:
@@ -2508,7 +2508,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         if tnames is not None:
             ofile = ofile[:-4]
             for i in tnames:
-                ofile += f'_{i[4:]}'
+                ofile += f'_{i}'
             ofile += '_tern.tif'
 
         # if os.path.exists(ofile):
@@ -2570,15 +2570,17 @@ def _testfn():
 
     extscene = None
 
-    ifile = r"D:/Workdata/PyGMI Test Data/Remote Sensing/Import/ASTER/AST_09T_00309042002082052_20200518022902_19756.zip"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AG100.v003.-27.022.0001.h5"
+    ifile = r"D:\ASTER\LC09_L2SP_170078_20220810_20230403_02_T1.tar"
 
     dat = get_data(ifile, extscene=extscene)
 
-    for i in dat[:1]:
-        plt.figure(dpi=300)
+    for i in dat:
+        plt.figure(dpi=150)
         plt.title(i.dataid)
-        plt.imshow(i.data, interpolation='none')
+        vmin = i.data.mean()-i.data.std()*2
+        vmax = i.data.mean()+i.data.std()*2
+
+        plt.imshow(i.data, interpolation='none', vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
@@ -2603,4 +2605,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
