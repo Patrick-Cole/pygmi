@@ -124,7 +124,7 @@ class BasicModule(QtWidgets.QDialog):
             self.stdout_redirect = sys.stdout
             self.showprocesslog = print
             self.pbar = ProgressBarText()
-            self.process_is_active = print
+            self.process_is_active = lambda *args, **kwargs: None
         else:
             self.stdout_redirect = EmittingStream(parent.showprocesslog)
             self.showprocesslog = parent.showprocesslog
@@ -227,7 +227,7 @@ class ContextModule(QtWidgets.QDialog):
             self.stdout_redirect = sys.stdout
             self.showprocesslog = print
             self.pbar = ProgressBarText()
-            self.process_is_active = print
+            self.process_is_active = lambda *args, **kwargs: None
         else:
             self.stdout_redirect = EmittingStream(parent.showprocesslog)
             self.showprocesslog = parent.showprocesslog

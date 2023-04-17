@@ -950,7 +950,7 @@ class MainWidget(QtWidgets.QMainWindow):
         isactive : bool, optional
             boolean variable indicating if a process is active.
         """
-        if isactive:
+        if isactive is True:
             self.textbrowser_processlog.setStyleSheet(
                 'QTextBrowser { background-color: rgba(255, 0, 0, 127); }')
             self.pbar.setValue(0)

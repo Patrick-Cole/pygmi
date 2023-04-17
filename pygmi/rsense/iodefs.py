@@ -46,7 +46,6 @@ from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
 from natsort import natsorted
-# import contextily as ctx
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
@@ -929,11 +928,21 @@ class ExportBatch(ContextModule):
             return False
 
         ifile = self.indata['RasterFileList'][0]
-        dat = get_data(ifile, piter=self.piter,
-                       showprocesslog=self.showprocesslog,
-                       extscene='Bands Only', metaonly=True)
 
-        bnames = [i.dataid for i in dat]
+        if 'AST_' in ifile:
+            tmp = get_aster_list(self.indata['RasterFileList'])
+            ifile = tmp[0]
+            dat = []
+            for i in ifile:
+                dat += get_data(i, piter=self.piter,
+                                showprocesslog=self.showprocesslog,
+                                extscene='Bands Only', metaonly=True)
+        else:
+            dat = get_data(ifile, piter=self.piter,
+                           showprocesslog=self.showprocesslog,
+                           extscene='Bands Only', metaonly=True)
+
+        bnames = natsorted([i.dataid for i in dat])
 
         if 'Explained Variance Ratio' in bnames[0]:
             bnames = [i.split('Explained Variance Ratio')[0] for i in bnames]
@@ -1040,6 +1049,49 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
+def get_aster_list(flist):
+    """
+    Get ASTER files from a file list.
+
+    Parameters
+    ----------
+    flist : list
+        List of filenames.
+
+    Returns
+    -------
+    flist : list
+        List of filenames.
+
+    """
+    if isinstance(flist[0], list):
+        if 'AST_' in flist[0][0].filename:
+            return flist
+        return []
+
+    names = {}
+    for i in flist:
+        if os.path.basename(i)[:3] != 'AST':
+            continue
+
+        adate = os.path.basename(i).split('_')[2]
+        if adate not in names:
+            names[adate] = []
+        names[adate].append(i)
+
+    for adate in names.keys():
+        has_07xt = [True for i in names[adate] if '_07XT_' in i]
+        has_07 = [True for i in names[adate] if '_07_' in i]
+        if len(has_07xt) > 0 and len(has_07) > 0:
+            names[adate] = [i for i in names[adate] if '_07_' not in i]
+
+    flist = []
+    for adate in names:
+        flist.append(names[adate])
+
+    return flist
+
+
 def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
              alldata=False, tnames=None, metaonly=False):
     """
@@ -1078,9 +1130,9 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     showprocesslog('Importing', bfile)
 
     if 'AST_' in bfile and 'hdf' in bfile.lower():
-        dat = get_aster_hdf(ifile, piter)
+        dat = get_aster_hdf(ifile, piter, metaonly)
     elif 'AST_' in bfile and 'zip' in bfile.lower():
-        dat = get_aster_zip(ifile, piter, showprocesslog)
+        dat = get_aster_zip(ifile, piter, showprocesslog, metaonly)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
         dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata,
                           tnames=tnames)
@@ -1886,7 +1938,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
     return dat
 
 
-def get_aster_zip(ifile, piter=None, showprocesslog=print):
+def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
     """
     Get ASTER zip Data.
 
@@ -1954,14 +2006,15 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
-        rtmp = dataset.read(1)
 
         dat.append(Data())
-        dat[-1].data = rtmp
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
-        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        if dat[-1].data.mask.size == 1:
-            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+        if metaonly is False:
+            dat[-1].data = dataset.read(1)
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+            dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+            if dat[-1].data.mask.size == 1:
+                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
         dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
         dat[-1].nodata = nval
@@ -1986,7 +2039,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     return dat
 
 
-def get_aster_hdf(ifile, piter=None):
+def get_aster_hdf(ifile, piter=None, metaonly=False):
     """
     Get ASTER hdf Data.
 
@@ -2089,24 +2142,28 @@ def get_aster_hdf(ifile, piter=None):
         if ptype == 'L1T' and 'ImageData3B' in bfile:
             continue
 
+        dat.append(Data())
+
         dataset1 = rasterio.open(bfile)
         dataset = rasterio.vrt.WarpedVRT(dataset1)
-        # crs = dataset1.gcps[-1]
-        # breakpoint()
 
-        dat.append(Data())
-        dat[-1].data = dataset.read(1)
-        if ptype == '08':
-            dat[-1].data[dat[-1].data == 2000] = nval
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
-        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        if dat[-1].data.mask.size == 1:
-            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+        if metaonly is False:
+            dat[-1].data = dataset.read(1)
+            if ptype == '08':
+                dat[-1].data[dat[-1].data == 2000] = nval
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+            dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+            if dat[-1].data.mask.size == 1:
+                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].crs = dataset.crs
+
+        dataset.close()
+        dataset1.close()
 
         dat[-1].dataid = bfile.split(':')[-1]
         dat[-1].nodata = nval
-        dat[-1].set_transform(transform=dataset.transform)
-        dat[-1].crs = dataset.crs
         dat[-1].metadata['SolarElev'] = solarelev
         dat[-1].metadata['JulianDay'] = jdate
         dat[-1].metadata['CalendarDate'] = cdate
@@ -2125,8 +2182,6 @@ def get_aster_hdf(ifile, piter=None):
             if ptype == 'L1T' and 'ImageData' in ifile:
                 dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
                 calctoa = True
-        dataset.close()
-        dataset1.close()
 
     if not dat:
         dat = None
@@ -2417,6 +2472,9 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     ifiles = indata['RasterFileList']
 
+    if 'AST_' in ifiles[0]:
+        ifiles = get_aster_list(indata['RasterFileList'])
+
     filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
                  'GeoTiff': 'GTiff',
                  'ENVI': 'ENVI',
@@ -2431,26 +2489,37 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
     os.makedirs(odir, exist_ok=True)
 
     for ifile in ifiles:
-        showprocesslog('Processing '+os.path.basename(ifile))
+        if isinstance(ifile, str):
+            # showprocesslog('Processing '+os.path.basename(ifile))
+            dat = get_data(ifile, piter=piter,
+                           showprocesslog=showprocesslog, tnames=tnames,
+                           extscene='Bands Only')
+        elif isinstance(ifile, list) and 'RasterFileList' in indata:
+            dat = []
+            for jfile in ifile:
+                # showprocesslog('Processing '+os.path.basename(jfile))
+                dat += get_data(jfile, piter=piter,
+                                showprocesslog=showprocesslog, tnames=tnames,
+                                extscene='Bands Only')
+            ifile = jfile
         ofile = os.path.join(odir, os.path.basename(ifile))
         ofile = ofile[:-4]+'.tif'
 
         if tnames is not None:
-            ofile = ofile[:-4]+'_tern.tif'
+            ofile = ofile[:-4]
+            for i in tnames:
+                ofile += f'_{i[4:]}'
+            ofile += '_tern.tif'
 
-        if os.path.exists(ofile):
-            showprocesslog('Output file exists, skipping')
-            continue
-
-        dat = get_data(ifile, piter=piter,
-                       showprocesslog=showprocesslog, tnames=tnames,
-                       extscene='Bands Only')
+        # if os.path.exists(ofile):
+        #     showprocesslog('Output file exists, skipping')
+        #     continue
 
         odat = []
         if tnames is not None:
             for i in tnames:
                 for j in dat:
-                    if i in j.dataid:
+                    if i == j.dataid:
                         odat.append(j)
                         break
         else:
@@ -2462,7 +2531,6 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
 def _test5P():
     """Test routine."""
-    import sys
     import matplotlib.pyplot as plt
 
     sfile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P\CCUS_Sept2021_25kmbuffer.shp"
@@ -2485,11 +2553,12 @@ def _test5P():
     plt.figure(dpi=150)
     ax = plt.gca()
     shp.plot(ax=ax, fc='none', ec='black')
-    try:
-        ctx.add_basemap(ax, crs=shp.crs,
-                        source=ctx.providers.OpenStreetMap.Mapnik)
-    except:
-        print('No internet')
+
+    # try:
+    #     ctx.add_basemap(ax, crs=shp.crs,
+    #                     source=ctx.providers.OpenStreetMap.Mapnik)
+    # except:
+    #     print('No internet')
 
     tmp.outdata['Vector']['Point'].plot(ax=ax, column='data')
     plt.show()
@@ -2518,7 +2587,7 @@ def _testfn2():
     """Test routine."""
     import sys
 
-    idir = r'e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\full'
+    idir = r'd:\aster'
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -2533,26 +2602,5 @@ def _testfn2():
     tmp2.run()
 
 
-def _testfn3():
-    """Test routine."""
-    idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2019"
-
-    ifiles = glob.glob(idir+'//**/*.xml', recursive=True)
-
-    ifiles = [i for i in ifiles if 'aux' not in i]
-    ifiles = [i for i in ifiles if 'MUL' in i]
-
-    for ifile in ifiles:
-        print(os.path.basename(ifile))
-        ofile = os.path.basename(ifile)[:-4]+'.tif'
-        ofile = os.path.join(idir, ofile)
-
-        if os.path.exists(ofile):
-            continue
-
-        dat = get_data(ifile, extscene='WorldView')
-        export_raster(ofile, dat, compression='ZSTD')
-
-
 if __name__ == "__main__":
-    _test5P()
+    _testfn2()
