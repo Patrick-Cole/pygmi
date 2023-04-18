@@ -1817,6 +1817,7 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
     data2.data = data2.data.astype(data.data.dtype)
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
+    data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
 
     data2.data = np.ma.masked_equal(data2.data, data.nodata)
     data2.nodata = data.nodata
