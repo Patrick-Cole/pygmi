@@ -230,8 +230,7 @@ class MNF(BasicModule):
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
                 dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog,
-                               extscene='Bands Only')
+                               showprocesslog=self.showprocesslog)
                 odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           noisetxt=noise,
@@ -436,8 +435,7 @@ class PCA(BasicModule):
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
                 dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog,
-                               extscene='Bands Only')
+                               showprocesslog=self.showprocesslog)
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           fwdonly=fwdonly)
@@ -776,8 +774,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
     for ifile in flist:
         pprint('Fitting '+os.path.basename(ifile))
 
-        dat = get_data(ifile, piter=piter, showprocesslog=pprint,
-                       extscene='Bands Only')
+        dat = get_data(ifile, piter=piter, showprocesslog=pprint)
 
         x2d = []
         maskall = []
@@ -807,8 +804,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
     for ifile in flist:
         pprint('Transforming '+os.path.basename(ifile))
 
-        dat = get_data(ifile, piter=piter, showprocesslog=pprint,
-                       extscene='Bands Only')
+        dat = get_data(ifile, piter=piter, showprocesslog=pprint)
 
         x2d = []
         maskall = []
@@ -877,7 +873,7 @@ def _testfn():
 
     ncmps = 10
 
-    dat = get_data(ifile, extscene='Hyperion')
+    dat = get_data(ifile)
 
     pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
 
@@ -906,15 +902,12 @@ def _testfn2():
     rcParams['figure.dpi'] = 150
 
     # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
-    # extscene = 'Sentinel-2 Bands Only'
     ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
-    extscene = None
-
     ifile = r'C:/Workdata/Remote Sensing/Landsat/LC09_L1TP_173080_20211110_20220119_02_T1.tar'
     # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
 
-    dat = get_data(ifile, extscene=extscene)
-    # dat2 = get_data(ifile2, extscene=extscene)
+    dat = get_data(ifile)
+    # dat2 = get_data(ifile2)
 
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 

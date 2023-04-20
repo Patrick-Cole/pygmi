@@ -1222,14 +1222,12 @@ def _testfn():
     import matplotlib.pyplot as plt
     import winsound
 
-    extscene = None
-
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
     ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
     ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
-    dat = iodefs.get_data(ifile, extscene=extscene)
+    dat = iodefs.get_data(ifile)
 
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
@@ -1280,8 +1278,8 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    extscene = 'Sentinel-2'
-    dat = iodefs.get_data(ifile, extscene=extscene)
+
+    dat = iodefs.get_data(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
 

@@ -246,8 +246,7 @@ class DataLayerStack(BasicModule):
             for ifile in ifiles:
                 self.showprocesslog('Processing '+os.path.basename(ifile))
                 dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog,
-                               extscene='Bands Only')
+                               showprocesslog=self.showprocesslog)
                 for i in dat:
                     i.data = i.data.astype(np.float32)
                 self.indata['Raster'] += dat

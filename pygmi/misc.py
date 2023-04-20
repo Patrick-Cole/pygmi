@@ -26,13 +26,14 @@
 Misc is a collection of routines which can be used in PyGMI in general.
 """
 
+import os
 import sys
 import types
 import time
 import psutil
 import numpy as np
 from matplotlib import ticker
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 PBAR_STYLE = """
@@ -137,6 +138,8 @@ class BasicModule(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.ifile = ''
+        self.ipth = os.path.dirname(__file__)+r'/images/'
+        self.setWindowIcon(QtGui.QIcon(self.ipth+'logo256.ico'))
 
     def settings(self, nodialog=False):
         """
@@ -239,6 +242,9 @@ class ContextModule(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+
+        self.ipth = os.path.dirname(__file__)+r'/images/'
+        self.setWindowIcon(QtGui.QIcon(self.ipth+'logo256.ico'))
 
     def run(self):
         """

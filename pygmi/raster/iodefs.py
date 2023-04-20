@@ -523,6 +523,12 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
+
+    # Exclusions
+    if 'AG1' in ifile and 'h5' in ifile.lower():
+        return None
+
+
     if piter is None:
         piter = ProgressBarText().iter
 
@@ -597,21 +603,25 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
     dmeta = {}
     rdate = None
-    with rasterio.open(ifile, driver=driver) as dataset:
-        if dataset is None:
-            return None
+    try:
+        with rasterio.open(ifile, driver=driver) as dataset:
+            if dataset is None:
+                return None
+            # allns = dataset.tag_namespaces()
 
-        # allns = dataset.tag_namespaces()
+            gmeta = dataset.tags()
+            istruct = dataset.tags(ns='IMAGE_STRUCTURE')
+            driver = dataset.driver
+            if 'TIFFTAG_DATETIME' in gmeta:
+                dtimestr = gmeta['TIFFTAG_DATETIME']
+                rdate = datetime.datetime.strptime(dtimestr,
+                                                   '%Y:%m:%d %H:%M:%S')
 
-        gmeta = dataset.tags()
-        istruct = dataset.tags(ns='IMAGE_STRUCTURE')
-        driver = dataset.driver
-        if 'TIFFTAG_DATETIME' in gmeta:
-            dtimestr = gmeta['TIFFTAG_DATETIME']
-            rdate = datetime.datetime.strptime(dtimestr, '%Y:%m:%d %H:%M:%S')
+            if driver == 'ENVI':
+                dmeta = dataset.tags(ns='ENVI')
 
-        if driver == 'ENVI':
-            dmeta = dataset.tags(ns='ENVI')
+    except rasterio.errors.RasterioIOError:
+        return None
 
     if custom_wkt == '' and dataset.crs is not None:
         custom_wkt = dataset.crs.to_wkt()

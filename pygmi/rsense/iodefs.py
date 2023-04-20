@@ -156,11 +156,54 @@ ESUN = [1848, 1549, 1114, 225.4, 86.63, 81.85, 74.85, 66.49, 59.85]
 class ImportData(BasicModule):
     """Import Data - Interfaces with rasterio routines."""
 
-    def __init__(self, parent=None, extscene=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.filt = ''
-        self.extscene = extscene
+
+        self.sfile = QtWidgets.QLineEdit('')
+        self.combo = QtWidgets.QListWidget()
+        self.ftype = QtWidgets.QLabel('File Type:')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        pb_sfile = QtWidgets.QPushButton(' Filename')
+
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_sfile.setIcon(icon)
+
+        self.setWindowTitle('Import Satellite Data')
+
+        gridlayout = QtWidgets.QGridLayout(self)
+
+        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
+        gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
+        gridlayout.addWidget(self.ftype, 2, 0, 1, 2)
+        gridlayout.addWidget(self.combo, 3, 0, 1, 2)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+
+        gridlayout.addWidget(buttonbox, 9, 0, 1, 2)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_sfile.pressed.connect(self.get_sfile)
 
     def settings(self, nodialog=False):
         """
@@ -177,35 +220,64 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
-        piter = self.parent.pbar.iter
+        if not nodialog:
+            tmp = self.exec_()
 
-        if self.extscene is None:
+            if tmp != 1:
+                return tmp
+
+        tnames = []
+        for i in range(self.combo.count()):
+            item = self.combo.item(i)
+            if item.isSelected():
+                tnames.append(str(item.text()))
+
+        if tnames == []:
             return False
 
-        if not nodialog:
-            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', self.extscene)
-            if self.ifile == '':
-                return False
         os.chdir(os.path.dirname(self.ifile))
 
-        dat = get_data(self.ifile, piter, self.showprocesslog, self.extscene)
+        dat = get_data(self.ifile, self.piter, self.showprocesslog, tnames)
 
         if dat is None:
-            if self.filt == 'hdf (*.hdf *.h5)':
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the data.'
-                                              'Currently only ASTER'
-                                              'is supported.',
-                                              QtWidgets.QMessageBox.Ok)
-            else:
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the data.',
-                                              QtWidgets.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the data.',
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
         output_type = 'Raster'
         self.outdata[output_type] = dat
+
+        return True
+
+    def get_sfile(self):
+        """Get the satellite filename."""
+        ext = ('Common formats (*.hdf *.zip *.tar *.tar.gz *.xml *.h5);;')
+
+        self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        # ext = ('ESRI Shapefile (*.shp);;')
+
+        if not self.ifile:
+            return False
+
+        self.sfile.setText(self.ifile)
+
+        self.indata['Raster'] = get_data(self.ifile, self.piter,
+                                         self.showprocesslog, metaonly=True)
+
+        tmp = []
+        for i in self.indata['Raster']:
+            tmp.append(i.dataid)
+
+        self.combo.addItems(tmp)
+
+        for i in range(self.combo.count()):
+            item = self.combo.item(i)
+
+            if item.text()[0] == 'B':
+                item.setSelected(True)
 
         return True
 
@@ -226,7 +298,6 @@ class ImportData(BasicModule):
         """
         self.ifile = projdata['ifile']
         self.filt = projdata['filt']
-        self.extscene = projdata['extscene']
 
         chk = self.settings(True)
 
@@ -246,7 +317,6 @@ class ImportData(BasicModule):
 
         projdata['ifile'] = self.ifile
         projdata['filt'] = self.filt
-        projdata['extscene'] = self.extscene
 
         return projdata
 
@@ -744,80 +814,6 @@ class ImportSentinel5P(BasicModule):
         return gdf
 
 
-class ImportShapeData(BasicModule):
-    """Import Shapefile Data."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if not nodialog:
-            ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
-
-            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                                  'Open File',
-                                                                  '.', ext)
-            if self.ifile == '':
-                return False
-        os.chdir(os.path.dirname(self.ifile))
-
-        gdf = gpd.read_file(self.ifile)
-        dat = {gdf.geom_type.iloc[0]: gdf}
-
-        self.outdata['Vector'] = dat
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        chk = self.settings(True)
-
-        return chk
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-        projdata['ifile'] = self.ifile
-
-        return projdata
-
-
 class ExportBatch(ContextModule):
     """Export Raster File List."""
 
@@ -936,11 +932,11 @@ class ExportBatch(ContextModule):
             for i in ifile:
                 dat += get_data(i, piter=self.piter,
                                 showprocesslog=self.showprocesslog,
-                                extscene='Bands Only', metaonly=True)
+                                metaonly=True)
         else:
             dat = get_data(ifile, piter=self.piter,
                            showprocesslog=self.showprocesslog,
-                           extscene='Bands Only', metaonly=True)
+                           metaonly=True)
 
         bnames = natsorted([i.dataid for i in dat])
 
@@ -1092,8 +1088,8 @@ def get_aster_list(flist):
     return flist
 
 
-def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
-             alldata=False, tnames=None, metaonly=False):
+def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
+             metaonly=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1107,14 +1103,10 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
-    extscene : str or None, optional
-        String used currently to give an option to limit bands in Sentinel-2.
-        The default is None.
-    alldata : bool, optional
-        Used to import all data. Currently used for Landsat. The default is
-        False.
     tnames : list, optional
-        list of band names to import, in order. the default is None.
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1123,37 +1115,33 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     """
     ifile = ifile[:]
     bfile = os.path.basename(ifile)
-
-    if extscene is None:
-        extscene = ['']
+    ext = os.path.splitext(ifile)[1].lower()
 
     showprocesslog('Importing', bfile)
+    dtree = {}
+    if '.xml' in bfile.lower():
+        dtree = etree_to_dict(ET.parse(ifile).getroot())
 
-    if 'AST_' in bfile and 'hdf' in bfile.lower():
-        dat = get_aster_hdf(ifile, piter, metaonly)
-    elif 'AST_' in bfile and 'zip' in bfile.lower():
-        dat = get_aster_zip(ifile, piter, showprocesslog, metaonly)
-    elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
-        dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata,
-                          tnames=tnames, metaonly=metaonly)
-        if dat is None and '.tar' not in ifile:
-            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
-                             tnames=tnames)
-    elif (('.xml' in bfile and '.SAFE' in ifile) or
-          'Sentinel-2' in extscene or
-          ('S2A_' in bfile and 'zip' in bfile.lower()) or
-          ('S2B_' in bfile and 'zip' in bfile.lower())):
-        dat = get_sentinel2(ifile, piter, showprocesslog, extscene, tnames,
-                            metaonly)
-    elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
+    if 'AST_' in bfile and ext == '.hdf':
+        dat = get_aster_hdf(ifile, piter, showprocesslog, tnames, metaonly)
+    elif 'AST_' in bfile and ext == '.zip':
+        dat = get_aster_zip(ifile, piter, showprocesslog, tnames, metaonly)
+    elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
+          ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
+        dat = get_landsat(ifile, piter, showprocesslog, tnames, metaonly)
+    elif ((ext == '.xml' and '.SAFE' in ifile) or
+          ('S2A_' in bfile and ext == '.zip') or
+          ('S2B_' in bfile and ext == '.zip')):
+        dat = get_sentinel2(ifile, piter, showprocesslog, tnames, metaonly)
+    elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
           '.006.' in bfile):
-        dat = get_modisv6(ifile, piter)
-    elif 'AG1' in bfile and 'h5' in bfile.lower():
-        dat = get_aster_ged(ifile, piter)
-    elif 'Hyperion' in extscene:
-        dat = get_hyperion(ifile, piter, showprocesslog)
-    elif 'WorldView' in extscene:
-        dat = get_worldview(ifile, piter, showprocesslog)
+        dat = get_modisv6(ifile, piter, showprocesslog, tnames, metaonly)
+    elif 'AG1' in bfile and ext == 'h5':
+        dat = get_aster_ged(ifile, piter, showprocesslog, tnames, metaonly)
+    elif ext == '.zip' and 'EO1H' in bfile:
+        dat = get_hyperion(ifile, piter, showprocesslog, tnames, metaonly)
+    elif ext == '.xml' and 'isd' in dtree:
+        dat = get_worldview(ifile, piter, showprocesslog, tnames, metaonly)
     else:
         dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
                          tnames=tnames, metaonly=metaonly)
@@ -1172,7 +1160,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     return dat
 
 
-def get_modisv6(ifile, piter=None):
+def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
+                metaonly=False):
     """
     Get MODIS v006 data.
 
@@ -1182,6 +1171,12 @@ def get_modisv6(ifile, piter=None):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1226,6 +1221,9 @@ def get_modisv6(ifile, piter=None):
         if bandid is None and ':' in ifile2:
             bandid = ifile2[ifile2.rindex(':')+1:]
 
+        if tnames is not None and bandid not in tnames:
+            continue
+
         if 'scale_factor' in meta:
             scale = float(meta['scale_factor'])
         else:
@@ -1242,22 +1240,23 @@ def get_modisv6(ifile, piter=None):
         else:
             offset = 0
 
-        rtmp2 = dataset.read(1)
-        rtmp2 = rtmp2.astype(float)
-
-        if nval == 32767:
-            mask = (rtmp2 > 32760)
-            lulc = np.zeros_like(rtmp2)
-            lulc[mask] = rtmp2[mask]-32760
-            lulc = np.ma.masked_equal(lulc, 0)
-        else:
-            mask = (rtmp2 == nval)
-
-        rtmp2 = rtmp2*scale+offset
-        rtmp2[mask] = 1e+20
-
         dat.append(Data())
-        dat[-1].data = np.ma.array(rtmp2, mask=mask)
+        if metaonly is False:
+            rtmp2 = dataset.read(1)
+            rtmp2 = rtmp2.astype(float)
+
+            if nval == 32767:
+                mask = (rtmp2 > 32760)
+                lulc = np.zeros_like(rtmp2)
+                lulc[mask] = rtmp2[mask]-32760
+                lulc = np.ma.masked_equal(lulc, 0)
+            else:
+                mask = (rtmp2 == nval)
+
+            rtmp2 = rtmp2*scale+offset
+            rtmp2[mask] = 1e+20
+
+            dat[-1].data = np.ma.array(rtmp2, mask=mask)
 
         dat[-1].dataid = bandid
         dat[-1].nodata = 1e+20
@@ -1278,8 +1277,8 @@ def get_modisv6(ifile, piter=None):
     return dat
 
 
-def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
-                tnames=None, metaonly=False):
+def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
+                metaonly=False):
     """
     Get Landsat Data.
 
@@ -1291,8 +1290,10 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
-    alldata : bool, optional
-        Used to import all data. The default is False.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1354,14 +1355,11 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
     elif '_MTL.txt' in ifilet:
         ifile = ifilet
     else:
-        showprocesslog('Input needs to be tar.gz or _MTL.txt for Landsat. '
+        showprocesslog('Input needs to be tar or _MTL.txt for Landsat. '
                        'Trying regular import')
         return None
 
-    if alldata is True:
-        files = glob.glob(ifile[:-7]+'*.tif')
-    else:
-        files = glob.glob(ifile[:-7]+'*[0-9].tif')
+    files = glob.glob(ifile[:-7]+'*.tif')
 
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
         if 'LC08' in ifile or 'LC09' in ifile:
@@ -1456,7 +1454,8 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
     return dat
 
 
-def get_worldview(ifilet, piter=None, showprocesslog=print):
+def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
     """
     Get WorldView Data.
 
@@ -1468,6 +1467,10 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1563,10 +1566,16 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     dat = []
     nval = 0
     for i in range(len(satbands)):
+        bname = f'Band {i+1}'
+        if tnames is not None and bname not in tnames:
+            continue
+
         fext = str(i+1)
         dat.append(Data())
-        dat[-1].data = np.zeros((rmax, cmax))
-        dat[-1].dataid = f'Band {i+1}'
+        if metaonly is False:
+            dat[-1].data = np.zeros((rmax, cmax))
+
+        dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].set_transform(xdim, xmin, ydim, ymax)
 
@@ -1588,9 +1597,10 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
         dataset = rasterio.open(ifile)
 
         for i in piter(dataset.indexes):
-            rtmp = dataset.read(i)
+            if metaonly is False:
+                dat[i-1].data[rmin:rmax+1, cmin:cmax+1] = dataset.read(i)
+
             bmeta = dataset.tags(i)
-            dat[i-1].data[rmin:rmax+1, cmin:cmax+1] = rtmp
             dat[i-1].crs = dataset.crs
             dat[i-1].filename = ifile
         dataset.close()
@@ -1598,6 +1608,8 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     showprocesslog('Calculating radiance and reflectance...')
     indx = -1
     for i in piter(dat):
+        if metaonly is True:
+            continue
         indx += 1
         mask = (i.data == nval)
 
@@ -1638,6 +1650,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
         tmp = dES**2 * np.pi / (Esun[bnum2name[indx]] * np.cos(szenith))
         tmp = tmp * scale / bwidth
+
         idata = i.data
         i.data = ne.evaluate('idata * tmp')
 
@@ -1650,9 +1663,10 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     return dat
 
 
-def get_hyperion(ifile, piter=None, showprocesslog=print):
+def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
+                 metaonly=False):
     """
-    Get Landsat Data.
+    Get Hyperion Data.
 
     Parameters
     ----------
@@ -1662,6 +1676,10 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1783,6 +1801,10 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
         if 58 <= bandno <= 78:
             continue
 
+        bname = f'Band {bandno}: {wavelength[bandno-1]} nm'
+        if tnames is not None and bname not in tnames:
+            continue
+
         showprocesslog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
         dataset = rasterio.open(os.path.join(idir, ifile2))
 
@@ -1790,28 +1812,30 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
             showprocesslog(f'Problem with band {bandno}')
             continue
 
-        rtmp = dataset.read(1)
-
-        if bandno <= 70:
-            rtmp = rtmp / scale_vnir
-        else:
-            rtmp = rtmp / scale_swir
-
         dat.append(Data())
-        dat[-1].data = rtmp
 
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        if dat[-1].data.mask.size == 1:
-            dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
-                                 dat[-1].data.mask)
+        if metaonly is False:
+            rtmp = dataset.read(1)
 
-        if maskall is None:
-            maskall = dat[-1].data.mask
-        else:
-            maskall = np.logical_and(maskall, dat[-1].data.mask)
+            if bandno <= 70:
+                rtmp = rtmp / scale_vnir
+            else:
+                rtmp = rtmp / scale_swir
 
-        dat[-1].dataid = f'Band {bandno}: {wavelength[bandno-1]} nm'
+            dat[-1].data = rtmp
+
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+            dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+            if dat[-1].data.mask.size == 1:
+                dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
+                                     dat[-1].data.mask)
+
+            if maskall is None:
+                maskall = dat[-1].data.mask
+            else:
+                maskall = np.logical_and(maskall, dat[-1].data.mask)
+
+        dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].crs = dataset.crs
         dat[-1].set_transform(transform=dataset.transform)
@@ -1842,8 +1866,8 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     return dat
 
 
-def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
-                  tnames=None, metaonly=False):
+def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
     """
     Get Sentinel-2 Data.
 
@@ -1855,10 +1879,10 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
-    extscene : str or None
-        String used currently to give an option to limit bands in Sentinel-2
     tnames : list, optional
-        list of band names to import, in order. the default is None.
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -1887,13 +1911,9 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
             continue
 
         for i in piter(dataset.indexes):
-            bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bmeta = dataset.tags(i)
 
-            if ('Bands Only' in extscene and
-                    'central wavelength' not in bname.lower()):
-                continue
-
+            bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bname = bname.replace(',', ' ')
             if tnames is not None and bname not in tnames:
                 continue
@@ -1938,7 +1958,8 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
     return dat
 
 
-def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
+def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
     """
     Get ASTER zip Data.
 
@@ -1950,6 +1971,10 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
         Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -2000,6 +2025,10 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
         if zfile.lower()[-4:] != '.tif':
             continue
 
+        bname = zfile[zfile.index('Band'):zfile.index('.tif')]
+        if tnames is not None and bname not in tnames:
+            continue
+
         dataset1 = rasterio.open(os.path.join(idir, zfile))
         if dataset1 is None:
             showprocesslog('Problem with '+zfile)
@@ -2016,7 +2045,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-        dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
+        dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].crs = dataset.crs
         dat[-1].set_transform(transform=dataset.transform)
@@ -2039,7 +2068,8 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, metaonly=False):
     return dat
 
 
-def get_aster_hdf(ifile, piter=None, metaonly=False):
+def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
     """
     Get ASTER hdf Data.
 
@@ -2049,6 +2079,12 @@ def get_aster_hdf(ifile, piter=None, metaonly=False):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -2142,6 +2178,10 @@ def get_aster_hdf(ifile, piter=None, metaonly=False):
         if ptype == 'L1T' and 'ImageData3B' in bfile:
             continue
 
+        bname = bfile.split(':')[-1]
+        if tnames is not None and bname not in tnames:
+            continue
+
         dat.append(Data())
 
         dataset1 = rasterio.open(bfile)
@@ -2162,7 +2202,7 @@ def get_aster_hdf(ifile, piter=None, metaonly=False):
         dataset.close()
         dataset1.close()
 
-        dat[-1].dataid = bfile.split(':')[-1]
+        dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].metadata['SolarElev'] = solarelev
         dat[-1].metadata['JulianDay'] = jdate
@@ -2192,7 +2232,8 @@ def get_aster_hdf(ifile, piter=None, metaonly=False):
     return dat
 
 
-def get_aster_ged(ifile, piter=None):
+def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
     """
     Get ASTER GED data.
 
@@ -2201,7 +2242,13 @@ def get_aster_ged(ifile, piter=None):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is None
+        Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
@@ -2231,33 +2278,39 @@ def get_aster_ged(ifile, piter=None):
             bandid = 'Observations'
             units = 'number per pixel'
 
-        rtmp2 = dataset.read()
-        if 'Latitude' in ifile2:
-            ymax = rtmp2.max()
-            ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
+        if tnames is not None and bandid not in tnames:
             continue
-
-        if 'Longitude' in ifile2:
-            xmin = rtmp2.min()
-            xdim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[2])
-            continue
-
-        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
-            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
 
         nbands = 1
-        if rtmp2.ndim == 3:
-            nbands = rtmp2.shape[0]
+
+        if metaonly is False:
+            rtmp2 = dataset.read()
+            if 'Latitude' in ifile2:
+                ymax = rtmp2.max()
+                ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
+                continue
+
+            if 'Longitude' in ifile2:
+                xmin = rtmp2.min()
+                xdim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[2])
+                continue
+
+            if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
+                rtmp2 = np.transpose(rtmp2, (2, 0, 1))
+
+            if rtmp2.ndim == 3:
+                nbands = rtmp2.shape[0]
 
         for i2 in range(nbands):
             nval = -9999
             i += 1
 
             dat.append(Data())
-            if rtmp2.ndim == 3:
-                dat[i].data = rtmp2[i2]
-            else:
-                dat[i].data = rtmp2
+            if metaonly is False:
+                if rtmp2.ndim == 3:
+                    dat[i].data = rtmp2[i2]
+                else:
+                    dat[i].data = rtmp2
 
             dat[i].data = np.ma.masked_invalid(dat[i].data)
             dat[i].data.mask = (np.ma.getmaskarray(dat[i].data)
@@ -2293,8 +2346,9 @@ def get_aster_ged(ifile, piter=None):
             dat[i].units = units
         dataset.close()
 
-    for i in dat:
-        i.set_transform(xdim, xmin, ydim, ymax)
+    if metaonly is False:
+        for i in dat:
+            i.set_transform(xdim, xmin, ydim, ymax)
 
     return dat
 
@@ -2492,15 +2546,13 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         if isinstance(ifile, str):
             # showprocesslog('Processing '+os.path.basename(ifile))
             dat = get_data(ifile, piter=piter,
-                           showprocesslog=showprocesslog, tnames=tnames,
-                           extscene='Bands Only')
+                           showprocesslog=showprocesslog, tnames=tnames)
         elif isinstance(ifile, list) and 'RasterFileList' in indata:
             dat = []
             for jfile in ifile:
                 # showprocesslog('Processing '+os.path.basename(jfile))
                 dat += get_data(jfile, piter=piter,
-                                showprocesslog=showprocesslog, tnames=tnames,
-                                extscene='Bands Only')
+                                showprocesslog=showprocesslog, tnames=tnames)
             ifile = jfile
         ofile = os.path.join(odir, os.path.basename(ifile))
         ofile = ofile[:-4]+'.tif'
@@ -2568,11 +2620,9 @@ def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    extscene = None
-
     ifile = r"D:\ASTER\LC09_L2SP_170078_20220810_20230403_02_T1.tar"
 
-    dat = get_data(ifile, extscene=extscene)
+    dat = get_data(ifile)
 
     for i in dat:
         plt.figure(dpi=150)
@@ -2603,6 +2653,39 @@ def _testfn2():
     tmp2.indata = dat
     tmp2.run()
 
+def _testfn3():
+    """Test routine."""
+    import sys
+    import matplotlib.pyplot as plt
+
+    metaonly = False
+    # metaonly = True
+
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122255_9222.zip"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122208_16894.hdf"
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    os.chdir(r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import')
+    tmp1 = ImportData()
+    tmp1.settings()
+
+    dat = tmp1.outdata['Raster']
+
+    if metaonly is False:
+        for i in dat:
+            plt.figure(dpi=150)
+            plt.title(i.dataid)
+            plt.imshow(i.data)
+            plt.colorbar()
+            plt.show()
+
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn3()

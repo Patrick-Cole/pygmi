@@ -59,43 +59,13 @@ class MenuWidget():
 
         self.menu3 = self.menu.addMenu('Import Data')
 
-        self.action_import_aster = QtWidgets.QAction('Import ASTER')
-        self.menu3.addAction(self.action_import_aster)
-        self.action_import_aster.triggered.connect(self.import_aster)
-
-        self.action_import_landsat = QtWidgets.QAction('Import Landsat 4 to 9')
-        self.menu3.addAction(self.action_import_landsat)
-        self.action_import_landsat.triggered.connect(self.import_landsat)
-
-        self.action_import_sentinel2 = QtWidgets.QAction('Import Sentinel-2')
-        self.menu3.addAction(self.action_import_sentinel2)
-        self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
-
-        self.action_import_sentinel2b = QtWidgets.QAction('Import Sentinel-2 '
-                                                          '(bands only)')
-        self.menu3.addAction(self.action_import_sentinel2b)
-        self.action_import_sentinel2b.triggered.connect(self.import_sentinel2b)
+        self.action_import_sat = QtWidgets.QAction('Import Satellite Data')
+        self.menu3.addAction(self.action_import_sat)
+        self.action_import_sat.triggered.connect(self.import_sat)
 
         self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
         self.menu3.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
-
-        self.action_import_modis = QtWidgets.QAction('Import MODIS v6')
-        self.menu3.addAction(self.action_import_modis)
-        self.action_import_modis.triggered.connect(self.import_modis)
-
-        self.action_import_hyperion = QtWidgets.QAction('Import Hyperion L1T')
-        self.menu3.addAction(self.action_import_hyperion)
-        self.action_import_hyperion.triggered.connect(self.import_hyperion)
-
-        self.action_import_wv = QtWidgets.QAction('Import WorldView Tiles')
-        self.menu3.addAction(self.action_import_wv)
-        self.action_import_wv.triggered.connect(self.import_wv)
-
-        self.action_import_ged = QtWidgets.QAction('Import ASTER Global '
-                                                   'Emissivity Database')
-        self.menu3.addAction(self.action_import_ged)
-        self.action_import_ged.triggered.connect(self.import_ged)
 
         self.menu3.addSeparator()
 
@@ -218,46 +188,9 @@ class MenuWidget():
         self.parent.item_insert('Io', 'Import Sentinel-5P',
                                 iodefs.ImportSentinel5P)
 
-    def import_sentinel2(self):
-        """Import Sentinel 2 data."""
-        self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                extscene='Sentinel-2 (*.xml *.zip);;')
-
-    def import_sentinel2b(self):
-        """Import Sentinel 2 data, bands only."""
-        self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                extscene='Sentinel-2 Bands Only (*.xml *.zip);;')
-
-    def import_modis(self):
-        """Import MODIS data."""
-        self.parent.item_insert('Io', 'Import MODIS v6', iodefs.ImportData,
-                                extscene='MODIS (*.hdf);;')
-
-    def import_aster(self):
-        """Import ASTER HDF data."""
-        self.parent.item_insert('Io', 'Import ASTER', iodefs.ImportData,
-                                extscene='ASTER (AST*.hdf AST*.zip);;')
-
-    def import_ged(self):
-        """Import HDF data."""
-        self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
-                                iodefs.ImportData,
-                                extscene='h5 (*.h5);;')
-
-    def import_landsat(self):
-        """Import Landsat data."""
-        self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
-                                extscene='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
-
-    def import_hyperion(self):
-        """Import Hyperion data."""
-        self.parent.item_insert('Io', 'Import Hyperion L1T', iodefs.ImportData,
-                                extscene='Hyperion L1T (*.zip);;')
-
-    def import_wv(self):
-        """Import WorldView data."""
-        self.parent.item_insert('Io', 'Import WorldView', iodefs.ImportData,
-                                extscene='WorldView (*.xml);;')
+    def import_sat(self):
+        """Import Satellite data."""
+        self.parent.item_insert('Io', 'Import Satellite', iodefs.ImportData)
 
     def batch_list(self):
         """Import batch list."""
