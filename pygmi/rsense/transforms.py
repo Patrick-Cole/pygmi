@@ -236,11 +236,21 @@ class MNF(BasicModule):
             noise = 'quad'
 
         if 'RasterFileList' in self.indata:
-            odir = os.path.join(os.path.dirname(flist[0]), 'MNF')
+            if isinstance(flist[0], list):
+                filename = flist[0][0].filename
+            else:
+                filename = flist[0].filename
+
+            odir = os.path.join(os.path.dirname(filename), 'MNF')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                self.showprocesslog('Processing '+os.path.basename(ifile))
+                if isinstance(ifile, list):
+                    filename = ifile[0].filename
+                else:
+                    filename = ifile.filename
+
+                self.showprocesslog('Processing '+os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
                                           showprocesslog=self.showprocesslog)
@@ -249,7 +259,7 @@ class MNF(BasicModule):
                                           noisetxt=noise,
                                           fwdonly=self.cb_fwdonly.isChecked())
 
-                ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
+                ofile = os.path.basename(filename).split('.')[0] + '_mnf.tif'
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
@@ -1004,8 +1014,8 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    tmp2 = PCA()
-    # tmp2 = MNF()
+    # tmp2 = PCA()
+    tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 
