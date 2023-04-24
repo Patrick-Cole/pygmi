@@ -1151,7 +1151,7 @@ def get_aster_list(flist):
     return flist
 
 
-def get_landsat_list(flist, sensor, allsats=False):
+def get_landsat_list(flist, sensor=None, allsats=False):
     """
     Get Landsat files from a file list.
 
@@ -1172,9 +1172,8 @@ def get_landsat_list(flist, sensor, allsats=False):
             return flist
         return []
 
-    if allsats is True:
+    if allsats is True or sensor is None:
         fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
-
     elif sensor == 'Landsat 8 and 9 (OLI)':
         fid = ['LC08', 'LC09']
     elif sensor == 'Landsat 7 (ETM+)':
@@ -1187,7 +1186,7 @@ def get_landsat_list(flist, sensor, allsats=False):
     flist2 = []
     for i in flist:
         for j in fid:
-            if j.fid not in i.sensor:
+            if j not in i.sensor:
                 continue
             if '.tif' in i.filename:
                 continue
@@ -1218,7 +1217,7 @@ def get_sentinel_list(flist):
 
     flist2 = []
     for i in flist:
-        if 'SENTINEL-2' not in i.sensor:
+        if 'Sentinel-2' not in i.sensor:
             continue
         flist2.append(i)
 

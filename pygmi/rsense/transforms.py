@@ -221,7 +221,7 @@ class MNF(BasicModule):
             if 'ASTER' in sensor:
                 flist = get_aster_list(flist)
             elif 'Landsat' in sensor:
-                flist = get_landsat_list(flist, sensor)
+                flist = get_landsat_list(flist)
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
 
@@ -449,7 +449,7 @@ class PCA(BasicModule):
             if 'ASTER' in sensor:
                 flist = get_aster_list(flist)
             elif 'Landsat' in sensor:
-                flist = get_landsat_list(flist, sensor)
+                flist = get_landsat_list(flist)
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
 
