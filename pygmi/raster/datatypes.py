@@ -313,13 +313,13 @@ class RasterMeta():
         self.bands = []
         self.tnames = []
 
-    def fromData(self, data):
+    def fromData(self, dat):
         """
         Populate class from a Data class.
 
         Parameters
         ----------
-        data : Data
+        dat : Data
             PyGMI data object.
 
         Returns
@@ -327,6 +327,7 @@ class RasterMeta():
         None.
 
         """
+        data = dat[0]
         self.sensor = data.metadata['Raster']['Sensor']
         self.extent = data.extent
         self.bounds = data.bounds
@@ -339,3 +340,16 @@ class RasterMeta():
         self.transform = data.transform
         self.crs = data.crs
         self.datetime = data.datetime
+
+        self.bands = []
+        self.tnames = []
+        for i in dat:
+            self.bands.append(i.dataid)
+            if i.dataid[0] == 'B':
+                self.tnames.append(i.dataid)
+
+        if 'ASTER 07' in self.sensor:
+            if len(self.bands) == 3:
+                self.sensor += 'v1'
+            else:
+                self.sensor += 'v2'

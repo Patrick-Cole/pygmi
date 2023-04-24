@@ -429,7 +429,7 @@ class ImportBatch(BasicModule):
         return True
 
     def get_sfile(self):
-        """Get the satellite filename."""
+        """Get the satellite filenames."""
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, 'Select Directory')
 
@@ -452,12 +452,7 @@ class ImportBatch(BasicModule):
             if dat is None:
                 continue
             datm = RasterMeta()
-            datm.fromData(dat[0])
-
-            for i in dat:
-                datm.bands.append(i.dataid)
-                if i.dataid[0] == 'B':
-                    datm.tnames.append(i.dataid)
+            datm.fromData(dat)
 
             self.bands[datm.sensor] = datm.bands
             self.tnames[datm.sensor] = datm.tnames

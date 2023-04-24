@@ -57,20 +57,16 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.menu3 = self.menu.addMenu('Import Data')
-
         self.action_import_sat = QtWidgets.QAction('Import Satellite Data')
-        self.menu3.addAction(self.action_import_sat)
+        self.menu.addAction(self.action_import_sat)
         self.action_import_sat.triggered.connect(self.import_sat)
 
         self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
-        self.menu3.addAction(self.action_import_sentinel5p)
+        self.menu.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
 
-        self.menu3.addSeparator()
-
         self.action_batch_list = QtWidgets.QAction('Create Batch List')
-        self.menu3.addAction(self.action_batch_list)
+        self.menu.addAction(self.action_batch_list)
         self.action_batch_list.triggered.connect(self.batch_list)
 
         self.menu.addSeparator()
