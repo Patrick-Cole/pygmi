@@ -261,3 +261,81 @@ class Data():
         vmax = mean+2*std
 
         return vmin, vmax
+
+
+class RasterMeta():
+    """
+    PyGMI Raster Metadata Object.
+
+    Attributes
+    ----------
+    sensor : str
+        Sensor used to measure data.
+    extent : tuple
+        Extent of data as (left, right, bottom, top)
+    bounds : tuple
+        Bounds of data as (left, bottom, right, top)
+    xdim : float
+        x-dimension of grid cell
+    ydim : float
+        y-dimension of grid cell
+    units : str
+        description of units to be used with colour bars
+    metadata : dictionary
+        Miscellaneous metadata for file.
+    filename : str
+        Filename of file.
+    transform : list of Affine, optional
+        rasterio transform. The default is None.
+    crs : CRS
+        rasterio crs of data.
+    datetime : datetime
+        date of survey.
+    bands : list
+        list of bands in dataset.
+    tnames : list
+        list fo bands to process.
+    """
+
+    def __init__(self):
+        self.sensor = 'Generic'
+        self.extent = None  # left, right, bottom, top
+        self.bounds = None  # left, bottom, right, top
+        self.xdim = None
+        self.ydim = None
+        self.units = ''
+        self.metadata = {'Cluster': {}, 'Raster': {}}
+        self.meta = {}
+        self.filename = ''
+        self.transform = None
+        self.crs = None
+        self.datetime = None
+        self.bands = []
+        self.tnames = []
+
+    def fromData(self, data):
+        """
+        Populate class from a Data class.
+
+        Parameters
+        ----------
+        data : Data
+            PyGMI data object.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.sensor = data.metadata['Raster']['Sensor']
+        self.extent = data.extent
+        self.bounds = data.bounds
+        self.xdim = data.xdim
+        self.ydim = data.ydim
+        self.units = data.units
+        self.metadata = data.metadata
+        self.meta = data.meta
+        self.filename = data.filename
+        self.transform = data.transform
+        self.crs = data.crs
+        self.datetime = data.datetime

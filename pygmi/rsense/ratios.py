@@ -72,7 +72,7 @@ class SatRatios(BasicModule):
                                     'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
-                                    'Sentinel-2', 'WorldView'])
+                                    'Sentinel-2', 'WorldView', 'Unknown'])
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -115,20 +115,28 @@ class SatRatios(BasicModule):
             return False
 
         if 'RasterFileList' in self.indata:
-            bfile = os.path.basename(self.indata['RasterFileList'][0])
+            dat = iodefs.get_data(self.indata['RasterFileList'][0],
+                                  self.piter, self.showprocesslog,
+                                  metaonly=True)
         else:
-            bfile = os.path.basename(self.indata['Raster'][0].filename)
+            dat = self.indata['Raster']
 
-        if 'AST_' in bfile and 'hdf' in bfile.lower():
+        instr = dat[0].metadata['Raster']['Instrument']
+
+        if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
-        elif bfile[:4] in ['LC08', 'LC09']:
+        elif 'LC08' in instr or 'LC09' in instr:
             self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
-        elif bfile[:4] in ['LE07']:
+        elif 'LE07' in instr:
             self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
-        elif bfile[:4] in ['LT04', 'LT05']:
+        elif 'LT04' in instr or 'LT05' in instr:
             self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
-        else:
+        elif 'WorldView' in instr and 'Multi' in instr:
+            self.combo_sensor.setCurrentText('WorldView')
+        elif 'Sentinel-2' in instr:
             self.combo_sensor.setCurrentText('Sentinel-2')
+        else:
+            self.combo_sensor.setCurrentText('Unknown')
 
         self.setratios()
 
@@ -524,7 +532,7 @@ class ConditionIndices(BasicModule):
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
                                     'Landsat (All)',
-                                    'Sentinel-2', 'WorldView'])
+                                    'Sentinel-2', 'WorldView', 'Unknown'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -572,19 +580,25 @@ class ConditionIndices(BasicModule):
         bfile = os.path.basename(self.indata['RasterFileList'][0])
         self.bfile = bfile[:4]
 
-        if 'AST_' in bfile and 'hdf' in bfile.lower():
+        dat = iodefs.get_data(self.indata['RasterFileList'][0],
+                              self.piter, self.showprocesslog, metaonly=True)
+
+        instr = dat[0].metadata['Raster']['Instrument']
+
+        if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
-        elif bfile[:4] in ['LC08', 'LC09']:
+        elif 'LC08' in instr or 'LC09' in instr:
             self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
-        elif bfile[:4] in ['LE07']:
+        elif 'LE07' in instr:
             self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
-        elif bfile[:4] in ['LT04', 'LT05']:
+        elif 'LT04' in instr or 'LT05' in instr:
             self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
-        elif ('LT04' in bfile or 'LT05' in bfile or 'LE07' in bfile or
-              'LC08' in bfile or 'LC09' in bfile):
-            self.combo_sensor.setCurrentText('Landsat (All)')
-        else:
+        elif 'WorldView' in instr and 'Multi' in instr:
+            self.combo_sensor.setCurrentText('WorldView')
+        elif 'Sentinel-2' in instr:
             self.combo_sensor.setCurrentText('Sentinel-2')
+        else:
+            self.combo_sensor.setCurrentText('Unknown')
 
         self.setratios()
 
@@ -856,7 +870,7 @@ class ConditionIndices(BasicModule):
         for i in datfin:
             i.data = i.data.astype(np.float32)
 
-        ofile = os.path.join(os.path.dirname(ifile), 'CI'+ofile+'.tif')
+        # ofile = os.path.join(os.path.dirname(ifile), 'CI'+ofile+'.tif')
 
         if datfin:
             self.outdata['Raster'] = datfin
@@ -873,8 +887,10 @@ class ConditionIndices(BasicModule):
 
         """
         sensor = self.combo_sensor.currentText()
+        rlist = []
 
-        rlist = ['VCI']
+        if 'Unknown' not in sensor:
+            rlist += ['VCI']
 
         if 'Landsat' in sensor:
             rlist += ['TCI', 'VHI']
@@ -969,6 +985,7 @@ def correct_bands(rlist, sensor, bfile=None):
                            'B4': 'B11', 'B5': 'B12', 'B3A': 'B8A'}
     sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',
                           'B3A': 'B7'}
+    sdict['Unknown'] = {}
 
     if sensor == 'Landsat (All)':
         if 'LC09' in bfile or 'LC08' in bfile:
@@ -1131,7 +1148,7 @@ def get_aster_list(flist):
             names[adate] = []
         names[adate].append(i)
 
-    for adate in names.keys():
+    for adate in names:
         has_07xt = [True for i in names[adate] if '_07XT_' in i]
         has_07 = [True for i in names[adate] if '_07_' in i]
         if len(has_07xt) > 0 and len(has_07) > 0:
@@ -1224,8 +1241,10 @@ def _testfn():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
-    ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
-    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122255_9222.zip"
+    # ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
+    # ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
     dat = iodefs.get_data(ifile)
 
@@ -1255,7 +1274,7 @@ def _testfn2():
     import glob
     import matplotlib.pyplot as plt
 
-    ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
+    ifiles = glob.glob(r'D:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
 
     app = QtWidgets.QApplication(sys.argv)
 

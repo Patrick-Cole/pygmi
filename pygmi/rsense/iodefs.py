@@ -48,7 +48,7 @@ from rasterio.crs import CRS
 from natsort import natsorted
 
 from pygmi import menu_default
-from pygmi.raster.datatypes import Data
+from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 
@@ -162,7 +162,7 @@ class ImportData(BasicModule):
         self.filt = ''
 
         self.sfile = QtWidgets.QLineEdit('')
-        self.combo = QtWidgets.QListWidget()
+        self.lw_tnames = QtWidgets.QListWidget()
         self.ftype = QtWidgets.QLabel('File Type:')
 
         self.setupui()
@@ -186,12 +186,12 @@ class ImportData(BasicModule):
 
         gridlayout = QtWidgets.QGridLayout(self)
 
-        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
         gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
         gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
         gridlayout.addWidget(self.ftype, 2, 0, 1, 2)
-        gridlayout.addWidget(self.combo, 3, 0, 1, 2)
+        gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -227,8 +227,8 @@ class ImportData(BasicModule):
                 return tmp
 
         tnames = []
-        for i in range(self.combo.count()):
-            item = self.combo.item(i)
+        for i in range(self.lw_tnames.count()):
+            item = self.lw_tnames.item(i)
             if item.isSelected():
                 tnames.append(str(item.text()))
 
@@ -271,13 +271,18 @@ class ImportData(BasicModule):
         for i in self.indata['Raster']:
             tmp.append(i.dataid)
 
-        self.combo.addItems(tmp)
+        self.lw_tnames.clear()
+        self.lw_tnames.addItems(tmp)
 
-        for i in range(self.combo.count()):
-            item = self.combo.item(i)
+        for i in range(self.lw_tnames.count()):
+            item = self.lw_tnames.item(i)
 
             if item.text()[0] == 'B':
                 item.setSelected(True)
+
+        instr = self.indata['Raster'][0].metadata['Raster']['Sensor']
+
+        self.ftype.setText(f' File Type: {instr}')
 
         return True
 
@@ -338,6 +343,58 @@ class ImportBatch(BasicModule):
         super().__init__(parent)
 
         self.idir = ''
+        self.tnames = None
+        self.filelist = []
+        self.bands = {}
+        self.tnames = {}
+        self.oldsensor = None
+
+        self.combo_sensor = QtWidgets.QComboBox()
+        self.sfile = QtWidgets.QLineEdit('')
+        self.lw_tnames = QtWidgets.QListWidget()
+        self.ftype = QtWidgets.QLabel('File Type:')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        pb_sfile = QtWidgets.QPushButton(' Directory')
+
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_sfile.setIcon(icon)
+
+        self.setWindowTitle('Import Batch Data')
+
+        gridlayout = QtWidgets.QGridLayout(self)
+
+        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
+        gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
+        gridlayout.addWidget(self.ftype, 2, 0, 1, 1)
+        gridlayout.addWidget(self.combo_sensor, 2, 1, 1, 1)
+        gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+
+        gridlayout.addWidget(buttonbox, 9, 0, 1, 2)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_sfile.pressed.connect(self.get_sfile)
+        self.combo_sensor.currentIndexChanged.connect(self.setsensor)
 
     def settings(self, nodialog=False):
         """
@@ -355,48 +412,100 @@ class ImportBatch(BasicModule):
 
         """
         if not nodialog or self.idir == '':
-            self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-                self.parent, 'Select Directory')
-            if self.idir == '':
-                return False
-        os.chdir(self.idir)
+            tmp = self.exec_()
 
-        zipdat = glob.glob(self.idir+'//AST*.zip')
-        hdfdat = glob.glob(self.idir+'//AST*.hdf')
-        targzdat = glob.glob(self.idir+'//L*.tar*')
-        mtldat = glob.glob(self.idir+'//L*MTL.txt')
-        rasterdat = []
-        for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
-            rasterdat += glob.glob(os.path.join(self.idir, ftype))
+            if tmp != 1:
+                return tmp
 
-        sendat = glob.glob(self.idir+'//S2?_*.zip')
-        sendir = [f.path for f in os.scandir(self.idir) if f.is_dir() and
-                  'SAFE' in f.path]
-        for i in sendir:
-            sendat.extend(glob.glob(i+'//MTD*.xml'))
-
-        if (not hdfdat and not zipdat and not targzdat and not mtldat and not
-                sendat and not rasterdat):
+        if not self.filelist:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-        dat = []
-        for i in hdfdat:
-            if 'met' not in i:
-                dat.append(i)
-
-        dat.extend(mtldat)
-        dat.extend(targzdat)
-        dat.extend(zipdat)
-        dat.extend(sendat)
-        dat.extend(rasterdat)
-
+        self.setsensor()
         output_type = 'RasterFileList'
-        self.outdata[output_type] = dat
+        self.outdata[output_type] = self.filelist
 
         return True
+
+    def get_sfile(self):
+        """Get the satellite filename."""
+        self.idir = QtWidgets.QFileDialog.getExistingDirectory(
+            self.parent, 'Select Directory')
+
+        if not self.idir:
+            return False
+
+        self.sfile.setText(self.idir)
+
+        types = ['*.hdf', '*.zip', '*.tar', '*.tar.gz', '*.xml', '*.h5']
+        allfiles = []
+        for i in types:
+            allfiles += glob.glob(os.path.join(self.idir, i))
+
+        self.bands = {}
+        self.tnames = {}
+        self.filelist = []
+        for ifile in self.piter(allfiles):
+            dat = get_data(ifile, showprocesslog=self.showprocesslog,
+                           metaonly=True)
+            if dat is None:
+                continue
+            datm = RasterMeta()
+            datm.fromData(dat[0])
+
+            for i in dat:
+                datm.bands.append(i.dataid)
+                if i.dataid[0] == 'B':
+                    datm.tnames.append(i.dataid)
+
+            self.bands[datm.sensor] = datm.bands
+            self.tnames[datm.sensor] = datm.tnames
+            self.filelist.append(datm)
+
+        self.combo_sensor.disconnect()
+        self.combo_sensor.clear()
+        self.combo_sensor.addItems(self.bands.keys())
+        self.combo_sensor.currentIndexChanged.connect(self.setsensor)
+
+        self.setsensor()
+
+        return True
+
+    def setsensor(self):
+        """
+        Set the sensor band data.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if self.lw_tnames.count() > 0:
+            self.tnames[self.oldsensor] = []
+            for i in range(self.lw_tnames.count()):
+                item = self.lw_tnames.item(i)
+                if item.isSelected():
+                    self.tnames[self.oldsensor].append(str(item.text()))
+
+            for i in self.filelist:
+                if i.sensor == self.oldsensor:
+                    i.tnames = self.tnames[self.oldsensor]
+
+        sensor = self.combo_sensor.currentText()
+        tmp = self.bands[sensor]
+
+        self.lw_tnames.clear()
+        self.lw_tnames.addItems(tmp)
+
+        for i in range(self.lw_tnames.count()):
+            item = self.lw_tnames.item(i)
+            if item.text() in self.tnames[sensor]:
+                item.setSelected(True)
+
+        self.oldsensor = sensor
 
     def loadproj(self, projdata):
         """
@@ -923,22 +1032,18 @@ class ExportBatch(ContextModule):
             self.process_is_active(False)
             return False
 
-        ifile = self.indata['RasterFileList'][0]
+        sensor = self.indata['RasterFileList'][0].sensor
 
-        if 'AST_' in ifile:
-            tmp = get_aster_list(self.indata['RasterFileList'])
-            ifile = tmp[0]
-            dat = []
-            for i in ifile:
-                dat += get_data(i, piter=self.piter,
-                                showprocesslog=self.showprocesslog,
-                                metaonly=True)
+        if 'ASTER' in sensor:
+            dat = get_aster_list(self.indata['RasterFileList'])[0]
         else:
-            dat = get_data(ifile, piter=self.piter,
-                           showprocesslog=self.showprocesslog,
-                           metaonly=True)
+            dat = self.indata['RasterFileList'][0]
 
-        bnames = natsorted([i.dataid for i in dat])
+        bnames = []
+        for i in dat:
+            bnames += i.tnames
+
+        bnames = natsorted(bnames)
 
         if 'Explained Variance Ratio' in bnames[0]:
             bnames = [i.split('Explained Variance Ratio')[0] for i in bnames]
@@ -1061,25 +1166,25 @@ def get_aster_list(flist):
 
     """
     if isinstance(flist[0], list):
-        if 'AST_' in flist[0][0].filename:
+        if 'ASTER' in flist[0][0].sensor:
             return flist
         return []
 
     names = {}
     for i in flist:
-        if os.path.basename(i)[:3] != 'AST':
+        if 'ASTER' not in i.sensor:
             continue
 
-        adate = os.path.basename(i).split('_')[2]
+        adate = os.path.basename(i.filename).split('_')[2]
         if adate not in names:
             names[adate] = []
         names[adate].append(i)
 
     for adate in names.keys():
-        has_07xt = [True for i in names[adate] if '_07XT_' in i]
-        has_07 = [True for i in names[adate] if '_07_' in i]
+        has_07xt = [True for i in names[adate] if '_07XT_' in i.filename]
+        has_07 = [True for i in names[adate] if '_07_' in i.filename]
         if len(has_07xt) > 0 and len(has_07) > 0:
-            names[adate] = [i for i in names[adate] if '_07_' not in i]
+            names[adate] = [i for i in names[adate] if '_07_' not in i.filename]
 
     flist = []
     for adate in names:
@@ -1264,6 +1369,7 @@ def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
         dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
         dat[-1].units = dataset.units[0]
+        dat[-1].metadata['Raster']['Sensor'] = 'MODIS'
 
         dataset.close()
 
@@ -1434,12 +1540,15 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
         dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
 
-        bmeta = dat[-1].metadata
+        bmeta = dat[-1].metadata['Raster']
+
+        platform = os.path.basename(ifilet)[:4]
+        bmeta['Sensor'] = f'Landsat {platform}'
+
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['Raster']['wavelength'] = (satbands[fext][1] +
-                                             satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][1] + satbands[fext][1])/2
 
         dataset.close()
 
@@ -1579,11 +1688,14 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
         dat[-1].nodata = nval
         dat[-1].set_transform(xdim, xmin, ydim, ymax)
 
-        bmeta = dat[-1].metadata
+        bmeta = dat[-1].metadata['Raster']
+
+        bmeta['Sensor'] = f'WorldView {satid} {platform}'
+
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['Raster']['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
+        bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
 
     for tile in dtree['isd']['TIL']['TILE']:
         ifile = os.path.join(idir, tile['FILENAME'])
@@ -1842,13 +1954,14 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
         dat[-1].filename = ifile
 
         bmeta = {}
+        bmeta['Sensor'] = 'Hyperion EO1H'
         # if satbands is not None and fext in satbands:
 
         dat[-1].metadata['Raster']['wavelength'] = wavelength[bandno-1]
         bmeta['WavelengthMin'] = wavelength[bandno-1]-fwhm[bandno-1]/2
         bmeta['WavelengthMax'] = wavelength[bandno-1]+fwhm[bandno-1]/2
 
-        dat[-1].metadata.update(bmeta)
+        dat[-1].metadata['Raster'].update(bmeta)
 
         dataset.close()
 
@@ -1938,11 +2051,13 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
 
+            bmeta['Raster'] = dat[-1].metadata['Raster']
+            bmeta['Raster']['Sensor'] = 'Sentinel-2'
             if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
                 wlen = float(bmeta['WAVELENGTH'])
                 bwidth = float(bmeta['BANDWIDTH'])
-                bmeta['WavelengthMin'] = wlen - bwidth/2
-                bmeta['WavelengthMax'] = wlen + bwidth/2
+                bmeta['Raster']['WavelengthMin'] = wlen - bwidth/2
+                bmeta['Raster']['WavelengthMax'] = wlen + bwidth/2
                 dat[-1].metadata['Raster']['wavelength'] = wlen
 
             dat[-1].metadata.update(bmeta)
@@ -2052,11 +2167,14 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
         dat[-1].filename = ifile
         dat[-1].units = units
 
-        bmeta = dat[-1].metadata
+        bmeta = dat[-1].metadata['Raster']
         fext = dat[-1].dataid[4:]
+
+        platform = ifile.split('_')[1]
+        bmeta["Sensor"] = f'ASTER {platform}'
         bmeta['WavelengthMin'] = satbands[fext][0]
         bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+        bmeta['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
 
         dataset.close()
         dataset1.close()
@@ -2212,12 +2330,15 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
         dat[-1].units = units
 
         if 'band' in dat[-1].dataid.lower():
-            bmeta = dat[-1].metadata
+            bmeta = dat[-1].metadata['Raster']
             fext = dat[-1].dataid[4:].split()[0]
+
+            platform = ifile.split('_')[1]
+            bmeta["Sensor"] = f'ASTER {platform}'
+
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['Raster']['wavelength'] = (satbands[fext][1] +
-                                             satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][1] + satbands[fext][1])/2
 
             if ptype == 'L1T' and 'ImageData' in ifile:
                 dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
@@ -2226,7 +2347,7 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
     if not dat:
         dat = None
 
-    if ptype == 'L1T' and calctoa is True:
+    elif ptype == 'L1T' and calctoa is True:
         dat = calculate_toa(dat)
 
     return dat
@@ -2344,6 +2465,7 @@ def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
             dat[i].nodata = nval
             dat[i].crs = CRS.from_epsg(4326)  # WGS84 geodetic
             dat[i].units = units
+            dat[i].metadata['Raster']['Sensor'] = 'ASTER GED'
         dataset.close()
 
     if metaonly is False:
@@ -2526,7 +2648,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     ifiles = indata['RasterFileList']
 
-    if 'AST_' in ifiles[0]:
+    if 'ASTER' in ifiles[0].sensor:
         ifiles = get_aster_list(indata['RasterFileList'])
 
     filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
@@ -2544,20 +2666,30 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     for ifile in ifiles:
         if isinstance(ifile, str):
+            if tnames is None:
+                tnames = ifile.tnames
+
             # showprocesslog('Processing '+os.path.basename(ifile))
             dat = get_data(ifile, piter=piter,
                            showprocesslog=showprocesslog, tnames=tnames)
         elif isinstance(ifile, list) and 'RasterFileList' in indata:
             dat = []
             for jfile in ifile:
+                if tnames is None:
+                    tnames = jfile.tnames
+
                 # showprocesslog('Processing '+os.path.basename(jfile))
-                dat += get_data(jfile, piter=piter,
-                                showprocesslog=showprocesslog, tnames=tnames)
+                tmp = get_data(jfile.filename, piter=piter,
+                               showprocesslog=showprocesslog,
+                               tnames=tnames)
+                if tmp is not None:
+                    dat += tmp
+
             ifile = jfile
-        ofile = os.path.join(odir, os.path.basename(ifile))
+        ofile = os.path.join(odir, os.path.basename(ifile.filename))
         ofile = ofile[:-4]+'.tif'
 
-        if tnames is not None:
+        if tnames is not None and len(tnames) == 3:
             ofile = ofile[:-4]
             for i in tnames:
                 ofile += f'_{i}'
@@ -2640,12 +2772,13 @@ def _testfn2():
     import sys
 
     idir = r'd:\aster'
+    os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
-    tmp1.settings(True)
+    tmp1.settings()
 
     dat = tmp1.outdata
 
@@ -2678,6 +2811,8 @@ def _testfn3():
 
     dat = tmp1.outdata['Raster']
 
+    breakpoint()
+
     if metaonly is False:
         for i in dat:
             plt.figure(dpi=150)
@@ -2688,4 +2823,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

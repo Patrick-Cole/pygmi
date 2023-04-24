@@ -523,11 +523,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
-
     # Exclusions
     if 'AG1' in ifile and 'h5' in ifile.lower():
         return None
-
 
     if piter is None:
         piter = ProgressBarText().iter
@@ -1596,22 +1594,23 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                 pprint('Unable to calculate std deviation. Not enough memory')
 
             if 'Raster' in datai.metadata:
-                if 'wavelength' in datai.metadata['Raster']:
-                    out.update_tags(i+1, wavelength=str(datai.metadata['Raster']['wavelength']))
-                    wavelength.append(datai.metadata['Raster']['wavelength'])
+                rmeta = datai.metadata['Raster']
+                if 'wavelength' in rmeta:
+                    out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
+                    wavelength.append(rmeta['wavelength'])
 
-                if 'fwhm' in datai.metadata['Raster']:
-                    fwhm.append(datai.metadata['Raster']['fwhm'])
+                if 'fwhm' in rmeta:
+                    fwhm.append(rmeta['fwhm'])
 
-                if 'reflectance_scale_factor' in datai.metadata['Raster']:
-                    out.update_tags(i+1, reflectance_scale_factor=str(datai.metadata['Raster']['reflectance_scale_factor']))
+                if 'reflectance_scale_factor' in rmeta:
+                    out.update_tags(i+1,
+                                    reflectance_scale_factor=str(rmeta['reflectance_scale_factor']))
 
-            if 'WavelengthMin' in datai.metadata:
-                out.update_tags(i+1, WavelengthMin=str(datai.metadata['WavelengthMin']))
-                out.update_tags(i+1, WavelengthMax=str(datai.metadata['WavelengthMax']))
-            elif 'WavelengthMin' in datai.metadata['Raster']:
-                out.update_tags(i+1, WavelengthMin=str(datai.metadata['Raster']['WavelengthMin']))
-                out.update_tags(i+1, WavelengthMax=str(datai.metadata['Raster']['WavelengthMax']))
+                if 'WavelengthMin' in rmeta:
+                    out.update_tags(i+1,
+                                    WavelengthMin=str(rmeta['WavelengthMin']))
+                    out.update_tags(i+1,
+                                    WavelengthMax=str(rmeta['WavelengthMax']))
 
     if drv == 'ENVI':
         wout = ''
@@ -1659,7 +1658,6 @@ def _filespeedtest():
         dat.nodata = 0
     export_raster(r'c:\workdata\temp.tif', dataset)
     dataset = get_raster(r'c:\workdata\temp.tif')
-
 
     # plt.figure(dpi=150)
     # plt.imshow(dataset[0].data, extent=dataset[0].extent)
