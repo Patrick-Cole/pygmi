@@ -1030,12 +1030,12 @@ class ExportBatch(ContextModule):
 
         if 'ASTER' in sensor:
             dat = get_aster_list(self.indata['RasterFileList'])[0]
+            bnames = []
+            for i in dat:
+                bnames += i.tnames
         else:
             dat = self.indata['RasterFileList'][0]
-
-        bnames = []
-        for i in dat:
-            bnames += i.tnames
+            bnames = dat.tnames
 
         bnames = natsorted(bnames)
 
@@ -1568,7 +1568,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
         dat[-1].nodata = nval
         dat[-1].crs = dataset.crs
         dat[-1].set_transform(transform=dataset.transform)
-        dat[-1].filename = ifile
+        dat[-1].filename = ifilet
 
         bmeta = dat[-1].metadata['Raster']
 
@@ -2707,10 +2707,6 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                 ofile += f'_{i}'
             ofile += '_tern.tif'
 
-        # if os.path.exists(ofile):
-        #     showprocesslog('Output file exists, skipping')
-        #     continue
-
         odat = []
         if tnames is not None:
             for i in tnames:
@@ -2783,13 +2779,11 @@ def _testfn2():
     """Test routine."""
     import sys
 
-    idir = r'd:\aster'
     os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = idir
     tmp1.settings()
 
     dat = tmp1.outdata

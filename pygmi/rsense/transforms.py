@@ -450,11 +450,20 @@ class PCA(BasicModule):
         odata = []
 
         if 'RasterFileList' in self.indata and fitlist is False:
-            odir = os.path.join(os.path.dirname(flist[0].filename), 'PCA')
+            if isinstance(flist[0], list):
+                filename = flist[0][0].filename
+            else:
+                filename = flist[0].filename
+            odir = os.path.join(os.path.dirname(filename), 'PCA')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                self.showprocesslog('Processing '+os.path.basename(ifile.filename))
+                if isinstance(ifile, list):
+                    filename = ifile[0].filename
+                else:
+                    filename = ifile.filename
+
+                self.showprocesslog('Processing '+os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
                                           showprocesslog=self.showprocesslog)
@@ -462,7 +471,7 @@ class PCA(BasicModule):
                                           pprint=self.showprocesslog,
                                           fwdonly=fwdonly)
 
-                ofile = os.path.basename(ifile.filename).split('.')[0] + '_pca.tif'
+                ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
@@ -900,6 +909,11 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
         ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
         ofile = os.path.join(odir, ofile)
+
+        if 'AST_' in ofile:
+            ofile = ofile.replace('_05_', '_')
+            ofile = ofile.replace('_07XT_', '_')
+            ofile = ofile.replace('_07_', '_')
 
         pprint('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD')
