@@ -34,6 +34,7 @@ from PyQt5 import QtWidgets, QtCore
 
 from pygmi import menu_default
 from pygmi.rsense import iodefs
+from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import BasicModule
@@ -115,13 +116,11 @@ class SatRatios(BasicModule):
             return False
 
         if 'RasterFileList' in self.indata:
-            dat = iodefs.get_data(self.indata['RasterFileList'][0],
-                                  self.piter, self.showprocesslog,
-                                  metaonly=True)
+            dat = self.indata['RasterFileList']
         else:
             dat = self.indata['Raster']
 
-        instr = dat[0].metadata['Raster']['Instrument']
+        instr = dat[0].metadata['Raster']['Sensor']
 
         if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
@@ -237,21 +236,13 @@ class SatRatios(BasicModule):
             return False
 
         for ifile in flist:
-            if isinstance(ifile, str):
-                dat = iodefs.get_data(ifile,
-                                      showprocesslog=self.showprocesslog,
-                                      piter=self.piter)
-                ofile = ifile
-            elif isinstance(ifile, list) and 'RasterFileList' in self.indata:
-                dat = []
-                for jfile in ifile:
-                    dat += iodefs.get_data(jfile,
-                                           showprocesslog=self.showprocesslog,
-                                           piter=self.piter)
-                ofile = ifile[-1]
+            if 'RasterFileList' in self.indata:
+                dat = get_from_rastermeta(ifile, piter=self.piter,
+                                          showprocesslog=self.showprocesslog)
             else:
                 dat = ifile
-                ofile = dat[0].filename
+
+            ofile = dat[0].filename
 
             if dat is None:
                 continue
@@ -283,6 +274,9 @@ class SatRatios(BasicModule):
 
                 formula = ','.join(rlist)
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
+
+                if txt == 'Band3N':
+                    txt = 'Band3'
 
                 if txt in formula:
                     datsml.append(i)
@@ -577,13 +571,12 @@ class ConditionIndices(BasicModule):
             self.showprocesslog('You need a raster file list as input.')
             return False
 
-        bfile = os.path.basename(self.indata['RasterFileList'][0])
+        bfile = os.path.basename(self.indata['RasterFileList'][0].filename)
         self.bfile = bfile[:4]
 
-        dat = iodefs.get_data(self.indata['RasterFileList'][0],
-                              self.piter, self.showprocesslog, metaonly=True)
+        dat = self.indata['RasterFileList'][0]
 
-        instr = dat[0].metadata['Raster']['Instrument']
+        instr = dat.metadata['Raster']['Sensor']
 
         if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
@@ -714,16 +707,13 @@ class ConditionIndices(BasicModule):
             flist = [self.indata['Raster']]
 
         for ifile in flist:
-            if isinstance(ifile, str):
-                dat = iodefs.get_data(ifile,
-                                      showprocesslog=self.showprocesslog,
-                                      piter=self.piter)
-            else:
-                dat = ifile
-                ifile = dat[0].filename
+            dat = get_from_rastermeta(ifile, piter=self.piter,
+                                      showprocesslog=self.showprocesslog)
 
             if dat is None:
                 continue
+
+            ofile = dat[0].filename
 
             # Prepare for layer stacking
             if sensor == 'WorldView':
@@ -1134,25 +1124,25 @@ def get_aster_list(flist):
 
     """
     if isinstance(flist[0], list):
-        if 'AST_' in flist[0][0].filename:
+        if 'ASTER' in flist[0][0].sensor:
             return flist
         return []
 
     names = {}
     for i in flist:
-        if os.path.basename(i)[:3] != 'AST':
+        if 'ASTER' not in i.sensor:
             continue
 
-        adate = os.path.basename(i).split('_')[2]
+        adate = os.path.basename(i.filename).split('_')[2]
         if adate not in names:
             names[adate] = []
         names[adate].append(i)
 
-    for adate in names:
-        has_07xt = [True for i in names[adate] if '_07XT_' in i]
-        has_07 = [True for i in names[adate] if '_07_' in i]
+    for adate in names.keys():
+        has_07xt = [True for i in names[adate] if '_07XT_' in i.filename]
+        has_07 = [True for i in names[adate] if '_07_' in i.filename]
         if len(has_07xt) > 0 and len(has_07) > 0:
-            names[adate] = [i for i in names[adate] if '_07_' not in i]
+            names[adate] = [i for i in names[adate] if '_07_' not in i.filename]
 
     flist = []
     for adate in names:
@@ -1196,11 +1186,12 @@ def get_landsat_list(flist, sensor, allsats=False):
 
     flist2 = []
     for i in flist:
-        if os.path.basename(i)[:4] not in fid:
-            continue
-        if '.tif' in i:
-            continue
-        flist2.append(i)
+        for j in fid:
+            if j.fid not in i.sensor:
+                continue
+            if '.tif' in i.filename:
+                continue
+            flist2.append(i)
 
     return flist2
 
@@ -1227,7 +1218,7 @@ def get_sentinel_list(flist):
 
     flist2 = []
     for i in flist:
-        if '.SAFE' not in i or 'S2A' not in i:
+        if 'SENTINEL-2' not in i.sensor:
             continue
         flist2.append(i)
 
@@ -1238,6 +1229,7 @@ def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
     import winsound
+    from pygmi.rsense.iodefs import ImportBatch
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
@@ -1246,14 +1238,24 @@ def _testfn():
     # ifile =r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\New2016_merge_comp.tif"
     # ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2022-03-29T13-42-10Zcomp.tif"
 
-    dat = iodefs.get_data(ifile)
+    # dat = iodefs.get_data(ifile)
 
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
+    # winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
+
+    # app = QtWidgets.QApplication(sys.argv)
+
+    idir = r'd:\aster'
+    os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
 
+    tmp1 = ImportBatch()
+    tmp1.idir = idir
+    tmp1.settings()
+
+
     SR = SatRatios()
-    SR.indata['Raster'] = dat
+    SR.indata = tmp1.outdata
     SR.settings()
 
     dat2 = SR.outdata['Raster']
@@ -1363,4 +1365,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

@@ -424,8 +424,7 @@ class ImportBatch(BasicModule):
             return False
 
         self.setsensor()
-        output_type = 'RasterFileList'
-        self.outdata[output_type] = self.filelist
+        self.outdata['RasterFileList'] = self.filelist
 
         return True
 
@@ -1261,6 +1260,42 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
         dataid = [i.dataid for i in dat]
         dorder = [i for _, i in natsorted(zip(dataid, range(len(dataid))))]
         dat = [dat[i] for i in dorder]
+
+    return dat
+
+
+def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
+    """
+    Import data from a RasterMeta item.
+
+    Parameters
+    ----------
+    ldata : RasterMeta or list
+        List of RasterMeta or single item.
+    piter : iter, optional
+        Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+
+    Returns
+    -------
+    dat : list
+        List of data.
+
+    """
+    if isinstance(ldata, RasterMeta):
+        dat = get_data(ldata.filename, piter=piter,
+                       showprocesslog=showprocesslog, tnames=tnames)
+    elif isinstance(ldata, list):
+        dat = []
+        for jfile in ldata:
+            tmp = get_data(jfile.filename, piter=piter,
+                           showprocesslog=showprocesslog,
+                           tnames=tnames)
+            if tmp is not None:
+                dat += tmp
 
     return dat
 
@@ -2665,28 +2700,10 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
     os.makedirs(odir, exist_ok=True)
 
     for ifile in ifiles:
-        if isinstance(ifile, str):
-            if tnames is None:
-                tnames = ifile.tnames
+        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=showprocesslog,
+                                  tnames=tnames)
 
-            # showprocesslog('Processing '+os.path.basename(ifile))
-            dat = get_data(ifile, piter=piter,
-                           showprocesslog=showprocesslog, tnames=tnames)
-        elif isinstance(ifile, list) and 'RasterFileList' in indata:
-            dat = []
-            for jfile in ifile:
-                if tnames is None:
-                    tnames = jfile.tnames
-
-                # showprocesslog('Processing '+os.path.basename(jfile))
-                tmp = get_data(jfile.filename, piter=piter,
-                               showprocesslog=showprocesslog,
-                               tnames=tnames)
-                if tmp is not None:
-                    dat += tmp
-
-            ifile = jfile
-        ofile = os.path.join(odir, os.path.basename(ifile.filename))
+        ofile = os.path.join(odir, os.path.basename(dat[0].filename))
         ofile = ofile[:-4]+'.tif'
 
         if tnames is not None and len(tnames) == 3:
