@@ -2205,7 +2205,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
         bmeta = dat[-1].metadata['Raster']
         fext = dat[-1].dataid[4:]
 
-        platform = ifile.split('_')[1]
+        platform = os.path.basename(ifile).split('_')[1]
         bmeta["Sensor"] = f'ASTER {platform}'
         bmeta['WavelengthMin'] = satbands[fext][0]
         bmeta['WavelengthMax'] = satbands[fext][1]
@@ -2368,7 +2368,7 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
             bmeta = dat[-1].metadata['Raster']
             fext = dat[-1].dataid[4:].split()[0]
 
-            platform = ifile.split('_')[1]
+            platform = os.path.basename(ifile).split('_')[1]
             bmeta["Sensor"] = f'ASTER {platform}'
 
             bmeta['WavelengthMin'] = satbands[fext][0]
