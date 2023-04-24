@@ -460,7 +460,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                 if i == 'RasterFileList':
                     text += i + '\n'
                     for j in odata[i]:
-                        text += os.path.basename(j) + '\n'
+                        text += os.path.basename(j.filename) + '\n'
                 if i in ('Raster', 'Cluster'):
                     if hasattr(odata[i][0], 'filename'):
                         file = odata[i][0].filename
