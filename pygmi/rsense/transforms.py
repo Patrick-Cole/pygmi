@@ -38,6 +38,10 @@ from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import BasicModule
 from pygmi import menu_default
+from pygmi.rsense.iodefs import get_from_rastermeta
+from pygmi.rsense.ratios import get_aster_list
+from pygmi.rsense.ratios import get_landsat_list
+from pygmi.rsense.ratios import get_sentinel_list
 
 
 class MNF(BasicModule):
@@ -211,6 +215,16 @@ class MNF(BasicModule):
         None.
 
         """
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            sensor = flist[0].sensor
+            if 'ASTER' in sensor:
+                flist = get_aster_list(flist)
+            elif 'Landsat' in sensor:
+                flist = get_landsat_list(flist, sensor)
+            elif 'Sentinel-2' in sensor:
+                flist = get_sentinel_list(flist)
+
         ncmps = self.sb_comps.value()
         odata = []
 
@@ -222,15 +236,14 @@ class MNF(BasicModule):
             noise = 'quad'
 
         if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
             odir = os.path.join(os.path.dirname(flist[0]), 'MNF')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
-                dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog)
+                dat = get_from_rastermeta(ifile, piter=self.piter,
+                                          showprocesslog=self.showprocesslog)
                 odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           noisetxt=noise,
@@ -420,6 +433,16 @@ class PCA(BasicModule):
         None.
 
         """
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            sensor = flist[0].sensor
+            if 'ASTER' in sensor:
+                flist = get_aster_list(flist)
+            elif 'Landsat' in sensor:
+                flist = get_landsat_list(flist, sensor)
+            elif 'Sentinel-2' in sensor:
+                flist = get_sentinel_list(flist)
+
         ncmps = self.sb_comps.value()
         fitlist = self.cb_fitlist.isChecked()
         fwdonly = self.cb_fwdonly.isChecked()
@@ -427,27 +450,25 @@ class PCA(BasicModule):
         odata = []
 
         if 'RasterFileList' in self.indata and fitlist is False:
-            flist = self.indata['RasterFileList']
-            odir = os.path.join(os.path.dirname(flist[0]), 'PCA')
+            odir = os.path.join(os.path.dirname(flist[0].filename), 'PCA')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                self.showprocesslog('Processing '+os.path.basename(ifile))
+                self.showprocesslog('Processing '+os.path.basename(ifile.filename))
 
-                dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog)
+                dat = get_from_rastermeta(ifile, piter=self.piter,
+                                          showprocesslog=self.showprocesslog)
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           fwdonly=fwdonly)
 
-                ofile = os.path.basename(ifile).split('.')[0] + '_pca.tif'
+                ofile = os.path.basename(ifile.filename).split('.')[0] + '_pca.tif'
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
 
         elif 'RasterFileList' in self.indata and fitlist is True:
-            flist = self.indata['RasterFileList']
             odata, self.ev = pca_calc_fitlist(flist, ncmps, piter=self.piter,
                                               pprint=self.showprocesslog,
                                               fwdonly=fwdonly)
@@ -768,13 +789,25 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
         Explained variance, from PCA.
 
     """
-    odir = os.path.join(os.path.dirname(flist[0]), 'PCA')
+    if isinstance(flist[0], list):
+        filename = flist[0][0].filename
+    else:
+        filename = flist[0].filename
+
+    odir = os.path.join(os.path.dirname(filename), 'PCA')
     os.makedirs(odir, exist_ok=True)
 
     for ifile in flist:
-        pprint('Fitting '+os.path.basename(ifile))
+        if isinstance(ifile, list):
+            filename = ifile[0].filename
+        else:
+            filename = ifile.filename
 
-        dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+        pprint('Fitting '+os.path.basename(filename))
+
+        # dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+
+        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=pprint)
 
         x2d = []
         maskall = []
@@ -802,9 +835,16 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
             iold = i
 
     for ifile in flist:
-        pprint('Transforming '+os.path.basename(ifile))
+        if isinstance(ifile, list):
+            filename = ifile[0].filename
+        else:
+            filename = ifile.filename
 
-        dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+        pprint('Transforming '+os.path.basename(filename))
+
+        # dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+
+        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=pprint)
 
         x2d = []
         maskall = []
@@ -858,7 +898,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
                                f'{evr[j]*100:.2f}%')
         del datall
 
-        ofile = os.path.basename(ifile).split('.')[0] + '_pca.tif'
+        ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
         ofile = os.path.join(odir, ofile)
 
         pprint('Exporting '+os.path.basename(ofile))
@@ -937,18 +977,16 @@ def _testfn2():
 
 def _testfn3():
     import sys
-    from matplotlib import rcParams
     from pygmi.rsense.iodefs import ImportBatch
 
-    rcParams['figure.dpi'] = 150
-
-    idir = r'e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\full'
+    idir = r'd:\aster'
+    os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
-    tmp1.settings(True)
+    tmp1.settings()
 
     dat = tmp1.outdata
 
@@ -959,4 +997,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn3()

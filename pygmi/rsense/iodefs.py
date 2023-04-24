@@ -1287,13 +1287,13 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
     """
     if isinstance(ldata, RasterMeta):
         dat = get_data(ldata.filename, piter=piter,
-                       showprocesslog=showprocesslog, tnames=tnames)
+                       showprocesslog=showprocesslog, tnames=ldata.tnames)
     elif isinstance(ldata, list):
         dat = []
         for jfile in ldata:
             tmp = get_data(jfile.filename, piter=piter,
                            showprocesslog=showprocesslog,
-                           tnames=tnames)
+                           tnames=jfile.tnames)
             if tmp is not None:
                 dat += tmp
 
