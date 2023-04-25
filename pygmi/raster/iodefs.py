@@ -812,7 +812,8 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             if 'reflectance scale factor' in dmeta:
                 dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
 
-            dat[-1].metadata['Raster'] = {**dmeta, **dest}
+            dat[-1].metadata['Raster'].update(dmeta)
+            dat[-1].metadata['Raster'].update(dest)
 
     return dat
 

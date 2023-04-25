@@ -147,7 +147,7 @@ class Data():
         self.nodata = 1e+20
         self.units = ''
         self.isrgb = False
-        self.metadata = {'Cluster': {}, 'Raster': {}}
+        self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
         self.meta = {}
         self.filename = ''
         self.transform = None

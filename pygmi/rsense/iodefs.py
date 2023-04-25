@@ -438,7 +438,8 @@ class ImportBatch(BasicModule):
 
         self.sfile.setText(self.idir)
 
-        types = ['*.hdf', '*.zip', '*.tar', '*.tar.gz', '*.xml', '*.h5']
+        types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
+                  '*.xml', '*.h5']
         allfiles = []
         for i in types:
             allfiles += glob.glob(os.path.join(self.idir, i))
@@ -463,7 +464,10 @@ class ImportBatch(BasicModule):
         self.combo_sensor.addItems(self.bands.keys())
         self.combo_sensor.currentIndexChanged.connect(self.setsensor)
 
-        self.setsensor()
+        if not self.filelist:
+            self.showprocesslog('No valid files in the directory.')
+        else:
+            self.setsensor()
 
         return True
 
@@ -496,7 +500,9 @@ class ImportBatch(BasicModule):
 
         for i in range(self.lw_tnames.count()):
             item = self.lw_tnames.item(i)
-            if item.text() in self.tnames[sensor]:
+            if sensor == 'Generic':
+                item.setSelected(True)
+            elif item.text() in self.tnames[sensor]:
                 item.setSelected(True)
 
         self.oldsensor = sensor
