@@ -1199,6 +1199,80 @@ def get_aster_list(flist):
     return flist
 
 
+def get_landsat_list(flist, sensor=None, allsats=False):
+    """
+    Get Landsat files from a file list.
+
+    Parameters
+    ----------
+    flist : list
+        List of filenames.
+
+    Returns
+    -------
+    flist : list
+        List of filenames.
+
+    """
+    if isinstance(flist[0], list):
+        bfile = os.path.basename(flist[0][0].filename)
+        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']:
+            return flist
+        return []
+
+    if allsats is True or sensor is None:
+        fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
+    elif sensor == 'Landsat 8 and 9 (OLI)':
+        fid = ['LC08', 'LC09']
+    elif sensor == 'Landsat 7 (ETM+)':
+        fid = ['LE07']
+    elif sensor == 'Landsat 4 and 5 (TM)':
+        fid = ['LT04', 'LT05']
+    else:
+        return None
+
+    flist2 = []
+    for i in flist:
+        for j in fid:
+            if j not in i.sensor:
+                continue
+            if '.tif' in i.filename:
+                continue
+            flist2.append(i)
+
+    return flist2
+
+
+def get_sentinel_list(flist):
+    """
+    Get Sentinel-2 files from a file list.
+
+    Parameters
+    ----------
+    flist : list
+        List of filenames.
+
+    Returns
+    -------
+    flist : list
+        List of filenames.
+
+    """
+    if isinstance(flist[0], list):
+        if '.SAFE' in flist[0][0].filename:
+            return flist
+        return []
+
+    flist2 = []
+    for i in flist:
+        if 'Sentinel-2' not in i.sensor:
+            continue
+        flist2.append(i)
+
+    return flist2
+
+
+
 def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
              metaonly=False, ensuresutm=False):
     """
@@ -2742,8 +2816,9 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
 def utm_to_south(dat):
     """
-    Make sure all UTM labels is for southern hemisphere. This does not actually
-    reproject.
+    Make sure all UTM labels are for southern hemisphere.
+
+    This does not actually reproject.
 
     Parameters
     ----------

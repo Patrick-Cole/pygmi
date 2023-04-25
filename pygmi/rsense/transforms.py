@@ -33,15 +33,15 @@ from sklearn.decomposition import IncrementalPCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
-from pygmi.raster.iodefs import export_raster
-from pygmi.rsense.iodefs import get_data
-from pygmi.raster.dataprep import lstack
 from pygmi.misc import BasicModule
 from pygmi import menu_default
+from pygmi.raster.iodefs import export_raster
+from pygmi.raster.dataprep import lstack
+from pygmi.rsense.iodefs import get_data
 from pygmi.rsense.iodefs import get_from_rastermeta
-from pygmi.rsense.ratios import get_aster_list
-from pygmi.rsense.ratios import get_landsat_list
-from pygmi.rsense.ratios import get_sentinel_list
+from pygmi.rsense.iodefs import get_aster_list
+from pygmi.rsense.iodefs import get_landsat_list
+from pygmi.rsense.iodefs import get_sentinel_list
 
 
 class MNF(BasicModule):

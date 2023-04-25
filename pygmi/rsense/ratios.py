@@ -36,6 +36,8 @@ from pygmi import menu_default
 from pygmi.rsense import iodefs
 from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.raster.iodefs import export_raster
+from pygmi.rsense.iodefs import get_aster_list, get_landsat_list
+from pygmi.rsense.iodefs import get_sentinel_list
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import BasicModule
 
@@ -1106,122 +1108,6 @@ def get_VHI(tci, vci, alpha=0.5):
                 vhi.append(tmp)
 
     return vhi
-
-
-def get_aster_list(flist):
-    """
-    Get ASTER files from a file list.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    if isinstance(flist[0], list):
-        if 'ASTER' in flist[0][0].sensor:
-            return flist
-        return []
-
-    names = {}
-    for i in flist:
-        if 'ASTER' not in i.sensor:
-            continue
-
-        adate = os.path.basename(i.filename).split('_')[2]
-        if adate not in names:
-            names[adate] = []
-        names[adate].append(i)
-
-    for adate in names.keys():
-        has_07xt = [True for i in names[adate] if '_07XT_' in i.filename]
-        has_07 = [True for i in names[adate] if '_07_' in i.filename]
-        if len(has_07xt) > 0 and len(has_07) > 0:
-            names[adate] = [i for i in names[adate] if '_07_' not in i.filename]
-
-    flist = []
-    for adate in names:
-        flist.append(names[adate])
-
-    return flist
-
-
-def get_landsat_list(flist, sensor=None, allsats=False):
-    """
-    Get Landsat files from a file list.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    if isinstance(flist[0], list):
-        bfile = os.path.basename(flist[0][0].filename)
-        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']:
-            return flist
-        return []
-
-    if allsats is True or sensor is None:
-        fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
-    elif sensor == 'Landsat 8 and 9 (OLI)':
-        fid = ['LC08', 'LC09']
-    elif sensor == 'Landsat 7 (ETM+)':
-        fid = ['LE07']
-    elif sensor == 'Landsat 4 and 5 (TM)':
-        fid = ['LT04', 'LT05']
-    else:
-        return None
-
-    flist2 = []
-    for i in flist:
-        for j in fid:
-            if j not in i.sensor:
-                continue
-            if '.tif' in i.filename:
-                continue
-            flist2.append(i)
-
-    return flist2
-
-
-def get_sentinel_list(flist):
-    """
-    Get Sentinel-2 files from a file list.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    if isinstance(flist[0], list):
-        if '.SAFE' in flist[0][0].filename:
-            return flist
-        return []
-
-    flist2 = []
-    for i in flist:
-        if 'Sentinel-2' not in i.sensor:
-            continue
-        flist2.append(i)
-
-    return flist2
 
 
 def _testfn():
