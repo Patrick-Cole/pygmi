@@ -48,6 +48,7 @@ from rasterio.crs import CRS
 from natsort import natsorted
 
 from pygmi import menu_default
+from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
@@ -353,6 +354,8 @@ class ImportBatch(BasicModule):
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
         self.ftype = QtWidgets.QLabel('File Type:')
+        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84, UTM is for southern '
+                                              'hemisphere')
 
         self.setupui()
 
@@ -372,6 +375,7 @@ class ImportBatch(BasicModule):
         pb_sfile.setIcon(icon)
 
         self.setWindowTitle('Import Batch Data')
+        self.ensuresutm.setChecked(True)
 
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -382,6 +386,7 @@ class ImportBatch(BasicModule):
         gridlayout.addWidget(self.ftype, 2, 0, 1, 1)
         gridlayout.addWidget(self.combo_sensor, 2, 1, 1, 1)
         gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
+        gridlayout.addWidget(self.ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -449,7 +454,8 @@ class ImportBatch(BasicModule):
         self.filelist = []
         for ifile in self.piter(allfiles):
             dat = get_data(ifile, showprocesslog=self.showprocesslog,
-                           metaonly=True)
+                           metaonly=True,
+                           ensuresutm=self.ensuresutm.isChecked())
             if dat is None:
                 continue
             datm = RasterMeta()
@@ -1194,7 +1200,7 @@ def get_aster_list(flist):
 
 
 def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
-             metaonly=False):
+             metaonly=False, ensuresutm=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1234,6 +1240,8 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
         dat = get_landsat(ifile, piter, showprocesslog, tnames, metaonly)
+        if ensuresutm is True:
+            dat = utm_to_south(dat)
     elif ((ext == '.xml' and '.SAFE' in ifile) or
           ('S2A_' in bfile and ext == '.zip') or
           ('S2B_' in bfile and ext == '.zip')):
@@ -1298,6 +1306,10 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
             if tmp is not None:
                 dat += tmp
 
+    for i, band in enumerate(dat):
+        if band.crs != ldata.crs:
+            band = data_reproject(band, ldata.crs)
+            dat[i] = band
     return dat
 
 
@@ -2701,7 +2713,8 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
     os.makedirs(odir, exist_ok=True)
 
     for ifile in ifiles:
-        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=showprocesslog,
+        dat = get_from_rastermeta(ifile, piter=piter,
+                                  showprocesslog=showprocesslog,
                                   tnames=tnames)
 
         ofile = os.path.join(odir, os.path.basename(dat[0].filename))
@@ -2725,6 +2738,31 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
         showprocesslog('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
+
+
+def utm_to_south(dat):
+    """
+    Make sure all UTM labels is for southern hemisphere. This does not actually
+    reproject.
+
+    Parameters
+    ----------
+    dat : list
+        List fo Data.
+
+    Returns
+    -------
+    dat : list
+        List of data.
+
+    """
+    for i in dat:
+        epsgcode = i.crs.to_epsg()
+        if epsgcode >= 32600 and epsgcode <= 32660:
+            epsgcode += 100
+            i.crs = CRS.from_epsg(epsgcode)
+
+    return dat
 
 
 def _test5P():
@@ -2797,6 +2835,7 @@ def _testfn2():
     tmp2 = ExportBatch()
     tmp2.indata = dat
     tmp2.run()
+
 
 def _testfn3():
     """Test routine."""

@@ -713,8 +713,7 @@ class DataMerge(BasicModule):
                     transform, width, height = calculate_default_transform(
                         i2.crs, crs, src_width, src_height, *i2.bounds)
 
-                    i2 = data_reproject(i2, i2.crs, crs, transform, height,
-                                        width)
+                    i2 = data_reproject(i2, crs, transform, height, width)
 
                 if self.forcetype is not None:
                     i2.data = i2.data.astype(self.forcetype)
@@ -971,14 +970,7 @@ class DataReproj(BasicModule):
         # Now create virtual dataset
         dat = []
         for data in self.piter(self.indata['Raster']):
-            src_height, src_width = data.data.shape
-
-            transform, width, height = calculate_default_transform(
-                src_crs, dst_crs, src_width, src_height, *data.bounds)
-
-            # Work out the boundaries of the new dataset in target projection
-            data2 = data_reproject(data, src_crs, dst_crs, transform,
-                                   height, width)
+            data2 = data_reproject(data, dst_crs, icrs=src_crs)
 
             dat.append(data2)
 
@@ -1775,7 +1767,8 @@ def redistribute_vertices(geom, distance):
     raise ValueError('unhandled geometry %s', (geom.geom_type,))
 
 
-def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
+def data_reproject(data, ocrs, otransform=None, orows=None,
+                   ocolumns=None, icrs=None):
     """
     Reproject dataset.
 
@@ -1783,23 +1776,32 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
     ----------
     data : PyGMI Data
         PyGMI dataset.
-    icrs : CRS
-        input crs.
     ocrs : CRS
         output crs.
-    otransform : Affine
-        Output affine transform.
-    orows : int
-        output rows.
-    ocolumns : int
-        output columns.
+    otransform : Affine, optional
+        Output affine transform. The default is None.
+    orows : int, optional
+        output rows. The default is None.
+    ocolumns : int, optional
+        output columns. The default is None.
+    icrs : CRS, optional
+        input crs. The default is None.
 
     Returns
     -------
-    data2 : TYPE
-        DESCRIPTION.
+    data2 : PyGMI Data
+        Reprojected dataset.
 
     """
+    if icrs is None:
+        icrs = data.crs
+
+    if otransform is None:
+        src_height, src_width = data.data.shape
+
+        otransform, ocolumns, orows = calculate_default_transform(
+            icrs, ocrs, src_width, src_height, *data.bounds)
+
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     odata, _ = reproject(source=data.data,
                          destination=odata,
@@ -1820,6 +1822,7 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
 
     data2.data = np.ma.masked_equal(data2.data, data.nodata)
     data2.nodata = data.nodata
+    data2.metadata = data.metadata
 
     return data2
 
