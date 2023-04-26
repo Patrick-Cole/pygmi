@@ -233,7 +233,7 @@ class ImportData(BasicModule):
             if item.isSelected():
                 tnames.append(str(item.text()))
 
-        if tnames == []:
+        if not tnames:
             return False
 
         os.chdir(os.path.dirname(self.ifile))
@@ -354,8 +354,8 @@ class ImportBatch(BasicModule):
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
         self.ftype = QtWidgets.QLabel('File Type:')
-        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84, UTM is for southern '
-                                              'hemisphere')
+        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
+                                              'southern hemisphere')
 
         self.setupui()
 
@@ -444,7 +444,7 @@ class ImportBatch(BasicModule):
         self.sfile.setText(self.idir)
 
         types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
-                  '*.xml', '*.h5']
+                 '*.xml', '*.h5']
         allfiles = []
         for i in types:
             allfiles += glob.glob(os.path.join(self.idir, i))
@@ -486,7 +486,6 @@ class ImportBatch(BasicModule):
         None.
 
         """
-
         if self.lw_tnames.count() > 0:
             self.tnames[self.oldsensor] = []
             for i in range(self.lw_tnames.count()):
@@ -589,7 +588,8 @@ class ImportSentinel5P(BasicModule):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.importsentinel5p')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.'
+                                           'importsentinel5p')
         label_subdata = QtWidgets.QLabel('Product:')
         label_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
@@ -962,7 +962,7 @@ class ExportBatch(ContextModule):
         label_blue = QtWidgets.QLabel('Blue Band:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
-        ext = ('GeoTiff compressed using ZSTD', 'GeoTiff', 'ENVI', 'ERMapper',
+        ext = ('GeoTiff', 'GeoTiff compressed using ZSTD', 'ENVI', 'ERMapper',
                'ERDAS Imagine')
 
         self.ofilt.addItems(ext)
@@ -1070,13 +1070,15 @@ class ExportBatch(ContextModule):
             tnames = [self.red.currentText(),
                       self.green.currentText(),
                       self.blue.currentText()]
+            otype = 'RGB'
         else:
+            otype = None
             tnames = None
 
         self.showprocesslog('Export Data Busy...')
 
         export_batch(self.indata, odir, filt, tnames, piter=self.piter,
-                     showprocesslog=self.showprocesslog)
+                     showprocesslog=self.showprocesslog, otype=otype)
 
         self.showprocesslog('Export Data Finished!')
         self.process_is_active(False)
@@ -1156,6 +1158,113 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
+def etree_to_dict(t):
+    """
+    Convert an ElementTree to dictionary.
+
+    From K3--rnc: https://stackoverflow.com/questions/7684333/converting-xml-to-dictionary-using-elementtree
+
+    Parameters
+    ----------
+    t : Elementtree
+        Root.
+
+    Returns
+    -------
+    d : dictionary
+        DESCRIPTION.
+
+    """
+    d = {t.tag: {} if t.attrib else None}
+    children = list(t)
+    if children:
+        dd = defaultdict(list)
+        for dc in map(etree_to_dict, children):
+            for k, v in dc.items():
+                dd[k].append(v)
+        d = {t.tag: {k: v[0] if len(v) == 1 else v
+                     for k, v in dd.items()}}
+    if t.attrib:
+        d[t.tag].update(('@' + k, v)
+                        for k, v in t.attrib.items())
+    if t.text:
+        text = t.text.strip()
+        if children or t.attrib:
+            if text:
+                d[t.tag]['#text'] = text
+        else:
+            d[t.tag] = text
+    return d
+
+
+def export_batch(indata, odir, filt, tnames=None, piter=None,
+                 showprocesslog=print, otype=None):
+    """
+    Export a batch of files directly from satellite format to disk.
+
+    Parameters
+    ----------
+    indata : dictionary
+        Dictionary containing 'RasterFileList' as one of its keys.
+    odir : str
+        Output Directory.
+    filt : str
+        type of file to export.
+    tnames : list, optional
+        list of band names to import, in order. the default is None.
+    piter : iter, optional
+        Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+
+    Returns
+    -------
+    None.
+
+    """
+    if 'RasterFileList' not in indata:
+        showprocesslog('You need a raster file list')
+        return
+
+    ifiles = indata['RasterFileList']
+
+    if 'ASTER' in ifiles[0].sensor:
+        ifiles = get_aster_list(indata['RasterFileList'])
+
+    filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
+                 'GeoTiff': 'GTiff',
+                 'ENVI': 'ENVI',
+                 'ERMapper': 'ERS',
+                 'ERDAS Imagine': 'HFA'}
+
+    compression = 'NONE'
+    ofilt = filt2gdal[filt]
+    if filt == 'GeoTiff compressed using ZSTD':
+        compression = 'ZSTD'
+
+    os.makedirs(odir, exist_ok=True)
+
+    for ifile in ifiles:
+        dat = get_from_rastermeta(ifile, piter=piter,
+                                  showprocesslog=showprocesslog,
+                                  tnames=tnames)
+
+        ofile = set_export_filename(dat, odir, otype)
+
+        odat = []
+        if tnames is not None:
+            for i in tnames:
+                for j in dat:
+                    if i == j.dataid:
+                        odat.append(j)
+                        break
+        else:
+            odat = dat
+
+        showprocesslog('Exporting '+os.path.basename(ofile))
+        export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
+
+
 def get_aster_list(flist):
     """
     Get ASTER files from a file list.
@@ -1186,11 +1295,12 @@ def get_aster_list(flist):
             names[adate] = []
         names[adate].append(i)
 
-    for adate in names.keys():
+    for adate in names:
         has_07xt = [True for i in names[adate] if '_07XT_' in i.filename]
         has_07 = [True for i in names[adate] if '_07_' in i.filename]
         if len(has_07xt) > 0 and len(has_07) > 0:
-            names[adate] = [i for i in names[adate] if '_07_' not in i.filename]
+            names[adate] = [i for i in names[adate]
+                            if '_07_' not in i.filename]
 
     flist = []
     for adate in names:
@@ -1270,7 +1380,6 @@ def get_sentinel_list(flist):
         flist2.append(i)
 
     return flist2
-
 
 
 def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
@@ -1369,20 +1478,30 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
 
     """
     if isinstance(ldata, RasterMeta):
+        if tnames is None:
+            tnames = ldata.tnames
         dat = get_data(ldata.filename, piter=piter,
-                       showprocesslog=showprocesslog, tnames=ldata.tnames)
+                       showprocesslog=showprocesslog, tnames=tnames)
+        ocrs = ldata.crs
     elif isinstance(ldata, list):
         dat = []
         for jfile in ldata:
-            tmp = get_data(jfile.filename, piter=piter,
-                           showprocesslog=showprocesslog,
-                           tnames=jfile.tnames)
+            if tnames is None:
+                tmp = get_data(jfile.filename, piter=piter,
+                               showprocesslog=showprocesslog,
+                               tnames=jfile.tnames)
+            else:
+                tmp = get_data(jfile.filename, piter=piter,
+                               showprocesslog=showprocesslog,
+                               tnames=tnames)
+
             if tmp is not None:
                 dat += tmp
+            ocrs = jfile.crs
 
     for i, band in enumerate(dat):
-        if band.crs != ldata.crs:
-            band = data_reproject(band, ldata.crs)
+        if band.crs != ocrs:
+            band = data_reproject(band, ocrs)
             dat[i] = band
     return dat
 
@@ -1646,7 +1765,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
                 showprocesslog('Converting band '+lstband+' to Kelvin. '
                                'Band renamed as LST')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
-            elif fext in satbands.keys():
+            elif fext in satbands:
                 showprocesslog('Converting band '+fext+' to reflectance.')
                 dat[-1].data = dat[-1].data*0.0000275 - 0.2
             elif fext in ['ST_CDIST', 'ST_QA']:
@@ -2700,118 +2819,70 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
-def etree_to_dict(t):
+def set_export_filename(dat, odir, otype=None):
     """
-    Convert an ElementTree to dictionary.
+    Set the export filename according to convention.
 
-    From K3--rnc: https://stackoverflow.com/questions/7684333/converting-xml-to-dictionary-using-elementtree
+    Different satellite products have different simplified conventions for
+    output filenames to avoid names getting too long.
 
     Parameters
     ----------
-    t : Elementtree
-        Root.
-
-    Returns
-    -------
-    d : dictionary
-        DESCRIPTION.
-
-    """
-    d = {t.tag: {} if t.attrib else None}
-    children = list(t)
-    if children:
-        dd = defaultdict(list)
-        for dc in map(etree_to_dict, children):
-            for k, v in dc.items():
-                dd[k].append(v)
-        d = {t.tag: {k: v[0] if len(v) == 1 else v
-                     for k, v in dd.items()}}
-    if t.attrib:
-        d[t.tag].update(('@' + k, v)
-                        for k, v in t.attrib.items())
-    if t.text:
-        text = t.text.strip()
-        if children or t.attrib:
-            if text:
-                d[t.tag]['#text'] = text
-        else:
-            d[t.tag] = text
-    return d
-
-
-def export_batch(indata, odir, filt, tnames=None, piter=None,
-                 showprocesslog=print):
-    """
-    Export a batch of files directly from satellite format to disk.
-
-    Parameters
-    ----------
-    indata : dictionary
-        Dictionary containing 'RasterFileList' as one of its keys.
+    dat : list
+        List of PyGMI data.
     odir : str
-        Output Directory.
-    filt : str
-        type of file to export.
-    tnames : list, optional
-        list of band names to import, in order. the default is None.
-    piter : iter, optional
-        Progress bar iterable. Default is None.
-    showprocesslog : function, optional
-        Routine to show text messages. The default is print.
+        Output directory.
+    otype : str
+        Output file type.
 
     Returns
     -------
-    None.
+    ofile : str
+        Output file name.
 
     """
-    if 'RasterFileList' not in indata:
-        showprocesslog('You need a raster file list')
-        return
+    sensor = dat[0].metadata['Raster']['Sensor']
+    filename = os.path.basename(dat[0].filename)
+    filename = os.path.splitext(filename)[0]
 
-    ifiles = indata['RasterFileList']
+    if otype is None:
+        otype = 'stack'
 
-    if 'ASTER' in ifiles[0].sensor:
-        ifiles = get_aster_list(indata['RasterFileList'])
+    if 'ASTER' in sensor:
+        tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
+        tmp = list(set(tmp))
+        tmp.sort()
+        plev = ''
+        for i in tmp:
+            plev += f'_{i}'
 
-    filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
-                 'GeoTiff': 'GTiff',
-                 'ENVI': 'ENVI',
-                 'ERMapper': 'ERS',
-                 'ERDAS Imagine': 'HFA'}
+        tmp = filename.split('_')
+        month = tmp[2][3:5]
+        day = tmp[2][5:7]
+        year = tmp[2][7:11]
+        uid = tmp[-1]
+        ofile = f'AST{plev}_{year}{month}{day}_{uid}'
+    elif 'Landsat' in sensor:
+        ofile = '_'.join(filename.split('_')[:4])
+    elif 'Sentinel-2' in sensor:
+        tmp = filename.split('_')
+        mission = tmp[0]
+        date = tmp[2].split('T')[0]
+        tile = tmp[5]
+        ofile = f'{mission}_{tile}_{date}'
+    else:
+        ofile = filename
 
-    compression = 'NONE'
-    ofilt = filt2gdal[filt]
-    if filt == 'GeoTiff compressed using ZSTD':
-        compression = 'ZSTD'
+    if otype == 'RGB':
+        tmp = [i.dataid.split()[0] for i in dat]
+        for i in tmp:
+            ofile += f'_{i.lower().replace("band", "b")}'
+    else:
+        ofile += f'_{otype}'
 
-    os.makedirs(odir, exist_ok=True)
+    ofile = os.path.join(odir, ofile)
 
-    for ifile in ifiles:
-        dat = get_from_rastermeta(ifile, piter=piter,
-                                  showprocesslog=showprocesslog,
-                                  tnames=tnames)
-
-        ofile = os.path.join(odir, os.path.basename(dat[0].filename))
-        ofile = ofile[:-4]+'.tif'
-
-        if tnames is not None and len(tnames) == 3:
-            ofile = ofile[:-4]
-            for i in tnames:
-                ofile += f'_{i}'
-            ofile += '_tern.tif'
-
-        odat = []
-        if tnames is not None:
-            for i in tnames:
-                for j in dat:
-                    if i == j.dataid:
-                        odat.append(j)
-                        break
-        else:
-            odat = dat
-
-        showprocesslog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
+    return ofile
 
 
 def utm_to_south(dat):
@@ -2833,7 +2904,7 @@ def utm_to_south(dat):
     """
     for i in dat:
         epsgcode = i.crs.to_epsg()
-        if epsgcode >= 32600 and epsgcode <= 32660:
+        if 32600 <= epsgcode <= 32660:
             epsgcode += 100
             i.crs = CRS.from_epsg(epsgcode)
 

@@ -34,7 +34,7 @@ from PyQt5 import QtWidgets, QtCore
 
 from pygmi import menu_default
 from pygmi.rsense import iodefs
-from pygmi.rsense.iodefs import get_from_rastermeta
+from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense.iodefs import get_aster_list, get_landsat_list
 from pygmi.rsense.iodefs import get_sentinel_list
@@ -244,7 +244,7 @@ class SatRatios(BasicModule):
             else:
                 dat = ifile
 
-            ofile = dat[0].filename
+            odir = os.path.dirname(dat[0].filename)
 
             if dat is None:
                 continue
@@ -366,11 +366,12 @@ class SatRatios(BasicModule):
                 datfin.append(rband)
 
             if datfin:
-                if len(datfin) == 1:
-                    ofile = (ofile.split('.')[0] + '_' +
-                             datfin[0].dataid.partition(' ')[-1] + '.tif')
-                else:
-                    ofile = ofile.split('.')[0] + '_ratio.tif'
+                ofile = set_export_filename(datfin, odir, 'ratio')
+                # if len(datfin) == 1:
+                #     ofile = (ofile.split('.')[0] + '_' +
+                #              datfin[0].dataid.partition(' ')[-1] + '.tif')
+                # else:
+                #     ofile = ofile.split('.')[0] + '_ratio.tif'
 
                 self.showprocesslog('Exporting to '+ofile)
                 export_raster(ofile, datfin, 'GTiff', piter=self.piter)

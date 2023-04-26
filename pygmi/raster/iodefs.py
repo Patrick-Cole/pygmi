@@ -1525,7 +1525,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                                                data[0].extent[3],
                                                data[0].xdim, data[0].ydim)
 
-    tmp = ofile.rpartition('.')
+    tmp = os.path.splitext(ofile)
 
     if drv == 'GTiff':
         tmpfile = tmp[0] + '.tif'

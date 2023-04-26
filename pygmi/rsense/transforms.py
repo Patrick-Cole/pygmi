@@ -42,6 +42,7 @@ from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.rsense.iodefs import get_aster_list
 from pygmi.rsense.iodefs import get_landsat_list
 from pygmi.rsense.iodefs import get_sentinel_list
+from pygmi.rsense.iodefs import set_export_filename
 
 
 class MNF(BasicModule):
@@ -259,8 +260,9 @@ class MNF(BasicModule):
                                           noisetxt=noise,
                                           fwdonly=self.cb_fwdonly.isChecked())
 
-                ofile = os.path.basename(filename).split('.')[0] + '_mnf.tif'
-                ofile = os.path.join(odir, ofile)
+                # ofile = os.path.basename(filename).split('.')[0] + '_mnf.tif'
+                # ofile = os.path.join(odir, ofile)
+                ofile = set_export_filename(odata, odir, 'mnf')
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
@@ -481,8 +483,10 @@ class PCA(BasicModule):
                                           pprint=self.showprocesslog,
                                           fwdonly=fwdonly)
 
-                ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
-                ofile = os.path.join(odir, ofile)
+                # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
+                # ofile = os.path.join(odir, ofile)
+
+                ofile = set_export_filename(odata, odir, 'pca')
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
@@ -680,7 +684,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'MNF {j+1} Explained Variance Ratio '
+            band.dataid = (f'MNF{j+1} Explained Variance Ratio '
                            f'{evr[j]*100:.2f}%')
 
     del datall
@@ -774,7 +778,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'PCA {j+1} Explained Variance Ratio '
+            band.dataid = (f'PCA{j+1} Explained Variance Ratio '
                            f'{evr[j]*100:.2f}%')
     del datall
 
@@ -913,17 +917,19 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
         for j, band in enumerate(odata):
             band.data = datall[:, :, j]
             if fwdonly is True:
-                band.dataid = (f'PCA {j+1} Explained Variance Ratio '
+                band.dataid = (f'PCA{j+1} Explained Variance Ratio '
                                f'{evr[j]*100:.2f}%')
         del datall
 
-        ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
-        ofile = os.path.join(odir, ofile)
+        # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
+        # ofile = os.path.join(odir, ofile)
 
-        if 'AST_' in ofile:
-            ofile = ofile.replace('_05_', '_')
-            ofile = ofile.replace('_07XT_', '_')
-            ofile = ofile.replace('_07_', '_')
+        # if 'AST_' in ofile:
+        #     ofile = ofile.replace('_05_', '_')
+        #     ofile = ofile.replace('_07XT_', '_')
+        #     ofile = ofile.replace('_07_', '_')
+
+        ofile = set_export_filename(odata, odir, 'pca')
 
         pprint('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD')
