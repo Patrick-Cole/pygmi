@@ -2220,6 +2220,92 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
     return dat
 
 
+def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
+                  metaonly=False):
+    """
+    Get Sentinel-1 Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    ifile = ifile[:]
+
+    with rasterio.open(ifile) as dataset:
+        if dataset is None:
+            return None
+        subdata = dataset.subdatasets
+
+    # subdata = [i for i in subdata if 'TCI' not in i]  # TCI is true color
+
+    nval = 0
+    dat = []
+    for bfile in subdata:
+        dataset = rasterio.open(bfile)
+        showprocesslog('Importing '+os.path.basename(bfile))
+        if dataset is None:
+            showprocesslog('Problem with '+ifile)
+            continue
+
+        for i in piter(dataset.indexes):
+            bmeta = dataset.tags(i)
+
+            tmp = bfile.split(':')
+            bname = f'{tmp[-2]}_{tmp[-1]}'
+
+            if tnames is not None and bname not in tnames:
+                continue
+
+            dat.append(Data())
+
+            if not metaonly:
+                rtmp = dataset.read(i)
+
+                dat[-1].data = rtmp
+                dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+                if dat[-1].data.mask.size == 1:
+                    dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+                # dat[-1].data = dat[-1].data.astype(float)
+                # dat[-1].data = dat[-1].data / 10000.
+
+            dat[-1].dataid = bname
+            dat[-1].nodata = nval
+            dat[-1].crs = dataset.crs
+            dat[-1].set_transform(transform=dataset.transform)
+            dat[-1].filename = ifile
+            # dat[-1].units = 'Reflectance'
+
+            bmeta['Raster'] = dat[-1].metadata['Raster']
+            bmeta['Raster']['Sensor'] = 'Sentinel-1'
+
+            dat[-1].metadata.update(bmeta)
+
+        dataset.close()
+
+    if not dat:
+        dat = None
+
+    return dat
+
+
 def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
                   metaonly=False):
     """
@@ -2845,6 +2931,9 @@ def set_export_filename(dat, odir, otype=None):
     filename = os.path.basename(dat[0].filename)
     filename = os.path.splitext(filename)[0]
 
+    filename = filename.replace('_stack', '')
+    filename = filename.replace('_ratio', '')
+
     if otype is None:
         otype = 'stack'
 
@@ -2988,36 +3077,17 @@ def _testfn3():
     import sys
     import matplotlib.pyplot as plt
 
-    metaonly = False
-    # metaonly = True
+    ifile = "D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
 
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122255_9222.zip"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122208_16894.hdf"
+    dat = get_sentinel1(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
-
-    os.chdir(r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import')
-    tmp1 = ImportData()
-    tmp1.settings()
-
-    dat = tmp1.outdata['Raster']
-
-    breakpoint()
-
-    if metaonly is False:
-        for i in dat:
-            plt.figure(dpi=150)
-            plt.title(i.dataid)
-            plt.imshow(i.data)
-            plt.colorbar()
-            plt.show()
+    for i in dat:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data)
+        plt.colorbar()
+        plt.show()
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()
