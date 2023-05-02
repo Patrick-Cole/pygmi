@@ -2252,23 +2252,31 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
         if dataset is None:
             return None
         subdata = dataset.subdatasets
+        tmp = dataset.tags(ns='derived_subdatasets')
 
-    # subdata = [i for i in subdata if 'TCI' not in i]  # TCI is true color
+    subdata = [i for i in subdata if 'IW1' in i]  # TCI is true color
+    subdata = [i for i in subdata if 'COMPLEX' not in i]  # TCI is true color
+
+    # subdata = [tmp['DERIVED_SUBDATASET_1_NAME']]
 
     nval = 0
     dat = []
+
     for bfile in subdata:
-        dataset = rasterio.open(bfile)
-        showprocesslog('Importing '+os.path.basename(bfile))
-        if dataset is None:
+        tmp = bfile.split(':')
+        bname = f'{tmp[0]}_{tmp[1]}_{tmp[-2]}_{tmp[-1]}'
+
+        dataset1 = rasterio.open(bfile)
+        showprocesslog('Importing '+bname)
+        if dataset1 is None:
             showprocesslog('Problem with '+ifile)
             continue
 
+        dataset = rasterio.vrt.WarpedVRT(dataset1)
+
         for i in piter(dataset.indexes):
             bmeta = dataset.tags(i)
-
-            tmp = bfile.split(':')
-            bname = f'{tmp[-2]}_{tmp[-1]}'
+            print(bmeta)
 
             if tnames is not None and bname not in tnames:
                 continue
@@ -2299,6 +2307,8 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
             dat[-1].metadata.update(bmeta)
 
         dataset.close()
+
+        # break
 
     if not dat:
         dat = None
@@ -3084,7 +3094,7 @@ def _testfn3():
     for i in dat:
         plt.figure(dpi=150)
         plt.title(i.dataid)
-        plt.imshow(i.data)
+        plt.imshow(i.data, extent=i.extent)
         plt.colorbar()
         plt.show()
 
