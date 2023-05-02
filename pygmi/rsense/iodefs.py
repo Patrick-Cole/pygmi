@@ -165,6 +165,8 @@ class ImportData(BasicModule):
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
         self.ftype = QtWidgets.QLabel('File Type:')
+        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
+                                              'southern hemisphere')
 
         self.setupui()
 
@@ -193,6 +195,7 @@ class ImportData(BasicModule):
         gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
         gridlayout.addWidget(self.ftype, 2, 0, 1, 2)
         gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
+        gridlayout.addWidget(self.ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -266,7 +269,8 @@ class ImportData(BasicModule):
         self.sfile.setText(self.ifile)
 
         self.indata['Raster'] = get_data(self.ifile, self.piter,
-                                         self.showprocesslog, metaonly=True)
+                                         self.showprocesslog, metaonly=True,
+                                         ensuresutm=self.ensuresutm.isChecked())
 
         tmp = []
         for i in self.indata['Raster']:
@@ -1427,8 +1431,6 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
         dat = get_landsat(ifile, piter, showprocesslog, tnames, metaonly)
-        if ensuresutm is True:
-            dat = utm_to_south(dat)
     elif ((ext == '.xml' and '.SAFE' in ifile) or
           ('S2A_' in bfile and ext == '.zip') or
           ('S2B_' in bfile and ext == '.zip')):
@@ -1447,6 +1449,9 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
                          tnames=tnames, metaonly=metaonly)
 
     if dat is not None:
+        if ensuresutm is True:
+            dat = utm_to_south(dat)
+
         for i in dat:
             if i.dataid is None:
                 i.dataid = ''

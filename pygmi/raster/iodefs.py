@@ -1650,7 +1650,7 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
-    ifile = ifile[:-4]+'_zstd.tif'
+    # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile)
 
     getinfo('Start')
@@ -1659,7 +1659,7 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_PACKBITS.tif', dataset, 'GTiff', compression='PACKBITS')  # 82s
     # export_raster(ifile[:-4]+'_LZW.tif', dataset, 'GTiff', compression='LZW') # 132
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
-    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s
+    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
     # best is zstd pred 3 zlvl 1
