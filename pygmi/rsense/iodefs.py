@@ -962,7 +962,8 @@ class ExportBatch(ContextModule):
         label_blue = QtWidgets.QLabel('Blue Band:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
-        ext = ('GeoTiff', 'GeoTiff compressed using ZSTD', 'ENVI', 'ERMapper',
+        ext = ('GeoTiff', 'GeoTiff compressed using DEFLATE',
+               'GeoTiff compressed using ZSTD', 'ENVI', 'ERMapper',
                'ERDAS Imagine')
 
         self.ofilt.addItems(ext)
@@ -1232,6 +1233,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         ifiles = get_aster_list(indata['RasterFileList'])
 
     filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
+                 'GeoTiff compressed using DEFLATE': 'GTiff',
                  'GeoTiff': 'GTiff',
                  'ENVI': 'ENVI',
                  'ERMapper': 'ERS',
@@ -1241,6 +1243,8 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
     ofilt = filt2gdal[filt]
     if filt == 'GeoTiff compressed using ZSTD':
         compression = 'ZSTD'
+    elif filt == 'GeoTiff compressed using DEFLATE':
+        compression = 'DEFLATE'
 
     os.makedirs(odir, exist_ok=True)
 
@@ -2127,7 +2131,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
     if len(header) > 0:
         hfile = header[0]
 
-        with open(os.path.join(idir, hfile)) as headerfile:
+        with open(os.path.join(idir, hfile), encoding='utf-8') as headerfile:
             txt = headerfile.read()
 
         txt = txt.split('\n')
@@ -2252,12 +2256,10 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
         if dataset is None:
             return None
         subdata = dataset.subdatasets
-        tmp = dataset.tags(ns='derived_subdatasets')
+        # tmp = dataset.tags(ns='derived_subdatasets')
 
-    subdata = [i for i in subdata if 'IW1' in i]  # TCI is true color
-    subdata = [i for i in subdata if 'COMPLEX' not in i]  # TCI is true color
-
-    # subdata = [tmp['DERIVED_SUBDATASET_1_NAME']]
+    # subdata = [i for i in subdata if 'IW1' in i]
+    # subdata = [i for i in subdata if 'COMPLEX' not in i]
 
     nval = 0
     dat = []
@@ -2307,8 +2309,6 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
             dat[-1].metadata.update(bmeta)
 
         dataset.close()
-
-        # break
 
     if not dat:
         dat = None
@@ -3066,8 +3066,6 @@ def _testfn():
 
 def _testfn2():
     """Test routine."""
-    import sys
-
     os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
@@ -3084,10 +3082,9 @@ def _testfn2():
 
 def _testfn3():
     """Test routine."""
-    import sys
     import matplotlib.pyplot as plt
 
-    ifile = "D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
+    ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
 
     dat = get_sentinel1(ifile)
 

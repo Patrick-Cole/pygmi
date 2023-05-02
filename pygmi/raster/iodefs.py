@@ -1212,6 +1212,7 @@ class ExportData(BasicModule):
             return False
 
         ext = ('GeoTiff (*.tif);;'
+               'GeoTiff compressed using DEFLATE (*.tif);;'
                'GeoTiff compressed using ZSTD (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
@@ -1252,11 +1253,15 @@ class ExportData(BasicModule):
                     export_raster(file_out, [dat], 'SAGA', piter=self.piter)
             else:
                 export_raster(self.ofile, data, 'SAGA', piter=self.piter)
-        if filt == 'GeoTiff (*.tif)':
-            export_raster(self.ofile, data, 'GTiff', piter=self.piter)
-        if filt == 'GeoTiff compressed using ZSTD (*.tif)':
+        if 'Geotiff' in filt:
+            if 'ZSTD' in filt:
+                compression = 'ZSTD'
+            elif 'DEFLATE' in filt:
+                compression = 'DEFLATE'
+            else:
+                compression = 'NONE'
             export_raster(self.ofile, data, 'GTiff', piter=self.piter,
-                          compression='ZSTD')
+                          compression=compression)
         if filt == 'ENVI (*.hdr)':
             export_raster(self.ofile, data, 'ENVI', piter=self.piter)
         if filt == 'ArcGIS BIL (*.bil)':
@@ -1331,7 +1336,7 @@ class ExportData(BasicModule):
 
     def export_surfer(self, data):
         """
-        Export a surfer binary grid.
+        Routine to export a surfer binary grid.
 
         Parameters
         ----------
@@ -1641,42 +1646,24 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
 def _filespeedtest():
     """Test."""
-    import matplotlib.pyplot as plt
     from pygmi.misc import getinfo
     print('Starting')
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\mosaic\Box1_rad_3band.ers"
-
-    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geosoft\FCR2613 CGS Block 2&3 TMI.GRD"
-
-    # iraster = None
+    ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
+    ifile = ifile[:-4]+'_zstd.tif'
+    dataset = get_raster(ifile)
 
     getinfo('Start')
 
-    dataset = get_raster(ifile)
-    for dat in dataset:
-        dat.data = dat.data.astype(float)
-        dat.nodata = 0
-    export_raster(r'c:\workdata\temp.tif', dataset)
-    dataset = get_raster(r'c:\workdata\temp.tif')
-
-    # plt.figure(dpi=150)
-    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    # plt.colorbar()
-    # plt.show()
-
-    # for i in dataset:
-    #     i.data = i.data*10000
-    #     i.data = i.data.astype(np.int16)
-
-    # export_raster(ofile, dataset, 'GTiff', compression='PACKBITS')  # 182s
-    # export_raster(ofile, dataset, 'GTiff', compression='LZW')  # 191, 140 with pred=3
-    # export_raster(ofile, dataset, 'GTiff', compression='LZMA')  #
-    # export_raster(ifile[:-4]+'_DEFLATE3ZL1.tiff', dataset, 'GTiff', compression='DEFLATE')  # 318, 277 PRED 3
-    # export_raster(ifile[:-4]+'_ZSTD3ZL1.tiff', dataset, 'GTiff', compression='ZSTD')  # 241, 281 pred=3
+    # export_raster(ifile[:-4]+'_NONE.tif', dataset, 'GTiff')  # 65s
+    # export_raster(ifile[:-4]+'_PACKBITS.tif', dataset, 'GTiff', compression='PACKBITS')  # 82s
+    # export_raster(ifile[:-4]+'_LZW.tif', dataset, 'GTiff', compression='LZW') # 132
+    # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
+    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s
+    # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
     # best is zstd pred 3 zlvl 1
-    # then deflade pred 3 zlvl 1
+    # then deflate pred 3 zlvl 1
 
     getinfo('End')
 
