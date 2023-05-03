@@ -1622,8 +1622,7 @@ def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
 
         dat[-1].dataid = bandid
         dat[-1].nodata = 1e+20
-        dat[-1].crs = crs
-        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifile
         dat[-1].units = dataset.units[0]
         dat[-1].metadata['Raster']['Sensor'] = 'MODIS'
@@ -1794,8 +1793,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
 
         dat[-1].dataid = fext
         dat[-1].nodata = nval
-        dat[-1].crs = dataset.crs
-        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifilet
 
         bmeta = dat[-1].metadata['Raster']
@@ -2207,8 +2205,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
 
         dat[-1].dataid = bname
         dat[-1].nodata = nval
-        dat[-1].crs = dataset.crs
-        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifile
 
         bmeta = {}
@@ -2311,8 +2308,7 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
-            dat[-1].crs = dataset.crs
-            dat[-1].set_transform(transform=dataset.transform)
+            dat[-1].meta_from_rasterio(dataset)
             dat[-1].filename = ifile
             # dat[-1].units = 'Reflectance'
 
@@ -2396,8 +2392,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
-            dat[-1].crs = dataset.crs
-            dat[-1].set_transform(transform=dataset.transform)
+            dat[-1].meta_from_rasterio(dataset)
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
 
@@ -2512,8 +2507,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
 
         dat[-1].dataid = bname
         dat[-1].nodata = nval
-        dat[-1].crs = dataset.crs
-        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifile
         dat[-1].units = units
 
@@ -2664,8 +2658,7 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-        dat[-1].set_transform(transform=dataset.transform)
-        dat[-1].crs = dataset.crs
+        dat[-1].meta_from_rasterio(dataset)
 
         dataset.close()
         dataset1.close()

@@ -148,13 +148,38 @@ class Data():
         self.units = ''
         self.isrgb = False
         self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
-        self.meta = {}
+        self.meta = {}  # rasterio meta
         self.filename = ''
         self.transform = None
         self.crs = None
         self.datetime = None
 
         self.set_transform(1, 0, 1, 0)
+
+    def meta_from_rasterio(self, dataset):
+        """
+        Set transform, bounds, extent, xdim and ydim from a rasterio dataset.
+
+        Parameters
+        ----------
+        dataset : rasterio dataset
+            Rasterio dataset.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.xdim = dataset.transform[0]
+        self.ydim = abs(dataset.transform[4])
+
+        left, bottom, right, top = dataset.bounds
+
+        self.extent = (left, right, bottom, top)
+        self.bounds = (left, bottom, right, top)
+        self.transform = dataset.transform
+        self.crs = dataset.crs
+        self.meta = dataset.meta
 
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
                       transform=None, iraster=None, rows=None, cols=None):
