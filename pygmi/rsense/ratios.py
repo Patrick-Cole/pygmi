@@ -374,7 +374,8 @@ class SatRatios(BasicModule):
                 #     ofile = ofile.split('.')[0] + '_ratio.tif'
 
                 self.showprocesslog('Exporting to '+ofile)
-                export_raster(ofile, datfin, 'GTiff', piter=self.piter)
+                export_raster(ofile, datfin, 'GTiff', piter=self.piter,
+                              compression='DEFLATE')
                 self.outdata['Raster'] = datfin
 
         return True
