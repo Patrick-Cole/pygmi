@@ -45,6 +45,7 @@ from geopandas import GeoDataFrame
 from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
+from rasterio import Affine
 from natsort import natsorted
 
 from pygmi import menu_default
@@ -3012,12 +3013,15 @@ def utm_to_south(dat):
         if 32600 <= epsgcode <= 32660:
             epsgcode += 100
             band.crs = CRS.from_epsg(epsgcode)
-            transform = band.transform
-            xdim = transform[0]
-            ydim = transform[4]
-            xmin = transform[2]
-            ymax = transform[5]+10000000
-            band.set_transform(xdim, xmin, ydim, ymax)
+
+            left, right, bottom, top = band.extent
+            top = top + 10000000
+            xdim = band.xdim
+            ydim = band.ydim
+
+            band.transform = Affine(xdim, 0, left, 0, -ydim, top)
+            band.extent = (left, right, bottom, top)
+            band.bounds = (left, bottom, right, top)
 
     return dat
 
