@@ -353,3 +353,63 @@ class RasterMeta():
                 self.sensor += 'v1'
             else:
                 self.sensor += 'v2'
+
+    def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
+                      transform=None, iraster=None, rows=None, cols=None):
+        """
+        Set the transform.
+
+        This requires either transform as input OR xdim, ydim, xmin, ymax.
+
+        Parameters
+        ----------
+        xdim : float, optional
+            x dimension. The default is None.
+        xmin : float, optional
+            x minimum. The default is None.
+        ydim : float, optional
+            y dimension. The default is None.
+        ymax : float, optional
+            y maximum. The default is None.
+        transform : list of Affine, optional
+            transform. The default is None.
+        iraster : list, optional
+            list containing offsets etc in event of cutting data. The default
+            is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if transform is not None:
+            xdim = transform[0]
+            ydim = transform[4]
+            xmin = transform[2]
+            ymax = transform[5]
+
+        ydim = abs(ydim)
+
+        if iraster is None:
+            xoff = 0
+            yoff = 0
+        else:
+            xoff, yoff, _, _ = iraster
+
+        # get rows and cols this way because RGB images have three dims
+        if rows is None:
+            rows = self.data.shape[0]
+        if cols is None:
+            cols = self.data.shape[1]
+
+        left = xmin + xoff*xdim
+        top = ymax - yoff*ydim
+        right = left + xdim*cols
+        bottom = top - ydim*rows
+
+        self.transform = Affine(xdim, 0, left, 0, -ydim, top)
+        self.xdim = xdim
+        self.ydim = ydim
+
+        self.extent = (left, right, bottom, top)
+        self.bounds = (left, bottom, right, top)

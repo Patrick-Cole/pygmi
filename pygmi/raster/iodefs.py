@@ -1253,7 +1253,7 @@ class ExportData(BasicModule):
                     export_raster(file_out, [dat], 'SAGA', piter=self.piter)
             else:
                 export_raster(self.ofile, data, 'SAGA', piter=self.piter)
-        if 'Geotiff' in filt:
+        if 'GeoTiff' in filt:
             if 'ZSTD' in filt:
                 compression = 'ZSTD'
             elif 'DEFLATE' in filt:
