@@ -48,7 +48,6 @@ from rasterio.crs import CRS
 from natsort import natsorted
 
 from pygmi import menu_default
-from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
@@ -186,6 +185,7 @@ class ImportData(BasicModule):
         pb_sfile.setIcon(icon)
 
         self.setWindowTitle('Import Satellite Data')
+        self.ensuresutm.setChecked(True)
 
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -249,8 +249,10 @@ class ImportData(BasicModule):
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-        output_type = 'Raster'
-        self.outdata[output_type] = dat
+        if self.ensuresutm.isChecked() is True:
+            dat = utm_to_south(dat)
+
+        self.outdata['Raster'] = dat
 
         return True
 
@@ -269,8 +271,7 @@ class ImportData(BasicModule):
         self.sfile.setText(self.ifile)
 
         self.indata['Raster'] = get_data(self.ifile, self.piter,
-                                         self.showprocesslog, metaonly=True,
-                                         ensuresutm=self.ensuresutm.isChecked())
+                                         self.showprocesslog, metaonly=True)
 
         tmp = []
         for i in self.indata['Raster']:
@@ -433,6 +434,10 @@ class ImportBatch(BasicModule):
             return False
 
         self.setsensor()
+
+        if self.ensuresutm.isChecked() is True:
+            self.filelist = utm_to_south(self.filelist)
+
         self.outdata['RasterFileList'] = self.filelist
 
         return True
@@ -458,8 +463,7 @@ class ImportBatch(BasicModule):
         self.filelist = []
         for ifile in self.piter(allfiles):
             dat = get_data(ifile, showprocesslog=self.showprocesslog,
-                           metaonly=True,
-                           ensuresutm=self.ensuresutm.isChecked())
+                           metaonly=True)
             if dat is None:
                 continue
             datm = RasterMeta()
@@ -1391,7 +1395,7 @@ def get_sentinel_list(flist):
 
 
 def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
-             metaonly=False, ensuresutm=False):
+             metaonly=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1449,9 +1453,6 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
                          tnames=tnames, metaonly=metaonly)
 
     if dat is not None:
-        if ensuresutm is True:
-            dat = utm_to_south(dat)
-
         for i in dat:
             if i.dataid is None:
                 i.dataid = ''
@@ -1508,10 +1509,9 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
                 dat += tmp
             ocrs = jfile.crs
 
-    for i, band in enumerate(dat):
-        if band.crs != ocrs:
-            band = data_reproject(band, ocrs)
-            dat[i] = band
+    for band in dat:
+        band.crs = ocrs
+
     return dat
 
 
@@ -1630,6 +1630,7 @@ def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
                           'wetland=3, urban=2, unclassifed=1')
         dat[-1].nodata = 0
 
+    showprocesslog('Import complete')
     return dat
 
 
@@ -2692,6 +2693,7 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
     elif ptype == 'L1T' and calctoa is True:
         dat = calculate_toa(dat)
 
+    showprocesslog('Import complete')
     return dat
 
 
@@ -2814,6 +2816,7 @@ def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
         for i in dat:
             i.set_transform(xdim, xmin, ydim, ymax)
 
+    showprocesslog('Import complete')
     return dat
 
 
@@ -2993,8 +2996,6 @@ def utm_to_south(dat):
     """
     Make sure all UTM labels are for southern hemisphere.
 
-    This does not actually reproject.
-
     Parameters
     ----------
     dat : list
@@ -3006,11 +3007,17 @@ def utm_to_south(dat):
         List of data.
 
     """
-    for i in dat:
-        epsgcode = i.crs.to_epsg()
+    for band in dat:
+        epsgcode = band.crs.to_epsg()
         if 32600 <= epsgcode <= 32660:
             epsgcode += 100
-            i.crs = CRS.from_epsg(epsgcode)
+            band.crs = CRS.from_epsg(epsgcode)
+            transform = band.transform
+            xdim = transform[0]
+            ydim = transform[4]
+            xmin = transform[2]
+            ymax = transform[5]+10000000
+            band.set_transform(xdim, xmin, ydim, ymax)
 
     return dat
 
@@ -3102,4 +3109,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

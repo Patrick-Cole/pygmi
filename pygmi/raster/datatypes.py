@@ -176,7 +176,7 @@ class Data():
         transform : list of Affine, optional
             transform. The default is None.
         iraster : list, optional
-            list containing offsets etc in even of cutting data. The default
+            list containing offsets etc in event of cutting data. The default
             is None.
 
         Returns
