@@ -1493,7 +1493,11 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
             tnames = ldata.tnames
         dat = get_data(ldata.filename, piter=piter,
                        showprocesslog=showprocesslog, tnames=tnames)
-        ocrs = ldata.crs
+        for band in dat:
+            band.crs = ldata.crs
+            band.extent = ldata.extent
+            band.transform = ldata.transform
+            band.bounds = ldata.bounds
     elif isinstance(ldata, list):
         dat = []
         for jfile in ldata:
@@ -1507,11 +1511,13 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
                                tnames=tnames)
 
             if tmp is not None:
-                dat += tmp
-            ocrs = jfile.crs
+                for band in tmp:
+                    band.crs = jfile.crs
+                    band.extent = jfile.extent
+                    band.transform = jfile.transform
+                    band.bounds = jfile.bounds
 
-    for band in dat:
-        band.crs = ocrs
+                dat += tmp
 
     return dat
 
@@ -3016,6 +3022,7 @@ def utm_to_south(dat):
 
             left, right, bottom, top = band.extent
             top = top + 10000000
+            bottom = bottom + 10000000
             xdim = band.xdim
             ydim = band.ydim
 
