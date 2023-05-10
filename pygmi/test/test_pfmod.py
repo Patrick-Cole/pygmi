@@ -30,6 +30,7 @@ tests.
 import numpy as np
 import matplotlib.pyplot as plt
 import PIL
+import PIL.ImageDraw
 
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
@@ -57,9 +58,9 @@ def main():
     print('Testing modelling of gravity and potential field data')
 
     ifile = 'testdata/block'
-    # ifile = 'data/dyke'
+    ifile = 'testdata/dyke'
     samplescale = 1.  # Horizontal scale of the samples.
-    power = 1.  # This parameter changes thinkness of voxels with depth.
+    power = 2.  # This parameter changes thinkness of voxels with depth.
     print('File:', ifile)
     print('Sample Scale:', samplescale)
     print('Power:', power)

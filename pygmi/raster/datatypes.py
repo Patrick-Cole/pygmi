@@ -324,19 +324,12 @@ class RasterMeta():
 
     def __init__(self):
         self.sensor = 'Generic'
-        self.extent = None  # left, right, bottom, top
-        self.bounds = None  # left, bottom, right, top
-        self.xdim = None
-        self.ydim = None
-        self.units = ''
-        self.metadata = {'Cluster': {}, 'Raster': {}}
-        self.meta = {}
-        self.filename = ''
-        self.transform = None
         self.crs = None
-        self.datetime = None
+        self.filename = ''
         self.bands = []
         self.tnames = []
+        self.banddata = []
+        self.to_sutm = False
 
     def fromData(self, dat):
         """
@@ -354,22 +347,15 @@ class RasterMeta():
         """
         data = dat[0]
         self.sensor = data.metadata['Raster']['Sensor']
-        self.extent = data.extent
-        self.bounds = data.bounds
-        self.xdim = data.xdim
-        self.ydim = data.ydim
-        self.units = data.units
-        self.metadata = data.metadata
-        self.meta = data.meta
-        self.filename = data.filename
-        self.transform = data.transform
         self.crs = data.crs
-        self.datetime = data.datetime
+        self.filename = data.filename
 
         self.bands = []
         self.tnames = []
+        self.banddata = []
         for i in dat:
             self.bands.append(i.dataid)
+            self.banddata.append(i)
             if i.dataid[0] == 'B':
                 self.tnames.append(i.dataid)
 

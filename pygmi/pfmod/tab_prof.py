@@ -475,7 +475,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if 'Borehole' not in self.parent.indata:
             return
 
-        if self.parent.indata['Raster'][0].crs.wkt == '':
+        if self.parent.indata['Raster'][0].crs is None:
             return
 
         data = self.parent.indata['Borehole']

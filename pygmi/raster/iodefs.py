@@ -28,6 +28,7 @@ import warnings
 import os
 import copy
 import datetime
+import xml.etree.ElementTree as ET
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
@@ -1471,7 +1472,8 @@ class ExportData(BasicModule):
 
 
 def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
-                  compression='NONE', bandsort=True, pprint=print):
+                  compression='NONE', bandsort=True, pprint=print,
+                  updatestats=True):
     """
     Export to rasterio format.
 
@@ -1479,7 +1481,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
     ----------
     ofile : str
         Output file name.
-    dat : PyGMI raster Data
+    dat : list or dictionary of PyGMI raster Data
         dataset to export
     drv : str
         name of the rasterio driver to use
@@ -1588,16 +1590,17 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
             del dtmp
 
-            out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
-            out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
-            out.update_tags(i+1, STATISTICS_MEAN=datai.data.mean())
-            out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
-            out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
-            out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
-            try:
-                out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
-            except MemoryError:
-                pprint('Unable to calculate std deviation. Not enough memory')
+            # out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
+            # out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
+            # out.update_tags(i+1, STATISTICS_MEAN=datai.data.mean())
+            # out.update_tags(i+1, STATISTICS_MEDIAN=np.ma.median(datai.data))
+            # out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
+            # out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
+            # out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
+            # try:
+            #     out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
+            # except MemoryError:
+            #     pprint('Unable to calculate std deviation. Not enough memory')
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
@@ -1617,6 +1620,59 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                                     WavelengthMin=str(rmeta['WavelengthMin']))
                     out.update_tags(i+1,
                                     WavelengthMax=str(rmeta['WavelengthMax']))
+
+    if updatestats is True:
+        dcov = calccov(data, pprint)
+
+        xfile = ofile+'.aux.xml'
+        tree = ET.parse(xfile)
+        root = tree.getroot()
+
+        pprint('Calculating statistics...')
+        for child in piter(root):
+            band = int(child.attrib['band'])-1
+            datai = data[band]
+            donly = datai.data.compressed()
+
+            # Histogram section
+            dhist = np.histogram(donly, 256)
+            dmin = str(dhist[1][0])
+            dmax = str(dhist[1][-1])
+            dhist = str(dhist[0].tolist()).replace(', ', '|')[1:-1]
+
+            hist = ET.SubElement(child, 'Histograms')
+            histitem = ET.SubElement(hist, 'HistItem')
+            ET.SubElement(histitem, 'HistMin').text = dmin
+            ET.SubElement(histitem, 'HistMax').text = dmax
+            ET.SubElement(histitem, 'BucketCount').text = '256'
+            ET.SubElement(histitem, 'IncludeOutOfRange').text = '1'
+            ET.SubElement(histitem, 'Approximate').text = '0'
+            ET.SubElement(histitem, 'HistCounts').text = dhist
+
+            # Metadata, statistics
+            dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
+            dmin = str(donly.min())
+            dmax = str(donly.max())
+            dmean = str(donly.mean())
+            dmedian = str(np.median(donly))
+            dstd = str(donly.std())
+
+            meta = child.find('Metadata')
+            ET.SubElement(meta, 'MDI', key='STATISTICS_COVARIANCES').text = dcovi
+            ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MAXIMUM').text = dmax
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MEAN').text = dmean
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MEDIAN').text = dmedian
+            ET.SubElement(meta, 'MDI', key='STATISTICS_MINIMUM').text = dmin
+            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORX').text = '1'
+            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORY').text = '2'
+            ET.SubElement(meta, 'MDI', key='STATISTICS_STDDEV').text = dstd
+
+            # meta[:] = sorted(meta, key=lambda x: x.tag)
+            child[:] = sorted(child, key=lambda x: x.tag)
+
+        ET.indent(tree)
+        tree.write(xfile, encoding='utf-8')
 
     if drv == 'ENVI':
         wout = ''
@@ -1642,6 +1698,47 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         with open(tmpfile[:-4]+'.hdr', 'a', encoding='utf-8') as myfile:
             myfile.write(wout)
             myfile.write(envimeta)
+
+
+def calccov(data, showprocesslog=print):
+    """
+    Calculate covariance from PyGMI Data.
+
+    This routine assumes all bands are co-located, with the same size.
+    Otherwise, run lstack first.
+
+    Parameters
+    ----------
+    data : list
+        List of PyGMI data.
+
+    Returns
+    -------
+    dcov : numpy array
+        Covariances.
+
+    """
+    from pygmi.misc import getinfo
+
+    showprocesslog('Calculating covariances...')
+
+    mask = data[0].data.mask
+    for band in data:
+        mask = np.logical_or(mask, band.data.mask)
+
+    getinfo(0)
+
+    data2 = []
+    for band in data:
+        data2.append(band.data.data[~mask])
+
+    data2 = np.array(data2)
+    dcov = np.cov(data2)
+
+    del data2
+
+    getinfo('covariance')
+    return dcov
 
 
 def _filespeedtest():

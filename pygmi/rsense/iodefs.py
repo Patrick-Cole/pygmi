@@ -436,20 +436,21 @@ class ImportBatch(BasicModule):
 
         self.setsensor()
 
-        if self.ensuresutm.isChecked() is True:
-            self.filelist = utm_to_south(self.filelist)
+        for i in self.filelist:
+            i.to_sutm = self.ensuresutm.isChecked()
 
         self.outdata['RasterFileList'] = self.filelist
 
         return True
 
-    def get_sfile(self):
+    def get_sfile(self, nodialog=False):
         """Get the satellite filenames."""
-        self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-            self.parent, 'Select Directory')
+        if not nodialog:
+            self.idir = QtWidgets.QFileDialog.getExistingDirectory(
+                self.parent, 'Select Directory')
 
-        if not self.idir:
-            return False
+            if not self.idir:
+                return False
 
         self.sfile.setText(self.idir)
 
@@ -976,6 +977,7 @@ class ExportBatch(ContextModule):
                'ERDAS Imagine')
 
         self.ofilt.addItems(ext)
+        self.ofilt.setCurrentText('GeoTiff compressed using DEFLATE')
 
         self.ternary.setChecked(False)
         self.red.setEnabled(False)
@@ -1493,11 +1495,9 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
             tnames = ldata.tnames
         dat = get_data(ldata.filename, piter=piter,
                        showprocesslog=showprocesslog, tnames=tnames)
-        for band in dat:
-            band.crs = ldata.crs
-            band.extent = ldata.extent
-            band.transform = ldata.transform
-            band.bounds = ldata.bounds
+
+        if ldata.to_sutm is True:
+            dat = utm_to_south(dat)
     elif isinstance(ldata, list):
         dat = []
         for jfile in ldata:
@@ -1511,11 +1511,8 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
                                tnames=tnames)
 
             if tmp is not None:
-                for band in tmp:
-                    band.crs = jfile.crs
-                    band.extent = jfile.extent
-                    band.transform = jfile.transform
-                    band.bounds = jfile.bounds
+                if jfile.to_sutm is True:
+                    tmp = utm_to_south(tmp)
 
                 dat += tmp
 
@@ -3066,18 +3063,39 @@ def _testfn():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\ASTER\LC09_L2SP_170078_20220810_20230403_02_T1.tar"
+    ifile = r"D:\WC\Sentinel_2\S2A_MSIL2A_20221221T082341_N0509_R121_T34HBJ_20221221T122258.zip"
+    ofile = ifile+'.tif'
 
-    dat = get_data(ifile)
+    # dat = get_data(ifile, tnames=['B2  central wavelength 490 nm (10.0m)',
+    #                               'B4  central wavelength 665 nm (10.0m)'])
 
-    for i in dat:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        vmin = i.data.mean()-i.data.std()*2
-        vmax = i.data.mean()+i.data.std()*2
 
-        plt.imshow(i.data, interpolation='none', vmin=vmin, vmax=vmax)
-        plt.colorbar()
-        plt.show()
+
+    os.chdir(r'D:\\')
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp1 = ImportBatch()
+    tmp1.idir = r"D:\WC\Sentinel_2"
+    tmp1.get_sfile(True)
+    tmp1.settings()
+
+
+    dat = tmp1.outdata['RasterFileList']
+
+    dat = get_data(ifile, tnames = dat[0].tnames)
+
+    export_raster(ofile, dat)
+
+    # for i in dat:
+    #     plt.figure(dpi=150)
+    #     plt.title(i.dataid)
+    #     vmin = i.data.mean()-i.data.std()*2
+    #     vmax = i.data.mean()+i.data.std()*2
+
+    #     plt.imshow(i.data, interpolation='none', vmin=vmin, vmax=vmax)
+    #     plt.colorbar()
+    #     plt.show()
 
 
 def _testfn2():
@@ -3113,4 +3131,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
