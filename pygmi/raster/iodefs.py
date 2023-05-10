@@ -1534,6 +1534,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
     tmp = os.path.splitext(ofile)
 
+    xfile = None
     if drv == 'GTiff':
         tmpfile = tmp[0] + '.tif'
     elif drv == 'EHdr':
@@ -1547,10 +1548,12 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         nodata = -99999.0
     elif drv == 'HFA':
         tmpfile = tmp[0]+'.img'
+        updatestats = False
     elif drv == 'ENVI':
         tmpfile = tmp[0]+'.dat'
     elif drv == 'ERS':
         tmpfile = tmp[0]
+        xfile = tmpfile+'.ers.aux.xml'
     else:
         tmpfile = ofile
 
@@ -1624,12 +1627,14 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
     if updatestats is True:
         dcov = calccov(data, pprint)
 
-        xfile = tmpfile+'.aux.xml'
+        if xfile is None:
+            xfile = tmpfile+'.aux.xml'
         tree = ET.parse(xfile)
         root = tree.getroot()
 
         pprint('Calculating statistics...')
-        for child in piter(root):
+        # for child in piter(root):
+        for child in piter(root.findall('PAMRasterBand')):
             band = int(child.attrib['band'])-1
             datai = data[band]
             donly = datai.data.compressed()
@@ -1658,6 +1663,8 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             dstd = str(donly.std())
 
             meta = child.find('Metadata')
+            if meta is None:
+                meta = ET.SubElement(child, 'Metadata')
             ET.SubElement(meta, 'MDI', key='STATISTICS_COVARIANCES').text = dcovi
             ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
             ET.SubElement(meta, 'MDI', key='STATISTICS_MAXIMUM').text = dmax
@@ -1735,6 +1742,9 @@ def calccov(data, showprocesslog=print):
     data2 = np.array(data2)
     dcov = np.cov(data2)
 
+    if dcov.size == 1:
+        dcov.shape = (1, 1)
+
     del data2
 
     getinfo('covariance')
@@ -1747,6 +1757,7 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
+    ifile = r"D:\Hope\All_quartz_ENVI.hdr"
     # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile)
 
@@ -1756,11 +1767,17 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_PACKBITS.tif', dataset, 'GTiff', compression='PACKBITS')  # 82s
     # export_raster(ifile[:-4]+'_LZW.tif', dataset, 'GTiff', compression='LZW') # 132
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
-    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
+
+    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
 
     # best is zstd pred 3 zlvl 1
     # then deflate pred 3 zlvl 1
+
+    # HFA has no xml file.
+
+    for drv in ['ERS']:
+        export_raster(ifile[:-4]+f'_{drv}', dataset, drv)
 
     getinfo('End')
 
