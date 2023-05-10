@@ -1549,7 +1549,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         tmpfile = tmp[0]+'.img'
     elif drv == 'ENVI':
         tmpfile = tmp[0]+'.dat'
-    elif drv == 'ERS':  # ER Mapper
+    elif drv == 'ERS':
         tmpfile = tmp[0]
     else:
         tmpfile = ofile
@@ -1624,7 +1624,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
     if updatestats is True:
         dcov = calccov(data, pprint)
 
-        xfile = ofile+'.aux.xml'
+        xfile = tmpfile+'.aux.xml'
         tree = ET.parse(xfile)
         root = tree.getroot()
 

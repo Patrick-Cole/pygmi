@@ -3131,4 +3131,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
