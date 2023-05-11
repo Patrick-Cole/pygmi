@@ -1525,11 +1525,12 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
     trans = data[0].transform
     crs = data[0].crs
 
-    try:
-        nodata = dtype.type(nodata)
-    except OverflowError:
-        print('Invalid nodata for dtype, resetting to 0')
-        nodata = 0
+    if nodata is not None:
+        try:
+            nodata = dtype.type(nodata)
+        except OverflowError:
+            print('Invalid nodata for dtype, resetting to None')
+            nodata = None
 
     if trans is None:
         trans = rasterio.transform.from_origin(data[0].extent[0],
@@ -1589,9 +1590,12 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
             out.set_band_description(i+1, datai.dataid)
 
-            dtmp = np.ma.array(datai.data)
-            dtmp.set_fill_value(nodata)
-            dtmp = dtmp.filled()
+            if nodata is None:
+                dtmp = datai.data
+            else:
+                dtmp = np.ma.array(datai.data)
+                dtmp.set_fill_value(nodata)
+                dtmp = dtmp.filled()
 
             out.write(dtmp, i+1)
 
@@ -1733,9 +1737,10 @@ def calccov(data, showlog=print):
 
     showlog('Calculating covariances...')
 
-    mask = data[0].data.mask
+    mask = np.ma.getmaskarray(data[0].data)
     for band in data:
-        mask = np.logical_or(mask, band.data.mask)
+        mask2 = np.ma.getmaskarray(band.data)
+        mask = np.logical_or(mask, mask2)
 
     # getinfo(0)
 
@@ -1774,7 +1779,7 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
-    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
+    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
 
     # best is zstd pred 3 zlvl 1
     # then deflate pred 3 zlvl 1

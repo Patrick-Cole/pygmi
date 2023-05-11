@@ -148,6 +148,8 @@ class Tilt1(BasicModule):
             data2[-1].dataid += ' Total Derivative'
 
         for i in data2:
+            if i.nodata is None:
+                continue
             i.data.data[i.data.mask] = i.nodata
 
         self.outdata['Raster'] = data2

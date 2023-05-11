@@ -144,7 +144,7 @@ class Data():
         self.xdim = None
         self.ydim = None
         self.dataid = ''
-        self.nodata = 1e+20
+        self.nodata = None
         self.units = ''
         self.isrgb = False
         self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}

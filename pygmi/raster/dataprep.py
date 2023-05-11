@@ -1480,7 +1480,8 @@ class Metadata(ContextModule):
         odata.units = self.led_units.text()
 
         try:
-            odata.nodata = float(self.txt_null.text())
+            if self.txt_null.text().lower() != 'none':
+                odata.nodata = float(self.txt_null.text())
             left = float(self.dsb_tlx.text())
             top = float(self.dsb_tly.text())
             xdim = float(self.dsb_xdim.text())
