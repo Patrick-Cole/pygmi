@@ -1638,7 +1638,7 @@ class PlotInterp(BasicModule):
         newimg[3].dataid = 'Alpha'
 
         iodefs.export_raster(str(filename), newimg, 'GTiff', piter=self.piter,
-                             bandsort=False)
+                             bandsort=False, updatestats=False)
 
         # Section for colorbars
         if 'Ternary' not in dtype:

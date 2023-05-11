@@ -1733,8 +1733,6 @@ def calccov(data, showlog=print):
         Covariances.
 
     """
-    # from pygmi.misc import getinfo
-
     showlog('Calculating covariances...')
 
     mask = np.ma.getmaskarray(data[0].data)
@@ -1742,11 +1740,9 @@ def calccov(data, showlog=print):
         mask2 = np.ma.getmaskarray(band.data)
         mask = np.logical_or(mask, mask2)
 
-    # getinfo(0)
-
     data2 = []
     for band in data:
-        data2.append(band.data.data[~mask])
+        data2.append(band.data[~mask])
 
     data2 = np.array(data2)
     dcov = np.cov(data2)
@@ -1756,7 +1752,6 @@ def calccov(data, showlog=print):
 
     del data2
 
-    # getinfo('covariance')
     return dcov
 
 
