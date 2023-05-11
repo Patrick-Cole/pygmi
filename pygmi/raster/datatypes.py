@@ -359,6 +359,9 @@ class RasterMeta():
             if i.dataid[0] == 'B':
                 self.tnames.append(i.dataid)
 
+        if not self.tnames:
+            self.tnames = self.bands.copy()
+
         if 'ASTER 07' in self.sensor:
             if len(self.bands) == 3:
                 self.sensor += 'v1'

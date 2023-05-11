@@ -287,6 +287,11 @@ class ImportData(BasicModule):
             if item.text()[0] == 'B':
                 item.setSelected(True)
 
+        # If nothing is selected, then select everything.
+        if not self.lw_tnames.selectedItems():
+            for i in range(self.lw_tnames.count()):
+                self.lw_tnames.item(i).setSelected(True)
+
         instr = self.indata['Raster'][0].metadata['Raster']['Sensor']
 
         self.ftype.setText(f' File Type: {instr}')
@@ -1620,6 +1625,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
         dat[-1].dataid = bandid
         dat[-1].nodata = 1e+20
         dat[-1].meta_from_rasterio(dataset)
+        dat[-1].crs = crs
         dat[-1].filename = ifile
         dat[-1].units = dataset.units[0]
         dat[-1].metadata['Raster']['Sensor'] = 'MODIS'
@@ -3006,6 +3012,8 @@ def utm_to_south(dat):
     """
     for band in dat:
         epsgcode = band.crs.to_epsg()
+        if epsgcode is None:
+            continue
         if 32600 <= epsgcode <= 32660:
             epsgcode += 100
             band.crs = CRS.from_epsg(epsgcode)
@@ -3080,10 +3088,9 @@ def _testfn():
     tmp1.get_sfile(True)
     tmp1.settings()
 
-
     dat = tmp1.outdata['RasterFileList']
 
-    dat = get_data(ifile, tnames = dat[0].tnames)
+    dat = get_data(ifile, tnames=dat[0].tnames)
 
     export_raster(ofile, dat)
 

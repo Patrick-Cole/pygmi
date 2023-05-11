@@ -119,10 +119,10 @@ class SatRatios(BasicModule):
 
         if 'RasterFileList' in self.indata:
             dat = self.indata['RasterFileList']
+            instr = dat[0].sensor
         else:
             dat = self.indata['Raster']
-
-        instr = dat[0].metadata['Raster']['Sensor']
+            instr = dat[0].metadata['Raster']['Sensor']
 
         if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
@@ -580,7 +580,7 @@ class ConditionIndices(BasicModule):
 
         dat = self.indata['RasterFileList'][0]
 
-        instr = dat.metadata['Raster']['Sensor']
+        instr = dat.sensor
 
         if 'ASTER' in instr:
             self.combo_sensor.setCurrentText('ASTER')
@@ -1138,6 +1138,7 @@ def _testfn():
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
+    tmp1.get_sfile(True)
     tmp1.settings()
 
 
