@@ -177,7 +177,7 @@ class ImportSeisan(BasicModule):
             ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
-            self.showprocesslog('Error: Problem with file')
+            self.showlog('Error: Problem with file')
             return False
 
         # This constructs a dictionary of functions
@@ -303,12 +303,12 @@ class ImportSeisan(BasicModule):
 
         if file_errors:
             if has_errors is False:
-                self.showprocesslog('Warning: Problem with file')
-                self.showprocesslog('Process will continue, but please '
+                self.showlog('Warning: Problem with file')
+                self.showlog('Process will continue, but please '
                                     'see warnings in '+self.ifile+'.log')
             else:
-                self.showprocesslog('Error: Problem with file')
-                self.showprocesslog('Process stopping, please see errors '
+                self.showlog('Error: Problem with file')
+                self.showlog('Process stopping, please see errors '
                                     'in '+self.ifile+'.log')
             fout = open(self.ifile+'.log', 'w', encoding='utf-8')
             for i in file_errors:
@@ -318,7 +318,7 @@ class ImportSeisan(BasicModule):
             if has_errors is True:
                 return False
         else:
-            self.showprocesslog('No errors in the file')
+            self.showlog('No errors in the file')
 
         if event:
             dat.append(event)
@@ -948,7 +948,7 @@ class ExportSeisan(ContextModule):
 
         """
         if 'Seis' not in self.indata:
-            self.showprocesslog(
+            self.showlog(
                 'Error: You need to have a SEISAN data first!')
             return
 
@@ -1450,7 +1450,7 @@ class ExportCSV(ContextModule):
 
         """
         if 'Seis' not in self.indata:
-            self.showprocesslog(
+            self.showlog(
                 'Error: You need to have a SEISAN data first!')
             return
 
@@ -1990,7 +1990,7 @@ class ExportSummary(ContextModule):
 
         """
         if 'Seis' not in self.indata:
-            self.showprocesslog('Error: You need to have a SEISAN data first!')
+            self.showlog('Error: You need to have a SEISAN data first!')
             return
 
         data = self.indata['Seis']

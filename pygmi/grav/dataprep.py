@@ -118,10 +118,10 @@ class ProcessData(BasicModule):
         """
         tmp = []
         if 'Line' not in self.indata:
-            self.showprocesslog('No Line Data')
+            self.showlog('No Line Data')
             return False
         if 'Gravity' not in self.indata['Line']:
-            self.showprocesslog('Not Gravity Data')
+            self.showlog('Not Gravity Data')
             return False
 
         if not nodialog:
@@ -135,14 +135,14 @@ class ProcessData(BasicModule):
             float(self.basethres.text())
             float(self.knownbase.text())
         except ValueError:
-            self.showprocesslog('Value Error')
+            self.showlog('Value Error')
             return False
 
         if self.knownstat.text() != 'None':
             try:
                 float(self.knownstat.text())
             except ValueError:
-                self.showprocesslog('Value Error')
+                self.showlog('Value Error')
                 return False
 
         if tmp != 1:
@@ -246,8 +246,8 @@ class ProcessData(BasicModule):
 
         dcor = np.interp(x, xp, fp)
 
-        self.showprocesslog('Quality Control')
-        self.showprocesslog('---------------')
+        self.showlog('Quality Control')
+        self.showlog('---------------')
         tmp = driftdat['DECTIMEDATE'].values.astype(int)
         tmp2 = []
         ix = []
@@ -270,13 +270,13 @@ class ProcessData(BasicModule):
             dcor2 = fp[filt]
             drifttime = (x2[-1]-x2[0])
             if drifttime == 0.:
-                self.showprocesslog(f'Day {iday+1} drift: Only one reading, '
+                self.showlog(f'Day {iday+1} drift: Only one reading, '
                                     'no drift result possible.')
                 driftrate = np.nan
 
             else:
                 driftrate = (dcor2[-1]-dcor2[0])/drifttime
-                self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} '
+                self.showlog(f'Day {iday+1} drift: {driftrate:.3e} '
                                     f'mGal/min over {drifttime:.3f} minutes.')
             dday.append(iday+1+x2[-1]/1440)
             drate.append(driftrate)

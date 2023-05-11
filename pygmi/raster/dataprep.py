@@ -78,7 +78,7 @@ class DataCut(BasicModule):
         if 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
-            self.showprocesslog('No raster data')
+            self.showlog('No raster data')
             return False
 
         if not nodialog:
@@ -88,7 +88,7 @@ class DataCut(BasicModule):
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
-        data = cut_raster(data, self.ifile, pprint=self.showprocesslog)
+        data = cut_raster(data, self.ifile, showlog=self.showlog)
 
         if data is None:
             return False
@@ -240,19 +240,19 @@ class DataLayerStack(BasicModule):
             from pygmi.rsense.iodefs import get_data
 
             ifiles = self.indata['RasterFileList']
-            self.showprocesslog('Warning: Layer stacking a file list assumes '
+            self.showlog('Warning: Layer stacking a file list assumes '
                                 'all datasets overlap in the same area')
             self.indata['Raster'] = []
             for ifile in ifiles:
-                self.showprocesslog('Processing '+os.path.basename(ifile))
+                self.showlog('Processing '+os.path.basename(ifile))
                 dat = get_data(ifile, piter=self.piter,
-                               showprocesslog=self.showprocesslog)
+                               showlog=self.showlog)
                 for i in dat:
                     i.data = i.data.astype(np.float32)
                 self.indata['Raster'] += dat
 
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -329,7 +329,7 @@ class DataLayerStack(BasicModule):
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
         dat = lstack(self.indata['Raster'], self.piter, dxy,
-                     pprint=self.showprocesslog,
+                     showlog=self.showlog,
                      commonmask=self.cmask.isChecked())
         self.outdata['Raster'] = dat
 
@@ -631,14 +631,14 @@ class DataMerge(BasicModule):
                 ifiles += glob.glob(os.path.join(self.idir, ftype))
 
             if not ifiles:
-                self.showprocesslog('No input files in that directory')
+                self.showlog('No input files in that directory')
                 return False
 
             for ifile in self.piter(ifiles):
                 indata += get_raster(ifile, piter=iter, metaonly=True)
 
         if indata is None:
-            self.showprocesslog('No input datasets')
+            self.showlog('No input datasets')
             return False
 
         # Get projection information
@@ -646,7 +646,7 @@ class DataMerge(BasicModule):
         crs = []
         for i in indata:
             if i.crs is None:
-                self.showprocesslog(f'{i.dataid} has no projection. '
+                self.showlog(f'{i.dataid} has no projection. '
                                     'Please assign one.')
                 return False
 
@@ -657,14 +657,14 @@ class DataMerge(BasicModule):
         wkt, iwkt, numwkt = np.unique(wkt, return_index=True,
                                       return_counts=True)
         if len(wkt) > 1:
-            self.showprocesslog('Error: Mismatched input projections. '
+            self.showlog('Error: Mismatched input projections. '
                                 'Selecting most common projection')
 
             crs = crs[iwkt[numwkt == numwkt.max()][0]]
         else:
             crs = indata[0].crs
 
-        bounds = get_shape_bounds(self.sfile.text(), crs, self.showprocesslog)
+        bounds = get_shape_bounds(self.sfile.text(), crs, self.showlog)
 
         # Start Merge
         bandlist = []
@@ -678,7 +678,7 @@ class DataMerge(BasicModule):
 
         outdat = []
         for dataid in bandlist:
-            self.showprocesslog('Extracting '+dataid+'...')
+            self.showlog('Extracting '+dataid+'...')
 
             if self.bands_to_files.isChecked():
                 odir = os.path.join(self.idir, 'mosaic')
@@ -690,7 +690,7 @@ class DataMerge(BasicModule):
                 ofile = os.path.join(odir, ofile)
 
                 if os.path.exists(ofile):
-                    self.showprocesslog('Output file exists, skipping.')
+                    self.showlog('Output file exists, skipping.')
                     continue
 
             ifiles = []
@@ -765,10 +765,10 @@ class DataMerge(BasicModule):
                 del i2
 
             if len(ifiles) < 2:
-                self.showprocesslog('Too few bands of name '+dataid)
+                self.showlog('Too few bands of name '+dataid)
                 continue
 
-            self.showprocesslog('Mosaicing '+dataid+'...')
+            self.showlog('Mosaicing '+dataid+'...')
             # print(ifiles)
 
             with rasterio.Env(CPL_DEBUG=True):
@@ -827,7 +827,7 @@ class DataMerge(BasicModule):
                 ifiles += glob.glob(os.path.join(self.idir, ftype))
 
         if not ifiles:
-            self.showprocesslog('No input datasets')
+            self.showlog('No input datasets')
             return False
 
         for i, ifile in enumerate(ifiles):
@@ -848,7 +848,7 @@ class DataMerge(BasicModule):
         for ifile in ifiles:
             with rasterio.open(ifile) as dataset:
                 if dataset.crs is None:
-                    self.showprocesslog(f'{ifile} has no projection. '
+                    self.showlog(f'{ifile} has no projection. '
                                         'Please assign one.')
                     return False
                 wkt.append(dataset.crs.wkt)
@@ -857,12 +857,12 @@ class DataMerge(BasicModule):
 
         wkt = list(set(wkt))
         if len(wkt) > 1:
-            self.showprocesslog('Error: Mismatched input projections')
+            self.showlog('Error: Mismatched input projections')
             return False
 
         nodata = list(set(nodata))
         if len(nodata) > 1:
-            self.showprocesslog('Error: Mismatched nodata values. '
+            self.showlog('Error: Mismatched nodata values. '
                                 'Try using merge by band labels merge option. '
                                 'Please confirm bands to be merged have the '
                                 'same label.')
@@ -954,11 +954,11 @@ class DataReproj(BasicModule):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.showprocesslog('Unknown Projection. Could not reproject')
+            self.showlog('Unknown Projection. Could not reproject')
             return
 
         if self.in_proj.wkt == '' or self.out_proj.wkt == '':
-            self.showprocesslog('Unknown Projection. Could not reproject')
+            self.showlog('Unknown Projection. Could not reproject')
             return
 
         # Input stuff
@@ -992,11 +992,11 @@ class DataReproj(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if self.indata['Raster'][0].crs is None:
-            self.showprocesslog('Your input data has no projection. '
+            self.showlog('Your input data has no projection. '
                                 'Please assign one in the metadata summary.')
             return False
 
@@ -1083,7 +1083,7 @@ class GetProf(BasicModule):
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
-            self.showprocesslog('No raster data')
+            self.showlog('No raster data')
             return False
 
         ext = 'Shape file (*.shp)'
@@ -1099,7 +1099,7 @@ class GetProf(BasicModule):
         try:
             gdf = gpd.read_file(self.ifile)
         except:
-            self.showprocesslog('There was a problem importing the shapefile. '
+            self.showlog('There was a problem importing the shapefile. '
                                 'Please make sure you have at all the '
                                 'individual files which make up the '
                                 'shapefile.')
@@ -1108,10 +1108,10 @@ class GetProf(BasicModule):
         gdf = gdf[gdf.geometry != None]
 
         if gdf.geom_type.iloc[0] != 'LineString':
-            self.showprocesslog('You need lines in that shape file')
+            self.showlog('You need lines in that shape file')
             return False
 
-        data = lstack(data, self.piter, pprint=self.showprocesslog)
+        data = lstack(data, self.piter, showlog=self.showlog)
         dxy = min(data[0].xdim, data[0].ydim)
         ogdf2 = None
 
@@ -1489,7 +1489,7 @@ class Metadata(ContextModule):
             odata.set_transform(xdim, left, ydim, top)
 
         except ValueError:
-            self.showprocesslog('Value error - abandoning changes')
+            self.showlog('Value error - abandoning changes')
 
         indx = self.combobox_bandid.currentIndex()
         txt = self.combobox_bandid.itemText(indx)
@@ -1642,7 +1642,7 @@ class Continuation(BasicModule):
         """
         tmp = []
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         for i in self.indata['Raster']:
@@ -2250,7 +2250,7 @@ def cluster_to_raster(indata):
     return indata
 
 
-def cut_raster(data, ifile, pprint=print, deepcopy=True):
+def cut_raster(data, ifile, showlog=print, deepcopy=True):
     """Cuts a raster dataset.
 
     Cut a raster dataset using a shapefile.
@@ -2261,7 +2261,7 @@ def cut_raster(data, ifile, pprint=print, deepcopy=True):
         PyGMI Dataset
     ifile : str
         shapefile used to cut data
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
 
     Returns
@@ -2276,7 +2276,7 @@ def cut_raster(data, ifile, pprint=print, deepcopy=True):
     try:
         gdf = gpd.read_file(ifile)
     except:
-        pprint('There was a problem importing the shapefile. Please make '
+        showlog('There was a problem importing the shapefile. Please make '
                'sure you have at all the individual files which make up '
                'the shapefile.')
         return None
@@ -2284,7 +2284,7 @@ def cut_raster(data, ifile, pprint=print, deepcopy=True):
     gdf = gdf[gdf.geometry != None]
 
     if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        pprint('You have a MultiPolygon. Only the first overlapping Polygon '
+        showlog('You have a MultiPolygon. Only the first overlapping Polygon '
                'of the MultiPolygon will be used.')
         poly = gdf['geometry'].iloc[0]
         tmp = poly.geoms[0]
@@ -2300,7 +2300,7 @@ def cut_raster(data, ifile, pprint=print, deepcopy=True):
         gdf.geometry.iloc[0] = tmp
 
     if gdf.geom_type.iloc[0] != 'Polygon':
-        pprint('You need a polygon in that shape file')
+        showlog('You need a polygon in that shape file')
         return None
 
     for idata in data:
@@ -2312,7 +2312,7 @@ def cut_raster(data, ifile, pprint=print, deepcopy=True):
         if ((dext[0] > lext[2]) or (dext[2] < lext[0])
                 or (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
-            pprint('The shapefile is not in the same area as the raster '
+            showlog('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
                    'projection is the same as the raster dataset')
             return None
@@ -2440,7 +2440,7 @@ def getepsgcodes():
     return pcodes
 
 
-def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
+def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
            masterid=None, nodeepcopy=False):
     """
     Layer stack datasets found in a single PyGMI data object.
@@ -2456,7 +2456,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
         Progress bar iterator. The default is None.
     dxy : float, optional
         Cell size. The default is None.
-    pprint : function, optional
+    showlog : function, optional
         Print function. The default is print.
     commonmask : bool, optional
         Create a common mask for all bands. The default is False.
@@ -2510,7 +2510,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
         dat = check_dataid(dat)
         return dat
 
-    pprint('Merging data...')
+    showlog('Merging data...')
     if masterid is not None:
         data = dat[masterid]
         xmin, xmax, ymin, ymax = data.extent
@@ -2537,7 +2537,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
     trans = rasterio.Affine(dxy, 0, xmin, 0, -1*dxy, ymax)
 
     if cols == 0 or rows == 0:
-        pprint('Your rows or cols are zero. '
+        showlog('Your rows or cols are zero. '
                'Your input projection may be wrong')
         return None
 
@@ -2550,7 +2550,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
             data.nodata = nodata
 
         if data.crs is None:
-            pprint(f'{data.dataid} has no defined projection. '
+            showlog(f'{data.dataid} has no defined projection. '
                    'Assigning local.')
 
             data.crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
@@ -2673,7 +2673,7 @@ def trim_raster(olddata):
     return olddata
 
 
-def cut_raster_basic(data, ifile, pprint=print):
+def cut_raster_basic(data, ifile, showlog=print):
     """Cuts a raster dataset.
 
     Cut a raster dataset using a shapefile.
@@ -2684,7 +2684,7 @@ def cut_raster_basic(data, ifile, pprint=print):
         PyGMI Dataset
     ifile : str
         shapefile used to cut data
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
 
     Returns
@@ -2697,7 +2697,7 @@ def cut_raster_basic(data, ifile, pprint=print):
     try:
         gdf = gpd.read_file(ifile)
     except:
-        pprint('There was a problem importing the shapefile. Please make '
+        showlog('There was a problem importing the shapefile. Please make '
                'sure you have at all the individual files which make up '
                'the shapefile.')
         return None
@@ -2705,7 +2705,7 @@ def cut_raster_basic(data, ifile, pprint=print):
     gdf = gdf[gdf.geometry != None]
 
     if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        pprint('You have a MultiPolygon. Only the first overlapping Polygon '
+        showlog('You have a MultiPolygon. Only the first overlapping Polygon '
                'of the MultiPolygon will be used.')
         poly = gdf['geometry'].iloc[0]
         tmp = poly.geoms[0]
@@ -2721,7 +2721,7 @@ def cut_raster_basic(data, ifile, pprint=print):
         gdf.geometry.iloc[0] = tmp
 
     if gdf.geom_type.iloc[0] != 'Polygon':
-        pprint('You need a polygon in that shape file')
+        showlog('You need a polygon in that shape file')
         return None
 
     for idata in data:
@@ -2733,7 +2733,7 @@ def cut_raster_basic(data, ifile, pprint=print):
         if ((dext[0] > lext[2]) or (dext[2] < lext[0])
                 or (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
-            pprint('The shapefile is not in the same area as the raster '
+            showlog('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
                    'projection is the same as the raster dataset')
             return None
@@ -2751,7 +2751,7 @@ def cut_raster_basic(data, ifile, pprint=print):
     return data
 
 
-def get_shape_bounds(sfile, crs=None, pprint=print):
+def get_shape_bounds(sfile, crs=None, showlog=print):
     """
     Get bounds from a shape file.
 
@@ -2761,7 +2761,7 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
         Filename for shapefile.
     crs : rasterio CRS
         target crs for shapefile
-    pprint : TYPE, optional
+    showlog : TYPE, optional
         Print. The default is print.
 
     Returns
@@ -2781,7 +2781,7 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
         gdf = gdf.to_crs(crs)
 
     if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        pprint('You have a MultiPolygon. Only the first Polygon '
+        showlog('You have a MultiPolygon. Only the first Polygon '
                'of the MultiPolygon will be used.')
         poly = gdf['geometry'].iloc[0]
         tmp = poly.geoms[0]
@@ -2789,7 +2789,7 @@ def get_shape_bounds(sfile, crs=None, pprint=print):
         gdf.geometry.iloc[0] = tmp
 
     if gdf.geom_type.iloc[0] != 'Polygon':
-        pprint('You need a polygon in that shape file')
+        showlog('You need a polygon in that shape file')
         return None
 
     bounds = gdf.geometry.iloc[0].bounds
@@ -3198,7 +3198,7 @@ def _testcut2():
     ifilt = r"D:\hypercut\*.hdr"
     odir = r"D:\hypercut\cut"
 
-    pprint = print
+    showlog = print
 
     ifiles = glob.glob(ifilt)
 
@@ -3209,7 +3209,7 @@ def _testcut2():
         gdf = gdf[gdf.geometry != None]
 
         if gdf.geom_type.iloc[0] == 'MultiPolygon':
-            pprint('You have a MultiPolygon. Only the first Polygon '
+            showlog('You have a MultiPolygon. Only the first Polygon '
                    'of the MultiPolygon will be used.')
             poly = gdf['geometry'].iloc[0]
             tmp = poly.geoms[0]
@@ -3217,7 +3217,7 @@ def _testcut2():
             gdf.geometry.iloc[0] = tmp
 
         if gdf.geom_type.iloc[0] != 'Polygon':
-            pprint('You need a polygon in that shape file')
+            showlog('You need a polygon in that shape file')
             return
 
         bounds = gdf.geometry.iloc[0].bounds

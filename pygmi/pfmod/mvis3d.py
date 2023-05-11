@@ -383,7 +383,7 @@ class Mod3dDisplay(ContextModule):
 
         """
         if 'Model3D' not in self.indata:
-            self.showprocesslog('No 3D model. You may need to execute that '
+            self.showlog('No 3D model. You may need to execute that '
                                 'module first')
             return False
 
@@ -396,7 +396,7 @@ class Mod3dDisplay(ContextModule):
         if liths[0] == 0:
             liths = liths[1:]
         if liths.size == 0:
-            self.showprocesslog('No 3D model. You need to draw in at least '
+            self.showlog('No 3D model. You need to draw in at least '
                                 'part of a lithology first.')
             return False
 
@@ -621,7 +621,7 @@ class Mod3dDisplay(ContextModule):
                 c[1:-1, 1:-1, 1:-1] = cc
 
                 faces, vtx = MarchingCubes(xx, yy, zz, c, .1,
-                                           self.showprocesslog)
+                                           self.showlog)
 
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
@@ -1381,7 +1381,7 @@ def normalize_v3(arr):
     return arr
 
 
-def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
+def MarchingCubes(x, y, z, c, iso, showlog=print):
     """
     Marching cubes.
 
@@ -1417,7 +1417,7 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
         Data.
     iso : float
         Isosurface level.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
@@ -1467,7 +1467,7 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        showprocesslog('Warning: No such lithology, or all voxels are above '
+        showlog('Warning: No such lithology, or all voxels are above '
                        'or below iso')
         F = np.array([])
         V = np.array([])

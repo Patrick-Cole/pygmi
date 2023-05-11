@@ -599,7 +599,7 @@ class TDEM1D(BasicModule):
             self.data = copy.deepcopy(self.indata['Line'])
             self.data = list(self.data.values())[0]
         else:
-            self.showprocesslog('No line data')
+            self.showlog('No line data')
             return False
 
         self.comboline.currentIndexChanged.disconnect()

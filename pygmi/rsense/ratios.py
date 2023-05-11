@@ -114,7 +114,7 @@ class SatRatios(BasicModule):
         """
         tmp = []
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showprocesslog('No Satellite Data')
+            self.showlog('No Satellite Data')
             return False
 
         if 'RasterFileList' in self.indata:
@@ -222,7 +222,7 @@ class SatRatios(BasicModule):
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
             if not flist:
-                self.showprocesslog('Warning: This might not be ' + sensor +
+                self.showlog('Warning: This might not be ' + sensor +
                                     ' data. Will attempt to do calculation '
                                     'anyway.')
                 flist = self.indata['RasterFileList']
@@ -234,13 +234,13 @@ class SatRatios(BasicModule):
             rlist.append(i.text()[2:])
 
         if not rlist:
-            self.showprocesslog('You need to select a ratio to calculate.')
+            self.showlog('You need to select a ratio to calculate.')
             return False
 
         for ifile in flist:
             if 'RasterFileList' in self.indata:
                 dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showprocesslog=self.showprocesslog)
+                                          showlog=self.showlog)
             else:
                 dat = ifile
 
@@ -283,7 +283,7 @@ class SatRatios(BasicModule):
                 if txt in formula:
                     datsml.append(i)
 
-            dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
+            dat = lstack(datsml, piter=self.piter, showlog=self.showlog)
 
             # del flist
             # del ifile
@@ -312,7 +312,7 @@ class SatRatios(BasicModule):
 
             datfin = []
             for i in self.piter(rlist):
-                self.showprocesslog('Calculating '+i)
+                self.showlog('Calculating '+i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
                 blist = formula
@@ -329,7 +329,7 @@ class SatRatios(BasicModule):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error: '+' '.join(abort)+' missing.')
+                    self.showlog('Error: '+' '.join(abort)+' missing.')
                     continue
 
                 newmask = datd[blist[0]].mask
@@ -373,7 +373,7 @@ class SatRatios(BasicModule):
                 # else:
                 #     ofile = ofile.split('.')[0] + '_ratio.tif'
 
-                self.showprocesslog('Exporting to '+ofile)
+                self.showlog('Exporting to '+ofile)
                 export_raster(ofile, datfin, 'GTiff', piter=self.piter,
                               compression='DEFLATE')
                 self.outdata['Raster'] = datfin
@@ -572,7 +572,7 @@ class ConditionIndices(BasicModule):
         """
         tmp = []
         if 'RasterFileList' not in self.indata:
-            self.showprocesslog('You need a raster file list as input.')
+            self.showlog('You need a raster file list as input.')
             return False
 
         bfile = os.path.basename(self.indata['RasterFileList'][0].filename)
@@ -676,7 +676,7 @@ class ConditionIndices(BasicModule):
             rlist1.append(i.text()[2:])
 
         if not rlist1:
-            self.showprocesslog('You need to select a condition index to '
+            self.showlog('You need to select a condition index to '
                                 'calculate.')
             return False
 
@@ -703,7 +703,7 @@ class ConditionIndices(BasicModule):
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
             if not flist:
-                self.showprocesslog('Warning: This might not be ' + sensor +
+                self.showlog('Warning: This might not be ' + sensor +
                                     ' data. Will attempt to do calculation '
                                     'anyway.')
                 flist = self.indata['RasterFileList']
@@ -712,7 +712,7 @@ class ConditionIndices(BasicModule):
 
         for ifile in flist:
             dat = get_from_rastermeta(ifile, piter=self.piter,
-                                      showprocesslog=self.showprocesslog)
+                                      showlog=self.showlog)
 
             if dat is None:
                 continue
@@ -757,7 +757,7 @@ class ConditionIndices(BasicModule):
                 if txt in formula:
                     datsml.append(i)
 
-            dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
+            dat = lstack(datsml, piter=self.piter, showlog=self.showlog)
 
             # del flist
             # del ifile
@@ -792,7 +792,7 @@ class ConditionIndices(BasicModule):
             for i in self.piter(rlist):
                 # i = correct_bands([i2], sensor, bfile)[0]
 
-                self.showprocesslog('Calculating '+i)
+                self.showlog('Calculating '+i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
                 blist = formula
@@ -809,7 +809,7 @@ class ConditionIndices(BasicModule):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error: '+' '.join(abort)+' missing.')
+                    self.showlog('Error: '+' '.join(abort)+' missing.')
                     continue
 
                 newmask = datd[blist[0]].mask
@@ -842,10 +842,10 @@ class ConditionIndices(BasicModule):
                 evi.append(tmp)
 
         if lst:
-            lst = lstack(lst, piter=self.piter, pprint=self.showprocesslog,
+            lst = lstack(lst, piter=self.piter, showlog=self.showlog,
                          commonmask=True)
         if evi:
-            evi = lstack(evi, piter=self.piter, pprint=self.showprocesslog,
+            evi = lstack(evi, piter=self.piter, showlog=self.showlog,
                          commonmask=True)
 
         ofile = ''

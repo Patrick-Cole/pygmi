@@ -115,7 +115,7 @@ class LandsatComposite(BasicModule):
                 return False
 
         if self.idir == '':
-            self.showprocesslog('Error: No input directory')
+            self.showlog('Error: No input directory')
             return False
 
         os.chdir(self.idir)
@@ -130,7 +130,7 @@ class LandsatComposite(BasicModule):
             return False
 
         mean = self.tday.value()
-        dat = composite(self.idir, 10, pprint=self.showprocesslog,
+        dat = composite(self.idir, 10, showlog=self.showlog,
                         piter=self.piter, mean=mean)
 
         self.outdata['Raster'] = dat
@@ -159,7 +159,7 @@ class LandsatComposite(BasicModule):
                            recursive=True)
 
         if not ifiles:
-            self.showprocesslog('Error: No *MTL.txt in the directory.')
+            self.showlog('Error: No *MTL.txt in the directory.')
             return
 
         allday = []
@@ -168,13 +168,13 @@ class LandsatComposite(BasicModule):
             sdate = datetime.strptime(sdate, '%Y%m%d')
             datday = sdate.timetuple().tm_yday
             allday.append(datday)
-            self.showprocesslog(f'Scene name: {os.path.basename(ifile)}')
-            self.showprocesslog(f'Scene day of year: {datday}')
+            self.showlog(f'Scene name: {os.path.basename(ifile)}')
+            self.showlog(f'Scene day of year: {datday}')
 
         allday = np.array(allday)
         mean = int(allday.mean())
 
-        self.showprocesslog(f'Mean day: {mean}')
+        self.showlog(f'Mean day: {mean}')
 
         self.tday.setValue(mean)
 
@@ -216,7 +216,7 @@ class LandsatComposite(BasicModule):
         return projdata
 
 
-def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
+def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
     """
     Create a Landsat composite.
 
@@ -229,7 +229,7 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
     mean : float, optional
         The mean or target day. If not specified, it is calculated
         automatically. The default is None.
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
     piter : iter, optional
         Progress bar iterable. The default is None.
@@ -257,18 +257,18 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
     std = allday.std()
 
     dat1 = import_and_score(ifiles[0], dreq, mean, std, piter=piter,
-                            pprint=pprint)
+                            showlog=showlog)
 
     for ifile in ifiles[1:]:
         dat2 = import_and_score(ifile, dreq, mean, std, piter=piter,
-                                pprint=pprint)
+                                showlog=showlog)
 
         tmp1 = {}
         tmp2 = {}
 
         for band in dat1:
             tmp1[band], tmp2[band] = lstack([dat1[band], dat2[band]],
-                                            pprint=pprint, piter=piter)
+                                            showlog=showlog, piter=piter)
 
         filt = (tmp1['score'].data < tmp2['score'].data)
 
@@ -287,14 +287,14 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
         datfin.append(data)
         datfin[-1].dataid = key
 
-    pprint(f'Range of days for scenes: {allday}')
-    pprint(f'Mean day {mean}')
-    pprint(f'Standard deviation {std:.2f}')
+    showlog(f'Range of days for scenes: {allday}')
+    showlog(f'Mean day {mean}')
+    showlog(f'Standard deviation {std:.2f}')
 
     return datfin
 
 
-def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
+def import_and_score(ifile, dreq, mean, std, showlog=print, piter=None):
     """
     Import data and score it.
 
@@ -308,7 +308,7 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
         The mean or target day.
     std : float
         The standard deviation of all days.
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
     piter : iter, optional
         Progress bar iterable. The default is None.
@@ -325,7 +325,7 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     bands = [f'B{i+1}' for i in range(11)]
 
     dat = {}
-    tmp = get_data(ifile, alldata=True, piter=piter, showprocesslog=pprint)
+    tmp = get_data(ifile, alldata=True, piter=piter, showlog=showlog)
 
     for i in tmp:
         if i.dataid in bands:
@@ -357,8 +357,8 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     dat['score'] = cdistscore
     dat['score'].data += dayscore
 
-    pprint(f'Scene name: {os.path.basename(ifile)}')
-    pprint(f'Scene day of year: {datday}')
+    showlog(f'Scene name: {os.path.basename(ifile)}')
+    showlog(f'Scene day of year: {datday}')
 
     filt = (dat['cdist'].data == 0)
     for data in dat.values():

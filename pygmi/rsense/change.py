@@ -178,17 +178,17 @@ class CreateSceneList(BasicModule):
             flist.append(ifile)
 
         if nodates is True:
-            self.showprocesslog('Some of your scenes do not have dates. '
+            self.showlog('Some of your scenes do not have dates. '
                                 'Correct this in the output spreadsheet')
 
         if not flist:
-            self.showprocesslog('No scenes could be found. Please make sure '
+            self.showlog('No scenes could be found. Please make sure '
                                 'that your shapefile or kml file is in the '
                                 'area of your scenes and in the same '
                                 'projection.')
             return False
 
-        self.showprocesslog('Updating spreadsheet...')
+        self.showlog('Updating spreadsheet...')
 
         df = pd.DataFrame()
         df['Datetime'] = dtime
@@ -200,7 +200,7 @@ class CreateSceneList(BasicModule):
 
         self.outdata['SceneList'] = df
 
-        self.showprocesslog('Saving to disk...')
+        self.showlog('Saving to disk...')
 
         ext = ('Scene List File (*.xlsx)')
 
@@ -662,7 +662,7 @@ class SceneViewer(BasicModule):
 
         """
         if 'SceneList' not in self.indata:
-            self.showprocesslog('You need a scene list.')
+            self.showlog('You need a scene list.')
             return False
 
         self.df = self.indata['SceneList']
@@ -970,7 +970,7 @@ class SceneViewer(BasicModule):
         #     dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
 
         #     if dat.data is None:
-        #         self.showprocesslog('Error: Dataset could not be read '
+        #         self.showlog('Error: Dataset could not be read '
         #                             'properly')
 
         #     if dat.data.dtype.kind == 'i':

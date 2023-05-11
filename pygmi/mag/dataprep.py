@@ -115,7 +115,7 @@ class Tilt1(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -422,7 +422,7 @@ class RTP(BasicModule):
         """
         tmp = []
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         for i in self.indata['Raster']:

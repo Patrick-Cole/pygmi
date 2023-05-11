@@ -54,9 +54,9 @@ class ProfileDisplay(QtWidgets.QWidget):
         super().__init__(parent)
 
         if parent is None:
-            self.showprocesslog = print
+            self.showlog = print
         else:
-            self.showprocesslog = parent.showprocesslog
+            self.showlog = parent.showlog
 
         self.parent = parent
         self.lmod1 = parent.lmod1
@@ -614,7 +614,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
                 data1 = copy.deepcopy(self.lmod1.griddata[i])
                 if data1.isrgb is True:
-                    # self.showprocesslog(f'Skipping RGB image {data1.dataid}')
+                    # self.showlog(f'Skipping RGB image {data1.dataid}')
                     continue
                 if 'Calculated Gravity' in i:
                     data1.data = data1.data + self.lmod1.gregional
@@ -2808,7 +2808,7 @@ class ImportPicture(BasicModule):
 
         imptext = self.importfile.text()
         if imptext != '':
-            dat = get_raster(imptext, showprocesslog=self.showprocesslog)
+            dat = get_raster(imptext, showlog=self.showlog)
 
             if dat is None:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',

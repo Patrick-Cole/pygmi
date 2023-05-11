@@ -263,7 +263,7 @@ class ClusterStats(ContextModule):
                       for i in data]
 
         if 'input_type' not in data[0].metadata['Cluster']:
-            self.showprocesslog('Your dataset does not qualify')
+            self.showlog('Your dataset does not qualify')
             return False
 
         self.cols = list(data[0].metadata['Cluster']['input_type'])

@@ -207,7 +207,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.is_import = False
         self.text_item = None
         self.my_class_name = ''
-        self.showprocesslog = parent.showprocesslog
+        self.showlog = parent.showlog
 
         if hasattr(self.my_class, 'arrows'):
             self.my_class.arrows = self.arrows
@@ -376,13 +376,13 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             return False
 
         self.my_class.parent.process_is_active()
-        self.showprocesslog(self.my_class_name+' busy...')
+        self.showlog(self.my_class_name+' busy...')
         iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
-            self.showprocesslog(self.my_class_name+' finished!')
+            self.showlog(self.my_class_name+' finished!')
         else:
-            self.showprocesslog(self.my_class_name+' cancelled.')
+            self.showlog(self.my_class_name+' cancelled.')
         return iflag
 
 
@@ -968,7 +968,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         self.process_is_active()
-        self.showprocesslog('Project load busy...')
+        self.showlog('Project load busy...')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open Project', '.', 'PyGMI project (*.json);;')
@@ -1079,7 +1079,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 alist[str(item)] = item
 
         if not alist:
-            self.showprocesslog('No connections. Aborting run.')
+            self.showlog('No connections. Aborting run.')
             return
 
         # Collect only items receiving data
@@ -1169,7 +1169,7 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
 
-    def showprocesslog(self, txt, replacelast=False):
+    def showlog(self, txt, replacelast=False):
         """
         Show text on the process log.
 

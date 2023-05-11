@@ -279,7 +279,7 @@ class ImportMod3D(BasicModule):
             else:
                 df1 = pd.read_csv(filename, sep=' ', names=names)
         except:
-            self.showprocesslog('Unable to import file')
+            self.showlog('Unable to import file')
             return
 
         x = df1.x.to_numpy(float)
@@ -520,7 +520,7 @@ class ExportMod3D(ContextModule):
 
         """
         if 'Model3D' not in self.indata:
-            self.showprocesslog('Error: You need to have a model first!')
+            self.showlog('Error: You need to have a model first!')
             return
 
         for self.lmod in self.indata['Model3D']:
@@ -536,7 +536,7 @@ class ExportMod3D(ContextModule):
 
             self.parent.process_is_active()
 
-            self.showprocesslog('Saving '+self.ofile+'...')
+            self.showlog('Saving '+self.ofile+'...')
 
             if ext == 'npz':
                 self.savemodel()
@@ -564,9 +564,9 @@ class ExportMod3D(ContextModule):
         # Save data
         try:
             np.savez_compressed(self.ofile, **outdict)
-            self.showprocesslog('Model save complete!')
+            self.showlog('Model save complete!')
         except:
-            self.showprocesslog('ERROR! Model save failed!')
+            self.showlog('ERROR! Model save failed!')
 
     def lmod2dict(self, outdict, pre=''):
         """
@@ -647,7 +647,7 @@ class ExportMod3D(ContextModule):
         None.
 
         """
-        self.showprocesslog('csv export starting...')
+        self.showlog('csv export starting...')
 
         self.lmod.update_lith_list_reverse()
         lithname = self.lmod.lith_list_reverse.copy()
@@ -687,7 +687,7 @@ class ExportMod3D(ContextModule):
         np.savetxt(self.ofile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
                    header=head)
 
-        self.showprocesslog('csv export complete!')
+        self.showlog('csv export complete!')
 
     def mod3dtokmz(self):
         """
@@ -738,10 +738,10 @@ class ExportMod3D(ContextModule):
         # Get Save Name
         filename = self.ofile
 
-        self.showprocesslog('kmz export starting...')
+        self.showlog('kmz export starting...')
 
         # Move to 3d model tab to update the model stuff
-        self.showprocesslog('updating 3d model...')
+        self.showlog('updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -754,7 +754,7 @@ class ExportMod3D(ContextModule):
         mvis_3d.lut = tmp
         mvis_3d.update_model(smooth)
 
-        self.showprocesslog('creating kmz file')
+        self.showlog('creating kmz file')
         heading = str(0.)
         tilt = str(45.)  # angle from vertical
         lat = str(np.mean([latsouth, latnorth]))  # coord of object
@@ -818,7 +818,7 @@ class ExportMod3D(ContextModule):
             curmod = self.lmod.lith_list_reverse[lith]
 
             if len(points) > 60000:
-                self.showprocesslog(curmod + ' has too many points (' +
+                self.showlog(curmod + ' has too many points (' +
                                     str(len(points))+'). Not exported')
                 points = points[:60000]
                 norm = norm[:60000]
@@ -1031,7 +1031,7 @@ class ExportMod3D(ContextModule):
 
             zfile.writestr('doc.kml', dockml)
 
-        self.showprocesslog('kmz export complete!')
+        self.showlog('kmz export complete!')
 
     def mod3dtoshp(self, nodialog=False):
         """
@@ -1064,10 +1064,10 @@ class ExportMod3D(ContextModule):
             if tmp == 0:
                 return
 
-        self.showprocesslog('Shapefile export starting...')
+        self.showlog('Shapefile export starting...')
 
         # Move to 3d model tab to update the model stuff
-        self.showprocesslog('Updating 3d model...')
+        self.showlog('Updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -1080,7 +1080,7 @@ class ExportMod3D(ContextModule):
         mvis_3d.lut = tmp
         mvis_3d.update_model(False)
 
-        self.showprocesslog('creating polygons')
+        self.showlog('creating polygons')
 
         # update colours
         self.lmod.update_lith_list_reverse()
@@ -1096,7 +1096,7 @@ class ExportMod3D(ContextModule):
             lithsusc = self.lmod.lith_list[lithtext].susc
             lithdens = self.lmod.lith_list[lithtext].density
 
-            self.showprocesslog(' '+lithtext)
+            self.showlog(' '+lithtext)
             QtWidgets.QApplication.processEvents()
 
             faces = np.array(mvis_3d.gfaces[lith])
@@ -1172,13 +1172,13 @@ class ExportMod3D(ContextModule):
 
             gdf[lithtext] = pd.concat(gdfxyz, ignore_index=True)
 
-        self.showprocesslog('Combining all lithologies...')
+        self.showlog('Combining all lithologies...')
         gdf = pd.concat(gdf, ignore_index=True)
 
-        self.showprocesslog('Exporting to shapefile...')
+        self.showlog('Exporting to shapefile...')
         gdf.to_file(self.ofile)
 
-        self.showprocesslog('Shapefile export complete!')
+        self.showlog('Shapefile export complete!')
 
 
 class Exportkmz(QtWidgets.QDialog):

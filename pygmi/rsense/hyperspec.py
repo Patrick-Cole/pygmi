@@ -428,13 +428,13 @@ class AnalSpec(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('Error: You must have a multi-band raster '
+            self.showlog('Error: You must have a multi-band raster '
                                 'dataset in addition to your cluster '
                                 'analysis results')
             return False
 
         if 'wavelength' not in self.indata['Raster'][0].metadata['Raster']:
-            self.showprocesslog('Error: Your data should have wavelengths in'
+            self.showlog('Error: Your data should have wavelengths in'
                                 ' the metadata')
             return False
 
@@ -449,7 +449,7 @@ class AnalSpec(BasicModule):
                 needsmerge = True
 
         if needsmerge is True:
-            self.showprocesslog('Error: Your data bands have different sizes. '
+            self.showlog('Error: Your data bands have different sizes. '
                                 'Use Layer Stack to fix this first')
             return False
 
@@ -477,7 +477,7 @@ class AnalSpec(BasicModule):
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
             self.map.wvl = self.map.wvl*1000.
-            self.showprocesslog('Wavelengths appear to be in nanometers. '
+            self.showlog('Wavelengths appear to be in nanometers. '
                                 'Converting to micrometers.')
 
         bands = [i.dataid for i in self.indata['Raster']]
@@ -689,7 +689,7 @@ class ProcFeatures(BasicModule):
         """
         tmp = []
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showprocesslog('No Satellite Data')
+            self.showlog('No Satellite Data')
             return False
 
         self.feature = features.feature
@@ -784,7 +784,7 @@ class ProcFeatures(BasicModule):
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                self.showprocesslog('Processing '+os.path.basename(ifile))
+                self.showlog('Processing '+os.path.basename(ifile))
 
                 dat = get_raster(ifile)
                 datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
@@ -794,10 +794,10 @@ class ProcFeatures(BasicModule):
                          mineral.replace(' ', '_') + '.tif')
                 ofile = os.path.join(odir, ofile)
                 if datfin[0].data.mask.min() == True:
-                    self.showprocesslog(' Could not find any ' + mineral +
+                    self.showlog(' Could not find any ' + mineral +
                                         '. No data to export.')
                 else:
-                    self.showprocesslog('Exporting '+os.path.basename(ofile))
+                    self.showlog('Exporting '+os.path.basename(ofile))
                     export_raster(ofile, datfin, 'GTiff', piter=self.piter)
 
         elif 'Raster' in self.indata:

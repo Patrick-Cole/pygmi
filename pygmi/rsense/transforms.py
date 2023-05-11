@@ -123,7 +123,7 @@ class MNF(BasicModule):
         self.ev = None
         tmp = []
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showprocesslog('No Satellite Data')
+            self.showlog('No Satellite Data')
             return False
 
         if 'Raster' in self.indata:
@@ -251,12 +251,12 @@ class MNF(BasicModule):
                 else:
                     filename = ifile.filename
 
-                self.showprocesslog('Processing '+os.path.basename(filename))
+                self.showlog('Processing '+os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showprocesslog=self.showprocesslog)
+                                          showlog=self.showlog)
                 odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
-                                          pprint=self.showprocesslog,
+                                          showlog=self.showlog,
                                           noisetxt=noise,
                                           fwdonly=self.cb_fwdonly.isChecked())
 
@@ -264,13 +264,13 @@ class MNF(BasicModule):
                 # ofile = os.path.join(odir, ofile)
                 ofile = set_export_filename(odata, odir, 'mnf')
 
-                self.showprocesslog('Exporting '+os.path.basename(ofile))
+                self.showlog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
             odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
-                                      pprint=self.showprocesslog,
+                                      showlog=self.showlog,
                                       noisetxt=noise,
                                       fwdonly=self.cb_fwdonly.isChecked())
 
@@ -349,7 +349,7 @@ class PCA(BasicModule):
         self.ev = None
         tmp = []
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showprocesslog('No Satellite Data')
+            self.showlog('No Satellite Data')
             return False
 
         if 'RasterFileList' in self.indata:
@@ -475,12 +475,12 @@ class PCA(BasicModule):
                 else:
                     filename = ifile.filename
 
-                self.showprocesslog('Processing '+os.path.basename(filename))
+                self.showlog('Processing '+os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showprocesslog=self.showprocesslog)
+                                          showlog=self.showlog)
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
-                                          pprint=self.showprocesslog,
+                                          showlog=self.showlog,
                                           fwdonly=fwdonly)
 
                 # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
@@ -488,18 +488,18 @@ class PCA(BasicModule):
 
                 ofile = set_export_filename(odata, odir, 'pca')
 
-                self.showprocesslog('Exporting '+os.path.basename(ofile))
+                self.showlog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
 
         elif 'RasterFileList' in self.indata and fitlist is True:
             odata, self.ev = pca_calc_fitlist(flist, ncmps, piter=self.piter,
-                                              pprint=self.showprocesslog,
+                                              showlog=self.showlog,
                                               fwdonly=fwdonly)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
             odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
-                                      pprint=self.showprocesslog,
+                                      showlog=self.showlog,
                                       fwdonly=self.cb_fwdonly.isChecked())
 
         self.outdata['Raster'] = odata
@@ -580,7 +580,7 @@ def get_noise(x2d, mask, noise=''):
     return nevals, nevecs
 
 
-def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
+def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
              fwdonly=True):
     """
     MNF Calculation.
@@ -595,7 +595,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     noisetxt : txt, optional
         Noise type. Can be 'diagonal', 'hv average' or 'quad'. The default is
         'hv average'.
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
     piter : function, optional
         Iteration function, used for progress bars. The default is iter.
@@ -612,7 +612,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter, pprint=pprint, commonmask=True)
+    dat = lstack(dat, piter=piter, showlog=showlog, commonmask=True)
 
     for j in dat:
         x2d.append(j.data)
@@ -624,10 +624,10 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
 
     mask = maskall[:, :, 0]
 
-    pprint('Calculating noise data...')
+    showlog('Calculating noise data...')
     nevals, nevecs = get_noise(x2d, mask, noisetxt)
 
-    pprint('Calculating MNF...')
+    showlog('Calculating MNF...')
     Ln = np.power(nevals, -0.5)
     Ln = np.diag(Ln)
 
@@ -641,14 +641,14 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     pca = IncrementalPCA(n_components=ncmps)
 
     iold = 0
-    pprint('Fitting PCA')
+    showlog('Fitting PCA')
     for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
         if i == 0:
             continue
         pca.partial_fit(Pnorm[iold: i])
         iold = i
 
-    pprint('Calculating PCA transform...')
+    showlog('Calculating PCA transform...')
 
     x2 = np.zeros((Pnorm.shape[0], pca.n_components_))
     iold = 0
@@ -663,7 +663,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
-        pprint('Calculating inverse MNF...')
+        showlog('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
         x2 = np.dot(P, Winv.T)
@@ -692,7 +692,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     return odata, ev
 
 
-def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
+def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
     """
     PCA Calculation.
 
@@ -703,7 +703,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
         (meaning all).
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
     piter : function, optional
         Iteration function, used for progress bars. The default is iter.
@@ -737,14 +737,14 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     pca = IncrementalPCA(n_components=ncmps)
 
     iold = 0
-    pprint('Fitting PCA')
+    showlog('Fitting PCA')
     for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
         if i == 0:
             continue
         pca.partial_fit(x2d[iold: i])
         iold = i
 
-    pprint('Calculating PCA transform...')
+    showlog('Calculating PCA transform...')
 
     x2 = np.zeros((x2d.shape[0], pca.n_components_))
     iold = 0
@@ -759,7 +759,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
-        pprint('Calculating inverse PCA...')
+        showlog('Calculating inverse PCA...')
         x2 = pca.inverse_transform(x2)
     else:
         x2dshape[-1] = ncmps
@@ -785,7 +785,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     return odata, ev
 
 
-def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
+def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
                      fwdonly=True):
     """
     PCA Calculation with using list of files in common fit.
@@ -797,7 +797,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
         (meaning all).
-    pprint : function, optional
+    showlog : function, optional
         Function for printing text. The default is print.
     piter : function, optional
         Iteration function, used for progress bars. The default is iter.
@@ -826,11 +826,11 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
         else:
             filename = ifile.filename
 
-        pprint('Fitting '+os.path.basename(filename))
+        showlog('Fitting '+os.path.basename(filename))
 
-        # dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+        # dat = get_data(ifile, piter=piter, showlog=showlog)
 
-        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=pprint)
+        dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
         x2d = []
         maskall = []
@@ -863,11 +863,11 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
         else:
             filename = ifile.filename
 
-        pprint('Transforming '+os.path.basename(filename))
+        showlog('Transforming '+os.path.basename(filename))
 
-        # dat = get_data(ifile, piter=piter, showprocesslog=pprint)
+        # dat = get_data(ifile, piter=piter, showlog=showlog)
 
-        dat = get_from_rastermeta(ifile, piter=piter, showprocesslog=pprint)
+        dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
         x2d = []
         maskall = []
@@ -898,7 +898,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
         evr = pca.explained_variance_ratio_
 
         if fwdonly is False:
-            pprint('Calculating inverse PCA...')
+            showlog('Calculating inverse PCA...')
             x2 = pca.inverse_transform(x2)
         else:
             x2dshape[-1] = ncmps
@@ -931,7 +931,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
         ofile = set_export_filename(odata, odir, 'pca')
 
-        pprint('Exporting '+os.path.basename(ofile))
+        showlog('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD')
 
     return odata, ev

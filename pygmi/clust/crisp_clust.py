@@ -178,12 +178,12 @@ class CrispClust(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different '
+            self.showlog('Error: Your input datasets have different '
                                 'sizes. Merge the data first')
             return False
 
@@ -289,7 +289,7 @@ class CrispClust(BasicModule):
         no_clust = np.array([self.min_cluster, self.max_cluster])
         de_norm = self.denorm
 
-        self.showprocesslog('Crisp Clustering started')
+        self.showlog('Crisp Clustering started')
 
 # #############################################################################
 # Section to deal with different bands having different null values.
@@ -307,7 +307,7 @@ class CrispClust(BasicModule):
         masktmp = ~masktmp
         for datai in data:
             if datai.nodata != 0.0:
-                self.showprocesslog('Setting '+datai.dataid+' nodata to 0.')
+                self.showlog('Setting '+datai.dataid+' nodata to 0.')
                 datai.data = np.ma.array(datai.data.filled(0))
             datai.data.mask = masktmp
 
@@ -374,10 +374,10 @@ class CrispClust(BasicModule):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1]+1)]
 
         for i in range(no_clust[0], no_clust[1]+1):
-            self.showprocesslog('Number of Clusters:'+str(i))
+            self.showlog('Number of Clusters:'+str(i))
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
-                self.showprocesslog('Initial guess: data driven')
+                self.showlog('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp/i
                 idx = np.arange(0, no_samp+dno_samp, dno_samp)
@@ -398,18 +398,18 @@ class CrispClust(BasicModule):
 
             elif self.radiobutton_manual.isChecked() is True:
 
-                self.showprocesslog('Initial guess: manual')
+                self.showlog('Initial guess: manual')
 
                 clidx, clcent, clobj_fcn, clvrc = self.crisp_means(
                     dat_in, i, startmdat[i], startmfix[i], max_iter,
                     term_thresh, cltype, cov_constr)
 
             elif self.radiobutton_random.isChecked() is True:
-                self.showprocesslog('Initial guess: random')
+                self.showlog('Initial guess: random')
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.showprocesslog('Run '+str(j+1)+' of'+str(no_runs))
+                    self.showlog('Run '+str(j+1)+' of'+str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -458,7 +458,7 @@ class CrispClust(BasicModule):
             i.set_transform(transform=data[0].transform)
             i.crs = data[0].crs
 
-        self.showprocesslog('Crisp Cluster complete ('+self.cltype + ' ' +
+        self.showlog('Crisp Cluster complete ('+self.cltype + ' ' +
                             self.init_type+')')
 
         for i in dat_out:
@@ -526,7 +526,7 @@ class CrispClust(BasicModule):
         vrc : numpy array
             Variance Ratio Criterion
         """
-        self.showprocesslog(' ')
+        self.showlog(' ')
 
         no_samples = data.shape[0]
         if cent.size == 0:  # if no center values are provided
@@ -585,7 +585,7 @@ class CrispClust(BasicModule):
             else:
                 obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
 
-            self.showprocesslog(f'Iteration: {i} Threshold: {term_thresh})'
+            self.showlog(f'Iteration: {i} Threshold: {term_thresh})'
                                 f' Current: {obj_fcn_dif:.2e}', True)
             # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:

@@ -53,9 +53,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure()
         super().__init__(fig)
         if parent is None:
-            self.showprocesslog = print
+            self.showlog = print
         else:
-            self.showprocesslog = parent.showprocesslog
+            self.showlog = parent.showlog
 
         # figure stuff
         self.htype = 'Linear'
@@ -170,7 +170,7 @@ class BeachBall(BasicModule):
         alist = sorted(set(alist))
 
         if not alist:
-            self.showprocesslog('Error: no Fault Plane Solutions')
+            self.showlog('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
         self.nofps = False
@@ -307,7 +307,7 @@ class BeachBall(BasicModule):
             pwidth = self.mmc.pwidth*idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
                                              self.mmc.isgeog,
-                                             self.showprocesslog)
+                                             self.showlog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
@@ -385,7 +385,7 @@ class BeachBall(BasicModule):
 
         """
         if self.nofps:
-            self.showprocesslog('Error: no Fault Plane Solutions')
+            self.showlog('Error: no Fault Plane Solutions')
             return False
 
         self.show()
@@ -426,7 +426,7 @@ class BeachBall(BasicModule):
         return projdata
 
 
-def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
+def beachball(fm, centerx, centery, diam, isgeog, showlog=print):
     """
     Beachball.
 
@@ -459,7 +459,7 @@ def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
         draw beachball with this diameter.
     isgeog : bool
         True if in geographic coordinates, False otherwise.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
@@ -550,7 +550,7 @@ def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
     l2 = np.sqrt(d**2/(np.sin(phi)**2 + np.cos(phi)**2 * d**2/m**2))
 
     if D == 0:
-        showprocesslog('Enter a diameter for the beachballs!')
+        showlog('Enter a diameter for the beachballs!')
         return None
 
     inc = 1

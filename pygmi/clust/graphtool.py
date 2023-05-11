@@ -821,7 +821,7 @@ class ScatterPlot(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('Error: You must have a multi-band raster '
+            self.showlog('Error: You must have a multi-band raster '
                                 'dataset in addition to your cluster analysis'
                                 ' results')
             return False

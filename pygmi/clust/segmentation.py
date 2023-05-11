@@ -121,7 +121,7 @@ class ImageSeg(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         data1 = []
@@ -248,7 +248,7 @@ class ImageSeg(BasicModule):
         """
         rows, cols, bands = data.shape
 
-        self.showprocesslog('Initialising...')
+        self.showlog('Initialising...')
 
         olist = {}
         slist = {}
@@ -271,12 +271,12 @@ class ImageSeg(BasicModule):
                     nlist[(k, i*cols+j)] = 1
                 omap[i, j] = i*cols+j
 
-        self.showprocesslog('merging...')
+        self.showlog('merging...')
 
         omap = self._segment2(omap, olist, slist, mlist, nlist, bands,
                               doshape, wcompact, wcolor, scale)
 
-        self.showprocesslog('renumbering...')
+        self.showlog('renumbering...')
         tmp = np.unique(omap)
 
         for i, val in enumerate(tmp):
@@ -341,7 +341,7 @@ class ImageSeg(BasicModule):
                 self.pbar.setMaximum(clen)
                 self.pbar.setMinimum(0)
                 self.pbar.setValue(0)
-            self.showprocesslog('Iteration number: '+str(cnt))
+            self.showlog('Iteration number: '+str(cnt))
             oldperc = 0
 
             olist3 = olist.copy()

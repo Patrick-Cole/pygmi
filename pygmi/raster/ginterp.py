@@ -1326,7 +1326,7 @@ class PlotInterp(BasicModule):
                 continue
             indata.append(i)
 
-        indata = dataprep.lstack(indata, pprint=self.showprocesslog,
+        indata = dataprep.lstack(indata, showlog=self.showlog,
                                  piter=self.piter)
 
         # Add membership data.
@@ -1761,11 +1761,11 @@ class PlotInterp(BasicModule):
             return True
 
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if self.indata['Raster'][0].isrgb:
-            self.showprocesslog('RGB images cannot be used in this module.')
+            self.showlog('RGB images cannot be used in this module.')
             return False
 
         self.show()

@@ -849,7 +849,7 @@ class SuperClass(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('Error: You must have a multi-band raster '
+            self.showlog('Error: You must have a multi-band raster '
                                 'dataset in addition to your cluster '
                                 'analysis results')
             return False
@@ -923,7 +923,7 @@ class SuperClass(BasicModule):
             i.nodata = 0
             i.data.data[i.data.mask] = 0
 
-        self.showprocesslog('Cluster complete')
+        self.showlog('Cluster complete')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -1049,7 +1049,7 @@ class SuperClass(BasicModule):
         lbls = np.unique(y)
 
         if len(lbls) < 2:
-            self.showprocesslog('Error: You need at least two classes')
+            self.showlog('Error: You need at least two classes')
 
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
 

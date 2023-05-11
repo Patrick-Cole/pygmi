@@ -73,7 +73,7 @@ class PointCut(BasicModule):
             key = list(data.keys())[0]
             data = data[key]
         else:
-            self.showprocesslog('No point data')
+            self.showlog('No point data')
             return False
 
         # nodialog = False
@@ -275,7 +275,7 @@ class DataGrid(BasicModule):
         """
         tmp = []
         if 'Line' not in self.indata:
-            self.showprocesslog('No Point Data')
+            self.showlog('No Point Data')
             return False
 
         self.dataid.clear()
@@ -319,7 +319,7 @@ class DataGrid(BasicModule):
             float(self.dsb_null.text())
             float(self.bdist.text())
         except ValueError:
-            self.showprocesslog('Value Error')
+            self.showlog('Value Error')
             return False
 
         self.acceptall()
@@ -392,7 +392,7 @@ class DataGrid(BasicModule):
 
         if bdist < 1:
             bdist = None
-            self.showprocesslog('Blanking distance too small.')
+            self.showlog('Blanking distance too small.')
 
         filt = (data[self.dataid.currentText()] != nullvalue)
         x = data.pygmiX.values[filt]
@@ -400,7 +400,7 @@ class DataGrid(BasicModule):
         z = data[self.dataid.currentText()].values[filt]
 
         if method == 'Minimum Curvature':
-            gdat = minc(x, y, z, dxy, showprocesslog=self.showprocesslog,
+            gdat = minc(x, y, z, dxy, showlog=self.showlog,
                         bdist=bdist)
             gdat = np.ma.filled(gdat, fill_value=nullvalue)
         else:
@@ -511,7 +511,7 @@ class DataReproj(BasicModule):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.showprocesslog('Could not reproject')
+            self.showlog('Could not reproject')
             return
 
         key = list(self.indata['Line'].keys())[0]
@@ -528,7 +528,7 @@ class DataReproj(BasicModule):
         xy = np.transpose([x2, y2])
 
         if np.inf in xy:
-            self.showprocesslog('Note: inf values in reprojected results. '
+            self.showlog('Note: inf values in reprojected results. '
                                 'Please check your input and output '
                                 'projections or input x and y data for '
                                 'mistakes.')
@@ -556,7 +556,7 @@ class DataReproj(BasicModule):
 
         """
         if 'Line' not in self.indata and 'Vector' not in self.indata:
-            self.showprocesslog('No vector data.')
+            self.showlog('No vector data.')
             return False
 
         if 'Vector' in self.indata:
@@ -696,7 +696,7 @@ def cut_point(data, ifile):
     return data
 
 
-def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
+def quickgrid(x, y, z, dxy, numits=4, showlog=print):
     """
     Do a quick grid.
 
@@ -713,7 +713,7 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     numits : int
         number of iterations. By default its 4. If this is negative, a maximum
         will be calculated and used.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
@@ -721,7 +721,7 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     newz : numpy array
         M x N array of z values
     """
-    showprocesslog('Creating Grid')
+    showlog('Creating Grid')
     x = x.flatten()
     y = y.flatten()
     z = z.flatten()
@@ -770,9 +770,9 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
             zfin[xx, yy] = newz[xx2, yy2]
             newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
 
-        showprocesslog('Iteration done: '+str(j+1)+' of '+str(numits))
+        showlog('Iteration done: '+str(j+1)+' of '+str(numits))
 
-    showprocesslog('Finished!')
+    showlog('Finished!')
 
     newz = np.ma.array(zfin)
     newz.mask = newmask

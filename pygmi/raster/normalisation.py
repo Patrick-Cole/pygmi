@@ -110,7 +110,7 @@ class Normalisation(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:

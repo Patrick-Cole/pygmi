@@ -281,7 +281,7 @@ class MagInvert(BasicModule):
         None.
 
         """
-        self.showprocesslog('Working...')
+        self.showlog('Working...')
 
         self.choose_combo(self.combo_dtm, 'DTM Dataset')
         self.choose_combo(self.combo_mag, 'Magnetic Dataset')
@@ -305,7 +305,7 @@ class MagInvert(BasicModule):
         # the same dataset
         tmp = list(set(self.lmod1.griddata.values()))
         self.outdata['Raster'] = tmp
-        self.showprocesslog('Changes applied.')
+        self.showlog('Changes applied.')
 
         self.accept()
 
@@ -704,7 +704,7 @@ class MagInvert(BasicModule):
                self.lmod1.griddata['DTM Dataset']]
 
         dat = lstack(dat, masterid=0, commonmask=True, piter=self.piter,
-                     pprint=self.showprocesslog)
+                     showlog=self.showlog)
 
         mag = dat[0]
         dtm = dat[1]
@@ -833,7 +833,7 @@ class MagInvert(BasicModule):
             with redirect_stdout(self.stdout_redirect):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
-            self.showprocesslog('Error: '+str(e))
+            self.showlog('Error: '+str(e))
             return False
 
         # Recreate True Model

@@ -170,7 +170,7 @@ class ImportLineData(BasicModule):
         try:
             nodata = float(self.nodata.text())
         except ValueError:
-            self.showprocesslog('Null Value error - abandoning import')
+            self.showlog('Null Value error - abandoning import')
             return False
 
         xcol = self.xchan.currentText()
@@ -250,7 +250,7 @@ class ImportLineData(BasicModule):
         chktxt = tmp[:tmp.index('\n')].lower()
 
         if r'/' not in chktxt and 'line' not in chktxt and 'tie' not in chktxt:
-            self.showprocesslog('Not Geosoft XYZ format')
+            self.showlog('Not Geosoft XYZ format')
             return None
 
         head = None
@@ -336,7 +336,7 @@ class ExportLine(ContextModule):
 
         """
         if 'Line' not in self.indata:
-            self.showprocesslog('Error: You need to have line data first!')
+            self.showlog('Error: You need to have line data first!')
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -345,7 +345,7 @@ class ExportLine(ContextModule):
         if filename == '':
             return False
 
-        self.showprocesslog('Export busy...')
+        self.showlog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Line']
@@ -355,7 +355,7 @@ class ExportLine(ContextModule):
 
         dfall.to_csv(filename, index=False)
 
-        self.showprocesslog('Export completed')
+        self.showlog('Export completed')
 
         return True
 
@@ -377,7 +377,7 @@ class ExportShapeData(ContextModule):
 
         """
         if 'Vector' not in self.indata:
-            self.showprocesslog('Error: You need to have vector data first!')
+            self.showlog('Error: You need to have vector data first!')
             return False
 
         filename, filt = QtWidgets.QFileDialog.getSaveFileName(
@@ -386,7 +386,7 @@ class ExportShapeData(ContextModule):
         if filename == '':
             return False
 
-        self.showprocesslog('Export busy...')
+        self.showlog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Vector']
@@ -397,7 +397,7 @@ class ExportShapeData(ContextModule):
         else:
             data.to_file(filename)
 
-        self.showprocesslog('Export completed')
+        self.showlog('Export completed')
 
         return True
 

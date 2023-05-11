@@ -325,7 +325,7 @@ class MergeMod3D(BasicModule):
         if 'Model3D' not in self.indata:
             return False
         if len(self.indata['Model3D']) != 2:
-            self.showprocesslog('You need two datasets connected!')
+            self.showlog('You need two datasets connected!')
             return False
 
         for i in self.indata['Model3D']:
@@ -388,7 +388,7 @@ class MergeMod3D(BasicModule):
 
         """
         if self.master.currentText() == self.slave.currentText():
-            self.showprocesslog('Your master dataset must be different'
+            self.showlog('Your master dataset must be different'
                                 ' to the slave dataset!')
             return False
 

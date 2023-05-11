@@ -58,7 +58,7 @@ class DeleteRecord(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.showprocesslog('Delete Rows starting')
+        self.showlog('Delete Rows starting')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
         if ifile == '':
@@ -116,8 +116,8 @@ class DeleteRecord(BasicModule):
         """
         ofile = ifile[:-4]+'_new.out'
 
-        self.showprocesslog('Input Filename: '+ifile)
-        self.showprocesslog('Output Filename: '+ofile)
+        self.showlog('Input Filename: '+ifile)
+        self.showlog('Output Filename: '+ofile)
 
         outputf = open(ofile, 'w', encoding='utf-8')
         inputf = open(ifile, encoding='utf-8')
@@ -129,8 +129,8 @@ class DeleteRecord(BasicModule):
 
         skey = str(skey).upper()
 
-        self.showprocesslog('Delete Criteria: '+skey)
-        self.showprocesslog('Working...')
+        self.showlog('Delete Criteria: '+skey)
+        self.showlog('Working...')
 
         skey = skey.replace(' ', '')
         skey = skey.split(',')
@@ -146,7 +146,7 @@ class DeleteRecord(BasicModule):
         inputf.close()
         outputf.close()
 
-        self.showprocesslog('Completed!')
+        self.showlog('Completed!')
 
 
 class Quarry(BasicModule):
@@ -174,9 +174,9 @@ class Quarry(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.showprocesslog('Delete quarry events starting')
-        self.showprocesslog('Daytime defined from 9am to 7pm')
-        self.showprocesslog('Events radius: .2 degrees')
+        self.showlog('Delete quarry events starting')
+        self.showlog('Daytime defined from 9am to 7pm')
+        self.showlog('Events radius: .2 degrees')
 
         if 'Seis' not in self.indata:
             return False
@@ -189,7 +189,7 @@ class Quarry(BasicModule):
                 alist.append(i)
 
         if not alist:
-            self.showprocesslog('Error: no Type 1 records')
+            self.showlog('Error: no Type 1 records')
             return False
 
         self.events = alist
@@ -243,7 +243,7 @@ class Quarry(BasicModule):
             New events
 
         """
-        self.showprocesslog('Working...')
+        self.showlog('Working...')
 
         hour = []
         lat = []
@@ -283,7 +283,7 @@ class Quarry(BasicModule):
         # db = DBSCAN(eps=0.01, min_samples=10).fit(X)
         # labels = db.labels_  # noisy samples are -1
 
-        # self.showprocesslog('now calculate means')
+        # self.showlog('now calculate means')
         # clusters = []
         # for i in np.unique(labels):
         #     if i == -1:
@@ -293,14 +293,14 @@ class Quarry(BasicModule):
         #     clusters.append([lontmp, lattmp])
 
         # clusters = np.array(clusters)
-        self.showprocesslog('Calculating Rq values')
+        self.showlog('Calculating Rq values')
 
         while stayinloop:
             lls = np.transpose([lat, lon])
             cnt = lls.shape[0]
             nd = []
             rstot = []
-            self.showprocesslog('daylight events left: ' + str(hour.sum()) +
+            self.showlog('daylight events left: ' + str(hour.sum()) +
                                 ' of ' + str(hour.size))
 
             # instead of a grid, we are using an actual event location
@@ -339,7 +339,7 @@ class Quarry(BasicModule):
                 stayinloop = False
             stayinloop = False
 
-        self.showprocesslog('Completed!')
+        self.showlog('Completed!')
 
         return newevents
 
@@ -353,7 +353,7 @@ class Quarry(BasicModule):
             New events
 
         """
-        self.showprocesslog('Working...')
+        self.showlog('Working...')
 
         hour = []
         lat = []
@@ -384,13 +384,13 @@ class Quarry(BasicModule):
         # rperc = self.randrqb(N, day, ehourall.shape[0])
         rperc = 3.0
 
-        self.showprocesslog('Calculating Rq values')
+        self.showlog('Calculating Rq values')
 
         lls = np.transpose([lat, lon])
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        self.showprocesslog('daylight events:'+str(hour.sum())+' of ' +
+        self.showlog('daylight events:'+str(hour.sum())+' of ' +
                             str(hour.size))
 
         for i in range(cnt):  # i is node number, centered on an event
@@ -406,7 +406,7 @@ class Quarry(BasicModule):
             nd.append(hrs)
 
         if len(nd) == 0:
-            self.showprocesslog('Not enough events within 0.2 degrees. '
+            self.showlog('Not enough events within 0.2 degrees. '
                                 'Aborting.')
             return None
         nd = np.sum(nd, 1)
@@ -430,7 +430,7 @@ class Quarry(BasicModule):
         ehour = np.delete(ehour, maxel)
         newevents = np.delete(newevents, maxel)
 
-        self.showprocesslog('Completed!')
+        self.showlog('Completed!')
 
         return newevents.tolist()
 
@@ -458,7 +458,7 @@ class Quarry(BasicModule):
         rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
                  1.3234714, 1.28444936, 1.26923077]
 
-        self.showprocesslog('Calculating random Rq values for calibration')
+        self.showlog('Calculating random Rq values for calibration')
         rperc = []
         nd = 0
         ld = day[1]-day[0]
@@ -466,7 +466,7 @@ class Quarry(BasicModule):
 
         nrange = [10]
         for N in nrange:
-            self.showprocesslog(str(N)+' of '+str(nmax), True)
+            self.showlog(str(N)+' of '+str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
             tmp *= 24
 
@@ -498,7 +498,7 @@ class Quarry(BasicModule):
             Percentiles
 
         """
-        self.showprocesslog('Calculating random Rq values for calibration')
+        self.showlog('Calculating random Rq values for calibration')
         elist = [50, 100, 150, 200]
 
         for N in elist:

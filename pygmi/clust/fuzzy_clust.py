@@ -187,12 +187,12 @@ class FuzzyClust(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different '
+            self.showlog('Error: Your input datasets have different '
                                 'sizes. Merge the data first')
             return False
 
@@ -302,7 +302,7 @@ class FuzzyClust(BasicModule):
         de_norm = self.denorm
         expo = self.fexp
 
-        self.showprocesslog('Fuzzy Clustering started')
+        self.showlog('Fuzzy Clustering started')
 
 # #############################################################################
 # Section to deal with different bands having different null values.
@@ -319,7 +319,7 @@ class FuzzyClust(BasicModule):
         masktmp = ~masktmp
         for datai in data:
             if datai.nodata != 0.0:
-                self.showprocesslog('Setting '+datai.dataid+' nodata to 0.')
+                self.showlog('Setting '+datai.dataid+' nodata to 0.')
                 datai.data = np.ma.array(datai.data.filled(0))
             datai.data.mask = masktmp
 
@@ -386,10 +386,10 @@ class FuzzyClust(BasicModule):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         for i in range(no_clust[0], no_clust[1] + 1):
-            self.showprocesslog('Number of Clusters:' + str(i))
+            self.showlog('Number of Clusters:' + str(i))
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
-                self.showprocesslog('Initial guess: data driven')
+                self.showlog('Initial guess: data driven')
 
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp / i
@@ -410,18 +410,18 @@ class FuzzyClust(BasicModule):
                     term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_manual.isChecked() is True:
-                self.showprocesslog('Initial guess: manual')
+                self.showlog('Initial guess: manual')
 
                 clu, clcent, clobj_fcn, clvrc, clnce, clxbi = self.fuzzy_means(
                     dat_in, i, startmdat[i], startmfix[i],
                     max_iter, term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_random.isChecked() is True:
-                self.showprocesslog('Initial guess: random')
+                self.showlog('Initial guess: random')
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.showprocesslog('Run ' + str(j+1) + ' of' +
+                    self.showlog('Run ' + str(j+1) + ' of' +
                                         str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
@@ -492,7 +492,7 @@ class FuzzyClust(BasicModule):
             i.data += 1
             i.crs = data[0].crs
 
-        self.showprocesslog('Fuzzy Cluster complete' + ' (' + self.cltype +
+        self.showlog('Fuzzy Cluster complete' + ' (' + self.cltype +
                             ' ' + self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
@@ -563,7 +563,7 @@ class FuzzyClust(BasicModule):
         xbi : numpy array
             Xie beni index.
         """
-        self.showprocesslog(' ')
+        self.showlog(' ')
 
         if cltype == 'fuzzy c-means':
             cltype = 'fcm'
@@ -609,7 +609,7 @@ class FuzzyClust(BasicModule):
         # if membership matrix is provided
         elif init.shape[0] == no_clust and init.shape[1] == no_samples:
             if init[init < 0].size > 0:  # check for negative memberships
-                self.showprocesslog('No negative memberships allowed!')
+                self.showlog('No negative memberships allowed!')
                 # scale given memberships to a column sum of unity
             uuu = init / (np.ones([no_clust, 1]) * init.sum())
             # MF matrix after exponential modification
@@ -640,7 +640,7 @@ class FuzzyClust(BasicModule):
             m_f = uuu ** expo
             obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
             if i > 0:
-                self.showprocesslog('Iteration: ' + str(i) + ' Threshold: ' +
+                self.showlog('Iteration: ' + str(i) + ' Threshold: ' +
                                     str(term_thresh) + ' Current: ' +
                                     '{:.2e}'.format(100*((obj_fcn[i - 1] -
                                                           obj_fcn[i]) /

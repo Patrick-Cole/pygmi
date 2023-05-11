@@ -194,7 +194,7 @@ class Metadata(ContextModule):
             odata.elev = float(self.dsb_elev.text())
             odata.rotation_angle = float(self.dsb_rot.text())
         except ValueError:
-            self.showprocesslog('Value error - abandoning changes')
+            self.showlog('Value error - abandoning changes')
 
         indx = self.combobox_bandid.currentIndex()
         txt = self.combobox_bandid.itemText(indx)
@@ -515,7 +515,7 @@ class StaticShiftEDI(BasicModule):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.showprocesslog('No EDI data')
+            self.showlog('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -726,7 +726,7 @@ class RotateEDI(BasicModule):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.showprocesslog('No EDI data')
+            self.showlog('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -1206,7 +1206,7 @@ class EditEDI(BasicModule):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.showprocesslog('No EDI data')
+            self.showlog('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -1737,7 +1737,7 @@ class Occam1D(BasicModule):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.showprocesslog('No EDI data')
+            self.showlog('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()

@@ -192,12 +192,12 @@ class CorrectDescriptions(BasicModule):
             if cmatch:
                 cmatch = cmatch[0]
             else:
-                # self.showprocesslog('No match found for '+text)
+                # self.showlog('No match found for '+text)
                 nomatch.append(text)
                 continue
 
             if cmatch != text:
-                # self.showprocesslog('Correcting '+text+' to '+cmatch)
+                # self.showlog('Correcting '+text+' to '+cmatch)
                 correction.append(text+' to '+cmatch)
                 i['3'].region = cmatch
 

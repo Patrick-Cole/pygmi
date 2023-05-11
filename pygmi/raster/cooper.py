@@ -130,7 +130,7 @@ class Gradients(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -154,7 +154,7 @@ class Gradients(BasicModule):
                 data[i].data = thgrad(data[i].data, data[i].xdim, data[i].ydim)
             else:
                 if data[i].xdim != data[i].ydim:
-                    self.showprocesslog('X and Y dimension are different. '
+                    self.showlog('X and Y dimension are different. '
                                         'Please resample')
                     return False
 
@@ -421,7 +421,7 @@ class Visibility2d(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -436,7 +436,7 @@ class Visibility2d(BasicModule):
         data2 = []
 
         for i, datai in enumerate(data):
-            self.showprocesslog(datai.dataid+':')
+            self.showlog(datai.dataid+':')
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
@@ -467,7 +467,7 @@ class Visibility2d(BasicModule):
                 data2[i].data = np.ma.array(data2[i].data, mask=mask)
 
         self.outdata['Raster'] = data2
-        self.showprocesslog('Finished!')
+        self.showlog('Finished!')
 
         return True
 
@@ -827,7 +827,7 @@ class AGC(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -847,7 +847,7 @@ class AGC(BasicModule):
         data2 = []
 
         for datai in data:
-            self.showprocesslog(datai.dataid+':')
+            self.showlog(datai.dataid+':')
 
             agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
                           piter=self.piter)
@@ -856,7 +856,7 @@ class AGC(BasicModule):
             data2[-1].dataid += ' AGC'
 
         self.outdata['Raster'] = data2
-        self.showprocesslog('Finished!')
+        self.showlog('Finished!')
 
         return True
 

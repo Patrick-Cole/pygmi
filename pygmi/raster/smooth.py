@@ -151,7 +151,7 @@ class Smooth(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         if not nodialog:
@@ -160,7 +160,7 @@ class Smooth(BasicModule):
                 return False
             self.parent.process_is_active(True)
 
-        self.showprocesslog('Smoothing ')
+        self.showlog('Smoothing ')
         data = copy.deepcopy(self.indata['Raster'])
         if self.radiobutton_2dmean.isChecked():
             for i, _ in enumerate(data):
@@ -177,7 +177,7 @@ class Smooth(BasicModule):
         if not nodialog:
             self.parent.process_is_active(False)
         self.outdata['Raster'] = data
-        self.showprocesslog('Finished!', True)
+        self.showlog('Finished!', True)
 
         return True
 
@@ -411,7 +411,7 @@ class Smooth(BasicModule):
             out = ssig.correlate(dat, fmat, 'same', method='direct')
 
         elif itype == '2D Median':
-            self.showprocesslog('Calculating Median...')
+            self.showlog('Calculating Median...')
             out = np.ma.zeros([rowd, cold])*np.nan
             out.mask = np.ma.getmaskarray(dat)
             fmat = fmat.astype(bool)

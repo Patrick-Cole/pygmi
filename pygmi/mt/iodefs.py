@@ -276,7 +276,7 @@ class ExportEDI(ContextModule):
         if 'MT - EDI' in self.indata:
             data = self.indata['MT - EDI']
         else:
-            self.showprocesslog('No EDI data')
+            self.showlog('No EDI data')
             self.parent.process_is_active(False)
             return False
 
@@ -292,13 +292,13 @@ class ExportEDI(ContextModule):
 
         ext = self.ofile[-3:]
 
-        self.showprocesslog('Export Data Busy...')
+        self.showlog('Export Data Busy...')
 
         # Pop up save dialog box
         if ext == 'edi':
             self.export_edi(data)
 
-        self.showprocesslog('Export EDI Finished!')
+        self.showlog('Export EDI Finished!')
         self.parent.process_is_active(False)
         return True
 

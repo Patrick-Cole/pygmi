@@ -145,7 +145,7 @@ class ImportCG5(BasicModule):
                 return False
 
         if self.line.currentText() == self.station.currentText():
-            self.showprocesslog('Your line column cannot be the same as your '
+            self.showlog('Your line column cannot be the same as your '
                                 'station column')
             return False
 
@@ -156,7 +156,7 @@ class ImportCG5(BasicModule):
                self.zchan.currentText()]
 
         if len(set(tmp)) != len(tmp):
-            self.showprocesslog('Unable to import, two of your GPS file '
+            self.showlog('Unable to import, two of your GPS file '
                                 'columns are the same. Make sure you have a '
                                 'line column in your GPS file, and that you '
                                 'did not specify the same column twice.')
@@ -180,7 +180,7 @@ class ImportCG5(BasicModule):
             try:
                 self.df_gps.latitude = pd.to_numeric(self.df_gps.latitude)
             except ValueError:
-                self.showprocesslog('You have characters in your latitude'
+                self.showlog('You have characters in your latitude'
                                     ' string which could not be converted.')
                 return False
 
@@ -192,7 +192,7 @@ class ImportCG5(BasicModule):
             try:
                 self.df_gps.longitude = pd.to_numeric(self.df_gps.longitude)
             except ValueError:
-                self.showprocesslog('You have characters in your longitude'
+                self.showlog('You have characters in your longitude'
                                     ' string which could not be converted.')
                 return False
 
@@ -233,8 +233,8 @@ class ImportCG5(BasicModule):
         dlist = dlist[dlist.STATION < float(self.basethres.text())]
 
         if dlist.size > 0:
-            self.showprocesslog('Warning, the following are duplicated:')
-            self.showprocesslog(dlist.to_string(index=False))
+            self.showlog('Warning, the following are duplicated:')
+            self.showlog(dlist.to_string(index=False))
 
         return True
 

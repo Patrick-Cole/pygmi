@@ -38,7 +38,7 @@ from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 
 
-def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
+def minc(x, y, z, dxy, showlog=print, extent=None, bdist=None,
          maxiters=100):
     """
     Minimum Curvature Gridding.
@@ -53,7 +53,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         1D array with z coordinates.
     dxy : float
         Cell x and y dimension.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     extent : list, optional
         Extent defined as (left, right, bottom, top). The default is None.
@@ -85,7 +85,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
 
     extent = np.array(extent)
 
-    showprocesslog('Setting up grid...')
+    showlog('Setting up grid...')
 
     # Add buffer
     extent[0] -= dxy*3
@@ -108,7 +108,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
 
     points = np.transpose([x.flatten(), y.flatten()])
 
-    showprocesslog('Creating nearest neighbour starting value...')
+    showlog('Creating nearest neighbour starting value...')
 
     u = griddata(points, z, (xxx, yyy), method='nearest')
     u = u[::-1]
@@ -120,7 +120,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
     y2 = y.flatten()
     z2 = z.flatten()
 
-    showprocesslog('Organizing input data...')
+    showlog('Organizing input data...')
 
     crds, blist = morg(x2, y2, z2, extent, dxy, rows, cols)
 
@@ -145,7 +145,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         coords[iint, jint].append([bmax, r, zval, b])
 
     if excludedpnts > 0:
-        showprocesslog(str(excludedpnts)+' point(s) excluded.')
+        showlog(str(excludedpnts)+' point(s) excluded.')
     # Choose only the closest coordinate per cell
     ijxyz = []
     for key in coords:
@@ -161,7 +161,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
             _, _, zval, b = coords[key][0]
             ijxyz.append([iint, jint, zval, b])
 
-    showprocesslog('Creating minimum curvature grid...')
+    showlog('Creating minimum curvature grid...')
     uold = np.zeros((rows, cols))
 
     # mean error per cell
@@ -192,13 +192,13 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         errdiff1 = np.abs(u-uold)
         errstd = errdiff1.std()*2.5
         errdiff = np.sum(errdiff1)/(rows*cols)
-        showprocesslog(f'Solution Error: {errdiff:.5f}')
+        showlog(f'Solution Error: {errdiff:.5f}')
 
         if errdiff > errold:
             u = uold
-            showprocesslog('Solution diverging. Stopping...')
+            showlog('Solution diverging. Stopping...')
             break
-    showprocesslog('Finished!')
+    showlog('Finished!')
 
     u = np.ma.array(u)
 

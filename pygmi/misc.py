@@ -115,7 +115,7 @@ class BasicModule(QtWidgets.QDialog):
         reference to a progress bar iterator.
     pbar : progressbar
         reference to a progress bar.
-    showprocesslog: stdout or alternative
+    showlog: stdout or alternative
         reference to a way to view messages, normally stdout or a Qt text box.
     """
 
@@ -123,12 +123,12 @@ class BasicModule(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.stdout_redirect = sys.stdout
-            self.showprocesslog = print
+            self.showlog = print
             self.pbar = ProgressBarText()
             self.process_is_active = lambda *args, **kwargs: None
         else:
-            self.stdout_redirect = EmittingStream(parent.showprocesslog)
-            self.showprocesslog = parent.showprocesslog
+            self.stdout_redirect = EmittingStream(parent.showlog)
+            self.showlog = parent.showlog
             self.pbar = parent.pbar
             self.process_is_active = parent.process_is_active
 
@@ -220,7 +220,7 @@ class ContextModule(QtWidgets.QDialog):
         reference to a progress bar iterator.
     pbar : progressbar
         reference to a progress bar.
-    showprocesslog: stdout or alternative
+    showlog: stdout or alternative
         reference to a way to view messages, normally stdout or a Qt text box.
     """
 
@@ -228,12 +228,12 @@ class ContextModule(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.stdout_redirect = sys.stdout
-            self.showprocesslog = print
+            self.showlog = print
             self.pbar = ProgressBarText()
             self.process_is_active = lambda *args, **kwargs: None
         else:
-            self.stdout_redirect = EmittingStream(parent.showprocesslog)
-            self.showprocesslog = parent.showprocesslog
+            self.stdout_redirect = EmittingStream(parent.showlog)
+            self.showlog = parent.showlog
             self.pbar = parent.pbar
             self.process_is_active = parent.process_is_active
 

@@ -217,13 +217,13 @@ class Cluster(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different '
+            self.showlog('Error: Your input datasets have different '
                                 'sizes. Merge the data first')
             return False
 
@@ -329,7 +329,7 @@ class Cluster(BasicModule):
 
         no_clust = range(self.min_cluster, self.max_cluster+1)
 
-        self.showprocesslog('Cluster analysis started')
+        self.showlog('Cluster analysis started')
 
         # Section to deal with different bands having different null values.
         masktmp = ~data[0].data.mask
@@ -346,16 +346,16 @@ class Cluster(BasicModule):
         X = np.transpose(X)
 
         if self.radiobutton_sscale.isChecked():
-            self.showprocesslog('Applying standard scaling')
+            self.showlog('Applying standard scaling')
             X = skp.StandardScaler().fit_transform(X)
         elif self.radiobutton_rscale.isChecked():
-            self.showprocesslog('Applying robust scaling')
+            self.showlog('Applying robust scaling')
             X = skp.RobustScaler().fit_transform(X)
 
         dat_out = []
         for i in self.piter(no_clust):
             if self.cltype != 'DBSCAN':
-                self.showprocesslog('Number of Clusters:'+str(i))
+                self.showlog('Number of Clusters:'+str(i))
             elif i > no_clust[0]:
                 continue
 
@@ -379,12 +379,12 @@ class Cluster(BasicModule):
                                  branching_factor=self.branchfac).fit(X)
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
-                self.showprocesslog('Could not find '+str(i)+' clusters. '
+                self.showlog('Could not find '+str(i)+' clusters. '
                                     'Please change settings.')
 
                 return False
             if cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
-                self.showprocesslog('Could not find any clusters. '
+                self.showlog('Could not find any clusters. '
                                     'Please change settings.')
 
                 return False
@@ -433,7 +433,7 @@ class Cluster(BasicModule):
             i.set_transform(transform=data[0].transform)
             i.crs = data[0].crs
 
-        self.showprocesslog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
+        self.showlog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 
         for i in dat_out:
             i.data += 1

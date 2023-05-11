@@ -422,7 +422,7 @@ class PlotVRCetc(GraphWindow):
             items += ['Xie-Beni Index']
 
         if len(items) == 0:
-            self.showprocesslog('Your dataset does not qualify')
+            self.showlog('Your dataset does not qualify')
             return
 
         self.combobox1.addItems(items)

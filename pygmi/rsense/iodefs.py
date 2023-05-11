@@ -242,7 +242,7 @@ class ImportData(BasicModule):
 
         os.chdir(os.path.dirname(self.ifile))
 
-        dat = get_data(self.ifile, self.piter, self.showprocesslog, tnames)
+        dat = get_data(self.ifile, self.piter, self.showlog, tnames)
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -272,7 +272,7 @@ class ImportData(BasicModule):
         self.sfile.setText(self.ifile)
 
         self.indata['Raster'] = get_data(self.ifile, self.piter,
-                                         self.showprocesslog, metaonly=True)
+                                         self.showlog, metaonly=True)
 
         tmp = []
         for i in self.indata['Raster']:
@@ -464,7 +464,7 @@ class ImportBatch(BasicModule):
         self.tnames = {}
         self.filelist = []
         for ifile in self.piter(allfiles):
-            dat = get_data(ifile, showprocesslog=self.showprocesslog,
+            dat = get_data(ifile, showlog=self.showlog,
                            metaonly=True)
             if dat is None:
                 continue
@@ -481,7 +481,7 @@ class ImportBatch(BasicModule):
         self.combo_sensor.currentIndexChanged.connect(self.setsensor)
 
         if not self.filelist:
-            self.showprocesslog('No valid files in the directory.')
+            self.showlog('No valid files in the directory.')
         else:
             self.setsensor()
 
@@ -697,7 +697,7 @@ class ImportSentinel5P(BasicModule):
             _ = float(self.lonmax.text())
             _ = float(self.latmax.text())
         except ValueError:
-            self.showprocesslog('Value error - abandoning import')
+            self.showlog('Value error - abandoning import')
             return False
 
         gdf = self.get_5P_data(meta)
@@ -854,7 +854,7 @@ class ImportSentinel5P(BasicModule):
         try:
             thres = int(self.qathres.text())
         except ValueError:
-            self.showprocesslog('Threshold text not an integer')
+            self.showlog('Threshold text not an integer')
             return None
 
         with rasterio.open(meta['latitude']) as dataset:
@@ -873,7 +873,7 @@ class ImportSentinel5P(BasicModule):
         del meta['longitude']
 
         if lats is None:
-            self.showprocesslog('No Latitudes in dataset')
+            self.showlog('No Latitudes in dataset')
             return None
 
         lats = lats.flatten()
@@ -933,7 +933,7 @@ class ImportSentinel5P(BasicModule):
             gdf = gdf.clip(shp)
 
         if gdf.size == 0:
-            self.showprocesslog(idfile, 'is empty.')
+            self.showlog(idfile, 'is empty.')
             return None
 
         return gdf
@@ -1046,7 +1046,7 @@ class ExportBatch(ContextModule):
         self.process_is_active(True)
 
         if 'RasterFileList' not in self.indata:
-            self.showprocesslog('No raster file list')
+            self.showlog('No raster file list')
             self.process_is_active(False)
             return False
 
@@ -1087,12 +1087,12 @@ class ExportBatch(ContextModule):
             otype = None
             tnames = None
 
-        self.showprocesslog('Export Data Busy...')
+        self.showlog('Export Data Busy...')
 
         export_batch(self.indata, odir, filt, tnames, piter=self.piter,
-                     showprocesslog=self.showprocesslog, otype=otype)
+                     showlog=self.showlog, otype=otype)
 
-        self.showprocesslog('Export Data Finished!')
+        self.showlog('Export Data Finished!')
         self.process_is_active(False)
         return True
 
@@ -1120,7 +1120,7 @@ class ExportBatch(ContextModule):
         self.odir.setText(odir)
 
 
-def calculate_toa(dat, showprocesslog=print):
+def calculate_toa(dat, showlog=print):
     """
     Top of atmosphere correction.
 
@@ -1130,7 +1130,7 @@ def calculate_toa(dat, showprocesslog=print):
     ----------
     dat : Data
         PyGMI raster dataset
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
@@ -1138,7 +1138,7 @@ def calculate_toa(dat, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
-    showprocesslog('Calculating top of atmosphere...')
+    showlog('Calculating top of atmosphere...')
 
     datanew = {}
     for datai in dat:
@@ -1210,7 +1210,7 @@ def etree_to_dict(t):
 
 
 def export_batch(indata, odir, filt, tnames=None, piter=None,
-                 showprocesslog=print, otype=None):
+                 showlog=print, otype=None):
     """
     Export a batch of files directly from satellite format to disk.
 
@@ -1226,7 +1226,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         list of band names to import, in order. the default is None.
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
@@ -1235,7 +1235,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     """
     if 'RasterFileList' not in indata:
-        showprocesslog('You need a raster file list')
+        showlog('You need a raster file list')
         return
 
     ifiles = indata['RasterFileList']
@@ -1261,7 +1261,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     for ifile in ifiles:
         dat = get_from_rastermeta(ifile, piter=piter,
-                                  showprocesslog=showprocesslog,
+                                  showlog=showlog,
                                   tnames=tnames)
 
         ofile = set_export_filename(dat, odir, otype)
@@ -1276,7 +1276,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         else:
             odat = dat
 
-        showprocesslog('Exporting '+os.path.basename(ofile))
+        showlog('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
 
 
@@ -1397,7 +1397,7 @@ def get_sentinel_list(flist):
     return flist2
 
 
-def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_data(ifile, piter=None, showlog=print, tnames=None,
              metaonly=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
@@ -1410,7 +1410,7 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -1426,33 +1426,33 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
     bfile = os.path.basename(ifile)
     ext = os.path.splitext(ifile)[1].lower()
 
-    showprocesslog('Importing', bfile)
+    showlog('Importing', bfile)
     dtree = {}
     if '.xml' in bfile.lower():
         dtree = etree_to_dict(ET.parse(ifile).getroot())
 
     if 'AST_' in bfile and ext == '.hdf':
-        dat = get_aster_hdf(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_aster_hdf(ifile, piter, showlog, tnames, metaonly)
     elif 'AST_' in bfile and ext == '.zip':
-        dat = get_aster_zip(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_aster_zip(ifile, piter, showlog, tnames, metaonly)
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
-        dat = get_landsat(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_landsat(ifile, piter, showlog, tnames, metaonly)
     elif ((ext == '.xml' and '.SAFE' in ifile) or
           ('S2A_' in bfile and ext == '.zip') or
           ('S2B_' in bfile and ext == '.zip')):
-        dat = get_sentinel2(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_sentinel2(ifile, piter, showlog, tnames, metaonly)
     elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
           '.006.' in bfile):
-        dat = get_modisv6(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_modisv6(ifile, piter, showlog, tnames, metaonly)
     elif 'AG1' in bfile and ext == 'h5':
-        dat = get_aster_ged(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_aster_ged(ifile, piter, showlog, tnames, metaonly)
     elif ext == '.zip' and 'EO1H' in bfile:
-        dat = get_hyperion(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_hyperion(ifile, piter, showlog, tnames, metaonly)
     elif ext == '.xml' and 'isd' in dtree:
-        dat = get_worldview(ifile, piter, showprocesslog, tnames, metaonly)
+        dat = get_worldview(ifile, piter, showlog, tnames, metaonly)
     else:
-        dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
+        dat = get_raster(ifile, piter=piter, showlog=showlog,
                          tnames=tnames, metaonly=metaonly)
 
     if dat is not None:
@@ -1469,7 +1469,7 @@ def get_data(ifile, piter=None, showprocesslog=print, tnames=None,
     return dat
 
 
-def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
+def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
     """
     Import data from a RasterMeta item.
 
@@ -1479,7 +1479,7 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
         List of RasterMeta or single item.
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -1494,7 +1494,7 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
         if tnames is None:
             tnames = ldata.tnames
         dat = get_data(ldata.filename, piter=piter,
-                       showprocesslog=showprocesslog, tnames=tnames)
+                       showlog=showlog, tnames=tnames)
 
         if ldata.to_sutm is True:
             dat = utm_to_south(dat)
@@ -1503,11 +1503,11 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
         for jfile in ldata:
             if tnames is None:
                 tmp = get_data(jfile.filename, piter=piter,
-                               showprocesslog=showprocesslog,
+                               showlog=showlog,
                                tnames=jfile.tnames)
             else:
                 tmp = get_data(jfile.filename, piter=piter,
-                               showprocesslog=showprocesslog,
+                               showlog=showlog,
                                tnames=tnames)
 
             if tmp is not None:
@@ -1519,7 +1519,7 @@ def get_from_rastermeta(ldata, piter=None, showprocesslog=print, tnames=None):
     return dat
 
 
-def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
                 metaonly=False):
     """
     Get MODIS v006 data.
@@ -1530,7 +1530,7 @@ def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -1633,11 +1633,11 @@ def get_modisv6(ifile, piter=None, showprocesslog=print, tnames=None,
                           'wetland=3, urban=2, unclassifed=1')
         dat[-1].nodata = 0
 
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 
-def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
+def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
                 metaonly=False):
     """
     Get Landsat Data.
@@ -1648,7 +1648,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -1706,16 +1706,16 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
             tarnames = tar.getnames()
             ifile = next((i for i in tarnames if '_MTL.txt' in i), None)
             if ifile is None:
-                showprocesslog('Could not find MTL.txt file in tar archive')
+                showlog('Could not find MTL.txt file in tar archive')
                 return None
-            showprocesslog('Extracting tar...')
+            showlog('Extracting tar...')
 
             tar.extractall(idir)
             ifile = os.path.join(idir, ifile)
     elif '_MTL.txt' in ifilet:
         ifile = ifilet
     else:
-        showprocesslog('Input needs to be tar or _MTL.txt for Landsat. '
+        showlog('Input needs to be tar or _MTL.txt for Landsat. '
                        'Trying regular import')
         return None
 
@@ -1728,7 +1728,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
             lstband = 'B6'
         satbands['LST'] = satbands[lstband]
 
-    showprocesslog('Importing Landsat data...')
+    showlog('Importing Landsat data...')
 
     bnamelen = len(ifile[:-7])
     nval = 0
@@ -1745,11 +1745,11 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
         if tnames is not None and fext.replace(',', ' ') not in tnames:
             continue
 
-        showprocesslog('Importing Band '+fext)
+        showlog('Importing Band '+fext)
         dataset = rasterio.open(ifile2)
 
         if dataset is None:
-            showprocesslog('Problem with band '+fext)
+            showlog('Problem with band '+fext)
             continue
 
         dat.append(Data())
@@ -1775,11 +1775,11 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
 
         if 'L2SP' in ifile2:
             if fext == 'LST':
-                showprocesslog('Converting band '+lstband+' to Kelvin. '
+                showlog('Converting band '+lstband+' to Kelvin. '
                                'Band renamed as LST')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
             elif fext in satbands:
-                showprocesslog('Converting band '+fext+' to reflectance.')
+                showlog('Converting band '+fext+' to reflectance.')
                 dat[-1].data = dat[-1].data*0.0000275 - 0.2
             elif fext in ['ST_CDIST', 'ST_QA']:
                 dat[-1].data = dat[-1].data*0.01
@@ -1809,14 +1809,14 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, tnames=None,
         dat = None
 
     if '.tar' in ifilet:
-        showprocesslog('Cleaning Extracted tar files...')
+        showlog('Cleaning Extracted tar files...')
         for tfile in piter(tarnames):
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 
-def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
+def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get WorldView Data.
@@ -1827,7 +1827,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -1845,7 +1845,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
     dtree = etree_to_dict(ET.parse(ifilet).getroot())
 
     if 'isd' not in dtree:
-        showprocesslog('Wrong xml file. Please choose the xml file in the '
+        showlog('Wrong xml file. Please choose the xml file in the '
                        'PAN or MUL directory')
         return None
 
@@ -1915,7 +1915,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
 
     idir = os.path.dirname(ifilet)
 
-    showprocesslog('Importing WorldView tiles...')
+    showlog('Importing WorldView tiles...')
 
     rmax = int(dtree['isd']['IMD']['NUMROWS'])
     cmax = int(dtree['isd']['IMD']['NUMCOLUMNS'])
@@ -1958,7 +1958,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
         cmin = int(tile['ULCOLOFFSET'])
         cmax = int(tile['LRCOLOFFSET'])
 
-        showprocesslog('Importing '+tile['FILENAME'])
+        showlog('Importing '+tile['FILENAME'])
         dataset = rasterio.open(ifile)
 
         for i in piter(dataset.indexes):
@@ -1970,7 +1970,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
             dat[i-1].filename = ifile
         dataset.close()
 
-    showprocesslog('Calculating radiance and reflectance...')
+    showlog('Calculating radiance and reflectance...')
     indx = -1
     for i in piter(dat):
         if metaonly is True:
@@ -2024,11 +2024,11 @@ def get_worldview(ifilet, piter=None, showprocesslog=print, tnames=None,
     if not dat:
         dat = None
 
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 
-def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
                  metaonly=False):
     """
     Get Hyperion Data.
@@ -2039,7 +2039,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2120,7 +2120,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
         10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077,
         10.4077, 10.4077]
 
-    showprocesslog('Extracting zip...')
+    showlog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
     with zipfile.ZipFile(ifile) as zfile:
@@ -2149,7 +2149,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
         scale_vnir = float(scale_vnir.split(' = ')[-1])
         scale_swir = float(scale_swir.split(' = ')[-1])
 
-    showprocesslog('Importing Hyperion data...')
+    showlog('Importing Hyperion data...')
 
     nval = 0
     dat = []
@@ -2170,11 +2170,11 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
         if tnames is not None and bname not in tnames:
             continue
 
-        showprocesslog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
+        showlog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
         dataset = rasterio.open(os.path.join(idir, ifile2))
 
         if dataset is None:
-            showprocesslog(f'Problem with band {bandno}')
+            showlog(f'Problem with band {bandno}')
             continue
 
         dat.append(Data())
@@ -2223,15 +2223,15 @@ def get_hyperion(ifile, piter=None, showprocesslog=print, tnames=None,
     for i in dat:
         i.data.mask = maskall
 
-    showprocesslog('Cleaning Extracted zip files...')
+    showlog('Cleaning Extracted zip files...')
     for zfile in zipnames:
         os.remove(os.path.join(idir, zfile))
 
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 
-def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_sentinel1(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get Sentinel-1 Data.
@@ -2242,7 +2242,7 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2276,9 +2276,9 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
         bname = f'{tmp[0]}_{tmp[1]}_{tmp[-2]}_{tmp[-1]}'
 
         dataset1 = rasterio.open(bfile)
-        showprocesslog('Importing '+bname)
+        showlog('Importing '+bname)
         if dataset1 is None:
-            showprocesslog('Problem with '+ifile)
+            showlog('Problem with '+ifile)
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
@@ -2322,7 +2322,7 @@ def get_sentinel1(ifile, piter=None, showprocesslog=print, tnames=None,
     return dat
 
 
-def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get Sentinel-2 Data.
@@ -2333,7 +2333,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2361,9 +2361,9 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
     dat = []
     for bfile in subdata:
         dataset = rasterio.open(bfile)
-        showprocesslog('Importing '+os.path.basename(bfile))
+        showlog('Importing '+os.path.basename(bfile))
         if dataset is None:
-            showprocesslog('Problem with '+ifile)
+            showlog('Problem with '+ifile)
             continue
 
         for i in piter(dataset.indexes):
@@ -2415,7 +2415,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, tnames=None,
     return dat
 
 
-def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get ASTER zip Data.
@@ -2426,7 +2426,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2469,7 +2469,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
     else:
         return None
 
-    showprocesslog('Extracting zip...')
+    showlog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
     with zipfile.ZipFile(ifile) as zfile:
@@ -2488,7 +2488,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
 
         dataset1 = rasterio.open(os.path.join(idir, zfile))
         if dataset1 is None:
-            showprocesslog('Problem with '+zfile)
+            showlog('Problem with '+zfile)
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
@@ -2520,14 +2520,14 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print, tnames=None,
         dataset.close()
         dataset1.close()
 
-    showprocesslog('Cleaning Extracted zip files...')
+    showlog('Cleaning Extracted zip files...')
     for zfile in zipnames:
         os.remove(os.path.join(idir, zfile))
 
     return dat
 
 
-def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get ASTER hdf Data.
@@ -2538,7 +2538,7 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2690,11 +2690,11 @@ def get_aster_hdf(ifile, piter=None, showprocesslog=print, tnames=None,
     elif ptype == 'L1T' and calctoa is True:
         dat = calculate_toa(dat)
 
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 
-def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
+def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get ASTER GED data.
@@ -2705,7 +2705,7 @@ def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     tnames : list, optional
         list of band names to import, in order. The default is None.
@@ -2813,7 +2813,7 @@ def get_aster_ged(ifile, piter=None, showprocesslog=print, tnames=None,
         for i in dat:
             i.set_transform(xdim, xmin, ydim, ymax)
 
-    showprocesslog('Import complete')
+    showlog('Import complete')
     return dat
 
 

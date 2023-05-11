@@ -285,7 +285,7 @@ class BIRRP(BasicModule):
 
         ilev = data.pop(0)
         if int(ilev) != 0:
-            self.showprocesslog('not supported')
+            self.showlog('not supported')
             return
         nout = int(data.pop(0))
         ninp = int(data.pop(0))
@@ -301,7 +301,7 @@ class BIRRP(BasicModule):
         if nout == 3:
             nz = int(data.pop(0))
         elif nout == 1:
-            self.showprocesslog('not supported')
+            self.showlog('not supported')
             return
         c2threshe1 = ''
         if int(nout) == 3 and int(nz) == 0:
@@ -313,13 +313,13 @@ class BIRRP(BasicModule):
         imode = int(data.pop(0))
         jmode = int(data.pop(0))
         if imode != 0:
-            self.showprocesslog('not supported')
+            self.showlog('not supported')
             return
         nread = ''
         if jmode == 0:
             nread = data.pop(0)
         else:
-            self.showprocesslog('not supported')
+            self.showlog('not supported')
             return
 
         nfil = {}

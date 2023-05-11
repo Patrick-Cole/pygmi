@@ -262,7 +262,7 @@ class TiltDepth(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         self.indata['Raster'] = lstack(self.indata['Raster'])
@@ -421,7 +421,7 @@ class TiltDepth(BasicModule):
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
         tmp = quickgrid(gx0, gy0, dist, data.xdim,
-                        showprocesslog=self.showprocesslog)
+                        showlog=self.showlog)
 
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data

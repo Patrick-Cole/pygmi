@@ -45,9 +45,9 @@ class MainWidget(QtWidgets.QMainWindow):
         super().__init__(parent)
 
         if parent is None:
-            self.showprocesslog = print
+            self.showlog = print
         else:
-            self.showprocesslog = parent.showprocesslog
+            self.showlog = parent.showlog
 
         self.indata = {'tmp': True}
         self.inraster = {}

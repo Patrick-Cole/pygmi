@@ -200,12 +200,12 @@ class IGRF(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
+            self.showlog('No Raster Data.')
             return False
 
         for i in self.indata['Raster']:
             if i.crs is None:
-                self.showprocesslog(f'{i.dataid} has no projection. '
+                self.showlog(f'{i.dataid} has no projection. '
                                     'Please assign one.')
                 return False
 
@@ -238,7 +238,7 @@ class IGRF(BasicModule):
                 dxy = min(i.xdim, i.ydim)
 
         data = dp.lstack(data, dxy=dxy, piter=self.piter,
-                         pprint=self.showprocesslog)
+                         showlog=self.showlog)
 
         for i in data:
             if i.dataid == self.combobox_mag.currentText():
@@ -254,7 +254,7 @@ class IGRF(BasicModule):
         odata, fmean, imean, dmean = calc_igrf(data, sdate, alt=alt, wkt=wkt,
                                                igrfonly=False,
                                                piter=self.piter,
-                                               pprint=self.showprocesslog)
+                                               showlog=self.showlog)
         bname = 'Magnetic Data: IGRF Corrected '
         bname = bname + f'F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}'
 
@@ -307,7 +307,7 @@ class IGRF(BasicModule):
 
 
 def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
-              pprint=print):
+              showlog=print):
     """
     Calculate IGRF.
 
@@ -325,7 +325,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         Output IGRF only. The default is True.
     piter : iter, optional
         Progress bar iterator. The default is iter.
-    pprint : print, optional
+    showlog : print, optional
         Print routine. The default is print.
 
     Returns
@@ -397,9 +397,9 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     igdgc = 1
 
     if maxyr < sdate < maxyr+1:
-        pprint('Warning: The date ' + str(sdate) + ' is out of range,')
-        pprint('but still within one year of model expiration date.')
-        pprint('An updated model file is available before 1.1.' + str(maxyr))
+        showlog('Warning: The date ' + str(sdate) + ' is out of range,')
+        showlog('but still within one year of model expiration date.')
+        showlog('An updated model file is available before 1.1.' + str(maxyr))
 
     if max2[modelI] == 0:
         gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
@@ -458,11 +458,11 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     imean = igrf_I.mean()
     dmean = igrf_D.mean()
 
-    pprint('Mean Values in Calculation')
-    pprint('=============================')
-    pprint(f'Total Intensity: {fmean:.2f}')
-    pprint(f'Inclination: {imean:.2f}')
-    pprint(f'Declination: {dmean:.2f}')
+    showlog('Mean Values in Calculation')
+    showlog('=============================')
+    showlog(f'Total Intensity: {fmean:.2f}')
+    showlog(f'Inclination: {imean:.2f}')
+    showlog(f'Declination: {dmean:.2f}')
 
     outdata = []
     outdata.append(copy.deepcopy(data))

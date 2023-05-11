@@ -359,7 +359,7 @@ class EquationEditor(BasicModule):
         elif 'Raster' in self.indata:
             intype = 'Raster'
         else:
-            self.showprocesslog('No raster data.')
+            self.showlog('No raster data.')
             return False
 
         indata = dataprep.lstack(self.indata[intype])

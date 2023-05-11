@@ -197,10 +197,10 @@ class ImportData(BasicModule):
             if not ok:
                 nval = 0.0
             dat = get_raster(self.ifile, nval, piter=self.piter,
-                             showprocesslog=self.showprocesslog)
+                             showlog=self.showlog)
         else:
             dat = get_raster(self.ifile, piter=self.piter,
-                             showprocesslog=self.showprocesslog)
+                             showlog=self.showlog)
 
         if dat is None:
             if self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
@@ -228,7 +228,7 @@ class ImportData(BasicModule):
         self.outdata[output_type] = dat
 
         if dat[0].crs is None:
-            self.showprocesslog('Warning: Your data has no projection. '
+            self.showlog('Warning: Your data has no projection. '
                                 'Please add a projection in the Display/Edit '
                                 'Metadata interface.')
 
@@ -306,7 +306,7 @@ class ImportRGBData(BasicModule):
         os.chdir(os.path.dirname(self.ifile))
 
         dat = get_raster(self.ifile, piter=self.piter,
-                         showprocesslog=self.showprocesslog)
+                         showlog=self.showlog)
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -494,7 +494,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
+def get_raster(ifile, nval=None, piter=None, showlog=print,
                iraster=None, driver=None, bounds=None, dataid=None,
                tnames=None, metaonly=False):
     """
@@ -511,7 +511,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         No data/null value. The default is None.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable, default is None.
-    showprocesslog : function, optional
+    showlog : function, optional
         Routine to show text messages. The default is print.
     iraster : None or tuple
         Incremental raster import, to import a section of a file. The tuple is
@@ -638,7 +638,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         xmin1, ymin1, xmax1, ymax1 = bounds
 
         if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
-            showprocesslog('Warning: No data in polygon.')
+            showlog('Warning: No data in polygon.')
             return None
 
         xmin2 = max(xmin, xmin1)
@@ -671,7 +671,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
-        showprocesslog('Warning: Your data does not have a projection. '
+        showlog('Warning: Your data does not have a projection. '
                        'Assigning local coordinate system.')
         crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
                               'AUTHORITY["EPSG","9001"]],'
@@ -719,20 +719,24 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
                                                                  xsize, ysize))
             # print(dataset.meta['dtype'])
-            if 'uint' in dataset.meta['dtype']:
-                if nval is None or np.isnan(nval):
-                    nval = 0
-                    # showprocesslog(f'Adjusting null value to {nval}')
-                nval = int(nval)
+            if nval is not None and np.isnan(nval):
+                nval = None
 
-            elif 'int' in dataset.meta['dtype']:
-                if nval is None or np.isnan(nval):
-                    nval = 999999
-                    # showprocesslog(f'Adjusting null value to {nval}')
-                nval = int(nval)
-            else:
-                if nval is None or np.isnan(nval):
-                    nval = 1e+20
+            # if 'uint' in dataset.meta['dtype']:
+            #     if nval is None or np.isnan(nval):
+            #         nval = 0
+            #         # showlog(f'Adjusting null value to {nval}')
+            #     nval = int(nval)
+
+            # elif 'int' in dataset.meta['dtype']:
+            #     if nval is None or np.isnan(nval):
+            #         nval = 999999
+            #         # showlog(f'Adjusting null value to {nval}')
+            #     nval = int(nval)
+            # else:
+            if 'int' not in dataset.meta['dtype'] and nval is not None:
+                # if nval is None or np.isnan(nval):
+                #     nval = 1e+20
                 nval = float(nval)
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
                                                            nval):
@@ -740,7 +744,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
                                                            nval):
                     nval = dat[-1].data.max()
-                # showprocesslog(f'Adjusting null value to {nval}')
+                showlog(f'Adjusting null value to {nval}')
 
             if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
@@ -1208,7 +1212,7 @@ class ExportData(BasicModule):
         elif 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
-            self.showprocesslog('No raster data')
+            self.showlog('No raster data')
             self.parent.process_is_active(False)
             return False
 
@@ -1232,7 +1236,7 @@ class ExportData(BasicModule):
             return False
         os.chdir(os.path.dirname(self.ofile))
 
-        self.showprocesslog('Export Data Busy...')
+        self.showlog('Export Data Busy...')
 
         # Pop up save dialog box
         if filt == 'ArcInfo ASCII (*.asc)':
@@ -1268,7 +1272,7 @@ class ExportData(BasicModule):
         if filt == 'ArcGIS BIL (*.bil)':
             export_raster(self.ofile, data, 'EHdr', piter=self.piter)
 
-        self.showprocesslog('Export Data Finished!')
+        self.showlog('Export Data Finished!')
         self.parent.process_is_active(False)
         return True
 
@@ -1287,7 +1291,7 @@ class ExportData(BasicModule):
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output '
+            self.showlog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
 
@@ -1350,7 +1354,7 @@ class ExportData(BasicModule):
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output '
+            self.showlog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
 
@@ -1380,7 +1384,7 @@ class ExportData(BasicModule):
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output '
+            self.showlog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
 
@@ -1424,7 +1428,7 @@ class ExportData(BasicModule):
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output '
+            self.showlog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
 
@@ -1472,7 +1476,7 @@ class ExportData(BasicModule):
 
 
 def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
-                  compression='NONE', bandsort=True, pprint=print,
+                  compression='NONE', bandsort=True, showlog=print,
                   updatestats=True):
     """
     Export to rasterio format.
@@ -1603,7 +1607,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             # try:
             #     out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
             # except MemoryError:
-            #     pprint('Unable to calculate std deviation. Not enough memory')
+            #     showlog('Unable to calculate std deviation. Not enough memory')
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
@@ -1625,14 +1629,14 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                                     WavelengthMax=str(rmeta['WavelengthMax']))
 
     if updatestats is True:
-        dcov = calccov(data, pprint)
+        dcov = calccov(data, showlog)
 
         if xfile is None:
             xfile = tmpfile+'.aux.xml'
         tree = ET.parse(xfile)
         root = tree.getroot()
 
-        pprint('Calculating statistics...')
+        showlog('Calculating statistics...')
         # for child in piter(root):
         for child in piter(root.findall('PAMRasterBand')):
             band = int(child.attrib['band'])-1
@@ -1707,7 +1711,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             myfile.write(envimeta)
 
 
-def calccov(data, showprocesslog=print):
+def calccov(data, showlog=print):
     """
     Calculate covariance from PyGMI Data.
 
@@ -1725,15 +1729,15 @@ def calccov(data, showprocesslog=print):
         Covariances.
 
     """
-    from pygmi.misc import getinfo
+    # from pygmi.misc import getinfo
 
-    showprocesslog('Calculating covariances...')
+    showlog('Calculating covariances...')
 
     mask = data[0].data.mask
     for band in data:
         mask = np.logical_or(mask, band.data.mask)
 
-    getinfo(0)
+    # getinfo(0)
 
     data2 = []
     for band in data:
@@ -1747,7 +1751,7 @@ def calccov(data, showprocesslog=print):
 
     del data2
 
-    getinfo('covariance')
+    # getinfo('covariance')
     return dcov
 
 
@@ -1757,7 +1761,8 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
-    ifile = r"D:\Hope\All_quartz_ENVI.hdr"
+    ifile = r"D:\Hope\3126AA_ESRI_TRUE_COLOUR_geo.tif"
+
     # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile)
 
@@ -1775,9 +1780,6 @@ def _filespeedtest():
     # then deflate pred 3 zlvl 1
 
     # HFA has no xml file.
-
-    for drv in ['ERS']:
-        export_raster(ifile[:-4]+f'_{drv}', dataset, drv)
 
     getinfo('End')
 
