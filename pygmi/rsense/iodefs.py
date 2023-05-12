@@ -1282,7 +1282,8 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
             odat = dat
 
         showlog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
+        export_raster(ofile, odat, ofilt, piter=piter, compression=compression,
+                      showlog=showlog)
 
 
 def get_aster_list(flist):

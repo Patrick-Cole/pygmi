@@ -1248,16 +1248,20 @@ class ExportData(BasicModule):
         if filt == 'Surfer grid (*.grd)':
             self.export_surfer(data)
         if filt == 'ERDAS Imagine (*.img)':
-            export_raster(self.ofile, data, 'HFA', piter=self.piter)
+            export_raster(self.ofile, data, 'HFA', piter=self.piter,
+                          showlog=self.showlog)
         if filt == 'ERMapper (*.ers)':
-            export_raster(self.ofile, data, 'ERS', piter=self.piter)
+            export_raster(self.ofile, data, 'ERS', piter=self.piter,
+                          showlog=self.showlog)
         if filt == 'SAGA binary grid (*.sdat)':
             if len(data) > 1:
                 for i, dat in enumerate(data):
                     file_out = self.get_filename(dat, 'sdat')
-                    export_raster(file_out, [dat], 'SAGA', piter=self.piter)
+                    export_raster(file_out, [dat], 'SAGA', piter=self.piter,
+                                  showlog=self.showlog)
             else:
-                export_raster(self.ofile, data, 'SAGA', piter=self.piter)
+                export_raster(self.ofile, data, 'SAGA', piter=self.piter,
+                              showlog=self.showlog)
         if 'GeoTiff' in filt:
             if 'ZSTD' in filt:
                 compression = 'ZSTD'
@@ -1266,11 +1270,13 @@ class ExportData(BasicModule):
             else:
                 compression = 'NONE'
             export_raster(self.ofile, data, 'GTiff', piter=self.piter,
-                          compression=compression)
+                          compression=compression, showlog=self.showlog)
         if filt == 'ENVI (*.hdr)':
-            export_raster(self.ofile, data, 'ENVI', piter=self.piter)
+            export_raster(self.ofile, data, 'ENVI', piter=self.piter,
+                          showlog=self.showlog)
         if filt == 'ArcGIS BIL (*.bil)':
-            export_raster(self.ofile, data, 'EHdr', piter=self.piter)
+            export_raster(self.ofile, data, 'EHdr', piter=self.piter,
+                          showlog=self.showlog)
 
         self.showlog('Export Data Finished!')
         self.parent.process_is_active(False)

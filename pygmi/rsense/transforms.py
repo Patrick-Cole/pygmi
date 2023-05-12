@@ -265,7 +265,8 @@ class MNF(BasicModule):
                 ofile = set_export_filename(odata, odir, 'mnf')
 
                 self.showlog('Exporting '+os.path.basename(ofile))
-                export_raster(ofile, odata, 'GTiff', piter=self.piter)
+                export_raster(ofile, odata, 'GTiff', piter=self.piter,
+                              showlog=self.showlog)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
@@ -489,7 +490,8 @@ class PCA(BasicModule):
                 ofile = set_export_filename(odata, odir, 'pca')
 
                 self.showlog('Exporting '+os.path.basename(ofile))
-                export_raster(ofile, odata, 'GTiff', piter=self.piter)
+                export_raster(ofile, odata, 'GTiff', piter=self.piter,
+                              showlog=self.showlog)
 
         elif 'RasterFileList' in self.indata and fitlist is True:
             odata, self.ev = pca_calc_fitlist(flist, ncmps, piter=self.piter,
@@ -932,7 +934,8 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         ofile = set_export_filename(odata, odir, 'pca')
 
         showlog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD')
+        export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD',
+                      showlog=showlog)
 
     return odata, ev
 

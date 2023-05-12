@@ -375,7 +375,7 @@ class SatRatios(BasicModule):
 
                 self.showlog('Exporting to '+ofile)
                 export_raster(ofile, datfin, 'GTiff', piter=self.piter,
-                              compression='DEFLATE')
+                              compression='DEFLATE', showlog=self.showlog)
                 self.outdata['Raster'] = datfin
 
         return True

@@ -798,7 +798,8 @@ class ProcFeatures(BasicModule):
                                         '. No data to export.')
                 else:
                     self.showlog('Exporting '+os.path.basename(ofile))
-                    export_raster(ofile, datfin, 'GTiff', piter=self.piter)
+                    export_raster(ofile, datfin, 'GTiff', piter=self.piter,
+                                  showlog=self.showlog)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']

@@ -792,7 +792,8 @@ class DataMerge(BasicModule):
             outdat[-1].metadata = metadata
 
             if self.bands_to_files.isChecked():
-                export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
+                export_raster(ofile, outdat, 'GTiff', compression='ZSTD',
+                              showlog=self.showlog)
 
                 del outdat
                 del mosaic
@@ -3050,7 +3051,7 @@ def _testmerge():
 
         if dat:
             ofile = idir+'.tif'
-            # export_raster(ofile, dat, 'GTiff', compression='ZSTD')
+            # export_raster(ofile, dat, 'GTiff', compression='ZSTD', showlog=self.showlog)
             del dat
 
 
