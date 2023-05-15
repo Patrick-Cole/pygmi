@@ -366,7 +366,7 @@ class SatRatios(BasicModule):
                 datfin.append(rband)
 
             if datfin:
-                ofile = set_export_filename(datfin, odir, 'ratio')
+                ofile = set_export_filename(dat, odir, 'ratio')
                 # if len(datfin) == 1:
                 #     ofile = (ofile.split('.')[0] + '_' +
                 #              datfin[0].dataid.partition(' ')[-1] + '.tif')

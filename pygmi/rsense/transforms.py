@@ -262,7 +262,7 @@ class MNF(BasicModule):
 
                 # ofile = os.path.basename(filename).split('.')[0] + '_mnf.tif'
                 # ofile = os.path.join(odir, ofile)
-                ofile = set_export_filename(odata, odir, 'mnf')
+                ofile = set_export_filename(dat, odir, 'mnf')
 
                 self.showlog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter,
@@ -487,7 +487,7 @@ class PCA(BasicModule):
                 # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
                 # ofile = os.path.join(odir, ofile)
 
-                ofile = set_export_filename(odata, odir, 'pca')
+                ofile = set_export_filename(dat, odir, 'pca')
 
                 self.showlog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter,
@@ -931,7 +931,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         #     ofile = ofile.replace('_07XT_', '_')
         #     ofile = ofile.replace('_07_', '_')
 
-        ofile = set_export_filename(odata, odir, 'pca')
+        ofile = set_export_filename(dat, odir, 'pca')
 
         showlog('Exporting '+os.path.basename(ofile))
         export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD',
@@ -1023,8 +1023,8 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    # tmp2 = PCA()
-    tmp2 = MNF()
+    tmp2 = PCA()
+    # tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 
