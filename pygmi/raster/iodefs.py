@@ -1216,9 +1216,9 @@ class ExportData(BasicModule):
             self.parent.process_is_active(False)
             return False
 
-        ext = ('GeoTiff (*.tif);;'
-               'GeoTiff compressed using DEFLATE (*.tif);;'
+        ext = ('GeoTiff compressed using DEFLATE (*.tif);;'
                'GeoTiff compressed using ZSTD (*.tif);;'
+               'GeoTiff (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
