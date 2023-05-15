@@ -421,8 +421,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.axis('equal')
         elif 'Polygon' in data:
             tmp = []
-            for i in data['Polygon'].geometry:
-                tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
+            for j in data['Polygon'].geometry:
+                if j.type == 'MultiPolygon':
+                    for i in list(j.geoms):
+                        tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
+                elif j.type == 'Polygon':
+                    tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
 
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)

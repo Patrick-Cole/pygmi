@@ -2271,7 +2271,6 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
     data : Data
         PyGMI Dataset
     """
-
     if deepcopy is True:
         data = copy.deepcopy(data)
 
@@ -2285,49 +2284,36 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
 
     gdf = gdf[gdf.geometry != None]
 
-    if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        showlog('You have a MultiPolygon. Only the first overlapping Polygon '
-               'of the MultiPolygon will be used.')
-        poly = gdf['geometry'].iloc[0]
-        tmp = poly.geoms[0]
-
-        dext = list(data[0].bounds)
-        dpoly = box(dext[0], dext[1], dext[2], dext[3])
-
-        for i in list(poly.geoms):
-            if i.overlaps(dpoly):
-                tmp = i
-                break
-
-        gdf.geometry.iloc[0] = tmp
-
-    if gdf.geom_type.iloc[0] != 'Polygon':
+    if 'Polygon' not in gdf.geom_type.iloc[0]:
         showlog('You need a polygon in that shape file')
         return None
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
-        poly = gdf['geometry'].iloc[0]
+        # poly = gdf['geometry'].iloc[0]
         dext = idata.bounds
-        lext = poly.bounds
+        lext = gdf['geometry'].total_bounds
 
         if ((dext[0] > lext[2]) or (dext[2] < lext[0])
                 or (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
             showlog('The shapefile is not in the same area as the raster '
-                   'dataset. Please check its coordinates and make sure its '
-                   'projection is the same as the raster dataset')
+                    'dataset. Please check its coordinates and make sure its '
+                    'projection is the same as the raster dataset')
             return None
 
         # This section converts PolygonZ to Polygon, and takes first polygon.
-        coords = gdf['geometry'].loc[0].exterior.coords
-        coords = [Polygon([[p[0], p[1]] for p in coords])]
+        # coords = gdf['geometry'].loc[0].exterior.coords
+        # coords = [Polygon([[p[0], p[1]] for p in coords])]
+        coords = gdf['geometry']
 
         dat, trans = riomask(idata.to_mem(), coords, crop=True)
 
         idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
 
         idata.set_transform(transform=trans)
+
+    data = trim_raster(data)
 
     return data
 
@@ -3090,15 +3076,11 @@ def _testcut():
     from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
-    sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\NRFproj\Mining-areas.shp"
-    ifile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2016mosaic.tif"
-    ofile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2016mines.tif"
+    sfile = r"D:\WC\Provinces_utm34.shp"
+    ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
+    ofile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack_cut.tif"
 
     dat = get_raster(ifile)
-
-    for i in dat:
-        i.data = i.data.astype(np.float32)
-
 
     dat = cut_raster(dat, sfile, deepcopy=False)
 
@@ -3109,7 +3091,7 @@ def _testcut():
     # DM.ifile = sfile
     # DM.settings(nodialog=True)
 
-    export_raster(ofile, dat, compression='ZSTD')
+    export_raster(ofile, dat, compression='DEFLATE')
 
     # plt.figure(dpi=150)
     # plt.imshow(DM.indata['Raster'][0].data,
@@ -3373,4 +3355,4 @@ def _teststd():
 
 
 if __name__ == "__main__":
-    _testmerge()
+    _testcut()
