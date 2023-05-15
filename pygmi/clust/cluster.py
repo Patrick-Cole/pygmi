@@ -542,8 +542,6 @@ def _test_marinda():
     plt.colorbar()
     plt.show()
 
-    breakpoint()
-
 
 def _test_marinda2():
     import sys
@@ -593,8 +591,6 @@ def _test_marinda2():
     plt.imshow(colormap)
     plt.colorbar()
     plt.show()
-
-    breakpoint()
 
 
 if __name__ == "__main__":

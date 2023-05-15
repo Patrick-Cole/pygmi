@@ -69,7 +69,7 @@ class ImportLineData(BasicModule):
                                            'importpointdata')
         label_xchan = QtWidgets.QLabel('X Channel:')
         label_ychan = QtWidgets.QLabel('Y Channel:')
-        label_nodata = QtWidgets.QLabel('Null Value:')
+        label_nodata = QtWidgets.QLabel('Nodata Value:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -170,7 +170,7 @@ class ImportLineData(BasicModule):
         try:
             nodata = float(self.nodata.text())
         except ValueError:
-            self.showlog('Null Value error - abandoning import')
+            self.showlog('Nodata Value error - abandoning import')
             return False
 
         xcol = self.xchan.currentText()

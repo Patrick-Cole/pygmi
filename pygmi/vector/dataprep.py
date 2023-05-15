@@ -891,8 +891,6 @@ def _testfn():
     DR.indata = IO.outdata
     DR.settings()
 
-    breakpoint()
-
 
 def _testfn_pointcut():
     """Test routine."""
@@ -913,9 +911,6 @@ def _testfn_pointcut():
     DR.indata = IO.outdata
     DR.ifile = sfile
     DR.settings(True)
-
-    breakpoint()
-
 
 
 if __name__ == "__main__":

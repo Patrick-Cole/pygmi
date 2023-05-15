@@ -508,7 +508,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
     ifile : str
         filename to import
     nval : float, optional
-        No data/null value. The default is None.
+        Nodata/null value. The default is None.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable, default is None.
     showlog : function, optional
@@ -744,7 +744,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
                                                            nval):
                     nval = dat[-1].data.max()
-                showlog(f'Adjusting null value to {nval}')
+                showlog(f'{bandid}: Adjusting nodata value to {nval}')
 
             if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
@@ -1129,12 +1129,8 @@ def get_geosoft(hfile):
         #     cbs = np.fromfile(f, dtype=np.int32, count=nb)
 
         #     for i in range(nb):
-        #         # breakpoint()
         #         blk = f.read(cbs[i])
-        #         # breakpoint()
         #         blk2 = lzrw1.decompress_chunk(blk)
-
-        #         breakpoint()
 
         else:
             return None
