@@ -41,7 +41,7 @@ from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
 from rasterio.mask import mask as riomask
 import geopandas as gpd
-from shapely.geometry import LineString, Polygon, box
+from shapely.geometry import LineString
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
@@ -241,7 +241,7 @@ class DataLayerStack(BasicModule):
 
             ifiles = self.indata['RasterFileList']
             self.showlog('Warning: Layer stacking a file list assumes '
-                                'all datasets overlap in the same area')
+                         'all datasets overlap in the same area')
             self.indata['Raster'] = []
             for ifile in ifiles:
                 self.showlog('Processing '+os.path.basename(ifile))
@@ -647,7 +647,7 @@ class DataMerge(BasicModule):
         for i in indata:
             if i.crs is None:
                 self.showlog(f'{i.dataid} has no projection. '
-                                    'Please assign one.')
+                             'Please assign one.')
                 return False
 
             wkt.append(i.crs.to_wkt())
@@ -658,7 +658,7 @@ class DataMerge(BasicModule):
                                       return_counts=True)
         if len(wkt) > 1:
             self.showlog('Error: Mismatched input projections. '
-                                'Selecting most common projection')
+                         'Selecting most common projection')
 
             crs = crs[iwkt[numwkt == numwkt.max()][0]]
         else:
@@ -850,7 +850,7 @@ class DataMerge(BasicModule):
             with rasterio.open(ifile) as dataset:
                 if dataset.crs is None:
                     self.showlog(f'{ifile} has no projection. '
-                                        'Please assign one.')
+                                 'Please assign one.')
                     return False
                 wkt.append(dataset.crs.wkt)
                 crs = dataset.crs
@@ -863,10 +863,9 @@ class DataMerge(BasicModule):
 
         nodata = list(set(nodata))
         if len(nodata) > 1:
-            self.showlog('Error: Mismatched nodata values. '
-                                'Try using merge by band labels merge option. '
-                                'Please confirm bands to be merged have the '
-                                'same label.')
+            self.showlog('Error: Mismatched nodata values. Try using merge '
+                         'by band labels merge option. Please confirm bands '
+                         'to be merged have the same label.')
             return False
 
         # Get band names and nodata
@@ -998,7 +997,7 @@ class DataReproj(BasicModule):
 
         if self.indata['Raster'][0].crs is None:
             self.showlog('Your input data has no projection. '
-                                'Please assign one in the metadata summary.')
+                         'Please assign one in the metadata summary.')
             return False
 
         if self.orig_wkt is None:
@@ -1101,9 +1100,8 @@ class GetProf(BasicModule):
             gdf = gpd.read_file(self.ifile)
         except:
             self.showlog('There was a problem importing the shapefile. '
-                                'Please make sure you have at all the '
-                                'individual files which make up the '
-                                'shapefile.')
+                         'Please make sure you have at all the '
+                         'individual files which make up the shapefile.')
             return None
 
         gdf = gdf[gdf.geometry != None]
@@ -2278,8 +2276,8 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
         gdf = gpd.read_file(ifile)
     except:
         showlog('There was a problem importing the shapefile. Please make '
-               'sure you have at all the individual files which make up '
-               'the shapefile.')
+                'sure you have at all the individual files which make up '
+                'the shapefile.')
         return None
 
     gdf = gdf[gdf.geometry != None]
@@ -2526,7 +2524,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
     if cols == 0 or rows == 0:
         showlog('Your rows or cols are zero. '
-               'Your input projection may be wrong')
+                'Your input projection may be wrong')
         return None
 
     dat2 = []
@@ -2539,7 +2537,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
         if data.crs is None:
             showlog(f'{data.dataid} has no defined projection. '
-                   'Assigning local.')
+                    'Assigning local.')
 
             data.crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
                                        'AUTHORITY["EPSG","9001"]],'
@@ -2659,84 +2657,6 @@ def trim_raster(olddata):
         data.set_transform(data.xdim, xmin, data.ydim, ymax)
 
     return olddata
-
-
-def cut_raster_basic(data, ifile, showlog=print):
-    """Cuts a raster dataset.
-
-    Cut a raster dataset using a shapefile.
-
-    Parameters
-    ----------
-    data : Data
-        PyGMI Dataset
-    ifile : str
-        shapefile used to cut data
-    showlog : function, optional
-        Function for printing text. The default is print.
-
-    Returns
-    -------
-    data : Data
-        PyGMI Dataset
-    """
-    data = copy.deepcopy(data)
-
-    try:
-        gdf = gpd.read_file(ifile)
-    except:
-        showlog('There was a problem importing the shapefile. Please make '
-               'sure you have at all the individual files which make up '
-               'the shapefile.')
-        return None
-
-    gdf = gdf[gdf.geometry != None]
-
-    if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        showlog('You have a MultiPolygon. Only the first overlapping Polygon '
-               'of the MultiPolygon will be used.')
-        poly = gdf['geometry'].iloc[0]
-        tmp = poly.geoms[0]
-
-        dext = list(data[0].bounds)
-        dpoly = box(dext[0], dext[1], dext[2], dext[3])
-
-        for i in list(poly.geoms):
-            if i.overlaps(dpoly):
-                tmp = i
-                break
-
-        gdf.geometry.iloc[0] = tmp
-
-    if gdf.geom_type.iloc[0] != 'Polygon':
-        showlog('You need a polygon in that shape file')
-        return None
-
-    for idata in data:
-        # Convert the layer extent to image pixel coordinates
-        poly = gdf['geometry'].iloc[0]
-        dext = idata.bounds
-        lext = poly.bounds
-
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
-                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
-
-            showlog('The shapefile is not in the same area as the raster '
-                   'dataset. Please check its coordinates and make sure its '
-                   'projection is the same as the raster dataset')
-            return None
-
-        # This section convers PolygonZ to Polygon, and takes first polygon.
-        coords = gdf['geometry'].loc[0].exterior.coords
-        coords = [Polygon([[p[0], p[1]] for p in coords])]
-
-        dat, trans = riomask(idata.to_mem(), coords, crop=True)
-
-        idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
-
-        idata.set_transform(transform=trans)
-
-    return data
 
 
 def get_shape_bounds(sfile, crs=None, showlog=print):
@@ -3074,7 +2994,6 @@ def _testreproj():
 def _testcut():
     """Test Reprojection."""
     from pygmi.raster.iodefs import get_raster, export_raster
-    import matplotlib.pyplot as plt
 
     sfile = r"D:\WC\Provinces_utm34.shp"
     ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
@@ -3084,26 +3003,7 @@ def _testcut():
 
     dat = cut_raster(dat, sfile, deepcopy=False)
 
-    # app = QtWidgets.QApplication(sys.argv)
-
-    # DM = DataCut()
-    # DM.indata['Raster'] = dat
-    # DM.ifile = sfile
-    # DM.settings(nodialog=True)
-
     export_raster(ofile, dat, compression='DEFLATE')
-
-    # plt.figure(dpi=150)
-    # plt.imshow(DM.indata['Raster'][0].data,
-    #            extent=DM.indata['Raster'][0].extent)
-    # plt.colorbar()
-    # plt.show()
-
-    # plt.figure(dpi=150)
-    # plt.imshow(DM.outdata['Raster'][0].data,
-    #            extent=DM.outdata['Raster'][0].extent)
-    # plt.colorbar()
-    # plt.show()
 
 
 def _testprof():
