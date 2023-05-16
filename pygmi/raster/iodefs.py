@@ -741,10 +741,12 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
                                                            nval):
                     nval = dat[-1].data.min()
+                    showlog(f'{bandid}: Adjusting nodata value to {nval}')
+
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
                                                            nval):
                     nval = dat[-1].data.max()
-                showlog(f'{bandid}: Adjusting nodata value to {nval}')
+                    showlog(f'{bandid}: Adjusting nodata value to {nval}')
 
             if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
