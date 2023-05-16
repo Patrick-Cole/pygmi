@@ -229,8 +229,8 @@ class ImportData(BasicModule):
 
         if dat[0].crs is None:
             self.showlog('Warning: Your data has no projection. '
-                                'Please add a projection in the Display/Edit '
-                                'Metadata interface.')
+                         'Please add a projection in the Display/Edit '
+                         'Metadata interface.')
 
         return True
 
@@ -672,7 +672,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
         crs = CRS.from_string(custom_wkt)
     else:
         showlog('Warning: Your data does not have a projection. '
-                       'Assigning local coordinate system.')
+                'Assigning local coordinate system.')
         crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
                               'AUTHORITY["EPSG","9001"]],'
                               'AXIS["Easting",EAST],'
@@ -725,13 +725,13 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             # if 'uint' in dataset.meta['dtype']:
             #     if nval is None or np.isnan(nval):
             #         nval = 0
-            #         # showlog(f'Adjusting null value to {nval}')
+            #         showlog(f'Adjusting null value to {nval}')
             #     nval = int(nval)
 
             # elif 'int' in dataset.meta['dtype']:
             #     if nval is None or np.isnan(nval):
             #         nval = 999999
-            #         # showlog(f'Adjusting null value to {nval}')
+            #         showlog(f'Adjusting null value to {nval}')
             #     nval = int(nval)
             # else:
             if 'int' not in dataset.meta['dtype'] and nval is not None:
@@ -1296,8 +1296,8 @@ class ExportData(BasicModule):
         """
         if len(data) > 1:
             self.showlog('Band names will be appended to the output '
-                                'filenames since you have a multiple band '
-                                'image')
+                         'filenames since you have a multiple band '
+                         'image')
 
         file_out = self.ofile.rpartition('.')[0]+'.gxf'
         for k in data:
@@ -1359,8 +1359,8 @@ class ExportData(BasicModule):
         """
         if len(data) > 1:
             self.showlog('Band names will be appended to the output '
-                                'filenames since you have a multiple band '
-                                'image')
+                         'filenames since you have a multiple band '
+                         'image')
 
         file_out = self.ofile.rpartition('.')[0] + '.grd'
         for k0 in data:
@@ -1389,8 +1389,8 @@ class ExportData(BasicModule):
         """
         if len(data) > 1:
             self.showlog('Band names will be appended to the output '
-                                'filenames since you have a multiple band '
-                                'image')
+                         'filenames since you have a multiple band '
+                         'image')
 
         file_out = self.ofile.rpartition('.')[0]+'.asc'
         for k in data:
@@ -1433,8 +1433,8 @@ class ExportData(BasicModule):
         """
         if len(data) > 1:
             self.showlog('Band names will be appended to the output '
-                                'filenames since you have a multiple band '
-                                'image')
+                         'filenames since you have a multiple band '
+                         'image')
 
         file_out = self.ofile.rpartition('.')[0]+'.xyz'
         for k in data:

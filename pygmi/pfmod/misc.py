@@ -389,7 +389,7 @@ class MergeMod3D(BasicModule):
         """
         if self.master.currentText() == self.slave.currentText():
             self.showlog('Your master dataset must be different'
-                                ' to the slave dataset!')
+                         ' to the slave dataset!')
             return False
 
         for data in self.indata['Model3D']:

@@ -429,13 +429,13 @@ class AnalSpec(BasicModule):
         """
         if 'Raster' not in self.indata:
             self.showlog('Error: You must have a multi-band raster '
-                                'dataset in addition to your cluster '
-                                'analysis results')
+                         'dataset in addition to your cluster '
+                         'analysis results')
             return False
 
         if 'wavelength' not in self.indata['Raster'][0].metadata['Raster']:
             self.showlog('Error: Your data should have wavelengths in'
-                                ' the metadata')
+                         ' the metadata')
             return False
 
         dat = self.indata['Raster']
@@ -450,7 +450,7 @@ class AnalSpec(BasicModule):
 
         if needsmerge is True:
             self.showlog('Error: Your data bands have different sizes. '
-                                'Use Layer Stack to fix this first')
+                         'Use Layer Stack to fix this first')
             return False
 
         wavelengths = []
@@ -478,7 +478,7 @@ class AnalSpec(BasicModule):
         if self.map.wvl.max() < 20:
             self.map.wvl = self.map.wvl*1000.
             self.showlog('Wavelengths appear to be in nanometers. '
-                                'Converting to micrometers.')
+                         'Converting to micrometers.')
 
         bands = [i.dataid for i in self.indata['Raster']]
 
@@ -795,7 +795,7 @@ class ProcFeatures(BasicModule):
                 ofile = os.path.join(odir, ofile)
                 if datfin[0].data.mask.min() == True:
                     self.showlog(' Could not find any ' + mineral +
-                                        '. No data to export.')
+                                 '. No data to export.')
                 else:
                     self.showlog('Exporting '+os.path.basename(ofile))
                     export_raster(ofile, datfin, 'GTiff', piter=self.piter,

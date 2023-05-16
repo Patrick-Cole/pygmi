@@ -529,9 +529,9 @@ class DataReproj(BasicModule):
 
         if np.inf in xy:
             self.showlog('Note: inf values in reprojected results. '
-                                'Please check your input and output '
-                                'projections or input x and y data for '
-                                'mistakes.')
+                         'Please check your input and output '
+                         'projections or input x and y data for '
+                         'mistakes.')
 
         data = data.assign(Xnew=xy[:, 0])
         data = data.assign(Ynew=xy[:, 1])

@@ -819,7 +819,7 @@ class ExportMod3D(ContextModule):
 
             if len(points) > 60000:
                 self.showlog(curmod + ' has too many points (' +
-                                    str(len(points))+'). Not exported')
+                             str(len(points))+'). Not exported')
                 points = points[:60000]
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]

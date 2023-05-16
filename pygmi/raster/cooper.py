@@ -155,7 +155,7 @@ class Gradients(BasicModule):
             else:
                 if data[i].xdim != data[i].ydim:
                     self.showlog('X and Y dimension are different. '
-                                        'Please resample')
+                                 'Please resample')
                     return False
 
                 mask = np.ma.getmaskarray(data[i].data)

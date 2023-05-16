@@ -193,7 +193,7 @@ class FuzzyClust(BasicModule):
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
             self.showlog('Error: Your input datasets have different '
-                                'sizes. Merge the data first')
+                         'sizes. Merge the data first')
             return False
 
         if not nodialog:
@@ -421,8 +421,7 @@ class FuzzyClust(BasicModule):
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.showlog('Run ' + str(j+1) + ' of' +
-                                        str(no_runs))
+                    self.showlog('Run ' + str(j+1) + ' of' + str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -493,7 +492,7 @@ class FuzzyClust(BasicModule):
             i.crs = data[0].crs
 
         self.showlog('Fuzzy Cluster complete' + ' (' + self.cltype +
-                            ' ' + self.init_type + ')')
+                     ' ' + self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -641,11 +640,10 @@ class FuzzyClust(BasicModule):
             obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
             if i > 0:
                 self.showlog('Iteration: ' + str(i) + ' Threshold: ' +
-                                    str(term_thresh) + ' Current: ' +
-                                    '{:.2e}'.format(100*((obj_fcn[i - 1] -
-                                                          obj_fcn[i]) /
-                                                         obj_fcn[i - 1])),
-                                    True)
+                             str(term_thresh) + ' Current: ' +
+                             '{:.2e}'.format(100*((obj_fcn[i - 1] -
+                                                   obj_fcn[i]) /
+                                                  obj_fcn[i - 1])), True)
 
                 # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:

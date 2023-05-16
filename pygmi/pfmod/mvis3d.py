@@ -384,7 +384,7 @@ class Mod3dDisplay(ContextModule):
         """
         if 'Model3D' not in self.indata:
             self.showlog('No 3D model. You may need to execute that '
-                                'module first')
+                         'module first')
             return False
 
         self.lmod1 = self.indata['Model3D'][0]
@@ -397,7 +397,7 @@ class Mod3dDisplay(ContextModule):
             liths = liths[1:]
         if liths.size == 0:
             self.showlog('No 3D model. You need to draw in at least '
-                                'part of a lithology first.')
+                         'part of a lithology first.')
             return False
 
         self.show()
@@ -1468,7 +1468,7 @@ def MarchingCubes(x, y, z, c, iso, showlog=print):
 
     if iden.size == 0:          # all voxels are above or below iso
         showlog('Warning: No such lithology, or all voxels are above '
-                       'or below iso')
+                'or below iso')
         F = np.array([])
         V = np.array([])
         return F, V

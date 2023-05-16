@@ -37,6 +37,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from pygmi.misc import BasicModule
 
+
 class GraphHist(FigureCanvasQTAgg):
     """Graph Hist."""
 
@@ -594,7 +595,6 @@ class PolygonInteractor(QtCore.QObject):
         self.polymask = Path(self.poly.xy).contains_points(self.pntxy)
         self.polyi_changed.emit()
 
-
     def motion_notify_callback(self, event):
         """
         Mouse notify callback.
@@ -821,9 +821,8 @@ class ScatterPlot(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showlog('Error: You must have a multi-band raster '
-                                'dataset in addition to your cluster analysis'
-                                ' results')
+            self.showlog('Error: You must have a multi-band raster dataset '
+                         'in addition to your cluster analysis results')
             return False
 
         self.dat_tmp = self.indata['Raster']
@@ -876,7 +875,6 @@ class ScatterPlot(BasicModule):
         self.map.update_graph()
 
         self.exec_()
-
 
         return True
 
@@ -1018,8 +1016,6 @@ def _testfn():
     DM.indata['Raster'] = dat
     DM.indata['Cluster'] = dat2
     DM.settings()
-
-    aaa=1
 
 
 if __name__ == "__main__":

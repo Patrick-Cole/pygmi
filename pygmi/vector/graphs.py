@@ -621,7 +621,7 @@ class PlotPoints(GraphWindow):
 
         if data.pygmiX.isna().min() == True:
             self.showlog('You do not have coordinates in that point '
-                                'dataset.')
+                         'dataset.')
             return
 
         self.show()

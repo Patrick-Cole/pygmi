@@ -146,7 +146,7 @@ class ImportCG5(BasicModule):
 
         if self.line.currentText() == self.station.currentText():
             self.showlog('Your line column cannot be the same as your '
-                                'station column')
+                         'station column')
             return False
 
         tmp = [self.line.currentText(),
@@ -157,9 +157,9 @@ class ImportCG5(BasicModule):
 
         if len(set(tmp)) != len(tmp):
             self.showlog('Unable to import, two of your GPS file '
-                                'columns are the same. Make sure you have a '
-                                'line column in your GPS file, and that you '
-                                'did not specify the same column twice.')
+                         'columns are the same. Make sure you have a '
+                         'line column in your GPS file, and that you '
+                         'did not specify the same column twice.')
             return False
 
         # Rename columns
@@ -181,7 +181,7 @@ class ImportCG5(BasicModule):
                 self.df_gps.latitude = pd.to_numeric(self.df_gps.latitude)
             except ValueError:
                 self.showlog('You have characters in your latitude'
-                                    ' string which could not be converted.')
+                             ' string which could not be converted.')
                 return False
 
         if self.df_gps.longitude.dtype == 'O':
@@ -193,7 +193,7 @@ class ImportCG5(BasicModule):
                 self.df_gps.longitude = pd.to_numeric(self.df_gps.longitude)
             except ValueError:
                 self.showlog('You have characters in your longitude'
-                                    ' string which could not be converted.')
+                             ' string which could not be converted.')
                 return False
 
         # Get rid of text in line columns

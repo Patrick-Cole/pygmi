@@ -1723,7 +1723,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         ifile = ifilet
     else:
         showlog('Input needs to be tar or _MTL.txt for Landsat. '
-                       'Trying regular import')
+                'Trying regular import')
         return None
 
     files = glob.glob(ifile[:-7]+'*.tif')
@@ -1783,7 +1783,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         if 'L2SP' in ifile2:
             if fext == 'LST':
                 showlog('Converting band '+lstband+' to Kelvin. '
-                               'Band renamed as LST')
+                        'Band renamed as LST')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
             elif fext in satbands:
                 showlog('Converting band '+fext+' to reflectance.')
@@ -1853,7 +1853,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
 
     if 'isd' not in dtree:
         showlog('Wrong xml file. Please choose the xml file in the '
-                       'PAN or MUL directory')
+                'PAN or MUL directory')
         return None
 
     platform = dtree['isd']['TIL']['BANDID']

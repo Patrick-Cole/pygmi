@@ -223,8 +223,8 @@ class SatRatios(BasicModule):
                 flist = get_sentinel_list(flist)
             if not flist:
                 self.showlog('Warning: This might not be ' + sensor +
-                                    ' data. Will attempt to do calculation '
-                                    'anyway.')
+                             ' data. Will attempt to do calculation '
+                             'anyway.')
                 flist = self.indata['RasterFileList']
         else:
             flist = [self.indata['Raster']]
@@ -677,7 +677,7 @@ class ConditionIndices(BasicModule):
 
         if not rlist1:
             self.showlog('You need to select a condition index to '
-                                'calculate.')
+                         'calculate.')
             return False
 
         rlist2 = []
@@ -704,8 +704,8 @@ class ConditionIndices(BasicModule):
                 flist = get_sentinel_list(flist)
             if not flist:
                 self.showlog('Warning: This might not be ' + sensor +
-                                    ' data. Will attempt to do calculation '
-                                    'anyway.')
+                             ' data. Will attempt to do calculation '
+                             'anyway.')
                 flist = self.indata['RasterFileList']
         else:
             flist = [self.indata['Raster']]

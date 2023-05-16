@@ -224,7 +224,7 @@ class Cluster(BasicModule):
 
         if tst.size > 2:
             self.showlog('Error: Your input datasets have different '
-                                'sizes. Merge the data first')
+                         'sizes. Merge the data first')
             return False
 
         self.min_samples = len(self.indata['Raster'])+1
@@ -366,7 +366,7 @@ class Cluster(BasicModule):
                                            # n_init='auto',
                                            batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol, # n_init='auto',
+                cfit = skc.KMeans(n_clusters=i, tol=self.tol,  # n_init='auto',
                                   max_iter=self.max_iter).fit(X)
 
             elif self.cltype == 'DBSCAN':
@@ -380,12 +380,12 @@ class Cluster(BasicModule):
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 self.showlog('Could not find '+str(i)+' clusters. '
-                                    'Please change settings.')
+                             'Please change settings.')
 
                 return False
             if cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
                 self.showlog('Could not find any clusters. '
-                                    'Please change settings.')
+                             'Please change settings.')
 
                 return False
 
@@ -401,7 +401,8 @@ class Cluster(BasicModule):
             dat_out[-1].data = zonal
             dat_out[-1].nodata = zonal.fill_value
             dat_out[-1].metadata['Cluster']['no_clusters'] = i
-            dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
+            dat_out[-1].metadata['Cluster']['center'] = np.zeros([i,
+                                                                  len(data)])
             dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
                 dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(X, cfit.labels_)
@@ -583,7 +584,6 @@ def _test_marinda2():
     colormap[:, :, 1] = norm2(cdata[1].data)
     colormap[:, :, 2] = norm2(cdata[2].data)
     colormap[:, :, 3] = np.logical_not(mask)
-
 
     # colormap[:, :, 3][colormap[:, :, 0]==0] = 0
 

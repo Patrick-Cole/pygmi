@@ -849,9 +849,8 @@ class SuperClass(BasicModule):
 
         """
         if 'Raster' not in self.indata:
-            self.showlog('Error: You must have a multi-band raster '
-                                'dataset in addition to your cluster '
-                                'analysis results')
+            self.showlog('Error: You must have a multi-band raster dataset in '
+                         'addition to your cluster analysis results')
             return False
 
         self.map.data = self.indata['Raster']
@@ -901,7 +900,8 @@ class SuperClass(BasicModule):
         dat_out[-1].nodata = zonal.fill_value
         dat_out[-1].metadata['Cluster']['no_clusters'] = i
         dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
-        dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
+        dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i,
+                                                                  len(data)])
 
         m = []
         s = []

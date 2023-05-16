@@ -39,7 +39,6 @@ import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
-from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
 from pygmi.misc import BasicModule
@@ -179,13 +178,13 @@ class CreateSceneList(BasicModule):
 
         if nodates is True:
             self.showlog('Some of your scenes do not have dates. '
-                                'Correct this in the output spreadsheet')
+                         'Correct this in the output spreadsheet')
 
         if not flist:
             self.showlog('No scenes could be found. Please make sure '
-                                'that your shapefile or kml file is in the '
-                                'area of your scenes and in the same '
-                                'projection.')
+                         'that your shapefile or kml file is in the '
+                         'area of your scenes and in the same '
+                         'projection.')
             return False
 
         self.showlog('Updating spreadsheet...')

@@ -487,7 +487,8 @@ class ImageSeg(BasicModule):
                 rmin, rmax = rminmax[i]
                 cmin, cmax = cminmax[i]
 
-                omap[rmin:rmax+1, cmin:cmax+1][omap[rmin:rmax+1, cmin:cmax+1] == hind] = i
+                omap[rmin:rmax+1, cmin:cmax+1][omap[rmin:rmax+1,
+                                                    cmin:cmax+1] == hind] = i
 
         return omap
 
@@ -539,10 +540,10 @@ def _testfn():
     plt.axis('off')
     plt.show()
 
-    wcolor = 0.5
-    wcompact = 0.5
-    doshape = True
-    scale = 1000
+    # wcolor = 0.5
+    # wcompact = 0.5
+    # doshape = True
+    # scale = 1000
 
     b1 = Data()
     b1.data = np.ma.array(data1[:, :, 0])

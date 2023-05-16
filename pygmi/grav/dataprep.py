@@ -271,13 +271,13 @@ class ProcessData(BasicModule):
             drifttime = (x2[-1]-x2[0])
             if drifttime == 0.:
                 self.showlog(f'Day {iday+1} drift: Only one reading, '
-                                    'no drift result possible.')
+                             'no drift result possible.')
                 driftrate = np.nan
 
             else:
                 driftrate = (dcor2[-1]-dcor2[0])/drifttime
                 self.showlog(f'Day {iday+1} drift: {driftrate:.3e} '
-                                    f'mGal/min over {drifttime:.3f} minutes.')
+                             f'mGal/min over {drifttime:.3f} minutes.')
             dday.append(iday+1+x2[-1]/1440)
             drate.append(driftrate)
             dtime.append(drifttime)

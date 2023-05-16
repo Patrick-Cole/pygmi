@@ -305,11 +305,11 @@ class ImportSeisan(BasicModule):
             if has_errors is False:
                 self.showlog('Warning: Problem with file')
                 self.showlog('Process will continue, but please '
-                                    'see warnings in '+self.ifile+'.log')
+                             'see warnings in '+self.ifile+'.log')
             else:
                 self.showlog('Error: Problem with file')
                 self.showlog('Process stopping, please see errors '
-                                    'in '+self.ifile+'.log')
+                             'in '+self.ifile+'.log')
             fout = open(self.ifile+'.log', 'w', encoding='utf-8')
             for i in file_errors:
                 fout.write(i[0]+'\n')
@@ -411,7 +411,6 @@ def read_record_type_1(i):
     # make sure coordinates have the correct range
     tmp.longitude = ((tmp.longitude - 180) % 360) - 180
     tmp.latitude = ((tmp.latitude - 90) % 180) - 90
-
 
     return tmp
 

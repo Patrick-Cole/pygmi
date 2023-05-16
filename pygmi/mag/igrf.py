@@ -206,7 +206,7 @@ class IGRF(BasicModule):
         for i in self.indata['Raster']:
             if i.crs is None:
                 self.showlog(f'{i.dataid} has no projection. '
-                                    'Please assign one.')
+                             'Please assign one.')
                 return False
 
         if self.wkt is None:

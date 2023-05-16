@@ -31,7 +31,7 @@ import numpy as np
 
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
-from pygmi.misc import ProgressBarText, BasicModule
+from pygmi.misc import BasicModule
 
 
 class CrispClust(BasicModule):
@@ -184,7 +184,7 @@ class CrispClust(BasicModule):
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
             self.showlog('Error: Your input datasets have different '
-                                'sizes. Merge the data first')
+                         'sizes. Merge the data first')
             return False
 
         self.update_vars()
@@ -287,7 +287,7 @@ class CrispClust(BasicModule):
         max_iter = self.max_iter
         term_thresh = self.term_thresh
         no_clust = np.array([self.min_cluster, self.max_cluster])
-        de_norm = self.denorm
+        # de_norm = self.denorm
 
         self.showlog('Crisp Clustering started')
 
@@ -459,7 +459,7 @@ class CrispClust(BasicModule):
             i.crs = data[0].crs
 
         self.showlog('Crisp Cluster complete ('+self.cltype + ' ' +
-                            self.init_type+')')
+                     self.init_type+')')
 
         for i in dat_out:
             i.data += 1
@@ -560,7 +560,8 @@ class CrispClust(BasicModule):
             dist_prev = edist
             # calc new cluster centre positions
             cent, idx = gcentroids(data, idx, no_clust, mindist)
-            # constrain the cluster center positions to keep it in  the given interval
+            # constrain the cluster center positions to keep it in  the given
+            # interval
             if centfix.size > 0:
                 # constrain the center positions within the given limits
                 cent_idx = cent > (cent_orig+centfix)
@@ -572,8 +573,8 @@ class CrispClust(BasicModule):
 
             # calc new cluster centre distances
             edist = gdist(data, cent, idx, no_clust, cltype, cov_constr)
-            # get new index values for each data point and the distance from each
-            # sample to its cluster center
+            # get new index values for each data point and the distance from
+            # each sample to its cluster center
             mindist = edist.min(0)
             idx = edist.argmin(0)
 
@@ -586,8 +587,9 @@ class CrispClust(BasicModule):
                 obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
 
             self.showlog(f'Iteration: {i} Threshold: {term_thresh})'
-                                f' Current: {obj_fcn_dif:.2e}', True)
-            # if no termination threshold provided, ignore this and do all iterations
+                         f' Current: {obj_fcn_dif:.2e}', True)
+            # if no termination threshold provided, ignore this and do all
+            # iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less
                 # than a defined threshold in percent
