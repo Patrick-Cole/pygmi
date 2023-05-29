@@ -465,6 +465,8 @@ class ImportBatch(BasicModule):
         for i in types:
             allfiles += glob.glob(os.path.join(self.idir, i))
 
+        allfiles = consolidate_aster_list(allfiles)
+
         self.bands = {}
         self.tnames = {}
         self.filelist = []
@@ -1055,16 +1057,8 @@ class ExportBatch(ContextModule):
             self.process_is_active(False)
             return False
 
-        sensor = self.indata['RasterFileList'][0].sensor
-
-        if 'ASTER' in sensor:
-            dat = get_aster_list(self.indata['RasterFileList'])[0]
-            bnames = []
-            for i in dat:
-                bnames += i.tnames
-        else:
-            dat = self.indata['RasterFileList'][0]
-            bnames = dat.tnames
+        dat = self.indata['RasterFileList'][0]
+        bnames = dat.tnames
 
         bnames = natsorted(bnames)
 
@@ -1245,9 +1239,6 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     ifiles = indata['RasterFileList']
 
-    if 'ASTER' in ifiles[0].sensor:
-        ifiles = get_aster_list(indata['RasterFileList'])
-
     filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
                  'GeoTiff compressed using DEFLATE': 'GTiff',
                  'GeoTiff': 'GTiff',
@@ -1286,9 +1277,9 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                       showlog=showlog)
 
 
-def get_aster_list(flist):
+def consolidate_aster_list(flist):
     """
-    Get ASTER files from a file list.
+    Consolidate ASTER files from a file list, getting rid of extra files.
 
     Parameters
     ----------
@@ -1301,106 +1292,38 @@ def get_aster_list(flist):
         List of filenames.
 
     """
-    if isinstance(flist[0], list):
-        if 'ASTER' in flist[0][0].sensor:
-            return flist
-        return []
+    asterhfiles = []
+    asterzfiles = []
+    otherfiles = []
 
-    names = {}
-    for i in flist:
-        if 'ASTER' not in i.sensor:
-            continue
+    for ifile in flist:
+        bfile = os.path.basename(ifile)
+        ext = os.path.splitext(ifile)[1].lower()
 
-        adate = os.path.basename(i.filename).split('_')[2]
-        if adate not in names:
-            names[adate] = []
-        names[adate].append(i)
+        if 'AST_' in bfile and ext == '.hdf':
+            asterhfiles.append(ifile)
+        if 'AST_' in bfile and ext == '.zip':
+            asterzfiles.append(ifile)
+        else:
+            otherfiles.append(ifile)
 
-    for adate in names:
-        has_07xt = [True for i in names[adate] if '_07XT_' in i.filename]
-        has_07 = [True for i in names[adate] if '_07_' in i.filename]
-        if len(has_07xt) > 0 and len(has_07) > 0:
-            names[adate] = [i for i in names[adate]
-                            if '_07_' not in i.filename]
+    asterfiles = []
+    tmp = {}
 
-    flist = []
-    for adate in names:
-        flist.append(names[adate])
+    for ifile in asterzfiles:
+        adate = os.path.basename(ifile).split('_')[2]
+        tmp[adate] = ifile
+    asterfiles += list(tmp.values())
+
+    for ifile in asterhfiles:
+        adate = os.path.basename(ifile).split('_')[2]
+        tmp[adate] = ifile
+
+    asterfiles += list(tmp.values())
+
+    flist = asterfiles+otherfiles
 
     return flist
-
-
-def get_landsat_list(flist, sensor=None, allsats=False):
-    """
-    Get Landsat files from a file list.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    if isinstance(flist[0], list):
-        bfile = os.path.basename(flist[0][0].filename)
-        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']:
-            return flist
-        return []
-
-    if allsats is True or sensor is None:
-        fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
-    elif sensor == 'Landsat 8 and 9 (OLI)':
-        fid = ['LC08', 'LC09']
-    elif sensor == 'Landsat 7 (ETM+)':
-        fid = ['LE07']
-    elif sensor == 'Landsat 4 and 5 (TM)':
-        fid = ['LT04', 'LT05']
-    else:
-        return None
-
-    flist2 = []
-    for i in flist:
-        for j in fid:
-            if j not in i.sensor:
-                continue
-            if '.tif' in i.filename:
-                continue
-            flist2.append(i)
-
-    return flist2
-
-
-def get_sentinel_list(flist):
-    """
-    Get Sentinel-2 files from a file list.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    if isinstance(flist[0], list):
-        if '.SAFE' in flist[0][0].filename:
-            return flist
-        return []
-
-    flist2 = []
-    for i in flist:
-        if 'Sentinel-2' not in i.sensor:
-            continue
-        flist2.append(i)
-
-    return flist2
 
 
 def get_data(ifile, piter=None, showlog=print, tnames=None,
@@ -1438,9 +1361,19 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
         dtree = etree_to_dict(ET.parse(ifile).getroot())
 
     if 'AST_' in bfile and ext == '.hdf':
-        dat = get_aster_hdf(ifile, piter, showlog, tnames, metaonly)
+        idir = os.path.dirname(ifile)
+        adate = os.path.basename(ifile).split('_')[2]
+        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+        dat = []
+        for ifile in ifiles:
+            dat += get_aster_hdf(ifile, piter, showlog, tnames, metaonly)
     elif 'AST_' in bfile and ext == '.zip':
-        dat = get_aster_zip(ifile, piter, showlog, tnames, metaonly)
+        idir = os.path.dirname(ifile)
+        adate = os.path.basename(ifile).split('_')[2]
+        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
+        dat = []
+        for ifile in ifiles:
+            dat += get_aster_zip(ifile, piter, showlog, tnames, metaonly)
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
         dat = get_landsat(ifile, piter, showlog, tnames, metaonly)
@@ -1496,31 +1429,25 @@ def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
         List of data.
 
     """
-    if isinstance(ldata, RasterMeta):
-        if tnames is None:
-            tnames = ldata.tnames
-        dat = get_data(ldata.filename, piter=piter,
-                       showlog=showlog, tnames=tnames)
+    if tnames is None:
+        tnames = ldata.tnames
 
-        if ldata.to_sutm is True:
-            dat = utm_to_south(dat)
-    elif isinstance(ldata, list):
-        dat = []
-        for jfile in ldata:
-            if tnames is None:
-                tmp = get_data(jfile.filename, piter=piter,
-                               showlog=showlog,
-                               tnames=jfile.tnames)
-            else:
-                tmp = get_data(jfile.filename, piter=piter,
-                               showlog=showlog,
-                               tnames=tnames)
+    ifile = ldata.banddata[0].filename
+    dat = get_data(ifile, piter=piter, showlog=showlog, tnames=tnames)
 
-            if tmp is not None:
-                if jfile.to_sutm is True:
-                    tmp = utm_to_south(tmp)
+    # ifiles = []
+    # for band in ldata.banddata:
+    #     ifiles.append(band.filename)
 
-                dat += tmp
+    # ifiles = list(set(ifiles))
+
+    # dat = []
+    # for ifile in ifiles:
+    #     dat += get_data(ldata.filename, piter=piter,
+    #                     showlog=showlog, tnames=tnames)
+
+    if ldata.to_sutm is True:
+        dat = utm_to_south(dat)
 
     return dat
 
@@ -2031,6 +1958,20 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
     if not dat:
         dat = None
 
+    # Standardize labels for band ratioing.
+
+    wvlabels = {'CoastalBlue': 'B1',
+                'Blue': 'B2',
+                'Green': 'B3',
+                'Yellow': 'B4',
+                'Red': 'B5',
+                'RedEdge': 'B6',
+                'NIR1': 'B7',
+                'NIR2': 'B8'}
+    for i in dat:
+        if i.dataid.split()[0] in wvlabels:
+            i.dataid = wvlabels[i.dataid.split()[0]]
+
     showlog('Import complete')
     return dat
 
@@ -2483,6 +2424,13 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         zipnames = zfile.namelist()
         zfile.extractall(idir)
 
+    platform = os.path.basename(ifile).split('_')[1]
+
+    if 'VNIR' in zipnames[0]:
+        platform += ' VNIR'
+    elif 'SWIR' in zipnames[0]:
+        platform += ' SWIR'
+
     dat = []
     nval = 0
     for zfile in piter(zipnames):
@@ -2518,8 +2466,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         bmeta = dat[-1].metadata['Raster']
         fext = dat[-1].dataid[4:]
 
-        platform = os.path.basename(ifile).split('_')[1]
-        bmeta["Sensor"] = f'ASTER {platform}'
+        bmeta['Sensor'] = f'ASTER {platform}'
         bmeta['WavelengthMin'] = satbands[fext][0]
         bmeta['WavelengthMax'] = satbands[fext][1]
         bmeta['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
@@ -2635,6 +2582,13 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
     else:
         return None
 
+    platform = os.path.basename(ifile).split('_')[1]
+
+    if 'VNIR' in subdata[0]:
+        platform += ' VNIR'
+    elif 'SWIR' in subdata[0]:
+        platform += ' SWIR'
+
     dat = []
     nval = 0
     calctoa = False
@@ -2681,7 +2635,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
             fext = dat[-1].dataid[4:].split()[0]
 
             platform = os.path.basename(ifile).split('_')[1]
-            bmeta["Sensor"] = f'ASTER {platform}'
+            bmeta['Sensor'] = f'ASTER {platform}'
 
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
@@ -3127,15 +3081,17 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
+    ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
 
-    dat = get_sentinel1(ifile)
 
-    for i in dat:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        plt.imshow(i.data, extent=i.extent)
-        plt.colorbar()
-        plt.show()
+    dat = get_data(ifile)
+
+    # for i in dat:
+    #     plt.figure(dpi=150)
+    #     plt.title(i.dataid)
+    #     plt.imshow(i.data, extent=i.extent)
+    #     plt.colorbar()
+    #     plt.show()
 
 
 if __name__ == "__main__":

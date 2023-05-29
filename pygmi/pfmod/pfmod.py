@@ -145,7 +145,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         self.showtext('Saving model, please do not close the interface...')
-        tmp = iodefs.ExportMod3D(self)
+        tmp = iodefs.ExportMod3D(self.parent)
         tmp.indata = self.outdata
         tmp.run()
 

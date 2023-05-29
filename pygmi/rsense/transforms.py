@@ -39,9 +39,6 @@ from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
 from pygmi.rsense.iodefs import get_data
 from pygmi.rsense.iodefs import get_from_rastermeta
-from pygmi.rsense.iodefs import get_aster_list
-from pygmi.rsense.iodefs import get_landsat_list
-from pygmi.rsense.iodefs import get_sentinel_list
 from pygmi.rsense.iodefs import set_export_filename
 
 
@@ -125,6 +122,10 @@ class MNF(BasicModule):
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
             self.showlog('No Satellite Data')
             return False
+
+        if 'RasterFileList' in self.indata:
+            if len(self.indata['RasterFileList'][0].bands) > 5:
+                self.sb_comps.setValue(5)
 
         if 'Raster' in self.indata:
             indata = self.indata['Raster']
@@ -218,13 +219,6 @@ class MNF(BasicModule):
         """
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
-            sensor = flist[0].sensor
-            if 'ASTER' in sensor:
-                flist = get_aster_list(flist)
-            elif 'Landsat' in sensor:
-                flist = get_landsat_list(flist)
-            elif 'Sentinel-2' in sensor:
-                flist = get_sentinel_list(flist)
 
         ncmps = self.sb_comps.value()
         odata = []
@@ -237,19 +231,12 @@ class MNF(BasicModule):
             noise = 'quad'
 
         if 'RasterFileList' in self.indata:
-            if isinstance(flist[0], list):
-                filename = flist[0][0].filename
-            else:
-                filename = flist[0].filename
-
+            filename = flist[0].filename
             odir = os.path.join(os.path.dirname(filename), 'MNF')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                if isinstance(ifile, list):
-                    filename = ifile[0].filename
-                else:
-                    filename = ifile.filename
+                filename = ifile.filename
 
                 self.showlog('Processing '+os.path.basename(filename))
 
@@ -260,8 +247,6 @@ class MNF(BasicModule):
                                           noisetxt=noise,
                                           fwdonly=self.cb_fwdonly.isChecked())
 
-                # ofile = os.path.basename(filename).split('.')[0] + '_mnf.tif'
-                # ofile = os.path.join(odir, ofile)
                 ofile = set_export_filename(dat, odir, 'mnf')
 
                 self.showlog('Exporting '+os.path.basename(ofile))
@@ -355,6 +340,8 @@ class PCA(BasicModule):
 
         if 'RasterFileList' in self.indata:
             self.cb_fitlist.setVisible(True)
+            if len(self.indata['RasterFileList'][0].bands) > 5:
+                self.sb_comps.setValue(5)
 
         if 'Raster' in self.indata:
             indata = self.indata['Raster']
@@ -446,35 +433,31 @@ class PCA(BasicModule):
         None.
 
         """
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
-            sensor = flist[0].sensor
-            if 'ASTER' in sensor:
-                flist = get_aster_list(flist)
-            elif 'Landsat' in sensor:
-                flist = get_landsat_list(flist)
-            elif 'Sentinel-2' in sensor:
-                flist = get_sentinel_list(flist)
-
         ncmps = self.sb_comps.value()
         fitlist = self.cb_fitlist.isChecked()
         fwdonly = self.cb_fwdonly.isChecked()
 
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+
+            sensors = [i.sensor for i in flist]
+            sensors = list(set(sensors))
+
+            if fitlist is True and len(sensors) > 1:
+                self.showlog('Error: You have more than one sensor type in '
+                             'your raster file list directory. Fit list is not'
+                             ' possible.')
+                return False
+
         odata = []
 
         if 'RasterFileList' in self.indata and fitlist is False:
-            if isinstance(flist[0], list):
-                filename = flist[0][0].filename
-            else:
-                filename = flist[0].filename
+            filename = flist[0].filename
             odir = os.path.join(os.path.dirname(filename), 'PCA')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
-                if isinstance(ifile, list):
-                    filename = ifile[0].filename
-                else:
-                    filename = ifile.filename
+                filename = ifile.filename
 
                 self.showlog('Processing '+os.path.basename(filename))
 
@@ -483,9 +466,6 @@ class PCA(BasicModule):
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
                                           showlog=self.showlog,
                                           fwdonly=fwdonly)
-
-                # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
-                # ofile = os.path.join(odir, ofile)
 
                 ofile = set_export_filename(dat, odir, 'pca')
 
@@ -1023,8 +1003,8 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    tmp2 = PCA()
-    # tmp2 = MNF()
+    # tmp2 = PCA()
+    tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 
