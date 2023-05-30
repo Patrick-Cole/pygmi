@@ -1613,7 +1613,7 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     return p
 
 
-@jit
+@jit(nopython=True)
 def fancyindex(out, var1, ii, jj, kk):
     """
     Fancy index.
