@@ -240,59 +240,13 @@ class ImportLineData(BasicModule):
 
         Returns
         -------
-        df2 : DataFrame
+        df : DataFrame
             Pandas dataframe.
 
         """
-        with open(self.ifile, encoding='utf-8') as fno:
-            tmp = fno.read()
+        df = get_GXYZ(self.ifile, self.showlog, self.piter)
 
-        chktxt = tmp[:tmp.index('\n')].lower()
-
-        if r'/' not in chktxt and 'line' not in chktxt and 'tie' not in chktxt:
-            self.showlog('Not Geosoft XYZ format')
-            return None
-
-        head = None
-        while r'/' in tmp[:tmp.index('\n')]:
-            head = tmp[:tmp.index('\n')]
-            tmp = tmp[tmp.index('\n')+1:]
-            head = head.split()
-            head.pop(0)
-
-        while r'/' in tmp:
-            t1 = tmp[:tmp.index(r'/')]
-            t2 = tmp[tmp.index(r'/')+1:]
-            t3 = t2[t2.index('\n')+1:]
-            tmp = t1+t3
-
-        tmp = tmp.lower()
-        tmp = tmp.lstrip()
-        tmp = re.split('(line|tie)', tmp)
-        if tmp[0] == '':
-            tmp.pop(0)
-
-        df2 = None
-        dflist = []
-        for i in self.piter(range(0, len(tmp), 2)):
-            tmp2 = tmp[i+1]
-
-            line = tmp[i]+' '+tmp2[:tmp2.index('\n')].strip()
-            tmp2 = tmp2[tmp2.index('\n')+1:]
-            if head is None:
-                head = [f'Column {i+1}' for i in
-                        range(len(tmp2[:tmp2.index('\n')].split()))]
-
-            tmp2 = tmp2.replace('*', 'NaN')
-            df1 = pd.read_csv(StringIO(tmp2), sep='\s+', names=head)
-
-            df1['line'] = line
-            dflist.append(df1)
-
-        # Concat in all df in one go is much faster
-        df2 = pd.concat(dflist, ignore_index=True)
-
-        return df2
+        return df
 
     def get_delimited(self, delimiter=','):
         """
@@ -479,3 +433,68 @@ class ImportShapeData(BasicModule):
         projdata['ifile'] = self.ifile
 
         return projdata
+
+
+def get_GXYZ(ifile, showlog=print, piter=iter):
+    """
+    Get Geosoft XYZ.
+
+    Returns
+    -------
+    df2 : DataFrame
+        Pandas dataframe.
+
+    """
+    with open(ifile, encoding='utf-8') as fno:
+        tmp = fno.read()
+
+    chktxt = tmp[:tmp.index('\n')].lower()
+
+    if r'/' not in chktxt and 'line' not in chktxt and 'tie' not in chktxt:
+        showlog('Not Geosoft XYZ format')
+        return None
+
+    while r'//' in tmp[:tmp.index('\n')]:
+        tmp = tmp[tmp.index('\n')+1:]
+
+    head = None
+
+    while r'/' in tmp[:tmp.index('\n')]:
+        head = tmp[:tmp.index('\n')]
+        tmp = tmp[tmp.index('\n')+1:]
+        head = head.split()
+        head.pop(0)
+
+    while r'/' in tmp:
+        t1 = tmp[:tmp.index(r'/')]
+        t2 = tmp[tmp.index(r'/')+1:]
+        t3 = t2[t2.index('\n')+1:]
+        tmp = t1+t3
+
+    tmp = tmp.lower()
+    tmp = tmp.lstrip()
+    tmp = re.split('(line|tie)', tmp)
+    if tmp[0] == '':
+        tmp.pop(0)
+
+    df2 = None
+    dflist = []
+    for i in piter(range(0, len(tmp), 2)):
+        tmp2 = tmp[i+1]
+
+        line = tmp[i]+' '+tmp2[:tmp2.index('\n')].strip()
+        tmp2 = tmp2[tmp2.index('\n')+1:]
+        if head is None:
+            head = [f'Column {i+1}' for i in
+                    range(len(tmp2[:tmp2.index('\n')].split()))]
+
+        tmp2 = tmp2.replace('*', 'NaN')
+        df1 = pd.read_csv(StringIO(tmp2), sep='\s+', names=head)
+
+        df1['line'] = line
+        dflist.append(df1)
+
+    # Concat in all df in one go is much faster
+    df2 = pd.concat(dflist, ignore_index=True)
+
+    return df2

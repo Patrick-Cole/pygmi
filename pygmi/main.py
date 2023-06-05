@@ -616,7 +616,10 @@ class MainWidget(QtWidgets.QMainWindow):
             if i == 'pygmi.__pycache__.menu':
                 continue
             start.update()
-            menuimports.append(importlib.import_module(i))
+            try:
+                menuimports.append(importlib.import_module(i))
+            except ModuleNotFoundError as err:
+                self.showlog(f'{i} cannot be loaded, {err}')
         start.close()
 
         self.menus = []

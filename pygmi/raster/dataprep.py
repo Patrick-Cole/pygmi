@@ -2622,7 +2622,7 @@ def trim_raster(olddata):
     """
     for data in olddata:
         mask = np.ma.getmaskarray(data.data)
-        data.data.data[mask] = data.nodata
+        # data.data.data[mask] = data.nodata
 
         rowstart = 0
         for i in range(mask.shape[0]):
@@ -2650,7 +2650,8 @@ def trim_raster(olddata):
 
         drows, dcols = data.data.shape
         data.data = data.data[rowstart:rowend, colstart:colend]
-        data.data.mask = (data.data.data == data.nodata)
+        data.data.mask = mask[rowstart:rowend, colstart:colend]
+        # data.data.mask = (data.data.data == data.nodata)
         xmin = data.extent[0] + colstart*data.xdim
         ymax = data.extent[-1] - rowstart*data.ydim
 
