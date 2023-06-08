@@ -47,7 +47,7 @@ from numba import jit
 from pygmi.raster.datatypes import Data
 from pygmi.raster.cooper import vertical
 from pygmi.raster.dataprep import lstack
-from pygmi.mag.dataprep import rtp
+from pygmi.mag.dataprep import rtp, nextpow2
 from pygmi.vector.dataprep import quickgrid
 from pygmi.misc import frm, ProgressBar, BasicModule
 from pygmi import menu_default
@@ -89,6 +89,7 @@ class TiltDepth(BasicModule):
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
         self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
         self.btn_save = QtWidgets.QPushButton('Save Depths to Text File')
+        self.do_rtp = QtWidgets.QCheckBox('Perform RTP on data')
         self.pbar = ProgressBar()
 
         self.setupui()
@@ -114,6 +115,7 @@ class TiltDepth(BasicModule):
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
         self.dsb_dec.setValue(-17.)
+        self.do_rtp.setChecked(True)
 
         vbl_raster = QtWidgets.QVBoxLayout()
         hbl_all = QtWidgets.QHBoxLayout(self)
@@ -123,7 +125,7 @@ class TiltDepth(BasicModule):
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
         tmp = sorted(colormaps.keys())
-        self.cbox_cbar.addItem('jet')
+        self.cbox_cbar.addItem('viridis')
         self.cbox_cbar.addItems(tmp)
 
         self.setWindowTitle('Tilt Depth Interpretation')
@@ -132,6 +134,8 @@ class TiltDepth(BasicModule):
         vbl_raster.addWidget(self.cbox_band1)
         vbl_raster.addWidget(labelc)
         vbl_raster.addWidget(self.cbox_cbar)
+
+        vbl_raster.addWidget(self.do_rtp)
         vbl_raster.addWidget(label_inc)
         vbl_raster.addWidget(self.dsb_inc)
         vbl_raster.addWidget(label_dec)
@@ -148,8 +152,25 @@ class TiltDepth(BasicModule):
         hbl_all.addLayout(vbl_right)
 
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
-        self.btn_apply.clicked.connect(self.change_band1)
+        self.btn_apply.clicked.connect(self.calculate)
         self.btn_save.clicked.connect(self.save_depths)
+        self.do_rtp.clicked.connect(self.rtp_choice)
+
+    def rtp_choice(self):
+        """
+        Check if RTP must be done.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.do_rtp.isChecked():
+            self.dsb_inc.setEnabled(True)
+            self.dsb_dec.setEnabled(True)
+        else:
+            self.dsb_inc.setEnabled(False)
+            self.dsb_dec.setEnabled(False)
 
     def save_depths(self):
         """
@@ -181,7 +202,7 @@ class TiltDepth(BasicModule):
 
         return True
 
-    def change_cbar(self):
+    def change_cbar_old(self):
         """
         Change the colour map for the colour bar.
 
@@ -218,11 +239,44 @@ class TiltDepth(BasicModule):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.colorbar(ims, format=frm)
+        self.figure.colorbar(ims, format=frm, label='Tilt Angle')
 
         self.figure.canvas.draw()
 
-    def change_band1(self):
+    def change_cbar(self):
+        """
+        Change the colour map for the colour bar.
+
+        Returns
+        -------
+        None.
+
+        """
+        if 'Raster' not in self.outdata:
+            return
+
+        zout = self.outdata['Raster'][0]
+        txt = str(self.cbox_cbar.currentText())
+
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        cmap = colormaps[txt]
+
+        vmin = zout.data.mean() - 2.5*zout.data.std()
+        vmax = zout.data.mean() + 2.5*zout.data.std()
+
+        ims = self.axes.imshow(zout.data, extent=zout.extent, cmap=cmap,
+                               interpolation='nearest', vmin=vmin, vmax=vmax)
+
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
+        self.figure.colorbar(ims, format=frm, label='Depth')
+
+        self.figure.canvas.draw()
+
+    def calculate(self):
         """
         Routine which occurs when apply button is pressed.
 
@@ -234,17 +288,18 @@ class TiltDepth(BasicModule):
         txt = str(self.cbox_band1.currentText())
 
         self.btn_apply.setText('Calculating...')
-        QtWidgets.QApplication.processEvents()
         self.btn_apply.setEnabled(False)
 
         for i in self.indata['Raster']:
             if i.dataid == txt:
-                self.tiltdepth(i)
-                self.change_cbar()
+                dat = i
+                break
+
+        self.tiltdepth(dat)
+        self.change_cbar()
 
         self.btn_apply.setEnabled(True)
         self.btn_apply.setText('Calculate Tilt Depth')
-        QtWidgets.QApplication.processEvents()
 
     def settings(self, nodialog=False):
         """
@@ -275,9 +330,15 @@ class TiltDepth(BasicModule):
         self.cbox_band1.clear()
         self.cbox_band1.addItems(blist)
 
-        if nodialog is False:
-            self.show()
-        QtWidgets.QApplication.processEvents()
+        # if nodialog is False:
+        #     self.show()
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
 
         return True
 
@@ -335,15 +396,23 @@ class TiltDepth(BasicModule):
         inc = self.dsb_inc.value()
         dec = self.dsb_dec.value()
 
-        zout = rtp(data, inc, dec)
+        if self.do_rtp.isChecked():
+            zout = rtp(data, inc, dec)
+        else:
+            zout = data
 
         # Tilt
         self.pbar.setValue(1)
 
         nr, nc = zout.data.shape
         dy, dx = np.gradient(zout.data)
-        dxtot = np.sqrt(dx**2+dy**2)
-        dz = vertical(zout.data)
+        dxtot = np.ma.sqrt(dx**2+dy**2)
+
+        nmax = np.max([nr, nc])
+        npts = int(2**nextpow2(nmax))
+        dz = vertical(zout.data, npts, 1)
+
+        # dz = vertical(zout.data)
         t1 = np.arctan(dz/dxtot)
 
         self.pbar.setValue(2)
@@ -431,12 +500,12 @@ class TiltDepth(BasicModule):
         dat.data.mask = mask[::-1]
         dat.nodata = dat.data.fill_value
         dat.set_transform(data.xdim, gx0.min(), data.ydim, gy0.max())
-        dat.dataid = data.dataid
+        dat.dataid = data.dataid+' depths'
 
         self.outdata['Raster'] = [dat]
 
 
-@jit(nopython=True, nogil=True)
+@jit(nopython=True)
 def distpc(dx, dy, dx0, dy0, dcnt):
     """
     Find closest distances.
@@ -519,3 +588,35 @@ def vgrad(cnt):
     cgrad[cgrad < -90] += 180.
 
     return np.array(gx), np.array(gy), cgrad, np.array(cntid)
+
+
+def _testfn():
+    """RTP testing routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+
+    # from IPython import get_ipython
+    # get_ipython().run_line_magic('matplotlib', 'inline')
+    ifile = r"D:\Workdata\PyGMI Test Data\IGRF_RTP.tif"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp1 = TiltDepth()
+    tmp1.indata['Raster'] = dat
+    tmp1.do_rtp.setChecked(False)
+    tmp1.dsb_inc.setValue(-63.)
+    tmp1.dsb_dec.setValue(-16.)
+
+    tmp1.settings()
+
+    dat = tmp1.outdata
+
+    breakpoint()
+
+
+
+if __name__ == "__main__":
+    _testfn()
