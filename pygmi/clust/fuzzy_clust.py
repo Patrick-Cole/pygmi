@@ -477,6 +477,7 @@ class FuzzyClust(BasicModule):
                 dummy = np.ones(data[0].data.shape) * np.nan
                 alpha1 = (data[0].data.mask == 0)
                 dummy[alpha1 == 1] = clu[k, :]
+                dummy = np.ma.masked_invalid(dummy)
                 dat_out[cnt].metadata['Cluster']['memdat'].append(dummy)
             dat_out[cnt].metadata['Cluster']['vrc'] = clvrc
             dat_out[cnt].metadata['Cluster']['nce'] = clnce
