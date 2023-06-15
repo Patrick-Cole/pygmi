@@ -772,7 +772,9 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             if newbounds is not None:
                 xmin, _, _, ymax = newbounds
                 xdim, ydim = dataset.res
-                dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster,
+                # dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster,
+                #                       rows=rows, cols=cols)
+                dat[-1].set_transform(xdim, xmin, ydim, ymax,
                                       rows=rows, cols=cols)
             else:
                 dat[-1].set_transform(transform=dataset.transform,
@@ -1580,6 +1582,8 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             kwargs['ZSTD_LEVEL'] = '1'
         if dtype in (np.float32, np.float64):
             kwargs['PREDICTOR'] = '3'
+        else:
+            kwargs['PREDICTOR'] = '2'
 
     with rasterio.open(tmpfile, 'w', driver=drv,
                        width=int(dcols), height=int(drows), count=len(data),
@@ -1766,6 +1770,7 @@ def _filespeedtest():
 
     ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
     ifile = r"D:\Hope\3126AA_ESRI_TRUE_COLOUR_geo.tif"
+    ifile = "D:\SRTM\SA_SRTM30m.tif"
 
     # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile)

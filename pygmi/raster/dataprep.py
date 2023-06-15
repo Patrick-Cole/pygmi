@@ -1338,6 +1338,7 @@ class Metadata(ContextModule):
         self.lbl_min = QtWidgets.QLabel()
         self.lbl_max = QtWidgets.QLabel()
         self.lbl_mean = QtWidgets.QLabel()
+        self.lbl_dtype = QtWidgets.QLabel()
 
         self.proj = GroupProj('Input Projection')
 
@@ -1369,6 +1370,7 @@ class Metadata(ContextModule):
         label_mean = QtWidgets.QLabel('Dataset Mean:')
         label_units = QtWidgets.QLabel('Dataset Units:')
         label_bandid = QtWidgets.QLabel('Band Name:')
+        label_dtype = QtWidgets.QLabel('Data Type:')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -1408,6 +1410,8 @@ class Metadata(ContextModule):
         gridlayout.addWidget(self.lbl_mean, 9, 1, 1, 1)
         gridlayout.addWidget(label_units, 10, 0, 1, 1)
         gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
+        gridlayout.addWidget(label_dtype, 11, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -1510,6 +1514,7 @@ class Metadata(ContextModule):
         self.lbl_max.setText(str(idata.data.max()))
         self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
+        self.lbl_dtype.setText(str(idata.data.dtype))
 
     def run(self):
         """
@@ -1560,6 +1565,7 @@ class Metadata(ContextModule):
         self.lbl_max.setText(str(idata.data.max()))
         self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
+        self.lbl_dtype.setText(str(idata.data.dtype))
 
         self.update_vals()
 
@@ -2498,7 +2504,11 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
     showlog('Merging data...')
     if masterid is not None:
-        data = dat[masterid]
+        for i in dat:
+            if i.dataid == masterid:
+                data = i
+                break
+        # data = dat[masterid]
         xmin, xmax, ymin, ymax = data.extent
         if dxy is None:
             dxy = min(data.xdim, data.ydim)
