@@ -1815,7 +1815,8 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
                          src_crs=icrs,
                          dst_transform=otransform,
                          dst_crs=ocrs,
-                         src_nodata=data.nodata)
+                         src_nodata=data.nodata,
+                         resampling=rasterio.enums.Resampling['bilinear'])
 
     data2 = Data()
     data2.data = odata
@@ -2433,7 +2434,7 @@ def getepsgcodes():
 
 
 def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
-           masterid=None, nodeepcopy=False):
+           masterid=None, nodeepcopy=False, resampling='nearest'):
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -2467,6 +2468,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
     if dat[0].isrgb:
         return dat
 
+    resampling = rasterio.enums.Resampling[resampling]
     needsmerge = False
     rows, cols = dat[0].data.shape
 
@@ -2573,7 +2575,8 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
                              src_crs=data.crs,
                              src_nodata=data.nodata,
                              dst_transform=trans,
-                             dst_crs=data.crs)
+                             dst_crs=data.crs,
+                             resampling=resampling)
 
         data2 = Data()
         data2.data = np.ma.masked_equal(odata, data.nodata)

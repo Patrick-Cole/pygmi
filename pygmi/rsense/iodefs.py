@@ -51,7 +51,11 @@ from natsort import natsorted
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
+from pygmi.raster.ginterp import histcomp, norm255, norm2, currentshader
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
+from pygmi.raster.dataprep import lstack, data_reproject
+from pygmi.vector.dataprep import reprojxy
+
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -957,6 +961,8 @@ class ExportBatch(ContextModule):
         self.red = QtWidgets.QComboBox()
         self.green = QtWidgets.QComboBox()
         self.blue = QtWidgets.QComboBox()
+        self.sunshade = QtWidgets.QComboBox()
+        self.slvl = QtWidgets.QComboBox()
         self.ternary = QtWidgets.QCheckBox('Ternary Export')
 
         self.setupui()
@@ -977,6 +983,8 @@ class ExportBatch(ContextModule):
         label_red = QtWidgets.QLabel('Red Band:')
         label_green = QtWidgets.QLabel('Green Band:')
         label_blue = QtWidgets.QLabel('Blue Band:')
+        label_shade = QtWidgets.QLabel('Sunshade Band:')
+        label_slvl = QtWidgets.QLabel('Sunshade Level:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
         ext = ('GeoTiff', 'GeoTiff compressed using DEFLATE',
@@ -985,11 +993,15 @@ class ExportBatch(ContextModule):
 
         self.ofilt.addItems(ext)
         self.ofilt.setCurrentText('GeoTiff compressed using DEFLATE')
+        self.slvl.addItems(['Standard', 'Heavy'])
+        self.slvl.setCurrentText('Standard')
 
         self.ternary.setChecked(False)
         self.red.setEnabled(False)
         self.green.setEnabled(False)
         self.blue.setEnabled(False)
+        self.sunshade.setEnabled(False)
+        self.slvl.setEnabled(False)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -1014,6 +1026,12 @@ class ExportBatch(ContextModule):
         gridlayout_main.addWidget(label_blue, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.blue, 5, 1, 1, 1)
 
+        gridlayout_main.addWidget(label_shade, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.sunshade, 6, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_slvl, 7, 0, 1, 1)
+        gridlayout_main.addWidget(self.slvl, 7, 1, 1, 1)
+
         gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
 
@@ -1035,10 +1053,18 @@ class ExportBatch(ContextModule):
             self.red.setEnabled(True)
             self.green.setEnabled(True)
             self.blue.setEnabled(True)
+            self.ofilt.setCurrentText('GeoTiff')
+            self.ofilt.setEnabled(False)
+            self.sunshade.setEnabled(True)
+            self.slvl.setEnabled(True)
+
         else:
             self.red.setEnabled(False)
             self.green.setEnabled(False)
             self.blue.setEnabled(False)
+            self.ofilt.setEnabled(True)
+            self.sunshade.setEnabled(False)
+            self.slvl.setEnabled(False)
 
     def run(self):
         """
@@ -1068,6 +1094,7 @@ class ExportBatch(ContextModule):
         self.red.addItems(bnames)
         self.green.addItems(bnames)
         self.blue.addItems(bnames)
+        self.sunshade.addItems(['None', 'External File (first band)']+bnames)
 
         tmp = self.exec_()
 
@@ -1082,14 +1109,35 @@ class ExportBatch(ContextModule):
                       self.green.currentText(),
                       self.blue.currentText()]
             otype = 'RGB'
+            sunfile = self.sunshade.currentText()
+            slevel = self.slvl.currentText()
+            if slevel == 'Standard':
+                cell = 25.
+                alpha = .75
+            else:
+                cell = 1.
+                alpha = .99
+
+            if sunfile == 'External File (first band)':
+                ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
+                       '*.pix *.bil);;')
+
+                sunfile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                    self.parent, 'Open File', '.', ext)
+                if sunfile == '':
+                    return False
         else:
             otype = None
             tnames = None
+            slevel = None
+            cell = 25.
+            alpha = .75
 
         self.showlog('Export Data Busy...')
 
         export_batch(self.indata, odir, filt, tnames, piter=self.piter,
-                     showlog=self.showlog, otype=otype)
+                     showlog=self.showlog, otype=otype, sunfile=sunfile,
+                     cell=cell, alpha=alpha)
 
         self.showlog('Export Data Finished!')
         self.process_is_active(False)
@@ -1209,7 +1257,8 @@ def etree_to_dict(t):
 
 
 def export_batch(indata, odir, filt, tnames=None, piter=None,
-                 showlog=print, otype=None):
+                 showlog=print, otype=None, sunfile=None,
+                 cell=25., alpha=.75):
     """
     Export a batch of files directly from satellite format to disk.
 
@@ -1236,6 +1285,9 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
     if 'RasterFileList' not in indata:
         showlog('You need a raster file list')
         return
+
+    if sunfile == 'None':
+        sunfile = None
 
     ifiles = indata['RasterFileList']
 
@@ -1271,10 +1323,16 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                         break
         else:
             odat = dat
-
         showlog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odat, ofilt, piter=piter, compression=compression,
-                      showlog=showlog)
+
+        if otype == 'RGB':
+            odat = save_ternary(odat, sunfile=sunfile, cell=cell, alpha=alpha)
+            export_raster(ofile, odat, 'GTiff', piter=piter,
+                          bandsort=False, updatestats=False,
+                          showlog=showlog)
+        else:
+            export_raster(ofile, odat, ofilt, piter=piter,
+                          compression=compression, showlog=showlog)
 
 
 def consolidate_aster_list(flist):
@@ -2881,6 +2939,116 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
+def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
+                 cell=25., alpha=.75):
+    """
+    Save a ternary image.
+
+    Returns
+    -------
+    None.
+
+    """
+    data = lstack(dat, nodeepcopy=True)
+
+    if sunfile is not None:
+        sdata = None
+        for i in data:
+            if i.dataid == sunfile:
+                sdata = i
+                break
+        if sdata is None:
+            sundata = get_raster(sunfile, metaonly=True)
+
+            owkt = sundata[0].crs.to_wkt()
+            iwkt = data[0].crs.to_wkt()
+
+            x = data[0].extent[:2]
+            y = data[0].extent[2:]
+
+            xx, yy = reprojxy(x, y, iwkt, owkt)
+
+            bounds = [xx[0], yy[0], xx[1], yy[1]]
+
+            sundata = get_raster(sunfile, bounds=bounds)
+            sundata = data_reproject(sundata[0], data[0].crs)
+
+            sdata = [data[0], sundata]
+            masterid = sdata[0].dataid
+            sdata = lstack(sdata, nodeepcopy=True, masterid=masterid,
+                           resampling='bilinear')[1]
+
+    red = data[0].data
+    green = data[1].data
+    blue = data[2].data
+
+    mask = np.logical_or(red.mask, green.mask)
+    mask = np.logical_or(mask, blue.mask)
+    mask = np.logical_not(mask)
+
+    red, _, _ = histcomp(red, perc=clippercl, uperc=clippercu)
+    green, _, _ = histcomp(green, perc=clippercl, uperc=clippercu)
+    blue, _, _ = histcomp(blue, perc=clippercl, uperc=clippercu)
+
+    img = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
+    img[:, :, 3] = mask*254+1
+
+    img[:, :, 0] = norm255(red)
+    img[:, :, 1] = norm255(green)
+    img[:, :, 2] = norm255(blue)
+
+    phi = -np.pi/4.
+    theta = np.pi/4.
+
+    # sundata = None
+    if sundata is not None:
+        sunshader = currentshader(sdata.data, cell, theta, phi, alpha)
+
+        snorm = norm2(sunshader)
+
+        img[:, :, 0] = img[:, :, 0]*snorm  # red
+        img[:, :, 1] = img[:, :, 1]*snorm  # green
+        img[:, :, 2] = img[:, :, 2]*snorm  # blue
+        img = img.astype(np.uint8)
+
+    import matplotlib.pyplot as plt
+
+    plt.figure(dpi=150)
+    plt.imshow(img)
+    plt.show()
+
+    newimg = [copy.deepcopy(data[0]),
+              copy.deepcopy(data[0]),
+              copy.deepcopy(data[0]),
+              copy.deepcopy(data[0])]
+
+    newimg[0].data = img[:, :, 0]
+    newimg[1].data = img[:, :, 1]
+    newimg[2].data = img[:, :, 2]
+    newimg[3].data = img[:, :, 3]
+
+    mask = img[:, :, 3]
+    newimg[0].data[newimg[0].data == 0] = 1
+    newimg[1].data[newimg[1].data == 0] = 1
+    newimg[2].data[newimg[2].data == 0] = 1
+
+    newimg[0].data[mask <= 1] = 0
+    newimg[1].data[mask <= 1] = 0
+    newimg[2].data[mask <= 1] = 0
+
+    newimg[0].nodata = 0
+    newimg[1].nodata = 0
+    newimg[2].nodata = 0
+    newimg[3].nodata = 0
+
+    newimg[0].dataid = data[0].dataid
+    newimg[1].dataid = data[1].dataid
+    newimg[2].dataid = data[2].dataid
+    newimg[3].dataid = 'Alpha'
+
+    return newimg
+
+
 def set_export_filename(dat, odir, otype=None):
     """
     Set the export filename according to convention.
@@ -3067,12 +3235,15 @@ def _testfn2():
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
+    tmp1.idir = r"D:\WC\Sentinel_2\raw"
+    tmp1.get_sfile(True)
     tmp1.settings()
 
     dat = tmp1.outdata
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
+    tmp2.get_odir(r"D:\WC\Sentinel_2\test")
     tmp2.run()
 
 
