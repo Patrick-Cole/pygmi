@@ -130,22 +130,26 @@ class Tilt1(BasicModule):
         data2 = []
 
         for i in self.piter(range(len(data))):
-            t1, th, t2, ta, tdx = tilt1(data[i].data, self.azi, self.smooth)
+            t1, th, t2, ta, tdx, tahg = tilt1(data[i].data, self.azi,
+                                              self.smooth)
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
-            data2[-5].data = t1
-            data2[-4].data = th
-            data2[-3].data = t2
-            data2[-2].data = ta
-            data2[-1].data = tdx
-            data2[-5].dataid += ' Standard Tilt Angle'
-            data2[-4].dataid += ' Hyperbolic Tilt Angle'
-            data2[-3].dataid += ' 2nd Order Tilt Angle'
-            data2[-2].dataid += ' Tilt Based Directional Derivative'
-            data2[-1].dataid += ' Total Derivative'
+            data2.append(copy.deepcopy(data[i]))
+            data2[-6].data = t1
+            data2[-5].data = th
+            data2[-4].data = t2
+            data2[-3].data = ta
+            data2[-2].data = tdx
+            data2[-1].data = tahg
+            data2[-6].dataid += ' Standard Tilt Angle'
+            data2[-5].dataid += ' Hyperbolic Tilt Angle'
+            data2[-4].dataid += ' 2nd Order Tilt Angle'
+            data2[-3].dataid += ' Tilt Based Directional Derivative'
+            data2[-2].dataid += ' Total Derivative'
+            data2[-1].dataid += ' Tilt Angle of the Horizontal Gradient'
 
         for i in data2:
             if i.nodata is None:
@@ -269,7 +273,16 @@ def tilt1(data, azi, s):
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative
 
-    return t1, th, t2, ta, tdx
+    data = dxtot
+    nr, nc = data.shape
+    dy, dx = np.gradient(data)
+    dxtot = np.ma.sqrt(dx*dx+dy*dy)
+    nmax = np.max([nr, nc])
+    npts = int(2**nextpow2(nmax))
+    dz = vertical(data, npts, 1)
+    tahg = np.ma.arctan(dz/dxtot)
+
+    return t1, th, t2, ta, tdx, tahg
 
 
 def nextpow2(n):
