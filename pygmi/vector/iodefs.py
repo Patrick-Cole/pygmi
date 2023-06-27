@@ -108,7 +108,8 @@ class ImportLineData(BasicModule):
 
         """
         if not nodialog:
-            ext = ('Comma Delimited (*.csv);;'
+            ext = ('Excel (*.xlsx);;'
+                   'Comma Delimited (*.csv);;'
                    'Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
                    'Space Delimited (*.txt);;'
@@ -121,6 +122,9 @@ class ImportLineData(BasicModule):
 
         if self.filt == 'Geosoft XYZ (*.xyz)':
             gdf = self.get_GXYZ()
+
+        elif self.filt == 'Excel (*.xlsx)':
+            gdf = self.get_excel()
         elif self.filt == 'ASCII XYZ (*.xyz)':
             gdf = self.get_delimited(' ')
         elif self.filt == 'Comma Delimited (*.csv)':
@@ -272,6 +276,25 @@ class ImportLineData(BasicModule):
 
         return gdf
 
+    def get_excel(self):
+        """
+        Get a delimited line file.
+
+        Returns
+        -------
+        gdf : Dataframe
+            Pandas dataframe.
+
+        """
+        gdf = pd.read_excel(self.ifile)
+
+        gdf.columns = gdf.columns.str.lower()
+
+        if 'line' not in gdf.columns:
+            gdf['line'] = 'None'
+
+        return gdf
+
 
 class ExportLine(ContextModule):
     """Export Line Data."""
@@ -393,7 +416,23 @@ class ImportShapeData(BasicModule):
 
         dat = {gdf.geom_type.iloc[0]: gdf}
 
-        self.outdata['Vector'] = dat
+        if gdf.geom_type.loc[0] == 'Point':
+            gdf['pygmiX'] = gdf.geometry.x
+            gdf['pygmiY'] = gdf.geometry.y
+
+            if 'line' not in gdf.columns:
+                gdf['line'] = 'None'
+            else:
+                gdf['line'] = gdf['line'].astype(str)
+
+            if 'Line' not in self.outdata:
+                self.outdata['Line'] = {}
+
+            # gdf = gdf.replace(nodata, np.nan)
+            self.outdata['Line'][self.ifile] = gdf
+
+        else:
+            self.outdata['Vector'] = dat
 
         return True
 
