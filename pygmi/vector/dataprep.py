@@ -231,7 +231,7 @@ class DataGrid(BasicModule):
 
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
+        # data = data.dropna()
 
         x = data.pygmiX.values
         y = data.pygmiY.values
@@ -282,7 +282,7 @@ class DataGrid(BasicModule):
 
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
+        # data = data.dropna()
 
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line') &
@@ -387,61 +387,23 @@ class DataGrid(BasicModule):
         bdist = float(self.bdist.text())
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
+        dataid = self.dataid.currentText()
         newdat = []
 
         if bdist < 1:
             bdist = None
             self.showlog('Blanking distance too small.')
 
-        filt = (data[self.dataid.currentText()] != nullvalue)
-        x = data.pygmiX.values[filt]
-        y = data.pygmiY.values[filt]
-        z = data[self.dataid.currentText()].values[filt]
+        data2 = data[['pygmiX', 'pygmiY', dataid]]
+        data2 = data2.dropna()
 
-        if method == 'Minimum Curvature':
-            gdat = minc(x, y, z, dxy, showlog=self.showlog,
-                        bdist=bdist)
-            gdat = np.ma.filled(gdat, fill_value=nullvalue)
-        else:
-            extent = np.array([x.min(), x.max(), y.min(), y.max()])
+        filt = (data2[dataid] != nullvalue)
+        x = data2.pygmiX.values[filt]
+        y = data2.pygmiY.values[filt]
+        z = data2[dataid].values[filt]
 
-            rows = int((extent[3] - extent[2])/dxy+1)
-            cols = int((extent[1] - extent[0])/dxy+1)
-
-            xxx = np.linspace(extent[0], extent[1], cols)
-            yyy = np.linspace(extent[2], extent[3], rows)
-            xxx, yyy = np.meshgrid(xxx, yyy)
-
-            points = np.transpose([x.flatten(), y.flatten()])
-
-            if method == 'Nearest Neighbour':
-                gdat = griddata(points, z, (xxx, yyy), method='nearest')
-                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
-            elif method == 'Linear':
-                gdat = griddata(points, z, (xxx, yyy), method='linear',
-                                fill_value=nullvalue)
-                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
-            elif method == 'Cubic':
-                gdat = griddata(points, z, (xxx, yyy), method='cubic',
-                                fill_value=nullvalue)
-                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
-
-            gdat = gdat[::-1]
-        gdat = np.ma.masked_equal(gdat, nullvalue)
-
-        # Create dataset
-        dat = Data()
-        dat.data = gdat
-        dat.nodata = nullvalue
-        dat.dataid = self.dataid.currentText()
-
-        rows, _ = dat.data.shape
-
-        left = x.min()
-        top = y.min() + dxy*rows
-
-        dat.set_transform(dxy, left, dxy, top)
+        dat = gridxyz(x, y, z, dxy, nullvalue, method, bdist, self.showlog)
+        dat.dataid = dataid
 
         newdat.append(dat)
 
@@ -649,34 +611,6 @@ def cut_point(data, ifile):
     data : Data
         PyGMI Dataset
     """
-    # shapef = ogr.Open(ifile)
-    # if shapef is None:
-    #     return None
-    # lyr = shapef.GetLayer()
-    # poly = lyr.GetNextFeature()
-    # if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-    #     shapef = None
-    #     return None
-
-    # points = []
-    # geom = poly.GetGeometryRef()
-
-    # ifin = 0
-    # imax = 0
-    # if geom.GetGeometryName() == 'MULTIPOLYGON':
-    #     for i in range(geom.GetGeometryCount()):
-    #         geom.GetGeometryRef(i)
-    #         itmp = geom.GetGeometryRef(i)
-    #         itmp = itmp.GetGeometryRef(0).GetPointCount()
-    #         if itmp > imax:
-    #             imax = itmp
-    #             ifin = i
-    #     geom = geom.GetGeometryRef(ifin)
-
-    # pts = geom.GetGeometryRef(0)
-    # for pnt in range(pts.GetPointCount()):
-    #     points.append((pts.GetX(pnt), pts.GetY(pnt)))
-
     gdf = gpd.read_file(ifile)
     gdf = gdf[gdf.geometry != None]
 
@@ -692,8 +626,61 @@ def cut_point(data, ifile):
 
     data = data[chk]
 
-    # shapef = None
     return data
+
+
+def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
+            bdist=4.0, showlog=print):
+    """Grid data."""
+    if bdist < 1:
+        bdist = None
+        showlog('Blanking distance too small.')
+
+    if method == 'Minimum Curvature':
+        gdat = minc(x, y, z, dxy, showlog=showlog,
+                    bdist=bdist)
+        gdat = np.ma.filled(gdat, fill_value=nullvalue)
+    else:
+        extent = np.array([x.min(), x.max(), y.min(), y.max()])
+
+        rows = int((extent[3] - extent[2])/dxy+1)
+        cols = int((extent[1] - extent[0])/dxy+1)
+
+        xxx = np.linspace(extent[0], extent[1], cols)
+        yyy = np.linspace(extent[2], extent[3], rows)
+        xxx, yyy = np.meshgrid(xxx, yyy)
+
+        points = np.transpose([x.flatten(), y.flatten()])
+
+        if method == 'Nearest Neighbour':
+            gdat = griddata(points, z, (xxx, yyy), method='nearest')
+            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
+        elif method == 'Linear':
+            gdat = griddata(points, z, (xxx, yyy), method='linear',
+                            fill_value=nullvalue)
+            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
+        elif method == 'Cubic':
+            gdat = griddata(points, z, (xxx, yyy), method='cubic',
+                            fill_value=nullvalue)
+            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
+
+        gdat = gdat[::-1]
+    gdat = np.ma.masked_equal(gdat, nullvalue)
+
+    # Create dataset
+    dat = Data()
+    dat.data = gdat
+    dat.nodata = nullvalue
+    # dat.dataid = self.dataid.currentText()
+
+    rows, _ = dat.data.shape
+
+    left = x.min()
+    top = y.min() + dxy*rows
+
+    dat.set_transform(dxy, left, dxy, top)
+
+    return dat
 
 
 def quickgrid(x, y, z, dxy, numits=4, showlog=print):

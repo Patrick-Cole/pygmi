@@ -411,7 +411,7 @@ class ImportShapeData(BasicModule):
 
         os.chdir(os.path.dirname(self.ifile))
 
-        gdf = gpd.read_file(self.ifile)
+        gdf = gpd.read_file(self.ifile, engine='pyogrio')
         gdf = gdf[gdf.geometry != None]
 
         dat = {gdf.geom_type.iloc[0]: gdf}
