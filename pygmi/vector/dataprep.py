@@ -231,10 +231,9 @@ class DataGrid(BasicModule):
 
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        # data = data.dropna()
 
-        x = data.pygmiX.values
-        y = data.pygmiY.values
+        x = data.geometry.x.values
+        y = data.geometry.y.values
 
         cols = round(x.ptp()/self.dxy)
         rows = round(y.ptp()/self.dxy)
@@ -282,12 +281,9 @@ class DataGrid(BasicModule):
 
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        # data = data.dropna()
 
         filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+                (data.columns != 'line'))
 
         cols = list(data.columns[filt])
         self.dataid.addItems(cols)
@@ -298,8 +294,8 @@ class DataGrid(BasicModule):
             self.dataid.setCurrentText(self.dataid_text)
 
         if self.dxy is None:
-            x = data.pygmiX.values
-            y = data.pygmiY.values
+            x = data.geometry.x.values
+            y = data.geometry.y.values
 
             dx = x.ptp()/np.sqrt(x.size)
             dy = y.ptp()/np.sqrt(y.size)
@@ -394,12 +390,12 @@ class DataGrid(BasicModule):
             bdist = None
             self.showlog('Blanking distance too small.')
 
-        data2 = data[['pygmiX', 'pygmiY', dataid]]
+        data2 = data[['geometry', dataid]]
         data2 = data2.dropna()
 
         filt = (data2[dataid] != nullvalue)
-        x = data2.pygmiX.values[filt]
-        y = data2.pygmiY.values[filt]
+        x = data2.geometry.x.values[filt]
+        y = data2.geometry.y.values[filt]
         z = data2[dataid].values[filt]
 
         dat = gridxyz(x, y, z, dxy, nullvalue, method, bdist, self.showlog)
@@ -485,20 +481,11 @@ class DataReproj(BasicModule):
         # Output stuff
         targ_wkt = self.out_proj.wkt
 
-        x2, y2 = reprojxy(data.pygmiX, data.pygmiY, orig_wkt, targ_wkt)
+        data.set_crs(CRS.from_wkt(orig_wkt), inplace=True)
+        data.to_crs(CRS.from_wkt(targ_wkt), inplace=True)
 
-        xy = np.transpose([x2, y2])
-
-        if np.inf in xy:
-            self.showlog('Note: inf values in reprojected results. '
-                         'Please check your input and output '
-                         'projections or input x and y data for '
-                         'mistakes.')
-
-        data = data.assign(Xnew=xy[:, 0])
-        data = data.assign(Ynew=xy[:, 1])
-        data.pygmiX = xy[:, 0]
-        data.pygmiY = xy[:, 1]
+        data = data.assign(Xnew=data.geometry.x.values)
+        data = data.assign(Ynew=data.geometry.y.values)
 
         self.outdata['Line'] = {key: data}
 
@@ -548,7 +535,7 @@ class DataReproj(BasicModule):
             self.outdata['Vector'] = {}
             for i in self.indata['Vector']:
                 ivec = self.indata['Vector'][i]
-                ivec.set_crs(self.in_proj.wkt)
+                ivec = ivec.set_crs(self.in_proj.wkt)
                 self.outdata['Vector'][i] = ivec.to_crs(self.out_proj.wkt)
         else:
             self.acceptall()
@@ -614,17 +601,21 @@ def cut_point(data, ifile):
     gdf = gpd.read_file(ifile)
     gdf = gdf[gdf.geometry != None]
 
-    if 'Polygon' in gdf.geom_type.iloc[0]:
-        dat = gdf.geometry.iloc[0]
+    if 'Polygon' not in gdf.geom_type.iloc[0]:
+        return None
+    # if 'Polygon' in gdf.geom_type.iloc[0]:
+    #     dat = gdf.geometry.iloc[0]
 
-    points = list(dat.exterior.coords)
+    data = gpd.clip(data, gdf)
 
-    bbpath = mplPath.Path(points)
+    # points = list(dat.exterior.coords)
 
-    chk = bbpath.contains_points(np.transpose([data.pygmiX.values,
-                                               data.pygmiY.values]))
+    # bbpath = mplPath.Path(points)
 
-    data = data[chk]
+    # chk = bbpath.contains_points(np.transpose([data.geometry.x.values,
+    #                                            data.geometry.y.values]))
+
+    # data = data[chk]
 
     return data
 

@@ -77,8 +77,6 @@ class ImportLEMI417Data(BasicModule):
         gdf = pd.read_csv(self.ifile, sep=None, engine='python', names=dataid,
                           skipinitialspace=True, index_col=False)
 
-        gdf['pygmiX'] = np.nan
-        gdf['pygmiY'] = np.nan
         gdf['line'] = 'None'
 
         if 'Line' not in self.outdata:

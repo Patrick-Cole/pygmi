@@ -34,7 +34,7 @@ import pandas as pd
 import geopandas as gpd
 
 from pygmi import menu_default
-from pygmi.misc import ProgressBarText, BasicModule, ContextModule
+from pygmi.misc import BasicModule, ContextModule
 
 
 class ImportLineData(BasicModule):
@@ -74,6 +74,11 @@ class ImportLineData(BasicModule):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.xchan.setSizeAdjustPolicy(3)
+        self.ychan.setSizeAdjustPolicy(3)
+        self.xchan.setMinimumSize = 10
+        self.ychan.setMinimumSize = 10
 
         self.setWindowTitle(r'Import Point/Line Data')
 
@@ -139,28 +144,42 @@ class ImportLineData(BasicModule):
         if gdf is None:
             return False
 
-        ltmp = gdf.columns.values
+        self.xchan.clear()
+        self.ychan.clear()
 
-        xind = 0
-        yind = 1
+        xind = -1
+        yind = -1
 
-        # Check for flexible matches
-        for i, tmp in enumerate(ltmp):
-            tmpl = tmp.lower()
-            if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
-                xind = i
-            if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
-                yind = i
-        # Check for exact matches. These take priority
-        for i, tmp in enumerate(ltmp):
-            tmpl = tmp.lower()
-            if tmpl in ['x', 'e']:
-                xind = i
-            if tmpl in ['y', 'n']:
-                yind = i
+        ltmp = gdf.columns.str.lower()
 
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
+        exactpairs = [['lon', 'lat'],
+                      ['long', 'lat'],
+                      ['longitude', 'latitude'],
+                      ['x', 'y'],
+                      ['e', 'n']]
+
+        for i, j in exactpairs:
+            if i in ltmp and j in ltmp:
+                xind = ltmp.get_loc(i)
+                yind = ltmp.get_loc(j)
+                break
+
+        if xind == -1:
+            ltmp = ltmp.values
+            # Check for flexible matches
+            for i, tmp in enumerate(ltmp):
+                tmpl = tmp.lower()
+                if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
+                    xind = i
+                if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
+                    yind = i
+
+        if xind == -1:
+            xind = 0
+            yind = 1
+
+        self.xchan.addItems(gdf.columns.values)
+        self.ychan.addItems(gdf.columns.values)
 
         self.xchan.setCurrentIndex(xind)
         self.ychan.setCurrentIndex(yind)
@@ -180,8 +199,14 @@ class ImportLineData(BasicModule):
         xcol = self.xchan.currentText()
         ycol = self.ychan.currentText()
 
-        gdf['pygmiX'] = gdf[xcol]
-        gdf['pygmiY'] = gdf[ycol]
+        x = gdf[xcol]
+        y = gdf[ycol]
+
+        if x.dtype == 'O' or y.dtype == 'O':
+            self.showlog('Error: You have text in your coordinates.')
+            return False
+
+        gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x, y))
 
         gdf['line'] = gdf['line'].astype(str)
 
@@ -328,9 +353,7 @@ class ExportLine(ContextModule):
         data = self.indata['Line']
         data = list(data.values())[0]
 
-        dfall = data.drop(['pygmiX', 'pygmiY'], axis=1)
-
-        dfall.to_csv(filename, index=False)
+        data.to_csv(filename, index=False)
 
         self.showlog('Export completed')
 
@@ -417,9 +440,6 @@ class ImportShapeData(BasicModule):
         dat = {gdf.geom_type.iloc[0]: gdf}
 
         if gdf.geom_type.loc[0] == 'Point':
-            gdf['pygmiX'] = gdf.geometry.x
-            gdf['pygmiY'] = gdf.geometry.y
-
             if 'line' not in gdf.columns:
                 gdf['line'] = 'None'
             else:

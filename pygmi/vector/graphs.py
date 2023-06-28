@@ -319,7 +319,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
-        data = data.dropna()
 
         zdata = data[ival]
         med = np.median(zdata)
@@ -336,8 +335,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for line in datagrp:
             data1 = line[1]
-            x = data1.pygmiX.values
-            y = data1.pygmiY.values
+            data1 = data1.dropna(subset=ival)
+            x = data1.geometry.x.values
+            y = data1.geometry.y.values
             z = data1[ival]
 
             if x.size < 2:
@@ -350,8 +350,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for line in datagrp:
             data1 = line[1]
 
-            x = data1.pygmiX.values
-            y = data1.pygmiY.values
+            x = data1.geometry.x.values
+            y = data1.geometry.y.values
             z = data1[ival]
 
             if x.size < 2:
@@ -595,10 +595,11 @@ class PlotPoints(GraphWindow):
         """
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
         i = self.combobox1.currentText()
+        data = data.dropna(subset=i)
 
-        self.mmc.update_map(data.pygmiX, data.pygmiY, data[i])
+        self.mmc.update_map(data.geometry.x.values, data.geometry.y.values,
+                            data[i])
 
     def run(self):
         """
@@ -613,13 +614,11 @@ class PlotPoints(GraphWindow):
         data = list(data.values())[0]
 
         filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+                (data.columns != 'line'))
 
         cols = list(data.columns[filt])
 
-        if data.pygmiX.isna().min() == True:
+        if 'geometry' not in data:
             self.showlog('You do not have coordinates in that point '
                          'dataset.')
             return
@@ -663,14 +662,14 @@ class PlotLines(GraphWindow):
         """
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
 
         line = self.combobox1.currentText()
         col = self.combobox2.currentText()
 
         data2 = data[data.line == line]
-        x = data2.pygmiX.values
-        y = data2.pygmiY.values
+        data2 = data2.dropna(subset=col)
+        x = data2.geometry.x.values
+        y = data2.geometry.y.values
 
         data2 = data2[col].values
 
@@ -697,9 +696,7 @@ class PlotLines(GraphWindow):
         data = self.indata['Line']
         data = list(data.values())[0]
         filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+                (data.columns != 'line'))
         cols = list(data.columns[filt])
         lines = data.line[data.line != 'nan'].unique()
 
@@ -738,10 +735,11 @@ class PlotLineMap(GraphWindow):
         """
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
-        data = data.dropna()
 
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
+        data = data.dropna(subset=i)
+
         self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
 
     def run(self):
@@ -762,9 +760,7 @@ class PlotLineMap(GraphWindow):
         data = self.indata['Line']
         data = list(data.values())[0]
         filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+                (data.columns != 'line'))
         cols = list(data.columns[filt])
         self.combobox1.addItems(cols)
 
@@ -879,9 +875,7 @@ class PlotVector(GraphWindow):
         data = data.select_dtypes(include='number')
 
         filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+                (data.columns != 'line'))
 
         cols = list(data.columns[filt])
         if len(cols) > 0:

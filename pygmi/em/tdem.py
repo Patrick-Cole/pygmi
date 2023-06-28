@@ -608,9 +608,7 @@ class TDEM1D(BasicModule):
         self.combobalt.clear()
 
         filt = ((self.data.columns != 'geometry') &
-                (self.data.columns != 'line') &
-                (self.data.columns != 'pygmiX') &
-                (self.data.columns != 'pygmiY'))
+                (self.data.columns != 'line'))
 
         cnames = list(self.data.columns[filt])
 

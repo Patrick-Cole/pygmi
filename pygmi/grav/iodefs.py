@@ -28,6 +28,7 @@ import os
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 
 from pygmi import menu_default
 from pygmi.misc import BasicModule
@@ -221,8 +222,9 @@ class ImportCG5(BasicModule):
 
         dfmerge = dfmerge[~filt]
 
-        dfmerge['pygmiX'] = dfmerge['longitude']
-        dfmerge['pygmiY'] = dfmerge['latitude']
+        x = dfmerge['longitude']
+        y = dfmerge['latitude']
+        dfmerge = gpd.GeoDataFrame(dfmerge, geometry=gpd.points_from_xy(x, y))
 
         dfmerge['line'] = dfmerge['line'].astype(str)
         self.outdata['Line'] = {'Gravity': dfmerge}

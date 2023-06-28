@@ -32,9 +32,6 @@ default extracted directory structure.
 import sys
 
 from pygmi.main import main
-# import warnings
-
-# warnings.simplefilter("default")
 
 # useful regex for find: \.(?!py) in spyder.ini
 

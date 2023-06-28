@@ -650,8 +650,8 @@ def _testfn():
 
     dat = IO.outdata['Line']
 
-    x = dat[ifile]['pygmiX'].to_numpy()
-    y = dat[ifile]['pygmiY'].to_numpy()
+    x = dat[ifile].geometry.x.to_numpy()
+    y = dat[ifile].geometry.y.to_numpy()
     z = dat[ifile]['Column 8'].to_numpy()
 
     dxy = 125

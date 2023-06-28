@@ -1097,7 +1097,7 @@ class GetProf(BasicModule):
         os.chdir(os.path.dirname(self.ifile))
 
         try:
-            gdf = gpd.read_file(self.ifile)
+            gdf = gpd.read_file(self.ifile, engine='pyogrio')
         except:
             self.showlog('There was a problem importing the shapefile. '
                          'Please make sure you have at all the '
@@ -1130,8 +1130,11 @@ class GetProf(BasicModule):
                 if ogdf is None:
                     ogdf = pd.DataFrame(xy[:, 0], columns=['X'])
                     ogdf['Y'] = xy[:, 1]
-                    ogdf['pygmiX'] = ogdf['X']
-                    ogdf['pygmiY'] = ogdf['Y']
+
+                    x = ogdf['X']
+                    y = ogdf['Y']
+                    ogdf = gpd.GeoDataFrame(ogdf,
+                                            geometry=gpd.points_from_xy(x, y))
 
                 ogdf[idata.dataid] = z
 

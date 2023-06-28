@@ -667,6 +667,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
 
+        fstyle = (QtWidgets.QFrame.Shape.Box | QtWidgets.QFrame.Shadow.Plain)
+        self.textbrowser_datainfo.setFrameStyle(fstyle)
+        self.textbrowser_processlog.setFrameStyle(fstyle)
+        self.graphics_view.setFrameStyle(fstyle)
+
         self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
         self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
