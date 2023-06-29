@@ -1145,7 +1145,7 @@ class GetProf(BasicModule):
             else:
                 ogdf2 = ogdf2.append(ogdf, ignore_index=True)
 
-        self.outdata['Line'] = {'profile': ogdf2}
+        self.outdata['Vector'] = [ogdf2]
 
         return True
 

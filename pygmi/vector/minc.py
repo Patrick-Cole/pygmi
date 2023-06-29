@@ -648,11 +648,11 @@ def _testfn():
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
-    dat = IO.outdata['Line']
+    dat = IO.outdata['Vector']
 
-    x = dat[ifile].geometry.x.to_numpy()
-    y = dat[ifile].geometry.y.to_numpy()
-    z = dat[ifile]['Column 8'].to_numpy()
+    x = dat.geometry.x.to_numpy()
+    y = dat.geometry.y.to_numpy()
+    z = dat['Column 8'].to_numpy()
 
     dxy = 125
 

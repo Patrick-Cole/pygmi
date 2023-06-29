@@ -56,9 +56,9 @@ def test_process_data():
     PD.indata = IO.outdata
     PD.settings(True)
 
-    datout = PD.outdata['Line']
+    datout = PD.outdata['Vector'][0]
 
-    boug = datout['Gravity']['BOUGUER']
+    boug = datout['BOUGUER']
     boug = np.array(boug)
 
     datout2 = np.array([-716.5271207830797, -716.5167383494435,

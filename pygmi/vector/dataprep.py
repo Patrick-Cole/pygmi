@@ -28,18 +28,17 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-import matplotlib.path as mplPath
+# import matplotlib.path as mplPath
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 import geopandas as gpd
 from pyproj import CRS, Transformer
 
-
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
-from pygmi.misc import BasicModule
+from pygmi.misc import BasicModule, ContextModule
 
 
 class PointCut(BasicModule):
@@ -68,10 +67,8 @@ class PointCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Line' in self.indata:
-            data = copy.deepcopy(self.indata['Line'])
-            key = list(data.keys())[0]
-            data = data[key]
+        if 'Vector' in self.indata:
+            data = copy.deepcopy(self.indata['Vector'][0])
         else:
             self.showlog('No point data')
             return False
@@ -97,7 +94,7 @@ class PointCut(BasicModule):
 
         if self.pbar is not None:
             self.pbar.to_max()
-        self.outdata['Line'] = {key: data}
+        self.outdata['Vector'] = [data]
 
         return True
 
@@ -229,8 +226,7 @@ class DataGrid(BasicModule):
         else:
             return
 
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
+        data = self.indata['Vector'][0]
 
         x = data.geometry.x.values
         y = data.geometry.y.values
@@ -273,14 +269,17 @@ class DataGrid(BasicModule):
 
         """
         tmp = []
-        if 'Line' not in self.indata:
+        if 'Vector' not in self.indata:
+            self.showlog('No Point Data')
+            return False
+
+        data = self.indata['Vector'][0]
+
+        if data.geom_type.iloc[0] != 'Point':
             self.showlog('No Point Data')
             return False
 
         self.dataid.clear()
-
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
 
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
@@ -381,8 +380,7 @@ class DataGrid(BasicModule):
         method = self.grid_method.currentText()
         nullvalue = float(self.dsb_null.text())
         bdist = float(self.bdist.text())
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
+        data = self.indata['Vector'][0]
         dataid = self.dataid.currentText()
         newdat = []
 
@@ -404,7 +402,7 @@ class DataGrid(BasicModule):
         newdat.append(dat)
 
         self.outdata['Raster'] = newdat
-        self.outdata['Line'] = self.indata['Line']
+        self.outdata['Vector'] = self.indata['Vector']
 
 
 class DataReproj(BasicModule):
@@ -472,8 +470,7 @@ class DataReproj(BasicModule):
             self.showlog('Could not reproject')
             return
 
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
+        data = self.indata['Vector'][0]
 
         # Input stuff
         orig_wkt = self.in_proj.wkt
@@ -487,7 +484,7 @@ class DataReproj(BasicModule):
         data = data.assign(Xnew=data.geometry.x.values)
         data = data.assign(Ynew=data.geometry.y.values)
 
-        self.outdata['Line'] = {key: data}
+        self.outdata['Vector'] = [data]
 
     def settings(self, nodialog=False):
         """
@@ -504,13 +501,12 @@ class DataReproj(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Line' not in self.indata and 'Vector' not in self.indata:
+        if 'Vector' not in self.indata:
             self.showlog('No vector data.')
             return False
 
-        if 'Vector' in self.indata:
-            firstkey = next(iter(self.indata['Vector'].keys()))
-            self.orig_wkt = self.indata['Vector'][firstkey].crs.to_wkt()
+        if self.indata['Vector'][0].crs is not None:
+            self.orig_wkt = self.indata['Vector'][0].crs.to_wkt()
 
         if self.orig_wkt is None:
             indx = self.in_proj.combodatum.findText(r'WGS 84')
@@ -518,6 +514,7 @@ class DataReproj(BasicModule):
             self.orig_wkt = self.in_proj.wkt
         else:
             self.in_proj.set_current(self.orig_wkt)
+
         if self.targ_wkt is None:
             indx = self.in_proj.combodatum.findText(r'WGS 84')
             self.out_proj.combodatum.setCurrentIndex(indx)
@@ -532,11 +529,10 @@ class DataReproj(BasicModule):
                 return False
 
         if 'Vector' in self.indata:
-            self.outdata['Vector'] = {}
-            for i in self.indata['Vector']:
-                ivec = self.indata['Vector'][i]
+            self.outdata['Vector'] = []
+            for ivec in self.indata['Vector']:
                 ivec = ivec.set_crs(self.in_proj.wkt)
-                self.outdata['Vector'][i] = ivec.to_crs(self.out_proj.wkt)
+                self.outdata['Vector'].append(ivec.to_crs(self.out_proj.wkt))
         else:
             self.acceptall()
 
@@ -578,6 +574,286 @@ class DataReproj(BasicModule):
         projdata['targ_wkt'] = self.out_proj.wkt
 
         return projdata
+
+
+class Metadata(ContextModule):
+    """
+    Edit Metadata.
+
+    This class allows the editing of the metadata for a vector dataset using a
+    GUI.
+
+    Attributes
+    ----------
+    banddata : dictionary
+        band data
+    bandid : dictionary
+        dictionary of strings containing band names.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.banddata = {}
+        self.dataid = {}
+        self.oldtxt = ''
+
+        self.combobox_bandid = QtWidgets.QComboBox()
+        self.pb_rename_id = QtWidgets.QPushButton('Rename Column Name')
+        self.lbl_rows = QtWidgets.QLabel()
+        self.lbl_cols = QtWidgets.QLabel()
+        self.inp_epsg_info = QtWidgets.QLabel()
+        self.txt_null = QtWidgets.QLineEdit()
+        self.dsb_tlx = QtWidgets.QLineEdit()
+        self.dsb_tly = QtWidgets.QLineEdit()
+        self.dsb_xdim = QtWidgets.QLineEdit()
+        self.dsb_ydim = QtWidgets.QLineEdit()
+        self.led_units = QtWidgets.QLineEdit()
+        self.lbl_min = QtWidgets.QLabel()
+        self.lbl_max = QtWidgets.QLabel()
+        self.lbl_mean = QtWidgets.QLabel()
+        self.lbl_dtype = QtWidgets.QLabel()
+
+        self.proj = GroupProj('Input Projection')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        groupbox = QtWidgets.QGroupBox('Dataset')
+
+        gridlayout = QtWidgets.QGridLayout(groupbox)
+        label_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
+        label_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
+        label_xdim = QtWidgets.QLabel('X Dimension:')
+        label_ydim = QtWidgets.QLabel('Y Dimension:')
+        label_null = QtWidgets.QLabel('Null/Nodata value:')
+        label_rows = QtWidgets.QLabel('Rows:')
+        label_cols = QtWidgets.QLabel('Columns:')
+        label_min = QtWidgets.QLabel('Dataset Minimum:')
+        label_max = QtWidgets.QLabel('Dataset Maximum:')
+        label_mean = QtWidgets.QLabel('Dataset Mean:')
+        label_units = QtWidgets.QLabel('Dataset Units:')
+        label_bandid = QtWidgets.QLabel('Band Name:')
+        label_dtype = QtWidgets.QLabel('Data Type:')
+
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Expanding)
+        groupbox.setSizePolicy(sizepolicy)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Vector Dataset Metadata')
+
+        gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
+        gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
+        gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
+
+        gridlayout.addWidget(label_tlx, 0, 0, 1, 1)
+        gridlayout.addWidget(self.dsb_tlx, 0, 1, 1, 1)
+        gridlayout.addWidget(label_tly, 1, 0, 1, 1)
+        gridlayout.addWidget(self.dsb_tly, 1, 1, 1, 1)
+        gridlayout.addWidget(label_xdim, 2, 0, 1, 1)
+        gridlayout.addWidget(self.dsb_xdim, 2, 1, 1, 1)
+        gridlayout.addWidget(label_ydim, 3, 0, 1, 1)
+        gridlayout.addWidget(self.dsb_ydim, 3, 1, 1, 1)
+        gridlayout.addWidget(label_null, 4, 0, 1, 1)
+        gridlayout.addWidget(self.txt_null, 4, 1, 1, 1)
+        gridlayout.addWidget(label_rows, 5, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_rows, 5, 1, 1, 1)
+        gridlayout.addWidget(label_cols, 6, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_cols, 6, 1, 1, 1)
+        gridlayout.addWidget(label_min, 7, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_min, 7, 1, 1, 1)
+        gridlayout.addWidget(label_max, 8, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_max, 8, 1, 1, 1)
+        gridlayout.addWidget(label_mean, 9, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_mean, 9, 1, 1, 1)
+        gridlayout.addWidget(label_units, 10, 0, 1, 1)
+        gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
+        gridlayout.addWidget(label_dtype, 11, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.pb_rename_id.clicked.connect(self.rename_id)
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Returns
+        -------
+        None.
+
+        """
+        wkt = self.proj.wkt
+
+        self.update_vals()
+        for tmp in self.indata['Raster']:
+            for j in self.dataid.items():
+                if j[1] == tmp.dataid:
+                    i = self.banddata[j[0]]
+                    tmp.dataid = j[0]
+                    tmp.set_transform(transform=i.transform)
+                    tmp.nodata = i.nodata
+                    if wkt == 'None':
+                        tmp.crs = None
+                    else:
+                        tmp.crs = CRS.from_wkt(wkt)
+                    tmp.units = i.units
+                    tmp.data.mask = (tmp.data.data == i.nodata)
+
+    def rename_id(self):
+        """
+        Rename the band name.
+
+        Returns
+        -------
+        None.
+
+        """
+        ctxt = str(self.combobox_bandid.currentText())
+        (skey, isokay) = QtWidgets.QInputDialog.getText(
+            self.parent, 'Rename Band Name',
+            'Please type in the new name for the band',
+            QtWidgets.QLineEdit.Normal, ctxt)
+
+        if isokay:
+            self.combobox_bandid.currentIndexChanged.disconnect()
+            indx = self.combobox_bandid.currentIndex()
+            txt = self.combobox_bandid.itemText(indx)
+            self.banddata[skey] = self.banddata.pop(txt)
+            self.dataid[skey] = self.dataid.pop(txt)
+            self.oldtxt = skey
+            self.combobox_bandid.setItemText(indx, skey)
+            self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+
+    def update_vals(self):
+        """
+        Update the values on the interface.
+
+        Returns
+        -------
+        None.
+
+        """
+        odata = self.banddata[self.oldtxt]
+        odata.units = self.led_units.text()
+
+        try:
+            if self.txt_null.text().lower() != 'none':
+                odata.nodata = float(self.txt_null.text())
+            left = float(self.dsb_tlx.text())
+            top = float(self.dsb_tly.text())
+            xdim = float(self.dsb_xdim.text())
+            ydim = float(self.dsb_ydim.text())
+
+            odata.set_transform(xdim, left, ydim, top)
+
+        except ValueError:
+            self.showlog('Value error - abandoning changes')
+
+        indx = self.combobox_bandid.currentIndex()
+        txt = self.combobox_bandid.itemText(indx)
+        self.oldtxt = txt
+        idata = self.banddata[txt]
+
+        irows = idata.data.shape[0]
+        icols = idata.data.shape[1]
+
+        self.lbl_cols.setText(str(icols))
+        self.lbl_rows.setText(str(irows))
+        self.txt_null.setText(str(idata.nodata))
+        self.dsb_tlx.setText(str(idata.extent[0]))
+        self.dsb_tly.setText(str(idata.extent[-1]))
+        self.dsb_xdim.setText(str(idata.xdim))
+        self.dsb_ydim.setText(str(idata.ydim))
+        self.lbl_min.setText(str(idata.data.min()))
+        self.lbl_max.setText(str(idata.data.max()))
+        self.lbl_mean.setText(str(idata.data.mean()))
+        self.led_units.setText(str(idata.units))
+        self.lbl_dtype.setText(str(idata.data.dtype))
+
+    def run(self):
+        """
+        Entry point to start this routine.
+
+        Returns
+        -------
+        tmp : bool
+            True if successful, False otherwise.
+
+        """
+        breakpoint()
+
+        bandid = []
+        if self.indata['Vector'][0].crs is None:
+            self.proj.set_current('None')
+        else:
+            self.proj.set_current(self.indata['Raster'][0].crs.wkt)
+
+        for i in self.indata['Raster']:
+            bandid.append(i.dataid)
+            self.banddata[i.dataid] = Data()
+            tmp = self.banddata[i.dataid]
+            self.dataid[i.dataid] = i.dataid
+            tmp.data = i.data
+            tmp.set_transform(transform=i.transform)
+            tmp.nodata = i.nodata
+            tmp.crs = i.crs
+            tmp.units = i.units
+
+        self.combobox_bandid.currentIndexChanged.disconnect()
+        self.combobox_bandid.addItems(bandid)
+        indx = self.combobox_bandid.currentIndex()
+        self.oldtxt = self.combobox_bandid.itemText(indx)
+        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+
+        idata = self.banddata[self.oldtxt]
+
+        irows = idata.data.shape[0]
+        icols = idata.data.shape[1]
+
+        self.lbl_cols.setText(str(icols))
+        self.lbl_rows.setText(str(irows))
+        self.txt_null.setText(str(idata.nodata))
+        self.dsb_tlx.setText(str(idata.extent[0]))
+        self.dsb_tly.setText(str(idata.extent[-1]))
+        self.dsb_xdim.setText(str(idata.xdim))
+        self.dsb_ydim.setText(str(idata.ydim))
+        self.lbl_min.setText(str(idata.data.min()))
+        self.lbl_max.setText(str(idata.data.max()))
+        self.lbl_mean.setText(str(idata.data.mean()))
+        self.led_units.setText(str(idata.units))
+        self.lbl_dtype.setText(str(idata.data.dtype))
+
+        self.update_vals()
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
+
+
 
 
 def cut_point(data, ifile):
@@ -845,16 +1121,20 @@ def _testfn():
     """Test routine."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportLineData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\SPECARCHIVE.XYZ"
 
-    IO = ImportLineData()
+    IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
+
+    MD = Metadata()
+    MD.indata = IO.outdata
+    MD.run()
 
     # DG = DataGrid()
     # DG.indata = IO.outdata
@@ -865,22 +1145,22 @@ def _testfn():
     # plt.imshow(dat)
     # plt.show()
 
-    DR = DataReproj()
-    DR.indata = IO.outdata
-    DR.settings()
+    # DR = DataReproj()
+    # DR.indata = IO.outdata
+    # DR.settings()
 
 
 def _testfn_pointcut():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportLineData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
 
-    IO = ImportLineData()
+    IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)
@@ -892,4 +1172,4 @@ def _testfn_pointcut():
 
 
 if __name__ == "__main__":
-    _testfn_pointcut()
+    _testfn()

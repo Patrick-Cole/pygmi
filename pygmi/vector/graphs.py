@@ -46,6 +46,8 @@ class GraphWindow(ContextModule):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
+        self.data = None
+
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
@@ -246,49 +248,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_map(self, xdata, ydata, zdata):
-        """
-        Update the map from point data.
-
-        Parameters
-        ----------
-        xdata : numpy array
-            1D x-data array.
-        ydata : numpy array
-            1D y-data array.
-        zdata : numpy array
-            1D z-data array.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.figure.clear()
-
-        ax1 = self.figure.add_subplot(111, label='Map')
-        ax1.ticklabel_format(style='plain')
-
-        self.axes = ax1
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
-
-        if is_numeric_dtype(zdata):
-            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=colormaps['jet'])
-        else:
-            return
-
-        self.figure.colorbar(scat, ax=ax1, format=frm)
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        self.figure.tight_layout()
-        self.figure.canvas.draw()
-
     def update_lmap(self, data, ival, scale, uselabels):
         """
         Update the plot from line data.
@@ -406,55 +365,40 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
 
-        if 'LineString' in data:
+        if 'LineString' in data.geom_type.iloc[0]:
             tmp = []
-            for i in data['LineString'].geometry:
-                if i.type == 'MultiLineString':
-                    for j in i:
-                        tmp.append(np.array(j.coords[:]))
-                else:
-                    tmp.append(np.array(i.coords[:]))
+            for i in data.geometry:
+                tmp.append(np.array(i.coords[:]))
 
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
             self.axes.axis('equal')
-        elif 'Polygon' in data:
+        elif 'Polygon' in data.geom_type.iloc[0]:
             tmp = []
-            for j in data['Polygon'].geometry:
-                if j.type == 'MultiPolygon':
-                    for i in list(j.geoms):
-                        tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
-                elif j.type == 'Polygon':
-                    tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
+            for j in data.geometry:
+                tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
 
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
             self.axes.axis('equal')
 
-        elif 'MultiPolygon' in data:
-            tmp = []
-            for j in data['MultiPolygon'].geometry:
-                if j.type == 'MultiPolygon':
-                    for i in list(j.geoms):
-                        tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
-                elif j.type == 'Polygon':
-                    tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
-
-            lcol = mc.LineCollection(tmp)
-            self.axes.add_collection(lcol)
-            self.axes.autoscale()
-            self.axes.axis('equal')
-
-        elif 'Point' in data:
+        elif 'Point' in data.geom_type.iloc[0]:
             if col != '':
-                self.axes.scatter(data['Point'].geometry.x,
-                                  data['Point'].geometry.y,
-                                  c=data['Point'][col])
+                dstd = data[col].std()
+                dmean = data[col].mean()
+                vmin = max(dmean-2*dstd, data[col].min())
+                vmax = min(dmean+2*dstd, data[col].max())
+
+                scat = self.axes.scatter(data.geometry.x,
+                                         data.geometry.y,
+                                         c=data[col], vmin=vmin, vmax=vmax)
+                self.figure.colorbar(scat, ax=self.axes, format=frm)
+
             else:
-                self.axes.scatter(data['Point'].geometry.x,
-                                  data['Point'].geometry.y)
+                self.axes.scatter(data.geometry.x,
+                                  data.geometry.y)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -504,8 +448,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         flen = []
 
         allcrds = []
-        for i in data['LineString'].geometry:
-            if i.type == 'MultiLineString':
+        for i in data.geometry:
+            if i.geom_type == 'MultiLineString':
                 for j in i:
                     allcrds.append(np.array(j.coords[:]))
             else:
@@ -572,65 +516,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotPoints(GraphWindow):
-    """Plot Points Class."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.spinbox.hide()
-        self.label3.hide()
-        self.combobox2.hide()
-        self.label2.hide()
-        self.xdata = None
-        self.ydata = None
-
-    def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
-        i = self.combobox1.currentText()
-        data = data.dropna(subset=i)
-
-        self.mmc.update_map(data.geometry.x.values, data.geometry.y.values,
-                            data[i])
-
-    def run(self):
-        """
-        Entry point to run class.
-
-        Returns
-        -------
-        None.
-
-        """
-        data = self.indata['Line']
-        data = list(data.values())[0]
-
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
-
-        cols = list(data.columns[filt])
-
-        if 'geometry' not in data:
-            self.showlog('You do not have coordinates in that point '
-                         'dataset.')
-            return
-
-        self.show()
-
-        self.combobox1.addItems(cols)
-
-        self.label1.setText('Map')
-        self.combobox1.setCurrentIndex(0)
-
-
 class PlotLines(GraphWindow):
     """Plot Lines Class."""
 
@@ -660,13 +545,13 @@ class PlotLines(GraphWindow):
         None.
 
         """
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
+        if self.data is None:
+            return
 
         line = self.combobox1.currentText()
         col = self.combobox2.currentText()
 
-        data2 = data[data.line == line]
+        data2 = self.data[self.data.line == line]
         data2 = data2.dropna(subset=col)
         x = data2.geometry.x.values
         y = data2.geometry.y.values
@@ -688,17 +573,25 @@ class PlotLines(GraphWindow):
         None.
 
         """
+        self.data = None
+        for i in self.indata['Vector']:
+            if i.geom_type.iloc[0] == 'Point':
+                self.data = i
+                break
+
+        if self.data is None:
+            self.showlog('No point type data.')
+            return
+
         self.combobox1.currentIndexChanged.disconnect()
         self.combobox2.currentIndexChanged.disconnect()
 
         self.show()
 
-        data = self.indata['Line']
-        data = list(data.values())[0]
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
-        cols = list(data.columns[filt])
-        lines = data.line[data.line != 'nan'].unique()
+        filt = ((self.data.columns != 'geometry') &
+                (self.data.columns != 'line'))
+        cols = list(self.data.columns[filt])
+        lines = self.data.line[self.data.line != 'nan'].unique()
 
         self.combobox1.addItems(lines)
         self.combobox2.addItems(cols)
@@ -733,12 +626,12 @@ class PlotLineMap(GraphWindow):
         None.
 
         """
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
+        if self.data is None:
+            return
 
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
-        data = data.dropna(subset=i)
+        data = self.data.dropna(subset=i)
 
         self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
 
@@ -751,14 +644,23 @@ class PlotLineMap(GraphWindow):
         None.
 
         """
+        self.data = None
+        for i in self.indata['Vector']:
+            if i.geom_type.iloc[0] == 'Point':
+                self.data = i
+                break
+
+        if self.data is None:
+            self.showlog('No point type data.')
+            return
+
         self.combobox1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
         self.checkbox.stateChanged.disconnect()
 
         self.show()
 
-        data = self.indata['Line']
-        data = list(data.values())[0]
+        data = self.indata['Vector'][0]
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
         cols = list(data.columns[filt])
@@ -807,16 +709,13 @@ class PlotRose(GraphWindow):
         None.
 
         """
-        if 'Vector' not in self.indata:
+        if self.data is None:
             return
-        data = self.indata['Vector']
+
         i = self.combobox1.currentIndex()
         equal = self.checkbox.isChecked()
-        if 'LineString' in data:
-            self.mmc.update_rose(data, i, self.spinbox.value(), equal)
-        else:
-            self.showlog('No line type data.')
-            return
+
+        self.mmc.update_rose(self.data, i, self.spinbox.value(), equal)
 
     def run(self):
         """
@@ -827,6 +726,18 @@ class PlotRose(GraphWindow):
         None.
 
         """
+        self.data = None
+        if 'Vector' not in self.indata:
+            return
+        for i in self.indata['Vector']:
+            if i.geom_type.iloc[0] == 'LineString':
+                self.data = i
+                break
+
+        if self.data is None:
+            self.showlog('No line type data.')
+            return
+
         self.show()
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
@@ -840,7 +751,7 @@ class PlotVector(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label1.hide()
+        # self.label1.hide()
         self.combobox2.hide()
         self.label2.hide()
         self.spinbox.hide()
@@ -855,8 +766,14 @@ class PlotVector(GraphWindow):
         None.
 
         """
-        data = self.indata['Vector']
+        if self.data is None:
+            return
+
         i = self.combobox1.currentText()
+        data = self.data.dropna(subset=i)
+        if data.size == 0:
+            i = ''
+            data = self.data
 
         self.mmc.update_vector(data, i)
 
@@ -869,20 +786,20 @@ class PlotVector(GraphWindow):
         None.
 
         """
-        data = self.indata['Vector']
-        key = list(data.keys())[0]
-        data = data[key]
-        data = data.select_dtypes(include='number')
+        self.data = self.indata['Vector'][0]
+        # self.data = self.data.select_dtypes(include='number')
 
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
+        filt = ((self.data.columns != 'geometry') &
+                (self.data.columns != 'line'))
 
-        cols = list(data.columns[filt])
+        cols = list(self.data.columns[filt])
         if len(cols) > 0:
             self.combobox1.addItems(cols)
             self.combobox1.setCurrentIndex(0)
         else:
             self.combobox1.hide()
+
+        self.label1.setText('Channel:')
 
         self.show()
 

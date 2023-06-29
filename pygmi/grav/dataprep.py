@@ -52,6 +52,8 @@ class ProcessData(BasicModule):
         self.absbase = QtWidgets.QLineEdit('978032.67715')
         self.basethres = QtWidgets.QLineEdit('10000')
 
+        self.gdata = None
+
         self.setupui()
 
     def setupui(self):
@@ -116,11 +118,18 @@ class ProcessData(BasicModule):
             True if successful, False otherwise.
 
         """
+        self.gdata = None
         tmp = []
-        if 'Line' not in self.indata:
+        if 'Vector' not in self.indata:
             self.showlog('No Line Data')
             return False
-        if 'Gravity' not in self.indata['Line']:
+
+        for i in self.indata['Vector']:
+            if 'Gravity' in i.attrs:
+                self.gdata = i
+                break
+
+        if self.gdata is None:
             self.showlog('Not Gravity Data')
             return False
 
@@ -212,7 +221,7 @@ class ProcessData(BasicModule):
         None.
 
         """
-        pdat = self.indata['Line']['Gravity']
+        pdat = self.gdata
         pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
         basethres = float(self.basethres.text())
@@ -330,7 +339,7 @@ class ProcessData(BasicModule):
 
         pdat.sort_values(by=['LINE', 'STATION'], inplace=True)
 
-        self.outdata['Line'] = {'Gravity': pdat}
+        self.outdata['Vector'] = [pdat]
 
     def calcbase(self):
         """
@@ -344,7 +353,7 @@ class ProcessData(BasicModule):
 
 
         """
-        pdat = self.indata['Line']['Gravity']
+        pdat = self.gdata
 
         basethres = float(self.basethres.text())
 
@@ -574,9 +583,9 @@ def _testfn():
 
     PD.settings(True)
 
-    datout = PD.outdata['Line']
+    datout = PD.outdata['Vector']
 
-    gdf = datout['Gravity']
+    gdf = datout[0]
 
     for i in ['GRAV', 'gobs_drift', 'BOUGUER', 'dcor', 'elevation',
               'gT', 'gATM', 'gHC', 'gSB']:

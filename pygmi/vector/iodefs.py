@@ -37,7 +37,7 @@ from pygmi import menu_default
 from pygmi.misc import BasicModule, ContextModule
 
 
-class ImportLineData(BasicModule):
+class ImportXYZData(BasicModule):
     """
     Import Line Data.
 
@@ -80,7 +80,7 @@ class ImportLineData(BasicModule):
         self.xchan.setMinimumSize = 10
         self.ychan.setMinimumSize = 10
 
-        self.setWindowTitle(r'Import Point/Line Data')
+        self.setWindowTitle(r'Import XYZ Data')
 
         gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
@@ -210,11 +210,8 @@ class ImportLineData(BasicModule):
 
         gdf['line'] = gdf['line'].astype(str)
 
-        if 'Line' not in self.outdata:
-            self.outdata['Line'] = {}
-
         gdf = gdf.replace(nodata, np.nan)
-        self.outdata['Line'][self.ifile] = gdf
+        self.outdata['Vector'] = [gdf]
 
         return True
 
@@ -292,7 +289,12 @@ class ImportLineData(BasicModule):
             Pandas dataframe.
 
         """
-        gdf = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
+        try:
+            gdf = pd.read_csv(self.ifile, delimiter=delimiter,
+                              index_col=False)
+        except:
+            self.showlog('Error reading file.')
+            return None
 
         gdf.columns = gdf.columns.str.lower()
 
@@ -321,7 +323,7 @@ class ImportLineData(BasicModule):
         return gdf
 
 
-class ExportLine(ContextModule):
+class ExportXYZData(ContextModule):
     """Export Line Data."""
 
     def __init__(self, parent=None):
@@ -337,7 +339,7 @@ class ExportLine(ContextModule):
             True if successful, False otherwise.
 
         """
-        if 'Line' not in self.indata:
+        if 'Vector' not in self.indata:
             self.showlog('Error: You need to have line data first!')
             return False
 
@@ -350,10 +352,12 @@ class ExportLine(ContextModule):
         self.showlog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
-        data = self.indata['Line']
-        data = list(data.values())[0]
+        data = self.indata['Vector'][0]
 
-        data.to_csv(filename, index=False)
+        filt = (data.columns != 'geometry')
+        cols = list(data.columns[filt])
+
+        data.to_csv(filename, index=False, columns=cols)
 
         self.showlog('Export completed')
 
@@ -389,8 +393,7 @@ class ExportShapeData(ContextModule):
         self.showlog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
-        data = self.indata['Vector']
-        data = list(data.values())[0]
+        data = self.indata['Vector'][0]
 
         if filt == 'GeoJSON (*.geojson)':
             data.to_file(filename, driver='GeoJSON')
@@ -436,8 +439,7 @@ class ImportShapeData(BasicModule):
 
         gdf = gpd.read_file(self.ifile, engine='pyogrio')
         gdf = gdf[gdf.geometry != None]
-
-        dat = {gdf.geom_type.iloc[0]: gdf}
+        gdf = gdf.explode(ignore_index=True)
 
         if gdf.geom_type.loc[0] == 'Point':
             if 'line' not in gdf.columns:
@@ -445,14 +447,7 @@ class ImportShapeData(BasicModule):
             else:
                 gdf['line'] = gdf['line'].astype(str)
 
-            if 'Line' not in self.outdata:
-                self.outdata['Line'] = {}
-
-            # gdf = gdf.replace(nodata, np.nan)
-            self.outdata['Line'][self.ifile] = gdf
-
-        else:
-            self.outdata['Vector'] = dat
+        self.outdata['Vector'] = [gdf]
 
         return True
 

@@ -28,100 +28,12 @@ import os
 from PyQt5 import QtWidgets
 import mtpy.core.mt
 import numpy as np
-import pandas as pd
 
 from pygmi.misc import ContextModule, BasicModule
 
-
-class ImportLEMI417Data(BasicModule):
-    """
-    Import LEMI-417 ASCII MT Data.
-
-    This is a class used to import LEMI-417 MT Data in ASCII format.
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if not nodialog:
-
-            ext = 'LEMI-417 Text DataAll Files (*.t*)'
-
-            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
-                return False
-        os.chdir(os.path.dirname(self.ifile))
-
-        dataid = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second',
-                  'Bx (nT)', 'By (nT)', 'Bz (nT)', 'TE (degrees C)',
-                  'TF (degrees C)', 'E1 ('+chr(956)+'V/m)',
-                  'E2 ('+chr(956)+'V/m)', 'E3 ('+chr(956)+'V/m)',
-                  'E4 ('+chr(956)+'V/m)']
-
-        gdf = pd.read_csv(self.ifile, sep=None, engine='python', names=dataid,
-                          skipinitialspace=True, index_col=False)
-
-        gdf['line'] = 'None'
-
-        if 'Line' not in self.outdata:
-            self.outdata['Line'] = {}
-
-        self.outdata['Line'][self.ifile] = gdf
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
+# The lines below are a temporary fix for mtpy. Removed in future.
+np.float = float
+np.complex = complex
 
 
 class ImportEDI(BasicModule):

@@ -47,7 +47,6 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Line')
         self.parent.add_to_context('Vector')
         context_menu = self.parent.context_menu
 
@@ -59,10 +58,9 @@ class MenuWidget():
         self.menufile.addAction(self.action_import_shape_data)
         self.action_import_shape_data.triggered.connect(self.import_shape_data)
 
-        self.action_import_line_data = QtWidgets.QAction('Import Point or Line'
-                                                         ' Data')
-        self.menufile.addAction(self.action_import_line_data)
-        self.action_import_line_data.triggered.connect(self.import_line_data)
+        self.action_import_xyz = QtWidgets.QAction('Import XYZ Data')
+        self.menufile.addAction(self.action_import_xyz)
+        self.action_import_xyz.triggered.connect(self.import_xyz)
 
         self.menufile.addSeparator()
 
@@ -81,26 +79,16 @@ class MenuWidget():
         self.action_grid.triggered.connect(self.grid)
 
         # Context menus
-        context_menu['Line'].addSeparator()
+        context_menu['Vector'].addSeparator()
 
-        self.action_show_line_data = QtWidgets.QAction('Show Line Data'
-                                                       ' Profile')
-        context_menu['Line'].addAction(self.action_show_line_data)
+        self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
+        context_menu['Vector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
 
-        self.action_show_line_data2 = QtWidgets.QAction('Show Line Data Map')
-        context_menu['Line'].addAction(self.action_show_line_data2)
+        self.action_show_line_data2 = QtWidgets.QAction('Show Profiles on a '
+                                                        'Map')
+        context_menu['Vector'].addAction(self.action_show_line_data2)
         self.action_show_line_data2.triggered.connect(self.show_line_map)
-
-        self.action_show_point_data2 = QtWidgets.QAction('Show Point Data Map')
-        context_menu['Line'].addAction(self.action_show_point_data2)
-        self.action_show_point_data2.triggered.connect(self.show_point_map)
-
-        self.action_export_line = QtWidgets.QAction('Export Line Data')
-        context_menu['Line'].addAction(self.action_export_line)
-        self.action_export_line.triggered.connect(self.export_line)
-
-        context_menu['Vector'].addSeparator()
 
         self.action_show_vector_data = QtWidgets.QAction('Show Vector Data')
         context_menu['Vector'].addAction(self.action_show_vector_data)
@@ -109,6 +97,12 @@ class MenuWidget():
         self.action_show_rose_diagram = QtWidgets.QAction('Show Rose Diagram')
         context_menu['Vector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
+
+        context_menu['Vector'].addSeparator()
+
+        self.action_export_xyz = QtWidgets.QAction('Export XYZ Data')
+        context_menu['Vector'].addAction(self.action_export_xyz)
+        self.action_export_xyz.triggered.connect(self.export_xyz)
 
         self.action_export_shape = QtWidgets.QAction('Export Shape Data')
         context_menu['Vector'].addAction(self.action_export_shape)
@@ -127,27 +121,23 @@ class MenuWidget():
         self.parent.item_insert('Step', 'Reproject Vector Data',
                                 dataprep.DataReproj)
 
-    def export_line(self):
-        """Export line data."""
-        self.parent.launch_context_item(iodefs.ExportLine)
+    def export_xyz(self):
+        """Export XYZ data."""
+        self.parent.launch_context_item(iodefs.ExportXYZData)
 
     def export_shape(self):
         """Export line data."""
         self.parent.launch_context_item(iodefs.ExportShapeData)
 
-    def import_line_data(self):
-        """Import line data."""
-        self.parent.item_insert('Io', 'Import Line Data',
-                                iodefs.ImportLineData)
+    def import_xyz(self):
+        """Import XYZ data."""
+        self.parent.item_insert('Io', 'Import XYZ Data',
+                                iodefs.ImportXYZData)
 
     def import_shape_data(self):
         """Import shape data."""
         self.parent.item_insert('Io', 'Import Shapefile Data',
                                 iodefs.ImportShapeData)
-
-    def show_point_map(self):
-        """Show point data."""
-        self.parent.launch_context_item(graphs.PlotPoints)
 
     def show_line_data(self):
         """Show line data."""

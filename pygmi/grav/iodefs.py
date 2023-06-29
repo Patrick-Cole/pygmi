@@ -227,8 +227,10 @@ class ImportCG5(BasicModule):
         dfmerge = gpd.GeoDataFrame(dfmerge, geometry=gpd.points_from_xy(x, y))
 
         dfmerge['line'] = dfmerge['line'].astype(str)
-        self.outdata['Line'] = {'Gravity': dfmerge}
+        dfmerge.attrs['Gravity'] = True
+        self.outdata['Vector'] = [dfmerge]
 
+        # Check for duplicates
         dtest = dfmerge.duplicated(['LINE', 'STATION'])
         dlist = dfmerge[['LINE', 'STATION']].loc[dtest]
         dlist = dlist[~dlist.duplicated()]

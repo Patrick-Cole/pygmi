@@ -545,8 +545,8 @@ def tick_formatter(x, pos):
 
     Returns
     -------
-    newx : TYPE
-        DESCRIPTION.
+    newx : str
+        Formatted coordinate.
 
     """
     if np.ma.is_masked(x):

@@ -65,13 +65,6 @@ class MenuWidget():
         self.menumt.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-        self.action_import_lemi417_data = QtWidgets.QAction('Import LEMI-417 '
-                                                            'Data to Point '
-                                                            'Data')
-        self.menumt.addAction(self.action_import_lemi417_data)
-        self.action_import_lemi417_data.triggered.connect(
-            self.import_lemi417_data)
-
         self.menumt.addSeparator()
 
         self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
@@ -118,11 +111,6 @@ class MenuWidget():
     def import_data(self):
         """Import data."""
         self.parent.item_insert('Io', 'Import EDI Data', iodefs.ImportEDI)
-
-    def import_lemi417_data(self):
-        """Import LEMI-417 MT data."""
-        self.parent.item_insert('Io', 'Import LEMI-417 Data',
-                                iodefs.ImportLEMI417Data)
 
     def occam1d(self):
         """Occam 1D inversion."""
