@@ -1103,6 +1103,7 @@ class ExportBatch(ContextModule):
 
         filt = self.ofilt.currentText()
         odir = self.odir.text()
+        sunfile = None
 
         if self.ternary.isChecked():
             tnames = [self.red.currentText(),

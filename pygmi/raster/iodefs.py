@@ -1597,7 +1597,8 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                                     WavelengthMax=str(rmeta['WavelengthMax']))
 
     if updatestats is True:
-        dcov = calccov(data, showlog)
+        dcov = None  # Disabled because it uses too much memory.
+        # dcov = calccov(data, showlog)
 
         if xfile is None:
             xfile = tmpfile+'.aux.xml'
