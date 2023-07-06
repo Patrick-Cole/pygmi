@@ -211,6 +211,7 @@ class ImportXYZData(BasicModule):
         gdf['line'] = gdf['line'].astype(str)
 
         gdf = gdf.replace(nodata, np.nan)
+        gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
 
         return True
@@ -447,6 +448,7 @@ class ImportShapeData(BasicModule):
             else:
                 gdf['line'] = gdf['line'].astype(str)
 
+        gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
 
         return True

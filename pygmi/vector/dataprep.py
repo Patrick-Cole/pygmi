@@ -593,26 +593,8 @@ class Metadata(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.banddata = {}
-        self.dataid = {}
-        self.oldtxt = ''
 
         self.combobox_bandid = QtWidgets.QComboBox()
-        self.pb_rename_id = QtWidgets.QPushButton('Rename Column Name')
-        self.lbl_rows = QtWidgets.QLabel()
-        self.lbl_cols = QtWidgets.QLabel()
-        self.inp_epsg_info = QtWidgets.QLabel()
-        self.txt_null = QtWidgets.QLineEdit()
-        self.dsb_tlx = QtWidgets.QLineEdit()
-        self.dsb_tly = QtWidgets.QLineEdit()
-        self.dsb_xdim = QtWidgets.QLineEdit()
-        self.dsb_ydim = QtWidgets.QLineEdit()
-        self.led_units = QtWidgets.QLineEdit()
-        self.lbl_min = QtWidgets.QLabel()
-        self.lbl_max = QtWidgets.QLabel()
-        self.lbl_mean = QtWidgets.QLabel()
-        self.lbl_dtype = QtWidgets.QLabel()
-
         self.proj = GroupProj('Input Projection')
 
         self.setupui()
@@ -628,26 +610,9 @@ class Metadata(ContextModule):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        groupbox = QtWidgets.QGroupBox('Dataset')
 
-        gridlayout = QtWidgets.QGridLayout(groupbox)
-        label_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
-        label_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
-        label_xdim = QtWidgets.QLabel('X Dimension:')
-        label_ydim = QtWidgets.QLabel('Y Dimension:')
-        label_null = QtWidgets.QLabel('Null/Nodata value:')
-        label_rows = QtWidgets.QLabel('Rows:')
-        label_cols = QtWidgets.QLabel('Columns:')
-        label_min = QtWidgets.QLabel('Dataset Minimum:')
-        label_max = QtWidgets.QLabel('Dataset Maximum:')
-        label_mean = QtWidgets.QLabel('Dataset Mean:')
-        label_units = QtWidgets.QLabel('Dataset Units:')
-        label_bandid = QtWidgets.QLabel('Band Name:')
-        label_dtype = QtWidgets.QLabel('Data Type:')
+        label_bandid = QtWidgets.QLabel('Source:')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                           QtWidgets.QSizePolicy.Expanding)
-        groupbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -656,41 +621,13 @@ class Metadata(ContextModule):
 
         gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
-        gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
+        gridlayout_main.addWidget(self.proj, 2, 0, 1, 4)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
-
-        gridlayout.addWidget(label_tlx, 0, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_tlx, 0, 1, 1, 1)
-        gridlayout.addWidget(label_tly, 1, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_tly, 1, 1, 1, 1)
-        gridlayout.addWidget(label_xdim, 2, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_xdim, 2, 1, 1, 1)
-        gridlayout.addWidget(label_ydim, 3, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_ydim, 3, 1, 1, 1)
-        gridlayout.addWidget(label_null, 4, 0, 1, 1)
-        gridlayout.addWidget(self.txt_null, 4, 1, 1, 1)
-        gridlayout.addWidget(label_rows, 5, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_rows, 5, 1, 1, 1)
-        gridlayout.addWidget(label_cols, 6, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_cols, 6, 1, 1, 1)
-        gridlayout.addWidget(label_min, 7, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_min, 7, 1, 1, 1)
-        gridlayout.addWidget(label_max, 8, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_max, 8, 1, 1, 1)
-        gridlayout.addWidget(label_mean, 9, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_mean, 9, 1, 1, 1)
-        gridlayout.addWidget(label_units, 10, 0, 1, 1)
-        gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
-        gridlayout.addWidget(label_dtype, 11, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
-        self.pb_rename_id.clicked.connect(self.rename_id)
+        self.resize(-1, 320)
 
     def acceptall(self):
         """
@@ -703,91 +640,11 @@ class Metadata(ContextModule):
         """
         wkt = self.proj.wkt
 
-        self.update_vals()
-        for tmp in self.indata['Raster']:
-            for j in self.dataid.items():
-                if j[1] == tmp.dataid:
-                    i = self.banddata[j[0]]
-                    tmp.dataid = j[0]
-                    tmp.set_transform(transform=i.transform)
-                    tmp.nodata = i.nodata
-                    if wkt == 'None':
-                        tmp.crs = None
-                    else:
-                        tmp.crs = CRS.from_wkt(wkt)
-                    tmp.units = i.units
-                    tmp.data.mask = (tmp.data.data == i.nodata)
-
-    def rename_id(self):
-        """
-        Rename the band name.
-
-        Returns
-        -------
-        None.
-
-        """
-        ctxt = str(self.combobox_bandid.currentText())
-        (skey, isokay) = QtWidgets.QInputDialog.getText(
-            self.parent, 'Rename Band Name',
-            'Please type in the new name for the band',
-            QtWidgets.QLineEdit.Normal, ctxt)
-
-        if isokay:
-            self.combobox_bandid.currentIndexChanged.disconnect()
-            indx = self.combobox_bandid.currentIndex()
-            txt = self.combobox_bandid.itemText(indx)
-            self.banddata[skey] = self.banddata.pop(txt)
-            self.dataid[skey] = self.dataid.pop(txt)
-            self.oldtxt = skey
-            self.combobox_bandid.setItemText(indx, skey)
-            self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
-
-    def update_vals(self):
-        """
-        Update the values on the interface.
-
-        Returns
-        -------
-        None.
-
-        """
-        odata = self.banddata[self.oldtxt]
-        odata.units = self.led_units.text()
-
-        try:
-            if self.txt_null.text().lower() != 'none':
-                odata.nodata = float(self.txt_null.text())
-            left = float(self.dsb_tlx.text())
-            top = float(self.dsb_tly.text())
-            xdim = float(self.dsb_xdim.text())
-            ydim = float(self.dsb_ydim.text())
-
-            odata.set_transform(xdim, left, ydim, top)
-
-        except ValueError:
-            self.showlog('Value error - abandoning changes')
-
-        indx = self.combobox_bandid.currentIndex()
-        txt = self.combobox_bandid.itemText(indx)
-        self.oldtxt = txt
-        idata = self.banddata[txt]
-
-        irows = idata.data.shape[0]
-        icols = idata.data.shape[1]
-
-        self.lbl_cols.setText(str(icols))
-        self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nodata))
-        self.dsb_tlx.setText(str(idata.extent[0]))
-        self.dsb_tly.setText(str(idata.extent[-1]))
-        self.dsb_xdim.setText(str(idata.xdim))
-        self.dsb_ydim.setText(str(idata.ydim))
-        self.lbl_min.setText(str(idata.data.min()))
-        self.lbl_max.setText(str(idata.data.max()))
-        self.lbl_mean.setText(str(idata.data.mean()))
-        self.led_units.setText(str(idata.units))
-        self.lbl_dtype.setText(str(idata.data.dtype))
+        for tmp in self.indata['Vector']:
+            if wkt == 'None':
+                tmp.crs = None
+            else:
+                tmp.crs = CRS.from_wkt(wkt)
 
     def run(self):
         """
@@ -799,50 +656,19 @@ class Metadata(ContextModule):
             True if successful, False otherwise.
 
         """
-        breakpoint()
-
         bandid = []
         if self.indata['Vector'][0].crs is None:
             self.proj.set_current('None')
         else:
-            self.proj.set_current(self.indata['Raster'][0].crs.wkt)
+            self.proj.set_current(self.indata['Vector'][0].crs.to_wkt())
 
-        for i in self.indata['Raster']:
-            bandid.append(i.dataid)
-            self.banddata[i.dataid] = Data()
-            tmp = self.banddata[i.dataid]
-            self.dataid[i.dataid] = i.dataid
-            tmp.data = i.data
-            tmp.set_transform(transform=i.transform)
-            tmp.nodata = i.nodata
-            tmp.crs = i.crs
-            tmp.units = i.units
+        for i in self.indata['Vector']:
+            if 'source' in i.attrs:
+                bandid.append(i.attrs['source'])
+            else:
+                bandid.append('Unknown')
 
-        self.combobox_bandid.currentIndexChanged.disconnect()
         self.combobox_bandid.addItems(bandid)
-        indx = self.combobox_bandid.currentIndex()
-        self.oldtxt = self.combobox_bandid.itemText(indx)
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
-
-        idata = self.banddata[self.oldtxt]
-
-        irows = idata.data.shape[0]
-        icols = idata.data.shape[1]
-
-        self.lbl_cols.setText(str(icols))
-        self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nodata))
-        self.dsb_tlx.setText(str(idata.extent[0]))
-        self.dsb_tly.setText(str(idata.extent[-1]))
-        self.dsb_xdim.setText(str(idata.xdim))
-        self.dsb_ydim.setText(str(idata.ydim))
-        self.lbl_min.setText(str(idata.data.min()))
-        self.lbl_max.setText(str(idata.data.max()))
-        self.lbl_mean.setText(str(idata.data.mean()))
-        self.led_units.setText(str(idata.units))
-        self.lbl_dtype.setText(str(idata.data.dtype))
-
-        self.update_vals()
 
         tmp = self.exec_()
 
@@ -852,8 +678,6 @@ class Metadata(ContextModule):
         self.acceptall()
 
         return True
-
-
 
 
 def cut_point(data, ifile):

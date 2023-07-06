@@ -81,6 +81,10 @@ class MenuWidget():
         # Context menus
         context_menu['Vector'].addSeparator()
 
+        self.action_metadata = QtWidgets.QAction('Display/Edit Vector Metadata')
+        context_menu['Vector'].addAction(self.action_metadata)
+        self.action_metadata.triggered.connect(self.metadata)
+
         self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
         context_menu['Vector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
@@ -138,6 +142,10 @@ class MenuWidget():
         """Import shape data."""
         self.parent.item_insert('Io', 'Import Shapefile Data',
                                 iodefs.ImportShapeData)
+
+    def metadata(self):
+        """Metadata."""
+        self.parent.launch_context_item(dataprep.Metadata)
 
     def show_line_data(self):
         """Show line data."""

@@ -228,6 +228,7 @@ class ImportCG5(BasicModule):
 
         dfmerge['line'] = dfmerge['line'].astype(str)
         dfmerge.attrs['Gravity'] = True
+        dfmerge.attrs['source'] = str(self.cg5file.text())
         self.outdata['Vector'] = [dfmerge]
 
         # Check for duplicates
