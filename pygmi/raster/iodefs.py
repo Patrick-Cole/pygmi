@@ -33,7 +33,6 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
 import rasterio
-# from rasterio.plot import plotting_extent
 from rasterio.windows import Window
 from rasterio.crs import CRS
 
@@ -537,7 +536,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
     custom_wkt = ''
     filename = ifile
 
-    # Envi Case
+    # ENVI Case
     if ext == 'hdr':
         ifile = ifile[:-4]
         if os.path.exists(ifile+'.dat'):
@@ -548,7 +547,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             ifile = ifile+'.img'
         elif not os.path.exists(ifile):
             return None
-
+    # ER Mapper case
     if ext == 'ers':
         with open(ifile, encoding='utf-8') as f:
             metadata = f.read()
@@ -618,16 +617,25 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
 
             if driver == 'ENVI':
                 dmeta = dataset.tags(ns='ENVI')
+                if 'fwhm' in dmeta:
+                    dmeta['fwhm'] = [float(i) for i in
+                                     dmeta['fwhm'][1:-1].split(',')]
+
+            wavelengthmax = 0.
+            for i in piter(range(dataset.count)):
+                index = dataset.indexes[i]
+                dest = dataset.tags(index)
+                for j in ['Wavelength', 'WAVELENGTH']:
+                    if j in dest:
+                        dest['wavelength'] = dest[j]
+                        del dest[j]
+
+                if 'wavelength' in dest:
+                    wavelengthmax = max(wavelengthmax, float(dest['wavelength']))
 
     except rasterio.errors.RasterioIOError:
         return None
 
-    if custom_wkt == '' and dataset.crs is not None:
-        custom_wkt = dataset.crs.to_wkt()
-
-    cols = dataset.width
-    rows = dataset.height
-    bands = dataset.count
     if nval is None:
         nval = dataset.nodata
     dtype = rasterio.band(dataset, 1).dtype
@@ -668,6 +676,9 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
     else:
         newbounds = None
 
+    # Projection
+    if custom_wkt == '' and dataset.crs is not None:
+        custom_wkt = dataset.crs.to_wkt()
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
@@ -678,12 +689,18 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                               'AXIS["Easting",EAST],'
                               'AXIS["Northing",NORTH]]')
 
+    # Perform BIL or BIP with internal routine, because its faster.
     isbil = False
     if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
             dataid is None and metaonly is False):
-        if istruct['INTERLEAVE'] == 'LINE':
+        interleave = istruct['INTERLEAVE']
+        if interleave == 'LINE' or interleave == 'PIXEL':
             isbil = True
-            datin = get_bil(ifile, bands, cols, rows, dtype, piter, iraster)
+            cols = dataset.width
+            rows = dataset.height
+            bands = dataset.count
+            datin = get_bil(ifile, bands, cols, rows, dtype, piter, iraster,
+                            interleave)
 
     with rasterio.open(ifile) as dataset:
         for i in piter(range(dataset.count)):
@@ -699,17 +716,26 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             if tnames is not None and bandid not in tnames:
                 continue
 
+            dat.append(Data())
+
+            # Determine units
             unit = dataset.units[i]
-            if unit is None:
+            if unit is None and 'wavelength_units' in dmeta:
+                unit = dmeta['wavelength_units']
+            elif unit is None and 0. < wavelengthmax < 100.:
+                unit = 'micrometers'
+            elif unit is None and wavelengthmax >= 100.:
+                unit = 'nanometers'
+            elif unit is None:
                 unit = ''
             if unit.lower() == 'micrometers':
-                dat[i].units = 'μm'
+                dat[-1].units = 'μm'
             elif unit.lower() == 'nanometers':
-                dat[i].units = 'nm'
+                dat[-1].units = 'nm'
             if nval is None:
                 nval = dataset.nodata
 
-            dat.append(Data())
+            # Get data
             if isbil is True and metaonly is False:
                 dat[-1].data = datin[i]
             elif iraster is None and metaonly is False:
@@ -718,25 +744,12 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                 xoff, yoff, xsize, ysize = iraster
                 dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
                                                                  xsize, ysize))
-            # print(dataset.meta['dtype'])
+
+            # Set Null Value
             if nval is not None and np.isnan(nval):
                 nval = None
 
-            # if 'uint' in dataset.meta['dtype']:
-            #     if nval is None or np.isnan(nval):
-            #         nval = 0
-            #         showlog(f'Adjusting null value to {nval}')
-            #     nval = int(nval)
-
-            # elif 'int' in dataset.meta['dtype']:
-            #     if nval is None or np.isnan(nval):
-            #         nval = 999999
-            #         showlog(f'Adjusting null value to {nval}')
-            #     nval = int(nval)
-            # else:
             if 'int' not in dataset.meta['dtype'] and nval is not None:
-                # if nval is None or np.isnan(nval):
-                #     nval = 1e+20
                 nval = float(nval)
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
                                                            nval):
@@ -751,29 +764,20 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
 
-    # Note that because the data is stored in a masked array, the array ends up
-    # being double the size that it was on the disk.
-
             if metaonly is False:
                 dat[-1].data = np.ma.masked_invalid(dat[-1].data)
                 dat[-1].data = dat[-1].data.filled(nval)
                 dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
                 dat[-1].data.set_fill_value(nval)
-
-            # dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
-            #                      (dat[-1].data == nval))
-            if metaonly is True:
-                rows = dataset.height
-                cols = dataset.width
-            else:
                 rows = None
                 cols = None
+            else:
+                rows = dataset.height
+                cols = dataset.width
 
             if newbounds is not None:
                 xmin, _, _, ymax = newbounds
                 xdim, ydim = dataset.res
-                # dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster,
-                #                       rows=rows, cols=cols)
                 dat[-1].set_transform(xdim, xmin, ydim, ymax,
                                       rows=rows, cols=cols)
             else:
@@ -783,7 +787,6 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             dat[-1].dataid = bandid
             dat[-1].nodata = nval
             dat[-1].filename = filename
-            dat[-1].units = unit
             dat[-1].datetime = rdate
 
             if driver == 'netCDF' and dataset.crs is None:
@@ -802,7 +805,6 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                     dat[-1].set_transform(xdim, xmin, ydim, ymin)
 
             dat[-1].crs = crs
-            # dat[i].xdim, dat[i].ydim = dataset.res
             dat[-1].meta = dataset.meta
 
             dest = dataset.tags(index)
@@ -811,23 +813,39 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                     dest[j.lower()] = dest[j]
                     del dest[j]
 
-            if 'fwhm' in dmeta:
-                fwhm = [float(i) for i in dmeta['fwhm'][1:-1].split(',')]
-                dest['fwhm'] = fwhm[index-1]
+            if 'wavelength' in dest:
+                dest['wavelength'] = float(dest['wavelength'])
 
-            if '.raw' in ifile:
-                dmeta['reflectance_scale_factor'] = 10000.
+            if 'fwhm' in dmeta:
+                dest['fwhm'] = dmeta['fwhm'][index-1]
+                dest['WavelengthMin'] = dest['wavelength']-dest['fwhm']/2
+                dest['WavelengthMax'] = dest['wavelength']+dest['fwhm']/2
+
+            if 'wavelength' in dest and dat[-1].units == 'μm':
+                dest['wavelength'] = dest['wavelength'] * 1000.
+                dat[-1].units = 'nm'
+                dest['wavelength_units'] = 'Nanometers'
+                if 'fwhm' in dest:
+                    dest['fwhm'] = dest['fwhm'] * 1000.
+                if 'WavelengthMin' in dest:
+                    dest['WavelengthMin'] = dest['WavelengthMin'] * 1000
+                    dest['WavelengthMax'] = dest['WavelengthMax'] * 1000
 
             if 'reflectance scale factor' in dmeta:
                 dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
 
+            if '.raw' in ifile and 'reflectance_scale_factor' not in dmeta:
+                dmeta['reflectance_scale_factor'] = 10000.
+
             dat[-1].metadata['Raster'].update(dmeta)
+            # dest overwrites same keys in dmeta.
             dat[-1].metadata['Raster'].update(dest)
 
     return dat
 
 
-def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None):
+def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None,
+            interleave='LINE'):
     """
     Get BIL format file.
 
@@ -883,69 +901,18 @@ def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None):
         datin.append(tmp)
 
     datin = np.concatenate(datin)
-    datin.shape = (ysize, bands, cols)
-    datin = np.swapaxes(datin, 0, 1)
+
+    if interleave == 'LINE':
+        datin.shape = (ysize, bands, cols)
+        datin = np.swapaxes(datin, 0, 1)
+    else:
+        datin.shape = (ysize, cols, bands)
+        # datin = np.swapaxes(datin, 0, 2)
+        # datin = np.swapaxes(datin, 1, 2)
+        datin = np.moveaxis(datin, [0, 1, 2], [1, 2, 0])
 
     if iraster is not None:
         datin = datin[:, :, xoff:xoff+xsize]
-
-    return datin
-
-
-def get_bil_old(ifile, bands, cols, rows, dtype, piter, iraster=None):
-    """
-    Get BIL format file.
-
-    This routine is called from get_raster
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-    bands : int
-        Number of bands.
-    cols : int
-        Number of columns.
-    rows : int
-        Number of rows.
-    dtype : data type
-        Data type.
-    piter : iterable from misc.ProgressBar or misc.ProgressBarText
-        progress bar iterable
-
-    Returns
-    -------
-    datin : PyGMI raster Data
-        dataset imported
-
-    """
-    dtype = np.dtype(dtype)
-
-    count = bands*cols*rows
-
-    offset = 0
-    icount = count//10
-    datin = []
-    dsize = dtype.itemsize
-    for _ in piter(range(0, 10)):
-        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=icount,
-                          offset=offset)
-        offset += icount*dsize
-        datin.append(tmp)
-
-    extra = int(count-offset/dsize)
-    if extra > 0:
-        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=extra,
-                          offset=offset)
-        datin.append(tmp)
-
-    datin = np.concatenate(datin)
-    datin.shape = (rows, bands, cols)
-    datin = np.swapaxes(datin, 0, 1)
-
-    if iraster is not None:
-        xoff, yoff, xsize, ysize = iraster
-        datin = datin[:, yoff:yoff+ysize, xoff:xoff+xsize]
 
     return datin
 
@@ -1535,7 +1502,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         try:
             nodata = dtype.type(nodata)
         except OverflowError:
-            print('Invalid nodata for dtype, resetting to None')
+            print(f'Invalid nodata for {dtype}, resetting to None')
             nodata = None
 
     if trans is None:
@@ -1609,22 +1576,11 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
             del dtmp
 
-            # out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
-            # out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
-            # out.update_tags(i+1, STATISTICS_MEAN=datai.data.mean())
-            # out.update_tags(i+1, STATISTICS_MEDIAN=np.ma.median(datai.data))
-            # out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
-            # out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
-            # out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
-            # try:
-            #     out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
-            # except MemoryError:
-            #     showlog('Unable to calculate std deviation. Not enough memory')
-
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
                 if 'wavelength' in rmeta:
-                    out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
+                    out.update_tags(i+1, Wavelength=str(rmeta['wavelength']))
+                    # out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
                     wavelength.append(rmeta['wavelength'])
 
                 if 'fwhm' in rmeta:
@@ -1671,7 +1627,6 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             ET.SubElement(histitem, 'HistCounts').text = dhist
 
             # Metadata, statistics
-            dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
             dmin = str(donly.min())
             dmax = str(donly.max())
             dmean = str(donly.mean())
@@ -1681,7 +1636,10 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             meta = child.find('Metadata')
             if meta is None:
                 meta = ET.SubElement(child, 'Metadata')
-            ET.SubElement(meta, 'MDI', key='STATISTICS_COVARIANCES').text = dcovi
+            if dcov is not None:
+                dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
+                ET.SubElement(meta, 'MDI',
+                              key='STATISTICS_COVARIANCES').text = dcovi
             ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
             ET.SubElement(meta, 'MDI', key='STATISTICS_MAXIMUM').text = dmax
             ET.SubElement(meta, 'MDI', key='STATISTICS_MEAN').text = dmean
@@ -1752,13 +1710,16 @@ def calccov(data, showlog=print):
     for band in data:
         data2.append(band.data[~mask])
 
-    data2 = np.array(data2)
-    dcov = np.cov(data2)
+    try:
+        dcov = np.cov(data2)
+    except MemoryError:
+        showlog('Cannot calculate covariance: ran out of memory')
+        return None
+
+    del data2
 
     if dcov.size == 1:
         dcov.shape = (1, 1)
-
-    del data2
 
     return dcov
 
@@ -1768,12 +1729,16 @@ def _filespeedtest():
     from pygmi.misc import getinfo
     print('Starting')
 
-    ifile = r"D:\Ratios\S2A_MSIL2A_20220705T074621_N0400_R135_T35JPM_20220705T122811_ratio.tif"
-    ifile = r"D:\Hope\3126AA_ESRI_TRUE_COLOUR_geo.tif"
-    ifile = "D:\SRTM\SA_SRTM30m.tif"
+    ifile = r"D:\Hyper\cut_048-055_ref_rect.hdr"
+    ifile = r"D:\Hyper\103A_0825-0943_ref_rect.hdr"
 
     # ifile = ifile[:-4]+'_zstd.tif'
-    dataset = get_raster(ifile)
+    dataset = get_raster(ifile, metaonly=False)
+
+    for i in dataset:
+        i.dataid = i.dataid.replace('band*', 'band ')
+        i.dataid = i.dataid.replace('band   ', 'band ')
+        i.dataid = i.dataid.replace('band  ', 'band ')
 
     getinfo('Start')
 
@@ -1783,12 +1748,8 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
-    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE')  # 104s, 4,246,330
-
-    # best is zstd pred 3 zlvl 1
-    # then deflate pred 3 zlvl 1
-
-    # HFA has no xml file.
+    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff',
+                  compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
 
     getinfo('End')
 

@@ -1121,13 +1121,13 @@ def _testfn():
     """Test routine."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportXYZData
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\SPECARCHIVE.XYZ"
 
-    IO = ImportXYZ()
+    IO = ImportXYZData()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
@@ -1153,14 +1153,14 @@ def _testfn():
 def _testfn_pointcut():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportXYZData
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
 
-    IO = ImportXYZ()
+    IO = ImportXYZData()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)

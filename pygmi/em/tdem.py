@@ -700,7 +700,7 @@ def tonumber(test, alttext=None):
 
 def _testfn():
     """Test routine."""
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportXYZData
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -708,7 +708,7 @@ def _testfn():
     filename = r'D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
     wfile = r'D:\Workdata\PyGMI Test Data\EM\wtimes.txt'
 
-    IO = ImportXYZ()
+    IO = ImportXYZData()
     IO.filt = 'Tab Delimited (*.txt)'
     IO.ifile = filename
     IO.xchan.setCurrentText('e')
