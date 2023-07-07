@@ -25,7 +25,9 @@
 """Import Data."""
 
 import os
+import glob
 import re
+import struct
 from io import StringIO
 
 from PyQt5 import QtWidgets, QtCore
@@ -118,7 +120,8 @@ class ImportXYZData(BasicModule):
                    'Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
                    'Space Delimited (*.txt);;'
-                   'Tab Delimited (*.txt)')
+                   'Tab Delimited (*.txt);;'
+                   'Intrepid Database (*..DIR)')
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -138,6 +141,9 @@ class ImportXYZData(BasicModule):
             gdf = self.get_delimited('\t')
         elif self.filt == 'Space Delimited (*.txt)':
             gdf = self.get_delimited(' ')
+        elif self.filt == 'Intrepid Database (*..DIR)':
+            gdf = get_intrepid(self.ifile, self.showlog, self.piter)
+            self.nodata.setDisabled(True)
         else:
             return False
 
@@ -210,7 +216,9 @@ class ImportXYZData(BasicModule):
 
         gdf['line'] = gdf['line'].astype(str)
 
-        gdf = gdf.replace(nodata, np.nan)
+        if self.nodata.isEnabled():
+            gdf = gdf.replace(nodata, np.nan)
+
         gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
 
@@ -399,7 +407,7 @@ class ExportShapeData(ContextModule):
         if filt == 'GeoJSON (*.geojson)':
             data.to_file(filename, driver='GeoJSON')
         else:
-            data.to_file(filename)
+            data.to_file(filename, engine='pyogrio')
 
         self.showlog('Export completed')
 
@@ -554,3 +562,153 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
     df2 = pd.concat(dflist, ignore_index=True)
 
     return df2
+
+
+def get_intrepid(ifile, showlog=print, piter=iter):
+    """
+    Get Intrepid Database.
+
+    Returns
+    -------
+    df2 : DataFrame
+        Pandas dataframe.
+
+    """
+    if '..dir' not in ifile.lower():
+        return None
+
+    idir = ifile[:-5]
+
+    dconv = {'IEEE4ByteReal': 'f',
+             'IEEE8ByteReal': 'd',
+             'Signed32BitInteger': 'i',
+             'Signed16BitInteger': 'h'}
+
+    # reclen = {'f': 4,
+    #           'd': 8,
+    #           'i': 4,
+    #           'h': 2}
+
+    files = glob.glob(os.path.join(idir, '*.PD'))
+    vfiles = glob.glob(os.path.join(idir, '*.vec'))
+
+    data = {}
+    numbands = {}
+    numlines = {}
+    numcellsperline = {}
+    nodata = {}
+
+    for j in piter(range(len(files))):
+        ifile = files[j]
+        vfile = vfiles[j]
+        cname = os.path.basename(ifile)[:-3].lower()
+        # print(cname)
+
+        with open(vfile) as file:
+            header = file.readlines()
+
+        for i in header:
+            tmp = i.replace('\t', '')
+            tmp = tmp.replace('\n', '')
+            tmp = tmp.replace(' ', '')
+
+            if 'CellType' in tmp:
+                tmp = tmp.split('=')
+                celltype = tmp[-1]
+            if 'NullCellValue' in tmp:
+                tmp = tmp.split('=')
+                null = tmp[-1]
+            if 'NrOfBands' in tmp:
+                tmp = tmp.split('=')
+                numbands[cname] = int(tmp[-1])
+            # if 'NrOfCellsPerLine' in tmp:
+            #     tmp = tmp.split('=')
+            #     numcellsperline[cname] = int(tmp[-1])
+            # if 'NrOfLines' in tmp:
+            #     tmp = tmp.split('=')
+            #     numlines[cname] = int(tmp[-1])
+
+        fmt = dconv[celltype]
+        if fmt in ['i', 'h']:
+            null = int(null)
+        else:
+            null = float(null)
+        nodata[cname] = null
+
+        tmp = np.fromfile(ifile, offset=512, dtype=fmt)
+        if tmp.min() == -np.inf:
+            nodata[cname] = -np.inf
+        # tmp = np.ma.masked_equal(tmp, null)
+
+#         with open(ifile, 'rb') as file:
+#             filecontent = file.read()
+
+# #        header = filecontent[:512]
+# #        hhope = struct.unpack(fmt*128, header)
+
+#         numrecs = (len(filecontent)-512)//reclen[fmt]
+#         tmp = struct.unpack(fmt*numrecs, filecontent[512:])
+
+#         tmp = np.ma.masked_invalid(tmp)
+#         tmp.mask = np.logical_or(tmp.mask, tmp == null)
+
+        if numbands[cname] > 1:
+            tmp.shape = (tmp.size//numbands[cname], numbands[cname])
+
+        data[cname] = tmp
+
+    if 'linenumber' in data:
+        linename = 'linenumber'
+        nodata['line'] = nodata[linename]
+    else:
+        linename = 'line'
+
+    line = data.pop(linename, None)
+    data.pop('linetype', None)
+    indx = data.pop('index', None)
+
+    i = list(data.keys())[0]
+    tmp = data[i].shape
+    linenumber = np.zeros(tmp, dtype=int) + nodata[linename]
+
+    for i, _ in enumerate(indx):
+        t1 = indx[i][0]
+        t2 = t1+indx[i][1]+1
+        linenumber[t1:t2] = line[i]
+
+    data['line'] = linenumber
+    numbands['line'] = 1
+
+    dkeys = list(data.keys())
+    for cname in dkeys:
+        if numbands[cname] > 1:
+            for j in range(numbands[cname]):
+                txt = f'{cname}_{j+1}'
+                data[txt] = data[cname][:, j]
+                nodata[txt] = nodata[cname]
+            del data[cname]
+
+    df = pd.DataFrame.from_dict(data)
+
+    df = df.astype(float)
+    for col in piter(df.columns):
+        df[col].replace(nodata[col], np.nan, inplace=True)
+
+    return df
+
+
+def _test():
+    """Test."""
+    from pygmi.misc import ProgressBarText
+
+    piter = ProgressBarText().iter
+    ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
+    ifile = r"D:\Additional Survey Data\RADALL..DIR"
+
+    data = get_intrepid(ifile, print, piter)
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    _test()
