@@ -1213,6 +1213,7 @@ class GroupProj(QtWidgets.QWidget):
 
         self.epsg_proj = getepsgcodes()
         self.epsg_proj[r'Current / Current'] = self.wkt
+        self.epsg_proj[r'None / None'] = ''
         tmp = list(self.epsg_proj.keys())
         tmp.sort(key=lambda c: c.lower())
 
@@ -1256,6 +1257,10 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
+        if wkt == '' or wkt == 'None':
+            self.combodatum.setCurrentText('None')
+            return
+
         self.wkt = wkt
         self.epsg_proj[r'Current / Current'] = self.wkt
         self.combo_change()

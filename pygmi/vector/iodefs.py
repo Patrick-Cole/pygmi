@@ -36,10 +36,11 @@ import pandas as pd
 import geopandas as gpd
 
 from pygmi import menu_default
+from pygmi.raster.dataprep import GroupProj
 from pygmi.misc import BasicModule, ContextModule
 
 
-class ImportXYZData(BasicModule):
+class ImportXYZ(BasicModule):
     """
     Import Line Data.
 
@@ -53,6 +54,7 @@ class ImportXYZData(BasicModule):
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
         self.nodata = QtWidgets.QLineEdit('99999')
+        self.proj = GroupProj('Input Projection')
 
         self.setupui()
 
@@ -93,8 +95,10 @@ class ImportXYZData(BasicModule):
         gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+
+        gridlayout_main.addWidget(self.proj, 3, 0, 1, 4)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -150,6 +154,8 @@ class ImportXYZData(BasicModule):
         if gdf is None:
             return False
 
+        self.proj.set_current('None')
+
         self.xchan.clear()
         self.ychan.clear()
 
@@ -168,6 +174,8 @@ class ImportXYZData(BasicModule):
             if i in ltmp and j in ltmp:
                 xind = ltmp.get_loc(i)
                 yind = ltmp.get_loc(j)
+                if 'lon' in i:
+                    self.proj.combodatum.setCurrentIndex(1)
                 break
 
         if xind == -1:
@@ -218,6 +226,8 @@ class ImportXYZData(BasicModule):
 
         if self.nodata.isEnabled():
             gdf = gdf.replace(nodata, np.nan)
+
+        gdf = gdf.set_crs(self.proj.wkt)
 
         gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
@@ -332,7 +342,7 @@ class ImportXYZData(BasicModule):
         return gdf
 
 
-class ExportXYZData(ContextModule):
+class ExportXYZ(ContextModule):
     """Export Line Data."""
 
     def __init__(self, parent=None):
@@ -348,14 +358,18 @@ class ExportXYZData(ContextModule):
             True if successful, False otherwise.
 
         """
+        self.parent.process_is_active(True)
+
         if 'Vector' not in self.indata:
             self.showlog('Error: You need to have line data first!')
+            self.parent.process_is_active(False)
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'csv (*.csv)')
+            self.parent, 'Save File', '.', 'csv (*.csv);; Excel (*.xlsx)')
 
         if filename == '':
+            self.parent.process_is_active(False)
             return False
 
         self.showlog('Export busy...')
@@ -366,14 +380,37 @@ class ExportXYZData(ContextModule):
         filt = (data.columns != 'geometry')
         cols = list(data.columns[filt])
 
-        data.to_csv(filename, index=False, columns=cols)
+        # from https://stackoverflow.com/questions/64695352/pandas-to-csv-progress-bar-with-tqdm
+        chunks = np.array_split(data.index, 100)  # split into 100 chunks
+        chunks = [i for i in chunks if i.size > 0]
+
+        if filename[-3:] == 'csv':
+            for chunck, subset in enumerate(self.piter(chunks)):
+                if chunck == 0:  # first row
+                    data.loc[subset].to_csv(filename, mode='w', index=False,
+                                            columns=cols)
+                else:
+                    data.loc[subset].to_csv(filename, header=None, mode='a',
+                                            index=False, columns=cols)
+        else:
+
+            if data.shape[0] > 1048576:
+                self.showlog('Your data has too many rows. Truncating it to '
+                             '1,048,576 rows')
+                data2 = data.iloc[:1048576]
+            else:
+                data2 = data
+
+            data2.to_excel(filename, index=False, columns=cols)
+
+        self.parent.process_is_active(False)
 
         self.showlog('Export completed')
 
         return True
 
 
-class ExportShapeData(ContextModule):
+class ExportVector(ContextModule):
     """Export Line Data."""
 
     def __init__(self, parent=None):
@@ -389,14 +426,19 @@ class ExportShapeData(ContextModule):
             True if successful, False otherwise.
 
         """
+        self.parent.process_is_active(True)
+
         if 'Vector' not in self.indata:
             self.showlog('Error: You need to have vector data first!')
+            self.parent.process_is_active(False)
             return False
 
         filename, filt = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson)')
+            self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson);;'
+            'GeoPackage (*.gpkg)')
 
         if filename == '':
+            self.parent.process_is_active(False)
             return False
 
         self.showlog('Export busy...')
@@ -404,17 +446,30 @@ class ExportShapeData(ContextModule):
         os.chdir(os.path.dirname(filename))
         data = self.indata['Vector'][0]
 
-        if filt == 'GeoJSON (*.geojson)':
-            data.to_file(filename, driver='GeoJSON')
-        else:
-            data.to_file(filename, engine='pyogrio')
+        # if filt == 'GeoJSON (*.geojson)':
+        #     driver = 'GeoJSON'
+        # elif filt == 'GeoPackage (*.gpkg)':
+        #     driver = 'GPKG'
+        # else:
+        #     driver = 'ESRI Shapefile'
+
+        chunks = np.array_split(data.index, 100)  # split into 100 chunks
+        chunks = [i for i in chunks if i.size > 0]
+
+        for chunck, subset in enumerate(self.piter(chunks)):
+            if chunck == 0:  # first row
+                data.loc[subset].to_file(filename, engine='pyogrio')
+            else:
+                data.loc[subset].to_file(filename, engine='pyogrio',
+                                         append=True)
 
         self.showlog('Export completed')
+        self.parent.process_is_active(False)
 
         return True
 
 
-class ImportShapeData(BasicModule):
+class ImportVector(BasicModule):
     """Import Shapefile Data."""
 
     def __init__(self, parent=None):
@@ -436,7 +491,7 @@ class ImportShapeData(BasicModule):
 
         """
         if not nodialog:
-            ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
+            ext = 'Shapefile (*.shp);;GeoPackage (*.gpkg)'
 
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
                                                                   'Open File',

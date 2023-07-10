@@ -53,10 +53,9 @@ class MenuWidget():
         self.menufile = QtWidgets.QMenu('Vector')
         parent.menubar.addAction(self.menufile.menuAction())
 
-        self.action_import_shape_data = QtWidgets.QAction('Import Shapefile'
-                                                          ' Data')
-        self.menufile.addAction(self.action_import_shape_data)
-        self.action_import_shape_data.triggered.connect(self.import_shape_data)
+        self.action_import_vector = QtWidgets.QAction('Import Vector Data')
+        self.menufile.addAction(self.action_import_vector)
+        self.action_import_vector.triggered.connect(self.import_vector)
 
         self.action_import_xyz = QtWidgets.QAction('Import XYZ Data')
         self.menufile.addAction(self.action_import_xyz)
@@ -108,9 +107,9 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_export_xyz)
         self.action_export_xyz.triggered.connect(self.export_xyz)
 
-        self.action_export_shape = QtWidgets.QAction('Export Shape Data')
-        context_menu['Vector'].addAction(self.action_export_shape)
-        self.action_export_shape.triggered.connect(self.export_shape)
+        self.action_export_vector = QtWidgets.QAction('Export Vector Data')
+        context_menu['Vector'].addAction(self.action_export_vector)
+        self.action_export_vector.triggered.connect(self.export_vector)
 
     def grid(self):
         """Grid datasets."""
@@ -127,21 +126,21 @@ class MenuWidget():
 
     def export_xyz(self):
         """Export XYZ data."""
-        self.parent.launch_context_item(iodefs.ExportXYZData)
+        self.parent.launch_context_item(iodefs.ExportXYZ)
 
-    def export_shape(self):
+    def export_vector(self):
         """Export line data."""
-        self.parent.launch_context_item(iodefs.ExportShapeData)
+        self.parent.launch_context_item(iodefs.ExportVector)
 
     def import_xyz(self):
         """Import XYZ data."""
         self.parent.item_insert('Io', 'Import XYZ Data',
-                                iodefs.ImportXYZData)
+                                iodefs.ImportXYZ)
 
-    def import_shape_data(self):
+    def import_vector(self):
         """Import shape data."""
-        self.parent.item_insert('Io', 'Import Shapefile Data',
-                                iodefs.ImportShapeData)
+        self.parent.item_insert('Io', 'Import Vector Data',
+                                iodefs.ImportVector)
 
     def metadata(self):
         """Metadata."""
