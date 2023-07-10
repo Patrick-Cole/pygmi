@@ -3201,8 +3201,6 @@ def _testfn():
     # dat = get_data(ifile, tnames=['B2  central wavelength 490 nm (10.0m)',
     #                               'B4  central wavelength 665 nm (10.0m)'])
 
-
-
     os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
@@ -3254,7 +3252,6 @@ def _testfn3():
 
     ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
     ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
-
 
     dat = get_data(ifile)
 

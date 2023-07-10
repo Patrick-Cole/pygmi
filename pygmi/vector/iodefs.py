@@ -27,7 +27,6 @@
 import os
 import glob
 import re
-import struct
 from io import StringIO
 
 from PyQt5 import QtWidgets, QtCore
@@ -42,9 +41,9 @@ from pygmi.misc import BasicModule, ContextModule
 
 class ImportXYZ(BasicModule):
     """
-    Import Line Data.
+    Import XYZ Data.
 
-    This class imports ASCII point data.
+    This class imports tabular data.
     """
 
     def __init__(self, parent=None):
@@ -70,7 +69,7 @@ class ImportXYZ(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.'
-                                           'importpointdata')
+                                           'importxyzdata')
         label_xchan = QtWidgets.QLabel('X Channel:')
         label_ychan = QtWidgets.QLabel('Y Channel:')
         label_nodata = QtWidgets.QLabel('Nodata Value:')
@@ -295,7 +294,7 @@ class ImportXYZ(BasicModule):
 
     def get_delimited(self, delimiter=','):
         """
-        Get a delimited line file.
+        Get a delimited file.
 
         Parameters
         ----------
@@ -324,7 +323,7 @@ class ImportXYZ(BasicModule):
 
     def get_excel(self):
         """
-        Get a delimited line file.
+        Get an Excel spreadsheet.
 
         Returns
         -------
@@ -343,7 +342,7 @@ class ImportXYZ(BasicModule):
 
 
 class ExportXYZ(ContextModule):
-    """Export Line Data."""
+    """Export XYZ Data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -380,7 +379,8 @@ class ExportXYZ(ContextModule):
         filt = (data.columns != 'geometry')
         cols = list(data.columns[filt])
 
-        # from https://stackoverflow.com/questions/64695352/pandas-to-csv-progress-bar-with-tqdm
+        # from https://stackoverflow.com/questions/64695352/pandas-to-csv-
+        # progress-bar-with-tqdm
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
 
@@ -411,7 +411,7 @@ class ExportXYZ(ContextModule):
 
 
 class ExportVector(ContextModule):
-    """Export Line Data."""
+    """Export Vector Data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -433,7 +433,7 @@ class ExportVector(ContextModule):
             self.parent.process_is_active(False)
             return False
 
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson);;'
             'GeoPackage (*.gpkg)')
 
@@ -445,13 +445,6 @@ class ExportVector(ContextModule):
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Vector'][0]
-
-        # if filt == 'GeoJSON (*.geojson)':
-        #     driver = 'GeoJSON'
-        # elif filt == 'GeoPackage (*.gpkg)':
-        #     driver = 'GPKG'
-        # else:
-        #     driver = 'ESRI Shapefile'
 
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
@@ -470,7 +463,7 @@ class ExportVector(ContextModule):
 
 
 class ImportVector(BasicModule):
-    """Import Shapefile Data."""
+    """Import Vector Data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -625,8 +618,8 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 
     Returns
     -------
-    df2 : DataFrame
-        Pandas dataframe.
+    df : DataFrame
+        Pandas Dataframe.
 
     """
     if '..dir' not in ifile.lower():
@@ -639,18 +632,11 @@ def get_intrepid(ifile, showlog=print, piter=iter):
              'Signed32BitInteger': 'i',
              'Signed16BitInteger': 'h'}
 
-    # reclen = {'f': 4,
-    #           'd': 8,
-    #           'i': 4,
-    #           'h': 2}
-
     files = glob.glob(os.path.join(idir, '*.PD'))
     vfiles = glob.glob(os.path.join(idir, '*.vec'))
 
     data = {}
     numbands = {}
-    numlines = {}
-    numcellsperline = {}
     nodata = {}
 
     for j in piter(range(len(files))):
@@ -659,7 +645,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
         cname = os.path.basename(ifile)[:-3].lower()
         # print(cname)
 
-        with open(vfile) as file:
+        with open(vfile, encoding='utf-8') as file:
             header = file.readlines()
 
         for i in header:
@@ -676,12 +662,6 @@ def get_intrepid(ifile, showlog=print, piter=iter):
             if 'NrOfBands' in tmp:
                 tmp = tmp.split('=')
                 numbands[cname] = int(tmp[-1])
-            # if 'NrOfCellsPerLine' in tmp:
-            #     tmp = tmp.split('=')
-            #     numcellsperline[cname] = int(tmp[-1])
-            # if 'NrOfLines' in tmp:
-            #     tmp = tmp.split('=')
-            #     numlines[cname] = int(tmp[-1])
 
         fmt = dconv[celltype]
         if fmt in ['i', 'h']:
@@ -693,19 +673,6 @@ def get_intrepid(ifile, showlog=print, piter=iter):
         tmp = np.fromfile(ifile, offset=512, dtype=fmt)
         if tmp.min() == -np.inf:
             nodata[cname] = -np.inf
-        # tmp = np.ma.masked_equal(tmp, null)
-
-#         with open(ifile, 'rb') as file:
-#             filecontent = file.read()
-
-# #        header = filecontent[:512]
-# #        hhope = struct.unpack(fmt*128, header)
-
-#         numrecs = (len(filecontent)-512)//reclen[fmt]
-#         tmp = struct.unpack(fmt*numrecs, filecontent[512:])
-
-#         tmp = np.ma.masked_invalid(tmp)
-#         tmp.mask = np.logical_or(tmp.mask, tmp == null)
 
         if numbands[cname] > 1:
             tmp.shape = (tmp.size//numbands[cname], numbands[cname])

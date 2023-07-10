@@ -703,19 +703,8 @@ def cut_point(data, ifile):
 
     if 'Polygon' not in gdf.geom_type.iloc[0]:
         return None
-    # if 'Polygon' in gdf.geom_type.iloc[0]:
-    #     dat = gdf.geometry.iloc[0]
 
     data = gpd.clip(data, gdf)
-
-    # points = list(dat.exterior.coords)
-
-    # bbpath = mplPath.Path(points)
-
-    # chk = bbpath.contains_points(np.transpose([data.geometry.x.values,
-    #                                            data.geometry.y.values]))
-
-    # data = data[chk]
 
     return data
 
