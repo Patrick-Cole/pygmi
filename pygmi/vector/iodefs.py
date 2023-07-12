@@ -226,7 +226,8 @@ class ImportXYZ(BasicModule):
         if self.nodata.isEnabled():
             gdf = gdf.replace(nodata, np.nan)
 
-        gdf = gdf.set_crs(self.proj.wkt)
+        if self.proj.wkt != '':
+            gdf = gdf.set_crs(self.proj.wkt)
 
         gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
@@ -433,7 +434,7 @@ class ExportVector(ContextModule):
             self.parent.process_is_active(False)
             return False
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson);;'
             'GeoPackage (*.gpkg)')
 
@@ -445,6 +446,13 @@ class ExportVector(ContextModule):
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Vector'][0]
+
+        if filt == 'GeoPackage (*.gpkg)' and 'fid' in data.columns.str.lower():
+            for i in data.columns:  # don't know case of fid column name
+                if i.lower() == 'fid':
+                    data['fid_original'] = data[i]
+                    data.drop(i, axis=1, inplace=True)
+                    break
 
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
