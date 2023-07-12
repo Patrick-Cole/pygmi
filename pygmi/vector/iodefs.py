@@ -454,15 +454,28 @@ class ExportVector(ContextModule):
                     data.drop(i, axis=1, inplace=True)
                     break
 
+        if filt == 'shp (*.shp)':
+            test = [i for i in data.columns if len(i) > 10]
+            if test:
+                self.showlog('You have columns with more than 10 characters. '
+                             'They will be renamed but could still cause '
+                             'problems.')
+
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
 
-        for chunck, subset in enumerate(self.piter(chunks)):
-            if chunck == 0:  # first row
-                data.loc[subset].to_file(filename, engine='pyogrio')
-            else:
-                data.loc[subset].to_file(filename, engine='pyogrio',
-                                         append=True)
+        try:
+            for chunck, subset in enumerate(self.piter(chunks)):
+                if chunck == 0:  # first row
+                    data.loc[subset].to_file(filename, engine='pyogrio')
+                else:
+                    data.loc[subset].to_file(filename, engine='pyogrio',
+                                             append=True)
+        except RuntimeError as e:
+            self.showlog(str(e))
+            self.showlog('Export aborted.')
+            self.parent.process_is_active(False)
+            return False
 
         self.showlog('Export completed')
         self.parent.process_is_active(False)
