@@ -505,7 +505,7 @@ class ImportVector(BasicModule):
 
         """
         if not nodialog:
-            ext = 'Shapefile (*.shp);;GeoPackage (*.gpkg)'
+            ext = 'Shapefile (*.shp);;Zipped Shapefile (*.shp.zip);;GeoPackage (*.gpkg)'
 
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
                                                                   'Open File',

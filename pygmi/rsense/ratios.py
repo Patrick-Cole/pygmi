@@ -256,7 +256,7 @@ class SatRatios(BasicModule):
             odir = os.path.dirname(dat[0].filename)
 
             datfin = calc_ratios(dat, rlist, showlog=self.showlog,
-                                 piter=self.piter)
+                                 piter=self.piter, sensor=sensor)
 
             if datfin:
                 odir = os.path.dirname(data[0].filename)
@@ -831,7 +831,7 @@ class ConditionIndices(BasicModule):
                 item.setText(' ' + item.text()[1:])
 
 
-def calc_ratios(dat, rlist, showlog=print, piter=iter):
+def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
     """
     Calculate Band ratios.
 
@@ -904,7 +904,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter):
     for i in piter(rlist):
         showlog('Calculating '+i)
         if 'Landslide Index' in i:
-            rband = landslide_index(dat, showlog, piter)
+            rband = landslide_index(dat, sensor, showlog, piter)
             datfin += rband
             continue
 
@@ -1232,7 +1232,7 @@ def get_VHI(tci, vci, alpha=0.5):
     return vhi
 
 
-def landslide_index(dat, showlog=print, piter=iter):
+def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     """
     Calculate Band ratios.
 
@@ -1259,7 +1259,8 @@ def landslide_index(dat, showlog=print, piter=iter):
              r'B4 SWIR',
              r'((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI']
 
-    sensor = dat[0].metadata['Raster']['Sensor']
+    if sensor is None:
+        sensor = dat[0].metadata['Raster']['Sensor']
     rlist = correct_bands(rlist, sensor)
 
     datfin = calc_ratios(dat, rlist, showlog=showlog, piter=piter)
