@@ -28,37 +28,41 @@ If you have any comments or queries, you can contact the author either through `
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.10 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.11 on Windows.
 
-PyGMI should still work with Python 3.8 and Python 3.9.
+PyGMI should still work with Python 3.9 and Python 3.10.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.10.9
+* python 3.11.4
 * contextily 1.3.0
-* discretize 0.8.3
-* fiona 1.8.22
-* geopandas 0.12.1
-* llvmlite 0.39.1
-* matplotlib 3.7.1
+* discretize 0.9.0
+* fiona 1.9.4.post1
+* gdal 3.7.1
+* geopandas 0.13.2
+* llvmlite 0.40.1
+* matplotlib 3.7.2
 * mtpy 1.1.5
-* natsort 8.2.0
-* numba 0.56.4
+* natsort 8.4.0
+* numba 0.57.1
 * numexpr 2.8.4
-* numpy 1.23.5+mkl
-* pandas 1.5.2
-* pillow 9.3.0
-* psutil 5.9.0
-* pyopengl 3.1.6
-* pyproj 3.4.1
-* PyQt5 5.15.6
-* pytest 7.1.1
-* rasterio 1.3.4
-* scikit-image 0.19.3
-* scikit-learn 1.1.3
-* scipy 1.9.3
-* shapely 1.8.5.post1
-* SimPEG 0.18.1
+* numpy 1.24.4
+* openpyxl 3.1.2
+* pandas 2.0.3
+* pillow 10.0.0
+* psutil 5.9.5
+* pyogrio 0.6.0
+* pyopengl 3.1.7
+* pyproj 3.6.0
+* PyQt5 5.15.9
+* pytest 7.4.0
+* rasterio 1.3.8
+* scikit-image 0.21.0
+* scikit-learn 1.3.0
+* scipy 1.11.1
+* shapely 2.0.1
+* SimPEG 0.19.0
+* utm 0.7.0
 
 Installation
 ------------
@@ -99,7 +103,7 @@ Examples of binaries you may need to get are:
 * discretize
 * fiona
 
-They can be obtained from the `website <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ by Christoph Gohlke.
+They can be obtained from the `website <https://www.cgohlke.com/>`_ by Christoph Gohlke.
 
 Linux
 -----
