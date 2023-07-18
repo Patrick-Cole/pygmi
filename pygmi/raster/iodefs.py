@@ -438,7 +438,13 @@ def get_ascii(ifile):
         nrows = int(adata[3])
         xdim = float(adata[9])
         ydim = float(adata[9])
-        nval = float(adata[11])
+        nval = adata[11]
+
+        if nval == 'None':
+            nval = None
+        else:
+            nval = float(nval)
+
         ulxmap = float(adata[5])
         ulymap = float(adata[7])+ydim*nrows
         if 'center' in adata[4].lower():
@@ -631,7 +637,8 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                         del dest[j]
 
                 if 'wavelength' in dest:
-                    wavelengthmax = max(wavelengthmax, float(dest['wavelength']))
+                    wavelengthmax = max(wavelengthmax,
+                                        float(dest['wavelength']))
 
     except rasterio.errors.RasterioIOError:
         return None
@@ -694,7 +701,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
     if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
             dataid is None and metaonly is False):
         interleave = istruct['INTERLEAVE']
-        if interleave == 'LINE' or interleave == 'PIXEL':
+        if interleave in ['LINE', 'PIXEL']:
             isbil = True
             cols = dataset.width
             rows = dataset.height

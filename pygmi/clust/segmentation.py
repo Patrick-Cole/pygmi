@@ -527,7 +527,6 @@ def _testfn():
     import sys
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
-    from pygmi.misc import PTime
     from matplotlib import rcParams
 
     rcParams['figure.dpi'] = 300
@@ -554,11 +553,9 @@ def _testfn():
 
     data = [b1, b2, b3]
 
-    ttt = PTime()
     IS = ImageSeg()
     IS.indata = {'Raster': data}
     IS.settings()
-    ttt.since_last_call()
 
     odata = IS.outdata['Raster'][0]
 

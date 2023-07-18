@@ -340,8 +340,8 @@ def savetable(ofile, bands, cols, data):
         for i in cols[1:]:
             htmp += ',' + i
 
-        for k, _ in enumerate(bands):
-            fobj.write(bands[k]+'\n')
+        for k, bandsk in enumerate(bands):
+            fobj.write(bandsk+'\n')
             fobj.write(htmp+'\n')
             for i, _ in enumerate(data[k]):
                 rtmp = str(data[k][i][0])

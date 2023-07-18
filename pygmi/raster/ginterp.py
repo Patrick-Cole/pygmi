@@ -459,8 +459,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             bincol = colormaps['gray'](binave)
 
-        for j, _ in enumerate(patches):
-            patches[j].set_color(bincol[j])
+        for j, patchesj in enumerate(patches):
+            patchesj.set_color(bincol[j])
 
         # This section draws the black line.
         if zval is None or np.ma.is_masked(zval) is True:
@@ -1491,6 +1491,8 @@ class PlotInterp(BasicModule):
         htype = str(self.cbox_htype.currentText())
         clippercl = self.mmc.clippercl
         clippercu = self.mmc.clippercu
+        cmin = None
+        cmax = None
 
         if dtype == 'Single Colour Map':
 

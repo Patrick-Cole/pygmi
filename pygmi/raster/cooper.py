@@ -439,7 +439,7 @@ class Visibility2d(BasicModule):
             self.showlog(datai.dataid+':')
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
-                                            self.dh*data[i].data.std()/100.,
+                                            self.dh*datai.data.std()/100.,
                                             self.piter)
 
             buff = self.wsize//2

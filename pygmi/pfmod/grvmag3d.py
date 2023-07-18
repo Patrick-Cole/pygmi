@@ -927,7 +927,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('Error: Create a model first')
         return None
 
-    ttt = PTime()
+    ptime = PTime()
     # Init some variables for convenience
     lmod.update_lithlist()
 
@@ -1103,7 +1103,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if pbars is not None:
         pbars.maxall()
 
-    tdiff = ttt.since_last_call(show=False)
+    tdiff = ptime.since_last_call(show=False)
     mins = int(tdiff/60)
     secs = tdiff-mins*60
 

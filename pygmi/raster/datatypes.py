@@ -129,12 +129,16 @@ class Data():
         Flag to signify an RGB image.
     metadata : dictionary
         Miscellaneous metadata for file.
+    meta : dictionary
+        Rasterio metadata for file.
     filename : str
         Filename of file.
     transform : list of Affine, optional
         rasterio transform. The default is None.
     crs : CRS
         rasterio crs of data
+    datetime : date
+        Date of dataset.
     """
 
     def __init__(self):
@@ -184,7 +188,7 @@ class Data():
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
                       transform=None, iraster=None, rows=None, cols=None):
         """
-        Set the transform.
+        Set the transform, xdim, ydim, extent and bounds.
 
         This requires either transform as input OR xdim, ydim, xmin, ymax.
 
@@ -203,6 +207,10 @@ class Data():
         iraster : list, optional
             list containing offsets etc in event of cutting data. The default
             is None.
+        rows : int, optional
+            rows in dataset. The default is None.
+        cols : int, optional
+            columns in dataset. The default is None.
 
         Returns
         -------
@@ -296,30 +304,19 @@ class RasterMeta():
     ----------
     sensor : str
         Sensor used to measure data.
-    extent : tuple
-        Extent of data as (left, right, bottom, top)
-    bounds : tuple
-        Bounds of data as (left, bottom, right, top)
-    xdim : float
-        x-dimension of grid cell
-    ydim : float
-        y-dimension of grid cell
-    units : str
-        description of units to be used with colour bars
-    metadata : dictionary
-        Miscellaneous metadata for file.
     filename : str
         Filename of file.
-    transform : list of Affine, optional
-        rasterio transform. The default is None.
     crs : CRS
         rasterio crs of data.
-    datetime : datetime
-        date of survey.
     bands : list
         list of bands in dataset.
     tnames : list
         list fo bands to process.
+    banddata : list
+        list of band data.
+    to_sutm : bool
+        flag to convert a file to SUTM.
+
     """
 
     def __init__(self):

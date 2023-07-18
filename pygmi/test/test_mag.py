@@ -52,7 +52,7 @@ def test_tilt1():
            [1.8572654805528055e-17, 1.8572654805528055e-17]]
     tdx2 = [[0.30816907111598496, 0.30816907111598496],
             [0.30816907111598496, 0.30816907111598496]]
-    t1, th, t2, ta, tdx = dataprep.tilt1(datin, 90, 0)
+    t1, th, t2, ta, tdx, _ = dataprep.tilt1(datin, 90, 0)
 
     np.testing.assert_array_equal(t1, t12)
     np.testing.assert_array_equal(th, th2)
@@ -119,7 +119,7 @@ def test_tilt():
     tmp.dsb_dec.setValue(0.)
     tmp.dsb_inc.setValue(90.)
     tmp.settings(True)
-    tmp.change_band1()
+    tmp.calculate()
 
     datout2 = tmp.depths
 
@@ -136,4 +136,4 @@ def test_tilt():
 
 
 if __name__ == "__main__":
-    test_IGRF()
+    test_tilt()

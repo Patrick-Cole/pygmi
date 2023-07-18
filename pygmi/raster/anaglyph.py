@@ -48,7 +48,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
         self.axes = fig.add_subplot(111)
@@ -144,6 +144,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.add_collection(lc)
 
         self.axes.autoscale()
+        self.axes.set_aspect('equal')
 
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
@@ -153,7 +154,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.tick_params(axis='y', labelrotation=0)
         self.axes.tick_params(axis='x', labelrotation=90)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_raster(self, data1, scale=7, rotang=10, atype='dubois',
@@ -272,7 +272,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 

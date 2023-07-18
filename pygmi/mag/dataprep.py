@@ -27,7 +27,7 @@
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from scipy.signal import tukey
+from scipy.signal.windows import tukey
 import scipy.interpolate as si
 from scipy import signal
 from pygmi import menu_default
@@ -700,7 +700,7 @@ def _testfn():
 
     dat = get_raster(ifile)[0]
 
-    t1, th, t2, ta, tdx = tilt1(dat.data, 75, 0)
+    t1, th, t2, ta, tdx, tahg = tilt1(dat.data, 75, 0)
 
     plt.figure(dpi=150)
     plt.imshow(t2)

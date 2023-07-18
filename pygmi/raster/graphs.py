@@ -58,7 +58,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -110,7 +110,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         cbar = self.figure.colorbar(rdata, format=frm)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_raster(self, data1, cmap):
@@ -155,7 +154,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2):
@@ -202,7 +200,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel(data1.units)
         self.axes.set_ylabel(data2.units)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_surface(self, data, cmap):
@@ -261,7 +258,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylabel('Y')
         self.axes.set_zlabel('Z')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hist(self, data1, ylog):
@@ -295,7 +291,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if ylog is True:
             self.axes.set_yscale('log')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -402,6 +397,7 @@ class PlotRaster(ContextModule):
 
         """
         self.show()
+        data = []
         if 'Raster' in self.indata:
             data = self.indata['Raster']
         elif 'Cluster' in self.indata:

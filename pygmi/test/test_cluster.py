@@ -123,4 +123,4 @@ def test_fuzzy():
 
 
 if __name__ == "__main__":
-    test_fuzzy()
+    test_crisp()

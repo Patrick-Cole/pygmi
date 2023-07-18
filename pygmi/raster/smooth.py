@@ -162,17 +162,15 @@ class Smooth(BasicModule):
 
         self.showlog('Smoothing ')
         data = copy.deepcopy(self.indata['Raster'])
-        if self.radiobutton_2dmean.isChecked():
-            for i, _ in enumerate(data):
-                data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Mean')
-                data[i].dataid = data[i].dataid+' 2D Mean'
 
-        if self.radiobutton_2dmedian.isChecked():
-            for i, _ in enumerate(data):
-                data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Median')
-                data[i].dataid = data[i].dataid+' 2D Median'
+        if self.radiobutton_2dmean.isChecked():
+            filt = '2D Mean'
+        else:
+            filt = '2D Median'
+
+        for dat in data:
+            dat.data = self.mov_win_filt(dat.data, self.fmat, filt)
+            dat.dataid = dat.dataid+' '+filt
 
         if not nodialog:
             self.parent.process_is_active(False)

@@ -305,6 +305,7 @@ def test_corr2d():
 def smalldata():
     """Small test dataset."""
     dat = Data()
+    dat.dataid = 'test'
     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
                            mask=[[0, 0], [0, 0]])
     dat.set_transform(1, 25, 1, -27)
@@ -545,4 +546,10 @@ def test_agc():
 
 
 if __name__ == "__main__":
-    test_vertical()
+    dat = Data()
+    dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
+                           mask=[[0, 0], [0, 0]])
+    dat.dataid = 'test'
+    dat.set_transform(1, 25, 1, -27)
+    dat.crs = CRS.from_epsg(4326)
+    test_io_ascii(dat)

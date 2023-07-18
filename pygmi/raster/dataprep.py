@@ -27,7 +27,6 @@
 import tempfile
 import math
 import os
-import sys
 import glob
 import copy
 from collections import Counter
@@ -47,6 +46,161 @@ from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
+
+
+class Continuation(BasicModule):
+    """Perform upward and downward continuation on potential field data."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.dataid = QtWidgets.QComboBox()
+        self.continuation = QtWidgets.QComboBox()
+        self.dsb_height = QtWidgets.QDoubleSpinBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
+        label_band = QtWidgets.QLabel('Band to perform continuation:')
+        label_cont = QtWidgets.QLabel('Continuation type:')
+        label_height = QtWidgets.QLabel('Continuation distance:')
+
+        self.dsb_height.setMaximum(1000000.0)
+        self.dsb_height.setMinimum(0.0)
+        self.dsb_height.setValue(0.0)
+        self.continuation.clear()
+        self.continuation.addItems(['Upward', 'Downward'])
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Continuation')
+
+        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_cont, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.continuation, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_height, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        if 'Raster' not in self.indata:
+            self.showlog('No Raster Data.')
+            return False
+
+        for i in self.indata['Raster']:
+            tmp.append(i.dataid)
+
+        self.dataid.clear()
+        self.dataid.addItems(tmp)
+
+        if not nodialog:
+            tmp = self.exec_()
+
+            if tmp != 1:
+                return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.dataid.setCurrentText(projdata['band'])
+        self.continuation.setCurrenText(projdata['ctype'])
+        self.dsb_height.setValue(projdata['height'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['band'] = self.dataid.currentText()
+        projdata['ctype'] = self.continuation.currentText()
+        projdata['height'] = self.dsb_height.value()
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        h = self.dsb_height.value()
+        ctype = self.continuation.currentText()
+
+        # Get data
+        for i in self.indata['Raster']:
+            if i.dataid == self.dataid.currentText():
+                data = i
+                break
+
+        if ctype == 'Downward':
+            dat = taylorcont(data, h)
+        else:
+            dat = fftcont(data, h)
+
+        self.outdata['Raster'] = [dat]
 
 
 class DataCut(BasicModule):
@@ -1250,14 +1404,14 @@ class GroupProj(QtWidgets.QWidget):
         Parameters
         ----------
         wkt : str
-            Well Known Text descriptions for coordinates (WKT) .
+            Well Known Text descriptions for coordinates (WKT).
 
         Returns
         -------
         None.
 
         """
-        if wkt == '' or wkt == 'None':
+        if wkt in ['', 'None']:
             self.combodatum.setCurrentText('None')
             return
 
@@ -1587,198 +1741,132 @@ class Metadata(ContextModule):
         return True
 
 
-class Continuation(BasicModule):
-    """Perform upward and downward continuation on potential field data."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.dataid = QtWidgets.QComboBox()
-        self.continuation = QtWidgets.QComboBox()
-        self.dsb_height = QtWidgets.QDoubleSpinBox()
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gridlayout_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
-        label_band = QtWidgets.QLabel('Band to perform continuation:')
-        label_cont = QtWidgets.QLabel('Continuation type:')
-        label_height = QtWidgets.QLabel('Continuation distance:')
-
-        self.dsb_height.setMaximum(1000000.0)
-        self.dsb_height.setMinimum(0.0)
-        self.dsb_height.setValue(0.0)
-        self.continuation.clear()
-        self.continuation.addItems(['Upward', 'Downward'])
-
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle('Continuation')
-
-        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
-
-        gridlayout_main.addWidget(label_cont, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.continuation, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_height, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        tmp = []
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
-            return False
-
-        for i in self.indata['Raster']:
-            tmp.append(i.dataid)
-
-        self.dataid.clear()
-        self.dataid.addItems(tmp)
-
-        if not nodialog:
-            tmp = self.exec_()
-
-            if tmp != 1:
-                return False
-
-        self.acceptall()
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dataid.setCurrentText(projdata['band'])
-        self.continuation.setCurrenText(projdata['ctype'])
-        self.dsb_height.setValue(projdata['height'])
-
-        return False
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-        projdata['band'] = self.dataid.currentText()
-        projdata['ctype'] = self.continuation.currentText()
-        projdata['height'] = self.dsb_height.value()
-
-        return projdata
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        h = self.dsb_height.value()
-        ctype = self.continuation.currentText()
-
-        # Get data
-        for i in self.indata['Raster']:
-            if i.dataid == self.dataid.currentText():
-                data = i
-                break
-
-        if ctype == 'Downward':
-            dat = taylorcont(data, h)
-        else:
-            dat = fftcont(data, h)
-
-        self.outdata['Raster'] = [dat]
-
-
-def redistribute_vertices(geom, distance):
+def check_dataid(out):
     """
-    Redistribute vertices in a geometry.
-
-    From https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely,
-    and by Mike-T.
+    Check dataid for duplicates and renames where necessary.
 
     Parameters
     ----------
-    geom : shapely geometry
-        Geometry from geopandas.
-    distance : float
-        sampling distance.
-
-    Raises
-    ------
-    ValueError
-        Error when there is an unknown geometry.
+    out : PyGMI Data
+        PyGMI raster data.
 
     Returns
     -------
-    shapely geometry
-        New geometry.
+    out : PyGMI Data
+        PyGMI raster data.
 
     """
-    if geom.geom_type == 'LineString':
-        num_vert = int(round(geom.length / distance))
-        if num_vert == 0:
-            num_vert = 1
-        return LineString(
-            [geom.interpolate(float(n) / num_vert, normalized=True)
-             for n in range(num_vert + 1)])
-    if geom.geom_type == 'MultiLineString':
-        parts = [redistribute_vertices(part, distance)
-                 for part in geom]
-        return type(geom)([p for p in parts if not p.is_empty])
-    raise ValueError('unhandled geometry %s', (geom.geom_type,))
+    tmplist = []
+    for i in out:
+        tmplist.append(i.dataid)
+
+    tmpcnt = Counter(tmplist)
+    for elt, count in tmpcnt.items():
+        j = 1
+        for i in out:
+            if elt == i.dataid and count > 1:
+                i.dataid += '('+str(j)+')'
+                j += 1
+
+    return out
+
+
+def cluster_to_raster(indata):
+    """
+    Convert cluster datasets to raster datasets.
+
+    Some routines will not understand the datasets produced by cluster
+    analysis routines, since they are designated 'Cluster' and not 'Raster'.
+    This provides a work-around for that.
+
+    Parameters
+    ----------
+    indata : Data
+        PyGMI raster dataset
+
+    Returns
+    -------
+    indata : Data
+        PyGMI raster dataset
+
+    """
+    if 'Cluster' not in indata:
+        return indata
+    if 'Raster' not in indata:
+        indata['Raster'] = []
+
+    for i in indata['Cluster']:
+        indata['Raster'].append(i)
+        indata['Raster'][-1].data = indata['Raster'][-1].data + 1
+
+    return indata
+
+
+def cut_raster(data, ifile, showlog=print, deepcopy=True):
+    """
+    Cut a raster dataset.
+
+    Cut a raster dataset using a shapefile.
+
+    Parameters
+    ----------
+    data : Data
+        PyGMI Dataset
+    ifile : str
+        shapefile used to cut data
+    showlog : function, optional
+        Function for printing text. The default is print.
+
+    Returns
+    -------
+    data : Data
+        PyGMI Dataset
+    """
+    if deepcopy is True:
+        data = copy.deepcopy(data)
+
+    try:
+        gdf = gpd.read_file(ifile)
+    except:
+        showlog('There was a problem importing the shapefile. Please make '
+                'sure you have at all the individual files which make up '
+                'the shapefile.')
+        return None
+
+    gdf = gdf[gdf.geometry != None]
+
+    if 'Polygon' not in gdf.geom_type.iloc[0]:
+        showlog('You need a polygon in that shape file')
+        return None
+
+    for idata in data:
+        # Convert the layer extent to image pixel coordinates
+        # poly = gdf['geometry'].iloc[0]
+        dext = idata.bounds
+        lext = gdf['geometry'].total_bounds
+
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
+                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
+
+            showlog('The shapefile is not in the same area as the raster '
+                    'dataset. Please check its coordinates and make sure its '
+                    'projection is the same as the raster dataset')
+            return None
+
+        # This section converts PolygonZ to Polygon, and takes first polygon.
+        # coords = gdf['geometry'].loc[0].exterior.coords
+        # coords = [Polygon([[p[0], p[1]] for p in coords])]
+        coords = gdf['geometry']
+
+        dat, trans = riomask(idata.to_mem(), coords, crop=True)
+
+        idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
+
+        idata.set_transform(transform=trans)
+
+    data = trim_raster(data)
+
+    return data
 
 
 def data_reproject(data, ocrs, otransform=None, orows=None,
@@ -1840,149 +1928,6 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.metadata = data.metadata
 
     return data2
-
-
-def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
-                 roff=None, coff=None):
-    """
-    Merge using median for rasterio, taking minimum value.
-
-    Parameters
-    ----------
-    merged_data : numpy array
-        Old data.
-    new_data : numpy array
-        New data to merge to old data.
-    merged_mask : float
-        Old mask.
-    new_mask : float
-        New mask.
-    index : int, optional
-        index of the current dataset within the merged dataset collection.
-        The default is None.
-    roff : int, optional
-        row offset in base array. The default is None.
-    coff : int, optional
-        col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
-
-    """
-    merged_data = np.ma.array(merged_data, mask=merged_mask)
-    new_data = np.ma.array(new_data, mask=new_mask)
-
-    mtmp1 = np.logical_and(~merged_mask, ~new_mask)
-    mtmp2 = np.logical_and(~merged_mask, new_mask)
-
-    tmp1 = new_data.copy()
-
-    if True in mtmp1:
-        tmp1 = tmp1 - np.ma.median(new_data[mtmp1])
-        tmp1 = tmp1 + np.ma.median(merged_data[mtmp1])
-        # tmp1 = tmp1 - new_data[mtmp1].mean()
-        # tmp1 = tmp1 + merged_data[mtmp1].mean()
-
-    tmp1[mtmp2] = merged_data[mtmp2]
-
-    # import matplotlib.pyplot as plt
-
-    # plt.figure(dpi=150)
-    # plt.suptitle(f'{roff} {coff}')
-    # plt.subplot(221)
-    # plt.title('merged_data')
-    # plt.imshow(merged_data[0], vmin=0.5, vmax=3.0, interpolation='nearest')
-    # plt.colorbar()
-
-    # plt.subplot(222)
-    # plt.title('new_data')
-    # plt.imshow(new_data[0], vmin=0.5, vmax=3.0, interpolation='nearest')
-    # plt.colorbar()
-    # plt.tight_layout()
-
-    # plt.subplot(223)
-    # plt.title('tmp1')
-    # plt.imshow(tmp1[0], vmin=0.5, vmax=3.0, interpolation='nearest')
-    # plt.colorbar()
-    # plt.tight_layout()
-    # plt.show()
-
-    merged_data[:] = tmp1
-
-
-def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
-              roff=None, coff=None):
-    """
-    Merge using minimum for rasterio, taking minimum value.
-
-    Parameters
-    ----------
-    merged_data : numpy array
-        Old data.
-    new_data : numpy array
-        New data to merge to old data.
-    merged_mask : float
-        Old mask.
-    new_mask : float
-        New mask.
-    index : int, optional
-        index of the current dataset within the merged dataset collection.
-        The default is None.
-    roff : int, optional
-        row offset in base array. The default is None.
-    coff : int, optional
-        col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
-
-    """
-    tmp = np.logical_and(~merged_mask, ~new_mask)
-
-    tmp1 = merged_data.copy()
-    tmp1[~new_mask] = new_data[~new_mask]
-    tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
-
-    merged_data[:] = tmp1
-
-
-def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
-              roff=None, coff=None):
-    """
-    Merge using maximum for rasterio, taking maximum value.
-
-    Parameters
-    ----------
-    merged_data : numpy array
-        Old data.
-    new_data : numpy array
-        New data to merge to old data.
-    merged_mask : float
-        Old mask.
-    new_mask : float
-        New mask.
-    index : int, optional
-        index of the current dataset within the merged dataset collection.
-        The default is None.
-    roff : int, optional
-        row offset in base array. The default is None.
-    coff : int, optional
-        col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
-
-    """
-    tmp = np.logical_and(~merged_mask, ~new_mask)
-
-    tmp1 = merged_data.copy()
-    tmp1[~new_mask] = new_data[~new_mask]
-    tmp1[tmp] = np.maximum(merged_data[tmp], new_data[tmp])
-
-    merged_data[:] = tmp1
 
 
 def fftprep(data):
@@ -2088,40 +2033,6 @@ def fft_getkxy(fftmod, xdim, ydim):
     return KX, KY
 
 
-def verticalp(data, order=1):
-    """
-    Vertical derivative.
-
-    Parameters
-    ----------
-    data : numpy array
-        Input data.
-    order : float, optional
-        Order. The default is 1.
-
-    Returns
-    -------
-    dout : numpy array
-        Output data
-
-    """
-    xdim = data.xdim
-    ydim = data.ydim
-
-    ndat, rdiff, cdiff, _ = fftprep(data)
-    fftmod = np.fft.fft2(ndat)
-
-    KX, KY = fft_getkxy(fftmod, xdim, ydim)
-
-    k = np.sqrt(KX**2+KY**2)
-    filt = k**order
-
-    zout = np.real(np.fft.ifft2(fftmod*filt))
-    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
-
-    return zout
-
-
 def fftcont(data, h):
     """
     Continuation.
@@ -2171,164 +2082,50 @@ def fftcont(data, h):
     return dat
 
 
-def taylorcont(data, h):
+def get_shape_bounds(sfile, crs=None, showlog=print):
     """
-    Continuation.
+    Get bounds from a shape file.
 
     Parameters
     ----------
-    data : PyGMI Data
-        PyGMI raster data.
-    h : float
-        Height.
+    sfile : str
+        Filename for shapefile.
+    crs : rasterio CRS
+        target crs for shapefile
+    showlog : TYPE, optional
+        Print. The default is print.
 
     Returns
     -------
-    dat : PyGMI Data
-        PyGMI raster data.
+    bounds : list
+        Rasterio bounds.
 
     """
-    dz = verticalp(data, order=1)
-    dz2 = verticalp(data, order=2)
-    dz3 = verticalp(data, order=3)
-    zout = (data.data + h*dz + h**2*dz2/math.factorial(2) +
-            h**3*dz3/math.factorial(3))
-
-    dat = Data()
-    dat.data = np.ma.masked_invalid(zout)
-    dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nodata = data.data.fill_value
-    dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
-    dat.set_transform(transform=data.transform)
-    dat.crs = data.crs
-    return dat
-
-
-def check_dataid(out):
-    """
-    Check dataid for duplicates and renames where necessary.
-
-    Parameters
-    ----------
-    out : PyGMI Data
-        PyGMI raster data.
-
-    Returns
-    -------
-    out : PyGMI Data
-        PyGMI raster data.
-
-    """
-    tmplist = []
-    for i in out:
-        tmplist.append(i.dataid)
-
-    tmpcnt = Counter(tmplist)
-    for elt, count in tmpcnt.items():
-        j = 1
-        for i in out:
-            if elt == i.dataid and count > 1:
-                i.dataid += '('+str(j)+')'
-                j += 1
-
-    return out
-
-
-def cluster_to_raster(indata):
-    """
-    Convert cluster datasets to raster datasets.
-
-    Some routines will not understand the datasets produced by cluster
-    analysis routines, since they are designated 'Cluster' and not 'Raster'.
-    This provides a work-around for that.
-
-    Parameters
-    ----------
-    indata : Data
-        PyGMI raster dataset
-
-    Returns
-    -------
-    indata : Data
-        PyGMI raster dataset
-
-    """
-    if 'Cluster' not in indata:
-        return indata
-    if 'Raster' not in indata:
-        indata['Raster'] = []
-
-    for i in indata['Cluster']:
-        indata['Raster'].append(i)
-        indata['Raster'][-1].data = indata['Raster'][-1].data + 1
-
-    return indata
-
-
-def cut_raster(data, ifile, showlog=print, deepcopy=True):
-    """Cuts a raster dataset.
-
-    Cut a raster dataset using a shapefile.
-
-    Parameters
-    ----------
-    data : Data
-        PyGMI Dataset
-    ifile : str
-        shapefile used to cut data
-    showlog : function, optional
-        Function for printing text. The default is print.
-
-    Returns
-    -------
-    data : Data
-        PyGMI Dataset
-    """
-    if deepcopy is True:
-        data = copy.deepcopy(data)
-
-    try:
-        gdf = gpd.read_file(ifile)
-    except:
-        showlog('There was a problem importing the shapefile. Please make '
-                'sure you have at all the individual files which make up '
-                'the shapefile.')
+    if sfile == '' or sfile is None:
         return None
+
+    gdf = gpd.read_file(sfile)
 
     gdf = gdf[gdf.geometry != None]
 
-    if 'Polygon' not in gdf.geom_type.iloc[0]:
+    if crs is not None:
+        gdf = gdf.to_crs(crs)
+
+    if gdf.geom_type.iloc[0] == 'MultiPolygon':
+        showlog('You have a MultiPolygon. Only the first Polygon '
+                'of the MultiPolygon will be used.')
+        poly = gdf['geometry'].iloc[0]
+        tmp = poly.geoms[0]
+
+        gdf.geometry.iloc[0] = tmp
+
+    if gdf.geom_type.iloc[0] != 'Polygon':
         showlog('You need a polygon in that shape file')
         return None
 
-    for idata in data:
-        # Convert the layer extent to image pixel coordinates
-        # poly = gdf['geometry'].iloc[0]
-        dext = idata.bounds
-        lext = gdf['geometry'].total_bounds
+    bounds = gdf.geometry.iloc[0].bounds
 
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
-                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
-
-            showlog('The shapefile is not in the same area as the raster '
-                    'dataset. Please check its coordinates and make sure its '
-                    'projection is the same as the raster dataset')
-            return None
-
-        # This section converts PolygonZ to Polygon, and takes first polygon.
-        # coords = gdf['geometry'].loc[0].exterior.coords
-        # coords = [Polygon([[p[0], p[1]] for p in coords])]
-        coords = gdf['geometry']
-
-        dat, trans = riomask(idata.to_mem(), coords, crop=True)
-
-        idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
-
-        idata.set_transform(transform=trans)
-
-    data = trim_raster(data)
-
-    return data
+    return bounds
 
 
 def epsgtowkt(epsg):
@@ -2623,6 +2420,197 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
     return out
 
 
+def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
+                 roff=None, coff=None):
+    """
+    Merge using median for rasterio, taking minimum value.
+
+    Parameters
+    ----------
+    merged_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    merged_mask : float
+        Old mask.
+    new_mask : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    merged_data = np.ma.array(merged_data, mask=merged_mask)
+    new_data = np.ma.array(new_data, mask=new_mask)
+
+    mtmp1 = np.logical_and(~merged_mask, ~new_mask)
+    mtmp2 = np.logical_and(~merged_mask, new_mask)
+
+    tmp1 = new_data.copy()
+
+    if True in mtmp1:
+        tmp1 = tmp1 - np.ma.median(new_data[mtmp1])
+        tmp1 = tmp1 + np.ma.median(merged_data[mtmp1])
+
+    tmp1[mtmp2] = merged_data[mtmp2]
+
+    merged_data[:] = tmp1
+
+
+def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
+              roff=None, coff=None):
+    """
+    Merge using minimum for rasterio, taking minimum value.
+
+    Parameters
+    ----------
+    merged_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    merged_mask : float
+        Old mask.
+    new_mask : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    tmp = np.logical_and(~merged_mask, ~new_mask)
+
+    tmp1 = merged_data.copy()
+    tmp1[~new_mask] = new_data[~new_mask]
+    tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
+
+    merged_data[:] = tmp1
+
+
+def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
+              roff=None, coff=None):
+    """
+    Merge using maximum for rasterio, taking maximum value.
+
+    Parameters
+    ----------
+    merged_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    merged_mask : float
+        Old mask.
+    new_mask : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    tmp = np.logical_and(~merged_mask, ~new_mask)
+
+    tmp1 = merged_data.copy()
+    tmp1[~new_mask] = new_data[~new_mask]
+    tmp1[tmp] = np.maximum(merged_data[tmp], new_data[tmp])
+
+    merged_data[:] = tmp1
+
+
+def redistribute_vertices(geom, distance):
+    """
+    Redistribute vertices in a geometry.
+
+    From https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely,
+    and by Mike-T.
+
+    Parameters
+    ----------
+    geom : shapely geometry
+        Geometry from geopandas.
+    distance : float
+        sampling distance.
+
+    Raises
+    ------
+    ValueError
+        Error when there is an unknown geometry.
+
+    Returns
+    -------
+    shapely geometry
+        New geometry.
+
+    """
+    if geom.geom_type == 'LineString':
+        num_vert = int(round(geom.length / distance))
+        if num_vert == 0:
+            num_vert = 1
+        return LineString(
+            [geom.interpolate(float(n) / num_vert, normalized=True)
+             for n in range(num_vert + 1)])
+    if geom.geom_type == 'MultiLineString':
+        parts = [redistribute_vertices(part, distance)
+                 for part in geom]
+        return type(geom)([p for p in parts if not p.is_empty])
+    raise ValueError('unhandled geometry %s', (geom.geom_type,))
+
+
+def taylorcont(data, h):
+    """
+    Taylor Continuation.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster data.
+    h : float
+        Height.
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster data.
+
+    """
+    dz = verticalp(data, order=1)
+    dz2 = verticalp(data, order=2)
+    dz3 = verticalp(data, order=3)
+    zout = (data.data + h*dz + h**2*dz2/math.factorial(2) +
+            h**3*dz3/math.factorial(3))
+
+    dat = Data()
+    dat.data = np.ma.masked_invalid(zout)
+    dat.data.mask = np.ma.getmaskarray(data.data)
+    dat.nodata = data.data.fill_value
+    dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
+    dat.set_transform(transform=data.transform)
+    dat.crs = data.crs
+    return dat
+
+
 def trim_raster(olddata):
     """
     Trim nulls from a raster dataset.
@@ -2681,75 +2669,38 @@ def trim_raster(olddata):
     return olddata
 
 
-def get_shape_bounds(sfile, crs=None, showlog=print):
+def verticalp(data, order=1):
     """
-    Get bounds from a shape file.
+    Vertical derivative.
 
     Parameters
     ----------
-    sfile : str
-        Filename for shapefile.
-    crs : rasterio CRS
-        target crs for shapefile
-    showlog : TYPE, optional
-        Print. The default is print.
+    data : numpy array
+        Input data.
+    order : float, optional
+        Order. The default is 1.
 
     Returns
     -------
-    bounds : list
-        Rasterio bounds.
+    dout : numpy array
+        Output data
 
     """
-    if sfile == '' or sfile is None:
-        return None
+    xdim = data.xdim
+    ydim = data.ydim
 
-    gdf = gpd.read_file(sfile)
+    ndat, rdiff, cdiff, _ = fftprep(data)
+    fftmod = np.fft.fft2(ndat)
 
-    gdf = gdf[gdf.geometry != None]
+    KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
-    if crs is not None:
-        gdf = gdf.to_crs(crs)
+    k = np.sqrt(KX**2+KY**2)
+    filt = k**order
 
-    if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        showlog('You have a MultiPolygon. Only the first Polygon '
-               'of the MultiPolygon will be used.')
-        poly = gdf['geometry'].iloc[0]
-        tmp = poly.geoms[0]
+    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
 
-        gdf.geometry.iloc[0] = tmp
-
-    if gdf.geom_type.iloc[0] != 'Polygon':
-        showlog('You need a polygon in that shape file')
-        return None
-
-    bounds = gdf.geometry.iloc[0].bounds
-
-    return bounds
-
-
-def data_merge(idir, sfile='', singleband=False, method='median', fdiff=True):
-    """Test Merge."""
-    app = QtWidgets.QApplication(sys.argv)
-
-    DM = DataMerge()
-    DM.idir = idir
-    DM.idirlist.setText(idir)
-    DM.sfile.setText(sfile)
-    DM.singleband = singleband
-    DM.forcetype = np.float32
-
-    if method == 'first':
-        DM.rb_first.setChecked(True)
-        DM.files_diff.setChecked(fdiff)
-    elif method == 'median':
-        DM.rb_median.setChecked(True)
-
-    DM.method_change()
-    DM.settings(True)
-
-    dat = DM.outdata['Raster']
-
-    return dat
+    return zout
 
 
 def _testdown():
@@ -2805,81 +2756,9 @@ def _testdown():
 
     # Plotting
     plt.plot(downz0.data[50], 'r.')
-    # plt.plot(zdown.data[50], 'b')
+    plt.plot(zdown.data[50], 'b')
     plt.plot(zdownn.data[50], 'k')
     plt.show()
-
-
-def _testgrid():
-    """
-    Test routine.
-
-    Returns
-    -------
-    None.
-
-    """
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.misc import PTime
-    import matplotlib.pyplot as plt
-
-    ttt = PTime()
-
-    ifile = r'd:\Work\Workdata\upward\EB_MTEF_Mag_IGRFrem.ers'
-    dat = get_raster(ifile)[0]
-
-    nr, nc = dat.data.shape
-
-    datamedian = np.ma.median(dat.data)
-    ndat = dat.data - datamedian
-
-    cdiff = nc//2
-    rdiff = nr//2
-
-    # Section to pad data
-
-    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))+np.nan
-    x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
-    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
-
-    ttt.since_last_call('Preparation')
-
-    for j in range(2):
-        z1[0] = 0
-        z1[-1] = 0
-        z1[:, 0] = 0
-        z1[:, -1] = 0
-
-        vert = np.zeros_like(z1)
-        hori = np.zeros_like(z1)
-
-        for i in range(z1.shape[0]):
-            mask = ~np.isnan(z1[i])
-            y = y1[i][mask]
-            z = z1[i][mask]
-            hori[i] = np.interp(y1[i], y, z)
-
-        for i in range(z1.shape[1]):
-            mask = ~np.isnan(z1[:, i])
-            x = x1[:, i][mask]
-            z = z1[:, i][mask]
-
-            vert[:, i] = np.interp(x1[:, i], x, z)
-
-        hori[hori == 0] = np.nan
-        vert[vert == 0] = np.nan
-
-        hv = hori.copy()
-        hv[np.isnan(hori)] = vert[np.isnan(hori)]
-        hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
-                                        vert[~np.isnan(hv)]], 0)
-
-        z1[np.isnan(z1)] = hv[np.isnan(z1)]
-
-    plt.imshow(z1)
-    plt.show()
-
-    ttt.since_last_call('Griddata, nearest')
 
 
 def _testfft():
@@ -2944,75 +2823,6 @@ def _testfft():
     plt.show()
 
 
-def _testmerge():
-    """Test Merge."""
-    from pygmi.raster.iodefs import export_raster
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    # sfile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
-    # idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\Landsat_9\PCA"
-    # ifilt = r"E:/WorkProjects/ST-2022-1355 Onshore Mapping/Niger/Landsat_9/RGB*/"
-
-    # sfile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\Mining-areas.shp"
-    # idir = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\WV2-2021"
-
-    idir = r'D:\Workdata\PyGMI Test Data\Raster\mosaic'
-
-    # idirs = glob.glob(ifilt)
-    idirs = [idir]
-
-    for idir in idirs:
-        print(idir)
-        DM = DataMerge()
-        DM.idir = idir
-        DM.idirlist.setText(idir)
-        # DM.sfile.setText(sfile)
-        # DM.singleband = True
-
-        DM.forcetype = np.float32
-        DM.settings()
-
-        dat = DM.outdata['Raster']
-
-        del DM
-
-        if dat:
-            ofile = idir+'.tif'
-            # export_raster(ofile, dat, 'GTiff', compression='ZSTD', showlog=self.showlog)
-            del dat
-
-
-def _testreproj():
-    """Test Reprojection."""
-    from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
-
-    ifile = r""
-
-    piter = ProgressBarText().iter
-
-    dat = get_raster(ifile, piter=piter)
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    DM = DataReproj()
-    DM.indata['Raster'] = dat
-    DM.settings()
-
-    plt.figure(dpi=150)
-    plt.imshow(DM.indata['Raster'][0].data,
-               extent=DM.indata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
-
-    plt.figure(dpi=150)
-    plt.imshow(DM.outdata['Raster'][0].data,
-               extent=DM.outdata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
-
-
 def _testcut():
     """Test Reprojection."""
     from pygmi.raster.iodefs import get_raster, export_raster
@@ -3026,254 +2836,6 @@ def _testcut():
     dat = cut_raster(dat, sfile, deepcopy=False)
 
     export_raster(ofile, dat, compression='DEFLATE')
-
-
-def _testprof():
-    """Test Reprojection."""
-    from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
-
-    ifile = r"d:\Workdata\bugs\Au5_SRTM30_utm36s.tif"
-    sfile = r"d:\Workdata\bugs\Profiles_utm36s.shp"
-
-    piter = ProgressBarText().iter
-
-    dat = get_raster(ifile, piter=piter)
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    DM = GetProf()
-    DM.indata['Raster'] = dat
-    DM.ifile = sfile
-    DM.settings(nodialog=True)
-
-    plt.figure(dpi=150)
-    plt.imshow(DM.indata['Raster'][0].data,
-               extent=DM.indata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
-
-    plt.figure(dpi=150)
-    plt.imshow(DM.outdata['Raster'][0].data,
-               extent=DM.outdata['Raster'][0].extent)
-    plt.colorbar()
-    plt.show()
-
-
-def _testlstack():
-    from pygmi.raster.iodefs import get_raster, export_raster
-    import matplotlib.pyplot as plt
-
-    idir = r'd:\Workdata\LULC\stack'
-
-    ifiles = glob.glob(os.path.join(idir, '*.tif'))
-
-    dat = []
-    for ifile in ifiles:
-        dat += get_raster(ifile)
-
-    for i in dat:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        plt.imshow(i.data)
-        plt.colorbar()
-        plt.show()
-        print(i.nodata)
-        print(i.data.dtype)
-
-    dat2 = lstack(dat, dxy=30)
-
-    for i in dat2:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        plt.imshow(i.data)
-        plt.colorbar()
-        plt.show()
-        print(i.nodata)
-        print(i.data.dtype)
-
-    ofile = r'd:/Workdata/LULC/2001_stack_norm_pc.tif'
-    export_raster(ofile, dat2, 'GTiff')
-
-
-def _testcut2():
-    """Test Reprojection."""
-    from pygmi.raster.iodefs import get_raster, export_raster
-
-    sfile = r"D:\hypercut\shape\Areas_utm33s_east.shp"
-    ifilt = r"D:\hypercut\*.hdr"
-    odir = r"D:\hypercut\cut"
-
-    showlog = print
-
-    ifiles = glob.glob(ifilt)
-
-    for ifile in ifiles:
-        print(ifile)
-        gdf = gpd.read_file(sfile)
-
-        gdf = gdf[gdf.geometry != None]
-
-        if gdf.geom_type.iloc[0] == 'MultiPolygon':
-            showlog('You have a MultiPolygon. Only the first Polygon '
-                   'of the MultiPolygon will be used.')
-            poly = gdf['geometry'].iloc[0]
-            tmp = poly.geoms[0]
-
-            gdf.geometry.iloc[0] = tmp
-
-        if gdf.geom_type.iloc[0] != 'Polygon':
-            showlog('You need a polygon in that shape file')
-            return
-
-        bounds = gdf.geometry.iloc[0].bounds
-
-        dat = get_raster(ifile, bounds=bounds)
-
-        if dat is None:
-            continue
-
-        for idat in dat:
-            idat.nodata = 0
-
-        ofile = os.path.join(odir, os.path.basename(ifile))
-        ofile = ofile[:-4]+'new.tif'
-        export_raster(ofile, dat, 'GTiff', bandsort=False)
-
-
-def _testnewnull():
-    """Test New null data assignment."""
-    from pygmi.raster.iodefs import get_raster, export_raster
-
-    ifilt = r"D:\hypercut\*.hdr"
-    odir = r"D:\hypercut\cut"
-
-    ifiles = glob.glob(ifilt)
-
-    for ifile in ifiles:
-        print(ifile)
-        dat = get_raster(ifile)
-        for idat in dat:
-            idat.nodata = 0
-            # idat.data = np.ma.masked_equal(idat.data, 0)
-
-        ofile = os.path.join(odir, os.path.basename(ifile))
-        ofile = ofile[:-4]+'.tif'
-        export_raster(ofile, dat, 'GTiff', bandsort=False)
-        # break
-
-
-def _testlower():
-    """Lowers resolution."""
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.raster.iodefs import export_raster
-
-    ifilt = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios\*.tif"
-    odir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios2"
-    dataid = 'B4divB2 Iron Oxide'
-
-    ifiles = glob.glob(ifilt)
-
-    for ifile in ifiles:
-        print(ifile)
-        dat = get_raster(ifile, dataid=dataid)
-        dat = lstack(dat, dxy=20)
-
-        ofile = os.path.join(odir, os.path.basename(ifile))
-        export_raster(ofile, dat, 'GTiff', compression='ZSTD')
-
-
-def _testcmask():
-    """Lowers resolution."""
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.raster.iodefs import export_raster
-
-    file2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2019diff\change_2019_time1_time2_stacked.hdr"
-    file2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\2021diff\change_2021_time1_time2_stacked.hdr"
-
-    ofile2016 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2016.tif"
-    ofile2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2019.tif"
-    ofile2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2021.tif"
-
-    dat2019 = get_raster(file2019)
-    for i in dat2019:
-        i.nodata = 0.
-        i.data = np.ma.masked_equal(i.data, i.data[-1, -1])
-        i.data = np.ma.filled(i.data, 0.)
-        i.data = np.ma.masked_equal(i.data, 0.)
-
-    dat2019 = dat2019[8:]
-
-    dat2021 = get_raster(file2021)
-    for i in dat2021:
-        i.nodata = 0.
-        i.data = np.ma.masked_equal(i.data, i.data[-1, -1])
-        i.data = np.ma.filled(i.data, 0.)
-        i.data = np.ma.masked_equal(i.data, 0.)
-
-    dat2016 = dat2021[:8]
-    dat2021 = dat2021[8:]
-
-    datall = [dat2019[0]]+dat2021
-    datall = lstack(datall, commonmask=True)
-    datall.pop(0)
-    datall = trim_raster(datall)
-
-    export_raster(ofile2021, datall, 'GTiff', compression='ZSTD')
-    del dat2021
-
-    datall = [dat2019[0]]+dat2016
-    datall = lstack(datall, commonmask=True)
-    datall.pop(0)
-    datall = trim_raster(datall)
-
-    export_raster(ofile2016, datall, 'GTiff', compression='ZSTD')
-
-    datall = [dat2016[0]]+dat2019
-    datall = lstack(datall, commonmask=True)
-    datall.pop(0)
-    datall = trim_raster(datall)
-
-    export_raster(ofile2019, datall, 'GTiff', compression='ZSTD')
-
-
-def _teststd():
-    """Calculate Standard Devation."""
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.raster.iodefs import export_raster
-
-    ifile2016 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2016_ratio.tif"
-    ifile2019 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2019_ratio.tif"
-    ifile2021 = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_2021_ratio.tif"
-
-    ofile = r"E:\WorkProjects\ST-2021-1349 NRF\BRICS_NRF\change_ratio_std.tif"
-
-    dat2016 = get_raster(ifile2016)
-    dat2019 = get_raster(ifile2019)
-    dat2021 = get_raster(ifile2021)
-    datstd = copy.deepcopy(dat2021)
-
-    dat = {}
-    for band in dat2016:
-        if band.dataid not in dat:
-            dat[band.dataid] = []
-        dat[band.dataid].append(band.data)
-
-    for band in dat2019:
-        if band.dataid not in dat:
-            dat[band.dataid] = []
-        dat[band.dataid].append(band.data)
-
-    for band in dat2021:
-        if band.dataid not in dat:
-            dat[band.dataid] = []
-        dat[band.dataid].append(band.data)
-
-    for band in datstd:
-        dstack = np.ma.array(dat[band.dataid])
-        band.data = dstack.std(0)
-
-    export_raster(ofile, datstd, 'GTiff', compression='ZSTD')
 
 
 if __name__ == "__main__":

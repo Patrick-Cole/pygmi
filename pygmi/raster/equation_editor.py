@@ -499,7 +499,7 @@ class EquationEditor(BasicModule):
 
 def hmode(data):
     """
-    Mode - this uses a histogram to generate a fast mode estimate.
+    Use a histogram to generate a fast mode estimate.
 
     Parameters
     ----------
@@ -542,7 +542,6 @@ def _test():
     EE.indata['Raster'] = dat
 
     EE.settings()
-
 
     out = EE.outdata['Raster']
 
