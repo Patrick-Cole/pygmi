@@ -787,7 +787,7 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
         self.sun = None
@@ -814,7 +814,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.set_xticklabels([])
 
         self.sun, = self.axes.plot(np.pi/4., cos(np.pi/4.), 'o')
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -1650,11 +1650,11 @@ class PlotInterp(BasicModule):
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
             # Horizontal Bar
-            fig = Figure()
+            fig = Figure(layout='constrained')
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
             fig.set_figheight(bwid+0.75)
-            fig.set_tight_layout(True)
+            # fig.set_tight_layout(True)
             ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
@@ -1665,11 +1665,11 @@ class PlotInterp(BasicModule):
             canvas.print_figure(fname, dpi=300)
 
             # Vertical Bar
-            fig = Figure()
+            fig = Figure(layout='constrained')
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid+1)
             fig.set_figheight(blen)
-            fig.set_tight_layout(True)
+            # fig.set_tight_layout(True)
             ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
@@ -1679,9 +1679,9 @@ class PlotInterp(BasicModule):
             fname = filename[:-4]+'_vcbar.png'
             canvas.print_figure(fname, dpi=300)
         else:
-            fig = Figure(figsize=[blen, blen])
+            fig = Figure(figsize=[blen, blen], layout='constrained')
             canvas = FigureCanvasQTAgg(fig)
-            fig.set_tight_layout(True)
+            # fig.set_tight_layout(True)
 
             tmp = np.array([[list(range(255))]*255])
             tmp.shape = (255, 255)

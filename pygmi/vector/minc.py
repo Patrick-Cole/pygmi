@@ -637,13 +637,13 @@ def _testfn():
     import sys
     from PyQt5 import QtWidgets
     import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportLineData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
 
-    IO = ImportLineData()
+    IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
@@ -667,7 +667,6 @@ def _testfn():
     plt.imshow(odat, extent=extent, vmin=vmin, vmax=vmax)
     plt.colorbar()
     plt.show()
-
 
 
 if __name__ == "__main__":

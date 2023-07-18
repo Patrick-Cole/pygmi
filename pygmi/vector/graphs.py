@@ -33,7 +33,7 @@ from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
-from pandas.api.types import is_numeric_dtype
+# from pandas.api.types import is_numeric_dtype
 
 from pygmi.misc import frm, ContextModule
 
@@ -101,7 +101,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -339,7 +339,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_vector(self, data, col):
@@ -364,6 +364,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.ticklabel_format(style='plain')
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
+        self.axes.axis('equal')
 
         if 'LineString' in data.geom_type.iloc[0]:
             tmp = []
@@ -373,7 +374,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
-            self.axes.axis('equal')
+            # self.axes.axis('equal')
         elif 'Polygon' in data.geom_type.iloc[0]:
             tmp = []
             for j in data.geometry:
@@ -382,7 +383,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
-            self.axes.axis('equal')
+            # self.axes.axis('equal')
 
         elif 'Point' in data.geom_type.iloc[0]:
             if col != '':
@@ -403,7 +404,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_rose(self, data, rtype, nbins=8, equal=False):
@@ -493,7 +493,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bcols2 = bcols[(fangle/bwidth).astype(int)]
             lcol = mc.LineCollection(allcrds, color=bcols2)
             ax2.add_collection(lcol)
-            ax2.autoscale(enable=True, tight=True)
+            ax2.autoscale(enable=True)  # , tight=True)
 
         else:
             # Draw rose diagram base on one angle per linear segment, normed
@@ -510,9 +510,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bcols2 = bcols[(fcnt/bwidth).astype(int)]
             lcol = mc.LineCollection(allcrds, color=bcols2)
             ax2.add_collection(lcol)
-            ax2.autoscale(enable=True, tight=True)
+            ax2.autoscale(enable=True)  # , tight=True)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -789,10 +789,10 @@ class PlotVector(GraphWindow):
         self.data = self.indata['Vector'][0]
         # self.data = self.data.select_dtypes(include='number')
 
-        filt = ((self.data.columns != 'geometry') &
-                (self.data.columns != 'line'))
+        # filt = ((self.data.columns != 'geometry') &
+        #         (self.data.columns != 'line'))
 
-        cols = list(self.data.columns[filt])
+        cols = list(self.data.select_dtypes(include=np.number).columns)
         if len(cols) > 0:
             self.combobox1.addItems(cols)
             self.combobox1.setCurrentIndex(0)

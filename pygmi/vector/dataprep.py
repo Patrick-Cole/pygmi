@@ -680,6 +680,51 @@ class Metadata(ContextModule):
         return True
 
 
+def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
+    """
+    Blanks area further than a defined number of cells from input data.
+
+    Parameters
+    ----------
+    gdat : numpy array
+        grid data to blank.
+    x : numpy array
+        x coordinates.
+    y : numpy array
+        y coordinates.
+    bdist : int
+        Blanking distance in units for cell.
+    extent : list
+        extent of grid.
+    dxy : float
+        Cell size.
+    Nullvalue : float
+        Null or nodata value.
+
+    Returns
+    -------
+    mask : numpy array
+        Mask to be used for blanking.
+
+    """
+    mask = np.zeros_like(gdat)
+
+    points = np.transpose([x, y])
+
+    for xy in points:
+        col = int((xy[0]-extent[0])/dxy)
+        row = int((xy[1]-extent[2])/dxy)
+
+        mask[row, col] = 1
+
+    dist = distance_transform_edt(np.logical_not(mask))
+    mask = (dist > bdist)
+
+    gdat[mask] = nullvalue
+
+    return gdat
+
+
 def cut_point(data, ifile):
     """
     Cuts a point dataset.
@@ -846,51 +891,6 @@ def quickgrid(x, y, z, dxy, numits=4, showlog=print):
     return newz
 
 
-def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
-    """
-    Blanks area further than a defined number of cells from input data.
-
-    Parameters
-    ----------
-    gdat : numpy array
-        grid data to blank.
-    x : numpy array
-        x coordinates.
-    y : numpy array
-        y coordinates.
-    bdist : int
-        Blanking distance in units for cell.
-    extent : list
-        extent of grid.
-    dxy : float
-        Cell size.
-    Nullvalue : float
-        Null or nodata value.
-
-    Returns
-    -------
-    mask : numpy array
-        Mask to be used for blanking.
-
-    """
-    mask = np.zeros_like(gdat)
-
-    points = np.transpose([x, y])
-
-    for xy in points:
-        col = int((xy[0]-extent[0])/dxy)
-        row = int((xy[1]-extent[2])/dxy)
-
-        mask[row, col] = 1
-
-    dist = distance_transform_edt(np.logical_not(mask))
-    mask = (dist > bdist)
-
-    gdat[mask] = nullvalue
-
-    return gdat
-
-
 def reprojxy(x, y, iwkt, owkt):
     """
     Reproject x and y coordinates.
@@ -933,14 +933,13 @@ def reprojxy(x, y, iwkt, owkt):
 def _testfn():
     """Test routine."""
     import sys
-    import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportXYZData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\SPECARCHIVE.XYZ"
 
-    IO = ImportXYZData()
+    IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
@@ -949,31 +948,18 @@ def _testfn():
     MD.indata = IO.outdata
     MD.run()
 
-    # DG = DataGrid()
-    # DG.indata = IO.outdata
-    # DG.settings()
-
-    # dat = DG.outdata['Raster'][0].data
-
-    # plt.imshow(dat)
-    # plt.show()
-
-    # DR = DataReproj()
-    # DR.indata = IO.outdata
-    # DR.settings()
-
 
 def _testfn_pointcut():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
 
-    IO = ImportXYZData()
+    IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)

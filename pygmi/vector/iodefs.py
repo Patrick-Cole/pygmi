@@ -505,7 +505,9 @@ class ImportVector(BasicModule):
 
         """
         if not nodialog:
-            ext = 'Shapefile (*.shp);;Zipped Shapefile (*.shp.zip);;GeoPackage (*.gpkg)'
+            ext = ('Shapefile (*.shp);;'
+                   'Zipped Shapefile (*.shp.zip);;'
+                   'GeoPackage (*.gpkg)')
 
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
                                                                   'Open File',
@@ -714,9 +716,9 @@ def get_intrepid(ifile, showlog=print, piter=iter):
     tmp = data[i].shape
     linenumber = np.zeros(tmp, dtype=int) + nodata[linename]
 
-    for i, _ in enumerate(indx):
-        t1 = indx[i][0]
-        t2 = t1+indx[i][1]+1
+    for i, indxi in enumerate(indx):
+        t1 = indxi[0]
+        t2 = t1+indxi[1]+1
         linenumber[t1:t2] = line[i]
 
     data['line'] = linenumber
@@ -749,8 +751,6 @@ def _test():
     ifile = r"D:\Additional Survey Data\RADALL..DIR"
 
     data = get_intrepid(ifile, print, piter)
-
-    breakpoint()
 
 
 if __name__ == "__main__":
