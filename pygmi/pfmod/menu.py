@@ -31,6 +31,7 @@ from pygmi.pfmod import mvis3d
 from pygmi.pfmod import iodefs
 from pygmi.pfmod import misc
 from pygmi.pfmod import pfinvert
+from pygmi.pfmod import show_table
 
 
 class MenuWidget():
@@ -83,6 +84,10 @@ class MenuWidget():
         context_menu['Model3D'].addAction(self.action_mod3d)
         self.action_mod3d.triggered.connect(self.mod3d)
 
+        self.action_stat3d = QtWidgets.QAction('3D Model Statisitics')
+        context_menu['Model3D'].addAction(self.action_stat3d)
+        self.action_stat3d.triggered.connect(self.stat3d)
+
         self.action_export_mod3d = QtWidgets.QAction('Export 3D Model')
         context_menu['Model3D'].addAction(self.action_export_mod3d)
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
@@ -104,6 +109,10 @@ class MenuWidget():
     def mod3d(self):
         """3D display of data."""
         self.parent.launch_context_item(mvis3d.Mod3dDisplay)
+
+    def stat3d(self):
+        """3D display of data."""
+        self.parent.launch_context_item(show_table.BasicStats3D)
 
     def import_mod3d(self):
         """Import data."""
