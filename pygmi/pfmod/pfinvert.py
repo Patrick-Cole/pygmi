@@ -30,8 +30,9 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import scipy.interpolate as si
 from discretize import TensorMesh
+from discretize.utils import active_from_xyz
 from SimPEG.potential_fields import magnetics
-from SimPEG.utils import surface2ind_topo,  model_builder
+from SimPEG.utils import model_builder
 from SimPEG import (maps, data, inverse_problem, data_misfit,
                     regularization, optimization, directives,
                     inversion)
@@ -703,8 +704,10 @@ class MagInvert(BasicModule):
         dat = [self.lmod1.griddata['Magnetic Dataset'],
                self.lmod1.griddata['DTM Dataset']]
 
-        dat = lstack(dat, masterid=0, commonmask=True, piter=self.piter,
-                     showlog=self.showlog)
+        masterid = self.lmod1.griddata['Magnetic Dataset'].dataid
+
+        dat = lstack(dat, masterid=masterid, commonmask=True,
+                     piter=self.piter, showlog=self.showlog)
 
         mag = dat[0]
         dtm = dat[1]
@@ -720,13 +723,6 @@ class MagInvert(BasicModule):
 
         xxx = np.linspace(xmin, xmax, cols, False) + xdim/2
         yyy = np.linspace(ymin, ymax, rows, False) + ydim/2
-
-        # xxx = np.arange(xmin, xmax, xdim) + xdim/2
-        # yyy = np.arange(ymin, ymax, ydim) + ydim/2
-
-        # Get rid of the extra values due to round off error
-        # xxx = xxx[xxx < xmax]
-        # yyy = yyy[yyy < ymax]
 
         xy = np.meshgrid(xxx, yyy[::-1])
         z = dtm.data + self.dsb_mht.value()
@@ -753,9 +749,6 @@ class MagInvert(BasicModule):
         declination = self.dsb_hdec.value()
         strength = self.dsb_hint.value()
 
-        # inducing_field = (strength, inclination, declination)
-        # source_field = magnetics.sources.SourceField(
-        #     receiver_list=receiver_list, parameters=inducing_field)
         source_field = magnetics.UniformBackgroundField(
             receiver_list=receiver_list, amplitude=strength,
             inclination=inclination, declination=declination)
@@ -776,20 +769,10 @@ class MagInvert(BasicModule):
 
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
 
-        # hx = [(dhxy, self.lmod1.numx)]
-        # hy = [(dhxy, self.lmod1.numy)]
-        # hz = [(dh, self.lmod1.numz)]
-
-        # x0 = xmin-5
-        # y0 = ymin-5
-        # z0 = -dh*self.lmod1.numz
-
-        # mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
-        # mesh = TensorMesh([hx, hy, hz], "CCN")
-
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
-        ind_active = surface2ind_topo(mesh, topo_xyz)
+
+        ind_active = active_from_xyz(mesh, topo_xyz)
         nC = int(ind_active.sum())
         model_map = maps.IdentityMap(nP=nC)
         starting_model = background_susceptibility * np.ones(nC)
@@ -803,7 +786,8 @@ class MagInvert(BasicModule):
         dmis = data_misfit.L2DataMisfit(data=data_object,
                                         simulation=simulation)
         reg = regularization.Sparse(mesh, active_cells=ind_active,
-                                    mapping=model_map, reference_model=starting_model,
+                                    mapping=model_map,
+                                    reference_model=starting_model,
                                     gradient_type="total")
         reg.norms = [0, 0, 0, 0]
 
@@ -822,7 +806,7 @@ class MagInvert(BasicModule):
 
         target_misfit = directives.TargetMisfit(chifact=1)
         sensitivity_weights = directives.UpdateSensitivityWeights(
-            everyIter=False)
+            every_iteration=False)
         directives_list = [sensitivity_weights, starting_beta, save_iteration,
                            update_IRLS, update_jacobi]
 
@@ -837,8 +821,6 @@ class MagInvert(BasicModule):
             return False
 
         # Recreate True Model
-        # -------------------
-
         background_susceptibility = 0.0001
         sphere_susceptibility = 0.01
 
@@ -862,14 +844,11 @@ class MagInvert(BasicModule):
         r3 = r2[:-5, 5:-5, 5:-5]
         r3 = np.ma.masked_invalid(r3)
         r3 = np.ma.array(r3)
-        # X = skp.StandardScaler().fit_transform(r3.flatten())
 
         X = r3.compressed().reshape(-1, 1)
 
-        # cfit = skc.KMeans(n_clusters=i, tol=self.tol,
-        #                   max_iter=self.max_iter).fit(X)
         numclasses = self.sb_classes.value()
-        cfit = skc.KMeans(n_clusters=numclasses).fit(X)
+        cfit = skc.KMeans(n_clusters=numclasses, n_init='auto').fit(X)
 
         zout = cfit.labels_
         r3[~r3.mask] = zout
@@ -884,7 +863,6 @@ class MagInvert(BasicModule):
         for i2 in range(cnt):
             susc[i2] = X[cfit.labels_ == i2].mean()
             inputliths[i2] = str(susc[i2])
-            # print(i2, susc[i2])
 
         bsusc = np.min(susc)
         bindx = np.nonzero(susc == bsusc)[0][0]
@@ -1033,21 +1011,6 @@ def _testfn():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    # r2 = plotting_map * recovered_model
-    # r2.shape = (mesh.shape_cells[2], mesh.shape_cells[1], mesh.shape_cells[0])
-
-    # r2 = r2[::-1]
-    # r2 = r2[:-5]
-
-    # plt.imshow(r2[:, r2.shape[1]//2])
-    # plt.show()
-
-    # 3D Display
-    # tmp = Mod3dDisplay()
-    # tmp.indata = DM.outdata
-    # tmp.run()
-    # tmp.exec_()
-
     get_ipython().run_line_magic('matplotlib', 'Qt5')
 
     tmp = MainWidget()
@@ -1066,20 +1029,8 @@ def _testfn2():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    # mfile = r"d:\Workdata\MagInv\pcmag.tif"
-
-    # mdat = get_raster(mfile)
-    # ddat = copy.deepcopy(mdat)
-    # ddat[0].data = ddat[0].data * 0.
-
     mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcmagdem.tif"
     dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcdem.tif"
-
-    # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
-    # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
-
-    # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_TMA_utm35s.tif"
-    # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_SRTM90m_utm35s.tif"
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
@@ -1125,10 +1076,6 @@ def _testfn2():
     DM.choose_dtm()
 
     DM.dsb_mht.setValue(mht)
-    # DM.dsb_hdec.setValue(0)
-    # DM.dsb_hint.setValue(50000)
-    # DM.dsb_hinc.setValue(90)
-
     DM.settings(True)
 
     maps1, mesh, ind_active, recovered_model, true_model = DM.tmp

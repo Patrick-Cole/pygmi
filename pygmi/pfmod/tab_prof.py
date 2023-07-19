@@ -505,8 +505,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             yind = int((y-self.lmod1.yrange[0])//self.lmod1.dxy)
             ifrom = []
             ito = []
-            for i, _ in enumerate(dfrom):
-                z1 = int((self.lmod1.zrange[1]-dfrom[i])//self.lmod1.d_z)
+            for i, dfromi in enumerate(dfrom):
+                z1 = int((self.lmod1.zrange[1]-dfromi)//self.lmod1.d_z)
                 z2 = int((self.lmod1.zrange[1]-dto[i])//self.lmod1.d_z)
                 ifrom.append(z1)
                 ito.append(z2)
@@ -906,13 +906,13 @@ class ProfileDisplay(QtWidgets.QWidget):
         y1, y2 = self.lmod1.custprofy['adhoc']
         px1, px2 = self.lmod1.custprofx['rotate']
 
-        if not(self.lmod1.xrange[0] <= x1 <= self.lmod1.xrange[1]):
+        if not (self.lmod1.xrange[0] <= x1 <= self.lmod1.xrange[1]):
             return False
-        if not(self.lmod1.xrange[0] <= x2 <= self.lmod1.xrange[1]):
+        if not (self.lmod1.xrange[0] <= x2 <= self.lmod1.xrange[1]):
             return False
-        if not(self.lmod1.yrange[0] <= y1 <= self.lmod1.yrange[1]):
+        if not (self.lmod1.yrange[0] <= y1 <= self.lmod1.yrange[1]):
             return False
-        if not(self.lmod1.yrange[0] <= y2 <= self.lmod1.yrange[1]):
+        if not (self.lmod1.yrange[0] <= y2 <= self.lmod1.yrange[1]):
             return False
 
         # convert units to cells
@@ -1512,7 +1512,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib Canvas."""
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
         self.lmod1 = parent.lmod1
@@ -1695,8 +1695,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 xxx = np.linspace(self.xold, xdata, steps)
                 yyy = np.linspace(self.yold, ydata, steps)
 
-                for i, _ in enumerate(xxx):
-                    self.set_mdata(xxx[i], yyy[i], mdata)
+                for i, xxxi in enumerate(xxx):
+                    self.set_mdata(xxxi, yyy[i], mdata)
 
             self.xold = xdata
             self.yold = ydata
@@ -1809,7 +1809,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def init_grid(self, dat, dat2=None, opac=0.0):
@@ -1931,7 +1931,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.lims.set_visible(True)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def slide_grid(self, dat, dat2=None, opac=None):

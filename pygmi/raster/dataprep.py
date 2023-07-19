@@ -2258,7 +2258,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
         Print function. The default is print.
     commonmask : bool, optional
         Create a common mask for all bands. The default is False.
-    masterid : int, optional
+    masterid : str, optional
         ID of master dataset. The default is None.
 
     Returns
@@ -2315,8 +2315,9 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
             if i.dataid == masterid:
                 data = i
                 break
-        # data = dat[masterid]
+
         xmin, xmax, ymin, ymax = data.extent
+
         if dxy is None:
             dxy = min(data.xdim, data.ydim)
     else:

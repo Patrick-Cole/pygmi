@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """The main program for the modelling package."""
 
-import sys
 from PyQt5 import QtWidgets, QtCore
 
 from pygmi.pfmod import misc
