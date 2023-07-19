@@ -79,8 +79,8 @@ class GraphHist(FigureCanvasQTAgg):
 
         """
         xyhist = np.zeros((bins + 1, bins + 1))
-        xxx = self.xcoord.compressed()
-        yyy = self.ycoord.compressed()
+        xxx = self.xcoord.compressed().astype(int)
+        yyy = self.ycoord.compressed().astype(int)
 
         xyhist = np.histogram2d(xxx, yyy, bins + 1)
 
@@ -109,8 +109,8 @@ class GraphHist(FigureCanvasQTAgg):
         clust = np.ma.array(dattmp[ctmp[2] - 1].data.flatten())
         clust.mask = np.ma.getmaskarray(self.xcoord)
         clust = clust.compressed()
-        xxx = self.xcoord.compressed()
-        yyy = self.ycoord.compressed()
+        xxx = self.xcoord.compressed().astype(int)
+        yyy = self.ycoord.compressed().astype(int)
         xyhist = np.zeros((bins + 1, bins + 1))
 
         xyhist[xxx, yyy] = (clust + 1)
@@ -195,6 +195,7 @@ class GraphHist(FigureCanvasQTAgg):
         ystep = yptp / 50
         self.xcoord = self.xcoord/xstep
         self.ycoord = self.ycoord/ystep
+
         self.xcoord = self.xcoord.astype(int)
         self.ycoord = self.ycoord.astype(int)
 
@@ -707,7 +708,7 @@ class ScatterPlot(BasicModule):
         None.
 
         """
-        self.hist.polyi.new_poly([[10, 10]])
+        self.hist.polyi.new_poly([[1, 1]])
 
         mtmp = self.map_combo.currentIndex()
         mask = self.indata['Raster'][mtmp].data.mask
@@ -726,7 +727,7 @@ class ScatterPlot(BasicModule):
         None.
 
         """
-        self.map.polyi.new_poly([[10, 10]])
+        self.map.polyi.new_poly([[1, 1]])
         dattmp = self.hist.csp.get_array()
         dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.))
         self.hist.csp.changed()
@@ -951,7 +952,7 @@ class ScatterPlot(BasicModule):
                          self.hist.ycoord[polymask]]).T
         dattmp.mask = np.ones_like(np.ma.getmaskarray(dattmp))
         for i in atmp:
-            dattmp.mask[i[1], i[0]] = False
+            dattmp.mask[int(i[1]), int(i[0])] = False
         self.hist.csp.changed()
         self.hist.figure.canvas.draw()
 

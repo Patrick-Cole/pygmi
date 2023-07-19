@@ -386,7 +386,7 @@ class FuzzyClust(BasicModule):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         for i in range(no_clust[0], no_clust[1] + 1):
-            self.showlog('Number of Clusters:' + str(i))
+            self.showlog(f'Number of Clusters: {i}')
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
                 self.showlog('Initial guess: data driven')
@@ -421,7 +421,7 @@ class FuzzyClust(BasicModule):
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.showlog('Run ' + str(j+1) + ' of' + str(no_runs))
+                    self.showlog(f'Run {j+1} of {no_runs}')
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -492,8 +492,7 @@ class FuzzyClust(BasicModule):
             i.data += 1
             i.crs = data[0].crs
 
-        self.showlog('Fuzzy Cluster complete' + ' (' + self.cltype +
-                     ' ' + self.init_type + ')')
+        self.showlog(f'Fuzzy Cluster complete ({self.cltype} {self.init_type})')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']

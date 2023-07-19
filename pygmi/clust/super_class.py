@@ -919,9 +919,8 @@ class SuperClass(BasicModule):
 
         for i in dat_out:
             i.data += 1
-            i.data = i.data.astype(np.uint8)
+            i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
             i.nodata = 0
-            i.data.data[i.data.mask] = 0
 
         self.showlog('Cluster complete')
 
@@ -1157,7 +1156,6 @@ def _testfn():
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = iodefs.get_raster(ifile)
-    # os.chdir(r'd:\Workdata\people\janinetest2')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data

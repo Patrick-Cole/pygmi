@@ -409,7 +409,7 @@ class CrispClust(BasicModule):
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.showlog('Run '+str(j+1)+' of'+str(no_runs))
+                    self.showlog(f'Run {j+1} of {no_runs}')
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -463,7 +463,7 @@ class CrispClust(BasicModule):
 
         for i in dat_out:
             i.data += 1
-            i.data = i.data.astype(np.uint8)
+            i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
             i.nodata = 0
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']

@@ -49,7 +49,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
         # figure stuff
-        fig = Figure()
+        fig = Figure(layout='constrained')
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -385,6 +385,8 @@ class PlotVRCetc(GraphWindow):
             x = [k.metadata['Cluster']['no_clusters'] for k in data]
             y = [k.metadata['Cluster']['vrc'] for k in data]
             self.mmc.update_scatter(x, y)
+
+        # nce and xbi are fuzzy clustering only.
         if (j == 'Normalized Class Entropy' and
                 data[0].metadata['Cluster']['nce'] is not None):
             x = [k.metadata['Cluster']['no_clusters'] for k in data]

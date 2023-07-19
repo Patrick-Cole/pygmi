@@ -78,7 +78,7 @@ class Cluster(BasicModule):
         self.setupui()
 
         self.combobox_alg.addItems(['Mini Batch K-Means (fast)', 'K-Means',
-                                    'DBSCAN', 'Birch'])
+                                    'Bisecting K-Means', 'DBSCAN', 'Birch'])
         self.combobox_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
@@ -182,7 +182,7 @@ class Cluster(BasicModule):
             self.label_minsamples.show()
             self.spinbox_minsamples.show()
             self.doublespinbox_eps.show()
-        elif i in ['K-Means', 'Mini Batch K-Means (fast)']:
+        elif 'K-Means' in i:
             self.label_minclusters.show()
             self.spinbox_minclusters.show()
             self.label_maxclusters.show()
@@ -359,14 +359,19 @@ class Cluster(BasicModule):
             elif i > no_clust[0]:
                 continue
 
+            cfit = None
             if self.cltype == 'Mini Batch K-Means (fast)':
                 bsize = max(os.cpu_count()*256, 1024)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter,
-                                           # n_init='auto',
+                                           n_init='auto',
                                            batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol,  # n_init='auto',
+                cfit = skc.BisectingKMeans(n_clusters=i, tol=self.tol,
+                                           max_iter=self.max_iter).fit(X)
+
+            elif self.cltype == 'Bisecting K-Means':
+                cfit = skc.KMeans(n_clusters=i, tol=self.tol, n_init='auto',
                                   max_iter=self.max_iter).fit(X)
 
             elif self.cltype == 'DBSCAN':
@@ -377,6 +382,10 @@ class Cluster(BasicModule):
                 X = np.ascontiguousarray(X)  # Birch gave an error without this
                 cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
                                  branching_factor=self.branchfac).fit(X)
+
+            if cfit is None:
+                self.showlog('Could not find any clusters. '
+                             'Please change settings.')
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 self.showlog('Could not find '+str(i)+' clusters. '
@@ -438,7 +447,7 @@ class Cluster(BasicModule):
 
         for i in dat_out:
             i.data += 1
-            i.data = i.data.astype(np.uint8)
+            i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
             i.nodata = 0
 
         self.outdata['Cluster'] = dat_out

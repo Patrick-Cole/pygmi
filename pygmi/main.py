@@ -43,6 +43,7 @@ import math
 import importlib
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
+import psutil
 from matplotlib import rcParams
 from matplotlib import interactive
 
@@ -1264,6 +1265,9 @@ class Startup(QtWidgets.QDialog):
 def main(nocgs=False):
     """Entry point for the PyGMI software."""
     # Set environment variables.
+    # The line below is to fix a problem in windows with loky library.
+    os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
+
     if 'GDAL_DATA' not in os.environ:
         import osgeo
         gdalpath = os.path.join(osgeo.__path__[0], r'data\gdal')
