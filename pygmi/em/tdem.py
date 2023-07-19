@@ -47,7 +47,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
     """MPL Canvas class."""
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
     def update_line(self, sigma, z, times_off, zobs, zpred):
@@ -95,7 +95,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax2.grid(True)
         ax2.legend(loc=3)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def disp_wave(self, times, wave, title):
@@ -117,7 +117,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         ax1.plot(times, wave)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -508,11 +508,12 @@ class TDEM1D(BasicModule):
             Waveform.
 
         """
+        starttime = 0.
         offtime = float(self.txofftime.text())
         peaktime = float(self.txpeaktime.text())
         rampoff1 = float(self.txrampoff1.text())
 
-        rampon = np.array([0, peaktime])
+        rampon = np.array([starttime, peaktime])
         rampoff = np.array([rampoff1, offtime])
 
         wtype = self.combowtype.currentText()
@@ -524,7 +525,8 @@ class TDEM1D(BasicModule):
             wform = time_domain.sources.TrapezoidWaveform(ramp_on=rampon,
                                                           ramp_off=rampoff)
         elif wtype == 'TriangularWaveform':
-            wform = time_domain.sources.TriangularWaveform(peak_time=peaktime,
+            wform = time_domain.sources.TriangularWaveform(start_time=starttime,
+                                                           peak_time=peaktime,
                                                            off_time=offtime)
         elif wtype == 'QuarterSineRampOnWaveform':
             wform = time_domain.sources.QuarterSineRampOnWaveform(
@@ -700,7 +702,7 @@ def tonumber(test, alttext=None):
 
 def _testfn():
     """Test routine."""
-    from pygmi.vector.iodefs import ImportXYZData
+    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -708,7 +710,7 @@ def _testfn():
     filename = r'D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
     wfile = r'D:\Workdata\PyGMI Test Data\EM\wtimes.txt'
 
-    IO = ImportXYZData()
+    IO = ImportXYZ()
     IO.filt = 'Tab Delimited (*.txt)'
     IO.ifile = filename
     IO.xchan.setCurrentText('e')
