@@ -270,7 +270,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """MPL Canvas class."""
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
     def update_line(self, data, ival, itype):
@@ -356,7 +356,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax2.set_xlabel('Period (s)')
         ax2.set_ylabel(r'Phase (Degrees)')
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -1315,7 +1315,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
     """MPL Canvas class."""
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
     def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
@@ -1388,7 +1388,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         if depths is not None:
             ax3.plot(res, np.array(depths)/1000)
 
-        gs.tight_layout(self.figure)
+        # gs.tight_layout(self.figure)
         self.figure.canvas.draw()
 
 

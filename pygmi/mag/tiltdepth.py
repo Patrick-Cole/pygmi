@@ -593,11 +593,8 @@ def vgrad(cnt):
 def _testfn():
     """RTP testing routine."""
     import sys
-    import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
-    # from IPython import get_ipython
-    # get_ipython().run_line_magic('matplotlib', 'inline')
     ifile = r"D:\Workdata\PyGMI Test Data\IGRF_RTP.tif"
 
     dat = get_raster(ifile)
@@ -613,9 +610,6 @@ def _testfn():
     tmp1.settings()
 
     dat = tmp1.outdata
-
-    breakpoint()
-
 
 
 if __name__ == "__main__":

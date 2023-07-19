@@ -31,6 +31,7 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
 from pygmi.misc import ContextModule
 
+
 class GraphWindow(ContextModule):
     """Graph Window - Main QT Dialog class for graphs."""
 
@@ -76,7 +77,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -275,7 +276,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
