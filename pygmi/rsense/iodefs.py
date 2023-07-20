@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Import remote sensing data."""
 
-
 import os
 import sys
 import copy
@@ -229,6 +228,11 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
+        self.lw_tnames.clear()
+        self.indata['Raster'] = []
+        self.sfile.setText('')
+        self.ftype.setText('File Type:')
+
         if not nodialog:
             tmp = self.exec_()
 
@@ -263,12 +267,15 @@ class ImportData(BasicModule):
 
     def get_sfile(self):
         """Get the satellite filename."""
-        ext = ('Common formats (*.hdf *.zip *.tar *.tar.gz *.xml *.h5);;')
+        self.lw_tnames.clear()
+        self.indata['Raster'] = []
+        self.sfile.setText('')
+        self.ftype.setText('File Type:')
+
+        ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5);;')
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
-
-        # ext = ('ESRI Shapefile (*.shp);;')
 
         if not self.ifile:
             return False
@@ -277,6 +284,12 @@ class ImportData(BasicModule):
 
         self.indata['Raster'] = get_data(self.ifile, self.piter,
                                          self.showlog, metaonly=True)
+
+        if self.indata['Raster'] is None:
+            self.showlog('Error: could not import data.')
+            self.sfile.setText('')
+            self.ftype.setText('File Type: Unknown')
+            return False
 
         tmp = []
         for i in self.indata['Raster']:
@@ -465,6 +478,7 @@ class ImportBatch(BasicModule):
 
         types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
                  '*.xml', '*.h5']
+
         allfiles = []
         for i in types:
             allfiles += glob.glob(os.path.join(self.idir, i))
@@ -716,8 +730,15 @@ class ImportSentinel5P(BasicModule):
         if gdf is None:
             return False
 
-        dat = {gdf.geom_type.iloc[0]: gdf}
-        self.outdata['Vector'] = dat
+        if gdf.geom_type.loc[0] == 'Point':
+            if 'line' not in gdf.columns:
+                gdf['line'] = 'None'
+            else:
+                gdf['line'] = gdf['line'].astype(str)
+
+        gdf.attrs['source'] = os.path.basename(self.ifile)
+
+        self.outdata['Vector'] = [gdf]
 
         return True
 
@@ -1123,7 +1144,7 @@ class ExportBatch(ContextModule):
                 ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
                        '*.pix *.bil);;')
 
-                sunfile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                sunfile, _ = QtWidgets.QFileDialog.getOpenFileName(
                     self.parent, 'Open File', '.', ext)
                 if sunfile == '':
                     return False
@@ -1424,15 +1445,15 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
         adate = os.path.basename(ifile).split('_')[2]
         ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
         dat = []
-        for ifile in ifiles:
-            dat += get_aster_hdf(ifile, piter, showlog, tnames, metaonly)
+        for afile in ifiles:
+            dat += get_aster_hdf(afile, piter, showlog, tnames, metaonly)
     elif 'AST_' in bfile and ext == '.zip':
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
         ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
         dat = []
-        for ifile in ifiles:
-            dat += get_aster_zip(ifile, piter, showlog, tnames, metaonly)
+        for afile in ifiles:
+            dat += get_aster_zip(afile, piter, showlog, tnames, metaonly)
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
         dat = get_landsat(ifile, piter, showlog, tnames, metaonly)
@@ -1443,7 +1464,7 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
     elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter, showlog, tnames, metaonly)
-    elif 'AG1' in bfile and ext == 'h5':
+    elif 'AG1' in bfile and ext == '.h5':
         dat = get_aster_ged(ifile, piter, showlog, tnames, metaonly)
     elif ext == '.zip' and 'EO1H' in bfile:
         dat = get_hyperion(ifile, piter, showlog, tnames, metaonly)
@@ -3190,47 +3211,8 @@ def _test5P():
     plt.show()
 
 
-def _testfn():
-    """Test routine."""
-    import matplotlib.pyplot as plt
-
-    ifile = r"D:\ASTER\LC09_L2SP_170078_20220810_20230403_02_T1.tar"
-    ifile = r"D:\WC\Sentinel_2\S2A_MSIL2A_20221221T082341_N0509_R121_T34HBJ_20221221T122258.zip"
-    ofile = ifile+'.tif'
-
-    # dat = get_data(ifile, tnames=['B2  central wavelength 490 nm (10.0m)',
-    #                               'B4  central wavelength 665 nm (10.0m)'])
-
-    os.chdir(r'D:\\')
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    tmp1 = ImportBatch()
-    tmp1.idir = r"D:\WC\Sentinel_2"
-    tmp1.get_sfile(True)
-    tmp1.settings()
-
-    dat = tmp1.outdata['RasterFileList']
-
-    dat = get_data(ifile, tnames=dat[0].tnames)
-
-    export_raster(ofile, dat)
-
-    # for i in dat:
-    #     plt.figure(dpi=150)
-    #     plt.title(i.dataid)
-    #     vmin = i.data.mean()-i.data.std()*2
-    #     vmax = i.data.mean()+i.data.std()*2
-
-    #     plt.imshow(i.data, interpolation='none', vmin=vmin, vmax=vmax)
-    #     plt.colorbar()
-    #     plt.show()
-
-
 def _testfn2():
     """Test routine."""
-    os.chdir(r'D:\\')
-
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
@@ -3252,16 +3234,18 @@ def _testfn3():
 
     ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
     ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
 
     dat = get_data(ifile)
 
-    # for i in dat:
-    #     plt.figure(dpi=150)
-    #     plt.title(i.dataid)
-    #     plt.imshow(i.data, extent=i.extent)
-    #     plt.colorbar()
-    #     plt.show()
+    for i in dat:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data, extent=i.extent)
+        plt.colorbar()
+        plt.show()
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

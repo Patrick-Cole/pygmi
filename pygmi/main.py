@@ -429,6 +429,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
     def selected_item_info(self):
         """Display info about selected item."""
         tmp = self.selectedItems()
+        self.parent.showdatainfo('')
+
         if not tmp:
             return
 
@@ -443,7 +445,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             for i in idata:
                 text += '\nInput ' + i + ' dataset: '
                 if i in 'Raster':
-                    if hasattr(idata[i][0], 'filename'):
+                    if idata[i] and hasattr(idata[i][0], 'filename'):
                         file = idata[i][0].filename
                     else:
                         file = i
