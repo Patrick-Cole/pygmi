@@ -38,7 +38,6 @@ import warnings
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
-import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -491,7 +490,7 @@ class ImportBatch(BasicModule):
         self.filelist = []
         for ifile in self.piter(allfiles):
             dat = get_data(ifile, showlog=self.showlog,
-                           metaonly=True)
+                           metaonly=True, piter=iter)
             if dat is None:
                 continue
             datm = RasterMeta()
@@ -1352,11 +1351,11 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         output type of file, regular or RGB ternary (with possible sunshading)
     sunfile : str
         either a filename of an external file to be used for sunshading, or an
-        existing bandname.
+        existing bandname. the default is None.
     cell : float
-        sunshading parameter.
+        Between 1 and 100 - controls sunshade detail. The default is 25.
     alpha : float
-        sunshading parameter.
+        How much incident light is reflected (0 to 1). The default is .75.
 
     Returns
     -------
@@ -1410,7 +1409,8 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         showlog('Exporting '+os.path.basename(ofile))
 
         if otype == 'RGB':
-            odat = save_ternary(odat, sunfile=sunfile, cell=cell, alpha=alpha)
+            odat = get_ternary(odat, sunfile=sunfile, cell=cell, alpha=alpha,
+                               piter=piter, showlog=showlog)
             export_raster(ofile, odat, 'GTiff', piter=piter,
                           bandsort=False, updatestats=False,
                           showlog=showlog)
@@ -2974,17 +2974,34 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
-def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
-                 cell=25., alpha=.75):
+def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
+                cell=25., alpha=.75, piter=iter, showlog=print):
     """
-    Save a ternary image.
+    Create a ternary image, with optional sunshading.
+
+    Parameters
+    ----------
+    dat : list
+        PyGMI Data.
+    sunfile : str, optional
+        Sunshading band or filename. The default is None.
+    clippercl : float, optional
+        Lower clip percenage for colour bar. The default is 1.
+    clippercu : float, optional
+        Upper clip percenage for colour bar. The default is 1.
+    cell : float, optional
+        Between 1 and 100 - controls sunshade detail. The default is 25.
+    alpha : float, optional
+        How much incident light is reflected (0 to 1). The default is .75.
 
     Returns
     -------
-    None.
+    newimg : list
+        list of PyGMI data.
 
     """
-    data = lstack(dat, nodeepcopy=True, checkdataid=False)
+    data = lstack(dat, nodeepcopy=True, checkdataid=False, piter=piter,
+                  showlog=showlog)
     sundata = None
 
     if sunfile is not None:
@@ -2995,7 +3012,8 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
                 break
 
         if sdata is None:
-            sundata = get_raster(sunfile, metaonly=True)
+            sundata = get_raster(sunfile, metaonly=True, piter=piter,
+                                 showlog=showlog)
 
             owkt = sundata[0].crs.to_wkt()
             iwkt = data[0].crs.to_wkt()
@@ -3007,13 +3025,15 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
 
             bounds = [xx[0], yy[0], xx[1], yy[1]]
 
-            sundata = get_raster(sunfile, bounds=bounds)
+            sundata = get_raster(sunfile, bounds=bounds, piter=piter,
+                                 showlog=showlog)
             sundata = data_reproject(sundata[0], data[0].crs)
 
             sdata = [data[0], sundata]
             masterid = sdata[0].dataid
             sdata = lstack(sdata, nodeepcopy=True, masterid=masterid,
-                           resampling='bilinear', checkdataid=False)[1]
+                           resampling='bilinear', checkdataid=False,
+                           piter=piter, showlog=showlog)[1]
 
     red = data[0].data
     green = data[1].data
@@ -3048,9 +3068,9 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
         img[:, :, 2] = img[:, :, 2]*snorm  # blue
         img = img.astype(np.uint8)
 
-    plt.figure(dpi=150)
-    plt.imshow(img)
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.imshow(img)
+    # plt.show()
 
     newimg = [copy.deepcopy(data[0]),
               copy.deepcopy(data[0]),
@@ -3165,7 +3185,7 @@ def utm_to_south(dat):
     Returns
     -------
     dat : list
-        List of data.
+        List of Data.
 
     """
     for band in dat:
@@ -3229,15 +3249,17 @@ def _testfn2():
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\WC\Sentinel_2\raw"
+    tmp1.idir = r"D:\Landsat"
     tmp1.get_sfile(True)
-    tmp1.settings()
+    tmp1.settings(True)
 
     dat = tmp1.outdata
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
-    tmp2.get_odir(r"D:\WC\Sentinel_2\test")
+    tmp2.get_odir(r"D:\Sentinel2\test")
+    tmp2.ternary.setChecked(True)
+    tmp2.click_ternary()
     tmp2.run()
 
 
@@ -3261,4 +3283,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()
