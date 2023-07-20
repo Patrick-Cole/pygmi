@@ -2239,7 +2239,8 @@ def getepsgcodes():
 
 
 def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
-           masterid=None, nodeepcopy=False, resampling='nearest'):
+           masterid=None, nodeepcopy=False, resampling='nearest',
+           checkdataid=True):
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -2306,7 +2307,8 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
     if needsmerge is False:
         if not nodeepcopy:
             dat = copy.deepcopy(dat)
-        dat = check_dataid(dat)
+        if checkdataid is True:
+            dat = check_dataid(dat)
         return dat
 
     showlog('Merging data...')
@@ -2416,7 +2418,10 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
             idat.data.mask = cmask
             idat.data = np.ma.array(idat.data.filled(idat.nodata), mask=cmask)
 
-    out = check_dataid(dat2)
+    if checkdataid is True:
+        out = check_dataid(dat2)
+    else:
+        out = dat2
 
     return out
 

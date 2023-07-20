@@ -38,6 +38,7 @@ import warnings
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
+import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -1239,6 +1240,55 @@ def calculate_toa(dat, showlog=print):
     return out
 
 
+def consolidate_aster_list(flist):
+    """
+    Consolidate ASTER files from a file list, getting rid of extra files.
+
+    Parameters
+    ----------
+    flist : list
+        List of filenames.
+
+    Returns
+    -------
+    flist : list
+        List of filenames.
+
+    """
+    asterhfiles = []
+    asterzfiles = []
+    otherfiles = []
+
+    for ifile in flist:
+        bfile = os.path.basename(ifile)
+        ext = os.path.splitext(ifile)[1].lower()
+
+        if 'AST_' in bfile and ext == '.hdf':
+            asterhfiles.append(ifile)
+        if 'AST_' in bfile and ext == '.zip':
+            asterzfiles.append(ifile)
+        else:
+            otherfiles.append(ifile)
+
+    asterfiles = []
+    tmp = {}
+
+    for ifile in asterzfiles:
+        adate = os.path.basename(ifile).split('_')[2]
+        tmp[adate] = ifile
+    asterfiles += list(tmp.values())
+
+    for ifile in asterhfiles:
+        adate = os.path.basename(ifile).split('_')[2]
+        tmp[adate] = ifile
+
+    asterfiles += list(tmp.values())
+
+    flist = asterfiles+otherfiles
+
+    return flist
+
+
 def etree_to_dict(t):
     """
     Convert an ElementTree to dictionary.
@@ -1298,6 +1348,15 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
+    otype : str
+        output type of file, regular or RGB ternary (with possible sunshading)
+    sunfile : str
+        either a filename of an external file to be used for sunshading, or an
+        existing bandname.
+    cell : float
+        sunshading parameter.
+    alpha : float
+        sunshading parameter.
 
     Returns
     -------
@@ -1308,10 +1367,13 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         showlog('You need a raster file list')
         return
 
+    ifiles = indata['RasterFileList']
+
     if sunfile == 'None':
         sunfile = None
-
-    ifiles = indata['RasterFileList']
+    elif tnames is not None and otype == 'RGB':
+        if sunfile in ifiles[0].bands and sunfile not in tnames:
+            tnames += [sunfile]
 
     filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
                  'GeoTiff compressed using DEFLATE': 'GTiff',
@@ -1355,55 +1417,6 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         else:
             export_raster(ofile, odat, ofilt, piter=piter,
                           compression=compression, showlog=showlog)
-
-
-def consolidate_aster_list(flist):
-    """
-    Consolidate ASTER files from a file list, getting rid of extra files.
-
-    Parameters
-    ----------
-    flist : list
-        List of filenames.
-
-    Returns
-    -------
-    flist : list
-        List of filenames.
-
-    """
-    asterhfiles = []
-    asterzfiles = []
-    otherfiles = []
-
-    for ifile in flist:
-        bfile = os.path.basename(ifile)
-        ext = os.path.splitext(ifile)[1].lower()
-
-        if 'AST_' in bfile and ext == '.hdf':
-            asterhfiles.append(ifile)
-        if 'AST_' in bfile and ext == '.zip':
-            asterzfiles.append(ifile)
-        else:
-            otherfiles.append(ifile)
-
-    asterfiles = []
-    tmp = {}
-
-    for ifile in asterzfiles:
-        adate = os.path.basename(ifile).split('_')[2]
-        tmp[adate] = ifile
-    asterfiles += list(tmp.values())
-
-    for ifile in asterhfiles:
-        adate = os.path.basename(ifile).split('_')[2]
-        tmp[adate] = ifile
-
-    asterfiles += list(tmp.values())
-
-    flist = asterfiles+otherfiles
-
-    return flist
 
 
 def get_data(ifile, piter=None, showlog=print, tnames=None,
@@ -2971,7 +2984,8 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     None.
 
     """
-    data = lstack(dat, nodeepcopy=True)
+    data = lstack(dat, nodeepcopy=True, checkdataid=False)
+    sundata = None
 
     if sunfile is not None:
         sdata = None
@@ -2979,6 +2993,7 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
             if i.dataid == sunfile:
                 sdata = i
                 break
+
         if sdata is None:
             sundata = get_raster(sunfile, metaonly=True)
 
@@ -2998,7 +3013,7 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
             sdata = [data[0], sundata]
             masterid = sdata[0].dataid
             sdata = lstack(sdata, nodeepcopy=True, masterid=masterid,
-                           resampling='bilinear')[1]
+                           resampling='bilinear', checkdataid=False)[1]
 
     red = data[0].data
     green = data[1].data
@@ -3032,8 +3047,6 @@ def save_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
         img[:, :, 1] = img[:, :, 1]*snorm  # green
         img[:, :, 2] = img[:, :, 2]*snorm  # blue
         img = img.astype(np.uint8)
-
-    import matplotlib.pyplot as plt
 
     plt.figure(dpi=150)
     plt.imshow(img)
