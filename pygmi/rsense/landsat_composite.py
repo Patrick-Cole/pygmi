@@ -125,7 +125,8 @@ class LandsatComposite(BasicModule):
 
         if not ifiles:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'No *MTL.txt in the directory.',
+                                          'No *MTL.txt in the directory or '
+                                          'subdirectories.',
                                           QtWidgets.QMessageBox.Ok)
             return False
 
@@ -325,7 +326,7 @@ def import_and_score(ifile, dreq, mean, std, showlog=print, piter=None):
     bands = [f'B{i+1}' for i in range(11)]
 
     dat = {}
-    tmp = get_data(ifile, alldata=True, piter=piter, showlog=showlog)
+    tmp = get_data(ifile, piter=piter, showlog=showlog)
 
     for i in tmp:
         if i.dataid in bands:

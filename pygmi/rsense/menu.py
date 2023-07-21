@@ -105,19 +105,19 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.menu2 = self.menu.addMenu('Change Detection')
+        # self.menu2 = self.menu.addMenu('Change Detection')
 
-        self.action_create_list = QtWidgets.QAction('Create Scene List ')
-        self.menu2.addAction(self.action_create_list)
-        self.action_create_list.triggered.connect(self.create_scene)
+        # self.action_create_list = QtWidgets.QAction('Create Scene List ')
+        # self.menu2.addAction(self.action_create_list)
+        # self.action_create_list.triggered.connect(self.create_scene)
 
-        self.action_load_list = QtWidgets.QAction('Load Scene List')
-        self.menu2.addAction(self.action_load_list)
-        self.action_load_list.triggered.connect(self.load_scene)
+        # self.action_load_list = QtWidgets.QAction('Load Scene List')
+        # self.menu2.addAction(self.action_load_list)
+        # self.action_load_list.triggered.connect(self.load_scene)
 
-        self.action_data_viewer = QtWidgets.QAction('View Change Data')
-        self.menu2.addAction(self.action_data_viewer)
-        self.action_data_viewer.triggered.connect(self.view_change)
+        # self.action_data_viewer = QtWidgets.QAction('View Change Data')
+        # self.menu2.addAction(self.action_data_viewer)
+        # self.action_data_viewer.triggered.connect(self.view_change)
 
         # Context menus
         context_menu['RasterFileList'].addSeparator()

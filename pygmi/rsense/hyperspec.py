@@ -57,7 +57,7 @@ class GraphMap(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        self.figure = Figure()
+        self.figure = Figure(layout='constrained')
 
         super().__init__(self.figure)
         self.setParent(parent)
@@ -118,15 +118,21 @@ class GraphMap(FigureCanvasQTAgg):
         ax1.xaxis.set_major_formatter(frm)
         ax1.yaxis.set_major_formatter(frm)
 
-        ax1.plot(self.col, self.row, '+w')
+        if self.rotate is True:
+            ax1.plot(self.row, self.col, '+w')
+        else:
+            ax1.plot(self.col, self.row, '+w')
+        # print(self.col, self.row)
 
         ax2 = self.figure.add_subplot(212)
 
-        prof = []
-        for i in self.datarr:
-            prof.append(i[self.row, self.col])
+        # prof = []
+        # for i in self.datarr:
+        #     prof.append(i[self.row, self.col])
 
-        prof = np.ma.stack(prof)/self.refl
+        prof = [i[self.row, self.col] for i in self.datarr]
+
+        prof = np.ma.stack(prof).filled(0)/self.refl
 
         ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
         ax2.grid(True)
@@ -164,7 +170,7 @@ class GraphMap(FigureCanvasQTAgg):
         rect.set_alpha(0.5)
         ax2.add_patch(rect)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -471,6 +477,8 @@ class AnalSpec(BasicModule):
         for j in dat:
             dat2.append(j.data)
             wvl.append(float(j.metadata['Raster']['wavelength']))
+
+        dat2 = np.ma.array(dat2)
 
         self.map.datarr = dat2
         self.map.nodata = dat[0].nodata
@@ -1259,28 +1267,12 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    # ifile = r"d:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
-    # ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
 
-    xoff = 0
-    yoff = 2000
-    xsize = None
-    ysize = 1000
-    nodata = 15000
-    nodata = 0
-
-    iraster = (xoff, yoff, xsize, ysize)
-    iraster = None
-
-    # data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
     data = get_data(ifile)
-
-    # data = get_raster(ifile, piter=pbar.iter)
 
     tmp = ProcFeatures(None)
     tmp.indata['Raster'] = data
-    # tmp.cb_ratios.setCurrentText('ferric iron')
     tmp.settings()
 
     dat = tmp.outdata['Raster'][0]
@@ -1317,145 +1309,5 @@ def _testfn2():
     tmp.settings()
 
 
-def _testfn3():
-    """Test."""
-    ifile1 = r'd:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
-    ifile2 = r'd:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
-    ifile3 = r'd:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
-
-    feat = 18
-
-    yoff = 2425
-    ysize = 400
-    nodata = 0
-    iraster = (0, yoff, None, ysize)
-
-    data1 = get_raster(ifile1, nval=nodata, iraster=iraster)
-    data2 = get_raster(ifile2, nval=nodata, iraster=iraster)
-    data3 = get_raster(ifile3, nval=nodata, iraster=iraster)
-
-    plt.figure(dpi=150)
-    plt.imshow(data1[0].data, extent=data1[0].extent)
-    plt.plot(277545, 6774900, '+k')
-    plt.show()
-
-    plt.figure(dpi=150)
-    plt.imshow(data2[0].data, extent=data2[0].extent)
-    plt.plot(277545, 6774900, '+k')
-    plt.plot(279900, 6774900, '+k')
-    plt.show()
-
-    plt.figure(dpi=150)
-    plt.imshow(data3[0].data, extent=data3[0].extent)
-    plt.plot(279900, 6774900, '+k')
-    plt.show()
-
-    yoff = 2625
-    ysize = 1
-    nodata = 0
-    iraster = (0, yoff, None, ysize)
-
-    data1 = get_raster(ifile1, nval=nodata, iraster=iraster)
-    data2 = get_raster(ifile2, nval=nodata, iraster=iraster)
-    data3 = get_raster(ifile3, nval=nodata, iraster=iraster)
-
-    for i in range(2):
-        if i == 0:
-            xxx = 277545
-            yyy = 6774900
-        else:
-            xxx = 279900
-            yyy = 6774900
-            data1 = data3
-
-        i1 = int((xxx-data1[0].extent[0])/data1[0].xdim)
-        i2 = int((xxx-data2[0].extent[0])/data2[0].xdim)
-
-        # Get list of wavelengths and data
-        dat1 = []
-        xval1 = []
-        for j in data1:
-            dat1.append(j.data)
-            refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
-            xval1.append(refl)
-
-        xval1 = np.array(xval1)
-        dat1 = np.array(dat1)
-
-        dat2 = []
-        xval2 = []
-        for j in data2:
-            dat2.append(j.data)
-            refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
-            xval2.append(refl)
-
-        xval2 = np.array(xval2)
-        dat2 = np.array(dat2)
-
-        dat1 = dat1[55: 98]
-        dat2 = dat2[55: 98]
-        xval1 = xval1[55: 98]
-        xval2 = xval2[55: 98]
-
-        fdat = []
-        xdat = []
-        fdat.append(dat1[:, 0, i1])
-        fdat.append(dat2[:, 0, i2])
-        xdat = xval1
-
-        fdat = np.array(fdat)
-
-        ptmp = np.array([0, 0])
-        dtmp = np.array([0, 0])
-
-        ptmp, dtmp = fproc(fdat, ptmp, dtmp, 11, 19, xdat)
-
-        spec1 = dat1[:, 0, i1]
-        spec2 = dat2[:, 0, i2]
-
-        plt.figure(dpi=150)
-        plt.title(str(i)+': '+str(i1))
-        plt.plot(xval1, spec1)
-        plt.plot(xval2, spec2, '-.')
-        ymin, ymax = plt.gca().get_ylim()
-        plt.vlines(ptmp[0], ymin, ymax, 'k')
-        plt.vlines(ptmp[1], ymin, ymax, 'k')
-
-        spec1 = spec1/phull(spec1)
-        spec2 = spec2/phull(spec2)
-
-        plt.figure(dpi=150)
-        plt.title(str(i)+': '+str(i1))
-        plt.plot(xval1, spec1)
-        plt.plot(xval2, spec2, 'r-.')
-
-        plt.plot(xval1[11:19], spec1[11:19], '.')
-        plt.plot(xval2[11:19], spec2[11:19], '.')
-
-        ymin, ymax = plt.gca().get_ylim()
-        plt.vlines(ptmp[0], ymin, ymax, label=str(ptmp[0]))
-        plt.vlines(ptmp[1], ymin, ymax, colors='r', linestyles='-.',
-                   label=str(ptmp[1]))
-        plt.legend()
-        plt.show()
-
-        plt.figure(dpi=150)
-
-        dat1 = np.ma.masked_equal(dat1, 0)
-        dat2 = np.ma.masked_equal(dat2, 0)
-
-        x1 = np.linspace(data1[0].extent[0], data1[0].extent[1],
-                         dat1[feat, 0].size)
-        x2 = np.linspace(data2[0].extent[0], data2[0].extent[1],
-                         dat2[feat, 0].size)
-        plt.plot(x1, dat1[feat, 0])
-        plt.plot(x2, dat2[feat, 0], '-.')
-
-        ymin, ymax = plt.gca().get_ylim()
-
-        plt.vlines(xxx, ymin, ymax, 'k')
-        plt.show()
-
-
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

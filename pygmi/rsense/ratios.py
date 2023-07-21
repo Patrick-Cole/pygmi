@@ -473,6 +473,11 @@ class ConditionIndices(BasicModule):
             self.showlog('You need a raster file list as input.')
             return False
 
+        if len(self.indata['RasterFileList']) < 2:
+            self.showlog('You need more than one scene in your raster file '
+                         'list.')
+            return False
+
         bfile = os.path.basename(self.indata['RasterFileList'][0].filename)
         self.bfile = bfile[:4]
 
@@ -592,21 +597,18 @@ class ConditionIndices(BasicModule):
         vhi = []
         lst = []
 
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
-            if sensor == 'ASTER':
-                flist = get_aster_list(flist)
-            elif 'Landsat' in sensor:
-                flist = get_landsat_list(flist, sensor)
-            elif 'Sentinel-2' in sensor:
-                flist = get_sentinel_list(flist)
-            if not flist:
-                self.showlog('Warning: This might not be ' + sensor +
-                             ' data. Will attempt to do calculation '
-                             'anyway.')
-                flist = self.indata['RasterFileList']
+        flist = self.indata['RasterFileList']
+        if sensor == 'ASTER':
+            flist = get_aster_list(flist)
+        elif 'Landsat' in sensor:
+            flist = get_landsat_list(flist, sensor)
+        elif 'Sentinel-2' in sensor:
+            flist = get_sentinel_list(flist)
         else:
-            flist = [self.indata['Raster']]
+            self.showlog('Warning: This might not be ' + sensor +
+                         ' data. Will attempt to do calculation '
+                         'anyway.')
+            flist = self.indata['RasterFileList']
 
         for ifile in flist:
             dat = get_from_rastermeta(ifile, piter=self.piter,
@@ -631,7 +633,7 @@ class ConditionIndices(BasicModule):
                     if i.dataid.split()[0] in wvlabels:
                         i.dataid = wvlabels[i.dataid.split()[0]]
 
-            bfile = os.path.basename(ifile)
+            bfile = os.path.basename(ifile.filename)
             rlist = correct_bands(rlist2, sensor, bfile)
 
             datsml = []
@@ -1363,99 +1365,6 @@ def _testfn():
     plt.show()
 
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
-
-
-def _testfn2():
-    """Test routine."""
-    import glob
-    import matplotlib.pyplot as plt
-
-    ifiles = glob.glob(r'D:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    SR = ConditionIndices()
-    SR.indata['RasterFileList'] = ifiles
-    SR.settings()
-
-    dat = SR.outdata["Raster"]
-
-    for i in dat:
-        plt.figure(dpi=200)
-        plt.imshow(i.data, extent=i.extent)
-        plt.colorbar()
-        plt.title(i.dataid)
-        plt.show()
-
-
-def _testfn3():
-    """Test Function."""
-    import matplotlib.pyplot as plt
-
-    ifile = r"C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-
-    dat = iodefs.get_data(ifile)
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    SR = SatRatios()
-    SR.indata['Raster'] = dat  # single file only
-
-    SR.settings()
-
-    plt.title(dat[2].dataid)
-    plt.imshow(dat[2].data)
-    plt.colorbar()
-    plt.show()
-
-    plt.title(dat[0].dataid)
-    plt.imshow(dat[0].data)
-    plt.colorbar()
-    plt.show()
-
-    plt.title(dat[3].dataid)
-    plt.imshow(dat[3].data)
-    plt.colorbar()
-    plt.show()
-
-    dat2 = SR.outdata['Raster']
-
-    plt.title(dat2[0].dataid)
-    plt.imshow(dat2[0].data, vmin=0, vmax=1)
-    plt.colorbar()
-    plt.show()
-
-
-def _testfn4():
-    """Test routine."""
-    import glob
-    import matplotlib.pyplot as plt
-    from pygmi.raster.dataprep import DataMerge
-
-    ifiles = glob.glob(r"C:\WorkProjects\ratios\*.zip")
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    ifiles = glob.glob(r"C:\WorkProjects\ratios\*.tif")
-
-    dat = []
-    for ifile in ifiles:
-        dat += iodefs.get_data(ifile)
-
-    DM = DataMerge()
-    DM.indata['Raster'] = dat
-    DM.settings()
-
-    dat += DM.outdata['Raster']
-
-    vmin = dat[0].data.mean() - dat[0].data.std()
-    vmax = dat[0].data.mean() + dat[0].data.std()
-
-    for i in dat:
-        plt.title(i.dataid)
-        plt.imshow(i.data, extent=i.extent, vmin=vmin, vmax=vmax)
-        plt.colorbar()
-        plt.show()
 
 
 if __name__ == "__main__":

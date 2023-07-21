@@ -3117,8 +3117,8 @@ def set_export_filename(dat, odir, otype=None):
         List of PyGMI data.
     odir : str
         Output directory.
-    otype : str
-        Output file type.
+    otype : str, optional.
+        Output file type. Default is None.
 
     Returns
     -------

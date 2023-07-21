@@ -488,7 +488,7 @@ class PCA(BasicModule):
         return True
 
 
-def get_noise(x2d, mask, noise=''):
+def get_noise(x2d, mask, noise='', piter=iter):
     """
     Calculate noise dataset from original data.
 
@@ -511,6 +511,9 @@ def get_noise(x2d, mask, noise=''):
 
     """
     mask = ~mask
+
+    pbar = piter([1, 2, 3])
+    next(pbar)
 
     if noise == 'diagonal':
         t1 = x2d[:-1, :-1]
@@ -555,8 +558,11 @@ def get_noise(x2d, mask, noise=''):
         noise = noise[mask2]
         ncov = np.cov(noise.T)/81
 
+    next(pbar)
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
+
+    next(pbar)
 
     # return noise, mask2
     return nevals, nevecs
@@ -607,7 +613,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
     mask = maskall[:, :, 0]
 
     showlog('Calculating noise data...')
-    nevals, nevecs = get_noise(x2d, mask, noisetxt)
+    nevals, nevecs = get_noise(x2d, mask, noisetxt, piter)
 
     showlog('Calculating MNF...')
     Ln = np.power(nevals, -0.5)
