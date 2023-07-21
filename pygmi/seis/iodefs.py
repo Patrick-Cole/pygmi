@@ -310,11 +310,11 @@ class ImportSeisan(BasicModule):
                 self.showlog('Error: Problem with file')
                 self.showlog('Process stopping, please see errors '
                              'in '+self.ifile+'.log')
-            fout = open(self.ifile+'.log', 'w', encoding='utf-8')
-            for i in file_errors:
-                fout.write(i[0]+'\n')
-                fout.write(i[1]+'\n')
-            fout.close()
+            with open(self.ifile+'.log', 'w', encoding='utf-8') as fout:
+                for i in file_errors:
+                    fout.write(i[0]+'\n')
+                    fout.write(i[1]+'\n')
+
             if has_errors is True:
                 return False
         else:
@@ -951,6 +951,8 @@ class ExportSeisan(ContextModule):
                 'Error: You need to have a SEISAN data first!')
             return
 
+        self.parent.process_is_active(True)
+
         data = self.indata['Seis']
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
@@ -958,22 +960,23 @@ class ExportSeisan(ContextModule):
                                                             '.', 'out (*.out)')
 
         if filename == '':
+            self.parent.process_is_active(False)
             return
 
         os.chdir(os.path.dirname(filename))
 
-        self.fobj = open(filename, 'w', encoding='utf-8')
+        with open(filename, 'w', encoding='utf-8') as self.fobj:
+            for i in self.piter(data):
+                self.write_record_type_1(i)
+                self.write_record_type_f(i)  # This is missing  some #3 recs
+                self.write_record_type_m(i)  # This is missing  some #3 recs
+                self.write_record_type_e(i)
+                self.write_record_type_i(i)  # This is missing  some #3 recs
+                self.write_record_type_4(i)
+                self.fobj.write(' \n')
 
-        for i in data:
-            self.write_record_type_1(i)
-            self.write_record_type_f(i)  # This is missing  some #3 recs
-            self.write_record_type_m(i)  # This is missing  some #3 recs
-            self.write_record_type_e(i)
-            self.write_record_type_i(i)  # This is missing  some #3 recs
-            self.write_record_type_4(i)
-            self.fobj.write(' \n')
-
-        self.fobj.close()
+        self.showlog('Export to Seisan Finished!')
+        self.parent.process_is_active(False)
 
     def write_record_type_1(self, data):
         """
@@ -1449,9 +1452,9 @@ class ExportCSV(ContextModule):
 
         """
         if 'Seis' not in self.indata:
-            self.showlog(
-                'Error: You need to have a SEISAN data first!')
+            self.showlog('Error: You need to have a SEISAN data first!')
             return
+        self.parent.process_is_active(True)
 
         data = self.indata['Seis']
 
@@ -1459,10 +1462,9 @@ class ExportCSV(ContextModule):
                                                             'Save File',
                                                             '.', 'csv (*.csv)')
         if filename == '':
+            self.parent.process_is_active(False)
             return
         os.chdir(os.path.dirname(filename))
-
-        self.fobj = open(filename, 'w', encoding='utf-8')
 
         headi = ('last_action_done, date_time_of_last_action, operator, '
                  'status, id, new_id_created, id_locked, ')
@@ -1488,19 +1490,21 @@ class ExportCSV(ContextModule):
                  'angle_of_incidence, azimuth_residual, travel_time_residual, '
                  'weight, epicentral_distance, azimuth_at_source, ')
 
-        self.fobj.write(headi+head1+heade+head4+'\n')
+        with open(filename, 'w', encoding='utf-8') as self.fobj:
+            self.fobj.write(headi+head1+heade+head4+'\n')
 
-        for i in data:
-            reci = self.write_record_type_i(i)
-            rec1 = self.write_record_type_1(i)
-            rece = self.write_record_type_e(i)
-            rec4 = self.write_record_type_4(i)
-            for j in rec4:
-                jtmp = reci+rec1+rece+j+'\n'
-                jtmp = jtmp.replace('nan', '')
-                self.fobj.write(jtmp)
+            for i in self.piter(data):
+                reci = self.write_record_type_i(i)
+                rec1 = self.write_record_type_1(i)
+                rece = self.write_record_type_e(i)
+                rec4 = self.write_record_type_4(i)
+                for j in rec4:
+                    jtmp = reci+rec1+rece+j+'\n'
+                    jtmp = jtmp.replace('nan', '')
+                    self.fobj.write(jtmp)
 
-        self.fobj.close()
+        self.showlog('Export to csv Finished!')
+        self.parent.process_is_active(False)
 
     def write_record_type_1(self, data):
         """
@@ -1991,6 +1995,7 @@ class ExportSummary(ContextModule):
         if 'Seis' not in self.indata:
             self.showlog('Error: You need to have a SEISAN data first!')
             return
+        self.parent.process_is_active(True)
 
         data = self.indata['Seis']
 
@@ -2002,13 +2007,14 @@ class ExportSummary(ContextModule):
                                                                'Save File',
                                                                '.', ext)
         if filename == '':
+            self.parent.process_is_active(False)
             return
         os.chdir(os.path.dirname(filename))
 
         head = ["Year", "Month", "Day", "Hour", "Minute", "Second",
                 "Latitude", "Longitude", "Depth", "Ml", "Mw", "Md", "Mb",
                 "Ms", "RMS", "LatitudeError",
-                "LongitudeError", "DepthError", "Mo", "SourceRaduis",
+                "LongitudeError", "DepthError", "Mo", "SourceRadius",
                 "StressDrop", "F0", "StdDeviation", "Mercalli",
                 "Agency", "Description"]
 
@@ -2021,7 +2027,7 @@ class ExportSummary(ContextModule):
         mtype['C'] = 'Md'
         mtype['W'] = 'Mw'
 
-        for i, idat in enumerate(data):
+        for i, idat in enumerate(self.piter(data)):
             ML = None
             if '1' in idat:
                 dat = idat['1']
@@ -2073,6 +2079,9 @@ class ExportSummary(ContextModule):
             gdf = gpd.GeoDataFrame(df, geometry=geom)
             gdf = gdf.set_crs("EPSG:4326")
             gdf.to_file(filename)
+
+        self.showlog('Export Summary Finished!')
+        self.parent.process_is_active(False)
 
 
 def mercalli(mag):
@@ -2338,7 +2347,7 @@ class FilterSeisan(BasicModule):
                             datd[newkey].append(tmp[j])
 
         slist = []
-        for event in datd.keys():
+        for event in datd:
             datd[event] = [min(datd[event]), max(datd[event])]
             if isinstance(datd[event][0], str):
                 slist.append(event)

@@ -40,8 +40,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
-import contextily as ctx
-import pyproj
+# import contextily as ctx
+# import pyproj
 
 from pygmi.misc import ContextModule
 
@@ -60,7 +60,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
 
-        fig = Figure()
+        fig = Figure(layout='constrained')
         self.axes = fig.add_subplot(111)
 
         self.ellipses = []
@@ -157,15 +157,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
 
+        # try:
+        #     ctx.add_basemap(self.axes, crs=pyproj.CRS.from_epsg(4326),
+        #                     source=ctx.providers.OpenStreetMap.Mapnik)
+        # except:
+        #     print('No internet')
 
-        try:
-            ctx.add_basemap(self.axes, crs=pyproj.CRS.from_epsg(4326),
-                            source=ctx.providers.OpenStreetMap.Mapnik)
-        except:
-            print('No internet')
-
-
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2, xlbl='Time', ylbl='ML',
@@ -237,7 +234,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         cbar = self.figure.colorbar(hbin[3])
         cbar.set_label('Number of Events')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hist(self, data1, xlbl='Data Value',
@@ -288,7 +284,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for tick in self.axes.get_xticklabels():
             tick.set_rotation(90)
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_bvalue(self, data1a, bins='doane'):
@@ -362,7 +357,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.legend()
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_pres(self, data1, phase='P'):
@@ -410,7 +404,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel('Time Residual (seconds)')
         self.axes.set_ylabel('Frequency (%)')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_residual(self, dat, res='ML'):
@@ -491,7 +484,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             self.axes.set_ylabel('ML-mean(ML)')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_wadati(self, dat, min_wad=5, min_vps=1.53,
@@ -576,7 +568,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel('P Time (seconds)')
         self.axes.set_ylabel('S-P Time (seconds)')
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -777,7 +768,6 @@ class PlotQC(GraphWindow):
             True if successful, False otherwise.
 
         """
-
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -907,60 +897,12 @@ def _testfn():
 
     data = tmp.outdata['Seis']
 
-    dat = import_for_plots(data)
+    # dat = import_for_plots(data)
 
     tmp = PlotQC()
     tmp.indata['Seis'] = data
     tmp.run()
     tmp.exec_()
-
-
-def _testfn2():
-    """Test for wave files."""
-    import sys
-    import matplotlib.pyplot as plt
-    from pygmi.seis.iodefs import ImportSeisan
-
-    ifile = r'D:\Workdata\seismology\april2021\collect.out'
-
-    app = QtWidgets.QApplication(sys.argv)
-    tmp = ImportSeisan()
-    tmp.ifile = ifile
-    tmp.settings(True)
-
-    data = tmp.outdata['Seis']
-
-    ifile = r'D:\Workdata\seismology\april2021\mulplt.wav'
-
-    with open(ifile, encoding='utf-8') as pntfile:
-        ltmp = pntfile.read()
-
-    ltmp = ltmp.split('\n')
-
-    l1 = ltmp.pop(0)
-    l2 = ltmp.pop(0)
-
-    while len(ltmp) > 2:
-        h1 = ltmp.pop(0)
-        h2 = ltmp.pop(0).split()
-
-        samples = int(h2[0])
-        rate = float(h2[1])
-        comp = h2[5]
-        year = h2[6]
-        month = h2[7]
-        day = h2[8]
-
-        lines = samples // 7 + 1
-        y = ''.join(ltmp[:lines]).split()
-        y = np.array(y, dtype=float)
-        x = np.arange(0, samples*rate, rate)
-
-        ltmp = ltmp[lines:]
-
-        plt.title(comp)
-        plt.plot(x, y)
-        plt.show()
 
 
 if __name__ == "__main__":
