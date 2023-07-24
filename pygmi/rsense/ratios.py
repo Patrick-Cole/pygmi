@@ -33,7 +33,6 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 
 from pygmi import menu_default
-from pygmi.rsense import iodefs
 from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
@@ -991,7 +990,7 @@ def correct_bands(rlist, sensor, bfile=None):
                       'B3A': 'B3',
                       'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
                       'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
-                      'B13': 'B13', 'B14': 'B14', 'B3A': 'B3'}
+                      'B13': 'B13', 'B14': 'B14'}
     sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
                                       'B3': 'B5', 'B4': 'B6', 'B5': 'B7',
                                       'B3A': 'B5'}

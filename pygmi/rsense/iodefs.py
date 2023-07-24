@@ -1351,7 +1351,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         output type of file, regular or RGB ternary (with possible sunshading)
     sunfile : str
         either a filename of an external file to be used for sunshading, or an
-        existing bandname. the default is None.
+        existing band name. the default is None.
     cell : float
         Between 1 and 100 - controls sunshade detail. The default is 25.
     alpha : float
@@ -2986,9 +2986,9 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     sunfile : str, optional
         Sunshading band or filename. The default is None.
     clippercl : float, optional
-        Lower clip percenage for colour bar. The default is 1.
+        Lower clip percentage for colour bar. The default is 1.
     clippercu : float, optional
-        Upper clip percenage for colour bar. The default is 1.
+        Upper clip percentage for colour bar. The default is 1.
     cell : float, optional
         Between 1 and 100 - controls sunshade detail. The default is 25.
     alpha : float, optional
