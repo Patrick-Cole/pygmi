@@ -9,7 +9,7 @@ authors = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 maintainers = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 description = 'Python Geoscience Modelling and Interpretation'
 readme = 'README.rst'
-requires-python = '>=3.8'
+requires-python = '>=3.9'
 license = {text = 'GNU General Public License v3 (GPLv3)'}
 keywords=['Geoscience', 'Geophysics', 'Magnetic', 'Gravity', 'Modelling',
           'Interpretation', 'Remote Sensing']
@@ -39,13 +39,15 @@ dependencies = ['contextily',
                 'llvmlite',
                 'matplotlib',
                 'mtpy',
+                'natsort',
                 'numba',
                 'numexpr',
                 'numpy',
-                'natsort',
+                'openpyxl',
                 'pandas',
                 'pillow',
                 'psutil',
+                'pyogrio',
                 'pyopengl',
                 'pyproj',
                 'PyQt5',
@@ -55,7 +57,8 @@ dependencies = ['contextily',
                 'scikit-learn',
                 'scipy',
                 'shapely',
-                'SimPEG']
+                'SimPEG',
+                'utm']
 
 [project.urls]
 homepage = 'http://patrick-cole.github.io/pygmi/'
