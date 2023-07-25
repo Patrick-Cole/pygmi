@@ -1,18 +1,14 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Vector Analysis: Context Menu &#8212; PyGMI 3.2.6.0 documentation</title>
+    <title>Vector Analysis: Context Menu &#8212; PyGMI 3.2.7.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -88,35 +84,37 @@
             
   <section id="vector-analysis-context-menu">
 <h1>Vector Analysis: Context Menu<a class="headerlink" href="#vector-analysis-context-menu" title="Permalink to this heading">¶</a></h1>
-<p>The vector context menus are available for modules which have vector output
-data. Output data is only available on green modules. To access the context
-menu, simply right-click a green module.</p>
-<section id="export-line-data">
-<h2>Export Line Data<a class="headerlink" href="#export-line-data" title="Permalink to this heading">¶</a></h2>
-<p>This module allows for the export of point or line data.</p>
+<p>The vector context menus are available for modules which have vector output data. Output data is only available on green modules. To access the context menu, simply right-click a green module.</p>
+<section id="display-edit-vector-metadata">
+<h2>Display/Edit Vector Metadata<a class="headerlink" href="#display-edit-vector-metadata" title="Permalink to this heading">¶</a></h2>
+<p>Here, the map projection associated with the vector file can be either defined or changed.</p>
 </section>
-<section id="show-line-data-profile">
-<h2>Show Line Data Profile<a class="headerlink" href="#show-line-data-profile" title="Permalink to this heading">¶</a></h2>
-<p>This module displays line data in profile form. The line and column can be chosen for display</p>
+<section id="export-xyz-data">
+<h2>Export XYZ Data<a class="headerlink" href="#export-xyz-data" title="Permalink to this heading">¶</a></h2>
+<p>This module allows for the export of XYZ data to either csv of Excel format.</p>
+</section>
+<section id="export-vector-data">
+<h2>Export Vector Data<a class="headerlink" href="#export-vector-data" title="Permalink to this heading">¶</a></h2>
+<p>This module allows for the export of vector data to either shapefile, GeoJSON or GeoPackage format. format.</p>
+</section>
+<section id="show-profile-data">
+<h2>Show Profile Data<a class="headerlink" href="#show-profile-data" title="Permalink to this heading">¶</a></h2>
+<p>This module displays line data or vector point data in profile form. The line and column can be chosen for display.</p>
 <img alt="_images/vectorlinedataprof.png" src="_images/vectorlinedataprof.png" />
 </section>
-<section id="show-line-data-map">
-<h2>Show Line Data Map<a class="headerlink" href="#show-line-data-map" title="Permalink to this heading">¶</a></h2>
+<section id="show-profiles-on-a-map">
+<h2>Show Profiles on a Map<a class="headerlink" href="#show-profiles-on-a-map" title="Permalink to this heading">¶</a></h2>
 <p>This module displays line data in in map form. The line data is displayed in black, superimposed over the x,y location of the data (gray line). The scale parameter changes the anomaly scale.</p>
 <img alt="_images/vectorlinedatamap.png" src="_images/vectorlinedatamap.png" />
 </section>
-<section id="show-point-data-map">
-<h2>Show Point Data Map<a class="headerlink" href="#show-point-data-map" title="Permalink to this heading">¶</a></h2>
+<section id="show-vector-data">
+<h2>Show Vector Data<a class="headerlink" href="#show-vector-data" title="Permalink to this heading">¶</a></h2>
 <p>This is a simple map showing points with their values in colours.</p>
 <img alt="_images/vectorpointmap.png" src="_images/vectorpointmap.png" />
 </section>
-<section id="show-vector-data">
-<h2>Show Vector Data<a class="headerlink" href="#show-vector-data" title="Permalink to this heading">¶</a></h2>
-<p>This is a simple viewer for vector data.</p>
-</section>
 <section id="show-rose-diagrams">
 <h2>Show Rose Diagrams<a class="headerlink" href="#show-rose-diagrams" title="Permalink to this heading">¶</a></h2>
-<p>This module calculates and displays rose diagrams. It needs as input shapefile data which has been imported into PyGMI. The user can specify how features are defined, either one angle per feature defined by the start and end point of the feature, or an angle per segment in the feature. The number of angles in the rose diagram can be set as well. A map of the features colour coded is also displayed. Equal area rose diagrams can also be produced.</p>
+<p>This module calculates and displays rose diagrams. It needs as input vector data with line features (as opposed to point or polygon) which has been imported into PyGMI. The user can specify how features are defined, either one angle per feature defined by the start and end point of the feature, or an angle per segment in the feature. The number of angles in the rose diagram can be set as well. A map of the features colour coded is also displayed. Equal area rose diagrams can also be produced.</p>
 <img alt="_images/vectorrose.png" src="_images/vectorrose.png" />
 </section>
 </section>
@@ -230,11 +228,11 @@ menu, simply right-click a green module.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2022 Council for Geoscience.
+      &copy;2023 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/vector.cm.rst.txt"

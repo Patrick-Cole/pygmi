@@ -1,24 +1,20 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3.2.6.0 documentation</title>
+    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3.2.7.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="rsense.ref.html" />
-    <link rel="prev" title="Remote Sensing" href="rsense.html" />
+    <link rel="prev" title="Remote Sensing: Context Menu" href="rsense.cm.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -73,7 +69,7 @@
     <ul>
         <li>
           &larr;
-          <a href="rsense.html" title="Previous document">Remote Sensing</a>
+          <a href="rsense.cm.html" title="Previous document">Remote Sensing: Context Menu</a>
         </li>
         <li>
           <a href="rsense.ref.html" title="Next document">References</a>
@@ -88,27 +84,22 @@
             
   <section id="remote-sensing-description-of-modules">
 <h1>Remote Sensing: Description of Modules<a class="headerlink" href="#remote-sensing-description-of-modules" title="Permalink to this heading">¶</a></h1>
-<section id="import-data">
-<h2>Import Data<a class="headerlink" href="#import-data" title="Permalink to this heading">¶</a></h2>
-<p>This is a menu with submenus enabling the importing of remote sensing data</p>
-<section id="import-aster">
-<h3>Import ASTER<a class="headerlink" href="#import-aster" title="Permalink to this heading">¶</a></h3>
-<p>ASTER data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.</p>
-</section>
-<section id="import-landsat-4-to-landsat-9">
-<h3>Import Landsat 4 to Landsat 9<a class="headerlink" href="#import-landsat-4-to-landsat-9" title="Permalink to this heading">¶</a></h3>
-<p>Landsat data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.</p>
-</section>
-<section id="import-sentinel-2">
-<h3>Import Sentinel 2<a class="headerlink" href="#import-sentinel-2" title="Permalink to this heading">¶</a></h3>
-<p>Sentinel 2 data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).</p>
-</section>
-<section id="import-sentinel-2-bands-only">
-<h3>Import Sentinel 2 (Bands Only)<a class="headerlink" href="#import-sentinel-2-bands-only" title="Permalink to this heading">¶</a></h3>
-<p>Sentinel 2 data can be imported here. Note this is a convenience function which excludes the QAQC bands.</p>
+<section id="import-satellite-data">
+<h2>Import Satellite Data<a class="headerlink" href="#import-satellite-data" title="Permalink to this heading">¶</a></h2>
+<p>Satellite data can be imported here. Once the file is selected, the user can select which band to import. In addition, a conversion from UTM to SUTM is available.</p>
+<p>This imports include:</p>
+<ul class="simple">
+<li><p>ASTER data; note that this is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.</p></li>
+<li><p>Landsat data; note that this is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.</p></li>
+<li><p>Sentinel 2 data; note that this is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).</p></li>
+<li><p>MODIS data.</p></li>
+<li><p>Hyperion L1T data.</p></li>
+<li><p>WorldView Tile data; the tiles will be merged into a single dataset.</p></li>
+<li><p>ASTER Global Emissivity data.</p></li>
+</ul>
 </section>
 <section id="import-sentinel-5-p">
-<h3>Import Sentinel 5-P<a class="headerlink" href="#import-sentinel-5-p" title="Permalink to this heading">¶</a></h3>
+<h2>Import Sentinel 5-P<a class="headerlink" href="#import-sentinel-5-p" title="Permalink to this heading">¶</a></h2>
 <p>Sentinel 5-P data is imported here, but unlike other imports, this converts data to a vector data format, from where it can be exported to a shapefile using the context menu. It accepts .nc data. This import also allows the user to cut the data according to a bounding box. The options are:</p>
 <ul class="simple">
 <li><p>Product - Relevant product contained in the .nc file</p></li>
@@ -119,30 +110,13 @@
 </ul>
 <img alt="_images/rsenseimp5p.png" src="_images/rsenseimp5p.png" />
 </section>
-<section id="import-modis-v6">
-<h3>Import MODIS v6<a class="headerlink" href="#import-modis-v6" title="Permalink to this heading">¶</a></h3>
-<p>MODIS data can be imported here.</p>
-</section>
-<section id="import-hyperion-l1t">
-<h3>Import Hyperion L1T<a class="headerlink" href="#import-hyperion-l1t" title="Permalink to this heading">¶</a></h3>
-<p>Hyperion data can be imported here.</p>
-</section>
-<section id="import-worldview-tiles">
-<h3>Import WorldView Tiles<a class="headerlink" href="#import-worldview-tiles" title="Permalink to this heading">¶</a></h3>
-<p>WorldView Tile data can be imported here. The tiles will be merged into a single dataset.</p>
-</section>
-<section id="import-aster-global-emissivity-database">
-<h3>Import ASTER Global Emissivity Database<a class="headerlink" href="#import-aster-global-emissivity-database" title="Permalink to this heading">¶</a></h3>
-<p>ASTER emissivity data can be imported here.</p>
-</section>
 <section id="create-batch-list">
-<h3>Create Batch List<a class="headerlink" href="#create-batch-list" title="Permalink to this heading">¶</a></h3>
-<p>This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a file list within PyGMI. The user must select a directory as input.</p>
-</section>
+<h2>Create Batch List<a class="headerlink" href="#create-batch-list" title="Permalink to this heading">¶</a></h2>
+<p>This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it only imports metadata, and not band data.  The user must select a directory as input. The options are similar to the regular satellite data import.</p>
 </section>
 <section id="calculate-band-ratios">
 <h2>Calculate Band Ratios<a class="headerlink" href="#calculate-band-ratios" title="Permalink to this heading">¶</a></h2>
-<p>This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to current directory in GeoTIFF format with the suffix <strong>_ratio.tif</strong></p>
+<p>This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to new subdirectory names ‘ratio’.</p>
 <p>Options:</p>
 <ul class="simple">
 <li><p>Sensor - satellite sensor to base ratios on.</p></li>
@@ -225,38 +199,6 @@
 <img alt="_images/rsensefproc.png" src="_images/rsensefproc.png" />
 </section>
 </section>
-<section id="change-detection">
-<h2>Change Detection<a class="headerlink" href="#change-detection" title="Permalink to this heading">¶</a></h2>
-<p>The change detection menu allows a user to create a list of scenes for comparison, and then view the scenes sequentially in a viewer.</p>
-<section id="create-scene-list">
-<h3>Create Scene List<a class="headerlink" href="#create-scene-list" title="Permalink to this heading">¶</a></h3>
-<p>This allows the user to create a list of scenes for comparison. Currently GeoTIFF is supported. The inputs are as follows:</p>
-<ul class="simple">
-<li><p>Load Shapefile - This is a boundary to define an area of interest within the scenes. Only scenes which contain boundary will be selected.</p></li>
-<li><p>Set Scene Directory - The directory which contains all the scenes for comparison.</p></li>
-<li><p>Recursive file search - searches sub directories for additional scenes.</p></li>
-</ul>
-<p>The module automatically requests an excel filename for outputting the scene list. This also enables the user to make manual changes to the list.</p>
-<img alt="_images/rsensecreatescenelist.png" src="_images/rsensecreatescenelist.png" />
-</section>
-<section id="load-scene-list">
-<h3>Load Scene List<a class="headerlink" href="#load-scene-list" title="Permalink to this heading">¶</a></h3>
-<p>Loads an excel file creates in <strong>Create Scene List</strong>.</p>
-</section>
-<section id="view-change-data">
-<h3>View Change Data<a class="headerlink" href="#view-change-data" title="Permalink to this heading">¶</a></h3>
-<p>This is the viewer for the change data. It allows scenes to be displayed with a variety of options:</p>
-<ul class="simple">
-<li><p>Horizontal scroll bar - this bar is used to quickly change between scenes</p></li>
-<li><p>Only display scenes flagged for use</p></li>
-<li><p>Use scene - checkbox to select whether a scene should be used.</p></li>
-<li><p>Band manipulation - the data can be displayed as either RGB, NDVI or NDWI (Green/NIR version, McFeeters 1996)</p></li>
-<li><p>Next scene</p></li>
-<li><p>Update scene list file - used to update or save to a new scene list file. Scenes flagged for use are captured in this file.</p></li>
-</ul>
-<img alt="_images/rsenseviewchange.png" src="_images/rsenseviewchange.png" />
-</section>
-</section>
 </section>
 
 
@@ -267,7 +209,7 @@
     <ul>
         <li>
           &larr;
-          <a href="rsense.html" title="Previous document">Remote Sensing</a>
+          <a href="rsense.cm.html" title="Previous document">Remote Sensing: Context Menu</a>
         </li>
         <li>
           <a href="rsense.ref.html" title="Next document">References</a>
@@ -338,7 +280,7 @@
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="wiki.html">PyGMI Wiki</a><ul>
   <li><a href="rsense.html">Remote Sensing</a><ul>
-      <li>Previous: <a href="rsense.html" title="previous chapter">Remote Sensing</a></li>
+      <li>Previous: <a href="rsense.cm.html" title="previous chapter">Remote Sensing: Context Menu</a></li>
       <li>Next: <a href="rsense.ref.html" title="next chapter">References</a></li>
   </ul></li>
   </ul></li>
@@ -368,11 +310,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2022 Council for Geoscience.
+      &copy;2023 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/rsense.dm.rst.txt"

@@ -1,6 +1,8 @@
 References
 ----------
- Cooper, G. R. J., & Cowan, D. R. (2006). Enhancing potential field data using filters based on the local phase. Computers & Geosciences, 32(10), 1585–1591. https://doi.org/10.1016/j.cageo.2006.02.016
+ Cooper, G.R.J., & Cowan, D.R. (2006). Enhancing potential field data using filters based on the local phase. Computers & Geosciences, 32(10), 1585–1591. https://doi.org/10.1016/j.cageo.2006.02.016
+ 
+ Ferreira, F., Souza, J., Bongiolo, A., Castro, L. (2013). Enhancement of the total horizontal gradient of magnetic anomalies using the tilt angle. GEOPHYSICS. 78. J33-J41. 10.1190/geo2011-0441.1.
  
  IGRF Code (Accessed 28 March, 2014, http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html), originally written in FORTRAN, was developed using subroutines written by A. Zunde (USGS), S.R.C. Malin & D.R. Barraclough (Institute of Geological Sciences, United Kingdom). Translated into C by Craig H. Shaffer. Rewritten by David Owens and maintained by: Stefan Maus (NOAA)
  

@@ -68,6 +68,14 @@ pygmi.pfmod.pfmod module
    :undoc-members:
    :show-inheritance:
 
+pygmi.pfmod.show\_table module
+------------------------------
+
+.. automodule:: pygmi.pfmod.show_table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.pfmod.tab\_mext module
 ----------------------------
 

@@ -1,25 +1,26 @@
 Vector Analysis: Description of Modules
 =======================================
 
-Import Shapefile Data
+Import Vector Data
 ---------------------
-This module imports ESRI shapefiles. Shapefiles are also referred to as vector data within PyGMI.
+This module imports ESRI shapefiles (.shp), zipped shapefiles (.shp.zip) or GeoPackages (.gpkg). These formats are also referred to as vector data within PyGMI.
 
-Import Point or Line Data
+Import XYZ Data
 -------------------------
-This module imports point data from a text file, for example a csv file. The user must choose the x and y columns.
+This module imports xyz/point data from a file, for example a csv or Excel file. The user must choose the x and y columns.
 
 Options:
 
 * X Channel - This is the column which contains x-coordinates.
 * Y Channel - This is the column which contains y-coordinates.
 * Null value - This is the null or nodata value in the data.
+* Input Projection - The datum and projection is specified here. This is especially important if the user intends to export the data to a vector (GIS) format.
 
 .. image:: _images/vectorimport.png
 
 Cut Points using Polygon
 ------------------------
-This tool provides a quick way to cut out data, using a shape file as the boundary for the cut. You will need to prepare the shape file in another package first.
+This tool provides a quick way to cut out data, using a vector file as the boundary for the cut. You will need to prepare the vector file in another package first.
 
 Reproject Vector Data
 ---------------------

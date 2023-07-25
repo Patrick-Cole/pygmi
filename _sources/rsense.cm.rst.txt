@@ -1,0 +1,20 @@
+Remote Sensing: Context Menu
+============================
+
+The remote sensing context menus are currently available for modules which have raster file list output data. Output data is only available on green modules. To access the context menu, simply right-click a green module.
+
+Export Raster File List
+-----------------------
+Raster Batch Lists can be exported to other formats, and to a ternary if desired.
+
+Options:
+
+* Output Directory - location for output files.
+* Output format - file format to export data to.
+* Ternary Export - checkbox if only three band are to be exported.
+* Red Band - used in ternary export.
+* Green Band - used in ternary export.
+* Blue Band - used in ternary export.
+* Sunshade Band - the band used for the sunshading layer. This can be an external dataset.
+* Sunshade Level - used to set the severity of sun shading.
+

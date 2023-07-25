@@ -1,28 +1,22 @@
 Remote Sensing: Description of Modules
 ======================================
 
-Import Data
------------
-This is a menu with submenus enabling the importing of remote sensing data
+Import Satellite Data
+---------------------
+Satellite data can be imported here. Once the file is selected, the user can select which band to import. In addition, a conversion from UTM to SUTM is available.
 
-Import ASTER
-^^^^^^^^^^^^
-ASTER data can be imported here. Note that it is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.
+This imports include:
 
-Import Landsat 4 to Landsat 9
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Landsat data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.
-
-Import Sentinel 2
-^^^^^^^^^^^^^^^^^
-Sentinel 2 data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).
-
-Import Sentinel 2 (Bands Only)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Sentinel 2 data can be imported here. Note this is a convenience function which excludes the QAQC bands.
+* ASTER data; note that this is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.
+* Landsat data; note that this is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.
+* Sentinel 2 data; note that this is the data as obtained from https://earthexplorer.usgs.gov. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).
+* MODIS data.
+* Hyperion L1T data.
+* WorldView Tile data; the tiles will be merged into a single dataset.
+* ASTER Global Emissivity data.
 
 Import Sentinel 5-P
-^^^^^^^^^^^^^^^^^^^
+-------------------
 Sentinel 5-P data is imported here, but unlike other imports, this converts data to a vector data format, from where it can be exported to a shapefile using the context menu. It accepts .nc data. This import also allows the user to cut the data according to a bounding box. The options are:
 
 * Product - Relevant product contained in the .nc file
@@ -33,29 +27,13 @@ Sentinel 5-P data is imported here, but unlike other imports, this converts data
 
 .. image:: _images/rsenseimp5p.png
 
-Import MODIS v6
-^^^^^^^^^^^^^^^
-MODIS data can be imported here.
-
-Import Hyperion L1T
-^^^^^^^^^^^^^^^^^^^
-Hyperion data can be imported here.
-
-Import WorldView Tiles
-^^^^^^^^^^^^^^^^^^^^^^
-WorldView Tile data can be imported here. The tiles will be merged into a single dataset.
-
-Import ASTER Global Emissivity Database
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ASTER emissivity data can be imported here.
-
 Create Batch List
-^^^^^^^^^^^^^^^^^
-This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a file list within PyGMI. The user must select a directory as input.
+-----------------
+This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it only imports metadata, and not band data.  The user must select a directory as input. The options are similar to the regular satellite data import.
 
 Calculate Band Ratios
 ---------------------
-This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to current directory in GeoTIFF format with the suffix **_ratio.tif**
+This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to new subdirectory names 'ratio'.
 
 Options:
 
@@ -146,37 +124,3 @@ Options are:
 * Details - including feature name, filter, threshold and description. The user is able to alter the respective dataset threshold.
 
 .. image:: _images/rsensefproc.png
-
-Change Detection
-----------------
-The change detection menu allows a user to create a list of scenes for comparison, and then view the scenes sequentially in a viewer.
-
-Create Scene List
-^^^^^^^^^^^^^^^^^
-This allows the user to create a list of scenes for comparison. Currently GeoTIFF is supported. The inputs are as follows:
-
-* Load Shapefile - This is a boundary to define an area of interest within the scenes. Only scenes which contain boundary will be selected.
-* Set Scene Directory - The directory which contains all the scenes for comparison.
-* Recursive file search - searches sub directories for additional scenes.
-
-The module automatically requests an excel filename for outputting the scene list. This also enables the user to make manual changes to the list.
-
-.. image:: _images/rsensecreatescenelist.png
-
-Load Scene List
-^^^^^^^^^^^^^^^
-Loads an excel file creates in **Create Scene List**.
-
-View Change Data
-^^^^^^^^^^^^^^^^
-This is the viewer for the change data. It allows scenes to be displayed with a variety of options:
-
-* Horizontal scroll bar - this bar is used to quickly change between scenes
-* Only display scenes flagged for use
-* Use scene - checkbox to select whether a scene should be used.
-* Band manipulation - the data can be displayed as either RGB, NDVI or NDWI (Green/NIR version, McFeeters 1996)
-* Next scene
-* Update scene list file - used to update or save to a new scene list file. Scenes flagged for use are captured in this file.
-
-.. image:: _images/rsenseviewchange.png
-

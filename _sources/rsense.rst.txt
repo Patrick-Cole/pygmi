@@ -11,6 +11,7 @@ Subpackages
 
 .. toctree::
 
+    rsense.cm
     rsense.dm
     rsense.ref
 

@@ -1,38 +1,41 @@
 Vector Analysis: Context Menu
 =============================
 
-The vector context menus are available for modules which have vector output
-data. Output data is only available on green modules. To access the context
-menu, simply right-click a green module.
+The vector context menus are available for modules which have vector output data. Output data is only available on green modules. To access the context menu, simply right-click a green module.
 
-Export Line Data
+Display/Edit Vector Metadata
+----------------------------
+Here, the map projection associated with the vector file can be either defined or changed.
+
+Export XYZ Data
+---------------
+This module allows for the export of XYZ data to either csv of Excel format.
+
+Export Vector Data
+------------------
+This module allows for the export of vector data to either shapefile, GeoJSON or GeoPackage format. format.
+
+Show Profile Data
 -----------------
-This module allows for the export of point or line data.
-
-Show Line Data Profile
-----------------------
-This module displays line data in profile form. The line and column can be chosen for display
+This module displays line data or vector point data in profile form. The line and column can be chosen for display.
 
 .. image:: _images/vectorlinedataprof.png
 
-Show Line Data Map
+Show Profiles on a Map
 ----------------------
 This module displays line data in in map form. The line data is displayed in black, superimposed over the x,y location of the data (gray line). The scale parameter changes the anomaly scale.
 
 .. image:: _images/vectorlinedatamap.png
 
-Show Point Data Map
--------------------
+Show Vector Data
+----------------
 This is a simple map showing points with their values in colours.
 
 .. image:: _images/vectorpointmap.png
 
-Show Vector Data
-----------------
-This is a simple viewer for vector data.
 
 Show Rose Diagrams
 ------------------
-This module calculates and displays rose diagrams. It needs as input shapefile data which has been imported into PyGMI. The user can specify how features are defined, either one angle per feature defined by the start and end point of the feature, or an angle per segment in the feature. The number of angles in the rose diagram can be set as well. A map of the features colour coded is also displayed. Equal area rose diagrams can also be produced.
+This module calculates and displays rose diagrams. It needs as input vector data with line features (as opposed to point or polygon) which has been imported into PyGMI. The user can specify how features are defined, either one angle per feature defined by the start and end point of the feature, or an angle per segment in the feature. The number of angles in the rose diagram can be set as well. A map of the features colour coded is also displayed. Equal area rose diagrams can also be produced.
 
 .. image:: _images/vectorrose.png

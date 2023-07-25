@@ -1,23 +1,19 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Remote Sensing &#8212; PyGMI 3.2.6.0 documentation</title>
+    <title>Remote Sensing &#8212; PyGMI 3.2.7.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Remote Sensing: Description of Modules" href="rsense.dm.html" />
+    <link rel="next" title="Remote Sensing: Context Menu" href="rsense.cm.html" />
     <link rel="prev" title="References" href="pfmod.ref.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -76,7 +72,7 @@
           <a href="pfmod.ref.html" title="Previous document">References</a>
         </li>
         <li>
-          <a href="rsense.dm.html" title="Next document">Remote Sensing: Description of Modules</a>
+          <a href="rsense.cm.html" title="Next document">Remote Sensing: Context Menu</a>
           &rarr;
         </li>
     </ul>
@@ -96,20 +92,14 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="rsense.dm.html">Remote Sensing: Description of Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#import-data">Import Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-aster">Import ASTER</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-landsat-4-to-landsat-9">Import Landsat 4 to Landsat 9</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-sentinel-2">Import Sentinel 2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-sentinel-2-bands-only">Import Sentinel 2 (Bands Only)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-sentinel-5-p">Import Sentinel 5-P</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-modis-v6">Import MODIS v6</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-hyperion-l1t">Import Hyperion L1T</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-worldview-tiles">Import WorldView Tiles</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#import-aster-global-emissivity-database">Import ASTER Global Emissivity Database</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#create-batch-list">Create Batch List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rsense.cm.html">Remote Sensing: Context Menu</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rsense.cm.html#export-raster-file-list">Export Raster File List</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="rsense.dm.html">Remote Sensing: Description of Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#import-satellite-data">Import Satellite Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#import-sentinel-5-p">Import Sentinel 5-P</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#create-batch-list">Create Batch List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#calculate-band-ratios">Calculate Band Ratios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#calculate-condition-indices">Calculate Condition Indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#landsat-temporal-composite">Landsat Temporal Composite</a></li>
@@ -118,12 +108,6 @@
 <li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#hyperspectral-imaging">Hyperspectral Imaging</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#analyse-spectra">Analyse Spectra</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#process-features">Process Features</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="rsense.dm.html#change-detection">Change Detection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#create-scene-list">Create Scene List</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#load-scene-list">Load Scene List</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rsense.dm.html#view-change-data">View Change Data</a></li>
 </ul>
 </li>
 </ul>
@@ -145,7 +129,7 @@
           <a href="pfmod.ref.html" title="Previous document">References</a>
         </li>
         <li>
-          <a href="rsense.dm.html" title="Next document">Remote Sensing: Description of Modules</a>
+          <a href="rsense.cm.html" title="Next document">Remote Sensing: Context Menu</a>
           &rarr;
         </li>
     </ul>
@@ -213,7 +197,7 @@
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="wiki.html">PyGMI Wiki</a><ul>
       <li>Previous: <a href="pfmod.ref.html" title="previous chapter">References</a></li>
-      <li>Next: <a href="rsense.dm.html" title="next chapter">Remote Sensing: Description of Modules</a></li>
+      <li>Next: <a href="rsense.cm.html" title="next chapter">Remote Sensing: Context Menu</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -241,11 +225,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2022 Council for Geoscience.
+      &copy;2023 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/rsense.rst.txt"
