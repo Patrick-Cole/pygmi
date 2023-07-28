@@ -794,7 +794,8 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             dat[-1].dataid = bandid
             dat[-1].nodata = nval
             dat[-1].filename = filename
-            dat[-1].datetime = rdate
+            if rdate is not None:
+                dat[-1].datetime = rdate
 
             if driver == 'netCDF' and dataset.crs is None:
                 if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:

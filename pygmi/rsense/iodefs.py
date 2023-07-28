@@ -1602,6 +1602,8 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
         meta = dataset.tags()
         bandid = dataset.descriptions[0]
         nval = dataset.nodata
+        datetxt = meta['RANGEBEGINNINGDATE']
+        date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
 
         if bandid is None and ':' in ifile2:
             bandid = ifile2[ifile2.rindex(':')+1:]
@@ -1650,6 +1652,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
         dat[-1].filename = ifile
         dat[-1].units = dataset.units[0]
         dat[-1].metadata['Raster']['Sensor'] = 'MODIS'
+        dat[-1].datetime = date
 
         dataset.close()
 
@@ -1746,6 +1749,14 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
                 'Trying regular import')
         return None
 
+    with open(ifile, encoding='utf-8') as inp:
+        headtxt = inp.readlines()
+
+    for i in headtxt:
+        if 'DATE_ACQUIRED' in i:
+            datetxt = i.split('=')[1][:-1].strip()
+            date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
+
     files = glob.glob(ifile[:-7]+'*.tif')
 
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
@@ -1819,6 +1830,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         dat[-1].nodata = nval
         dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifilet
+        dat[-1].datetime = date
 
         bmeta = dat[-1].metadata['Raster']
 
@@ -1878,6 +1890,9 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
 
     platform = dtree['isd']['TIL']['BANDID']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
+    datetxt = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
+    date = datetime.datetime.fromisoformat(datetxt)
+
     satbands = None
 
     if platform == 'P':
@@ -1967,6 +1982,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].set_transform(xdim, xmin, ydim, ymax)
+        dat[-1].datetime = date
 
         bmeta = dat[-1].metadata['Raster']
 
@@ -2186,9 +2202,12 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
         txt = txt.split('\n')
         scale_vnir = [i for i in txt if 'SCALING_FACTOR_VNIR' in i][0]
         scale_swir = [i for i in txt if 'SCALING_FACTOR_SWIR' in i][0]
+        datetxt = [i for i in txt if 'ACQUISITION_DATE' in i][0]
 
         scale_vnir = float(scale_vnir.split(' = ')[-1])
         scale_swir = float(scale_swir.split(' = ')[-1])
+        datetxt = datetxt.split(' = ')[-1].strip()
+        date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
 
     showlog('Importing Hyperion data...')
 
@@ -2255,6 +2274,7 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
         bmeta['WavelengthMax'] = wavelength[bandno-1]+fwhm[bandno-1]/2
 
         dat[-1].metadata['Raster'].update(bmeta)
+        dat[-1].datetime = date
 
         dataset.close()
 
@@ -2395,6 +2415,9 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         if dataset is None:
             return None
         subdata = dataset.subdatasets
+        meta = dataset.tags()
+        datetxt = meta['PRODUCT_STOP_TIME']
+        date = datetime.datetime.fromisoformat(datetxt)
 
     subdata = [i for i in subdata if 'TCI' not in i]  # TCI is true color
 
@@ -2433,6 +2456,7 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
             dat[-1].meta_from_rasterio(dataset)
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
+            dat[-1].datetime = date
 
             bmeta['Raster'] = dat[-1].metadata['Raster']
             bmeta['Raster']['Sensor'] = 'Sentinel-2'
@@ -2510,6 +2534,10 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
     else:
         return None
 
+    # Get Date
+    datetxt = os.path.basename(ifile).split('_')[2][3:]
+    date = datetime.datetime.strptime(datetxt, '%m%d%Y%H%M%S')
+
     showlog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
@@ -2540,7 +2568,6 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
-
         dat.append(Data())
 
         if metaonly is False:
@@ -2555,6 +2582,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifile
         dat[-1].units = units
+        dat[-1].datetime = date
 
         bmeta = dat[-1].metadata['Raster']
         fext = dat[-1].dataid[4:]
@@ -2578,6 +2606,8 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
     Get ASTER hdf Data.
+
+    This function needs the orignal filename to extract the date.
 
     Parameters
     ----------
@@ -2628,6 +2658,11 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
         ptype = '08'
     else:
         return None
+
+    # Get Date
+    datetxt = os.path.basename(ifile).split('_')[2][3:]
+    date = datetime.datetime.strptime(datetxt, '%m%d%Y%H%M%S')
+
     with rasterio.open(ifile) as dataset:
         meta = dataset.tags()
         subdata = dataset.subdatasets
@@ -2722,6 +2757,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
         dat[-1].metadata['ShortName'] = meta['SHORTNAME']
         dat[-1].filename = ifile
         dat[-1].units = units
+        dat[-1].datetime = date
 
         if 'band' in dat[-1].dataid.lower():
             bmeta = dat[-1].metadata['Raster']
@@ -2779,10 +2815,16 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
 
     with rasterio.open(ifile) as dataset:
         subdata = dataset.subdatasets
+        meta = dataset.tags()
+        try:
+            year = int(meta['Emissivity_Mean_Description'].split('2000-')[-1])
+            date = datetime.date(year, 1, 1)
+        except:
+            showlog('Date uncertian, setting it to 2000-01-01')
+            date = datetime.date(2000, 1, 1)
 
     i = -1
     for ifile2 in subdata:
-        dataset = rasterio.open(ifile2)
         units = ''
 
         if 'ASTER_GDEM' in ifile2:
@@ -2796,6 +2838,8 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
 
         if tnames is not None and bandid not in tnames:
             continue
+
+        dataset = rasterio.open(ifile2)
 
         nbands = 1
 
@@ -2861,6 +2905,7 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
             dat[i].crs = CRS.from_epsg(4326)  # WGS84 geodetic
             dat[i].units = units
             dat[i].metadata['Raster']['Sensor'] = 'ASTER GED'
+            dat[i].datetime = date
         dataset.close()
 
     if metaonly is False:
@@ -3267,20 +3312,28 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
-    ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    # ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
+    # ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
+    # ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
 
     dat = get_data(ifile)
 
-    for i in dat:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        plt.imshow(i.data, extent=i.extent)
-        plt.colorbar()
-        plt.show()
+    print(dat[-1].datetime)
+
+
+    # for i in dat:
+    #     plt.figure(dpi=150)
+    #     plt.title(i.dataid)
+    #     plt.imshow(i.data, extent=i.extent)
+    #     plt.colorbar()
+    #     plt.show()
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

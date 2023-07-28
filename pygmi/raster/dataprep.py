@@ -1501,6 +1501,7 @@ class Metadata(ContextModule):
         self.lbl_max = QtWidgets.QLabel()
         self.lbl_mean = QtWidgets.QLabel()
         self.lbl_dtype = QtWidgets.QLabel()
+        self.date = QtWidgets.QDateEdit()
 
         self.proj = GroupProj('Input Projection')
 
@@ -1533,6 +1534,7 @@ class Metadata(ContextModule):
         label_units = QtWidgets.QLabel('Dataset Units:')
         label_bandid = QtWidgets.QLabel('Band Name:')
         label_dtype = QtWidgets.QLabel('Data Type:')
+        label_date = QtWidgets.QLabel('Acquisition Date:')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -1542,6 +1544,7 @@ class Metadata(ContextModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Dataset Metadata')
+        self.date.setCalendarPopup(True)
 
         gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
@@ -1574,6 +1577,8 @@ class Metadata(ContextModule):
         gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
         gridlayout.addWidget(label_dtype, 11, 0, 1, 1)
         gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
+        gridlayout.addWidget(label_date, 12, 0, 1, 1)
+        gridlayout.addWidget(self.date, 12, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -1600,6 +1605,7 @@ class Metadata(ContextModule):
                     tmp.dataid = j[0]
                     tmp.set_transform(transform=i.transform)
                     tmp.nodata = i.nodata
+                    tmp.datetime = i.datetime
                     if wkt == 'None':
                         tmp.crs = None
                     else:
@@ -1653,7 +1659,7 @@ class Metadata(ContextModule):
             ydim = float(self.dsb_ydim.text())
 
             odata.set_transform(xdim, left, ydim, top)
-
+            odata.datetime = self.date.date().toPyDate()
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
@@ -1677,6 +1683,7 @@ class Metadata(ContextModule):
         self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
+        self.date.setDate(idata.datetime)
 
     def run(self):
         """
@@ -1704,6 +1711,7 @@ class Metadata(ContextModule):
             tmp.nodata = i.nodata
             tmp.crs = i.crs
             tmp.units = i.units
+            tmp.datetime = i.datetime
 
         self.combobox_bandid.currentIndexChanged.disconnect()
         self.combobox_bandid.addItems(bandid)
@@ -1728,6 +1736,7 @@ class Metadata(ContextModule):
         self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
+        self.date.setDate(idata.datetime)
 
         self.update_vals()
 
@@ -2829,20 +2838,22 @@ def _testfft():
     plt.show()
 
 
-def _testcut():
-    """Test Reprojection."""
-    from pygmi.raster.iodefs import get_raster, export_raster
+def _test():
+    """Test."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
 
-    sfile = r"D:\WC\Provinces_utm34.shp"
     ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
-    ofile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack_cut.tif"
 
     dat = get_raster(ifile)
 
-    dat = cut_raster(dat, sfile, deepcopy=False)
+    app = QtWidgets.QApplication(sys.argv)
+    tmp = Metadata()
+    tmp.indata['Raster'] = dat
+    tmp.run()
 
-    export_raster(ofile, dat, compression='DEFLATE')
+
 
 
 if __name__ == "__main__":
-    _testcut()
+    _test()

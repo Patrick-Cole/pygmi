@@ -25,6 +25,7 @@
 """Class for raster data types and conversion routines."""
 
 import warnings
+import datetime
 import numpy as np
 from rasterio.io import MemoryFile
 from rasterio import Affine
@@ -156,7 +157,7 @@ class Data():
         self.filename = ''
         self.transform = None
         self.crs = None
-        self.datetime = None
+        self.datetime = datetime.datetime(1900, 1, 1)
 
         self.set_transform(1, 0, 1, 0)
 
