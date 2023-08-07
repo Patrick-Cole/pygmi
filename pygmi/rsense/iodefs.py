@@ -1811,6 +1811,8 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
 
+        dat[-1].units = 'DN'
+
         if 'L2SP' in ifile2:
             if fext == 'LST':
                 showlog('Converting band '+lstband+' to Kelvin. '
@@ -1826,6 +1828,19 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             elif fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
                 dat[-1].data = dat[-1].data*0.0001
 
+            if fext in ['ST_QA', 'LST']:
+                dat[-1].units = 'Kelvin'
+            elif fext in ['QA_PIXEL', 'QA_AEROSOL', 'QA_RADSAT']:
+                dat[-1].units = 'Bit Index'
+            elif fext == 'ST_CDIST':
+                dat[-1].units = 'km'
+            elif fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
+                dat[-1].units = 'W/(m2.sr.μm)/DN'
+            elif fext in satbands:
+                dat[-1].units = 'Reflectance'
+            else:
+                dat[-1].units = ''
+
         dat[-1].dataid = fext
         dat[-1].nodata = nval
         dat[-1].meta_from_rasterio(dataset)
@@ -1840,7 +1855,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['wavelength'] = (satbands[fext][1] + satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1])/2
 
         dataset.close()
 
@@ -2361,14 +2376,11 @@ def get_sentinel1(ifile, piter=None, showlog=print, tnames=None,
                 dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
                 if dat[-1].data.mask.size == 1:
                     dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
-                # dat[-1].data = dat[-1].data.astype(float)
-                # dat[-1].data = dat[-1].data / 10000.
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
             dat[-1].meta_from_rasterio(dataset)
             dat[-1].filename = ifile
-            # dat[-1].units = 'Reflectance'
 
             bmeta['Raster'] = dat[-1].metadata['Raster']
             bmeta['Raster']['Sensor'] = 'Sentinel-1'
@@ -2429,6 +2441,7 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         if dataset is None:
             showlog('Problem with '+ifile)
             continue
+        plvl = dataset.tags()['PROCESSING_LEVEL']
 
         for i in piter(dataset.indexes):
             bmeta = dataset.tags(i)
@@ -2448,14 +2461,17 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
                 dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
                 if dat[-1].data.mask.size == 1:
                     dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
-                dat[-1].data = dat[-1].data.astype(np.float32)
-                dat[-1].data = dat[-1].data / 10000.
+
+                if 'WAVELENGTH' in bmeta and plvl == 'Level-2A':
+                    dat[-1].data = dat[-1].data.astype(np.float32)
+                    dat[-1].data = dat[-1].data / 10000.
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
             dat[-1].meta_from_rasterio(dataset)
             dat[-1].filename = ifile
-            dat[-1].units = 'Reflectance'
+            if 'WAVELENGTH' in bmeta and plvl == 'Level-2A':
+                dat[-1].units = 'Reflectance'
             dat[-1].datetime = date
 
             bmeta['Raster'] = dat[-1].metadata['Raster']
@@ -2469,8 +2485,8 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
 
             dat[-1].metadata.update(bmeta)
 
-            if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
-                dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
+            # if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
+            #     dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
 
         dataset.close()
 
@@ -2590,7 +2606,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         bmeta['Sensor'] = f'ASTER {platform}'
         bmeta['WavelengthMin'] = satbands[fext][0]
         bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+        bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
 
         dataset.close()
         dataset1.close()
@@ -2768,7 +2784,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['wavelength'] = (satbands[fext][1] + satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1])/2
 
             if ptype == 'L1T' and 'ImageData' in ifile:
                 dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
@@ -3317,14 +3333,17 @@ def _testfn3():
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
-    # ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
     # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
 
     dat = get_data(ifile)
 
     print(dat[-1].datetime)
+
+    # ofile = r'D:\tmp.hdr'
+    # export_raster(ofile, dat, 'ENVI')
 
 
     # for i in dat:

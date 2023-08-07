@@ -2404,6 +2404,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
         data2.data = data2.data.astype(data.data.dtype)
         data2.dataid = data.dataid
         data2.filename = data.filename
+        data2.datetime = data.datetime
 
         dat2.append(data2)
 

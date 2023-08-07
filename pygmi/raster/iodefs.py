@@ -605,8 +605,8 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                                   'AXIS["Easting",EAST],'
                                   'AXIS["Northing",NORTH]]')
 
-    dmeta = {}
-    rdate = None
+    envimeta = {}
+    rdate = datetime.datetime(1900, 1, 1)
     try:
         with rasterio.open(ifile, driver=driver) as dataset:
             if dataset is None:
@@ -622,23 +622,10 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                                                    '%Y:%m:%d %H:%M:%S')
 
             if driver == 'ENVI':
-                dmeta = dataset.tags(ns='ENVI')
-                if 'fwhm' in dmeta:
-                    dmeta['fwhm'] = [float(i) for i in
-                                     dmeta['fwhm'][1:-1].split(',')]
-
-            wavelengthmax = 0.
-            for i in piter(range(dataset.count)):
-                index = dataset.indexes[i]
-                dest = dataset.tags(index)
-                for j in ['Wavelength', 'WAVELENGTH']:
-                    if j in dest:
-                        dest['wavelength'] = dest[j]
-                        del dest[j]
-
-                if 'wavelength' in dest:
-                    wavelengthmax = max(wavelengthmax,
-                                        float(dest['wavelength']))
+                envimeta = dataset.tags(ns='ENVI')
+                if 'fwhm' in envimeta:
+                    envimeta['fwhm'] = [float(i) for i in
+                                        envimeta['fwhm'][1:-1].split(',')]
 
     except rasterio.errors.RasterioIOError:
         return None
@@ -713,6 +700,16 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
         for i in piter(range(dataset.count)):
             index = dataset.indexes[i]
             bandid = dataset.descriptions[i]
+            dest = dataset.tags(index)
+            for j in ['Wavelength', 'WAVELENGTH']:
+                if j in dest:
+                    dest['wavelength'] = dest[j]
+                    del dest[j]
+
+            if 'AcquisitionDate' in dest:
+                dtimestr = dest['AcquisitionDate']
+                rdate = datetime.datetime.strptime(dtimestr,
+                                                   '%Y-%m-%d %H:%M:%S')
 
             if bandid == '' or bandid is None:
                 bandid = 'Band '+str(index)+' '+bname
@@ -726,21 +723,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             dat.append(Data())
 
             # Determine units
-            unit = dataset.units[i]
-            if unit is None and 'wavelength_units' in dmeta:
-                unit = dmeta['wavelength_units']
-            elif unit is None and 0. < wavelengthmax < 100.:
-                unit = 'micrometers'
-            elif unit is None and wavelengthmax >= 100.:
-                unit = 'nanometers'
-            elif unit is None:
-                unit = ''
-            if unit.lower() == 'micrometers':
-                dat[-1].units = 'μm'
-            elif unit.lower() == 'nanometers':
-                dat[-1].units = 'nm'
-            if nval is None:
-                nval = dataset.nodata
+            dat[-1].units = dataset.units[i]
 
             # Get data
             if isbil is True and metaonly is False:
@@ -753,6 +736,9 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                                                                  xsize, ysize))
 
             # Set Null Value
+            if nval is None:
+                nval = dataset.nodata
+
             if nval is not None and np.isnan(nval):
                 nval = None
 
@@ -791,12 +777,6 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                 dat[-1].set_transform(transform=dataset.transform,
                                       rows=rows, cols=cols)
 
-            dat[-1].dataid = bandid
-            dat[-1].nodata = nval
-            dat[-1].filename = filename
-            if rdate is not None:
-                dat[-1].datetime = rdate
-
             if driver == 'netCDF' and dataset.crs is None:
                 if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
                     xrng = gmeta['x#actual_range']
@@ -812,41 +792,38 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                     ydim = (yrng[1]-yrng[0])/rows
                     dat[-1].set_transform(xdim, xmin, ydim, ymin)
 
+            dat[-1].dataid = bandid
+            dat[-1].nodata = nval
+            dat[-1].filename = filename
             dat[-1].crs = crs
             dat[-1].meta = dataset.meta
-
-            dest = dataset.tags(index)
-            for j in ['Wavelength', 'WAVELENGTH']:
-                if j in dest:
-                    dest[j.lower()] = dest[j]
-                    del dest[j]
+            dat[-1].datetime = rdate
 
             if 'wavelength' in dest:
                 dest['wavelength'] = float(dest['wavelength'])
+                dest['wavelength_units'] = 'nanometers'
 
-            if 'fwhm' in dmeta:
-                dest['fwhm'] = dmeta['fwhm'][index-1]
-                dest['WavelengthMin'] = dest['wavelength']-dest['fwhm']/2
-                dest['WavelengthMax'] = dest['wavelength']+dest['fwhm']/2
+                if 'fwhm' in envimeta:
+                    dest['fwhm'] = envimeta['fwhm'][index-1]
+                    dest['WavelengthMin'] = dest['wavelength']-dest['fwhm']/2
+                    dest['WavelengthMax'] = dest['wavelength']+dest['fwhm']/2
 
-            if 'wavelength' in dest and dat[-1].units == 'μm':
-                dest['wavelength'] = dest['wavelength'] * 1000.
-                dat[-1].units = 'nm'
-                dest['wavelength_units'] = 'Nanometers'
-                if 'fwhm' in dest:
-                    dest['fwhm'] = dest['fwhm'] * 1000.
-                if 'WavelengthMin' in dest:
-                    dest['WavelengthMin'] = dest['WavelengthMin'] * 1000
-                    dest['WavelengthMax'] = dest['WavelengthMax'] * 1000
+                # Convert micrometers to nanometers
+                if dest['wavelength'] < 100.:
+                    dest['wavelength'] = dest['wavelength'] * 1000.
+                    if 'fwhm' in dest:
+                        dest['fwhm'] = dest['fwhm'] * 1000.
+                    if 'WavelengthMin' in dest:
+                        dest['WavelengthMin'] = dest['WavelengthMin'] * 1000
+                        dest['WavelengthMax'] = dest['WavelengthMax'] * 1000
 
-            if 'reflectance scale factor' in dmeta:
-                dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
+            if '.raw' in ifile and 'reflectance_scale_factor' not in envimeta:
+                dest['reflectance_scale_factor'] = 10000.
+            if 'reflectance scale factor' in envimeta:
+                dest['reflectance_scale_factor'] = envimeta['reflectance scale factor']
+            elif 'reflectance_scale_factor' in envimeta:
+                dest['reflectance_scale_factor'] = envimeta['reflectance_scale_factor']
 
-            if '.raw' in ifile and 'reflectance_scale_factor' not in dmeta:
-                dmeta['reflectance_scale_factor'] = 10000.
-
-            dat[-1].metadata['Raster'].update(dmeta)
-            # dest overwrites same keys in dmeta.
             dat[-1].metadata['Raster'].update(dest)
 
     return dat
@@ -1456,9 +1433,8 @@ class ExportData(BasicModule):
         return file_out
 
 
-def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
-                  compression='NONE', bandsort=True, showlog=print,
-                  updatestats=True):
+def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
+                  bandsort=True, showlog=print, updatestats=True):
     """
     Export to rasterio format.
 
@@ -1470,8 +1446,6 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
         dataset to export
     drv : str
         name of the rasterio driver to use
-    envimeta : str, optional
-        ENVI metadata. The default is ''.
     piter : ProgressBar.iter/ProgressBarText.iter, optional
         Progressbar iterable from misc. The default is None.
     compression : str, optional
@@ -1572,6 +1546,7 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
             datai = data[i]
 
             out.set_band_description(i+1, datai.dataid)
+            out.set_band_unit(i+1, datai.units)
 
             if nodata is None:
                 dtmp = datai.data
@@ -1586,9 +1561,9 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
+
                 if 'wavelength' in rmeta:
-                    out.update_tags(i+1, Wavelength=str(rmeta['wavelength']))
-                    # out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
+                    out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
                     wavelength.append(rmeta['wavelength'])
 
                 if 'fwhm' in rmeta:
@@ -1603,6 +1578,9 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
                                     WavelengthMin=str(rmeta['WavelengthMin']))
                     out.update_tags(i+1,
                                     WavelengthMax=str(rmeta['WavelengthMax']))
+
+                if datai.datetime != datetime.datetime(1900, 1, 1):
+                    out.update_tags(i+1, AcquisitionDate=str(datai.datetime))
 
     if updatestats is True:
         dcov = None  # Disabled because it uses too much memory.
@@ -1666,13 +1644,14 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
     if drv == 'ENVI':
         wout = ''
-        if (wavelength and envimeta is not None and
-                'wavelength' not in envimeta):
+        if wavelength:
             wout = str(wavelength)
             wout = wout.replace('[', '{')
             wout = wout.replace(']', '}')
             wout = wout.replace("'", '')
             wout = 'wavelength = '+wout+'\n'
+            wout += 'wavelength_units = nanometers\n'
+
         if fwhm:
             fwhm = str(fwhm)
             fwhm = fwhm.replace('[', '{')
@@ -1687,7 +1666,6 @@ def export_raster(ofile, dat, drv='GTiff', envimeta='', piter=None,
 
         with open(tmpfile[:-4]+'.hdr', 'a', encoding='utf-8') as myfile:
             myfile.write(wout)
-            myfile.write(envimeta)
 
 
 def calccov(data, showlog=print):
@@ -1740,14 +1718,12 @@ def _filespeedtest():
 
     ifile = r"D:\Hyper\cut_048-055_ref_rect.hdr"
     ifile = r"D:\Hyper\103A_0825-0943_ref_rect.hdr"
+    ifile = r"D:/tmp.tif"
 
     # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile, metaonly=False)
 
-    for i in dataset:
-        i.dataid = i.dataid.replace('band*', 'band ')
-        i.dataid = i.dataid.replace('band   ', 'band ')
-        i.dataid = i.dataid.replace('band  ', 'band ')
+    breakpoint()
 
     getinfo('Start')
 
