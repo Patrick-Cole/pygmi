@@ -161,7 +161,7 @@ class Smooth(BasicModule):
             self.parent.process_is_active(True)
 
         self.showlog('Smoothing ')
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
 
         if self.radiobutton_2dmean.isChecked():
             filt = '2D Mean'

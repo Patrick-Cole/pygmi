@@ -126,18 +126,18 @@ class Tilt1(BasicModule):
         self.smooth = self.sb_s.value()
         self.azi = self.sb_azi.value()
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
         data2 = []
 
         for i in self.piter(range(len(data))):
             t1, th, t2, ta, tdx, tahg = tilt1(data[i].data, self.azi,
                                               self.smooth)
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
+            data2.append(data[i].copy())
+            data2.append(data[i].copy())
+            data2.append(data[i].copy())
+            data2.append(data[i].copy())
+            data2.append(data[i].copy())
+            data2.append(data[i].copy())
             data2[-6].data = t1
             data2[-5].data = th
             data2[-4].data = t2

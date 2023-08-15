@@ -1211,7 +1211,7 @@ def calculate_toa(dat, showlog=print):
 
     datanew = {}
     for datai in dat:
-        datanew[datai.dataid.split()[1]] = copy.deepcopy(datai)
+        datanew[datai.dataid.split()[1]] = datai.copy()
 
     out = []
     for i in range(len(dat)):
@@ -1657,7 +1657,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
         dataset.close()
 
     if lulc is not None:
-        dat.append(copy.deepcopy(dat[0]))
+        dat.append(dat[0].copy())
         dat[-1].data = lulc
         dat[-1].dataid = ('LULC: out of earth=7, water=6, barren=5, snow=4, '
                           'wetland=3, urban=2, unclassifed=1')
@@ -3133,10 +3133,10 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     # plt.imshow(img)
     # plt.show()
 
-    newimg = [copy.deepcopy(data[0]),
-              copy.deepcopy(data[0]),
-              copy.deepcopy(data[0]),
-              copy.deepcopy(data[0])]
+    newimg = [data[0].copy(),
+              data[0].copy(),
+              data[0].copy(),
+              data[0].copy()]
 
     newimg[0].data = img[:, :, 0]
     newimg[1].data = img[:, :, 1]
@@ -3333,10 +3333,12 @@ def _testfn3():
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
-    ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
     # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
+
 
     dat = get_data(ifile)
 
@@ -3344,7 +3346,6 @@ def _testfn3():
 
     # ofile = r'D:\tmp.hdr'
     # export_raster(ofile, dat, 'ENVI')
-
 
     # for i in dat:
     #     plt.figure(dpi=150)

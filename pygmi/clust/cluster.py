@@ -339,7 +339,7 @@ class Cluster(BasicModule):
 
         X = []
         for band in data:
-            tmp = copy.deepcopy(band)
+            tmp = band.copy()
             tmp.data.mask = masktmp
             X.append(tmp.data.compressed())
             del tmp
@@ -419,7 +419,7 @@ class Cluster(BasicModule):
             # Reloading this hear to save memory. Need unscaled values.
             X = []
             for band in data:
-                tmp = copy.deepcopy(band)
+                tmp = band.copy()
                 tmp.data.mask = masktmp
                 X.append(tmp.data.compressed())
             X = np.transpose(X)

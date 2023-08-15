@@ -881,7 +881,7 @@ class SuperClass(BasicModule):
         yout1 = classifier.predict(datall)
         yout[~mask] = yout1
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
         dat_out = [Data()]
 
         dat_out[-1].metadata['Cluster']['input_type'] = []

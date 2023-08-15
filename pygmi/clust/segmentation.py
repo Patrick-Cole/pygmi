@@ -147,7 +147,7 @@ class ImageSeg(BasicModule):
         omap = self.segment1(data1, scale=scale, wcolor=wcolor,
                              wcompact=wcompact, doshape=doshape)
 
-        odat = copy.deepcopy(self.indata['Raster'][0])
+        odat = self.indata['Raster'][0].copy()
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
         odat.dataid = 'Segments'
 

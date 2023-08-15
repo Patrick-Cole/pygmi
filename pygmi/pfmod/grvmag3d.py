@@ -1082,16 +1082,14 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     if 'Magnetic Dataset' in lmod.griddata:
         ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
-        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
-            lmod.griddata['Magnetic Dataset'])
+        lmod.griddata['Magnetic Residual'] = lmod.griddata['Magnetic Dataset'].copy()
         lmod.griddata['Magnetic Residual'].data = (
             lmod.griddata['Magnetic Dataset'].data - ztmp)
         lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
 
     if 'Gravity Dataset' in lmod.griddata:
         ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
-        lmod.griddata['Gravity Residual'] = copy.deepcopy(
-            lmod.griddata['Gravity Dataset'])
+        lmod.griddata['Gravity Residual'] = lmod.griddata['Gravity Dataset'].copy()
         lmod.griddata['Gravity Residual'].data = (
             lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'

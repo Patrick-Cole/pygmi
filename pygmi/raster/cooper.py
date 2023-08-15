@@ -141,7 +141,7 @@ class Gradients(BasicModule):
         self.azi = self.sb_azi.value()
         self.order = self.sb_order.value()
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
 
         for i in self.piter(range(len(data))):
             if self.rb_ddir.isChecked():
@@ -432,7 +432,7 @@ class Visibility2d(BasicModule):
         self.wsize = self.sb_wsize.value()
         self.dh = self.sb_dh.value()
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
         data2 = []
 
         for i, datai in enumerate(data):
@@ -448,9 +448,9 @@ class Visibility2d(BasicModule):
             xdim = datai.transform[0]
             ydim = abs(datai.transform[4])
 
-            data2.append(copy.deepcopy(datai))
-            data2.append(copy.deepcopy(datai))
-            data2.append(copy.deepcopy(datai))
+            data2.append(datai.copy())
+            data2.append(datai.copy())
+            data2.append(datai.copy())
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum
@@ -843,7 +843,7 @@ class AGC(BasicModule):
 
         self.wsize = self.sb_wsize.value()
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
         data2 = []
 
         for datai in data:
@@ -851,7 +851,7 @@ class AGC(BasicModule):
 
             agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
                           piter=self.piter)
-            data2.append(copy.deepcopy(datai))
+            data2.append(datai.copy())
             data2[-1].data = agcdata
             data2[-1].dataid += ' AGC'
 

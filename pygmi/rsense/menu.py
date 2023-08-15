@@ -105,7 +105,11 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        # self.menu2 = self.menu.addMenu('Change Detection')
+        self.menu2 = self.menu.addMenu('Change Detection')
+
+        self.action_calc_change = QtWidgets.QAction('Calculate Change Indices')
+        self.menu2.addAction(self.action_calc_change)
+        self.action_calc_change.triggered.connect(self.calc_change)
 
         # self.action_create_list = QtWidgets.QAction('Create Scene List ')
         # self.menu2.addAction(self.action_create_list)
@@ -130,20 +134,25 @@ class MenuWidget():
         """Export Raster File List."""
         self.parent.launch_context_item(iodefs.ExportBatch)
 
-    def create_scene(self):
-        """Create Scene."""
-        self.parent.item_insert('Step', 'Create Scene List',
-                                change.CreateSceneList)
+    def calc_change(self):
+        """Calculate change."""
+        self.parent.item_insert('Step', 'Calculate Change Indices',
+                                change.CalculateChange)
 
-    def load_scene(self):
-        """Load Scene."""
-        self.parent.item_insert('Io', 'Import Scene List',
-                                change.LoadSceneList)
+    # def create_scene(self):
+    #     """Create Scene."""
+    #     self.parent.item_insert('Step', 'Create Scene List',
+    #                             change.CreateSceneList)
 
-    def view_change(self):
-        """View Change Detection."""
-        self.parent.item_insert('Step', 'Change Detection Viewer',
-                                change.SceneViewer)
+    # def load_scene(self):
+    #     """Load Scene."""
+    #     self.parent.item_insert('Io', 'Import Scene List',
+    #                             change.LoadSceneList)
+
+    # def view_change(self):
+    #     """View Change Detection."""
+    #     self.parent.item_insert('Step', 'Change Detection Viewer',
+    #                             change.SceneViewer)
 
     def calc_ratios(self):
         """Calculate Ratios."""

@@ -209,15 +209,6 @@ class SatRatios(BasicModule):
         """
         sensor = self.combo_sensor.currentText()
 
-        rlist = []
-        for i in self.lw_ratios.selectedItems():
-            rlist.append(i.text()[2:])
-
-        if 'RasterFileList' in self.indata:
-            data = self.indata['RasterFileList']
-        else:
-            data = self.indata['Raster']
-
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
             if sensor == 'ASTER':
@@ -252,13 +243,11 @@ class SatRatios(BasicModule):
             if dat is None:
                 continue
 
-            odir = os.path.dirname(dat[0].filename)
-
             datfin = calc_ratios(dat, rlist, showlog=self.showlog,
                                  piter=self.piter, sensor=sensor)
 
             if datfin:
-                odir = os.path.dirname(data[0].filename)
+                odir = os.path.dirname(dat[0].filename)
                 odir = os.path.join(odir, 'ratios')
 
                 os.makedirs(odir, exist_ok=True)
@@ -728,7 +717,7 @@ class ConditionIndices(BasicModule):
 
                 ratio = np.ma.fix_invalid(ratio)
 
-                tmp = copy.deepcopy(dat[0])
+                tmp = dat[0].copy()
                 tmp.data = ratio
                 tmp.nodata = 1e+20
                 evi.append(tmp)
@@ -954,7 +943,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
         ratio = np.ma.fix_invalid(ratio)
 
-        rband = copy.deepcopy(dat[0])
+        rband = dat[0].copy()
         rband.data = ratio
         rband.dataid = i.replace(r'/', 'div')
         datfin.append(rband)
@@ -1153,7 +1142,7 @@ def get_TCI(lst):
     lstmin = lst2.min(0)
 
     for dat in lst:
-        tmp = copy.deepcopy(dat)
+        tmp = dat.copy()
 
         tmp.data = (lstmax-dat.data)/(lstmax-lstmin)
 
@@ -1191,7 +1180,7 @@ def get_VCI(evi, index):
 
     vci = []
     for dat in evi:
-        tmp = copy.deepcopy(dat)
+        tmp = dat.copy()
 
         tmp.data = (dat.data-evimin)/(evimax-evimin)
 
@@ -1224,7 +1213,7 @@ def get_VHI(tci, vci, alpha=0.5):
     for tci1 in tci:
         for vci1 in vci:
             if tci1.filename == vci1.filename:
-                tmp = copy.deepcopy(tci1)
+                tmp = tci1.copy()
                 tmp.data = vci1.data*alpha+tci1.data*(1-alpha)
                 tmp.dataid = os.path.basename(tci1.filename)[:-4]+'_VHI'
 
@@ -1276,9 +1265,9 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
         elif 'BSI' in i.dataid:
             BSI = i.data
 
-    red = copy.deepcopy(dat[0])
-    green = copy.deepcopy(dat[0])
-    blue = copy.deepcopy(dat[0])
+    red = dat[0].copy()
+    green = dat[0].copy()
+    blue = dat[0].copy()
 
     red.data[:] = 3.5*BSI
     green.data[:] = 0.3
@@ -1321,11 +1310,6 @@ def _testfn():
     import winsound
     from pygmi.rsense.iodefs import ImportBatch
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\new\AST_07XT_00308302021082202_20230215122255_9222.zip"
-
     idir = r'd:\sentinel2'
     os.chdir(r'D:\\')
 
@@ -1335,8 +1319,6 @@ def _testfn():
     tmp1.idir = idir
     tmp1.get_sfile(True)
     tmp1.settings()
-
-    tmp1.outdata['RasterFileList'] = [tmp1.outdata['RasterFileList'][0]]
 
     SR = SatRatios()
     SR.indata = tmp1.outdata
@@ -1352,19 +1334,9 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-    dat = [i.data for i in dat2]
-    dat = np.moveaxis(dat, 0, -1)
-
-    plt.figure(dpi=200)
-    plt.imshow(dat, vmin=0, vmax=1)
-    plt.show()
-
-    plt.figure(dpi=200)
-    plt.imshow(dat)
-    plt.show()
-
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
+    breakpoint()
 
 if __name__ == "__main__":
     _testfn()

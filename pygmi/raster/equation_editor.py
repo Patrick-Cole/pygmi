@@ -440,7 +440,7 @@ class EquationEditor(BasicModule):
             findati = findati.astype(indata[i].data.dtype)
             findati[mask] = indata[i].nodata
 
-            outdata.append(copy.deepcopy(indata[i]))
+            outdata.append(indata[i].copy())
             outdata[-1].data = np.ma.masked_equal(findati,
                                                   indata[i].nodata)
             outdata[-1].nodata = indata[i].nodata

@@ -853,6 +853,7 @@ class DataMerge(BasicModule):
                 if i.dataid != dataid and self.singleband is False:
                     continue
                 metadata = i.metadata
+                datetime = i.datetime
 
                 i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)
 
@@ -923,7 +924,6 @@ class DataMerge(BasicModule):
                 continue
 
             self.showlog('Mosaicing '+dataid+'...')
-            # print(ifiles)
 
             with rasterio.Env(CPL_DEBUG=True):
                 mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
@@ -944,6 +944,7 @@ class DataMerge(BasicModule):
             outdat[-1].crs = crs
             outdat[-1].nodata = nodata
             outdat[-1].metadata = metadata
+            outdat[-1].datetime = datetime
 
             if self.bands_to_files.isChecked():
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD',
@@ -1235,7 +1236,7 @@ class GetProf(BasicModule):
 
         """
         if 'Raster' in self.indata:
-            data = copy.deepcopy(self.indata['Raster'])
+            data = [i.copy() for i in self.indata['Raster']]
         else:
             self.showlog('No raster data')
             return False
@@ -1832,7 +1833,7 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
         PyGMI Dataset
     """
     if deepcopy is True:
-        data = copy.deepcopy(data)
+        data = [i.copy() for i in data]
 
     try:
         gdf = gpd.read_file(ifile)
@@ -2315,7 +2316,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
     if needsmerge is False:
         if not nodeepcopy:
-            dat = copy.deepcopy(dat)
+            dat = [i.copy() for i in dat]
         if checkdataid is True:
             dat = check_dataid(dat)
         return dat

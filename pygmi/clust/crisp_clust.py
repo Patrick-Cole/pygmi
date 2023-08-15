@@ -278,7 +278,7 @@ class CrispClust(BasicModule):
         None.
 
         """
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
         self.update_vars()
 
         cltype = self.cltype

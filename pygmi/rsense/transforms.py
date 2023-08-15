@@ -666,7 +666,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
 
     del x2
 
-    odata = copy.deepcopy(dat)
+    odata = [i.copy() for i in dat]
     if fwdonly:
         odata = odata[:ncmps]
     for j, band in enumerate(odata):
@@ -760,7 +760,7 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     del x2
 
-    odata = copy.deepcopy(dat)
+    odata = [i.copy() for i in dat]
     if fwdonly:
         odata = odata[:ncmps]
     for j, band in enumerate(odata):
@@ -899,7 +899,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
         del x2
 
-        odata = copy.deepcopy(dat)
+        odata = [i.copy() for i in dat]
         if fwdonly:
             odata = odata[:ncmps]
         for j, band in enumerate(odata):
@@ -908,14 +908,6 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
                 band.dataid = (f'PCA{j+1} Explained Variance Ratio '
                                f'{evr[j]*100:.2f}%')
         del datall
-
-        # ofile = os.path.basename(filename).split('.')[0] + '_pca.tif'
-        # ofile = os.path.join(odir, ofile)
-
-        # if 'AST_' in ofile:
-        #     ofile = ofile.replace('_05_', '_')
-        #     ofile = ofile.replace('_07XT_', '_')
-        #     ofile = ofile.replace('_07_', '_')
 
         ofile = set_export_filename(dat, odir, 'pca')
 

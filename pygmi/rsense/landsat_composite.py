@@ -349,7 +349,7 @@ def import_and_score(ifile, dreq, mean, std, showlog=print, piter=None):
     sdate = os.path.basename(ifile).split('_')[3]
     sdate = datetime.strptime(sdate, '%Y%m%d')
     datday = sdate.timetuple().tm_yday
-    cdistscore = copy.deepcopy(dat['cdist'])
+    cdistscore = dat['cdist'].copy()
     cdistscore.data = np.ma.masked_equal(cdist2.filled(0), 0)
     cdistscore.nodata = 0
 

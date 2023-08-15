@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
-# Name:        change.py (part of PyGMI)
+# Name:        ratios.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2019 Council for Geoscience
+# Copyright:   (c) 2020 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -22,45 +22,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Change Detection."""
+"""Calculate remote sensing ratios."""
 
-import datetime
-from pathlib import Path
-from xml.etree import ElementTree
-from PyQt5 import QtWidgets, QtCore
+import math
+import os
+import sys
 import numpy as np
-import pandas as pd
-import geopandas as gpd
-from shapely.geometry.polygon import Polygon
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib import colormaps
-import matplotlib.animation as manimation
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from numba import jit
+from PyQt5 import QtWidgets, QtCore
 
-from pygmi.misc import frm
-from pygmi.raster.ginterp import histcomp, norm255
+from pygmi import menu_default
+from pygmi.rsense.iodefs import get_from_rastermeta
+from pygmi.raster.dataprep import lstack
 from pygmi.misc import BasicModule
-from pygmi.raster.iodefs import get_raster
 
 
-class CreateSceneList(BasicModule):
-    """
-    Create Scene List.
-
-    This class creates a list of scenes for use in change detection.
-    """
+class CalculateChange(BasicModule):
+    """Calculate Change Indices."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.indata = {'tmp': True}
-
-        self.shapefile = QtWidgets.QLineEdit('')
-        self.scenefile = QtWidgets.QLineEdit('')
-        self.isrecursive = QtWidgets.QCheckBox('Recursive file search')
-        self.useall = QtWidgets.QCheckBox('Use all scenes')
+        # self.combo_sensor = QtWidgets.QComboBox()
+        self.lw_indices = QtWidgets.QListWidget()
 
         self.setupui()
 
@@ -74,32 +58,38 @@ class CreateSceneList(BasicModule):
 
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
+        btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pygmi.rsense.change.cscene')
-        pb_shape = QtWidgets.QPushButton('Load shapefile or kml file')
-        pb_scene = QtWidgets.QPushButton('Set scene directory')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        # label_sensor = QtWidgets.QLabel('Sensor:')
+        label_ratios = QtWidgets.QLabel('Indicess:')
 
+        self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)
+
+        # self.combo_sensor.addItems(['ASTER',
+        #                             'Landsat 8 and 9 (OLI)',
+        #                             'Landsat 7 (ETM+)',
+        #                             'Landsat 4 and 5 (TM)',
+        #                             'Sentinel-2', 'WorldView', 'Unknown'])
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle(r'Create Scene List')
+        self.setWindowTitle('Calculate Change Indices')
 
-        gridlayout_main.addWidget(self.shapefile, 0, 0, 1, 1)
-        gridlayout_main.addWidget(pb_shape, 0, 1, 1, 1)
+        # gridlayout_main.addWidget(label_sensor, 0, 0, 1, 1)
+        # gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gridlayout_main.addWidget(label_ratios, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.lw_indices, 1, 1, 1, 1)
+        gridlayout_main.addWidget(btn_invert, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(self.scenefile, 1, 0, 1, 1)
-        gridlayout_main.addWidget(pb_scene, 1, 1, 1, 1)
-
-        gridlayout_main.addWidget(self.useall, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.isrecursive, 3, 0, 1, 2)
-
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        pb_shape.pressed.connect(self.get_shape)
-        pb_scene.pressed.connect(self.get_scene)
+        self.lw_indices.clicked.connect(self.set_selected_indices)
+        btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
         """
@@ -116,572 +106,23 @@ class CreateSceneList(BasicModule):
             True if successful, False otherwise.
 
         """
-        if not nodialog:
-            tmp = self.exec_()
-
-            if tmp != 1:
-                return tmp
-
-        idir = self.scenefile.text()
-        sfile = self.shapefile.text()
-
-        if idir == '' or sfile == '':
+        tmp = []
+        if 'RasterFileList' not in self.indata:
+            self.showlog('No batch file list detected.')
             return False
 
-        if not self.useall.isChecked():
-            if sfile[-3:] == 'shp':
-                ddpoints = get_shape_coords(sfile, True)
-            else:
-                ddpoints = get_kml_coords(sfile)
-            ddpoints2 = Polygon(ddpoints)
-
-        if self.isrecursive.isChecked():
-            subfiles = Path(idir).rglob('*.tif')
-        else:
-            subfiles = Path(idir).glob('*.tif')
-
-        subfiles = list(subfiles)
-        dtime = []
-        flist = []
-        nodates = False
-        for ifile in self.piter(subfiles):
-            dattmp = get_raster(str(ifile), metaonly=True)
-
-            if not self.useall.isChecked():
-                dxlim = dattmp[0].extent[:2]
-                dylim = dattmp[0].extent[2:]
-
-                coords = [[dxlim[0], dylim[0]],
-                          [dxlim[0], dylim[1]],
-                          [dxlim[1], dylim[1]],
-                          [dxlim[1], dylim[0]],
-                          [dxlim[0], dylim[0]]]
-
-                coords2 = Polygon(coords)
-                gdf = gpd.GeoDataFrame(geometry=[coords2])
-                gdf = gdf.set_crs(dattmp[0].crs)
-                gdf = gdf.to_crs(epsg=4326)
-
-                gdf2 = gpd.GeoDataFrame(geometry=[ddpoints2])
-                gdf2 = gdf2.set_crs(4326)
-
-                if not gdf.intersects(ddpoints2).loc[0]:
-                    continue
-
-            dt = dattmp[0].datetime
-            if dt is None:
-                dt = datetime.datetime(1900, 1, 1)
-                nodates = True
-
-            dtime.append(dt)
-            flist.append(ifile)
-
-        if nodates is True:
-            self.showlog('Some of your scenes do not have dates. '
-                         'Correct this in the output spreadsheet')
-
-        if not flist:
-            self.showlog('No scenes could be found. Please make sure '
-                         'that your shapefile or kml file is in the '
-                         'area of your scenes and in the same '
-                         'projection.')
-            return False
-
-        self.showlog('Updating spreadsheet...')
-
-        df = pd.DataFrame()
-        df['Datetime'] = dtime
-        df['Filename'] = flist
-        df['Use'] = True
-        df['Shapefile'] = sfile
-
-        df.sort_values('Datetime', inplace=True)
-
-        self.outdata['SceneList'] = df
-
-        self.showlog('Saving to disk...')
-
-        ext = ('Scene List File (*.xlsx)')
-
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
-        if filename == '':
-            return False
-
-        df.to_excel(filename, index=False)
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.shapefile.setText(projdata['shapefile'])
-        self.scenefile.setText(projdata['scenefile'])
-        self.isrecursive.setChecked(projdata['recursive'])
-
-        chk = self.settings(True)
-
-        return chk
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-        projdata['shapefile'] = self.shapefile.text()
-        projdata['scenefile'] = self.scenefile.text()
-        projdata['recursive'] = self.isrecursive.isChecked()
-
-        return projdata
-
-    def get_shape(self, filename=''):
-        """
-        Get shape filename.
-
-        Parameters
-        ----------
-        filename : str, optional
-            Input filename. The default is ''.
-
-        Returns
-        -------
-        None.
-
-        """
-        ext = ('shapefile or kml file (*.shp *.kml)')
-
-        if filename == '':
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if filename == '':
-                return
-
-        self.shapefile.setText(filename)
-
-    def get_scene(self, directory=''):
-        """
-        Get Scene Directory.
-
-        Parameters
-        ----------
-        directory : str, optional
-            Directory path as a string. The default is ''.
-
-        Returns
-        -------
-        None.
-
-        """
-        if directory == '':
-            directory = QtWidgets.QFileDialog.getExistingDirectory(
-                self.parent, 'Select Directory')
-
-            if directory == '':
-                return
-
-        self.scenefile.setText(directory)
-
-
-class LoadSceneList(BasicModule):
-    """Load scene list."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if not nodialog:
-            ext = 'Scene List File (*.xlsx)'
-
-            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open Scene List Spreadsheet', '.', ext)
-            if self.ifile == '':
-                return False
-
-        df = pd.read_excel(self.ifile)
-
-        self.outdata['SceneList'] = df
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Simple canvas with a sine plot."""
-
-    def __init__(self, parent=None, width=10, height=8, dpi=100,
-                 bands=(0, 1, 2)):
-        self.fig = Figure(figsize=(width, height), dpi=dpi)
-
-        self.ax1 = self.fig.add_subplot(111)
-        self.im1 = None
-        self.bands = bands
-        self.parent = parent
-        self.rcid = None
-        self.manip = 'RGB'
-        self.cbar = None
-        self.capture_active = False
-        self.writer = None
-
-        super().__init__(self.fig)
-
-        self.setParent(parent)
-
-        FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Expanding,
-                                        QtWidgets.QSizePolicy.Expanding)
-        FigureCanvasQTAgg.updateGeometry(self)
-
-        self.fig.canvas.mpl_connect('button_release_event', self.onClick)
-
-    def capture(self):
-        """
-        Capture.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.capture_active = not self.capture_active
-
-        if self.capture_active:
-            ext = ('GIF (*.gif)')
-            wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
-                self.parent, 'Save File', '.', ext)
-            if wfile == '':
-                self.capture_active = not self.capture_active
-                return
-
-            self.writer = manimation.PillowWriter(fps=4)
-            self.writer.setup(self.fig, wfile)
-        else:
-            self.writer.finish()
-
-    def compute_initial_figure(self, dat, dates, points):
-        """
-        Compute initial figure.
-
-        Parameters
-        ----------
-        dat : PyGMI Data
-            PyGMI dataset.
-        dates : str
-            Dates to show on title.
-        points : numpy array
-            Points to plot.
-
-        Returns
-        -------
-        None.
-
-        """
-        extent = []
-
-        rtmp1 = dat[self.bands[2]].data
-        rtmp2 = dat[self.bands[1]].data
-        rtmp3 = dat[self.bands[0]].data
-
-        rtmp1 = (rtmp1-rtmp1.min())/rtmp1.ptp()
-        rtmp2 = (rtmp2-rtmp2.min())/rtmp2.ptp()
-        rtmp3 = (rtmp3-rtmp3.min())/rtmp3.ptp()
-
-        # alpha = np.logical_not(rtmp1 == 0.)
-        alpha = ~rtmp1.mask
-
-        dtmp = np.array([rtmp1, rtmp2, rtmp3, alpha])
-        dtmp = np.moveaxis(dtmp, 0, 2)
-        dtmp = dtmp*255
-        dtmp = dtmp.astype(np.uint8)
-
-        extent = dat[self.bands[0]].extent
-
-        self.im1 = self.ax1.imshow(dtmp, extent=extent)
-        self.ax1.plot(points[:, 0], points[:, 1])
-        self.cbar = None
-
-        self.fig.suptitle(dates)
-
-    def update_plot(self, dat, dates):
-        """
-        Update plot.
-
-        Parameters
-        ----------
-        dat : PyGMI Data
-            PyGMI dataset.
-        dates : str
-            Dates to show on title.
-
-        Returns
-        -------
-        None.
-
-        """
-        extent = dat[self.bands[0]].extent
-        if self.manip == 'NDWI':
-            if self.cbar is None:
-                self.cbar = self.figure.colorbar(self.im1, format=frm)
-            green = np.ma.masked_equal(dat[2].data, 0)
-            nir = np.ma.masked_equal(dat[4].data, 0)
-            green = green.astype(float)
-            nir = nir.astype(float)
-            dtmp = (green-nir)/(green+nir)
-            self.im1.set_clim(-1, 1)
-            self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(colormaps['PiYG_r'])
-        elif self.manip == 'NDVI':
-            if self.cbar is None:
-                self.cbar = self.figure.colorbar(self.im1, format=frm)
-            red = np.ma.masked_equal(dat[3].data, 0)
-            nir = np.ma.masked_equal(dat[4].data, 0)
-            red = red.astype(float)
-            nir = nir.astype(float)
-            dtmp = (nir-red)/(nir+red)
-            self.im1.set_clim(-1, 1)
-            self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(colormaps('PiYG'))
-        else:
-            if self.cbar is not None:
-                self.cbar.remove()
-                self.cbar = None
-
-            mask = (dat[self.bands[2]].data == 0.)
-            red = np.ma.array(dat[self.bands[2]].data, mask=mask)
-            green = np.ma.array(dat[self.bands[1]].data, mask=mask)
-            blue = np.ma.array(dat[self.bands[0]].data, mask=mask)
-
-            red, _, _ = histcomp(red, nbr_bins=10000, perc=2.)
-            green, _, _ = histcomp(green, nbr_bins=10000, perc=2.)
-            blue, _, _ = histcomp(blue, nbr_bins=10000, perc=2.)
-
-            red = norm255(red)
-            green = norm255(green)
-            blue = norm255(blue)
-
-            red[mask] = 0
-            green[mask] = 0
-            blue[mask] = 0
-
-            alpha = ~mask
-            alpha = alpha*255
-
-            dtmp = np.array([red, green, blue, alpha])
-            dtmp = np.moveaxis(dtmp, 0, 2)
-            dtmp = dtmp.astype(np.uint8)
-            self.im1.set_clim(0, 255)
-            self.im1.set_clim(0, 255)
-
-        self.im1.set_data(dtmp)
-        self.im1.set_extent(extent)
-        self.fig.suptitle(dates)
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
-
-        self.fig.canvas.draw()
-
-    def onClick(self, event):
-        """
-        On click event.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.rcid = self.fig.canvas.mpl_connect('draw_event', self.redraw)
-
-    def redraw(self, event):
-        """
-        Redraw event.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fig.canvas.mpl_disconnect(self.rcid)
-        self.parent.newdata(self.parent.curimage)
-
-
-class SceneViewer(BasicModule):
-    """Scene Viewer."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.df = None
-        self.pbar2 = QtWidgets.QProgressBar()
-
-        self.setWindowTitle("View Change Data")
-
-        self.file_menu = QtWidgets.QMenu('&File', self)
-        self.help_menu = QtWidgets.QMenu('&Help', self)
-
-        self.help_menu.addAction('&About', self.about)
-        self.file_menu.addAction('&Quit', self.fileQuit,
-                                 QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
-
-        vlayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout()
-        hlayout2 = QtWidgets.QHBoxLayout()
-
-        self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
-
-        mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.slider = MySlider()
-        self.slider.setOrientation(QtCore.Qt.Horizontal)
-
-        self.button1 = QtWidgets.QPushButton('Start Capture')
-        self.button2 = QtWidgets.QPushButton('Update Scene List File')
-        self.button3 = QtWidgets.QPushButton('Next Scene')
-        self.cb_use = QtWidgets.QCheckBox('Use Scene')
-        self.cb_display = QtWidgets.QCheckBox('Only Display Scenes Flagged '
-                                              'for Use')
-        self.cb_display.setChecked(True)
-        self.manip = QtWidgets.QComboBox()
-
-        actions = ['RGB', 'NDVI', 'NDWI']
-        self.manip.addItems(actions)
-
-        hlayout2.addWidget(QtWidgets.QLabel('Band Manipulation:'))
-        hlayout2.addWidget(self.manip)
-        hlayout.addWidget(self.button3)
-        hlayout.addWidget(self.button2)
-        hlayout.addWidget(self.button1)
-        vlayout.addWidget(self.canvas)
-        vlayout.addWidget(mpl_toolbar)
-        vlayout.addWidget(self.slider)
-        vlayout.addWidget(self.cb_display)
-        vlayout.addWidget(self.cb_use)
-        vlayout.addLayout(hlayout2)
-        vlayout.addLayout(hlayout)
-        vlayout.addWidget(self.pbar2)
-
-        self.curimage = 0
-
-        mpl_toolbar.actions()[0].triggered.connect(self.home_callback)
-        self.slider.valueChanged.connect(self.newdata)
-        self.cb_use.stateChanged.connect(self.flaguse)
-        self.button2.clicked.connect(self.updateanim)
-        self.button3.clicked.connect(self.nextscene)
-        self.button1.clicked.connect(self.capture)
-        self.manip.currentIndexChanged.connect(self.manip_change)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if 'SceneList' not in self.indata:
-            self.showlog('You need a scene list.')
-            return False
-
-        self.df = self.indata['SceneList']
-        sfile = self.df['Shapefile'][0]
-
-        dates = self.df.Datetime[self.curimage]
-        dat = self.get_tiff(self.df.Filename[self.curimage], firstrun=True)
-        points = get_shape_coords(sfile, False)
-        self.slider.setMaximum(len(self.df)-1)
-        self.cb_use.setChecked(bool(self.df.Use[self.curimage]))
-
-        self.canvas.bands = list(dat.keys())
-
-        self.canvas.compute_initial_figure(dat, dates, points)
+        self.setindices()
 
         if not nodialog:
             tmp = self.exec_()
+        else:
+            tmp = 1
 
-            if tmp != 1:
-                return tmp
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
         return True
 
     def loadproj(self, projdata):
@@ -699,6 +140,14 @@ class SceneViewer(BasicModule):
             A check to see if settings was successfully run.
 
         """
+        self.combo_sensor.setCurrentText(projdata['sensor'])
+        self.setratios()
+
+        for i in self.lw_indices.selectedItems():
+            if i.text()[2:] not in projdata['ratios']:
+                i.setSelected(False)
+        self.set_selected_ratios()
+
         return False
 
     def saveproj(self):
@@ -712,472 +161,474 @@ class SceneViewer(BasicModule):
 
         """
         projdata = {}
+        projdata['sensor'] = self.combo_sensor.currentText()
+
+        rlist = []
+        for i in self.lw_indices.selectedItems():
+            rlist.append(i.text()[2:])
+
+        projdata['ratios'] = rlist
 
         return projdata
 
-    def manip_change(self, event):
+    def acceptall(self):
         """
-        Change manipulation.
+        Accept option.
 
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
+        Updates self.outdata, which is used as input to other modules.
 
         Returns
         -------
         None.
 
         """
-        self.canvas.manip = self.manip.currentText()
-        self.newdata(self.curimage)
+        flist = self.indata['RasterFileList']
 
-    def updateanim(self, event):
-        """
-        Update animation file.
+        ilist = []
+        for i in self.lw_indices.selectedItems():
+            ilist.append(i.text()[2:])
 
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        ext = ('Scene List File (*.xlsx)')
-
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
-        if filename == '':
+        if not ilist:
+            self.showlog('You need to select an index to calculate.')
             return False
 
-        self.df.to_excel(filename, index=False)
+        datfin = calc_change(flist, ilist, showlog=self.showlog,
+                             piter=self.piter)
+
+        if not datfin:
+            return False
+        #     odir = os.path.dirname(ifile.filename)
+        #     odir = os.path.join(odir, 'change')
+
+        #     os.makedirs(odir, exist_ok=True)
+
+        #     ofile = set_export_filename(dat, odir, 'ratio')
+
+        #     self.showlog('Exporting to '+ofile)
+        #     export_raster(ofile, datfin, 'GTiff', piter=self.piter,
+        #                   compression='DEFLATE', showlog=self.showlog)
+
+        self.outdata['Raster'] = datfin
 
         return True
 
-    def nextscene(self, event):
-        """
-        Get next scene.
+    def setindices(self):
+        """Set the available indices."""
+        ilist = ['Difference', 'Mean', 'Standard Deviation',
+                 'Coefficient of Variation',
+                 'Spectral Angle Mapper']
 
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
+        self.lw_indices.clear()
+        self.lw_indices.addItems(ilist)
+
+        for i in range(self.lw_indices.count()):
+            item = self.lw_indices.item(i)
+            item.setSelected(True)
+            item.setText('\u2713 ' + item.text())
+
+    def invert_selection(self):
+        """
+        Invert the selected ratios.
 
         Returns
         -------
         None.
 
         """
-        self.slider.setValue(self.slider.value()+1)
+        for i in range(self.lw_indices.count()):
+            item = self.lw_indices.item(i)
+            item.setSelected(not item.isSelected())
 
-    def flaguse(self, event):
+        self.set_selected_indices()
+
+    def set_selected_indices(self):
         """
-        Flag the scene for use.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
+        Set the selected ratios.
 
         Returns
         -------
         None.
 
         """
-        self.df.loc[self.curimage, 'Use'] = self.cb_use.isChecked()
-
-    def home_callback(self, event):
-        """
-        Home callback.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.newdata(self.curimage)
-
-    def newdata(self, indx, capture=False):
-        """
-        Get new dataset.
-
-        Parameters
-        ----------
-        indx : int
-            Current index.
-        capture : bool, optional
-            Option to capture the scene. The default is False.
-
-        Returns
-        -------
-        None.
-
-        """
-        if not self.df.Use[indx] and self.cb_display.isChecked():
-            if capture is False:
-                return
-        else:
-            self.curimage = indx
-
-        dates = self.df.Datetime[indx]
-        dat = self.get_tiff(self.df.Filename[self.curimage])
-        self.cb_use.setChecked(bool(self.df.Use[self.curimage]))
-
-        self.canvas.update_plot(dat, dates)
-
-    def capture(self):
-        """Capture."""
-        self.slider.valueChanged.disconnect()
-
-        self.canvas.capture()
-        for indx in self.df.index:
-            self.slider.setValue(indx)
-            self.newdata(indx, capture=True)
-            self.canvas.writer.grab_frame()
-
-        self.canvas.capture()
-        self.slider.valueChanged.connect(self.newdata)
-        self.slider.setValue(self.curimage)
-
-    def fileQuit(self):
-        """
-        File quit.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.close()
-
-    def closeEvent(self, cevent):
-        """
-        Close event.
-
-        Parameters
-        ----------
-        cevent : TYPE
-            Unused.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fileQuit()
-
-    def about(self):
-        """
-        About.
-
-        Returns
-        -------
-        None.
-
-        """
-        QtWidgets.QMessageBox.about(self, "About",
-                                    """Timeseries Plot""")
-
-    def get_tiff(self, ifile, firstrun=False):
-        """
-        Get TIFF images.
-
-        Parameters
-        ----------
-        ifile : str
-            Filename to import.
-        firstrun : bool, optional
-            Option for first time running this routine. The default is False.
-
-        Returns
-        -------
-        datall : dictionary or None
-            Data images
-
-        """
-        datall = {}
-        ifile = str(ifile)
-
-        dataset = get_raster(ifile)
-
-        for i, band in enumerate(dataset):
-            datall[i+1] = band
-        # dx = dataset[0].xdim
-        # dy = dataset[0].ydim
-        dxlim = dataset[0].extent[:2]
-        dylim = dataset[0].extent[2:]
-        # rows, cols = dataset[0].data.shape
-
-        # # dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-        # self.pbar2.setMinimum(0)
-        # self.pbar2.setValue(0)
-        # self.pbar2.setMaximum(dataset.RasterCount-1)
-
-        # # gtr = dataset.GetGeoTransform()
-        # # cols = dataset.RasterXSize
-        # # rows = dataset.RasterYSize
-        # # dx = abs(gtr[1])
-        # # dy = abs(gtr[5])
-        # # dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
-        # # dylim = (gtr[3]+gtr[5]*rows, gtr[3])
-
-        axes = self.canvas.ax1
-
-        if firstrun is True:
-            axes.set_xlim(dxlim[0], dxlim[1])
-            axes.set_ylim(dylim[0], dylim[1])
-
-        # ext = (axes.transAxes.transform([(1, 1)]) -
-        #        axes.transAxes.transform([(0, 0)]))[0]
-
-        # xlim, ylim = axes.get_xlim(), axes.get_ylim()
-
-        # xoff = max(int((xlim[0]-dxlim[0])/dx), 0)
-        # yoff = max(-int((ylim[1]-dylim[1])/dy), 0)
-
-        # xoff1 = min(int((xlim[1]-dxlim[1])/dx), 0)
-        # yoff1 = min(-int((ylim[0]-dylim[0])/dy), 0)
-
-        # xsize = cols-xoff+xoff1
-        # ysize = rows-yoff+yoff1
-
-        # xdim = dx*xsize/int(ext[0])
-        # ydim = dy*ysize/int(ext[1])
-
-        # xbuf = min(xsize, int(ext[0]))
-        # ybuf = min(ysize, int(ext[1]))
-
-        # for i in range(dataset.RasterCount):
-
-        #     rtmp = dataset.GetRasterBand(i+1)
-        #     nval = rtmp.GetNoDataValue()
-        #     bandid = rtmp.GetDescription()
-        #     if bandid == '':
-        #         bandid = 'Band '+str(i+1)
-
-        #     dat = Data()
-        #     dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
-
-        #     if dat.data is None:
-        #         self.showlog('Error: Dataset could not be read '
-        #                             'properly')
-
-        #     if dat.data.dtype.kind == 'i':
-        #         if nval is None:
-        #             nval = 999999
-        #         nval = int(nval)
-        #     elif dat.data.dtype.kind == 'u':
-        #         if nval is None:
-        #             nval = 0
-        #         nval = int(nval)
-        #     else:
-        #         if nval is None:
-        #             nval = 1e+20
-        #         nval = float(nval)
-
-        #     dat.nodata = nval
-        #     dat.xdim = xdim
-        #     dat.ydim = ydim
-        #     dat.wkt = dataset.GetProjection()
-        #     datall[i+1] = dat
-
-        #     self.pbar2.setValue(i)
-
-        if datall == {}:
-            datall = None
-
-        # dataset = None
-
-        return datall
+        for i in range(self.lw_indices.count()):
+            item = self.lw_indices.item(i)
+            if item.isSelected():
+                item.setText('\u2713' + item.text()[1:])
+            else:
+                item.setText(' ' + item.text()[1:])
 
 
-class MySlider(QtWidgets.QSlider):
+def calc_change(flist, ilist=None, showlog=print, piter=iter):
     """
-    My Slider.
-
-    Custom class which allows clicking on a horizontal slider bar with slider
-    moving to click in a single step.
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def mousePressEvent(self, event):
-        """
-        Mouse press event.
-
-        Parameters
-        ----------
-        event : event
-            Event variable.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               event.x(),
-                                                               self.width()))
-
-    def mouseMoveEvent(self, event):
-        """
-        Mouse move event.
-
-        Jump to pointer position while moving.
-
-        Parameters
-        ----------
-        event : event
-            Event variable.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               event.x(),
-                                                               self.width()))
-
-
-def get_shape_coords(sfile, todegrees=False):
-    """
-    Get coordinates from a shapefile.
+    Calculate Change Indices.
 
     Parameters
     ----------
-    sfile : str
-        Shapefile name.
-    todegrees : bool, optional
-        Transform the coordinates to degrees. The default is False.
+    flist : list
+        List of batch file list data.
+    ilist : list, optional
+        List of strings describing index to calculate.
+    showlog : print, optional
+        Display information. The default is print.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    ddpoints : numpy array
-        Output coordinates.
+    datfin : list
+        List of PyGMI Data.
 
     """
-    gdf = gpd.read_file(sfile)
-    gdf = gdf[gdf.geometry != None]
+    if len(flist) < 2:
+        showlog('You need a minimum of two datasets.')
+        return None
 
-    if todegrees is True:
-        gdf = gdf.to_crs(epsg=4326)
+    # dat = lstack(dat, piter=piter, showlog=showlog)
+    meandat = None
+    std = None
+    datfin = []
 
-    gdf = gdf.explode(index_parts=False)
-    coords = gdf.geometry.apply(lambda geom: np.array(geom.exterior.coords))
+    if 'Mean' in ilist:
+        meandat, cnt, M = calc_mean(flist, showlog, piter)
 
-    ddpoints = np.vstack(coords)
+    if 'Standard Deviation' in ilist:
+        showlog('Calculating STD...')
 
-    ddpoints = ddpoints[:, :2]
-    return ddpoints
+        if meandat is None:
+            meandat, cnt, M = calc_mean(flist, showlog, piter)
+
+        std = {}
+        for i in meandat:
+            std[i] = meandat[i].copy()
+            std[i].data = stddev(M[i], cnt[i])
+            std[i].dataid += '_STD'
+        datfin += list(std.values())
+
+    if 'Coefficient of Variation' in ilist:
+        showlog('Calculating CV...')
+
+        if meandat is None:
+            meandat, cnt, M = calc_mean(flist, showlog, piter)
+        if std is None:
+            std = {}
+            for i in meandat:
+                std[i] = meandat[i].copy()
+                std[i].data = stddev(M[i], cnt[i])
+
+        cv = {}
+        for i in meandat:
+            cv[i] = meandat[i].copy()
+            cv[i].data = coefv(meandat[i].data, std[i].data)
+            cv[i].dataid += '_CV'
+
+        datfin += list(cv.values())
+
+    if 'Mean' in ilist:
+        for i in meandat:
+            meandat[i].dataid += '_MEAN'
+        datfin += list(meandat.values())
+
+    if 'Spectral Angle Mapper' in ilist and len(flist) != 2:
+        showlog('Only two datasets allowed for SAM.')
+    elif 'Spectral Angle Mapper' in ilist:
+        sam = calc_sam(flist, showlog, piter)
+        sam.dataid += '_SAM'
+        datfin += [sam]
+
+    if 'Difference' in ilist and len(flist) != 2:
+        showlog('Only two datasets allowed for difference.')
+    elif 'Difference' in ilist:
+        showlog('Calculating difference...')
+
+        dat1, dat2 = match_data(flist, showlog=showlog, piter=piter)
+
+        diff = [i.copy() for i in dat1]
+
+        for i, dband in enumerate(diff):
+            dband.data = dat2[i].data-dat1[i].data
+            dband.dataid += '_DIFF'
+        datfin += diff
+
+    return datfin
 
 
-def get_kml_coords(kml):
+def calc_mean(flist, showlog=print, piter=iter):
     """
-    Extract points from kml.
+    Load data and calculate iterative Mean.
 
     Parameters
     ----------
-    kml : str.
-        kml file name.
+    flist : list
+        List of batch file list data.
+    showlog : print, optional
+        Display information. The default is print.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    coordinates : numpy array
-        Coordinate in numpy format.
+    meandat : dictionary
+        PyGMI Data.
+    cnt : dictionary
+        numpy array.
+    M : dictionary
+        numpy array.
 
     """
-    ns = "{http://www.opengis.net/kml/2.2}"
-    tree = ElementTree.parse(kml)
+    showlog('Calculating mean...')
+    tmp = get_from_rastermeta(flist[0], piter=piter, showlog=showlog)
 
-    coordinates = []
-    for placemark in tree.findall(".//" + ns + "Placemark"):
-        polygon = placemark.findall(".//" + ns + "Polygon")
+    meandat = {}
+    for val in tmp:
+        meandat[val.dataid] = val
 
-        for i in polygon:
-            coordstext = i.findtext('.//'+ns+'coordinates')
-            coordstext = coordstext.strip()
+    # Init variables
+    cnt = {}
+    M = {}
 
-            for point_text in coordstext.split():
-                floats = point_text.split(",")
-                coordinates.append([float(floats[0]), float(floats[1])])
+    for i in meandat:
+        cnt[i] = None
+        M[i] = None
 
-    coordinates = np.array(coordinates)
-    return coordinates
+    # Iteratively calculate stats
+    for ifile in piter(flist[1:]):
+        tmp = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
+        dat = {}
+        for val in tmp:
+            dat[val.dataid] = val
+
+        for i in meandat:
+            if i not in dat:
+                showlog(f'{i} not in first dataset, skipping.')
+                continue
+            meandat[i], dat[i] = lstack([meandat[i], dat[i]], showlog=showlog,
+                                        piter=piter, checkdataid=False)
+
+            tmp = imean(meandat[i].data, dat[i].data, cnt[i], M[i])
+            meandat[i].data, cnt[i], M[i] = tmp
+
+    return meandat, cnt, M
+
+
+def calc_sam(flist, showlog=print, piter=iter):
+    """
+    Load data and calculate spectral angle between two times.
+
+    Parameters
+    ----------
+    flist : list
+        List of batch file list data.
+    showlog : print, optional
+        Display information. The default is print.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
+
+    Returns
+    -------
+    meandat : dictionary
+        PyGMI Data.
+    cnt : dictionary
+        numpy array.
+    M : dictionary
+        numpy array.
+
+    """
+    showlog('Calculating SAM...')
+
+    dat1, dat2 = match_data(flist, showlog=showlog, piter=piter)
+
+    dat1b = []
+    for j in dat1:
+        dat1b.append(j.data)
+
+    dat2b = []
+    for j in dat2:
+        dat2b.append(j.data)
+
+    dat1b = np.array(dat1b)
+    dat1b = np.moveaxis(dat1b, 0, -1)
+    dat2b = np.array(dat2b)
+    dat2b = np.moveaxis(dat2b, 0, -1)
+
+    # Init variables
+    angle = dat1[0].copy()
+    # mask = angle['angle'].data.mask
+    angle.data = angle.data.astype(float)
+    angle.data *= 0.
+
+    rows, cols = angle.data.shape
+
+    # 1844.7 sec, 583 sec
+    for i in piter(range(rows)):
+        for j in range(cols):
+            s1 = dat1b[i, j]
+            s2 = dat2b[i, j]
+            # if mask[i, j] == True:
+            #     continue
+            # angle['angle'].data[i, j] = scm(s1, s2)
+            angle.data[i, j] = sam(s1, s2)
+
+    angle.nodata = 0.
+    angle.data.mask = dat1[0].data.mask
+    angle.data = angle.data.filled(0.)
+    angle.data = np.ma.array(angle.data, mask=dat1[0].data.mask)
+
+    return angle
+
+
+def coefv(mean, std):
+    """Calculate coefficient of variation."""
+    # Sqrt to convert variance to standard deviation
+    cv = std/mean
+
+    tmp = cv.compressed()
+    perc1 = np.percentile(tmp, 1)
+    cv[cv < perc1] = perc1
+
+    perc99 = np.percentile(tmp, 99)
+    cv[cv > perc99] = perc99
+
+    return cv
+
+
+def imean(mean, newdat, cnt=None, M=None):
+    """Calculate mean and variance parameters."""
+    if cnt is None:
+        cnt = np.ones_like(mean)
+    if M is None:
+        M = np.zeros_like(mean)
+    mean = mean.astype(float)
+    newdat = newdat.astype(float)
+
+    n1 = cnt
+    cnt = cnt + 1
+    n = cnt
+    delta = newdat - mean
+    delta_n = delta / n
+    term1 = delta * delta_n * n1
+    mean = mean + delta_n
+    M = M + term1
+
+    return mean, cnt, M
+
+
+def match_data(flist, showlog=print, piter=iter):
+    """
+    Match two datasets.
+
+    Parameters
+    ----------
+    flist : list
+        List of batch file list data.
+    showlog : print, optional
+        Display information. The default is print.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
+
+    Returns
+    -------
+    dat1 : list
+        List of PyGMI data.
+    dat2 : list
+        List of PyGMI data.
+
+    """
+    tnames = list(set(flist[0].tnames).intersection(set(flist[1].tnames)))
+
+    dat1 = get_from_rastermeta(flist[0], piter=piter, showlog=showlog,
+                               tnames=tnames)
+    dat2 = get_from_rastermeta(flist[1], piter=piter, showlog=showlog,
+                               tnames=tnames)
+
+    tmp = lstack(dat1+dat2, showlog=showlog, piter=piter, checkdataid=False)
+
+    dat1 = tmp[:len(tnames)]
+    dat2 = tmp[len(tnames):]
+
+    if dat1[0].datetime > dat2[0].datetime:
+        dat1, dat2 = dat2, dat1
+
+    return dat1, dat2
+
+
+@jit(nopython=True)
+def sam(s1, s2):
+    """SAM."""
+    s1a = s1.astype('d')
+    s2a = s2.astype('d')
+
+    # result = np.dot(s1, s2)/(np.sqrt(np.sum(s1**2))*np.sqrt(np.sum(s2**2)))
+
+    num = np.dot(s1a, s2a)
+    denom = np.sqrt(np.sum(s1a**2))*np.sqrt(np.sum(s2a**2))
+
+    if denom == 0.:
+        result = 0.0
+    else:
+        result = math.acos(num/denom)
+
+    return result
+
+
+def scm(s1, s2):
+    """SCM or MSAM."""
+    s1 = s1.astype('d')
+    s2 = s2.astype('d')
+
+    s1a = s1-s1.mean()
+    s2a = s2-s2.mean()
+
+    num = np.dot(s1a, s2a)
+    denom = np.sqrt(np.sum(s1a**2))*np.sqrt(np.sum(s2a**2))
+
+    if denom == 0.:
+        result = -1.0
+    else:
+        result = num/denom
+
+    return result
+
+
+def stddev(M, cnt):
+    """Calculate std deviation."""
+    var = M/cnt
+    std = np.sqrt(var)
+
+    return std
 
 
 def _testfn():
     """Test routine."""
-    import sys
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
+    import matplotlib.pyplot as plt
+    import winsound
+    from pygmi.rsense.iodefs import ImportBatch
 
-    sfile = r'd:\Workdata\change\fl35.shp'
-    sfile = r'd:\Workdata\change\Planet\area-dd.shp'
-    pdir = r'd:\Workdata\change\Planet'
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    CSL = CreateSceneList(None)
-    CSL.isrecursive.setChecked(True)
-    CSL.shapefile.setText(sfile)
-    CSL.scenefile.setText(pdir)
-    CSL.settings(True)
-
-    plt.show()
-
-
-def _testview():
-    """Test routine."""
-    import sys
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
-
-    ifile = r'd:\Workdata\change\planet\paddock.xlsx'
+    idir = r'E:\KZN Floods\change\ratios'
+    os.chdir(r'E:\\')
 
     app = QtWidgets.QApplication(sys.argv)
 
-    LSL = LoadSceneList()
-    LSL.ifile = ifile
-    LSL.settings(True)
+    tmp1 = ImportBatch()
+    tmp1.idir = idir
+    tmp1.get_sfile(True)
+    tmp1.settings()
 
-    SV = SceneViewer()
-    SV.indata = LSL.outdata
-    SV.settings()
+    SR = CalculateChange()
+    SR.indata = tmp1.outdata
+    SR.settings()
 
+    dat2 = SR.outdata['Raster']
+    for i in dat2:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        vmin = i.data.mean()-2*i.data.std()
+        vmax = i.data.mean()+2*i.data.std()
+        plt.imshow(i.data, vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.show()
 
-def _testanim():
-    """Test for animation."""
-    wfile = r'd:\Work\Workdata\change\tmp.gif'
-
-    fig = plt.figure(dpi=150)
-
-    writer = manimation.PillowWriter(fps=4)
-    writer.setup(fig, wfile)
-
-    tmp = np.random.rand(100, 100)
-    im = plt.imshow(tmp)
-    for i in range(20):
-        red = np.random.rand(100, 100)
-        im.set_data(red)
-        fig.suptitle(str(i))
-        writer.grab_frame()
-    plt.show()
-    writer.finish()
+    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
 
 if __name__ == "__main__":
-    _testview()
+    _testfn()

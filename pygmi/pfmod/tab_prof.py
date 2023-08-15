@@ -612,7 +612,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                          'Magnetic Residual'):
                     continue
 
-                data1 = copy.deepcopy(self.lmod1.griddata[i])
+                data1 = self.lmod1.griddata[i].copy()
                 if data1.isrgb is True:
                     # self.showlog(f'Skipping RGB image {data1.dataid}')
                     continue
@@ -1402,10 +1402,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         tmprng2 = None
         tmpprof2 = None
         if 'Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics:
-            data2 = copy.deepcopy(self.lmod1.griddata['Magnetic Dataset'])
+            data2 = self.lmod1.griddata['Magnetic Dataset'].copy()
         elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
-            data2 = copy.deepcopy(self.lmod1.griddata['Gravity Dataset'])
+            data2 = self.lmod1.griddata['Gravity Dataset'].copy()
 
         if data2 is not None:
             data2.data = np.pad(data2.data, 1, 'edge')

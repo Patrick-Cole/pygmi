@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """Class for raster data types and conversion routines."""
 
+from copy import deepcopy
 import warnings
 import datetime
 import numpy as np
@@ -160,6 +161,25 @@ class Data():
         self.datetime = datetime.datetime(1900, 1, 1)
 
         self.set_transform(1, 0, 1, 0)
+
+    def copy(self):
+        """
+        Make a deepcopy of the function.
+
+        This routine will clear metadata during copy.
+
+        Returns
+        -------
+        data : Data
+            PyGMI data type.
+
+        """
+        data = Data()
+        data.__dict__ = {key: deepcopy(value) for key, value in
+                         self.__dict__.items()}
+        data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
+
+        return data
 
     def meta_from_rasterio(self, dataset):
         """

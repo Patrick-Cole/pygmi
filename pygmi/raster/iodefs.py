@@ -1148,7 +1148,7 @@ class ExportData(BasicModule):
 
         if 'Cluster' in self.indata:
             data = self.indata['Cluster']
-            newdat = copy.deepcopy(data)
+            newdat = [i.copy() for i in data]
             for i in data:
                 if 'memdat' not in i.metadata['Cluster']:
                     continue
@@ -1318,7 +1318,7 @@ class ExportData(BasicModule):
 
         file_out = self.ofile.rpartition('.')[0] + '.grd'
         for k0 in data:
-            k = copy.deepcopy(k0)
+            k = k0.copy()
             if len(data) > 1:
                 file_out = self.get_filename(k, 'grd')
 
@@ -1580,7 +1580,8 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
                                     WavelengthMax=str(rmeta['WavelengthMax']))
 
                 if datai.datetime != datetime.datetime(1900, 1, 1):
-                    out.update_tags(i+1, AcquisitionDate=str(datai.datetime))
+                    adatetxt = datai.datetime.strftime('%Y-%m-%d %H:%M:%S')
+                    out.update_tags(i+1, AcquisitionDate=adatetxt)
 
     if updatestats is True:
         dcov = None  # Disabled because it uses too much memory.
@@ -1597,6 +1598,8 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             band = int(child.attrib['band'])-1
             datai = data[band]
             donly = datai.data.compressed()
+            donly = np.ma.masked_invalid(donly)
+            donly = donly.compressed()
 
             # Histogram section
             dhist = np.histogram(donly, 256)

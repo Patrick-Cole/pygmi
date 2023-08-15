@@ -260,7 +260,7 @@ class IGRF(BasicModule):
 
         self.outdata['Raster'] = odata
 
-        self.outdata['Raster'].append(copy.deepcopy(maggrid))
+        self.outdata['Raster'].append(maggrid.copy())
         self.outdata['Raster'][-1].data -= odata[0].data
         self.outdata['Raster'][-1].dataid = bname
         return True
@@ -465,16 +465,16 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     showlog(f'Declination: {dmean:.2f}')
 
     outdata = []
-    outdata.append(copy.deepcopy(data))
+    outdata.append(data.copy())
     outdata[-1].data = igrf_F
     outdata[-1].dataid = 'IGRF'
 
     if not igrfonly:
-        outdata.append(copy.deepcopy(data))
+        outdata.append(data.copy())
         outdata[-1].data = igrf_I
         outdata[-1].dataid = 'Inclination'
 
-        outdata.append(copy.deepcopy(data))
+        outdata.append(data.copy())
         outdata[-1].data = igrf_D
         outdata[-1].dataid = 'Declination'
 

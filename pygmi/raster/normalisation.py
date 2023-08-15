@@ -118,7 +118,7 @@ class Normalisation(BasicModule):
             if temp == 0:
                 return False
 
-        data = copy.deepcopy(self.indata['Raster'])
+        data = [i.copy() for i in self.indata['Raster']]
 
         if self.radiobutton_interval.isChecked():
             for i in data:
