@@ -507,17 +507,20 @@ class ImportVector(BasicModule):
         if not nodialog:
             ext = ('Shapefile (*.shp);;'
                    'Zipped Shapefile (*.shp.zip);;'
-                   'GeoPackage (*.gpkg)')
+                   'GeoPackage (*.gpkg);;'
+                   'KML or KMZ (*.kml, *.kmz)')
 
-            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                                  'Open File',
-                                                                  '.', ext)
+            self.ifile, ext = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
             if self.ifile == '':
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
 
-        gdf = gpd.read_file(self.ifile, engine='pyogrio')
+        if 'KML' in ext:
+            gdf = gpd.read_file(self.ifile,  allow_unsupported_drivers=True)
+        else:
+            gdf = gpd.read_file(self.ifile, engine='pyogrio')
         gdf = gdf[gdf.geometry != None]
         gdf = gdf.explode(ignore_index=True)
 
@@ -747,10 +750,23 @@ def _test():
     from pygmi.misc import ProgressBarText
 
     piter = ProgressBarText().iter
-    ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
-    ifile = r"D:\Additional Survey Data\RADALL..DIR"
+    # ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
+    # ifile = r"D:\Additional Survey Data\RADALL..DIR"
 
-    data = get_intrepid(ifile, print, piter)
+    # data = get_intrepid(ifile, print, piter)
+
+    ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
+
+    import fiona
+
+    with fiona.open(ifile, allow_unsupported_drivers=True) as collection:
+
+        a=1
+
+
+    aaa = gpd.read_file(ifile, allow_unsupported_drivers=True)
+
+    breakpoint()
 
 
 if __name__ == "__main__":
