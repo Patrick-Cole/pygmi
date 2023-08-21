@@ -477,7 +477,7 @@ class ImportBatch(BasicModule):
         self.sfile.setText(self.idir)
 
         types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
-                 '*.xml', '*.h5']
+                 '*.xml', '*.h5', '*.SAFE/MTD_MSIL2A.xml']
 
         allfiles = []
         for i in types:
@@ -3189,6 +3189,11 @@ def set_export_filename(dat, odir, otype=None):
     """
     sensor = dat[0].metadata['Raster']['Sensor']
     filename = os.path.basename(dat[0].filename)
+
+    # Deal with Sentinel-2 directory case.
+    if filename == 'MTD_MSIL2A.xml':
+        filename = os.path.basename(os.path.dirname(dat[0].filename))
+
     filename = os.path.splitext(filename)[0]
 
     filename = filename.replace('_stack', '')

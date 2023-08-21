@@ -54,6 +54,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.cbar = None
         self.capture_active = False
         self.writer = None
+        self.piter = parent.piter
+        self.showlog = parent.showlog
 
         super().__init__(self.fig)
 
@@ -117,9 +119,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         extent = dat.banddict[self.bands[0]].extent
 
-        self.im1 = imshow(self.ax1, data, extent=extent)
+        self.im1 = imshow(self.ax1, data, extent=extent, piter=self.piter,
+                          showlog=self.showlog)
         self.im1.rgbmode = self.manip
+        self.im1.rgbclip = None
         self.cbar = None
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
 
         self.fig.suptitle(dates)
 
@@ -161,21 +167,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.fig.canvas.draw()
 
-    def onClick(self, event):
-        """
-        On click event.
+    # def onClick(self, event):
+    #     """
+    #     On click event.
 
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
+    #     Parameters
+    #     ----------
+    #     event : TYPE
+    #         Unused.
 
-        Returns
-        -------
-        None.
+    #     Returns
+    #     -------
+    #     None.
 
-        """
-        self.rcid = self.fig.canvas.mpl_connect('draw_event', self.redraw)
+    #     """
+    #     self.rcid = self.fig.canvas.mpl_connect('draw_event', self.redraw)
 
     def redraw(self, event):
         """
@@ -207,7 +213,8 @@ class SceneViewer(BasicModule):
         self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
 
         self.mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.slider = MySlider()
+        # self.slider = MySlider()
+        self.slider = QtWidgets.QSlider()
         self.slider.setOrientation(QtCore.Qt.Horizontal)
 
         self.button1 = QtWidgets.QPushButton('Start Capture')
@@ -235,6 +242,7 @@ class SceneViewer(BasicModule):
         hlayoutmain = QtWidgets.QHBoxLayout(self)
 
         self.setWindowTitle("View Change Data")
+        self.slider.setTracking(False)
 
         gbox1 = QtWidgets.QGroupBox('Display Type')
         v1 = QtWidgets.QVBoxLayout()
@@ -548,58 +556,6 @@ class SceneViewer(BasicModule):
         self.showlog('Capture complete.')
 
 
-class MySlider(QtWidgets.QSlider):
-    """
-    My Slider.
-
-    Custom class which allows clicking on a horizontal slider bar with slider
-    moving to click in a single step.
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def mousePressEvent(self, event):
-        """
-        Mouse press event.
-
-        Parameters
-        ----------
-        event : event
-            Event variable.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               event.x(),
-                                                               self.width()))
-
-    def mouseMoveEvent(self, event):
-        """
-        Mouse move event.
-
-        Jump to pointer position while moving.
-
-        Parameters
-        ----------
-        event : event
-            Event variable.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               event.x(),
-                                                               self.width()))
-
-
 def _testview():
     """Test routine."""
     import sys
@@ -607,6 +563,7 @@ def _testview():
 
     idir = r"E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic"
     idir = r"D:\Workdata\change\Planet"
+    idir = r"E:\Namaqua_change\namakwa"
 
     app = QtWidgets.QApplication(sys.argv)
 

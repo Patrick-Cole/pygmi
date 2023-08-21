@@ -26,7 +26,7 @@
 
 from PyQt5 import QtWidgets
 
-from pygmi.rsense import change
+from pygmi.rsense import change, change_viewer
 from pygmi.rsense import iodefs
 from pygmi.rsense import ratios
 from pygmi.rsense import hyperspec
@@ -152,7 +152,7 @@ class MenuWidget():
     def view_change(self):
         """View Change Detection."""
         self.parent.item_insert('Step', 'Change Detection Viewer',
-                                change.SceneViewer)
+                                change_viewer.SceneViewer)
 
     def calc_ratios(self):
         """Calculate Ratios."""

@@ -51,10 +51,13 @@ class ModestImage(mi.AxesImage):
         # Custom lines for PyGMI
         self.shade = None
         self.rgbmode = ''  # Can be None, CMY Ternary or RGB Ternary
-        self.rgbclip = [[None, None], [None, None], [None, None]]
+        # self.rgbclip = [[None, None], [None, None], [None, None]]
+        self.rgbclip = None
         self.dohisteq = False
         self.kval = 0.01  # For CMYK Ternary
         self.dmeta = None
+        self.piter = iter
+        self.showlog = print
 
     def set_data(self, A):
         """
@@ -316,13 +319,14 @@ class ModestImage(mi.AxesImage):
             A = np.moveaxis(A, 0, 2)
             self._A = A
 
-            self.rgbclip = []
-            lclip, uclip = np.percentile(red.compressed(), [1, 99])
-            self.rgbclip.append([lclip, uclip])
-            lclip, uclip = np.percentile(green.compressed(), [1, 99])
-            self.rgbclip.append([lclip, uclip])
-            lclip, uclip = np.percentile(blue.compressed(), [1, 99])
-            self.rgbclip.append([lclip, uclip])
+            if self.rgbclip is None:
+                self.rgbclip = []
+                lclip, uclip = np.percentile(red.compressed(), [1, 99])
+                self.rgbclip.append([lclip, uclip])
+                lclip, uclip = np.percentile(green.compressed(), [1, 99])
+                self.rgbclip.append([lclip, uclip])
+                lclip, uclip = np.percentile(blue.compressed(), [1, 99])
+                self.rgbclip.append([lclip, uclip])
         else:
             self._A = datd[tnames[0]].data
             self.rgbclip = []
@@ -756,7 +760,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
            origin=None, extent=None, shape=None, filternorm=1,
            filterrad=4.0, imlim=None, resample=None, url=None,
            suncell=None, suntheta=None, sunphi=None, sunalpha=None,
-           **kwargs):
+           piter=iter, showlog=print, **kwargs):
     """
     Similar to matplotlib's imshow command, but produces a ModestImage.
 
@@ -775,6 +779,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
                      origin=origin, extent=extent, filternorm=filternorm,
                      filterrad=filterrad, resample=resample, **kwargs)
 
+    im.piter = piter
+    im.showlog = showlog
     im.set_data(X)
     im.set_alpha(alpha)
 
