@@ -26,9 +26,7 @@
 
 import datetime
 from PyQt5 import QtWidgets, QtCore
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -65,8 +63,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                         QtWidgets.QSizePolicy.Expanding,
                                         QtWidgets.QSizePolicy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
-
-        # self.fig.canvas.mpl_connect('button_release_event', self.onClick)
 
     def capture(self):
         """
@@ -166,39 +162,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ax1.yaxis.set_major_formatter(frm)
 
         self.fig.canvas.draw()
-
-    # def onClick(self, event):
-    #     """
-    #     On click event.
-
-    #     Parameters
-    #     ----------
-    #     event : TYPE
-    #         Unused.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     self.rcid = self.fig.canvas.mpl_connect('draw_event', self.redraw)
-
-    def redraw(self, event):
-        """
-        Redraw event.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fig.canvas.mpl_disconnect(self.rcid)
-        self.parent.newdata(self.parent.curimage)
 
 
 class SceneViewer(BasicModule):
@@ -446,7 +409,7 @@ class SceneViewer(BasicModule):
 
         return projdata
 
-    def manip_change(self, event):
+    def manip_change(self):
         """
         Change manipulation or bands.
 
@@ -476,14 +439,9 @@ class SceneViewer(BasicModule):
         self.canvas.manip = maniptxt
         self.newdata(self.curimage)
 
-    def nextscene(self, event):
+    def nextscene(self):
         """
         Get next scene.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
 
         Returns
         -------
@@ -492,14 +450,9 @@ class SceneViewer(BasicModule):
         """
         self.slider.setValue(self.slider.value()+1)
 
-    def prevscene(self, event):
+    def prevscene(self):
         """
         Get previous scene.
-
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
 
         Returns
         -------
@@ -508,7 +461,7 @@ class SceneViewer(BasicModule):
         """
         self.slider.setValue(self.slider.value()-1)
 
-    def newdata(self, indx, capture=False):
+    def newdata(self, indx):
         """
         Get new dataset.
 
@@ -516,8 +469,6 @@ class SceneViewer(BasicModule):
         ----------
         indx : int
             Current index.
-        capture : bool, optional
-            Option to capture the scene. The default is False.
 
         Returns
         -------
@@ -539,14 +490,21 @@ class SceneViewer(BasicModule):
         self.canvas.update_plot(dat, dates)
 
     def capture(self):
-        """Capture."""
+        """
+        Capture all scenes in the current view as an animation.
+
+        Returns
+        -------
+        None.
+
+        """
         self.showlog('Starting capture...')
         self.slider.valueChanged.disconnect()
 
         self.canvas.capture()
         for indx in self.df.index:
             self.slider.setValue(indx)
-            self.newdata(indx, capture=True)
+            self.newdata(indx)
             self.canvas.writer.grab_frame()
 
         self.canvas.capture()
@@ -556,7 +514,7 @@ class SceneViewer(BasicModule):
         self.showlog('Capture complete.')
 
 
-def _testview():
+def _testfn():
     """Test routine."""
     import sys
     from pygmi.rsense.iodefs import ImportBatch
@@ -572,10 +530,10 @@ def _testview():
     tmp1.get_sfile(True)
     tmp1.settings()
 
-    SV = SceneViewer()
-    SV.indata = tmp1.outdata
-    SV.settings()
+    tmp2 = SceneViewer()
+    tmp2.indata = tmp1.outdata
+    tmp2.settings()
 
 
 if __name__ == "__main__":
-    _testview()
+    _testfn()

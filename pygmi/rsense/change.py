@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Calculate remote sensing ratios."""
+"""Calculate change detection indices."""
 
 import math
 import os
@@ -213,7 +213,14 @@ class CalculateChange(BasicModule):
         return True
 
     def setindices(self):
-        """Set the available indices."""
+        """
+        Set the available indices.
+
+        Returns
+        -------
+        None.
+
+        """
         ilist = ['Difference', 'Mean', 'Standard Deviation',
                  'Coefficient of Variation',
                  'Spectral Angle Mapper']
@@ -228,7 +235,7 @@ class CalculateChange(BasicModule):
 
     def invert_selection(self):
         """
-        Invert the selected ratios.
+        Invert the selected indices.
 
         Returns
         -------
@@ -243,7 +250,7 @@ class CalculateChange(BasicModule):
 
     def set_selected_indices(self):
         """
-        Set the selected ratios.
+        Set the selected indices.
 
         Returns
         -------
@@ -331,9 +338,9 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
     if 'Spectral Angle Mapper' in ilist and len(flist) != 2:
         showlog('Only two datasets allowed for SAM.')
     elif 'Spectral Angle Mapper' in ilist:
-        sam = calc_sam(flist, showlog, piter)
-        sam.dataid += '_SAM'
-        datfin += [sam]
+        sam1 = calc_sam(flist, showlog, piter)
+        sam1.dataid += '_SAM'
+        datfin += [sam1]
 
     if 'Difference' in ilist and len(flist) != 2:
         showlog('Only two datasets allowed for difference.')
@@ -477,7 +484,22 @@ def calc_sam(flist, showlog=print, piter=iter):
 
 
 def coefv(mean, std):
-    """Calculate coefficient of variation."""
+    """
+    Calculate coefficient of variation.
+
+    Parameters
+    ----------
+    mean : numpy array
+        numpy array of mean values.
+    std : numpy array
+        numpy array of standard deviation values.
+
+    Returns
+    -------
+    cv : numpy array
+        Array of coefficient of variation values.
+
+    """
     # Sqrt to convert variance to standard deviation
     cv = std/mean
 
@@ -492,7 +514,30 @@ def coefv(mean, std):
 
 
 def imean(mean, newdat, cnt=None, M=None):
-    """Calculate mean and variance parameters."""
+    """
+    Calculate mean and variance parameters.
+
+    Parameters
+    ----------
+    mean : numpy array
+        existing mean values.
+    newdat : numpy array
+        new data to be added to mean..
+    cnt : numpy array, optional
+        cnt of values which made up mean. The default is None.
+    M : numpy array, optional
+        Variance parameter, where Variance = M/cnt. The default is None.
+
+    Returns
+    -------
+    mean : numpy array
+        Updated mean of data.
+    cnt : numpy array
+        Updated cnt of values which made up mean.
+    M : numpy array
+        Updated variance parameter, where Variance = M/cnt.
+
+    """
     if cnt is None:
         cnt = np.ones_like(mean)
     if M is None:
@@ -553,7 +598,22 @@ def match_data(flist, showlog=print, piter=iter):
 
 @jit(nopython=True)
 def sam(s1, s2):
-    """SAM."""
+    """
+    Calculate Spectral Angle Mapper (SAM).
+
+    Parameters
+    ----------
+    s1 : numpy array
+        Spectrum 1.
+    s2 : numpy array
+        Spectrum 2.
+
+    Returns
+    -------
+    result : numpy array
+        Output angles.
+
+    """
     s1a = s1.astype('d')
     s2a = s2.astype('d')
 
@@ -571,7 +631,22 @@ def sam(s1, s2):
 
 
 def scm(s1, s2):
-    """SCM or MSAM."""
+    """
+    SCM or MSAM.
+
+    Parameters
+    ----------
+    s1 : numpy array
+        Spectrum 1.
+    s2 : numpy array
+        Spectrum 2.
+
+    Returns
+    -------
+    result : numpy array
+        Output angles.
+
+    """
     s1 = s1.astype('d')
     s2 = s2.astype('d')
 
@@ -590,7 +665,22 @@ def scm(s1, s2):
 
 
 def stddev(M, cnt):
-    """Calculate std deviation."""
+    """
+    Calculate std deviation.
+
+    Parameters
+    ----------
+    M : numpy array
+        Variance parameter, where Variance = M/cnt.
+    cnt : numpy array
+        cnt of values which made up mean.
+
+    Returns
+    -------
+    std : TYPE
+        DESCRIPTION.
+
+    """
     var = M/cnt
     std = np.sqrt(var)
 
@@ -600,7 +690,6 @@ def stddev(M, cnt):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
-    import winsound
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'E:\KZN Floods\change\ratios'
@@ -613,11 +702,11 @@ def _testfn():
     tmp1.get_sfile(True)
     tmp1.settings()
 
-    SR = CalculateChange()
-    SR.indata = tmp1.outdata
-    SR.settings()
+    tmp2 = CalculateChange()
+    tmp2.indata = tmp1.outdata
+    tmp2.settings()
 
-    dat2 = SR.outdata['Raster']
+    dat2 = tmp2.outdata['Raster']
     for i in dat2:
         plt.figure(dpi=150)
         plt.title(i.dataid)
@@ -626,8 +715,6 @@ def _testfn():
         plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
-
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
 
 if __name__ == "__main__":

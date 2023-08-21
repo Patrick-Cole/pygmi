@@ -26,7 +26,6 @@
 
 import os
 import sys
-import copy
 import xml.etree.ElementTree as ET
 import glob
 import tarfile
