@@ -501,7 +501,7 @@ def get_ascii(ifile):
 
 def get_raster(ifile, nval=None, piter=None, showlog=print,
                iraster=None, driver=None, bounds=None, dataid=None,
-               tnames=None, metaonly=False):
+               tnames=None, metaonly=False, out_shape=None):
     """
     Get raster dataset.
 
@@ -627,11 +627,12 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
                     envimeta['fwhm'] = [float(i) for i in
                                         envimeta['fwhm'][1:-1].split(',')]
 
+            if nval is None:
+                nval = dataset.nodata
+
     except rasterio.errors.RasterioIOError:
         return None
 
-    if nval is None:
-        nval = dataset.nodata
     dtype = rasterio.band(dataset, 1).dtype
 
     if bounds is not None:
@@ -729,11 +730,13 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             if isbil is True and metaonly is False:
                 dat[-1].data = datin[i]
             elif iraster is None and metaonly is False:
-                dat[-1].data = dataset.read(index)
+                dat[-1].data = dataset.read(index, out_shape=out_shape)
             elif metaonly is False:
                 xoff, yoff, xsize, ysize = iraster
-                dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
-                                                                 xsize, ysize))
+                dat[-1].data = dataset.read(index,
+                                            window=Window(xoff, yoff,
+                                                          xsize, ysize),
+                                            out_shape=out_shape)
 
             # Set Null Value
             if nval is None:

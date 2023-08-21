@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
-# Name:        ratios.py (part of PyGMI)
+# Name:        change.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2020 Council for Geoscience
+# Copyright:   (c) 2023 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI

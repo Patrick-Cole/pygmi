@@ -119,9 +119,9 @@ class MenuWidget():
         # self.menu2.addAction(self.action_load_list)
         # self.action_load_list.triggered.connect(self.load_scene)
 
-        # self.action_data_viewer = QtWidgets.QAction('View Change Data')
-        # self.menu2.addAction(self.action_data_viewer)
-        # self.action_data_viewer.triggered.connect(self.view_change)
+        self.action_data_viewer = QtWidgets.QAction('View Change Data')
+        self.menu2.addAction(self.action_data_viewer)
+        self.action_data_viewer.triggered.connect(self.view_change)
 
         # Context menus
         context_menu['RasterFileList'].addSeparator()
@@ -149,10 +149,10 @@ class MenuWidget():
     #     self.parent.item_insert('Io', 'Import Scene List',
     #                             change.LoadSceneList)
 
-    # def view_change(self):
-    #     """View Change Detection."""
-    #     self.parent.item_insert('Step', 'Change Detection Viewer',
-    #                             change.SceneViewer)
+    def view_change(self):
+        """View Change Detection."""
+        self.parent.item_insert('Step', 'Change Detection Viewer',
+                                change.SceneViewer)
 
     def calc_ratios(self):
         """Calculate Ratios."""
