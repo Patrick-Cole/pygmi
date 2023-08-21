@@ -1418,7 +1418,7 @@ def MarchingCubes(x, y, z, c, iso, showlog=print):
     iso : float
         Isosurface level.
     showlog : function, optional
-        Routine to show text messages. The default is print.
+        Display information. The default is print.
 
     Returns
     -------

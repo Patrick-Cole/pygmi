@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Calculate remote sensing ratios."""
 
-import copy
 import os
 import sys
 import re
@@ -830,18 +829,18 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
     Parameters
     ----------
-    dat : list
+    dat : list of PyGMI Data.
         List of PyGMI Data.
     rlist : list
         List of strings, containing ratios to calculate..
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    datfin : list
+    datfin : list of PyGMI Data.
         List of PyGMI Data.
 
     """
@@ -1122,12 +1121,12 @@ def get_TCI(lst):
 
     Parameters
     ----------
-    lst : list
+    lst : list of PyGMI Data.
         list of PyGMI datasets - land surface temperatures.
 
     Returns
     -------
-    tci : list
+    tci : list of PyGMI Data.
         output TCI datasets.
 
     """
@@ -1158,14 +1157,14 @@ def get_VCI(evi, index):
 
     Parameters
     ----------
-    evi : list
+    evi : list of PyGMI Data
         list of EVI datasets.
     index : str
         index for dataid.
 
     Returns
     -------
-    vci : list
+    vci : list of PyGMI Data
         output VCI datasets.
 
     """
@@ -1205,7 +1204,7 @@ def get_VHI(tci, vci, alpha=0.5):
 
     Returns
     -------
-    vhi : list
+    vhi : list of PyGMI Data
         Output VHI datasets.
 
     """
@@ -1231,16 +1230,16 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     Parameters
     ----------
-    dat : list
+    dat : list of PyGMI Data.
         List of PyGMI Data.
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    datfin : list
+    datfin : list of PyGMI Data.
         Red, green and blue PyGMI Data.
 
     """

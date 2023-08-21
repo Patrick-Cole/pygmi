@@ -23,8 +23,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """Calculate Landsat composite scenes."""
+
 import os
-import copy
 import glob
 from datetime import datetime
 import numpy as np
@@ -232,13 +232,13 @@ def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
         automatically. The default is None.
     showlog : function, optional
         Function for printing text. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. The default is None.
 
     Returns
     -------
-    datfin : list
-        List of PyGMI Data objects.
+    datfin : list of PyGMI Data.
+        List of PyGMI Data.
 
     """
     if piter is None:
@@ -311,7 +311,7 @@ def import_and_score(ifile, dreq, mean, std, showlog=print, piter=None):
         The standard deviation of all days.
     showlog : function, optional
         Function for printing text. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. The default is None.
 
     Returns
@@ -369,35 +369,6 @@ def import_and_score(ifile, dreq, mean, std, showlog=print, piter=None):
     del dat['cdist']
 
     return dat
-
-
-def plot_rgb(dat, title='RGB'):
-    """
-    Plot RGB map.
-
-    Parameters
-    ----------
-    dat : list
-        List of PyGMI datasets.
-    title : str
-        Title for plot.
-
-    Returns
-    -------
-    None.
-
-    """
-    blue = dat['B2'].data[5000:6000, 2000:3000]
-    green = dat['B3'].data[5000:6000, 2000:3000]
-    red = dat['B4'].data[5000:6000, 2000:3000]
-    alpha = np.logical_not(red.mask)
-    rgb = np.array([red, green, blue, alpha])
-    rgb = np.moveaxis(rgb, 0, 2)
-
-    plt.figure(dpi=150)
-    plt.title(title)
-    plt.imshow(rgb)
-    plt.show()
 
 
 def _testfn():

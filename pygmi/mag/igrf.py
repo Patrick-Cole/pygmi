@@ -55,7 +55,6 @@ from math import sin
 from math import cos
 from math import sqrt
 from math import atan2
-import copy
 
 from numba import jit
 from PyQt5 import QtWidgets, QtCore
@@ -313,7 +312,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
 
     Parameters
     ----------
-    data : PyGMI data
+    data : PyGMI Data
         Input magnetic data.
     sdate : Date
         Survey date.
@@ -323,15 +322,15 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         WKT projection. The default is None.
     igrfonly : bool, optional
         Output IGRF only. The default is True.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
-    showlog : print, optional
-        Print routine. The default is print.
+    showlog : function, optional
+        Display information. The default is print.
 
     Returns
     -------
-    outdata : PyGMI data
-        Output data.
+    outdata : list of PyGMI Data.
+        Output PyGMI Data.
     fmean : float
         Total intensity mean.
     imean : float

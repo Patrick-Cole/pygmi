@@ -832,7 +832,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
 
     Parameters
     ----------
-    dat : PyGMI Data
+    dat : list of PyGMI Data
         Input PyGMI data.
     mineral : str
         Mineral description.
@@ -845,12 +845,12 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         features or ratios with thresholds to be combined.
     rfilt : bool
         Flag to decide whether to filter final ratio products less than 1.0
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    datfin : list
+    datfin : list of PyGMI Data.
         Output datasets.
 
     """

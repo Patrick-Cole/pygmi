@@ -788,8 +788,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        idata : list
-            Input list of PyGMI dataset
+        idata : list of PyGMI Data
+            Input list of PyGMI Data
         """
         idata = []
         for item in self.scene.selectedItems():
@@ -803,8 +803,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        odata : list
-            Output list of PyGMI dataset
+        odata : list of PyGMI Data
+            Output list of PyGMI Data
         """
         odata = []
         for item in self.scene.selectedItems():

@@ -180,8 +180,6 @@ def basicstats3d_calc(lmod):
 
             mass = lvol * density
 
-            # breakpoint()
-
             lidx = i.lith_index.copy()
             lidx.shape = (-1, lidx.shape[-1])
 

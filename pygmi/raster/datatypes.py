@@ -170,7 +170,7 @@ class Data():
 
         Returns
         -------
-        data : Data
+        data : PyGMI Data
             PyGMI data type.
 
         """
@@ -303,10 +303,10 @@ class Data():
 
         Returns
         -------
-        vmin : TYPE
-            DESCRIPTION.
-        vmax : TYPE
-            DESCRIPTION.
+        vmin : float
+            Value minimum.
+        vmax : float
+            Value maximum.
 
         """
         mean = self.data.mean()
@@ -355,7 +355,7 @@ class RasterMeta():
 
         Parameters
         ----------
-        dat : Data
+        dat : PyGMI Data
             PyGMI data object.
 
         Returns

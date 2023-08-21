@@ -25,8 +25,6 @@
 """Transforms such as PCA and MNF."""
 
 import os
-import copy
-
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from sklearn.decomposition import IncrementalPCA
@@ -575,7 +573,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
 
     Parameters
     ----------
-    dat : List
+    dat : list of PyGMI Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -592,8 +590,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
 
     Returns
     -------
-    odata : list
-        Output list of PyGMI Data.Can be forward or inverse transformed data.
+    odata : list of PyGMI Data.
+        Output list of PyGMI Data. Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.
 
@@ -686,7 +684,7 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     Parameters
     ----------
-    dat : List
+    dat : list of PyGMI Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -700,8 +698,8 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     Returns
     -------
-    odata : list
-        Output list of PyGMI Data.Can be forward or inverse transformed data.
+    odata : list of PyGMI Data.
+        Output list of PyGMI Data. Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.
 
@@ -780,7 +778,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
     Parameters
     ----------
-    dat : List
+    dat : list of PyGMI Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -794,7 +792,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
     Returns
     -------
-    odata : list
+    odata : list of PyGMI Data.
         Output list of PyGMI Data.Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.
@@ -928,7 +926,7 @@ def _testfn():
 
     pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
 
-    for i, _ in enumerate(dat): #[0, 5, 10, 13, 14, 15, 20, 25]:
+    for i, _ in enumerate(dat):  # [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
         vmin = dat[i].data.min()
 

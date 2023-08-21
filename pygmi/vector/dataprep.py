@@ -733,15 +733,15 @@ def cut_point(data, ifile):
 
     Parameters
     ----------
-    data : Data
-        PyGMI Dataset
+    data : GeoDataFrame
+        GeoPandas GeoDataFrame
     ifile : str
         shapefile used to cut data
 
     Returns
     -------
-    data : Data
-        PyGMI Dataset
+    data : GeoDataFrame
+        GeoPandas GeoDataFrame
     """
     gdf = gpd.read_file(ifile)
     gdf = gdf[gdf.geometry != None]
@@ -756,7 +756,34 @@ def cut_point(data, ifile):
 
 def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
             bdist=4.0, showlog=print):
-    """Grid data."""
+    """
+    Grid xyz data.
+
+    Parameters
+    ----------
+    x : numpy array
+        X coordinate values.
+    y : numpy array
+        Y coordinate values.
+    z : numpy array
+        Z or data values.
+    dxy : float
+        Grid cell size, in distance units.
+    nullvalue : float, optional
+        null or nodata value. The default is 1e+20.
+    method : str, optional
+        Gridding method. The default is 'Nearest Neighbour'.
+    bdist : float, optional
+        Blacking distance. The default is 4.0.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    dat : PyGMI Data.
+        Output raster dataset.
+
+    """
     if bdist < 1:
         bdist = None
         showlog('Blanking distance too small.')

@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Main Clustering set of routines."""
 
-import copy
 import os
 from PyQt5 import QtWidgets, QtCore
 import numpy as np

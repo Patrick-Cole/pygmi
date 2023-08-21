@@ -25,7 +25,6 @@
 """Main Crisp Clustering set of routines."""
 
 import os
-import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 

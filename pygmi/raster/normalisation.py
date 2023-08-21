@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Normalisation function."""
 
-import copy
 import warnings
 from PyQt5 import QtWidgets, QtCore
 import numpy as np

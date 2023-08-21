@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Equation editor."""
 
-import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
@@ -47,8 +46,6 @@ class EquationEditor(BasicModule):
         string with the equation in it
     bands : dictionary
         dictionary of bands
-    bandsall : list
-        list of all bands
     """
 
     def __init__(self, parent=None):
@@ -165,7 +162,7 @@ class EquationEditor(BasicModule):
 
         Parameters
         ----------
-        indata : PyGMI Data
+        indata : list of PyGMI Data.
             PyGMI raster dataset.
 
         Returns

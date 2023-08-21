@@ -95,7 +95,7 @@ class GraphHist(FigureCanvasQTAgg):
         ----------
         bins : int
             Number of bins.
-        dattmp : list
+        dattmp : list of PyGMI Data
             Data.
         ctmp : list
             Cluster indices.

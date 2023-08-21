@@ -271,18 +271,18 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
     Parameters
     ----------
-    flist : list
+    flist : list of RasterMeta.
         List of batch file list data.
     ilist : list, optional
         List of strings describing index to calculate.
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    datfin : list
+    datfin : list of PyGMI Data
         List of PyGMI Data.
 
     """
@@ -365,21 +365,21 @@ def calc_mean(flist, showlog=print, piter=iter):
 
     Parameters
     ----------
-    flist : list
+    flist : list of RasterMeta
         List of batch file list data.
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    meandat : dictionary
-        PyGMI Data.
-    cnt : dictionary
-        numpy array.
-    M : dictionary
-        numpy array.
+    meandat : dictionary of PyGMI Data.
+        PyGMI Data representing means.
+    cnt : dictionary of numpy arrays
+        Count of values which made up mean.
+    M : dictionary of numpy arrays
+        Variance parameter, where Variance = M/cnt.
 
     """
     showlog('Calculating mean...')
@@ -423,21 +423,17 @@ def calc_sam(flist, showlog=print, piter=iter):
 
     Parameters
     ----------
-    flist : list
+    flist : list of RasterMeta.
         List of batch file list data.
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    meandat : dictionary
-        PyGMI Data.
-    cnt : dictionary
-        numpy array.
-    M : dictionary
-        numpy array.
+    angle : PyGMI Data
+        PyGMI Data of SAM angles.
 
     """
     showlog('Calculating SAM...')
@@ -563,21 +559,25 @@ def match_data(flist, showlog=print, piter=iter):
 
     Parameters
     ----------
-    flist : list
+    flist : list of RasterMeta
         List of batch file list data.
-    showlog : print, optional
+    showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    dat1 : list
-        List of PyGMI data.
-    dat2 : list
-        List of PyGMI data.
+    dat1 : list of PyGMI Data
+        First dataset with matched bands only.
+    dat2 : list of PyGMI Data
+        Second dataset with matched bands only.
 
     """
+    if len(flist) > 2:
+        showlog('You have more than two datasets being matched. '
+                'Only the first two will be used.')
+
     tnames = list(set(flist[0].tnames).intersection(set(flist[1].tnames)))
 
     dat1 = get_from_rastermeta(flist[0], piter=piter, showlog=showlog,
@@ -677,8 +677,8 @@ def stddev(M, cnt):
 
     Returns
     -------
-    std : TYPE
-        DESCRIPTION.
+    std : numpy array
+        Calculated standard deviation.
 
     """
     var = M/cnt

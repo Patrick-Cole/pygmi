@@ -2909,8 +2909,8 @@ def rotate2d(pts, cntr, ang=np.pi/4):
 
     Returns
     -------
-    pts2 : TYPE
-        DESCRIPTION.
+    pts2 : numpy array
+        Rotated points.
 
     """
     trans = np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]])

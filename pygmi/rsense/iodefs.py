@@ -1342,7 +1342,7 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         type of file to export.
     tnames : list, optional
         list of band names to import, in order. the default is None.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -1429,7 +1429,7 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -1440,7 +1440,7 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    dat : PyGMI raster Data
+    dat : list of PyGMI Data
         dataset imported
     """
     ifile = ifile[:]
@@ -1508,7 +1508,7 @@ def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
     ----------
     ldata : RasterMeta or list
         List of RasterMeta or single item.
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -1517,7 +1517,7 @@ def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
 
     Returns
     -------
-    dat : list
+    dat : list  of PyGMI Data
         List of data.
 
     """
@@ -1553,7 +1553,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -1675,7 +1675,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
     ----------
     ifilet : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -1878,7 +1878,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
     ----------
     ifilet : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2108,7 +2108,7 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2315,7 +2315,7 @@ def get_sentinel1(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2403,7 +2403,7 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2504,7 +2504,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2622,13 +2622,13 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
     """
     Get ASTER hdf Data.
 
-    This function needs the orignal filename to extract the date.
+    This function needs the original filename to extract the date.
 
     Parameters
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -2808,7 +2808,7 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
     ----------
     ifile : str
         filename to import
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterable. Default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -3041,7 +3041,7 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
 
     Parameters
     ----------
-    dat : list
+    dat : list of PyGMI Data
         PyGMI Data.
     sunfile : str, optional
         Sunshading band or filename. The default is None.
@@ -3056,7 +3056,7 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
 
     Returns
     -------
-    newimg : list
+    newimg : list of PyGMI Data.
         list of PyGMI data.
 
     """
@@ -3173,7 +3173,7 @@ def set_export_filename(dat, odir, otype=None):
 
     Parameters
     ----------
-    dat : list
+    dat : list of PyGMI Data.
         List of PyGMI data.
     odir : str
         Output directory.
@@ -3244,12 +3244,12 @@ def utm_to_south(dat):
 
     Parameters
     ----------
-    dat : list
-        List fo Data.
+    dat : list of PyGMI Data
+        List of Data.
 
     Returns
     -------
-    dat : list
+    dat : list of PyGMI Data
         List of Data.
 
     """

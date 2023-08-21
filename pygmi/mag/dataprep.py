@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """A set of Magnetic Data routines."""
 
-import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from scipy.signal.windows import tukey

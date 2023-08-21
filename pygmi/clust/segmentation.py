@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """Image segmentation routines."""
-import copy
+
 import numpy as np
 from sklearn.cluster import DBSCAN
 import skimage

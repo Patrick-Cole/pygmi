@@ -390,7 +390,7 @@ def off_grid(u, i, j, wn, b):
         2D grid of z values.
     i : int
         Current row.
-    j : TYPE
+    j : int
         Current Column.
     wn : float
         Data value.
@@ -399,8 +399,8 @@ def off_grid(u, i, j, wn, b):
 
     Returns
     -------
-    uij : TYPE
-        DESCRIPTION.
+    uij : float
+        Output value.
 
     """
     ba, bb, bc, bd, be = b

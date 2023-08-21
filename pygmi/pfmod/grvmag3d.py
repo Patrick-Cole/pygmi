@@ -36,7 +36,6 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
 """
 
-import copy
 import tempfile
 from PyQt5 import QtWidgets, QtCore
 
@@ -1182,7 +1181,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
         Number of x elements. The default is 50.
     numy : int, optional
         Number of y elements. The default is 40.
-    numz : TYPE, optional
+    numz : int, optional
         number of z elements (layers). The default is 5.
     dxy : float, optional
         Cell size in x and y direction. The default is 100..
@@ -1200,7 +1199,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
         Gravity sensor height. The default is 0..
     finc : float, optional
         Magnetic field inclination (degrees). The default is -67.
-    fdec : TYPE, optional
+    fdec : float, optional
         Magnetic field declination (degrees). The default is -17.
     inputliths : list or None, optional
         List of input lithologies. The default is None.
@@ -1428,10 +1427,10 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
         Observation X coordinates.
     yobs : numpy array
         Observation Y coordinates.
-    numx : TYPE
-        DESCRIPTION.
-    numy : TYPE
-        DESCRIPTION.
+    numx : int
+        Number of X.
+    numy : int
+        Number of Y.
     z_0 : float
         Observation height.
     x_1 : float

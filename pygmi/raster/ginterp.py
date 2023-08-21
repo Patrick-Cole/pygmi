@@ -77,9 +77,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         string indicating the histogram stretch to apply to the sun data
     cbar : matplotlib colour map
         colour map to be used for pseudo colour bars
-    data : list
+    data : list of PyGMI Data
         list of PyGMI raster data objects - used for colour images
-    sdata : list
+    sdata : list of PyGMI Data
         list of PyGMI raster data objects - used for shaded images
     gmode : str
         string containing the graphics mode - Contour, Ternary, Sunshade,

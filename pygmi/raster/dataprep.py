@@ -28,7 +28,6 @@ import tempfile
 import math
 import os
 import glob
-import copy
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -1757,12 +1756,12 @@ def check_dataid(out):
 
     Parameters
     ----------
-    out : PyGMI Data
+    out : list of PyGMI Data
         PyGMI raster data.
 
     Returns
     -------
-    out : PyGMI Data
+    out : list of PyGMI Data
         PyGMI raster data.
 
     """
@@ -1820,7 +1819,7 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
 
     Parameters
     ----------
-    data : Data
+    data : list of PyGMI Data
         PyGMI Dataset
     ifile : str
         shapefile used to cut data
@@ -1829,7 +1828,7 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
 
     Returns
     -------
-    data : Data
+    data : list of PyGMI Data
         PyGMI Dataset
     """
     if deepcopy is True:
@@ -2102,8 +2101,8 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
         Filename for shapefile.
     crs : rasterio CRS
         target crs for shapefile
-    showlog : TYPE, optional
-        Print. The default is print.
+    showlog : function, optional
+        Display information. The default is print.
 
     Returns
     -------
@@ -2259,14 +2258,14 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
     Parameters
     ----------
-    dat : PyGMI Data
+    dat : list of PyGMI Data
         data object which stores datasets
-    piter : iter, optional
+    piter : function, optional
         Progress bar iterator. The default is None.
     dxy : float, optional
         Cell size. The default is None.
     showlog : function, optional
-        Print function. The default is print.
+        Display information. The default is print.
     commonmask : bool, optional
         Create a common mask for all bands. The default is False.
     masterid : str, optional
@@ -2274,7 +2273,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
 
     Returns
     -------
-    out : PyGMI Data
+    out : list of PyGMI Data
         data object which stores datasets
 
     """
@@ -2638,12 +2637,12 @@ def trim_raster(olddata):
 
     Parameters
     ----------
-    olddata : Data
+    olddata : list of PyGMI Data
         PyGMI dataset
 
     Returns
     -------
-    olddata : Data
+    olddata : list of PyGMI Data
         PyGMI dataset
     """
     for data in olddata:

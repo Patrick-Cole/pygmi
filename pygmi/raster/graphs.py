@@ -619,7 +619,7 @@ def check_bands(data):
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : list of PyGMI Data
         PyGMI raster dataset.
 
     Returns

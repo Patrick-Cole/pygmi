@@ -111,9 +111,9 @@ class BasicModule(QtWidgets.QDialog):
         dictionary of output datasets
     ifile : str
         input file, used in IO routines and to pass filename back to main.py
-    piter : iter
+    piter : function
         reference to a progress bar iterator.
-    pbar : progressbar
+    pbar : function
         reference to a progress bar.
     showlog: stdout or alternative
         reference to a way to view messages, normally stdout or a Qt text box.
@@ -216,9 +216,9 @@ class ContextModule(QtWidgets.QDialog):
         dictionary of input datasets
     outdata : dictionary
         dictionary of output datasets
-    piter : iter
+    piter : function
         reference to a progress bar iterator.
-    pbar : progressbar
+    pbar : function
         reference to a progress bar.
     showlog: stdout or alternative
         reference to a way to view messages, normally stdout or a Qt text box.

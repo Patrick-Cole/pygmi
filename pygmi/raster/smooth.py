@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Smooth Data."""
 
-import copy
 import warnings
 from PyQt5 import QtWidgets
 import numpy as np

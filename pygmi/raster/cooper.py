@@ -30,7 +30,6 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 
@@ -524,7 +523,7 @@ def visibility2d(data, wsize, dh, piter=iter):
         window size, must be odd
     dh : float
         height of observer above surface
-    piter : iter
+    piter : function, optional
         Progress bar iterable. The default is iter.
 
     Returns
@@ -912,7 +911,7 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
         AGC type - can be median or mean, default is 'mean'.
     nodata : float, optional
         no data value, default is 0.
-    piter : iter
+    piter : function, optional
         Progress bar iterable. The default is iter.
 
     Returns

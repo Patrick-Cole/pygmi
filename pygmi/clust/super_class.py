@@ -26,7 +26,6 @@
 
 import os
 import sys
-import copy
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt

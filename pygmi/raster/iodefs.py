@@ -384,12 +384,12 @@ def clusterprep(dat):
 
     Parameters
     ----------
-    dat : list
+    dat : list of PyGMI Data
         List of PyGMI datasets.
 
     Returns
     -------
-    dat2 : list
+    dat2 : list of PyGMI Data
         List of PyGMI datasets.
 
     """
@@ -514,7 +514,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
         filename to import
     nval : float, optional
         Nodata/null value. The default is None.
-    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+    piter : function, optional
         progress bar iterable, default is None.
     showlog : function, optional
         Routine to show text messages. The default is print.
@@ -526,8 +526,8 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    dat : list of PyGMI Data
+        Raster dataset imported
     """
     # Exclusions
     if 'AG1' in ifile and 'h5' in ifile.lower():
@@ -851,7 +851,7 @@ def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None,
         Number of rows.
     dtype : data type
         Data type.
-    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+    piter : function
         progress bar iterable
 
     Returns
@@ -916,7 +916,7 @@ def get_geopak(hfile):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : list of PyGMI Data
         PyGMI raster dataset.
 
     """
@@ -1029,7 +1029,7 @@ def get_geosoft(hfile):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : list of PyGMI Data
         Dataset imported
     """
     with open(hfile, mode='rb') as f:
@@ -1449,8 +1449,8 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
         dataset to export
     drv : str
         name of the rasterio driver to use
-    piter : ProgressBar.iter/ProgressBarText.iter, optional
-        Progressbar iterable from misc. The default is None.
+    piter : function, optional
+        Progressbar iterable. The default is None.
     compression : str, optional
         Compression for GeoTiff. Can be None or ZSTD. The default is None.
     bandsort : bool, optional
@@ -1683,7 +1683,7 @@ def calccov(data, showlog=print):
 
     Parameters
     ----------
-    data : list
+    data : list of PyGMI Data
         List of PyGMI data.
 
     Returns
