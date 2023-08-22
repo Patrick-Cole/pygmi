@@ -1125,7 +1125,7 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     k : int
         k index.
     mgval : numpy array
-        DESCRIPTION.
+        Magnetic or gravity data being summed.
     numx : int
         Number of x elements.
     numy : int
@@ -1312,7 +1312,7 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     Parameters
     ----------
     mval : numpy array
-        DESCRIPTION.
+        Existing magnetic values.
     xobs : numpy array
         Observation X coordinates.
     yobs : numpy array
@@ -1422,7 +1422,7 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     Parameters
     ----------
     gval : numpy array
-        DESCRIPTION.
+        Existing gravity values.
     xobs : numpy array
         Observation X coordinates.
     yobs : numpy array

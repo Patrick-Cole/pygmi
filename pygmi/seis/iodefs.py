@@ -2211,13 +2211,13 @@ class FilterSeisan(BasicModule):
         self.dind_R.stateChanged.connect(self.dind_click)
         self.dind_D.stateChanged.connect(self.dind_click)
 
-    def dind_click(self, state):
+    def dind_click(self, int):
         """
         Check checkboxes.
 
         Parameters
         ----------
-        state : TYPE
+        state : int
             State of checkbox.
 
         Returns

@@ -31,7 +31,6 @@ from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib import colormaps
-from matplotlib.artist import Artist
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -195,7 +194,6 @@ class PolygonInteractor(QtCore.QObject):
                            color='y', animated=True)
         self.ax.add_line(self.line)
 
-        self.poly.add_callback(self.poly_changed)
         self._ind = None  # the active vert
 
         self.canvas.mpl_connect('draw_event', self.draw_callback)
@@ -212,8 +210,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE, optional
-            Unused. The default is None.
+        event : matplotlib.backend_bases.DrawEvent, optional
+            Draw event object. The default is None.
 
         Returns
         -------
@@ -250,34 +248,14 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
         self.canvas.draw()
 
-    def poly_changed(self, poly):
-        """
-        Polygon changed.
-
-        Parameters
-        ----------
-        poly : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-        # this method is called whenever the polygon object is called
-        # only copy the artist props to the line (except visibility)
-        vis = self.line.get_visible()
-        Artist.update_from(self.line, poly)
-        self.line.set_visible(vis)  # don't use the poly visibility state
-
     def get_ind_under_point(self, event):
         """
         Get the index of vertex under point if within epsilon tolerance.
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -304,8 +282,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -374,8 +352,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse Event.
 
         Returns
         -------
@@ -408,8 +386,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------

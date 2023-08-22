@@ -306,7 +306,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
         std = {}
         for i in meandat:
-            std[i] = meandat[i].copy()
+            std[i] = meandat[i].copy(True)
             std[i].data = stddev(M[i], cnt[i])
             std[i].dataid += '_STD'
         datfin += list(std.values())
@@ -319,12 +319,12 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
         if std is None:
             std = {}
             for i in meandat:
-                std[i] = meandat[i].copy()
+                std[i] = meandat[i].copy(True)
                 std[i].data = stddev(M[i], cnt[i])
 
         cv = {}
         for i in meandat:
-            cv[i] = meandat[i].copy()
+            cv[i] = meandat[i].copy(True)
             cv[i].data = coefv(meandat[i].data, std[i].data)
             cv[i].dataid += '_CV'
 
@@ -454,7 +454,7 @@ def calc_sam(flist, showlog=print, piter=iter):
     dat2b = np.moveaxis(dat2b, 0, -1)
 
     # Init variables
-    angle = dat1[0].copy()
+    angle = dat1[0].copy(True)
     # mask = angle['angle'].data.mask
     angle.data = angle.data.astype(float)
     angle.data *= 0.

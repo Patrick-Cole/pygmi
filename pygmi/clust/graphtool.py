@@ -28,7 +28,6 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 from matplotlib import colormaps
-from matplotlib.artist import Artist
 from matplotlib.patches import Polygon
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
@@ -113,7 +112,7 @@ class GraphHist(FigureCanvasQTAgg):
         yyy = self.ycoord.compressed().astype(int)
         xyhist = np.zeros((bins + 1, bins + 1))
 
-        xyhist[xxx, yyy] = (clust + 1)
+        xyhist[xxx, yyy] = clust + 1
 
         xymahist = np.ma.masked_equal(xyhist, 0)
         return xymahist
@@ -401,7 +400,6 @@ class PolygonInteractor(QtCore.QObject):
                            color='y', animated=True)
         self.ax.add_line(self.line)
 
-        self.poly.add_callback(self.poly_changed)
         self._ind = None  # the active vert
 
         self.canvas.mpl_connect('button_press_event',
@@ -448,34 +446,14 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.draw()
         self.update_plots()
 
-    def poly_changed(self, poly):
-        """
-        Polygon changed.
-
-        Parameters
-        ----------
-        poly : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-        # this method is called whenever the polygon object is called
-        # only copy the artist props to the line (except visibility)
-        vis = self.line.get_visible()
-        Artist.update_from(self.line, poly)
-        self.line.set_visible(vis)  # don't use the poly visibility state
-
     def get_ind_under_point(self, event):
         """
         Get the index of vertex under point if within epsilon tolerance.
 
         Parameters
         ----------
-        event : TYPE
-            Unused.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -502,8 +480,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -571,8 +549,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -602,8 +580,8 @@ class PolygonInteractor(QtCore.QObject):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -1013,10 +991,10 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    DM = ScatterPlot()
-    DM.indata['Raster'] = dat
-    DM.indata['Cluster'] = dat2
-    DM.settings()
+    tmp1 = ScatterPlot()
+    tmp1.indata['Raster'] = dat
+    tmp1.indata['Cluster'] = dat2
+    tmp1.settings()
 
 
 if __name__ == "__main__":

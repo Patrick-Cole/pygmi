@@ -664,9 +664,12 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
 
     del x2
 
-    odata = [i.copy() for i in dat]
     if fwdonly:
+        odata = [i.copy(True) for i in dat]
         odata = odata[:ncmps]
+    else:
+        odata = [i.copy() for i in dat]
+
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
@@ -758,9 +761,12 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     del x2
 
-    odata = [i.copy() for i in dat]
     if fwdonly:
+        odata = [i.copy(True) for i in dat]
         odata = odata[:ncmps]
+    else:
+        odata = [i.copy() for i in dat]
+
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
@@ -897,9 +903,12 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
         del x2
 
-        odata = [i.copy() for i in dat]
         if fwdonly:
+            odata = [i.copy(True) for i in dat]
             odata = odata[:ncmps]
+        else:
+            odata = [i.copy() for i in dat]
+
         for j, band in enumerate(odata):
             band.data = datall[:, :, j]
             if fwdonly is True:

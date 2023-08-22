@@ -514,14 +514,14 @@ class FuzzyClust(BasicModule):
             and N is the number of coordinates (attributes) for each sample.
         no_clust : int
             Number of clusters.
-        init : TYPE
+        init : numpy array
             INIT may be set to [], in this case the FCM generates random
             initial center locations to start the algorithm. Alternatively,
             INIT can be of matrix type, either containing a user-given
             membership matrix [NO_CLUST M] or a cluster center matrix
             [NO_CLUST, N].
-        centfix : TYPE
-            DESCRIPTION.
+        centfix : numpy array
+            Constrains the position of cluster centers.
         maxit : int
             MAXIT give the maximum number of iterations..
         term_thresh : float
@@ -672,7 +672,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     Parameters
     ----------
     cent : numpy array
-        DESCRIPTION.
+        Class centers.
     data : numpy array
         Input data.
     uuu : numpy array

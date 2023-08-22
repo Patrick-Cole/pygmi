@@ -162,7 +162,7 @@ class Data():
 
         self.set_transform(1, 0, 1, 0)
 
-    def copy(self):
+    def copy(self, resetmeta=False):
         """
         Make a deepcopy of the function.
 
@@ -177,7 +177,9 @@ class Data():
         data = Data()
         data.__dict__ = {key: deepcopy(value) for key, value in
                          self.__dict__.items()}
-        data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
+
+        if resetmeta is True:
+            data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
 
         return data
 

@@ -1729,8 +1729,6 @@ def _filespeedtest():
     # ifile = ifile[:-4]+'_zstd.tif'
     dataset = get_raster(ifile, metaonly=False)
 
-    breakpoint()
-
     getinfo('Start')
 
     # export_raster(ifile[:-4]+'_NONE.tif', dataset, 'GTiff')  # 65s

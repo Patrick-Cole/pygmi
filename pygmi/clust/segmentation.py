@@ -147,7 +147,7 @@ class ImageSeg(BasicModule):
         omap = self.segment1(data1, scale=scale, wcolor=wcolor,
                              wcompact=wcompact, doshape=doshape)
 
-        odat = self.indata['Raster'][0].copy()
+        odat = self.indata['Raster'][0].copy(True)
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
         odat.dataid = 'Segments'
 
@@ -231,7 +231,7 @@ class ImageSeg(BasicModule):
         ----------
         data : numpy array
             Input data.
-        scale : TYPE, optional
+        scale : int, optional
             Scale. The default is 500.
         wcolor : float, optional
             Colour weight. The default is 0.5.
@@ -309,13 +309,13 @@ class ImageSeg(BasicModule):
             Compactness weight. The default is 0.5.
         wcolor : float, optional
             Colour weight. The default is 0.5.
-        scale : TYPE, optional
+        scale : int, optional
             Scale. The default is 500.
 
 
         Returns
         -------
-        omap : TYPE
+        omap : numpy array
             output data.
 
         """

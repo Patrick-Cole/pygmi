@@ -56,18 +56,16 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        x : numpy array
-            X coordinates (period).
-        pdata : numpy array
-            Phase data.
-        rdata : numpy array
-            Apparent resistivity data.
-        depths : numpy array, optional
-            Model depths. The default is None.
-        res : numpy array, optional
-            Resistivities. The default is None.
-        title : str or None, optional
-            DESCRIPTION. The default is None.
+        sigma : numpy array
+            Conductivity values.
+        z : numpy array
+            Depth values.
+        times_off : numpy array
+            Time.
+        zobs : numpy array
+            Observed dBz/dt.
+        zpred : numpy array
+            Predicted dBz/dt.
 
         Returns
         -------
@@ -101,6 +99,15 @@ class MyMplCanvas2(FigureCanvasQTAgg):
     def disp_wave(self, times, wave, title):
         """
         Display waveform.
+
+        Parameters
+        ----------
+        times : numpy array
+            Times.
+        wave : numpy array
+            Waveform amplitude.
+        title : str
+            Title.
 
         Returns
         -------
@@ -437,7 +444,7 @@ class TDEM1D(BasicModule):
         z = np.r_[mesh.cell_centers_z[active][0], z,
                   mesh.cell_centers_z[active][-1]]
 
-        times_off = ((times - offtime)*1e6)
+        times_off = (times - offtime)*1e6
         zobs = dobs_sky/txarea
         zpred = -dpred_sky/txarea
 
@@ -554,7 +561,7 @@ class TDEM1D(BasicModule):
         None.
 
         """
-        ext = ('Text file (*.txt)')
+        ext = 'Text file (*.txt)'
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(

@@ -486,7 +486,7 @@ class CrispClust(BasicModule):
             cluster centre positions, either empty [] --> randomly guessed
             center positions will be used for initialisation or NO_CLUSTxP
             matrix
-        centfix : TYPE
+        centfix : numpy array
             Constrains the position of cluster centers, if CENTFIX is empty,
             cluster centers can freely vary during cluster analysis, otherwise
             CENTFIX is of equal size to CENT and gives an absolute deviation
@@ -510,7 +510,7 @@ class CrispClust(BasicModule):
         cov_constr : float
             scalar between [0 1], values > 0 trim the covariance matrix
             to avoid needle-like ellipsoids for the clusters, applies only for
-            CLTYPE='vardet', but must always be provided.
+            cltype='vardet', but must always be provided.
 
         Returns
         -------
@@ -657,8 +657,8 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
     ----------
     data : numpy array
         Input data.
-    center : TYPE
-        DESCRIPTION.
+    center : numpy array
+        center of each class.
     index : numpy array
         Cluster index number for each sample.
     no_clust : int

@@ -769,8 +769,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : QKeyEvent
+            Key press event object.
 
         Returns
         -------

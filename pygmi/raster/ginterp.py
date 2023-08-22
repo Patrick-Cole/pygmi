@@ -203,8 +203,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            Unused.
+        event : matplotlib.backend_bases.ResizeEvent
+            Resize event.
 
         Returns
         -------
@@ -213,14 +213,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.flagresize = True
 
-    def init_graph(self, event=None):
+    def init_graph(self):
         """
         Initialize the graph.
-
-        Parameters
-        ----------
-        event : TYPE, optional
-            Unused. The default is None.
 
         Returns
         -------
@@ -260,12 +255,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def move(self, event):
         """
-        Mouse is moving.
+        Mouse is moving over canvas.
 
         Parameters
         ----------
-        event : TYPE
-            Event.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -1390,8 +1385,8 @@ class PlotInterp(BasicModule):
 
         Parameters
         ----------
-        event : TYPE
-            Unused.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse event.
 
         Returns
         -------

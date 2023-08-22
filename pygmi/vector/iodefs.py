@@ -757,17 +757,6 @@ def _test():
 
     ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
 
-    import fiona
-
-    with fiona.open(ifile, allow_unsupported_drivers=True) as collection:
-
-        a=1
-
-
-    aaa = gpd.read_file(ifile, allow_unsupported_drivers=True)
-
-    breakpoint()
-
 
 if __name__ == "__main__":
     _test()

@@ -716,7 +716,7 @@ class ConditionIndices(BasicModule):
 
                 ratio = np.ma.fix_invalid(ratio)
 
-                tmp = dat[0].copy()
+                tmp = dat[0].copy(True)
                 tmp.data = ratio
                 tmp.nodata = 1e+20
                 evi.append(tmp)
@@ -942,7 +942,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
         ratio = np.ma.fix_invalid(ratio)
 
-        rband = dat[0].copy()
+        rband = dat[0].copy(True)
         rband.data = ratio
         rband.dataid = i.replace(r'/', 'div')
         datfin.append(rband)
@@ -1141,7 +1141,7 @@ def get_TCI(lst):
     lstmin = lst2.min(0)
 
     for dat in lst:
-        tmp = dat.copy()
+        tmp = dat.copy(True)
 
         tmp.data = (lstmax-dat.data)/(lstmax-lstmin)
 
@@ -1179,7 +1179,7 @@ def get_VCI(evi, index):
 
     vci = []
     for dat in evi:
-        tmp = dat.copy()
+        tmp = dat.copy(True)
 
         tmp.data = (dat.data-evimin)/(evimax-evimin)
 
@@ -1212,7 +1212,7 @@ def get_VHI(tci, vci, alpha=0.5):
     for tci1 in tci:
         for vci1 in vci:
             if tci1.filename == vci1.filename:
-                tmp = tci1.copy()
+                tmp = tci1.copy(True)
                 tmp.data = vci1.data*alpha+tci1.data*(1-alpha)
                 tmp.dataid = os.path.basename(tci1.filename)[:-4]+'_VHI'
 
@@ -1264,9 +1264,9 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
         elif 'BSI' in i.dataid:
             BSI = i.data
 
-    red = dat[0].copy()
-    green = dat[0].copy()
-    blue = dat[0].copy()
+    red = dat[0].copy(True)
+    green = dat[0].copy(True)
+    blue = dat[0].copy(True)
 
     red.data[:] = 3.5*BSI
     green.data[:] = 0.3
@@ -1335,7 +1335,6 @@ def _testfn():
 
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
-    breakpoint()
 
 if __name__ == "__main__":
     _testfn()

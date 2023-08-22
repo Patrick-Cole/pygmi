@@ -116,7 +116,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
+        event : matplotlib.backend_bases.MouseEvent
             Button release event.
 
         Returns
@@ -136,7 +136,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
+        event : matplotlib.backend_bases.MouseEvent
             Motion notify event.
 
         Returns
@@ -165,8 +165,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            Picker event.
+        event : matplotlib.backend_bases.PickEvent
+            Pick event.
 
         Returns
         -------
@@ -192,8 +192,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            Unused.
+        event : matplotlib.backend_bases.ResizeEvent
+            Resize event.
 
         Returns
         -------

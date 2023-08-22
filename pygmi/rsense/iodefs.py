@@ -1301,7 +1301,7 @@ def etree_to_dict(t):
     Returns
     -------
     d : dictionary
-        DESCRIPTION.
+        Dictionary of ElementTree items.
 
     """
     d = {t.tag: {} if t.attrib else None}

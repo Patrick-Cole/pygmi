@@ -413,11 +413,6 @@ class SceneViewer(BasicModule):
         """
         Change manipulation or bands.
 
-        Parameters
-        ----------
-        event : TYPE
-            Unused.
-
         Returns
         -------
         None.

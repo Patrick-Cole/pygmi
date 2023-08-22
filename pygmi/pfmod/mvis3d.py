@@ -1198,8 +1198,8 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : QMouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -1214,8 +1214,8 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : QMouseEvent
+            Mouse event.
 
         Returns
         -------
@@ -1241,8 +1241,8 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : QWheelEvent
+            Mouse wheel event.
 
         Returns
         -------

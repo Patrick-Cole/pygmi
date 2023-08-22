@@ -270,8 +270,8 @@ class AnalSpec(BasicModule):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : matplotlib.backend_bases.MouseEvent
+            Mouse Event.
 
         Returns
         -------
@@ -307,8 +307,8 @@ class AnalSpec(BasicModule):
 
         Parameters
         ----------
-        row : TYPE
-            Unused.
+        row : int
+            row of table, unused.
 
         Returns
         -------
