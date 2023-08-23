@@ -199,8 +199,10 @@ class ImageSeg(BasicModule):
 
         """
         self.scale.setText(projdata['scale'])
-        self.scale.setText(projdata['wcolor'])
-        self.scale.setText(projdata['wcompact'])
+        self.wcolor.setText(projdata['wcolor'])
+        self.wcompact.setText(projdata['wcompact'])
+        self.eps.setText(projdata['eps'])
+        self.dbscan.setChecked(projdata['dbscan'])
 
         return False
 
@@ -219,6 +221,8 @@ class ImageSeg(BasicModule):
         projdata['scale'] = self.scale.text()
         projdata['wcolor'] = self.wcolor.text()
         projdata['wcompact'] = self.wcompact.text()
+        projdata['eps'] = self.eps.text()
+        projdata['dbscan'] = self.dbscan.isChecked()
 
         return projdata
 

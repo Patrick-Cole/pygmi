@@ -268,6 +268,10 @@ class Cluster(BasicModule):
         self.doublespinbox_bthres.setProperty('value', projdata['bthres'])
         self.spinbox_branchfac.setProperty('value', projdata['branchfac'])
 
+        self.radiobutton_sscale.setChecked(projdata['sscale'])
+        self.radiobutton_rscale.setChecked(projdata['rscale'])
+        self.radiobutton_noscale.setChecked(projdata['noscale'])
+
         return False
 
     def saveproj(self):
@@ -292,6 +296,10 @@ class Cluster(BasicModule):
         projdata['min_samples'] = self.min_samples
         projdata['bthres'] = self.bthres
         projdata['branchfac'] = self.branchfac
+
+        projdata['sscale'] = self.radiobutton_sscale.isChecked()
+        projdata['rscale'] = self.radiobutton_rscale.isChecked()
+        projdata['noscale'] = self.radiobutton_noscale.isChecked()
 
         return projdata
 

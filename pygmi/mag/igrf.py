@@ -283,6 +283,8 @@ class IGRF(BasicModule):
         self.dsb_alt.setValue(projdata['alt'])
         date = self.dateedit.date().fromString(projdata['date'])
         self.dateedit.setDate(date)
+        self.combobox_dtm.setCurrentText(projdata['dtm'])
+        self.combobox_mag.setCurrentText(projdata['mag'])
 
         return False
 
@@ -301,6 +303,8 @@ class IGRF(BasicModule):
         projdata['wkt'] = self.proj.wkt
         projdata['alt'] = self.dsb_alt.value()
         projdata['date'] = self.dateedit.date().toString()
+        projdata['dtm'] = self.combobox_dtm.currentText()
+        projdata['mag'] = self.combobox_mag.currentText()
 
         return projdata
 

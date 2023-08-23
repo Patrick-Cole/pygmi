@@ -357,6 +357,11 @@ class TiltDepth(BasicModule):
             A check to see if settings was successfully run.
 
         """
+        self.cbox_band1.setCurrentText(projdata['band1'])
+        self.cbox_cbar.setCurrentText(projdata['cbar'])
+        self.dsb_inc.setValue(projdata['inc'])
+        self.dsb_dec.setValue(projdata['dec'])
+
         return False
 
     def saveproj(self):
@@ -370,6 +375,11 @@ class TiltDepth(BasicModule):
 
         """
         projdata = {}
+
+        projdata['band1'] = self.cbox_band1.currentText()
+        projdata['cbar'] = self.cbox_cbar.currentText()
+        projdata['inc'] = self.dsb_inc.value()
+        projdata['dec'] = self.dsb_dec.value()
 
         return projdata
 

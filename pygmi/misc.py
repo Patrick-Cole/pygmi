@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Misc is a collection of routines which can be used in PyGMI in general.
-"""
+"""Misc is a collection of routines which can be used in PyGMI in general."""
 
 import os
 import sys

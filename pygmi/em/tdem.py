@@ -661,6 +661,37 @@ class TDEM1D(BasicModule):
             A check to see if settings was successfully run.
 
         """
+        self.combostype.setCurrentText(projdata['stype'])
+        self.combowtype.setCurrentText(projdata['wtype'])
+        self.combotxori.setCurrentText(projdata['txori'])
+        self.comborxori.setCurrentText(projdata['rxori'])
+        self.comboline.setCurrentText(projdata['line'])
+        self.combofid.setCurrentText(projdata['fid'])
+        self.combobalt.setCurrentText(projdata['alt'])
+
+        self.mesh_cs.setText(projdata['mesh_cs'])
+        self.mesh_ncx.setText(projdata['mesh_ncx'])
+        self.mesh_ncz.setText(projdata['mesh_ncz'])
+        self.mesh_npad.setText(projdata['mesh_npad'])
+        self.mesh_padrate.setText(projdata['mesh_padrate'])
+
+        self.loopturns.setText(projdata['loopturns'])
+        self.loopcurrent.setText(projdata['loopcurrent'])
+        self.mu.setText(projdata['mu'])
+        self.txarea.setText(projdata['txarea'])
+        self.txofftime.setText(projdata['txofftime'])
+        self.txrampoff1.setText(projdata['txofframp1'])
+        self.txpeaktime.setText(projdata['txpeaktime'])
+        self.datachan.setText(projdata['datachan'])
+        self.sig_half.setText(projdata['sig_half'])
+        self.sig_air.setText(projdata['sig_air'])
+        self.rel_err.setText(projdata['rel_air'])
+        self.noise_floor.setText(projdata['noise_floor'])
+        self.wfile.setText(projdata['wfile'])
+        self.maxiter.setText(projdata['maxiter'])
+
+        self.get_wfile(projdata['wfile'])
+
         return False
 
     def saveproj(self):
@@ -674,6 +705,35 @@ class TDEM1D(BasicModule):
 
         """
         projdata = {}
+
+        projdata['stype'] = self.combostype.currentText()
+        projdata['wtype'] = self.combowtype.currentText()
+        projdata['txori'] = self.combotxori.currentText()
+        projdata['rxori'] = self.comborxori.currentText()
+        projdata['line'] = self.comboline.currentText()
+        projdata['fid'] = self.combofid.currentText()
+        projdata['alt'] = self.combobalt.currentText()
+
+        projdata['mesh_cs'] = self.mesh_cs.text()
+        projdata['mesh_ncx'] = self.mesh_ncx.text()
+        projdata['mesh_ncz'] = self.mesh_ncz.text()
+        projdata['mesh_npad'] = self.mesh_npad.text()
+        projdata['mesh_padrate'] = self.mesh_padrate.text()
+
+        projdata['loopturns'] = self.loopturns.text()
+        projdata['loopcurrent'] = self.loopcurrent.text()
+        projdata['mu'] = self.mu.text()
+        projdata['txarea'] = self.txarea.text()
+        projdata['txofftime'] = self.txofftime.text()
+        projdata['txrampoff1'] = self.txrampoff1.text()
+        projdata['txpeaktime'] = self.txpeaktime.text()
+        projdata['datachan'] = self.datachan.text()
+        projdata['sig_half'] = self.sig_half.text()
+        projdata['sig_air'] = self.sig_air.text()
+        projdata['rel_air'] = self.rel_err.text()
+        projdata['noise_floor'] = self.noise_floor.text()
+        projdata['wfile'] = self.wfile.text()
+        projdata['maxiter'] = self.maxiter.text()
 
         return projdata
 
