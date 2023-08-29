@@ -94,12 +94,7 @@ class GraphMap(FigureCanvasQTAgg):
                           cmap=colormaps['jet'])
         axes = self.figure.gca()
 
-        if dat.crs is not None:
-            crs = dat.crs.to_dict()
-        else:
-            crs = {}
-
-        if 'proj' in crs and crs['proj'] == 'longlat':
+        if dat.crs.is_geographic:
             axes.set_xlabel('Longitude')
             axes.set_ylabel('Latitude')
         else:

@@ -692,6 +692,10 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
             if nval is not None and np.isnan(nval):
                 nval = None
 
+            if ('int' not in dataset.meta['dtype'] and nval is None and
+                    ext == 'ers'):
+                nval = 1e+20
+
             if 'int' not in dataset.meta['dtype'] and nval is not None:
                 nval = float(nval)
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),

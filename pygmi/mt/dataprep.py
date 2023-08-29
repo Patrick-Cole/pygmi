@@ -382,19 +382,19 @@ class StaticShiftEDI(BasicModule):
         self.combobox2.addItems(['xy, yx', 'xx, yy'])
         self.combobox2.setCurrentIndex(0)
 
-        self.shiftx = QtWidgets.QDoubleSpinBox()
-        self.shiftx.setMinimum(0.)
-        self.shiftx.setMaximum(100000.)
-        self.shiftx.setValue(1.)
-        self.shifty = QtWidgets.QDoubleSpinBox()
-        self.shifty.setMinimum(0.)
-        self.shifty.setMaximum(100000.)
-        self.shifty.setValue(1.)
+        self.dsb_shiftx = QtWidgets.QDoubleSpinBox()
+        self.dsb_shiftx.setMinimum(0.)
+        self.dsb_shiftx.setMaximum(100000.)
+        self.dsb_shiftx.setValue(1.)
+        self.dsb_shifty = QtWidgets.QDoubleSpinBox()
+        self.dsb_shifty.setMinimum(0.)
+        self.dsb_shifty.setMaximum(100000.)
+        self.dsb_shifty.setValue(1.)
         label1 = QtWidgets.QLabel('Station Name:')
         label2 = QtWidgets.QLabel('Graph Type:')
         label3 = QtWidgets.QLabel('Shift X:')
         label4 = QtWidgets.QLabel('Shift Y:')
-        self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
+        self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
         pb_apply = QtWidgets.QPushButton('Remove Static Shift')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
@@ -409,9 +409,9 @@ class StaticShiftEDI(BasicModule):
         hbl.addWidget(self.combobox2)
 
         hbl3.addWidget(label3)
-        hbl3.addWidget(self.shiftx)
+        hbl3.addWidget(self.dsb_shiftx)
         hbl3.addWidget(label4)
-        hbl3.addWidget(self.shifty)
+        hbl3.addWidget(self.dsb_shifty)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
@@ -419,7 +419,7 @@ class StaticShiftEDI(BasicModule):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.checkbox)
+        vbl.addWidget(self.cb_applyall)
         vbl.addLayout(hbl)
         vbl.addLayout(hbl3)
         vbl.addLayout(hbl2)
@@ -454,10 +454,10 @@ class StaticShiftEDI(BasicModule):
         None.
 
         """
-        ssx = self.shiftx.value()
-        ssy = self.shifty.value()
+        ssx = self.dsb_shiftx.value()
+        ssy = self.dsb_shifty.value()
 
-        if self.checkbox.isChecked():
+        if self.cb_applyall.isChecked():
             for i in self.data:
                 self.data[i].Z = self.data[i].remove_static_shift(ssx, ssy)
         else:
@@ -477,7 +477,7 @@ class StaticShiftEDI(BasicModule):
         """
         i = self.combobox1.currentText()
 
-        if self.checkbox.isChecked():
+        if self.cb_applyall.isChecked():
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
             self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
@@ -547,9 +547,9 @@ class StaticShiftEDI(BasicModule):
         None.
 
         """
-        self.saveobj(self.shiftx)
-        self.saveobj(self.shifty)
-        self.saveobj(self.checkbox)
+        self.saveobj(self.dsb_shiftx)
+        self.saveobj(self.dsb_shifty)
+        self.saveobj(self.cb_applyall)
 
 
 class RotateEDI(BasicModule):
@@ -572,13 +572,13 @@ class RotateEDI(BasicModule):
         self.combobox2.addItems(['xy, yx', 'xx, yy'])
         self.combobox2.setCurrentIndex(0)
 
-        self.spinbox = QtWidgets.QDoubleSpinBox()
-        self.spinbox.setMinimum(0.)
-        self.spinbox.setMaximum(360.)
+        self.sb_rotangle = QtWidgets.QDoubleSpinBox()
+        self.sb_rotangle.setMinimum(0.)
+        self.sb_rotangle.setMaximum(360.)
         label1 = QtWidgets.QLabel('Station Name:')
         label2 = QtWidgets.QLabel('Graph Type:')
         label3 = QtWidgets.QLabel('Rotate Z (0 is North):')
-        self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
+        self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
         pb_apply = QtWidgets.QPushButton('Apply rotation')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
@@ -594,7 +594,7 @@ class RotateEDI(BasicModule):
         hbl.addWidget(label2)
         hbl.addWidget(self.combobox2)
         hbl.addWidget(label3)
-        hbl.addWidget(self.spinbox)
+        hbl.addWidget(self.sb_rotangle)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
@@ -602,7 +602,7 @@ class RotateEDI(BasicModule):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.checkbox)
+        vbl.addWidget(self.cb_applyall)
         vbl.addLayout(hbl)
         vbl.addLayout(hbl2)
         vbl.addWidget(buttonbox)
@@ -636,9 +636,9 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        rotZ = self.spinbox.value()
+        rotZ = self.sb_rotangle.value()
 
-        if self.checkbox.isChecked():
+        if self.cb_applyall.isChecked():
             for i in self.data:
                 self.data[i].Z.rotate(rotZ)
                 self.data[i].Tipper.rotate(rotZ)
@@ -660,12 +660,12 @@ class RotateEDI(BasicModule):
         """
         i = self.combobox1.currentText()
 
-        if self.checkbox.isChecked():
+        if self.cb_applyall.isChecked():
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
             self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
 
-        self.spinbox.setValue(self.data[i].rotation_angle)
+        self.sb_rotangle.setValue(self.data[i].rotation_angle)
 
         self.change_band()
 
@@ -713,7 +713,7 @@ class RotateEDI(BasicModule):
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
         i = self.combobox1.currentText()
-        self.spinbox.setValue(self.data[i].rotation_angle)
+        self.sb_rotangle.setValue(self.data[i].rotation_angle)
 
         self.change_band()
 
@@ -735,8 +735,8 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        self.saveobj(self.spinbox)
-        self.saveobj(self.checkbox)
+        self.saveobj(self.sb_rotangle)
+        self.saveobj(self.cb_applyall)
 
 
 class MyMplCanvasPick(FigureCanvasQTAgg):

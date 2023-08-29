@@ -197,32 +197,48 @@ class BasicModule(QtWidgets.QDialog):
 
         for otxt in projdata:
             obj = vars(self)[otxt]
+
+            if obj is None:
+                vars(self)[otxt] = projdata[otxt]
+
             if isinstance(obj, (float, int, bool, list, np.ndarray, tuple,
                                 str)):
                 vars(self)[otxt] = projdata[otxt]
 
             if isinstance(obj, QtWidgets.QComboBox):
+                obj.blockSignals(True)
                 obj.setCurrentText(projdata[otxt])
+                obj.blockSignals(False)
 
             if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
+                obj.blockSignals(True)
                 obj.setText(projdata[otxt])
+                obj.blockSignals(False)
 
             if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
                                 QtWidgets.QSlider)):
+                obj.blockSignals(True)
                 obj.setValue(projdata[otxt])
+                obj.blockSignals(False)
 
             if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+                obj.blockSignals(True)
                 obj.setChecked(projdata[otxt])
+                obj.blockSignals(False)
 
             if isinstance(obj, QtWidgets.QDateEdit):
+                obj.blockSignals(True)
                 date = obj.date().fromString(projdata[otxt])
                 obj.setDate(date)
+                obj.blockSignals(False)
 
             if isinstance(obj, QtWidgets.QListWidget):
+                obj.blockSignals(True)
                 obj.selectAll()
                 for i in obj.selectedItems():
                     if i.text()[2:] not in self.projdata[otxt]:
                         i.setSelected(False)
+                obj.blockSignals(False)
 
         if self.is_import is True:
             chk = self.settings(True)
