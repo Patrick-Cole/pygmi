@@ -52,7 +52,6 @@ class MagInvert(BasicModule):
         super().__init__(parent)
         self.lmod1 = LithModel()
         self.lmod2 = LithModel()
-        # self.pbar = ProgressBar()
         self.inraster = {}
         self.tmp = []
 
@@ -136,18 +135,18 @@ class MagInvert(BasicModule):
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
-        label_3 = QtWidgets.QLabel('Height of observation - Magnetic')
-        label_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
-        label_5 = QtWidgets.QLabel('Magnetic Inclination')
-        label_6 = QtWidgets.QLabel('Magnetic Declination')
+        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic')
+        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
+        lbl_5 = QtWidgets.QLabel('Magnetic Inclination')
+        lbl_6 = QtWidgets.QLabel('Magnetic Declination')
 
-        gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_3, 3, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_mht, 3, 1, 1, 1)
-        gl_gen_prop.addWidget(label_4, 4, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_4, 4, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hint, 4, 1, 1, 1)
-        gl_gen_prop.addWidget(label_5, 5, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_5, 5, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hinc, 5, 1, 1, 1)
-        gl_gen_prop.addWidget(label_6, 6, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_6, 6, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Data Information Groupbox
@@ -689,6 +688,40 @@ class MagInvert(BasicModule):
             self.outdata['Model3D'] = [self.lmod2]
 
         return tmp
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.combo_model)
+        self.saveobj(self.combo_other)
+        self.saveobj(self.combo_dtm)
+        self.saveobj(self.combo_mag)
+        self.saveobj(self.combo_grv)
+        self.saveobj(self.combo_reggrv)
+        self.saveobj(self.combo_dataset)
+
+        self.saveobj(self.dsb_utlx)
+        self.saveobj(self.dsb_utly)
+        self.saveobj(self.dsb_utlz)
+        self.saveobj(self.dsb_xextent)
+        self.saveobj(self.dsb_yextent)
+        self.saveobj(self.dsb_zextent)
+        self.saveobj(self.dsb_xycell)
+        self.saveobj(self.dsb_zcell)
+        self.saveobj(self.sb_cols)
+        self.saveobj(self.sb_rows)
+        self.saveobj(self.sb_layers)
+        self.saveobj(self.sb_classes)
+        self.saveobj(self.dsb_mht)
+        self.saveobj(self.dsb_hdec)
+        self.saveobj(self.dsb_hint)
+        self.saveobj(self.dsb_hinc)
 
     def acceptall(self):
         """

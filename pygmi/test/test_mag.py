@@ -30,7 +30,7 @@ the tests.
 import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from rasterio.crs import CRS
+from pyproj.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.mag import dataprep

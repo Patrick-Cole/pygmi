@@ -286,8 +286,8 @@ class MergeMod3D(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        label_master = QtWidgets.QLabel('Master Dataset:')
-        label_slave = QtWidgets.QLabel('Slave Dataset:')
+        lbl_master = QtWidgets.QLabel('Master Dataset:')
+        lbl_slave = QtWidgets.QLabel('Slave Dataset:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -295,10 +295,10 @@ class MergeMod3D(BasicModule):
 
         self.setWindowTitle('3D Model Merge')
 
-        gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_slave, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_slave, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.slave, 1, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
@@ -344,36 +344,17 @@ class MergeMod3D(BasicModule):
 
         return tmp
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
+        self.saveobj(self.master)
+        self.saveobj(self.slave)
 
     def acceptall(self):
         """

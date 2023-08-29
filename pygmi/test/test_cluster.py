@@ -56,8 +56,8 @@ def test_cluster():
 
     tmp = cluster.Cluster(None)
     tmp.indata = {'Raster': [dat1, dat2, dat1]}
-    tmp.spinbox_minclusters.setValue(2)
-    tmp.spinbox_maxclusters.setValue(2)
+    tmp.sb_minclusters.setValue(2)
+    tmp.sb_maxclusters.setValue(2)
     tmp.settings(True)
 
     datout2 = tmp.outdata['Cluster'][0].data.data
@@ -83,8 +83,8 @@ def test_crisp():
 
     tmp = crisp_clust.CrispClust(None)
     tmp.indata = {'Raster': [dat1, dat2]}
-    tmp.spinbox_minclusters.setValue(2)
-    tmp.spinbox_maxclusters.setValue(2)
+    tmp.sb_minclusters.setValue(2)
+    tmp.sb_maxclusters.setValue(2)
     tmp.settings(True)
 
     datout2 = tmp.outdata['Cluster'][0].data.data
@@ -111,9 +111,9 @@ def test_fuzzy():
 
     tmp = fuzzy_clust.FuzzyClust(None)
     tmp.indata = {'Raster': [dat1, dat2]}
-    tmp.spinbox_minclusters.setValue(2)
-    tmp.spinbox_maxclusters.setValue(2)
-    tmp.combobox_alg.setCurrentIndex(0)
+    tmp.sb_minclusters.setValue(2)
+    tmp.sb_maxclusters.setValue(2)
+    tmp.combo_alg.setCurrentIndex(0)
     tmp.settings(True)
 
     datout2 = tmp.outdata['Cluster'][0].data.data

@@ -93,7 +93,7 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        ext = ('Description list (*.txt)')
+        ext = 'Description list (*.txt)'
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -130,36 +130,17 @@ class CorrectDescriptions(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.textfile)
 
-        return projdata
 
     def acceptall(self):
         """

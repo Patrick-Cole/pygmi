@@ -51,6 +51,7 @@ class PointCut(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -98,41 +99,16 @@ class PointCut(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 class DataGrid(BasicModule):
@@ -153,9 +129,9 @@ class DataGrid(BasicModule):
 
         self.dataid = QtWidgets.QComboBox()
         self.grid_method = QtWidgets.QComboBox()
-        self.label_rows = QtWidgets.QLabel('Rows: 0')
-        self.label_cols = QtWidgets.QLabel('Columns: 0')
-        self.label_bdist = QtWidgets.QLabel('Blanking Distance:')
+        self.lbl_rows = QtWidgets.QLabel('Rows: 0')
+        self.lbl_cols = QtWidgets.QLabel('Columns: 0')
+        self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
 
         self.setupui()
 
@@ -171,10 +147,10 @@ class DataGrid(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
-        label_band = QtWidgets.QLabel('Column to Grid:')
-        label_dxy = QtWidgets.QLabel('Cell Size:')
-        label_null = QtWidgets.QLabel('Null Value:')
-        label_method = QtWidgets.QLabel('Gridding Method:')
+        lbl_band = QtWidgets.QLabel('Column to Grid:')
+        lbl_dxy = QtWidgets.QLabel('Cell Size:')
+        lbl_null = QtWidgets.QLabel('Null Value:')
+        lbl_method = QtWidgets.QLabel('Gridding Method:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
@@ -192,17 +168,17 @@ class DataGrid(BasicModule):
 
         self.setWindowTitle('Dataset Gridding')
 
-        gridlayout_main.addWidget(label_method, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_method, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.grid_method, 0, 1, 1, 1)
-        gridlayout_main.addWidget(label_dxy, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_dxy, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 1, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_rows, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.label_cols, 3, 0, 1, 2)
-        gridlayout_main.addWidget(label_band, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
+        gridlayout_main.addWidget(lbl_band, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.dataid, 4, 1, 1, 1)
-        gridlayout_main.addWidget(label_null, 5, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_null, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_null, 5, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_bdist, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
         gridlayout_main.addWidget(self.bdist, 6, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 7, 1, 1, 3)
@@ -234,8 +210,8 @@ class DataGrid(BasicModule):
         cols = round(x.ptp()/self.dxy)
         rows = round(y.ptp()/self.dxy)
 
-        self.label_rows.setText('Rows: '+str(rows))
-        self.label_cols.setText('Columns: '+str(cols))
+        self.lbl_rows.setText('Rows: '+str(rows))
+        self.lbl_cols.setText('Columns: '+str(cols))
 
     def grid_method_change(self):
         """
@@ -247,10 +223,10 @@ class DataGrid(BasicModule):
 
         """
         if self.grid_method.currentText() == 'Minimum Curvature':
-            self.label_bdist.show()
+            self.lbl_bdist.show()
             self.bdist.show()
         else:
-            self.label_bdist.hide()
+            self.lbl_bdist.hide()
             self.bdist.hide()
 
     def settings(self, nodialog=False):
@@ -304,6 +280,7 @@ class DataGrid(BasicModule):
         self.dsb_dxy.setText(f'{self.dxy:.8f}')
         self.dxy_change()
 
+        self.grid_method_change()
         if not nodialog:
             tmp = self.exec_()
             if tmp != 1:
@@ -321,49 +298,21 @@ class DataGrid(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dsb_dxy.textChanged.disconnect()
-        self.dataid_text = projdata['band']
-        self.dsb_dxy.setText(projdata['dxy'])
-        self.dsb_null.setText(projdata['nullvalue'])
-        self.bdist.setText(projdata['bdist'])
-
-        self.dsb_dxy.textChanged.connect(self.dxy_change)
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['dxy'] = self.dsb_dxy.text()
-        projdata['nullvalue'] = self.dsb_null.text()
-        projdata['bdist'] = self.bdist.text()
-        projdata['band'] = self.dataid_text
-
-        return projdata
+        self.saveobj(self.dsb_dxy)
+        self.saveobj(self.dsb_null)
+        self.saveobj(self.bdist)
+        self.saveobj(self.dataid_text)
+        self.saveobj(self.dataid)
+        self.saveobj(self.grid_method)
 
     def acceptall(self):
         """
@@ -418,10 +367,10 @@ class DataReproj(BasicModule):
         self.targ_wkt = None
 
         self.groupboxb = QtWidgets.QGroupBox()
-        self.combobox_inp_epsg = QtWidgets.QComboBox()
+        self.combo_inp_epsg = QtWidgets.QComboBox()
         self.inp_epsg_info = QtWidgets.QLabel()
         self.groupbox2b = QtWidgets.QGroupBox()
-        self.combobox_out_epsg = QtWidgets.QComboBox()
+        self.combo_out_epsg = QtWidgets.QComboBox()
         self.out_epsg_info = QtWidgets.QLabel()
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
@@ -485,6 +434,8 @@ class DataReproj(BasicModule):
         data = data.assign(Ynew=data.geometry.y.values)
 
         self.outdata['Vector'] = [data]
+        self.orig_wkt = self.in_proj.wkt
+        self.targ_wkt = self.out_proj.wkt
 
     def settings(self, nodialog=False):
         """
@@ -538,42 +489,17 @@ class DataReproj(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.orig_wkt = projdata['orig_wkt']
-        self.targ_wkt = projdata['targ_wkt']
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['orig_wkt'] = self.in_proj.wkt
-        projdata['targ_wkt'] = self.out_proj.wkt
-
-        return projdata
+        self.saveobj(self.orig_wkt)
+        self.saveobj(self.targ_wkt)
 
 
 class Metadata(ContextModule):
@@ -594,7 +520,7 @@ class Metadata(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.combobox_bandid = QtWidgets.QComboBox()
+        self.combo_bandid = QtWidgets.QComboBox()
         self.proj = GroupProj('Input Projection')
 
         self.setupui()
@@ -611,7 +537,7 @@ class Metadata(ContextModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
-        label_bandid = QtWidgets.QLabel('Source:')
+        lbl_bandid = QtWidgets.QLabel('Source:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -619,8 +545,8 @@ class Metadata(ContextModule):
 
         self.setWindowTitle('Vector Dataset Metadata')
 
-        gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.proj, 2, 0, 1, 4)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
 
@@ -668,7 +594,7 @@ class Metadata(ContextModule):
             else:
                 bandid.append('Unknown')
 
-        self.combobox_bandid.addItems(bandid)
+        self.combo_bandid.addItems(bandid)
 
         tmp = self.exec_()
 

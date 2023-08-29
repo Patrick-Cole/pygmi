@@ -73,9 +73,9 @@ class EquationEditor(BasicModule):
         """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        label_1 = QtWidgets.QLabel('Data Band Key:')
-        label_2 = QtWidgets.QLabel('Output Equation:')
-        label_3 = QtWidgets.QLabel('Output Data Type:')
+        lbl_1 = QtWidgets.QLabel('Data Band Key:')
+        lbl_2 = QtWidgets.QLabel('Output Equation:')
+        lbl_3 = QtWidgets.QLabel('Output Data Type:')
         self.dtype.addItems(['auto', 'uint8', 'int16', 'int32',
                              'float32', 'float64'])
 
@@ -129,13 +129,13 @@ class EquationEditor(BasicModule):
                '</ul>')
         self.textbrowser2.setHtml(tmp)
 
-        gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.textbrowser, 1, 0, 1, 2)
-        gridlayout.addWidget(label_1, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
         gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
         gridlayout.addWidget(self.label, 4, 1, 1, 1)
         gridlayout.addWidget(self.dtype, 6, 0, 1, 1)
-        gridlayout.addWidget(label_3, 5, 0, 1, 1)
+        gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
         gridlayout.addWidget(self.textbrowser2, 7, 0, 1, 2)
         gridlayout.addWidget(buttonbox, 8, 0, 1, 2)
 
@@ -457,41 +457,17 @@ class EquationEditor(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.equation = projdata['equation']
-        self.textbrowser.setText(self.equation)
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['equation'] = self.equation
-
-        return projdata
+        self.saveobj(self.equation)
+        self.saveobj(self.textbrowser)
 
 
 def hmode(data):

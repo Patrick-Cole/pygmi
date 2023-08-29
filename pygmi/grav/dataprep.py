@@ -68,12 +68,12 @@ class ProcessData(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
-        label_density = QtWidgets.QLabel('Background Density (kg/m3):')
-        label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
+        lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
+        lbl_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
                                          '(mGal):')
-        label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
-        label_kstat = QtWidgets.QLabel('Known Base Station Number:')
-        label_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity '
+        lbl_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
+        lbl_kstat = QtWidgets.QLabel('Known Base Station Number:')
+        lbl_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity '
                                        '(mGal):')
         pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
 
@@ -83,18 +83,18 @@ class ProcessData(BasicModule):
 
         self.setWindowTitle('Gravity Data Processing')
 
-        gridlayout_main.addWidget(label_kstat, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_kstat, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.knownstat, 0, 1, 1, 1)
-        gridlayout_main.addWidget(label_kbase, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_kbase, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.knownbase, 1, 1, 1, 1)
 
         gridlayout_main.addWidget(pb_calcbase, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(label_density, 3, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_density, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.density, 3, 1, 1, 1)
-        gridlayout_main.addWidget(label_absbase, 4, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_absbase, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.absbase, 4, 1, 1, 1)
-        gridlayout_main.addWidget(label_bthres, 5, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_bthres, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.basethres, 5, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -161,54 +161,23 @@ class ProcessData(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dsb_dxy.setValue(projdata['dxy'])
-        self.dsb_null.setValue(projdata['null'])
-        self.dataid.setCurrentText(projdata['dataid'])
-        self.density.setText(projdata['density'])
-        self.knownstat.setText(projdata['knownstat'])
-        self.knownbase.setText(projdata['knownbase'])
-        self.absbase.setText(projdata['absbase'])
-        self.basethres.setText(projdata['basethres'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['dxy'] = self.dsb_dxy.value()
-        projdata['null'] = self.dsb_null.value()
-        projdata['dataid'] = self.dataid.currentText()
-        projdata['density'] = self.density.text()
-        projdata['knownstat'] = self.knownstat.text()
-        projdata['knownbase'] = self.knownbase.text()
-        projdata['absbase'] = self.absbase.text()
-        projdata['basethres'] = self.basethres.text()
-
-        return projdata
+        self.saveobj(self.dsb_dxy)
+        self.saveobj(self.dsb_null)
+        self.saveobj(self.dataid)
+        self.saveobj(self.density)
+        self.saveobj(self.knownstat)
+        self.saveobj(self.knownbase)
+        self.saveobj(self.absbase)
+        self.saveobj(self.basethres)
 
     def acceptall(self, nodialog):
         """

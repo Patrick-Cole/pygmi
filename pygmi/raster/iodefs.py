@@ -34,7 +34,7 @@ import numpy as np
 from natsort import natsorted
 import rasterio
 from rasterio.windows import Window
-from rasterio.crs import CRS
+from pyproj.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
@@ -120,12 +120,12 @@ class BandSelect(ContextModule):
 class ImportData(BasicModule):
     """Import Data - Interfaces with rasterio routines."""
 
-    def __init__(self, parent=None, ifile='', filt='', listimport=''):
+    def __init__(self, parent=None, ifile='', filt=''):
         super().__init__(parent)
 
         self.ifile = ifile
         self.filt = filt
-        self.listimport = listimport
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -142,7 +142,7 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
-        if not nodialog and not self.listimport:
+        if not nodialog:
             ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
                    '*.pix *.bil);;'
                    'ArcGIS BIL (*.bil);;'
@@ -173,11 +173,10 @@ class ImportData(BasicModule):
             for ifile in ifilelist:
                 self.parent.item_insert('Io', 'Import Raster Data', ImportData,
                                         ifile=ifile, filt=self.filt,
-                                        listimport=True)
-        else:
-            self.listimport = False
+                                        nodialog=True)
 
         os.chdir(os.path.dirname(self.ifile))
+        self.parent.process_is_active(True)
 
         if self.filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
@@ -233,44 +232,17 @@ class ImportData(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        self.filt = projdata['filt']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-        projdata['filt'] = self.filt
-
-        return projdata
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
 
 
 class ImportRGBData(BasicModule):
@@ -278,6 +250,7 @@ class ImportRGBData(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -340,42 +313,16 @@ class ImportRGBData(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 def clusterprep(dat):

@@ -38,18 +38,18 @@ class CrispClust(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.spinbox_maxclusters = QtWidgets.QSpinBox()
-        self.combobox_alg = QtWidgets.QComboBox()
-        self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
-        self.spinbox_maxiterations = QtWidgets.QSpinBox()
-        self.spinbox_repeatedruns = QtWidgets.QSpinBox()
-        self.spinbox_minclusters = QtWidgets.QSpinBox()
+        self.sb_maxclusters = QtWidgets.QSpinBox()
+        self.combo_alg = QtWidgets.QComboBox()
+        self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
+        self.sb_maxiterations = QtWidgets.QSpinBox()
+        self.sb_repeatedruns = QtWidgets.QSpinBox()
+        self.sb_minclusters = QtWidgets.QSpinBox()
         self.groupbox = QtWidgets.QGroupBox()
-        self.label_7 = QtWidgets.QLabel()
-        self.doublespinbox_constraincluster = QtWidgets.QDoubleSpinBox()
-        self.radiobutton_random = QtWidgets.QRadioButton()
-        self.radiobutton_manual = QtWidgets.QRadioButton()
-        self.radiobutton_datadriven = QtWidgets.QRadioButton()
+        self.lbl_7 = QtWidgets.QLabel()
+        self.dsb_constraincluster = QtWidgets.QDoubleSpinBox()
+        self.rb_random = QtWidgets.QRadioButton()
+        self.rb_manual = QtWidgets.QRadioButton()
+        self.rb_datadriven = QtWidgets.QRadioButton()
 
         self.setupui()
 
@@ -65,8 +65,8 @@ class CrispClust(BasicModule):
         self.type = 'crisp'
         self.log = ''
 
-        self.combobox_alg.addItems(['k-means', 'advanced k-means', 'w-means'])
-        self.combobox_alg.currentIndexChanged.connect(self.combo)
+        self.combo_alg.addItems(['k-means', 'advanced k-means', 'w-means'])
+        self.combo_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
     def setupui(self):
@@ -83,63 +83,63 @@ class CrispClust(BasicModule):
 
         buttonbox = QtWidgets.QDialogButtonBox()
         label = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
-        label_4 = QtWidgets.QLabel()
-        label_5 = QtWidgets.QLabel()
-        label_6 = QtWidgets.QLabel()
+        lbl_2 = QtWidgets.QLabel()
+        lbl_3 = QtWidgets.QLabel()
+        lbl_4 = QtWidgets.QLabel()
+        lbl_5 = QtWidgets.QLabel()
+        lbl_6 = QtWidgets.QLabel()
 
-        self.spinbox_minclusters.setMinimum(1)
-        self.spinbox_minclusters.setProperty('value', 5)
-        self.spinbox_maxclusters.setMinimum(1)
-        self.spinbox_maxclusters.setProperty('value', 5)
-        self.spinbox_maxiterations.setMinimum(1)
-        self.spinbox_maxiterations.setMaximum(1000)
-        self.spinbox_maxiterations.setProperty('value', 100)
-        self.doublespinbox_maxerror.setDecimals(5)
-        self.doublespinbox_maxerror.setProperty('value', 1e-05)
-        self.spinbox_repeatedruns.setMinimum(1)
+        self.sb_minclusters.setMinimum(1)
+        self.sb_minclusters.setProperty('value', 5)
+        self.sb_maxclusters.setMinimum(1)
+        self.sb_maxclusters.setProperty('value', 5)
+        self.sb_maxiterations.setMinimum(1)
+        self.sb_maxiterations.setMaximum(1000)
+        self.sb_maxiterations.setProperty('value', 100)
+        self.dsb_maxerror.setDecimals(5)
+        self.dsb_maxerror.setProperty('value', 1e-05)
+        self.sb_repeatedruns.setMinimum(1)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        self.radiobutton_random.setChecked(True)
+        self.rb_random.setChecked(True)
         self.groupbox.hide()
 
         self.setWindowTitle('Crisp Clustering')
         label.setText('Cluster Algorithm:')
-        label_2.setText('Minimum Clusters:')
-        label_3.setText('Maximum Clusters')
-        label_4.setText('Maximum Iterations:')
-        label_5.setText('Terminate if relative change per iteration '
+        lbl_2.setText('Minimum Clusters:')
+        lbl_3.setText('Maximum Clusters')
+        lbl_4.setText('Maximum Iterations:')
+        lbl_5.setText('Terminate if relative change per iteration '
                         'is less than:')
-        label_6.setText('Repeated Runs:')
-        self.label_7.setText('Constrain Cluster Shape '
+        lbl_6.setText('Repeated Runs:')
+        self.lbl_7.setText('Constrain Cluster Shape '
                              '(0: unconstrained, 1: spherical)')
         self.groupbox.setTitle('Initial Guess')
-        self.radiobutton_random.setText('Random')
-        self.radiobutton_manual.setText('Manual')
-        self.radiobutton_datadriven.setText('Data Driven')
+        self.rb_random.setText('Random')
+        self.rb_manual.setText('Manual')
+        self.rb_datadriven.setText('Data Driven')
 
         gridlayout.addWidget(label, 0, 2, 1, 1)
-        gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
-        gridlayout.addWidget(label_2, 1, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_minclusters, 1, 4, 1, 1)
-        gridlayout.addWidget(label_3, 2, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxclusters, 2, 4, 1, 1)
-        gridlayout.addWidget(label_4, 3, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxiterations, 3, 4, 1, 1)
-        gridlayout.addWidget(label_5, 4, 2, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_maxerror, 4, 4, 1, 1)
-        gridlayout.addWidget(label_6, 5, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_repeatedruns, 5, 4, 1, 1)
-        gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_constraincluster, 6, 4, 1, 1)
+        gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(lbl_2, 1, 2, 1, 1)
+        gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)
+        gridlayout.addWidget(lbl_3, 2, 2, 1, 1)
+        gridlayout.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
+        gridlayout.addWidget(lbl_4, 3, 2, 1, 1)
+        gridlayout.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
+        gridlayout.addWidget(lbl_5, 4, 2, 1, 1)
+        gridlayout.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
+        gridlayout.addWidget(lbl_6, 5, 2, 1, 1)
+        gridlayout.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_7, 6, 2, 1, 1)
+        gridlayout.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
         gridlayout.addWidget(self.groupbox, 8, 2, 1, 3)
         gridlayout.addWidget(buttonbox, 9, 4, 1, 1)
 
-        verticallayout.addWidget(self.radiobutton_random)
-        verticallayout.addWidget(self.radiobutton_manual)
-        verticallayout.addWidget(self.radiobutton_datadriven)
+        verticallayout.addWidget(self.rb_random)
+        verticallayout.addWidget(self.rb_manual)
+        verticallayout.addWidget(self.rb_datadriven)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -153,13 +153,13 @@ class CrispClust(BasicModule):
         None.
 
         """
-        i = str(self.combobox_alg.currentText())
+        i = str(self.combo_alg.currentText())
         if i == 'w-means':
-            self.label_7.show()
-            self.doublespinbox_constraincluster.show()
+            self.lbl_7.show()
+            self.dsb_constraincluster.show()
         else:
-            self.label_7.hide()
-            self.doublespinbox_constraincluster.hide()
+            self.lbl_7.hide()
+            self.dsb_constraincluster.hide()
 
     def settings(self, nodialog=False):
         """
@@ -201,55 +201,39 @@ class CrispClust(BasicModule):
             self.parent.pbar.to_max()
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combobox_alg.setCurrentText(projdata['cltype'])
-        self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
-        self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
-        self.spinbox_maxiterations.setProperty('value', projdata['max_iter'])
-        self.doublespinbox_maxerror.setProperty('value',
-                                                projdata['term_thresh'])
-        self.spinbox_repeatedruns.setProperty('value', projdata['runs'])
-        self.doublespinbox_constraincluster.setProperty('value',
-                                                        projdata['constrain'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
         self.update_vars()
-        projdata = {}
 
-        projdata['cltype'] = self.cltype
-        projdata['min_cluster'] = self.min_cluster
-        projdata['max_cluster'] = self.max_cluster
-        projdata['max_iter'] = self.max_iter
-        projdata['term_thresh'] = self.term_thresh
-        projdata['runs'] = self.runs
-        projdata['constrain'] = self.constrain
+        self.saveobj(self.sb_maxclusters)
+        self.saveobj(self.combo_alg)
+        self.saveobj(self.dsb_maxerror)
+        self.saveobj(self.sb_maxiterations)
+        self.saveobj(self.sb_repeatedruns)
+        self.saveobj(self.sb_minclusters)
+        self.saveobj(self.dsb_constraincluster)
+        self.saveobj(self.rb_random)
+        self.saveobj(self.rb_manual)
+        self.saveobj(self.rb_datadriven)
 
-        return projdata
+        self.saveobj(self.cltype)
+        self.saveobj(self.min_cluster)
+        self.saveobj(self.max_cluster)
+        self.saveobj(self.max_iter)
+        self.saveobj(self.term_thresh)
+        self.saveobj(self.runs)
+        self.saveobj(self.constrain)
+        self.saveobj(self.denorm)
+        self.saveobj(self.init_type)
+        self.saveobj(self.type)
+        self.saveobj(self.log)
 
     def update_vars(self):
         """
@@ -260,13 +244,13 @@ class CrispClust(BasicModule):
         None.
 
         """
-        self.cltype = str(self.combobox_alg.currentText())
-        self.min_cluster = self.spinbox_minclusters.value()
-        self.max_cluster = self.spinbox_maxclusters.value()
-        self.max_iter = self.spinbox_maxiterations.value()
-        self.term_thresh = self.doublespinbox_maxerror.value()
-        self.runs = self.spinbox_repeatedruns.value()
-        self.constrain = self.doublespinbox_constraincluster.value()
+        self.cltype = str(self.combo_alg.currentText())
+        self.min_cluster = self.sb_minclusters.value()
+        self.max_cluster = self.sb_maxclusters.value()
+        self.max_iter = self.sb_maxiterations.value()
+        self.term_thresh = self.dsb_maxerror.value()
+        self.runs = self.sb_repeatedruns.value()
+        self.constrain = self.dsb_constraincluster.value()
 
     def run(self):
         """
@@ -314,7 +298,7 @@ class CrispClust(BasicModule):
 
         dat_in = np.array([i.data.compressed() for i in data]).T
 
-        if self.radiobutton_manual.isChecked() is True:
+        if self.rb_manual.isChecked() is True:
             ext = ('ASCII matrix (*.txt);;'
                    'ASCII matrix (*.asc);;'
                    'ASCII matrix (*.dat)')
@@ -375,7 +359,7 @@ class CrispClust(BasicModule):
         for i in range(no_clust[0], no_clust[1]+1):
             self.showlog('Number of Clusters:'+str(i))
             cnt = cnt + 1
-            if self.radiobutton_datadriven.isChecked() is True:
+            if self.rb_datadriven.isChecked() is True:
                 self.showlog('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp/i
@@ -395,7 +379,7 @@ class CrispClust(BasicModule):
                     dat_in, i, startmdat[i], startmfix[i], max_iter,
                     term_thresh, cltype, cov_constr)
 
-            elif self.radiobutton_manual.isChecked() is True:
+            elif self.rb_manual.isChecked() is True:
 
                 self.showlog('Initial guess: manual')
 
@@ -403,7 +387,7 @@ class CrispClust(BasicModule):
                     dat_in, i, startmdat[i], startmfix[i], max_iter,
                     term_thresh, cltype, cov_constr)
 
-            elif self.radiobutton_random.isChecked() is True:
+            elif self.rb_random.isChecked() is True:
                 self.showlog('Initial guess: random')
 
                 clobj_fcn = np.array([np.inf])

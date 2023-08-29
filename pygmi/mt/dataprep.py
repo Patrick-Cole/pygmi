@@ -65,7 +65,7 @@ class Metadata(ContextModule):
         self.dataid = {}
         self.oldtxt = ''
 
-        self.combobox_bandid = QtWidgets.QComboBox()
+        self.combo_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Station Name')
         self.dsb_lat = QtWidgets.QLineEdit()
         self.dsb_lon = QtWidgets.QLineEdit()
@@ -91,14 +91,14 @@ class Metadata(ContextModule):
         groupbox = QtWidgets.QGroupBox('Dataset')
 
         gridlayout = QtWidgets.QGridLayout(groupbox)
-        label_utmx = QtWidgets.QLabel('UTM X Coordinate:')
-        label_utmy = QtWidgets.QLabel('UTM Y Coordinate:')
-        label_lat = QtWidgets.QLabel('Latitude:')
-        label_lon = QtWidgets.QLabel('Longitude:')
-        label_elev = QtWidgets.QLabel('Elevation:')
-        label_utmzone = QtWidgets.QLabel('UTM Zone:')
-        label_rot = QtWidgets.QLabel('Rotation:')
-        label_bandid = QtWidgets.QLabel('Station Name:')
+        lbl_utmx = QtWidgets.QLabel('UTM X Coordinate:')
+        lbl_utmy = QtWidgets.QLabel('UTM Y Coordinate:')
+        lbl_lat = QtWidgets.QLabel('Latitude:')
+        lbl_lon = QtWidgets.QLabel('Longitude:')
+        lbl_elev = QtWidgets.QLabel('Elevation:')
+        lbl_utmzone = QtWidgets.QLabel('UTM Zone:')
+        lbl_rot = QtWidgets.QLabel('Rotation:')
+        lbl_bandid = QtWidgets.QLabel('Station Name:')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -109,31 +109,31 @@ class Metadata(ContextModule):
 
         self.setWindowTitle('Dataset Metadata')
 
-        gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
 
-        gridlayout.addWidget(label_lat, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_lat, 0, 0, 1, 1)
         gridlayout.addWidget(self.dsb_lat, 0, 1, 1, 1)
-        gridlayout.addWidget(label_lon, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_lon, 1, 0, 1, 1)
         gridlayout.addWidget(self.dsb_lon, 1, 1, 1, 1)
-        gridlayout.addWidget(label_elev, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl_elev, 2, 0, 1, 1)
         gridlayout.addWidget(self.dsb_elev, 2, 1, 1, 1)
-        gridlayout.addWidget(label_utmx, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_utmx, 3, 0, 1, 1)
         gridlayout.addWidget(self.dsb_utmx, 3, 1, 1, 1)
-        gridlayout.addWidget(label_utmy, 4, 0, 1, 1)
+        gridlayout.addWidget(lbl_utmy, 4, 0, 1, 1)
         gridlayout.addWidget(self.dsb_utmy, 4, 1, 1, 1)
-        gridlayout.addWidget(label_utmzone, 5, 0, 1, 1)
+        gridlayout.addWidget(lbl_utmzone, 5, 0, 1, 1)
         gridlayout.addWidget(self.dsb_utmzone, 5, 1, 1, 1)
-        gridlayout.addWidget(label_rot, 6, 0, 1, 1)
+        gridlayout.addWidget(lbl_rot, 6, 0, 1, 1)
         gridlayout.addWidget(self.dsb_rot, 6, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -157,21 +157,21 @@ class Metadata(ContextModule):
         None.
 
         """
-        ctxt = str(self.combobox_bandid.currentText())
+        ctxt = str(self.combo_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Station Name',
             'Please type in the new name for the station',
             QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
-            self.combobox_bandid.currentIndexChanged.disconnect()
-            indx = self.combobox_bandid.currentIndex()
-            txt = self.combobox_bandid.itemText(indx)
+            self.combo_bandid.currentIndexChanged.disconnect()
+            indx = self.combo_bandid.currentIndex()
+            txt = self.combo_bandid.itemText(indx)
             self.banddata[skey] = self.banddata.pop(txt)
             self.dataid[skey] = self.dataid.pop(txt)
             self.oldtxt = skey
-            self.combobox_bandid.setItemText(indx, skey)
-            self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+            self.combo_bandid.setItemText(indx, skey)
+            self.combo_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
         """
@@ -196,8 +196,8 @@ class Metadata(ContextModule):
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
-        indx = self.combobox_bandid.currentIndex()
-        txt = self.combobox_bandid.itemText(indx)
+        indx = self.combo_bandid.currentIndex()
+        txt = self.combo_bandid.itemText(indx)
         self.oldtxt = txt
         idata = self.banddata[txt]
 
@@ -232,11 +232,11 @@ class Metadata(ContextModule):
             self.banddata[i] = copy.deepcopy(self.indata['MT - EDI'][i])
             self.dataid[i] = i
 
-        self.combobox_bandid.currentIndexChanged.disconnect()
-        self.combobox_bandid.addItems(bandid)
-        indx = self.combobox_bandid.currentIndex()
-        self.oldtxt = self.combobox_bandid.itemText(indx)
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.combo_bandid.currentIndexChanged.disconnect()
+        self.combo_bandid.addItems(bandid)
+        indx = self.combo_bandid.currentIndex()
+        self.oldtxt = self.combo_bandid.itemText(indx)
+        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
 
         idata = self.banddata[self.oldtxt]
 
@@ -538,44 +538,18 @@ class StaticShiftEDI(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.shiftx.setValue(projdata['shiftx'])
-        self.shifty.setValue(projdata['shifty'])
-        self.checkbox.setChecked(projdata['checkbox'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['shiftx'] = self.shiftx.value()
-        projdata['shifty'] = self.shifty.value()
-        projdata['checkbox'] = self.checkbox.isChecked()
-
-        return projdata
+        self.saveobj(self.shiftx)
+        self.saveobj(self.shifty)
+        self.saveobj(self.checkbox)
 
 
 class RotateEDI(BasicModule):
@@ -752,42 +726,17 @@ class RotateEDI(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.spinbox.setValue(projdata['rotz'])
-        self.checkbox.setChecked(projdata['checkbox'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['rotz'] = self.spinbox.value()
-        projdata['checkbox'] = self.checkbox.isChecked()
-
-        return projdata
+        self.saveobj(self.spinbox)
+        self.saveobj(self.checkbox)
 
 
 class MyMplCanvasPick(FigureCanvasQTAgg):
@@ -941,7 +890,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : event
+        width : event
             unused.
 
         Returns
@@ -1229,37 +1178,15 @@ class EditEDI(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
-
 
 class MySlider(QtWidgets.QSlider):
     """
@@ -1771,64 +1698,28 @@ class Occam1D(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.targetdepth.setText(projdata['tdepth'])
-        self.nlayers.setText(projdata['nlayers'])
-        self.bottomlayer.setText(projdata['blayer'])
-        self.airlayer.setText(projdata['alayer'])
-        self.z1layer.setText(projdata['z1layer'])
-        self.maxiter.setText(projdata['miter'])
-        self.targetrms.setText(projdata['trms'])
-        self.errres.setText(projdata['rerr'])
-        self.errphase.setText(projdata['perr'])
-        self.errfloorphase.setText(projdata['perrflr'])
-        self.errfloorres.setText(projdata['rerrflr'])
-        self.combomode.setCurrentText(projdata['mode'])
-        self.remove_out_quad.setChecked(projdata['routq'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['tdepth'] = self.targetdepth.text()
-        projdata['nlayers'] = self.nlayers.text()
-        projdata['blayer'] = self.bottomlayer.text()
-        projdata['alayer'] = self.airlayer.text()
-        projdata['z1layer'] = self.z1layer.text()
-        projdata['miter'] = self.maxiter.text()
-        projdata['trms'] = self.targetrms.text()
-        projdata['rerr'] = self.errres.text()
-        projdata['perr'] = self.errphase.text()
-        projdata['perrflr'] = self.errfloorphase.text()
-        projdata['rerrflr'] = self.errfloorres.text()
-        projdata['mode'] = self.combomode.currentText()
-        projdata['routq'] = self.remove_out_quad.isChecked()
-
-        return projdata
+        self.saveobj(self.targetdepth)
+        self.saveobj(self.nlayers)
+        self.saveobj(self.bottomlayer)
+        self.saveobj(self.airlayer)
+        self.saveobj(self.z1layer)
+        self.saveobj(self.maxiter)
+        self.saveobj(self.targetrms)
+        self.saveobj(self.errres)
+        self.saveobj(self.errphase)
+        self.saveobj(self.errfloorphase)
+        self.saveobj(self.errfloorres)
+        self.saveobj(self.combomode)
+        self.saveobj(self.remove_out_quad)
 
 
 def tonumber(test, alttext=None):

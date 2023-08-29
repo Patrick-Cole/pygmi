@@ -46,6 +46,7 @@ class ImportCG5(BasicModule):
 
         self.df_cg5 = None
         self.df_gps = None
+        self.is_import = True
 
         self.line = QtWidgets.QComboBox()
         self.station = QtWidgets.QComboBox()
@@ -71,12 +72,12 @@ class ImportCG5(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
-        label_line = QtWidgets.QLabel('Line:')
-        label_station = QtWidgets.QLabel('Station:')
-        label_xchan = QtWidgets.QLabel('Longitude:')
-        label_ychan = QtWidgets.QLabel('Latitude:')
-        label_zchan = QtWidgets.QLabel('Ellipsoid (GPS) Elevation:')
-        label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
+        lbl_line = QtWidgets.QLabel('Line:')
+        lbl_station = QtWidgets.QLabel('Station:')
+        lbl_xchan = QtWidgets.QLabel('Longitude:')
+        lbl_ychan = QtWidgets.QLabel('Latitude:')
+        lbl_zchan = QtWidgets.QLabel('Ellipsoid (GPS) Elevation:')
+        lbl_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
@@ -98,22 +99,22 @@ class ImportCG5(BasicModule):
         gridlayout_main.addWidget(self.gpsfile, 1, 0, 1, 1)
         gridlayout_main.addWidget(pb_gps, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_line, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_line, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.line, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_station, 3, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_station, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.station, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_xchan, 4, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_xchan, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.xchan, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_ychan, 5, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_ychan, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.ychan, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_zchan, 6, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_zchan, 6, 0, 1, 1)
         gridlayout_main.addWidget(self.zchan, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_bthres, 7, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_bthres, 7, 0, 1, 1)
         gridlayout_main.addWidget(self.basethres, 7, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
@@ -243,61 +244,25 @@ class ImportCG5(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.get_cg5(projdata['cg5file'])
-        self.get_gps(projdata['gpsfile'])
-
-        self.line.setCurrentText(projdata['line'])
-        self.station.setCurrentText(projdata['station'])
-        self.xchan.setCurrentText(projdata['xchan'])
-        self.ychan.setCurrentText(projdata['ychan'])
-        self.zchan.setCurrentText(projdata['zchan'])
-
-        self.nodata.setText(projdata['nodata'])
-        self.basethres.setText(projdata['basethres'])
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.line)
+        self.saveobj(self.station)
+        self.saveobj(self.xchan)
+        self.saveobj(self.ychan)
+        self.saveobj(self.zchan)
 
-        projdata['line'] = self.line.currentText()
-        projdata['station'] = self.station.currentText()
-        projdata['xchan'] = self.xchan.currentText()
-        projdata['ychan'] = self.ychan.currentText()
-        projdata['zchan'] = self.zchan.currentText()
-
-        projdata['nodata'] = self.nodata.text()
-        projdata['cg5file'] = self.cg5file.text()
-        projdata['gpsfile'] = self.gpsfile.text()
-        projdata['basethres'] = self.basethres.text()
-
-        return projdata
+        self.saveobj(self.nodata)
+        self.saveobj(self.cg5file)
+        self.saveobj(self.gpsfile)
+        self.saveobj(self.basethres)
 
     def get_cg5(self, filename=''):
         """
@@ -313,7 +278,7 @@ class ImportCG5(BasicModule):
         None.
 
         """
-        ext = ('CG-5 ASCII (*.txt *.xyz)')
+        ext = 'CG-5 ASCII (*.txt *.xyz)'
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -362,7 +327,7 @@ class ImportCG5(BasicModule):
         None.
 
         """
-        ext = ('GPS comma delimited (*.csv)')
+        ext = 'GPS comma delimited (*.csv)'
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(

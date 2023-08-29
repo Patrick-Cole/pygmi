@@ -71,7 +71,7 @@ class LandsatComposite(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.rsense.landsat_composite')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
-        label_tday = QtWidgets.QLabel('Target Day:')
+        lbl_tday = QtWidgets.QLabel('Target Day:')
 
         self.tday.setMinimum(1)
         self.tday.setMaximum(366)
@@ -85,7 +85,7 @@ class LandsatComposite(BasicModule):
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_tday, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_tday, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.tday, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
@@ -179,42 +179,18 @@ class LandsatComposite(BasicModule):
 
         self.tday.setValue(mean)
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.idir = projdata['idir']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['idir'] = self.idir
-
-        return projdata
+        self.saveobj(self.idir)
+        self.saveobj(self.tday)
+        self.saveobj(self.idirlist)
 
 
 def composite(idir, dreq=10, mean=None, showlog=print, piter=None):

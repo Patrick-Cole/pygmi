@@ -42,9 +42,9 @@ import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point
 import rasterio
-from rasterio.crs import CRS
 from rasterio import Affine
 from natsort import natsorted
+from pyproj.crs import CRS
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data, RasterMeta
@@ -53,7 +53,6 @@ from pygmi.raster.ginterp import histcomp, norm255, norm2, currentshader
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.dataprep import lstack, data_reproject
 from pygmi.vector.dataprep import reprojxy
-
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -163,6 +162,7 @@ class ImportData(BasicModule):
         super().__init__(parent)
 
         self.filt = ''
+        self.is_import = True
 
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
@@ -314,44 +314,21 @@ class ImportData(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        self.filt = projdata['filt']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-        projdata['filt'] = self.filt
-
-        return projdata
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
+        self.saveobj(self.sfile)
+        self.saveobj(self.ftype)
+        self.saveobj(self.ensuresutm)
+        self.saveobj(self.lw_tnames)
 
 
 class ImportBatch(BasicModule):
@@ -376,6 +353,7 @@ class ImportBatch(BasicModule):
         self.bands = {}
         self.tnames = {}
         self.oldsensor = None
+        self.is_import = True
 
         self.combo_sensor = QtWidgets.QComboBox()
         self.sfile = QtWidgets.QLineEdit('')
@@ -443,6 +421,9 @@ class ImportBatch(BasicModule):
             True if successful, False otherwise.
 
         """
+        if self.idir != '':
+            self.get_sfile(True)
+
         if not nodialog or self.idir == '':
             tmp = self.exec_()
 
@@ -546,42 +527,27 @@ class ImportBatch(BasicModule):
 
         self.oldsensor = sensor
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.idir = projdata['idir']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.idir)
+        self.saveobj(self.tnames)
+        self.saveobj(self.filelist)
+        self.saveobj(self.bands)
+        self.saveobj(self.tnames)
+        self.saveobj(self.oldsensor)
 
-        projdata['idir'] = self.idir
-
-        return projdata
+        self.saveobj(self.combo_sensor)
+        self.saveobj(self.sfile)
+        self.saveobj(self.lw_tnames)
+        self.saveobj(self.ftype)
+        self.saveobj(self.ensuresutm )
 
 
 class ImportSentinel5P(BasicModule):
@@ -593,6 +559,7 @@ class ImportSentinel5P(BasicModule):
         self.sfile = ''
         self.filt = ''
         self.indx = 0
+        self.is_import = True
 
         self.subdata = QtWidgets.QComboBox()
         self.lonmin = QtWidgets.QLineEdit('16')
@@ -603,11 +570,11 @@ class ImportSentinel5P(BasicModule):
         self.cclip = QtWidgets.QRadioButton('Clip using coordinates')
         self.sclip = QtWidgets.QRadioButton('Clip using shapefile')
         self.shpfile = QtWidgets.QLineEdit(self.sfile)
-        self.label_sfile = QtWidgets.QPushButton('Load shapefile')
-        self.label_lonmin = QtWidgets.QLabel('Minimum Longitude:')
-        self.label_lonmax = QtWidgets.QLabel('Maximum Longitude:')
-        self.label_latmin = QtWidgets.QLabel('Minimum Latitude:')
-        self.label_latmax = QtWidgets.QLabel('Maximum Latitude:')
+        self.lbl_sfile = QtWidgets.QPushButton('Load shapefile')
+        self.lbl_lonmin = QtWidgets.QLabel('Minimum Longitude:')
+        self.lbl_lonmax = QtWidgets.QLabel('Maximum Longitude:')
+        self.lbl_latmin = QtWidgets.QLabel('Minimum Latitude:')
+        self.lbl_latmax = QtWidgets.QLabel('Maximum Latitude:')
 
         self.setupui()
 
@@ -624,40 +591,40 @@ class ImportSentinel5P(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.'
                                            'importsentinel5p')
-        label_subdata = QtWidgets.QLabel('Product:')
-        label_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
+        lbl_subdata = QtWidgets.QLabel('Product:')
+        lbl_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.cclip.setChecked(True)
-        self.label_sfile.hide()
+        self.lbl_sfile.hide()
         self.shpfile.hide()
 
         self.setWindowTitle(r'Import Sentinel-5P Data')
 
-        gridlayout_main.addWidget(label_subdata, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_subdata, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.subdata, 0, 1, 1, 1)
 
         gridlayout_main.addWidget(self.cclip, 1, 0, 1, 2)
         gridlayout_main.addWidget(self.sclip, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(self.label_lonmin, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_lonmin, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.lonmin, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.label_lonmax, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_lonmax, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.lonmax, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.label_latmin, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_latmin, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.latmin, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.label_latmax, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_latmax, 6, 0, 1, 1)
         gridlayout_main.addWidget(self.latmax, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.label_sfile, 7, 0, 1, 1)
+        gridlayout_main.addWidget(self.lbl_sfile, 7, 0, 1, 1)
         gridlayout_main.addWidget(self.shpfile, 7, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_qathres, 8, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_qathres, 8, 0, 1, 1)
         gridlayout_main.addWidget(self.qathres, 8, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 10, 0, 1, 1)
@@ -667,7 +634,7 @@ class ImportSentinel5P(BasicModule):
         buttonbox.rejected.connect(self.reject)
         self.cclip.clicked.connect(self.clipchoice)
         self.sclip.clicked.connect(self.clipchoice)
-        self.label_sfile.clicked.connect(self.loadshp)
+        self.lbl_sfile.clicked.connect(self.loadshp)
 
     def settings(self, nodialog=False):
         """
@@ -685,7 +652,7 @@ class ImportSentinel5P(BasicModule):
 
         """
         if not nodialog:
-            ext = ('Sentinel-5P (*.nc)')
+            ext = 'Sentinel-5P (*.nc)'
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -751,49 +718,27 @@ class ImportSentinel5P(BasicModule):
 
         """
         if self.cclip.isChecked():
-            self.label_sfile.hide()
+            self.lbl_sfile.hide()
             self.shpfile.hide()
             self.lonmin.show()
             self.lonmax.show()
             self.latmin.show()
             self.latmax.show()
-            self.label_lonmin.show()
-            self.label_lonmax.show()
-            self.label_latmin.show()
-            self.label_latmax.show()
+            self.lbl_lonmin.show()
+            self.lbl_lonmax.show()
+            self.lbl_latmin.show()
+            self.lbl_latmax.show()
         else:
             self.lonmin.hide()
             self.lonmax.hide()
             self.latmin.hide()
             self.latmax.hide()
-            self.label_lonmin.hide()
-            self.label_lonmax.hide()
-            self.label_latmin.hide()
-            self.label_latmax.hide()
-            self.label_sfile.show()
+            self.lbl_lonmin.hide()
+            self.lbl_lonmax.hide()
+            self.lbl_latmin.hide()
+            self.lbl_latmax.hide()
+            self.lbl_sfile.show()
             self.shpfile.show()
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        self.filt = projdata['filt']
-
-        chk = self.settings(True)
-
-        return chk
 
     def loadshp(self):
         """
@@ -804,7 +749,7 @@ class ImportSentinel5P(BasicModule):
         None.
 
         """
-        ext = ('Shapefile (*.shp)')
+        ext = 'Shapefile (*.shp)'
 
         self.sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -817,16 +762,22 @@ class ImportSentinel5P(BasicModule):
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
+        self.saveobj(self.sfile)
+        self.saveobj(self.indx)
 
-        projdata['ifile'] = self.ifile
-        projdata['filt'] = self.filt
-
-        return projdata
+        self.saveobj(self.subdata)
+        self.saveobj(self.lonmin)
+        self.saveobj(self.lonmax)
+        self.saveobj(self.latmin)
+        self.saveobj(self.latmax)
+        self.saveobj(self.qathres)
+        self.saveobj(self.cclip)
+        self.saveobj(self.sclip)
 
     def get_5P_meta(self):
         """
@@ -999,12 +950,12 @@ class ExportBatch(ContextModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.exportbatch')
-        label_ofilt = QtWidgets.QLabel('Output Format:')
-        label_red = QtWidgets.QLabel('Red Band:')
-        label_green = QtWidgets.QLabel('Green Band:')
-        label_blue = QtWidgets.QLabel('Blue Band:')
-        label_shade = QtWidgets.QLabel('Sunshade Band:')
-        label_slvl = QtWidgets.QLabel('Sunshade Level:')
+        lbl_ofilt = QtWidgets.QLabel('Output Format:')
+        lbl_red = QtWidgets.QLabel('Red Band:')
+        lbl_green = QtWidgets.QLabel('Green Band:')
+        lbl_blue = QtWidgets.QLabel('Blue Band:')
+        lbl_shade = QtWidgets.QLabel('Sunshade Band:')
+        lbl_slvl = QtWidgets.QLabel('Sunshade Level:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
         ext = ('GeoTiff', 'GeoTiff compressed using DEFLATE',
@@ -1032,24 +983,24 @@ class ExportBatch(ContextModule):
         gridlayout_main.addWidget(self.odir, 0, 0, 1, 1)
         gridlayout_main.addWidget(pb_odir, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_ofilt, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_ofilt, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.ofilt, 1, 1, 1, 1)
 
         gridlayout_main.addWidget(self.ternary, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(label_red, 3, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_red, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.red, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_green, 4, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_green, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.green, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_blue, 5, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_blue, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.blue, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_shade, 6, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_shade, 6, 0, 1, 1)
         gridlayout_main.addWidget(self.sunshade, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_slvl, 7, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_slvl, 7, 0, 1, 1)
         gridlayout_main.addWidget(self.slvl, 7, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
@@ -1584,7 +1535,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
     for ifile2 in subdata:
         dataset = rasterio.open(ifile2)
 
-        wkt = dataset.crs.wkt
+        wkt = dataset.crs.to_wkt()
         crs = dataset.crs
         if 'Sinusoidal' in wkt:
             wkt = wkt.replace('PROJCS["unnamed"', 'PROJCS["Sinusoidal"')
@@ -3342,7 +3293,6 @@ def _testfn3():
     # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
     ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
-
 
     dat = get_data(ifile)
 

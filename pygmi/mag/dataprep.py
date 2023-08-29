@@ -74,7 +74,7 @@ class Tilt1(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
         label = QtWidgets.QLabel('Azimuth (degrees from east)')
-        label_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
+        lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -88,7 +88,7 @@ class Tilt1(BasicModule):
 
         self.setWindowTitle('Tilt Angle')
 
-        gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
         gridlayout.addWidget(label, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
@@ -158,42 +158,17 @@ class Tilt1(BasicModule):
         self.outdata['Raster'] = data2
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.sb_s.setValue(projdata['smooth'])
-        self.sb_azi.setValue(projdata['azi'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['smooth'] = self.sb_s.value()
-        projdata['azi'] = self.sb_azi.value()
-
-        return projdata
+        self.saveobj(self.sb_s)
+        self.saveobj(self.sb_azi)
 
 
 def tilt1(data, azi, s):
@@ -389,9 +364,9 @@ class RTP(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
-        label_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
-        label_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
-        label_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
+        lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
+        lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -406,12 +381,12 @@ class RTP(BasicModule):
 
         self.setWindowTitle('Reduction to the Pole')
 
-        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_inc, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_inc, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_dec, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_dec, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
@@ -455,44 +430,18 @@ class RTP(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dataid.setCurrentText(projdata['band'])
-        self.dsb_inc.setValue(projdata['inc'])
-        self.dsb_dec.setValue(projdata['dec'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['band'] = self.dataid.currentText()
-        projdata['inc'] = self.dsb_inc.value()
-        projdata['dec'] = self.dsb_dec.value()
-
-        return projdata
+        self.saveobj(self.dataid)
+        self.saveobj(self.dsb_inc)
+        self.saveobj(self.dsb_dec)
 
     def acceptall(self):
         """

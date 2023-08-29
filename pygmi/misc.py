@@ -134,7 +134,9 @@ class BasicModule(QtWidgets.QDialog):
 
         self.indata = {}
         self.outdata = {}
+        self.projdata = {}
         self.parent = parent
+        self.is_import = False
         self.ifile = ''
         self.ipth = os.path.dirname(__file__)+r'/images/'
         self.setWindowIcon(QtGui.QIcon(self.ipth+'logo256.ico'))
@@ -185,7 +187,49 @@ class BasicModule(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        return False
+        self.projdata = projdata
+
+        for otxt in projdata:
+            if otxt not in vars(self):
+                self.showlog('Cannot load project, you may be using an '
+                             'old project format.')
+                return False
+
+        for otxt in projdata:
+            obj = vars(self)[otxt]
+            if isinstance(obj, (float, int, bool, list, np.ndarray, tuple,
+                                str)):
+                vars(self)[otxt] = projdata[otxt]
+
+            if isinstance(obj, QtWidgets.QComboBox):
+                obj.setCurrentText(projdata[otxt])
+
+            if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
+                obj.setText(projdata[otxt])
+
+            if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
+                                QtWidgets.QSlider)):
+                obj.setValue(projdata[otxt])
+
+            if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+                obj.setChecked(projdata[otxt])
+
+            if isinstance(obj, QtWidgets.QDateEdit):
+                date = obj.date().fromString(projdata[otxt])
+                obj.setDate(date)
+
+            if isinstance(obj, QtWidgets.QListWidget):
+                obj.selectAll()
+                for i in obj.selectedItems():
+                    if i.text()[2:] not in self.projdata[otxt]:
+                        i.setSelected(False)
+
+        if self.is_import is True:
+            chk = self.settings(True)
+        else:
+            chk = False
+
+        return chk
 
     def saveproj(self):
         """
@@ -193,14 +237,59 @@ class BasicModule(QtWidgets.QDialog):
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
 
-        return projdata
+    def saveobj(self, obj):
+        """
+        Save an object to a dictionary.
 
+        This is a convenience function for saving project information.
+
+        Parameters
+        ----------
+        obj : variable
+            A variable to be saved.
+
+        Returns
+        -------
+        None.
+
+        """
+        otxt = None
+        for name in vars(self):
+            if id(vars(self)[name]) == id(obj):
+                otxt = name
+        if otxt is None:
+            return
+
+        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str)):
+            self.projdata[otxt] = obj
+
+        if isinstance(obj, QtWidgets.QComboBox):
+            self.projdata[otxt] = obj.currentText()
+
+        if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
+            self.projdata[otxt] = obj.text()
+
+        if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
+                            QtWidgets.QSlider)):
+            self.projdata[otxt] = obj.value()
+
+        if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+            self.projdata[otxt] = obj.isChecked()
+
+        if isinstance(obj, QtWidgets.QDateEdit):
+            self.projdata[otxt] = obj.date().toString()
+
+        if isinstance(obj, QtWidgets.QListWidget):
+            tmp = []
+            for i in obj.selectedItems():
+                tmp.append(i.text()[2:])
+            self.projdata[otxt] = tmp
+
+        return
 
 class ContextModule(QtWidgets.QDialog):
     """
@@ -556,3 +645,18 @@ def tick_formatter(x, pos):
 
 
 frm = ticker.FuncFormatter(tick_formatter)
+
+
+def _testfn():
+    """Test function."""
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp = BasicModule()
+    tmp.ifile = QtWidgets.QLineEdit('test')
+    tmp.saveobj(tmp.ifile)
+
+    print(tmp.projdata)
+
+
+if __name__ == "__main__":
+    _testfn()

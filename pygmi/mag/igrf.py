@@ -137,8 +137,8 @@ class IGRF(BasicModule):
 
         self.dsb_alt = QtWidgets.QDoubleSpinBox()
         self.dateedit = QtWidgets.QDateEdit()
-        self.combobox_dtm = QtWidgets.QComboBox()
-        self.combobox_mag = QtWidgets.QComboBox()
+        self.combo_dtm = QtWidgets.QComboBox()
+        self.combo_mag = QtWidgets.QComboBox()
         self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
@@ -156,10 +156,10 @@ class IGRF(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
-        label_0 = QtWidgets.QLabel('Sensor clearance above ground')
-        label_1 = QtWidgets.QLabel('Date')
-        label_2 = QtWidgets.QLabel('Digital Elevation Model')
-        label_3 = QtWidgets.QLabel('Magnetic Data')
+        lbl_0 = QtWidgets.QLabel('Sensor clearance above ground')
+        lbl_1 = QtWidgets.QLabel('Date')
+        lbl_2 = QtWidgets.QLabel('Digital Elevation Model')
+        lbl_3 = QtWidgets.QLabel('Magnetic Data')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -169,14 +169,14 @@ class IGRF(BasicModule):
         self.setWindowTitle('IGRF')
 
         gridlayout.addWidget(self.proj, 0, 0, 1, 2)
-        gridlayout.addWidget(label_0, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl_0, 2, 0, 1, 1)
         gridlayout.addWidget(self.dsb_alt, 2, 1, 1, 1)
-        gridlayout.addWidget(label_1, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
         gridlayout.addWidget(self.dateedit, 3, 1, 1, 1)
-        gridlayout.addWidget(label_2, 4, 0, 1, 1)
-        gridlayout.addWidget(self.combobox_dtm, 4, 1, 1, 1)
-        gridlayout.addWidget(label_3, 5, 0, 1, 1)
-        gridlayout.addWidget(self.combobox_mag, 5, 1, 1, 1)
+        gridlayout.addWidget(lbl_2, 4, 0, 1, 1)
+        gridlayout.addWidget(self.combo_dtm, 4, 1, 1, 1)
+        gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
+        gridlayout.addWidget(self.combo_mag, 5, 1, 1, 1)
         gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
 
@@ -209,20 +209,20 @@ class IGRF(BasicModule):
                 return False
 
         if self.wkt is None:
-            self.wkt = self.indata['Raster'][0].crs.wkt
+            self.wkt = self.indata['Raster'][0].crs.to_wkt()
 
         self.proj.set_current(self.wkt)
 
         data = self.indata['Raster']
 
-        self.combobox_dtm.clear()
-        self.combobox_mag.clear()
+        self.combo_dtm.clear()
+        self.combo_mag.clear()
         for i in data:
-            self.combobox_dtm.addItem(i.dataid)
-            self.combobox_mag.addItem(i.dataid)
+            self.combo_dtm.addItem(i.dataid)
+            self.combo_mag.addItem(i.dataid)
 
         if len(data) > 1:
-            self.combobox_dtm.setCurrentIndex(1)
+            self.combo_dtm.setCurrentIndex(1)
 
         if not nodialog:
             tmp = self.exec_()
@@ -230,21 +230,21 @@ class IGRF(BasicModule):
             if tmp == 0:
                 return False
 
-        i = self.combobox_mag.currentIndex()
+        i = self.combo_mag.currentIndex()
 
         for i in data:
-            if i.dataid == self.combobox_mag.currentText():
+            if i.dataid == self.combo_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
 
         data = dp.lstack(data, dxy=dxy, piter=self.piter,
                          showlog=self.showlog)
 
         for i in data:
-            if i.dataid == self.combobox_mag.currentText():
+            if i.dataid == self.combo_mag.currentText():
                 maggrid = i
-            if i.dataid == self.combobox_dtm.currentText():
+            if i.dataid == self.combo_dtm.currentText():
                 data = i
-                wkt = i.crs.wkt
+                wkt = i.crs.to_wkt()
 
         sdate = self.dateedit.date()
         sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
@@ -264,49 +264,20 @@ class IGRF(BasicModule):
         self.outdata['Raster'][-1].dataid = bname
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.wkt = projdata['wkt']
-        self.dsb_alt.setValue(projdata['alt'])
-        date = self.dateedit.date().fromString(projdata['date'])
-        self.dateedit.setDate(date)
-        self.combobox_dtm.setCurrentText(projdata['dtm'])
-        self.combobox_mag.setCurrentText(projdata['mag'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['wkt'] = self.proj.wkt
-        projdata['alt'] = self.dsb_alt.value()
-        projdata['date'] = self.dateedit.date().toString()
-        projdata['dtm'] = self.combobox_dtm.currentText()
-        projdata['mag'] = self.combobox_mag.currentText()
-
-        return projdata
+        self.saveobj(self.wkt)
+        self.saveobj(self.dsb_alt)
+        self.saveobj(self.dateedit)
+        self.saveobj(self.combo_dtm)
+        self.saveobj(self.combo_mag)
 
 
 def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,

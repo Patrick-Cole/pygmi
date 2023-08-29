@@ -50,6 +50,7 @@ class ImportEDI(BasicModule):
         super().__init__(parent
                          )
         self.ifilelist = []
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -91,42 +92,16 @@ class ImportEDI(BasicModule):
         self.outdata[output_type] = dat
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifilelist = projdata['ifilelist']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifilelist'] = self.ifilelist
-
-        return projdata
+        self.saveobj(self.ifilelist)
 
 
 def get_EDI(ifiles):

@@ -38,18 +38,18 @@ class FuzzyClust(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combobox_alg = QtWidgets.QComboBox()
-        self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
-        self.doublespinbox_fuzzynessexp = QtWidgets.QDoubleSpinBox()
-        self.doublespinbox_constraincluster = QtWidgets.QDoubleSpinBox()
-        self.spinbox_maxclusters = QtWidgets.QSpinBox()
-        self.spinbox_maxiterations = QtWidgets.QSpinBox()
-        self.spinbox_repeatedruns = QtWidgets.QSpinBox()
-        self.spinbox_minclusters = QtWidgets.QSpinBox()
-        self.label_7 = QtWidgets.QLabel()
-        self.radiobutton_random = QtWidgets.QRadioButton()
-        self.radiobutton_manual = QtWidgets.QRadioButton()
-        self.radiobutton_datadriven = QtWidgets.QRadioButton()
+        self.combo_alg = QtWidgets.QComboBox()
+        self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
+        self.dsb_fuzzynessexp = QtWidgets.QDoubleSpinBox()
+        self.dsb_constraincluster = QtWidgets.QDoubleSpinBox()
+        self.sb_maxclusters = QtWidgets.QSpinBox()
+        self.sb_maxiterations = QtWidgets.QSpinBox()
+        self.sb_repeatedruns = QtWidgets.QSpinBox()
+        self.sb_minclusters = QtWidgets.QSpinBox()
+        self.lbl_7 = QtWidgets.QLabel()
+        self.rb_random = QtWidgets.QRadioButton()
+        self.rb_manual = QtWidgets.QRadioButton()
+        self.rb_datadriven = QtWidgets.QRadioButton()
 
         self.setupui()
 
@@ -65,11 +65,11 @@ class FuzzyClust(BasicModule):
         self.type = 'fuzzy'
         self.fexp = 1.5
 
-        self.combobox_alg.addItems(['fuzzy c-means',
-                                    'advanced fuzzy c-means',
-                                    'Gustafson-Kessel'])
-#                                   , 'Gath-Geva'])
-        self.combobox_alg.currentIndexChanged.connect(self.combo)
+        self.combo_alg.addItems(['fuzzy c-means',
+                                 'advanced fuzzy c-means',
+                                 'Gustafson-Kessel'])
+#                                , 'Gath-Geva'])
+        self.combo_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
     def setupui(self):
@@ -87,25 +87,25 @@ class FuzzyClust(BasicModule):
 
         buttonbox = QtWidgets.QDialogButtonBox(self)
         label = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
-        label_4 = QtWidgets.QLabel()
-        label_5 = QtWidgets.QLabel()
-        label_6 = QtWidgets.QLabel()
-        label_8 = QtWidgets.QLabel()
+        lbl_2 = QtWidgets.QLabel()
+        lbl_3 = QtWidgets.QLabel()
+        lbl_4 = QtWidgets.QLabel()
+        lbl_5 = QtWidgets.QLabel()
+        lbl_6 = QtWidgets.QLabel()
+        lbl_8 = QtWidgets.QLabel()
 
-        self.spinbox_maxclusters.setMinimum(1)
-        self.spinbox_maxclusters.setProperty('value', 5)
-        self.spinbox_maxiterations.setMinimum(1)
-        self.spinbox_maxiterations.setMaximum(1000)
-        self.spinbox_maxiterations.setProperty('value', 100)
-        self.spinbox_repeatedruns.setMinimum(1)
-        self.spinbox_minclusters.setMinimum(1)
-        self.spinbox_minclusters.setProperty('value', 5)
-        self.doublespinbox_maxerror.setDecimals(5)
-        self.doublespinbox_maxerror.setProperty('value', 1e-05)
-        self.doublespinbox_fuzzynessexp.setProperty('value', 1.5)
-        self.radiobutton_random.setChecked(True)
+        self.sb_maxclusters.setMinimum(1)
+        self.sb_maxclusters.setProperty('value', 5)
+        self.sb_maxiterations.setMinimum(1)
+        self.sb_maxiterations.setMaximum(1000)
+        self.sb_maxiterations.setProperty('value', 100)
+        self.sb_repeatedruns.setMinimum(1)
+        self.sb_minclusters.setMinimum(1)
+        self.sb_minclusters.setProperty('value', 5)
+        self.dsb_maxerror.setDecimals(5)
+        self.dsb_maxerror.setProperty('value', 1e-05)
+        self.dsb_fuzzynessexp.setProperty('value', 1.5)
+        self.rb_random.setChecked(True)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
@@ -113,42 +113,42 @@ class FuzzyClust(BasicModule):
         groupbox.setTitle('Initial Guess')
         groupbox.hide()
         label.setText('Cluster Algorithm:')
-        label_2.setText('Minimum Clusters:')
-        label_3.setText('Maximum Clusters')
-        label_4.setText('Maximum Iterations:')
-        label_5.setText('Terminate if relative change per iteration is less '
-                        'than:')
-        label_6.setText('Repeated Runs:')
-        self.label_7.setText('Constrain Cluster Shape (0: unconstrained, '
-                             '1: spherical)')
-        label_8.setText('Fuzzyness Exponent')
-        self.radiobutton_random.setText('Random')
-        self.radiobutton_manual.setText('Manual')
-        self.radiobutton_datadriven.setText('Data Driven')
+        lbl_2.setText('Minimum Clusters:')
+        lbl_3.setText('Maximum Clusters')
+        lbl_4.setText('Maximum Iterations:')
+        lbl_5.setText('Terminate if relative change per iteration is less '
+                      'than:')
+        lbl_6.setText('Repeated Runs:')
+        self.lbl_7.setText('Constrain Cluster Shape (0: unconstrained, '
+                           '1: spherical)')
+        lbl_8.setText('Fuzzyness Exponent')
+        self.rb_random.setText('Random')
+        self.rb_manual.setText('Manual')
+        self.rb_datadriven.setText('Data Driven')
 
         gridlayout.addWidget(label, 0, 2, 1, 1)
-        gridlayout.addWidget(label_2, 1, 2, 1, 1)
-        gridlayout.addWidget(label_3, 2, 2, 1, 1)
-        gridlayout.addWidget(label_4, 3, 2, 1, 1)
-        gridlayout.addWidget(label_5, 4, 2, 1, 1)
-        gridlayout.addWidget(label_6, 5, 2, 1, 1)
-        gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
-        gridlayout.addWidget(label_8, 7, 2, 1, 1)
+        gridlayout.addWidget(lbl_2, 1, 2, 1, 1)
+        gridlayout.addWidget(lbl_3, 2, 2, 1, 1)
+        gridlayout.addWidget(lbl_4, 3, 2, 1, 1)
+        gridlayout.addWidget(lbl_5, 4, 2, 1, 1)
+        gridlayout.addWidget(lbl_6, 5, 2, 1, 1)
+        gridlayout.addWidget(self.lbl_7, 6, 2, 1, 1)
+        gridlayout.addWidget(lbl_8, 7, 2, 1, 1)
         gridlayout.addWidget(groupbox, 9, 2, 1, 3)
 
-        gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
-        gridlayout.addWidget(self.spinbox_minclusters, 1, 4, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxclusters, 2, 4, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxiterations, 3, 4, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_maxerror, 4, 4, 1, 1)
-        gridlayout.addWidget(self.spinbox_repeatedruns, 5, 4, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_constraincluster, 6, 4, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_fuzzynessexp, 7, 4, 1, 1)
+        gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)
+        gridlayout.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
+        gridlayout.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
+        gridlayout.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
+        gridlayout.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
+        gridlayout.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
+        gridlayout.addWidget(self.dsb_fuzzynessexp, 7, 4, 1, 1)
         gridlayout.addWidget(buttonbox, 10, 4, 1, 1)
 
-        verticallayout.addWidget(self.radiobutton_random)
-        verticallayout.addWidget(self.radiobutton_manual)
-        verticallayout.addWidget(self.radiobutton_datadriven)
+        verticallayout.addWidget(self.rb_random)
+        verticallayout.addWidget(self.rb_manual)
+        verticallayout.addWidget(self.rb_datadriven)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -162,13 +162,13 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        i = str(self.combobox_alg.currentText())
+        i = str(self.combo_alg.currentText())
         if i in ('Gath-Geva', 'Gustafson-Kessel'):
-            self.label_7.show()
-            self.doublespinbox_constraincluster.show()
+            self.lbl_7.show()
+            self.dsb_constraincluster.show()
         else:
-            self.label_7.hide()
-            self.doublespinbox_constraincluster.hide()
+            self.lbl_7.hide()
+            self.dsb_constraincluster.hide()
 
     def settings(self, nodialog=False):
         """
@@ -210,57 +210,40 @@ class FuzzyClust(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combobox_alg.setCurrentText(projdata['cltype'])
-        self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
-        self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
-        self.spinbox_maxiterations.setProperty('value', projdata['max_iter'])
-        self.doublespinbox_maxerror.setProperty('value',
-                                                projdata['term_thresh'])
-        self.spinbox_repeatedruns.setProperty('value', projdata['runs'])
-        self.doublespinbox_constraincluster.setProperty('value',
-                                                        projdata['constrain'])
-        self.doublespinbox_fuzzynessexp.setProperty('value',
-                                                    projdata['fexp'])
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
         self.update_vars()
-        projdata = {}
 
-        projdata['cltype'] = self.cltype
-        projdata['min_cluster'] = self.min_cluster
-        projdata['max_cluster'] = self.max_cluster
-        projdata['max_iter'] = self.max_iter
-        projdata['term_thresh'] = self.term_thresh
-        projdata['runs'] = self.runs
-        projdata['constrain'] = self.constrain
-        projdata['fexp'] = self.fexp
+        self.saveobj(self.combo_alg)
+        self.saveobj(self.dsb_maxerror)
+        self.saveobj(self.dsb_fuzzynessexp)
+        self.saveobj(self.dsb_constraincluster)
+        self.saveobj(self.sb_maxclusters)
+        self.saveobj(self.sb_maxiterations)
+        self.saveobj(self.sb_repeatedruns)
+        self.saveobj(self.sb_minclusters)
+        self.saveobj(self.rb_random)
+        self.saveobj(self.rb_manual)
+        self.saveobj(self.rb_datadriven)
 
-        return projdata
+        self.saveobj(self.cltype)
+        self.saveobj(self.min_cluster)
+        self.saveobj(self.max_cluster)
+        self.saveobj(self.max_iter)
+        self.saveobj(self.term_thresh)
+        self.saveobj(self.runs)
+        self.saveobj(self.constrain)
+        self.saveobj(self.denorm)
+        self.saveobj(self.init_type)
+        self.saveobj(self.type)
+        self.saveobj(self.fexp)
 
     def update_vars(self):
         """
@@ -271,14 +254,14 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        self.cltype = str(self.combobox_alg.currentText())
-        self.min_cluster = self.spinbox_minclusters.value()
-        self.max_cluster = self.spinbox_maxclusters.value()
-        self.max_iter = self.spinbox_maxiterations.value()
-        self.term_thresh = self.doublespinbox_maxerror.value()
-        self.runs = self.spinbox_repeatedruns.value()
-        self.constrain = self.doublespinbox_constraincluster.value()
-        self.fexp = self.doublespinbox_fuzzynessexp.value()
+        self.cltype = str(self.combo_alg.currentText())
+        self.min_cluster = self.sb_minclusters.value()
+        self.max_cluster = self.sb_maxclusters.value()
+        self.max_iter = self.sb_maxiterations.value()
+        self.term_thresh = self.dsb_maxerror.value()
+        self.runs = self.sb_repeatedruns.value()
+        self.constrain = self.dsb_constraincluster.value()
+        self.fexp = self.dsb_fuzzynessexp.value()
 
     def run(self):
         """
@@ -326,7 +309,7 @@ class FuzzyClust(BasicModule):
 
         dat_in = np.array([i.data.compressed() for i in data]).T
 
-        if self.radiobutton_manual.isChecked() is True:
+        if self.rb_manual.isChecked() is True:
             ext = ('ASCII matrix (*.txt);;'
                    'ASCII matrix (*.asc);;'
                    'ASCII matrix (*.dat)')
@@ -387,7 +370,7 @@ class FuzzyClust(BasicModule):
         for i in range(no_clust[0], no_clust[1] + 1):
             self.showlog(f'Number of Clusters: {i}')
             cnt = cnt + 1
-            if self.radiobutton_datadriven.isChecked() is True:
+            if self.rb_datadriven.isChecked() is True:
                 self.showlog('Initial guess: data driven')
 
                 no_samp = dat_in.shape[0]
@@ -408,14 +391,14 @@ class FuzzyClust(BasicModule):
                     dat_in, i, startmdat[i], startmfix[i], max_iter,
                     term_thresh, expo, cltype, cov_constr)
 
-            elif self.radiobutton_manual.isChecked() is True:
+            elif self.rb_manual.isChecked() is True:
                 self.showlog('Initial guess: manual')
 
                 clu, clcent, clobj_fcn, clvrc, clnce, clxbi = self.fuzzy_means(
                     dat_in, i, startmdat[i], startmfix[i],
                     max_iter, term_thresh, expo, cltype, cov_constr)
 
-            elif self.radiobutton_random.isChecked() is True:
+            elif self.rb_random.isChecked() is True:
                 self.showlog('Initial guess: random')
 
                 clobj_fcn = np.array([np.Inf])

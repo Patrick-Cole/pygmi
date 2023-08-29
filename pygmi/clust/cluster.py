@@ -41,26 +41,26 @@ class Cluster(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combobox_alg = QtWidgets.QComboBox()
-        self.spinbox_branchfac = QtWidgets.QSpinBox()
-        self.spinbox_minsamples = QtWidgets.QSpinBox()
-        self.spinbox_minclusters = QtWidgets.QSpinBox()
-        self.spinbox_maxclusters = QtWidgets.QSpinBox()
-        self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
-        self.doublespinbox_eps = QtWidgets.QDoubleSpinBox()
-        self.doublespinbox_bthres = QtWidgets.QDoubleSpinBox()
-        self.spinbox_maxiterations = QtWidgets.QSpinBox()
-        self.radiobutton_sscale = QtWidgets.QRadioButton('Standard Scaling')
-        self.radiobutton_rscale = QtWidgets.QRadioButton('Robust Scaling')
-        self.radiobutton_noscale = QtWidgets.QRadioButton('No Scaling')
-        self.label_minclusters = QtWidgets.QLabel('Minimum Clusters:')
-        self.label_maxclusters = QtWidgets.QLabel('Maximum Clusters:')
-        self.label_maxiter = QtWidgets.QLabel('Maximum Iterations:')
-        self.label_maxerror = QtWidgets.QLabel('Tolerance:')
-        self.label_eps = QtWidgets.QLabel('eps:')
-        self.label_minsamples = QtWidgets.QLabel('Minimum Samples:')
-        self.label_bthres = QtWidgets.QLabel('Threshold:')
-        self.label_branchfac = QtWidgets.QLabel('Branching Factor:')
+        self.combo_alg = QtWidgets.QComboBox()
+        self.sb_branchfac = QtWidgets.QSpinBox()
+        self.sb_minsamples = QtWidgets.QSpinBox()
+        self.sb_minclusters = QtWidgets.QSpinBox()
+        self.sb_maxclusters = QtWidgets.QSpinBox()
+        self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
+        self.dsb_eps = QtWidgets.QDoubleSpinBox()
+        self.dsb_bthres = QtWidgets.QDoubleSpinBox()
+        self.sb_maxiterations = QtWidgets.QSpinBox()
+        self.rb_sscale = QtWidgets.QRadioButton('Standard Scaling')
+        self.rb_rscale = QtWidgets.QRadioButton('Robust Scaling')
+        self.rb_noscale = QtWidgets.QRadioButton('No Scaling')
+        self.lbl_minclusters = QtWidgets.QLabel('Minimum Clusters:')
+        self.lbl_maxclusters = QtWidgets.QLabel('Maximum Clusters:')
+        self.lbl_maxiter = QtWidgets.QLabel('Maximum Iterations:')
+        self.lbl_maxerror = QtWidgets.QLabel('Tolerance:')
+        self.lbl_eps = QtWidgets.QLabel('eps:')
+        self.lbl_minsamples = QtWidgets.QLabel('Minimum Samples:')
+        self.lbl_bthres = QtWidgets.QLabel('Threshold:')
+        self.lbl_branchfac = QtWidgets.QLabel('Branching Factor:')
 
         self.cltype = 'k-means'
         self.min_cluster = 5
@@ -76,9 +76,9 @@ class Cluster(BasicModule):
 
         self.setupui()
 
-        self.combobox_alg.addItems(['Mini Batch K-Means (fast)', 'K-Means',
+        self.combo_alg.addItems(['Mini Batch K-Means (fast)', 'K-Means',
                                     'Bisecting K-Means', 'DBSCAN', 'Birch'])
-        self.combobox_alg.currentIndexChanged.connect(self.combo)
+        self.combo_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
     def setupui(self):
@@ -96,25 +96,25 @@ class Cluster(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         label = QtWidgets.QLabel('Cluster Algorithm:')
 
-        self.spinbox_minclusters.setMinimum(1)
-        self.spinbox_minclusters.setProperty('value', self.min_cluster)
-        self.spinbox_maxclusters.setMinimum(1)
-        self.spinbox_maxclusters.setProperty('value', self.max_cluster)
-        self.spinbox_maxiterations.setMinimum(1)
-        self.spinbox_maxiterations.setMaximum(1000)
-        self.spinbox_maxiterations.setProperty('value', self.max_iter)
-        self.spinbox_minsamples.setMinimum(2)
-        self.spinbox_minsamples.setProperty('value', self.min_samples)
-        self.doublespinbox_eps.setDecimals(5)
-        self.doublespinbox_eps.setProperty('value', self.eps)
-        self.doublespinbox_eps.setSingleStep(0.1)
-        self.doublespinbox_maxerror.setDecimals(5)
-        self.doublespinbox_maxerror.setProperty('value', self.tol)
-        self.radiobutton_sscale.setChecked(True)
-        self.spinbox_branchfac.setMinimum(2)
-        self.spinbox_branchfac.setProperty('value', self.branchfac)
-        self.doublespinbox_bthres.setDecimals(5)
-        self.doublespinbox_bthres.setProperty('value', self.bthres)
+        self.sb_minclusters.setMinimum(1)
+        self.sb_minclusters.setProperty('value', self.min_cluster)
+        self.sb_maxclusters.setMinimum(1)
+        self.sb_maxclusters.setProperty('value', self.max_cluster)
+        self.sb_maxiterations.setMinimum(1)
+        self.sb_maxiterations.setMaximum(1000)
+        self.sb_maxiterations.setProperty('value', self.max_iter)
+        self.sb_minsamples.setMinimum(2)
+        self.sb_minsamples.setProperty('value', self.min_samples)
+        self.dsb_eps.setDecimals(5)
+        self.dsb_eps.setProperty('value', self.eps)
+        self.dsb_eps.setSingleStep(0.1)
+        self.dsb_maxerror.setDecimals(5)
+        self.dsb_maxerror.setProperty('value', self.tol)
+        self.rb_sscale.setChecked(True)
+        self.sb_branchfac.setMinimum(2)
+        self.sb_branchfac.setProperty('value', self.branchfac)
+        self.dsb_bthres.setDecimals(5)
+        self.dsb_bthres.setProperty('value', self.bthres)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -122,26 +122,26 @@ class Cluster(BasicModule):
         self.setWindowTitle('Cluster Analysis')
 
         gridlayout.addWidget(label, 0, 2, 1, 1)
-        gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
-        gridlayout.addWidget(self.label_minclusters, 1, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_minclusters, 1, 4, 1, 1)
-        gridlayout.addWidget(self.label_maxclusters, 2, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxclusters, 2, 4, 1, 1)
-        gridlayout.addWidget(self.label_maxiter, 3, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_maxiterations, 3, 4, 1, 1)
-        gridlayout.addWidget(self.label_maxerror, 4, 2, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_maxerror, 4, 4, 1, 1)
-        gridlayout.addWidget(self.label_bthres, 3, 2, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_bthres, 3, 4, 1, 1)
-        gridlayout.addWidget(self.label_branchfac, 4, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_branchfac, 4, 4, 1, 1)
-        gridlayout.addWidget(self.label_eps, 1, 2, 1, 1)
-        gridlayout.addWidget(self.doublespinbox_eps, 1, 4, 1, 1)
-        gridlayout.addWidget(self.label_minsamples, 2, 2, 1, 1)
-        gridlayout.addWidget(self.spinbox_minsamples, 2, 4, 1, 1)
-        gridlayout.addWidget(self.radiobutton_noscale, 7, 2, 1, 1)
-        gridlayout.addWidget(self.radiobutton_sscale, 8, 2, 1, 1)
-        gridlayout.addWidget(self.radiobutton_rscale, 9, 2, 1, 1)
+        gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_minclusters, 1, 2, 1, 1)
+        gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_maxclusters, 2, 2, 1, 1)
+        gridlayout.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_maxiter, 3, 2, 1, 1)
+        gridlayout.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_maxerror, 4, 2, 1, 1)
+        gridlayout.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_bthres, 3, 2, 1, 1)
+        gridlayout.addWidget(self.dsb_bthres, 3, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_branchfac, 4, 2, 1, 1)
+        gridlayout.addWidget(self.sb_branchfac, 4, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_eps, 1, 2, 1, 1)
+        gridlayout.addWidget(self.dsb_eps, 1, 4, 1, 1)
+        gridlayout.addWidget(self.lbl_minsamples, 2, 2, 1, 1)
+        gridlayout.addWidget(self.sb_minsamples, 2, 4, 1, 1)
+        gridlayout.addWidget(self.rb_noscale, 7, 2, 1, 1)
+        gridlayout.addWidget(self.rb_sscale, 8, 2, 1, 1)
+        gridlayout.addWidget(self.rb_rscale, 9, 2, 1, 1)
         gridlayout.addWidget(helpdocs, 10, 2, 1, 1)
         gridlayout.addWidget(buttonbox, 10, 4, 1, 1)
 
@@ -157,48 +157,48 @@ class Cluster(BasicModule):
         None.
 
         """
-        i = str(self.combobox_alg.currentText())
+        i = str(self.combo_alg.currentText())
 
-        self.label_minclusters.hide()
-        self.spinbox_minclusters.hide()
-        self.label_maxclusters.hide()
-        self.spinbox_maxclusters.hide()
-        self.label_maxerror.hide()
-        self.doublespinbox_maxerror.hide()
-        self.label_maxiter.hide()
-        self.spinbox_maxiterations.hide()
-        self.label_minsamples.hide()
-        self.spinbox_minsamples.hide()
-        self.label_eps.hide()
-        self.doublespinbox_eps.hide()
-        self.label_branchfac.hide()
-        self.spinbox_branchfac.hide()
-        self.label_bthres.hide()
-        self.doublespinbox_bthres.hide()
+        self.lbl_minclusters.hide()
+        self.sb_minclusters.hide()
+        self.lbl_maxclusters.hide()
+        self.sb_maxclusters.hide()
+        self.lbl_maxerror.hide()
+        self.dsb_maxerror.hide()
+        self.lbl_maxiter.hide()
+        self.sb_maxiterations.hide()
+        self.lbl_minsamples.hide()
+        self.sb_minsamples.hide()
+        self.lbl_eps.hide()
+        self.dsb_eps.hide()
+        self.lbl_branchfac.hide()
+        self.sb_branchfac.hide()
+        self.lbl_bthres.hide()
+        self.dsb_bthres.hide()
 
         if i == 'DBSCAN':
-            self.label_eps.show()
-            self.label_minsamples.show()
-            self.spinbox_minsamples.show()
-            self.doublespinbox_eps.show()
+            self.lbl_eps.show()
+            self.lbl_minsamples.show()
+            self.sb_minsamples.show()
+            self.dsb_eps.show()
         elif 'K-Means' in i:
-            self.label_minclusters.show()
-            self.spinbox_minclusters.show()
-            self.label_maxclusters.show()
-            self.spinbox_maxclusters.show()
-            self.label_maxerror.show()
-            self.doublespinbox_maxerror.show()
-            self.label_maxiter.show()
-            self.spinbox_maxiterations.show()
+            self.lbl_minclusters.show()
+            self.sb_minclusters.show()
+            self.lbl_maxclusters.show()
+            self.sb_maxclusters.show()
+            self.lbl_maxerror.show()
+            self.dsb_maxerror.show()
+            self.lbl_maxiter.show()
+            self.sb_maxiterations.show()
         elif i == 'Birch':
-            self.label_minclusters.show()
-            self.spinbox_minclusters.show()
-            self.label_maxclusters.show()
-            self.spinbox_maxclusters.show()
-            self.label_branchfac.show()
-            self.spinbox_branchfac.show()
-            self.label_bthres.show()
-            self.doublespinbox_bthres.show()
+            self.lbl_minclusters.show()
+            self.sb_minclusters.show()
+            self.lbl_maxclusters.show()
+            self.sb_maxclusters.show()
+            self.lbl_branchfac.show()
+            self.sb_branchfac.show()
+            self.lbl_bthres.show()
+            self.dsb_bthres.show()
 
     def settings(self, nodialog=False):
         """
@@ -227,7 +227,7 @@ class Cluster(BasicModule):
             return False
 
         self.min_samples = len(self.indata['Raster'])+1
-        self.spinbox_minsamples.setProperty('value', self.min_samples)
+        self.sb_minsamples.setProperty('value', self.min_samples)
 
         if not nodialog:
             temp = self.exec_()
@@ -243,65 +243,43 @@ class Cluster(BasicModule):
             self.parent.pbar.to_max()
         return flag
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combobox_alg.setCurrentText(projdata['cltype'])
-        self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
-        self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
-        self.spinbox_maxiterations.setProperty('value', projdata['max_iter'])
-        self.doublespinbox_maxerror.setProperty('value', projdata['tol'])
-        self.doublespinbox_eps.setProperty('value', projdata['eps'])
-        self.spinbox_minsamples.setProperty('value', projdata['min_samples'])
-        self.doublespinbox_bthres.setProperty('value', projdata['bthres'])
-        self.spinbox_branchfac.setProperty('value', projdata['branchfac'])
-
-        self.radiobutton_sscale.setChecked(projdata['sscale'])
-        self.radiobutton_rscale.setChecked(projdata['rscale'])
-        self.radiobutton_noscale.setChecked(projdata['noscale'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
         self.update_vars()
-        projdata = {}
 
-        projdata['cltype'] = self.cltype
-        projdata['min_cluster'] = self.min_cluster
-        projdata['max_cluster'] = self.max_cluster
-        projdata['max_iter'] = self.max_iter
-        projdata['tol'] = self.tol
-        projdata['eps'] = self.eps
-        projdata['min_samples'] = self.min_samples
-        projdata['bthres'] = self.bthres
-        projdata['branchfac'] = self.branchfac
+        self.saveobj(self.combo_alg)
+        self.saveobj(self.sb_branchfac)
+        self.saveobj(self.sb_minsamples)
+        self.saveobj(self.sb_minclusters)
+        self.saveobj(self.sb_maxclusters)
+        self.saveobj(self.dsb_maxerror)
+        self.saveobj(self.dsb_eps)
+        self.saveobj(self.dsb_bthres)
+        self.saveobj(self.sb_maxiterations)
 
-        projdata['sscale'] = self.radiobutton_sscale.isChecked()
-        projdata['rscale'] = self.radiobutton_rscale.isChecked()
-        projdata['noscale'] = self.radiobutton_noscale.isChecked()
+        self.saveobj(self.cltype)
+        self.saveobj(self.min_cluster)
+        self.saveobj(self.max_cluster)
+        self.saveobj(self.max_iter)
+        self.saveobj(self.tol)
+        self.saveobj(self.eps)
+        self.saveobj(self.min_samples)
+        self.saveobj(self.bthres)
+        self.saveobj(self.branchfac)
 
-        return projdata
+        self.saveobj(self.rb_sscale)
+        self.saveobj(self.rb_rscale)
+        self.saveobj(self.rb_noscale)
+
+        self.saveobj(self.runs)
+        self.saveobj(self.log)
 
     def update_vars(self):
         """
@@ -312,15 +290,15 @@ class Cluster(BasicModule):
         None.
 
         """
-        self.cltype = str(self.combobox_alg.currentText())
-        self.min_cluster = self.spinbox_minclusters.value()
-        self.max_cluster = self.spinbox_maxclusters.value()
-        self.max_iter = self.spinbox_maxiterations.value()
-        self.tol = self.doublespinbox_maxerror.value()
-        self.eps = self.doublespinbox_eps.value()
-        self.min_samples = self.spinbox_minsamples.value()
-        self.bthres = self.doublespinbox_bthres.value()
-        self.branchfac = self.spinbox_branchfac.value()
+        self.cltype = str(self.combo_alg.currentText())
+        self.min_cluster = self.sb_minclusters.value()
+        self.max_cluster = self.sb_maxclusters.value()
+        self.max_iter = self.sb_maxiterations.value()
+        self.tol = self.dsb_maxerror.value()
+        self.eps = self.dsb_eps.value()
+        self.min_samples = self.sb_minsamples.value()
+        self.bthres = self.dsb_bthres.value()
+        self.branchfac = self.sb_branchfac.value()
 
     def run(self):
         """
@@ -352,10 +330,10 @@ class Cluster(BasicModule):
             del tmp
         X = np.transpose(X)
 
-        if self.radiobutton_sscale.isChecked():
+        if self.rb_sscale.isChecked():
             self.showlog('Applying standard scaling')
             X = skp.StandardScaler().fit_transform(X)
-        elif self.radiobutton_rscale.isChecked():
+        elif self.rb_rscale.isChecked():
             self.showlog('Applying robust scaling')
             X = skp.RobustScaler().fit_transform(X)
 
@@ -440,7 +418,7 @@ class Cluster(BasicModule):
             dat_out[-1].metadata['Cluster']['center'] = np.array(m)
             dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
 
-            self.log = ('Cluster complete' + ' (' + self.cltype+')')
+            self.log = f'Cluster complete ({self.cltype})'
 
         for i in dat_out:
             i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
@@ -506,7 +484,7 @@ def _test_marinda():
 
     DM = Cluster()
     DM.indata['Raster'] = dat2
-    DM.spinbox_maxclusters.setProperty('value', 9)
+    DM.sb_maxclusters.setProperty('value', 9)
 
     DM.settings()
 
@@ -581,7 +559,7 @@ def _test_marinda2():
 
     DM = Cluster()
     DM.indata['Raster'] = dat2
-    DM.spinbox_maxclusters.setProperty('value', 7)
+    DM.sb_maxclusters.setProperty('value', 7)
 
     DM.settings()
 

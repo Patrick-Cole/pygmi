@@ -41,19 +41,17 @@ class Normalisation(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
-        self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  '
+        self.rb_interval = QtWidgets.QRadioButton('Interval [0 1]')
+        self.rb_mean = QtWidgets.QRadioButton('Mean: zero,  '
                                                        'Standard deviation: '
                                                        'unity')
-        self.radiobutton_median = QtWidgets.QRadioButton('Median: zero,  '
+        self.rb_median = QtWidgets.QRadioButton('Median: zero,  '
                                                          'Median absolute '
                                                          'deviation: unity')
-        self.radiobutton_8bit = QtWidgets.QRadioButton('8-bit histogram '
+        self.rb_8bit = QtWidgets.QRadioButton('8-bit histogram '
                                                        'equalisation [0 255]')
 
         self.setupui()
-
-        self.normtype = 'minmax'  # mimax/meanstd/medmad/histeq
 
     def setupui(self):
         """
@@ -69,7 +67,7 @@ class Normalisation(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
 
-        self.radiobutton_interval.setChecked(True)
+        self.rb_interval.setChecked(True)
 
         groupbox = QtWidgets.QGroupBox('Normalisation/Scaling')
         verticallayout_2 = QtWidgets.QVBoxLayout(groupbox)
@@ -77,10 +75,10 @@ class Normalisation(BasicModule):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        verticallayout_2.addWidget(self.radiobutton_interval)
-        verticallayout_2.addWidget(self.radiobutton_mean)
-        verticallayout_2.addWidget(self.radiobutton_median)
-        verticallayout_2.addWidget(self.radiobutton_8bit)
+        verticallayout_2.addWidget(self.rb_interval)
+        verticallayout_2.addWidget(self.rb_mean)
+        verticallayout_2.addWidget(self.rb_median)
+        verticallayout_2.addWidget(self.rb_8bit)
 
         horizontallayout.addWidget(helpdocs)
         horizontallayout.addWidget(buttonbox)
@@ -119,22 +117,22 @@ class Normalisation(BasicModule):
 
         data = [i.copy() for i in self.indata['Raster']]
 
-        if self.radiobutton_interval.isChecked():
+        if self.rb_interval.isChecked():
             for i in data:
                 tmp1 = i.data.min()
                 tmp2 = i.data.max() - i.data.min()
                 i, _ = datacommon(i, tmp1, tmp2)
-        elif self.radiobutton_mean.isChecked():
+        elif self.rb_mean.isChecked():
             for i in data:
                 tmp1 = i.data.mean()
                 tmp2 = i.data.std()
                 i, _ = datacommon(i, tmp1, tmp2)
-        elif self.radiobutton_median.isChecked():
+        elif self.rb_median.isChecked():
             for i in data:
                 tmp1 = np.median(i.data.compressed())
                 tmp2 = np.median(abs(i.data.compressed() - tmp1))
                 i, _ = datacommon(i, tmp1, tmp2)
-        elif self.radiobutton_8bit.isChecked():
+        elif self.rb_8bit.isChecked():
             for i in data:
                 i.data = histeq(i.data)
                 i.data = 255*(i.data/i.data.ptp())
@@ -148,54 +146,19 @@ class Normalisation(BasicModule):
             self.pbar.to_max()
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        if projdata['type'] == 'interval':
-            self.radiobutton_interval.setChecked(True)
-        elif projdata['type'] == 'mean':
-            self.radiobutton_mean.setChecked(True)
-        elif projdata['type'] == 'median':
-            self.radiobutton_median.setChecked(True)
-        elif projdata['type'] == '8bit':
-            self.radiobutton_8bit.setChecked(True)
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        if self.radiobutton_interval.isChecked():
-            projdata['type'] = 'interval'
-        elif self.radiobutton_mean.isChecked():
-            projdata['type'] = 'mean'
-        elif self.radiobutton_median.isChecked():
-            projdata['type'] = 'median'
-        elif self.radiobutton_8bit.isChecked():
-            projdata['type'] = '8bit'
-
-        return projdata
+        self.saveobj(self.rb_interval)
+        self.saveobj(self.rb_mean)
+        self.saveobj(self.rb_median)
+        self.saveobj(self.rb_8bit)
 
 
 def datacommon(data, tmp1, tmp2):

@@ -55,8 +55,8 @@ class MergeLith(QtWidgets.QDialog):
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
-        label_1 = QtWidgets.QLabel('Master Lithology')
-        label_2 = QtWidgets.QLabel('Lithologies To Merge')
+        lbl_1 = QtWidgets.QLabel('Master Lithology')
+        lbl_2 = QtWidgets.QLabel('Lithologies To Merge')
 
         self.lw_lithmaster.setSelectionMode(self.lw_lithmaster.SingleSelection)
         self.lw_lithmerge.setSelectionMode(self.lw_lithmerge.MultiSelection)
@@ -65,9 +65,9 @@ class MergeLith(QtWidgets.QDialog):
 
         self.setWindowTitle('Merge Lithologies')
 
-        gridlayout.addWidget(label_1, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 0, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
-        gridlayout.addWidget(label_2, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 1, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
@@ -105,8 +105,8 @@ class LithNotes(QtWidgets.QDialog):
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
-        label_1 = QtWidgets.QLabel('Lithology Code')
-        label_2 = QtWidgets.QLabel('Notes')
+        lbl_1 = QtWidgets.QLabel('Lithology Code')
+        lbl_2 = QtWidgets.QLabel('Notes')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -127,9 +127,9 @@ class LithNotes(QtWidgets.QDialog):
         self.setWindowTitle('Lithology Notes')
 
         gridlayout.addWidget(self.lw_param_defs, 0, 1, 1, 1)
-        gridlayout.addWidget(label_1, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
         gridlayout.addWidget(self.lithcode, 1, 1, 1, 1)
-        gridlayout.addWidget(label_2, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 2, 0, 1, 1)
         gridlayout.addWidget(self.notes, 2, 1, 1, 1)
         gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
 
@@ -271,24 +271,24 @@ class ParamDisplay(QtWidgets.QDialog):
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
-        label_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
-        label_2 = QtWidgets.QLabel('Height of observation - Gravity')
-        label_3 = QtWidgets.QLabel('Height of observation - Magnetic')
-        label_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
-        label_5 = QtWidgets.QLabel('Magnetic Inclination')
-        label_6 = QtWidgets.QLabel('Magnetic Declination')
+        lbl_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
+        lbl_2 = QtWidgets.QLabel('Height of observation - Gravity')
+        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic')
+        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
+        lbl_5 = QtWidgets.QLabel('Magnetic Inclination')
+        lbl_6 = QtWidgets.QLabel('Magnetic Declination')
 
-        gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_1, 0, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
-        gl_gen_prop.addWidget(label_2, 2, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_2, 2, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_ght, 2, 1, 1, 1)
-        gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_3, 3, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_mht, 3, 1, 1, 1)
-        gl_gen_prop.addWidget(label_4, 4, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_4, 4, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hint, 4, 1, 1, 1)
-        gl_gen_prop.addWidget(label_5, 5, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_5, 5, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hinc, 5, 1, 1, 1)
-        gl_gen_prop.addWidget(label_6, 6, 0, 1, 1)
+        gl_gen_prop.addWidget(lbl_6, 6, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Lithological Properties
@@ -326,13 +326,13 @@ class ParamDisplay(QtWidgets.QDialog):
 
         gl_lithprops = QtWidgets.QGridLayout(self.gbox_lithprops)
 
-        label_7 = QtWidgets.QLabel('Magnetic Susceptibility (SI)')
-        label_8 = QtWidgets.QLabel('Remanent Magnetization Intensity (nT)')
-        label_9 = QtWidgets.QLabel('Q Ratio')
-        label_10 = QtWidgets.QLabel('Remanent Magnetization (A/m)')
-        label_11 = QtWidgets.QLabel('Remanent Inclination')
-        label_12 = QtWidgets.QLabel('Remanent Declination')
-        label_13 = QtWidgets.QLabel('Density (g/cm3)')
+        lbl_7 = QtWidgets.QLabel('Magnetic Susceptibility (SI)')
+        lbl_8 = QtWidgets.QLabel('Remanent Magnetization Intensity (nT)')
+        lbl_9 = QtWidgets.QLabel('Q Ratio')
+        lbl_10 = QtWidgets.QLabel('Remanent Magnetization (A/m)')
+        lbl_11 = QtWidgets.QLabel('Remanent Inclination')
+        lbl_12 = QtWidgets.QLabel('Remanent Declination')
+        lbl_13 = QtWidgets.QLabel('Density (g/cm3)')
 
         self.dsb_susc.setDecimals(7)
         self.dsb_susc.setMaximum(999999999.0)
@@ -359,19 +359,19 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_density.setSingleStep(0.01)
         self.dsb_density.setProperty('value', 2.75)
 
-        gl_lithprops.addWidget(label_13, 3, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_13, 3, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_density, 3, 1, 1, 1)
-        gl_lithprops.addWidget(label_7, 4, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_7, 4, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_susc, 4, 1, 1, 1)
-        gl_lithprops.addWidget(label_8, 5, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_8, 5, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_rmi, 5, 1, 1, 1)
-        gl_lithprops.addWidget(label_10, 6, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_10, 6, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_magnetization, 6, 1, 1, 1)
-        gl_lithprops.addWidget(label_9, 7, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_9, 7, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_qratio, 7, 1, 1, 1)
-        gl_lithprops.addWidget(label_11, 8, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_11, 8, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_minc, 8, 1, 1, 1)
-        gl_lithprops.addWidget(label_12, 9, 0, 1, 1)
+        gl_lithprops.addWidget(lbl_12, 9, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_mdec, 9, 1, 1, 1)
         gl_lithprops.addWidget(pb_applylith, 10, 0, 1, 2)
 

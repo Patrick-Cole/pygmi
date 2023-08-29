@@ -23,7 +23,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """Hyperspectral Interpretation Routines."""
-import json
 import sys
 import re
 import os
@@ -180,10 +179,6 @@ class AnalSpec(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.depthmarkers = {'Start': [0., 0., 0.]}
-        self.nummarkers = 1
-        self.depthfunc = None
-        self.dx = 1.
         self.spectra = None
         self.feature = {}
         self.feature[900] = [776, 1050, 850, 910]
@@ -198,8 +193,6 @@ class AnalSpec(BasicModule):
         self.combo = QtWidgets.QComboBox()
         self.combo_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
-        self.dsb_mdepth = QtWidgets.QDoubleSpinBox()
-        self.pb_save = QtWidgets.QPushButton('Save')
         self.lbl_info = QtWidgets.QLabel('')
         self.group_info = QtWidgets.QGroupBox('Information:')
         self.chk_hull = QtWidgets.QCheckBox('Remove Hull')
@@ -355,7 +348,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        ext = ('ENVI Spectral Library (*.sli)')
+        ext = 'ENVI Spectral Library (*.sli)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -395,28 +388,6 @@ class AnalSpec(BasicModule):
         """
         self.map.rotate = self.chk_rot.isChecked()
         self.map.init_graph()
-
-    def save(self):
-        """
-        Save depth marks to a json file, with same name as the raster image.
-
-        Returns
-        -------
-        None.
-
-        """
-        sdata = {}
-
-        ofile = self.indata['Raster'][0].filename[:-4]+'.json'
-
-        sdata['numcores'] = self.sb_numcore.value()
-        sdata['traylen'] = self.dsb_traylen.value()
-        sdata['depthmarkers'] = self.depthmarkers
-
-        with open(ofile, 'w', encoding='utf-8') as todisk:
-            json.dump(sdata, todisk, indent=4)
-
-        self.lbl_info.setText('Save complete.')
 
     def settings(self, nodialog=False):
         """
@@ -510,36 +481,15 @@ class AnalSpec(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
 
 
 class ProcFeatures(BasicModule):
@@ -727,36 +677,18 @@ class ProcFeatures(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
+        self.saveobj(self.cb_ratios)
+        self.saveobj(self.rfiltcheck)
+        self.saveobj(self.filtercheck)
 
     def acceptall(self):
         """
@@ -1208,7 +1140,7 @@ def readsli(ifile):
         if len(tmp) > 1:
             hdr3[tmp[0].strip()] = tmp[1].strip()
 
-    for i in hdr3.keys():
+    for i in hdr3:
         if i in ['samples', 'lines', 'bands', 'header offset', 'data type']:
             hdr3[i] = int(hdr3[i])
             continue

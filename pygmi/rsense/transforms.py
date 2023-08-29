@@ -173,36 +173,20 @@ class MNF(BasicModule):
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
+        self.saveobj(self.sb_comps)
+        self.saveobj(self.cb_fwdonly)
+        self.saveobj(self.rb_noise_diag)
+        self.saveobj(self.rb_noise_hv)
+        self.saveobj(self.rb_noise_quad)
 
     def acceptall(self):
         """
@@ -217,6 +201,8 @@ class MNF(BasicModule):
         """
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
+        else:
+            flist = None
 
         ncmps = self.sb_comps.value()
         odata = []
@@ -389,36 +375,18 @@ class PCA(BasicModule):
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
+        self.saveobj(self.sb_comps)
+        self.saveobj(self.cb_fwdonly)
+        self.saveobj(self.cb_fitlist)
 
     def acceptall(self):
         """

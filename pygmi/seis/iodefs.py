@@ -139,6 +139,7 @@ class ImportSeisan(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.is_import = True
         idir = os.path.dirname(os.path.realpath(__file__))
         self.tfile = os.path.join(idir, r'descriptions.txt')
 
@@ -326,42 +327,17 @@ class ImportSeisan(BasicModule):
         self.outdata['Seis'] = dat
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.ifile)
 
-        projdata['ifile'] = self.ifile
-
-        return projdata
 
 
 def read_record_type_1(i):
@@ -808,6 +784,7 @@ class ImportGenericFPS(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -890,42 +867,16 @@ class ImportGenericFPS(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 class ExportSeisan(ContextModule):
@@ -2164,10 +2115,10 @@ class FilterSeisan(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_rectype = QtWidgets.QLabel('Record Type:')
-        label_recdesc = QtWidgets.QLabel('Description:')
-        label_from = QtWidgets.QLabel('From')
-        label_to = QtWidgets.QLabel('To')
+        lbl_rectype = QtWidgets.QLabel('Record Type:')
+        lbl_recdesc = QtWidgets.QLabel('Description:')
+        lbl_from = QtWidgets.QLabel('From')
+        lbl_to = QtWidgets.QLabel('To')
         grp_dind = QtWidgets.QGroupBox('Distance Indicator')
         vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.dind_L)
@@ -2192,15 +2143,15 @@ class FilterSeisan(BasicModule):
         self.recdesc.currentTextChanged.connect(self.recdesc_init)
 
         gridlayout_main.addWidget(grp_dind, 0, 0, 1, 2)
-        gridlayout_main.addWidget(label_rectype, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_rectype, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.rectype, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_recdesc, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_recdesc, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.recdesc, 2, 1, 1, 1)
         gridlayout_main.addWidget(self.rinc, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.rexc, 3, 1, 1, 1)
-        gridlayout_main.addWidget(label_from, 4, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_from, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_from, 4, 1, 1, 1)
-        gridlayout_main.addWidget(label_to, 5, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_to, 5, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_to, 5, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -2211,7 +2162,7 @@ class FilterSeisan(BasicModule):
         self.dind_R.stateChanged.connect(self.dind_click)
         self.dind_D.stateChanged.connect(self.dind_click)
 
-    def dind_click(self, int):
+    def dind_click(self, state):
         """
         Check checkboxes.
 
@@ -2424,57 +2375,24 @@ class FilterSeisan(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dsb_from.setValue(projdata['from'])
-        self.dsb_to.setValue(projdata['to'])
-        self.rectype.setCurrentText(projdata['rectype'])
-        self.recdesc.setCurrentText(projdata['recdesc'])
-        self.dind_L.setChecked(projdata['L'])
-        self.dind_R.setChecked(projdata['R'])
-        self.dind_D.setChecked(projdata['D'])
-        self.rinc.setChecked(projdata['rinc'])
-        self.rexc.setChecked(projdata['rexc'])
-        self.dind_click(None)
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['from'] = self.dsb_from.value()
-        projdata['to'] = self.dsb_to.value()
-        projdata['rectype'] = self.rectype.currentText()
-        projdata['recdesc'] = self.recdesc.currentText()
-        projdata['L'] = self.dind_L.isChecked()
-        projdata['R'] = self.dind_R.isChecked()
-        projdata['D'] = self.dind_D.isChecked()
-        projdata['rinc'] = self.rinc.isChecked()
-        projdata['rexc'] = self.rexc.isChecked()
-
-        return projdata
+        self.saveobj(self.dsb_from)
+        self.saveobj(self.dsb_to)
+        self.saveobj(self.rectype)
+        self.saveobj(self.recdesc)
+        self.saveobj(self.dind_L)
+        self.saveobj(self.dind_R)
+        self.saveobj(self.dind_D)
+        self.saveobj(self.rinc)
+        self.saveobj(self.rexc)
 
     def acceptall(self):
         """

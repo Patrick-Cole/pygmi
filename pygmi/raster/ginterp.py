@@ -1777,36 +1777,27 @@ class PlotInterp(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
+        self.saveobj(self.cbox_dtype)
+        self.saveobj(self.cbox_band1)
+        self.saveobj(self.cbox_band2)
+        self.saveobj(self.cbox_band3)
+        self.saveobj(self.cbox_bands)
+        self.saveobj(self.cbox_htype)
+        self.saveobj(self.lineclipu)
+        self.saveobj(self.lineclipl)
+        self.saveobj(self.cbox_cbar)
+        self.saveobj(self.kslider)
+        self.saveobj(self.sslider)
+        self.saveobj(self.aslider)
 
 
 def aspect2(data):

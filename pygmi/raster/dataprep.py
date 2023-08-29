@@ -35,7 +35,9 @@ import pandas as pd
 from scipy.signal import tukey
 import rasterio
 import rasterio.merge
-from rasterio.crs import CRS
+import pyproj
+from pyproj.crs import CRS, ProjectedCRS
+from pyproj.crs.coordinate_operation import TransverseMercatorConversion
 from rasterio.warp import calculate_default_transform, reproject
 from rasterio.mask import mask as riomask
 import geopandas as gpd
@@ -70,9 +72,9 @@ class Continuation(BasicModule):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
-        label_band = QtWidgets.QLabel('Band to perform continuation:')
-        label_cont = QtWidgets.QLabel('Continuation type:')
-        label_height = QtWidgets.QLabel('Continuation distance:')
+        lbl_band = QtWidgets.QLabel('Band to perform continuation:')
+        lbl_cont = QtWidgets.QLabel('Continuation type:')
+        lbl_height = QtWidgets.QLabel('Continuation distance:')
 
         self.dsb_height.setMaximum(1000000.0)
         self.dsb_height.setMinimum(0.0)
@@ -86,12 +88,12 @@ class Continuation(BasicModule):
 
         self.setWindowTitle('Continuation')
 
-        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_cont, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_cont, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.continuation, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_height, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_height, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
@@ -135,44 +137,18 @@ class Continuation(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dataid.setCurrentText(projdata['band'])
-        self.continuation.setCurrenText(projdata['ctype'])
-        self.dsb_height.setValue(projdata['height'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['band'] = self.dataid.currentText()
-        projdata['ctype'] = self.continuation.currentText()
-        projdata['height'] = self.dsb_height.value()
-
-        return projdata
+        self.saveobj(self.dataid)
+        self.saveobj(self.continuation)
+        self.saveobj(self.dsb_height)
 
     def acceptall(self):
         """
@@ -250,40 +226,16 @@ class DataCut(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['shapefile']
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['shapefile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 class DataLayerStack(BasicModule):
@@ -297,12 +249,11 @@ class DataLayerStack(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dxy = None
-        self.piter = parent.pbar.iter
         self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.label_rows = QtWidgets.QLabel('Rows: 0')
-        self.label_cols = QtWidgets.QLabel('Columns: 0')
+        self.lbl_rows = QtWidgets.QLabel('Rows: 0')
+        self.lbl_cols = QtWidgets.QLabel('Columns: 0')
 
         self.setupui()
 
@@ -319,7 +270,7 @@ class DataLayerStack(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.'
                                            'datalayerstack')
-        label_dxy = QtWidgets.QLabel('Cell Size:')
+        lbl_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
@@ -333,10 +284,10 @@ class DataLayerStack(BasicModule):
 
         self.setWindowTitle('Dataset Layer Stack and Resample')
 
-        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.cmask, 3, 0, 1, 2)
         gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
@@ -371,8 +322,8 @@ class DataLayerStack(BasicModule):
         cols = int((xmax - xmin)/dxy)
         rows = int((ymax - ymin)/dxy)
 
-        self.label_rows.setText('Rows: '+str(rows))
-        self.label_cols.setText('Columns: '+str(cols))
+        self.lbl_rows.setText('Rows: '+str(rows))
+        self.lbl_cols.setText('Columns: '+str(cols))
 
     def settings(self, nodialog=False):
         """
@@ -431,42 +382,18 @@ class DataLayerStack(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.dxy = projdata['dxy']
-        self.cmask.setChecked(projdata['cmask'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['dxy'] = self.dsb_dxy.value()
-        projdata['cmask'] = self.cmask.isChecked()
-
-        return projdata
+        self.saveobj(self.dxy)
+        self.saveobj(self.dsb_dxy)
+        self.saveobj(self.cmask)
 
     def acceptall(self):
         """
@@ -697,45 +624,30 @@ class DataMerge(BasicModule):
 
         return tmp
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.idir = projdata['idir']
-        self.idirlist.setText(self.idir)
-        self.files_diff.setChecked(projdata['files_diff'])
-        self.shift_to_median.setChecked(projdata['mean_shift'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.idir)
+        self.saveobj(self.idirlist)
+        self.saveobj(self.files_diff)
+        self.saveobj(self.shift_to_median)
 
-        projdata['idir'] = self.idir
-        projdata['files_diff'] = self.files_diff.isChecked()
-        projdata['mean_shift'] = self.shift_to_median.isChecked()
+        self.saveobj(self.rb_first)
+        self.saveobj(self.rb_last)
+        self.saveobj(self.rb_min)
+        self.saveobj(self.rb_max)
+        self.saveobj(self.rb_median)
 
-        return projdata
+        self.saveobj(self.sfile)
+        self.saveobj(self.bands_to_files)
+        self.saveobj(self.forcetype)
+        self.saveobj(self.singleband)
 
     def acceptall(self):
         """
@@ -1006,7 +918,7 @@ class DataMerge(BasicModule):
                     self.showlog(f'{ifile} has no projection. '
                                  'Please assign one.')
                     return False
-                wkt.append(dataset.crs.wkt)
+                wkt.append(dataset.crs.to_wkt())
                 crs = dataset.crs
                 nodata.append(dataset.nodata)
 
@@ -1059,10 +971,10 @@ class DataReproj(BasicModule):
         self.targ_wkt = None
 
         self.groupboxb = QtWidgets.QGroupBox()
-        self.combobox_inp_epsg = QtWidgets.QComboBox()
+        self.combo_inp_epsg = QtWidgets.QComboBox()
         self.inp_epsg_info = QtWidgets.QLabel(wordWrap=True)
         self.groupbox2b = QtWidgets.QGroupBox()
-        self.combobox_out_epsg = QtWidgets.QComboBox()
+        self.combo_out_epsg = QtWidgets.QComboBox()
         self.out_epsg_info = QtWidgets.QLabel()
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
@@ -1128,6 +1040,8 @@ class DataReproj(BasicModule):
 
             dat.append(data2)
 
+        self.orig_wkt = self.in_proj.wkt
+        self.targ_wkt = self.out_proj.wkt
         self.outdata['Raster'] = dat
 
     def settings(self, nodialog=False):
@@ -1155,9 +1069,9 @@ class DataReproj(BasicModule):
             return False
 
         if self.orig_wkt is None:
-            self.orig_wkt = self.indata['Raster'][0].crs.wkt
+            self.orig_wkt = self.indata['Raster'][0].crs.to_wkt()
         if self.targ_wkt is None:
-            self.targ_wkt = self.indata['Raster'][0].crs.wkt
+            self.targ_wkt = self.indata['Raster'][0].crs.to_wkt()
 
         self.in_proj.set_current(self.orig_wkt)
         self.out_proj.set_current(self.targ_wkt)
@@ -1171,42 +1085,17 @@ class DataReproj(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.orig_wkt = projdata['orig_wkt']
-        self.targ_wkt = projdata['targ_wkt']
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['orig_wkt'] = self.in_proj.wkt
-        projdata['targ_wkt'] = self.out_proj.wkt
-
-        return projdata
+        self.saveobj(self.orig_wkt)
+        self.saveobj(self.targ_wkt)
 
 
 class GetProf(BasicModule):
@@ -1303,40 +1192,16 @@ class GetProf(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['shapefile']
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['shapefile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 class GroupProj(QtWidgets.QWidget):
@@ -1355,8 +1220,11 @@ class GroupProj(QtWidgets.QWidget):
         self.groupbox = QtWidgets.QGroupBox(title)
         self.combodatum = QtWidgets.QComboBox()
         self.comboproj = QtWidgets.QComboBox()
-        self.label = QtWidgets.QLabel()
-        self.label.setWordWrap(True)
+        # self.label = QtWidgets.QLabel()
+        # self.label.setWordWrap(True)
+
+        self.label = QtWidgets.QTextBrowser()
+        self.label.setWordWrapMode(0)
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
@@ -1455,8 +1323,11 @@ class GroupProj(QtWidgets.QWidget):
 
         self.wkt = self.epsg_proj[txt]
 
+        # if self.wkt is not a string, it must be epsg code
         if not isinstance(self.wkt, str):
-            self.wkt = epsgtowkt(self.wkt)
+            self.wkt = CRS.from_epsg(self.wkt).to_wkt(pretty=True)
+        elif self.wkt not in ['', 'None']:
+            self.wkt = CRS.from_wkt(self.wkt).to_wkt(pretty=True)
 
         # The next two lines make sure we have spaces after ALL commas.
         wkttmp = self.wkt.replace(', ', ',')
@@ -1486,7 +1357,7 @@ class Metadata(ContextModule):
         self.dataid = {}
         self.oldtxt = ''
 
-        self.combobox_bandid = QtWidgets.QComboBox()
+        self.combo_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
@@ -1521,20 +1392,20 @@ class Metadata(ContextModule):
         groupbox = QtWidgets.QGroupBox('Dataset')
 
         gridlayout = QtWidgets.QGridLayout(groupbox)
-        label_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
-        label_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
-        label_xdim = QtWidgets.QLabel('X Dimension:')
-        label_ydim = QtWidgets.QLabel('Y Dimension:')
-        label_null = QtWidgets.QLabel('Null/Nodata value:')
-        label_rows = QtWidgets.QLabel('Rows:')
-        label_cols = QtWidgets.QLabel('Columns:')
-        label_min = QtWidgets.QLabel('Dataset Minimum:')
-        label_max = QtWidgets.QLabel('Dataset Maximum:')
-        label_mean = QtWidgets.QLabel('Dataset Mean:')
-        label_units = QtWidgets.QLabel('Dataset Units:')
-        label_bandid = QtWidgets.QLabel('Band Name:')
-        label_dtype = QtWidgets.QLabel('Data Type:')
-        label_date = QtWidgets.QLabel('Acquisition Date:')
+        lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
+        lbl_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
+        lbl_xdim = QtWidgets.QLabel('X Dimension:')
+        lbl_ydim = QtWidgets.QLabel('Y Dimension:')
+        lbl_null = QtWidgets.QLabel('Null/Nodata value:')
+        lbl_rows = QtWidgets.QLabel('Rows:')
+        lbl_cols = QtWidgets.QLabel('Columns:')
+        lbl_min = QtWidgets.QLabel('Dataset Minimum:')
+        lbl_max = QtWidgets.QLabel('Dataset Maximum:')
+        lbl_mean = QtWidgets.QLabel('Dataset Mean:')
+        lbl_units = QtWidgets.QLabel('Dataset Units:')
+        lbl_bandid = QtWidgets.QLabel('Band Name:')
+        lbl_dtype = QtWidgets.QLabel('Data Type:')
+        lbl_date = QtWidgets.QLabel('Acquisition Date:')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -1546,44 +1417,44 @@ class Metadata(ContextModule):
         self.setWindowTitle('Dataset Metadata')
         self.date.setCalendarPopup(True)
 
-        gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
 
-        gridlayout.addWidget(label_tlx, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_tlx, 0, 0, 1, 1)
         gridlayout.addWidget(self.dsb_tlx, 0, 1, 1, 1)
-        gridlayout.addWidget(label_tly, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_tly, 1, 0, 1, 1)
         gridlayout.addWidget(self.dsb_tly, 1, 1, 1, 1)
-        gridlayout.addWidget(label_xdim, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl_xdim, 2, 0, 1, 1)
         gridlayout.addWidget(self.dsb_xdim, 2, 1, 1, 1)
-        gridlayout.addWidget(label_ydim, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_ydim, 3, 0, 1, 1)
         gridlayout.addWidget(self.dsb_ydim, 3, 1, 1, 1)
-        gridlayout.addWidget(label_null, 4, 0, 1, 1)
+        gridlayout.addWidget(lbl_null, 4, 0, 1, 1)
         gridlayout.addWidget(self.txt_null, 4, 1, 1, 1)
-        gridlayout.addWidget(label_rows, 5, 0, 1, 1)
+        gridlayout.addWidget(lbl_rows, 5, 0, 1, 1)
         gridlayout.addWidget(self.lbl_rows, 5, 1, 1, 1)
-        gridlayout.addWidget(label_cols, 6, 0, 1, 1)
+        gridlayout.addWidget(lbl_cols, 6, 0, 1, 1)
         gridlayout.addWidget(self.lbl_cols, 6, 1, 1, 1)
-        gridlayout.addWidget(label_min, 7, 0, 1, 1)
+        gridlayout.addWidget(lbl_min, 7, 0, 1, 1)
         gridlayout.addWidget(self.lbl_min, 7, 1, 1, 1)
-        gridlayout.addWidget(label_max, 8, 0, 1, 1)
+        gridlayout.addWidget(lbl_max, 8, 0, 1, 1)
         gridlayout.addWidget(self.lbl_max, 8, 1, 1, 1)
-        gridlayout.addWidget(label_mean, 9, 0, 1, 1)
+        gridlayout.addWidget(lbl_mean, 9, 0, 1, 1)
         gridlayout.addWidget(self.lbl_mean, 9, 1, 1, 1)
-        gridlayout.addWidget(label_units, 10, 0, 1, 1)
+        gridlayout.addWidget(lbl_units, 10, 0, 1, 1)
         gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
-        gridlayout.addWidget(label_dtype, 11, 0, 1, 1)
+        gridlayout.addWidget(lbl_dtype, 11, 0, 1, 1)
         gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
-        gridlayout.addWidget(label_date, 12, 0, 1, 1)
+        gridlayout.addWidget(lbl_date, 12, 0, 1, 1)
         gridlayout.addWidget(self.date, 12, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -1622,21 +1493,21 @@ class Metadata(ContextModule):
         None.
 
         """
-        ctxt = str(self.combobox_bandid.currentText())
+        ctxt = str(self.combo_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
             'Please type in the new name for the band',
             QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
-            self.combobox_bandid.currentIndexChanged.disconnect()
-            indx = self.combobox_bandid.currentIndex()
-            txt = self.combobox_bandid.itemText(indx)
+            self.combo_bandid.currentIndexChanged.disconnect()
+            indx = self.combo_bandid.currentIndex()
+            txt = self.combo_bandid.itemText(indx)
             self.banddata[skey] = self.banddata.pop(txt)
             self.dataid[skey] = self.dataid.pop(txt)
             self.oldtxt = skey
-            self.combobox_bandid.setItemText(indx, skey)
-            self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+            self.combo_bandid.setItemText(indx, skey)
+            self.combo_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
         """
@@ -1663,8 +1534,8 @@ class Metadata(ContextModule):
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
-        indx = self.combobox_bandid.currentIndex()
-        txt = self.combobox_bandid.itemText(indx)
+        indx = self.combo_bandid.currentIndex()
+        txt = self.combo_bandid.itemText(indx)
         self.oldtxt = txt
         idata = self.banddata[txt]
 
@@ -1699,7 +1570,8 @@ class Metadata(ContextModule):
         if self.indata['Raster'][0].crs is None:
             self.proj.set_current('None')
         else:
-            self.proj.set_current(self.indata['Raster'][0].crs.wkt)
+            crs = CRS.from_user_input(self.indata['Raster'][0].crs)
+            self.proj.set_current(crs.to_wkt(pretty=True))
 
         for i in self.indata['Raster']:
             bandid.append(i.dataid)
@@ -1713,11 +1585,11 @@ class Metadata(ContextModule):
             tmp.units = i.units
             tmp.datetime = i.datetime
 
-        self.combobox_bandid.currentIndexChanged.disconnect()
-        self.combobox_bandid.addItems(bandid)
-        indx = self.combobox_bandid.currentIndex()
-        self.oldtxt = self.combobox_bandid.itemText(indx)
-        self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.combo_bandid.currentIndexChanged.disconnect()
+        self.combo_bandid.addItems(bandid)
+        indx = self.combo_bandid.currentIndex()
+        self.oldtxt = self.combo_bandid.itemText(indx)
+        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
 
         idata = self.banddata[self.oldtxt]
 
@@ -2137,25 +2009,6 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
     return bounds
 
 
-def epsgtowkt(epsg):
-    """
-    Routine to get a WKT from an epsg code.
-
-    Parameters
-    ----------
-    epsg : str or int
-        EPSG code.
-
-    Returns
-    -------
-    out : str
-        WKT description.
-
-    """
-    out = CRS.from_epsg(int(epsg)).to_wkt()
-    return out
-
-
 def getepsgcodes():
     """
     Routine used to get a list of EPSG codes.
@@ -2166,83 +2019,75 @@ def getepsgcodes():
         Dictionary of codes per projection in WKT format.
 
     """
-    with open(os.path.join(os.path.dirname(__file__), 'gcs.csv'),
-              encoding='utf-8') as dfile:
-        dlines = dfile.readlines()
-
-    dlines = dlines[1:]
-    dcodes = {}
-    for i in dlines:
-        tmp = i.split(',')
-        if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:-1]
-
-        dcodes[tmp[1]] = int(tmp[0])
-
-    with open(os.path.join(os.path.dirname(__file__), 'pcs.csv'),
-              encoding='utf-8') as pfile:
-        plines = pfile.readlines()
+    crs_list = pyproj.database.query_crs_info(auth_name='EPSG', pj_types=None)
 
     pcodes = {}
-    for i in dcodes:
-        pcodes[i+r' / Geodetic Geographic'] = dcodes[i]
+    for i in crs_list:
+        if '/' in i.name:
+            pcodes[i.name] = int(i.code)
+        else:
+            pcodes[i.name+r' / Geodetic Geographic'] = int(i.code)
 
-    plines = plines[1:]
-    for i in plines:
-        tmp = i.split(',')
-        if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:-1]
-
-        pcodes[tmp[1]] = int(tmp[0])
-
-    for datum in ['Cape', 'Hartebeesthoek94']:
+    for datum in [4222, 4148]:
         for clong in range(15, 35, 2):
-            if 'Cape' in datum:
-                wkt = ('PROJCS["Cape / TM'+str(clong)+'",'
-                       'GEOGCS["Cape",'
-                       'DATUM["Cape",'
-                       'SPHEROID["Clarke 1880 (Arc)",'
-                       '6378249.145,293.4663077,'
-                       'AUTHORITY["EPSG","7013"]],'
-                       'AUTHORITY["EPSG","6222"]],'
-                       'PRIMEM["Greenwich",0,'
-                       'AUTHORITY["EPSG","8901"]],'
-                       'UNIT["degree",0.0174532925199433,'
-                       'AUTHORITY["EPSG","9122"]],'
-                       'AUTHORITY["EPSG","4222"]],'
-                       'PROJECTION["Transverse_Mercator"],'
-                       'PARAMETER["latitude_of_origin",0],'
-                       'PARAMETER["central_meridian",'+str(clong)+'],'
-                       'PARAMETER["scale_factor",1],'
-                       'PARAMETER["false_easting",0],'
-                       'PARAMETER["false_northing",0],'
-                       'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-                       'AXIS["Easting",EAST],'
-                       'AXIS["Northing",NORTH]]')
+            geog_crs = CRS.from_epsg(datum)
+            proj_crs = ProjectedCRS(name=f'{geog_crs.name} / TM{clong}',
+                                    conversion=TransverseMercatorConversion(
+                                        latitude_natural_origin=0,
+                                        longitude_natural_origin=clong,
+                                        false_easting=0,
+                                        false_northing=0,
+                                        scale_factor_natural_origin=1.0,),
+                                    geodetic_crs=geog_crs)
 
-            elif 'Hartebeesthoek94' in datum:
-                wkt = ('PROJCS["Hartebeesthoek94 / TM'+str(clong)+'",'
-                       'GEOGCS["Hartebeesthoek94",'
-                       'DATUM["Hartebeesthoek94",'
-                       'SPHEROID["WGS 84",6378137,298.257223563,'
-                       'AUTHORITY["EPSG","7030"]],'
-                       'AUTHORITY["EPSG","6148"]],'
-                       'PRIMEM["Greenwich",0,'
-                       'AUTHORITY["EPSG","8901"]],'
-                       'UNIT["degree",0.0174532925199433,'
-                       'AUTHORITY["EPSG","9122"]],'
-                       'AUTHORITY["EPSG","4148"]],'
-                       'PROJECTION["Transverse_Mercator"],'
-                       'PARAMETER["latitude_of_origin",0],'
-                       'PARAMETER["central_meridian",'+str(clong)+'],'
-                       'PARAMETER["scale_factor",1],'
-                       'PARAMETER["false_easting",0],'
-                       'PARAMETER["false_northing",0],'
-                       'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-                       'AXIS["Easting",EAST],'
-                       'AXIS["Northing",NORTH]]')
+            pcodes[f'{geog_crs.name} / TM{clong}'] = proj_crs.to_wkt(pretty=True)
 
-            pcodes[datum+r' / TM'+str(clong)] = wkt
+            # if 'Cape' in datum:
+            #     wkt = ('PROJCS["Cape / TM'+str(clong)+'",'
+            #            'GEOGCS["Cape",'
+            #            'DATUM["Cape",'
+            #            'SPHEROID["Clarke 1880 (Arc)",'
+            #            '6378249.145,293.4663077,'
+            #            'AUTHORITY["EPSG","7013"]],'
+            #            'AUTHORITY["EPSG","6222"]],'
+            #            'PRIMEM["Greenwich",0,'
+            #            'AUTHORITY["EPSG","8901"]],'
+            #            'UNIT["degree",0.0174532925199433,'
+            #            'AUTHORITY["EPSG","9122"]],'
+            #            'AUTHORITY["EPSG","4222"]],'
+            #            'PROJECTION["Transverse_Mercator"],'
+            #            'PARAMETER["latitude_of_origin",0],'
+            #            'PARAMETER["central_meridian",'+str(clong)+'],'
+            #            'PARAMETER["scale_factor",1],'
+            #            'PARAMETER["false_easting",0],'
+            #            'PARAMETER["false_northing",0],'
+            #            'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+            #            'AXIS["Easting",EAST],'
+            #            'AXIS["Northing",NORTH]]')
+
+            # elif 'Hartebeesthoek94' in datum:
+            #     wkt = ('PROJCS["Hartebeesthoek94 / TM'+str(clong)+'",'
+            #            'GEOGCS["Hartebeesthoek94",'
+            #            'DATUM["Hartebeesthoek94",'
+            #            'SPHEROID["WGS 84",6378137,298.257223563,'
+            #            'AUTHORITY["EPSG","7030"]],'
+            #            'AUTHORITY["EPSG","6148"]],'
+            #            'PRIMEM["Greenwich",0,'
+            #            'AUTHORITY["EPSG","8901"]],'
+            #            'UNIT["degree",0.0174532925199433,'
+            #            'AUTHORITY["EPSG","9122"]],'
+            #            'AUTHORITY["EPSG","4148"]],'
+            #            'PROJECTION["Transverse_Mercator"],'
+            #            'PARAMETER["latitude_of_origin",0],'
+            #            'PARAMETER["central_meridian",'+str(clong)+'],'
+            #            'PARAMETER["scale_factor",1],'
+            #            'PARAMETER["false_easting",0],'
+            #            'PARAMETER["false_northing",0],'
+            #            'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+            #            'AXIS["Easting",EAST],'
+            #            'AXIS["Northing",NORTH]]')
+
+            # pcodes[datum+r' / TM'+str(clong)] = wkt
 
     return pcodes
 
@@ -2839,7 +2684,7 @@ def _testfft():
     plt.show()
 
 
-def _test():
+def _testfn():
     """Test."""
     import sys
     from pygmi.raster.iodefs import get_raster
@@ -2854,7 +2699,20 @@ def _test():
     tmp.run()
 
 
+def _testfn2():
+    geog_crs = CRS.from_epsg(4222)
 
+    proj_crs = ProjectedCRS(name='WGS 84 / TM 25',
+        conversion=TransverseMercatorConversion(
+            latitude_natural_origin=0,
+            longitude_natural_origin=25,
+            false_easting=0,
+            false_northing=0,
+            scale_factor_natural_origin=1.0,
+            ), geodetic_crs=geog_crs)
+
+
+    breakpoint()
 
 if __name__ == "__main__":
-    _test()
+    _testfn2()

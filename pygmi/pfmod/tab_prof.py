@@ -491,7 +491,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                 continue
 
             x, y = reprojxy(lon, lat, 4326,
-                            self.parent.indata['Raster'][0].crs.wkt)
+                            self.parent.indata['Raster'][0].crs.to_wkt())
 
             if x < self.lmod1.xrange[0] or x > self.lmod1.xrange[1]:
                 continue
@@ -2210,14 +2210,14 @@ class LithBound(QtWidgets.QDialog):
 
         """
         gridlayout = QtWidgets.QGridLayout(self)
-        label_3 = QtWidgets.QLabel('Lithologies Above Layer')
-        label_4 = QtWidgets.QLabel('Lithologies Below Layer')
+        lbl_3 = QtWidgets.QLabel('Lithologies Above Layer')
+        lbl_4 = QtWidgets.QLabel('Lithologies Below Layer')
 
-        gridlayout.addWidget(label_3, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_3, 0, 0, 1, 1)
         self.lw_lithupper.setSelectionMode(
             QtWidgets.QAbstractItemView.SingleSelection)
         gridlayout.addWidget(self.lw_lithupper, 0, 1, 1, 1)
-        gridlayout.addWidget(label_4, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_4, 1, 0, 1, 1)
         self.lw_lithlower.setSelectionMode(
             QtWidgets.QAbstractItemView.SingleSelection)
         gridlayout.addWidget(self.lw_lithlower, 1, 1, 1, 1)
@@ -2380,10 +2380,10 @@ class RangedCopy(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         label = QtWidgets.QLabel('Range Start')
-        label_2 = QtWidgets.QLabel('Master Profile')
-        label_3 = QtWidgets.QLabel('Lithologies To Copy')
-        label_4 = QtWidgets.QLabel('Lithologies To Overwrite')
-        label_5 = QtWidgets.QLabel('Range End')
+        lbl_2 = QtWidgets.QLabel('Master Profile')
+        lbl_3 = QtWidgets.QLabel('Lithologies To Copy')
+        lbl_4 = QtWidgets.QLabel('Lithologies To Overwrite')
+        lbl_5 = QtWidgets.QLabel('Range End')
 
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
@@ -2414,19 +2414,19 @@ class RangedCopy(QtWidgets.QDialog):
 
         gridlayout.addWidget(gb_target, 0, 0, 1, 2)
 
-        gridlayout.addWidget(label_2, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_master, 1, 1, 1, 1)
 
         gridlayout.addWidget(label, 2, 0, 1, 1)
         gridlayout.addWidget(self.sb_start, 2, 1, 1, 1)
 
-        gridlayout.addWidget(label_5, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_5, 3, 0, 1, 1)
         gridlayout.addWidget(self.sb_end, 3, 1, 1, 1)
 
-        gridlayout.addWidget(label_3, 4, 0, 1, 1)
+        gridlayout.addWidget(lbl_3, 4, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithcopy, 4, 1, 1, 1)
 
-        gridlayout.addWidget(label_4, 5, 0, 1, 1)
+        gridlayout.addWidget(lbl_4, 5, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithdel, 5, 1, 1, 1)
 
         gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
@@ -2832,37 +2832,15 @@ class ImportPicture(BasicModule):
 
         return curline
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        return projdata
-
 
 def gridmatch2(cgrv, rgrv):
     """

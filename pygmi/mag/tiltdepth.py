@@ -106,8 +106,8 @@ class TiltDepth(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
         label2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
         labelc = QtWidgets.QLabel('Colour Bar:')
-        label_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
-        label_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
+        lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -136,9 +136,9 @@ class TiltDepth(BasicModule):
         vbl_raster.addWidget(self.cbox_cbar)
 
         vbl_raster.addWidget(self.do_rtp)
-        vbl_raster.addWidget(label_inc)
+        vbl_raster.addWidget(lbl_inc)
         vbl_raster.addWidget(self.dsb_inc)
-        vbl_raster.addWidget(label_dec)
+        vbl_raster.addWidget(lbl_dec)
         vbl_raster.addWidget(self.dsb_dec)
         vbl_raster.addWidget(self.btn_apply)
         vbl_raster.addWidget(self.pbar)
@@ -342,46 +342,19 @@ class TiltDepth(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.cbox_band1.setCurrentText(projdata['band1'])
-        self.cbox_cbar.setCurrentText(projdata['cbar'])
-        self.dsb_inc.setValue(projdata['inc'])
-        self.dsb_dec.setValue(projdata['dec'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['band1'] = self.cbox_band1.currentText()
-        projdata['cbar'] = self.cbox_cbar.currentText()
-        projdata['inc'] = self.dsb_inc.value()
-        projdata['dec'] = self.dsb_dec.value()
-
-        return projdata
+        self.saveobj(self.cbox_band1)
+        self.saveobj(self.cbox_cbar)
+        self.saveobj(self.dsb_inc)
+        self.saveobj(self.dsb_dec)
 
     def tiltdepth(self, data):
         """

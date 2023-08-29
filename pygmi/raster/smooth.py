@@ -40,19 +40,19 @@ class Smooth(BasicModule):
         super().__init__(parent)
 
         self.label = QtWidgets.QLabel('X:')
-        self.spinbox_x = QtWidgets.QSpinBox()
-        self.label_2 = QtWidgets.QLabel('Y:')
-        self.label_3 = QtWidgets.QLabel('Radius in Samples:')
-        self.spinbox_y = QtWidgets.QSpinBox()
-        self.spinbox_radius = QtWidgets.QSpinBox()
-        self.label_4 = QtWidgets.QLabel('Standard Deviation:')
-        self.spinbox_stddev = QtWidgets.QSpinBox()
+        self.sb_x = QtWidgets.QSpinBox()
+        self.lbl_2 = QtWidgets.QLabel('Y:')
+        self.lbl_3 = QtWidgets.QLabel('Radius in Samples:')
+        self.sb_y = QtWidgets.QSpinBox()
+        self.sb_radius = QtWidgets.QSpinBox()
+        self.lbl_4 = QtWidgets.QLabel('Standard Deviation:')
+        self.sb_stddev = QtWidgets.QSpinBox()
 
-        self.radiobutton_2dmedian = QtWidgets.QRadioButton('2D Median')
-        self.radiobutton_2dmean = QtWidgets.QRadioButton('2D Mean')
-        self.radiobutton_box = QtWidgets.QRadioButton('Box Window')
-        self.radiobutton_disk = QtWidgets.QRadioButton('Disk Window')
-        self.radiobutton_gaussian = QtWidgets.QRadioButton('Gaussian Window')
+        self.rb_2dmedian = QtWidgets.QRadioButton('2D Median')
+        self.rb_2dmean = QtWidgets.QRadioButton('2D Mean')
+        self.rb_box = QtWidgets.QRadioButton('Box Window')
+        self.rb_disk = QtWidgets.QRadioButton('Disk Window')
+        self.rb_gaussian = QtWidgets.QRadioButton('Gaussian Window')
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
@@ -78,20 +78,20 @@ class Smooth(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.smooth')
 
-        self.spinbox_x.setMinimum(1)
-        self.spinbox_x.setMaximum(999999)
-        self.spinbox_x.setProperty('value', 5)
-        self.spinbox_y.setMinimum(1)
-        self.spinbox_y.setMaximum(9999999)
-        self.spinbox_y.setProperty('value', 5)
-        self.spinbox_radius.setMinimum(1)
-        self.spinbox_radius.setMaximum(99999)
-        self.spinbox_radius.setProperty('value', 5)
-        self.spinbox_stddev.setMinimum(1)
-        self.spinbox_stddev.setMaximum(99999)
-        self.spinbox_stddev.setProperty('value', 5)
-        self.radiobutton_2dmean.setChecked(True)
-        self.radiobutton_box.setChecked(True)
+        self.sb_x.setMinimum(1)
+        self.sb_x.setMaximum(999999)
+        self.sb_x.setProperty('value', 5)
+        self.sb_y.setMinimum(1)
+        self.sb_y.setMaximum(9999999)
+        self.sb_y.setProperty('value', 5)
+        self.sb_radius.setMinimum(1)
+        self.sb_radius.setMaximum(99999)
+        self.sb_radius.setProperty('value', 5)
+        self.sb_stddev.setMinimum(1)
+        self.sb_stddev.setMaximum(99999)
+        self.sb_stddev.setProperty('value', 5)
+        self.rb_2dmean.setChecked(True)
+        self.rb_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -99,21 +99,21 @@ class Smooth(BasicModule):
         self.setWindowTitle('Smoothing Filters')
 
         verticallayout = QtWidgets.QVBoxLayout(groupbox_2)
-        verticallayout.addWidget(self.radiobutton_2dmean)
-        verticallayout.addWidget(self.radiobutton_2dmedian)
+        verticallayout.addWidget(self.rb_2dmean)
+        verticallayout.addWidget(self.rb_2dmedian)
         verticallayout_2 = QtWidgets.QVBoxLayout(groupbox_3)
-        verticallayout_2.addWidget(self.radiobutton_box)
-        verticallayout_2.addWidget(self.radiobutton_disk)
-        verticallayout_2.addWidget(self.radiobutton_gaussian)
+        verticallayout_2.addWidget(self.rb_box)
+        verticallayout_2.addWidget(self.rb_disk)
+        verticallayout_2.addWidget(self.rb_gaussian)
 
         gridlayout_2.addWidget(self.label, 0, 0, 1, 1)
-        gridlayout_2.addWidget(self.spinbox_x, 0, 1, 1, 1)
-        gridlayout_2.addWidget(self.label_2, 1, 0, 1, 1)
-        gridlayout_2.addWidget(self.spinbox_y, 1, 1, 1, 1)
-        gridlayout_2.addWidget(self.label_3, 2, 0, 1, 1)
-        gridlayout_2.addWidget(self.spinbox_radius, 2, 1, 1, 1)
-        gridlayout_2.addWidget(self.label_4, 3, 0, 1, 1)
-        gridlayout_2.addWidget(self.spinbox_stddev, 3, 1, 1, 1)
+        gridlayout_2.addWidget(self.sb_x, 0, 1, 1, 1)
+        gridlayout_2.addWidget(self.lbl_2, 1, 0, 1, 1)
+        gridlayout_2.addWidget(self.sb_y, 1, 1, 1, 1)
+        gridlayout_2.addWidget(self.lbl_3, 2, 0, 1, 1)
+        gridlayout_2.addWidget(self.sb_radius, 2, 1, 1, 1)
+        gridlayout_2.addWidget(self.lbl_4, 3, 0, 1, 1)
+        gridlayout_2.addWidget(self.sb_stddev, 3, 1, 1, 1)
 
         gridlayout.addWidget(self.tablewidget, 1, 0, 1, 3)
         gridlayout.addWidget(groupbox_2, 2, 0, 1, 1)
@@ -122,15 +122,15 @@ class Smooth(BasicModule):
         gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 3, 0, 1, 1)
 
-        self.radiobutton_2dmean.clicked.connect(self.choosefilter)
-        self.radiobutton_2dmedian.clicked.connect(self.choosefilter)
-        self.radiobutton_box.clicked.connect(self.choosefilter)
-        self.radiobutton_disk.clicked.connect(self.choosefilter)
-        self.radiobutton_gaussian.clicked.connect(self.choosefilter)
-        self.spinbox_x.valueChanged.connect(self.choosefilter)
-        self.spinbox_y.valueChanged.connect(self.choosefilter)
-        self.spinbox_radius.valueChanged.connect(self.choosefilter)
-        self.spinbox_stddev.valueChanged.connect(self.choosefilter)
+        self.rb_2dmean.clicked.connect(self.choosefilter)
+        self.rb_2dmedian.clicked.connect(self.choosefilter)
+        self.rb_box.clicked.connect(self.choosefilter)
+        self.rb_disk.clicked.connect(self.choosefilter)
+        self.rb_gaussian.clicked.connect(self.choosefilter)
+        self.sb_x.valueChanged.connect(self.choosefilter)
+        self.sb_y.valueChanged.connect(self.choosefilter)
+        self.sb_radius.valueChanged.connect(self.choosefilter)
+        self.sb_stddev.valueChanged.connect(self.choosefilter)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -153,6 +153,7 @@ class Smooth(BasicModule):
             self.showlog('No Raster Data.')
             return False
 
+        self.choosefilter()
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
@@ -162,7 +163,7 @@ class Smooth(BasicModule):
         self.showlog('Smoothing ')
         data = [i.copy() for i in self.indata['Raster']]
 
-        if self.radiobutton_2dmean.isChecked():
+        if self.rb_2dmean.isChecked():
             filt = '2D Mean'
         else:
             filt = '2D Median'
@@ -178,74 +179,25 @@ class Smooth(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        if projdata['ftype'] == '2D Mean':
-            self.radiobutton_2dmean.setChecked(True)
-        else:
-            self.radiobutton_2dmedian.setChecked(True)
-
-        if projdata['fshape'] == 'box':
-            self.radiobutton_box.setChecked(True)
-            self.spinbox_x.setValue(projdata['fsize'][0])
-            self.spinbox_y.setValue(projdata['fsize'][1])
-        if projdata['fshape'] == 'disc':
-            self.radiobutton_disk.setChecked(True)
-            self.spinbox_radius.setValue(projdata['frad'])
-        if projdata['fshape'] == 'gaussian':
-            self.radiobutton_gaussian.setChecked(True)
-            self.spinbox_stddev.setValue(projdata['fsigma'])
-
-        self.choosefilter()
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.sb_x)
+        self.saveobj(self.sb_y)
+        self.saveobj(self.sb_radius)
+        self.saveobj(self.sb_stddev)
 
-        box_x = self.spinbox_x.value()
-        box_y = self.spinbox_y.value()
-        rad = self.spinbox_radius.value()
-        sigma = self.spinbox_stddev.value()
-
-        if self.radiobutton_2dmean.isChecked():
-            projdata['ftype'] = '2D Mean'
-        elif self.radiobutton_2dmedian.isChecked():
-            projdata['ftype'] = '2D Median'
-
-        if self.radiobutton_box.isChecked():
-            projdata['fshape'] = 'box'
-            projdata['fsize'] = (box_x, box_y)
-        elif self.radiobutton_disk.isChecked():
-            projdata['fshape'] = 'disc'
-            projdata['frad'] = rad
-        elif self.radiobutton_gaussian.isChecked():
-            projdata['fshape'] = 'gaussian'
-            projdata['fsigma'] = sigma
-
-        return projdata
+        self.saveobj(self.rb_2dmedian)
+        self.saveobj(self.rb_2dmean)
+        self.saveobj(self.rb_box)
+        self.saveobj(self.rb_disk)
+        self.saveobj(self.rb_gaussian)
 
     def choosefilter(self):
         """
@@ -259,57 +211,57 @@ class Smooth(BasicModule):
         # Do not need to check whether inputs are greater than zero,
         # since the spinboxes will not permit it.
 
-        box_x = self.spinbox_x.value()
-        box_y = self.spinbox_y.value()
-        rad = self.spinbox_radius.value()
-        sigma = self.spinbox_stddev.value()
+        box_x = self.sb_x.value()
+        box_y = self.sb_y.value()
+        rad = self.sb_radius.value()
+        sigma = self.sb_stddev.value()
         fmat = None
 
-        if self.radiobutton_2dmean.isChecked():
-            self.radiobutton_gaussian.setVisible(True)
-            if self.radiobutton_box.isChecked():
+        if self.rb_2dmean.isChecked():
+            self.rb_gaussian.setVisible(True)
+            if self.rb_box.isChecked():
                 fmat = filters2d('average', [box_y, box_x])
-            elif self.radiobutton_disk.isChecked():
+            elif self.rb_disk.isChecked():
                 fmat = filters2d('disc', rad)
-            elif self.radiobutton_gaussian.isChecked():
+            elif self.rb_gaussian.isChecked():
                 fmat = filters2d('gaussian', [box_x, box_y], sigma)
         else:
-            self.radiobutton_gaussian.setVisible(False)
-            if self.radiobutton_gaussian.isChecked():
-                self.radiobutton_box.setChecked(True)
-            if self.radiobutton_box.isChecked():
+            self.rb_gaussian.setVisible(False)
+            if self.rb_gaussian.isChecked():
+                self.rb_box.setChecked(True)
+            if self.rb_box.isChecked():
                 fmat = np.ones((box_y, box_x))
-            elif self.radiobutton_disk.isChecked():
+            elif self.rb_disk.isChecked():
                 fmat = filters2d('disc', rad)
                 fmat[fmat > 0] = 1
 
-        if self.radiobutton_box.isChecked():
-            self.spinbox_x.setVisible(True)
-            self.spinbox_y.setVisible(True)
-            self.spinbox_radius.setVisible(False)
-            self.spinbox_stddev.setVisible(False)
+        if self.rb_box.isChecked():
+            self.sb_x.setVisible(True)
+            self.sb_y.setVisible(True)
+            self.sb_radius.setVisible(False)
+            self.sb_stddev.setVisible(False)
             self.label.setVisible(True)
-            self.label_2.setVisible(True)
-            self.label_3.setVisible(False)
-            self.label_4.setVisible(False)
-        elif self.radiobutton_disk.isChecked():
-            self.spinbox_x.setVisible(False)
-            self.spinbox_y.setVisible(False)
-            self.spinbox_radius.setVisible(True)
-            self.spinbox_stddev.setVisible(False)
+            self.lbl_2.setVisible(True)
+            self.lbl_3.setVisible(False)
+            self.lbl_4.setVisible(False)
+        elif self.rb_disk.isChecked():
+            self.sb_x.setVisible(False)
+            self.sb_y.setVisible(False)
+            self.sb_radius.setVisible(True)
+            self.sb_stddev.setVisible(False)
             self.label.setVisible(False)
-            self.label_2.setVisible(False)
-            self.label_3.setVisible(True)
-            self.label_4.setVisible(False)
-        elif self.radiobutton_gaussian.isChecked():
-            self.spinbox_x.setVisible(False)
-            self.spinbox_y.setVisible(False)
-            self.spinbox_radius.setVisible(False)
-            self.spinbox_stddev.setVisible(True)
+            self.lbl_2.setVisible(False)
+            self.lbl_3.setVisible(True)
+            self.lbl_4.setVisible(False)
+        elif self.rb_gaussian.isChecked():
+            self.sb_x.setVisible(False)
+            self.sb_y.setVisible(False)
+            self.sb_radius.setVisible(False)
+            self.sb_stddev.setVisible(True)
             self.label.setVisible(False)
-            self.label_2.setVisible(False)
-            self.label_3.setVisible(False)
-            self.label_4.setVisible(True)
+            self.lbl_2.setVisible(False)
+            self.lbl_3.setVisible(False)
+            self.lbl_4.setVisible(True)
 
         self.fmat = fmat
         self.updatetable()

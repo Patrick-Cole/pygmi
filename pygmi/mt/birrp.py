@@ -268,7 +268,7 @@ class BIRRP(BasicModule):
         None.
 
         """
-        ext = ('*.birrp (*.birrp)')
+        ext = '*.birrp (*.birrp)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -407,7 +407,7 @@ class BIRRP(BasicModule):
         None.
 
         """
-        ext = ('*.birrp (*.birrp)')
+        ext = '*.birrp (*.birrp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -483,7 +483,7 @@ class BIRRP(BasicModule):
         None.
 
         """
-        ext = ('*.* (*.*)')
+        ext = '*.* (*.*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -734,35 +734,12 @@ class BIRRP(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
-
-        return projdata

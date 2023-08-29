@@ -183,48 +183,20 @@ class ImageSeg(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.scale.setText(projdata['scale'])
-        self.wcolor.setText(projdata['wcolor'])
-        self.wcompact.setText(projdata['wcompact'])
-        self.eps.setText(projdata['eps'])
-        self.dbscan.setChecked(projdata['dbscan'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['scale'] = self.scale.text()
-        projdata['wcolor'] = self.wcolor.text()
-        projdata['wcompact'] = self.wcompact.text()
-        projdata['eps'] = self.eps.text()
-        projdata['dbscan'] = self.dbscan.isChecked()
-
-        return projdata
+        self.saveobj(self.scale)
+        self.saveobj(self.wcolor)
+        self.saveobj(self.wcompact)
+        self.saveobj(self.eps)
+        self.saveobj(self.dbscan)
 
     def segment1(self, data, scale=500, wcolor=0.5, wcompact=0.5,
                  doshape=True):

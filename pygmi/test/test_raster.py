@@ -33,7 +33,7 @@ import sys
 import tempfile
 from PyQt5 import QtWidgets
 import numpy as np
-from rasterio.crs import CRS
+from pyproj.crs import CRS
 import pytest
 
 from pygmi.raster.datatypes import Data
@@ -374,25 +374,25 @@ def test_normalisation():
 
     tmp = normalisation.Normalisation(None)
     tmp.indata = {'Raster': [datin, datin]}
-    tmp.radiobutton_interval.setChecked(True)
+    tmp.rb_interval.setChecked(True)
     tmp.settings(True)
     datout = np.ma.array([[0., 1.], [0., 1.]])
 
     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    tmp.radiobutton_mean.setChecked(True)
+    tmp.rb_mean.setChecked(True)
     tmp.settings(True)
     datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    tmp.radiobutton_median.setChecked(True)
+    tmp.rb_median.setChecked(True)
     tmp.settings(True)
     datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    tmp.radiobutton_8bit.setChecked(True)
+    tmp.rb_8bit.setChecked(True)
     tmp.settings(True)
 
     datout = np.ma.array([[0., 255.], [0., 255.]])
@@ -409,8 +409,8 @@ def test_smooth():
     tmp = smooth.Smooth(None)
     tmp.indata = {'Raster': [datin]}
 
-    tmp.radiobutton_2dmean.setChecked(True)
-    tmp.radiobutton_box.setChecked(True)
+    tmp.rb_2dmean.setChecked(True)
+    tmp.rb_box.setChecked(True)
     tmp.choosefilter()
     tmp.settings(True)
     datout2 = tmp.outdata['Raster'][0].data.data
@@ -425,7 +425,7 @@ def test_smooth():
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
-    tmp.radiobutton_disk.setChecked(True)
+    tmp.rb_disk.setChecked(True)
     tmp.choosefilter()
     tmp.settings(True)
     datout2 = tmp.outdata['Raster'][0].data.data
@@ -447,7 +447,7 @@ def test_smooth():
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
-    tmp.radiobutton_gaussian.setChecked(True)
+    tmp.rb_gaussian.setChecked(True)
     tmp.choosefilter()
     tmp.settings(True)
 
@@ -467,8 +467,8 @@ def test_smooth():
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
-    tmp.radiobutton_2dmedian.setChecked(True)
-    tmp.radiobutton_box.setChecked(True)
+    tmp.rb_2dmedian.setChecked(True)
+    tmp.rb_box.setChecked(True)
     tmp.choosefilter()
     tmp.settings(True)
     datout2 = tmp.outdata['Raster'][0].data.data
@@ -483,7 +483,7 @@ def test_smooth():
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
-    tmp.radiobutton_disk.setChecked(True)
+    tmp.rb_disk.setChecked(True)
     tmp.choosefilter()
     tmp.settings(True)
     datout2 = tmp.outdata['Raster'][0].data.data

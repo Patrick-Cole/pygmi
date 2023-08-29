@@ -32,7 +32,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
-from rasterio.crs import CRS
+from pyproj.crs import CRS
 from shapely.geometry import Polygon
 
 from pygmi.pfmod.datatypes import LithModel
@@ -57,6 +57,7 @@ class ImportMod3D(BasicModule):
 
         self.lmod = LithModel()
         self.filt = ''
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -112,44 +113,17 @@ class ImportMod3D(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        self.filt = projdata['filt']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-        projdata['filt'] = self.filt
-
-        return projdata
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
 
     def import_leapfrog_csv(self, filename):
         """
@@ -711,7 +685,7 @@ class ExportMod3D(ContextModule):
         zrng = np.array(self.lmod.zrange, dtype=float)
 
         if 'Raster' in self.indata:
-            wkt = self.indata['Raster'][0].crs.wkt
+            wkt = self.indata['Raster'][0].crs.to_wkt()
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
@@ -1053,7 +1027,7 @@ class ExportMod3D(ContextModule):
         zrng = np.array(self.lmod.zrange, dtype=float)
 
         if 'Raster' in self.indata:
-            wkt = self.indata['Raster'][0].crs.wkt
+            wkt = self.indata['Raster'][0].crs.to_wkt()
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
@@ -1254,16 +1228,16 @@ class MessageCombo(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        label_master = QtWidgets.QLabel()
+        lbl_master = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Ok)
 
         self.setWindowTitle('Model Choice')
-        label_master.setText('Choose Model:')
+        lbl_master.setText('Choose Model:')
 
-        gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 

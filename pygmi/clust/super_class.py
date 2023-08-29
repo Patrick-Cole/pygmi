@@ -906,48 +906,20 @@ class SuperClass(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combo_class.setCurrentText(projdata['combo_class'])
-        self.KNalgorithm.setCurrentText(projdata['KNalgorithm'])
-        self.DTcriterion.setCurrentText(projdata['DTcriterion'])
-        self.RFcriterion.setCurrentText(projdata['RFcriterion'])
-        self.SVCkernel.setCurrentText(projdata['SVCkernel'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['combo_class'] = self.combo_class.currentText()
-        projdata['KNalgorithm'] = self.KNalgorithm.currentText()
-        projdata['DTcriterion'] = self.DTcriterion.currentText()
-        projdata['RFcriterion'] = self.RFcriterion.currentText()
-        projdata['SVCkernel'] = self.SVCkernel.currentText()
-
-        return projdata
+        self.saveobj(self.combo_class)
+        self.saveobj(self.KNalgorithm)
+        self.saveobj(self.DTcriterion)
+        self.saveobj(self.RFcriterion)
+        self.saveobj(self.SVCkernel)
 
     def init_classifier(self):
         """

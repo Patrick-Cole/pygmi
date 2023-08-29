@@ -49,6 +49,7 @@ class ImportXYZ(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.filt = ''
+        self.is_import = True
 
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
@@ -70,9 +71,9 @@ class ImportXYZ(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.'
                                            'importxyzdata')
-        label_xchan = QtWidgets.QLabel('X Channel:')
-        label_ychan = QtWidgets.QLabel('Y Channel:')
-        label_nodata = QtWidgets.QLabel('Nodata Value:')
+        lbl_xchan = QtWidgets.QLabel('X Channel:')
+        lbl_ychan = QtWidgets.QLabel('Y Channel:')
+        lbl_nodata = QtWidgets.QLabel('Nodata Value:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -85,13 +86,13 @@ class ImportXYZ(BasicModule):
 
         self.setWindowTitle(r'Import XYZ Data')
 
-        gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_xchan, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_ychan, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_nodata, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
@@ -234,50 +235,20 @@ class ImportXYZ(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-        self.filt = projdata['filt']
-        self.xchan.setCurrentText(projdata['xchan'])
-        self.ychan.setCurrentText(projdata['ychan'])
-        self.nodata.setText(projdata['nodata'])
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-        projdata['filt'] = self.filt
-        projdata['xchan'] = self.xchan.currentText()
-        projdata['ychan'] = self.ychan.currentText()
-        projdata['nodata'] = self.nodata.text()
-
-        return projdata
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
+        self.saveobj(self.xchan)
+        self.saveobj(self.ychan)
+        self.saveobj(self.nodata)
 
     def get_GXYZ(self):
         """
@@ -488,6 +459,7 @@ class ImportVector(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.is_import = True
 
     def settings(self, nodialog=False):
         """
@@ -535,42 +507,16 @@ class ImportVector(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.ifile = projdata['ifile']
-
-        chk = self.settings(True)
-
-        return chk
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['ifile'] = self.ifile
-
-        return projdata
+        self.saveobj(self.ifile)
 
 
 def get_GXYZ(ifile, showlog=print, piter=iter):

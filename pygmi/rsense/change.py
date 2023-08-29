@@ -61,8 +61,8 @@ class CalculateChange(BasicModule):
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
-        # label_sensor = QtWidgets.QLabel('Sensor:')
-        label_ratios = QtWidgets.QLabel('Indicess:')
+        # lbl_sensor = QtWidgets.QLabel('Sensor:')
+        lbl_ratios = QtWidgets.QLabel('Indices:')
 
         self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)
 
@@ -77,9 +77,9 @@ class CalculateChange(BasicModule):
 
         self.setWindowTitle('Calculate Change Indices')
 
-        # gridlayout_main.addWidget(label_sensor, 0, 0, 1, 1)
+        # gridlayout_main.addWidget(lbl_sensor, 0, 0, 1, 1)
         # gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
-        gridlayout_main.addWidget(label_ratios, 1, 0, 1, 1)
+        gridlayout_main.addWidget(lbl_ratios, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.lw_indices, 1, 1, 1, 1)
         gridlayout_main.addWidget(btn_invert, 2, 0, 1, 2)
 
@@ -125,51 +125,16 @@ class CalculateChange(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combo_sensor.setCurrentText(projdata['sensor'])
-        self.setratios()
-
-        for i in self.lw_indices.selectedItems():
-            if i.text()[2:] not in projdata['ratios']:
-                i.setSelected(False)
-        self.set_selected_ratios()
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-        projdata['sensor'] = self.combo_sensor.currentText()
-
-        rlist = []
-        for i in self.lw_indices.selectedItems():
-            rlist.append(i.text()[2:])
-
-        projdata['ratios'] = rlist
-
-        return projdata
+        self.saveobj(self.lw_indices)
 
     def acceptall(self):
         """

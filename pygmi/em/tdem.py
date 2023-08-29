@@ -639,6 +639,9 @@ class TDEM1D(BasicModule):
 
         self.comboline.currentIndexChanged.connect(self.change_line)
 
+        if self.wfile.text() != '':
+            self.get_wfile(self.wfile.text())
+
         tmp = self.exec_()
 
         if tmp != 1:
@@ -646,96 +649,43 @@ class TDEM1D(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.combostype.setCurrentText(projdata['stype'])
-        self.combowtype.setCurrentText(projdata['wtype'])
-        self.combotxori.setCurrentText(projdata['txori'])
-        self.comborxori.setCurrentText(projdata['rxori'])
-        self.comboline.setCurrentText(projdata['line'])
-        self.combofid.setCurrentText(projdata['fid'])
-        self.combobalt.setCurrentText(projdata['alt'])
-
-        self.mesh_cs.setText(projdata['mesh_cs'])
-        self.mesh_ncx.setText(projdata['mesh_ncx'])
-        self.mesh_ncz.setText(projdata['mesh_ncz'])
-        self.mesh_npad.setText(projdata['mesh_npad'])
-        self.mesh_padrate.setText(projdata['mesh_padrate'])
-
-        self.loopturns.setText(projdata['loopturns'])
-        self.loopcurrent.setText(projdata['loopcurrent'])
-        self.mu.setText(projdata['mu'])
-        self.txarea.setText(projdata['txarea'])
-        self.txofftime.setText(projdata['txofftime'])
-        self.txrampoff1.setText(projdata['txofframp1'])
-        self.txpeaktime.setText(projdata['txpeaktime'])
-        self.datachan.setText(projdata['datachan'])
-        self.sig_half.setText(projdata['sig_half'])
-        self.sig_air.setText(projdata['sig_air'])
-        self.rel_err.setText(projdata['rel_air'])
-        self.noise_floor.setText(projdata['noise_floor'])
-        self.wfile.setText(projdata['wfile'])
-        self.maxiter.setText(projdata['maxiter'])
-
-        self.get_wfile(projdata['wfile'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
+        self.saveobj(self.combostype)
+        self.saveobj(self.combowtype)
+        self.saveobj(self.combotxori)
+        self.saveobj(self.comborxori)
+        self.saveobj(self.comboline)
+        self.saveobj(self.combofid)
+        self.saveobj(self.combobalt)
 
-        projdata['stype'] = self.combostype.currentText()
-        projdata['wtype'] = self.combowtype.currentText()
-        projdata['txori'] = self.combotxori.currentText()
-        projdata['rxori'] = self.comborxori.currentText()
-        projdata['line'] = self.comboline.currentText()
-        projdata['fid'] = self.combofid.currentText()
-        projdata['alt'] = self.combobalt.currentText()
+        self.saveobj(self.mesh_cs)
+        self.saveobj(self.mesh_ncx)
+        self.saveobj(self.mesh_ncz)
+        self.saveobj(self.mesh_npad)
+        self.saveobj(self.mesh_padrate)
 
-        projdata['mesh_cs'] = self.mesh_cs.text()
-        projdata['mesh_ncx'] = self.mesh_ncx.text()
-        projdata['mesh_ncz'] = self.mesh_ncz.text()
-        projdata['mesh_npad'] = self.mesh_npad.text()
-        projdata['mesh_padrate'] = self.mesh_padrate.text()
-
-        projdata['loopturns'] = self.loopturns.text()
-        projdata['loopcurrent'] = self.loopcurrent.text()
-        projdata['mu'] = self.mu.text()
-        projdata['txarea'] = self.txarea.text()
-        projdata['txofftime'] = self.txofftime.text()
-        projdata['txrampoff1'] = self.txrampoff1.text()
-        projdata['txpeaktime'] = self.txpeaktime.text()
-        projdata['datachan'] = self.datachan.text()
-        projdata['sig_half'] = self.sig_half.text()
-        projdata['sig_air'] = self.sig_air.text()
-        projdata['rel_air'] = self.rel_err.text()
-        projdata['noise_floor'] = self.noise_floor.text()
-        projdata['wfile'] = self.wfile.text()
-        projdata['maxiter'] = self.maxiter.text()
-
-        return projdata
+        self.saveobj(self.loopturns)
+        self.saveobj(self.loopcurrent)
+        self.saveobj(self.mu)
+        self.saveobj(self.txarea)
+        self.saveobj(self.txofftime)
+        self.saveobj(self.txrampoff1)
+        self.saveobj(self.txpeaktime)
+        self.saveobj(self.datachan)
+        self.saveobj(self.sig_half)
+        self.saveobj(self.sig_air)
+        self.saveobj(self.rel_err)
+        self.saveobj(self.noise_floor)
+        self.saveobj(self.wfile)
+        self.saveobj(self.maxiter)
 
 
 def tonumber(test, alttext=None):

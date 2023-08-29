@@ -205,7 +205,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.diagram_type = diagram_type
         self.context_menu = context_menu
         self.my_class = my_class
-        self.is_import = False
+        self.is_import = my_class.is_import
         self.text_item = None
         self.my_class_name = ''
         self.showlog = parent.showlog
@@ -682,9 +682,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
 
         label = QtWidgets.QLabel('Dataset Information:')
-        label_2 = QtWidgets.QLabel('Process Log:')
+        lbl_2 = QtWidgets.QLabel('Process Log:')
         self.grid_layout.addWidget(label, 0, 2, 1, 1)
-        self.grid_layout.addWidget(label_2, 2, 2, 1, 1)
+        self.grid_layout.addWidget(lbl_2, 2, 2, 1, 1)
 
         self.setCentralWidget(self.centralwidget)
         self.setMenuBar(self.menubar)
@@ -839,6 +839,12 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
+        if 'nodialog' in kwargs:
+            nodialog = kwargs['nodialog']
+            del kwargs['nodialog']
+        else:
+            nodialog = False
+
         class_name_active = class_name(self, **kwargs)
 
         item = DiagramItem(item_type, self.scene.my_item_menu,
@@ -853,7 +859,7 @@ class MainWidget(QtWidgets.QMainWindow):
             item.is_import = True
 
         if item_type == 'Io' and projimport is False:
-            iflag = item.settings()
+            iflag = item.settings(nodialog)
             if iflag is False:
                 return None
             if item.my_class.ifile != '':
@@ -1063,7 +1069,8 @@ class MainWidget(QtWidgets.QMainWindow):
                                 'y': item.y()}
 
                 if hasattr(item.my_class, 'saveproj'):
-                    ilist[cname]['itemdata'] = item.my_class.saveproj()
+                    item.my_class.saveproj()
+                    ilist[cname]['itemdata'] = item.my_class.projdata
 
             if isinstance(item, Arrow):
                 sname = str(item.my_start_item.my_class)
@@ -1238,20 +1245,20 @@ class Startup(QtWidgets.QDialog):
         self.setWindowFlags(QtCore.Qt.ToolTip)
 
         self.gridlayout_main = QtWidgets.QVBoxLayout(self)
-        self.label_info = QtWidgets.QLabel(self)
-        self.label_pic = QtWidgets.QLabel(self)
-        self.label_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
+        self.lbl_info = QtWidgets.QLabel(self)
+        self.lbl_pic = QtWidgets.QLabel(self)
+        self.lbl_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
                                                r'/images/logo256.ico'))
-        self.label_info.setScaledContents(True)
+        self.lbl_info.setScaledContents(True)
         self.pbar = QtWidgets.QProgressBar(self)
 
         labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
         fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Bold)
-        self.label_info.setFont(fnt)
-        self.label_info.setText(labeltext)
-        self.gridlayout_main.addWidget(self.label_info)
-        self.gridlayout_main.addWidget(self.label_pic)
+        self.lbl_info.setFont(fnt)
+        self.lbl_info.setText(labeltext)
+        self.gridlayout_main.addWidget(self.lbl_info)
+        self.gridlayout_main.addWidget(self.lbl_pic)
 
         self.pbar.setMaximum(pbarmax - 1)
         self.gridlayout_main.addWidget(self.pbar)

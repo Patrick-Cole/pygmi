@@ -62,8 +62,8 @@ class Gradients(BasicModule):
         self.rb_vgrad = QtWidgets.QRadioButton('Vertical Derivative')
         self.rb_dratio = QtWidgets.QRadioButton('Derivative Ratio')
         self.rb_thg = QtWidgets.QRadioButton('Total Horizonal Gradient')
-        self.label_or = QtWidgets.QLabel('Strength Factor')
-        self.label_az = QtWidgets.QLabel('Azimuth')
+        self.lbl_or = QtWidgets.QLabel('Strength Factor')
+        self.lbl_az = QtWidgets.QLabel('Azimuth')
 
         self.setupui()
 
@@ -91,7 +91,7 @@ class Gradients(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.rb_ddir.setChecked(True)
         self.sb_order.hide()
-        self.label_or.hide()
+        self.lbl_or.hide()
 
         self.setWindowTitle('Gradient Calculation')
 
@@ -99,9 +99,9 @@ class Gradients(BasicModule):
         gridlayout.addWidget(self.rb_dratio, 1, 0, 1, 1)
         gridlayout.addWidget(self.rb_vgrad, 2, 0, 1, 1)
         gridlayout.addWidget(self.rb_thg, 3, 0, 1, 1)
-        gridlayout.addWidget(self.label_az, 4, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_az, 4, 0, 1, 1)
         gridlayout.addWidget(self.sb_azi, 4, 1, 1, 1)
-        gridlayout.addWidget(self.label_or, 5, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_or, 5, 0, 1, 1)
         gridlayout.addWidget(self.sb_order, 5, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
@@ -132,6 +132,7 @@ class Gradients(BasicModule):
             self.showlog('No Raster Data.')
             return False
 
+        self.radiochange()
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
@@ -172,63 +173,23 @@ class Gradients(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.azi = projdata['azim']
-        self.order = projdata['order']
-
-        self.sb_azi.setValue(projdata['azim'])
-        self.sb_order.setValue(projdata['order'])
-
-        if projdata['type'] == 'dratio':
-            self.rb_dratio.setChecked(True)
-        if projdata['type'] == 'ddir':
-            self.rb_dratio.setChecked(True)
-        if projdata['type'] == 'vgrad':
-            self.rb_dratio.setChecked(True)
-
-        self.radiochange()
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        self.azi = self.sb_azi.value()
-        self.order = self.sb_order.value()
-        projdata['azim'] = self.azi
-        projdata['order'] = self.order
-
-        if self.rb_dratio.isChecked():
-            projdata['type'] = 'dratio'
-        elif self.rb_ddir.isChecked():
-            projdata['type'] = 'ddir'
-        else:
-            projdata['type'] = 'vgrad'
-
-        return projdata
+        self.saveobj(self.azi)
+        self.saveobj(self.order)
+        self.saveobj(self.sb_order)
+        self.saveobj(self.sb_azi)
+        self.saveobj(self.rb_ddir)
+        self.saveobj(self.rb_vgrad)
+        self.saveobj(self.rb_dratio)
+        self.saveobj(self.rb_thg)
 
     def radiochange(self):
         """
@@ -240,18 +201,18 @@ class Gradients(BasicModule):
 
         """
         self.sb_order.hide()
-        self.label_or.hide()
+        self.lbl_or.hide()
         self.sb_azi.hide()
-        self.label_az.hide()
+        self.lbl_az.hide()
 
         if self.rb_dratio.isChecked():
             self.sb_order.show()
-            self.label_or.show()
+            self.lbl_or.show()
             self.sb_azi.show()
-            self.label_az.show()
+            self.lbl_az.show()
         elif self.rb_ddir.isChecked():
             self.sb_azi.show()
-            self.label_az.show()
+            self.lbl_az.show()
 
 
 def gradients(data, azi, xint, yint):
@@ -381,7 +342,7 @@ class Visibility2d(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
         label = QtWidgets.QLabel('Viewing Height (% std dev)')
-        label_2 = QtWidgets.QLabel('Window Size (Odd)')
+        lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
@@ -394,7 +355,7 @@ class Visibility2d(BasicModule):
 
         self.setWindowTitle('Visibility')
 
-        gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
         gridlayout.addWidget(label, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
@@ -470,42 +431,17 @@ class Visibility2d(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.sb_wsize.setValue(projdata['wsize'])
-        self.sb_dh.setValue(projdata['vheight'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['wsize'] = self.sb_wsize.value()
-        projdata['vheight'] = self.sb_dh.value()
-
-        return projdata
+        self.saveobj(self.sb_wsize)
+        self.saveobj(self.sb_dh)
 
 
 def visibility2d(data, wsize, dh, piter=iter):
@@ -786,7 +722,7 @@ class AGC(BasicModule):
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.AGC')
-        label_2 = QtWidgets.QLabel('Window Size (Odd)')
+        lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
         self.sb_wsize.setPrefix('')
         self.sb_wsize.setMinimum(3)
@@ -802,7 +738,7 @@ class AGC(BasicModule):
         gridlayout.addWidget(self.rb_mean, 0, 0, 1, 1)
         gridlayout.addWidget(self.rb_median, 1, 0, 1, 1)
         gridlayout.addWidget(self.rb_rms, 2, 0, 1, 1)
-        gridlayout.addWidget(label_2, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl_2, 3, 0, 1, 1)
         gridlayout.addWidget(self.sb_wsize, 3, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
@@ -859,42 +795,20 @@ class AGC(BasicModule):
 
         return True
 
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-        self.sb_wsize.setValue(projdata['wsize'])
-        self.sb_dh.setValue(projdata['vheight'])
-
-        return False
-
     def saveproj(self):
         """
         Save project data from class.
 
         Returns
         -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
+        None.
 
         """
-        projdata = {}
-
-        projdata['wsize'] = self.sb_wsize.value()
-        projdata['vheight'] = self.sb_dh.value()
-
-        return projdata
+        self.saveobj(self.sb_wsize)
+        self.saveobj(self.sb_dh)
+        self.saveobj(self.rb_mean)
+        self.saveobj(self.rb_median)
+        self.saveobj(self.rb_rms)
 
 
 def agc(data, wsize, atype='mean', nodata=0., piter=iter):
