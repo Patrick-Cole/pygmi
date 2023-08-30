@@ -2379,7 +2379,7 @@ class RangedCopy(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
-        label = QtWidgets.QLabel('Range Start')
+        lbl_1 = QtWidgets.QLabel('Range Start')
         lbl_2 = QtWidgets.QLabel('Master Profile')
         lbl_3 = QtWidgets.QLabel('Lithologies To Copy')
         lbl_4 = QtWidgets.QLabel('Lithologies To Overwrite')
@@ -2417,7 +2417,7 @@ class RangedCopy(QtWidgets.QDialog):
         gridlayout.addWidget(lbl_2, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_master, 1, 1, 1, 1)
 
-        gridlayout.addWidget(label, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 2, 0, 1, 1)
         gridlayout.addWidget(self.sb_start, 2, 1, 1, 1)
 
         gridlayout.addWidget(lbl_5, 3, 0, 1, 1)
@@ -2585,8 +2585,8 @@ class ImportPicture(BasicModule):
         self.dsb_zmax = QtWidgets.QDoubleSpinBox()
         self.dsb_zmin = QtWidgets.QDoubleSpinBox()
 
-        self.chk_getpicture = QtWidgets.QCheckBox('Import picture for profile')
-        self.chk_getcoords = QtWidgets.QCheckBox('Get coordinates from last '
+        self.cb_getpicture = QtWidgets.QCheckBox('Import picture for profile')
+        self.cb_getcoords = QtWidgets.QCheckBox('Get coordinates from last '
                                                  'profile')
         self.importfile = QtWidgets.QLineEdit('')
 
@@ -2659,7 +2659,7 @@ class ImportPicture(BasicModule):
         self.setWindowTitle('New Custom Profile')
 
         gridlayout_2.addWidget(groupbox, 0, 0, 1, 2)
-        gridlayout_2.addWidget(self.chk_getcoords, 1, 0, 1, 1)
+        gridlayout_2.addWidget(self.cb_getcoords, 1, 0, 1, 1)
         gridlayout_2.addWidget(pb_import, 2, 0, 1, 1)
         gridlayout_2.addWidget(self.importfile, 2, 1, 1, 1)
         gridlayout_2.addWidget(helpdocs, 3, 0, 1, 1)
@@ -2674,7 +2674,7 @@ class ImportPicture(BasicModule):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.chk_getcoords.stateChanged.connect(self.getcoords)
+        self.cb_getcoords.stateChanged.connect(self.getcoords)
         pb_import.pressed.connect(self.get_filename)
 
     def get_filename(self):
@@ -2705,7 +2705,7 @@ class ImportPicture(BasicModule):
         """
         zmin, zmax = self.lmod.zrange
 
-        if self.chk_getcoords.isChecked():
+        if self.cb_getcoords.isChecked():
             x1, x2 = self.lmod.custprofx['adhoc']
             y1, y2 = self.lmod.custprofy['adhoc']
         else:

@@ -82,7 +82,7 @@ class CrispClust(BasicModule):
         verticallayout = QtWidgets.QVBoxLayout(self.groupbox)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        label = QtWidgets.QLabel()
+        lbl_1 = QtWidgets.QLabel()
         lbl_2 = QtWidgets.QLabel()
         lbl_3 = QtWidgets.QLabel()
         lbl_4 = QtWidgets.QLabel()
@@ -106,21 +106,21 @@ class CrispClust(BasicModule):
         self.groupbox.hide()
 
         self.setWindowTitle('Crisp Clustering')
-        label.setText('Cluster Algorithm:')
+        lbl_1.setText('Cluster Algorithm:')
         lbl_2.setText('Minimum Clusters:')
         lbl_3.setText('Maximum Clusters')
         lbl_4.setText('Maximum Iterations:')
         lbl_5.setText('Terminate if relative change per iteration '
-                        'is less than:')
+                      'is less than:')
         lbl_6.setText('Repeated Runs:')
         self.lbl_7.setText('Constrain Cluster Shape '
-                             '(0: unconstrained, 1: spherical)')
+                           '(0: unconstrained, 1: spherical)')
         self.groupbox.setTitle('Initial Guess')
         self.rb_random.setText('Random')
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
 
-        gridlayout.addWidget(label, 0, 2, 1, 1)
+        gridlayout.addWidget(lbl_1, 0, 2, 1, 1)
         gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
         gridlayout.addWidget(lbl_2, 1, 2, 1, 1)
         gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)

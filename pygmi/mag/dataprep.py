@@ -73,7 +73,7 @@ class Tilt1(BasicModule):
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
-        label = QtWidgets.QLabel('Azimuth (degrees from east)')
+        lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
         lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -90,7 +90,7 @@ class Tilt1(BasicModule):
 
         gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
-        gridlayout.addWidget(label, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)

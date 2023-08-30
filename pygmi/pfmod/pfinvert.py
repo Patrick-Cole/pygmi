@@ -109,12 +109,12 @@ class MagInvert(BasicModule):
         # Current Models Groupbox
         h_model = QtWidgets.QHBoxLayout()
 
-        lbl1_model = QtWidgets.QLabel('Current Model:')
+        lbl_model = QtWidgets.QLabel('Current Model:')
 
         self.combo_model.addItems(['None'])
         self.combo_model.setSizePolicy(sizepolicy)
 
-        h_model.addWidget(lbl1_model)
+        h_model.addWidget(lbl_model)
         h_model.addWidget(self.combo_model)
 
         # General Properties
@@ -175,16 +175,16 @@ class MagInvert(BasicModule):
 
         self.combo_dataset.addItems(['None'])
 
-        lbl0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
-        lbl3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
-        lbl4 = QtWidgets.QLabel('Upper Top Left Y Coordinate:')
-        lbl1 = QtWidgets.QLabel('Upper Top Left Z Coordinate (from DTM):')
-        lbl8 = QtWidgets.QLabel('Total X Extent:')
-        lbl9 = QtWidgets.QLabel('Total Y Extent:')
-        lbl10 = QtWidgets.QLabel('Total Z Extent (Depth):')
-        lbl5 = QtWidgets.QLabel('X and Y Cell Size:')
-        lbl6 = QtWidgets.QLabel('Z Cell Size:')
-        lbl99 = QtWidgets.QLabel('Number of output classes:')
+        lbl_0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
+        lbl_3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
+        lbl_4 = QtWidgets.QLabel('Upper Top Left Y Coordinate:')
+        lbl_1 = QtWidgets.QLabel('Upper Top Left Z Coordinate (from DTM):')
+        lbl_8 = QtWidgets.QLabel('Total X Extent:')
+        lbl_9 = QtWidgets.QLabel('Total Y Extent:')
+        lbl_10 = QtWidgets.QLabel('Total Z Extent (Depth):')
+        lbl_5 = QtWidgets.QLabel('X and Y Cell Size:')
+        lbl_6 = QtWidgets.QLabel('Z Cell Size:')
+        lbl_99 = QtWidgets.QLabel('Number of output classes:')
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -222,16 +222,16 @@ class MagInvert(BasicModule):
         self.sb_layers.setMaximum(1000000)
         self.sb_layers.setPrefix('Layers (Z): ')
 
-        gl_extent.addWidget(lbl0, 0, 0, 1, 1)
-        gl_extent.addWidget(lbl3, 1, 0, 1, 1)
-        gl_extent.addWidget(lbl4, 2, 0, 1, 1)
-        gl_extent.addWidget(lbl1, 3, 0, 1, 1)
-        gl_extent.addWidget(lbl8, 4, 0, 1, 1)
-        gl_extent.addWidget(lbl9, 5, 0, 1, 1)
-        gl_extent.addWidget(lbl10, 6, 0, 1, 1)
-        gl_extent.addWidget(lbl5, 7, 0, 1, 1)
-        gl_extent.addWidget(lbl6, 8, 0, 1, 1)
-        gl_extent.addWidget(lbl99, 9, 0, 1, 1)
+        gl_extent.addWidget(lbl_0, 0, 0, 1, 1)
+        gl_extent.addWidget(lbl_3, 1, 0, 1, 1)
+        gl_extent.addWidget(lbl_4, 2, 0, 1, 1)
+        gl_extent.addWidget(lbl_1, 3, 0, 1, 1)
+        gl_extent.addWidget(lbl_8, 4, 0, 1, 1)
+        gl_extent.addWidget(lbl_9, 5, 0, 1, 1)
+        gl_extent.addWidget(lbl_10, 6, 0, 1, 1)
+        gl_extent.addWidget(lbl_5, 7, 0, 1, 1)
+        gl_extent.addWidget(lbl_6, 8, 0, 1, 1)
+        gl_extent.addWidget(lbl_99, 9, 0, 1, 1)
         gl_extent.addWidget(self.combo_dataset, 0, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utlx, 1, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utly, 2, 1, 1, 1)

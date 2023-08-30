@@ -298,9 +298,9 @@ class PlotAnaglyph(ContextModule):
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
         self.cbox_cbar = QtWidgets.QComboBox()
-        self.doshade = QtWidgets.QCheckBox('Sunshade:')
-        self.doimage = QtWidgets.QRadioButton('Full Image:')
-        self.docontour = QtWidgets.QRadioButton('Contour '
+        self.cb_shade = QtWidgets.QCheckBox('Sunshade:')
+        self.rb_doimage = QtWidgets.QRadioButton('Full Image:')
+        self.rb_docontour = QtWidgets.QRadioButton('Contour '
                                                 '(Slider sets number):')
         self.slider_scale = QtWidgets.QSlider()
         self.slider_angle = QtWidgets.QSlider()
@@ -311,9 +311,9 @@ class PlotAnaglyph(ContextModule):
         self.combobox2.setSizePolicy(sizepolicy)
         self.cbox_cbar.setSizePolicy(sizepolicy)
 
-        self.doshade.setSizePolicy(sizepolicy)
-        self.doimage.setSizePolicy(sizepolicy)
-        self.docontour.setSizePolicy(sizepolicy)
+        self.cb_shade.setSizePolicy(sizepolicy)
+        self.rb_doimage.setSizePolicy(sizepolicy)
+        self.rb_docontour.setSizePolicy(sizepolicy)
         self.slider_scale.setSizePolicy(sizepolicy)
         self.slider_angle.setSizePolicy(sizepolicy)
         self.slider_cnt.setSizePolicy(sizepolicy)
@@ -331,7 +331,7 @@ class PlotAnaglyph(ContextModule):
 
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(maps)
-        self.doimage.setChecked(True)
+        self.rb_doimage.setChecked(True)
         self.slider_cnt.setMinimum(3)
         self.slider_cnt.setMaximum(30)
         self.slider_cnt.setOrientation(QtCore.Qt.Horizontal)
@@ -349,8 +349,8 @@ class PlotAnaglyph(ContextModule):
         self.slider_angle.setValue(10)
 
         # Add widgets to layout
-        vbl_left.addWidget(self.doimage)
-        vbl_left.addWidget(self.docontour)
+        vbl_left.addWidget(self.rb_doimage)
+        vbl_left.addWidget(self.rb_docontour)
         vbl_left.addWidget(self.slider_cnt)
         vbl_left.addWidget(QtWidgets.QLabel('Bands:'))
         vbl_left.addWidget(self.combobox1)
@@ -362,7 +362,7 @@ class PlotAnaglyph(ContextModule):
         vbl_left.addWidget(self.slider_scale)
         vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
         vbl_left.addWidget(self.slider_angle)
-        vbl_left.addWidget(self.doshade)
+        vbl_left.addWidget(self.cb_shade)
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl.addLayout(vbl_left)
@@ -370,9 +370,9 @@ class PlotAnaglyph(ContextModule):
 
         self.setFocus()
 
-        self.doimage.released.connect(self.change_image)
-        self.docontour.released.connect(self.change_contours)
-        self.doshade.stateChanged.connect(self.change_colors)
+        self.rb_doimage.released.connect(self.change_image)
+        self.rb_docontour.released.connect(self.change_contours)
+        self.cb_shade.stateChanged.connect(self.change_colors)
         self.combobox1.currentIndexChanged.connect(self.change_all)
         self.combobox2.currentIndexChanged.connect(self.change_atype)
         self.cbox_cbar.currentIndexChanged.connect(self.change_colors)
@@ -392,11 +392,11 @@ class PlotAnaglyph(ContextModule):
         i = self.combobox1.currentIndex()
         txt = str(self.cbox_cbar.currentText())
         cbar = colormaps[txt]
-        shade = self.doshade.isChecked()
+        shade = self.cb_shade.isChecked()
         scale = self.slider_scale.value()
         rotang = self.slider_angle.value()
 
-        if self.docontour.isChecked():
+        if self.rb_docontour.isChecked():
             data = self.indata['Raster']
             self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
         else:
@@ -416,7 +416,7 @@ class PlotAnaglyph(ContextModule):
         """
         txt = str(self.cbox_cbar.currentText())
         cbar = colormaps[txt]
-        shade = self.doshade.isChecked()
+        shade = self.cb_shade.isChecked()
 
         self.mmc.update_colors(atype=self.combobox2.currentText(),
                                cmap=cbar, doshade=shade)
@@ -441,13 +441,13 @@ class PlotAnaglyph(ContextModule):
         None.
 
         """
-        self.docontour.setChecked(True)
+        self.rb_docontour.setChecked(True)
 
         i = self.combobox1.currentIndex()
         scale = self.slider_scale.value()
         rotang = self.slider_angle.value()
 
-        self.doshade.setDisabled(True)
+        self.cb_shade.setDisabled(True)
         self.combobox1.setDisabled(True)
         self.combobox2.setDisabled(True)
         self.cbox_cbar.setDisabled(True)
@@ -468,7 +468,7 @@ class PlotAnaglyph(ContextModule):
         """
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
-        self.doshade.setEnabled(True)
+        self.cb_shade.setEnabled(True)
         self.combobox1.setEnabled(True)
         self.combobox2.setEnabled(True)
         self.cbox_cbar.setEnabled(True)

@@ -45,7 +45,7 @@ class ImageSeg(BasicModule):
         self.wcompact = QtWidgets.QLineEdit('0.5')
         self.wcolor = QtWidgets.QLineEdit('0.9')
         self.eps = QtWidgets.QLineEdit('0.1')
-        self.dbscan = QtWidgets.QCheckBox('Use DBSCAN to group segments')
+        self.cb_dbscan = QtWidgets.QCheckBox('Use DBSCAN to group segments')
 
         self.setupui()
 
@@ -73,7 +73,7 @@ class ImageSeg(BasicModule):
 
         self.wcompact.setValidator(val)
         self.wcolor.setValidator(val)
-        self.dbscan.setChecked(False)
+        self.cb_dbscan.setChecked(False)
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
@@ -94,7 +94,7 @@ class ImageSeg(BasicModule):
         gridlayout_main.addWidget(lbl_scale, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.scale, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.dbscan, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_dbscan, 3, 0, 1, 2)
 
         gridlayout_main.addWidget(lbl_eps, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.eps, 4, 1, 1, 1)
@@ -153,7 +153,7 @@ class ImageSeg(BasicModule):
 
         self.outdata['Raster'] = [odat]
 
-        if not self.dbscan.isChecked():
+        if not self.cb_dbscan.isChecked():
             return True
 
         means = []
@@ -196,7 +196,7 @@ class ImageSeg(BasicModule):
         self.saveobj(self.wcolor)
         self.saveobj(self.wcompact)
         self.saveobj(self.eps)
-        self.saveobj(self.dbscan)
+        self.saveobj(self.cb_dbscan)
 
     def segment1(self, data, scale=500, wcolor=0.5, wcompact=0.5,
                  doshape=True):

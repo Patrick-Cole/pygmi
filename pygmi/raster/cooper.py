@@ -341,7 +341,7 @@ class Visibility2d(BasicModule):
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
-        label = QtWidgets.QLabel('Viewing Height (% std dev)')
+        lbl_1 = QtWidgets.QLabel('Viewing Height (% std dev)')
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
         self.sb_dh.setMinimum(1)
@@ -357,7 +357,7 @@ class Visibility2d(BasicModule):
 
         gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
-        gridlayout.addWidget(label, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)

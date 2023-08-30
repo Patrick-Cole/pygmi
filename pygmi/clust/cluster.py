@@ -94,7 +94,7 @@ class Cluster(BasicModule):
         gridlayout = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        label = QtWidgets.QLabel('Cluster Algorithm:')
+        lbl_1 = QtWidgets.QLabel('Cluster Algorithm:')
 
         self.sb_minclusters.setMinimum(1)
         self.sb_minclusters.setProperty('value', self.min_cluster)
@@ -121,7 +121,7 @@ class Cluster(BasicModule):
 
         self.setWindowTitle('Cluster Analysis')
 
-        gridlayout.addWidget(label, 0, 2, 1, 1)
+        gridlayout.addWidget(lbl_1, 0, 2, 1, 1)
         gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
         gridlayout.addWidget(self.lbl_minclusters, 1, 2, 1, 1)
         gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)

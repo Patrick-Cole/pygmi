@@ -89,7 +89,7 @@ class TiltDepth(BasicModule):
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
         self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
         self.btn_save = QtWidgets.QPushButton('Save Depths to Text File')
-        self.do_rtp = QtWidgets.QCheckBox('Perform RTP on data')
+        self.cb_rtp = QtWidgets.QCheckBox('Perform RTP on data')
         self.pbar = ProgressBar()
 
         self.setupui()
@@ -104,8 +104,8 @@ class TiltDepth(BasicModule):
 
         """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
-        label2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
-        labelc = QtWidgets.QLabel('Colour Bar:')
+        lbl_2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
+        lbl_c = QtWidgets.QLabel('Colour Bar:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
         lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
@@ -115,7 +115,7 @@ class TiltDepth(BasicModule):
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
         self.dsb_dec.setValue(-17.)
-        self.do_rtp.setChecked(True)
+        self.cb_rtp.setChecked(True)
 
         vbl_raster = QtWidgets.QVBoxLayout()
         hbl_all = QtWidgets.QHBoxLayout(self)
@@ -130,12 +130,12 @@ class TiltDepth(BasicModule):
 
         self.setWindowTitle('Tilt Depth Interpretation')
 
-        vbl_raster.addWidget(label2)
+        vbl_raster.addWidget(lbl_2)
         vbl_raster.addWidget(self.cbox_band1)
-        vbl_raster.addWidget(labelc)
+        vbl_raster.addWidget(lbl_c)
         vbl_raster.addWidget(self.cbox_cbar)
 
-        vbl_raster.addWidget(self.do_rtp)
+        vbl_raster.addWidget(self.cb_rtp)
         vbl_raster.addWidget(lbl_inc)
         vbl_raster.addWidget(self.dsb_inc)
         vbl_raster.addWidget(lbl_dec)
@@ -154,7 +154,7 @@ class TiltDepth(BasicModule):
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
         self.btn_apply.clicked.connect(self.calculate)
         self.btn_save.clicked.connect(self.save_depths)
-        self.do_rtp.clicked.connect(self.rtp_choice)
+        self.cb_rtp.clicked.connect(self.rtp_choice)
 
     def rtp_choice(self):
         """
@@ -165,7 +165,7 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        if self.do_rtp.isChecked():
+        if self.cb_rtp.isChecked():
             self.dsb_inc.setEnabled(True)
             self.dsb_dec.setEnabled(True)
         else:
@@ -379,7 +379,7 @@ class TiltDepth(BasicModule):
         inc = self.dsb_inc.value()
         dec = self.dsb_dec.value()
 
-        if self.do_rtp.isChecked():
+        if self.cb_rtp.isChecked():
             zout = rtp(data, inc, dec)
         else:
             zout = data

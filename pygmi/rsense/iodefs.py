@@ -166,8 +166,8 @@ class ImportData(BasicModule):
 
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
-        self.ftype = QtWidgets.QLabel('File Type:')
-        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
+        self.lbl_ftype = QtWidgets.QLabel('File Type:')
+        self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
                                               'southern hemisphere')
 
         self.setupui()
@@ -188,7 +188,7 @@ class ImportData(BasicModule):
         pb_sfile.setIcon(icon)
 
         self.setWindowTitle('Import Satellite Data')
-        self.ensuresutm.setChecked(True)
+        self.cb_ensuresutm.setChecked(True)
 
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -196,9 +196,9 @@ class ImportData(BasicModule):
 
         gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
         gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
-        gridlayout.addWidget(self.ftype, 2, 0, 1, 2)
+        gridlayout.addWidget(self.lbl_ftype, 2, 0, 1, 2)
         gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
-        gridlayout.addWidget(self.ensuresutm, 4, 0, 1, 2)
+        gridlayout.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -230,7 +230,7 @@ class ImportData(BasicModule):
         self.lw_tnames.clear()
         self.indata['Raster'] = []
         self.sfile.setText('')
-        self.ftype.setText('File Type:')
+        self.lbl_ftype.setText('File Type:')
 
         if not nodialog:
             tmp = self.exec_()
@@ -257,7 +257,7 @@ class ImportData(BasicModule):
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-        if self.ensuresutm.isChecked() is True:
+        if self.cb_ensuresutm.isChecked() is True:
             dat = utm_to_south(dat)
 
         self.outdata['Raster'] = dat
@@ -269,7 +269,7 @@ class ImportData(BasicModule):
         self.lw_tnames.clear()
         self.indata['Raster'] = []
         self.sfile.setText('')
-        self.ftype.setText('File Type:')
+        self.lbl_ftype.setText('File Type:')
 
         ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5);;')
 
@@ -287,7 +287,7 @@ class ImportData(BasicModule):
         if self.indata['Raster'] is None:
             self.showlog('Error: could not import data.')
             self.sfile.setText('')
-            self.ftype.setText('File Type: Unknown')
+            self.lbl_ftype.setText('File Type: Unknown')
             return False
 
         tmp = []
@@ -310,7 +310,7 @@ class ImportData(BasicModule):
 
         instr = self.indata['Raster'][0].metadata['Raster']['Sensor']
 
-        self.ftype.setText(f' File Type: {instr}')
+        self.lbl_ftype.setText(f' File Type: {instr}')
 
         return True
 
@@ -326,8 +326,8 @@ class ImportData(BasicModule):
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
         self.saveobj(self.sfile)
-        self.saveobj(self.ftype)
-        self.saveobj(self.ensuresutm)
+        self.saveobj(self.lbl_ftype)
+        self.saveobj(self.cb_ensuresutm)
         self.saveobj(self.lw_tnames)
 
 
@@ -358,8 +358,8 @@ class ImportBatch(BasicModule):
         self.combo_sensor = QtWidgets.QComboBox()
         self.sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
-        self.ftype = QtWidgets.QLabel('File Type:')
-        self.ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
+        self.lbl_ftype = QtWidgets.QLabel('File Type:')
+        self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
                                               'southern hemisphere')
 
         self.setupui()
@@ -380,7 +380,7 @@ class ImportBatch(BasicModule):
         pb_sfile.setIcon(icon)
 
         self.setWindowTitle('Import Batch Data')
-        self.ensuresutm.setChecked(True)
+        self.cb_ensuresutm.setChecked(True)
 
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -388,10 +388,10 @@ class ImportBatch(BasicModule):
 
         gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
         gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
-        gridlayout.addWidget(self.ftype, 2, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_ftype, 2, 0, 1, 1)
         gridlayout.addWidget(self.combo_sensor, 2, 1, 1, 1)
         gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
-        gridlayout.addWidget(self.ensuresutm, 4, 0, 1, 2)
+        gridlayout.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -439,7 +439,7 @@ class ImportBatch(BasicModule):
         self.setsensor()
 
         for i in self.filelist:
-            i.to_sutm = self.ensuresutm.isChecked()
+            i.to_sutm = self.cb_ensuresutm.isChecked()
 
         self.outdata['RasterFileList'] = self.filelist
 
@@ -546,8 +546,8 @@ class ImportBatch(BasicModule):
         self.saveobj(self.combo_sensor)
         self.saveobj(self.sfile)
         self.saveobj(self.lw_tnames)
-        self.saveobj(self.ftype)
-        self.saveobj(self.ensuresutm )
+        self.saveobj(self.lbl_ftype)
+        self.saveobj(self.cb_ensuresutm )
 
 
 class ImportSentinel5P(BasicModule):
@@ -567,8 +567,8 @@ class ImportSentinel5P(BasicModule):
         self.latmin = QtWidgets.QLineEdit('-35')
         self.latmax = QtWidgets.QLineEdit('-21')
         self.qathres = QtWidgets.QLineEdit('50')
-        self.cclip = QtWidgets.QRadioButton('Clip using coordinates')
-        self.sclip = QtWidgets.QRadioButton('Clip using shapefile')
+        self.rb_cclip = QtWidgets.QRadioButton('Clip using coordinates')
+        self.rb_sclip = QtWidgets.QRadioButton('Clip using shapefile')
         self.shpfile = QtWidgets.QLineEdit(self.sfile)
         self.lbl_sfile = QtWidgets.QPushButton('Load shapefile')
         self.lbl_lonmin = QtWidgets.QLabel('Minimum Longitude:')
@@ -597,7 +597,7 @@ class ImportSentinel5P(BasicModule):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        self.cclip.setChecked(True)
+        self.rb_cclip.setChecked(True)
         self.lbl_sfile.hide()
         self.shpfile.hide()
 
@@ -606,8 +606,8 @@ class ImportSentinel5P(BasicModule):
         gridlayout_main.addWidget(lbl_subdata, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.subdata, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.cclip, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.sclip, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.rb_cclip, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.rb_sclip, 2, 0, 1, 2)
 
         gridlayout_main.addWidget(self.lbl_lonmin, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.lonmin, 3, 1, 1, 1)
@@ -632,8 +632,8 @@ class ImportSentinel5P(BasicModule):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.cclip.clicked.connect(self.clipchoice)
-        self.sclip.clicked.connect(self.clipchoice)
+        self.rb_cclip.clicked.connect(self.clipchoice)
+        self.rb_sclip.clicked.connect(self.clipchoice)
         self.lbl_sfile.clicked.connect(self.loadshp)
 
     def settings(self, nodialog=False):
@@ -717,7 +717,7 @@ class ImportSentinel5P(BasicModule):
         None.
 
         """
-        if self.cclip.isChecked():
+        if self.rb_cclip.isChecked():
             self.lbl_sfile.hide()
             self.shpfile.hide()
             self.lonmin.show()
@@ -776,8 +776,8 @@ class ImportSentinel5P(BasicModule):
         self.saveobj(self.latmin)
         self.saveobj(self.latmax)
         self.saveobj(self.qathres)
-        self.saveobj(self.cclip)
-        self.saveobj(self.sclip)
+        self.saveobj(self.rb_cclip)
+        self.saveobj(self.rb_sclip)
 
     def get_5P_meta(self):
         """
@@ -862,7 +862,7 @@ class ImportSentinel5P(BasicModule):
         lons = lons.flatten()
         pnts = np.transpose([lons, lats])
 
-        if self.cclip.isChecked():
+        if self.rb_cclip.isChecked():
             lonmin = float(self.lonmin.text())
             latmin = float(self.latmin.text())
             lonmax = float(self.lonmax.text())
@@ -911,7 +911,7 @@ class ImportSentinel5P(BasicModule):
 
         gdf = gdf.set_crs("EPSG:4326")
 
-        if self.sclip.isChecked():
+        if self.rb_sclip.isChecked():
             gdf = gdf.clip(shp)
 
         if gdf.size == 0:
@@ -934,7 +934,7 @@ class ExportBatch(ContextModule):
         self.blue = QtWidgets.QComboBox()
         self.sunshade = QtWidgets.QComboBox()
         self.slvl = QtWidgets.QComboBox()
-        self.ternary = QtWidgets.QCheckBox('Ternary Export')
+        self.cb_ternary = QtWidgets.QCheckBox('Ternary Export')
 
         self.setupui()
 
@@ -967,7 +967,7 @@ class ExportBatch(ContextModule):
         self.slvl.addItems(['Standard', 'Heavy'])
         self.slvl.setCurrentText('Standard')
 
-        self.ternary.setChecked(False)
+        self.cb_ternary.setChecked(False)
         self.red.setEnabled(False)
         self.green.setEnabled(False)
         self.blue.setEnabled(False)
@@ -986,7 +986,7 @@ class ExportBatch(ContextModule):
         gridlayout_main.addWidget(lbl_ofilt, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.ofilt, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.ternary, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_ternary, 2, 0, 1, 2)
 
         gridlayout_main.addWidget(lbl_red, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.red, 3, 1, 1, 1)
@@ -1009,7 +1009,7 @@ class ExportBatch(ContextModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         pb_odir.pressed.connect(self.get_odir)
-        self.ternary.clicked.connect(self.click_ternary)
+        self.cb_ternary.clicked.connect(self.click_ternary)
 
     def click_ternary(self):
         """
@@ -1020,7 +1020,7 @@ class ExportBatch(ContextModule):
         None.
 
         """
-        if self.ternary.isChecked():
+        if self.cb_ternary.isChecked():
             self.red.setEnabled(True)
             self.green.setEnabled(True)
             self.blue.setEnabled(True)
@@ -1076,7 +1076,7 @@ class ExportBatch(ContextModule):
         odir = self.odir.text()
         sunfile = None
 
-        if self.ternary.isChecked():
+        if self.cb_ternary.isChecked():
             tnames = [self.red.currentText(),
                       self.green.currentText(),
                       self.blue.currentText()]

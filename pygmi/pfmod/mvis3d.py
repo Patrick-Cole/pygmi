@@ -89,14 +89,12 @@ class Mod3dDisplay(ContextModule):
 
         # Back to normal stuff
         self.lw_3dmod_defs = QtWidgets.QListWidget()
-        self.label = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
         self.pb_save = QtWidgets.QPushButton('Save to Image File (JPG or PNG)')
         self.pb_resetlight = QtWidgets.QPushButton('Reset Light')
         self.pb_refresh = QtWidgets.QPushButton('Refresh Model')
-        self.checkbox_smooth = QtWidgets.QCheckBox('Smooth Model')
-        self.checkbox_ortho = QtWidgets.QCheckBox('Orthographic Projection')
-        self.checkbox_axis = QtWidgets.QCheckBox('Display Axis')
+        self.cb_smooth = QtWidgets.QCheckBox('Smooth Model')
+        self.cb_ortho = QtWidgets.QCheckBox('Orthographic Projection')
+        self.cb_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
         self.glwidget = GLWidget()
         self.vslider_3dmodel = QtWidgets.QSlider()
@@ -131,21 +129,21 @@ class Mod3dDisplay(ContextModule):
         self.lw_3dmod_defs.setSelectionMode(
             QtWidgets.QAbstractItemView.MultiSelection)
         self.lw_3dmod_defs.setFixedWidth(220)
-        self.checkbox_smooth.setSizePolicy(sizepolicy)
+        self.cb_smooth.setSizePolicy(sizepolicy)
         self.pb_save.setSizePolicy(sizepolicy_pb)
         self.pb_refresh.setSizePolicy(sizepolicy_pb)
         self.pbar.setOrientation(QtCore.Qt.Vertical)
 
-        self.checkbox_ortho.setChecked(True)
-        self.checkbox_axis.setChecked(True)
+        self.cb_ortho.setChecked(True)
+        self.cb_axis.setChecked(True)
 
         verticallayout.addWidget(self.lw_3dmod_defs)
         verticallayout.addWidget(QtWidgets.QLabel('Light Position:'))
         verticallayout.addWidget(self.msc)
         verticallayout.addWidget(self.pb_resetlight)
-        verticallayout.addWidget(self.checkbox_smooth)
-        verticallayout.addWidget(self.checkbox_ortho)
-        verticallayout.addWidget(self.checkbox_axis)
+        verticallayout.addWidget(self.cb_smooth)
+        verticallayout.addWidget(self.cb_ortho)
+        verticallayout.addWidget(self.cb_axis)
         verticallayout.addWidget(self.pb_save)
         verticallayout.addWidget(self.pb_refresh)
         vbox_cmodel.addWidget(self.glwidget)
@@ -159,9 +157,9 @@ class Mod3dDisplay(ContextModule):
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.pb_resetlight.clicked.connect(self.resetlight)
-        self.checkbox_smooth.stateChanged.connect(self.update_plot)
-        self.checkbox_ortho.stateChanged.connect(self.update_model2)
-        self.checkbox_axis.stateChanged.connect(self.update_model2)
+        self.cb_smooth.stateChanged.connect(self.update_plot)
+        self.cb_ortho.stateChanged.connect(self.update_model2)
+        self.cb_axis.stateChanged.connect(self.update_model2)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.sunclick)
 
     def save(self):
@@ -479,7 +477,7 @@ class Mod3dDisplay(ContextModule):
         QtWidgets.QApplication.processEvents()
 
         if issmooth is None:
-            issmooth = self.checkbox_smooth.isChecked()
+            issmooth = self.cb_smooth.isChecked()
 
         self.faces = {}
         self.norms = {}
@@ -649,8 +647,8 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
-        self.glwidget.is_ortho = self.checkbox_ortho.isChecked()
-        self.glwidget.has_axis = self.checkbox_axis.isChecked()
+        self.glwidget.is_ortho = self.cb_ortho.isChecked()
+        self.glwidget.has_axis = self.cb_axis.isChecked()
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
@@ -716,7 +714,7 @@ class Mod3dDisplay(ContextModule):
         vadd = cmin+cptpd2
         vmult = cptp
 
-        self.glwidget.hastriangles = self.checkbox_smooth.isChecked()
+        self.glwidget.hastriangles = self.cb_smooth.isChecked()
         self.glwidget.cubeVtxArray = vtx
         self.glwidget.cubeClrArray = clr
         self.glwidget.cubeNrmArray = nrm

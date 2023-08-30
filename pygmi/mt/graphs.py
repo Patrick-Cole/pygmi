@@ -48,12 +48,12 @@ class GraphWindow(ContextModule):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel('Bands:')
-        self.label2 = QtWidgets.QLabel('Bands:')
+        self.lbl_1 = QtWidgets.QLabel('Bands:')
+        self.lbl_2 = QtWidgets.QLabel('Bands:')
 
-        hbl.addWidget(self.label1)
+        hbl.addWidget(self.lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(self.label2)
+        hbl.addWidget(self.lbl_2)
         hbl.addWidget(self.combobox2)
 
         vbl.addWidget(self.mmc)
@@ -316,8 +316,8 @@ class PlotPoints(GraphWindow):
         for i in ['xy, yx', 'xx, yy']:
             self.combobox2.addItem(i)
 
-        self.label1.setText('Station Name:')
-        self.label2.setText('Graph Type:')
+        self.lbl_1.setText('Station Name:')
+        self.lbl_2.setText('Graph Type:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(0)
 

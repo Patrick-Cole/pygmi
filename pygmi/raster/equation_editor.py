@@ -57,7 +57,7 @@ class EquationEditor(BasicModule):
 
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
-        self.label = QtWidgets.QLabel(': iall')
+        self.lbl_bands = QtWidgets.QLabel(': iall')
         self.dtype = QtWidgets.QComboBox()
 
         self.setupui()
@@ -133,7 +133,7 @@ class EquationEditor(BasicModule):
         gridlayout.addWidget(self.textbrowser, 1, 0, 1, 2)
         gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
         gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
-        gridlayout.addWidget(self.label, 4, 1, 1, 1)
+        gridlayout.addWidget(self.lbl_bands, 4, 1, 1, 1)
         gridlayout.addWidget(self.dtype, 6, 0, 1, 1)
         gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
         gridlayout.addWidget(self.textbrowser2, 7, 0, 1, 2)
@@ -154,7 +154,7 @@ class EquationEditor(BasicModule):
         """
         txt = self.combobox.currentText()
         if txt != '':
-            self.label.setText(': '+self.bands[txt])
+            self.lbl_bands.setText(': '+self.bands[txt])
 
     def eq_fix(self, indata):
         """

@@ -249,7 +249,7 @@ class DataLayerStack(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dxy = None
-        self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
+        self.cb_cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.lbl_rows = QtWidgets.QLabel('Rows: 0')
@@ -280,7 +280,7 @@ class DataLayerStack(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.cmask.setChecked(True)
+        self.cb_cmask.setChecked(True)
 
         self.setWindowTitle('Dataset Layer Stack and Resample')
 
@@ -288,7 +288,7 @@ class DataLayerStack(BasicModule):
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
         gridlayout_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
         gridlayout_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.cmask, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_cmask, 3, 0, 1, 2)
         gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
 
@@ -393,7 +393,7 @@ class DataLayerStack(BasicModule):
         """
         self.saveobj(self.dxy)
         self.saveobj(self.dsb_dxy)
-        self.saveobj(self.cmask)
+        self.saveobj(self.cb_cmask)
 
     def acceptall(self):
         """
@@ -410,7 +410,7 @@ class DataLayerStack(BasicModule):
         self.dxy = dxy
         dat = lstack(self.indata['Raster'], self.piter, dxy,
                      showlog=self.showlog,
-                     commonmask=self.cmask.isChecked())
+                     commonmask=self.cb_cmask.isChecked())
         self.outdata['Raster'] = dat
 
 
@@ -441,19 +441,16 @@ class DataMerge(BasicModule):
 
         self.idirlist = QtWidgets.QLineEdit('')
         self.sfile = QtWidgets.QLineEdit('')
-        self.files_diff = QtWidgets.QCheckBox('Mosaic by band labels, '
-                                              'since band order may differ, '
-                                              'or input files have different '
-                                              'numbers of bands or '
-                                              'nodata values.')
-        self.shift_to_median = QtWidgets.QCheckBox('Shift bands to median '
-                                                   'value before mosaic. May '
-                                                   'allow for cleaner mosaic '
-                                                   'if datasets are offset.')
+        self.cb_files_diff = QtWidgets.QCheckBox(
+            'Mosaic by band labels, '
+            'since band order may differ, or input files have different '
+            'numbers of bands or nodata values.')
+        self.cb_shift_to_median = QtWidgets.QCheckBox(
+            'Shift bands to median value before mosaic. May '
+            'allow for cleaner mosaic if datasets are offset.')
 
-        self.bands_to_files = QtWidgets.QCheckBox('Save each band separately '
-                                                  'in a "mosaic" '
-                                                  'subdirectory.')
+        self.cb_bands_to_files = QtWidgets.QCheckBox(
+            'Save each band separately in a "mosaic" subdirectory.')
         self.forcetype = None
         self.singleband = False
         self.setupui()
@@ -473,8 +470,8 @@ class DataMerge(BasicModule):
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile for boundary (optional)')
 
-        self.files_diff.setChecked(True)
-        self.shift_to_median.setChecked(False)
+        self.cb_files_diff.setChecked(True)
+        self.cb_shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -496,10 +493,10 @@ class DataMerge(BasicModule):
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
         gridlayout_main.addWidget(pb_sfile, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.sfile, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.files_diff, 3, 0, 1, 2)
-        gridlayout_main.addWidget(self.shift_to_median, 4, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_files_diff, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_shift_to_median, 4, 0, 1, 2)
         gridlayout_main.addWidget(gb_merge_method, 5, 0, 1, 2)
-        gridlayout_main.addWidget(self.bands_to_files, 6, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_bands_to_files, 6, 0, 1, 2)
         gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 7, 1, 1, 1)
 
@@ -507,8 +504,8 @@ class DataMerge(BasicModule):
         buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
         pb_sfile.pressed.connect(self.get_sfile)
-        self.shift_to_median.stateChanged.connect(self.shiftchanged)
-        self.files_diff.stateChanged.connect(self.filesdiffchanged)
+        self.cb_shift_to_median.stateChanged.connect(self.shiftchanged)
+        self.cb_files_diff.stateChanged.connect(self.filesdiffchanged)
         self.rb_first.clicked.connect(self.method_change)
         self.rb_last.clicked.connect(self.method_change)
         self.rb_min.clicked.connect(self.method_change)
@@ -544,8 +541,8 @@ class DataMerge(BasicModule):
         None.
 
         """
-        if self.shift_to_median.isChecked():
-            self.files_diff.setChecked(True)
+        if self.cb_shift_to_median.isChecked():
+            self.cb_files_diff.setChecked(True)
 
     def filesdiffchanged(self):
         """
@@ -556,11 +553,11 @@ class DataMerge(BasicModule):
         None.
 
         """
-        if not self.files_diff.isChecked():
-            self.shift_to_median.setChecked(False)
-            self.bands_to_files.hide()
+        if not self.cb_files_diff.isChecked():
+            self.cb_shift_to_median.setChecked(False)
+            self.cb_bands_to_files.hide()
         else:
-            self.bands_to_files.show()
+            self.cb_bands_to_files.show()
 
     def get_idir(self):
         """
@@ -635,8 +632,8 @@ class DataMerge(BasicModule):
         """
         self.saveobj(self.idir)
         self.saveobj(self.idirlist)
-        self.saveobj(self.files_diff)
-        self.saveobj(self.shift_to_median)
+        self.saveobj(self.cb_files_diff)
+        self.saveobj(self.cb_shift_to_median)
 
         self.saveobj(self.rb_first)
         self.saveobj(self.rb_last)
@@ -645,7 +642,7 @@ class DataMerge(BasicModule):
         self.saveobj(self.rb_median)
 
         self.saveobj(self.sfile)
-        self.saveobj(self.bands_to_files)
+        self.saveobj(self.cb_bands_to_files)
         self.saveobj(self.forcetype)
         self.saveobj(self.singleband)
 
@@ -661,7 +658,7 @@ class DataMerge(BasicModule):
             Success of routine.
 
         """
-        if self.files_diff.isChecked():
+        if self.cb_files_diff.isChecked():
             tmp = self.merge_different()
         else:
             tmp = self.merge_same()
@@ -745,7 +742,7 @@ class DataMerge(BasicModule):
         for dataid in bandlist:
             self.showlog('Extracting '+dataid+'...')
 
-            if self.bands_to_files.isChecked():
+            if self.cb_bands_to_files.isChecked():
                 odir = os.path.join(self.idir, 'mosaic')
                 os.makedirs(odir, exist_ok=True)
                 ofile = dataid+'.tif'
@@ -784,7 +781,7 @@ class DataMerge(BasicModule):
                 if self.forcetype is not None:
                     i2.data = i2.data.astype(self.forcetype)
 
-                if self.shift_to_median.isChecked():
+                if self.cb_shift_to_median.isChecked():
                     mval = np.ma.median(i2.data)
                 else:
                     mval = 0
@@ -857,7 +854,7 @@ class DataMerge(BasicModule):
             outdat[-1].metadata = metadata
             outdat[-1].datetime = datetime
 
-            if self.bands_to_files.isChecked():
+            if self.cb_bands_to_files.isChecked():
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD',
                               showlog=self.showlog)
 
@@ -970,12 +967,6 @@ class DataReproj(BasicModule):
         self.orig_wkt = None
         self.targ_wkt = None
 
-        self.groupboxb = QtWidgets.QGroupBox()
-        self.combo_inp_epsg = QtWidgets.QComboBox()
-        self.inp_epsg_info = QtWidgets.QLabel(wordWrap=True)
-        self.groupbox2b = QtWidgets.QGroupBox()
-        self.combo_out_epsg = QtWidgets.QComboBox()
-        self.out_epsg_info = QtWidgets.QLabel()
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
 
@@ -1220,18 +1211,16 @@ class GroupProj(QtWidgets.QWidget):
         self.groupbox = QtWidgets.QGroupBox(title)
         self.combodatum = QtWidgets.QComboBox()
         self.comboproj = QtWidgets.QComboBox()
-        # self.label = QtWidgets.QLabel()
-        # self.label.setWordWrap(True)
 
-        self.label = QtWidgets.QTextBrowser()
-        self.label.setWordWrapMode(0)
+        self.lbl_wkt = QtWidgets.QTextBrowser()
+        self.lbl_wkt.setWordWrapMode(0)
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
         gridlayout = QtWidgets.QGridLayout(self.groupbox)
         gridlayout.addWidget(self.combodatum, 0, 0, 1, 1)
         gridlayout.addWidget(self.comboproj, 1, 0, 1, 1)
-        gridlayout.addWidget(self.label, 2, 0, 1, 1)
+        gridlayout.addWidget(self.lbl_wkt, 2, 0, 1, 1)
 
         self.epsg_proj = getepsgcodes()
         self.epsg_proj[r'Current / Current'] = self.wkt
@@ -1333,7 +1322,7 @@ class GroupProj(QtWidgets.QWidget):
         wkttmp = self.wkt.replace(', ', ',')
         wkttmp = wkttmp.replace(',', ', ')
 
-        self.label.setText(wkttmp)
+        self.lbl_wkt.setText(wkttmp)
 
 
 class Metadata(ContextModule):
@@ -1361,7 +1350,6 @@ class Metadata(ContextModule):
         self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
-        self.inp_epsg_info = QtWidgets.QLabel()
         self.txt_null = QtWidgets.QLineEdit()
         self.dsb_tlx = QtWidgets.QLineEdit()
         self.dsb_tly = QtWidgets.QLineEdit()

@@ -61,24 +61,16 @@ class CalculateChange(BasicModule):
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
-        # lbl_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
         self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)
 
-        # self.combo_sensor.addItems(['ASTER',
-        #                             'Landsat 8 and 9 (OLI)',
-        #                             'Landsat 7 (ETM+)',
-        #                             'Landsat 4 and 5 (TM)',
-        #                             'Sentinel-2', 'WorldView', 'Unknown'])
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Calculate Change Indices')
 
-        # gridlayout_main.addWidget(lbl_sensor, 0, 0, 1, 1)
-        # gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
         gridlayout_main.addWidget(lbl_ratios, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.lw_indices, 1, 1, 1, 1)
         gridlayout_main.addWidget(btn_invert, 2, 0, 1, 2)

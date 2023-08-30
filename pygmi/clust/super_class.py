@@ -429,7 +429,7 @@ class SuperClass(BasicModule):
         self.SVCkernel = QtWidgets.QComboBox()
         self.DTcriterion = QtWidgets.QComboBox()
         self.RFcriterion = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
+        self.lbl_1 = QtWidgets.QLabel()
 
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
 
@@ -479,7 +479,7 @@ class SuperClass(BasicModule):
 
         lbl_combo = QtWidgets.QLabel('Data Band:')
         lbl_class = QtWidgets.QLabel('Classifier:')
-        self.label1.setText('Algorithm:')
+        self.lbl_1.setText('Algorithm:')
 
         self.KNalgorithm.addItems(['auto', 'ball_tree', 'kd_tree', 'brute'])
         self.DTcriterion.addItems(['gini', 'entropy'])
@@ -502,7 +502,7 @@ class SuperClass(BasicModule):
 
         grid_class.addWidget(lbl_class, 0, 0, 1, 1)
         grid_class.addWidget(self.combo_class, 0, 1, 1, 1)
-        grid_class.addWidget(self.label1, 1, 0, 1, 1)
+        grid_class.addWidget(self.lbl_1, 1, 0, 1, 1)
         grid_class.addWidget(self.KNalgorithm, 1, 1, 1, 1)
         grid_class.addWidget(self.DTcriterion, 1, 1, 1, 1)
         grid_class.addWidget(self.RFcriterion, 1, 1, 1, 1)
@@ -546,16 +546,16 @@ class SuperClass(BasicModule):
 
         if ctext == 'K Neighbors Classifier':
             self.KNalgorithm.setHidden(False)
-            self.label1.setText('Algorithm:')
+            self.lbl_1.setText('Algorithm:')
         elif ctext == 'Decision Tree Classifier':
             self.DTcriterion.setHidden(False)
-            self.label1.setText('Criterion:')
+            self.lbl_1.setText('Criterion:')
         elif ctext == 'Random Forest Classifier':
             self.RFcriterion.setHidden(False)
-            self.label1.setText('Criterion:')
+            self.lbl_1.setText('Criterion:')
         elif ctext == 'Support Vector Classifier':
             self.SVCkernel.setHidden(False)
-            self.label1.setText('Kernel:')
+            self.lbl_1.setText('Kernel:')
 
     def calc_metrics(self):
         """

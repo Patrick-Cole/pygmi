@@ -195,8 +195,8 @@ class AnalSpec(BasicModule):
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
         self.lbl_info = QtWidgets.QLabel('')
         self.group_info = QtWidgets.QGroupBox('Information:')
-        self.chk_hull = QtWidgets.QCheckBox('Remove Hull')
-        self.chk_rot = QtWidgets.QCheckBox('Rotate View')
+        self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
+        self.cb_rot = QtWidgets.QCheckBox('Rotate View')
         self.lw_speclib = QtWidgets.QListWidget()
 
         self.setupui()
@@ -236,8 +236,8 @@ class AnalSpec(BasicModule):
         grid_main.addWidget(self.combo, 0, 2)
         grid_main.addWidget(lbl_feature, 1, 1)
         grid_main.addWidget(self.combo_feature, 1, 2)
-        grid_main.addWidget(self.chk_rot, 2, 1)
-        grid_main.addWidget(self.chk_hull, 2, 2)
+        grid_main.addWidget(self.cb_rot, 2, 1)
+        grid_main.addWidget(self.cb_hull, 2, 2)
         grid_main.addWidget(pb_speclib, 3, 1, 1, 2)
         grid_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
 
@@ -249,8 +249,8 @@ class AnalSpec(BasicModule):
         grid_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
 
         self.combo_feature.currentIndexChanged.connect(self.feature_change)
-        self.chk_hull.clicked.connect(self.hull)
-        self.chk_rot.clicked.connect(self.rotate_view)
+        self.cb_hull.clicked.connect(self.hull)
+        self.cb_rot.clicked.connect(self.rotate_view)
         pb_speclib.clicked.connect(self.load_splib)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
@@ -289,7 +289,7 @@ class AnalSpec(BasicModule):
         self.map.row = int(event.ydata)
         self.map.col = int(event.xdata)
 
-        if self.chk_rot.isChecked():
+        if self.cb_rot.isChecked():
             self.map.row, self.map.col = self.map.col, self.map.row
 
         self.map.init_graph()
@@ -336,7 +336,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        self.map.remhull = self.chk_hull.isChecked()
+        self.map.remhull = self.cb_hull.isChecked()
         self.map.init_graph()
 
     def load_splib(self):
@@ -386,7 +386,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        self.map.rotate = self.chk_rot.isChecked()
+        self.map.rotate = self.cb_rot.isChecked()
         self.map.init_graph()
 
     def settings(self, nodialog=False):
@@ -503,10 +503,10 @@ class ProcFeatures(BasicModule):
         self.feature = None
 
         self.cb_ratios = QtWidgets.QComboBox()
-        self.rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
+        self.cb_rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
                                               'ratio, filter out values less '
                                               'than 1.')
-        self.filtercheck = QtWidgets.QCheckBox('Filter Albedo and Vegetation')
+        self.cb_filtercheck = QtWidgets.QCheckBox('Filter Albedo and Vegetation')
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
@@ -533,8 +533,8 @@ class ProcFeatures(BasicModule):
         self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
                                                     'Threshold'])
         self.tablewidget.resizeColumnsToContents()
-        self.filtercheck.setChecked(True)
-        self.rfiltcheck.setChecked(True)
+        self.cb_filtercheck.setChecked(True)
+        self.cb_rfiltcheck.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -546,14 +546,14 @@ class ProcFeatures(BasicModule):
         gridlayout_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
         gridlayout_main.addWidget(lbl_details, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.tablewidget, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.filtercheck, 3, 0, 1, 2)
-        gridlayout_main.addWidget(self.rfiltcheck, 4, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_filtercheck, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.cb_rfiltcheck, 4, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         self.cb_ratios.currentIndexChanged.connect(self.product_change)
-        self.filtercheck.stateChanged.connect(self.product_change)
+        self.cb_filtercheck.stateChanged.connect(self.product_change)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -571,7 +571,7 @@ class ProcFeatures(BasicModule):
 
         product = self.product[txt]
 
-        if self.filtercheck.isChecked():
+        if self.cb_filtercheck.isChecked():
             product = product + self.product['filter']
 
         numrows = len(product)
@@ -687,8 +687,8 @@ class ProcFeatures(BasicModule):
 
         """
         self.saveobj(self.cb_ratios)
-        self.saveobj(self.rfiltcheck)
-        self.saveobj(self.filtercheck)
+        self.saveobj(self.cb_rfiltcheck)
+        self.saveobj(self.cb_filtercheck)
 
     def acceptall(self):
         """
@@ -704,7 +704,7 @@ class ProcFeatures(BasicModule):
         datfin = []
 
         mineral = self.cb_ratios.currentText()
-        rfilt = self.rfiltcheck.isChecked()
+        rfilt = self.cb_rfiltcheck.isChecked()
 
         product = self.product
 

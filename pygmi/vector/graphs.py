@@ -56,18 +56,18 @@ class GraphWindow(ContextModule):
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
-        self.label1 = QtWidgets.QLabel('Bands:')
-        self.label2 = QtWidgets.QLabel('Bands:')
-        self.label3 = QtWidgets.QLabel('Value:')
+        self.lbl_1 = QtWidgets.QLabel('Bands:')
+        self.lbl_2 = QtWidgets.QLabel('Bands:')
+        self.lbl_3 = QtWidgets.QLabel('Value:')
         self.checkbox = QtWidgets.QCheckBox('Option:')
 
         self.checkbox.hide()
 
-        hbl.addWidget(self.label1)
+        hbl.addWidget(self.lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(self.label2)
+        hbl.addWidget(self.lbl_2)
         hbl.addWidget(self.combobox2)
-        hbl.addWidget(self.label3)
+        hbl.addWidget(self.lbl_3)
         hbl.addWidget(self.spinbox)
 
         vbl.addWidget(self.mmc)
@@ -522,7 +522,7 @@ class PlotLines(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.spinbox.hide()
-        self.label3.hide()
+        self.lbl_3.hide()
         self.xcol = ''
         self.ycol = ''
 
@@ -596,8 +596,8 @@ class PlotLines(GraphWindow):
         self.combobox1.addItems(lines)
         self.combobox2.addItems(cols)
 
-        self.label1.setText('Line:')
-        self.label2.setText('Column:')
+        self.lbl_1.setText('Line:')
+        self.lbl_2.setText('Column:')
 
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(0)
@@ -614,7 +614,7 @@ class PlotLineMap(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.combobox2.hide()
-        self.label2.hide()
+        self.lbl_2.hide()
         self.checkbox.show()
 
     def change_band(self):
@@ -667,8 +667,8 @@ class PlotLineMap(GraphWindow):
         self.combobox1.addItems(cols)
 
         self.checkbox.setText('Show Line Labels:')
-        self.label1.setText('Column:')
-        self.label3.setText('Scale:')
+        self.lbl_1.setText('Column:')
+        self.lbl_3.setText('Scale:')
         self.spinbox.setMinimum(1)
         self.spinbox.setMaximum(1000000)
         self.spinbox.setValue(100)
@@ -688,7 +688,7 @@ class PlotRose(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.combobox2.hide()
-        self.label2.hide()
+        self.lbl_2.hide()
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
@@ -742,7 +742,7 @@ class PlotRose(GraphWindow):
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
         self.checkbox.setText('Equal Area Rose Diagram')
-        self.label1.setText('Rose Diagram Type:')
+        self.lbl_1.setText('Rose Diagram Type:')
         self.combobox1.setCurrentIndex(0)
 
 
@@ -751,11 +751,11 @@ class PlotVector(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.label1.hide()
+        # self.lbl_1.hide()
         self.combobox2.hide()
-        self.label2.hide()
+        self.lbl_2.hide()
         self.spinbox.hide()
-        self.label3.hide()
+        self.lbl_3.hide()
 
     def change_band(self):
         """
@@ -799,7 +799,7 @@ class PlotVector(GraphWindow):
         else:
             self.combobox1.hide()
 
-        self.label1.setText('Channel:')
+        self.lbl_1.setText('Channel:')
 
         self.show()
 

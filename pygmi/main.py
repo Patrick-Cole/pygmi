@@ -681,9 +681,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
         self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
 
-        label = QtWidgets.QLabel('Dataset Information:')
+        lbl_1 = QtWidgets.QLabel('Dataset Information:')
         lbl_2 = QtWidgets.QLabel('Process Log:')
-        self.grid_layout.addWidget(label, 0, 2, 1, 1)
+        self.grid_layout.addWidget(lbl_1, 0, 2, 1, 1)
         self.grid_layout.addWidget(lbl_2, 2, 2, 1, 1)
 
         self.setCentralWidget(self.centralwidget)

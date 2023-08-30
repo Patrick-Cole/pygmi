@@ -349,13 +349,13 @@ class PlotRaster(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtWidgets.QComboBox()
-        label1 = QtWidgets.QLabel('Bands:')
-        hbl.addWidget(label1)
+        lbl_1 = QtWidgets.QLabel('Bands:')
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
 
         self.combobox2 = QtWidgets.QComboBox()
-        label2 = QtWidgets.QLabel('Colormap:')
-        hbl.addWidget(label2)
+        lbl_2 = QtWidgets.QLabel('Colormap:')
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
         self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
@@ -416,13 +416,13 @@ class PlotSurface(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtWidgets.QComboBox()
-        label1 = QtWidgets.QLabel('Bands:')
-        hbl.addWidget(label1)
+        lbl_1 = QtWidgets.QLabel('Bands:')
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
 
         self.combobox2 = QtWidgets.QComboBox()
-        label2 = QtWidgets.QLabel('Colormap:')
-        hbl.addWidget(label2)
+        lbl_2 = QtWidgets.QLabel('Colormap:')
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
         self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
@@ -487,11 +487,11 @@ class PlotScatter(ContextModule):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        label1 = QtWidgets.QLabel('X Band:')
-        label2 = QtWidgets.QLabel('Y Band:')
-        hbl.addWidget(label1)
+        lbl_1 = QtWidgets.QLabel('X Band:')
+        lbl_2 = QtWidgets.QLabel('Y Band:')
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(label2)
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
 
         vbl.addWidget(self.mmc)
@@ -561,10 +561,10 @@ class PlotHist(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtWidgets.QComboBox()
-        label1 = QtWidgets.QLabel('Bands:')
-        self.chk_log = QtWidgets.QCheckBox('Log Y Axis:')
-        hbl.addWidget(self.chk_log)
-        hbl.addWidget(label1)
+        lbl_1 = QtWidgets.QLabel('Bands:')
+        self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
+        hbl.addWidget(self.cb_log)
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
 
         vbl.addWidget(self.mmc)
@@ -574,7 +574,7 @@ class PlotHist(ContextModule):
         self.setFocus()
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.chk_log.stateChanged.connect(self.change_band)
+        self.cb_log.stateChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -587,7 +587,7 @@ class PlotHist(ContextModule):
         """
         data = self.indata['Raster']
         i = self.combobox1.currentIndex()
-        ylog = self.chk_log.isChecked()
+        ylog = self.cb_log.isChecked()
         self.mmc.update_hist(data[i], ylog)
 
     def run(self):

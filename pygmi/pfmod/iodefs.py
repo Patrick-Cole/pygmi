@@ -1161,7 +1161,7 @@ class Exportkmz(QtWidgets.QDialog):
     def __init__(self, wkt, parent=None):
         super().__init__(parent)
 
-        self.checkbox_smooth = QtWidgets.QCheckBox()
+        self.cb_smooth = QtWidgets.QCheckBox()
         self.proj = dp.GroupProj('Confirm Model Projection')
         self.proj.set_current(wkt)
 
@@ -1184,12 +1184,12 @@ class Exportkmz(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         gridlayout.addWidget(self.proj, 0, 0, 1, 2)
-        gridlayout.addWidget(self.checkbox_smooth, 1, 0, 1, 2)
+        gridlayout.addWidget(self.cb_smooth, 1, 0, 1, 2)
         gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
         self.setWindowTitle('Google Earth kmz Export')
-        self.checkbox_smooth.setText('Smooth Model')
+        self.cb_smooth.setText('Smooth Model')
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

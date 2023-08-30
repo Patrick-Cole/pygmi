@@ -838,7 +838,7 @@ class PlotInterp(BasicModule):
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
-        self.chk_histtype = QtWidgets.QCheckBox('Full histogram with clip '
+        self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
                                                 'lines')
         self.cbox_dtype = QtWidgets.QComboBox()
         self.cbox_band1 = QtWidgets.QComboBox()
@@ -852,11 +852,11 @@ class PlotInterp(BasicModule):
         self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # CMYK
         self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        self.label4 = QtWidgets.QLabel('Sunshade Data:')
-        self.labels = QtWidgets.QLabel('Sunshade Detail')
-        self.labela = QtWidgets.QLabel('Light Reflectance')
-        self.labelc = QtWidgets.QLabel('Colour Bar:')
-        self.labelk = QtWidgets.QLabel('K value:')
+        self.lbl_4 = QtWidgets.QLabel('Sunshade Data:')
+        self.lbl_s = QtWidgets.QLabel('Sunshade Detail')
+        self.lbl_a = QtWidgets.QLabel('Light Reflectance')
+        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
+        self.lbl_k = QtWidgets.QLabel('K value:')
         self.gbox_sun = QtWidgets.QGroupBox('Sunshading')
 
         self.setupui()
@@ -878,10 +878,10 @@ class PlotInterp(BasicModule):
         self.aslider.hide()
         self.kslider.hide()
         self.msc.hide()
-        self.labela.hide()
-        self.labels.hide()
-        self.labelk.hide()
-        self.label4.hide()
+        self.lbl_a.hide()
+        self.lbl_s.hide()
+        self.lbl_k.hide()
+        self.lbl_4.hide()
         self.cbox_bands.hide()
 
     def setupui(self):
@@ -960,7 +960,7 @@ class PlotInterp(BasicModule):
         self.setWindowTitle('Raster Data Display')
 
         v1.addWidget(self.cbox_dtype)
-        v1.addWidget(self.labelk)
+        v1.addWidget(self.lbl_k)
         v1.addWidget(self.kslider)
         vbl_raster.addWidget(gbox1)
 
@@ -972,19 +972,19 @@ class PlotInterp(BasicModule):
         v3.addWidget(self.cbox_htype)
         v3.addWidget(self.lineclipl)
         v3.addWidget(self.lineclipu)
-        v3.addWidget(self.chk_histtype)
+        v3.addWidget(self.cb_histtype)
         v3.addWidget(btn_apply)
-        v3.addWidget(self.labelc)
+        v3.addWidget(self.lbl_c)
         v3.addWidget(self.cbox_cbar)
         vbl_raster.addWidget(gbox3)
 
         vbl_raster.addWidget(self.gbox_sun)
-        v4.addWidget(self.label4)
+        v4.addWidget(self.lbl_4)
         v4.addWidget(self.cbox_bands)
         v4.addWidget(self.msc)
-        v4.addWidget(self.labels)
+        v4.addWidget(self.lbl_s)
         v4.addWidget(self.sslider)
-        v4.addWidget(self.labela)
+        v4.addWidget(self.lbl_a)
         v4.addWidget(self.aslider)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveimg)
@@ -1006,7 +1006,7 @@ class PlotInterp(BasicModule):
         self.btn_saveimg.clicked.connect(self.save_img)
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
         btn_apply.clicked.connect(self.change_lclip)
-        self.chk_histtype.clicked.connect(self.change_dtype)
+        self.cb_histtype.clicked.connect(self.change_dtype)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -1100,11 +1100,11 @@ class PlotInterp(BasicModule):
         txt = str(self.cbox_dtype.currentText())
         self.mmc.gmode = txt
         self.cbox_band1.show()
-        self.mmc.fullhist = self.chk_histtype.isChecked()
+        self.mmc.fullhist = self.cb_histtype.isChecked()
 
         if txt == 'Single Colour Map':
-            self.labelc.show()
-            self.labelk.hide()
+            self.lbl_c.show()
+            self.lbl_k.hide()
             self.cbox_band2.hide()
             self.cbox_band3.hide()
             self.cbox_cbar.show()
@@ -1116,8 +1116,8 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
 
         if txt == 'Contour':
-            self.labelk.hide()
-            self.labelc.show()
+            self.lbl_k.hide()
+            self.lbl_c.show()
             self.cbox_band2.hide()
             self.cbox_band3.hide()
             self.cbox_cbar.show()
@@ -1130,8 +1130,8 @@ class PlotInterp(BasicModule):
             self.gbox_sun.setChecked(False)
 
         if 'Ternary' in txt:
-            self.labelk.hide()
-            self.labelc.hide()
+            self.lbl_k.hide()
+            self.lbl_c.hide()
             self.cbox_band2.show()
             self.cbox_band3.show()
             self.cbox_cbar.hide()
@@ -1143,26 +1143,26 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             if 'CMY' in txt:
                 self.kslider.show()
-                self.labelk.show()
+                self.lbl_k.show()
                 self.mmc.kval = float(self.kslider.value())/100.
 
         if self.gbox_sun.isChecked():
             self.msc.show()
-            self.label4.show()
+            self.lbl_4.show()
             self.cbox_bands.show()
             self.sslider.show()
             self.aslider.show()
-            self.labela.show()
-            self.labels.show()
+            self.lbl_a.show()
+            self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
             self.mmc.shade = True
             self.msc.init_graph()
         else:
             self.msc.hide()
-            self.labela.hide()
-            self.labels.hide()
-            self.label4.hide()
+            self.lbl_a.hide()
+            self.lbl_s.hide()
+            self.lbl_4.hide()
             self.cbox_bands.hide()
             self.mmc.shade = False
 
@@ -1195,12 +1195,12 @@ class PlotInterp(BasicModule):
 
         if self.gbox_sun.isChecked():
             self.msc.show()
-            self.label4.show()
+            self.lbl_4.show()
             self.cbox_bands.show()
             self.sslider.show()
             self.aslider.show()
-            self.labela.show()
-            self.labels.show()
+            self.lbl_a.show()
+            self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
             self.mmc.shade = True
@@ -1208,9 +1208,9 @@ class PlotInterp(BasicModule):
             QtWidgets.QApplication.processEvents()
         else:
             self.msc.hide()
-            self.labela.hide()
-            self.labels.hide()
-            self.label4.hide()
+            self.lbl_a.hide()
+            self.lbl_s.hide()
+            self.lbl_4.hide()
             self.cbox_bands.hide()
             self.sslider.hide()
             self.aslider.hide()

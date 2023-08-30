@@ -52,7 +52,7 @@ class LandsatComposite(BasicModule):
 
         self.idir = ''
 
-        self.tday = QtWidgets.QSpinBox()
+        self.sb_tday = QtWidgets.QSpinBox()
         self.idirlist = QtWidgets.QLineEdit('')
 
         self.setupui()
@@ -73,9 +73,9 @@ class LandsatComposite(BasicModule):
 
         lbl_tday = QtWidgets.QLabel('Target Day:')
 
-        self.tday.setMinimum(1)
-        self.tday.setMaximum(366)
-        self.tday.setValue(1)
+        self.sb_tday.setMinimum(1)
+        self.sb_tday.setMaximum(366)
+        self.sb_tday.setValue(1)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -86,7 +86,7 @@ class LandsatComposite(BasicModule):
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
         gridlayout_main.addWidget(lbl_tday, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.tday, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.sb_tday, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
 
@@ -130,7 +130,7 @@ class LandsatComposite(BasicModule):
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-        mean = self.tday.value()
+        mean = self.sb_tday.value()
         dat = composite(self.idir, 10, showlog=self.showlog,
                         piter=self.piter, mean=mean)
 
@@ -177,7 +177,7 @@ class LandsatComposite(BasicModule):
 
         self.showlog(f'Mean day: {mean}')
 
-        self.tday.setValue(mean)
+        self.sb_tday.setValue(mean)
 
     def saveproj(self):
         """
@@ -189,7 +189,7 @@ class LandsatComposite(BasicModule):
 
         """
         self.saveobj(self.idir)
-        self.saveobj(self.tday)
+        self.saveobj(self.sb_tday)
         self.saveobj(self.idirlist)
 
 

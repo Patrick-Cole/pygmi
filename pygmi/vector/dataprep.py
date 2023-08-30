@@ -366,12 +366,6 @@ class DataReproj(BasicModule):
         self.orig_wkt = None
         self.targ_wkt = None
 
-        self.groupboxb = QtWidgets.QGroupBox()
-        self.combo_inp_epsg = QtWidgets.QComboBox()
-        self.inp_epsg_info = QtWidgets.QLabel()
-        self.groupbox2b = QtWidgets.QGroupBox()
-        self.combo_out_epsg = QtWidgets.QComboBox()
-        self.out_epsg_info = QtWidgets.QLabel()
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
 

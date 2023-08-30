@@ -390,10 +390,10 @@ class StaticShiftEDI(BasicModule):
         self.dsb_shifty.setMinimum(0.)
         self.dsb_shifty.setMaximum(100000.)
         self.dsb_shifty.setValue(1.)
-        label1 = QtWidgets.QLabel('Station Name:')
-        label2 = QtWidgets.QLabel('Graph Type:')
-        label3 = QtWidgets.QLabel('Shift X:')
-        label4 = QtWidgets.QLabel('Shift Y:')
+        lbl_1 = QtWidgets.QLabel('Station Name:')
+        lbl_2 = QtWidgets.QLabel('Graph Type:')
+        lbl_3 = QtWidgets.QLabel('Shift X:')
+        lbl_4 = QtWidgets.QLabel('Shift Y:')
         self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
         pb_apply = QtWidgets.QPushButton('Remove Static Shift')
         pb_reset = QtWidgets.QPushButton('Reset data')
@@ -403,14 +403,14 @@ class StaticShiftEDI(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        hbl.addWidget(label1)
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(label2)
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
 
-        hbl3.addWidget(label3)
+        hbl3.addWidget(lbl_3)
         hbl3.addWidget(self.dsb_shiftx)
-        hbl3.addWidget(label4)
+        hbl3.addWidget(lbl_4)
         hbl3.addWidget(self.dsb_shifty)
 
         hbl2.addWidget(helpdocs)
@@ -572,12 +572,12 @@ class RotateEDI(BasicModule):
         self.combobox2.addItems(['xy, yx', 'xx, yy'])
         self.combobox2.setCurrentIndex(0)
 
-        self.sb_rotangle = QtWidgets.QDoubleSpinBox()
-        self.sb_rotangle.setMinimum(0.)
-        self.sb_rotangle.setMaximum(360.)
-        label1 = QtWidgets.QLabel('Station Name:')
-        label2 = QtWidgets.QLabel('Graph Type:')
-        label3 = QtWidgets.QLabel('Rotate Z (0 is North):')
+        self.dsb_rotangle = QtWidgets.QDoubleSpinBox()
+        self.dsb_rotangle.setMinimum(0.)
+        self.dsb_rotangle.setMaximum(360.)
+        lbl_1 = QtWidgets.QLabel('Station Name:')
+        lbl_2 = QtWidgets.QLabel('Graph Type:')
+        lbl_3 = QtWidgets.QLabel('Rotate Z (0 is North):')
         self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
         pb_apply = QtWidgets.QPushButton('Apply rotation')
         pb_reset = QtWidgets.QPushButton('Reset data')
@@ -589,12 +589,12 @@ class RotateEDI(BasicModule):
 
         helpdocs = menu_default.HelpButton('pygmi.mt.rotate')
 
-        hbl.addWidget(label1)
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(label2)
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
-        hbl.addWidget(label3)
-        hbl.addWidget(self.sb_rotangle)
+        hbl.addWidget(lbl_3)
+        hbl.addWidget(self.dsb_rotangle)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
@@ -636,7 +636,7 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        rotZ = self.sb_rotangle.value()
+        rotZ = self.dsb_rotangle.value()
 
         if self.cb_applyall.isChecked():
             for i in self.data:
@@ -665,7 +665,7 @@ class RotateEDI(BasicModule):
         else:
             self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
 
-        self.sb_rotangle.setValue(self.data[i].rotation_angle)
+        self.dsb_rotangle.setValue(self.data[i].rotation_angle)
 
         self.change_band()
 
@@ -713,7 +713,7 @@ class RotateEDI(BasicModule):
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
         i = self.combobox1.currentText()
-        self.sb_rotangle.setValue(self.data[i].rotation_angle)
+        self.dsb_rotangle.setValue(self.data[i].rotation_angle)
 
         self.change_band()
 
@@ -735,7 +735,7 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        self.saveobj(self.sb_rotangle)
+        self.saveobj(self.dsb_rotangle)
         self.saveobj(self.cb_applyall)
 
 
@@ -1027,8 +1027,8 @@ class EditEDI(BasicModule):
         self.combobox2.addItems(['xy, yx', 'xx, yy'])
         self.combobox2.setCurrentIndex(0)
 
-        label1 = QtWidgets.QLabel('Station Name:')
-        label2 = QtWidgets.QLabel('Graph Type:')
+        lbl_1 = QtWidgets.QLabel('Station Name:')
+        lbl_2 = QtWidgets.QLabel('Graph Type:')
         pb_apply = QtWidgets.QPushButton('Mask and Interpolate')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
@@ -1037,9 +1037,9 @@ class EditEDI(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        hbl.addWidget(label1)
+        hbl.addWidget(lbl_1)
         hbl.addWidget(self.combobox1)
-        hbl.addWidget(label2)
+        hbl.addWidget(lbl_2)
         hbl.addWidget(self.combobox2)
 
         hbl2.addWidget(helpdocs)
@@ -1355,9 +1355,9 @@ class Occam1D(BasicModule):
         self.errfloorres.setSizePolicy(sizepolicy)
         self.errfloorphase = QtWidgets.QLineEdit('2.')
         self.errfloorphase.setSizePolicy(sizepolicy)
-        self.remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
-                                                   r'Phase values out of '
-                                                   r'1st/3rd Quadrant')
+        self.cb_remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
+                                                      r'Phase values out of '
+                                                      r'1st/3rd Quadrant')
 
         self.targetdepth = QtWidgets.QLineEdit('40000.')
         self.targetdepth.setSizePolicy(sizepolicy)
@@ -1373,25 +1373,25 @@ class Occam1D(BasicModule):
         self.maxiter.setSizePolicy(sizepolicy)
         self.targetrms = QtWidgets.QLineEdit('1.')
         self.targetrms.setSizePolicy(sizepolicy)
-        self.remove_out_quad.setChecked(True)
+        self.cb_remove_out_quad.setChecked(True)
 
         self.hs_profnum = MySlider()
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
 
-        label1 = QtWidgets.QLabel('Station Name:')
-        label1.setSizePolicy(sizepolicy)
-        label3 = QtWidgets.QLabel('Mode:')
-        label4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
-        label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
-        label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
-        label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        label8 = QtWidgets.QLabel('Height of air layer:')
-        label9 = QtWidgets.QLabel('Bottom of model:')
-        label10 = QtWidgets.QLabel('Depth of target to investigate:')
-        label11 = QtWidgets.QLabel('Depth of first layer:')
-        label12 = QtWidgets.QLabel('Number of layers:')
-        label13 = QtWidgets.QLabel('Maximum Iterations:')
-        label14 = QtWidgets.QLabel('Target RMS:')
+        lbl_1 = QtWidgets.QLabel('Station Name:')
+        lbl_1.setSizePolicy(sizepolicy)
+        lbl_3 = QtWidgets.QLabel('Mode:')
+        lbl_4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
+        lbl_5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
+        lbl_6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
+        lbl_7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
+        lbl_8 = QtWidgets.QLabel('Height of air layer:')
+        lbl_9 = QtWidgets.QLabel('Bottom of model:')
+        lbl_10 = QtWidgets.QLabel('Depth of target to investigate:')
+        lbl_11 = QtWidgets.QLabel('Depth of first layer:')
+        lbl_12 = QtWidgets.QLabel('Number of layers:')
+        lbl_13 = QtWidgets.QLabel('Maximum Iterations:')
+        lbl_14 = QtWidgets.QLabel('Target RMS:')
 
         self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
 
@@ -1402,33 +1402,33 @@ class Occam1D(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        gbl.addWidget(label1, 0, 0)
+        gbl.addWidget(lbl_1, 0, 0)
         gbl.addWidget(self.combobox1, 0, 1)
-        gbl.addWidget(label3, 2, 0)
+        gbl.addWidget(lbl_3, 2, 0)
         gbl.addWidget(self.combomode, 2, 1)
-        gbl.addWidget(label4, 3, 0)
+        gbl.addWidget(lbl_4, 3, 0)
         gbl.addWidget(self.errres, 3, 1)
-        gbl.addWidget(label5, 4, 0)
+        gbl.addWidget(lbl_5, 4, 0)
         gbl.addWidget(self.errphase, 4, 1)
-        gbl.addWidget(label6, 5, 0)
+        gbl.addWidget(lbl_6, 5, 0)
         gbl.addWidget(self.errfloorres, 5, 1)
-        gbl.addWidget(label7, 6, 0)
+        gbl.addWidget(lbl_7, 6, 0)
         gbl.addWidget(self.errfloorphase, 6, 1)
-        gbl.addWidget(label8, 7, 0)
+        gbl.addWidget(lbl_8, 7, 0)
         gbl.addWidget(self.airlayer, 7, 1)
-        gbl.addWidget(label9, 8, 0)
+        gbl.addWidget(lbl_9, 8, 0)
         gbl.addWidget(self.bottomlayer, 8, 1)
-        gbl.addWidget(label10, 9, 0)
+        gbl.addWidget(lbl_10, 9, 0)
         gbl.addWidget(self.targetdepth, 9, 1)
-        gbl.addWidget(label11, 10, 0)
+        gbl.addWidget(lbl_11, 10, 0)
         gbl.addWidget(self.z1layer, 10, 1)
-        gbl.addWidget(label12, 11, 0)
+        gbl.addWidget(lbl_12, 11, 0)
         gbl.addWidget(self.nlayers, 11, 1)
-        gbl.addWidget(label13, 12, 0)
+        gbl.addWidget(lbl_13, 12, 0)
         gbl.addWidget(self.maxiter, 12, 1)
-        gbl.addWidget(label14, 13, 0)
+        gbl.addWidget(lbl_14, 13, 0)
         gbl.addWidget(self.targetrms, 13, 1)
-        gbl.addWidget(self.remove_out_quad, 14, 0, 1, 2)
+        gbl.addWidget(self.cb_remove_out_quad, 14, 0, 1, 2)
 
         gbl.addWidget(pb_apply, 15, 0, 1, 2)
         gbl.addWidget(buttonbox, 16, 0, 1, 2)
@@ -1498,7 +1498,7 @@ class Occam1D(BasicModule):
         parm['perr'] = tonumber(self.errphase.text(), 'data')
         parm['perrflr'] = tonumber(self.errfloorphase.text())
         parm['rerrflr'] = tonumber(self.errfloorres.text())
-        parm['routq'] = self.remove_out_quad.isChecked()
+        parm['routq'] = self.cb_remove_out_quad.isChecked()
 
         if -999 in parm.values():
             return
@@ -1719,7 +1719,7 @@ class Occam1D(BasicModule):
         self.saveobj(self.errfloorphase)
         self.saveobj(self.errfloorres)
         self.saveobj(self.combomode)
-        self.saveobj(self.remove_out_quad)
+        self.saveobj(self.cb_remove_out_quad)
 
 
 def tonumber(test, alttext=None):

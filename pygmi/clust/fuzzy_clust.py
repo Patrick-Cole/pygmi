@@ -86,7 +86,7 @@ class FuzzyClust(BasicModule):
         verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
         buttonbox = QtWidgets.QDialogButtonBox(self)
-        label = QtWidgets.QLabel()
+        lbl_1 = QtWidgets.QLabel()
         lbl_2 = QtWidgets.QLabel()
         lbl_3 = QtWidgets.QLabel()
         lbl_4 = QtWidgets.QLabel()
@@ -112,7 +112,7 @@ class FuzzyClust(BasicModule):
         self.setWindowTitle('Fuzzy Clustering')
         groupbox.setTitle('Initial Guess')
         groupbox.hide()
-        label.setText('Cluster Algorithm:')
+        lbl_1.setText('Cluster Algorithm:')
         lbl_2.setText('Minimum Clusters:')
         lbl_3.setText('Maximum Clusters')
         lbl_4.setText('Maximum Iterations:')
@@ -126,7 +126,7 @@ class FuzzyClust(BasicModule):
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
 
-        gridlayout.addWidget(label, 0, 2, 1, 1)
+        gridlayout.addWidget(lbl_1, 0, 2, 1, 1)
         gridlayout.addWidget(lbl_2, 1, 2, 1, 1)
         gridlayout.addWidget(lbl_3, 2, 2, 1, 1)
         gridlayout.addWidget(lbl_4, 3, 2, 1, 1)

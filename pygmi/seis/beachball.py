@@ -140,8 +140,8 @@ class BeachBall(BasicModule):
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
         self.cbox_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
-        self.radio_geog = QtWidgets.QRadioButton('Geographic Units')
-        self.radio_proj = QtWidgets.QRadioButton('Projected Units')
+        self.rb_geog = QtWidgets.QRadioButton('Geographic Units')
+        self.rb_proj = QtWidgets.QRadioButton('Projected Units')
 
         self.setupui()
 
@@ -221,27 +221,27 @@ class BeachBall(BasicModule):
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
-        label2 = QtWidgets.QLabel('FPS Algorithm:')
-        label3 = QtWidgets.QLabel('Width Scale Factor:')
+        lbl_2 = QtWidgets.QLabel('FPS Algorithm:')
+        lbl_3 = QtWidgets.QLabel('Width Scale Factor:')
 
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
         self.dsb_dist.setProperty('value', 0.001)
 
-        self.radio_geog.setChecked(True)
+        self.rb_geog.setChecked(True)
 
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
 
         self.setWindowTitle('Fault Plane Solution (FPS)')
 
-        vbl_raster.addWidget(label2)
+        vbl_raster.addWidget(lbl_2)
         vbl_raster.addWidget(self.cbox_alg)
-        vbl_raster.addWidget(label3)
+        vbl_raster.addWidget(lbl_3)
         vbl_raster.addWidget(self.dsb_dist)
-        vbl_raster.addWidget(self.radio_geog)
-        vbl_raster.addWidget(self.radio_proj)
+        vbl_raster.addWidget(self.rb_geog)
+        vbl_raster.addWidget(self.rb_proj)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveshp)
         vbl_right = QtWidgets.QVBoxLayout()
@@ -252,7 +252,7 @@ class BeachBall(BasicModule):
 
         self.btn_saveshp.clicked.connect(self.save_shp)
         self.dsb_dist.valueChanged.connect(self.change_alg)
-        self.radio_geog.toggled.connect(self.change_alg)
+        self.rb_geog.toggled.connect(self.change_alg)
 
     def save_shp(self):
         """
@@ -364,7 +364,7 @@ class BeachBall(BasicModule):
                        i['1'].magnitude_1]
                 indata.append(tmp)
 
-        self.mmc.isgeog = self.radio_geog.isChecked()
+        self.mmc.isgeog = self.rb_geog.isChecked()
         self.mmc.data = np.array(indata)
         self.mmc.pwidth = self.dsb_dist.value()
         self.mmc.init_graph()
@@ -408,8 +408,8 @@ class BeachBall(BasicModule):
         self.saveobj(self.stype)
         self.saveobj(self.cbox_alg)
         self.saveobj(self.dsb_dist)
-        self.saveobj(self.radio_geog)
-        self.saveobj(self.radio_proj)
+        self.saveobj(self.rb_geog)
+        self.saveobj(self.rb_proj)
 
 
 def beachball(fm, centerx, centery, diam, isgeog, showlog=print):

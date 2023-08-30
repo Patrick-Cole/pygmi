@@ -589,11 +589,11 @@ class GraphWindow(ContextModule):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel('Bands:')
-        self.label2 = QtWidgets.QLabel('Bands:')
-        self.hbl.addWidget(self.label1)
+        self.lbl_1 = QtWidgets.QLabel('Bands:')
+        self.lbl_2 = QtWidgets.QLabel('Bands:')
+        self.hbl.addWidget(self.lbl_1)
         self.hbl.addWidget(self.combobox1)
-        self.hbl.addWidget(self.label2)
+        self.hbl.addWidget(self.lbl_2)
         self.hbl.addWidget(self.combobox2)
 
         vbl.addWidget(self.mmc)
@@ -643,7 +643,7 @@ class PlotQC(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.label2.hide()
+        self.lbl_2.hide()
         self.combobox2.hide()
         self.datd = None
 
@@ -754,7 +754,7 @@ class PlotQC(GraphWindow):
         for i in products:
             self.combobox1.addItem(i)
 
-        self.label1.setText('Product:')
+        self.lbl_1.setText('Product:')
         self.combobox1.setCurrentIndex(0)
         self.change_band()
 

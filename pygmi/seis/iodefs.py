@@ -2095,11 +2095,11 @@ class FilterSeisan(BasicModule):
         self.rectype = QtWidgets.QComboBox()
         self.recdesc = QtWidgets.QComboBox()
         self.dind = 'LRD'
-        self.dind_L = QtWidgets.QCheckBox('Local (L)')
-        self.dind_R = QtWidgets.QCheckBox('Regional (R)')
-        self.dind_D = QtWidgets.QCheckBox('Distant (D)')
-        self.rinc = QtWidgets.QRadioButton('Include')
-        self.rexc = QtWidgets.QRadioButton('Exclude')
+        self.cb_dind_L = QtWidgets.QCheckBox('Local (L)')
+        self.cb_dind_R = QtWidgets.QCheckBox('Regional (R)')
+        self.cb_dind_D = QtWidgets.QCheckBox('Distant (D)')
+        self.rb_rinc = QtWidgets.QRadioButton('Include')
+        self.rb_rexc = QtWidgets.QRadioButton('Exclude')
 
         self.setupui()
 
@@ -2121,9 +2121,9 @@ class FilterSeisan(BasicModule):
         lbl_to = QtWidgets.QLabel('To')
         grp_dind = QtWidgets.QGroupBox('Distance Indicator')
         vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(self.dind_L)
-        vbox.addWidget(self.dind_R)
-        vbox.addWidget(self.dind_D)
+        vbox.addWidget(self.cb_dind_L)
+        vbox.addWidget(self.cb_dind_R)
+        vbox.addWidget(self.cb_dind_D)
         grp_dind.setLayout(vbox)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -2131,13 +2131,13 @@ class FilterSeisan(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Data Filtering')
-        self.dind_D.setChecked(True)
-        self.dind_R.setChecked(True)
-        self.dind_L.setChecked(True)
+        self.cb_dind_D.setChecked(True)
+        self.cb_dind_R.setChecked(True)
+        self.cb_dind_L.setChecked(True)
 
         self.rectype.addItems(['1', '4', 'E'])
         self.recdesc.addItems(['None'])
-        self.rinc.setChecked(True)
+        self.rb_rinc.setChecked(True)
 
         self.rectype.currentTextChanged.connect(self.rectype_init)
         self.recdesc.currentTextChanged.connect(self.recdesc_init)
@@ -2147,8 +2147,8 @@ class FilterSeisan(BasicModule):
         gridlayout_main.addWidget(self.rectype, 1, 1, 1, 1)
         gridlayout_main.addWidget(lbl_recdesc, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.recdesc, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.rinc, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.rexc, 3, 1, 1, 1)
+        gridlayout_main.addWidget(self.rb_rinc, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.rb_rexc, 3, 1, 1, 1)
         gridlayout_main.addWidget(lbl_from, 4, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_from, 4, 1, 1, 1)
         gridlayout_main.addWidget(lbl_to, 5, 0, 1, 1)
@@ -2158,9 +2158,9 @@ class FilterSeisan(BasicModule):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.dind_L.stateChanged.connect(self.dind_click)
-        self.dind_R.stateChanged.connect(self.dind_click)
-        self.dind_D.stateChanged.connect(self.dind_click)
+        self.cb_dind_L.stateChanged.connect(self.dind_click)
+        self.cb_dind_R.stateChanged.connect(self.dind_click)
+        self.cb_dind_D.stateChanged.connect(self.dind_click)
 
     def dind_click(self, state):
         """
@@ -2177,11 +2177,11 @@ class FilterSeisan(BasicModule):
 
         """
         self.dind = ''
-        if self.dind_L.isChecked():
+        if self.cb_dind_L.isChecked():
             self.dind += 'L'
-        if self.dind_R.isChecked():
+        if self.cb_dind_R.isChecked():
             self.dind += 'R'
-        if self.dind_D.isChecked():
+        if self.cb_dind_D.isChecked():
             self.dind += 'D'
 
         if self.dind != '':
@@ -2338,28 +2338,28 @@ class FilterSeisan(BasicModule):
 
         self.dind = ''
         if 'L' in dind:
-            self.dind_L.setEnabled(True)
-            self.dind_L.setChecked(True)
+            self.cb_dind_L.setEnabled(True)
+            self.cb_dind_L.setChecked(True)
             self.dind += 'L'
         else:
-            self.dind_L.setEnabled(False)
-            self.dind_L.setChecked(False)
+            self.cb_dind_L.setEnabled(False)
+            self.cb_dind_L.setChecked(False)
 
         if 'R' in dind:
-            self.dind_R.setEnabled(True)
-            self.dind_R.setChecked(True)
+            self.cb_dind_R.setEnabled(True)
+            self.cb_dind_R.setChecked(True)
             self.dind += 'R'
         else:
-            self.dind_R.setEnabled(False)
-            self.dind_R.setChecked(False)
+            self.cb_dind_R.setEnabled(False)
+            self.cb_dind_R.setChecked(False)
 
         if 'D' in dind:
-            self.dind_D.setEnabled(True)
-            self.dind_D.setChecked(True)
+            self.cb_dind_D.setEnabled(True)
+            self.cb_dind_D.setChecked(True)
             self.dind += 'D'
         else:
-            self.dind_D.setEnabled(False)
-            self.dind_D.setChecked(False)
+            self.cb_dind_D.setEnabled(False)
+            self.cb_dind_D.setChecked(False)
 
         self.get_limits()
         self.rectype.setCurrentText('1')
@@ -2388,11 +2388,11 @@ class FilterSeisan(BasicModule):
         self.saveobj(self.dsb_to)
         self.saveobj(self.rectype)
         self.saveobj(self.recdesc)
-        self.saveobj(self.dind_L)
-        self.saveobj(self.dind_R)
-        self.saveobj(self.dind_D)
-        self.saveobj(self.rinc)
-        self.saveobj(self.rexc)
+        self.saveobj(self.cb_dind_L)
+        self.saveobj(self.cb_dind_R)
+        self.saveobj(self.cb_dind_D)
+        self.saveobj(self.rb_rinc)
+        self.saveobj(self.rb_rexc)
 
     def acceptall(self):
         """
@@ -2430,10 +2430,10 @@ class FilterSeisan(BasicModule):
                 if testval is None:
                     continue
 
-                if self.rinc.isChecked() and (testval < minval or
+                if self.rb_rinc.isChecked() and (testval < minval or
                                               testval > maxval):
                     continue
-                if not self.rinc.isChecked() and (minval <= testval <= maxval):
+                if not self.rb_rinc.isChecked() and (minval <= testval <= maxval):
                     continue
             else:
                 for j in i[rectype]:
@@ -2446,10 +2446,10 @@ class FilterSeisan(BasicModule):
                     if testval is None:
                         break
 
-                    if self.rinc.isChecked() and (testval < minval or
+                    if self.rb_rinc.isChecked() and (testval < minval or
                                                   testval > maxval):
                         break
-                    if not self.rinc.isChecked() and (minval <= testval <= maxval):
+                    if not self.rb_rinc.isChecked() and (minval <= testval <= maxval):
                         break
                     badrec = False
                 if badrec is True:
