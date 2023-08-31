@@ -48,11 +48,11 @@ class ImportCG5(BasicModule):
         self.df_gps = None
         self.is_import = True
 
-        self.line = QtWidgets.QComboBox()
-        self.station = QtWidgets.QComboBox()
-        self.xchan = QtWidgets.QComboBox()
-        self.ychan = QtWidgets.QComboBox()
-        self.zchan = QtWidgets.QComboBox()
+        self.cmb_line = QtWidgets.QComboBox()
+        self.cmb_station = QtWidgets.QComboBox()
+        self.cmb_xchan = QtWidgets.QComboBox()
+        self.cmb_ychan = QtWidgets.QComboBox()
+        self.cmb_zchan = QtWidgets.QComboBox()
         self.nodata = QtWidgets.QLineEdit('-99999')
         self.cg5file = QtWidgets.QLineEdit('')
         self.gpsfile = QtWidgets.QLineEdit('')
@@ -81,11 +81,11 @@ class ImportCG5(BasicModule):
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
-        self.line.setEnabled(False)
-        self.station.setEnabled(False)
-        self.xchan.setEnabled(False)
-        self.ychan.setEnabled(False)
-        self.zchan.setEnabled(False)
+        self.cmb_line.setEnabled(False)
+        self.cmb_station.setEnabled(False)
+        self.cmb_xchan.setEnabled(False)
+        self.cmb_ychan.setEnabled(False)
+        self.cmb_zchan.setEnabled(False)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -100,19 +100,19 @@ class ImportCG5(BasicModule):
         gridlayout_main.addWidget(pb_gps, 1, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_line, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.line, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_line, 2, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_station, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.station, 3, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_station, 3, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_xchan, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.xchan, 4, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_xchan, 4, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_ychan, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.ychan, 5, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_ychan, 5, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_zchan, 6, 0, 1, 1)
-        gridlayout_main.addWidget(self.zchan, 6, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_zchan, 6, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_bthres, 7, 0, 1, 1)
         gridlayout_main.addWidget(self.basethres, 7, 1, 1, 1)
@@ -146,16 +146,16 @@ class ImportCG5(BasicModule):
             if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
                 return False
 
-        if self.line.currentText() == self.station.currentText():
+        if self.cmb_line.currentText() == self.cmb_station.currentText():
             self.showlog('Your line column cannot be the same as your '
                          'station column')
             return False
 
-        tmp = [self.line.currentText(),
-               self.station.currentText(),
-               self.xchan.currentText(),
-               self.ychan.currentText(),
-               self.zchan.currentText()]
+        tmp = [self.cmb_line.currentText(),
+               self.cmb_station.currentText(),
+               self.cmb_xchan.currentText(),
+               self.cmb_ychan.currentText(),
+               self.cmb_zchan.currentText()]
 
         if len(set(tmp)) != len(tmp):
             self.showlog('Unable to import, two of your GPS file '
@@ -166,11 +166,11 @@ class ImportCG5(BasicModule):
 
         # Rename columns
         cren = {}
-        cren[self.line.currentText()] = 'line'
-        cren[self.station.currentText()] = 'station'
-        cren[self.xchan.currentText()] = 'longitude'
-        cren[self.ychan.currentText()] = 'latitude'
-        cren[self.zchan.currentText()] = 'elevation'
+        cren[self.cmb_line.currentText()] = 'line'
+        cren[self.cmb_station.currentText()] = 'station'
+        cren[self.cmb_xchan.currentText()] = 'longitude'
+        cren[self.cmb_ychan.currentText()] = 'latitude'
+        cren[self.cmb_zchan.currentText()] = 'elevation'
 
         self.df_gps.rename(columns=cren, inplace=True)
 
@@ -253,11 +253,11 @@ class ImportCG5(BasicModule):
         None.
 
         """
-        self.saveobj(self.line)
-        self.saveobj(self.station)
-        self.saveobj(self.xchan)
-        self.saveobj(self.ychan)
-        self.saveobj(self.zchan)
+        self.saveobj(self.cmb_line)
+        self.saveobj(self.cmb_station)
+        self.saveobj(self.cmb_xchan)
+        self.saveobj(self.cmb_ychan)
+        self.saveobj(self.cmb_zchan)
 
         self.saveobj(self.nodata)
         self.saveobj(self.cg5file)
@@ -364,20 +364,20 @@ class ImportCG5(BasicModule):
             elif 'line' in tmp.lower():
                 lind = i
 
-        self.line.addItems(ltmp)
-        self.station.addItems(ltmp)
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
-        self.zchan.addItems(ltmp)
+        self.cmb_line.addItems(ltmp)
+        self.cmb_station.addItems(ltmp)
+        self.cmb_xchan.addItems(ltmp)
+        self.cmb_ychan.addItems(ltmp)
+        self.cmb_zchan.addItems(ltmp)
 
-        self.line.setCurrentIndex(lind)
-        self.station.setCurrentIndex(sind)
-        self.xchan.setCurrentIndex(xind)
-        self.ychan.setCurrentIndex(yind)
-        self.zchan.setCurrentIndex(zind)
+        self.cmb_line.setCurrentIndex(lind)
+        self.cmb_station.setCurrentIndex(sind)
+        self.cmb_xchan.setCurrentIndex(xind)
+        self.cmb_ychan.setCurrentIndex(yind)
+        self.cmb_zchan.setCurrentIndex(zind)
 
-        self.line.setEnabled(True)
-        self.station.setEnabled(True)
-        self.xchan.setEnabled(True)
-        self.ychan.setEnabled(True)
-        self.zchan.setEnabled(True)
+        self.cmb_line.setEnabled(True)
+        self.cmb_station.setEnabled(True)
+        self.cmb_xchan.setEnabled(True)
+        self.cmb_ychan.setEnabled(True)
+        self.cmb_zchan.setEnabled(True)

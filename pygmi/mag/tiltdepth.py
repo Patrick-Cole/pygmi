@@ -83,8 +83,8 @@ class TiltDepth(BasicModule):
         self.mmc = FigureCanvasQTAgg(self.figure)
         self.axes = self.figure.add_subplot(111)
 
-        self.cbox_band1 = QtWidgets.QComboBox()
-        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.cmb_band1 = QtWidgets.QComboBox()
+        self.cmb_cbar = QtWidgets.QComboBox(self)
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
         self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
@@ -125,15 +125,15 @@ class TiltDepth(BasicModule):
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
         tmp = sorted(colormaps.keys())
-        self.cbox_cbar.addItem('viridis')
-        self.cbox_cbar.addItems(tmp)
+        self.cmb_cbar.addItem('viridis')
+        self.cmb_cbar.addItems(tmp)
 
         self.setWindowTitle('Tilt Depth Interpretation')
 
         vbl_raster.addWidget(lbl_2)
-        vbl_raster.addWidget(self.cbox_band1)
+        vbl_raster.addWidget(self.cmb_band1)
         vbl_raster.addWidget(lbl_c)
-        vbl_raster.addWidget(self.cbox_cbar)
+        vbl_raster.addWidget(self.cmb_cbar)
 
         vbl_raster.addWidget(self.cb_rtp)
         vbl_raster.addWidget(lbl_inc)
@@ -151,7 +151,7 @@ class TiltDepth(BasicModule):
         hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
-        self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
+        self.cmb_cbar.currentIndexChanged.connect(self.change_cbar)
         self.btn_apply.clicked.connect(self.calculate)
         self.btn_save.clicked.connect(self.save_depths)
         self.cb_rtp.clicked.connect(self.rtp_choice)
@@ -212,7 +212,7 @@ class TiltDepth(BasicModule):
 
         """
         zout = self.indata['Raster'][0]
-        txt = str(self.cbox_cbar.currentText())
+        txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -256,7 +256,7 @@ class TiltDepth(BasicModule):
             return
 
         zout = self.outdata['Raster'][0]
-        txt = str(self.cbox_cbar.currentText())
+        txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -285,7 +285,7 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_band1.currentText())
+        txt = str(self.cmb_band1.currentText())
 
         self.btn_apply.setText('Calculating...')
         self.btn_apply.setEnabled(False)
@@ -327,8 +327,8 @@ class TiltDepth(BasicModule):
         for i in data:
             blist.append(i.dataid)
 
-        self.cbox_band1.clear()
-        self.cbox_band1.addItems(blist)
+        self.cmb_band1.clear()
+        self.cmb_band1.addItems(blist)
 
         # if nodialog is False:
         #     self.show()
@@ -351,8 +351,8 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        self.saveobj(self.cbox_band1)
-        self.saveobj(self.cbox_cbar)
+        self.saveobj(self.cmb_band1)
+        self.saveobj(self.cmb_cbar)
         self.saveobj(self.dsb_inc)
         self.saveobj(self.dsb_dec)
 

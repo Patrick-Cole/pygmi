@@ -148,24 +148,24 @@ class TDEM1D(BasicModule):
         self.mmc = MyMplCanvas2(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combostype = QtWidgets.QComboBox()
-        self.combostype.addItems(['CircularLoop',
-                                  'MagDipole'])
+        self.cmb_stype = QtWidgets.QComboBox()
+        self.cmb_stype.addItems(['CircularLoop',
+                                 'MagDipole'])
 
-        self.combowtype = QtWidgets.QComboBox()
-        self.combowtype.addItems(['VTEMWaveform',
-                                  'RampOffWaveform',
-                                  'TrapezoidWaveform',
-                                  'QuarterSineRampOnWaveform',
-                                  'TriangularWaveform',
-                                  'HalfSineWaveform'])
-        self.combotxori = QtWidgets.QComboBox()
-        self.combotxori.addItems(['z', 'x', 'y'])
-        self.comborxori = QtWidgets.QComboBox()
-        self.comborxori.addItems(['z', 'x', 'y'])
-        self.comboline = QtWidgets.QComboBox()
-        self.combofid = QtWidgets.QComboBox()
-        self.combobalt = QtWidgets.QComboBox()
+        self.cmb_wtype = QtWidgets.QComboBox()
+        self.cmb_wtype.addItems(['VTEMWaveform',
+                                 'RampOffWaveform',
+                                 'TrapezoidWaveform',
+                                 'QuarterSineRampOnWaveform',
+                                 'TriangularWaveform',
+                                 'HalfSineWaveform'])
+        self.cmb_txori = QtWidgets.QComboBox()
+        self.cmb_txori.addItems(['z', 'x', 'y'])
+        self.cmb_rxori = QtWidgets.QComboBox()
+        self.cmb_rxori.addItems(['z', 'x', 'y'])
+        self.cmb_line = QtWidgets.QComboBox()
+        self.cmb_fid = QtWidgets.QComboBox()
+        self.cmb_balt = QtWidgets.QComboBox()
         self.loopturns = QtWidgets.QLineEdit('1.0')
         self.loopcurrent = QtWidgets.QLineEdit('1.0')
         self.mu = QtWidgets.QLineEdit('1.25663706212e-06')
@@ -198,21 +198,21 @@ class TDEM1D(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        gbl.addWidget('Line Number:', self.comboline)
-        gbl.addWidget(r'Fid/Station Name:', self.combofid)
-        gbl.addWidget('Bird Height:', self.combobalt)
+        gbl.addWidget('Line Number:', self.cmb_line)
+        gbl.addWidget(r'Fid/Station Name:', self.cmb_fid)
+        gbl.addWidget('Bird Height:', self.cmb_balt)
         gbl.addWidget('Data channel prefix:', self.datachan)
-        gbl.addWidget('Waveform Type:', self.combowtype)
+        gbl.addWidget('Waveform Type:', self.cmb_wtype)
         gbl.addWidget('Tx Peak time:', self.txpeaktime)
         gbl.addWidget('Tx Ramp Off start time:', self.txrampoff1)
         gbl.addWidget('Tx Off time:', self.txofftime)
-        gbl.addWidget('Source Type:', self.combostype)
-        gbl.addWidget('Tx Orientation:', self.combotxori)
+        gbl.addWidget('Source Type:', self.cmb_stype)
+        gbl.addWidget('Tx Orientation:', self.cmb_txori)
         gbl.addWidget('Tx Area:', self.txarea)
         gbl.addWidget('Number of turns in loop:', self.loopturns)
         gbl.addWidget('Current in loop:', self.loopcurrent)
         gbl.addWidget('Permeability of the background:', self.mu)
-        gbl.addWidget('Rx Orientation:', self.comborxori)
+        gbl.addWidget('Rx Orientation:', self.cmb_rxori)
         gbl.addWidget('Mesh cell size:', self.mesh_cs)
         gbl.addWidget('Mesh number cells in x direction:', self.mesh_ncx)
         gbl.addWidget('Mesh number cells in z direction:', self.mesh_ncz)
@@ -239,9 +239,9 @@ class TDEM1D(BasicModule):
         pb_wfile.pressed.connect(self.get_wfile)
         pb_wdisp.pressed.connect(self.disp_wave)
 
-        self.comboline.currentIndexChanged.connect(self.change_line)
-        self.combowtype.currentIndexChanged.connect(self.disp_wave)
-        self.combostype.currentIndexChanged.connect(self.change_source)
+        self.cmb_line.currentIndexChanged.connect(self.change_line)
+        self.cmb_wtype.currentIndexChanged.connect(self.disp_wave)
+        self.cmb_stype.currentIndexChanged.connect(self.change_source)
 
         self.disp_wave()
 
@@ -263,9 +263,9 @@ class TDEM1D(BasicModule):
         self.disp_wave()
 
         dprefix = (self.datachan.text()).lower()
-        line = self.comboline.currentText()
-        fid = float(self.combofid.currentText())
-        balt = self.combobalt.currentText()
+        line = self.cmb_line.currentText()
+        fid = float(self.cmb_fid.currentText())
+        balt = self.cmb_balt.currentText()
         txarea = float(self.txarea.text())
         offtime = float(self.txofftime.text())
         peaktime = float(self.txpeaktime.text())
@@ -284,9 +284,9 @@ class TDEM1D(BasicModule):
         floor = float(self.noise_floor.text())
         maxiter = int(self.maxiter.text())
 
-        txori = self.combotxori.currentText()
-        rxori = self.comborxori.currentText()
-        stype = self.combostype.currentText()
+        txori = self.cmb_txori.currentText()
+        rxori = self.cmb_rxori.currentText()
+        stype = self.cmb_stype.currentText()
 
         times = self.times
         times = times + peaktime
@@ -459,7 +459,7 @@ class TDEM1D(BasicModule):
         None.
 
         """
-        stype = self.combostype.currentText()
+        stype = self.cmb_stype.currentText()
 
         if stype == 'CircularLoop':
             self.loopcurrent.setEnabled(True)
@@ -481,7 +481,7 @@ class TDEM1D(BasicModule):
         """
         offtime = float(self.txofftime.text())
         times = np.linspace(0, offtime, 1000)
-        wtype = self.combowtype.currentText()
+        wtype = self.cmb_wtype.currentText()
 
         wform = self.update_wave()
 
@@ -523,7 +523,7 @@ class TDEM1D(BasicModule):
         rampon = np.array([starttime, peaktime])
         rampoff = np.array([rampoff1, offtime])
 
-        wtype = self.combowtype.currentText()
+        wtype = self.cmb_wtype.currentText()
 
         if wtype == 'VTEMWaveform':
             wform = time_domain.sources.VTEMWaveform(off_time=offtime,
@@ -583,11 +583,11 @@ class TDEM1D(BasicModule):
         None.
 
         """
-        self.combofid.clear()
+        self.cmb_fid.clear()
 
-        line = self.comboline.currentText()
+        line = self.cmb_line.currentText()
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
-        self.combofid.addItems(fid)
+        self.cmb_fid.addItems(fid)
 
     def settings(self, nodialog=False):
         """
@@ -610,34 +610,34 @@ class TDEM1D(BasicModule):
             self.showlog('No line data')
             return False
 
-        self.comboline.currentIndexChanged.disconnect()
-        self.comboline.clear()
-        self.combofid.clear()
-        self.combobalt.clear()
+        self.cmb_line.currentIndexChanged.disconnect()
+        self.cmb_line.clear()
+        self.cmb_fid.clear()
+        self.cmb_balt.clear()
 
         filt = ((self.data.columns != 'geometry') &
                 (self.data.columns != 'line'))
 
         cnames = list(self.data.columns[filt])
 
-        self.combobalt.addItems(cnames)
+        self.cmb_balt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
             if ('elev' in tmp or 'alt' in tmp or 'height' in tmp or
                     'radar' in tmp):
-                self.combobalt.setCurrentIndex(i)
+                self.cmb_balt.setCurrentIndex(i)
                 break
 
         lines = list(self.data.line.unique().astype(str))
-        self.comboline.addItems(lines)
+        self.cmb_line.addItems(lines)
 
-        self.comboline.setCurrentIndex(0)
-        line = self.comboline.currentText()
+        self.cmb_line.setCurrentIndex(0)
+        line = self.cmb_line.currentText()
 
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
-        self.combofid.addItems(fid)
+        self.cmb_fid.addItems(fid)
 
-        self.comboline.currentIndexChanged.connect(self.change_line)
+        self.cmb_line.currentIndexChanged.connect(self.change_line)
 
         if self.wfile.text() != '':
             self.get_wfile(self.wfile.text())
@@ -658,13 +658,13 @@ class TDEM1D(BasicModule):
         None.
 
         """
-        self.saveobj(self.combostype)
-        self.saveobj(self.combowtype)
-        self.saveobj(self.combotxori)
-        self.saveobj(self.comborxori)
-        self.saveobj(self.comboline)
-        self.saveobj(self.combofid)
-        self.saveobj(self.combobalt)
+        self.saveobj(self.cmb_stype)
+        self.saveobj(self.cmb_wtype)
+        self.saveobj(self.cmb_txori)
+        self.saveobj(self.cmb_rxori)
+        self.saveobj(self.cmb_line)
+        self.saveobj(self.cmb_fid)
+        self.saveobj(self.cmb_balt)
 
         self.saveobj(self.mesh_cs)
         self.saveobj(self.mesh_ncx)

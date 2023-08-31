@@ -78,9 +78,9 @@ class BIRRP(BasicModule):
 
         self.df_gps = None
 
-        self.ilev = QtWidgets.QComboBox()
-        self.nout = QtWidgets.QComboBox()
-        self.ninp = QtWidgets.QComboBox()
+        self.cmb_ilev = QtWidgets.QComboBox()
+        self.cmb_nout = QtWidgets.QComboBox()
+        self.cmb_ninp = QtWidgets.QComboBox()
         self.tbw = QtWidgets.QLineEdit('2')
         self.deltat = QtWidgets.QLineEdit('1')
         self.nfft = QtWidgets.QLineEdit('65536')
@@ -88,14 +88,14 @@ class BIRRP(BasicModule):
         self.uin = QtWidgets.QLineEdit('0')
         self.ainuin = QtWidgets.QLineEdit('.9999')
         self.c2threshe = QtWidgets.QLineEdit('0')
-        self.nz = QtWidgets.QComboBox()
+        self.cmb_nz = QtWidgets.QComboBox()
         self.c2threshe1 = QtWidgets.QLineEdit('0')
         self.ofil = QtWidgets.QLineEdit('mt')
-        self.nlev = QtWidgets.QComboBox()
+        self.cmb_nlev = QtWidgets.QComboBox()
         self.npcs = QtWidgets.QLineEdit('1')
         self.nar = QtWidgets.QLineEdit('15')
-        self.imode = QtWidgets.QComboBox()
-        self.jmode = QtWidgets.QComboBox()
+        self.cmb_imode = QtWidgets.QComboBox()
+        self.cmb_jmode = QtWidgets.QComboBox()
 
         self.nread = QtWidgets.QLineEdit('1')
 
@@ -153,24 +153,24 @@ class BIRRP(BasicModule):
                                                'file')
         pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')
 
-        self.ilev.setDisabled(True)
-        self.imode.setDisabled(True)
-        self.ninp.setDisabled(True)
+        self.cmb_ilev.setDisabled(True)
+        self.cmb_imode.setDisabled(True)
+        self.cmb_ninp.setDisabled(True)
         self.nar.setValidator(QtGui.QIntValidator(self))
-        self.nlev.setCurrentIndex(3)
+        self.cmb_nlev.setCurrentIndex(3)
 
-        self.ilev.addItem('0 = basic')
-        self.nout.addItems(['2 = EX, EY', '3 = EX, EY, BZ'])
-        self.ninp.addItems(['2 = BX, BY'])
-        self.imode.addItems(['0 = separate ASCII files',
+        self.cmb_ilev.addItem('0 = basic')
+        self.cmb_nout.addItems(['2 = EX, EY', '3 = EX, EY, BZ'])
+        self.cmb_ninp.addItems(['2 = BX, BY'])
+        self.cmb_imode.addItems(['0 = separate ASCII files',
                              '1 = separate binary files',
                              '2 = single ASCII file',
                              '3 = TS ASCII format'])
-        self.jmode.addItems(['0 = by points', '1 = by date/time'])
-        self.nz.addItems(['0 = separate from E',
+        self.cmb_jmode.addItems(['0 = by points', '1 = by date/time'])
+        self.cmb_nz.addItems(['0 = separate from E',
                           '1 = E threshold',
                           '2 = E and B threshold'])
-        self.nlev.addItems(['-3', '-2', '-1', '0', '1', '2', '3'])
+        self.cmb_nlev.addItems(['-3', '-2', '-1', '0', '1', '2', '3'])
 
         for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:
             self.nfil[i].setValidator(QtGui.QIntValidator(self))
@@ -188,9 +188,9 @@ class BIRRP(BasicModule):
         self.lay2 = QtWidgets.QFormLayout()
         self.lay3 = QtWidgets.QFormLayout()
 
-        self.lay.addRow("ILEV: input Level", self.ilev)
-        self.lay.addRow("NOUT: number of output time series", self.nout)
-        self.lay.addRow("NINP: number of input time series", self.ninp)
+        self.lay.addRow("ILEV: input Level", self.cmb_ilev)
+        self.lay.addRow("NOUT: number of output time series", self.cmb_nout)
+        self.lay.addRow("NINP: number of input time series", self.cmb_ninp)
         self.lay.addRow("TBW: time bandwidth for prolate data window",
                         self.tbw)
         self.lay.addRow("DELTAT: sample interval", self.deltat)
@@ -201,12 +201,12 @@ class BIRRP(BasicModule):
         self.lay.addRow("C2THRESHE: second stage coherence threshold",
                         self.c2threshe)
         self.lay.addRow("OFIL: output filename root", self.ofil)
-        self.lay.addRow("NLEV: output level", self.nlev)
+        self.lay.addRow("NLEV: output level", self.cmb_nlev)
         self.lay.addRow("NPCS: number of data pieces", self.npcs)
         self.lay.addRow("NAR: length of ar filter (0 for none, <0 for "
                         "filename)", self.nar)
-        self.lay.addRow("IMODE: file mode", self.imode)
-        self.lay.addRow("JMODE: input mode", self.jmode)
+        self.lay.addRow("IMODE: file mode", self.cmb_imode)
+        self.lay.addRow("JMODE: input mode", self.cmb_jmode)
         self.lay.addRow("NREAD: number of data values to be read", self.nread)
         self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for electrics",
                         self.thetae)
@@ -244,9 +244,9 @@ class BIRRP(BasicModule):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.nout.currentIndexChanged.connect(self.nout_changed)
-        self.nz.currentIndexChanged.connect(self.nout_changed)
-        self.jmode.currentIndexChanged.connect(self.jmode_changed)
+        self.cmb_nout.currentIndexChanged.connect(self.cmb_nout_changed)
+        self.cmb_nz.currentIndexChanged.connect(self.cmb_nout_changed)
+        self.cmb_jmode.currentIndexChanged.connect(self.cmb_jmode_changed)
         self.nar.editingFinished.connect(self.nar_changed)
         pb_importbirrp.pressed.connect(self.importbirrp)
         pb_runbirrp.pressed.connect(self.runbirrp)
@@ -363,8 +363,8 @@ class BIRRP(BasicModule):
         thetar = data.pop(0)+','+data.pop(0)+','+data.pop(0)
 
 # Now we set controls
-        self.nout.setCurrentIndex(nout-2)
-        self.ninp.setCurrentIndex(ninp-2)
+        self.cmb_nout.setCurrentIndex(nout-2)
+        self.cmb_ninp.setCurrentIndex(ninp-2)
         self.tbw.setText(tbw)
         self.deltat.setText(deltat)
         self.nfft.setText(nfft)
@@ -372,14 +372,14 @@ class BIRRP(BasicModule):
         self.uin.setText(uin)
         self.ainuin.setText(ainuin)
         self.c2threshe.setText(c2threshe)
-        self.nz.setCurrentIndex(nz)
+        self.cmb_nz.setCurrentIndex(nz)
         self.c2threshe1.setText(c2threshe1)
         self.ofil.setText(ofil)
-        self.nlev.setCurrentIndex(nlev+3)
+        self.cmb_nlev.setCurrentIndex(nlev+3)
         self.npcs.setText(npcs)
         self.nar.setText(nar)
-        self.imode.setCurrentIndex(imode)
-        self.jmode.setCurrentIndex(jmode)
+        self.cmb_imode.setCurrentIndex(imode)
+        self.cmb_jmode.setCurrentIndex(jmode)
         self.nread.setText(nread)
 
         for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:
@@ -416,15 +416,15 @@ class BIRRP(BasicModule):
 
         birrp_path = os.path.dirname(__file__)[:-2]+r'\bin\birrp.exe'
 
-        nout = self.nout.currentIndex()+2
-        nz = self.nz.currentIndex()
-        jmode = self.jmode.currentIndex()
+        nout = self.cmb_nout.currentIndex()+2
+        nz = self.cmb_nz.currentIndex()
+        jmode = self.cmb_jmode.currentIndex()
         nar = int(self.nar.text())
 
         with open(filename, 'w+', encoding='utf-8') as ofile:
             ofile.write('0\n')  # ilev == 0
-            ofile.write(str(self.nout.currentIndex()+2)+'\n')
-            ofile.write(str(self.ninp.currentIndex()+2)+'\n')
+            ofile.write(str(self.cmb_nout.currentIndex()+2)+'\n')
+            ofile.write(str(self.cmb_ninp.currentIndex()+2)+'\n')
 
             ofile.write(self.tbw.text()+'\n')
             ofile.write(self.deltat.text()+'\n')
@@ -433,15 +433,15 @@ class BIRRP(BasicModule):
             ofile.write(self.uin.text()+','+self.ainuin.text()+'\n')
             ofile.write(self.c2threshe.text()+'\n')
             if nout == 3:
-                ofile.write(str(self.nz.currentIndex())+'\n')
+                ofile.write(str(self.cmb_nz.currentIndex())+'\n')
             if nout == 3 and nz == 0:
                 ofile.write(self.c2threshe1.text()+'\n')
             ofile.write(self.ofil.text()+'\n')
-            ofile.write(str(self.nlev.currentIndex()-3)+'\n')
+            ofile.write(str(self.cmb_nlev.currentIndex()-3)+'\n')
             ofile.write(self.npcs.text()+'\n')
             ofile.write(self.nar.text()+'\n')
-            ofile.write(str(self.imode.currentIndex())+'\n')
-            ofile.write(str(self.jmode.currentIndex())+'\n')
+            ofile.write(str(self.cmb_imode.currentIndex())+'\n')
+            ofile.write(str(self.cmb_jmode.currentIndex())+'\n')
             if jmode == 0:
                 ofile.write(self.nread.text()+'\n')
 
@@ -587,8 +587,8 @@ class BIRRP(BasicModule):
         None.
 
         """
-        row, _ = self.lay.getWidgetPosition(self.jmode)
-        txt = self.jmode.currentText()
+        row, _ = self.lay.getWidgetPosition(self.cmb_jmode)
+        txt = self.cmb_jmode.currentText()
 
         if txt == '0 = by points':
             self.showrow(row+1, "NREAD: number of data values to be read",
@@ -627,16 +627,16 @@ class BIRRP(BasicModule):
         """
         row, _ = self.lay.getWidgetPosition(self.c2threshe)
 
-        txt = self.nout.currentText()
-        txt2 = self.nz.currentText()
+        txt = self.cmb_nout.currentText()
+        txt2 = self.cmb_nz.currentText()
 
 # First do NZ
         if txt == '3 = EX, EY, BZ':
             self.showrow(row+1,
                          "NZ: threshold mode for vertical magnetic field",
-                         self.nz, self.lay)
+                         self.cmb_nz, self.lay)
         else:
-            self.removerow(self.nz, self.lay)
+            self.removerow(self.cmb_nz, self.lay)
 
 # Now do C2threshe1
         if txt == '3 = EX, EY, BZ' and txt2 == '0 = separate from E':
@@ -664,7 +664,7 @@ class BIRRP(BasicModule):
 
         self.nar_changed()
         self.nfil_changed()
-        self.jmode_changed()
+        self.cmb_jmode_changed()
 
     def showrow(self, row, label, widget, lay):
         """

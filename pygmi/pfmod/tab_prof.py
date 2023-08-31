@@ -84,8 +84,8 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.hs_overview = MySlider()
         self.hs_sideview = MySlider()
-        self.combo_overview = QtWidgets.QComboBox()
-        self.combo_proftype = QtWidgets.QComboBox()
+        self.cmb_overview = QtWidgets.QComboBox()
+        self.cmb_proftype = QtWidgets.QComboBox()
 
         self.sb_layer = QtWidgets.QSpinBox()
         self.hs_layer = MySlider()
@@ -126,7 +126,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_cprof_delete = QtWidgets.QPushButton('Delete Current Profile')
 
         lbl_prof_type = QtWidgets.QLabel('Profile Type:')
-        self.combo_proftype.addItems(['Standard Profile', 'Custom Profile'])
+        self.cmb_proftype.addItems(['Standard Profile', 'Custom Profile'])
 
         self.dial_prof_dir.setMaximum(359)
         self.sb_prof_dir.setMaximum(359)
@@ -173,7 +173,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         hl_proftype = QtWidgets.QHBoxLayout()
         hl_proftype.addWidget(lbl_prof_type)
-        hl_proftype.addWidget(self.combo_proftype)
+        hl_proftype.addWidget(self.cmb_proftype)
 
         hl_profnum = QtWidgets.QHBoxLayout()
         hl_profnum.addWidget(self.sb_profnum)
@@ -188,7 +188,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         hl_layer.addWidget(self.hs_layer)
 
         hl_pics = QtWidgets.QHBoxLayout()
-        hl_pics.addWidget(self.combo_overview)
+        hl_pics.addWidget(self.cmb_overview)
         hl_pics.addWidget(self.hs_overview)
         hl_pics.addWidget(self.hs_sideview)
 
@@ -238,10 +238,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.dial_prof_dir.sliderReleased.connect(self.prof_dir)
         self.sb_prof_dir.valueChanged.connect(self.sprofdir)
 
-        self.combo_proftype.currentIndexChanged.connect(self.proftype_changed)
+        self.cmb_proftype.currentIndexChanged.connect(self.proftype_changed)
 
         self.hs_overview.valueChanged.connect(self.pic_overview2)
-        self.combo_overview.currentIndexChanged.connect(self.pic_overview)
+        self.cmb_overview.currentIndexChanged.connect(self.pic_overview)
 
         pb_export_csv.clicked.connect(self.export_csv)
         pb_rcopy.clicked.connect(self.rcopy)
@@ -274,7 +274,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = self.get_model()
 
         self.mmc.init_grid(gtmp, gtmpl)
-        self.mmc.init_grid_top(self.combo_overview.currentText(),
+        self.mmc.init_grid_top(self.cmb_overview.currentText(),
                                self.hs_overview.value())
         self.mmc.update_line_top()
 
@@ -342,7 +342,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         None.
 
         """
-        text = self.combo_proftype.currentText()
+        text = self.cmb_proftype.currentText()
         if text == 'Standard Profile':
             self.gb_dir.setHidden(False)
             self.gb_cprof.setHidden(True)
@@ -1094,7 +1094,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         None.
 
         """
-        self.mmc.init_grid_top(self.combo_overview.currentText(),
+        self.mmc.init_grid_top(self.cmb_overview.currentText(),
                                self.hs_overview.value())
         self.mmc.figure.canvas.draw()
 
@@ -1328,7 +1328,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = self.get_model()
 
         self.mmc.init_grid(gtmp)
-        self.mmc.init_grid_top(self.combo_overview.currentText(),
+        self.mmc.init_grid_top(self.cmb_overview.currentText(),
                                self.hs_overview.value())
         self.mmc.update_line_top()
 
@@ -1463,21 +1463,21 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.valueChanged.disconnect()
         self.hs_cprofnum.valueChanged.disconnect()
         self.sb_cprofnum.valueChanged.disconnect()
-        self.combo_overview.currentIndexChanged.disconnect()
+        self.cmb_overview.currentIndexChanged.disconnect()
 
         self.lmod1 = self.parent.lmod1
         self.mmc.lmod1 = self.lmod1
 
         citems = list(self.lmod1.griddata.keys())
-        self.combo_overview.clear()
-        self.combo_overview.addItems(citems)
+        self.cmb_overview.clear()
+        self.cmb_overview.addItems(citems)
 
-        curtext = self.combo_overview.currentText()
-        cindex = self.combo_overview.findText(curtext,
+        curtext = self.cmb_overview.currentText()
+        cindex = self.cmb_overview.findText(curtext,
                                               QtCore.Qt.MatchFixedString)
         if cindex == -1:
             cindex = 0
-        self.combo_overview.setCurrentIndex(cindex)
+        self.cmb_overview.setCurrentIndex(cindex)
 
         txtmsg = ('Note: The display of gravity or magnetic data is '
                   'triggered off their respective calculations. Press '
@@ -1505,7 +1505,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.valueChanged.connect(self.hprofnum)
         self.sb_cprofnum.valueChanged.connect(self.scprofnum)
         self.hs_cprofnum.valueChanged.connect(self.hcprofnum)
-        self.combo_overview.currentIndexChanged.connect(self.pic_overview)
+        self.cmb_overview.currentIndexChanged.connect(self.pic_overview)
 
 
 class MyMplCanvas(FigureCanvasQTAgg):

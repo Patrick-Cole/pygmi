@@ -46,15 +46,15 @@ class GraphWindow(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
 
         hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -62,8 +62,8 @@ class GraphWindow(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """Combo box to choose band."""
@@ -296,8 +296,8 @@ class PlotPoints(GraphWindow):
 
         """
         data = self.indata['MT - EDI']
-        i = self.combobox1.currentText()
-        i2 = self.combobox2.currentText()
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
         self.mmc.update_line(data, i, i2)
 
     def run(self):
@@ -312,14 +312,14 @@ class PlotPoints(GraphWindow):
         self.show()
         data = self.indata['MT - EDI']
         for i in data:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
         for i in ['xy, yx', 'xx, yy']:
-            self.combobox2.addItem(i)
+            self.cmb_2.addItem(i)
 
         self.lbl_1.setText('Station Name:')
         self.lbl_2.setText('Graph Type:')
-        self.combobox1.setCurrentIndex(0)
-        self.combobox2.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_2.setCurrentIndex(0)
 
 
 def _testfn():

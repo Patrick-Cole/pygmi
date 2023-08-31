@@ -59,9 +59,9 @@ class GraphWindow(ContextModule):
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
         self.lbl_3 = QtWidgets.QLabel('Value:')
-        self.checkbox = QtWidgets.QCheckBox('Option:')
+        self.cb_1 = QtWidgets.QCheckBox('Option:')
 
-        self.checkbox.hide()
+        self.cb_1.hide()
 
         hbl.addWidget(self.lbl_1)
         hbl.addWidget(self.combobox1)
@@ -72,7 +72,7 @@ class GraphWindow(ContextModule):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.checkbox)
+        vbl.addWidget(self.cb_1)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -80,7 +80,7 @@ class GraphWindow(ContextModule):
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.combobox2.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
-        self.checkbox.stateChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -615,7 +615,7 @@ class PlotLineMap(GraphWindow):
         super().__init__(parent)
         self.combobox2.hide()
         self.lbl_2.hide()
-        self.checkbox.show()
+        self.cb_1.show()
 
     def change_band(self):
         """
@@ -633,7 +633,7 @@ class PlotLineMap(GraphWindow):
         i = self.combobox1.currentText()
         data = self.data.dropna(subset=i)
 
-        self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
+        self.mmc.update_lmap(data, i, scale, self.cb_1.isChecked())
 
     def run(self):
         """
@@ -656,7 +656,7 @@ class PlotLineMap(GraphWindow):
 
         self.combobox1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
-        self.checkbox.stateChanged.disconnect()
+        self.cb_1.stateChanged.disconnect()
 
         self.show()
 
@@ -666,7 +666,7 @@ class PlotLineMap(GraphWindow):
         cols = list(data.columns[filt])
         self.combobox1.addItems(cols)
 
-        self.checkbox.setText('Show Line Labels:')
+        self.cb_1.setText('Show Line Labels:')
         self.lbl_1.setText('Column:')
         self.lbl_3.setText('Scale:')
         self.spinbox.setMinimum(1)
@@ -679,7 +679,7 @@ class PlotLineMap(GraphWindow):
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
-        self.checkbox.stateChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
 
 
 class PlotRose(GraphWindow):
@@ -692,7 +692,7 @@ class PlotRose(GraphWindow):
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
-        self.checkbox.show()
+        self.cb_1.show()
 
         self.setWindowTitle('Rose Diagram')
         if parent is None:
@@ -713,7 +713,7 @@ class PlotRose(GraphWindow):
             return
 
         i = self.combobox1.currentIndex()
-        equal = self.checkbox.isChecked()
+        equal = self.cb_1.isChecked()
 
         self.mmc.update_rose(self.data, i, self.spinbox.value(), equal)
 
@@ -741,7 +741,7 @@ class PlotRose(GraphWindow):
         self.show()
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
-        self.checkbox.setText('Equal Area Rose Diagram')
+        self.cb_1.setText('Equal Area Rose Diagram')
         self.lbl_1.setText('Rose Diagram Type:')
         self.combobox1.setCurrentIndex(0)
 

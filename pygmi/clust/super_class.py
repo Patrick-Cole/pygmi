@@ -422,13 +422,13 @@ class SuperClass(BasicModule):
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.apoly = QtWidgets.QPushButton('Add Polygon')
-        self.combo = QtWidgets.QComboBox()
-        self.combo_class = QtWidgets.QComboBox()
+        self.cmb_databand = QtWidgets.QComboBox()
+        self.cmb_class = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
-        self.KNalgorithm = QtWidgets.QComboBox()
-        self.SVCkernel = QtWidgets.QComboBox()
-        self.DTcriterion = QtWidgets.QComboBox()
-        self.RFcriterion = QtWidgets.QComboBox()
+        self.cmb_KNalgorithm = QtWidgets.QComboBox()
+        self.cmb_SVCkernel = QtWidgets.QComboBox()
+        self.cmb_DTcriterion = QtWidgets.QComboBox()
+        self.cmb_RFcriterion = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel()
 
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
@@ -474,24 +474,25 @@ class SuperClass(BasicModule):
                    'Random Forest Classifier',
                    'Support Vector Classifier']
 
-        self.combo_class.clear()
-        self.combo_class.addItems(choices)
+        self.cmb_class.clear()
+        self.cmb_class.addItems(choices)
 
-        lbl_combo = QtWidgets.QLabel('Data Band:')
+        lbl_databand = QtWidgets.QLabel('Data Band:')
         lbl_class = QtWidgets.QLabel('Classifier:')
         self.lbl_1.setText('Algorithm:')
 
-        self.KNalgorithm.addItems(['auto', 'ball_tree', 'kd_tree', 'brute'])
-        self.DTcriterion.addItems(['gini', 'entropy'])
-        self.RFcriterion.addItems(['gini', 'entropy'])
-        self.SVCkernel.addItems(['rbf', 'linear', 'poly'])
+        self.cmb_KNalgorithm.addItems(['auto', 'ball_tree', 'kd_tree',
+                                       'brute'])
+        self.cmb_DTcriterion.addItems(['gini', 'entropy'])
+        self.cmb_RFcriterion.addItems(['gini', 'entropy'])
+        self.cmb_SVCkernel.addItems(['rbf', 'linear', 'poly'])
 
-        self.SVCkernel.setHidden(True)
-        self.DTcriterion.setHidden(True)
-        self.RFcriterion.setHidden(True)
+        self.cmb_SVCkernel.setHidden(True)
+        self.cmb_DTcriterion.setHidden(True)
+        self.cmb_RFcriterion.setHidden(True)
 
-        grid_right.addWidget(lbl_combo, 0, 0, 1, 1)
-        grid_right.addWidget(self.combo, 0, 1, 1, 2)
+        grid_right.addWidget(lbl_databand, 0, 0, 1, 1)
+        grid_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
 
         grid_right.addWidget(self.tablewidget, 1, 0, 3, 2)
         grid_right.addWidget(self.apoly, 1, 2, 1, 1)
@@ -501,12 +502,12 @@ class SuperClass(BasicModule):
         grid_right.addWidget(saveshape, 4, 1, 1, 1)
 
         grid_class.addWidget(lbl_class, 0, 0, 1, 1)
-        grid_class.addWidget(self.combo_class, 0, 1, 1, 1)
+        grid_class.addWidget(self.cmb_class, 0, 1, 1, 1)
         grid_class.addWidget(self.lbl_1, 1, 0, 1, 1)
-        grid_class.addWidget(self.KNalgorithm, 1, 1, 1, 1)
-        grid_class.addWidget(self.DTcriterion, 1, 1, 1, 1)
-        grid_class.addWidget(self.RFcriterion, 1, 1, 1, 1)
-        grid_class.addWidget(self.SVCkernel, 1, 1, 1, 1)
+        grid_class.addWidget(self.cmb_KNalgorithm, 1, 1, 1, 1)
+        grid_class.addWidget(self.cmb_DTcriterion, 1, 1, 1, 1)
+        grid_class.addWidget(self.cmb_RFcriterion, 1, 1, 1, 1)
+        grid_class.addWidget(self.cmb_SVCkernel, 1, 1, 1, 1)
 
         grid_main.addWidget(self.map, 0, 0, 2, 1)
         grid_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
@@ -523,7 +524,7 @@ class SuperClass(BasicModule):
 
         self.tablewidget.currentItemChanged.connect(self.onrowchange)
         self.tablewidget.cellChanged.connect(self.oncellchange)
-        self.combo_class.currentIndexChanged.connect(self.class_change)
+        self.cmb_class.currentIndexChanged.connect(self.class_change)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -537,24 +538,24 @@ class SuperClass(BasicModule):
         None.
 
         """
-        ctext = self.combo_class.currentText()
+        ctext = self.cmb_class.currentText()
 
-        self.SVCkernel.setHidden(True)
-        self.DTcriterion.setHidden(True)
-        self.RFcriterion.setHidden(True)
-        self.KNalgorithm.setHidden(True)
+        self.cmb_SVCkernel.setHidden(True)
+        self.cmb_DTcriterion.setHidden(True)
+        self.cmb_RFcriterion.setHidden(True)
+        self.cmb_KNalgorithm.setHidden(True)
 
         if ctext == 'K Neighbors Classifier':
-            self.KNalgorithm.setHidden(False)
+            self.cmb_KNalgorithm.setHidden(False)
             self.lbl_1.setText('Algorithm:')
         elif ctext == 'Decision Tree Classifier':
-            self.DTcriterion.setHidden(False)
+            self.cmb_DTcriterion.setHidden(False)
             self.lbl_1.setText('Criterion:')
         elif ctext == 'Random Forest Classifier':
-            self.RFcriterion.setHidden(False)
+            self.cmb_RFcriterion.setHidden(False)
             self.lbl_1.setText('Criterion:')
         elif ctext == 'Support Vector Classifier':
-            self.SVCkernel.setHidden(False)
+            self.cmb_SVCkernel.setHidden(False)
             self.lbl_1.setText('Kernel:')
 
     def calc_metrics(self):
@@ -741,7 +742,7 @@ class SuperClass(BasicModule):
         None.
 
         """
-        self.m[0] = self.combo.currentIndex()
+        self.m[0] = self.cmb_databand.currentIndex()
         self.map.update_graph()
 
     def load_shape(self):
@@ -829,9 +830,9 @@ class SuperClass(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        self.combo.clear()
-        self.combo.addItems(bands)
-        self.combo.currentIndexChanged.connect(self.on_combo)
+        self.cmb_databand.clear()
+        self.cmb_databand.addItems(bands)
+        self.cmb_databand.currentIndexChanged.connect(self.on_combo)
 
         self.map.init_graph()
 
@@ -910,11 +911,11 @@ class SuperClass(BasicModule):
         None.
 
         """
-        self.saveobj(self.combo_class)
-        self.saveobj(self.KNalgorithm)
-        self.saveobj(self.DTcriterion)
-        self.saveobj(self.RFcriterion)
-        self.saveobj(self.SVCkernel)
+        self.saveobj(self.cmb_class)
+        self.saveobj(self.cmb_KNalgorithm)
+        self.saveobj(self.cmb_DTcriterion)
+        self.saveobj(self.cmb_RFcriterion)
+        self.saveobj(self.cmb_SVCkernel)
 
     def init_classifier(self):
         """
@@ -936,19 +937,19 @@ class SuperClass(BasicModule):
             Class labels.
 
         """
-        ctext = self.combo_class.currentText()
+        ctext = self.cmb_class.currentText()
 
         if ctext == 'K Neighbors Classifier':
-            alg = self.KNalgorithm.currentText()
+            alg = self.cmb_KNalgorithm.currentText()
             classifier = KNeighborsClassifier(algorithm=alg)
         elif ctext == 'Decision Tree Classifier':
-            crit = self.DTcriterion.currentText()
+            crit = self.cmb_DTcriterion.currentText()
             classifier = DecisionTreeClassifier(criterion=crit)
         elif ctext == 'Random Forest Classifier':
-            crit = self.RFcriterion.currentText()
+            crit = self.cmb_RFcriterion.currentText()
             classifier = RandomForestClassifier(criterion=crit)
         elif ctext == 'Support Vector Classifier':
-            ker = self.SVCkernel.currentText()
+            ker = self.cmb_SVCkernel.currentText()
             classifier = SVC(gamma='scale', kernel=ker)
 
         rows, cols = self.map.data[0].data.shape
@@ -1017,7 +1018,7 @@ class SuperClass(BasicModule):
         if max(polymask) is False:
             return
 
-        mtmp = self.combo.currentIndex()
+        mtmp = self.cmb_databand.currentIndex()
         mask = self.indata['Raster'][mtmp].data.mask
 
         polymask = np.array(polymask)

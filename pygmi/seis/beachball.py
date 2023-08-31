@@ -34,13 +34,14 @@ import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets
 import geopandas as gpd
-from shapely.geometry import Polygon
+from shapely import Polygon, GeometryCollection
 from shapely.validation import make_valid
 from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib import patches
+from obspy.imaging.beachball import beach
 import scipy.spatial.distance as sdist
 
 from pygmi.misc import BasicModule
@@ -112,6 +113,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pxy = idat[:2]
             np1 = idat[3:-1]
             pwidth = self.pwidth*idat[-1]
+
+            # patch = beach(np1, xy=pxy)
+
+            # self.axes.add_collection(patch)
+
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
                                              self.isgeog)
 
@@ -312,11 +318,18 @@ class BeachBall(BasicModule):
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            poly1 = make_valid(Polygon(pvert1))
-            poly0 = make_valid(Polygon(pvert0))
-            poly0 = poly0.difference(poly1)
+            poly1 = Polygon(pvert1)
+            poly0 = Polygon(pvert0)
+            poly1b = make_valid_poly(poly1)
+            poly0b = make_valid_poly(poly0)
 
-            layer['geometry'].append(poly0)
+            if poly0b is None or poly1b is None:
+                self.showlog('Problem exporting beachball')
+                continue
+
+            poly0c = poly0b.difference(poly1b)
+
+            layer['geometry'].append(poly0c)
             layer['Event'].append(i)
             layer['Strike'].append(np1[0])
             layer['Dip'].append(np1[1])
@@ -337,7 +350,7 @@ class BeachBall(BasicModule):
         gdf = gpd.GeoDataFrame(layer)
         gdf = gdf.set_crs(4326)
 
-        gdf.to_file(self.ifile)
+        gdf.to_file(self.ifile+'.shp')
 
         return True
 
@@ -388,10 +401,15 @@ class BeachBall(BasicModule):
             self.showlog('Error: no Fault Plane Solutions')
             return False
 
-        self.show()
         QtWidgets.QApplication.processEvents()
-
         self.mmc.init_graph()
+
+        if not nodialog:
+            temp = self.exec_()
+
+            if temp == 0:
+                return False
+
         return True
 
     def saveproj(self):
@@ -702,6 +720,39 @@ def strikedip(n, e, u):
     return strike, dip
 
 
+def make_valid_poly(poly):
+    """
+    Use make_valid command and return a single polygon.
+
+    Parameters
+    ----------
+    poly : Polygon
+        Shapely polygon.
+
+    Returns
+    -------
+    polynew : Polygon
+        New polygon or None.
+
+    """
+    polynew = make_valid(poly)
+
+    if isinstance(polynew, GeometryCollection) is False:
+        if 'Polygon' in polynew.geom_type:
+            return polynew
+        else:
+            return None
+
+    polynew = [i for i in polynew.geoms if 'Polygon' in i.geom_type]
+
+    if polynew:
+        polynew = polynew[0]
+    else:
+        polynew = None
+
+    return polynew
+
+
 def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     """
     Adapted from code, mij2d.f, created by Chen Ji.
@@ -852,3 +903,73 @@ def TDL(AN, BN):
             FL = -FL
 
     return FT, FD, FL
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from pygmi.seis.iodefs import ImportSeisan
+
+    app = QtWidgets.QApplication(sys.argv)
+    tmp = ImportSeisan()
+    tmp.ifile = r"D:\buglet_bugs\20230607_updated.out"
+    tmp.settings(True)
+
+    outdata = tmp.outdata
+
+    tmp = BeachBall()
+    tmp.indata = outdata
+    tmp.data_init()
+    tmp.settings()
+
+
+def _testfn2():
+    """Test routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from matplotlib.animation import FuncAnimation
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'qt5')
+
+    patch = beach([20.77, 25, 0], xy=(30, -30), width=1)
+
+    xy0 = patch.get_paths()[0].to_polygons()[0]
+    xy1 = patch.get_paths()[1].to_polygons()[0]
+
+
+
+    # ax.add_collection(patch)
+    # plt.show()
+
+    # plt.plot(xy0[:, 0], xy0[:, 1])
+    # plt.show()
+
+    # plt.plot(xy1[:, 0], xy1[:, 1])
+    # plt.show()
+
+    pvert1 = xy1
+
+    fig = plt.figure()
+    ax = plt.gca()
+
+    bbox = patch.get_window_extent()
+    ax.set_xlim((bbox.xmin, bbox.xmax))
+    ax.set_ylim((bbox.ymin, bbox.ymax))
+
+    graph, = plt.plot([], [],'-.')
+
+    patch = patches.Polygon(pvert1[:1], edgecolor=(0.0, 0.0, 0.0))
+    ax.add_patch(patch)
+
+    def animate(i):
+        patch.set_xy(pvert1[:i])
+        return patch
+
+    ani = FuncAnimation(fig, animate, frames=len(pvert1), interval=50)
+    plt.show()
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    _testfn2()

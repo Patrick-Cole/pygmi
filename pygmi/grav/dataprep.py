@@ -43,9 +43,6 @@ class ProcessData(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.dsb_null = QtWidgets.QDoubleSpinBox()
-        self.dataid = QtWidgets.QComboBox()
         self.density = QtWidgets.QLineEdit('2670')
         self.knownstat = QtWidgets.QLineEdit('None')
         self.knownbase = QtWidgets.QLineEdit('978000.0')
@@ -70,11 +67,11 @@ class ProcessData(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
         lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
         lbl_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
-                                         '(mGal):')
+                                       '(mGal):')
         lbl_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         lbl_kstat = QtWidgets.QLabel('Known Base Station Number:')
         lbl_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity '
-                                       '(mGal):')
+                                     '(mGal):')
         pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -170,9 +167,6 @@ class ProcessData(BasicModule):
         None.
 
         """
-        self.saveobj(self.dsb_dxy)
-        self.saveobj(self.dsb_null)
-        self.saveobj(self.dataid)
         self.saveobj(self.density)
         self.saveobj(self.knownstat)
         self.saveobj(self.knownbase)

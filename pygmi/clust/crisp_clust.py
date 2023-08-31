@@ -39,7 +39,7 @@ class CrispClust(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.sb_maxclusters = QtWidgets.QSpinBox()
-        self.combo_alg = QtWidgets.QComboBox()
+        self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
         self.sb_maxiterations = QtWidgets.QSpinBox()
         self.sb_repeatedruns = QtWidgets.QSpinBox()
@@ -65,8 +65,8 @@ class CrispClust(BasicModule):
         self.type = 'crisp'
         self.log = ''
 
-        self.combo_alg.addItems(['k-means', 'advanced k-means', 'w-means'])
-        self.combo_alg.currentIndexChanged.connect(self.combo)
+        self.cmb_alg.addItems(['k-means', 'advanced k-means', 'w-means'])
+        self.cmb_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
     def setupui(self):
@@ -121,7 +121,7 @@ class CrispClust(BasicModule):
         self.rb_datadriven.setText('Data Driven')
 
         gridlayout.addWidget(lbl_1, 0, 2, 1, 1)
-        gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(self.cmb_alg, 0, 4, 1, 1)
         gridlayout.addWidget(lbl_2, 1, 2, 1, 1)
         gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)
         gridlayout.addWidget(lbl_3, 2, 2, 1, 1)
@@ -153,7 +153,7 @@ class CrispClust(BasicModule):
         None.
 
         """
-        i = str(self.combo_alg.currentText())
+        i = str(self.cmb_alg.currentText())
         if i == 'w-means':
             self.lbl_7.show()
             self.dsb_constraincluster.show()
@@ -213,7 +213,7 @@ class CrispClust(BasicModule):
         self.update_vars()
 
         self.saveobj(self.sb_maxclusters)
-        self.saveobj(self.combo_alg)
+        self.saveobj(self.cmb_alg)
         self.saveobj(self.dsb_maxerror)
         self.saveobj(self.sb_maxiterations)
         self.saveobj(self.sb_repeatedruns)
@@ -244,7 +244,7 @@ class CrispClust(BasicModule):
         None.
 
         """
-        self.cltype = str(self.combo_alg.currentText())
+        self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
         self.max_cluster = self.sb_maxclusters.value()
         self.max_iter = self.sb_maxiterations.value()

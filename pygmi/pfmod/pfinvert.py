@@ -55,13 +55,13 @@ class MagInvert(BasicModule):
         self.inraster = {}
         self.tmp = []
 
-        self.combo_model = QtWidgets.QComboBox()
-        self.combo_other = QtWidgets.QComboBox()
-        self.combo_dtm = QtWidgets.QComboBox()
-        self.combo_mag = QtWidgets.QComboBox()
-        self.combo_grv = QtWidgets.QComboBox()
-        self.combo_reggrv = QtWidgets.QComboBox()
-        self.combo_dataset = QtWidgets.QComboBox()
+        self.cmb_model = QtWidgets.QComboBox()
+        self.cmb_other = QtWidgets.QComboBox()
+        self.cmb_dtm = QtWidgets.QComboBox()
+        self.cmb_mag = QtWidgets.QComboBox()
+        self.cmb_grv = QtWidgets.QComboBox()
+        self.cmb_reggrv = QtWidgets.QComboBox()
+        self.cmb_dataset = QtWidgets.QComboBox()
         self.dsb_utlx = QtWidgets.QDoubleSpinBox()
         self.dsb_utly = QtWidgets.QDoubleSpinBox()
         self.dsb_utlz = QtWidgets.QDoubleSpinBox()
@@ -111,11 +111,11 @@ class MagInvert(BasicModule):
 
         lbl_model = QtWidgets.QLabel('Current Model:')
 
-        self.combo_model.addItems(['None'])
-        self.combo_model.setSizePolicy(sizepolicy)
+        self.cmb_model.addItems(['None'])
+        self.cmb_model.setSizePolicy(sizepolicy)
 
         h_model.addWidget(lbl_model)
-        h_model.addWidget(self.combo_model)
+        h_model.addWidget(self.cmb_model)
 
         # General Properties
         self.dsb_mht.setMaximum(999999999.0)
@@ -153,11 +153,11 @@ class MagInvert(BasicModule):
         gb_data_info = QtWidgets.QGroupBox('Dataset Information')
         gl_data_info = QtWidgets.QGridLayout(gb_data_info)
 
-        self.combo_mag.addItems(['None'])
-        self.combo_grv.addItems(['None'])
-        self.combo_reggrv.addItems(['None'])
-        self.combo_dtm.addItems(['None'])
-        self.combo_other.addItems(['None'])
+        self.cmb_mag.addItems(['None'])
+        self.cmb_grv.addItems(['None'])
+        self.cmb_reggrv.addItems(['None'])
+        self.cmb_dtm.addItems(['None'])
+        self.cmb_other.addItems(['None'])
 
         gl_data_info.setColumnStretch(0, 1)
         gl_data_info.setColumnStretch(1, 1)
@@ -166,14 +166,14 @@ class MagInvert(BasicModule):
         gl_data_info.addWidget(QtWidgets.QLabel('DTM Dataset:'), 0, 0, 1, 1)
         gl_data_info.addWidget(QtWidgets.QLabel('Magnetic Dataset:'),
                                1, 0, 1, 1)
-        gl_data_info.addWidget(self.combo_dtm, 0, 1, 1, 1)
-        gl_data_info.addWidget(self.combo_mag, 1, 1, 1, 1)
+        gl_data_info.addWidget(self.cmb_dtm, 0, 1, 1, 1)
+        gl_data_info.addWidget(self.cmb_mag, 1, 1, 1, 1)
 
         # Data Extents Groupbox
         gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
         gl_extent = QtWidgets.QGridLayout(gb_extent)
 
-        self.combo_dataset.addItems(['None'])
+        self.cmb_dataset.addItems(['None'])
 
         lbl_0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
         lbl_3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
@@ -232,7 +232,7 @@ class MagInvert(BasicModule):
         gl_extent.addWidget(lbl_5, 7, 0, 1, 1)
         gl_extent.addWidget(lbl_6, 8, 0, 1, 1)
         gl_extent.addWidget(lbl_99, 9, 0, 1, 1)
-        gl_extent.addWidget(self.combo_dataset, 0, 1, 1, 1)
+        gl_extent.addWidget(self.cmb_dataset, 0, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utlx, 1, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utly, 2, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utlz, 3, 1, 1, 1)
@@ -265,9 +265,9 @@ class MagInvert(BasicModule):
         self.dsb_xextent.valueChanged.connect(self.upd_layers)
         self.dsb_yextent.valueChanged.connect(self.upd_layers)
         self.dsb_zextent.valueChanged.connect(self.upd_layers)
-        self.combo_dataset.currentIndexChanged.connect(self.get_area)
-        self.combo_dtm.currentIndexChanged.connect(self.choose_dtm)
-        self.combo_model.currentIndexChanged.connect(self.choose_model)
+        self.cmb_dataset.currentIndexChanged.connect(self.get_area)
+        self.cmb_dtm.currentIndexChanged.connect(self.choose_dtm)
+        self.cmb_model.currentIndexChanged.connect(self.choose_model)
 
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
@@ -283,9 +283,9 @@ class MagInvert(BasicModule):
         """
         self.showlog('Working...')
 
-        self.choose_combo(self.combo_dtm, 'DTM Dataset')
-        self.choose_combo(self.combo_mag, 'Magnetic Dataset')
-        self.choose_combo(self.combo_dataset, 'Study Area Dataset')
+        self.choose_combo(self.cmb_dtm, 'DTM Dataset')
+        self.choose_combo(self.cmb_mag, 'Magnetic Dataset')
+        self.choose_combo(self.cmb_dataset, 'Study Area Dataset')
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -340,7 +340,7 @@ class MagInvert(BasicModule):
         None.
 
         """
-        ctxt = str(self.combo_dtm.currentText())
+        ctxt = str(self.cmb_dtm.currentText())
         if ctxt not in ('None', ''):
             curgrid = self.inraster[ctxt]
 
@@ -360,7 +360,7 @@ class MagInvert(BasicModule):
         None.
 
         """
-        ctxt = str(self.combo_model.currentText())
+        ctxt = str(self.cmb_model.currentText())
         if ctxt == 'None' or 'Model3D' not in self.indata:
             return
         for i in self.indata['Model3D']:
@@ -414,7 +414,7 @@ class MagInvert(BasicModule):
         None.
 
         """
-        ctxt = str(self.combo_dataset.currentText())
+        ctxt = str(self.cmb_dataset.currentText())
         if ctxt not in ('None', ''):
             curgrid = self.inraster[ctxt]
 
@@ -494,16 +494,16 @@ class MagInvert(BasicModule):
             for i in self.indata['Model3D']:
                 modnames.append(i.name)
 
-        self.combo_model.currentIndexChanged.disconnect()
+        self.cmb_model.currentIndexChanged.disconnect()
 
-        self.combo_model.clear()
-        self.combo_model.addItems(modnames)
-        self.combo_model.setCurrentIndex(0)
+        self.cmb_model.clear()
+        self.cmb_model.addItems(modnames)
+        self.cmb_model.setCurrentIndex(0)
 
         if len(modnames) >= 2:
-            self.combo_model.setCurrentIndex(1)
+            self.cmb_model.setCurrentIndex(1)
 
-        self.combo_model.currentIndexChanged.connect(self.choose_model)
+        self.cmb_model.currentIndexChanged.connect(self.choose_model)
 
     def update_combos(self):
         """
@@ -514,7 +514,7 @@ class MagInvert(BasicModule):
         None.
 
         """
-        self.combo_dataset.currentIndexChanged.disconnect()
+        self.cmb_dataset.currentIndexChanged.disconnect()
 
         gkeys = list(self.inraster.keys())
         if 'Calculated Gravity' in gkeys:
@@ -524,51 +524,51 @@ class MagInvert(BasicModule):
         gkeys = ['None'] + gkeys
 
         if len(gkeys) > 1:
-            self.combo_other.clear()
-            self.combo_other.addItems(gkeys)
-            self.combo_other.setCurrentIndex(0)
-            self.combo_dtm.clear()
-            self.combo_dtm.addItems(gkeys)
-            self.combo_dtm.setCurrentIndex(0)
-            self.combo_mag.clear()
-            self.combo_mag.addItems(gkeys)
-            self.combo_mag.setCurrentIndex(0)
-            self.combo_grv.clear()
-            self.combo_grv.addItems(gkeys)
-            self.combo_grv.setCurrentIndex(0)
-            self.combo_reggrv.clear()
-            self.combo_reggrv.addItems(gkeys)
-            self.combo_reggrv.setCurrentIndex(0)
-            self.combo_dataset.clear()
-            self.combo_dataset.addItems(gkeys)
-            self.combo_dataset.setCurrentIndex(0)
+            self.cmb_other.clear()
+            self.cmb_other.addItems(gkeys)
+            self.cmb_other.setCurrentIndex(0)
+            self.cmb_dtm.clear()
+            self.cmb_dtm.addItems(gkeys)
+            self.cmb_dtm.setCurrentIndex(0)
+            self.cmb_mag.clear()
+            self.cmb_mag.addItems(gkeys)
+            self.cmb_mag.setCurrentIndex(0)
+            self.cmb_grv.clear()
+            self.cmb_grv.addItems(gkeys)
+            self.cmb_grv.setCurrentIndex(0)
+            self.cmb_reggrv.clear()
+            self.cmb_reggrv.addItems(gkeys)
+            self.cmb_reggrv.setCurrentIndex(0)
+            self.cmb_dataset.clear()
+            self.cmb_dataset.addItems(gkeys)
+            self.cmb_dataset.setCurrentIndex(0)
 
             lkeys = list(self.lmod1.griddata.keys())
             if 'DTM Dataset' in lkeys:
                 tmp = self.lmod1.griddata['DTM Dataset'].dataid
-                self.combo_dtm.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_dtm.setCurrentIndex(gkeys.index(tmp))
 
             if 'Magnetic Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Magnetic Dataset'].dataid
-                self.combo_mag.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_mag.setCurrentIndex(gkeys.index(tmp))
 
             if 'Gravity Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Gravity Dataset'].dataid
-                self.combo_grv.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_grv.setCurrentIndex(gkeys.index(tmp))
 
             if 'Gravity Regional' in lkeys:
                 tmp = self.lmod1.griddata['Gravity Regional'].dataid
-                self.combo_reggrv.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_reggrv.setCurrentIndex(gkeys.index(tmp))
 
             if 'Study Area Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Study Area Dataset'].dataid
-                self.combo_dataset.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_dataset.setCurrentIndex(gkeys.index(tmp))
 
             if 'Other' in lkeys:
                 tmp = self.lmod1.griddata['Other'].dataid
-                self.combo_other.setCurrentIndex(gkeys.index(tmp))
+                self.cmb_other.setCurrentIndex(gkeys.index(tmp))
 
-        self.combo_dataset.currentIndexChanged.connect(self.get_area)
+        self.cmb_dataset.currentIndexChanged.connect(self.get_area)
 
     def update_vals(self):
         """
@@ -698,13 +698,13 @@ class MagInvert(BasicModule):
         None.
 
         """
-        self.saveobj(self.combo_model)
-        self.saveobj(self.combo_other)
-        self.saveobj(self.combo_dtm)
-        self.saveobj(self.combo_mag)
-        self.saveobj(self.combo_grv)
-        self.saveobj(self.combo_reggrv)
-        self.saveobj(self.combo_dataset)
+        self.saveobj(self.cmb_model)
+        self.saveobj(self.cmb_other)
+        self.saveobj(self.cmb_dtm)
+        self.saveobj(self.cmb_mag)
+        self.saveobj(self.cmb_grv)
+        self.saveobj(self.cmb_reggrv)
+        self.saveobj(self.cmb_dataset)
 
         self.saveobj(self.dsb_utlx)
         self.saveobj(self.dsb_utly)

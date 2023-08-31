@@ -137,8 +137,8 @@ class IGRF(BasicModule):
 
         self.dsb_alt = QtWidgets.QDoubleSpinBox()
         self.dateedit = QtWidgets.QDateEdit()
-        self.combo_dtm = QtWidgets.QComboBox()
-        self.combo_mag = QtWidgets.QComboBox()
+        self.cmb_dtm = QtWidgets.QComboBox()
+        self.cmb_mag = QtWidgets.QComboBox()
         self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
@@ -174,9 +174,9 @@ class IGRF(BasicModule):
         gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
         gridlayout.addWidget(self.dateedit, 3, 1, 1, 1)
         gridlayout.addWidget(lbl_2, 4, 0, 1, 1)
-        gridlayout.addWidget(self.combo_dtm, 4, 1, 1, 1)
+        gridlayout.addWidget(self.cmb_dtm, 4, 1, 1, 1)
         gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
-        gridlayout.addWidget(self.combo_mag, 5, 1, 1, 1)
+        gridlayout.addWidget(self.cmb_mag, 5, 1, 1, 1)
         gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
 
@@ -215,14 +215,14 @@ class IGRF(BasicModule):
 
         data = self.indata['Raster']
 
-        self.combo_dtm.clear()
-        self.combo_mag.clear()
+        self.cmb_dtm.clear()
+        self.cmb_mag.clear()
         for i in data:
-            self.combo_dtm.addItem(i.dataid)
-            self.combo_mag.addItem(i.dataid)
+            self.cmb_dtm.addItem(i.dataid)
+            self.cmb_mag.addItem(i.dataid)
 
         if len(data) > 1:
-            self.combo_dtm.setCurrentIndex(1)
+            self.cmb_dtm.setCurrentIndex(1)
 
         if not nodialog:
             tmp = self.exec_()
@@ -230,19 +230,19 @@ class IGRF(BasicModule):
             if tmp == 0:
                 return False
 
-        i = self.combo_mag.currentIndex()
+        i = self.cmb_mag.currentIndex()
 
         for i in data:
-            if i.dataid == self.combo_mag.currentText():
+            if i.dataid == self.cmb_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
 
         data = dp.lstack(data, dxy=dxy, piter=self.piter,
                          showlog=self.showlog)
 
         for i in data:
-            if i.dataid == self.combo_mag.currentText():
+            if i.dataid == self.cmb_mag.currentText():
                 maggrid = i
-            if i.dataid == self.combo_dtm.currentText():
+            if i.dataid == self.cmb_dtm.currentText():
                 data = i
                 wkt = i.crs.to_wkt()
 
@@ -276,8 +276,8 @@ class IGRF(BasicModule):
         self.saveobj(self.wkt)
         self.saveobj(self.dsb_alt)
         self.saveobj(self.dateedit)
-        self.saveobj(self.combo_dtm)
-        self.saveobj(self.combo_mag)
+        self.saveobj(self.cmb_dtm)
+        self.saveobj(self.cmb_mag)
 
 
 def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,

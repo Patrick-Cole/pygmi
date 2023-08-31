@@ -54,8 +54,8 @@ class Continuation(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.dataid = QtWidgets.QComboBox()
-        self.continuation = QtWidgets.QComboBox()
+        self.cmb_dataid = QtWidgets.QComboBox()
+        self.cmb_cont = QtWidgets.QComboBox()
         self.dsb_height = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
@@ -79,8 +79,8 @@ class Continuation(BasicModule):
         self.dsb_height.setMaximum(1000000.0)
         self.dsb_height.setMinimum(0.0)
         self.dsb_height.setValue(0.0)
-        self.continuation.clear()
-        self.continuation.addItems(['Upward', 'Downward'])
+        self.cmb_cont.clear()
+        self.cmb_cont.addItems(['Upward', 'Downward'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -89,10 +89,10 @@ class Continuation(BasicModule):
         self.setWindowTitle('Continuation')
 
         gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_cont, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.continuation, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_cont, 1, 1, 1, 1)
         gridlayout_main.addWidget(lbl_height, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
@@ -124,8 +124,8 @@ class Continuation(BasicModule):
         for i in self.indata['Raster']:
             tmp.append(i.dataid)
 
-        self.dataid.clear()
-        self.dataid.addItems(tmp)
+        self.cmb_dataid.clear()
+        self.cmb_dataid.addItems(tmp)
 
         if not nodialog:
             tmp = self.exec_()
@@ -146,8 +146,8 @@ class Continuation(BasicModule):
         None.
 
         """
-        self.saveobj(self.dataid)
-        self.saveobj(self.continuation)
+        self.saveobj(self.cmb_dataid)
+        self.saveobj(self.cmb_cont)
         self.saveobj(self.dsb_height)
 
     def acceptall(self):
@@ -162,11 +162,11 @@ class Continuation(BasicModule):
 
         """
         h = self.dsb_height.value()
-        ctype = self.continuation.currentText()
+        ctype = self.cmb_cont.currentText()
 
         # Get data
         for i in self.indata['Raster']:
-            if i.dataid == self.dataid.currentText():
+            if i.dataid == self.cmb_dataid.currentText():
                 data = i
                 break
 
@@ -1209,8 +1209,8 @@ class GroupProj(QtWidgets.QWidget):
 
         self.gridlayout = QtWidgets.QGridLayout(self)
         self.groupbox = QtWidgets.QGroupBox(title)
-        self.combodatum = QtWidgets.QComboBox()
-        self.comboproj = QtWidgets.QComboBox()
+        self.cmb_datum = QtWidgets.QComboBox()
+        self.cmb_proj = QtWidgets.QComboBox()
 
         self.lbl_wkt = QtWidgets.QTextBrowser()
         self.lbl_wkt.setWordWrapMode(0)
@@ -1218,8 +1218,8 @@ class GroupProj(QtWidgets.QWidget):
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
         gridlayout = QtWidgets.QGridLayout(self.groupbox)
-        gridlayout.addWidget(self.combodatum, 0, 0, 1, 1)
-        gridlayout.addWidget(self.comboproj, 1, 0, 1, 1)
+        gridlayout.addWidget(self.cmb_datum, 0, 0, 1, 1)
+        gridlayout.addWidget(self.cmb_proj, 1, 0, 1, 1)
         gridlayout.addWidget(self.lbl_wkt, 2, 0, 1, 1)
 
         self.epsg_proj = getepsgcodes()
@@ -1249,10 +1249,10 @@ class GroupProj(QtWidgets.QWidget):
             if r'Geodetic Geographic' in j and j[0] != r'Geodetic Geographic':
                 self.plist[i] = [r'Geodetic Geographic']+self.plist[i]
 
-        self.combodatum.addItems(tmp)
-        self.comboproj.addItem('Current')
-        self.combodatum.currentIndexChanged.connect(self.combo_datum_change)
-        self.comboproj.currentIndexChanged.connect(self.combo_change)
+        self.cmb_datum.addItems(tmp)
+        self.cmb_proj.addItem('Current')
+        self.cmb_datum.currentIndexChanged.connect(self.combo_datum_change)
+        self.cmb_proj.currentIndexChanged.connect(self.combo_change)
 
     def set_current(self, wkt):
         """
@@ -1269,7 +1269,7 @@ class GroupProj(QtWidgets.QWidget):
 
         """
         if wkt in ['', 'None']:
-            self.combodatum.setCurrentText('None')
+            self.cmb_datum.setCurrentText('None')
             return
 
         self.wkt = wkt
@@ -1285,14 +1285,14 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
-        indx = self.combodatum.currentIndex()
-        txt = self.combodatum.itemText(indx)
-        self.comboproj.currentIndexChanged.disconnect()
+        indx = self.cmb_datum.currentIndex()
+        txt = self.cmb_datum.itemText(indx)
+        self.cmb_proj.currentIndexChanged.disconnect()
 
-        self.comboproj.clear()
-        self.comboproj.addItems(self.plist[txt])
+        self.cmb_proj.clear()
+        self.cmb_proj.addItems(self.plist[txt])
 
-        self.comboproj.currentIndexChanged.connect(self.combo_change)
+        self.cmb_proj.currentIndexChanged.connect(self.combo_change)
 
         self.combo_change()
 
@@ -1305,8 +1305,8 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
-        dtxt = self.combodatum.currentText()
-        ptxt = self.comboproj.currentText()
+        dtxt = self.cmb_datum.currentText()
+        ptxt = self.cmb_proj.currentText()
 
         txt = dtxt + r' / '+ptxt
 
@@ -1346,7 +1346,7 @@ class Metadata(ContextModule):
         self.dataid = {}
         self.oldtxt = ''
 
-        self.combo_bandid = QtWidgets.QComboBox()
+        self.cmb_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
@@ -1406,7 +1406,7 @@ class Metadata(ContextModule):
         self.date.setCalendarPopup(True)
 
         gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
@@ -1442,7 +1442,7 @@ class Metadata(ContextModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+        self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -1481,21 +1481,21 @@ class Metadata(ContextModule):
         None.
 
         """
-        ctxt = str(self.combo_bandid.currentText())
+        ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
             'Please type in the new name for the band',
             QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
-            self.combo_bandid.currentIndexChanged.disconnect()
-            indx = self.combo_bandid.currentIndex()
-            txt = self.combo_bandid.itemText(indx)
+            self.cmb_bandid.currentIndexChanged.disconnect()
+            indx = self.cmb_bandid.currentIndex()
+            txt = self.cmb_bandid.itemText(indx)
             self.banddata[skey] = self.banddata.pop(txt)
             self.dataid[skey] = self.dataid.pop(txt)
             self.oldtxt = skey
-            self.combo_bandid.setItemText(indx, skey)
-            self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+            self.cmb_bandid.setItemText(indx, skey)
+            self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
         """
@@ -1522,8 +1522,8 @@ class Metadata(ContextModule):
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
-        indx = self.combo_bandid.currentIndex()
-        txt = self.combo_bandid.itemText(indx)
+        indx = self.cmb_bandid.currentIndex()
+        txt = self.cmb_bandid.itemText(indx)
         self.oldtxt = txt
         idata = self.banddata[txt]
 
@@ -1573,11 +1573,11 @@ class Metadata(ContextModule):
             tmp.units = i.units
             tmp.datetime = i.datetime
 
-        self.combo_bandid.currentIndexChanged.disconnect()
-        self.combo_bandid.addItems(bandid)
-        indx = self.combo_bandid.currentIndex()
-        self.oldtxt = self.combo_bandid.itemText(indx)
-        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+        self.cmb_bandid.currentIndexChanged.disconnect()
+        self.cmb_bandid.addItems(bandid)
+        indx = self.cmb_bandid.currentIndex()
+        self.oldtxt = self.cmb_bandid.itemText(indx)
+        self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
         idata = self.banddata[self.oldtxt]
 
@@ -2687,20 +2687,5 @@ def _testfn():
     tmp.run()
 
 
-def _testfn2():
-    geog_crs = CRS.from_epsg(4222)
-
-    proj_crs = ProjectedCRS(name='WGS 84 / TM 25',
-        conversion=TransverseMercatorConversion(
-            latitude_natural_origin=0,
-            longitude_natural_origin=25,
-            false_easting=0,
-            false_northing=0,
-            scale_factor_natural_origin=1.0,
-            ), geodetic_crs=geog_crs)
-
-
-    breakpoint()
-
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

@@ -346,7 +346,7 @@ class RTP(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.dataid = QtWidgets.QComboBox()
+        self.cmb_dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
 
@@ -382,7 +382,7 @@ class RTP(BasicModule):
         self.setWindowTitle('Reduction to the Pole')
 
         gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_inc, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
@@ -417,8 +417,8 @@ class RTP(BasicModule):
         for i in self.indata['Raster']:
             tmp.append(i.dataid)
 
-        self.dataid.clear()
-        self.dataid.addItems(tmp)
+        self.cmb_dataid.clear()
+        self.cmb_dataid.addItems(tmp)
 
         if not nodialog:
             tmp = self.exec_()
@@ -439,7 +439,7 @@ class RTP(BasicModule):
         None.
 
         """
-        self.saveobj(self.dataid)
+        self.saveobj(self.cmb_dataid)
         self.saveobj(self.dsb_inc)
         self.saveobj(self.dsb_dec)
 
@@ -459,7 +459,7 @@ class RTP(BasicModule):
 
         newdat = []
         for data in self.piter(self.indata['Raster']):
-            if data.dataid != self.dataid.currentText():
+            if data.dataid != self.cmb_dataid.currentText():
                 continue
             dat = rtp(data, I_deg, D_deg)
             newdat.append(dat)

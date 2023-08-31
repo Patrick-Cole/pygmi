@@ -203,15 +203,15 @@ class GraphWindow(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
 
         hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -219,8 +219,8 @@ class GraphWindow(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -239,7 +239,7 @@ class PlotRaster(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.lbl_2.hide()
-        self.combobox2.hide()
+        self.cmb_2.hide()
 
     def change_band(self):
         """
@@ -250,7 +250,7 @@ class PlotRaster(GraphWindow):
         None.
 
         """
-        i = self.combobox1.currentIndex()
+        i = self.cmb_1.currentIndex()
         data = self.indata['Cluster']
         self.mmc.update_classes(data[i])
 
@@ -267,7 +267,7 @@ class PlotRaster(GraphWindow):
         data = self.indata['Cluster']
 
         for i in data:
-            self.combobox1.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
         self.change_band()
 
 
@@ -287,14 +287,14 @@ class PlotMembership(GraphWindow):
 
         """
         data = self.indata['Cluster']
-        i = self.combobox1.currentIndex()
-        self.combobox2.clear()
-        self.combobox2.currentIndexChanged.disconnect()
+        i = self.cmb_1.currentIndex()
+        self.cmb_2.clear()
+        self.cmb_2.currentIndexChanged.disconnect()
 
         for j in range(data[i].metadata['Cluster']['no_clusters']):
-            self.combobox2.addItem('Membership Map for Cluster ' + str(j + 1))
+            self.cmb_2.addItem('Membership Map for Cluster ' + str(j + 1))
 
-        self.combobox2.currentIndexChanged.connect(self.change_band_two)
+        self.cmb_2.currentIndexChanged.connect(self.change_band_two)
         self.change_band_two()
 
     def run(self):
@@ -313,7 +313,7 @@ class PlotMembership(GraphWindow):
 
         self.show()
         for i in data:
-            self.combobox1.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
 
         self.change_band()
 
@@ -321,8 +321,8 @@ class PlotMembership(GraphWindow):
         """Combo box to choose band."""
         data = self.indata['Cluster']
 
-        i = self.combobox1.currentIndex()
-        j = self.combobox2.currentIndex()
+        i = self.cmb_1.currentIndex()
+        j = self.cmb_2.currentIndex()
 
         self.mmc.update_membership(data[i], j)
 
@@ -332,7 +332,7 @@ class PlotVRCetc(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combobox2.hide()
+        self.cmb_2.hide()
         self.lbl_2.hide()
 
     def change_band(self):
@@ -346,7 +346,7 @@ class PlotVRCetc(GraphWindow):
         """
         data = self.indata['Cluster']
 
-        j = str(self.combobox1.currentText())
+        j = str(self.cmb_1.currentText())
 
         if (j == 'Objective Function' and
                 data[0].metadata['Cluster']['obj_fcn'] is not None):
@@ -417,8 +417,8 @@ class PlotVRCetc(GraphWindow):
             self.showlog('Your dataset does not qualify')
             return
 
-        self.combobox1.addItems(items)
+        self.cmb_1.addItems(items)
 
         self.lbl_1.setText('Graph Type:')
-        self.combobox1.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
         self.show()

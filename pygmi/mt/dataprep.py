@@ -65,7 +65,7 @@ class Metadata(ContextModule):
         self.dataid = {}
         self.oldtxt = ''
 
-        self.combo_bandid = QtWidgets.QComboBox()
+        self.cmb_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Station Name')
         self.dsb_lat = QtWidgets.QLineEdit()
         self.dsb_lon = QtWidgets.QLineEdit()
@@ -110,7 +110,7 @@ class Metadata(ContextModule):
         self.setWindowTitle('Dataset Metadata')
 
         gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
@@ -133,7 +133,7 @@ class Metadata(ContextModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+        self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -157,21 +157,21 @@ class Metadata(ContextModule):
         None.
 
         """
-        ctxt = str(self.combo_bandid.currentText())
+        ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Station Name',
             'Please type in the new name for the station',
             QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
-            self.combo_bandid.currentIndexChanged.disconnect()
-            indx = self.combo_bandid.currentIndex()
-            txt = self.combo_bandid.itemText(indx)
+            self.cmb_bandid.currentIndexChanged.disconnect()
+            indx = self.cmb_bandid.currentIndex()
+            txt = self.cmb_bandid.itemText(indx)
             self.banddata[skey] = self.banddata.pop(txt)
             self.dataid[skey] = self.dataid.pop(txt)
             self.oldtxt = skey
-            self.combo_bandid.setItemText(indx, skey)
-            self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+            self.cmb_bandid.setItemText(indx, skey)
+            self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
         """
@@ -196,8 +196,8 @@ class Metadata(ContextModule):
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
-        indx = self.combo_bandid.currentIndex()
-        txt = self.combo_bandid.itemText(indx)
+        indx = self.cmb_bandid.currentIndex()
+        txt = self.cmb_bandid.itemText(indx)
         self.oldtxt = txt
         idata = self.banddata[txt]
 
@@ -232,11 +232,11 @@ class Metadata(ContextModule):
             self.banddata[i] = copy.deepcopy(self.indata['MT - EDI'][i])
             self.dataid[i] = i
 
-        self.combo_bandid.currentIndexChanged.disconnect()
-        self.combo_bandid.addItems(bandid)
-        indx = self.combo_bandid.currentIndex()
-        self.oldtxt = self.combo_bandid.itemText(indx)
-        self.combo_bandid.currentIndexChanged.connect(self.update_vals)
+        self.cmb_bandid.currentIndexChanged.disconnect()
+        self.cmb_bandid.addItems(bandid)
+        indx = self.cmb_bandid.currentIndex()
+        self.oldtxt = self.cmb_bandid.itemText(indx)
+        self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
         idata = self.banddata[self.oldtxt]
 
@@ -377,10 +377,10 @@ class StaticShiftEDI(BasicModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.combobox2.addItems(['xy, yx', 'xx, yy'])
-        self.combobox2.setCurrentIndex(0)
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.setCurrentIndex(0)
 
         self.dsb_shiftx = QtWidgets.QDoubleSpinBox()
         self.dsb_shiftx.setMinimum(0.)
@@ -404,9 +404,9 @@ class StaticShiftEDI(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
 
         hbl3.addWidget(lbl_3)
         hbl3.addWidget(self.dsb_shiftx)
@@ -429,8 +429,8 @@ class StaticShiftEDI(BasicModule):
         pb_reset.clicked.connect(self.reset_data)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
         """
@@ -461,7 +461,7 @@ class StaticShiftEDI(BasicModule):
             for i in self.data:
                 self.data[i].Z = self.data[i].remove_static_shift(ssx, ssy)
         else:
-            i = self.combobox1.currentText()
+            i = self.cmb_1.currentText()
             self.data[i].Z = self.data[i].remove_static_shift(ssx, ssy)
 
         self.change_band()
@@ -475,7 +475,7 @@ class StaticShiftEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
             self.data = copy.deepcopy(self.indata['MT - EDI'])
@@ -493,8 +493,8 @@ class StaticShiftEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
-        i2 = self.combobox2.currentText()
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self, nodialog=False):
@@ -518,14 +518,14 @@ class StaticShiftEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.combobox1.currentIndexChanged.disconnect()
+        self.cmb_1.currentIndexChanged.disconnect()
 
-        self.combobox1.clear()
+        self.cmb_1.clear()
         for i in self.data:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
         self.change_band()
 
@@ -567,10 +567,10 @@ class RotateEDI(BasicModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.combobox2.addItems(['xy, yx', 'xx, yy'])
-        self.combobox2.setCurrentIndex(0)
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.setCurrentIndex(0)
 
         self.dsb_rotangle = QtWidgets.QDoubleSpinBox()
         self.dsb_rotangle.setMinimum(0.)
@@ -590,9 +590,9 @@ class RotateEDI(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.mt.rotate')
 
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
         hbl.addWidget(lbl_3)
         hbl.addWidget(self.dsb_rotangle)
 
@@ -611,8 +611,8 @@ class RotateEDI(BasicModule):
         pb_reset.clicked.connect(self.reset_data)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
         """
@@ -643,7 +643,7 @@ class RotateEDI(BasicModule):
                 self.data[i].Z.rotate(rotZ)
                 self.data[i].Tipper.rotate(rotZ)
         else:
-            i = self.combobox1.currentText()
+            i = self.cmb_1.currentText()
             self.data[i].Z.rotate(rotZ)
             self.data[i].Tipper.rotate(rotZ)
 
@@ -658,7 +658,7 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
             self.data = copy.deepcopy(self.indata['MT - EDI'])
@@ -678,8 +678,8 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
-        i2 = self.combobox2.currentText()
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self, nodialog=False):
@@ -703,16 +703,16 @@ class RotateEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.combobox1.currentIndexChanged.disconnect()
-        self.combobox1.clear()
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_1.clear()
 
         for i in self.data:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         self.dsb_rotangle.setValue(self.data[i].rotation_angle)
 
         self.change_band()
@@ -1022,10 +1022,10 @@ class EditEDI(BasicModule):
         self.mmc = MyMplCanvasPick(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.combobox2.addItems(['xy, yx', 'xx, yy'])
-        self.combobox2.setCurrentIndex(0)
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.setCurrentIndex(0)
 
         lbl_1 = QtWidgets.QLabel('Station Name:')
         lbl_2 = QtWidgets.QLabel('Graph Type:')
@@ -1038,9 +1038,9 @@ class EditEDI(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
@@ -1056,8 +1056,8 @@ class EditEDI(BasicModule):
         pb_reset.clicked.connect(self.reset_data)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
         """
@@ -1084,7 +1084,7 @@ class EditEDI(BasicModule):
         if self.mmc.maskrange is None:
             return
 
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
 
         x0 = self.mmc.maskrange[0]
         x1 = self.mmc.maskrange[1]
@@ -1120,7 +1120,7 @@ class EditEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
         self.change_band()
 
@@ -1133,8 +1133,8 @@ class EditEDI(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
-        i2 = self.combobox2.currentText()
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self, nodialog=False):
@@ -1158,14 +1158,14 @@ class EditEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.combobox1.currentIndexChanged.disconnect()
-        self.combobox1.clear()
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_1.clear()
 
         for i in self.data:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
         self.change_band()
 
@@ -1342,11 +1342,11 @@ class Occam1D(BasicModule):
         self.mmc = MyMplCanvas2(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.combomode = QtWidgets.QComboBox()
-        self.combomode.addItems(['TE', 'TM', 'DET'])
-        self.combomode.setCurrentIndex(0)
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_mode = QtWidgets.QComboBox()
+        self.cmb_mode.addItems(['TE', 'TM', 'DET'])
+        self.cmb_mode.setCurrentIndex(0)
         self.errres = QtWidgets.QLineEdit('data')
         self.errres.setSizePolicy(sizepolicy)
         self.errphase = QtWidgets.QLineEdit('data')
@@ -1403,9 +1403,9 @@ class Occam1D(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         gbl.addWidget(lbl_1, 0, 0)
-        gbl.addWidget(self.combobox1, 0, 1)
+        gbl.addWidget(self.cmb_1, 0, 1)
         gbl.addWidget(lbl_3, 2, 0)
-        gbl.addWidget(self.combomode, 2, 1)
+        gbl.addWidget(self.cmb_mode, 2, 1)
         gbl.addWidget(lbl_4, 3, 0)
         gbl.addWidget(self.errres, 3, 1)
         gbl.addWidget(lbl_5, 4, 0)
@@ -1447,7 +1447,7 @@ class Occam1D(BasicModule):
         pb_apply.clicked.connect(self.apply)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.hs_profnum.valueChanged.connect(self.snum)
 
     def snum(self):
@@ -1503,8 +1503,8 @@ class Occam1D(BasicModule):
         if -999 in parm.values():
             return
 
-        mode = self.combomode.currentText()
-        i = self.combobox1.currentText()
+        mode = self.cmb_mode.currentText()
+        i = self.cmb_1.currentText()
         edi_file = self.data[i].fn
 
         save_path = edi_file[:-4]+'-'+mode
@@ -1582,7 +1582,7 @@ class Occam1D(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
         self.change_band()
 
@@ -1595,8 +1595,8 @@ class Occam1D(BasicModule):
         None.
 
         """
-        i = self.combobox1.currentText()
-        mode = self.combomode.currentText()
+        i = self.cmb_1.currentText()
+        mode = self.cmb_mode.currentText()
         n = self.hs_profnum.value()
 
         edi_file = self.data[i].fn
@@ -1667,17 +1667,17 @@ class Occam1D(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.combobox1.currentIndexChanged.disconnect()
-        self.combobox1.clear()
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_1.clear()
 
         for i in self.data:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
-        i = self.combobox1.currentText()
-        mode = self.combomode.currentText()
+        i = self.cmb_1.currentText()
+        mode = self.cmb_mode.currentText()
         edi_file = self.data[i].fn
         save_path = edi_file[:-4]+'-'+mode
 
@@ -1718,7 +1718,7 @@ class Occam1D(BasicModule):
         self.saveobj(self.errphase)
         self.saveobj(self.errfloorphase)
         self.saveobj(self.errfloorres)
-        self.saveobj(self.combomode)
+        self.saveobj(self.cmb_mode)
         self.saveobj(self.cb_remove_out_quad)
 
 

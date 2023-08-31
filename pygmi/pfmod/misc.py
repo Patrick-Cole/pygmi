@@ -269,8 +269,8 @@ class MergeMod3D(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.master = QtWidgets.QComboBox()
-        self.slave = QtWidgets.QComboBox()
+        self.cmb_master = QtWidgets.QComboBox()
+        self.cmb_slave = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -296,10 +296,10 @@ class MergeMod3D(BasicModule):
         self.setWindowTitle('3D Model Merge')
 
         gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_master, 0, 1, 1, 1)
 
         gridlayout_main.addWidget(lbl_slave, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.slave, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 
@@ -331,11 +331,11 @@ class MergeMod3D(BasicModule):
         for i in self.indata['Model3D']:
             tmp.append(i.name)
 
-        self.master.addItems(tmp)
-        self.slave.addItems(tmp)
+        self.cmb_master.addItems(tmp)
+        self.cmb_slave.addItems(tmp)
 
-        self.master.setCurrentIndex(0)
-        self.slave.setCurrentIndex(1)
+        self.cmb_master.setCurrentIndex(0)
+        self.cmb_slave.setCurrentIndex(1)
 
         tmp = self.exec_()
 
@@ -353,8 +353,8 @@ class MergeMod3D(BasicModule):
         None.
 
         """
-        self.saveobj(self.master)
-        self.saveobj(self.slave)
+        self.saveobj(self.cmb_master)
+        self.saveobj(self.cmb_slave)
 
     def acceptall(self):
         """
@@ -368,15 +368,15 @@ class MergeMod3D(BasicModule):
             True if successful, False otherwise
 
         """
-        if self.master.currentText() == self.slave.currentText():
+        if self.cmb_master.currentText() == self.cmb_slave.currentText():
             self.showlog('Your master dataset must be different'
                          ' to the slave dataset!')
             return False
 
         for data in self.indata['Model3D']:
-            if data.name == self.master.currentText():
+            if data.name == self.cmb_master.currentText():
                 datmaster = data
-            if data.name == self.slave.currentText():
+            if data.name == self.cmb_slave.currentText():
                 datslave = data
 
         xrange = list(datmaster.xrange) + list(datslave.xrange)

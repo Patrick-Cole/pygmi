@@ -38,7 +38,7 @@ class FuzzyClust(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combo_alg = QtWidgets.QComboBox()
+        self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
         self.dsb_fuzzynessexp = QtWidgets.QDoubleSpinBox()
         self.dsb_constraincluster = QtWidgets.QDoubleSpinBox()
@@ -65,11 +65,11 @@ class FuzzyClust(BasicModule):
         self.type = 'fuzzy'
         self.fexp = 1.5
 
-        self.combo_alg.addItems(['fuzzy c-means',
+        self.cmb_alg.addItems(['fuzzy c-means',
                                  'advanced fuzzy c-means',
                                  'Gustafson-Kessel'])
 #                                , 'Gath-Geva'])
-        self.combo_alg.currentIndexChanged.connect(self.combo)
+        self.cmb_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
     def setupui(self):
@@ -136,7 +136,7 @@ class FuzzyClust(BasicModule):
         gridlayout.addWidget(lbl_8, 7, 2, 1, 1)
         gridlayout.addWidget(groupbox, 9, 2, 1, 3)
 
-        gridlayout.addWidget(self.combo_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(self.cmb_alg, 0, 4, 1, 1)
         gridlayout.addWidget(self.sb_minclusters, 1, 4, 1, 1)
         gridlayout.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
         gridlayout.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
@@ -162,7 +162,7 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        i = str(self.combo_alg.currentText())
+        i = str(self.cmb_alg.currentText())
         if i in ('Gath-Geva', 'Gustafson-Kessel'):
             self.lbl_7.show()
             self.dsb_constraincluster.show()
@@ -221,7 +221,7 @@ class FuzzyClust(BasicModule):
         """
         self.update_vars()
 
-        self.saveobj(self.combo_alg)
+        self.saveobj(self.cmb_alg)
         self.saveobj(self.dsb_maxerror)
         self.saveobj(self.dsb_fuzzynessexp)
         self.saveobj(self.dsb_constraincluster)
@@ -254,7 +254,7 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        self.cltype = str(self.combo_alg.currentText())
+        self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
         self.max_cluster = self.sb_maxclusters.value()
         self.max_iter = self.sb_maxiterations.value()

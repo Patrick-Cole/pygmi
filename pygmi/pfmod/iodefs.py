@@ -1212,8 +1212,8 @@ class MessageCombo(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.master = QtWidgets.QComboBox()
-        self.master.addItems(combotext)
+        self.cmb_master = QtWidgets.QComboBox()
+        self.cmb_master.addItems(combotext)
 
         self.setupui()
 
@@ -1238,7 +1238,7 @@ class MessageCombo(QtWidgets.QDialog):
         lbl_master.setText('Choose Model:')
 
         gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmb_master, 0, 1, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
@@ -1253,7 +1253,7 @@ class MessageCombo(QtWidgets.QDialog):
             Returns current text.
 
         """
-        return self.master.currentText()
+        return self.cmb_master.currentText()
 
 
 def _testfn():

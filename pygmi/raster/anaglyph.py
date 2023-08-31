@@ -295,9 +295,9 @@ class PlotAnaglyph(ContextModule):
         # Define Widgets
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.cbox_cbar = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_cbar = QtWidgets.QComboBox()
         self.cb_shade = QtWidgets.QCheckBox('Sunshade:')
         self.rb_doimage = QtWidgets.QRadioButton('Full Image:')
         self.rb_docontour = QtWidgets.QRadioButton('Contour '
@@ -307,9 +307,9 @@ class PlotAnaglyph(ContextModule):
         self.slider_cnt = QtWidgets.QSlider()
 
         # Size policies
-        self.combobox1.setSizePolicy(sizepolicy)
-        self.combobox2.setSizePolicy(sizepolicy)
-        self.cbox_cbar.setSizePolicy(sizepolicy)
+        self.cmb_1.setSizePolicy(sizepolicy)
+        self.cmb_2.setSizePolicy(sizepolicy)
+        self.cmb_cbar.setSizePolicy(sizepolicy)
 
         self.cb_shade.setSizePolicy(sizepolicy)
         self.rb_doimage.setSizePolicy(sizepolicy)
@@ -319,18 +319,18 @@ class PlotAnaglyph(ContextModule):
         self.slider_cnt.setSizePolicy(sizepolicy)
 
         # Configure Widgets
-        self.combobox2.addItem('Dubois (Red-Green)')
-        self.combobox2.addItem('Green-Magenta')
-        self.combobox2.addItem('Amber-Blue')
-        self.combobox2.addItem('True (Red-Green)')
-        self.combobox2.addItem('Gray (Red-Green)')
-        self.combobox2.addItem('Optimized (Red-Green)')
+        self.cmb_2.addItem('Dubois (Red-Green)')
+        self.cmb_2.addItem('Green-Magenta')
+        self.cmb_2.addItem('Amber-Blue')
+        self.cmb_2.addItem('True (Red-Green)')
+        self.cmb_2.addItem('Gray (Red-Green)')
+        self.cmb_2.addItem('Optimized (Red-Green)')
 
         maps = sorted(m for m in colormaps() if not
                       m.startswith(('spectral', 'Vega', 'jet')))
 
-        self.cbox_cbar.addItem('jet')
-        self.cbox_cbar.addItems(maps)
+        self.cmb_cbar.addItem('jet')
+        self.cmb_cbar.addItems(maps)
         self.rb_doimage.setChecked(True)
         self.slider_cnt.setMinimum(3)
         self.slider_cnt.setMaximum(30)
@@ -353,11 +353,11 @@ class PlotAnaglyph(ContextModule):
         vbl_left.addWidget(self.rb_docontour)
         vbl_left.addWidget(self.slider_cnt)
         vbl_left.addWidget(QtWidgets.QLabel('Bands:'))
-        vbl_left.addWidget(self.combobox1)
+        vbl_left.addWidget(self.cmb_1)
         vbl_left.addWidget(QtWidgets.QLabel('Type:'))
-        vbl_left.addWidget(self.combobox2)
+        vbl_left.addWidget(self.cmb_2)
         vbl_left.addWidget(QtWidgets.QLabel('Colour Bar:'))
-        vbl_left.addWidget(self.cbox_cbar)
+        vbl_left.addWidget(self.cmb_cbar)
         vbl_left.addWidget(QtWidgets.QLabel('Scale (1-30):'))
         vbl_left.addWidget(self.slider_scale)
         vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
@@ -373,9 +373,9 @@ class PlotAnaglyph(ContextModule):
         self.rb_doimage.released.connect(self.change_image)
         self.rb_docontour.released.connect(self.change_contours)
         self.cb_shade.stateChanged.connect(self.change_colors)
-        self.combobox1.currentIndexChanged.connect(self.change_all)
-        self.combobox2.currentIndexChanged.connect(self.change_atype)
-        self.cbox_cbar.currentIndexChanged.connect(self.change_colors)
+        self.cmb_1.currentIndexChanged.connect(self.change_all)
+        self.cmb_2.currentIndexChanged.connect(self.change_atype)
+        self.cmb_cbar.currentIndexChanged.connect(self.change_colors)
         self.slider_scale.sliderReleased.connect(self.change_all)
         self.slider_angle.sliderReleased.connect(self.change_all)
         self.slider_cnt.sliderReleased.connect(self.change_contours)
@@ -389,8 +389,8 @@ class PlotAnaglyph(ContextModule):
         None.
 
         """
-        i = self.combobox1.currentIndex()
-        txt = str(self.cbox_cbar.currentText())
+        i = self.cmb_1.currentIndex()
+        txt = str(self.cmb_cbar.currentText())
         cbar = colormaps[txt]
         shade = self.cb_shade.isChecked()
         scale = self.slider_scale.value()
@@ -401,7 +401,7 @@ class PlotAnaglyph(ContextModule):
             self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
         else:
             data = self.indata['Raster']
-            self.mmc.update_raster(data[i], atype=self.combobox2.currentText(),
+            self.mmc.update_raster(data[i], atype=self.cmb_2.currentText(),
                                    cmap=cbar, shade=shade, scale=scale,
                                    rotang=rotang)
 
@@ -414,11 +414,11 @@ class PlotAnaglyph(ContextModule):
         None.
 
         """
-        txt = str(self.cbox_cbar.currentText())
+        txt = str(self.cmb_cbar.currentText())
         cbar = colormaps[txt]
         shade = self.cb_shade.isChecked()
 
-        self.mmc.update_colors(atype=self.combobox2.currentText(),
+        self.mmc.update_colors(atype=self.cmb_2.currentText(),
                                cmap=cbar, doshade=shade)
 
     def change_atype(self):
@@ -430,7 +430,7 @@ class PlotAnaglyph(ContextModule):
         None.
 
         """
-        self.mmc.update_atype(atype=self.combobox2.currentText())
+        self.mmc.update_atype(atype=self.cmb_2.currentText())
 
     def change_contours(self):
         """
@@ -443,14 +443,14 @@ class PlotAnaglyph(ContextModule):
         """
         self.rb_docontour.setChecked(True)
 
-        i = self.combobox1.currentIndex()
+        i = self.cmb_1.currentIndex()
         scale = self.slider_scale.value()
         rotang = self.slider_angle.value()
 
         self.cb_shade.setDisabled(True)
-        self.combobox1.setDisabled(True)
-        self.combobox2.setDisabled(True)
-        self.cbox_cbar.setDisabled(True)
+        self.cmb_1.setDisabled(True)
+        self.cmb_2.setDisabled(True)
+        self.cmb_cbar.setDisabled(True)
 
         data = self.indata['Raster']
 
@@ -469,9 +469,9 @@ class PlotAnaglyph(ContextModule):
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
         self.cb_shade.setEnabled(True)
-        self.combobox1.setEnabled(True)
-        self.combobox2.setEnabled(True)
-        self.cbox_cbar.setEnabled(True)
+        self.cmb_1.setEnabled(True)
+        self.cmb_2.setEnabled(True)
+        self.cmb_cbar.setEnabled(True)
 
         self.change_all()
 
@@ -491,7 +491,7 @@ class PlotAnaglyph(ContextModule):
             return
 
         for i in data:
-            self.combobox1.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
         self.change_all()
 
 
