@@ -1879,7 +1879,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        dat2 = self.myparent.combo_overview.currentText()
+        dat2 = self.myparent.cmb_overview.currentText()
 
         extent = self.lmod1.xrange+self.lmod1.yrange
         curlayer = self.myparent.sb_layer.value()

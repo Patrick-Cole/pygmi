@@ -53,6 +53,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.outdata = {}
         self.parent = parent
         self.lmod1 = LithModel()  # actual model
+        self.is_import = False
 
         # General
         self.txtmsg = ''

@@ -74,4 +74,4 @@ pygmi-gui = 'pygmi:main'
 pygmi = 'pygmi:main'
 
 [tool.setuptools.dynamic]
-version = {attr = 'pygmi.__version__'}
+version = {attr = 'pygmi.version.__version__'}

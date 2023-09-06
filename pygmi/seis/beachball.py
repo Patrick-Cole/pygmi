@@ -34,17 +34,18 @@ import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets
 import geopandas as gpd
-from shapely import Polygon, GeometryCollection
-from shapely.validation import make_valid
+from shapely import Polygon, LineString, make_valid
 from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib import patches
-from obspy.imaging.beachball import beach
+from osgeo import ogr, osr
 import scipy.spatial.distance as sdist
 
 from pygmi.misc import BasicModule
+
+osr.UseExceptions()
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -260,7 +261,7 @@ class BeachBall(BasicModule):
         self.dsb_dist.valueChanged.connect(self.change_alg)
         self.rb_geog.toggled.connect(self.change_alg)
 
-    def save_shp(self):
+    def save_shp_new(self):
         """
         Save Beachballs.
 
@@ -301,9 +302,11 @@ class BeachBall(BasicModule):
                  'Dip': [],
                  'Rake': [],
                  'Magnitude': [],
-                 'Quadrant': [],
+                 # 'Quadrant': [],
                  'Depth': [],
                  'geometry': []}
+
+        layerb = {'geometry': []}
 
         # Calculate BeachBall
         for i, idat in enumerate(indata):
@@ -319,24 +322,19 @@ class BeachBall(BasicModule):
             pvert0 = np.transpose([xxx2, yyy2])
 
             poly1 = Polygon(pvert1)
-            poly0 = Polygon(pvert0)
-            poly1b = make_valid_poly(poly1)
-            poly0b = make_valid_poly(poly0)
+            poly0 = LineString(pvert0)
 
-            if poly0b is None or poly1b is None:
-                self.showlog('Problem exporting beachball')
-                continue
+            poly1 = make_valid(poly1)
+            poly0 = make_valid(poly0)
 
-            poly0c = poly0b.difference(poly1b)
-
-            layer['geometry'].append(poly0c)
-            layer['Event'].append(i)
-            layer['Strike'].append(np1[0])
-            layer['Dip'].append(np1[1])
-            layer['Rake'].append(np1[2])
-            layer['Magnitude'].append(idat[-1])
-            layer['Quadrant'].append('Compressional')
-            layer['Depth'].append(depth)
+            layerb['geometry'].append(poly0)
+            # layer['Event'].append(i)
+            # layer['Strike'].append(np1[0])
+            # layer['Dip'].append(np1[1])
+            # layer['Rake'].append(np1[2])
+            # layer['Magnitude'].append(idat[-1])
+            # layer['Quadrant'].append('Compressional')
+            # layer['Depth'].append(depth)
 
             layer['geometry'].append(poly1)
             layer['Event'].append(i)
@@ -344,13 +342,121 @@ class BeachBall(BasicModule):
             layer['Dip'].append(np1[1])
             layer['Rake'].append(np1[2])
             layer['Magnitude'].append(idat[-1])
-            layer['Quadrant'].append('Tensional')
+            # layer['Quadrant'].append('Tensional')
             layer['Depth'].append(depth)
 
         gdf = gpd.GeoDataFrame(layer)
         gdf = gdf.set_crs(4326)
+        gdf.to_file(self.ifile[:-4]+'_polygon.gpkg')
 
-        gdf.to_file(self.ifile+'.shp')
+        gdf = gpd.GeoDataFrame(layerb)
+        gdf = gdf.set_crs(4326)
+        gdf.to_file(self.ifile[:-4]+'_boundary.gpkg')
+
+        return True
+
+    def save_shp(self):
+        """
+        Save Beachballs.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'Shape file (*.shp)'
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(os.path.dirname(filename))
+
+        self.ifile = str(filename)
+
+        indata = self.mmc.data
+
+        if os.path.isfile(self.ifile):
+            tmp = self.ifile[:-4]
+            os.remove(tmp+'.shp')
+            os.remove(tmp+'.shx')
+            os.remove(tmp+'.prj')
+            os.remove(tmp+'.dbf')
+
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        data_source2 = driver.CreateDataSource(self.ifile)
+
+        # create the spatial reference, WGS84
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+        # create the layer
+        layer2 = data_source2.CreateLayer('Fault Plane Solution',
+                                          srs, ogr.wkbPolygon)
+
+        layer2.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Dip', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Rake', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Magnitude', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Quadrant', ogr.OFTString))
+        layer2.CreateField(ogr.FieldDefn('Depth', ogr.OFTReal))
+
+        # Calculate BeachBall
+        for idat in indata:
+            pxy = idat[:2]
+            np1 = idat[3:-1]
+            depth = idat[2]
+            pwidth = self.mmc.pwidth*idat[-1]
+
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
+                                             self.mmc.isgeog,
+                                             self.showlog)
+
+            pvert1 = np.transpose([yyy, xxx])
+            pvert0 = np.transpose([xxx2, yyy2])
+
+            pvert1 = np.vstack([pvert1, pvert1[0]])
+            pvert0 = np.vstack([pvert0, pvert0[0]])
+
+            # Create Geometry
+            outring = ogr.Geometry(ogr.wkbLinearRing)
+            for i in pvert1:
+                outring.AddPoint(i[0], i[1])
+
+            innerring = ogr.Geometry(ogr.wkbLinearRing)
+            for i in pvert0:
+                innerring.AddPoint(i[0], i[1])
+
+            poly = ogr.Geometry(ogr.wkbPolygon)
+            poly.AddGeometry(outring)
+
+            poly1 = ogr.Geometry(ogr.wkbPolygon)
+            poly1.AddGeometry(innerring)
+
+            feature = ogr.Feature(layer2.GetLayerDefn())
+
+            feature.SetField('Strike', np1[0])
+            feature.SetField('Dip', np1[1])
+            feature.SetField('Rake', np1[2])
+            feature.SetField('Magnitude', idat[-1])
+            feature.SetField('Quadrant', 'Compressional (Colour)')
+            feature.SetField('Depth', depth)
+            feature.SetGeometry(poly)
+
+            feature2 = ogr.Feature(layer2.GetLayerDefn())
+            feature2.SetField('Quadrant', 'Tensional (White)')
+            feature2.SetField('Depth', depth)
+            feature2.SetGeometry(poly1)
+            # Create the feature in the layer (shapefile)
+            layer2.CreateFeature(feature2)
+            layer2.CreateFeature(feature)
+            # Destroy the feature to free resources
+            feature.Destroy()
+            feature2.Destroy()
+
+        data_source2.Destroy()
 
         return True
 
@@ -720,39 +826,6 @@ def strikedip(n, e, u):
     return strike, dip
 
 
-def make_valid_poly(poly):
-    """
-    Use make_valid command and return a single polygon.
-
-    Parameters
-    ----------
-    poly : Polygon
-        Shapely polygon.
-
-    Returns
-    -------
-    polynew : Polygon
-        New polygon or None.
-
-    """
-    polynew = make_valid(poly)
-
-    if isinstance(polynew, GeometryCollection) is False:
-        if 'Polygon' in polynew.geom_type:
-            return polynew
-        else:
-            return None
-
-    polynew = [i for i in polynew.geoms if 'Polygon' in i.geom_type]
-
-    if polynew:
-        polynew = polynew[0]
-    else:
-        polynew = None
-
-    return polynew
-
-
 def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     """
     Adapted from code, mij2d.f, created by Chen Ji.
@@ -929,47 +1002,41 @@ def _testfn2():
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation
     from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'qt5')
-
-    patch = beach([20.77, 25, 0], xy=(30, -30), width=1)
-
-    xy0 = patch.get_paths()[0].to_polygons()[0]
-    xy1 = patch.get_paths()[1].to_polygons()[0]
+    # get_ipython().run_line_magic('matplotlib', 'qt5')
 
 
+    np1 = [20.77, 25, 0]
+    # np1 = [150, 87, 1]
+    xxx, yyy, xxx2, yyy2 = beachball(np1, 30, -30, 1, True)
 
-    # ax.add_collection(patch)
-    # plt.show()
-
-    # plt.plot(xy0[:, 0], xy0[:, 1])
-    # plt.show()
-
-    # plt.plot(xy1[:, 0], xy1[:, 1])
-    # plt.show()
-
-    pvert1 = xy1
+    pvert1 = np.transpose([yyy, xxx])
+    pvert0 = np.transpose([xxx2, yyy2])
 
     fig = plt.figure()
     ax = plt.gca()
+    ax.set_aspect('equal')
 
-    bbox = patch.get_window_extent()
-    ax.set_xlim((bbox.xmin, bbox.xmax))
-    ax.set_ylim((bbox.ymin, bbox.ymax))
+    xmin = 29
+    xmax = 31
+    ymin = -31
+    ymax = -29
 
-    graph, = plt.plot([], [],'-.')
+    ax.set_xlim((xmin, xmax))
+    ax.set_ylim((ymin, ymax))
 
-    patch = patches.Polygon(pvert1[:1], edgecolor=(0.0, 0.0, 0.0))
+    # patch = patches.Polygon(pvert1[:1], edgecolor=(0.0, 0.0, 0.0))
+    patch = patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0))
     ax.add_patch(patch)
 
-    def animate(i):
-        patch.set_xy(pvert1[:i])
-        return patch
+    # def animate(i):
+    #     patch.set_xy(pvert1[:i])
+    #     return patch
 
-    ani = FuncAnimation(fig, animate, frames=len(pvert1), interval=50)
+    # ani = FuncAnimation(fig, animate, frames=len(pvert1), interval=50)
     plt.show()
 
     breakpoint()
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
