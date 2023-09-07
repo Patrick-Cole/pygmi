@@ -183,7 +183,7 @@ class BIRRP(BasicModule):
         self.setWindowTitle(r'BIRRP Processing')
 
         vbl = QtWidgets.QVBoxLayout(self)
-        hbl1 = QtWidgets.QHBoxLayout()
+        hbl_1 = QtWidgets.QHBoxLayout()
         self.lay = QtWidgets.QFormLayout()
         self.lay2 = QtWidgets.QFormLayout()
         self.lay3 = QtWidgets.QFormLayout()
@@ -229,18 +229,18 @@ class BIRRP(BasicModule):
             self.lay3.addRow("NSKIP: leading values to skip in "+i,
                              self.nskip[i])
 
-        hbl1.addLayout(self.lay)
-        hbl1.addLayout(self.lay2)
-        hbl1.addLayout(self.lay3)
+        hbl_1.addLayout(self.lay)
+        hbl_1.addLayout(self.lay2)
+        hbl_1.addLayout(self.lay3)
 
-        hbl2 = QtWidgets.QHBoxLayout()
-#        hbl2.addWidget(helpdocs)
-        hbl2.addWidget(buttonbox)
+        hbl_2 = QtWidgets.QHBoxLayout()
+#        hbl_2.addWidget(helpdocs)
+        hbl_2.addWidget(buttonbox)
 
         vbl.addWidget(pb_importbirrp)
-        vbl.addLayout(hbl1)
+        vbl.addLayout(hbl_1)
         vbl.addWidget(pb_runbirrp)
-        vbl.addLayout(hbl2)
+        vbl.addLayout(hbl_2)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

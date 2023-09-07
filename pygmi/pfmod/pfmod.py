@@ -108,8 +108,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         centralwidget = QtWidgets.QWidget(self)
-        verticallayout = QtWidgets.QVBoxLayout(centralwidget)
-        hlayout = QtWidgets.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(centralwidget)
+        hbl = QtWidgets.QHBoxLayout()
 
         helpdocs = menu_default.HelpButton()
 
@@ -122,11 +122,11 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.setWindowTitle('Potential Field Modelling')
 
-        hlayout.addWidget(self.textbrowser)
-        hlayout.addWidget(helpdocs)
-        verticallayout.addLayout(hlayout)
-        verticallayout.addWidget(self.pbar_sub)
-        verticallayout.addWidget(self.pbar_main)
+        hbl.addWidget(self.textbrowser)
+        hbl.addWidget(helpdocs)
+        vbl.addLayout(hbl)
+        vbl.addWidget(self.pbar_sub)
+        vbl.addWidget(self.pbar_main)
 
         helpdocs.clicked.disconnect()
         helpdocs.clicked.connect(self.help_docs)

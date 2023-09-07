@@ -58,7 +58,7 @@ class SatRatios(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
@@ -78,14 +78,14 @@ class SatRatios(BasicModule):
 
         self.setWindowTitle('Band Ratio Calculations')
 
-        gridlayout_main.addWidget(lbl_sensor, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_ratios, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
-        gridlayout_main.addWidget(btn_invert, 2, 0, 1, 2)
+        gl_main.addWidget(lbl_sensor, 0, 0, 1, 1)
+        gl_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
+        gl_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
+        gl_main.addWidget(btn_invert, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -362,7 +362,7 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.cind')
@@ -389,16 +389,16 @@ class ConditionIndices(BasicModule):
 
         self.setWindowTitle('Condition Indices Calculations')
 
-        gridlayout_main.addWidget(lbl_sensor, 0, 0, 1, 2)
-        gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_index, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.combo_index, 1, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_ratios, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.lw_ratios, 2, 1, 1, 1)
-        gridlayout_main.addWidget(btn_invert, 3, 0, 1, 2)
+        gl_main.addWidget(lbl_sensor, 0, 0, 1, 2)
+        gl_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_index, 1, 0, 1, 1)
+        gl_main.addWidget(self.combo_index, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_ratios, 2, 0, 1, 1)
+        gl_main.addWidget(self.lw_ratios, 2, 1, 1, 1)
+        gl_main.addWidget(btn_invert, 3, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

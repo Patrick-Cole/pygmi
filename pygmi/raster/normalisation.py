@@ -62,29 +62,29 @@ class Normalisation(BasicModule):
         None.
 
         """
-        verticallayout = QtWidgets.QVBoxLayout(self)
-        horizontallayout = QtWidgets.QHBoxLayout()
+        vbl_1 = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
 
         self.rb_interval.setChecked(True)
 
         groupbox = QtWidgets.QGroupBox('Normalisation/Scaling')
-        verticallayout_2 = QtWidgets.QVBoxLayout(groupbox)
+        vbl_2 = QtWidgets.QVBoxLayout(groupbox)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        verticallayout_2.addWidget(self.rb_interval)
-        verticallayout_2.addWidget(self.rb_mean)
-        verticallayout_2.addWidget(self.rb_median)
-        verticallayout_2.addWidget(self.rb_8bit)
+        vbl_2.addWidget(self.rb_interval)
+        vbl_2.addWidget(self.rb_mean)
+        vbl_2.addWidget(self.rb_median)
+        vbl_2.addWidget(self.rb_8bit)
 
-        horizontallayout.addWidget(helpdocs)
-        horizontallayout.addWidget(buttonbox)
+        hbl.addWidget(helpdocs)
+        hbl.addWidget(buttonbox)
 
-        verticallayout.addWidget(groupbox)
-        verticallayout.addLayout(horizontallayout)
+        vbl_1.addWidget(groupbox)
+        vbl_1.addLayout(hbl)
 
         self.setWindowTitle('Normalisation')
 

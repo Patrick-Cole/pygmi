@@ -215,13 +215,13 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        grid_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        infolayout = QtWidgets.QVBoxLayout(self.group_info)
+        vbl_info = QtWidgets.QVBoxLayout(self.group_info)
         pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
 
         self.lbl_info.setWordWrap(True)
@@ -230,23 +230,23 @@ class AnalSpec(BasicModule):
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_feature = QtWidgets.QLabel('Feature:')
 
-        infolayout.addWidget(self.lbl_info)
+        vbl_info.addWidget(self.lbl_info)
 
-        grid_main.addWidget(lbl_combo, 0, 1)
-        grid_main.addWidget(self.combo, 0, 2)
-        grid_main.addWidget(lbl_feature, 1, 1)
-        grid_main.addWidget(self.combo_feature, 1, 2)
-        grid_main.addWidget(self.cb_rot, 2, 1)
-        grid_main.addWidget(self.cb_hull, 2, 2)
-        grid_main.addWidget(pb_speclib, 3, 1, 1, 2)
-        grid_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
+        gl_main.addWidget(lbl_combo, 0, 1)
+        gl_main.addWidget(self.combo, 0, 2)
+        gl_main.addWidget(lbl_feature, 1, 1)
+        gl_main.addWidget(self.combo_feature, 1, 2)
+        gl_main.addWidget(self.cb_rot, 2, 1)
+        gl_main.addWidget(self.cb_hull, 2, 2)
+        gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
+        gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
 
-        grid_main.addWidget(self.group_info, 5, 1, 8, 2)
+        gl_main.addWidget(self.group_info, 5, 1, 8, 2)
 
-        grid_main.addWidget(self.map, 0, 0, 10, 1)
-        grid_main.addWidget(self.mpl_toolbar, 11, 0)
+        gl_main.addWidget(self.map, 0, 0, 10, 1)
+        gl_main.addWidget(self.mpl_toolbar, 11, 0)
 
-        grid_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
+        gl_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
 
         self.combo_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
@@ -522,7 +522,7 @@ class ProcFeatures(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.pfeat')
         lbl_ratios = QtWidgets.QLabel('Product:')
@@ -542,15 +542,15 @@ class ProcFeatures(BasicModule):
 
         self.setWindowTitle('Process Hyperspectral Features')
 
-        gridlayout_main.addWidget(lbl_ratios, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_details, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.tablewidget, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.cb_filtercheck, 3, 0, 1, 2)
-        gridlayout_main.addWidget(self.cb_rfiltcheck, 4, 0, 1, 2)
+        gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
+        gl_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_details, 2, 0, 1, 1)
+        gl_main.addWidget(self.tablewidget, 2, 1, 1, 1)
+        gl_main.addWidget(self.cb_filtercheck, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_rfiltcheck, 4, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         self.cb_ratios.currentIndexChanged.connect(self.product_change)
         self.cb_filtercheck.stateChanged.connect(self.product_change)

@@ -71,7 +71,7 @@ class EquationEditor(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         lbl_1 = QtWidgets.QLabel('Data Band Key:')
         lbl_2 = QtWidgets.QLabel('Output Equation:')
@@ -129,15 +129,15 @@ class EquationEditor(BasicModule):
                '</ul>')
         self.textbrowser2.setHtml(tmp)
 
-        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
-        gridlayout.addWidget(self.textbrowser, 1, 0, 1, 2)
-        gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
-        gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_bands, 4, 1, 1, 1)
-        gridlayout.addWidget(self.dtype, 6, 0, 1, 1)
-        gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
-        gridlayout.addWidget(self.textbrowser2, 7, 0, 1, 2)
-        gridlayout.addWidget(buttonbox, 8, 0, 1, 2)
+        gl_1.addWidget(lbl_2, 0, 0, 1, 1)
+        gl_1.addWidget(self.textbrowser, 1, 0, 1, 2)
+        gl_1.addWidget(lbl_1, 3, 0, 1, 1)
+        gl_1.addWidget(self.combobox, 4, 0, 1, 1)
+        gl_1.addWidget(self.lbl_bands, 4, 1, 1, 1)
+        gl_1.addWidget(self.dtype, 6, 0, 1, 1)
+        gl_1.addWidget(lbl_3, 5, 0, 1, 1)
+        gl_1.addWidget(self.textbrowser2, 7, 0, 1, 2)
+        gl_1.addWidget(buttonbox, 8, 0, 1, 2)
 
         self.combobox.currentIndexChanged.connect(self.combo)
         buttonbox.accepted.connect(self.accept)

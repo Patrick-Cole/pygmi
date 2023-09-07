@@ -144,7 +144,7 @@ class DataGrid(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
         lbl_band = QtWidgets.QLabel('Column to Grid:')
@@ -168,20 +168,20 @@ class DataGrid(BasicModule):
 
         self.setWindowTitle('Dataset Gridding')
 
-        gridlayout_main.addWidget(lbl_method, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.grid_method, 0, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_dxy, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dxy, 1, 1, 1, 1)
-        gridlayout_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
-        gridlayout_main.addWidget(lbl_band, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 4, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_null, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_null, 5, 1, 1, 1)
-        gridlayout_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
-        gridlayout_main.addWidget(self.bdist, 6, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 7, 1, 1, 3)
+        gl_main.addWidget(lbl_method, 0, 0, 1, 1)
+        gl_main.addWidget(self.grid_method, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_dxy, 1, 0, 1, 1)
+        gl_main.addWidget(self.dsb_dxy, 1, 1, 1, 1)
+        gl_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
+        gl_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
+        gl_main.addWidget(lbl_band, 4, 0, 1, 1)
+        gl_main.addWidget(self.dataid, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_null, 5, 0, 1, 1)
+        gl_main.addWidget(self.dsb_null, 5, 1, 1, 1)
+        gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
+        gl_main.addWidget(self.bdist, 6, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 7, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 7, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -380,7 +380,7 @@ class DataReproj(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
 
@@ -390,10 +390,10 @@ class DataReproj(BasicModule):
 
         self.setWindowTitle('Dataset Reprojection')
 
-        gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 1, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 1, 1, 1, 1)
+        gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
+        gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 1, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 1, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -528,7 +528,7 @@ class Metadata(ContextModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
         lbl_bandid = QtWidgets.QLabel('Source:')
@@ -539,10 +539,10 @@ class Metadata(ContextModule):
 
         self.setWindowTitle('Vector Dataset Metadata')
 
-        gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
-        gridlayout_main.addWidget(self.proj, 2, 0, 1, 4)
-        gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
+        gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
+        gl_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
+        gl_main.addWidget(self.proj, 2, 0, 1, 4)
+        gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

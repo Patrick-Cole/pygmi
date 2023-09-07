@@ -169,60 +169,60 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_profile_linethick.setPrefix('Line Thickness: ')
 
         # Set groupboxes and layouts
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
 
-        hl_proftype = QtWidgets.QHBoxLayout()
-        hl_proftype.addWidget(lbl_prof_type)
-        hl_proftype.addWidget(self.cmb_proftype)
+        hbl_proftype = QtWidgets.QHBoxLayout()
+        hbl_proftype.addWidget(lbl_prof_type)
+        hbl_proftype.addWidget(self.cmb_proftype)
 
-        hl_profnum = QtWidgets.QHBoxLayout()
-        hl_profnum.addWidget(self.sb_profnum)
-        hl_profnum.addWidget(self.hs_profnum)
+        hbl_profnum = QtWidgets.QHBoxLayout()
+        hbl_profnum.addWidget(self.sb_profnum)
+        hbl_profnum.addWidget(self.hs_profnum)
 
-        hl_cprofnum = QtWidgets.QHBoxLayout()
-        hl_cprofnum.addWidget(self.sb_cprofnum)
-        hl_cprofnum.addWidget(self.hs_cprofnum)
+        hbl_cprofnum = QtWidgets.QHBoxLayout()
+        hbl_cprofnum.addWidget(self.sb_cprofnum)
+        hbl_cprofnum.addWidget(self.hs_cprofnum)
 
-        hl_layer = QtWidgets.QHBoxLayout()
-        hl_layer.addWidget(self.sb_layer)
-        hl_layer.addWidget(self.hs_layer)
+        hbl_layer = QtWidgets.QHBoxLayout()
+        hbl_layer.addWidget(self.sb_layer)
+        hbl_layer.addWidget(self.hs_layer)
 
-        hl_pics = QtWidgets.QHBoxLayout()
-        hl_pics.addWidget(self.cmb_overview)
-        hl_pics.addWidget(self.hs_overview)
-        hl_pics.addWidget(self.hs_sideview)
+        hbl_pics = QtWidgets.QHBoxLayout()
+        hbl_pics.addWidget(self.cmb_overview)
+        hbl_pics.addWidget(self.hs_overview)
+        hbl_pics.addWidget(self.hs_sideview)
 
         self.gb_cprof = QtWidgets.QGroupBox('Custom Profile')
-        hl_cprof = QtWidgets.QHBoxLayout(self.gb_cprof)
-        hl_cprof.addWidget(pb_cprof_add)
-        hl_cprof.addWidget(pb_cprof_delete)
+        hbl_cprof = QtWidgets.QHBoxLayout(self.gb_cprof)
+        hbl_cprof.addWidget(pb_cprof_add)
+        hbl_cprof.addWidget(pb_cprof_delete)
         self.gb_cprof.setHidden(True)
 
         self.gb_dir = QtWidgets.QGroupBox('Profile Orientation')
-        hl_dir = QtWidgets.QHBoxLayout(self.gb_dir)
-        hl_dir.addWidget(self.dial_prof_dir)
-        hl_dir.addWidget(self.sb_prof_dir)
+        hbl_dir = QtWidgets.QHBoxLayout(self.gb_dir)
+        hbl_dir.addWidget(self.dial_prof_dir)
+        hbl_dir.addWidget(self.sb_prof_dir)
 
         vl_plots = QtWidgets.QVBoxLayout()
         vl_plots.addWidget(self.mpl_toolbar)
         vl_plots.addWidget(self.mmc)
-        vl_plots.addLayout(hl_pics)
+        vl_plots.addLayout(hbl_pics)
 
         vl_tools = QtWidgets.QVBoxLayout()
-        vl_tools.addLayout(hl_proftype)
+        vl_tools.addLayout(hbl_proftype)
         vl_tools.addWidget(self.gb_dir)
         vl_tools.addWidget(self.gb_cprof)
-        vl_tools.addLayout(hl_profnum)
-        vl_tools.addLayout(hl_cprofnum)
-        vl_tools.addLayout(hl_layer)
+        vl_tools.addLayout(hbl_profnum)
+        vl_tools.addLayout(hbl_cprofnum)
+        vl_tools.addLayout(hbl_layer)
         vl_tools.addWidget(self.lw_prof_defs)
         vl_tools.addWidget(self.sb_profile_linethick)
         vl_tools.addWidget(pb_rcopy)
         vl_tools.addWidget(pb_lbound)
         vl_tools.addWidget(pb_export_csv)
 
-        gridlayout.addLayout(vl_plots, 0, 0, 8, 1)
-        gridlayout.addLayout(vl_tools, 0, 1, 8, 1)
+        gl_1.addLayout(vl_plots, 0, 0, 8, 1)
+        gl_1.addLayout(vl_tools, 0, 1, 8, 1)
 
         # Buttons etc
         self.sb_profile_linethick.valueChanged.connect(self.setwidth)
@@ -2209,27 +2209,27 @@ class LithBound(QtWidgets.QDialog):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         lbl_3 = QtWidgets.QLabel('Lithologies Above Layer')
         lbl_4 = QtWidgets.QLabel('Lithologies Below Layer')
 
-        gridlayout.addWidget(lbl_3, 0, 0, 1, 1)
+        gl_1.addWidget(lbl_3, 0, 0, 1, 1)
         self.lw_lithupper.setSelectionMode(
             QtWidgets.QAbstractItemView.SingleSelection)
-        gridlayout.addWidget(self.lw_lithupper, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_4, 1, 0, 1, 1)
+        gl_1.addWidget(self.lw_lithupper, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_4, 1, 0, 1, 1)
         self.lw_lithlower.setSelectionMode(
             QtWidgets.QAbstractItemView.SingleSelection)
-        gridlayout.addWidget(self.lw_lithlower, 1, 1, 1, 1)
+        gl_1.addWidget(self.lw_lithlower, 1, 1, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
         self.rb_depth.setChecked(True)
 
-        gridlayout.addWidget(self.rb_depth, 2, 0, 1, 2)
-        gridlayout.addWidget(self.rb_height, 3, 0, 1, 2)
-        gridlayout.addWidget(self.buttonbox, 4, 0, 1, 2)
+        gl_1.addWidget(self.rb_depth, 2, 0, 1, 2)
+        gl_1.addWidget(self.rb_height, 3, 0, 1, 2)
+        gl_1.addWidget(self.buttonbox, 4, 0, 1, 2)
 
         self.setWindowTitle('Add Lithological Boundary')
 
@@ -2375,7 +2375,7 @@ class RangedCopy(QtWidgets.QDialog):
         """
         self.setWindowTitle('Ranged Copy')
 
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
@@ -2408,29 +2408,29 @@ class RangedCopy(QtWidgets.QDialog):
         self.sb_master.setValue(rval)
 
         gb_target = QtWidgets.QGroupBox('Target:')
-        vl_dir = QtWidgets.QHBoxLayout(gb_target)
-        vl_dir.addWidget(self.rb_sideview)
-        vl_dir.addWidget(self.rb_overview)
+        hbl_dir = QtWidgets.QHBoxLayout(gb_target)
+        hbl_dir.addWidget(self.rb_sideview)
+        hbl_dir.addWidget(self.rb_overview)
 
-        gridlayout.addWidget(gb_target, 0, 0, 1, 2)
+        gl_1.addWidget(gb_target, 0, 0, 1, 2)
 
-        gridlayout.addWidget(lbl_2, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sb_master, 1, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 1, 0, 1, 1)
+        gl_1.addWidget(self.sb_master, 1, 1, 1, 1)
 
-        gridlayout.addWidget(lbl_1, 2, 0, 1, 1)
-        gridlayout.addWidget(self.sb_start, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 2, 0, 1, 1)
+        gl_1.addWidget(self.sb_start, 2, 1, 1, 1)
 
-        gridlayout.addWidget(lbl_5, 3, 0, 1, 1)
-        gridlayout.addWidget(self.sb_end, 3, 1, 1, 1)
+        gl_1.addWidget(lbl_5, 3, 0, 1, 1)
+        gl_1.addWidget(self.sb_end, 3, 1, 1, 1)
 
-        gridlayout.addWidget(lbl_3, 4, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithcopy, 4, 1, 1, 1)
+        gl_1.addWidget(lbl_3, 4, 0, 1, 1)
+        gl_1.addWidget(self.lw_lithcopy, 4, 1, 1, 1)
 
-        gridlayout.addWidget(lbl_4, 5, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithdel, 5, 1, 1, 1)
+        gl_1.addWidget(lbl_4, 5, 0, 1, 1)
+        gl_1.addWidget(self.lw_lithdel, 5, 1, 1, 1)
 
-        gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 6, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -2610,8 +2610,8 @@ class ImportPicture(BasicModule):
 
         """
         groupbox = QtWidgets.QGroupBox('Profile Coordinates')
-        gridlayout_2 = QtWidgets.QGridLayout(self)
-        gridlayout_3 = QtWidgets.QGridLayout(groupbox)
+        gl_2 = QtWidgets.QGridLayout(self)
+        gl_3 = QtWidgets.QGridLayout(groupbox)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
 
@@ -2658,19 +2658,19 @@ class ImportPicture(BasicModule):
 
         self.setWindowTitle('New Custom Profile')
 
-        gridlayout_2.addWidget(groupbox, 0, 0, 1, 2)
-        gridlayout_2.addWidget(self.cb_getcoords, 1, 0, 1, 1)
-        gridlayout_2.addWidget(pb_import, 2, 0, 1, 1)
-        gridlayout_2.addWidget(self.importfile, 2, 1, 1, 1)
-        gridlayout_2.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_2.addWidget(buttonbox, 3, 1, 1, 1)
+        gl_2.addWidget(groupbox, 0, 0, 1, 2)
+        gl_2.addWidget(self.cb_getcoords, 1, 0, 1, 1)
+        gl_2.addWidget(pb_import, 2, 0, 1, 1)
+        gl_2.addWidget(self.importfile, 2, 1, 1, 1)
+        gl_2.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_2.addWidget(buttonbox, 3, 1, 1, 1)
 
-        gridlayout_3.addWidget(self.dsb_x1, 2, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_y1, 2, 1, 1, 1)
-        gridlayout_3.addWidget(self.dsb_x2, 4, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_y2, 4, 1, 1, 1)
-        gridlayout_3.addWidget(self.dsb_zmax, 5, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_zmin, 5, 1, 1, 1)
+        gl_3.addWidget(self.dsb_x1, 2, 0, 1, 1)
+        gl_3.addWidget(self.dsb_y1, 2, 1, 1, 1)
+        gl_3.addWidget(self.dsb_x2, 4, 0, 1, 1)
+        gl_3.addWidget(self.dsb_y2, 4, 1, 1, 1)
+        gl_3.addWidget(self.dsb_zmax, 5, 0, 1, 1)
+        gl_3.addWidget(self.dsb_zmin, 5, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

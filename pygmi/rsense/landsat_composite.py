@@ -66,7 +66,7 @@ class LandsatComposite(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.landsat_composite')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
@@ -83,12 +83,12 @@ class LandsatComposite(BasicModule):
 
         self.setWindowTitle('Landsat Temporal Composite')
 
-        gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_tday, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.sb_tday, 2, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
+        gl_main.addWidget(pb_idirlist, 1, 0, 1, 1)
+        gl_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_tday, 2, 0, 1, 1)
+        gl_main.addWidget(self.sb_tday, 2, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 5, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

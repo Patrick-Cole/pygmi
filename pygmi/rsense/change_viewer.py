@@ -199,50 +199,50 @@ class SceneViewer(BasicModule):
         None.
 
         """
-        vlayout = QtWidgets.QVBoxLayout()
-        vlayout2 = QtWidgets.QVBoxLayout()
-        hlayout = QtWidgets.QHBoxLayout()
-        hlayoutmain = QtWidgets.QHBoxLayout(self)
+        vbl_1 = QtWidgets.QVBoxLayout()
+        vbl_2 = QtWidgets.QVBoxLayout()
+        hbl = QtWidgets.QHBoxLayout()
+        hblmain = QtWidgets.QHBoxLayout(self)
 
         self.setWindowTitle("View Change Data")
         self.slider.setTracking(False)
 
         gbox1 = QtWidgets.QGroupBox('Display Type')
-        v1 = QtWidgets.QVBoxLayout()
-        gbox1.setLayout(v1)
+        vbl_1 = QtWidgets.QVBoxLayout()
+        gbox1.setLayout(vbl_1)
 
         gbox2 = QtWidgets.QGroupBox('Data Bands')
-        v2 = QtWidgets.QVBoxLayout()
-        gbox2.setLayout(v2)
+        vbl_2 = QtWidgets.QVBoxLayout()
+        gbox2.setLayout(vbl_2)
 
         # gbox2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
         #                     QtWidgets.QSizePolicy.Preferred)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
                                        QtWidgets.QSizePolicy.Expanding)
 
-        v2.addWidget(self.cbox_band1)
-        v2.addWidget(self.cbox_band2)
-        v2.addWidget(self.cbox_band3)
+        vbl_2.addWidget(self.cbox_band1)
+        vbl_2.addWidget(self.cbox_band2)
+        vbl_2.addWidget(self.cbox_band3)
 
         actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
         self.manip.addItems(actions)
 
-        v1.addWidget(self.manip)
+        vbl_1.addWidget(self.manip)
 
-        hlayout.addWidget(self.button2)
-        hlayout.addWidget(self.button3)
-        vlayout.addWidget(self.canvas)
-        vlayout.addWidget(self.mpl_toolbar)
-        vlayout.addWidget(self.slider)
-        vlayout.addLayout(hlayout)
+        hbl.addWidget(self.button2)
+        hbl.addWidget(self.button3)
+        vbl_1.addWidget(self.canvas)
+        vbl_1.addWidget(self.mpl_toolbar)
+        vbl_1.addWidget(self.slider)
+        vbl_1.addLayout(hbl)
 
-        vlayout2.addWidget(gbox1)
-        vlayout2.addWidget(gbox2)
-        vlayout2.addWidget(self.button1)
-        vlayout2.addItem(spacer)
+        vbl_2.addWidget(gbox1)
+        vbl_2.addWidget(gbox2)
+        vbl_2.addWidget(self.button1)
+        vbl_2.addItem(spacer)
 
-        hlayoutmain.addLayout(vlayout2)
-        hlayoutmain.addLayout(vlayout)
+        hblmain.addLayout(vbl_2)
+        hblmain.addLayout(vbl_1)
 
         self.curimage = 0
 

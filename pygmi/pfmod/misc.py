@@ -283,7 +283,7 @@ class MergeMod3D(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
         lbl_master = QtWidgets.QLabel('Master Dataset:')
@@ -295,13 +295,13 @@ class MergeMod3D(BasicModule):
 
         self.setWindowTitle('3D Model Merge')
 
-        gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_master, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_master, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_master, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_slave, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gl_main.addWidget(lbl_slave, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

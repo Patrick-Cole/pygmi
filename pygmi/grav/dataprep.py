@@ -62,7 +62,7 @@ class ProcessData(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
         lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
@@ -80,21 +80,21 @@ class ProcessData(BasicModule):
 
         self.setWindowTitle('Gravity Data Processing')
 
-        gridlayout_main.addWidget(lbl_kstat, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.knownstat, 0, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_kbase, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.knownbase, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_kstat, 0, 0, 1, 1)
+        gl_main.addWidget(self.knownstat, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_kbase, 1, 0, 1, 1)
+        gl_main.addWidget(self.knownbase, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(pb_calcbase, 2, 0, 1, 2)
+        gl_main.addWidget(pb_calcbase, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(lbl_density, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.density, 3, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_absbase, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.absbase, 4, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_bthres, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.basethres, 5, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(lbl_density, 3, 0, 1, 1)
+        gl_main.addWidget(self.density, 3, 1, 1, 1)
+        gl_main.addWidget(lbl_absbase, 4, 0, 1, 1)
+        gl_main.addWidget(self.absbase, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_bthres, 5, 0, 1, 1)
+        gl_main.addWidget(self.basethres, 5, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

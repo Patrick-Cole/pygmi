@@ -58,7 +58,7 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         # helpdocs = menu_default.HelpButton('pygmi.seis.utils.cordesc')
         pb_textfile = QtWidgets.QPushButton('Load Description List')
@@ -69,11 +69,11 @@ class CorrectDescriptions(BasicModule):
 
         self.setWindowTitle(r'Correct Descriptions')
 
-        gridlayout_main.addWidget(self.textfile, 0, 0, 1, 1)
-        gridlayout_main.addWidget(pb_textfile, 0, 1, 1, 1)
+        gl_main.addWidget(self.textfile, 0, 0, 1, 1)
+        gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
 
-        # gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        # gl_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

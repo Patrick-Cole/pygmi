@@ -69,7 +69,7 @@ class Continuation(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
         lbl_band = QtWidgets.QLabel('Band to perform continuation:')
@@ -88,15 +88,15 @@ class Continuation(BasicModule):
 
         self.setWindowTitle('Continuation')
 
-        gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_band, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_cont, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_cont, 1, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_height, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gl_main.addWidget(lbl_cont, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_cont, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_height, 2, 0, 1, 1)
+        gl_main.addWidget(self.dsb_height, 2, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -266,7 +266,7 @@ class DataLayerStack(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.'
                                            'datalayerstack')
@@ -284,13 +284,13 @@ class DataLayerStack(BasicModule):
 
         self.setWindowTitle('Dataset Layer Stack and Resample')
 
-        gridlayout_main.addWidget(lbl_dxy, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gridlayout_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.cb_cmask, 3, 0, 1, 2)
-        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_dxy, 0, 0, 1, 1)
+        gl_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
+        gl_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
+        gl_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
+        gl_main.addWidget(self.cb_cmask, 3, 0, 1, 2)
+        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 4, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -464,7 +464,7 @@ class DataMerge(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
@@ -481,24 +481,24 @@ class DataMerge(BasicModule):
         self.setWindowTitle('Dataset Mosaic')
 
         gb_merge_method = QtWidgets.QGroupBox('Mosiac method')
-        gl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
+        vbl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
 
-        gl_merge_method.addWidget(self.rb_median)
-        gl_merge_method.addWidget(self.rb_first)
-        gl_merge_method.addWidget(self.rb_last)
-        gl_merge_method.addWidget(self.rb_min)
-        gl_merge_method.addWidget(self.rb_max)
+        vbl_merge_method.addWidget(self.rb_median)
+        vbl_merge_method.addWidget(self.rb_first)
+        vbl_merge_method.addWidget(self.rb_last)
+        vbl_merge_method.addWidget(self.rb_min)
+        vbl_merge_method.addWidget(self.rb_max)
 
-        gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
-        gridlayout_main.addWidget(pb_sfile, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.sfile, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.cb_files_diff, 3, 0, 1, 2)
-        gridlayout_main.addWidget(self.cb_shift_to_median, 4, 0, 1, 2)
-        gridlayout_main.addWidget(gb_merge_method, 5, 0, 1, 2)
-        gridlayout_main.addWidget(self.cb_bands_to_files, 6, 0, 1, 2)
-        gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 7, 1, 1, 1)
+        gl_main.addWidget(pb_idirlist, 1, 0, 1, 1)
+        gl_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gl_main.addWidget(pb_sfile, 2, 0, 1, 1)
+        gl_main.addWidget(self.sfile, 2, 1, 1, 1)
+        gl_main.addWidget(self.cb_files_diff, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_shift_to_median, 4, 0, 1, 2)
+        gl_main.addWidget(gb_merge_method, 5, 0, 1, 2)
+        gl_main.addWidget(self.cb_bands_to_files, 6, 0, 1, 2)
+        gl_main.addWidget(helpdocs, 7, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 7, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -981,7 +981,7 @@ class DataReproj(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
 
@@ -991,10 +991,10 @@ class DataReproj(BasicModule):
 
         self.setWindowTitle('Dataset Reprojection')
 
-        gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 1, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 1, 1, 1, 1)
+        gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
+        gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 1, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 1, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -1207,7 +1207,7 @@ class GroupProj(QtWidgets.QWidget):
 
         self.wkt = ''
 
-        self.gridlayout = QtWidgets.QGridLayout(self)
+        self.gl_1 = QtWidgets.QGridLayout(self)
         self.groupbox = QtWidgets.QGroupBox(title)
         self.cmb_datum = QtWidgets.QComboBox()
         self.cmb_proj = QtWidgets.QComboBox()
@@ -1215,12 +1215,12 @@ class GroupProj(QtWidgets.QWidget):
         self.lbl_wkt = QtWidgets.QTextBrowser()
         self.lbl_wkt.setWordWrapMode(0)
 
-        self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
+        self.gl_1.addWidget(self.groupbox, 1, 0, 1, 2)
 
-        gridlayout = QtWidgets.QGridLayout(self.groupbox)
-        gridlayout.addWidget(self.cmb_datum, 0, 0, 1, 1)
-        gridlayout.addWidget(self.cmb_proj, 1, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_wkt, 2, 0, 1, 1)
+        gl_1 = QtWidgets.QGridLayout(self.groupbox)
+        gl_1.addWidget(self.cmb_datum, 0, 0, 1, 1)
+        gl_1.addWidget(self.cmb_proj, 1, 0, 1, 1)
+        gl_1.addWidget(self.lbl_wkt, 2, 0, 1, 1)
 
         self.epsg_proj = getepsgcodes()
         self.epsg_proj[r'Current / Current'] = self.wkt
@@ -1375,11 +1375,11 @@ class Metadata(ContextModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         groupbox = QtWidgets.QGroupBox('Dataset')
 
-        gridlayout = QtWidgets.QGridLayout(groupbox)
+        gl_1 = QtWidgets.QGridLayout(groupbox)
         lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
         lbl_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
         lbl_xdim = QtWidgets.QLabel('X Dimension:')
@@ -1405,39 +1405,39 @@ class Metadata(ContextModule):
         self.setWindowTitle('Dataset Metadata')
         self.date.setCalendarPopup(True)
 
-        gridlayout_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
-        gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
-        gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
+        gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
+        gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
+        gl_main.addWidget(groupbox, 2, 0, 1, 2)
+        gl_main.addWidget(self.proj, 2, 2, 1, 2)
+        gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
-        gridlayout.addWidget(lbl_tlx, 0, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_tlx, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_tly, 1, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_tly, 1, 1, 1, 1)
-        gridlayout.addWidget(lbl_xdim, 2, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_xdim, 2, 1, 1, 1)
-        gridlayout.addWidget(lbl_ydim, 3, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_ydim, 3, 1, 1, 1)
-        gridlayout.addWidget(lbl_null, 4, 0, 1, 1)
-        gridlayout.addWidget(self.txt_null, 4, 1, 1, 1)
-        gridlayout.addWidget(lbl_rows, 5, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_rows, 5, 1, 1, 1)
-        gridlayout.addWidget(lbl_cols, 6, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_cols, 6, 1, 1, 1)
-        gridlayout.addWidget(lbl_min, 7, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_min, 7, 1, 1, 1)
-        gridlayout.addWidget(lbl_max, 8, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_max, 8, 1, 1, 1)
-        gridlayout.addWidget(lbl_mean, 9, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_mean, 9, 1, 1, 1)
-        gridlayout.addWidget(lbl_units, 10, 0, 1, 1)
-        gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
-        gridlayout.addWidget(lbl_dtype, 11, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_dtype, 11, 1, 1, 1)
-        gridlayout.addWidget(lbl_date, 12, 0, 1, 1)
-        gridlayout.addWidget(self.date, 12, 1, 1, 1)
+        gl_1.addWidget(lbl_tlx, 0, 0, 1, 1)
+        gl_1.addWidget(self.dsb_tlx, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_tly, 1, 0, 1, 1)
+        gl_1.addWidget(self.dsb_tly, 1, 1, 1, 1)
+        gl_1.addWidget(lbl_xdim, 2, 0, 1, 1)
+        gl_1.addWidget(self.dsb_xdim, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_ydim, 3, 0, 1, 1)
+        gl_1.addWidget(self.dsb_ydim, 3, 1, 1, 1)
+        gl_1.addWidget(lbl_null, 4, 0, 1, 1)
+        gl_1.addWidget(self.txt_null, 4, 1, 1, 1)
+        gl_1.addWidget(lbl_rows, 5, 0, 1, 1)
+        gl_1.addWidget(self.lbl_rows, 5, 1, 1, 1)
+        gl_1.addWidget(lbl_cols, 6, 0, 1, 1)
+        gl_1.addWidget(self.lbl_cols, 6, 1, 1, 1)
+        gl_1.addWidget(lbl_min, 7, 0, 1, 1)
+        gl_1.addWidget(self.lbl_min, 7, 1, 1, 1)
+        gl_1.addWidget(lbl_max, 8, 0, 1, 1)
+        gl_1.addWidget(self.lbl_max, 8, 1, 1, 1)
+        gl_1.addWidget(lbl_mean, 9, 0, 1, 1)
+        gl_1.addWidget(self.lbl_mean, 9, 1, 1, 1)
+        gl_1.addWidget(lbl_units, 10, 0, 1, 1)
+        gl_1.addWidget(self.led_units, 10, 1, 1, 1)
+        gl_1.addWidget(lbl_dtype, 11, 0, 1, 1)
+        gl_1.addWidget(self.lbl_dtype, 11, 1, 1, 1)
+        gl_1.addWidget(lbl_date, 12, 0, 1, 1)
+        gl_1.addWidget(self.date, 12, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

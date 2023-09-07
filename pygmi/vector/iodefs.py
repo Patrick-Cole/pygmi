@@ -67,7 +67,7 @@ class ImportXYZ(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.'
                                            'importxyzdata')
@@ -86,19 +86,19 @@ class ImportXYZ(BasicModule):
 
         self.setWindowTitle(r'Import XYZ Data')
 
-        gridlayout_main.addWidget(lbl_xchan, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_xchan, 0, 0, 1, 1)
+        gl_main.addWidget(self.xchan, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_ychan, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_ychan, 1, 0, 1, 1)
+        gl_main.addWidget(self.ychan, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_nodata, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
+        gl_main.addWidget(lbl_nodata, 2, 0, 1, 1)
+        gl_main.addWidget(self.nodata, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
 
-        gridlayout_main.addWidget(self.proj, 3, 0, 1, 4)
+        gl_main.addWidget(self.proj, 3, 0, 1, 4)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

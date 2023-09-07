@@ -71,7 +71,7 @@ class MNF(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.mnf')
         lbl_comps = QtWidgets.QLabel('Number of components:')
@@ -87,15 +87,15 @@ class MNF(BasicModule):
 
         self.setWindowTitle('Minimum Noise Fraction')
 
-        gridlayout_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
-        gridlayout_main.addWidget(lbl_comps, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.sb_comps, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.rb_noise_hv, 3, 0, 1, 2)
-        gridlayout_main.addWidget(self.rb_noise_diag, 4, 0, 1, 2)
-        gridlayout_main.addWidget(self.rb_noise_quad, 5, 0, 1, 2)
+        gl_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
+        gl_main.addWidget(lbl_comps, 2, 0, 1, 1)
+        gl_main.addWidget(self.sb_comps, 2, 1, 1, 1)
+        gl_main.addWidget(self.rb_noise_hv, 3, 0, 1, 2)
+        gl_main.addWidget(self.rb_noise_diag, 4, 0, 1, 2)
+        gl_main.addWidget(self.rb_noise_quad, 5, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -273,7 +273,7 @@ class PCA(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.pca')
         lbl_comps = QtWidgets.QLabel('Number of components:')
@@ -290,13 +290,13 @@ class PCA(BasicModule):
 
         self.setWindowTitle('Principal Component Analysis')
 
-        gridlayout_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
-        gridlayout_main.addWidget(lbl_comps, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.sb_comps, 2, 1, 1, 1)
-        gridlayout_main.addWidget(self.cb_fitlist, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
+        gl_main.addWidget(lbl_comps, 2, 0, 1, 1)
+        gl_main.addWidget(self.sb_comps, 2, 1, 1, 1)
+        gl_main.addWidget(self.cb_fitlist, 3, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

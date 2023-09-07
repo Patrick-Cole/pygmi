@@ -566,7 +566,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar = QtWidgets.QToolBar()
 
         self.centralwidget = QtWidgets.QWidget()
-        self.grid_layout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gl_1 = QtWidgets.QGridLayout(self.centralwidget)
         self.graphics_view = QtWidgets.QGraphicsView()
         self.textbrowser_datainfo = QtWidgets.QTextBrowser()
         self.textbrowser_processlog = QtWidgets.QTextBrowser()
@@ -676,15 +676,15 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_processlog.setFrameStyle(fstyle)
         self.graphics_view.setFrameStyle(fstyle)
 
-        self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
-        self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
-        self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
-        self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
+        self.gl_1.addWidget(self.graphics_view, 0, 0, 4, 2)
+        self.gl_1.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
+        self.gl_1.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
+        self.gl_1.addWidget(self.pbar, 5, 0, 1, 3)
 
         lbl_1 = QtWidgets.QLabel('Dataset Information:')
         lbl_2 = QtWidgets.QLabel('Process Log:')
-        self.grid_layout.addWidget(lbl_1, 0, 2, 1, 1)
-        self.grid_layout.addWidget(lbl_2, 2, 2, 1, 1)
+        self.gl_1.addWidget(lbl_1, 0, 2, 1, 1)
+        self.gl_1.addWidget(lbl_2, 2, 2, 1, 1)
 
         self.setCentralWidget(self.centralwidget)
         self.setMenuBar(self.menubar)
@@ -1244,7 +1244,7 @@ class Startup(QtWidgets.QDialog):
         super().__init__(parent)
         self.setWindowFlags(QtCore.Qt.ToolTip)
 
-        self.gridlayout_main = QtWidgets.QVBoxLayout(self)
+        self.vbl_main = QtWidgets.QVBoxLayout(self)
         self.lbl_info = QtWidgets.QLabel(self)
         self.lbl_pic = QtWidgets.QLabel(self)
         self.lbl_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
@@ -1257,11 +1257,11 @@ class Startup(QtWidgets.QDialog):
         fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Bold)
         self.lbl_info.setFont(fnt)
         self.lbl_info.setText(labeltext)
-        self.gridlayout_main.addWidget(self.lbl_info)
-        self.gridlayout_main.addWidget(self.lbl_pic)
+        self.vbl_main.addWidget(self.lbl_info)
+        self.vbl_main.addWidget(self.lbl_pic)
 
         self.pbar.setMaximum(pbarmax - 1)
-        self.gridlayout_main.addWidget(self.pbar)
+        self.vbl_main.addWidget(self.pbar)
 
         self.open()
 

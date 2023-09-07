@@ -111,14 +111,14 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
-        horizontallayout = QtWidgets.QHBoxLayout(self)
-        vbox_cmodel = QtWidgets.QVBoxLayout()
-        verticallayout = QtWidgets.QVBoxLayout()
+        hbl = QtWidgets.QHBoxLayout(self)
+        vbl_cmodel = QtWidgets.QVBoxLayout()
+        vbl = QtWidgets.QVBoxLayout()
 
         self.vslider_3dmodel.setMinimum(1)
         self.vslider_3dmodel.setMaximum(1000)
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
-        vbox_cmodel.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
+        vbl_cmodel.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Fixed)
 
@@ -137,20 +137,20 @@ class Mod3dDisplay(ContextModule):
         self.cb_ortho.setChecked(True)
         self.cb_axis.setChecked(True)
 
-        verticallayout.addWidget(self.lw_3dmod_defs)
-        verticallayout.addWidget(QtWidgets.QLabel('Light Position:'))
-        verticallayout.addWidget(self.msc)
-        verticallayout.addWidget(self.pb_resetlight)
-        verticallayout.addWidget(self.cb_smooth)
-        verticallayout.addWidget(self.cb_ortho)
-        verticallayout.addWidget(self.cb_axis)
-        verticallayout.addWidget(self.pb_save)
-        verticallayout.addWidget(self.pb_refresh)
-        vbox_cmodel.addWidget(self.glwidget)
-        horizontallayout.addWidget(self.vslider_3dmodel)
-        horizontallayout.addLayout(vbox_cmodel)
-        horizontallayout.addLayout(verticallayout)
-        horizontallayout.addWidget(self.pbar)
+        vbl.addWidget(self.lw_3dmod_defs)
+        vbl.addWidget(QtWidgets.QLabel('Light Position:'))
+        vbl.addWidget(self.msc)
+        vbl.addWidget(self.pb_resetlight)
+        vbl.addWidget(self.cb_smooth)
+        vbl.addWidget(self.cb_ortho)
+        vbl.addWidget(self.cb_axis)
+        vbl.addWidget(self.pb_save)
+        vbl.addWidget(self.pb_refresh)
+        vbl_cmodel.addWidget(self.glwidget)
+        hbl.addWidget(self.vslider_3dmodel)
+        hbl.addLayout(vbl_cmodel)
+        hbl.addLayout(vbl)
+        hbl.addWidget(self.pbar)
 
         self.lw_3dmod_defs.clicked.connect(self.change_defs)
         self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)

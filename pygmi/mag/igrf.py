@@ -152,7 +152,7 @@ class IGRF(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
@@ -168,17 +168,17 @@ class IGRF(BasicModule):
 
         self.setWindowTitle('IGRF')
 
-        gridlayout.addWidget(self.proj, 0, 0, 1, 2)
-        gridlayout.addWidget(lbl_0, 2, 0, 1, 1)
-        gridlayout.addWidget(self.dsb_alt, 2, 1, 1, 1)
-        gridlayout.addWidget(lbl_1, 3, 0, 1, 1)
-        gridlayout.addWidget(self.dateedit, 3, 1, 1, 1)
-        gridlayout.addWidget(lbl_2, 4, 0, 1, 1)
-        gridlayout.addWidget(self.cmb_dtm, 4, 1, 1, 1)
-        gridlayout.addWidget(lbl_3, 5, 0, 1, 1)
-        gridlayout.addWidget(self.cmb_mag, 5, 1, 1, 1)
-        gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_1.addWidget(self.proj, 0, 0, 1, 2)
+        gl_1.addWidget(lbl_0, 2, 0, 1, 1)
+        gl_1.addWidget(self.dsb_alt, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 3, 0, 1, 1)
+        gl_1.addWidget(self.dateedit, 3, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 4, 0, 1, 1)
+        gl_1.addWidget(self.cmb_dtm, 4, 1, 1, 1)
+        gl_1.addWidget(lbl_3, 5, 0, 1, 1)
+        gl_1.addWidget(self.cmb_mag, 5, 1, 1, 1)
+        gl_1.addWidget(buttonbox, 6, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 6, 0, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

@@ -195,8 +195,8 @@ class HelpDocs(QtWidgets.QDialog):
         # create GUI
         self.setWindowTitle('Help!')
 
-        self.vbox = QtWidgets.QVBoxLayout()
-        self.setLayout(self.vbox)
+        self.vbl = QtWidgets.QVBoxLayout()
+        self.setLayout(self.vbl)
 
         self.text = QtWidgets.QTextBrowser()
         self.text.setOpenExternalLinks(True)
@@ -214,14 +214,14 @@ class HelpDocs(QtWidgets.QDialog):
         ptmp.setColor(2, 9, ptmp.color(10))
         self.text.setPalette(ptmp)
 
-        self.vbox.addWidget(self.text)
+        self.vbl.addWidget(self.text)
 
         self.buttonbox = QtWidgets.QDialogButtonBox()
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
 
-        self.vbox.addWidget(self.buttonbox)
+        self.vbl.addWidget(self.buttonbox)
 
         self.buttonbox.accepted.connect(self.accept)
 

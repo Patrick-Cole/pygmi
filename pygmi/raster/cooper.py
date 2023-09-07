@@ -79,7 +79,7 @@ class Gradients(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
@@ -95,16 +95,16 @@ class Gradients(BasicModule):
 
         self.setWindowTitle('Gradient Calculation')
 
-        gridlayout.addWidget(self.rb_ddir, 0, 0, 1, 1)
-        gridlayout.addWidget(self.rb_dratio, 1, 0, 1, 1)
-        gridlayout.addWidget(self.rb_vgrad, 2, 0, 1, 1)
-        gridlayout.addWidget(self.rb_thg, 3, 0, 1, 1)
-        gridlayout.addWidget(self.lbl_az, 4, 0, 1, 1)
-        gridlayout.addWidget(self.sb_azi, 4, 1, 1, 1)
-        gridlayout.addWidget(self.lbl_or, 5, 0, 1, 1)
-        gridlayout.addWidget(self.sb_order, 5, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
+        gl_1.addWidget(self.rb_ddir, 0, 0, 1, 1)
+        gl_1.addWidget(self.rb_dratio, 1, 0, 1, 1)
+        gl_1.addWidget(self.rb_vgrad, 2, 0, 1, 1)
+        gl_1.addWidget(self.rb_thg, 3, 0, 1, 1)
+        gl_1.addWidget(self.lbl_az, 4, 0, 1, 1)
+        gl_1.addWidget(self.sb_azi, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_or, 5, 0, 1, 1)
+        gl_1.addWidget(self.sb_order, 5, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 6, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 6, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -338,7 +338,7 @@ class Visibility2d(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
         lbl_1 = QtWidgets.QLabel('Viewing Height (% std dev)')
@@ -355,12 +355,12 @@ class Visibility2d(BasicModule):
 
         self.setWindowTitle('Visibility')
 
-        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
-        gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 0, 0, 1, 1)
+        gl_1.addWidget(self.sb_wsize, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 1, 0, 1, 1)
+        gl_1.addWidget(self.sb_dh, 1, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -719,7 +719,7 @@ class AGC(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.AGC')
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
@@ -735,13 +735,13 @@ class AGC(BasicModule):
 
         self.setWindowTitle('Automatic Gain Control')
 
-        gridlayout.addWidget(self.rb_mean, 0, 0, 1, 1)
-        gridlayout.addWidget(self.rb_median, 1, 0, 1, 1)
-        gridlayout.addWidget(self.rb_rms, 2, 0, 1, 1)
-        gridlayout.addWidget(lbl_2, 3, 0, 1, 1)
-        gridlayout.addWidget(self.sb_wsize, 3, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
+        gl_1.addWidget(self.rb_mean, 0, 0, 1, 1)
+        gl_1.addWidget(self.rb_median, 1, 0, 1, 1)
+        gl_1.addWidget(self.rb_rms, 2, 0, 1, 1)
+        gl_1.addWidget(lbl_2, 3, 0, 1, 1)
+        gl_1.addWidget(self.sb_wsize, 3, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 4, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 4, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

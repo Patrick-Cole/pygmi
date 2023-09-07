@@ -58,7 +58,7 @@ class ImageSeg(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.clust.segmentation')
 
@@ -85,22 +85,22 @@ class ImageSeg(BasicModule):
 
         self.setWindowTitle(r'Image Segmentation')
 
-        gridlayout_main.addWidget(lbl_wcompact, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.wcompact, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_wcompact, 0, 0, 1, 1)
+        gl_main.addWidget(self.wcompact, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_wcolor, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.wcolor, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_wcolor, 1, 0, 1, 1)
+        gl_main.addWidget(self.wcolor, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_scale, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.scale, 2, 1, 1, 1)
+        gl_main.addWidget(lbl_scale, 2, 0, 1, 1)
+        gl_main.addWidget(self.scale, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.cb_dbscan, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_dbscan, 3, 0, 1, 2)
 
-        gridlayout_main.addWidget(lbl_eps, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.eps, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_eps, 4, 0, 1, 1)
+        gl_main.addWidget(self.eps, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

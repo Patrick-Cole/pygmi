@@ -190,15 +190,15 @@ class ImportData(BasicModule):
         self.setWindowTitle('Import Satellite Data')
         self.cb_ensuresutm.setChecked(True)
 
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
 
         self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
-        gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
-        gridlayout.addWidget(self.lbl_ftype, 2, 0, 1, 2)
-        gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
-        gridlayout.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
+        gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
+        gl_1.addWidget(self.sfile, 1, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ftype, 2, 0, 1, 2)
+        gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
+        gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -206,7 +206,7 @@ class ImportData(BasicModule):
         buttonbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
-        gridlayout.addWidget(buttonbox, 9, 0, 1, 2)
+        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -382,16 +382,16 @@ class ImportBatch(BasicModule):
         self.setWindowTitle('Import Batch Data')
         self.cb_ensuresutm.setChecked(True)
 
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
 
         self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
-        gridlayout.addWidget(pb_sfile, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sfile, 1, 1, 1, 1)
-        gridlayout.addWidget(self.lbl_ftype, 2, 0, 1, 1)
-        gridlayout.addWidget(self.combo_sensor, 2, 1, 1, 1)
-        gridlayout.addWidget(self.lw_tnames, 3, 0, 1, 2)
-        gridlayout.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
+        gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
+        gl_1.addWidget(self.sfile, 1, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ftype, 2, 0, 1, 1)
+        gl_1.addWidget(self.combo_sensor, 2, 1, 1, 1)
+        gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
+        gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -399,7 +399,7 @@ class ImportBatch(BasicModule):
         buttonbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
-        gridlayout.addWidget(buttonbox, 9, 0, 1, 2)
+        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -587,7 +587,7 @@ class ImportSentinel5P(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.'
                                            'importsentinel5p')
@@ -603,32 +603,32 @@ class ImportSentinel5P(BasicModule):
 
         self.setWindowTitle(r'Import Sentinel-5P Data')
 
-        gridlayout_main.addWidget(lbl_subdata, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.subdata, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_subdata, 0, 0, 1, 1)
+        gl_main.addWidget(self.subdata, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.rb_cclip, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.rb_sclip, 2, 0, 1, 2)
+        gl_main.addWidget(self.rb_cclip, 1, 0, 1, 2)
+        gl_main.addWidget(self.rb_sclip, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(self.lbl_lonmin, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.lonmin, 3, 1, 1, 1)
+        gl_main.addWidget(self.lbl_lonmin, 3, 0, 1, 1)
+        gl_main.addWidget(self.lonmin, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.lbl_lonmax, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.lonmax, 4, 1, 1, 1)
+        gl_main.addWidget(self.lbl_lonmax, 4, 0, 1, 1)
+        gl_main.addWidget(self.lonmax, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.lbl_latmin, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.latmin, 5, 1, 1, 1)
+        gl_main.addWidget(self.lbl_latmin, 5, 0, 1, 1)
+        gl_main.addWidget(self.latmin, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.lbl_latmax, 6, 0, 1, 1)
-        gridlayout_main.addWidget(self.latmax, 6, 1, 1, 1)
+        gl_main.addWidget(self.lbl_latmax, 6, 0, 1, 1)
+        gl_main.addWidget(self.latmax, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.lbl_sfile, 7, 0, 1, 1)
-        gridlayout_main.addWidget(self.shpfile, 7, 1, 1, 1)
+        gl_main.addWidget(self.lbl_sfile, 7, 0, 1, 1)
+        gl_main.addWidget(self.shpfile, 7, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_qathres, 8, 0, 1, 1)
-        gridlayout_main.addWidget(self.qathres, 8, 1, 1, 1)
+        gl_main.addWidget(lbl_qathres, 8, 0, 1, 1)
+        gl_main.addWidget(self.qathres, 8, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 10, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 10, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 10, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 10, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -947,7 +947,7 @@ class ExportBatch(ContextModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.exportbatch')
         lbl_ofilt = QtWidgets.QLabel('Output Format:')
@@ -980,31 +980,31 @@ class ExportBatch(ContextModule):
 
         self.setWindowTitle(r'Export File List')
 
-        gridlayout_main.addWidget(self.odir, 0, 0, 1, 1)
-        gridlayout_main.addWidget(pb_odir, 0, 1, 1, 1)
+        gl_main.addWidget(self.odir, 0, 0, 1, 1)
+        gl_main.addWidget(pb_odir, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_ofilt, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.ofilt, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_ofilt, 1, 0, 1, 1)
+        gl_main.addWidget(self.ofilt, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.cb_ternary, 2, 0, 1, 2)
+        gl_main.addWidget(self.cb_ternary, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(lbl_red, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.red, 3, 1, 1, 1)
+        gl_main.addWidget(lbl_red, 3, 0, 1, 1)
+        gl_main.addWidget(self.red, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_green, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.green, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_green, 4, 0, 1, 1)
+        gl_main.addWidget(self.green, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_blue, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.blue, 5, 1, 1, 1)
+        gl_main.addWidget(lbl_blue, 5, 0, 1, 1)
+        gl_main.addWidget(self.blue, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_shade, 6, 0, 1, 1)
-        gridlayout_main.addWidget(self.sunshade, 6, 1, 1, 1)
+        gl_main.addWidget(lbl_shade, 6, 0, 1, 1)
+        gl_main.addWidget(self.sunshade, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_slvl, 7, 0, 1, 1)
-        gridlayout_main.addWidget(self.slvl, 7, 1, 1, 1)
+        gl_main.addWidget(lbl_slvl, 7, 0, 1, 1)
+        gl_main.addWidget(self.slvl, 7, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

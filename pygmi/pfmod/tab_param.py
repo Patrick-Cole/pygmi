@@ -52,7 +52,7 @@ class MergeLith(QtWidgets.QDialog):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
         lbl_1 = QtWidgets.QLabel('Master Lithology')
@@ -65,11 +65,11 @@ class MergeLith(QtWidgets.QDialog):
 
         self.setWindowTitle('Merge Lithologies')
 
-        gridlayout.addWidget(lbl_1, 0, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_2, 1, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
-        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 0, 0, 1, 1)
+        gl_1.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 1, 0, 1, 1)
+        gl_1.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
+        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -102,7 +102,7 @@ class LithNotes(QtWidgets.QDialog):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
         lbl_1 = QtWidgets.QLabel('Lithology Code')
@@ -126,12 +126,12 @@ class LithNotes(QtWidgets.QDialog):
 
         self.setWindowTitle('Lithology Notes')
 
-        gridlayout.addWidget(self.lw_param_defs, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
-        gridlayout.addWidget(self.lithcode, 1, 1, 1, 1)
-        gridlayout.addWidget(lbl_2, 2, 0, 1, 1)
-        gridlayout.addWidget(self.notes, 2, 1, 1, 1)
-        gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
+        gl_1.addWidget(self.lw_param_defs, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 1, 0, 1, 1)
+        gl_1.addWidget(self.lithcode, 1, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 2, 0, 1, 1)
+        gl_1.addWidget(self.notes, 2, 1, 1, 1)
+        gl_1.addWidget(buttonbox, 3, 1, 1, 1)
 
         self.lw_param_defs.currentItemChanged.connect(self.lw_index_change)
 
@@ -260,8 +260,8 @@ class ParamDisplay(QtWidgets.QDialog):
         sizepolicy.setHeightForWidth(
             self.lw_param_defs.sizePolicy().hasHeightForWidth())
 
-        verticallayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -375,12 +375,12 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_lithprops.addWidget(self.dsb_mdec, 9, 1, 1, 1)
         gl_lithprops.addWidget(pb_applylith, 10, 0, 1, 2)
 
-        hlayout.addWidget(helpdocs)
-        hlayout.addWidget(buttonbox)
+        hbl.addWidget(helpdocs)
+        hbl.addWidget(buttonbox)
 
-        verticallayout.addWidget(gb_gen_prop)
-        verticallayout.addWidget(gb_lith_prop)
-        verticallayout.addLayout(hlayout)
+        vbl.addWidget(gb_gen_prop)
+        vbl.addWidget(gb_lith_prop)
+        vbl.addLayout(hbl)
 
         self.add_defs(deftxt='Background')  # First call is for background
         self.add_defs()  # Second is for the first lithology type

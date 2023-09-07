@@ -95,8 +95,8 @@ class MagInvert(BasicModule):
         self.setWindowTitle('Inverse Modelling Parameters')
         helpdocs = menu_default.HelpButton('pygmi.pfmod.minv')
 
-        verticallayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -107,15 +107,15 @@ class MagInvert(BasicModule):
         buttonbox.button(buttonbox.Ok).setText('Run Inversion')
 
         # Current Models Groupbox
-        h_model = QtWidgets.QHBoxLayout()
+        hbl_model = QtWidgets.QHBoxLayout()
 
         lbl_model = QtWidgets.QLabel('Current Model:')
 
         self.cmb_model.addItems(['None'])
         self.cmb_model.setSizePolicy(sizepolicy)
 
-        h_model.addWidget(lbl_model)
-        h_model.addWidget(self.cmb_model)
+        hbl_model.addWidget(lbl_model)
+        hbl_model.addWidget(self.cmb_model)
 
         # General Properties
         self.dsb_mht.setMaximum(999999999.0)
@@ -246,15 +246,15 @@ class MagInvert(BasicModule):
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
         gl_extent.addWidget(self.sb_classes, 9, 1, 1, 1)
 
-        hlayout.addWidget(helpdocs)
-        # hlayout.addWidget(self.pbar)
-        hlayout.addWidget(buttonbox)
+        hbl.addWidget(helpdocs)
+        # hbl.addWidget(self.pbar)
+        hbl.addWidget(buttonbox)
 
         # Assign to main layout
-        verticallayout.addWidget(gb_data_info)
-        verticallayout.addWidget(gb_gen_prop)
-        verticallayout.addWidget(gb_extent)
-        verticallayout.addLayout(hlayout)
+        vbl.addWidget(gb_data_info)
+        vbl.addWidget(gb_gen_prop)
+        vbl.addWidget(gb_extent)
+        vbl.addLayout(hbl)
 
         # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)
@@ -928,8 +928,8 @@ class MagInvert(BasicModule):
                                  inputliths=inputliths, susc=susc, dens=dens,
                                  hintn=strength)
 
-        self.lmod2.lith_list['Background'].susc = bsusc
-        self.lmod2.lith_index = r4.astype(int)
+        self.lmod2.lithbl_list['Background'].susc = bsusc
+        self.lmod2.lithbl_index = r4.astype(int)
         self.lmod2.name = 'Internal Inverted Model'
         self.lmod2.griddata = self.lmod1.griddata
 

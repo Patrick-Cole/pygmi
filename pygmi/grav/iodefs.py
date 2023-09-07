@@ -69,7 +69,7 @@ class ImportCG5(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         lbl_line = QtWidgets.QLabel('Line:')
@@ -93,32 +93,32 @@ class ImportCG5(BasicModule):
 
         self.setWindowTitle(r'Import CG-5 Data')
 
-        gridlayout_main.addWidget(self.cg5file, 0, 0, 1, 1)
-        gridlayout_main.addWidget(pb_cg5, 0, 1, 1, 1)
+        gl_main.addWidget(self.cg5file, 0, 0, 1, 1)
+        gl_main.addWidget(pb_cg5, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.gpsfile, 1, 0, 1, 1)
-        gridlayout_main.addWidget(pb_gps, 1, 1, 1, 1)
+        gl_main.addWidget(self.gpsfile, 1, 0, 1, 1)
+        gl_main.addWidget(pb_gps, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_line, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_line, 2, 1, 1, 1)
+        gl_main.addWidget(lbl_line, 2, 0, 1, 1)
+        gl_main.addWidget(self.cmb_line, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_station, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_station, 3, 1, 1, 1)
+        gl_main.addWidget(lbl_station, 3, 0, 1, 1)
+        gl_main.addWidget(self.cmb_station, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_xchan, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_xchan, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_xchan, 4, 0, 1, 1)
+        gl_main.addWidget(self.cmb_xchan, 4, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_ychan, 5, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_ychan, 5, 1, 1, 1)
+        gl_main.addWidget(lbl_ychan, 5, 0, 1, 1)
+        gl_main.addWidget(self.cmb_ychan, 5, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_zchan, 6, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_zchan, 6, 1, 1, 1)
+        gl_main.addWidget(lbl_zchan, 6, 0, 1, 1)
+        gl_main.addWidget(self.cmb_zchan, 6, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_bthres, 7, 0, 1, 1)
-        gridlayout_main.addWidget(self.basethres, 7, 1, 1, 1)
+        gl_main.addWidget(lbl_bthres, 7, 0, 1, 1)
+        gl_main.addWidget(self.basethres, 7, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

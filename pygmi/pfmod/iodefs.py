@@ -1176,17 +1176,17 @@ class Exportkmz(QtWidgets.QDialog):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        gridlayout.addWidget(self.proj, 0, 0, 1, 2)
-        gridlayout.addWidget(self.cb_smooth, 1, 0, 1, 2)
-        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(self.proj, 0, 0, 1, 2)
+        gl_1.addWidget(self.cb_smooth, 1, 0, 1, 2)
+        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
 
         self.setWindowTitle('Google Earth kmz Export')
         self.cb_smooth.setText('Smooth Model')
@@ -1226,7 +1226,7 @@ class MessageCombo(QtWidgets.QDialog):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         lbl_master = QtWidgets.QLabel()
 
@@ -1237,9 +1237,9 @@ class MessageCombo(QtWidgets.QDialog):
         self.setWindowTitle('Model Choice')
         lbl_master.setText('Choose Model:')
 
-        gridlayout_main.addWidget(lbl_master, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_master, 0, 1, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gl_main.addWidget(lbl_master, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_master, 0, 1, 1, 1)
+        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
 

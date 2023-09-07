@@ -76,8 +76,8 @@ class MextDisplay(QtWidgets.QDialog):
         self.setWindowTitle('Model Extent Parameters')
         helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
 
-        verticallayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -90,15 +90,15 @@ class MextDisplay(QtWidgets.QDialog):
                                                '(reset calculations)')
 
         # Current Models Groupbox
-        h_model = QtWidgets.QHBoxLayout()
+        hbl_model = QtWidgets.QHBoxLayout()
 
         lbl_model = QtWidgets.QLabel('Current Model:')
 
         self.cmb_model.addItems(['None'])
         self.cmb_model.setSizePolicy(sizepolicy)
 
-        h_model.addWidget(lbl_model)
-        h_model.addWidget(self.cmb_model)
+        hbl_model.addWidget(lbl_model)
+        hbl_model.addWidget(self.cmb_model)
 
         # Data Information Groupbox
         gb_data_info = QtWidgets.QGroupBox('Dataset Information')
@@ -205,16 +205,16 @@ class MextDisplay(QtWidgets.QDialog):
         gl_extent.addWidget(self.sb_rows, 2, 2, 1, 1)
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
 
-        hlayout.addWidget(helpdocs)
-        hlayout.addWidget(self.pbar)
-        hlayout.addWidget(buttonbox)
+        hbl.addWidget(helpdocs)
+        hbl.addWidget(self.pbar)
+        hbl.addWidget(buttonbox)
 
         # Assign to main layout
 
-        verticallayout.addLayout(h_model)
-        verticallayout.addWidget(gb_data_info)
-        verticallayout.addWidget(gb_extent)
-        verticallayout.addLayout(hlayout)
+        vbl.addLayout(hbl_model)
+        vbl.addWidget(gb_data_info)
+        vbl.addWidget(gb_extent)
+        vbl.addLayout(hbl)
 
         # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)

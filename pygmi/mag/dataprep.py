@@ -70,7 +70,7 @@ class Tilt1(BasicModule):
         None.
 
         """
-        gridlayout = QtWidgets.QGridLayout(self)
+        gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
         lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
@@ -88,12 +88,12 @@ class Tilt1(BasicModule):
 
         self.setWindowTitle('Tilt Angle')
 
-        gridlayout.addWidget(lbl_2, 0, 0, 1, 1)
-        gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
-        gridlayout.addWidget(lbl_1, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 0, 0, 1, 1)
+        gl_1.addWidget(self.sb_s, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 1, 0, 1, 1)
+        gl_1.addWidget(self.sb_azi, 1, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -361,7 +361,7 @@ class RTP(BasicModule):
         None.
 
         """
-        gridlayout_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
         lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
@@ -381,15 +381,15 @@ class RTP(BasicModule):
 
         self.setWindowTitle('Reduction to the Pole')
 
-        gridlayout_main.addWidget(lbl_band, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_band, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(lbl_inc, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
-        gridlayout_main.addWidget(lbl_dec, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gl_main.addWidget(lbl_inc, 1, 0, 1, 1)
+        gl_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_dec, 2, 0, 1, 1)
+        gl_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
+        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

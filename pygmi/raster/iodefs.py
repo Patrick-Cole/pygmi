@@ -51,13 +51,13 @@ class BandSelect(ContextModule):
         super().__init__(parent)
         self.setWindowTitle('Band Selection')
 
-        self.vbox = QtWidgets.QVBoxLayout()
-        self.setLayout(self.vbox)
+        self.vbl = QtWidgets.QVBoxLayout()
+        self.setLayout(self.vbl)
 
-        self.combo = QtWidgets.QListWidget()
-        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_1 = QtWidgets.QListWidget()
+        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
-        self.vbox.addWidget(self.combo)
+        self.vbl.addWidget(self.lw_1)
 
         self.buttonbox = QtWidgets.QDialogButtonBox()
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -65,7 +65,7 @@ class BandSelect(ContextModule):
         self.buttonbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
-        self.vbox.addWidget(self.buttonbox)
+        self.vbl.addWidget(self.buttonbox)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -88,7 +88,7 @@ class BandSelect(ContextModule):
         tmp = []
         for i in data['Raster']:
             tmp.append(i.dataid)
-        self.combo.addItems(tmp)
+        self.lw_1.addItems(tmp)
 
         if not tmp:
             return False
@@ -98,7 +98,7 @@ class BandSelect(ContextModule):
         if tmp != 1:
             return False
 
-        atmp = [i.row() for i in self.combo.selectedIndexes()]
+        atmp = [i.row() for i in self.lw_1.selectedIndexes()]
 
         if atmp:
             dtmp = []

@@ -446,12 +446,12 @@ class SuperClass(BasicModule):
         None.
 
         """
-        grid_main = QtWidgets.QGridLayout(self)
+        gl_main = QtWidgets.QGridLayout(self)
         group_map = QtWidgets.QGroupBox('Class Edit')
-        grid_right = QtWidgets.QGridLayout(group_map)
+        gl_right = QtWidgets.QGridLayout(group_map)
 
         group_class = QtWidgets.QGroupBox('Supervised Classification')
-        grid_class = QtWidgets.QGridLayout(group_class)
+        gl_class = QtWidgets.QGridLayout(group_class)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -491,30 +491,30 @@ class SuperClass(BasicModule):
         self.cmb_DTcriterion.setHidden(True)
         self.cmb_RFcriterion.setHidden(True)
 
-        grid_right.addWidget(lbl_databand, 0, 0, 1, 1)
-        grid_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
+        gl_right.addWidget(lbl_databand, 0, 0, 1, 1)
+        gl_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
 
-        grid_right.addWidget(self.tablewidget, 1, 0, 3, 2)
-        grid_right.addWidget(self.apoly, 1, 2, 1, 1)
-        grid_right.addWidget(self.dpoly, 2, 2, 1, 1)
-        grid_right.addWidget(calcmetrics, 3, 2, 1, 1)
-        grid_right.addWidget(loadshape, 4, 0, 1, 1)
-        grid_right.addWidget(saveshape, 4, 1, 1, 1)
+        gl_right.addWidget(self.tablewidget, 1, 0, 3, 2)
+        gl_right.addWidget(self.apoly, 1, 2, 1, 1)
+        gl_right.addWidget(self.dpoly, 2, 2, 1, 1)
+        gl_right.addWidget(calcmetrics, 3, 2, 1, 1)
+        gl_right.addWidget(loadshape, 4, 0, 1, 1)
+        gl_right.addWidget(saveshape, 4, 1, 1, 1)
 
-        grid_class.addWidget(lbl_class, 0, 0, 1, 1)
-        grid_class.addWidget(self.cmb_class, 0, 1, 1, 1)
-        grid_class.addWidget(self.lbl_1, 1, 0, 1, 1)
-        grid_class.addWidget(self.cmb_KNalgorithm, 1, 1, 1, 1)
-        grid_class.addWidget(self.cmb_DTcriterion, 1, 1, 1, 1)
-        grid_class.addWidget(self.cmb_RFcriterion, 1, 1, 1, 1)
-        grid_class.addWidget(self.cmb_SVCkernel, 1, 1, 1, 1)
+        gl_class.addWidget(lbl_class, 0, 0, 1, 1)
+        gl_class.addWidget(self.cmb_class, 0, 1, 1, 1)
+        gl_class.addWidget(self.lbl_1, 1, 0, 1, 1)
+        gl_class.addWidget(self.cmb_KNalgorithm, 1, 1, 1, 1)
+        gl_class.addWidget(self.cmb_DTcriterion, 1, 1, 1, 1)
+        gl_class.addWidget(self.cmb_RFcriterion, 1, 1, 1, 1)
+        gl_class.addWidget(self.cmb_SVCkernel, 1, 1, 1, 1)
 
-        grid_main.addWidget(self.map, 0, 0, 2, 1)
-        grid_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
+        gl_main.addWidget(self.map, 0, 0, 2, 1)
+        gl_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
 
-        grid_main.addWidget(group_map, 0, 1, 1, 1)
-        grid_main.addWidget(group_class, 1, 1, 1, 1)
-        grid_main.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_main.addWidget(group_map, 0, 1, 1, 1)
+        gl_main.addWidget(group_class, 1, 1, 1, 1)
+        gl_main.addWidget(buttonbox, 2, 1, 1, 1)
 
         self.apoly.clicked.connect(self.on_apoly)
         self.dpoly.clicked.connect(self.on_dpoly)
