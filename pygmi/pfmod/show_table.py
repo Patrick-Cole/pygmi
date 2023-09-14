@@ -117,7 +117,7 @@ class BasicStats3D(ContextModule):
 
         self.combo()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False

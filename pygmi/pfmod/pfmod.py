@@ -285,7 +285,7 @@ def _testfn():
     PF.indata = MM.outdata
     PF.settings()
 
-    app.exec_()
+    app.exec()
 
 
 if __name__ == "__main__":

@@ -43,7 +43,7 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     Formats strings according with a mod for values containing the value -999
     or None. In that case it will output spaces instead. In the case of strings
     being output, they are truncated to fit the format statement. This routine
-    also  puts the new strings in the correct columns
+    also puts the new strings in the correct columns
 
     Parameters
     ----------
@@ -888,7 +888,7 @@ class ExportSeisan(ContextModule):
         self.lmod = None
         self.fobj = None
 
-    def run(self):
+    def run(self, filename=None):
         """
         Run.
 
@@ -902,13 +902,16 @@ class ExportSeisan(ContextModule):
                 'Error: You need to have a SEISAN data first!')
             return
 
-        self.parent.process_is_active(True)
+        if self.parent is not None:
+            self.parent.process_is_active(True)
 
         data = self.indata['Seis']
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
-                                                            'Save File',
-                                                            '.', 'out (*.out)')
+        if filename is None:
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                                'Save File',
+                                                                '.',
+                                                                'out (*.out)')
 
         if filename == '':
             self.parent.process_is_active(False)
@@ -927,7 +930,9 @@ class ExportSeisan(ContextModule):
                 self.fobj.write(' \n')
 
         self.showlog('Export to Seisan Finished!')
-        self.parent.process_is_active(False)
+
+        if self.parent is not None:
+            self.parent.process_is_active(False)
 
     def write_record_type_1(self, data):
         """
@@ -2092,8 +2097,8 @@ class FilterSeisan(BasicModule):
 
         self.dsb_from = QtWidgets.QDoubleSpinBox()
         self.dsb_to = QtWidgets.QDoubleSpinBox()
-        self.rectype = QtWidgets.QComboBox()
-        self.recdesc = QtWidgets.QComboBox()
+        self.cmb_rectype = QtWidgets.QComboBox()
+        self.cmb_recdesc = QtWidgets.QComboBox()
         self.dind = 'LRD'
         self.cb_dind_L = QtWidgets.QCheckBox('Local (L)')
         self.cb_dind_R = QtWidgets.QCheckBox('Regional (R)')
@@ -2119,12 +2124,12 @@ class FilterSeisan(BasicModule):
         lbl_recdesc = QtWidgets.QLabel('Description:')
         lbl_from = QtWidgets.QLabel('From')
         lbl_to = QtWidgets.QLabel('To')
-        grp_dind = QtWidgets.QGroupBox('Distance Indicator')
+        gbox_dind = QtWidgets.QGroupBox('Distance Indicator')
         vbl = QtWidgets.QVBoxLayout()
         vbl.addWidget(self.cb_dind_L)
         vbl.addWidget(self.cb_dind_R)
         vbl.addWidget(self.cb_dind_D)
-        grp_dind.setLayout(vbl)
+        gbox_dind.setLayout(vbl)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -2135,18 +2140,18 @@ class FilterSeisan(BasicModule):
         self.cb_dind_R.setChecked(True)
         self.cb_dind_L.setChecked(True)
 
-        self.rectype.addItems(['1', '4', 'E'])
-        self.recdesc.addItems(['None'])
+        self.cmb_rectype.addItems(['1', '4', 'E'])
+        self.cmb_recdesc.addItems(['None'])
         self.rb_rinc.setChecked(True)
 
-        self.rectype.currentTextChanged.connect(self.rectype_init)
-        self.recdesc.currentTextChanged.connect(self.recdesc_init)
+        self.cmb_rectype.currentTextChanged.connect(self.rectype_init)
+        self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
 
-        gl_main.addWidget(grp_dind, 0, 0, 1, 2)
+        gl_main.addWidget(gbox_dind, 0, 0, 1, 2)
         gl_main.addWidget(lbl_rectype, 1, 0, 1, 1)
-        gl_main.addWidget(self.rectype, 1, 1, 1, 1)
+        gl_main.addWidget(self.cmb_rectype, 1, 1, 1, 1)
         gl_main.addWidget(lbl_recdesc, 2, 0, 1, 1)
-        gl_main.addWidget(self.recdesc, 2, 1, 1, 1)
+        gl_main.addWidget(self.cmb_recdesc, 2, 1, 1, 1)
         gl_main.addWidget(self.rb_rinc, 3, 0, 1, 1)
         gl_main.addWidget(self.rb_rexc, 3, 1, 1, 1)
         gl_main.addWidget(lbl_from, 4, 0, 1, 1)
@@ -2186,13 +2191,13 @@ class FilterSeisan(BasicModule):
 
         if self.dind != '':
             self.get_limits()
-            self.rectype.setCurrentText('1')
+            self.cmb_rectype.setCurrentText('1')
             self.rectype_init('1')
         else:
-            self.recdesc.disconnect()
-            self.recdesc.clear()
+            self.cmb_recdesc.disconnect()
+            self.cmb_recdesc.clear()
             self.recdesc_init('')
-            self.recdesc.currentTextChanged.connect(self.recdesc_init)
+            self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
 
     def rectype_init(self, txt):
         """
@@ -2208,18 +2213,18 @@ class FilterSeisan(BasicModule):
         None.
 
         """
-        self.rectype.disconnect()
-        self.recdesc.disconnect()
+        self.cmb_rectype.disconnect()
+        self.cmb_recdesc.disconnect()
 
         tmp = list(self.datlimits.keys())
         tmp = [i[2:] for i in tmp if i[0] == txt]
 
-        self.recdesc.clear()
-        self.recdesc.addItems(tmp)
+        self.cmb_recdesc.clear()
+        self.cmb_recdesc.addItems(tmp)
 
-        self.rectype.currentTextChanged.connect(self.rectype_init)
-        self.recdesc.currentTextChanged.connect(self.recdesc_init)
-        self.recdesc_init(self.recdesc.currentText())
+        self.cmb_rectype.currentTextChanged.connect(self.rectype_init)
+        self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
+        self.recdesc_init(self.cmb_recdesc.currentText())
 
     def recdesc_init(self, txt):
         """
@@ -2239,7 +2244,7 @@ class FilterSeisan(BasicModule):
             minval = 0
             maxval = 0
         else:
-            rectxt = self.rectype.currentText()+'_'+txt
+            rectxt = self.cmb_rectype.currentText()+'_'+txt
             minval, maxval = self.datlimits[rectxt]
 
         self.dsb_from.setMinimum(minval)
@@ -2267,8 +2272,8 @@ class FilterSeisan(BasicModule):
             if event['1'].distance_indicator not in self.dind:
                 continue
 
-            allitems = [self.rectype.itemText(i)
-                        for i in range(self.rectype.count())]
+            allitems = [self.cmb_rectype.itemText(i)
+                        for i in range(self.cmb_rectype.count())]
             for rectype in allitems:
                 if rectype not in event:
                     continue
@@ -2362,11 +2367,11 @@ class FilterSeisan(BasicModule):
             self.cb_dind_D.setChecked(False)
 
         self.get_limits()
-        self.rectype.setCurrentText('1')
+        self.cmb_rectype.setCurrentText('1')
         self.rectype_init('1')
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return False
@@ -2386,8 +2391,8 @@ class FilterSeisan(BasicModule):
         """
         self.saveobj(self.dsb_from)
         self.saveobj(self.dsb_to)
-        self.saveobj(self.rectype)
-        self.saveobj(self.recdesc)
+        self.saveobj(self.cmb_rectype)
+        self.saveobj(self.cmb_recdesc)
         self.saveobj(self.cb_dind_L)
         self.saveobj(self.cb_dind_R)
         self.saveobj(self.cb_dind_D)
@@ -2406,8 +2411,8 @@ class FilterSeisan(BasicModule):
 
         """
         data = self.indata['Seis']
-        rectype = self.rectype.currentText()
-        recdesc = self.recdesc.currentText()
+        rectype = self.cmb_rectype.currentText()
+        recdesc = self.cmb_recdesc.currentText()
         minval = self.dsb_from.value()
         maxval = self.dsb_to.value()
 

@@ -132,7 +132,7 @@ class MNF(BasicModule):
                 self.sb_comps.setValue(5)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 
@@ -334,7 +334,7 @@ class PCA(BasicModule):
                 self.sb_comps.setValue(5)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 

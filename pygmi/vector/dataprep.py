@@ -123,12 +123,12 @@ class DataGrid(BasicModule):
         self.dxy = None
         self.dataid_text = None
 
-        self.dsb_dxy = QtWidgets.QLineEdit('1.0')
-        self.dsb_null = QtWidgets.QLineEdit('0.0')
-        self.bdist = QtWidgets.QLineEdit('4.0')
+        self.le_dxy = QtWidgets.QLineEdit('1.0')
+        self.le_null = QtWidgets.QLineEdit('0.0')
+        self.le_bdist = QtWidgets.QLineEdit('4.0')
 
-        self.dataid = QtWidgets.QComboBox()
-        self.grid_method = QtWidgets.QComboBox()
+        self.cmb_dataid = QtWidgets.QComboBox()
+        self.cmb_grid_method = QtWidgets.QComboBox()
         self.lbl_rows = QtWidgets.QLabel('Rows: 0')
         self.lbl_cols = QtWidgets.QLabel('Columns: 0')
         self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
@@ -156,10 +156,10 @@ class DataGrid(BasicModule):
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
 
-        self.dsb_dxy.setValidator(val)
-        self.dsb_null.setValidator(val)
+        self.le_dxy.setValidator(val)
+        self.le_null.setValidator(val)
 
-        self.grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
+        self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                    'Minimum Curvature'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -169,23 +169,23 @@ class DataGrid(BasicModule):
         self.setWindowTitle('Dataset Gridding')
 
         gl_main.addWidget(lbl_method, 0, 0, 1, 1)
-        gl_main.addWidget(self.grid_method, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_grid_method, 0, 1, 1, 1)
         gl_main.addWidget(lbl_dxy, 1, 0, 1, 1)
-        gl_main.addWidget(self.dsb_dxy, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_dxy, 1, 1, 1, 1)
         gl_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
         gl_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
         gl_main.addWidget(lbl_band, 4, 0, 1, 1)
-        gl_main.addWidget(self.dataid, 4, 1, 1, 1)
+        gl_main.addWidget(self.cmb_dataid, 4, 1, 1, 1)
         gl_main.addWidget(lbl_null, 5, 0, 1, 1)
-        gl_main.addWidget(self.dsb_null, 5, 1, 1, 1)
+        gl_main.addWidget(self.le_null, 5, 1, 1, 1)
         gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
-        gl_main.addWidget(self.bdist, 6, 1, 1, 1)
+        gl_main.addWidget(self.le_bdist, 6, 1, 1, 1)
         gl_main.addWidget(helpdocs, 7, 0, 1, 1)
         gl_main.addWidget(buttonbox, 7, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.dsb_dxy.textChanged.connect(self.dxy_change)
+        self.le_dxy.textChanged.connect(self.dxy_change)
 
     def dxy_change(self):
         """
@@ -196,9 +196,9 @@ class DataGrid(BasicModule):
         None.
 
         """
-        txt = str(self.dsb_dxy.text())
+        txt = str(self.le_dxy.text())
         if txt.replace('.', '', 1).isdigit():
-            self.dxy = float(self.dsb_dxy.text())
+            self.dxy = float(self.le_dxy.text())
         else:
             return
 
@@ -222,12 +222,12 @@ class DataGrid(BasicModule):
         None.
 
         """
-        if self.grid_method.currentText() == 'Minimum Curvature':
+        if self.cmb_grid_method.currentText() == 'Minimum Curvature':
             self.lbl_bdist.show()
-            self.bdist.show()
+            self.le_bdist.show()
         else:
             self.lbl_bdist.hide()
-            self.bdist.hide()
+            self.le_bdist.hide()
 
     def settings(self, nodialog=False):
         """
@@ -255,18 +255,18 @@ class DataGrid(BasicModule):
             self.showlog('No Point Data')
             return False
 
-        self.dataid.clear()
+        self.cmb_dataid.clear()
 
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
 
         cols = list(data.columns[filt])
-        self.dataid.addItems(cols)
+        self.cmb_dataid.addItems(cols)
 
         if self.dataid_text is None:
-            self.dataid_text = self.dataid.currentText()
+            self.dataid_text = self.cmb_dataid.currentText()
         if self.dataid_text in cols:
-            self.dataid.setCurrentText(self.dataid_text)
+            self.cmb_dataid.setCurrentText(self.dataid_text)
 
         if self.dxy is None:
             x = data.geometry.x.values
@@ -277,19 +277,19 @@ class DataGrid(BasicModule):
             self.dxy = max(dx, dy)
             self.dxy = min([x.ptp(), y.ptp(), self.dxy])
 
-        self.dsb_dxy.setText(f'{self.dxy:.8f}')
+        self.le_dxy.setText(f'{self.dxy:.8f}')
         self.dxy_change()
 
-        self.grid_method_change()
+        self.cmb_grid_method_change()
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
             if tmp != 1:
                 return False
 
         try:
-            float(self.dsb_dxy.text())
-            float(self.dsb_null.text())
-            float(self.bdist.text())
+            float(self.le_dxy.text())
+            float(self.le_null.text())
+            float(self.le_bdist.text())
         except ValueError:
             self.showlog('Value Error')
             return False
@@ -307,12 +307,12 @@ class DataGrid(BasicModule):
         None.
 
         """
-        self.saveobj(self.dsb_dxy)
-        self.saveobj(self.dsb_null)
-        self.saveobj(self.bdist)
+        self.saveobj(self.le_dxy)
+        self.saveobj(self.le_null)
+        self.saveobj(self.le_bdist)
         self.saveobj(self.dataid_text)
-        self.saveobj(self.dataid)
-        self.saveobj(self.grid_method)
+        self.saveobj(self.cmb_dataid)
+        self.saveobj(self.cmb_grid_method)
 
     def acceptall(self):
         """
@@ -325,12 +325,12 @@ class DataGrid(BasicModule):
         None.
 
         """
-        dxy = float(self.dsb_dxy.text())
-        method = self.grid_method.currentText()
-        nullvalue = float(self.dsb_null.text())
-        bdist = float(self.bdist.text())
+        dxy = float(self.le_dxy.text())
+        method = self.cmb_grid_method.currentText()
+        nullvalue = float(self.le_null.text())
+        bdist = float(self.le_bdist.text())
         data = self.indata['Vector'][0]
-        dataid = self.dataid.currentText()
+        dataid = self.cmb_dataid.currentText()
         newdat = []
 
         if bdist < 1:
@@ -468,7 +468,7 @@ class DataReproj(BasicModule):
             self.out_proj.set_current(self.targ_wkt)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return False
@@ -514,7 +514,7 @@ class Metadata(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.combo_bandid = QtWidgets.QComboBox()
+        self.cmb_bandid = QtWidgets.QComboBox()
         self.proj = GroupProj('Input Projection')
 
         self.setupui()
@@ -540,7 +540,7 @@ class Metadata(ContextModule):
         self.setWindowTitle('Vector Dataset Metadata')
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gl_main.addWidget(self.combo_bandid, 0, 1, 1, 3)
+        gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gl_main.addWidget(self.proj, 2, 0, 1, 4)
         gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
@@ -588,9 +588,9 @@ class Metadata(ContextModule):
             else:
                 bandid.append('Unknown')
 
-        self.combo_bandid.addItems(bandid)
+        self.cmb_bandid.addItems(bandid)
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -743,7 +743,7 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
     dat = Data()
     dat.data = gdat
     dat.nodata = nullvalue
-    # dat.dataid = self.dataid.currentText()
+    # dat.dataid = self.cmb_dataid.currentText()
 
     rows, _ = dat.data.shape
 

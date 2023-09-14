@@ -67,13 +67,13 @@ class Metadata(ContextModule):
 
         self.cmb_bandid = QtWidgets.QComboBox()
         self.pb_rename_id = QtWidgets.QPushButton('Rename Station Name')
-        self.dsb_lat = QtWidgets.QLineEdit()
-        self.dsb_lon = QtWidgets.QLineEdit()
-        self.dsb_elev = QtWidgets.QLineEdit()
-        self.dsb_utmx = QtWidgets.QLineEdit()
-        self.dsb_utmy = QtWidgets.QLineEdit()
-        self.dsb_utmzone = QtWidgets.QLineEdit()
-        self.dsb_rot = QtWidgets.QLineEdit()
+        self.le_lat = QtWidgets.QLineEdit()
+        self.le_lon = QtWidgets.QLineEdit()
+        self.le_elev = QtWidgets.QLineEdit()
+        self.le_utmx = QtWidgets.QLineEdit()
+        self.le_utmy = QtWidgets.QLineEdit()
+        self.le_utmzone = QtWidgets.QLineEdit()
+        self.le_rot = QtWidgets.QLineEdit()
 
         self.setupui()
 
@@ -88,9 +88,9 @@ class Metadata(ContextModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        groupbox = QtWidgets.QGroupBox('Dataset')
+        gbox = QtWidgets.QGroupBox('Dataset')
 
-        gl_1 = QtWidgets.QGridLayout(groupbox)
+        gl_1 = QtWidgets.QGridLayout(gbox)
         lbl_utmx = QtWidgets.QLabel('UTM X Coordinate:')
         lbl_utmy = QtWidgets.QLabel('UTM Y Coordinate:')
         lbl_lat = QtWidgets.QLabel('Latitude:')
@@ -102,7 +102,7 @@ class Metadata(ContextModule):
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
-        groupbox.setSizePolicy(sizepolicy)
+        gbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -112,23 +112,23 @@ class Metadata(ContextModule):
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        gl_main.addWidget(groupbox, 2, 0, 1, 2)
+        gl_main.addWidget(gbox, 2, 0, 1, 2)
         gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
         gl_1.addWidget(lbl_lat, 0, 0, 1, 1)
-        gl_1.addWidget(self.dsb_lat, 0, 1, 1, 1)
+        gl_1.addWidget(self.le_lat, 0, 1, 1, 1)
         gl_1.addWidget(lbl_lon, 1, 0, 1, 1)
-        gl_1.addWidget(self.dsb_lon, 1, 1, 1, 1)
+        gl_1.addWidget(self.le_lon, 1, 1, 1, 1)
         gl_1.addWidget(lbl_elev, 2, 0, 1, 1)
-        gl_1.addWidget(self.dsb_elev, 2, 1, 1, 1)
+        gl_1.addWidget(self.le_elev, 2, 1, 1, 1)
         gl_1.addWidget(lbl_utmx, 3, 0, 1, 1)
-        gl_1.addWidget(self.dsb_utmx, 3, 1, 1, 1)
+        gl_1.addWidget(self.le_utmx, 3, 1, 1, 1)
         gl_1.addWidget(lbl_utmy, 4, 0, 1, 1)
-        gl_1.addWidget(self.dsb_utmy, 4, 1, 1, 1)
+        gl_1.addWidget(self.le_utmy, 4, 1, 1, 1)
         gl_1.addWidget(lbl_utmzone, 5, 0, 1, 1)
-        gl_1.addWidget(self.dsb_utmzone, 5, 1, 1, 1)
+        gl_1.addWidget(self.le_utmzone, 5, 1, 1, 1)
         gl_1.addWidget(lbl_rot, 6, 0, 1, 1)
-        gl_1.addWidget(self.dsb_rot, 6, 1, 1, 1)
+        gl_1.addWidget(self.le_rot, 6, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -185,14 +185,14 @@ class Metadata(ContextModule):
         odata = self.banddata[self.oldtxt]
 
         try:
-            odata.lat = float(self.dsb_lat.text())
-            odata.lon = float(self.dsb_lon.text())
-            if self.dsb_utmx.text() != 'None':
-                odata.east = float(self.dsb_utmx.text())
-            if self.dsb_utmy.text() != 'None':
-                odata.north = float(self.dsb_utmy.text())
-            odata.elev = float(self.dsb_elev.text())
-            odata.rotation_angle = float(self.dsb_rot.text())
+            odata.lat = float(self.le_lat.text())
+            odata.lon = float(self.le_lon.text())
+            if self.le_utmx.text() != 'None':
+                odata.east = float(self.le_utmx.text())
+            if self.le_utmy.text() != 'None':
+                odata.north = float(self.le_utmy.text())
+            odata.elev = float(self.le_elev.text())
+            odata.rotation_angle = float(self.le_rot.text())
         except ValueError:
             self.showlog('Value error - abandoning changes')
 
@@ -201,19 +201,19 @@ class Metadata(ContextModule):
         self.oldtxt = txt
         idata = self.banddata[txt]
 
-        self.dsb_lat.setText(str(idata.lat))
-        self.dsb_lon.setText(str(idata.lon))
-        self.dsb_elev.setText(str(idata.elev))
+        self.le_lat.setText(str(idata.lat))
+        self.le_lon.setText(str(idata.lon))
+        self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.dsb_utmx.setText('None')
+            self.le_utmx.setText('None')
         else:
-            self.dsb_utmx.setText(str(idata.east))
+            self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.dsb_utmy.setText('None')
+            self.le_utmy.setText('None')
         else:
-            self.dsb_utmy.setText(str(idata.north))
-        self.dsb_utmzone.setText(str(idata.utm_zone))
-        self.dsb_rot.setText(str(idata.rotation_angle))
+            self.le_utmy.setText(str(idata.north))
+        self.le_utmzone.setText(str(idata.utm_zone))
+        self.le_rot.setText(str(idata.rotation_angle))
 
     def run(self):
         """
@@ -240,23 +240,23 @@ class Metadata(ContextModule):
 
         idata = self.banddata[self.oldtxt]
 
-        self.dsb_lat.setText(str(idata.lat))
-        self.dsb_lon.setText(str(idata.lon))
-        self.dsb_elev.setText(str(idata.elev))
+        self.le_lat.setText(str(idata.lat))
+        self.le_lon.setText(str(idata.lon))
+        self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.dsb_utmx.setText('None')
+            self.le_utmx.setText('None')
         else:
-            self.dsb_utmx.setText(str(idata.east))
+            self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.dsb_utmy.setText('None')
+            self.le_utmy.setText('None')
         else:
-            self.dsb_utmy.setText(str(idata.north))
-        self.dsb_utmzone.setText(str(idata.utm_zone))
-        self.dsb_rot.setText(str(idata.rotation_angle))
+            self.le_utmy.setText(str(idata.north))
+        self.le_utmzone.setText(str(idata.utm_zone))
+        self.le_rot.setText(str(idata.rotation_angle))
 
         self.update_vals()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -529,7 +529,7 @@ class StaticShiftEDI(BasicModule):
 
         self.change_band()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -717,7 +717,7 @@ class RotateEDI(BasicModule):
 
         self.change_band()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -1169,7 +1169,7 @@ class EditEDI(BasicModule):
 
         self.change_band()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -1347,32 +1347,32 @@ class Occam1D(BasicModule):
         self.cmb_mode = QtWidgets.QComboBox()
         self.cmb_mode.addItems(['TE', 'TM', 'DET'])
         self.cmb_mode.setCurrentIndex(0)
-        self.errres = QtWidgets.QLineEdit('data')
-        self.errres.setSizePolicy(sizepolicy)
-        self.errphase = QtWidgets.QLineEdit('data')
-        self.errphase.setSizePolicy(sizepolicy)
-        self.errfloorres = QtWidgets.QLineEdit('4.')
-        self.errfloorres.setSizePolicy(sizepolicy)
-        self.errfloorphase = QtWidgets.QLineEdit('2.')
-        self.errfloorphase.setSizePolicy(sizepolicy)
+        self.le_errres = QtWidgets.QLineEdit('data')
+        self.le_errres.setSizePolicy(sizepolicy)
+        self.le_errphase = QtWidgets.QLineEdit('data')
+        self.le_errphase.setSizePolicy(sizepolicy)
+        self.le_errfloorres = QtWidgets.QLineEdit('4.')
+        self.le_errfloorres.setSizePolicy(sizepolicy)
+        self.le_errfloorphase = QtWidgets.QLineEdit('2.')
+        self.le_errfloorphase.setSizePolicy(sizepolicy)
         self.cb_remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
                                                       r'Phase values out of '
                                                       r'1st/3rd Quadrant')
 
-        self.targetdepth = QtWidgets.QLineEdit('40000.')
-        self.targetdepth.setSizePolicy(sizepolicy)
-        self.nlayers = QtWidgets.QLineEdit('100')
-        self.nlayers.setSizePolicy(sizepolicy)
-        self.bottomlayer = QtWidgets.QLineEdit('100000.')
-        self.bottomlayer.setSizePolicy(sizepolicy)
-        self.airlayer = QtWidgets.QLineEdit('10000.')
-        self.airlayer.setSizePolicy(sizepolicy)
-        self.z1layer = QtWidgets.QLineEdit('10.')
-        self.z1layer.setSizePolicy(sizepolicy)
-        self.maxiter = QtWidgets.QLineEdit('200')
-        self.maxiter.setSizePolicy(sizepolicy)
-        self.targetrms = QtWidgets.QLineEdit('1.')
-        self.targetrms.setSizePolicy(sizepolicy)
+        self.le_targetdepth = QtWidgets.QLineEdit('40000.')
+        self.le_targetdepth.setSizePolicy(sizepolicy)
+        self.le_nlayers = QtWidgets.QLineEdit('100')
+        self.le_nlayers.setSizePolicy(sizepolicy)
+        self.le_bottomlayer = QtWidgets.QLineEdit('100000.')
+        self.le_bottomlayer.setSizePolicy(sizepolicy)
+        self.le_airlayer = QtWidgets.QLineEdit('10000.')
+        self.le_airlayer.setSizePolicy(sizepolicy)
+        self.le_z1layer = QtWidgets.QLineEdit('10.')
+        self.le_z1layer.setSizePolicy(sizepolicy)
+        self.le_maxiter = QtWidgets.QLineEdit('200')
+        self.le_maxiter.setSizePolicy(sizepolicy)
+        self.le_targetrms = QtWidgets.QLineEdit('1.')
+        self.le_targetrms.setSizePolicy(sizepolicy)
         self.cb_remove_out_quad.setChecked(True)
 
         self.hs_profnum = MySlider()
@@ -1407,27 +1407,27 @@ class Occam1D(BasicModule):
         gl_1.addWidget(lbl_3, 2, 0)
         gl_1.addWidget(self.cmb_mode, 2, 1)
         gl_1.addWidget(lbl_4, 3, 0)
-        gl_1.addWidget(self.errres, 3, 1)
+        gl_1.addWidget(self.le_errres, 3, 1)
         gl_1.addWidget(lbl_5, 4, 0)
-        gl_1.addWidget(self.errphase, 4, 1)
+        gl_1.addWidget(self.le_errphase, 4, 1)
         gl_1.addWidget(lbl_6, 5, 0)
-        gl_1.addWidget(self.errfloorres, 5, 1)
+        gl_1.addWidget(self.le_errfloorres, 5, 1)
         gl_1.addWidget(lbl_7, 6, 0)
-        gl_1.addWidget(self.errfloorphase, 6, 1)
+        gl_1.addWidget(self.le_errfloorphase, 6, 1)
         gl_1.addWidget(lbl_8, 7, 0)
-        gl_1.addWidget(self.airlayer, 7, 1)
+        gl_1.addWidget(self.le_airlayer, 7, 1)
         gl_1.addWidget(lbl_9, 8, 0)
-        gl_1.addWidget(self.bottomlayer, 8, 1)
+        gl_1.addWidget(self.le_bottomlayer, 8, 1)
         gl_1.addWidget(lbl_10, 9, 0)
-        gl_1.addWidget(self.targetdepth, 9, 1)
+        gl_1.addWidget(self.le_targetdepth, 9, 1)
         gl_1.addWidget(lbl_11, 10, 0)
-        gl_1.addWidget(self.z1layer, 10, 1)
+        gl_1.addWidget(self.le_z1layer, 10, 1)
         gl_1.addWidget(lbl_12, 11, 0)
-        gl_1.addWidget(self.nlayers, 11, 1)
+        gl_1.addWidget(self.le_nlayers, 11, 1)
         gl_1.addWidget(lbl_13, 12, 0)
-        gl_1.addWidget(self.maxiter, 12, 1)
+        gl_1.addWidget(self.le_maxiter, 12, 1)
         gl_1.addWidget(lbl_14, 13, 0)
-        gl_1.addWidget(self.targetrms, 13, 1)
+        gl_1.addWidget(self.le_targetrms, 13, 1)
         gl_1.addWidget(self.cb_remove_out_quad, 14, 0, 1, 2)
 
         gl_1.addWidget(pb_apply, 15, 0, 1, 2)
@@ -1487,17 +1487,17 @@ class Occam1D(BasicModule):
         """
         parm = {}
 
-        parm['tdepth'] = tonumber(self.targetdepth.text())
-        parm['nlayers'] = tonumber(self.nlayers.text())
-        parm['blayer'] = tonumber(self.bottomlayer.text())
-        parm['alayer'] = tonumber(self.airlayer.text())
-        parm['z1layer'] = tonumber(self.z1layer.text())
-        parm['miter'] = tonumber(self.maxiter.text())
-        parm['trms'] = tonumber(self.targetrms.text())
-        parm['rerr'] = tonumber(self.errres.text(), 'data')
-        parm['perr'] = tonumber(self.errphase.text(), 'data')
-        parm['perrflr'] = tonumber(self.errfloorphase.text())
-        parm['rerrflr'] = tonumber(self.errfloorres.text())
+        parm['tdepth'] = tonumber(self.le_targetdepth.text())
+        parm['nlayers'] = tonumber(self.le_nlayers.text())
+        parm['blayer'] = tonumber(self.le_bottomlayer.text())
+        parm['alayer'] = tonumber(self.le_airlayer.text())
+        parm['z1layer'] = tonumber(self.le_z1layer.text())
+        parm['miter'] = tonumber(self.le_maxiter.text())
+        parm['trms'] = tonumber(self.le_targetrms.text())
+        parm['rerr'] = tonumber(self.le_errres.text(), 'data')
+        parm['perr'] = tonumber(self.le_errphase.text(), 'data')
+        parm['perrflr'] = tonumber(self.le_errfloorphase.text())
+        parm['rerrflr'] = tonumber(self.le_errfloorres.text())
         parm['routq'] = self.cb_remove_out_quad.isChecked()
 
         if -999 in parm.values():
@@ -1689,7 +1689,7 @@ class Occam1D(BasicModule):
 
         self.change_band()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -1707,17 +1707,17 @@ class Occam1D(BasicModule):
         None.
 
         """
-        self.saveobj(self.targetdepth)
-        self.saveobj(self.nlayers)
-        self.saveobj(self.bottomlayer)
-        self.saveobj(self.airlayer)
-        self.saveobj(self.z1layer)
-        self.saveobj(self.maxiter)
-        self.saveobj(self.targetrms)
-        self.saveobj(self.errres)
-        self.saveobj(self.errphase)
-        self.saveobj(self.errfloorphase)
-        self.saveobj(self.errfloorres)
+        self.saveobj(self.le_targetdepth)
+        self.saveobj(self.le_nlayers)
+        self.saveobj(self.le_bottomlayer)
+        self.saveobj(self.le_airlayer)
+        self.saveobj(self.le_z1layer)
+        self.saveobj(self.le_maxiter)
+        self.saveobj(self.le_targetrms)
+        self.saveobj(self.le_errres)
+        self.saveobj(self.le_errphase)
+        self.saveobj(self.le_errfloorphase)
+        self.saveobj(self.le_errfloorres)
         self.saveobj(self.cmb_mode)
         self.saveobj(self.cb_remove_out_quad)
 

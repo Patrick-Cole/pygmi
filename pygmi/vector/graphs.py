@@ -53,8 +53,8 @@ class GraphWindow(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
@@ -64,9 +64,9 @@ class GraphWindow(ContextModule):
         self.cb_1.hide()
 
         hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
         hbl.addWidget(self.lbl_3)
         hbl.addWidget(self.spinbox)
 
@@ -77,8 +77,8 @@ class GraphWindow(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
         self.cb_1.stateChanged.connect(self.change_band)
 
@@ -548,8 +548,8 @@ class PlotLines(GraphWindow):
         if self.data is None:
             return
 
-        line = self.combobox1.currentText()
-        col = self.combobox2.currentText()
+        line = self.cmb_1.currentText()
+        col = self.cmb_2.currentText()
 
         data2 = self.data[self.data.line == line]
         data2 = data2.dropna(subset=col)
@@ -583,8 +583,8 @@ class PlotLines(GraphWindow):
             self.showlog('No point type data.')
             return
 
-        self.combobox1.currentIndexChanged.disconnect()
-        self.combobox2.currentIndexChanged.disconnect()
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_2.currentIndexChanged.disconnect()
 
         self.show()
 
@@ -593,19 +593,19 @@ class PlotLines(GraphWindow):
         cols = list(self.data.columns[filt])
         lines = self.data.line[self.data.line != 'nan'].unique()
 
-        self.combobox1.addItems(lines)
-        self.combobox2.addItems(cols)
+        self.cmb_1.addItems(lines)
+        self.cmb_2.addItems(cols)
 
         self.lbl_1.setText('Line:')
         self.lbl_2.setText('Column:')
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox2.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_2.setCurrentIndex(0)
 
         self.change_band()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
 
 class PlotLineMap(GraphWindow):
@@ -613,7 +613,7 @@ class PlotLineMap(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combobox2.hide()
+        self.cmb_2.hide()
         self.lbl_2.hide()
         self.cb_1.show()
 
@@ -630,7 +630,7 @@ class PlotLineMap(GraphWindow):
             return
 
         scale = self.spinbox.value()
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         data = self.data.dropna(subset=i)
 
         self.mmc.update_lmap(data, i, scale, self.cb_1.isChecked())
@@ -654,7 +654,7 @@ class PlotLineMap(GraphWindow):
             self.showlog('No point type data.')
             return
 
-        self.combobox1.currentIndexChanged.disconnect()
+        self.cmb_1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
         self.cb_1.stateChanged.disconnect()
 
@@ -664,7 +664,7 @@ class PlotLineMap(GraphWindow):
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
         cols = list(data.columns[filt])
-        self.combobox1.addItems(cols)
+        self.cmb_1.addItems(cols)
 
         self.cb_1.setText('Show Line Labels:')
         self.lbl_1.setText('Column:')
@@ -673,11 +673,11 @@ class PlotLineMap(GraphWindow):
         self.spinbox.setMaximum(1000000)
         self.spinbox.setValue(100)
 
-        self.combobox1.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
 
         self.change_band()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
         self.cb_1.stateChanged.connect(self.change_band)
 
@@ -687,7 +687,7 @@ class PlotRose(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combobox2.hide()
+        self.cmb_2.hide()
         self.lbl_2.hide()
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
@@ -712,7 +712,7 @@ class PlotRose(GraphWindow):
         if self.data is None:
             return
 
-        i = self.combobox1.currentIndex()
+        i = self.cmb_1.currentIndex()
         equal = self.cb_1.isChecked()
 
         self.mmc.update_rose(self.data, i, self.spinbox.value(), equal)
@@ -739,11 +739,11 @@ class PlotRose(GraphWindow):
             return
 
         self.show()
-        self.combobox1.addItem('Average Angle per Feature')
-        self.combobox1.addItem('Angle per segment in Feature')
+        self.cmb_1.addItem('Average Angle per Feature')
+        self.cmb_1.addItem('Angle per segment in Feature')
         self.cb_1.setText('Equal Area Rose Diagram')
         self.lbl_1.setText('Rose Diagram Type:')
-        self.combobox1.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
 
 
 class PlotVector(GraphWindow):
@@ -752,7 +752,7 @@ class PlotVector(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         # self.lbl_1.hide()
-        self.combobox2.hide()
+        self.cmb_2.hide()
         self.lbl_2.hide()
         self.spinbox.hide()
         self.lbl_3.hide()
@@ -769,7 +769,7 @@ class PlotVector(GraphWindow):
         if self.data is None:
             return
 
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         data = self.data.dropna(subset=i)
         if data.size == 0:
             i = ''
@@ -794,10 +794,10 @@ class PlotVector(GraphWindow):
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
         if len(cols) > 0:
-            self.combobox1.addItems(cols)
-            self.combobox1.setCurrentIndex(0)
+            self.cmb_1.addItems(cols)
+            self.cmb_1.setCurrentIndex(0)
         else:
-            self.combobox1.hide()
+            self.cmb_1.hide()
 
         self.lbl_1.setText('Channel:')
 

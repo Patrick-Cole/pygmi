@@ -51,9 +51,9 @@ class ImportXYZ(BasicModule):
         self.filt = ''
         self.is_import = True
 
-        self.xchan = QtWidgets.QComboBox()
-        self.ychan = QtWidgets.QComboBox()
-        self.nodata = QtWidgets.QLineEdit('99999')
+        self.cmb_xchan = QtWidgets.QComboBox()
+        self.cmb_ychan = QtWidgets.QComboBox()
+        self.le_nodata = QtWidgets.QLineEdit('99999')
         self.proj = GroupProj('Input Projection')
 
         self.setupui()
@@ -79,21 +79,21 @@ class ImportXYZ(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.xchan.setSizeAdjustPolicy(3)
-        self.ychan.setSizeAdjustPolicy(3)
-        self.xchan.setMinimumSize = 10
-        self.ychan.setMinimumSize = 10
+        self.cmb_xchan.setSizeAdjustPolicy(3)
+        self.cmb_ychan.setSizeAdjustPolicy(3)
+        self.cmb_xchan.setMinimumSize = 10
+        self.cmb_ychan.setMinimumSize = 10
 
         self.setWindowTitle(r'Import XYZ Data')
 
         gl_main.addWidget(lbl_xchan, 0, 0, 1, 1)
-        gl_main.addWidget(self.xchan, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_xchan, 0, 1, 1, 1)
 
         gl_main.addWidget(lbl_ychan, 1, 0, 1, 1)
-        gl_main.addWidget(self.ychan, 1, 1, 1, 1)
+        gl_main.addWidget(self.cmb_ychan, 1, 1, 1, 1)
 
         gl_main.addWidget(lbl_nodata, 2, 0, 1, 1)
-        gl_main.addWidget(self.nodata, 2, 1, 1, 1)
+        gl_main.addWidget(self.le_nodata, 2, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 5, 0, 1, 1)
         gl_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -147,7 +147,7 @@ class ImportXYZ(BasicModule):
             gdf = self.get_delimited(' ')
         elif self.filt == 'Intrepid Database (*..DIR)':
             gdf = get_intrepid(self.ifile, self.showlog, self.piter)
-            self.nodata.setDisabled(True)
+            self.le_nodata.setDisabled(True)
         else:
             return False
 
@@ -156,8 +156,8 @@ class ImportXYZ(BasicModule):
 
         self.proj.set_current('None')
 
-        self.xchan.clear()
-        self.ychan.clear()
+        self.cmb_xchan.clear()
+        self.cmb_ychan.clear()
 
         xind = -1
         yind = -1
@@ -192,26 +192,26 @@ class ImportXYZ(BasicModule):
             xind = 0
             yind = 1
 
-        self.xchan.addItems(gdf.columns.values)
-        self.ychan.addItems(gdf.columns.values)
+        self.cmb_xchan.addItems(gdf.columns.values)
+        self.cmb_ychan.addItems(gdf.columns.values)
 
-        self.xchan.setCurrentIndex(xind)
-        self.ychan.setCurrentIndex(yind)
+        self.cmb_xchan.setCurrentIndex(xind)
+        self.cmb_ychan.setCurrentIndex(yind)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return tmp
 
         try:
-            nodata = float(self.nodata.text())
+            nodata = float(self.le_nodata.text())
         except ValueError:
             self.showlog('Nodata Value error - abandoning import')
             return False
 
-        xcol = self.xchan.currentText()
-        ycol = self.ychan.currentText()
+        xcol = self.cmb_xchan.currentText()
+        ycol = self.cmb_ychan.currentText()
 
         x = gdf[xcol]
         y = gdf[ycol]
@@ -224,7 +224,7 @@ class ImportXYZ(BasicModule):
 
         gdf['line'] = gdf['line'].astype(str)
 
-        if self.nodata.isEnabled():
+        if self.le_nodata.isEnabled():
             gdf = gdf.replace(nodata, np.nan)
 
         if self.proj.wkt != '':
@@ -246,9 +246,9 @@ class ImportXYZ(BasicModule):
         """
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
-        self.saveobj(self.xchan)
-        self.saveobj(self.ychan)
-        self.saveobj(self.nodata)
+        self.saveobj(self.cmb_xchan)
+        self.saveobj(self.cmb_ychan)
+        self.saveobj(self.le_nodata)
 
     def get_GXYZ(self):
         """

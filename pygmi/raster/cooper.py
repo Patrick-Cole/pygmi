@@ -134,7 +134,7 @@ class Gradients(BasicModule):
 
         self.radiochange()
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 
@@ -385,7 +385,7 @@ class Visibility2d(BasicModule):
             return False
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 
@@ -766,7 +766,7 @@ class AGC(BasicModule):
             return False
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 

@@ -1313,9 +1313,9 @@ def main(nocgs=False):
     wid.activateWindow()
 
     if hasattr(__builtins__, '__IPYTHON__'):
-        app.exec_()
+        app.exec()
     else:
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
 
 
 if __name__ == "__main__":

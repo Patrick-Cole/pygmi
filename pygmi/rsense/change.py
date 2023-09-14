@@ -43,7 +43,6 @@ class CalculateChange(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # self.combo_sensor = QtWidgets.QComboBox()
         self.lw_indices = QtWidgets.QListWidget()
 
         self.setupui()
@@ -106,7 +105,7 @@ class CalculateChange(BasicModule):
         self.setindices()
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 

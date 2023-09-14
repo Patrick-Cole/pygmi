@@ -183,9 +183,9 @@ class SceneViewer(BasicModule):
         self.button1 = QtWidgets.QPushButton('Start Capture')
         self.button2 = QtWidgets.QPushButton('Previous Scene')
         self.button3 = QtWidgets.QPushButton('Next Scene')
-        self.cbox_band1 = QtWidgets.QComboBox()
-        self.cbox_band2 = QtWidgets.QComboBox()
-        self.cbox_band3 = QtWidgets.QComboBox()
+        self.cmb_band1 = QtWidgets.QComboBox()
+        self.cmb_band2 = QtWidgets.QComboBox()
+        self.cmb_band3 = QtWidgets.QComboBox()
         self.manip = QtWidgets.QComboBox()
 
         self.setupui()
@@ -207,22 +207,22 @@ class SceneViewer(BasicModule):
         self.setWindowTitle("View Change Data")
         self.slider.setTracking(False)
 
-        gbox1 = QtWidgets.QGroupBox('Display Type')
+        gbox_1 = QtWidgets.QGroupBox('Display Type')
         vbl_1 = QtWidgets.QVBoxLayout()
-        gbox1.setLayout(vbl_1)
+        gbox_1.setLayout(vbl_1)
 
-        gbox2 = QtWidgets.QGroupBox('Data Bands')
+        gbox_2 = QtWidgets.QGroupBox('Data Bands')
         vbl_2 = QtWidgets.QVBoxLayout()
-        gbox2.setLayout(vbl_2)
+        gbox_2.setLayout(vbl_2)
 
-        # gbox2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+        # gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
         #                     QtWidgets.QSizePolicy.Preferred)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
                                        QtWidgets.QSizePolicy.Expanding)
 
-        vbl_2.addWidget(self.cbox_band1)
-        vbl_2.addWidget(self.cbox_band2)
-        vbl_2.addWidget(self.cbox_band3)
+        vbl_2.addWidget(self.cmb_band1)
+        vbl_2.addWidget(self.cmb_band2)
+        vbl_2.addWidget(self.cmb_band3)
 
         actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
         self.manip.addItems(actions)
@@ -236,8 +236,8 @@ class SceneViewer(BasicModule):
         vbl_1.addWidget(self.slider)
         vbl_1.addLayout(hbl)
 
-        vbl_2.addWidget(gbox1)
-        vbl_2.addWidget(gbox2)
+        vbl_2.addWidget(gbox_1)
+        vbl_2.addWidget(gbox_2)
         vbl_2.addWidget(self.button1)
         vbl_2.addItem(spacer)
 
@@ -251,9 +251,9 @@ class SceneViewer(BasicModule):
         self.button3.clicked.connect(self.nextscene)
         self.button1.clicked.connect(self.capture)
         self.manip.currentIndexChanged.connect(self.manip_change)
-        self.cbox_band1.currentIndexChanged.connect(self.manip_change)
-        self.cbox_band2.currentIndexChanged.connect(self.manip_change)
-        self.cbox_band3.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band1.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band2.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band3.currentIndexChanged.connect(self.manip_change)
 
     def settings(self, nodialog=False):
         """
@@ -291,42 +291,42 @@ class SceneViewer(BasicModule):
         bands = dat.bands
 
         try:
-            self.cbox_band1.currentIndexChanged.disconnect()
-            self.cbox_band2.currentIndexChanged.disconnect()
-            self.cbox_band3.currentIndexChanged.disconnect()
+            self.cmb_band1.currentIndexChanged.disconnect()
+            self.cmb_band2.currentIndexChanged.disconnect()
+            self.cmb_band3.currentIndexChanged.disconnect()
         except TypeError:
             pass
 
-        self.cbox_band1.clear()
-        self.cbox_band2.clear()
-        self.cbox_band3.clear()
+        self.cmb_band1.clear()
+        self.cmb_band2.clear()
+        self.cmb_band3.clear()
 
-        self.cbox_band1.addItems(bands)
-        self.cbox_band2.addItems(bands)
-        self.cbox_band3.addItems(bands)
+        self.cmb_band1.addItems(bands)
+        self.cmb_band2.addItems(bands)
+        self.cmb_band3.addItems(bands)
 
         if len(bands) > 3:
-            self.cbox_band1.setCurrentIndex(3)
-            self.cbox_band2.setCurrentIndex(2)
-            self.cbox_band3.setCurrentIndex(1)
+            self.cmb_band1.setCurrentIndex(3)
+            self.cmb_band2.setCurrentIndex(2)
+            self.cmb_band3.setCurrentIndex(1)
         elif len(bands) == 3:
-            self.cbox_band1.setCurrentIndex(2)
-            self.cbox_band2.setCurrentIndex(1)
-            self.cbox_band3.setCurrentIndex(0)
+            self.cmb_band1.setCurrentIndex(2)
+            self.cmb_band2.setCurrentIndex(1)
+            self.cmb_band3.setCurrentIndex(0)
 
-        self.cbox_band1.currentIndexChanged.connect(self.manip_change)
-        self.cbox_band2.currentIndexChanged.connect(self.manip_change)
-        self.cbox_band3.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band1.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band2.currentIndexChanged.connect(self.manip_change)
+        self.cmb_band3.currentIndexChanged.connect(self.manip_change)
 
-        self.canvas.bands = [self.cbox_band1.currentText(),
-                             self.cbox_band2.currentText(),
-                             self.cbox_band3.currentText()]
+        self.canvas.bands = [self.cmb_band1.currentText(),
+                             self.cmb_band2.currentText(),
+                             self.cmb_band3.currentText()]
 
         self.canvas.manip = self.manip.currentText()
         self.canvas.compute_initial_figure(dat, dates)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return tmp
@@ -400,15 +400,15 @@ class SceneViewer(BasicModule):
         maniptxt = self.manip.currentText()
 
         if 'Ternary' in maniptxt:
-            self.cbox_band2.show()
-            self.cbox_band3.show()
+            self.cmb_band2.show()
+            self.cmb_band3.show()
         else:
-            self.cbox_band2.hide()
-            self.cbox_band3.hide()
+            self.cmb_band2.hide()
+            self.cmb_band3.hide()
 
-        self.canvas.bands = [self.cbox_band1.currentText(),
-                             self.cbox_band2.currentText(),
-                             self.cbox_band3.currentText()]
+        self.canvas.bands = [self.cmb_band1.currentText(),
+                             self.cmb_band2.currentText(),
+                             self.cmb_band3.currentText()]
 
         self.canvas.manip = maniptxt
         self.newdata(self.curimage)

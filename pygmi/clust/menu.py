@@ -57,36 +57,36 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
         # Normal menus
-        self.menuclustering = QtWidgets.QMenu('Classification')
-        parent.menubar.addAction(self.menuclustering.menuAction())
+        self.menu = QtWidgets.QMenu('Classification')
+        parent.menubar.addAction(self.menu.menuAction())
 
         self.action_clustering = QtWidgets.QAction('Cluster Analysis')
-        self.menuclustering.addAction(self.action_clustering)
+        self.menu.addAction(self.action_clustering)
         self.action_clustering.triggered.connect(self.cluster)
 
         self.action_crisp_clustering = QtWidgets.QAction("Crisp Clustering")
-        self.menuclustering.addAction(self.action_crisp_clustering)
+        self.menu.addAction(self.action_crisp_clustering)
         self.action_crisp_clustering.triggered.connect(self.crisp_cluster)
 
         self.action_fuzzy_clustering = QtWidgets.QAction("Fuzzy Clustering")
-        self.menuclustering.addAction(self.action_fuzzy_clustering)
+        self.menu.addAction(self.action_fuzzy_clustering)
         self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
 
-        self.menuclustering.addSeparator()
+        self.menu.addSeparator()
 
         self.action_segmentation = QtWidgets.QAction('Image Segmentation')
-        self.menuclustering.addAction(self.action_segmentation)
+        self.menu.addAction(self.action_segmentation)
         self.action_segmentation.triggered.connect(self.segmentation)
 
         self.action_super_class = QtWidgets.QAction("Supervised "
                                                     "Classification")
-        self.menuclustering.addAction(self.action_super_class)
+        self.menu.addAction(self.action_super_class)
         self.action_super_class.triggered.connect(self.super_class)
 
-        self.menuclustering.addSeparator()
+        self.menu.addSeparator()
 
         self.action_scatter_plot = QtWidgets.QAction('Scatter Plot Tool')
-        self.menuclustering.addAction(self.action_scatter_plot)
+        self.menu.addAction(self.action_scatter_plot)
         self.action_scatter_plot.triggered.connect(self.scatter_plot)
 
 # Context menus

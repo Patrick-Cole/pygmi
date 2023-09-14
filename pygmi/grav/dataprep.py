@@ -43,11 +43,12 @@ class ProcessData(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.density = QtWidgets.QLineEdit('2670')
-        self.knownstat = QtWidgets.QLineEdit('None')
-        self.knownbase = QtWidgets.QLineEdit('978000.0')
-        self.absbase = QtWidgets.QLineEdit('978032.67715')
-        self.basethres = QtWidgets.QLineEdit('10000')
+
+        self.le_density = QtWidgets.QLineEdit('2670')
+        self.le_knownstat = QtWidgets.QLineEdit('None')
+        self.le_knownbase = QtWidgets.QLineEdit('978000.0')
+        self.le_absbase = QtWidgets.QLineEdit('978032.67715')
+        self.le_basethres = QtWidgets.QLineEdit('10000')
 
         self.gdata = None
 
@@ -81,18 +82,18 @@ class ProcessData(BasicModule):
         self.setWindowTitle('Gravity Data Processing')
 
         gl_main.addWidget(lbl_kstat, 0, 0, 1, 1)
-        gl_main.addWidget(self.knownstat, 0, 1, 1, 1)
+        gl_main.addWidget(self.le_knownstat, 0, 1, 1, 1)
         gl_main.addWidget(lbl_kbase, 1, 0, 1, 1)
-        gl_main.addWidget(self.knownbase, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_knownbase, 1, 1, 1, 1)
 
         gl_main.addWidget(pb_calcbase, 2, 0, 1, 2)
 
         gl_main.addWidget(lbl_density, 3, 0, 1, 1)
-        gl_main.addWidget(self.density, 3, 1, 1, 1)
+        gl_main.addWidget(self.le_density, 3, 1, 1, 1)
         gl_main.addWidget(lbl_absbase, 4, 0, 1, 1)
-        gl_main.addWidget(self.absbase, 4, 1, 1, 1)
+        gl_main.addWidget(self.le_absbase, 4, 1, 1, 1)
         gl_main.addWidget(lbl_bthres, 5, 0, 1, 1)
-        gl_main.addWidget(self.basethres, 5, 1, 1, 1)
+        gl_main.addWidget(self.le_basethres, 5, 1, 1, 1)
         gl_main.addWidget(helpdocs, 6, 0, 1, 1)
         gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
@@ -131,22 +132,22 @@ class ProcessData(BasicModule):
             return False
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 
         try:
-            float(self.density.text())
-            float(self.absbase.text())
-            float(self.basethres.text())
-            float(self.knownbase.text())
+            float(self.le_density.text())
+            float(self.le_absbase.text())
+            float(self.le_basethres.text())
+            float(self.le_knownbase.text())
         except ValueError:
             self.showlog('Value Error')
             return False
 
-        if self.knownstat.text() != 'None':
+        if self.le_knownstat.text() != 'None':
             try:
-                float(self.knownstat.text())
+                float(self.le_knownstat.text())
             except ValueError:
                 self.showlog('Value Error')
                 return False
@@ -167,11 +168,11 @@ class ProcessData(BasicModule):
         None.
 
         """
-        self.saveobj(self.density)
-        self.saveobj(self.knownstat)
-        self.saveobj(self.knownbase)
-        self.saveobj(self.absbase)
-        self.saveobj(self.basethres)
+        self.saveobj(self.le_density)
+        self.saveobj(self.le_knownstat)
+        self.saveobj(self.le_knownbase)
+        self.saveobj(self.le_absbase)
+        self.saveobj(self.le_basethres)
 
     def acceptall(self, nodialog):
         """
@@ -187,8 +188,8 @@ class ProcessData(BasicModule):
         pdat = self.gdata
         pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
-        basethres = float(self.basethres.text())
-        kstat = self.knownstat.text()
+        basethres = float(self.le_basethres.text())
+        kstat = self.le_knownstat.text()
         if kstat == 'None':
             kstat = -1.0
         else:
@@ -276,12 +277,12 @@ class ProcessData(BasicModule):
             plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
             plt.show()
 
-        gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
+        gobs = pdat['GRAV'] - dcor + float(self.le_absbase.text())
 
         # Variables used
         lat = np.deg2rad(pdat.latitude)
         h = pdat['elevation']  # This is the ellipsoidal (gps) height
-        dens = float(self.density.text())
+        dens = float(self.le_density.text())
 
         # Corrections
         gT = theoretical_gravity(lat)
@@ -318,15 +319,15 @@ class ProcessData(BasicModule):
         """
         pdat = self.gdata
 
-        basethres = float(self.basethres.text())
+        basethres = float(self.le_basethres.text())
 
-        if self.knownstat.text() == 'None':
+        if self.le_knownstat.text() == 'None':
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           txt, QtWidgets.QMessageBox.Ok)
             return
 
-        kstat = float(self.knownstat.text())
+        kstat = float(self.le_knownstat.text())
         if kstat not in pdat['STATION'].values:
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -357,8 +358,8 @@ class ProcessData(BasicModule):
                                           txt, QtWidgets.QMessageBox.Ok)
             return
 
-        absbase = grv-np.interp(x, xp, fp) + float(self.knownbase.text())
-        self.absbase.setText(str(absbase.iloc[0]))
+        absbase = grv-np.interp(x, xp, fp) + float(self.le_knownbase.text())
+        self.le_absbase.setText(str(absbase.iloc[0]))
 
 
 def geocentric_radius(lat):

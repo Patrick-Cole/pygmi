@@ -190,11 +190,11 @@ class AnalSpec(BasicModule):
         self.feature[2330] = [2120, 2370]
 
         self.map = GraphMap(self)
-        self.combo = QtWidgets.QComboBox()
-        self.combo_feature = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
         self.lbl_info = QtWidgets.QLabel('')
-        self.group_info = QtWidgets.QGroupBox('Information:')
+        self.gbox_info = QtWidgets.QGroupBox('Information:')
         self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
         self.cb_rot = QtWidgets.QCheckBox('Rotate View')
         self.lw_speclib = QtWidgets.QListWidget()
@@ -221,7 +221,7 @@ class AnalSpec(BasicModule):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        vbl_info = QtWidgets.QVBoxLayout(self.group_info)
+        vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
         pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
 
         self.lbl_info.setWordWrap(True)
@@ -233,22 +233,22 @@ class AnalSpec(BasicModule):
         vbl_info.addWidget(self.lbl_info)
 
         gl_main.addWidget(lbl_combo, 0, 1)
-        gl_main.addWidget(self.combo, 0, 2)
+        gl_main.addWidget(self.cmb_1, 0, 2)
         gl_main.addWidget(lbl_feature, 1, 1)
-        gl_main.addWidget(self.combo_feature, 1, 2)
+        gl_main.addWidget(self.cmb_feature, 1, 2)
         gl_main.addWidget(self.cb_rot, 2, 1)
         gl_main.addWidget(self.cb_hull, 2, 2)
         gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
 
-        gl_main.addWidget(self.group_info, 5, 1, 8, 2)
+        gl_main.addWidget(self.gbox_info, 5, 1, 8, 2)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
 
         gl_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
 
-        self.combo_feature.currentIndexChanged.connect(self.feature_change)
+        self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
         self.cb_rot.clicked.connect(self.rotate_view)
         pb_speclib.clicked.connect(self.load_splib)
@@ -321,7 +321,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        txt = self.combo_feature.currentText()
+        txt = self.cmb_feature.currentText()
 
         self.map.feature = [int(txt)] + self.feature[int(txt)]
 
@@ -374,7 +374,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        self.map.mindx = self.combo.currentIndex()
+        self.map.mindx = self.cmb_1.currentIndex()
         self.map.init_graph()
 
     def rotate_view(self):
@@ -461,18 +461,18 @@ class AnalSpec(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        self.combo.clear()
-        self.combo.addItems(bands)
-        self.combo.currentIndexChanged.connect(self.on_combo)
+        self.cmb_1.clear()
+        self.cmb_1.addItems(bands)
+        self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
         ftxt = [str(i) for i in self.feature]
-        self.combo_feature.disconnect()
-        self.combo_feature.clear()
-        self.combo_feature.addItems(ftxt)
+        self.cmb_feature.disconnect()
+        self.cmb_feature.clear()
+        self.cmb_feature.addItems(ftxt)
         self.feature_change()
-        self.combo_feature.currentIndexChanged.connect(self.feature_change)
+        self.cmb_feature.currentIndexChanged.connect(self.feature_change)
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp == 0:
             return False
@@ -502,7 +502,7 @@ class ProcFeatures(BasicModule):
         self.ratio = {}
         self.feature = None
 
-        self.cb_ratios = QtWidgets.QComboBox()
+        self.cmb_ratios = QtWidgets.QComboBox()
         self.cb_rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
                                               'ratio, filter out values less '
                                               'than 1.')
@@ -543,7 +543,7 @@ class ProcFeatures(BasicModule):
         self.setWindowTitle('Process Hyperspectral Features')
 
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
-        gl_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
+        gl_main.addWidget(self.cmb_ratios, 1, 1, 1, 1)
         gl_main.addWidget(lbl_details, 2, 0, 1, 1)
         gl_main.addWidget(self.tablewidget, 2, 1, 1, 1)
         gl_main.addWidget(self.cb_filtercheck, 3, 0, 1, 2)
@@ -552,7 +552,7 @@ class ProcFeatures(BasicModule):
         gl_main.addWidget(helpdocs, 6, 0, 1, 1)
         gl_main.addWidget(buttonbox, 6, 1, 1, 3)
 
-        self.cb_ratios.currentIndexChanged.connect(self.product_change)
+        self.cmb_ratios.currentIndexChanged.connect(self.product_change)
         self.cb_filtercheck.stateChanged.connect(self.product_change)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -566,7 +566,7 @@ class ProcFeatures(BasicModule):
         None.
 
         """
-        txt = self.cb_ratios.currentText()
+        txt = self.cmb_ratios.currentText()
         self.tablewidget.clear()
 
         product = self.product[txt]
@@ -606,14 +606,14 @@ class ProcFeatures(BasicModule):
         self.tablewidget.setItem(0, 3, item)
 
         for i in range(1, numrows):
-            cb = QtWidgets.QComboBox()
-            cb.addItems(['<', '>'])
-            self.tablewidget.setCellWidget(i, 1, cb)
+            cmb_1 = QtWidgets.QComboBox()
+            cmb_1.addItems(['<', '>'])
+            self.tablewidget.setCellWidget(i, 1, cmb_1)
 
             txt2 = str(product[i])
             txt2 = txt2.split()
 
-            cb.setCurrentText(txt2[1])
+            cmb_1.setCurrentText(txt2[1])
             item = QtWidgets.QTableWidgetItem(txt2[0])
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tablewidget.setItem(i, 0, item)
@@ -653,20 +653,20 @@ class ProcFeatures(BasicModule):
         self.feature = features.feature
         self.ratio = features.ratio
 
-        self.cb_ratios.disconnect()
+        self.cmb_ratios.disconnect()
         self.product = features.product.copy()
         del self.product['filter']
-        self.cb_ratios.clear()
-        self.cb_ratios.addItems(self.product)
+        self.cmb_ratios.clear()
+        self.cmb_ratios.addItems(self.product)
 
         # The filter line is added after the other products so that it does
         # not make it into the list widget
         self.product['filter'] = features.product['filter']
-        self.cb_ratios.currentIndexChanged.connect(self.product_change)
+        self.cmb_ratios.currentIndexChanged.connect(self.product_change)
         self.product_change()
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 
@@ -686,7 +686,7 @@ class ProcFeatures(BasicModule):
         None.
 
         """
-        self.saveobj(self.cb_ratios)
+        self.saveobj(self.cmb_ratios)
         self.saveobj(self.cb_rfiltcheck)
         self.saveobj(self.cb_filtercheck)
 
@@ -703,7 +703,7 @@ class ProcFeatures(BasicModule):
         """
         datfin = []
 
-        mineral = self.cb_ratios.currentText()
+        mineral = self.cmb_ratios.currentText()
         rfilt = self.cb_rfiltcheck.isChecked()
 
         product = self.product

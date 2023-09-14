@@ -44,7 +44,7 @@ class CrispClust(BasicModule):
         self.sb_maxiterations = QtWidgets.QSpinBox()
         self.sb_repeatedruns = QtWidgets.QSpinBox()
         self.sb_minclusters = QtWidgets.QSpinBox()
-        self.groupbox = QtWidgets.QGroupBox()
+        self.gbox = QtWidgets.QGroupBox()
         self.lbl_7 = QtWidgets.QLabel()
         self.dsb_constraincluster = QtWidgets.QDoubleSpinBox()
         self.rb_random = QtWidgets.QRadioButton()
@@ -79,7 +79,7 @@ class CrispClust(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        vbl = QtWidgets.QVBoxLayout(self.groupbox)
+        vbl = QtWidgets.QVBoxLayout(self.gbox)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         lbl_1 = QtWidgets.QLabel()
@@ -103,7 +103,7 @@ class CrispClust(BasicModule):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.rb_random.setChecked(True)
-        self.groupbox.hide()
+        self.gbox.hide()
 
         self.setWindowTitle('Crisp Clustering')
         lbl_1.setText('Cluster Algorithm:')
@@ -115,7 +115,7 @@ class CrispClust(BasicModule):
         lbl_6.setText('Repeated Runs:')
         self.lbl_7.setText('Constrain Cluster Shape '
                            '(0: unconstrained, 1: spherical)')
-        self.groupbox.setTitle('Initial Guess')
+        self.gbox.setTitle('Initial Guess')
         self.rb_random.setText('Random')
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
@@ -134,7 +134,7 @@ class CrispClust(BasicModule):
         gl_1.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
         gl_1.addWidget(self.lbl_7, 6, 2, 1, 1)
         gl_1.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
-        gl_1.addWidget(self.groupbox, 8, 2, 1, 3)
+        gl_1.addWidget(self.gbox, 8, 2, 1, 3)
         gl_1.addWidget(buttonbox, 9, 4, 1, 1)
 
         vbl.addWidget(self.rb_random)
@@ -189,7 +189,7 @@ class CrispClust(BasicModule):
         self.update_vars()
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 

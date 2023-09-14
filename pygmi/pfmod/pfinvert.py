@@ -132,8 +132,8 @@ class MagInvert(BasicModule):
         self.sb_classes.setMinimum(2)
         self.sb_classes.setMaximum(1000)
 
-        gb_gen_prop = QtWidgets.QGroupBox('General Properties')
-        gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
+        gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
+        gl_gen_prop = QtWidgets.QGridLayout(gbox_gen_prop)
 
         lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic')
         lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
@@ -150,8 +150,8 @@ class MagInvert(BasicModule):
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Data Information Groupbox
-        gb_data_info = QtWidgets.QGroupBox('Dataset Information')
-        gl_data_info = QtWidgets.QGridLayout(gb_data_info)
+        gbox_data_info = QtWidgets.QGroupBox('Dataset Information')
+        gl_data_info = QtWidgets.QGridLayout(gbox_data_info)
 
         self.cmb_mag.addItems(['None'])
         self.cmb_grv.addItems(['None'])
@@ -170,8 +170,8 @@ class MagInvert(BasicModule):
         gl_data_info.addWidget(self.cmb_mag, 1, 1, 1, 1)
 
         # Data Extents Groupbox
-        gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
-        gl_extent = QtWidgets.QGridLayout(gb_extent)
+        gbox_extent = QtWidgets.QGroupBox('Model Extent Properties')
+        gl_extent = QtWidgets.QGridLayout(gbox_extent)
 
         self.cmb_dataset.addItems(['None'])
 
@@ -251,9 +251,9 @@ class MagInvert(BasicModule):
         hbl.addWidget(buttonbox)
 
         # Assign to main layout
-        vbl.addWidget(gb_data_info)
-        vbl.addWidget(gb_gen_prop)
-        vbl.addWidget(gb_extent)
+        vbl.addWidget(gbox_data_info)
+        vbl.addWidget(gbox_gen_prop)
+        vbl.addWidget(gbox_extent)
         vbl.addLayout(hbl)
 
         # Link functions
@@ -677,7 +677,7 @@ class MagInvert(BasicModule):
         if nodialog is False:
             self.update_combos()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return tmp

@@ -145,7 +145,7 @@ class BeachBall(BasicModule):
 
         self.mmc = MyMplCanvas(self)
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
-        self.cbox_alg = QtWidgets.QComboBox()
+        self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
         self.rb_geog = QtWidgets.QRadioButton('Geographic Units')
         self.rb_proj = QtWidgets.QRadioButton('Projected Units')
@@ -183,15 +183,15 @@ class BeachBall(BasicModule):
         self.nofps = False
 
         try:
-            self.cbox_alg.currentIndexChanged.disconnect()
+            self.cmb_alg.currentIndexChanged.disconnect()
         except TypeError:
             pass
 
-        self.cbox_alg.clear()
-        self.cbox_alg.addItems(alist)
+        self.cmb_alg.clear()
+        self.cmb_alg.addItems(alist)
         self.algorithm = alist[0]
 
-        self.cbox_alg.currentIndexChanged.connect(self.change_alg)
+        self.cmb_alg.currentIndexChanged.connect(self.change_alg)
 
         pwidth = 1.
 
@@ -244,7 +244,7 @@ class BeachBall(BasicModule):
         self.setWindowTitle('Fault Plane Solution (FPS)')
 
         vbl_raster.addWidget(lbl_2)
-        vbl_raster.addWidget(self.cbox_alg)
+        vbl_raster.addWidget(self.cmb_alg)
         vbl_raster.addWidget(lbl_3)
         vbl_raster.addWidget(self.dsb_dist)
         vbl_raster.addWidget(self.rb_geog)
@@ -469,7 +469,7 @@ class BeachBall(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_alg.currentText())
+        txt = str(self.cmb_alg.currentText())
         self.algorithm = txt
         data = self.indata[self.stype]
 
@@ -511,7 +511,7 @@ class BeachBall(BasicModule):
         self.mmc.init_graph()
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
 
             if temp == 0:
                 return False
@@ -530,7 +530,7 @@ class BeachBall(BasicModule):
         self.saveobj(self.algorithm)
         self.saveobj(self.nofps)
         self.saveobj(self.stype)
-        self.saveobj(self.cbox_alg)
+        self.saveobj(self.cmb_alg)
         self.saveobj(self.dsb_dist)
         self.saveobj(self.rb_geog)
         self.saveobj(self.rb_proj)

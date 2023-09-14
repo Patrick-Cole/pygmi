@@ -53,10 +53,9 @@ class ImportCG5(BasicModule):
         self.cmb_xchan = QtWidgets.QComboBox()
         self.cmb_ychan = QtWidgets.QComboBox()
         self.cmb_zchan = QtWidgets.QComboBox()
-        self.nodata = QtWidgets.QLineEdit('-99999')
-        self.cg5file = QtWidgets.QLineEdit('')
-        self.gpsfile = QtWidgets.QLineEdit('')
-        self.basethres = QtWidgets.QLineEdit('10000')
+        self.le_cg5file = QtWidgets.QLineEdit('')
+        self.le_gpsfile = QtWidgets.QLineEdit('')
+        self.le_basethres = QtWidgets.QLineEdit('10000')
 
         self.setupui()
 
@@ -93,10 +92,10 @@ class ImportCG5(BasicModule):
 
         self.setWindowTitle(r'Import CG-5 Data')
 
-        gl_main.addWidget(self.cg5file, 0, 0, 1, 1)
+        gl_main.addWidget(self.le_cg5file, 0, 0, 1, 1)
         gl_main.addWidget(pb_cg5, 0, 1, 1, 1)
 
-        gl_main.addWidget(self.gpsfile, 1, 0, 1, 1)
+        gl_main.addWidget(self.le_gpsfile, 1, 0, 1, 1)
         gl_main.addWidget(pb_gps, 1, 1, 1, 1)
 
         gl_main.addWidget(lbl_line, 2, 0, 1, 1)
@@ -115,7 +114,7 @@ class ImportCG5(BasicModule):
         gl_main.addWidget(self.cmb_zchan, 6, 1, 1, 1)
 
         gl_main.addWidget(lbl_bthres, 7, 0, 1, 1)
-        gl_main.addWidget(self.basethres, 7, 1, 1, 1)
+        gl_main.addWidget(self.le_basethres, 7, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 8, 0, 1, 1)
         gl_main.addWidget(buttonbox, 8, 1, 1, 3)
@@ -141,7 +140,7 @@ class ImportCG5(BasicModule):
 
         """
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
                 return False
@@ -217,7 +216,7 @@ class ImportCG5(BasicModule):
                            right_on=['line', 'station'], how='left')
 
         # eliminate ordinary stations (not base stations) without coordinates
-        filt = dfmerge['STATION'] < float(self.basethres.text())
+        filt = dfmerge['STATION'] < float(self.le_basethres.text())
 
         filt = filt & dfmerge['longitude'].isna()
 
@@ -229,14 +228,14 @@ class ImportCG5(BasicModule):
 
         dfmerge['line'] = dfmerge['line'].astype(str)
         dfmerge.attrs['Gravity'] = True
-        dfmerge.attrs['source'] = str(self.cg5file.text())
+        dfmerge.attrs['source'] = str(self.le_cg5file.text())
         self.outdata['Vector'] = [dfmerge]
 
         # Check for duplicates
         dtest = dfmerge.duplicated(['LINE', 'STATION'])
         dlist = dfmerge[['LINE', 'STATION']].loc[dtest]
         dlist = dlist[~dlist.duplicated()]
-        dlist = dlist[dlist.STATION < float(self.basethres.text())]
+        dlist = dlist[dlist.STATION < float(self.le_basethres.text())]
 
         if dlist.size > 0:
             self.showlog('Warning, the following are duplicated:')
@@ -259,10 +258,9 @@ class ImportCG5(BasicModule):
         self.saveobj(self.cmb_ychan)
         self.saveobj(self.cmb_zchan)
 
-        self.saveobj(self.nodata)
-        self.saveobj(self.cg5file)
-        self.saveobj(self.gpsfile)
-        self.saveobj(self.basethres)
+        self.saveobj(self.le_cg5file)
+        self.saveobj(self.le_gpsfile)
+        self.saveobj(self.le_basethres)
 
     def get_cg5(self, filename=''):
         """
@@ -311,7 +309,7 @@ class ImportCG5(BasicModule):
         tmp2 = np.genfromtxt(data, dtype=dtype)
 
         self.df_cg5 = pd.DataFrame(tmp2)
-        self.cg5file.setText(filename)
+        self.le_cg5file.setText(filename)
 
     def get_gps(self, filename=''):
         """
@@ -342,7 +340,7 @@ class ImportCG5(BasicModule):
 
         self.df_gps = df2
 
-        self.gpsfile.setText(filename)
+        self.le_gpsfile.setText(filename)
 
         ltmp = list(df2.columns)
 

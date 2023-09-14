@@ -128,7 +128,7 @@ class Continuation(BasicModule):
         self.cmb_dataid.addItems(tmp)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return False
@@ -370,7 +370,7 @@ class DataLayerStack(BasicModule):
             self.dsb_dxy.setValue(self.dxy)
             self.dxy_change()
 
-            tmp = self.exec_()
+            tmp = self.exec()
             if tmp != 1:
                 return False
 
@@ -439,8 +439,8 @@ class DataMerge(BasicModule):
                                                 'overlap value and copy over '
                                                 'first file at overlap.')
 
-        self.idirlist = QtWidgets.QLineEdit('')
-        self.sfile = QtWidgets.QLineEdit('')
+        self.le_idirlist = QtWidgets.QLineEdit('')
+        self.le_sfile = QtWidgets.QLineEdit('')
         self.cb_files_diff = QtWidgets.QCheckBox(
             'Mosaic by band labels, '
             'since band order may differ, or input files have different '
@@ -480,8 +480,8 @@ class DataMerge(BasicModule):
 
         self.setWindowTitle('Dataset Mosaic')
 
-        gb_merge_method = QtWidgets.QGroupBox('Mosiac method')
-        vbl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
+        gbox_merge_method = QtWidgets.QGroupBox('Mosiac method')
+        vbl_merge_method = QtWidgets.QVBoxLayout(gbox_merge_method)
 
         vbl_merge_method.addWidget(self.rb_median)
         vbl_merge_method.addWidget(self.rb_first)
@@ -490,12 +490,12 @@ class DataMerge(BasicModule):
         vbl_merge_method.addWidget(self.rb_max)
 
         gl_main.addWidget(pb_idirlist, 1, 0, 1, 1)
-        gl_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_idirlist, 1, 1, 1, 1)
         gl_main.addWidget(pb_sfile, 2, 0, 1, 1)
-        gl_main.addWidget(self.sfile, 2, 1, 1, 1)
+        gl_main.addWidget(self.le_sfile, 2, 1, 1, 1)
         gl_main.addWidget(self.cb_files_diff, 3, 0, 1, 2)
         gl_main.addWidget(self.cb_shift_to_median, 4, 0, 1, 2)
-        gl_main.addWidget(gb_merge_method, 5, 0, 1, 2)
+        gl_main.addWidget(gbox_merge_method, 5, 0, 1, 2)
         gl_main.addWidget(self.cb_bands_to_files, 6, 0, 1, 2)
         gl_main.addWidget(helpdocs, 7, 0, 1, 1)
         gl_main.addWidget(buttonbox, 7, 1, 1, 1)
@@ -571,7 +571,7 @@ class DataMerge(BasicModule):
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
              self.parent, 'Select Directory')
 
-        self.idirlist.setText(self.idir)
+        self.le_idirlist.setText(self.idir)
 
         if self.idir == '':
             self.idir = None
@@ -593,7 +593,7 @@ class DataMerge(BasicModule):
         if not sfile:
             return False
 
-        self.sfile.setText(sfile)
+        self.le_sfile.setText(sfile)
 
         return True
 
@@ -613,7 +613,7 @@ class DataMerge(BasicModule):
 
         """
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
             if tmp != 1:
                 return False
 
@@ -631,7 +631,7 @@ class DataMerge(BasicModule):
 
         """
         self.saveobj(self.idir)
-        self.saveobj(self.idirlist)
+        self.saveobj(self.le_idirlist)
         self.saveobj(self.cb_files_diff)
         self.saveobj(self.cb_shift_to_median)
 
@@ -641,7 +641,7 @@ class DataMerge(BasicModule):
         self.saveobj(self.rb_max)
         self.saveobj(self.rb_median)
 
-        self.saveobj(self.sfile)
+        self.saveobj(self.le_sfile)
         self.saveobj(self.cb_bands_to_files)
         self.saveobj(self.forcetype)
         self.saveobj(self.singleband)
@@ -726,7 +726,7 @@ class DataMerge(BasicModule):
         else:
             crs = indata[0].crs
 
-        bounds = get_shape_bounds(self.sfile.text(), crs, self.showlog)
+        bounds = get_shape_bounds(self.le_sfile.text(), crs, self.showlog)
 
         # Start Merge
         bandlist = []
@@ -863,7 +863,7 @@ class DataMerge(BasicModule):
                 outdat = []
 
         if bounds is not None:
-            outdat = cut_raster(outdat, self.sfile.text(), deepcopy=False)
+            outdat = cut_raster(outdat, self.le_sfile.text(), deepcopy=False)
 
         self.outdata['Raster'] = outdat
 
@@ -1068,7 +1068,7 @@ class DataReproj(BasicModule):
         self.out_proj.set_current(self.targ_wkt)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
             if tmp != 1:
                 return False
 
@@ -1208,16 +1208,16 @@ class GroupProj(QtWidgets.QWidget):
         self.wkt = ''
 
         self.gl_1 = QtWidgets.QGridLayout(self)
-        self.groupbox = QtWidgets.QGroupBox(title)
+        self.gbox = QtWidgets.QGroupBox(title)
         self.cmb_datum = QtWidgets.QComboBox()
         self.cmb_proj = QtWidgets.QComboBox()
 
         self.lbl_wkt = QtWidgets.QTextBrowser()
         self.lbl_wkt.setWordWrapMode(0)
 
-        self.gl_1.addWidget(self.groupbox, 1, 0, 1, 2)
+        self.gl_1.addWidget(self.gbox, 1, 0, 1, 2)
 
-        gl_1 = QtWidgets.QGridLayout(self.groupbox)
+        gl_1 = QtWidgets.QGridLayout(self.gbox)
         gl_1.addWidget(self.cmb_datum, 0, 0, 1, 1)
         gl_1.addWidget(self.cmb_proj, 1, 0, 1, 1)
         gl_1.addWidget(self.lbl_wkt, 2, 0, 1, 1)
@@ -1350,12 +1350,12 @@ class Metadata(ContextModule):
         self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
-        self.txt_null = QtWidgets.QLineEdit()
-        self.dsb_tlx = QtWidgets.QLineEdit()
-        self.dsb_tly = QtWidgets.QLineEdit()
-        self.dsb_xdim = QtWidgets.QLineEdit()
-        self.dsb_ydim = QtWidgets.QLineEdit()
-        self.led_units = QtWidgets.QLineEdit()
+        self.le_txt_null = QtWidgets.QLineEdit()
+        self.le_tlx = QtWidgets.QLineEdit()
+        self.le_tly = QtWidgets.QLineEdit()
+        self.le_xdim = QtWidgets.QLineEdit()
+        self.le_ydim = QtWidgets.QLineEdit()
+        self.le_led_units = QtWidgets.QLineEdit()
         self.lbl_min = QtWidgets.QLabel()
         self.lbl_max = QtWidgets.QLabel()
         self.lbl_mean = QtWidgets.QLabel()
@@ -1377,9 +1377,9 @@ class Metadata(ContextModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        groupbox = QtWidgets.QGroupBox('Dataset')
+        gbox = QtWidgets.QGroupBox('Dataset')
 
-        gl_1 = QtWidgets.QGridLayout(groupbox)
+        gl_1 = QtWidgets.QGridLayout(gbox)
         lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
         lbl_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
         lbl_xdim = QtWidgets.QLabel('X Dimension:')
@@ -1397,7 +1397,7 @@ class Metadata(ContextModule):
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
-        groupbox.setSizePolicy(sizepolicy)
+        gbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1408,20 +1408,20 @@ class Metadata(ContextModule):
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        gl_main.addWidget(groupbox, 2, 0, 1, 2)
+        gl_main.addWidget(gbox, 2, 0, 1, 2)
         gl_main.addWidget(self.proj, 2, 2, 1, 2)
         gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
         gl_1.addWidget(lbl_tlx, 0, 0, 1, 1)
-        gl_1.addWidget(self.dsb_tlx, 0, 1, 1, 1)
+        gl_1.addWidget(self.le_tlx, 0, 1, 1, 1)
         gl_1.addWidget(lbl_tly, 1, 0, 1, 1)
-        gl_1.addWidget(self.dsb_tly, 1, 1, 1, 1)
+        gl_1.addWidget(self.le_tly, 1, 1, 1, 1)
         gl_1.addWidget(lbl_xdim, 2, 0, 1, 1)
-        gl_1.addWidget(self.dsb_xdim, 2, 1, 1, 1)
+        gl_1.addWidget(self.le_xdim, 2, 1, 1, 1)
         gl_1.addWidget(lbl_ydim, 3, 0, 1, 1)
-        gl_1.addWidget(self.dsb_ydim, 3, 1, 1, 1)
+        gl_1.addWidget(self.le_ydim, 3, 1, 1, 1)
         gl_1.addWidget(lbl_null, 4, 0, 1, 1)
-        gl_1.addWidget(self.txt_null, 4, 1, 1, 1)
+        gl_1.addWidget(self.le_txt_null, 4, 1, 1, 1)
         gl_1.addWidget(lbl_rows, 5, 0, 1, 1)
         gl_1.addWidget(self.lbl_rows, 5, 1, 1, 1)
         gl_1.addWidget(lbl_cols, 6, 0, 1, 1)
@@ -1433,7 +1433,7 @@ class Metadata(ContextModule):
         gl_1.addWidget(lbl_mean, 9, 0, 1, 1)
         gl_1.addWidget(self.lbl_mean, 9, 1, 1, 1)
         gl_1.addWidget(lbl_units, 10, 0, 1, 1)
-        gl_1.addWidget(self.led_units, 10, 1, 1, 1)
+        gl_1.addWidget(self.le_led_units, 10, 1, 1, 1)
         gl_1.addWidget(lbl_dtype, 11, 0, 1, 1)
         gl_1.addWidget(self.lbl_dtype, 11, 1, 1, 1)
         gl_1.addWidget(lbl_date, 12, 0, 1, 1)
@@ -1507,15 +1507,15 @@ class Metadata(ContextModule):
 
         """
         odata = self.banddata[self.oldtxt]
-        odata.units = self.led_units.text()
+        odata.units = self.le_led_units.text()
 
         try:
-            if self.txt_null.text().lower() != 'none':
-                odata.nodata = float(self.txt_null.text())
-            left = float(self.dsb_tlx.text())
-            top = float(self.dsb_tly.text())
-            xdim = float(self.dsb_xdim.text())
-            ydim = float(self.dsb_ydim.text())
+            if self.le_txt_null.text().lower() != 'none':
+                odata.nodata = float(self.le_txt_null.text())
+            left = float(self.le_tlx.text())
+            top = float(self.le_tly.text())
+            xdim = float(self.le_xdim.text())
+            ydim = float(self.le_ydim.text())
 
             odata.set_transform(xdim, left, ydim, top)
             odata.datetime = self.date.date().toPyDate()
@@ -1532,15 +1532,15 @@ class Metadata(ContextModule):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nodata))
-        self.dsb_tlx.setText(str(idata.extent[0]))
-        self.dsb_tly.setText(str(idata.extent[-1]))
-        self.dsb_xdim.setText(str(idata.xdim))
-        self.dsb_ydim.setText(str(idata.ydim))
+        self.le_txt_null.setText(str(idata.nodata))
+        self.le_tlx.setText(str(idata.extent[0]))
+        self.le_tly.setText(str(idata.extent[-1]))
+        self.le_xdim.setText(str(idata.xdim))
+        self.le_ydim.setText(str(idata.ydim))
         self.lbl_min.setText(str(idata.data.min()))
         self.lbl_max.setText(str(idata.data.max()))
         self.lbl_mean.setText(str(idata.data.mean()))
-        self.led_units.setText(str(idata.units))
+        self.le_led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
         self.date.setDate(idata.datetime)
 
@@ -1586,21 +1586,21 @@ class Metadata(ContextModule):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nodata))
-        self.dsb_tlx.setText(str(idata.extent[0]))
-        self.dsb_tly.setText(str(idata.extent[-1]))
-        self.dsb_xdim.setText(str(idata.xdim))
-        self.dsb_ydim.setText(str(idata.ydim))
+        self.le_txt_null.setText(str(idata.nodata))
+        self.le_tlx.setText(str(idata.extent[0]))
+        self.le_tly.setText(str(idata.extent[-1]))
+        self.le_xdim.setText(str(idata.xdim))
+        self.le_ydim.setText(str(idata.ydim))
         self.lbl_min.setText(str(idata.data.min()))
         self.lbl_max.setText(str(idata.data.max()))
         self.lbl_mean.setText(str(idata.data.mean()))
-        self.led_units.setText(str(idata.units))
+        self.le_led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
         self.date.setDate(idata.datetime)
 
         self.update_vals()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False

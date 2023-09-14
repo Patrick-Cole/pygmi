@@ -840,15 +840,15 @@ class PlotInterp(BasicModule):
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
         self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
                                                 'lines')
-        self.cbox_dtype = QtWidgets.QComboBox()
-        self.cbox_band1 = QtWidgets.QComboBox()
-        self.cbox_band2 = QtWidgets.QComboBox()
-        self.cbox_band3 = QtWidgets.QComboBox()
-        self.cbox_bands = QtWidgets.QComboBox()
-        self.cbox_htype = QtWidgets.QComboBox()
-        self.lineclipu = QtWidgets.QLineEdit()
-        self.lineclipl = QtWidgets.QLineEdit()
-        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.cmb_dtype = QtWidgets.QComboBox()
+        self.cmb_band1 = QtWidgets.QComboBox()
+        self.cmb_band2 = QtWidgets.QComboBox()
+        self.cmb_band3 = QtWidgets.QComboBox()
+        self.cmb_bands = QtWidgets.QComboBox()
+        self.cmb_htype = QtWidgets.QComboBox()
+        self.le_lineclipu = QtWidgets.QLineEdit()
+        self.le_lineclipl = QtWidgets.QLineEdit()
+        self.cmb_cbar = QtWidgets.QComboBox(self)
         self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # CMYK
         self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
@@ -861,7 +861,7 @@ class PlotInterp(BasicModule):
 
         self.setupui()
 
-        txt = str(self.cbox_cbar.currentText())
+        txt = str(self.cmb_cbar.currentText())
         self.mmc.cbar = colormaps[txt]
 
         self.setFocus()
@@ -871,9 +871,9 @@ class PlotInterp(BasicModule):
         self.mmc.argb[1].set_visible(False)
         self.mmc.argb[2].set_visible(False)
 
-        self.cbox_band1.show()
-        self.cbox_band2.hide()
-        self.cbox_band3.hide()
+        self.cmb_band1.show()
+        self.cmb_band2.hide()
+        self.cmb_band3.hide()
         self.sslider.hide()
         self.aslider.hide()
         self.kslider.hide()
@@ -882,7 +882,7 @@ class PlotInterp(BasicModule):
         self.lbl_s.hide()
         self.lbl_k.hide()
         self.lbl_4.hide()
-        self.cbox_bands.hide()
+        self.cmb_bands.hide()
 
     def setupui(self):
         """
@@ -896,23 +896,23 @@ class PlotInterp(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
         btn_apply = QtWidgets.QPushButton('Apply Histogram')
 
-        gbox1 = QtWidgets.QGroupBox('Display Type')
+        gbox_1 = QtWidgets.QGroupBox('Display Type')
         vbl_1 = QtWidgets.QVBoxLayout()
-        gbox1.setLayout(vbl_1)
+        gbox_1.setLayout(vbl_1)
 
-        gbox2 = QtWidgets.QGroupBox('Data Bands')
+        gbox_2 = QtWidgets.QGroupBox('Data Bands')
         vbl_2 = QtWidgets.QVBoxLayout()
-        gbox2.setLayout(vbl_2)
+        gbox_2.setLayout(vbl_2)
 
-        gbox3 = QtWidgets.QGroupBox('Histogram Stretch')
+        gbox_3 = QtWidgets.QGroupBox('Histogram Stretch')
         vbl_3 = QtWidgets.QVBoxLayout()
-        gbox3.setLayout(vbl_3)
+        gbox_3.setLayout(vbl_3)
 
-        gbox1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+        gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                             QtWidgets.QSizePolicy.Preferred)
-        gbox2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+        gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                             QtWidgets.QSizePolicy.Preferred)
-        gbox3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+        gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                             QtWidgets.QSizePolicy.Preferred)
         self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                     QtWidgets.QSizePolicy.Preferred)
@@ -940,47 +940,47 @@ class PlotInterp(BasicModule):
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
 
-        self.lineclipu.setPlaceholderText('% of high values to exclude')
-        self.lineclipl.setPlaceholderText('% of low values to exclude')
+        self.le_lineclipu.setPlaceholderText('% of high values to exclude')
+        self.le_lineclipl.setPlaceholderText('% of low values to exclude')
         self.btn_saveimg.setAutoDefault(False)
         helpdocs.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 
         tmp = sorted(m for m in colormaps())
 
-        self.cbox_cbar.addItem('jet')
-        self.cbox_cbar.addItem('viridis')
-        self.cbox_cbar.addItem('terrain')
-        self.cbox_cbar.addItems(tmp)
-        self.cbox_dtype.addItems(['Single Colour Map', 'Contour',
+        self.cmb_cbar.addItem('jet')
+        self.cmb_cbar.addItem('viridis')
+        self.cmb_cbar.addItem('terrain')
+        self.cmb_cbar.addItems(tmp)
+        self.cmb_dtype.addItems(['Single Colour Map', 'Contour',
                                   'RGB Ternary', 'CMY Ternary'])
-        self.cbox_htype.addItems(['Linear with Percent Clip',
+        self.cmb_htype.addItems(['Linear with Percent Clip',
                                   'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Display')
 
-        vbl_1.addWidget(self.cbox_dtype)
+        vbl_1.addWidget(self.cmb_dtype)
         vbl_1.addWidget(self.lbl_k)
         vbl_1.addWidget(self.kslider)
-        vbl_raster.addWidget(gbox1)
+        vbl_raster.addWidget(gbox_1)
 
-        vbl_2.addWidget(self.cbox_band1)
-        vbl_2.addWidget(self.cbox_band2)
-        vbl_2.addWidget(self.cbox_band3)
-        vbl_raster.addWidget(gbox2)
+        vbl_2.addWidget(self.cmb_band1)
+        vbl_2.addWidget(self.cmb_band2)
+        vbl_2.addWidget(self.cmb_band3)
+        vbl_raster.addWidget(gbox_2)
 
-        vbl_3.addWidget(self.cbox_htype)
-        vbl_3.addWidget(self.lineclipl)
-        vbl_3.addWidget(self.lineclipu)
+        vbl_3.addWidget(self.cmb_htype)
+        vbl_3.addWidget(self.le_lineclipl)
+        vbl_3.addWidget(self.le_lineclipu)
         vbl_3.addWidget(self.cb_histtype)
         vbl_3.addWidget(btn_apply)
         vbl_3.addWidget(self.lbl_c)
-        vbl_3.addWidget(self.cbox_cbar)
-        vbl_raster.addWidget(gbox3)
+        vbl_3.addWidget(self.cmb_cbar)
+        vbl_raster.addWidget(gbox_3)
 
         vbl_raster.addWidget(self.gbox_sun)
         vbl_4.addWidget(self.lbl_4)
-        vbl_4.addWidget(self.cbox_bands)
+        vbl_4.addWidget(self.cmb_bands)
         vbl_4.addWidget(self.msc)
         vbl_4.addWidget(self.lbl_s)
         vbl_4.addWidget(self.sslider)
@@ -995,9 +995,9 @@ class PlotInterp(BasicModule):
         hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
-        self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
-        self.cbox_dtype.currentIndexChanged.connect(self.change_dtype)
-        self.cbox_htype.currentIndexChanged.connect(self.change_htype)
+        self.cmb_cbar.currentIndexChanged.connect(self.change_cbar)
+        self.cmb_dtype.currentIndexChanged.connect(self.change_dtype)
+        self.cmb_htype.currentIndexChanged.connect(self.change_htype)
 
         self.sslider.sliderReleased.connect(self.change_sunsliders)
         self.aslider.sliderReleased.connect(self.change_sunsliders)
@@ -1020,7 +1020,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = self.lineclipu.text()
+        txt = self.le_lineclipu.text()
         try:
             uclip = float(txt)
         except ValueError:
@@ -1028,13 +1028,13 @@ class PlotInterp(BasicModule):
                 uclip = 0.0
             else:
                 uclip = self.mmc.clippercu
-            self.lineclipu.setText(str(uclip))
+            self.le_lineclipu.setText(str(uclip))
 
         if uclip < 0.0 or uclip >= 100.0:
             uclip = self.mmc.clippercu
-            self.lineclipu.setText(str(uclip))
+            self.le_lineclipu.setText(str(uclip))
 
-        txt = self.lineclipl.text()
+        txt = self.le_lineclipl.text()
         try:
             lclip = float(txt)
         except ValueError:
@@ -1042,17 +1042,17 @@ class PlotInterp(BasicModule):
                 lclip = 0.0
             else:
                 lclip = self.mmc.clippercl
-            self.lineclipl.setText(str(lclip))
+            self.le_lineclipl.setText(str(lclip))
 
         if lclip < 0.0 or lclip >= 100.0:
             lclip = self.mmc.clippercl
-            self.lineclipl.setText(str(lclip))
+            self.le_lineclipl.setText(str(lclip))
 
         if (lclip+uclip) >= 100.:
             clip = self.mmc.clippercu
-            self.lineclipu.setText(str(clip))
+            self.le_lineclipu.setText(str(clip))
             clip = self.mmc.clippercl
-            self.lineclipl.setText(str(clip))
+            self.le_lineclipl.setText(str(clip))
             return
 
         self.mmc.clippercu = uclip
@@ -1069,7 +1069,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_band3.currentText())
+        txt = str(self.cmb_band3.currentText())
         self.mmc.hband[2] = txt
         self.mmc.init_graph()
 
@@ -1082,7 +1082,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_cbar.currentText())
+        txt = str(self.cmb_cbar.currentText())
         self.mmc.cbar = colormaps[txt]
         self.mmc.update_graph()
 
@@ -1097,17 +1097,17 @@ class PlotInterp(BasicModule):
         """
         self.mmc.figure.canvas.mpl_disconnect(self.mmc.cid)
 
-        txt = str(self.cbox_dtype.currentText())
+        txt = str(self.cmb_dtype.currentText())
         self.mmc.gmode = txt
-        self.cbox_band1.show()
+        self.cmb_band1.show()
         self.mmc.fullhist = self.cb_histtype.isChecked()
 
         if txt == 'Single Colour Map':
             self.lbl_c.show()
             self.lbl_k.hide()
-            self.cbox_band2.hide()
-            self.cbox_band3.hide()
-            self.cbox_cbar.show()
+            self.cmb_band2.hide()
+            self.cmb_band3.hide()
+            self.cmb_cbar.show()
             self.mmc.argb[0].set_visible(True)
             self.mmc.argb[1].set_visible(False)
             self.mmc.argb[2].set_visible(False)
@@ -1118,9 +1118,9 @@ class PlotInterp(BasicModule):
         if txt == 'Contour':
             self.lbl_k.hide()
             self.lbl_c.show()
-            self.cbox_band2.hide()
-            self.cbox_band3.hide()
-            self.cbox_cbar.show()
+            self.cmb_band2.hide()
+            self.cmb_band3.hide()
+            self.cmb_cbar.show()
             self.mmc.argb[0].set_visible(False)
             self.mmc.argb[1].set_visible(False)
             self.mmc.argb[2].set_visible(False)
@@ -1132,9 +1132,9 @@ class PlotInterp(BasicModule):
         if 'Ternary' in txt:
             self.lbl_k.hide()
             self.lbl_c.hide()
-            self.cbox_band2.show()
-            self.cbox_band3.show()
-            self.cbox_cbar.hide()
+            self.cmb_band2.show()
+            self.cmb_band3.show()
+            self.cmb_cbar.hide()
             self.mmc.argb[0].set_visible(True)
             self.mmc.argb[1].set_visible(True)
             self.mmc.argb[2].set_visible(True)
@@ -1149,7 +1149,7 @@ class PlotInterp(BasicModule):
         if self.gbox_sun.isChecked():
             self.msc.show()
             self.lbl_4.show()
-            self.cbox_bands.show()
+            self.cmb_bands.show()
             self.sslider.show()
             self.aslider.show()
             self.lbl_a.show()
@@ -1163,7 +1163,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.hide()
             self.lbl_s.hide()
             self.lbl_4.hide()
-            self.cbox_bands.hide()
+            self.cmb_bands.hide()
             self.mmc.shade = False
 
         self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
@@ -1196,7 +1196,7 @@ class PlotInterp(BasicModule):
         if self.gbox_sun.isChecked():
             self.msc.show()
             self.lbl_4.show()
-            self.cbox_bands.show()
+            self.cmb_bands.show()
             self.sslider.show()
             self.aslider.show()
             self.lbl_a.show()
@@ -1211,7 +1211,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.hide()
             self.lbl_s.hide()
             self.lbl_4.hide()
-            self.cbox_bands.hide()
+            self.cmb_bands.hide()
             self.sslider.hide()
             self.aslider.hide()
             self.mmc.shade = False
@@ -1243,7 +1243,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_band2.currentText())
+        txt = str(self.cmb_band2.currentText())
         self.mmc.hband[1] = txt
         self.mmc.init_graph()
 
@@ -1256,14 +1256,14 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_htype.currentText())
+        txt = str(self.cmb_htype.currentText())
 
         if txt == 'Histogram Equalization':
-            self.lineclipl.hide()
-            self.lineclipu.hide()
+            self.le_lineclipl.hide()
+            self.le_lineclipu.hide()
         else:
-            self.lineclipl.show()
-            self.lineclipu.show()
+            self.le_lineclipl.show()
+            self.le_lineclipu.show()
 
         self.mmc.htype = txt
         self.mmc.update_graph()
@@ -1277,7 +1277,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_band1.currentText())
+        txt = str(self.cmb_band1.currentText())
         self.mmc.hband[0] = txt
         self.mmc.init_graph()
 
@@ -1290,7 +1290,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = str(self.cbox_bands.currentText())
+        txt = str(self.cmb_bands.currentText())
         self.mmc.hband[3] = txt
         self.mmc.update_graph()
 
@@ -1358,26 +1358,26 @@ class PlotInterp(BasicModule):
             blist.append(i.dataid)
 
         try:
-            self.cbox_band1.currentIndexChanged.disconnect()
-            self.cbox_band2.currentIndexChanged.disconnect()
-            self.cbox_band3.currentIndexChanged.disconnect()
-            self.cbox_bands.currentIndexChanged.disconnect()
+            self.cmb_band1.currentIndexChanged.disconnect()
+            self.cmb_band2.currentIndexChanged.disconnect()
+            self.cmb_band3.currentIndexChanged.disconnect()
+            self.cmb_bands.currentIndexChanged.disconnect()
         except TypeError:
             pass
 
-        self.cbox_band1.clear()
-        self.cbox_band2.clear()
-        self.cbox_band3.clear()
-        self.cbox_bands.clear()
-        self.cbox_band1.addItems(blist)
-        self.cbox_band2.addItems(blist)
-        self.cbox_band3.addItems(blist)
-        self.cbox_bands.addItems(blist)
+        self.cmb_band1.clear()
+        self.cmb_band2.clear()
+        self.cmb_band3.clear()
+        self.cmb_bands.clear()
+        self.cmb_band1.addItems(blist)
+        self.cmb_band2.addItems(blist)
+        self.cmb_band3.addItems(blist)
+        self.cmb_bands.addItems(blist)
 
-        self.cbox_band1.currentIndexChanged.connect(self.change_red)
-        self.cbox_band2.currentIndexChanged.connect(self.change_green)
-        self.cbox_band3.currentIndexChanged.connect(self.change_blue)
-        self.cbox_bands.currentIndexChanged.connect(self.change_sun)
+        self.cmb_band1.currentIndexChanged.connect(self.change_red)
+        self.cmb_band2.currentIndexChanged.connect(self.change_green)
+        self.cmb_band3.currentIndexChanged.connect(self.change_blue)
+        self.cmb_bands.currentIndexChanged.connect(self.change_sun)
 
     def move(self, event):
         """
@@ -1444,7 +1444,7 @@ class PlotInterp(BasicModule):
 
         bwid = blen/16.
 
-        dtype = str(self.cbox_dtype.currentText())
+        dtype = str(self.cmb_dtype.currentText())
 
         rtext = 'Red'
         gtext = 'Green'
@@ -1454,12 +1454,12 @@ class PlotInterp(BasicModule):
             text, okay = QtWidgets.QInputDialog.getText(
                 self, 'Colorbar', 'Enter colorbar unit label:',
                 QtWidgets.QLineEdit.Normal,
-                self.units[str(self.cbox_band1.currentText())])
+                self.units[str(self.cmb_band1.currentText())])
 
             if not okay:
                 return False
         else:
-            units = str(self.cbox_band1.currentText())
+            units = str(self.cmb_band1.currentText())
             rtext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter red/cyan label:',
                 QtWidgets.QLineEdit.Normal, units)
@@ -1467,7 +1467,7 @@ class PlotInterp(BasicModule):
             if not okay:
                 return False
 
-            units = str(self.cbox_band2.currentText())
+            units = str(self.cmb_band2.currentText())
             gtext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter green/magenta label:',
                 QtWidgets.QLineEdit.Normal, units)
@@ -1475,7 +1475,7 @@ class PlotInterp(BasicModule):
             if not okay:
                 return False
 
-            units = str(self.cbox_band3.currentText())
+            units = str(self.cmb_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter blue/yelow label:',
                 QtWidgets.QLineEdit.Normal, units)
@@ -1483,7 +1483,7 @@ class PlotInterp(BasicModule):
             if not okay:
                 return False
 
-        htype = str(self.cbox_htype.currentText())
+        htype = str(self.cmb_htype.currentText())
         clippercl = self.mmc.clippercl
         clippercu = self.mmc.clippercu
         cmin = None
@@ -1640,7 +1640,7 @@ class PlotInterp(BasicModule):
 
         # Section for colorbars
         if 'Ternary' not in dtype:
-            txt = str(self.cbox_cbar.currentText())
+            txt = str(self.cmb_cbar.currentText())
             cmap = colormaps[txt]
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
@@ -1770,7 +1770,7 @@ class PlotInterp(BasicModule):
         self.mmc.init_graph()
         self.msc.init_graph()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp == 0:
             return False
@@ -1786,15 +1786,15 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        self.saveobj(self.cbox_dtype)
-        self.saveobj(self.cbox_band1)
-        self.saveobj(self.cbox_band2)
-        self.saveobj(self.cbox_band3)
-        self.saveobj(self.cbox_bands)
-        self.saveobj(self.cbox_htype)
-        self.saveobj(self.lineclipu)
-        self.saveobj(self.lineclipl)
-        self.saveobj(self.cbox_cbar)
+        self.saveobj(self.cmb_dtype)
+        self.saveobj(self.cmb_band1)
+        self.saveobj(self.cmb_band2)
+        self.saveobj(self.cmb_band3)
+        self.saveobj(self.cmb_bands)
+        self.saveobj(self.cmb_htype)
+        self.saveobj(self.le_lineclipu)
+        self.saveobj(self.le_lineclipl)
+        self.saveobj(self.cmb_cbar)
         self.saveobj(self.kslider)
         self.saveobj(self.sslider)
         self.saveobj(self.aslider)

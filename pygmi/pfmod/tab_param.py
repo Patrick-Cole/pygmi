@@ -200,7 +200,7 @@ class LithNotes(QtWidgets.QDialog):
             self.codelist[i] = self.lmod1.lith_list[i].lithcode
             self.noteslist[i] = self.lmod1.lith_list[i].lithnotes
 
-        self.exec_()
+        self.exec()
 
 
 class ParamDisplay(QtWidgets.QDialog):
@@ -268,8 +268,8 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         # General Properties
-        gb_gen_prop = QtWidgets.QGroupBox('General Properties')
-        gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
+        gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
+        gl_gen_prop = QtWidgets.QGridLayout(gbox_gen_prop)
 
         lbl_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
         lbl_2 = QtWidgets.QLabel('Height of observation - Gravity')
@@ -292,8 +292,8 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Lithological Properties
-        gb_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
-        gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
+        gbox_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
+        gl_lith_prop = QtWidgets.QGridLayout(gbox_lith_prop)
 
         pb_applylith = QtWidgets.QPushButton('Apply Changes')
 
@@ -378,8 +378,8 @@ class ParamDisplay(QtWidgets.QDialog):
         hbl.addWidget(helpdocs)
         hbl.addWidget(buttonbox)
 
-        vbl.addWidget(gb_gen_prop)
-        vbl.addWidget(gb_lith_prop)
+        vbl.addWidget(gbox_gen_prop)
+        vbl.addWidget(gbox_lith_prop)
         vbl.addLayout(hbl)
 
         self.add_defs(deftxt='Background')  # First call is for background
@@ -787,7 +787,7 @@ class ParamDisplay(QtWidgets.QDialog):
             mlith.lw_lithmaster.addItem(i)
             mlith.lw_lithmerge.addItem(i)
 
-        tmp = mlith.exec_()
+        tmp = mlith.exec()
 
         if tmp == 0:
             return
@@ -879,7 +879,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
-        self.exec_()
+        self.exec()
 
         self.parent.profile.lw_prof_defs.setCurrentRow(-1)
         self.parent.profile.change_defs()

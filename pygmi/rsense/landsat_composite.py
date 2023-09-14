@@ -53,7 +53,7 @@ class LandsatComposite(BasicModule):
         self.idir = ''
 
         self.sb_tday = QtWidgets.QSpinBox()
-        self.idirlist = QtWidgets.QLineEdit('')
+        self.le_idirlist = QtWidgets.QLineEdit('')
 
         self.setupui()
 
@@ -84,7 +84,7 @@ class LandsatComposite(BasicModule):
         self.setWindowTitle('Landsat Temporal Composite')
 
         gl_main.addWidget(pb_idirlist, 1, 0, 1, 1)
-        gl_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_idirlist, 1, 1, 1, 1)
         gl_main.addWidget(lbl_tday, 2, 0, 1, 1)
         gl_main.addWidget(self.sb_tday, 2, 1, 1, 1)
         gl_main.addWidget(helpdocs, 5, 0, 1, 1)
@@ -110,7 +110,7 @@ class LandsatComposite(BasicModule):
 
         """
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
             if tmp != 1:
                 return False
 
@@ -150,7 +150,7 @@ class LandsatComposite(BasicModule):
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
              self.parent, 'Select Directory')
 
-        self.idirlist.setText(self.idir)
+        self.le_idirlist.setText(self.idir)
 
         if self.idir == '':
             self.idir = None
@@ -190,7 +190,7 @@ class LandsatComposite(BasicModule):
         """
         self.saveobj(self.idir)
         self.saveobj(self.sb_tday)
-        self.saveobj(self.idirlist)
+        self.saveobj(self.le_idirlist)
 
 
 def composite(idir, dreq=10, mean=None, showlog=print, piter=None):

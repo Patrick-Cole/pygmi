@@ -101,8 +101,8 @@ class MextDisplay(QtWidgets.QDialog):
         hbl_model.addWidget(self.cmb_model)
 
         # Data Information Groupbox
-        gb_data_info = QtWidgets.QGroupBox('Dataset Information')
-        gl_data_info = QtWidgets.QGridLayout(gb_data_info)
+        gbox_data_info = QtWidgets.QGroupBox('Dataset Information')
+        gl_data_info = QtWidgets.QGridLayout(gbox_data_info)
 
         self.cmb_mag.addItems(['None'])
         self.cmb_grv.addItems(['None'])
@@ -132,8 +132,8 @@ class MextDisplay(QtWidgets.QDialog):
         gl_data_info.addWidget(self.cmb_other, 4, 1, 1, 1)
 
         # Data Extents Groupbox
-        gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
-        gl_extent = QtWidgets.QGridLayout(gb_extent)
+        gbox_extent = QtWidgets.QGroupBox('Model Extent Properties')
+        gl_extent = QtWidgets.QGridLayout(gbox_extent)
 
         self.cmb_dataset.addItems(['None'])
 
@@ -212,8 +212,8 @@ class MextDisplay(QtWidgets.QDialog):
         # Assign to main layout
 
         vbl.addLayout(hbl_model)
-        vbl.addWidget(gb_data_info)
-        vbl.addWidget(gb_extent)
+        vbl.addWidget(gbox_data_info)
+        vbl.addWidget(gbox_extent)
         vbl.addLayout(hbl)
 
         # Link functions
@@ -641,7 +641,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.update_vals()
         self.update_combos()
 
-        self.exec_()
+        self.exec()
 
         # The next line is necessary to update any dataset changes.
         self.parent.profile.tab_activate()  # Link to tab_prof

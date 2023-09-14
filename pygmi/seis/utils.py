@@ -45,7 +45,7 @@ class CorrectDescriptions(BasicModule):
         idir = os.path.dirname(os.path.realpath(__file__))
         tfile = os.path.join(idir, r'descriptions.txt')
 
-        self.textfile = QtWidgets.QLineEdit(tfile)
+        self.le_textfile = QtWidgets.QLineEdit(tfile)
 
         self.setupui()
 
@@ -69,7 +69,7 @@ class CorrectDescriptions(BasicModule):
 
         self.setWindowTitle(r'Correct Descriptions')
 
-        gl_main.addWidget(self.textfile, 0, 0, 1, 1)
+        gl_main.addWidget(self.le_textfile, 0, 0, 1, 1)
         gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
 
         # gl_main.addWidget(helpdocs, 5, 0, 1, 1)
@@ -101,7 +101,7 @@ class CorrectDescriptions(BasicModule):
             if filename == '':
                 return
 
-        self.textfile.setText(filename)
+        self.le_textfile.setText(filename)
 
     def settings(self, nodialog=False):
         """
@@ -121,7 +121,7 @@ class CorrectDescriptions(BasicModule):
         if 'Seis' not in self.indata:
             return False
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False
@@ -139,7 +139,7 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        self.saveobj(self.textfile)
+        self.saveobj(self.le_textfile)
 
 
     def acceptall(self):
@@ -153,7 +153,7 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        filename = self.textfile.text()
+        filename = self.le_textfile.text()
         with open(filename, encoding='utf-8') as fno:
             tmp = fno.read()
 

@@ -50,31 +50,31 @@ class MenuWidget():
         self.parent.add_to_context('Vector')
         context_menu = self.parent.context_menu
 
-        self.menufile = QtWidgets.QMenu('Vector')
-        parent.menubar.addAction(self.menufile.menuAction())
+        self.menu = QtWidgets.QMenu('Vector')
+        parent.menubar.addAction(self.menu.menuAction())
 
         self.action_import_vector = QtWidgets.QAction('Import Vector Data')
-        self.menufile.addAction(self.action_import_vector)
+        self.menu.addAction(self.action_import_vector)
         self.action_import_vector.triggered.connect(self.import_vector)
 
         self.action_import_xyz = QtWidgets.QAction('Import XYZ Data')
-        self.menufile.addAction(self.action_import_xyz)
+        self.menu.addAction(self.action_import_xyz)
         self.action_import_xyz.triggered.connect(self.import_xyz)
 
-        self.menufile.addSeparator()
+        self.menu.addSeparator()
 
         self.action_cut_data = QtWidgets.QAction('Cut Points using Polygon')
-        self.menufile.addAction(self.action_cut_data)
+        self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
         self.action_reproject = QtWidgets.QAction('Reproject Vector Data')
-        self.menufile.addAction(self.action_reproject)
+        self.menu.addAction(self.action_reproject)
         self.action_reproject.triggered.connect(self.reproject)
 
-        self.menufile.addSeparator()
+        self.menu.addSeparator()
 
         self.action_grid = QtWidgets.QAction('Dataset Gridding')
-        self.menufile.addAction(self.action_grid)
+        self.menu.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 
         # Context menus

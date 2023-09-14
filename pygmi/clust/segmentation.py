@@ -41,10 +41,10 @@ class ImageSeg(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.scale = QtWidgets.QLineEdit('1000')
-        self.wcompact = QtWidgets.QLineEdit('0.5')
-        self.wcolor = QtWidgets.QLineEdit('0.9')
-        self.eps = QtWidgets.QLineEdit('0.1')
+        self.le_scale = QtWidgets.QLineEdit('1000')
+        self.le_wcompact = QtWidgets.QLineEdit('0.5')
+        self.le_wcolor = QtWidgets.QLineEdit('0.9')
+        self.le_eps = QtWidgets.QLineEdit('0.1')
         self.cb_dbscan = QtWidgets.QCheckBox('Use DBSCAN to group segments')
 
         self.setupui()
@@ -71,13 +71,13 @@ class ImageSeg(BasicModule):
         val.setNotation(QtGui.QDoubleValidator.StandardNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
 
-        self.wcompact.setValidator(val)
-        self.wcolor.setValidator(val)
+        self.le_wcompact.setValidator(val)
+        self.le_wcolor.setValidator(val)
         self.cb_dbscan.setChecked(False)
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
-        self.scale.setValidator(QtGui.QIntValidator(self))
+        self.le_scale.setValidator(QtGui.QIntValidator(self))
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -86,18 +86,18 @@ class ImageSeg(BasicModule):
         self.setWindowTitle(r'Image Segmentation')
 
         gl_main.addWidget(lbl_wcompact, 0, 0, 1, 1)
-        gl_main.addWidget(self.wcompact, 0, 1, 1, 1)
+        gl_main.addWidget(self.le_wcompact, 0, 1, 1, 1)
 
         gl_main.addWidget(lbl_wcolor, 1, 0, 1, 1)
-        gl_main.addWidget(self.wcolor, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_wcolor, 1, 1, 1, 1)
 
         gl_main.addWidget(lbl_scale, 2, 0, 1, 1)
-        gl_main.addWidget(self.scale, 2, 1, 1, 1)
+        gl_main.addWidget(self.le_scale, 2, 1, 1, 1)
 
         gl_main.addWidget(self.cb_dbscan, 3, 0, 1, 2)
 
         gl_main.addWidget(lbl_eps, 4, 0, 1, 1)
-        gl_main.addWidget(self.eps, 4, 1, 1, 1)
+        gl_main.addWidget(self.le_eps, 4, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 5, 0, 1, 1)
         gl_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -132,15 +132,15 @@ class ImageSeg(BasicModule):
         data1 = np.moveaxis(data1, 0, -1)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return False
 
-        scale = float(self.scale.text())
-        wcolor = float(self.wcolor.text())
-        wcompact = float(self.wcompact.text())
-        eps = float(self.eps.text())
+        scale = float(self.le_scale.text())
+        wcolor = float(self.le_wcolor.text())
+        wcompact = float(self.le_wcompact.text())
+        eps = float(self.le_eps.text())
 
         doshape = True
 
@@ -192,10 +192,10 @@ class ImageSeg(BasicModule):
         None.
 
         """
-        self.saveobj(self.scale)
-        self.saveobj(self.wcolor)
-        self.saveobj(self.wcompact)
-        self.saveobj(self.eps)
+        self.saveobj(self.le_scale)
+        self.saveobj(self.le_wcolor)
+        self.saveobj(self.le_wcompact)
+        self.saveobj(self.le_eps)
         self.saveobj(self.cb_dbscan)
 
     def segment1(self, data, scale=500, wcolor=0.5, wcompact=0.5,

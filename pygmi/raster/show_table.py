@@ -37,7 +37,7 @@ class BasicStats(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.combobox = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.pushbutton_save = QtWidgets.QPushButton('Save')
 
@@ -59,14 +59,14 @@ class BasicStats(ContextModule):
         vbl = QtWidgets.QVBoxLayout()
 
         vbl.addWidget(self.pushbutton_save)
-        vbl.addWidget(self.combobox)
+        vbl.addWidget(self.cmb_1)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 
         self.setWindowTitle('Basic Statistics')
 
-        self.combobox.currentIndexChanged.connect(self.combo)
+        self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
@@ -78,7 +78,7 @@ class BasicStats(ContextModule):
         None.
 
         """
-        i = self.combobox.currentIndex()
+        i = self.cmb_1.currentIndex()
         data = self.data[i][:, 1:]
 
         for row in range(data.shape[0]):
@@ -105,9 +105,9 @@ class BasicStats(ContextModule):
         cols = self.cols[1:]
 
         if len(self.data) == 1:
-            self.combobox.hide()
+            self.cmb_1.hide()
 
-        self.combobox.addItems(self.bands)
+        self.cmb_1.addItems(self.bands)
         self.tablewidget.setRowCount(data.shape[0])
         self.tablewidget.setColumnCount(data.shape[1])
         self.tablewidget.setHorizontalHeaderLabels(cols)
@@ -190,7 +190,7 @@ class ClusterStats(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.combobox = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.pushbutton_save = QtWidgets.QPushButton('Save')
 
@@ -212,7 +212,7 @@ class ClusterStats(ContextModule):
         vbl = QtWidgets.QVBoxLayout()
 
         vbl.addWidget(self.pushbutton_save)
-        vbl.addWidget(self.combobox)
+        vbl.addWidget(self.cmb_1)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
@@ -220,7 +220,7 @@ class ClusterStats(ContextModule):
         self.setWindowTitle(
             'Cluster Statistics (Mean Value : Std Deviation)')
 
-        self.combobox.currentIndexChanged.connect(self.combo)
+        self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
@@ -232,7 +232,7 @@ class ClusterStats(ContextModule):
         None.
 
         """
-        i = self.combobox.currentIndex()
+        i = self.cmb_1.currentIndex()
         data = self.data[i]
 
         self.tablewidget.setRowCount(len(data))
@@ -283,9 +283,9 @@ class ClusterStats(ContextModule):
         cols = self.cols
 
         if len(self.data) == 1:
-            self.combobox.hide()
+            self.cmb_1.hide()
 
-        self.combobox.addItems(self.bands)
+        self.cmb_1.addItems(self.bands)
         self.tablewidget.setRowCount(len(data))
         self.tablewidget.setColumnCount(len(data[0]))
         self.tablewidget.setHorizontalHeaderLabels(cols)

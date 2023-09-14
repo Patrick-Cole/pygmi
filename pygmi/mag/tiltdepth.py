@@ -333,7 +333,7 @@ class TiltDepth(BasicModule):
         # if nodialog is False:
         #     self.show()
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 

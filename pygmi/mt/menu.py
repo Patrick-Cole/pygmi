@@ -52,37 +52,37 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
         # Normal menus
-        self.menumt = QtWidgets.QMenu('MT')
-        parent.menubar.addAction(self.menumt.menuAction())
+        self.menu = QtWidgets.QMenu('MT')
+        parent.menubar.addAction(self.menu.menuAction())
 
         self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
-        self.menumt.addAction(self.action_birrp)
+        self.menu.addAction(self.action_birrp)
         self.action_birrp.triggered.connect(self.birrp)
 
-        self.menumt.addSeparator()
+        self.menu.addSeparator()
 
         self.action_import_data = QtWidgets.QAction('Import EDI Data')
-        self.menumt.addAction(self.action_import_data)
+        self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-        self.menumt.addSeparator()
+        self.menu.addSeparator()
 
         self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
-        self.menumt.addAction(self.action_rotate_data)
+        self.menu.addAction(self.action_rotate_data)
         self.action_rotate_data.triggered.connect(self.rotate_data)
 
         self.action_sshift_data = QtWidgets.QAction('Remove Static Shift')
-        self.menumt.addAction(self.action_sshift_data)
+        self.menu.addAction(self.action_sshift_data)
         self.action_sshift_data.triggered.connect(self.sshift_data)
 
         self.action_mi_data = QtWidgets.QAction('Mask and Interpolate')
-        self.menumt.addAction(self.action_mi_data)
+        self.menu.addAction(self.action_mi_data)
         self.action_mi_data.triggered.connect(self.mi_data)
 
-        self.menumt.addSeparator()
+        self.menu.addSeparator()
 
         self.action_occam1d = QtWidgets.QAction('Occam 1D Inversion')
-        self.menumt.addAction(self.action_occam1d)
+        self.menu.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
         # Context menus

@@ -113,7 +113,7 @@ def test_fuzzy():
     tmp.indata = {'Raster': [dat1, dat2]}
     tmp.sb_minclusters.setValue(2)
     tmp.sb_maxclusters.setValue(2)
-    tmp.combo_alg.setCurrentIndex(0)
+    tmp.cmb_alg.setCurrentIndex(0)
     tmp.settings(True)
 
     datout2 = tmp.outdata['Cluster'][0].data.data

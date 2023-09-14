@@ -118,7 +118,7 @@ class Tilt1(BasicModule):
             return False
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 
@@ -421,7 +421,7 @@ class RTP(BasicModule):
         self.cmb_dataid.addItems(tmp)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return False

@@ -152,7 +152,7 @@ class ImportMod3D(BasicModule):
         header = header[7:]
 
         mtmp = MessageCombo(header)
-        mtmp.exec_()
+        mtmp.exec()
         datindx = mtmp.master.currentIndex()
 
         x = []
@@ -689,7 +689,7 @@ class ExportMod3D(ContextModule):
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
-        tmp = prjkmz.exec_()
+        tmp = prjkmz.exec()
 
         if tmp == 0:
             return

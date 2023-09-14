@@ -69,8 +69,8 @@ class Normalisation(BasicModule):
 
         self.rb_interval.setChecked(True)
 
-        groupbox = QtWidgets.QGroupBox('Normalisation/Scaling')
-        vbl_2 = QtWidgets.QVBoxLayout(groupbox)
+        gbox = QtWidgets.QGroupBox('Normalisation/Scaling')
+        vbl_2 = QtWidgets.QVBoxLayout(gbox)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -83,7 +83,7 @@ class Normalisation(BasicModule):
         hbl.addWidget(helpdocs)
         hbl.addWidget(buttonbox)
 
-        vbl_1.addWidget(groupbox)
+        vbl_1.addWidget(gbox)
         vbl_1.addLayout(hbl)
 
         self.setWindowTitle('Normalisation')
@@ -111,7 +111,7 @@ class Normalisation(BasicModule):
             return False
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 

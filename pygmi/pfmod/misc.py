@@ -337,7 +337,7 @@ class MergeMod3D(BasicModule):
         self.cmb_master.setCurrentIndex(0)
         self.cmb_slave.setCurrentIndex(1)
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp == 1:
             tmp = self.acceptall()

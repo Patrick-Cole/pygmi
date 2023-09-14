@@ -2119,7 +2119,7 @@ def _testfn():
     # This activates the opengl stuff
 
     wid.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 def _testfn2():
@@ -2138,7 +2138,7 @@ def _testfn2():
     M3D.indata = IM.outdata
     M3D.data_init()
     M3D.run()
-    M3D.exec_()
+    M3D.exec()
 
 
 if __name__ == "__main__":

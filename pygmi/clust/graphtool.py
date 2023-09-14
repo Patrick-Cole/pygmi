@@ -644,10 +644,10 @@ class ScatterPlot(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        group_cp = QtWidgets.QGroupBox('Cross Plot Settings')
-        gl_left = QtWidgets.QGridLayout(group_cp)
-        group_map = QtWidgets.QGroupBox('Map Settings')
-        gl_right = QtWidgets.QGridLayout(group_map)
+        gbox_cp = QtWidgets.QGroupBox('Cross Plot Settings')
+        gl_left = QtWidgets.QGridLayout(gbox_cp)
+        gbox_map = QtWidgets.QGroupBox('Map Settings')
+        gl_right = QtWidgets.QGridLayout(gbox_map)
 
         self.setWindowTitle('Scatter Plot Tool')
 
@@ -671,8 +671,8 @@ class ScatterPlot(BasicModule):
         gl_right.addWidget(self.map_combo2, 1, 1, 1, 1)
         gl_main.addWidget(self.hist, 0, 0, 1, 1)
         gl_main.addWidget(self.map, 0, 1, 1, 1)
-        gl_main.addWidget(group_cp, 1, 0, 1, 1)
-        gl_main.addWidget(group_map, 1, 1, 1, 1)
+        gl_main.addWidget(gbox_cp, 1, 0, 1, 1)
+        gl_main.addWidget(gbox_map, 1, 1, 1, 1)
 
         self.cp_dpoly.clicked.connect(self.on_cp_dpoly)
         self.map_dpoly.clicked.connect(self.on_map_dpoly)
@@ -853,7 +853,7 @@ class ScatterPlot(BasicModule):
         self.hist.update_graph(clearaxis=True)
         self.map.update_graph()
 
-        self.exec_()
+        self.exec()
 
         return True
 

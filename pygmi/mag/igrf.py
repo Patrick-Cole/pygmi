@@ -225,7 +225,7 @@ class IGRF(BasicModule):
             self.cmb_dtm.setCurrentIndex(1)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp == 0:
                 return False

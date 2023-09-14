@@ -447,11 +447,11 @@ class SuperClass(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        group_map = QtWidgets.QGroupBox('Class Edit')
-        gl_right = QtWidgets.QGridLayout(group_map)
+        gbox_map = QtWidgets.QGroupBox('Class Edit')
+        gl_right = QtWidgets.QGridLayout(gbox_map)
 
-        group_class = QtWidgets.QGroupBox('Supervised Classification')
-        gl_class = QtWidgets.QGridLayout(group_class)
+        gbox_class = QtWidgets.QGroupBox('Supervised Classification')
+        gl_class = QtWidgets.QGridLayout(gbox_class)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -512,8 +512,8 @@ class SuperClass(BasicModule):
         gl_main.addWidget(self.map, 0, 0, 2, 1)
         gl_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
 
-        gl_main.addWidget(group_map, 0, 1, 1, 1)
-        gl_main.addWidget(group_class, 1, 1, 1, 1)
+        gl_main.addWidget(gbox_map, 0, 1, 1, 1)
+        gl_main.addWidget(gbox_class, 1, 1, 1, 1)
         gl_main.addWidget(buttonbox, 2, 1, 1, 1)
 
         self.apoly.clicked.connect(self.on_apoly)
@@ -840,7 +840,7 @@ class SuperClass(BasicModule):
         self.map.polyi.polyi_changed.connect(self.updatepoly)
         self.map.update_graph()
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp == 0:
             return False

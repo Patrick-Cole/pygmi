@@ -230,7 +230,7 @@ class Cluster(BasicModule):
         self.sb_minsamples.setProperty('value', self.min_samples)
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
             if self.parent is not None:

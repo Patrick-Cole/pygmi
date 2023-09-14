@@ -53,19 +53,19 @@ class FileMenu():
 
 # File Menu
 
-        self.menufile = QtWidgets.QMenu('File')
-        parent.menubar.addAction(self.menufile.menuAction())
+        self.menu = QtWidgets.QMenu('File')
+        parent.menubar.addAction(self.menu.menuAction())
 
         self.action_save = QtWidgets.QAction('Save Project')
-        self.menufile.addAction(self.action_save)
+        self.menu.addAction(self.action_save)
         self.action_save.triggered.connect(parent.save)
 
         self.action_load = QtWidgets.QAction('Load Project')
-        self.menufile.addAction(self.action_load)
+        self.menu.addAction(self.action_load)
         self.action_load.triggered.connect(parent.load)
 
         self.action_exit = QtWidgets.QAction('Exit')
-        self.menufile.addAction(self.action_exit)
+        self.menu.addAction(self.action_exit)
         self.action_exit.triggered.connect(parent.close)
 
 
@@ -84,14 +84,14 @@ class HelpMenu():
         self.parent = parent
         self.webpage = r'http://patrick-cole.github.io/pygmi/'
 
-        self.menuhelp = QtWidgets.QMenu('Help')
-        parent.menubar.addAction(self.menuhelp.menuAction())
+        self.menu = QtWidgets.QMenu('Help')
+        parent.menubar.addAction(self.menu.menuAction())
 
         self.action_help = QtWidgets.QAction('Help')
         self.action_about = QtWidgets.QAction('About')
 
-        self.menuhelp.addAction(self.action_help)
-        self.menuhelp.addAction(self.action_about)
+        self.menu.addAction(self.action_help)
+        self.menu.addAction(self.action_about)
 
         self.action_about.triggered.connect(self.about)
         self.action_help.triggered.connect(self.webhelp)
@@ -225,6 +225,6 @@ class HelpDocs(QtWidgets.QDialog):
 
         self.buttonbox.accepted.connect(self.accept)
 
-        self.exec_()
+        self.exec()
 
         os.chdir(opth)

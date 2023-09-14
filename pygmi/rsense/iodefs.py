@@ -164,7 +164,7 @@ class ImportData(BasicModule):
         self.filt = ''
         self.is_import = True
 
-        self.sfile = QtWidgets.QLineEdit('')
+        self.le_sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
         self.lbl_ftype = QtWidgets.QLabel('File Type:')
         self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
@@ -195,7 +195,7 @@ class ImportData(BasicModule):
         self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
-        gl_1.addWidget(self.sfile, 1, 1, 1, 1)
+        gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
         gl_1.addWidget(self.lbl_ftype, 2, 0, 1, 2)
         gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
@@ -229,11 +229,11 @@ class ImportData(BasicModule):
         """
         self.lw_tnames.clear()
         self.indata['Raster'] = []
-        self.sfile.setText('')
+        self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return tmp
@@ -268,7 +268,7 @@ class ImportData(BasicModule):
         """Get the satellite filename."""
         self.lw_tnames.clear()
         self.indata['Raster'] = []
-        self.sfile.setText('')
+        self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
         ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5);;')
@@ -279,14 +279,14 @@ class ImportData(BasicModule):
         if not self.ifile:
             return False
 
-        self.sfile.setText(self.ifile)
+        self.le_sfile.setText(self.ifile)
 
         self.indata['Raster'] = get_data(self.ifile, self.piter,
                                          self.showlog, metaonly=True)
 
         if self.indata['Raster'] is None:
             self.showlog('Error: could not import data.')
-            self.sfile.setText('')
+            self.le_sfile.setText('')
             self.lbl_ftype.setText('File Type: Unknown')
             return False
 
@@ -325,7 +325,7 @@ class ImportData(BasicModule):
         """
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
-        self.saveobj(self.sfile)
+        self.saveobj(self.le_sfile)
         self.saveobj(self.lbl_ftype)
         self.saveobj(self.cb_ensuresutm)
         self.saveobj(self.lw_tnames)
@@ -355,8 +355,8 @@ class ImportBatch(BasicModule):
         self.oldsensor = None
         self.is_import = True
 
-        self.combo_sensor = QtWidgets.QComboBox()
-        self.sfile = QtWidgets.QLineEdit('')
+        self.cmb_sensor = QtWidgets.QComboBox()
+        self.le_sfile = QtWidgets.QLineEdit('')
         self.lw_tnames = QtWidgets.QListWidget()
         self.lbl_ftype = QtWidgets.QLabel('File Type:')
         self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
@@ -387,9 +387,9 @@ class ImportBatch(BasicModule):
         self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
-        gl_1.addWidget(self.sfile, 1, 1, 1, 1)
+        gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
         gl_1.addWidget(self.lbl_ftype, 2, 0, 1, 1)
-        gl_1.addWidget(self.combo_sensor, 2, 1, 1, 1)
+        gl_1.addWidget(self.cmb_sensor, 2, 1, 1, 1)
         gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
@@ -404,7 +404,7 @@ class ImportBatch(BasicModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         pb_sfile.pressed.connect(self.get_sfile)
-        self.combo_sensor.currentIndexChanged.connect(self.setsensor)
+        self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
 
     def settings(self, nodialog=False):
         """
@@ -425,7 +425,7 @@ class ImportBatch(BasicModule):
             self.get_sfile(True)
 
         if not nodialog or self.idir == '':
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return tmp
@@ -454,7 +454,7 @@ class ImportBatch(BasicModule):
             if not self.idir:
                 return False
 
-        self.sfile.setText(self.idir)
+        self.le_sfile.setText(self.idir)
 
         types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
                  '*.xml', '*.h5', '*.SAFE/MTD_MSIL2A.xml']
@@ -480,10 +480,10 @@ class ImportBatch(BasicModule):
             self.tnames[datm.sensor] = datm.tnames
             self.filelist.append(datm)
 
-        self.combo_sensor.disconnect()
-        self.combo_sensor.clear()
-        self.combo_sensor.addItems(self.bands.keys())
-        self.combo_sensor.currentIndexChanged.connect(self.setsensor)
+        self.cmb_sensor.disconnect()
+        self.cmb_sensor.clear()
+        self.cmb_sensor.addItems(self.bands.keys())
+        self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
 
         if not self.filelist:
             self.showlog('No valid files in the directory.')
@@ -512,7 +512,7 @@ class ImportBatch(BasicModule):
                 if i.sensor == self.oldsensor:
                     i.tnames = self.tnames[self.oldsensor]
 
-        sensor = self.combo_sensor.currentText()
+        sensor = self.cmb_sensor.currentText()
         tmp = self.bands[sensor]
 
         self.lw_tnames.clear()
@@ -543,8 +543,8 @@ class ImportBatch(BasicModule):
         self.saveobj(self.tnames)
         self.saveobj(self.oldsensor)
 
-        self.saveobj(self.combo_sensor)
-        self.saveobj(self.sfile)
+        self.saveobj(self.cmb_sensor)
+        self.saveobj(self.le_sfile)
         self.saveobj(self.lw_tnames)
         self.saveobj(self.lbl_ftype)
         self.saveobj(self.cb_ensuresutm )
@@ -561,15 +561,15 @@ class ImportSentinel5P(BasicModule):
         self.indx = 0
         self.is_import = True
 
-        self.subdata = QtWidgets.QComboBox()
-        self.lonmin = QtWidgets.QLineEdit('16')
-        self.lonmax = QtWidgets.QLineEdit('34')
-        self.latmin = QtWidgets.QLineEdit('-35')
-        self.latmax = QtWidgets.QLineEdit('-21')
-        self.qathres = QtWidgets.QLineEdit('50')
+        self.cmb_subdata = QtWidgets.QComboBox()
+        self.le_lonmin = QtWidgets.QLineEdit('16')
+        self.le_lonmax = QtWidgets.QLineEdit('34')
+        self.le_latmin = QtWidgets.QLineEdit('-35')
+        self.le_latmax = QtWidgets.QLineEdit('-21')
+        self.le_qathres = QtWidgets.QLineEdit('50')
         self.rb_cclip = QtWidgets.QRadioButton('Clip using coordinates')
         self.rb_sclip = QtWidgets.QRadioButton('Clip using shapefile')
-        self.shpfile = QtWidgets.QLineEdit(self.sfile)
+        self.le_shpfile = QtWidgets.QLineEdit(self.sfile)
         self.lbl_sfile = QtWidgets.QPushButton('Load shapefile')
         self.lbl_lonmin = QtWidgets.QLabel('Minimum Longitude:')
         self.lbl_lonmax = QtWidgets.QLabel('Maximum Longitude:')
@@ -599,33 +599,33 @@ class ImportSentinel5P(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.rb_cclip.setChecked(True)
         self.lbl_sfile.hide()
-        self.shpfile.hide()
+        self.le_shpfile.hide()
 
         self.setWindowTitle(r'Import Sentinel-5P Data')
 
         gl_main.addWidget(lbl_subdata, 0, 0, 1, 1)
-        gl_main.addWidget(self.subdata, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_subdata, 0, 1, 1, 1)
 
         gl_main.addWidget(self.rb_cclip, 1, 0, 1, 2)
         gl_main.addWidget(self.rb_sclip, 2, 0, 1, 2)
 
         gl_main.addWidget(self.lbl_lonmin, 3, 0, 1, 1)
-        gl_main.addWidget(self.lonmin, 3, 1, 1, 1)
+        gl_main.addWidget(self.le_lonmin, 3, 1, 1, 1)
 
         gl_main.addWidget(self.lbl_lonmax, 4, 0, 1, 1)
-        gl_main.addWidget(self.lonmax, 4, 1, 1, 1)
+        gl_main.addWidget(self.le_lonmax, 4, 1, 1, 1)
 
         gl_main.addWidget(self.lbl_latmin, 5, 0, 1, 1)
-        gl_main.addWidget(self.latmin, 5, 1, 1, 1)
+        gl_main.addWidget(self.le_latmin, 5, 1, 1, 1)
 
         gl_main.addWidget(self.lbl_latmax, 6, 0, 1, 1)
-        gl_main.addWidget(self.latmax, 6, 1, 1, 1)
+        gl_main.addWidget(self.le_latmax, 6, 1, 1, 1)
 
         gl_main.addWidget(self.lbl_sfile, 7, 0, 1, 1)
-        gl_main.addWidget(self.shpfile, 7, 1, 1, 1)
+        gl_main.addWidget(self.le_shpfile, 7, 1, 1, 1)
 
         gl_main.addWidget(lbl_qathres, 8, 0, 1, 1)
-        gl_main.addWidget(self.qathres, 8, 1, 1, 1)
+        gl_main.addWidget(self.le_qathres, 8, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 10, 0, 1, 1)
         gl_main.addWidget(buttonbox, 10, 1, 1, 3)
@@ -672,21 +672,21 @@ class ImportSentinel5P(BasicModule):
                 continue
             tmp.append(i)
 
-        self.subdata.clear()
-        self.subdata.addItems(tmp)
-        self.subdata.setCurrentIndex(self.indx)
+        self.cmb_subdata.clear()
+        self.cmb_subdata.addItems(tmp)
+        self.cmb_subdata.setCurrentIndex(self.indx)
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
 
             if tmp != 1:
                 return tmp
 
         try:
-            _ = float(self.lonmin.text())
-            _ = float(self.latmin.text())
-            _ = float(self.lonmax.text())
-            _ = float(self.latmax.text())
+            _ = float(self.le_lonmin.text())
+            _ = float(self.le_latmin.text())
+            _ = float(self.le_lonmax.text())
+            _ = float(self.le_latmax.text())
         except ValueError:
             self.showlog('Value error - abandoning import')
             return False
@@ -719,26 +719,26 @@ class ImportSentinel5P(BasicModule):
         """
         if self.rb_cclip.isChecked():
             self.lbl_sfile.hide()
-            self.shpfile.hide()
-            self.lonmin.show()
-            self.lonmax.show()
-            self.latmin.show()
-            self.latmax.show()
+            self.le_shpfile.hide()
+            self.le_lonmin.show()
+            self.le_lonmax.show()
+            self.le_latmin.show()
+            self.le_latmax.show()
             self.lbl_lonmin.show()
             self.lbl_lonmax.show()
             self.lbl_latmin.show()
             self.lbl_latmax.show()
         else:
-            self.lonmin.hide()
-            self.lonmax.hide()
-            self.latmin.hide()
-            self.latmax.hide()
+            self.le_lonmin.hide()
+            self.le_lonmax.hide()
+            self.le_latmin.hide()
+            self.le_latmax.hide()
             self.lbl_lonmin.hide()
             self.lbl_lonmax.hide()
             self.lbl_latmin.hide()
             self.lbl_latmax.hide()
             self.lbl_sfile.show()
-            self.shpfile.show()
+            self.le_shpfile.show()
 
     def loadshp(self):
         """
@@ -754,7 +754,7 @@ class ImportSentinel5P(BasicModule):
         self.sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
 
-        self.shpfile.setText(self.sfile)
+        self.le_shpfile.setText(self.sfile)
 
     def saveproj(self):
         """
@@ -770,12 +770,12 @@ class ImportSentinel5P(BasicModule):
         self.saveobj(self.sfile)
         self.saveobj(self.indx)
 
-        self.saveobj(self.subdata)
-        self.saveobj(self.lonmin)
-        self.saveobj(self.lonmax)
-        self.saveobj(self.latmin)
-        self.saveobj(self.latmax)
-        self.saveobj(self.qathres)
+        self.saveobj(self.cmb_subdata)
+        self.saveobj(self.le_lonmin)
+        self.saveobj(self.le_lonmax)
+        self.saveobj(self.le_latmin)
+        self.saveobj(self.le_latmax)
+        self.saveobj(self.le_qathres)
         self.saveobj(self.rb_cclip)
         self.saveobj(self.rb_sclip)
 
@@ -834,7 +834,7 @@ class ImportSentinel5P(BasicModule):
 
         """
         try:
-            thres = int(self.qathres.text())
+            thres = int(self.le_qathres.text())
         except ValueError:
             self.showlog('Threshold text not an integer')
             return None
@@ -863,10 +863,10 @@ class ImportSentinel5P(BasicModule):
         pnts = np.transpose([lons, lats])
 
         if self.rb_cclip.isChecked():
-            lonmin = float(self.lonmin.text())
-            latmin = float(self.latmin.text())
-            lonmax = float(self.lonmax.text())
-            latmax = float(self.latmax.text())
+            lonmin = float(self.le_lonmin.text())
+            latmin = float(self.le_latmin.text())
+            lonmax = float(self.le_lonmax.text())
+            latmax = float(self.le_latmax.text())
         else:
             shp = gpd.read_file(self.sfile)
             shp = shp.to_crs(4326)
@@ -879,7 +879,7 @@ class ImportSentinel5P(BasicModule):
         mask = ((lats > latmin) & (lats < latmax) & (lons < lonmax) &
                 (lons > lonmin))
 
-        idfile = self.subdata.currentText()
+        idfile = self.cmb_subdata.currentText()
 
         dfile = meta[idfile]
 
@@ -927,13 +927,13 @@ class ExportBatch(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.ofilt = QtWidgets.QComboBox()
-        self.odir = QtWidgets.QLineEdit('')
-        self.red = QtWidgets.QComboBox()
-        self.green = QtWidgets.QComboBox()
-        self.blue = QtWidgets.QComboBox()
-        self.sunshade = QtWidgets.QComboBox()
-        self.slvl = QtWidgets.QComboBox()
+        self.cmb_ofilt = QtWidgets.QComboBox()
+        self.le_odir = QtWidgets.QLineEdit('')
+        self.cmb_red = QtWidgets.QComboBox()
+        self.cmb_green = QtWidgets.QComboBox()
+        self.cmb_blue = QtWidgets.QComboBox()
+        self.cmb_sunshade = QtWidgets.QComboBox()
+        self.cmb_slvl = QtWidgets.QComboBox()
         self.cb_ternary = QtWidgets.QCheckBox('Ternary Export')
 
         self.setupui()
@@ -962,17 +962,17 @@ class ExportBatch(ContextModule):
                'GeoTiff compressed using ZSTD', 'ENVI', 'ERMapper',
                'ERDAS Imagine')
 
-        self.ofilt.addItems(ext)
-        self.ofilt.setCurrentText('GeoTiff compressed using DEFLATE')
-        self.slvl.addItems(['Standard', 'Heavy'])
-        self.slvl.setCurrentText('Standard')
+        self.cmb_ofilt.addItems(ext)
+        self.cmb_ofilt.setCurrentText('GeoTiff compressed using DEFLATE')
+        self.cmb_slvl.addItems(['Standard', 'Heavy'])
+        self.cmb_slvl.setCurrentText('Standard')
 
         self.cb_ternary.setChecked(False)
-        self.red.setEnabled(False)
-        self.green.setEnabled(False)
-        self.blue.setEnabled(False)
-        self.sunshade.setEnabled(False)
-        self.slvl.setEnabled(False)
+        self.cmb_red.setEnabled(False)
+        self.cmb_green.setEnabled(False)
+        self.cmb_blue.setEnabled(False)
+        self.cmb_sunshade.setEnabled(False)
+        self.cmb_slvl.setEnabled(False)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -980,28 +980,28 @@ class ExportBatch(ContextModule):
 
         self.setWindowTitle(r'Export File List')
 
-        gl_main.addWidget(self.odir, 0, 0, 1, 1)
+        gl_main.addWidget(self.le_odir, 0, 0, 1, 1)
         gl_main.addWidget(pb_odir, 0, 1, 1, 1)
 
         gl_main.addWidget(lbl_ofilt, 1, 0, 1, 1)
-        gl_main.addWidget(self.ofilt, 1, 1, 1, 1)
+        gl_main.addWidget(self.cmb_ofilt, 1, 1, 1, 1)
 
         gl_main.addWidget(self.cb_ternary, 2, 0, 1, 2)
 
         gl_main.addWidget(lbl_red, 3, 0, 1, 1)
-        gl_main.addWidget(self.red, 3, 1, 1, 1)
+        gl_main.addWidget(self.cmb_red, 3, 1, 1, 1)
 
         gl_main.addWidget(lbl_green, 4, 0, 1, 1)
-        gl_main.addWidget(self.green, 4, 1, 1, 1)
+        gl_main.addWidget(self.cmb_green, 4, 1, 1, 1)
 
         gl_main.addWidget(lbl_blue, 5, 0, 1, 1)
-        gl_main.addWidget(self.blue, 5, 1, 1, 1)
+        gl_main.addWidget(self.cmb_blue, 5, 1, 1, 1)
 
         gl_main.addWidget(lbl_shade, 6, 0, 1, 1)
-        gl_main.addWidget(self.sunshade, 6, 1, 1, 1)
+        gl_main.addWidget(self.cmb_sunshade, 6, 1, 1, 1)
 
         gl_main.addWidget(lbl_slvl, 7, 0, 1, 1)
-        gl_main.addWidget(self.slvl, 7, 1, 1, 1)
+        gl_main.addWidget(self.cmb_slvl, 7, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 8, 0, 1, 1)
         gl_main.addWidget(buttonbox, 8, 1, 1, 3)
@@ -1021,21 +1021,21 @@ class ExportBatch(ContextModule):
 
         """
         if self.cb_ternary.isChecked():
-            self.red.setEnabled(True)
-            self.green.setEnabled(True)
-            self.blue.setEnabled(True)
-            self.ofilt.setCurrentText('GeoTiff')
-            self.ofilt.setEnabled(False)
-            self.sunshade.setEnabled(True)
-            self.slvl.setEnabled(True)
+            self.cmb_red.setEnabled(True)
+            self.cmb_green.setEnabled(True)
+            self.cmb_blue.setEnabled(True)
+            self.cmb_ofilt.setCurrentText('GeoTiff')
+            self.cmb_ofilt.setEnabled(False)
+            self.cmb_sunshade.setEnabled(True)
+            self.cmb_slvl.setEnabled(True)
 
         else:
-            self.red.setEnabled(False)
-            self.green.setEnabled(False)
-            self.blue.setEnabled(False)
-            self.ofilt.setEnabled(True)
-            self.sunshade.setEnabled(False)
-            self.slvl.setEnabled(False)
+            self.cmb_red.setEnabled(False)
+            self.cmb_green.setEnabled(False)
+            self.cmb_blue.setEnabled(False)
+            self.cmb_ofilt.setEnabled(True)
+            self.cmb_sunshade.setEnabled(False)
+            self.cmb_slvl.setEnabled(False)
 
     def run(self):
         """
@@ -1062,27 +1062,27 @@ class ExportBatch(ContextModule):
         if 'Explained Variance Ratio' in bnames[0]:
             bnames = [i.split('Explained Variance Ratio')[0] for i in bnames]
 
-        self.red.addItems(bnames)
-        self.green.addItems(bnames)
-        self.blue.addItems(bnames)
-        self.sunshade.addItems(['None', 'External File (first band)']+bnames)
+        self.cmb_red.addItems(bnames)
+        self.cmb_green.addItems(bnames)
+        self.cmb_blue.addItems(bnames)
+        self.cmb_sunshade.addItems(['None', 'External File (first band)']+bnames)
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
-        if tmp != 1 or self.odir.text() == '':
+        if tmp != 1 or self.le_odir.text() == '':
             return False
 
-        filt = self.ofilt.currentText()
-        odir = self.odir.text()
+        filt = self.cmb_ofilt.currentText()
+        odir = self.le_odir.text()
         sunfile = None
 
         if self.cb_ternary.isChecked():
-            tnames = [self.red.currentText(),
-                      self.green.currentText(),
-                      self.blue.currentText()]
+            tnames = [self.cmb_red.currentText(),
+                      self.cmb_green.currentText(),
+                      self.cmb_blue.currentText()]
             otype = 'RGB'
-            sunfile = self.sunshade.currentText()
-            slevel = self.slvl.currentText()
+            sunfile = self.cmb_sunshade.currentText()
+            slevel = self.cmb_slvl.currentText()
             if slevel == 'Standard':
                 cell = 25.
                 alpha = .75
@@ -1136,7 +1136,7 @@ class ExportBatch(ContextModule):
             if odir == '':
                 return
 
-        self.odir.setText(odir)
+        self.le_odir.setText(odir)
 
 
 def calculate_toa(dat, showlog=print):

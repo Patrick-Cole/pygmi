@@ -82,8 +82,8 @@ class FuzzyClust(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        groupbox = QtWidgets.QGroupBox(self)
-        vbl = QtWidgets.QVBoxLayout(groupbox)
+        gbox = QtWidgets.QGroupBox(self)
+        vbl = QtWidgets.QVBoxLayout(gbox)
 
         buttonbox = QtWidgets.QDialogButtonBox(self)
         lbl_1 = QtWidgets.QLabel()
@@ -110,8 +110,8 @@ class FuzzyClust(BasicModule):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Fuzzy Clustering')
-        groupbox.setTitle('Initial Guess')
-        groupbox.hide()
+        gbox.setTitle('Initial Guess')
+        gbox.hide()
         lbl_1.setText('Cluster Algorithm:')
         lbl_2.setText('Minimum Clusters:')
         lbl_3.setText('Maximum Clusters')
@@ -134,7 +134,7 @@ class FuzzyClust(BasicModule):
         gl_1.addWidget(lbl_6, 5, 2, 1, 1)
         gl_1.addWidget(self.lbl_7, 6, 2, 1, 1)
         gl_1.addWidget(lbl_8, 7, 2, 1, 1)
-        gl_1.addWidget(groupbox, 9, 2, 1, 3)
+        gl_1.addWidget(gbox, 9, 2, 1, 3)
 
         gl_1.addWidget(self.cmb_alg, 0, 4, 1, 1)
         gl_1.addWidget(self.sb_minclusters, 1, 4, 1, 1)
@@ -197,7 +197,7 @@ class FuzzyClust(BasicModule):
 
         if not nodialog:
             self.update_vars()
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
 

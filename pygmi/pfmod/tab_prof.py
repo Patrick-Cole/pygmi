@@ -192,14 +192,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         hbl_pics.addWidget(self.hs_overview)
         hbl_pics.addWidget(self.hs_sideview)
 
-        self.gb_cprof = QtWidgets.QGroupBox('Custom Profile')
-        hbl_cprof = QtWidgets.QHBoxLayout(self.gb_cprof)
+        self.gbox_cprof = QtWidgets.QGroupBox('Custom Profile')
+        hbl_cprof = QtWidgets.QHBoxLayout(self.gbox_cprof)
         hbl_cprof.addWidget(pb_cprof_add)
         hbl_cprof.addWidget(pb_cprof_delete)
-        self.gb_cprof.setHidden(True)
+        self.gbox_cprof.setHidden(True)
 
-        self.gb_dir = QtWidgets.QGroupBox('Profile Orientation')
-        hbl_dir = QtWidgets.QHBoxLayout(self.gb_dir)
+        self.gbox_dir = QtWidgets.QGroupBox('Profile Orientation')
+        hbl_dir = QtWidgets.QHBoxLayout(self.gbox_dir)
         hbl_dir.addWidget(self.dial_prof_dir)
         hbl_dir.addWidget(self.sb_prof_dir)
 
@@ -210,8 +210,8 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         vl_tools = QtWidgets.QVBoxLayout()
         vl_tools.addLayout(hbl_proftype)
-        vl_tools.addWidget(self.gb_dir)
-        vl_tools.addWidget(self.gb_cprof)
+        vl_tools.addWidget(self.gbox_dir)
+        vl_tools.addWidget(self.gbox_cprof)
         vl_tools.addLayout(hbl_profnum)
         vl_tools.addLayout(hbl_cprofnum)
         vl_tools.addLayout(hbl_layer)
@@ -344,8 +344,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         """
         text = self.cmb_proftype.currentText()
         if text == 'Standard Profile':
-            self.gb_dir.setHidden(False)
-            self.gb_cprof.setHidden(True)
+            self.gbox_dir.setHidden(False)
+            self.gbox_cprof.setHidden(True)
             self.sb_cprofnum.setHidden(True)
             self.hs_cprofnum.setHidden(True)
             self.sb_profnum.setHidden(False)
@@ -354,8 +354,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.prof_dir()
             self.cproflim = None
         else:
-            self.gb_dir.setHidden(True)
-            self.gb_cprof.setHidden(False)
+            self.gbox_dir.setHidden(True)
+            self.gbox_cprof.setHidden(False)
             self.sb_cprofnum.setHidden(False)
             self.hs_cprofnum.setHidden(False)
             self.sb_profnum.setHidden(True)
@@ -678,7 +678,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             return
 
         lbnd = LithBound(self.lmod1)
-        tmp = lbnd.exec_()
+        tmp = lbnd.exec()
         if tmp == 0:
             return
 
@@ -747,7 +747,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         """
         rcopy = RangedCopy(self)
 
-        tmp = rcopy.exec_()
+        tmp = rcopy.exec()
         if tmp == 0:
             return
 
@@ -1015,7 +1015,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         """
         pscale = PlotScale(self, self.lmod1)
-        tmp = pscale.exec_()
+        tmp = pscale.exec()
         if tmp == 0:
             return
 
@@ -2407,12 +2407,12 @@ class RangedCopy(QtWidgets.QDialog):
         self.sb_end.setValue(rmax)
         self.sb_master.setValue(rval)
 
-        gb_target = QtWidgets.QGroupBox('Target:')
-        hbl_dir = QtWidgets.QHBoxLayout(gb_target)
+        gbox_target = QtWidgets.QGroupBox('Target:')
+        hbl_dir = QtWidgets.QHBoxLayout(gbox_target)
         hbl_dir.addWidget(self.rb_sideview)
         hbl_dir.addWidget(self.rb_overview)
 
-        gl_1.addWidget(gb_target, 0, 0, 1, 2)
+        gl_1.addWidget(gbox_target, 0, 0, 1, 2)
 
         gl_1.addWidget(lbl_2, 1, 0, 1, 1)
         gl_1.addWidget(self.sb_master, 1, 1, 1, 1)
@@ -2587,8 +2587,8 @@ class ImportPicture(BasicModule):
 
         self.cb_getpicture = QtWidgets.QCheckBox('Import picture for profile')
         self.cb_getcoords = QtWidgets.QCheckBox('Get coordinates from last '
-                                                 'profile')
-        self.importfile = QtWidgets.QLineEdit('')
+                                                'profile')
+        self.le_importfile = QtWidgets.QLineEdit('')
 
         self.setupui()
 
@@ -2609,9 +2609,9 @@ class ImportPicture(BasicModule):
         None.
 
         """
-        groupbox = QtWidgets.QGroupBox('Profile Coordinates')
+        gbox = QtWidgets.QGroupBox('Profile Coordinates')
         gl_2 = QtWidgets.QGridLayout(self)
-        gl_3 = QtWidgets.QGridLayout(groupbox)
+        gl_3 = QtWidgets.QGridLayout(gbox)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
 
@@ -2658,10 +2658,10 @@ class ImportPicture(BasicModule):
 
         self.setWindowTitle('New Custom Profile')
 
-        gl_2.addWidget(groupbox, 0, 0, 1, 2)
+        gl_2.addWidget(gbox, 0, 0, 1, 2)
         gl_2.addWidget(self.cb_getcoords, 1, 0, 1, 1)
         gl_2.addWidget(pb_import, 2, 0, 1, 1)
-        gl_2.addWidget(self.importfile, 2, 1, 1, 1)
+        gl_2.addWidget(self.le_importfile, 2, 1, 1, 1)
         gl_2.addWidget(helpdocs, 3, 0, 1, 1)
         gl_2.addWidget(buttonbox, 3, 1, 1, 1)
 
@@ -2692,7 +2692,7 @@ class ImportPicture(BasicModule):
         if filename == '':
             return
 
-        self.importfile.setText(filename)
+        self.le_importfile.setText(filename)
 
     def getcoords(self):
         """
@@ -2734,7 +2734,7 @@ class ImportPicture(BasicModule):
             True if successful, False otherwise.
 
         """
-        temp = self.exec_()
+        temp = self.exec()
         if temp == 0:
             return None
 
@@ -2806,7 +2806,7 @@ class ImportPicture(BasicModule):
         self.lmod.custprofy[curline] = [y1, y2, y1a, y2a]
         self.lmod.profpics[curline] = None
 
-        imptext = self.importfile.text()
+        imptext = self.le_importfile.text()
         if imptext != '':
             dat = get_raster(imptext, showlog=self.showlog)
 

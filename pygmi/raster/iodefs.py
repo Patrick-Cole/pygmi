@@ -93,7 +93,7 @@ class BandSelect(ContextModule):
         if not tmp:
             return False
 
-        tmp = self.exec_()
+        tmp = self.exec()
 
         if tmp != 1:
             return False

@@ -348,24 +348,24 @@ class PlotRaster(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
 
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         lbl_2 = QtWidgets.QLabel('Colormap:')
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
-        self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+        hbl.addWidget(self.cmb_2)
+        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -376,8 +376,8 @@ class PlotRaster(ContextModule):
         None.
 
         """
-        i = self.combobox1.currentIndex()
-        cmap = self.combobox2.currentText()
+        i = self.cmb_1.currentIndex()
+        cmap = self.cmb_2.currentText()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
             self.mmc.update_raster(data[i], cmap)
@@ -399,7 +399,7 @@ class PlotRaster(ContextModule):
             data = self.indata['Cluster']
 
         for i in data:
-            self.combobox1.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
 
 
 class PlotSurface(ContextModule):
@@ -415,16 +415,16 @@ class PlotSurface(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
 
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         lbl_2 = QtWidgets.QLabel('Colormap:')
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
-        self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+        hbl.addWidget(self.cmb_2)
+        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -432,8 +432,8 @@ class PlotSurface(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -444,8 +444,8 @@ class PlotSurface(ContextModule):
         None.
 
         """
-        i = self.combobox1.currentIndex()
-        cmap = self.combobox2.currentText()
+        i = self.cmb_1.currentIndex()
+        cmap = self.cmb_2.currentText()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
             self.mmc.update_surface(data[i], cmap)
@@ -464,7 +464,7 @@ class PlotSurface(ContextModule):
             data = self.indata['Raster']
 
             for i in data:
-                self.combobox1.addItem(i.dataid)
+                self.cmb_1.addItem(i.dataid)
             self.change_band()
 
 
@@ -485,14 +485,14 @@ class PlotScatter(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('X Band:')
         lbl_2 = QtWidgets.QLabel('Y Band:')
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
-        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -500,8 +500,8 @@ class PlotScatter(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -513,8 +513,8 @@ class PlotScatter(ContextModule):
 
         """
         data = self.indata['Raster']
-        i = self.combobox1.currentIndex()
-        j = self.combobox2.currentIndex()
+        i = self.cmb_1.currentIndex()
+        j = self.cmb_2.currentIndex()
 
         x = data[i]
         y = data[j]
@@ -540,11 +540,11 @@ class PlotScatter(ContextModule):
         self.show()
         data = self.indata['Raster']
         for i in data:
-            self.combobox1.addItem(i.dataid)
-            self.combobox2.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
+            self.cmb_2.addItem(i.dataid)
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox2.setCurrentIndex(1)
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_2.setCurrentIndex(1)
 
 
 class PlotHist(ContextModule):
@@ -560,12 +560,12 @@ class PlotHist(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
         hbl.addWidget(self.cb_log)
         hbl.addWidget(lbl_1)
-        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -573,7 +573,7 @@ class PlotHist(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cb_log.stateChanged.connect(self.change_band)
 
     def change_band(self):
@@ -586,7 +586,7 @@ class PlotHist(ContextModule):
 
         """
         data = self.indata['Raster']
-        i = self.combobox1.currentIndex()
+        i = self.cmb_1.currentIndex()
         ylog = self.cb_log.isChecked()
         self.mmc.update_hist(data[i], ylog)
 
@@ -602,9 +602,9 @@ class PlotHist(ContextModule):
         self.show()
         data = self.indata['Raster']
         for i in data:
-            self.combobox1.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
 
-        self.combobox1.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
         self.change_band()
 
 

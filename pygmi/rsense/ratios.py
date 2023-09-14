@@ -44,7 +44,7 @@ class SatRatios(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.combo_sensor = QtWidgets.QComboBox()
+        self.cmb_sensor = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
 
         self.setupui()
@@ -67,7 +67,7 @@ class SatRatios(BasicModule):
 
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
-        self.combo_sensor.addItems(['ASTER',
+        self.cmb_sensor.addItems(['ASTER',
                                     'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
@@ -79,7 +79,7 @@ class SatRatios(BasicModule):
         self.setWindowTitle('Band Ratio Calculations')
 
         gl_main.addWidget(lbl_sensor, 0, 0, 1, 1)
-        gl_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_sensor, 0, 1, 1, 1)
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
         gl_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
         gl_main.addWidget(btn_invert, 2, 0, 1, 2)
@@ -90,7 +90,7 @@ class SatRatios(BasicModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
-        self.combo_sensor.currentIndexChanged.connect(self.setratios)
+        self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
@@ -121,24 +121,24 @@ class SatRatios(BasicModule):
             instr = dat[0].metadata['Raster']['Sensor']
 
         if 'ASTER' in instr:
-            self.combo_sensor.setCurrentText('ASTER')
+            self.cmb_sensor.setCurrentText('ASTER')
         elif 'LC08' in instr or 'LC09' in instr:
-            self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
+            self.cmb_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
         elif 'LE07' in instr:
-            self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
+            self.cmb_sensor.setCurrentText('Landsat 7 (ETM+)')
         elif 'LT04' in instr or 'LT05' in instr:
-            self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
+            self.cmb_sensor.setCurrentText('Landsat 4 and 5 (TM)')
         elif 'WorldView' in instr and 'Multi' in instr:
-            self.combo_sensor.setCurrentText('WorldView')
+            self.cmb_sensor.setCurrentText('WorldView')
         elif 'Sentinel-2' in instr:
-            self.combo_sensor.setCurrentText('Sentinel-2')
+            self.cmb_sensor.setCurrentText('Sentinel-2')
         else:
-            self.combo_sensor.setCurrentText('Unknown')
+            self.cmb_sensor.setCurrentText('Unknown')
 
         self.setratios()
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 
@@ -158,7 +158,7 @@ class SatRatios(BasicModule):
         None.
 
         """
-        self.saveobj(self.combo_sensor)
+        self.saveobj(self.cmb_sensor)
         self.saveobj(self.lw_ratios)
 
     def acceptall(self):
@@ -172,7 +172,7 @@ class SatRatios(BasicModule):
         None.
 
         """
-        sensor = self.combo_sensor.currentText()
+        sensor = self.cmb_sensor.currentText()
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
@@ -238,7 +238,7 @@ class SatRatios(BasicModule):
         None.
 
         """
-        sensor = self.combo_sensor.currentText()
+        sensor = self.cmb_sensor.currentText()
 
         rlist = []
 
@@ -347,9 +347,9 @@ class ConditionIndices(BasicModule):
 
         self.bfile = None
 
-        self.combo_index = QtWidgets.QComboBox()
+        self.cmb_index = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
-        self.combo_sensor = QtWidgets.QComboBox()
+        self.cmb_sensor = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -372,11 +372,11 @@ class ConditionIndices(BasicModule):
 
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
-        self.combo_index.addItems(['EVI',
+        self.cmb_index.addItems(['EVI',
                                    'NDVI',
                                    'MSAVI2'])
 
-        self.combo_sensor.addItems(['ASTER',
+        self.cmb_sensor.addItems(['ASTER',
                                     'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
@@ -390,9 +390,9 @@ class ConditionIndices(BasicModule):
         self.setWindowTitle('Condition Indices Calculations')
 
         gl_main.addWidget(lbl_sensor, 0, 0, 1, 2)
-        gl_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_sensor, 0, 1, 1, 1)
         gl_main.addWidget(lbl_index, 1, 0, 1, 1)
-        gl_main.addWidget(self.combo_index, 1, 1, 1, 1)
+        gl_main.addWidget(self.cmb_index, 1, 1, 1, 1)
         gl_main.addWidget(lbl_ratios, 2, 0, 1, 1)
         gl_main.addWidget(self.lw_ratios, 2, 1, 1, 1)
         gl_main.addWidget(btn_invert, 3, 0, 1, 2)
@@ -403,7 +403,7 @@ class ConditionIndices(BasicModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
-        self.combo_sensor.currentIndexChanged.connect(self.setratios)
+        self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
@@ -439,24 +439,24 @@ class ConditionIndices(BasicModule):
         instr = dat.sensor
 
         if 'ASTER' in instr:
-            self.combo_sensor.setCurrentText('ASTER')
+            self.cmb_sensor.setCurrentText('ASTER')
         elif 'LC08' in instr or 'LC09' in instr:
-            self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
+            self.cmb_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
         elif 'LE07' in instr:
-            self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
+            self.cmb_sensor.setCurrentText('Landsat 7 (ETM+)')
         elif 'LT04' in instr or 'LT05' in instr:
-            self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
+            self.cmb_sensor.setCurrentText('Landsat 4 and 5 (TM)')
         elif 'WorldView' in instr and 'Multi' in instr:
-            self.combo_sensor.setCurrentText('WorldView')
+            self.cmb_sensor.setCurrentText('WorldView')
         elif 'Sentinel-2' in instr:
-            self.combo_sensor.setCurrentText('Sentinel-2')
+            self.cmb_sensor.setCurrentText('Sentinel-2')
         else:
-            self.combo_sensor.setCurrentText('Unknown')
+            self.cmb_sensor.setCurrentText('Unknown')
 
         self.setratios()
 
         if not nodialog:
-            tmp = self.exec_()
+            tmp = self.exec()
         else:
             tmp = 1
 
@@ -476,8 +476,8 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        self.saveobj(self.combo_sensor)
-        self.saveobj(self.combo_index)
+        self.saveobj(self.cmb_sensor)
+        self.saveobj(self.cmb_index)
         self.saveobj(self.lw_ratios)
 
     def acceptall(self):
@@ -491,8 +491,8 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        index = self.combo_index.currentText()
-        sensor = self.combo_sensor.currentText()
+        index = self.cmb_index.currentText()
+        sensor = self.cmb_sensor.currentText()
 
         rlist1 = []
         for i in self.lw_ratios.selectedItems():
@@ -691,7 +691,7 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        sensor = self.combo_sensor.currentText()
+        sensor = self.cmb_sensor.currentText()
         rlist = []
 
         if 'Unknown' not in sensor:

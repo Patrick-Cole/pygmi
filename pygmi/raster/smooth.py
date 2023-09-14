@@ -71,10 +71,10 @@ class Smooth(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        groupbox = QtWidgets.QGroupBox('Filter Size')
-        gl_2 = QtWidgets.QGridLayout(groupbox)
-        groupbox_2 = QtWidgets.QGroupBox('Filter Type')
-        groupbox_3 = QtWidgets.QGroupBox('Filter Shape')
+        gbox = QtWidgets.QGroupBox('Filter Size')
+        gl_2 = QtWidgets.QGridLayout(gbox)
+        gbox_2 = QtWidgets.QGroupBox('Filter Type')
+        gbox_3 = QtWidgets.QGroupBox('Filter Shape')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.smooth')
 
@@ -98,10 +98,10 @@ class Smooth(BasicModule):
 
         self.setWindowTitle('Smoothing Filters')
 
-        vbl_1 = QtWidgets.QVBoxLayout(groupbox_2)
+        vbl_1 = QtWidgets.QVBoxLayout(gbox_2)
         vbl_1.addWidget(self.rb_2dmean)
         vbl_1.addWidget(self.rb_2dmedian)
-        vbl_2 = QtWidgets.QVBoxLayout(groupbox_3)
+        vbl_2 = QtWidgets.QVBoxLayout(gbox_3)
         vbl_2.addWidget(self.rb_box)
         vbl_2.addWidget(self.rb_disk)
         vbl_2.addWidget(self.rb_gaussian)
@@ -116,9 +116,9 @@ class Smooth(BasicModule):
         gl_2.addWidget(self.sb_stddev, 3, 1, 1, 1)
 
         gl_1.addWidget(self.tablewidget, 1, 0, 1, 3)
-        gl_1.addWidget(groupbox_2, 2, 0, 1, 1)
-        gl_1.addWidget(groupbox_3, 2, 1, 1, 1)
-        gl_1.addWidget(groupbox, 2, 2, 1, 1)
+        gl_1.addWidget(gbox_2, 2, 0, 1, 1)
+        gl_1.addWidget(gbox_3, 2, 1, 1, 1)
+        gl_1.addWidget(gbox, 2, 2, 1, 1)
         gl_1.addWidget(buttonbox, 3, 1, 1, 1)
         gl_1.addWidget(helpdocs, 3, 0, 1, 1)
 
@@ -155,7 +155,7 @@ class Smooth(BasicModule):
 
         self.choosefilter()
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
             if temp == 0:
                 return False
             self.parent.process_is_active(True)

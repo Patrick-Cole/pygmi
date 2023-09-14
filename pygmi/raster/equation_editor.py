@@ -53,12 +53,12 @@ class EquationEditor(BasicModule):
         self.equation = None
         self.bands = {}
 
-        self.combobox = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
 
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
         self.lbl_bands = QtWidgets.QLabel(': iall')
-        self.dtype = QtWidgets.QComboBox()
+        self.cmb_dtype = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -76,7 +76,7 @@ class EquationEditor(BasicModule):
         lbl_1 = QtWidgets.QLabel('Data Band Key:')
         lbl_2 = QtWidgets.QLabel('Output Equation:')
         lbl_3 = QtWidgets.QLabel('Output Data Type:')
-        self.dtype.addItems(['auto', 'uint8', 'int16', 'int32',
+        self.cmb_dtype.addItems(['auto', 'uint8', 'int16', 'int32',
                              'float32', 'float64'])
 
         self.textbrowser.setEnabled(True)
@@ -132,14 +132,14 @@ class EquationEditor(BasicModule):
         gl_1.addWidget(lbl_2, 0, 0, 1, 1)
         gl_1.addWidget(self.textbrowser, 1, 0, 1, 2)
         gl_1.addWidget(lbl_1, 3, 0, 1, 1)
-        gl_1.addWidget(self.combobox, 4, 0, 1, 1)
+        gl_1.addWidget(self.cmb_1, 4, 0, 1, 1)
         gl_1.addWidget(self.lbl_bands, 4, 1, 1, 1)
-        gl_1.addWidget(self.dtype, 6, 0, 1, 1)
+        gl_1.addWidget(self.cmb_dtype, 6, 0, 1, 1)
         gl_1.addWidget(lbl_3, 5, 0, 1, 1)
         gl_1.addWidget(self.textbrowser2, 7, 0, 1, 2)
         gl_1.addWidget(buttonbox, 8, 0, 1, 2)
 
-        self.combobox.currentIndexChanged.connect(self.combo)
+        self.cmb_1.currentIndexChanged.connect(self.combo)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -152,7 +152,7 @@ class EquationEditor(BasicModule):
         None.
 
         """
-        txt = self.combobox.currentText()
+        txt = self.cmb_1.currentText()
         if txt != '':
             self.lbl_bands.setText(': '+self.bands[txt])
 
@@ -348,8 +348,8 @@ class EquationEditor(BasicModule):
         self.bands = {}
         self.bands['all data'] = 'iall'
 
-        self.combobox.clear()
-        self.combobox.addItem('all data')
+        self.cmb_1.clear()
+        self.cmb_1.addItem('all data')
 
         if 'Cluster' in self.indata:
             intype = 'Cluster'
@@ -362,7 +362,7 @@ class EquationEditor(BasicModule):
         indata = dataprep.lstack(self.indata[intype])
 
         for j, i in enumerate(indata):
-            self.combobox.addItem(i.dataid)
+            self.cmb_1.addItem(i.dataid)
             self.bands[i.dataid] = 'i'+str(j)
             bandsall.append(i.data)
             localdict['i'+str(j)] = i.data
@@ -371,7 +371,7 @@ class EquationEditor(BasicModule):
         localdict['iall'] = np.ma.array(bandsall)
 
         if not nodialog:
-            temp = self.exec_()
+            temp = self.exec()
 
             if temp == 0:
                 return False
@@ -442,7 +442,7 @@ class EquationEditor(BasicModule):
                                                   indata[i].nodata)
             outdata[-1].nodata = indata[i].nodata
 
-        dtype = self.dtype.currentText()
+        dtype = self.cmb_dtype.currentText()
         # This is needed to get rid of bad, unmasked values etc.
         for i, outdatai in enumerate(outdata):
             outdatai.data.set_fill_value(indata[i].nodata)

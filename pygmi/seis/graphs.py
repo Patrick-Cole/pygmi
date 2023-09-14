@@ -587,14 +587,14 @@ class GraphWindow(ContextModule):
 
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
         self.hbl.addWidget(self.lbl_1)
-        self.hbl.addWidget(self.combobox1)
+        self.hbl.addWidget(self.cmb_1)
         self.hbl.addWidget(self.lbl_2)
-        self.hbl.addWidget(self.combobox2)
+        self.hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -603,8 +603,8 @@ class GraphWindow(ContextModule):
 
         self.setFocus()
 
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
@@ -644,7 +644,7 @@ class PlotQC(GraphWindow):
         super().__init__(parent)
 
         self.lbl_2.hide()
-        self.combobox2.hide()
+        self.cmb_2.hide()
         self.datd = None
 
     def change_band(self):
@@ -658,7 +658,7 @@ class PlotQC(GraphWindow):
         """
         self.btn_saveshp.hide()
 
-        i = self.combobox1.currentText()
+        i = self.cmb_1.currentText()
         if i == 'Hour Histogram':
             self.mmc.update_hist(self.datd['1_hour'], 'Hour', bins=24,
                                  rng=(-0.5, 23.5))
@@ -752,10 +752,10 @@ class PlotQC(GraphWindow):
                          'Wadati']
 
         for i in products:
-            self.combobox1.addItem(i)
+            self.cmb_1.addItem(i)
 
         self.lbl_1.setText('Product:')
-        self.combobox1.setCurrentIndex(0)
+        self.cmb_1.setCurrentIndex(0)
         self.change_band()
 
     def save_shp(self):
@@ -902,7 +902,7 @@ def _testfn():
     tmp = PlotQC()
     tmp.indata['Seis'] = data
     tmp.run()
-    tmp.exec_()
+    tmp.exec()
 
 
 if __name__ == "__main__":
