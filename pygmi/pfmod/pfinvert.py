@@ -979,9 +979,9 @@ def _testfn():
     DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
 
     DM.update_combos()
-    DM.combo_dtm.setCurrentText('dem')
-    DM.combo_mag.setCurrentText('mag')
-    DM.combo_dataset.setCurrentText('mag')
+    DM.cmb_dtm.setCurrentText('dem')
+    DM.cmb_mag.setCurrentText('mag')
+    DM.cmb_dataset.setCurrentText('mag')
 
     DM.choose_dtm()
 

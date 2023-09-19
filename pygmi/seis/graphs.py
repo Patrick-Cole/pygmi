@@ -634,10 +634,10 @@ class PlotQC(GraphWindow):
 
     Attributes
     ----------
-    label2 : QLabel
-        reference to GraphWindow's label2
-    combobox2 : QComboBox
-        reference to GraphWindow's combobox2
+    lbl_2 : QLabel
+        reference to GraphWindow's lbl_2
+    cmb_2 : QComboBox
+        reference to GraphWindow's cmb_2
     """
 
     def __init__(self, parent=None):

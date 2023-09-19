@@ -280,7 +280,7 @@ class DataGrid(BasicModule):
         self.le_dxy.setText(f'{self.dxy:.8f}')
         self.dxy_change()
 
-        self.cmb_grid_method_change()
+        self.grid_method_change()
         if not nodialog:
             tmp = self.exec()
             if tmp != 1:
@@ -347,6 +347,7 @@ class DataGrid(BasicModule):
 
         dat = gridxyz(x, y, z, dxy, nullvalue, method, bdist, self.showlog)
         dat.dataid = dataid
+        dat.crs = data2.crs
 
         newdat.append(dat)
 
@@ -454,15 +455,15 @@ class DataReproj(BasicModule):
             self.orig_wkt = self.indata['Vector'][0].crs.to_wkt()
 
         if self.orig_wkt is None:
-            indx = self.in_proj.combodatum.findText(r'WGS 84')
-            self.in_proj.combodatum.setCurrentIndex(indx)
+            indx = self.in_proj.cmb_datum.findText(r'WGS 84')
+            self.in_proj.cmb_datum.setCurrentIndex(indx)
             self.orig_wkt = self.in_proj.wkt
         else:
             self.in_proj.set_current(self.orig_wkt)
 
         if self.targ_wkt is None:
-            indx = self.in_proj.combodatum.findText(r'WGS 84')
-            self.out_proj.combodatum.setCurrentIndex(indx)
+            indx = self.in_proj.cmb_datum.findText(r'WGS 84')
+            self.out_proj.cmb_datum.setCurrentIndex(indx)
             self.targ_wkt = self.out_proj.wkt
         else:
             self.out_proj.set_current(self.targ_wkt)

@@ -119,7 +119,8 @@ class ImportXYZ(BasicModule):
 
         """
         if not nodialog:
-            ext = ('Excel (*.xlsx);;'
+            ext = ('Common formats (*.xlsx, *.csv);;'
+                   'Excel (*.xlsx);;'
                    'Comma Delimited (*.csv);;'
                    'Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
@@ -135,11 +136,11 @@ class ImportXYZ(BasicModule):
         if self.filt == 'Geosoft XYZ (*.xyz)':
             gdf = self.get_GXYZ()
 
-        elif self.filt == 'Excel (*.xlsx)':
+        elif '.xlsx' in self.ifile:
             gdf = self.get_excel()
         elif self.filt == 'ASCII XYZ (*.xyz)':
             gdf = self.get_delimited(' ')
-        elif self.filt == 'Comma Delimited (*.csv)':
+        elif '.csv' in self.ifile:
             gdf = self.get_delimited(',')
         elif self.filt == 'Tab Delimited (*.txt)':
             gdf = self.get_delimited('\t')
@@ -175,7 +176,7 @@ class ImportXYZ(BasicModule):
                 xind = ltmp.get_loc(i)
                 yind = ltmp.get_loc(j)
                 if 'lon' in i:
-                    self.proj.combodatum.setCurrentIndex(1)
+                    self.proj.cmb_datum.setCurrentIndex(1)
                 break
 
         if xind == -1:

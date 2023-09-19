@@ -552,18 +552,23 @@ def vgrad(cnt):
     cntid = []
 
     n = 0
-    for cntvert in cnt.allsegs[0]:
-        n += 1
+    for path in cnt.get_paths():
 
-        dx = np.diff(cntvert[:, 0])
-        dy = np.diff(cntvert[:, 1])
+        cntv = path.vertices
+        cntc = path.codes
+        cnt2 = np.split(cntv, np.where(cntc == 1)[0][1:])
+        for cntvert in cnt2:
+            n += 1
 
-        cntid.extend([n]*dx.size)
+            dx = np.diff(cntvert[:, 0])
+            dy = np.diff(cntvert[:, 1])
 
-        gx.extend((cntvert[:, 0][:-1] + dx/2).tolist())
-        gy.extend((cntvert[:, 1][:-1] + dy/2).tolist())
-        dx2.extend(dx)
-        dy2.extend(dy)
+            cntid.extend([n]*dx.size)
+
+            gx.extend((cntvert[:, 0][:-1] + dx/2).tolist())
+            gy.extend((cntvert[:, 1][:-1] + dy/2).tolist())
+            dx2.extend(dx)
+            dy2.extend(dy)
 
     cgrad = np.arctan2(dy2, dx2)
     cgrad = np.rad2deg(cgrad)
