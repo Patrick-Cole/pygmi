@@ -222,6 +222,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        if self.ccbar is not None:
+            self.ccbar.remove()
+            self.ccbar = None
+
         self.figure.canvas.mpl_disconnect(self.cid)
 
         self.axes.clear()
@@ -839,7 +843,7 @@ class PlotInterp(BasicModule):
         self.msc = MySunCanvas(self)
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
         self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
-                                                'lines')
+                                               'lines')
         self.cmb_dtype = QtWidgets.QComboBox()
         self.cmb_band1 = QtWidgets.QComboBox()
         self.cmb_band2 = QtWidgets.QComboBox()

@@ -635,7 +635,7 @@ class TextFileSplit(BasicModule):
         pb_ifile = QtWidgets.QPushButton(' Filename')
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
+        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.filesplit')
         lbl_files = QtWidgets.QLabel('Number of files:')
         lbl_lines = QtWidgets.QLabel('Max lines per file:')
         lbl_bytes = QtWidgets.QLabel('Max bytes per file:')
