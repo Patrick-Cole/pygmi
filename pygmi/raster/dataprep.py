@@ -425,6 +425,7 @@ class DataMerge(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.idir = None
+        self.is_import = True
         self.method = merge_median
         self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
                                                'last file at overlap.')
@@ -856,7 +857,7 @@ class DataMerge(BasicModule):
 
             if self.cb_bands_to_files.isChecked():
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD',
-                              showlog=self.showlog)
+                              showlog=self.showlog, piter=self.piter)
 
                 del outdat
                 del mosaic
@@ -865,7 +866,8 @@ class DataMerge(BasicModule):
         if bounds is not None:
             outdat = cut_raster(outdat, self.le_sfile.text(), deepcopy=False)
 
-        self.outdata['Raster'] = outdat
+        if outdat:
+            self.outdata['Raster'] = outdat
 
         return True
 
@@ -1116,6 +1118,7 @@ class GetProf(BasicModule):
         """
         if 'Raster' in self.indata:
             data = [i.copy() for i in self.indata['Raster']]
+            icrs = data[0].crs
         else:
             self.showlog('No raster data')
             return False
@@ -1174,6 +1177,8 @@ class GetProf(BasicModule):
 
             icnt += 1
             ogdf['line'] = str(icnt)
+            ogdf.crs = icrs
+
             if ogdf2 is None:
                 ogdf2 = ogdf
             else:
