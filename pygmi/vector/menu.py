@@ -62,6 +62,11 @@ class MenuWidget():
         self.action_import_xyz.triggered.connect(self.import_xyz)
 
         self.menu.addSeparator()
+        self.action_file_split = QtWidgets.QAction('Text File Split')
+        self.menu.addAction(self.action_file_split)
+        self.action_file_split.triggered.connect(self.file_split)
+
+        self.menu.addSeparator()
 
         self.action_cut_data = QtWidgets.QAction('Cut Points using Polygon')
         self.menu.addAction(self.action_cut_data)
@@ -131,6 +136,11 @@ class MenuWidget():
     def export_vector(self):
         """Export line data."""
         self.parent.launch_context_item(iodefs.ExportVector)
+
+    def file_split(self):
+        """Text file split."""
+        self.parent.item_insert('Io', 'Text File Split',
+                                dataprep.TextFileSplit)
 
     def import_xyz(self):
         """Import XYZ data."""

@@ -26,9 +26,10 @@
 
 import os
 import copy
+import glob
+from functools import partial
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-# import matplotlib.path as mplPath
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 import geopandas as gpd
@@ -38,7 +39,7 @@ from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
-from pygmi.misc import BasicModule, ContextModule
+from pygmi.misc import BasicModule, ContextModule, ProgressBarText
 
 
 class PointCut(BasicModule):
@@ -601,6 +602,286 @@ class Metadata(ContextModule):
         return True
 
 
+class TextFileSplit(BasicModule):
+    """Split a text file into smaller text files."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.is_import = True
+
+        self.le_ifile = QtWidgets.QLineEdit('')
+        self.le_files = QtWidgets.QLineEdit('1')
+        self.le_lines = QtWidgets.QLineEdit('1')
+        self.le_bytes = QtWidgets.QLineEdit('1')
+        self.chk_allfiles = QtWidgets.QCheckBox('Split all text files with '
+                                                'same extension in current '
+                                                'directory')
+
+        self.cmb_method = QtWidgets.QComboBox()
+        self.lbl_totsize = QtWidgets.QLabel('0')
+        self.lbl_totlines = QtWidgets.QLabel('0')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        pb_ifile = QtWidgets.QPushButton(' Filename')
+        gl_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
+        lbl_files = QtWidgets.QLabel('Number of files:')
+        lbl_lines = QtWidgets.QLabel('Max lines per file:')
+        lbl_bytes = QtWidgets.QLabel('Max bytes per file:')
+        lbl_method = QtWidgets.QLabel('Split Method:')
+        self.lbl_totsize = QtWidgets.QLabel('0')
+        self.lbl_totlines = QtWidgets.QLabel('0')
+
+        val = QtGui.QIntValidator(1, 2147483647)
+
+        self.le_files.setValidator(val)
+        self.le_lines.setValidator(val)
+        self.le_bytes.setValidator(val)
+        self.le_files.setEnabled(True)
+        self.le_lines.setDisabled(True)
+        self.le_bytes.setDisabled(True)
+
+        self.cmb_method.addItems(['Files', 'Bytes', 'Lines'])
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Text File Split')
+
+        gl_main.addWidget(pb_ifile, 0, 0, 1, 1)
+        gl_main.addWidget(self.le_ifile, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_method, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_method, 1, 1, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel('Total File Size:'), 2, 0, 1, 1)
+        gl_main.addWidget(self.lbl_totsize, 2, 1, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel('Total Lines:'), 3, 0, 1, 1)
+        gl_main.addWidget(self.lbl_totlines, 3, 1, 1, 1)
+        gl_main.addWidget(lbl_files, 4, 0, 1, 1)
+        gl_main.addWidget(self.le_files, 4, 1, 1, 1)
+        gl_main.addWidget(lbl_lines, 5, 0, 1, 1)
+        gl_main.addWidget(self.le_lines, 5, 1, 1, 1)
+        gl_main.addWidget(lbl_bytes, 6, 0, 1, 1)
+        gl_main.addWidget(self.le_bytes, 6, 1, 1, 1)
+        gl_main.addWidget(self.chk_allfiles, 7, 0, 1, 2)
+        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_ifile.pressed.connect(self.get_ifile)
+
+        self.le_files.textChanged.connect(self.change_method)
+        self.le_lines.textChanged.connect(self.change_method)
+        self.le_bytes.textChanged.connect(self.change_method)
+        self.cmb_method.currentIndexChanged.connect(self.change_method)
+
+    def change_method(self):
+        """Update fields when method changes."""
+        method = self.cmb_method.currentText()
+
+        totlines = int(self.lbl_totlines.text().replace(',', ''))
+        totbytes = int(self.lbl_totsize.text().replace(',', ''))
+
+        try:
+            numfiles = int(self.le_files.text().replace(',', ''))
+            numlines = int(self.le_lines.text().replace(',', ''))
+            numbytes = int(self.le_bytes.text().replace(',', ''))
+        except ValueError:
+            return
+
+        if method == 'Files':
+            numlines = totlines // numfiles + 1
+            numbytes = totbytes // numfiles + 1
+            self.le_files.setEnabled(True)
+            self.le_lines.setDisabled(True)
+            self.le_bytes.setDisabled(True)
+        elif method == 'Lines':
+            numfiles = totlines // numlines + 1
+            numbytes = totbytes // numfiles + 1
+            self.le_files.setDisabled(True)
+            self.le_lines.setEnabled(True)
+            self.le_bytes.setDisabled(True)
+
+        elif method == 'Bytes':
+            numfiles = totbytes // numbytes + 1
+            numlines = totlines // numfiles + 1
+            self.le_files.setDisabled(True)
+            self.le_lines.setDisabled(True)
+            self.le_bytes.setEnabled(True)
+
+        self.le_files.blockSignals(True)
+        self.le_lines.blockSignals(True)
+        self.le_bytes.blockSignals(True)
+
+        self.le_files.setText(f'{numfiles:,}')
+        self.le_lines.setText(f'{numlines:,}')
+        self.le_bytes.setText(f'{numbytes:,}')
+
+        self.le_files.blockSignals(False)
+        self.le_lines.blockSignals(False)
+        self.le_bytes.blockSignals(False)
+
+    def get_ifile(self):
+        """
+        Get input file information.
+
+        Returns
+        -------
+        None.
+
+        """
+        ext = ('Common formats (*.txt *.xyz *.csv);;')
+
+        self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        if not self.ifile:
+            return False
+
+        self.le_ifile.setText(self.ifile)
+        fsize = os.path.getsize(self.ifile)
+        tlines = txtlinecnt(self.ifile)
+
+        self.lbl_totsize.setText(f'{fsize:,}')
+        self.lbl_totlines.setText(f'{tlines:,}')
+
+        self.le_files.setValidator(QtGui.QIntValidator(1, fsize))
+        self.le_lines.setValidator(QtGui.QIntValidator(1, tlines))
+        self.le_bytes.setValidator(QtGui.QIntValidator(1, fsize))
+
+        self.change_method()
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        # self.cmb_dataid.clear()
+
+        # filt = ((data.columns != 'geometry') &
+        #         (data.columns != 'line'))
+
+        # cols = list(data.columns[filt])
+        # self.cmb_dataid.addItems(cols)
+
+        # if self.dataid_text is None:
+        #     self.dataid_text = self.cmb_dataid.currentText()
+        # if self.dataid_text in cols:
+        #     self.cmb_dataid.setCurrentText(self.dataid_text)
+
+        # if self.dxy is None:
+        #     x = data.geometry.x.values
+        #     y = data.geometry.y.values
+
+        #     dx = x.ptp()/np.sqrt(x.size)
+        #     dy = y.ptp()/np.sqrt(y.size)
+        #     self.dxy = max(dx, dy)
+        #     self.dxy = min([x.ptp(), y.ptp(), self.dxy])
+
+        # self.le_dxy.setText(f'{self.dxy:.8f}')
+        # self.dxy_change()
+
+        # self.grid_method_change()
+        if not nodialog:
+            tmp = self.exec()
+            if tmp != 1:
+                return False
+
+        # try:
+        #     float(self.le_dxy.text())
+        #     float(self.le_null.text())
+        #     float(self.le_bdist.text())
+        # except ValueError:
+        #     self.showlog('Value Error')
+        #     return False
+
+        self.acceptall()
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.le_ifile)
+        self.saveobj(self.le_files)
+        self.saveobj(self.le_lines)
+        self.saveobj(self.le_bytes)
+        self.saveobj(self.chk_allfiles)
+        self.saveobj(self.cmb_method)
+        self.saveobj(self.lbl_totsize)
+        self.saveobj(self.lbl_totlines)
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        method = self.cmb_method.currentText()
+
+        totlines = int(self.lbl_totlines.text().replace(',', ''))
+        totbytes = int(self.lbl_totsize.text().replace(',', ''))
+
+        try:
+            numfiles = int(self.le_files.text().replace(',', ''))
+            numlines = int(self.le_lines.text().replace(',', ''))
+            numbytes = int(self.le_bytes.text().replace(',', ''))
+        except ValueError:
+            return
+
+        if method == 'Bytes':
+            num = numbytes
+        elif method == 'Lines':
+            num = numlines
+        else:
+            num = numfiles
+
+        if self.chk_allfiles.isChecked():
+            _, fext = os.path.splitext(self.ifile)
+            fdir = os.path.dirname(self.ifile)
+            ifiles = glob.glob(os.path.join(fdir, f'*{fext}'))
+        else:
+            ifiles = [self.ifile]
+
+        for ifile in ifiles:
+            self.showlog(f'Splitting {os.path.basename(ifile)}...')
+            filesplit(ifile, num, method.lower(), showlog=self.showlog,
+                      piter=self.piter)
+
+
 def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
     """
     Blanks area further than a defined number of cells from input data.
@@ -673,6 +954,86 @@ def cut_point(data, ifile):
     data = gpd.clip(data, gdf)
 
     return data
+
+
+def txtlinecnt(filename):
+    """
+    Count lines in text file.
+
+    Parameters
+    ----------
+    filename : str
+        filename of text file.
+
+    Returns
+    -------
+    int
+        Total number of lines in a file.
+
+    """
+    with open(filename, 'rb') as f:
+        bufgen = iter(partial(f.raw.read, 1024*1024), b'')
+        linecnt = sum(buf.count(b'\n') for buf in bufgen)
+    return linecnt
+
+
+def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
+    """
+    Split an input file into a number of output files.
+
+    Parameters
+    ----------
+    ifile : str
+        Input filename.
+    num : int
+        Number of bytes or lines to split by.
+    mode : str, optional
+        Can be 'bytes', 'files' or 'lines'. The default is 'bytes'.
+    showlog : function, optional
+        Display information. The default is print.
+    piter : iter, optional
+        Progress iterator. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    fsize = os.path.getsize(ifile)
+    fname, fext = os.path.splitext(ifile)
+
+    if mode == 'files':
+        numfiles = num
+        numcnt = fsize // num + 1
+    elif mode == 'bytes':
+        numcnt = num
+        numfiles = fsize // num + 1
+    elif mode == 'lines':
+        totlines = txtlinecnt(ifile)
+        numfiles = totlines // num + 1
+        numcnt = num
+
+    txt = None
+    with open(ifile, encoding='utf-8') as reader:
+        for i in piter(range(numfiles)):
+            if txt == '':
+                continue
+
+            with open(f'{fname}_{i+1}{fext}', 'w') as writer:
+                fread = 0
+                while fread < numcnt:
+                    txt = reader.readline()
+                    if txt == '':
+                        break
+                    if mode == 'lines':
+                        fread += 1
+                    else:
+                        fread += len(txt)
+
+                    writer.write(txt)
 
 
 def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
@@ -918,5 +1279,23 @@ def _testfn_pointcut():
     DR.settings(True)
 
 
+def _testfn_filesplit():
+    """Test Routine."""
+    import sys
+
+    ifile = r"D:\fsplit\bushveld_magarchive.xyz"
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    # num = os.path.getsize(ifile)//10
+    # num = 10
+    # num = 772740
+
+    # filesplit(ifile, num, mode='lines')
+
+    app = TextFileSplit()
+    app.settings()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn_filesplit()
