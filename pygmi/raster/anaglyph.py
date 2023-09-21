@@ -103,7 +103,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        asegs = tmp.allsegs
+        # asegs = tmp.allsegs
+        asegs = tmp.get_paths()
         lvls = tmp.levels
         xmin = self.x.min()
         xmax = self.x.max()
@@ -112,7 +113,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         lines = []
         for i, lvl in enumerate(asegs):
-            for j in lvl:
+            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
+            for j in cnt:
                 x1 = j[:, 0]
                 y1 = j[:, 1]
                 z1 = [lvls[i]]*x1.size
@@ -130,7 +132,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         lines = []
         for i, lvl in enumerate(asegs):
-            for j in lvl:
+            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
+            for j in cnt:
                 x1 = j[:, 0]
                 y1 = j[:, 1]
                 z1 = [lvls[i]]*x1.size
