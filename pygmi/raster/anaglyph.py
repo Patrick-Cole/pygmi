@@ -103,7 +103,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        # asegs = tmp.allsegs
         asegs = tmp.get_paths()
         lvls = tmp.levels
         xmin = self.x.min()

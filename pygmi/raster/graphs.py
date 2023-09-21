@@ -221,6 +221,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         y = dtly-np.arange(rows)*data.ydim-data.ydim/2
         x, y = np.meshgrid(x, y)
         z = data.data.copy()
+        vmin, vmax = np.percentile(z.compressed(), [1, 99])
+
+        # z[z < vmin] = vmin
+        # z[z > vmax] = vmax
 
         if not np.ma.is_masked(z):
             z = np.ma.array(z)
@@ -230,7 +234,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         cmap = colormaps[cmap]
 
-        norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
+        norml = mcolors.Normalize(vmin=vmin, vmax=vmax)
 
         z.data[z.mask] = np.nan
         z = z.data
@@ -238,8 +242,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
 
+        vmin, vmax = np.percentile(z, [1, 99])
+
         surf = self.axes.plot_surface(x, y, z, cmap=cmap,
-                                      norm=norml, vmin=z.min(), vmax=z.max(),
+                                      norm=norml, vmin=vmin, vmax=vmax,
                                       shade=False, antialiased=False)
 
         self.figure.colorbar(surf, format=frm)
