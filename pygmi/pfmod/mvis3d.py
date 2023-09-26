@@ -290,8 +290,8 @@ class Mod3dDisplay(ContextModule):
         """
         xdata, ydata = self.msc.sun.get_data()
 
-        phi = -xdata
-        theta = np.pi/2.-ydata
+        phi = -xdata[0]
+        theta = np.pi/2.-ydata[0]
 
         x = np.cos(phi)
         y = -np.sin(phi)
@@ -311,8 +311,8 @@ class Mod3dDisplay(ContextModule):
              event returned by matplotlib when a button is pressed
         """
         if event.inaxes == self.msc.axes:
-            self.msc.sun.set_xdata(event.xdata)
-            self.msc.sun.set_ydata(event.ydata)
+            self.msc.sun.set_xdata([event.xdata])
+            self.msc.sun.set_ydata([event.ydata])
             self.msc.figure.canvas.draw()
 
             phi = -event.xdata
