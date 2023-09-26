@@ -364,8 +364,8 @@ class QLabelVStack:
     """QLabelVStack."""
 
     def __init__(self, parent=None):
-        self.gl_1 = QtWidgets.QGridLayout(parent)
-        self.gl_1.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.layout = QtWidgets.QGridLayout(parent)
+        self.layout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.indx = 0
 
     def addWidget(self, widget1, widget2):
@@ -387,8 +387,8 @@ class QLabelVStack:
         if isinstance(widget1, str):
             widget1 = QtWidgets.QLabel(widget1)
 
-        self.gl_1.addWidget(widget1, self.indx, 0)
-        self.gl_1.addWidget(widget2, self.indx, 1)
+        self.layout.addWidget(widget1, self.indx, 0)
+        self.layout.addWidget(widget2, self.indx, 1)
         self.indx += 1
 
 

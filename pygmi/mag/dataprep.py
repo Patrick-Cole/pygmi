@@ -210,7 +210,8 @@ def tilt1(data, azi, s):
     if s > 0:
         se = np.ones((s, s))/(s*s)
         data2 = signal.convolve2d(data, se, 'valid')  # smooth
-        mask = signal.convolve2d(data.mask, se, 'valid')
+        mask = np.ma.getmaskarray(data.data)
+        mask = signal.convolve2d(mask, se, 'valid')
         data = np.ma.array(data2, mask=mask)
 
     nr, nc = data.shape
@@ -643,12 +644,11 @@ def _testfn():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    ifile = 'd:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
-    ifile = r'C:/Workdata/raster/ER Mapper/magmicrolevel.PD.ers'
+    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\RTP\rtptest.tif"
 
     dat = get_raster(ifile)[0]
 
-    t1, th, t2, ta, tdx, tahg = tilt1(dat.data, 75, 0)
+    t1, th, t2, ta, tdx, tahg = tilt1(dat.data, 75, 3)
 
     plt.figure(dpi=150)
     plt.imshow(t2)
