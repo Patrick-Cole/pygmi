@@ -770,7 +770,11 @@ class PlotVector(GraphWindow):
             return
 
         i = self.cmb_1.currentText()
-        data = self.data.dropna(subset=i)
+
+        if i == '':
+            data = self.data
+        else:
+            data = self.data.dropna(subset=i)
         if data.size == 0:
             i = ''
             data = self.data

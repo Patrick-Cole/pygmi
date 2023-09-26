@@ -84,14 +84,9 @@ class PointCut(BasicModule):
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
-        data = cut_point(data, self.ifile)
+        data = cut_point(data, self.ifile, self.showlog)
 
         if data is None:
-            err = ('There was a problem importing the shapefile. Please make '
-                   'sure you have at all the individual files which make up '
-                   'the shapefile.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok)
             return False
 
         if self.pbar is not None:
@@ -161,7 +156,7 @@ class DataGrid(BasicModule):
         self.le_null.setValidator(val)
 
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
-                                   'Minimum Curvature'])
+                                       'Minimum Curvature'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -927,7 +922,7 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
     return gdat
 
 
-def cut_point(data, ifile):
+def cut_point(data, ifile, showlog=print):
     """
     Cuts a point dataset.
 
@@ -949,6 +944,12 @@ def cut_point(data, ifile):
     gdf = gdf[gdf.geometry != None]
 
     if 'Polygon' not in gdf.geom_type.iloc[0]:
+        showlog('No polygons in shapefile.')
+        return None
+
+    if data.crs != gdf.crs:
+        showlog('Your shapefile does not have the same projection as the data '
+                'to be clipped.')
         return None
 
     data = gpd.clip(data, gdf)
