@@ -195,7 +195,7 @@ class TiltDepth(BasicModule):
 
         os.chdir(os.path.dirname(filename))
         np.savetxt(filename, self.depths, delimiter=',',
-                   header='x, y, id, depth')
+                   header='x, y, id, depth', comments='')
 
         QtWidgets.QMessageBox.information(self.parent, 'Information',
                                           'Save completed!')
