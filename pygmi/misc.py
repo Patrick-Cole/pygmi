@@ -119,6 +119,7 @@ class BasicModule(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         if parent is None:
             self.stdout_redirect = sys.stdout
             self.showlog = print
@@ -128,7 +129,10 @@ class BasicModule(QtWidgets.QDialog):
             self.stdout_redirect = EmittingStream(parent.showlog)
             self.showlog = parent.showlog
             self.pbar = parent.pbar
-            self.process_is_active = parent.process_is_active
+            if hasattr(parent, 'process_is_active'):
+                self.process_is_active = parent.process_is_active
+            else:
+                self.process_is_active = lambda *args, **kwargs: None
 
         self.piter = self.pbar.iter
 

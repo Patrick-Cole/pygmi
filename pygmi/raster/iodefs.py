@@ -176,7 +176,9 @@ class ImportData(BasicModule):
                                         nodialog=True)
 
         os.chdir(os.path.dirname(self.ifile))
-        self.parent.process_is_active(True)
+
+        if self.parent is not None:
+            self.parent.process_is_active(True)
 
         if self.filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
