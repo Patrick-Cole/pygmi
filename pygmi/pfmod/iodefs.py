@@ -22,8 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import Potential field model data."""
 
+import datetime
 import sys
 import os
 import zipfile
@@ -387,6 +388,8 @@ class ImportMod3D(BasicModule):
 
         # This gets rid of a legacy variable names and updates to new ones
         for i in lmod.griddata:
+            if not hasattr(lmod.griddata[i], 'datetime'):
+                lmod.griddata[i].datetime = datetime.datetime(1900, 1, 1)
             if not hasattr(lmod.griddata[i], 'units'):
                 lmod.griddata[i].units = ''
             if not hasattr(lmod.griddata[i], 'isrgb'):
@@ -433,6 +436,7 @@ class ImportMod3D(BasicModule):
 
         for i in lmod.griddata:
             if lmod.griddata[i].crs is not None:
+                lmod.griddata[i].crs = CRS.from_user_input(lmod.griddata[i].crs)
                 crsfin = lmod.griddata[i].crs
 
         for i in lmod.griddata:
