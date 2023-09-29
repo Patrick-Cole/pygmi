@@ -28,11 +28,11 @@ import os
 import sys
 import types
 import time
+import textwrap
 import psutil
 import numpy as np
 from matplotlib import ticker
 from PyQt5 import QtWidgets, QtCore, QtGui
-
 
 PBAR_STYLE = """
 QProgressBar{
@@ -637,6 +637,41 @@ def getinfo(txt=None, reset=False):
     memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
 
     print(heading+memtxt+f' Time(s): {tdiff:.3f}')
+
+
+def textwrap2(text, width, placeholder='...', max_lines=None):
+    """
+    Provide slightly different placeholder functionality to textwrap.
+
+    Placeholders will be a part of last line, instead of replacing it.
+
+    Parameters
+    ----------
+    text : str
+        Text to wrap.
+    width : int
+        Maximum line length.
+    placeholder : sre, optional
+        Placeholder when lines exceed max_lines. The default is '...'.
+    max_lines : int, optional
+        Maximum number of lines. The default is None.
+
+    Returns
+    -------
+    text2 : str
+        Output wrapped text.
+
+    """
+    text2 = textwrap.wrap(text, width=width)
+
+    if max_lines is not None and text2:
+        text2 = text2[:max_lines]
+        if len(text2[-1]) == width:
+            text2[-1] = text2[-1][:-len(placeholder)] + placeholder
+
+    text2 = '\n'.join(text2)
+
+    return text2
 
 
 def tick_formatter(x, pos):

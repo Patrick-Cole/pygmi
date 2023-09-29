@@ -51,6 +51,7 @@ class LandsatComposite(BasicModule):
         super().__init__(parent)
 
         self.idir = ''
+        self.is_import = True
 
         self.sb_tday = QtWidgets.QSpinBox()
         self.le_idirlist = QtWidgets.QLineEdit('')

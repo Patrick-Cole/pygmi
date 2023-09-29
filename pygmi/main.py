@@ -38,6 +38,7 @@ pygmi packages.
 import json
 import sys
 import os
+import textwrap
 import pkgutil
 import math
 import importlib
@@ -49,7 +50,7 @@ from matplotlib import interactive
 
 import pygmi
 from pygmi import menu_default
-from pygmi import misc
+from pygmi.misc import ProgressBar, textwrap2
 
 rcParams['axes.formatter.limits'] = [-12, 12]
 rcParams['axes.formatter.useoffset'] = False
@@ -189,8 +190,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     context_menu = context_menu
     my_class : object
         Class that the diagram item is linked to.
-    is_import : bool
-        Flags whether my_class is used to import data
+
     text_item : None
     my_class_name : str
         Class name being referenced
@@ -205,7 +205,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.diagram_type = diagram_type
         self.context_menu = context_menu
         self.my_class = my_class
-        self.is_import = my_class.is_import
         self.text_item = None
         self.my_class_name = ''
         self.showlog = parent.showlog
@@ -370,11 +369,14 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             method.
 
         """
-        if self.my_class.indata == {} and self.is_import is False:
+        if self.my_class.indata == {} and self.my_class.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
                                           QtWidgets.QMessageBox.Ok)
             return False
+
+        if self.text_item is not None:
+            self.text_item.setPlainText(self.my_class_name+':')
 
         self.my_class.parent.process_is_active()
         self.showlog(self.my_class_name+' busy...')
@@ -384,6 +386,15 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.showlog(self.my_class_name+' finished!')
         else:
             self.showlog(self.my_class_name+' cancelled.')
+
+        if self.my_class.is_import is True and self.text_item is not None:
+            item_name = self.my_class_name
+            ifile = os.path.basename(self.my_class.ifile)
+            ifile = textwrap2(ifile, width=10, max_lines=2)
+
+            if ifile != '':
+                self.text_item.setPlainText(f'{self.my_class_name}:\n{ifile}')
+
         return iflag
 
 
@@ -570,7 +581,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.graphics_view = QtWidgets.QGraphicsView()
         self.textbrowser_datainfo = QtWidgets.QTextBrowser()
         self.textbrowser_processlog = QtWidgets.QTextBrowser()
-        self.pbar = misc.ProgressBar()
+        self.pbar = ProgressBar()
 
         self.action_run = QtWidgets.QAction(self)
         self.action_help = QtWidgets.QAction(self)
@@ -760,7 +771,7 @@ class MainWidget(QtWidgets.QMainWindow):
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
                 item.update_indata()
-                if item.my_class.indata == {} and item.is_import is False:
+                if item.my_class.indata == {} and item.my_class.is_import is False:
                     item.setBrush(self.scene.my_item_color)
 
     def keyPressEvent(self, event):
@@ -851,12 +862,12 @@ class MainWidget(QtWidgets.QMainWindow):
                            class_name_active, self)
         item_color = self.scene.my_item_color
 
-        item_name = item_name.replace(' ', '\n')
+        item_name = textwrap.wrap(item_name, width=13, break_long_words=False)
+        item_name = [f'{i: <13}' for i in item_name]
+        item_name = '\n'.join(item_name)
+        item_name = item_name.strip()
 
-        item.my_class_name = item_name.replace('\n', ' ')
-
-        if item_type == 'Io':
-            item.is_import = True
+        item.my_class_name = item_name
 
         if item_type == 'Io' and projimport is False:
             iflag = item.settings(nodialog)
@@ -864,11 +875,10 @@ class MainWidget(QtWidgets.QMainWindow):
                 return None
             if item.my_class.ifile != '':
                 ifile = os.path.basename(item.my_class.ifile)
-                if len(ifile) > len(item_name):
-                    ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
-                if len(ifile) > 2*len(item_name):
-                    ifile = ifile[:2*len(item_name)]+'...\n'
-                item_name += ':\n'+ifile
+                ifile = textwrap2(ifile, width=13, max_lines=2)
+                if '\n' not in ifile:
+                    ifile = ifile + '\n'
+                item_name = f'{item_name}:\n{ifile}'
             item_color = QtGui.QColor(0, 255, 0, 127)
 
         # Do text first, since this determines size of polygon
@@ -910,6 +920,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         text_item.setParentItem(item)
         rect_item.setParentItem(item)
+        item.text_item = text_item
 
         # Enable moving
         self.scene.my_mode = 'MoveItem'
@@ -1112,7 +1123,7 @@ class MainWidget(QtWidgets.QMainWindow):
                         getsdata = True
                 if getsdata is True:
                     ilist.append(item)
-                elif not item.is_import:
+                elif not item.my_class.is_import:
                     slist.append(item)
 
         # Get rid of arrows from an item sending data without an import.
@@ -1123,7 +1134,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         # Delete data in modules.
         for i in ilist:
-            if not i.is_import:
+            if not i.my_class.is_import:
                 i.my_class.indata = {}
                 i.my_class.outdata = {}
 

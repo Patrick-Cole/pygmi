@@ -186,7 +186,7 @@ class SceneViewer(BasicModule):
         self.cmb_band1 = QtWidgets.QComboBox()
         self.cmb_band2 = QtWidgets.QComboBox()
         self.cmb_band3 = QtWidgets.QComboBox()
-        self.manip = QtWidgets.QComboBox()
+        self.cmb_manip = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -208,29 +208,28 @@ class SceneViewer(BasicModule):
         self.slider.setTracking(False)
 
         gbox_1 = QtWidgets.QGroupBox('Display Type')
-        vbl_1 = QtWidgets.QVBoxLayout()
-        gbox_1.setLayout(vbl_1)
+        vbl_1b = QtWidgets.QVBoxLayout()
+        gbox_1.setLayout(vbl_1b)
 
         gbox_2 = QtWidgets.QGroupBox('Data Bands')
-        vbl_2 = QtWidgets.QVBoxLayout()
-        gbox_2.setLayout(vbl_2)
+        vbl_2b = QtWidgets.QVBoxLayout()
+        gbox_2.setLayout(vbl_2b)
 
-        # gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-        #                     QtWidgets.QSizePolicy.Preferred)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
                                        QtWidgets.QSizePolicy.Expanding)
 
-        vbl_2.addWidget(self.cmb_band1)
-        vbl_2.addWidget(self.cmb_band2)
-        vbl_2.addWidget(self.cmb_band3)
+        vbl_2b.addWidget(self.cmb_band1)
+        vbl_2b.addWidget(self.cmb_band2)
+        vbl_2b.addWidget(self.cmb_band3)
 
         actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
-        self.manip.addItems(actions)
+        self.cmb_manip.addItems(actions)
 
-        vbl_1.addWidget(self.manip)
+        vbl_1b.addWidget(self.cmb_manip)
 
         hbl.addWidget(self.button2)
         hbl.addWidget(self.button3)
+
         vbl_1.addWidget(self.canvas)
         vbl_1.addWidget(self.mpl_toolbar)
         vbl_1.addWidget(self.slider)
@@ -250,7 +249,7 @@ class SceneViewer(BasicModule):
         self.button2.clicked.connect(self.prevscene)
         self.button3.clicked.connect(self.nextscene)
         self.button1.clicked.connect(self.capture)
-        self.manip.currentIndexChanged.connect(self.manip_change)
+        self.cmb_manip.currentIndexChanged.connect(self.manip_change)
         self.cmb_band1.currentIndexChanged.connect(self.manip_change)
         self.cmb_band2.currentIndexChanged.connect(self.manip_change)
         self.cmb_band3.currentIndexChanged.connect(self.manip_change)
@@ -322,7 +321,7 @@ class SceneViewer(BasicModule):
                              self.cmb_band2.currentText(),
                              self.cmb_band3.currentText()]
 
-        self.canvas.manip = self.manip.currentText()
+        self.canvas.manip = self.cmb_manip.currentText()
         self.canvas.compute_initial_figure(dat, dates)
 
         if not nodialog:
@@ -397,7 +396,7 @@ class SceneViewer(BasicModule):
         None.
 
         """
-        maniptxt = self.manip.currentText()
+        maniptxt = self.cmb_manip.currentText()
 
         if 'Ternary' in maniptxt:
             self.cmb_band2.show()

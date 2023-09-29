@@ -677,7 +677,7 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter, commonmask=True)
+    dat = lstack(dat, piter=piter, commonmask=True, showlog=showlog)
 
     for j in dat:
         x2d.append(j.data)
@@ -794,7 +794,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
         x2d = []
         maskall = []
-        dat = lstack(dat, piter=piter, commonmask=True)
+        dat = lstack(dat, piter=piter, commonmask=True, showlog=showlog)
 
         for j in dat:
             x2d.append(j.data)
@@ -831,7 +831,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
         x2d = []
         maskall = []
-        dat = lstack(dat, piter=piter)
+        dat = lstack(dat, piter=piter, showlog=showlog)
 
         for j in dat:
             x2d.append(j.data)

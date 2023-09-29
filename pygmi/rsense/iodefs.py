@@ -457,7 +457,7 @@ class ImportBatch(BasicModule):
         self.le_sfile.setText(self.idir)
 
         types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
-                 '*.xml', '*.h5', '*.SAFE/MTD_MSIL2A.xml']
+                 '*[!aux].xml', '*.h5', '*.SAFE/MTD_MSIL2A.xml']
 
         allfiles = []
         for i in types:
@@ -476,8 +476,15 @@ class ImportBatch(BasicModule):
             datm = RasterMeta()
             datm.fromData(dat)
 
-            self.bands[datm.sensor] = datm.bands
-            self.tnames[datm.sensor] = datm.tnames
+            if datm.sensor == 'Generic':
+                if 'Generic' not in self.tnames:
+                    self.bands['Generic'] = []
+                self.bands['Generic'] = list(set(self.bands['Generic'] +
+                                                 datm.bands))
+            else:
+                self.bands[datm.sensor] = datm.bands
+
+            self.tnames[datm.sensor] = self.bands[datm.sensor].copy()
             self.filelist.append(datm)
 
         self.cmb_sensor.disconnect()
@@ -3266,17 +3273,18 @@ def _testfn2():
 
     tmp1 = ImportBatch()
     tmp1.idir = r"D:\Landsat"
+    tmp1.idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change'
     tmp1.get_sfile(True)
-    tmp1.settings(True)
+    tmp1.settings()
 
-    dat = tmp1.outdata
+    # dat = tmp1.outdata
 
-    tmp2 = ExportBatch()
-    tmp2.indata = dat
-    tmp2.get_odir(r"D:\Sentinel2\test")
-    tmp2.ternary.setChecked(True)
-    tmp2.click_ternary()
-    tmp2.run()
+    # tmp2 = ExportBatch()
+    # tmp2.indata = dat
+    # tmp2.get_odir(r"D:\Sentinel2\test")
+    # tmp2.ternary.setChecked(True)
+    # tmp2.click_ternary()
+    # tmp2.run()
 
 
 def _testfn3():
@@ -3310,4 +3318,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

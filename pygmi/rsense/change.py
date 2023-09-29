@@ -648,7 +648,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r'E:\KZN Floods\change\ratios'
+    idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
     os.chdir(r'E:\\')
 
     app = QtWidgets.QApplication(sys.argv)
