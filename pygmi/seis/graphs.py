@@ -200,6 +200,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = np.ma.masked_invalid(data1)
         y = np.ma.masked_invalid(data2)
 
+        if y.mask.min() == True or x.mask.min() == True:
+            self.figure.canvas.draw()
+            return
+
         xmin = x.min()
         xmax = x.max()
         ymin = y.min()
@@ -268,6 +272,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         dattmp = np.array(data1)
         dattmp = dattmp[~np.isnan(dattmp)]
+        if dattmp.size == 0:
+            self.figure.canvas.draw()
+            return
 
         if np.unique(dattmp).size == 1:
             bins = 5
@@ -672,12 +679,17 @@ class PlotQC(GraphWindow):
             self.mmc.update_hist(self.datd['1_year'], 'Year', bins=bins,
                                  rng=(bmin, bmax))
         elif i == 'Number of Stations':
+            if np.isnan(self.datd['1_number_of_stations_used']).all():
+                bmin = 0.5
+                bmax = 1.5
+            else:
+                bmin = np.nanmin(self.datd['1_number_of_stations_used']) + 0.5
+                bmax = np.nanmax(self.datd['1_number_of_stations_used']) + 1.5
+
             bins = np.unique(self.datd['1_number_of_stations_used']).size
-            bmin = np.nanmin(self.datd['1_number_of_stations_used'])+0.5
-            bmax = np.nanmax(self.datd['1_number_of_stations_used'])+1.5
+
             self.mmc.update_hist(self.datd['1_number_of_stations_used'],
                                  i, bins=bins, rng=(bmin, bmax))
-
         elif i == 'RMS of time residuals':
             rts = np.array(self.datd['1_rms_of_time_residuals'])
             self.mmc.update_hist(rts, i)
@@ -892,7 +904,8 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
+    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
+    tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
     tmp.settings(True)
 
     data = tmp.outdata['Seis']

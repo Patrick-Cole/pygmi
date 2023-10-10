@@ -243,7 +243,8 @@ class ImportSeisan(BasicModule):
 
             if ltype == '1' and (np.isnan(tmp.latitude) or
                                  np.isnan(tmp.longitude)):
-                errs = ['Warning: Incomplete data on line: '+str(iii+1), i]
+                errs = ['Warning: Incomplete data (not latitude or longitude) '
+                        f'on line: {iii+1}', i]
                 file_errors.append(errs)
 
             if ltype == 'F':
