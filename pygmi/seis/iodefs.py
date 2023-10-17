@@ -133,6 +133,68 @@ def str2int(inp):
     return int(inp)
 
 
+def importmacro(ifile):
+    """
+    Import macro format.
+
+    1.  Line
+        Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+        'GMT',1x,i4,1x,2i2,1x,2i2,1x,i2,1x,'Local time'
+    2.  Line Comments
+    3.  Line Observations: Latitude, Longitude,intensity, code for scale,
+        postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+        Note the postal code is an ascii string and left justified (a10).
+
+    Parameters
+    ----------
+    ifile : str
+        Input macro file.
+
+    Returns
+    -------
+    df1 : Pandas dataframe
+        List of locations with intensities.
+
+    """
+    with open(ifile, encoding='utf-8') as io:
+        line1a = io.readline()
+        comment = io.readline()
+
+    line1 = line1a.split()
+    line1.pop(-1)
+    line1.pop(-1)
+
+    secs = line1.pop(-1)
+    hourmin = line1.pop(-1)
+    day = line1.pop(-1)
+    month = line1.pop(-1)
+
+    line1.pop(-1)
+
+    gsecs = line1.pop(-1)
+    ghourmin = line1.pop(-1)
+    gday = line1.pop(-1)
+    gmonth = line1.pop(-1)
+
+    year = line1.pop(-1)
+
+    location = line1a.split(year)[0]
+
+    # df1 = pd.read_csv(ifile, sep='\s+', skiprows=2, header=None, engine='python')#,
+                      # names=['lat', 'lon', 'intensity', 'code', 'postalcode',
+                      #        'location'])
+
+    df1 = pd.read_fwf(ifile, skiprows=2, names=['lat', 'lon', 'intensity',
+                                                'code', 'postalcode',
+                                                'location'])
+
+
+    df1.intensity = df1.intensity.str.replace('+', '')
+    df1.intensity = df1.intensity.astype(float)
+
+    return df1
+
+
 class ImportSeisan(BasicModule):
     """Import SEISAN Data."""
 
@@ -2464,3 +2526,13 @@ class FilterSeisan(BasicModule):
             newdat.append(i)
 
         self.outdata['Seis'] = newdat
+
+
+def _testfn():
+    """Test."""
+    ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+    dat = importmacro(ifile)
+
+
+if __name__ == "__main__":
+    _testfn()

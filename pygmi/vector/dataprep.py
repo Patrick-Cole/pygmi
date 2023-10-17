@@ -904,6 +904,9 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
         Mask to be used for blanking.
 
     """
+    if bdist is None:
+        return gdat
+
     mask = np.zeros_like(gdat)
 
     points = np.transpose([x, y])
@@ -1067,7 +1070,7 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
         Output raster dataset.
 
     """
-    if bdist < 1:
+    if bdist is not None and bdist < 1:
         bdist = None
         showlog('Blanking distance too small.')
 
@@ -1078,27 +1081,23 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
     else:
         extent = np.array([x.min(), x.max(), y.min(), y.max()])
 
-        rows = int((extent[3] - extent[2])/dxy+1)
-        cols = int((extent[1] - extent[0])/dxy+1)
+        xxx = np.arange(extent[0], extent[1]+dxy/2, dxy)
+        yyy = np.arange(extent[2], extent[3]+dxy/2, dxy)
 
-        xxx = np.linspace(extent[0], extent[1], cols)
-        yyy = np.linspace(extent[2], extent[3], rows)
         xxx, yyy = np.meshgrid(xxx, yyy)
 
         points = np.transpose([x.flatten(), y.flatten()])
 
         if method == 'Nearest Neighbour':
             gdat = griddata(points, z, (xxx, yyy), method='nearest')
-            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
         elif method == 'Linear':
             gdat = griddata(points, z, (xxx, yyy), method='linear',
                             fill_value=nullvalue)
-            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
         elif method == 'Cubic':
             gdat = griddata(points, z, (xxx, yyy), method='cubic',
                             fill_value=nullvalue)
-            gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
 
+        gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
         gdat = gdat[::-1]
     gdat = np.ma.masked_equal(gdat, nullvalue)
 
@@ -1110,8 +1109,8 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
 
     rows, _ = dat.data.shape
 
-    left = x.min()
-    top = y.min() + dxy*rows
+    left = x.min() - dxy/2
+    top = y.min() + dxy*rows - dxy/2
 
     dat.set_transform(dxy, left, dxy, top)
 

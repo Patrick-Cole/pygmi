@@ -40,10 +40,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
-# import contextily as ctx
-# import pyproj
 
 from pygmi.misc import ContextModule
+from pygmi.seis.iodefs import importmacro
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -897,6 +896,77 @@ def eigsorted(cov):
     return vals[order], vecs[:, order]
 
 
+def _testiso():
+    """Test creation of isoseismal maps."""
+    import matplotlib.pyplot as plt
+    import matplotlib.tri as tri
+    from pygmi.vector.dataprep import gridxyz
+
+    ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+
+    df1 = importmacro(ifile)
+
+    x = df1.lon
+    y = df1.lat
+    z = df1.intensity
+
+    # Tricontour plot
+    plt.figure(dpi=150)
+    ax = plt.gca()
+    plt.plot(x, y, '.')
+
+    ax.tricontour(x, y, z, levels=[0, 1, 2, 3, 4, 5], colors='k')
+    cntr = ax.tricontourf(x, y, z, levels=[0, 1, 2, 3, 4, 5])
+    plt.colorbar(cntr)
+
+    plt.show()
+
+    # Smooth tricontour plot
+    # triang = tri.Triangulation(x, y)
+    # refiner = tri.UniformTriRefiner(triang)
+    # tri_refi, z_refi = refiner.refine_field(z)
+
+    # plt.figure(dpi=150)
+    # ax = plt.gca()
+    # plt.plot(x, y, '.')
+
+    # ax.tricontour(tri_refi, z_refi, levels=[0, 1, 2, 3, 4, 5], colors='k')
+    # cntr = ax.tricontourf(tri_refi, z_refi, levels=[0, 1, 2, 3, 4, 5])
+
+    # plt.show()
+
+    # Gridding, contour
+    dxy = 0.1
+    dat = gridxyz(x.to_numpy(), y.to_numpy(), z.to_numpy(), dxy,
+                  # method='Nearest Neighbour', bdist=None)
+                  # method='Minimum Curvature', bdist=None)
+                   method='Linear', bdist=None)
+
+    xmin, xmax, ymin, ymax = dat.extent
+    rows, cols = dat.data.shape
+
+    xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy/2
+    yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy/2
+
+    xi, yi = np.meshgrid(xi, yi)
+    zi = dat.data
+
+    plt.figure(dpi=150)
+    ax = plt.gca()
+
+    # plt.imshow(zi, extent=dat.extent, vmin=0)
+
+    # plt.colorbar()
+    plt.plot(x, y, '.')
+
+    zi = zi[::-1]
+    ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
+    cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
+
+    plt.show()
+
+    # breakpoint()
+
 def _testfn():
     """Test routine."""
     import sys
@@ -919,4 +989,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testiso()

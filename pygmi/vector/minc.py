@@ -93,18 +93,13 @@ def minc(x, y, z, dxy, showlog=print, extent=None, bdist=None,
     extent[2] -= dxy*3
     extent[3] += dxy*3
 
-    rows = int((extent[3] - extent[2])/dxy+1)
-    cols = int((extent[1] - extent[0])/dxy+1)
-
-    dxy1 = dxy
-    for mult in [4, 2, 1]:
-        dxy = dxy1*mult
-
     # Make new start grid
 
-    xxx = np.linspace(extent[0], extent[1], cols)
-    yyy = np.linspace(extent[2], extent[3], rows)
+    xxx = np.arange(extent[0], extent[1]+dxy/2, dxy)
+    yyy = np.arange(extent[2], extent[3]+dxy/2, dxy)
+
     xxx, yyy = np.meshgrid(xxx, yyy)
+    rows, cols = xxx.shape
 
     points = np.transpose([x.flatten(), y.flatten()])
 
