@@ -900,6 +900,7 @@ def _testiso():
     """Test creation of isoseismal maps."""
     import matplotlib.pyplot as plt
     import matplotlib.tri as tri
+    from sklearn.gaussian_process import GaussianProcessRegressor
     from pygmi.vector.dataprep import gridxyz
 
     ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
@@ -909,6 +910,10 @@ def _testiso():
     x = df1.lon
     y = df1.lat
     z = df1.intensity
+
+    x = x.to_numpy()
+    y = y.to_numpy()
+    z = z.to_numpy()
 
     # Tricontour plot
     plt.figure(dpi=150)
@@ -936,7 +941,15 @@ def _testiso():
     # plt.show()
 
     # Gridding, contour
-    dxy = 0.1
+
+    dx = x.ptp()/np.sqrt(x.size)
+    dy = y.ptp()/np.sqrt(y.size)
+    dxy = max(dx, dy)
+    dxy = min([x.ptp(), y.ptp(), dxy])
+
+    breakpoint()
+
+    dxy = 0.05
     dat = gridxyz(x.to_numpy(), y.to_numpy(), z.to_numpy(), dxy,
                   # method='Nearest Neighbour', bdist=None)
                   # method='Minimum Curvature', bdist=None)
@@ -960,6 +973,32 @@ def _testiso():
     plt.plot(x, y, '.')
 
     zi = zi[::-1]
+    ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
+    cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
+
+    plt.show()
+
+    # Kriging
+    from sklearn.gaussian_process.kernels import RBF
+
+    kernel = 1 * RBF(length_scale=1.0, length_scale_bounds=[1e-2, 5.0])
+    X = np.transpose([x, y])
+    gp = GaussianProcessRegressor(kernel=kernel)
+    gp.fit(X, z)
+
+    Xi = np.transpose([xi.flatten(), yi.flatten()])
+
+    znew = gp.predict(Xi)
+
+    znew.shape = zi.shape
+
+    zi = znew
+
+    plt.figure(dpi=150)
+    ax = plt.gca()
+
+    plt.plot(x, y, '.')
+
     ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
     cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
 

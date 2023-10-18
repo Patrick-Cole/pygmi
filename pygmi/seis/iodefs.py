@@ -92,19 +92,19 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
 
 def str2float(inp):
     """
-    Convert a set number of columns to float, or returns None.
+    Convert a number  float, or returns NaN.
 
     Parameters
     ----------
     inp : str
-        string with a list of floats in it
+        string with a float in it
 
     Returns
     -------
     output : float
-        all columns returned as floats
+        float or np.nan
     """
-    if inp.strip() == '':
+    if inp.strip() == '' or inp.strip() == '*':
         return np.nan
 
     fval = float(inp)
@@ -116,17 +116,17 @@ def str2float(inp):
 
 def str2int(inp):
     """
-    Convert a set number of columns to integer, or returns None.
+    Convert a number to integer, or returns NaN.
 
     Parameters
     ----------
     inp : str
-        string with a list of floats in it
+        string with an integer in it
 
     Returns
     -------
-    output : float
-        all columns returned as integers
+    output : int
+        integer or np.nan
     """
     if inp.strip() == '':
         return np.nan
@@ -180,14 +180,9 @@ def importmacro(ifile):
 
     location = line1a.split(year)[0]
 
-    # df1 = pd.read_csv(ifile, sep='\s+', skiprows=2, header=None, engine='python')#,
-                      # names=['lat', 'lon', 'intensity', 'code', 'postalcode',
-                      #        'location'])
-
     df1 = pd.read_fwf(ifile, skiprows=2, names=['lat', 'lon', 'intensity',
                                                 'code', 'postalcode',
                                                 'location'])
-
 
     df1.intensity = df1.intensity.str.replace('+', '')
     df1.intensity = df1.intensity.astype(float)
@@ -249,6 +244,7 @@ class ImportSeisan(BasicModule):
         read_record_type['2'] = read_record_type_2
         read_record_type['3'] = read_record_type_3
         read_record_type['4'] = read_record_type_4
+        read_record_type['phase'] = read_record_type_phase
         read_record_type['5'] = read_record_type_5
         read_record_type['6'] = read_record_type_6
         read_record_type['E'] = read_record_type_e
@@ -262,6 +258,7 @@ class ImportSeisan(BasicModule):
         event['4'] = []
         event['F'] = {}
         dat = []
+        ltype4 = '4'
 
         file_errors = []
 
@@ -280,13 +277,16 @@ class ImportSeisan(BasicModule):
 
             ltype = i[79]
 
-            if ltype in '67':
+            if ltype == '6':
+                continue
+            if ltype == '7' and 'PAR1' in i:
+                ltype4 = 'phase'
                 continue
 
-            if ltype == ' ' and 'PRE' in i:
-                ltype = '1'
-            elif ltype == ' ':
-                ltype = '4'
+            # if ltype == ' ' and 'PRE' in i:
+            #     ltype = '1'
+            if ltype == ' ':
+                ltype = ltype4
 
             if ltype == '1' and event.get('1') is not None:
                 continue
@@ -311,7 +311,7 @@ class ImportSeisan(BasicModule):
 
             if ltype == 'F':
                 event[ltype].update(tmp)
-            elif ltype in ('4', ' '):
+            elif ltype in ('4', ' ', 'phase'):
                 ltype = '4'
                 event[ltype].append(tmp)
             elif ltype == 'M' and event.get('M') is not None:
@@ -400,7 +400,6 @@ class ImportSeisan(BasicModule):
 
         """
         self.saveobj(self.ifile)
-
 
 
 def read_record_type_1(i):
@@ -565,6 +564,69 @@ def read_record_type_4(i):
     return tmp
 
 
+def read_record_type_phase(i):
+    """
+    Read record type phase (nordic2 type 4).
+
+    Parameters
+    ----------
+    i : str
+        String to read from.
+
+    Returns
+    -------
+    tmp : sdt.seisan_4
+        SEISAN 4 record.
+
+    """
+    tmp = sdt.seisan_4()
+
+    tmp.station_name = i[1:6]
+    tmp.component = i[6:9]
+    tmp.network_code = i[10:12]
+    tmp.location = i[12:14]
+    tmp.quality = i[16]
+    tmp.phase_id = i[17:24]
+
+    tmp.weighting_indicator = np.nan
+    if i[25] != '_':
+        tmp.weighting_indicator = str2int(i[25])
+    tmp.flag_auto_pick = i[26]
+
+    tmp.hour = str2int(i[26:28])
+    tmp.minutes = str2int(i[28:30])
+    tmp.seconds = str2float(i[31:37])
+
+    param1 = i[37:44]
+    param2 = i[44:50]
+
+    tmp.agency = i[51:54]
+    tmp.operator = i[55:59]
+    tmp.angle_of_incidence = str2float(i[59:63])
+
+    residual = str2float(i[63:68])
+
+    tmp.weight = str2int(i[68:70])
+    tmp.epicentral_distance = str2float(i[70:75])
+    tmp.azimuth_at_source = str2int(i[76:79])
+
+    if 'END' in tmp.phase_id:
+        tmp.duration = str2float(param1)
+        tmp.travel_time_residual = residual
+    elif 'AMP' in tmp.phase_id:
+        tmp.amplitude = str2float(param1)
+        tmp.period = str2float(param2)
+    elif 'BAZ' in tmp.phase_id:
+        tmp.direction_of_approach = str2float(param1)
+        tmp.phase_velocity = str2float(param2)
+        tmp.amplitude_residual = residual
+    else:
+        tmp.first_motion = param1[-1]
+        tmp.magnitude_residual = residual
+
+    return tmp
+
+
 def read_record_type_5(i):
     """
     Read record type 5.
@@ -631,6 +693,9 @@ def read_record_type_e(i):
     tmp.cov_xy = str2float(i[43:55])
     tmp.cov_xz = str2float(i[55:67])
     tmp.cov_yz = str2float(i[67:79])
+
+    tmp.agency = i[11:14]
+    tmp.location_indicator = i[9]
 
     return tmp
 
@@ -969,12 +1034,14 @@ class ExportSeisan(ContextModule):
             self.parent.process_is_active(True)
 
         data = self.indata['Seis']
+        filt = 'Nordic2'
 
         if filename is None:
-            filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
-                                                                'Save File',
-                                                                '.',
-                                                                'out (*.out)')
+            ext = ('Nordic2 format (*.out);;'
+                   'Nordic format (*.out)')
+
+            filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+                self.parent, 'Save File', '.', ext)
 
         if filename == '':
             self.parent.process_is_active(False)
@@ -989,7 +1056,10 @@ class ExportSeisan(ContextModule):
                 self.write_record_type_m(i)  # This is missing  some #3 recs
                 self.write_record_type_e(i)
                 self.write_record_type_i(i)  # This is missing  some #3 recs
-                self.write_record_type_4(i)
+                if 'Nordic2' in filt:
+                    self.write_record_type_phase(i)
+                else:
+                    self.write_record_type_4(i)
                 self.fobj.write(' \n')
 
         self.showlog('Export to Seisan Finished!')
@@ -1128,7 +1198,7 @@ class ExportSeisan(ContextModule):
         None.
 
         """
-        if '4' not in data:
+        if '4' not in data or not data['4']:
             return
         dat = data['4']
 
@@ -1160,6 +1230,77 @@ class ExportSeisan(ContextModule):
             tmp = sform('{0:3d}', dat.azimuth_at_source, tmp, 77, 79, 0)
 
             self.fobj.write(tmp)
+
+    def write_record_type_phase(self, data):
+        """
+        Write record type 4.
+
+        Parameters
+        ----------
+        data : Dictionary
+            Dictionary of record types.
+
+        Returns
+        -------
+        None.
+
+        """
+        if '4' not in data or not data['4']:
+            return
+        dat = data['4']
+
+        # Write line type 7 header
+        tmp = (' STAT COM NTLO IPHASE   W HHMM SS.SSS   PAR1  PAR2 AGA OPE '
+               ' AIN  RES W  DIS CAZ7\n')
+        self.fobj.write(tmp)
+
+        for dat in data['4']:
+
+            if 'END' in dat.phase_id:
+                param1 = dat.duration
+                param2 = None
+                residual = dat.travel_time_residual
+            elif 'AMP' in dat.phase_id:
+                param1 = dat.amplitude
+                param2 = dat.period
+                residual = None
+            elif 'BAZ' in dat.phase_id:
+                param1 = dat.direction_of_approach
+                param2 = dat.phase_velocity
+                residual = dat.amplitude_residual
+            else:
+                param1 = f'{dat.first_motion:>7}'
+                param2 = None
+                residual = dat.magnitude_residual
+
+
+            tmp = ' '*80+'\n'
+            tmp = sform('{0:5s}', dat.station_name, tmp, 2, 6)
+            tmp = sform('{0:3s}', dat.component, tmp, 7, 9)
+            tmp = sform('{0:2s}', dat.network_code, tmp, 11, 12)
+            tmp = sform('{0:2s}', dat.location, tmp, 13, 14)
+            tmp = sform('{0:1s}', dat.quality, tmp, 16)
+            tmp = sform('{0:8s}', dat.phase_id, tmp, 17, 24)
+            tmp = sform('{0:1d}', dat.weighting_indicator, tmp, 25, 25, 1)
+            tmp = sform('{0:1s}', dat.flag_auto_pick, tmp, 26)
+            tmp = sform('{0:2d}', dat.hour, tmp, 27, 28, 0)
+            tmp = sform('{0:2d}', dat.minutes, tmp, 29, 30, 0)
+            tmp = sform('{0:>6.2f}', dat.seconds, tmp, 32, 37, 0)
+
+            tmp = sform('{0:7s}', param1, tmp, 38, 44)
+            tmp = sform('{0:6s}', param2, tmp, 45, 50)
+
+            tmp = sform('{0:3s}', dat.agency, tmp, 52, 54)
+            tmp = sform('{0:3s}', dat.operator, tmp, 56, 58)
+
+            tmp = sform('{0:4.0f}', dat.angle_of_incidence, tmp, 60, 63)
+            tmp = sform('{0:5.1f}', residual, tmp, 64, 68, 0)
+            tmp = sform('{0:2d}', dat.weight, tmp, 69, 70)
+            tmp = sform('{0:5.0f}', dat.epicentral_distance, tmp, 71, 75, 0)
+            tmp = sform('{0:3d}', dat.azimuth_at_source, tmp, 77, 79, 0)
+
+            self.fobj.write(tmp)
+
 
     def write_record_type_5(self, data):
         """
@@ -2499,9 +2640,10 @@ class FilterSeisan(BasicModule):
                     continue
 
                 if self.rb_rinc.isChecked() and (testval < minval or
-                                              testval > maxval):
+                                                 testval > maxval):
                     continue
-                if not self.rb_rinc.isChecked() and (minval <= testval <= maxval):
+                if not self.rb_rinc.isChecked() and (minval <= testval <=
+                                                     maxval):
                     continue
             else:
                 for j in i[rectype]:
@@ -2515,9 +2657,10 @@ class FilterSeisan(BasicModule):
                         break
 
                     if self.rb_rinc.isChecked() and (testval < minval or
-                                                  testval > maxval):
+                                                     testval > maxval):
                         break
-                    if not self.rb_rinc.isChecked() and (minval <= testval <= maxval):
+                    if not self.rb_rinc.isChecked() and (minval <= testval <=
+                                                         maxval):
                         break
                     badrec = False
                 if badrec is True:
@@ -2530,8 +2673,25 @@ class FilterSeisan(BasicModule):
 
 def _testfn():
     """Test."""
-    ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
-    dat = importmacro(ifile)
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\Workdata\seismology\nordic2\collect.out"
+    ofile = ifile[:-4]+'2.out'
+
+    tmp = ImportSeisan()
+    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
+    tmp.ifile = ifile
+    tmp.settings(True)
+
+    data = tmp.outdata['Seis']
+
+
+    tmp = ExportSeisan()
+    tmp.indata['Seis'] = data
+    tmp.run(ofile)
+    # ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+    # dat = importmacro(ifile)
 
 
 if __name__ == "__main__":

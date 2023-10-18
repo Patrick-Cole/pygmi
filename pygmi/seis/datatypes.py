@@ -78,11 +78,6 @@ class seisan_1():
     80 A1          Type of this line ("1"), can be blank if first
     -              line of event
 
-    If more than 3 magnitudes need to be associated with the hypocenter in the
-    first line, a subsequent additional type one line can be written with the
-    same year, month, day until event ID and hypocenter agency. The magnitudes
-    on this line will then be associated with the main header line and there
-    is then room for 6 magnitudes.
     """
 
     def __init__(self):
@@ -212,9 +207,9 @@ class seisan_3():
     """
     Type 3 Line (Optional).
 
-    Columns Format Description 	Comments
+    Columns Format Description Comments
     1               Free
-    2-79    A       Text      	Anything
+    2-79    A       Text      Anything
     80      A1      Type of this line ("3")
     """
 
@@ -226,17 +221,17 @@ class seisan_3():
 
 class seisan_4():
     """
-    Type 4 line.
+    Type 4 (phase) line.
 
-    Columns Format Description 	Comments
+    Columns Format Description Comments
 
     1               Free
     2- 6    A5      Station Name    Blank = End of readings = end of event
     7       A1      Instrument Type S = SP, I = IP, L = LP etc
-    8       A1      Component 	   Z, N, E ,T, R, 1, 2
+    8       A1      Component    Z, N, E ,T, R, 1, 2
     9               Free or weight, see note below
     10      A1      Quality Indicator 	I, E, etc.
-    11-14   A2      Phase ID 	PN, PG, LG, P, S, etc. **
+    11-14   A2      Phase ID    PN, PG, LG, P, S, etc. **
     15      I1      Weighting Indicator (1-4) 0 or blank= full weight, 1=75%,
     -               2=50%, 3=25%, 4=0%, 9: no weight, use difference time
     -               (e.g. P-S).
@@ -269,15 +264,48 @@ class seisan_4():
     80      A1      Type of this line ("4"), can be blank, which it is most
     -               often.
 
-    NB: Epicentral distance: Had format I5 before version 7.2. All old lines
-    can be read with format F5.0 with same results, but now distance can also
-    be e.g. 1.23 km which cannot be read by earlier versions. However, an
-    UPDATE would fix that.
-    ** Long phase names: An 8 character phase can be used in column 11-18.
-    There is then not room for polarity information. The weight is then put
-    into column 9. This format is recognized by HYP and MULPLT.
-
     Type 4 cards should be followed by a Blank Card (Type 0)
+
+    Nordic 2:
+
+    Columns Format Description Comments
+    1 Free
+    2- 6  A5 Station Name
+    7-9   A3 Component, eg SHZ
+    10       Free
+    11-12 A2 Network code
+    13-14 A2 Location
+    15       Free
+    16    A1 Quality Indicator I, E, etc.
+    17-24 A8 Phase ID PN, PG, LG, P, S, etc.
+    25    I1 Weighting Indicator (1-4) 0 or blank= full weight, 1=75%, 2=50%,
+             3=25%,4=0%, 9: no weight, time (e.g. P-S).
+    26       Free or flag A to indicate automatic pick, removed when picking
+    27-28 I2 Hour Hour can be up to 48 to indicate next day
+    29-30 I2 Minutes
+    31       Free
+    32-37 F6.0 Seconds
+    38-44    Parameter 1. If a phase, it is polarity in column 44
+                          If phase END for coda, it is duration(s)(F)
+                          If amplitude phase, it is amplitude (G7)
+                          Amplitude is(Zero-Peak) in units of nm,
+                          nm/s, nm/s^2 or counts.
+                          If back azimuth phase (BAZ), it a back azimuth (F)
+    45-50    Parameter 2  If a phase or END, it is blank
+                          If an amplitude, it is period (F)
+                          If back azimuth phase, it is apparent velocity(km/s)
+    51         Free
+    52-54 A3   Agency
+    55         Free
+    56-58 A3   Operator
+    59         Free
+    60-63 F4.0 Angle of incidence
+    64-68 F5.1 Residual, can be travel time, back azimuth or magnitude
+    69-70 I2   Weight used, like 05 is 0.5
+    71-75 F5.0 Epicentral distance(km)
+    76 Free
+    77-79 I3   Azimuth at source
+    80 A1 Type of this line (" ")
     """
 
     def __init__(self):
@@ -296,14 +324,23 @@ class seisan_4():
         self.amplitude = None
         self.period = None
         self.direction_of_approach = None
-        self.phase_velocity = None
+        self.phase_velocity = None  # apparent velocity
         self.angle_of_incidence = None
-        self.azimuth_residual = None
+        self.azimuth_residual = None  # Back azimuth
         self.travel_time_residual = None
         self.weight = None
         self.epicentral_distance = None
         self.azimuth_at_source = None
         self.dataid = ''
+
+        self.network_code = ''
+        self.location = ''
+        self.polarity = None
+        self.back_azimuth = None
+        # self.apparent_velocity = None
+        self.agency = ''
+        self.operator = ''
+        self.magnitude_residual = None
 
 
 class seisan_5():
@@ -330,7 +367,7 @@ class seisan_6():
 
     Columns Format Description 	Comments
     1       Free
-    2-79    A      Name(s) of tracedata files
+    2-79    A      Name(s) of file or archivereference, a-format
     80      A1     Type of this line ("6")
     """
 
@@ -339,62 +376,25 @@ class seisan_6():
         self.dataid = ''
 
 
-class seisan_7():
-    """
-    Type 7 Line (Optional).
-
-    Columns Format Description 	Comments
-    1       Free
-    2-79    A      Help lines to place the numbers in right positions
-    80      A1     Type of this line ("7")
-
-    STAT SP : Station and component
-    IPHAS : Phase with onset
-    W : Phase weight, HYPO71 style
-    HRMM SECON : Hour, minute and seconds
-    CODA : Coda length (secs)
-    AMPLIT PERI: Amplitude (nm) and period (sec)
-    AZIM VELO : Back azimuth (deg) and apparent velocity of arrival at station
-    AIN : Angle of incidence
-    AR : back azimuth residual
-    TRES : Arrival time residual
-    W : Weigh used in location
-    DIS : Epicentral distance in km
-    CAZ : Azimuth from event to station
-    """
-
-    def __init__(self):
-        self.stat = None
-        self.sp = None
-        self.iphas = None
-        self.phase_weight = None
-        self.d = None
-        self.hour = None
-        self.minutes = None
-        self.seconds = None
-        self.coda = None
-        self.amplitude = None
-        self.period = None
-        self.azimuth = None
-        self.velocity = None
-        self.angle_incidence = None
-        self.azimuth_residual = None
-        self.time_residual = None
-        self.location_weight = None
-        self.distance = None
-        self.caz = None
-        self.dataid = ''
-
-
 class seisan_E():
     """
     Type E Line (Optional): Hyp error estimates.
+
+    Before version 12.0 there was only one E-line in S-file which could only
+    belong to the main hypocenter. In order to know which E-line belongs to
+    which 1-line, the location program indicator and the agency must match.
+    If only one E-line and no agency, it is assumed it belongs to the main
+    hypocenter. This ensures backwards compatibility. Multiple E-lines can be
+    used in both Nordic and Nordic2 format.
 
     Columns Format Description
 
     1     Free
     2-5   A4 The text GAP=
     6-8   I3 Gap
+    10:10 A1 Location program indicator, blank for Hypocenter (new from version 12)
+    11:11 Free
+    12:14 A3 Agency (new from version 12)
     15-20 F6.2 Origin time error
     25-30 F6.1 Latitude (y) error
     31-32 Free
@@ -427,6 +427,9 @@ class seisan_E():
         self.cov_yz = None  # cvyz
         self.dataid = ''
 
+        self.agency = None
+        self.location_indicator = None
+
 
 class seisan_F():
     """
@@ -435,7 +438,7 @@ class seisan_F():
     Columns Format Description
 
     1:30    3F10.0 Strike, dip and rake, Aki convention
-    31:45   4F5.1  Error in strike dip and rake (HASH), error in fault plane
+    31:45   3F5.1  Error in strike dip and rake (HASH), error in fault plane
     -              and aux. plane (FPFIT)
     46:50   F5.1   Fit error:  FPFIT and HASH (F-fit)
     51:55   F5.1   Station distribution ratio (FPFIT, HASH)
@@ -473,7 +476,7 @@ class seisan_H():
     Type H line, High accuracy hypocenter line.
 
     Columns Format Description
-    1:15    As type 1 line
+    1:15    As type 1 line including program used in column 6 (new from version 12)
     16      Free
     17      f6.3    Seconds
     23      Free
@@ -484,7 +487,8 @@ class seisan_H():
     45:52   f8.3    Depth
     53      Free
     54:59   f6.3    RMS
-    60:79   Free
+    61:63 Agency, A3 (new from version 12)
+    62:79   Free
     80      H
     """
 
@@ -510,15 +514,18 @@ class seisan_I():
     Columns Description
     1       Free
     2:8     Help text for the action indicator
-    9:11 	Last action done, so far defined:
-    -        SPL: Split
-    -        REG: Register
-    -        ARG: AUTO Register, AUTOREG
-    -        UPD: Update
-    -        UP : Update only from EEV
-    -        REE: Register from EEV
-    -        DUB: Duplicated event
-    -        NEW: New event
+    9:11    Last action done, so far defined:
+              ARG: AUTO Register, AUTOREG
+              ARX: From ARC extract
+              DPH: Phases deleted with DELS
+              DUP: Duplicated event
+              HIN: Updated with HYPOINVERSE
+              NEW: New event
+              REE: Register from EEV
+              REG: Register
+              SPL: Split
+              UPD: Update with HYP
+              UP : Update with HYP only from EEV
     12      Free
     13:26   Date and time of last action
     27      Free
