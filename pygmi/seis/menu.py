@@ -50,6 +50,7 @@ class MenuWidget():
 
         self.parent = parent
         self.parent.add_to_context('Seis')
+        self.parent.add_to_context('MacroSeis')
         context_menu = self.parent.context_menu
 
         self.menu = QtWidgets.QMenu('Seismology')
@@ -85,6 +86,12 @@ class MenuWidget():
         self.action_quarry.triggered.connect(self.quarry)
 
         # Context menus
+
+        context_menu['MacroSeis'].addSeparator()
+
+        self.action_show_iso_plots = QtWidgets.QAction('Show Isoseismic Plots')
+        context_menu['MacroSeis'].addAction(self.action_show_iso_plots)
+        self.action_show_iso_plots.triggered.connect(self.show_iso_plots)
 
         context_menu['Seis'].addSeparator()
 
@@ -153,3 +160,7 @@ class MenuWidget():
     def show_QC_plots(self):
         """Show QC plots."""
         self.parent.launch_context_item(graphs.PlotQC)
+
+    def show_iso_plots(self):
+        """Show QC plots."""
+        self.parent.launch_context_item(graphs.PlotIso)

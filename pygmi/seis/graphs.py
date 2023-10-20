@@ -40,7 +40,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
+from shapelysmooth import catmull_rom_smooth
+from scipy.spatial.distance import pdist
 
+from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
 from pygmi.seis.iodefs import importmacro
 
@@ -576,6 +579,100 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
+    def update_isohull(self, datd):
+        """
+        Update isoseismic plot using convex hull method.
+
+        Parameters
+        ----------
+        datd : GeoDatFrame
+            Mactoseismic data.
+
+        Returns
+        -------
+        None.
+
+        """
+        df1 = datd
+
+        x = df1.lon.to_numpy()
+        y = df1.lat.to_numpy()
+        z = df1.intensity.to_numpy()
+
+        plist = []
+        uvals = np.sort(df1.intensity.unique())
+
+        for i in uvals:
+            df2 = df1[df1.intensity >= i]
+            hull = df2.unary_union.convex_hull
+            hull = catmull_rom_smooth(hull)
+
+            plist.append(hull)
+            if len(plist) > 1:
+                plist[-2] = plist[-2].difference(hull)
+
+        gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
+
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+        self.axes.plot(x, y, '.')
+
+        gdf.plot(ax=self.axes, column='Intensity', legend=True, edgecolor='k',
+                 legend_kwds={'label': 'Intensity'})
+
+        self.figure.canvas.draw()
+
+    def update_isocontour(self, datd):
+        """
+        Update isoseismic plot using contours.
+
+        Parameters
+        ----------
+        datd : GeoDatFrame
+            Mactoseismic data.
+
+        Returns
+        -------
+        None.
+
+        """
+        df1 = datd
+
+        x = df1.lon.to_numpy()
+        y = df1.lat.to_numpy()
+        z = df1.intensity.to_numpy()
+        uvals = np.sort(df1.intensity.unique())
+
+        X = np.transpose([x, y])
+        r = pdist(X)
+        dxy = r.min() / 2
+
+        dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
+
+        xmin, xmax, ymin, ymax = dat.extent
+        rows, cols = dat.data.shape
+
+        xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy/2
+        yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy/2
+
+        xi, yi = np.meshgrid(xi, yi)
+        zi = dat.data
+
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        self.axes.plot(x, y, '.')
+
+        zi = zi[::-1]
+        self.axes.contour(xi, yi, zi, levels=uvals, colors='k')
+        cntr = self.axes.contourf(xi, yi, zi, levels=uvals)
+
+        # self.axes.tricontour(x, y, z, levels=uvals, colors='k')
+        # cntr = self.axes.tricontourf(x, y, z, levels=uvals)
+
+        self.figure.colorbar(cntr)
+        self.figure.canvas.draw()
+
 
 class GraphWindow(ContextModule):
     """Graph Window - The QDialog window which will contain our image."""
@@ -809,6 +906,108 @@ class PlotQC(GraphWindow):
         return True
 
 
+class PlotIso(GraphWindow):
+    """
+    Plot Hist Class.
+
+    Attributes
+    ----------
+    lbl_2 : QLabel
+        reference to GraphWindow's lbl_2
+    cmb_2 : QComboBox
+        reference to GraphWindow's cmb_2
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.lbl_2.hide()
+        self.cmb_2.hide()
+        self.datd = None
+
+    def change_band(self):
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.btn_saveshp.hide()
+
+        i = self.cmb_1.currentText()
+        if i == 'Convex Hull Method':
+            # self.btn_saveshp.show()
+            self.mmc.update_isohull(self.datd)
+        elif i == 'Standard Contours':
+            self.mmc.update_isocontour(self.datd)
+
+    def run(self):
+        """
+        Entry point to run routine.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.show()
+        self.datd = self.indata['MacroSeis']
+
+        products = ['Convex Hull Method',
+                    'Standard Contours']
+
+        for i in products:
+            self.cmb_1.addItem(i)
+
+        self.lbl_1.setText('Product:')
+        self.cmb_1.setCurrentIndex(0)
+        self.change_band()
+
+        # self.exec()
+
+    def save_shp(self):
+        """
+        Save shapefile.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'Shape file (*.shp)'
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(os.path.dirname(filename))
+
+        ifile = str(filename)
+
+        # if os.path.isfile(ifile):
+        #     tmp = ifile[:-4]
+        #     os.remove(tmp+'.shp')
+        #     os.remove(tmp+'.shx')
+        #     os.remove(tmp+'.prj')
+        #     os.remove(tmp+'.dbf')
+
+        # indata = self.mmc.ellipses
+        # geom = [Polygon(i) for i in indata]
+
+        # gdict = {'geometry': geom}
+
+        # gdf = gpd.GeoDataFrame(gdict)
+        # gdf = gdf.set_crs(4326)
+
+        # gdf.to_file(filename)
+
+        return True
+
+
+
 def import_for_plots(dat):
     """
     Import data to plot.
@@ -900,20 +1099,18 @@ def _testiso():
     """Test creation of isoseismal maps."""
     import matplotlib.pyplot as plt
     import matplotlib.tri as tri
-    from sklearn.gaussian_process import GaussianProcessRegressor
+    from scipy.spatial.distance import pdist
     from pygmi.vector.dataprep import gridxyz
+    from shapelysmooth import catmull_rom_smooth
+    import rasterio as rio
 
     ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
 
     df1 = importmacro(ifile)
 
-    x = df1.lon
-    y = df1.lat
-    z = df1.intensity
-
-    x = x.to_numpy()
-    y = y.to_numpy()
-    z = z.to_numpy()
+    x = df1.lon.to_numpy()
+    y = df1.lat.to_numpy()
+    z = df1.intensity.to_numpy()
 
     # Tricontour plot
     plt.figure(dpi=150)
@@ -926,34 +1123,11 @@ def _testiso():
 
     plt.show()
 
-    # Smooth tricontour plot
-    # triang = tri.Triangulation(x, y)
-    # refiner = tri.UniformTriRefiner(triang)
-    # tri_refi, z_refi = refiner.refine_field(z)
+    X = np.transpose([x, y])
+    r = pdist(X)
+    dxy = r.min() / 2
 
-    # plt.figure(dpi=150)
-    # ax = plt.gca()
-    # plt.plot(x, y, '.')
-
-    # ax.tricontour(tri_refi, z_refi, levels=[0, 1, 2, 3, 4, 5], colors='k')
-    # cntr = ax.tricontourf(tri_refi, z_refi, levels=[0, 1, 2, 3, 4, 5])
-
-    # plt.show()
-
-    # Gridding, contour
-
-    dx = x.ptp()/np.sqrt(x.size)
-    dy = y.ptp()/np.sqrt(y.size)
-    dxy = max(dx, dy)
-    dxy = min([x.ptp(), y.ptp(), dxy])
-
-    breakpoint()
-
-    dxy = 0.05
-    dat = gridxyz(x.to_numpy(), y.to_numpy(), z.to_numpy(), dxy,
-                  # method='Nearest Neighbour', bdist=None)
-                  # method='Minimum Curvature', bdist=None)
-                   method='Linear', bdist=None)
+    dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
 
     xmin, xmax, ymin, ymax = dat.extent
     rows, cols = dat.data.shape
@@ -967,44 +1141,39 @@ def _testiso():
     plt.figure(dpi=150)
     ax = plt.gca()
 
-    # plt.imshow(zi, extent=dat.extent, vmin=0)
-
-    # plt.colorbar()
     plt.plot(x, y, '.')
 
     zi = zi[::-1]
     ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
     cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
 
+    plt.colorbar(cntr)
     plt.show()
 
-    # Kriging
-    from sklearn.gaussian_process.kernels import RBF
+    # New method using rasterio
+    plist = []
+    uvals = np.sort(df1.intensity.unique())
 
-    kernel = 1 * RBF(length_scale=1.0, length_scale_bounds=[1e-2, 5.0])
-    X = np.transpose([x, y])
-    gp = GaussianProcessRegressor(kernel=kernel)
-    gp.fit(X, z)
+    for i in uvals:
+        df2 = df1[df1.intensity >= i]
+        hull = df2.unary_union.convex_hull
+        hull = catmull_rom_smooth(hull)
 
-    Xi = np.transpose([xi.flatten(), yi.flatten()])
+        plist.append(hull)
+        if len(plist) > 1:
+            plist[-2] = plist[-2].difference(hull)
 
-    znew = gp.predict(Xi)
+    gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
 
-    znew.shape = zi.shape
-
-    zi = znew
-
-    plt.figure(dpi=150)
+    plt.figure(dpi=250)
     ax = plt.gca()
-
     plt.plot(x, y, '.')
-
-    ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
-    cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
-
+    gdf.plot(ax=ax, column='Intensity', legend=True,
+             legend_kwds={'label': 'Intensity'})
     plt.show()
 
     # breakpoint()
+
 
 def _testfn():
     """Test routine."""
@@ -1014,18 +1183,19 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
-    tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
+    # tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
+    tmp.ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
     tmp.settings(True)
 
-    data = tmp.outdata['Seis']
+    data = tmp.outdata
 
     # dat = import_for_plots(data)
 
-    tmp = PlotQC()
-    tmp.indata['Seis'] = data
+    tmp = PlotIso()
+    tmp.indata = data
     tmp.run()
     tmp.exec()
 
 
 if __name__ == "__main__":
-    _testiso()
+    _testfn()

@@ -133,6 +133,61 @@ def str2int(inp):
     return int(inp)
 
 
+class ImportSeisan(BasicModule):
+    """Import SEISAN Data."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.is_import = True
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if not nodialog:
+            ext = ('SEISAN Format (*.out);;'
+                   'SEISAN macroseismic files (*.macro);;'
+                   'All Files (*.*)')
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+
+        os.chdir(os.path.dirname(self.ifile))
+
+        if '.macro' in self.ifile.lower():
+            dat = importmacro(self.ifile)
+            self.outdata['MacroSeis'] = dat
+        else:
+            dat = importnordic(self.ifile, self.showlog)
+            self.outdata['Seis'] = dat
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.ifile)
+
+
 def importmacro(ifile):
     """
     Import macro format.
@@ -152,7 +207,7 @@ def importmacro(ifile):
 
     Returns
     -------
-    df1 : Pandas dataframe
+    gdf1 : GeoPandas dataframe
         List of locations with intensities.
 
     """
@@ -187,219 +242,194 @@ def importmacro(ifile):
     df1.intensity = df1.intensity.str.replace('+', '')
     df1.intensity = df1.intensity.astype(float)
 
-    return df1
+    gdf1 = gpd.GeoDataFrame(df1, geometry=gpd.points_from_xy(df1.lon, df1.lat),
+                            crs='EPSG:4326')
+
+    return gdf1
 
 
-class ImportSeisan(BasicModule):
-    """Import SEISAN Data."""
+def importnordic(ifile, showlog=print):
+    """
+    Import Nordic and Nordic2 data.
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    Parameters
+    ----------
+    ifile : str
+        Input file to import.
+    showlog : function, optional
+        Display information. The default is print.
 
-        self.is_import = True
-        idir = os.path.dirname(os.path.realpath(__file__))
-        self.tfile = os.path.join(idir, r'descriptions.txt')
+    Returns
+    -------
+    dat : list
+        SEISAN Data.
 
-        with open(self.tfile, encoding='utf-8') as inp:
-            self.rnames = inp.read()
+    """
+    idir = os.path.dirname(os.path.realpath(__file__))
+    tfile = os.path.join(idir, r'descriptions.txt')
 
-        self.rnames = self.rnames.split('\n')
+    with open(tfile, encoding='utf-8') as inp:
+        rnames = inp.read()
 
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
+    rnames = rnames.split('\n')
 
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
+    with open(ifile, encoding='utf-8') as pntfile:
+        ltmp = pntfile.readlines()
 
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
+    if len(ltmp[0]) < 80:
+        showlog('Error: Problem with file')
+        return False
 
-        """
-        if not nodialog:
-            ext = \
-                'SEISAN Format (*.out);;' +\
-                'All Files (*.*)'
-            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
-                return False
+    # This constructs a dictionary of functions
+    read_record_type = {}
+    read_record_type['1'] = read_record_type_1
+    read_record_type['2'] = read_record_type_2
+    read_record_type['3'] = read_record_type_3
+    read_record_type['4'] = read_record_type_4
+    read_record_type['phase'] = read_record_type_phase
+    read_record_type['5'] = read_record_type_5
+    read_record_type['6'] = read_record_type_6
+    read_record_type['E'] = read_record_type_e
+    read_record_type['F'] = read_record_type_f
+    read_record_type['H'] = read_record_type_h
+    read_record_type['I'] = read_record_type_i
+    read_record_type['M'] = read_record_type_m
+    read_record_type['P'] = read_record_type_p
 
-        os.chdir(os.path.dirname(self.ifile))
+    event = {}
+    event['4'] = []
+    event['F'] = {}
+    dat = []
+    ltype4 = '4'
 
-        with open(self.ifile, encoding='utf-8') as pntfile:
-            ltmp = pntfile.readlines()
+    file_errors = []
 
-        if len(ltmp[0]) < 80:
-            self.showlog('Error: Problem with file')
-            return False
+    for iii, i in enumerate(ltmp):
+        if i.strip() == '':
+            if event:
+                dat.append(event)
+                event = {}
+                event['4'] = []
+                event['F'] = {}
+            continue
 
-        # This constructs a dictionary of functions
-        read_record_type = {}
-        read_record_type['1'] = read_record_type_1
-        read_record_type['2'] = read_record_type_2
-        read_record_type['3'] = read_record_type_3
-        read_record_type['4'] = read_record_type_4
-        read_record_type['phase'] = read_record_type_phase
-        read_record_type['5'] = read_record_type_5
-        read_record_type['6'] = read_record_type_6
-        read_record_type['E'] = read_record_type_e
-        read_record_type['F'] = read_record_type_f
-        read_record_type['H'] = read_record_type_h
-        read_record_type['I'] = read_record_type_i
-        read_record_type['M'] = read_record_type_m
-        read_record_type['P'] = read_record_type_p
+        # Fix short lines
+        if len(i) < 81:
+            i = i[:-1].ljust(80)+'\n'
 
-        event = {}
-        event['4'] = []
-        event['F'] = {}
-        dat = []
-        ltype4 = '4'
+        ltype = i[79]
 
-        file_errors = []
+        if ltype == '6':
+            continue
+        if ltype == '7' and 'PAR1' in i:
+            ltype4 = 'phase'
+            continue
 
-        for iii, i in enumerate(ltmp):
-            if i.strip() == '':
-                if event:
-                    dat.append(event)
-                    event = {}
-                    event['4'] = []
-                    event['F'] = {}
-                continue
+        # if ltype == ' ' and 'PRE' in i:
+        #     ltype = '1'
+        if ltype == ' ':
+            ltype = ltype4
 
-            # Fix short lines
-            if len(i) < 81:
-                i = i[:-1].ljust(80)+'\n'
+        if ltype == '1' and event.get('1') is not None:
+            continue
 
-            ltype = i[79]
+        try:
+            tmp = read_record_type[ltype](i)
+        except KeyError:
+            errs = ['Error: Invalid line type: ' + str(ltype) +
+                    ' on line '+str(iii+1), i]
+            file_errors.append(errs)
+            continue
+        except ValueError:
+            errs = ['Error: Problem on line: '+str(iii+1), i]
+            file_errors.append(errs)
+            continue
 
-            if ltype == '6':
-                continue
-            if ltype == '7' and 'PAR1' in i:
-                ltype4 = 'phase'
-                continue
+        if ltype == '1' and (np.isnan(tmp.latitude) or
+                             np.isnan(tmp.longitude)):
+            errs = ['Warning: Incomplete data (not latitude or longitude) '
+                    f'on line: {iii+1}', i]
+            file_errors.append(errs)
 
-            # if ltype == ' ' and 'PRE' in i:
-            #     ltype = '1'
-            if ltype == ' ':
-                ltype = ltype4
-
-            if ltype == '1' and event.get('1') is not None:
-                continue
-
-            try:
-                tmp = read_record_type[ltype](i)
-            except KeyError:
-                errs = ['Error: Invalid line type: ' + str(ltype) +
-                        ' on line '+str(iii+1), i]
-                file_errors.append(errs)
-                continue
-            except ValueError:
-                errs = ['Error: Problem on line: '+str(iii+1), i]
-                file_errors.append(errs)
-                continue
-
-            if ltype == '1' and (np.isnan(tmp.latitude) or
-                                 np.isnan(tmp.longitude)):
-                errs = ['Warning: Incomplete data (not latitude or longitude) '
-                        f'on line: {iii+1}', i]
-                file_errors.append(errs)
-
-            if ltype == 'F':
-                event[ltype].update(tmp)
-            elif ltype in ('4', ' ', 'phase'):
-                ltype = '4'
-                event[ltype].append(tmp)
-            elif ltype == 'M' and event.get('M') is not None:
-                event[ltype] = merge_m(event[ltype], tmp)
-            elif ltype == '3':
-                if tmp.region != '':
-                    event[ltype] = tmp
-                    if tmp.region not in self.rnames:
-                        errs = ['Warning: Possible spelling error on on '
-                                'line: '+str(iii+1)+'. Make sure the region '
-                                'spelling, case and punctuation '
-                                'matches exactly the definitions '
-                                'in '+self.tfile, i]
-                        file_errors.append(errs)
-            else:
+        if ltype == 'F':
+            event[ltype].update(tmp)
+        elif ltype in ('4', ' ', 'phase'):
+            ltype = '4'
+            event[ltype].append(tmp)
+        elif ltype == 'M' and event.get('M') is not None:
+            event[ltype] = merge_m(event[ltype], tmp)
+        elif ltype == '3':
+            if tmp.region != '':
                 event[ltype] = tmp
-
-            # IP errors
-            if ltype == '4' and tmp.quality == 'I':
-                if tmp.phase_id[0] == 'S':
-                    errs = ['Warning: IP error on line: '+str(iii+1), i]
+                if tmp.region not in rnames:
+                    errs = ['Warning: Possible spelling error on on '
+                            'line: '+str(iii+1)+'. Make sure the region '
+                            'spelling, case and punctuation '
+                            'matches exactly the definitions '
+                            'in '+tfile, i]
                     file_errors.append(errs)
-                elif (tmp.phase_id[0] == 'P' and
-                      tmp.first_motion not in ['C', 'D']):
-                    errs = ['Warning: IP error (first motion must be C or D)'
-                            ' on line: '+str(iii+1), i]
-                    file_errors.append(errs)
+        else:
+            event[ltype] = tmp
 
-            # EP/S phase errors
-            if ltype == '4' and tmp.quality == 'E':
-                if tmp.first_motion in ['C', 'D']:
-                    errs = [r'Warning: EP/S error (first motion must be empty)'
-                            ' on line: '+str(iii+1), i]
-                    file_errors.append(errs)
+        # IP errors
+        if ltype == '4' and tmp.quality == 'I':
+            if tmp.phase_id[0] == 'S':
+                errs = ['Warning: IP error on line: '+str(iii+1), i]
+                file_errors.append(errs)
+            elif (tmp.phase_id[0] == 'P' and
+                  tmp.first_motion not in ['C', 'D']):
+                errs = ['Warning: IP error (first motion must be C or D)'
+                        ' on line: '+str(iii+1), i]
+                file_errors.append(errs)
 
-            # High time residuals
-            if ltype == '4' and tmp.quality == 'E':
-                if tmp.travel_time_residual > 3:
-                    errs = [r'Warning: Travel time residual > 3 on '
+        # EP/S phase errors
+        if ltype == '4' and tmp.quality == 'E':
+            if tmp.first_motion in ['C', 'D']:
+                errs = [r'Warning: EP/S error (first motion must be empty)'
+                        ' on line: '+str(iii+1), i]
+                file_errors.append(errs)
+
+        # High time residuals
+        if ltype == '4' and tmp.quality == 'E':
+            if tmp.travel_time_residual > 3:
+                errs = [r'Warning: Travel time residual > 3 on '
+                        'line: '+str(iii+1), i]
+                file_errors.append(errs)
+
+        if ltype == '4' and len(event['4']) > 1:
+            dat1 = event['4'][-2]
+            dat2 = event['4'][-1]
+            if dat1.station_name == dat2.station_name:
+                if 'AML' in dat1.phase_id and dat2.phase_id[0] != ' ':
+                    errs = [r'Warning: Phases may be out of order on '
                             'line: '+str(iii+1), i]
                     file_errors.append(errs)
 
-            if ltype == '4' and len(event['4']) > 1:
-                dat1 = event['4'][-2]
-                dat2 = event['4'][-1]
-                if dat1.station_name == dat2.station_name:
-                    if 'AML' in dat1.phase_id and dat2.phase_id[0] != ' ':
-                        errs = [r'Warning: Phases may be out of order on '
-                                'line: '+str(iii+1), i]
-                        file_errors.append(errs)
+    has_errors = any('Error' in s for s in file_errors)
 
-        has_errors = any('Error' in s for s in file_errors)
-
-        if file_errors:
-            if has_errors is False:
-                self.showlog('Warning: Problem with file')
-                self.showlog('Process will continue, but please '
-                             'see warnings in '+self.ifile+'.log')
-            else:
-                self.showlog('Error: Problem with file')
-                self.showlog('Process stopping, please see errors '
-                             'in '+self.ifile+'.log')
-            with open(self.ifile+'.log', 'w', encoding='utf-8') as fout:
-                for i in file_errors:
-                    fout.write(i[0]+'\n')
-                    fout.write(i[1]+'\n')
-
-            if has_errors is True:
-                return False
+    if file_errors:
+        if has_errors is False:
+            showlog('Warning: Problem with file')
+            showlog('Process will continue, but please '
+                    'see warnings in '+ifile+'.log')
         else:
-            self.showlog('No errors in the file')
+            showlog('Error: Problem with file')
+            showlog('Process stopping, please see errors '
+                    'in '+ifile+'.log')
+        with open(ifile+'.log', 'w', encoding='utf-8') as fout:
+            for i in file_errors:
+                fout.write(i[0]+'\n')
+                fout.write(i[1]+'\n')
 
-        if event:
-            dat.append(event)
+        if has_errors is True:
+            return False
+    else:
+        showlog('No errors in the file')
 
-        self.outdata['Seis'] = dat
-        return True
+    if event:
+        dat.append(event)
 
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.saveobj(self.ifile)
+    return dat
 
 
 def read_record_type_1(i):
