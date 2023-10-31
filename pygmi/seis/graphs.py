@@ -42,6 +42,7 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
 from shapelysmooth import catmull_rom_smooth
 from scipy.spatial.distance import pdist
+from scipy.spatial import ConvexHull
 
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
@@ -66,6 +67,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
 
         self.ellipses = []
+        self.isolines = None
 
         super().__init__(fig)
 
@@ -399,10 +401,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         pid = pid[~np.isnan(tres)]
         tres = tres[~np.isnan(tres)].astype(float)
 
+        pid = np.char.strip(pid)
+
         if phase == 'P':
-            ptres = tres[pid == 'P   ']
+            ptres = tres[pid == 'P']
         else:
-            ptres = tres[pid == 'S   ']
+            ptres = tres[pid == 'S']
 
         txt = 'mean: '+str(np.around(ptres.mean(), 3))
         txt += '\nstd: '+str(np.around(ptres.std(), 3))
@@ -530,9 +534,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 if rec.weighting_indicator == 9:
                     continue
                 time = rec.hour*3600+rec.minutes*60+rec.seconds
-                if rec.phase_id == 'P   ':
+                if rec.phase_id.strip() == 'P':
                     P[rec.station_name] = time
-                if rec.phase_id == 'S   ':
+                if rec.phase_id.strip() == 'S':
                     S[rec.station_name] = time
 
             # Make sure P and S times are from same stations
@@ -615,12 +619,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.plot(x, y, '.')
+        self.axes.plot(x, y, 'k.')
 
         gdf.plot(ax=self.axes, column='Intensity', legend=True, edgecolor='k',
                  legend_kwds={'label': 'Intensity'})
 
         self.figure.canvas.draw()
+
+        self.isolines = gdf
 
     def update_isocontour(self, datd):
         """
@@ -645,7 +651,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         X = np.transpose([x, y])
         r = pdist(X)
-        dxy = r.min() / 2
+        dxy = r.min() / 10
 
         dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
 
@@ -661,17 +667,27 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.plot(x, y, '.')
+        self.axes.plot(x, y, 'k.')
 
-        zi = zi[::-1]
-        self.axes.contour(xi, yi, zi, levels=uvals, colors='k')
-        cntr = self.axes.contourf(xi, yi, zi, levels=uvals)
-
-        # self.axes.tricontour(x, y, z, levels=uvals, colors='k')
-        # cntr = self.axes.tricontourf(x, y, z, levels=uvals)
+        zi = zi[::-1]+0.0001
+        cntr1 = self.axes.contour(xi, yi, zi, levels=uvals, colors='k')
+        cntr = self.axes.contourf(xi, yi, zi, levels=uvals, extend='max')
 
         self.figure.colorbar(cntr)
         self.figure.canvas.draw()
+
+        pnts = np.transpose([x, y])
+        hull0 = ConvexHull(pnts)
+        gdict = {'Intensity': [0], 'geometry': [Polygon(pnts[hull0.vertices])]}
+
+        plist, pvals = contourtopoly(cntr1)
+
+        gdict['Intensity'] += pvals
+        gdict['geometry'] += plist
+
+        gdf = gpd.GeoDataFrame(gdict)
+
+        self.isolines = gdf
 
 
 class GraphWindow(ContextModule):
@@ -934,7 +950,7 @@ class PlotIso(GraphWindow):
         None.
 
         """
-        self.btn_saveshp.hide()
+        # self.btn_saveshp.hide()
 
         i = self.cmb_1.currentText()
         if i == 'Convex Hull Method':
@@ -987,25 +1003,56 @@ class PlotIso(GraphWindow):
 
         ifile = str(filename)
 
-        # if os.path.isfile(ifile):
-        #     tmp = ifile[:-4]
-        #     os.remove(tmp+'.shp')
-        #     os.remove(tmp+'.shx')
-        #     os.remove(tmp+'.prj')
-        #     os.remove(tmp+'.dbf')
+        if os.path.isfile(ifile):
+            tmp = ifile[:-4]
+            os.remove(tmp+'.shp')
+            os.remove(tmp+'.shx')
+            os.remove(tmp+'.prj')
+            os.remove(tmp+'.dbf')
 
-        # indata = self.mmc.ellipses
-        # geom = [Polygon(i) for i in indata]
+        gdf = self.mmc.isolines
+        gdf = gdf.set_crs(4326)
 
-        # gdict = {'geometry': geom}
-
-        # gdf = gpd.GeoDataFrame(gdict)
-        # gdf = gdf.set_crs(4326)
-
-        # gdf.to_file(filename)
+        gdf.to_file(filename)
 
         return True
 
+
+def contourtopoly(cntr):
+    """
+    Convert Matplotlib contours to Polygons.
+
+    Parameters
+    ----------
+    cntr : Matplotlib countour
+        Contour collection.
+
+    Returns
+    -------
+    plist : list
+        List of Polygon objects.
+
+    """
+    plist = []
+    pvals = []
+    vals = cntr.levels
+    for i, path in enumerate(cntr.get_paths()):
+        val = vals[i]
+        if path.to_polygons():
+            poly = None
+            for polypoints in path.to_polygons():
+                x = polypoints[:, 0]
+                y = polypoints[:, 1]
+
+                poly = Polygon([coords for coords in zip(x, y)])
+
+                if not poly.is_valid:
+                    poly = poly.buffer(0.)
+
+                plist.append(poly)
+                pvals.append(val)
+
+    return plist, pvals
 
 
 def import_for_plots(dat):
@@ -1103,6 +1150,8 @@ def _testiso():
     from pygmi.vector.dataprep import gridxyz
     from shapelysmooth import catmull_rom_smooth
     import rasterio as rio
+    from contourpy import contour_generator
+    from scipy.spatial import ConvexHull
 
     ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
 
@@ -1112,20 +1161,24 @@ def _testiso():
     y = df1.lat.to_numpy()
     z = df1.intensity.to_numpy()
 
+    uvals = np.sort(df1.intensity.unique())
+
     # Tricontour plot
-    plt.figure(dpi=150)
-    ax = plt.gca()
-    plt.plot(x, y, '.')
+    # plt.figure(dpi=150)
+    # ax = plt.gca()
+    # plt.plot(x, y, '.')
 
-    ax.tricontour(x, y, z, levels=[0, 1, 2, 3, 4, 5], colors='k')
-    cntr = ax.tricontourf(x, y, z, levels=[0, 1, 2, 3, 4, 5])
-    plt.colorbar(cntr)
+    # cntr1t = ax.tricontour(x, y, z, levels=uvals, colors='k')
+    # cntr = ax.tricontourf(x, y, z, levels=uvals)
+    # # ax.clabel(cntr1t, inline=True)
+    # plt.colorbar(cntr)
 
-    plt.show()
+    # plt.show()
 
+    # Using linear interpolation
     X = np.transpose([x, y])
     r = pdist(X)
-    dxy = r.min() / 2
+    dxy = r.min() / 10
 
     dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
 
@@ -1143,36 +1196,71 @@ def _testiso():
 
     plt.plot(x, y, '.')
 
-    zi = zi[::-1]
-    ax.contour(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5], colors='k')
-    cntr = ax.contourf(xi, yi, zi, levels=[0, 1, 2, 3, 4, 5])
+    zi = zi[::-1]+0.0001
+    cntr1 = ax.contour(xi, yi, zi, levels=uvals, colors='k', algorithm='serial')
+    cntr = ax.contourf(xi, yi, zi, levels=uvals, algorithm='serial')
+    # ax.clabel(cntr1, inline=True)
 
     plt.colorbar(cntr)
     plt.show()
 
     # New method using rasterio
-    plist = []
-    uvals = np.sort(df1.intensity.unique())
+    # plist = []
 
-    for i in uvals:
-        df2 = df1[df1.intensity >= i]
-        hull = df2.unary_union.convex_hull
-        hull = catmull_rom_smooth(hull)
+    # for i in uvals:
+    #     df2 = df1[df1.intensity >= i]
+    #     hull = df2.unary_union.convex_hull
+    #     hull = catmull_rom_smooth(hull)
 
-        plist.append(hull)
-        if len(plist) > 1:
-            plist[-2] = plist[-2].difference(hull)
+    #     plist.append(hull)
+    #     if len(plist) > 1:
+    #         plist[-2] = plist[-2].difference(hull)
 
-    gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
+    # gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
+
+    # plt.figure(dpi=250)
+    # ax = plt.gca()
+    # plt.plot(x, y, '.')
+    # gdf.plot(ax=ax, column='Intensity', legend=True,
+    #          legend_kwds={'label': 'Intensity'})
+    # plt.show()
+
+    # contour tests
+
+    # plist = contourtopoly(cntr)
+    # gdf = gpd.GeoDataFrame({"Intensity": cntr.levels[:-1]}, geometry=plist)
+
+    # ax = plt.gca()
+    # plt.plot(x, y, '.')
+
+    # gdf.plot(ax=ax, column='Intensity', legend=True, edgecolor='k',
+    #          legend_kwds={'label': 'Intensity'})
+
+    # plt.show()
+
+
+    pnts = np.transpose([x, y])
+    hull0 = ConvexHull(pnts)
+    gdict = {'Intensity': [0], 'geometry': [Polygon(pnts[hull0.vertices])]}
+
+
+    plist, pvals = contourtopoly(cntr1)
+
+    gdict['Intensity'] += pvals
+    gdict['geometry'] += plist
+
+    gdf = gpd.GeoDataFrame(gdict)
+
 
     plt.figure(dpi=250)
     ax = plt.gca()
     plt.plot(x, y, '.')
-    gdf.plot(ax=ax, column='Intensity', legend=True,
-             legend_kwds={'label': 'Intensity'})
+    gdf.plot(ax=ax, column='Intensity', legend=True, edgecolor='k',
+             facecolor='none', legend_kwds={'label': 'Intensity'})
     plt.show()
 
-    # breakpoint()
+
+    breakpoint()
 
 
 def _testfn():
@@ -1199,3 +1287,4 @@ def _testfn():
 
 if __name__ == "__main__":
     _testfn()
+    # _testiso()

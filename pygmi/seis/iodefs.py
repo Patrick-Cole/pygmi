@@ -615,13 +615,13 @@ def read_record_type_phase(i):
     tmp.component = i[6:9]
     tmp.network_code = i[10:12]
     tmp.location = i[12:14]
-    tmp.quality = i[16]
-    tmp.phase_id = i[17:24]
+    tmp.quality = i[15]
+    tmp.phase_id = i[16:24]
 
     tmp.weighting_indicator = np.nan
-    if i[25] != '_':
+    if i[24] != '_':
         tmp.weighting_indicator = str2int(i[25])
-    tmp.flag_auto_pick = i[26]
+    tmp.flag_auto_pick = i[25]
 
     tmp.hour = str2int(i[26:28])
     tmp.minutes = str2int(i[28:30])
@@ -631,7 +631,7 @@ def read_record_type_phase(i):
     param2 = i[44:50]
 
     tmp.agency = i[51:54]
-    tmp.operator = i[55:59]
+    tmp.operator = i[55:58]
     tmp.angle_of_incidence = str2float(i[59:63])
 
     residual = str2float(i[63:68])
@@ -640,19 +640,22 @@ def read_record_type_phase(i):
     tmp.epicentral_distance = str2float(i[70:75])
     tmp.azimuth_at_source = str2int(i[76:79])
 
+    tmp.travel_time_residual = np.nan
+
     if 'END' in tmp.phase_id:
         tmp.duration = str2float(param1)
-        tmp.travel_time_residual = residual
-    elif 'AMP' in tmp.phase_id:
+        tmp.magnitude_residual = residual
+    elif 'AMP' in tmp.phase_id or 'AML' in tmp.phase_id:
         tmp.amplitude = str2float(param1)
         tmp.period = str2float(param2)
+        tmp.magnitude_residual = residual
     elif 'BAZ' in tmp.phase_id:
         tmp.direction_of_approach = str2float(param1)
         tmp.phase_velocity = str2float(param2)
-        tmp.amplitude_residual = residual
+        tmp.azimuth_residual = residual
     else:
         tmp.first_motion = param1[-1]
-        tmp.magnitude_residual = residual
+        tmp.travel_time_residual = residual
 
     return tmp
 
@@ -1289,20 +1292,19 @@ class ExportSeisan(ContextModule):
             if 'END' in dat.phase_id:
                 param1 = dat.duration
                 param2 = None
-                residual = dat.travel_time_residual
-            elif 'AMP' in dat.phase_id:
+                residual = dat.magnitude_residual
+            elif 'AMP' in dat.phase_id or 'AML' in dat.phase_id:
                 param1 = dat.amplitude
                 param2 = dat.period
-                residual = None
+                residual = dat.magnitude_residual
             elif 'BAZ' in dat.phase_id:
                 param1 = dat.direction_of_approach
                 param2 = dat.phase_velocity
-                residual = dat.amplitude_residual
+                residual = dat.azimuth_residual
             else:
                 param1 = f'{dat.first_motion:>7}'
                 param2 = None
-                residual = dat.magnitude_residual
-
+                residual = dat.travel_time_residual
 
             tmp = ' '*80+'\n'
             tmp = sform('{0:5s}', dat.station_name, tmp, 2, 6)
@@ -1330,7 +1332,6 @@ class ExportSeisan(ContextModule):
             tmp = sform('{0:3d}', dat.azimuth_at_source, tmp, 77, 79, 0)
 
             self.fobj.write(tmp)
-
 
     def write_record_type_5(self, data):
         """

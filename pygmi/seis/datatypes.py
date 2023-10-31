@@ -313,7 +313,7 @@ class seisan_4():
         self.instrument_type = ' '
         self.component = ' '
         self.quality = ' '
-        self.phase_id = None
+        self.phase_id = ''
         self.weighting_indicator = None
         self.flag_auto_pick = None
         self.first_motion = ' '
@@ -337,7 +337,6 @@ class seisan_4():
         self.location = ''
         self.polarity = None
         self.back_azimuth = None
-        # self.apparent_velocity = None
         self.agency = ''
         self.operator = ''
         self.magnitude_residual = None
