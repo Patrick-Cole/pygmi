@@ -1319,8 +1319,8 @@ class ExportSeisan(ContextModule):
             tmp = sform('{0:2d}', dat.minutes, tmp, 29, 30, 0)
             tmp = sform('{0:>6.2f}', dat.seconds, tmp, 32, 37, 0)
 
-            tmp = sform('{0:7s}', param1, tmp, 38, 44)
-            tmp = sform('{0:6s}', param2, tmp, 45, 50)
+            tmp = sform('{0:7s}', str(param1), tmp, 38, 44)
+            tmp = sform('{0:6s}', str(param2), tmp, 45, 50)
 
             tmp = sform('{0:3s}', dat.agency, tmp, 52, 54)
             tmp = sform('{0:3s}', dat.operator, tmp, 56, 58)
@@ -2702,6 +2702,80 @@ class FilterSeisan(BasicModule):
         self.outdata['Seis'] = newdat
 
 
+def xlstomacro():
+    """
+    Convert an excel file to macro file.
+
+    1.  Line
+        Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+        'GMT',1x,i4,1x,2i2,1x,2i2,1x,i2,1x,'Local time'
+    2.  Line Comments
+    3.  Line Observations: Latitude, Longitude,intensity, code for scale,
+        postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+        Note the postal code is an ascii string and left justified (a10).
+
+    """
+    from geopy.geocoders import Nominatim, ArcGIS, GoogleV3
+    from pygmi.misc import ProgressBarText
+
+    piter = ProgressBarText().iter
+
+    ifile = r"D:\Workdata\seismology\macro\Copy of Intensity_Database_30September2022 (002).xlsx"
+    odir = os.path.dirname(ifile)
+
+    df = pd.read_excel(ifile, skiprows=1)
+    df2 = df.set_index(['elat', 'elon'])
+    indx = df2.index.unique()
+
+    geolocator = ArcGIS()
+
+    # geolocator = GoogleV3()
+    # tmp = geolocator.reverse('-29.129, 30.090')
+
+    for i in piter(indx):
+        df3 = df2.loc[i]
+        location = str(i)[1:-1]
+        year = df3.iloc[0].year
+        mon = df3.iloc[0].mon
+        day = df3.iloc[0].day
+        hour = int(df3.iloc[0].hour)
+        mins = int(df3.iloc[0].mins)
+
+        ofile = f'{year:4d}-{mon:02d}-{day:02d}-{hour:02d}{mins:02d}-00.macro'
+        ofile = os.path.join(odir, ofile)
+        # if os.path.exists(ofile):
+        #     continue
+
+        tmp = geolocator.reverse(location)
+        tmp = tmp.raw
+        pcode = tmp['Postal']
+        state = tmp['Region']
+        suburb = tmp['ShortLabel']
+
+        location = f'{pcode}, {suburb}, {state}'
+        location = location[:35]
+
+        txt = (f'{location:35s} {year:4d} {mon:2d}{day:2d} '
+               f'{hour-2:2d}{mins:2d} 00.0 GMT {mon:2d}{day:2d} '
+               f'{hour:2d}{mins:2d} 00.0 Local Time\n Comment\n')
+        for row in df3.iterrows():
+            lat = float(row[1].lat)
+            lon = float(row[1].lon)
+            intensity2 = float(row[1].intensity2)
+            rloc = row[1].IDP
+
+            tmp = geolocator.reverse(f'{lat}, {lon}')
+            tmp = tmp.raw
+            pcode = tmp['Postal']
+            txt += (f' {lat:9.3f}{lon:8.3f}  {intensity2:5.1f}  MM  '
+                    f'{pcode:10s}       {rloc}\n')
+
+        with open(ofile, 'w') as io:
+            io.write(txt)
+
+    print('Finished!')
+
+
 def _testfn():
     """Test."""
     import sys
@@ -2717,7 +2791,6 @@ def _testfn():
 
     data = tmp.outdata['Seis']
 
-
     tmp = ExportSeisan()
     tmp.indata['Seis'] = data
     tmp.run(ofile)
@@ -2726,4 +2799,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    # _testfn()
+    xlstomacro()
