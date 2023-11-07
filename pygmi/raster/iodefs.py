@@ -1594,7 +1594,7 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             ET.SubElement(meta, 'MDI', key='STATISTICS_MEDIAN').text = dmedian
             ET.SubElement(meta, 'MDI', key='STATISTICS_MINIMUM').text = dmin
             ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORX').text = '1'
-            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORY').text = '2'
+            ET.SubElement(meta, 'MDI', key='STATISTICS_SKIPFACTORY').text = '1'
             ET.SubElement(meta, 'MDI', key='STATISTICS_STDDEV').text = dstd
 
             # meta[:] = sorted(meta, key=lambda x: x.tag)
