@@ -1538,8 +1538,8 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
                     adatetxt = datai.datetime.strftime('%Y-%m-%d %H:%M:%S')
                     out.update_tags(i+1, AcquisitionDate=adatetxt)
 
-                if out.tags(i+1) == {}:
-                    out.update_tags(i+1, tmp='1')
+                if updatestats is True:
+                    out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
 
     if updatestats is True:
         dcov = None  # Disabled because it uses too much memory.
@@ -1584,12 +1584,11 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             meta = child.find('Metadata')
             if meta is None:
                 meta = ET.SubElement(child, 'Metadata')
-            breakpoint()
             if dcov is not None:
                 dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
                 ET.SubElement(meta, 'MDI',
                               key='STATISTICS_COVARIANCES').text = dcovi
-            ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
+            # ET.SubElement(meta, 'MDI', key='STATISTICS_EXCLUDEDVALUES')
             ET.SubElement(meta, 'MDI', key='STATISTICS_MAXIMUM').text = dmax
             ET.SubElement(meta, 'MDI', key='STATISTICS_MEAN').text = dmean
             ET.SubElement(meta, 'MDI', key='STATISTICS_MEDIAN').text = dmedian
