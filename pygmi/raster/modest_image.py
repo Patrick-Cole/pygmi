@@ -370,11 +370,12 @@ class ModestImage(mi.AxesImage):
             colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
             colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
 
-        # if np.ma.isMaskedArray(self._A):
-        #     mask = np.logical_or(self._A[:, :, 0].mask,
-        #                          self._A[:, :, 1].mask)
-        #     mask = np.logical_or(mask, self._A[:, :, 2].mask)
-        #     colormap[:, :, 3] = np.logical_not(mask)
+        if np.ma.isMaskedArray(self._A):
+            colormap = colormap.filled(0)
+            mask = np.logical_and(self._A[:, :, 0].mask,
+                                  self._A[:, :, 1].mask)
+            mask = np.logical_and(mask, self._A[:, :, 2].mask)
+            colormap[:, :, 3] = np.logical_not(mask)
         return colormap
 
     def draw_sunshade(self, colormap=None):

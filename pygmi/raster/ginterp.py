@@ -2062,8 +2062,16 @@ def _testfn():
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r'd:\WorkData\testdata.hdr'
-    data = iodefs.get_raster(ifile)
+    # ifile = r'd:\WorkData\testdata.hdr'
+    # data = iodefs.get_raster(ifile)
+
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_amph_gt_2.tif"
+    data1 = iodefs.get_raster(ifile)
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferric_gt_2.tif"
+    data2 = iodefs.get_raster(ifile)
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferrous_gt_2.tif"
+    data3 = iodefs.get_raster(ifile)
+    data = data1+data2+data3
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
