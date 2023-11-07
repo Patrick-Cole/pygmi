@@ -913,11 +913,11 @@ class PlotInterp(BasicModule):
         gbox_3.setLayout(vbl_3)
 
         gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                            QtWidgets.QSizePolicy.Preferred)
+                             QtWidgets.QSizePolicy.Preferred)
         gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                            QtWidgets.QSizePolicy.Preferred)
+                             QtWidgets.QSizePolicy.Preferred)
         gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                            QtWidgets.QSizePolicy.Preferred)
+                             QtWidgets.QSizePolicy.Preferred)
         self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                     QtWidgets.QSizePolicy.Preferred)
 
@@ -957,9 +957,9 @@ class PlotInterp(BasicModule):
         self.cmb_cbar.addItem('terrain')
         self.cmb_cbar.addItems(tmp)
         self.cmb_dtype.addItems(['Single Colour Map', 'Contour',
-                                  'RGB Ternary', 'CMY Ternary'])
+                                 'RGB Ternary', 'CMY Ternary'])
         self.cmb_htype.addItems(['Linear with Percent Clip',
-                                  'Histogram Equalization'])
+                                 'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Display')
 

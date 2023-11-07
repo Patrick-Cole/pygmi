@@ -682,7 +682,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
 
-        fstyle = (QtWidgets.QFrame.Shape.Box | QtWidgets.QFrame.Shadow.Plain)
+        fstyle = QtWidgets.QFrame.Shape.Box | QtWidgets.QFrame.Shadow.Plain
         self.textbrowser_datainfo.setFrameStyle(fstyle)
         self.textbrowser_processlog.setFrameStyle(fstyle)
         self.graphics_view.setFrameStyle(fstyle)
@@ -771,7 +771,8 @@ class MainWidget(QtWidgets.QMainWindow):
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
                 item.update_indata()
-                if item.my_class.indata == {} and item.my_class.is_import is False:
+                if (item.my_class.indata == {} and
+                        item.my_class.is_import is False):
                     item.setBrush(self.scene.my_item_color)
 
     def keyPressEvent(self, event):
@@ -1259,7 +1260,7 @@ class Startup(QtWidgets.QDialog):
         self.lbl_info = QtWidgets.QLabel(self)
         self.lbl_pic = QtWidgets.QLabel(self)
         self.lbl_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
-                                               r'/images/logo256.ico'))
+                                             r'/images/logo256.ico'))
         self.lbl_info.setScaledContents(True)
         self.pbar = QtWidgets.QProgressBar(self)
 

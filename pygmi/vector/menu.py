@@ -85,7 +85,8 @@ class MenuWidget():
         # Context menus
         context_menu['Vector'].addSeparator()
 
-        self.action_metadata = QtWidgets.QAction('Display/Edit Vector Metadata')
+        self.action_metadata = QtWidgets.QAction('Display/Edit Vector '
+                                                 'Metadata')
         context_menu['Vector'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 

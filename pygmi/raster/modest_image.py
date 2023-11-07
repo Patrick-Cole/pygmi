@@ -741,7 +741,6 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     im.set_data(X)
     im.set_alpha(alpha)
 
-
     axes._set_artist_props(im)
 
     axes.format_coord = lambda x, y: f'x = {x:,.5f}, y = {y:,.5f}'

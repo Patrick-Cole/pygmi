@@ -168,7 +168,7 @@ class ImportData(BasicModule):
         self.lw_tnames = QtWidgets.QListWidget()
         self.lbl_ftype = QtWidgets.QLabel('File Type:')
         self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
-                                              'southern hemisphere')
+                                                 'southern hemisphere')
 
         self.setupui()
 
@@ -360,7 +360,7 @@ class ImportBatch(BasicModule):
         self.lw_tnames = QtWidgets.QListWidget()
         self.lbl_ftype = QtWidgets.QLabel('File Type:')
         self.cb_ensuresutm = QtWidgets.QCheckBox('Ensure WGS84 UTM is for '
-                                              'southern hemisphere')
+                                                 'southern hemisphere')
 
         self.setupui()
 
@@ -554,7 +554,7 @@ class ImportBatch(BasicModule):
         self.saveobj(self.le_sfile)
         self.saveobj(self.lw_tnames)
         self.saveobj(self.lbl_ftype)
-        self.saveobj(self.cb_ensuresutm )
+        self.saveobj(self.cb_ensuresutm)
 
 
 class ImportSentinel5P(BasicModule):
@@ -1072,7 +1072,8 @@ class ExportBatch(ContextModule):
         self.cmb_red.addItems(bnames)
         self.cmb_green.addItems(bnames)
         self.cmb_blue.addItems(bnames)
-        self.cmb_sunshade.addItems(['None', 'External File (first band)']+bnames)
+        self.cmb_sunshade.addItems(['None', 'External File (first band)'] +
+                                   bnames)
 
         tmp = self.exec()
 

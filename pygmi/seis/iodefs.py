@@ -2756,8 +2756,8 @@ def xlstomacro():
         location = location[:35]
 
         txt = (f'{location:35s} {year:4d} {mon:2d}{day:2d} '
-               f'{hour-2:2d}{mins:2d} 00.0 GMT {mon:2d}{day:2d} '
-               f'{hour:2d}{mins:2d} 00.0 Local Time\n Comment\n')
+               f'{hour:2d}{mins:2d} 00.0 GMT {mon:2d}{day:2d} '
+               f'{hour-2:2d}{mins:2d} 00.0 Local Time\n Comment\n')
         for row in df3.iterrows():
             lat = float(row[1].lat)
             lon = float(row[1].lon)

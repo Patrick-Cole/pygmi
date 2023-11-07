@@ -1197,7 +1197,8 @@ def _testiso():
     plt.plot(x, y, '.')
 
     zi = zi[::-1]+0.0001
-    cntr1 = ax.contour(xi, yi, zi, levels=uvals, colors='k', algorithm='serial')
+    cntr1 = ax.contour(xi, yi, zi, levels=uvals, colors='k',
+                       algorithm='serial')
     cntr = ax.contourf(xi, yi, zi, levels=uvals, algorithm='serial')
     # ax.clabel(cntr1, inline=True)
 
@@ -1238,11 +1239,9 @@ def _testiso():
 
     # plt.show()
 
-
     pnts = np.transpose([x, y])
     hull0 = ConvexHull(pnts)
     gdict = {'Intensity': [0], 'geometry': [Polygon(pnts[hull0.vertices])]}
-
 
     plist, pvals = contourtopoly(cntr1)
 
@@ -1251,14 +1250,12 @@ def _testiso():
 
     gdf = gpd.GeoDataFrame(gdict)
 
-
     plt.figure(dpi=250)
     ax = plt.gca()
     plt.plot(x, y, '.')
     gdf.plot(ax=ax, column='Intensity', legend=True, edgecolor='k',
              facecolor='none', legend_kwds={'label': 'Intensity'})
     plt.show()
-
 
     breakpoint()
 

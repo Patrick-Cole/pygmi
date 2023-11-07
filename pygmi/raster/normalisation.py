@@ -43,13 +43,12 @@ class Normalisation(BasicModule):
 
         self.rb_interval = QtWidgets.QRadioButton('Interval [0 1]')
         self.rb_mean = QtWidgets.QRadioButton('Mean: zero,  '
-                                                       'Standard deviation: '
-                                                       'unity')
+                                              'Standard deviation: unity')
         self.rb_median = QtWidgets.QRadioButton('Median: zero,  '
-                                                         'Median absolute '
-                                                         'deviation: unity')
+                                                'Median absolute '
+                                                'deviation: unity')
         self.rb_8bit = QtWidgets.QRadioButton('8-bit histogram '
-                                                       'equalisation [0 255]')
+                                              'equalisation [0 255]')
 
         self.setupui()
 

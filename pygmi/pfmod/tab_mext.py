@@ -379,7 +379,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         ctxt = str(self.cmb_dataset.currentText())
-        if ctxt not in ('None', u''):
+        if ctxt not in ('None', ''):
             curgrid = self.parent.inraster[ctxt]
 
             crows, ccols = curgrid.data.shape

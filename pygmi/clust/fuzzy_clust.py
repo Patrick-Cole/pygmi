@@ -66,9 +66,9 @@ class FuzzyClust(BasicModule):
         self.fexp = 1.5
 
         self.cmb_alg.addItems(['fuzzy c-means',
-                                 'advanced fuzzy c-means',
-                                 'Gustafson-Kessel'])
-#                                , 'Gath-Geva'])
+                               'advanced fuzzy c-means',
+                               'Gustafson-Kessel'])  # , 'Gath-Geva'])
+
         self.cmb_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 

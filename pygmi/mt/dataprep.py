@@ -1188,6 +1188,7 @@ class EditEDI(BasicModule):
 
         """
 
+
 class MySlider(QtWidgets.QSlider):
     """
     My Slider.
@@ -1548,8 +1549,9 @@ class Occam1D(BasicModule):
                 occam_path += '.exe'
 
             if not os.path.exists(occam_path):
-                text = ('No Occam1D executable found. Please place it in the bin '
-                        'directory. You may need to obtain the source code from '
+                text = ('No Occam1D executable found. Please place it in the '
+                        'bin directory. You may need to obtain the source '
+                        'code from '
                         'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
                         'and compile it. It should be called occam1d for '
                         'non-windows platforms and occam1d.exe for windows.')
@@ -1559,7 +1561,8 @@ class Occam1D(BasicModule):
 
             self.mmc.figure.clear()
             self.mmc.figure.set_facecolor('r')
-            self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
+            self.mmc.figure.suptitle('Busy, please wait...', fontsize=14,
+                                     y=0.5)
             self.mmc.figure.canvas.draw()
             QtWidgets.QApplication.processEvents()
 

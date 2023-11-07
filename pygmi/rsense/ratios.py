@@ -68,10 +68,10 @@ class SatRatios(BasicModule):
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
         self.cmb_sensor.addItems(['ASTER',
-                                    'Landsat 8 and 9 (OLI)',
-                                    'Landsat 7 (ETM+)',
-                                    'Landsat 4 and 5 (TM)',
-                                    'Sentinel-2', 'WorldView', 'Unknown'])
+                                  'Landsat 8 and 9 (OLI)',
+                                  'Landsat 7 (ETM+)',
+                                  'Landsat 4 and 5 (TM)',
+                                  'Sentinel-2', 'WorldView', 'Unknown'])
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -373,15 +373,15 @@ class ConditionIndices(BasicModule):
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
         self.cmb_index.addItems(['EVI',
-                                   'NDVI',
-                                   'MSAVI2'])
+                                 'NDVI',
+                                 'MSAVI2'])
 
         self.cmb_sensor.addItems(['ASTER',
-                                    'Landsat 8 and 9 (OLI)',
-                                    'Landsat 7 (ETM+)',
-                                    'Landsat 4 and 5 (TM)',
-                                    'Landsat (All)',
-                                    'Sentinel-2', 'WorldView', 'Unknown'])
+                                  'Landsat 8 and 9 (OLI)',
+                                  'Landsat 7 (ETM+)',
+                                  'Landsat 4 and 5 (TM)',
+                                  'Landsat (All)',
+                                  'Sentinel-2', 'WorldView', 'Unknown'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)

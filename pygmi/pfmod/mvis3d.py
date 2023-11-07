@@ -29,15 +29,10 @@ import os
 import sys
 import numpy as np
 
-# The next two lines are fixes for types in PyOpenGL. They are not used, so
-# just avoid a crash when these types are not on certain platforms.
-np.float128 = np.float64
-np.complex256 = np.complex128
-
 from PyQt5 import QtCore, QtWidgets, QtOpenGL, QtGui
 from OpenGL import GL
 from OpenGL import GLU
-from OpenGL import GLUT
+# from OpenGL import GLUT
 from OpenGL.arrays import vbo
 from scipy.ndimage import zoom, convolve
 from numba import jit
@@ -876,7 +871,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         None.
 
         """
-        GLUT.glutInit()
+        # GLUT.glutInit()
         ctmp = QtGui.QColor.fromCmykF(0., 0., 0., 0.0)
         self.qglClearColor(ctmp)
         self.initGeometry()
@@ -1079,25 +1074,25 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         GL.glColor3f(0, 0, 0)
 
-        self.print_string(xmax+6, ymax, zmin, 'X')
-        self.print_string(xmin, ymin-10, zmin, 'Y')
-        self.print_string(xmin, ymax, zmax+6, 'Z')
+        # self.print_string(xmax+6, ymax, zmin, 'X')
+        # self.print_string(xmin, ymin-10, zmin, 'Y')
+        # self.print_string(xmin, ymax, zmax+6, 'Z')
 
-        dz1 = (self.zmax-self.zmin)/5
+        # dz1 = (self.zmax-self.zmin)/5
 
-        for i in np.arange(xmin, xmax-dx, dx):
-            text = str(round((i+dx)*self.vmult+self.vadd[0], 1))
-            self.print_string(i+dx, ymax+4, zmin, text)
+        # for i in np.arange(xmin, xmax-dx, dx):
+        #     text = str(round((i+dx)*self.vmult+self.vadd[0], 1))
+        #     self.print_string(i+dx, ymax+4, zmin, text)
 
-        for i in np.arange(ymin, ymax-dy, dy):
-            text = str(round((i+dy)*self.vmult+self.vadd[1], 1))
-            self.print_string(xmax, i+dy, zmin, text)
+        # for i in np.arange(ymin, ymax-dy, dy):
+        #     text = str(round((i+dy)*self.vmult+self.vadd[1], 1))
+        #     self.print_string(xmax, i+dy, zmin, text)
 
-        tmp = self.zmin
-        for i in np.arange(zmin, zmax-dz, dz):
-            tmp += dz1
-            text = str(round(tmp, 1))
-            self.print_string(xmin, ymax+4, i+dz, text)
+        # tmp = self.zmin
+        # for i in np.arange(zmin, zmax-dz, dz):
+        #     tmp += dz1
+        #     text = str(round(tmp, 1))
+        #     self.print_string(xmin, ymax+4, i+dz, text)
 
         GL.glEnable(GL.GL_LIGHTING)
 
@@ -1122,9 +1117,9 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         """
         GL.glRasterPos3f(x, y, z)
-        for _, ch in enumerate(text):
-            GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
-                                     ctypes.c_int(ord(ch)))
+        # for _, ch in enumerate(text):
+        #     GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
+        #                              ctypes.c_int(ord(ch)))
 
     def resizeGL(self, width, height):
         """

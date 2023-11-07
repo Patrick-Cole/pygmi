@@ -1474,7 +1474,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         curtext = self.cmb_overview.currentText()
         cindex = self.cmb_overview.findText(curtext,
-                                              QtCore.Qt.MatchFixedString)
+                                            QtCore.Qt.MatchFixedString)
         if cindex == -1:
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
@@ -2841,6 +2841,7 @@ class ImportPicture(BasicModule):
         None.
 
         """
+
 
 def gridmatch2(cgrv, rgrv):
     """

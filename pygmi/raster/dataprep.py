@@ -586,7 +586,7 @@ class DataMerge(BasicModule):
         None.
 
         """
-        ext = ('ESRI Shapefile (*.shp);;')
+        ext = 'ESRI Shapefile (*.shp);;'
 
         sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)

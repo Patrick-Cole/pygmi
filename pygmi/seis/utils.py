@@ -141,7 +141,6 @@ class CorrectDescriptions(BasicModule):
         """
         self.saveobj(self.le_textfile)
 
-
     def acceptall(self):
         """
         Accept option.

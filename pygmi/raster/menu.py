@@ -148,11 +148,13 @@ class MenuWidget():
         context_menu['Raster'].addAction(self.action_basic_statistics)
         self.action_basic_statistics.triggered.connect(self.basic_stats)
 
-        self.action_show_raster_data = QtWidgets.QAction('Show Raster Data (Simple)')
+        self.action_show_raster_data = QtWidgets.QAction('Show Raster Data '
+                                                         '(Simple)')
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_raster_data2 = QtWidgets.QAction('Show Raster Data (Advanced)')
+        self.action_show_raster_data2 = QtWidgets.QAction('Show Raster Data '
+                                                          '(Advanced)')
         context_menu['Raster'].addAction(self.action_show_raster_data2)
         self.action_show_raster_data2.triggered.connect(self.show_raster_data2)
 

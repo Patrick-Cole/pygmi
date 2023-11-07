@@ -77,7 +77,7 @@ class EquationEditor(BasicModule):
         lbl_2 = QtWidgets.QLabel('Output Equation:')
         lbl_3 = QtWidgets.QLabel('Output Data Type:')
         self.cmb_dtype.addItems(['auto', 'uint8', 'int16', 'int32',
-                             'float32', 'float64'])
+                                 'float32', 'float64'])
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)

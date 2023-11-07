@@ -311,6 +311,7 @@ class BasicModule(QtWidgets.QDialog):
 
         return
 
+
 class ContextModule(QtWidgets.QDialog):
     """
     Context Module.

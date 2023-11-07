@@ -1517,7 +1517,6 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
-
                 if 'wavelength' in rmeta:
                     out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
                     wavelength.append(rmeta['wavelength'])
@@ -1538,6 +1537,9 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
                 if datai.datetime != datetime.datetime(1900, 1, 1):
                     adatetxt = datai.datetime.strftime('%Y-%m-%d %H:%M:%S')
                     out.update_tags(i+1, AcquisitionDate=adatetxt)
+
+                if out.tags(i+1) == {}:
+                    out.update_tags(i+1, tmp='1')
 
     if updatestats is True:
         dcov = None  # Disabled because it uses too much memory.
@@ -1582,6 +1584,7 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             meta = child.find('Metadata')
             if meta is None:
                 meta = ET.SubElement(child, 'Metadata')
+            breakpoint()
             if dcov is not None:
                 dcovi = str(dcov[:, band].tolist()).replace(' ', '')[1:-1]
                 ET.SubElement(meta, 'MDI',

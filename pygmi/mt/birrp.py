@@ -148,7 +148,6 @@ class BIRRP(BasicModule):
 
         """
         buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration '
                                                'file')
         pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')
@@ -163,13 +162,13 @@ class BIRRP(BasicModule):
         self.cmb_nout.addItems(['2 = EX, EY', '3 = EX, EY, BZ'])
         self.cmb_ninp.addItems(['2 = BX, BY'])
         self.cmb_imode.addItems(['0 = separate ASCII files',
-                             '1 = separate binary files',
-                             '2 = single ASCII file',
-                             '3 = TS ASCII format'])
+                                 '1 = separate binary files',
+                                 '2 = single ASCII file',
+                                 '3 = TS ASCII format'])
         self.cmb_jmode.addItems(['0 = by points', '1 = by date/time'])
         self.cmb_nz.addItems(['0 = separate from E',
-                          '1 = E threshold',
-                          '2 = E and B threshold'])
+                              '1 = E threshold',
+                              '2 = E and B threshold'])
         self.cmb_nlev.addItems(['-3', '-2', '-1', '0', '1', '2', '3'])
 
         for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:

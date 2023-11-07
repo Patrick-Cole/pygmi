@@ -1004,7 +1004,6 @@ def _testfn2():
     from IPython import get_ipython
     # get_ipython().run_line_magic('matplotlib', 'qt5')
 
-
     np1 = [20.77, 25, 0]
     # np1 = [150, 87, 1]
     xxx, yyy, xxx2, yyy2 = beachball(np1, 30, -30, 1, True)

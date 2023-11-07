@@ -504,9 +504,10 @@ class ProcFeatures(BasicModule):
 
         self.cmb_ratios = QtWidgets.QComboBox()
         self.cb_rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
-                                              'ratio, filter out values less '
-                                              'than 1.')
-        self.cb_filtercheck = QtWidgets.QCheckBox('Filter Albedo and Vegetation')
+                                                 'ratio, filter out values '
+                                                 'less than 1.')
+        self.cb_filtercheck = QtWidgets.QCheckBox('Filter Albedo and '
+                                                  'Vegetation')
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
