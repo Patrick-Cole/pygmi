@@ -838,6 +838,8 @@ class PlotInterp(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.units = {}
+        self.clippercu = {}
+        self.clippercl = {}
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
@@ -849,6 +851,7 @@ class PlotInterp(BasicModule):
         self.cmb_band2 = QtWidgets.QComboBox()
         self.cmb_band3 = QtWidgets.QComboBox()
         self.cmb_bands = QtWidgets.QComboBox()
+        self.cmb_bandh = QtWidgets.QComboBox()
         self.cmb_htype = QtWidgets.QComboBox()
         self.le_lineclipu = QtWidgets.QLineEdit()
         self.le_lineclipl = QtWidgets.QLineEdit()
@@ -915,7 +918,7 @@ class PlotInterp(BasicModule):
         gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                              QtWidgets.QSizePolicy.Preferred)
         gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                             QtWidgets.QSizePolicy.Preferred)
+                              QtWidgets.QSizePolicy.Preferred)
         gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                              QtWidgets.QSizePolicy.Preferred)
         self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
@@ -973,6 +976,7 @@ class PlotInterp(BasicModule):
         vbl_2.addWidget(self.cmb_band3)
         vbl_raster.addWidget(gbox_2)
 
+        vbl_3.addWidget(self.cmb_bandh)
         vbl_3.addWidget(self.cmb_htype)
         vbl_3.addWidget(self.le_lineclipl)
         vbl_3.addWidget(self.le_lineclipu)
@@ -1089,6 +1093,16 @@ class PlotInterp(BasicModule):
         txt = str(self.cmb_cbar.currentText())
         self.mmc.cbar = colormaps[txt]
         self.mmc.update_graph()
+
+    def change_clipband(self):
+        """
+        Change the clip percentage band.
+
+        Returns
+        -------
+        None.
+
+        """
 
     def change_dtype(self):
         """
@@ -1358,14 +1372,20 @@ class PlotInterp(BasicModule):
         self.mmc.hband[3] = data[0].dataid
 
         blist = []
+        self.clippercu = {}
+        self.clippercl = {}
+
         for i in data:
             blist.append(i.dataid)
+            self.clippercu[i.dataid] = 0.0
+            self.clippercl[i.dataid] = 0.0
 
         try:
             self.cmb_band1.currentIndexChanged.disconnect()
             self.cmb_band2.currentIndexChanged.disconnect()
             self.cmb_band3.currentIndexChanged.disconnect()
             self.cmb_bands.currentIndexChanged.disconnect()
+            self.cmb_bandh.currentIndexChanged.disconnect()
         except TypeError:
             pass
 
@@ -1373,15 +1393,18 @@ class PlotInterp(BasicModule):
         self.cmb_band2.clear()
         self.cmb_band3.clear()
         self.cmb_bands.clear()
+        self.cmb_bandh.clear()
         self.cmb_band1.addItems(blist)
         self.cmb_band2.addItems(blist)
         self.cmb_band3.addItems(blist)
         self.cmb_bands.addItems(blist)
+        self.cmb_bandh.addItems(blist)
 
         self.cmb_band1.currentIndexChanged.connect(self.change_red)
         self.cmb_band2.currentIndexChanged.connect(self.change_green)
         self.cmb_band3.currentIndexChanged.connect(self.change_blue)
         self.cmb_bands.currentIndexChanged.connect(self.change_sun)
+        self.cmb_bandh.currentIndexChanged.connect(self.change_clipband)
 
     def move(self, event):
         """
@@ -1544,6 +1567,9 @@ class PlotInterp(BasicModule):
 
             cmin = red.min()
             cmax = red.max()
+            red = red.filled(0)
+            green = green.filled(0)
+            blue = blue.filled(0)
 
             img = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
             img[:, :, 3] = mask*254+1
