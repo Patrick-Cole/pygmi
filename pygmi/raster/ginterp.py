@@ -1529,8 +1529,8 @@ class PlotInterp(BasicModule):
             green = dat[1]
             blue = dat[2]
 
-            mask = np.logical_or(red.mask, green.mask)
-            mask = np.logical_or(mask, blue.mask)
+            mask = np.logical_and(red.mask, green.mask)
+            mask = np.logical_and(mask, blue.mask)
             mask = np.logical_not(mask)
 
             if htype == 'Histogram Equalization':
@@ -2065,7 +2065,7 @@ def _testfn():
     # ifile = r'd:\WorkData\testdata.hdr'
     # data = iodefs.get_raster(ifile)
 
-    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_amph_gt_2.tif"
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_augite_gt_2.tif"
     data1 = iodefs.get_raster(ifile)
     ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferric_gt_2.tif"
     data2 = iodefs.get_raster(ifile)
