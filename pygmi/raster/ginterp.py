@@ -326,6 +326,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         x1, x2, y1, y2 = self.data[0].extent
         self.image.set_visible(False)
+        clippercu = self.clippercu[self.hband[0]]
+        clippercl = self.clippercl[self.hband[0]]
 
         for i in self.data:
             if i.dataid == self.hband[0]:
@@ -333,9 +335,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if self.htype == 'Histogram Equalization':
             dat = histeq(dat)
-        elif self.clippercl > 0. or self.clippercu > 0.:
-            dat, _, _ = histcomp(dat, perc=self.clippercl,
-                                 uperc=self.clippercu)
+        elif clippercl > 0. or clippercu > 0.:
+            dat, _, _ = histcomp(dat, perc=clippercl,
+                                 uperc=clippercu)
 
         xdim = (x2-x1)/dat.data.shape[1]/2
         ydim = (y2-y1)/dat.data.shape[0]/2
@@ -552,15 +554,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.image.dohisteq = True
         else:
             self.image.dohisteq = False
+            clippercu = self.clippercu[self.hband[0]]
+            clippercl = self.clippercl[self.hband[0]]
             lclip[0], uclip[0] = np.percentile(dat[:, :, 0].compressed(),
-                                               [self.clippercl,
-                                                100-self.clippercu])
+                                               [clippercl, 100-clippercu])
+            clippercu = self.clippercu[self.hband[1]]
+            clippercl = self.clippercl[self.hband[1]]
             lclip[1], uclip[1] = np.percentile(dat[:, :, 1].compressed(),
-                                               [self.clippercl,
-                                                100-self.clippercu])
+                                               [clippercl, 100-clippercu])
+            clippercu = self.clippercu[self.hband[2]]
+            clippercl = self.clippercl[self.hband[2]]
             lclip[2], uclip[2] = np.percentile(dat[:, :, 2].compressed(),
-                                               [self.clippercl,
-                                                100-self.clippercu])
+                                               [clippercl, 100-clippercu])
 
             self.image.rgbclip = [[lclip[0], uclip[0]],
                                   [lclip[1], uclip[1]],
@@ -568,7 +573,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for i in range(3):
             hdata = dat[:, :, i]
-            if ((self.clippercu > 0. or self.clippercl > 0.) and
+            clippercu = self.clippercu[self.hband[i]]
+            clippercl = self.clippercl[self.hband[i]]
+
+            if ((clippercu > 0. or clippercl > 0.) and
                     self.fullhist is True and
                     self.htype != 'Histogram Equalization'):
                 self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
@@ -634,6 +642,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.clipvall = [None, None, None]
         self.image.rgbmode = self.gmode
 
+        clippercu = self.clippercu[self.hband[0]]
+        clippercl = self.clippercl[self.hband[0]]
+
         for i in self.data:
             if i.dataid == self.hband[0]:
                 pseudo = i.data
@@ -665,15 +676,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             self.image.dohisteq = False
             pseudoc = pseudo.compressed()
-            lclip, uclip = np.percentile(pseudoc, [self.clippercl,
-                                                   100-self.clippercu])
+            lclip, uclip = np.percentile(pseudoc, [clippercl, 100-clippercu])
 
         self.image.cmap = self.cbar
         self.image.set_clim(lclip, uclip)
         self.image.set_clim(lclip, uclip)
 
         self.newcmp = self.cbar
-        if ((self.clippercu > 0. or self.clippercl > 0.) and
+        if ((clippercu > 0. or clippercl > 0.) and
                 self.fullhist is True and
                 self.htype != 'Histogram Equalization'):
             self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none')
@@ -918,7 +928,7 @@ class PlotInterp(BasicModule):
         gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                              QtWidgets.QSizePolicy.Preferred)
         gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                              QtWidgets.QSizePolicy.Preferred)
+                             QtWidgets.QSizePolicy.Preferred)
         gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
                              QtWidgets.QSizePolicy.Preferred)
         self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
@@ -976,8 +986,8 @@ class PlotInterp(BasicModule):
         vbl_2.addWidget(self.cmb_band3)
         vbl_raster.addWidget(gbox_2)
 
-        vbl_3.addWidget(self.cmb_bandh)
         vbl_3.addWidget(self.cmb_htype)
+        vbl_3.addWidget(self.cmb_bandh)
         vbl_3.addWidget(self.le_lineclipl)
         vbl_3.addWidget(self.le_lineclipu)
         vbl_3.addWidget(self.cb_histtype)
@@ -1019,54 +1029,6 @@ class PlotInterp(BasicModule):
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
 
-    def change_lclip(self):
-        """
-        Change the linear clip percentage.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = self.le_lineclipu.text()
-        try:
-            uclip = float(txt)
-        except ValueError:
-            if txt == '':
-                uclip = 0.0
-            else:
-                uclip = self.mmc.clippercu
-            self.le_lineclipu.setText(str(uclip))
-
-        if uclip < 0.0 or uclip >= 100.0:
-            uclip = self.mmc.clippercu
-            self.le_lineclipu.setText(str(uclip))
-
-        txt = self.le_lineclipl.text()
-        try:
-            lclip = float(txt)
-        except ValueError:
-            if txt == '':
-                lclip = 0.0
-            else:
-                lclip = self.mmc.clippercl
-            self.le_lineclipl.setText(str(lclip))
-
-        if lclip < 0.0 or lclip >= 100.0:
-            lclip = self.mmc.clippercl
-            self.le_lineclipl.setText(str(lclip))
-
-        if (lclip+uclip) >= 100.:
-            clip = self.mmc.clippercu
-            self.le_lineclipu.setText(str(clip))
-            clip = self.mmc.clippercl
-            self.le_lineclipl.setText(str(clip))
-            return
-
-        self.mmc.clippercu = uclip
-        self.mmc.clippercl = lclip
-
-        self.change_dtype()
 
     def change_blue(self):
         """
@@ -1078,6 +1040,7 @@ class PlotInterp(BasicModule):
 
         """
         txt = str(self.cmb_band3.currentText())
+        self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[2] = txt
         self.mmc.init_graph()
 
@@ -1103,6 +1066,9 @@ class PlotInterp(BasicModule):
         None.
 
         """
+        dattxt = self.cmb_bandh.currentText()
+        self.le_lineclipl.setText(str(self.clippercl[dattxt]))
+        self.le_lineclipu.setText(str(self.clippercu[dattxt]))
 
     def change_dtype(self):
         """
@@ -1188,6 +1154,44 @@ class PlotInterp(BasicModule):
                                                           self.mmc.revent)
         self.mmc.init_graph()
 
+
+    def change_green(self):
+        """
+        Change the green or second band.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = str(self.cmb_band2.currentText())
+        self.cmb_bandh.setCurrentText(txt)
+        self.mmc.hband[1] = txt
+        self.mmc.init_graph()
+
+    def change_htype(self):
+        """
+        Change the histogram stretch to apply to the normal data.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = str(self.cmb_htype.currentText())
+
+        if txt == 'Histogram Equalization':
+            self.le_lineclipl.hide()
+            self.le_lineclipu.hide()
+            self.cmb_bandh.hide()
+        else:
+            self.le_lineclipl.show()
+            self.le_lineclipu.show()
+            self.cmb_bandh.show()
+
+        self.mmc.htype = txt
+        self.mmc.update_graph()
+
     def change_kval(self):
         """
         Change the CMYK K value.
@@ -1198,6 +1202,88 @@ class PlotInterp(BasicModule):
 
         """
         self.mmc.kval = float(self.kslider.value())/100.
+        self.mmc.update_graph()
+
+    def change_lclip(self):
+        """
+        Change the linear clip percentage.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.le_lineclipu.text()
+        dattxt = self.cmb_bandh.currentText()
+
+        try:
+            uclip = float(txt)
+        except ValueError:
+            if txt == '':
+                uclip = 0.0
+            else:
+                uclip = self.mmc.clippercu[dattxt]
+            self.le_lineclipu.setText(str(uclip))
+
+        if uclip < 0.0 or uclip >= 100.0:
+            uclip = self.mmc.clippercu[dattxt]
+            self.le_lineclipu.setText(str(uclip))
+
+        txt = self.le_lineclipl.text()
+        try:
+            lclip = float(txt)
+        except ValueError:
+            if txt == '':
+                lclip = 0.0
+            else:
+                lclip = self.mmc.clippercl[dattxt]
+            self.le_lineclipl.setText(str(lclip))
+
+        if lclip < 0.0 or lclip >= 100.0:
+            lclip = self.mmc.clippercl[dattxt]
+            self.le_lineclipl.setText(str(lclip))
+
+        if (lclip+uclip) >= 100.:
+            clip = self.mmc.clippercu[dattxt]
+            self.le_lineclipu.setText(str(clip))
+            clip = self.mmc.clippercl[dattxt]
+            self.le_lineclipl.setText(str(clip))
+            return
+
+        # self.mmc.clippercu = uclip
+        # self.mmc.clippercl = lclip
+        self.clippercl[dattxt] = lclip
+        self.clippercu[dattxt] = uclip
+        self.mmc.clippercu = self.clippercu
+        self.mmc.clippercl = self.clippercl
+
+        self.change_dtype()
+
+    def change_red(self):
+        """
+        Change the red or first band.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = str(self.cmb_band1.currentText())
+        self.cmb_bandh.setCurrentText(txt)
+        self.mmc.hband[0] = txt
+        self.mmc.init_graph()
+
+    def change_sun(self):
+        """
+        Change the sunshade band.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = str(self.cmb_bands.currentText())
+        self.mmc.hband[3] = txt
         self.mmc.update_graph()
 
     def change_sun_checkbox(self):
@@ -1251,66 +1337,6 @@ class PlotInterp(BasicModule):
         self.mmc.cell = self.sslider.value()
         self.mmc.alpha = float(self.aslider.value())/100.
         self.mmc.update_shade()
-
-    def change_green(self):
-        """
-        Change the green or second band.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = str(self.cmb_band2.currentText())
-        self.mmc.hband[1] = txt
-        self.mmc.init_graph()
-
-    def change_htype(self):
-        """
-        Change the histogram stretch to apply to the normal data.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = str(self.cmb_htype.currentText())
-
-        if txt == 'Histogram Equalization':
-            self.le_lineclipl.hide()
-            self.le_lineclipu.hide()
-        else:
-            self.le_lineclipl.show()
-            self.le_lineclipu.show()
-
-        self.mmc.htype = txt
-        self.mmc.update_graph()
-
-    def change_red(self):
-        """
-        Change the red or first band.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = str(self.cmb_band1.currentText())
-        self.mmc.hband[0] = txt
-        self.mmc.init_graph()
-
-    def change_sun(self):
-        """
-        Change the sunshade band.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = str(self.cmb_bands.currentText())
-        self.mmc.hband[3] = txt
-        self.mmc.update_graph()
 
     def data_init(self):
         """
@@ -1511,13 +1537,12 @@ class PlotInterp(BasicModule):
                 return False
 
         htype = str(self.cmb_htype.currentText())
-        clippercl = self.mmc.clippercl
-        clippercu = self.mmc.clippercu
         cmin = None
         cmax = None
 
         if dtype == 'Single Colour Map':
-
+            clippercu = self.mmc.clippercu[self.mmc.hband[0]]
+            clippercl = self.mmc.clippercl[self.mmc.hband[0]]
             for i in self.mmc.data:
                 if i.dataid == self.mmc.hband[0]:
                     pseudo = i.data
@@ -1541,7 +1566,6 @@ class PlotInterp(BasicModule):
             img = img.astype(np.uint8)
 
         elif 'Ternary' in dtype:
-
             dat = [None, None, None]
             for i in self.mmc.data:
                 for j in range(3):
@@ -1560,9 +1584,15 @@ class PlotInterp(BasicModule):
                 red = histeq(red)
                 green = histeq(green)
                 blue = histeq(blue)
-            elif clippercl > 0. or clippercu > 0.:
+            else:
+                clippercu = self.mmc.clippercu[self.mmc.hband[0]]
+                clippercl = self.mmc.clippercl[self.mmc.hband[0]]
                 red, _, _ = histcomp(red, perc=clippercl, uperc=clippercu)
+                clippercu = self.mmc.clippercu[self.mmc.hband[1]]
+                clippercl = self.mmc.clippercl[self.mmc.hband[1]]
                 green, _, _ = histcomp(green, perc=clippercl, uperc=clippercu)
+                clippercu = self.mmc.clippercu[self.mmc.hband[2]]
+                clippercl = self.mmc.clippercl[self.mmc.hband[2]]
                 blue, _, _ = histcomp(blue, perc=clippercl, uperc=clippercu)
 
             cmin = red.min()
@@ -1570,6 +1600,9 @@ class PlotInterp(BasicModule):
             red = red.filled(0)
             green = green.filled(0)
             blue = blue.filled(0)
+            red = np.ma.array(red, mask=dat[0].mask)
+            green = np.ma.array(green, mask=dat[1].mask)
+            blue = np.ma.array(blue, mask=dat[2].mask)
 
             img = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
             img[:, :, 3] = mask*254+1
@@ -1589,6 +1622,9 @@ class PlotInterp(BasicModule):
             img = img.astype(np.uint8)
 
         elif dtype == 'Contour':
+            clippercu = self.mmc.clippercu[self.mmc.hband[0]]
+            clippercl = self.mmc.clippercl[self.mmc.hband[0]]
+
             pseudo = self.mmc.image._full_res.copy()
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
