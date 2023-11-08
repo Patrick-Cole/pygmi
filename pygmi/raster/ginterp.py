@@ -43,9 +43,8 @@ supports GeoTiff files.
 import os
 import sys
 import copy
-from math import cos, sin, tan
+from math import cos
 import numpy as np
-import numexpr as ne
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
@@ -63,6 +62,8 @@ from pygmi.misc import BasicModule
 from pygmi.raster import iodefs, dataprep
 from pygmi import menu_default
 from pygmi.raster.modest_image import imshow
+from pygmi.raster.misc import currentshader, histcomp, histeq, img2rgb
+from pygmi.raster.misc import norm2, norm255
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -1029,7 +1030,6 @@ class PlotInterp(BasicModule):
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
 
-
     def change_blue(self):
         """
         Change the blue or third display band.
@@ -1153,7 +1153,6 @@ class PlotInterp(BasicModule):
         self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
                                                           self.mmc.revent)
         self.mmc.init_graph()
-
 
     def change_green(self):
         """
@@ -1712,11 +1711,10 @@ class PlotInterp(BasicModule):
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
             # Horizontal Bar
-            fig = Figure(layout='constrained')
+            fig = Figure(layout='tight')
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
             fig.set_figheight(bwid+0.75)
-            # fig.set_tight_layout(True)
             ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
@@ -1727,11 +1725,10 @@ class PlotInterp(BasicModule):
             canvas.print_figure(fname, dpi=300)
 
             # Vertical Bar
-            fig = Figure(layout='constrained')
+            fig = Figure(layout='tight')
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid+1)
             fig.set_figheight(blen)
-            # fig.set_tight_layout(True)
             ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
@@ -1741,9 +1738,8 @@ class PlotInterp(BasicModule):
             fname = filename[:-4]+'_vcbar.png'
             canvas.print_figure(fname, dpi=300)
         else:
-            fig = Figure(figsize=[blen, blen], layout='constrained')
+            fig = Figure(figsize=[blen, blen], layout='tight')
             canvas = FigureCanvasQTAgg(fig)
-            # fig.set_tight_layout(True)
 
             tmp = np.array([[list(range(255))]*255])
             tmp.shape = (255, 255)
@@ -1789,11 +1785,10 @@ class PlotInterp(BasicModule):
             im.set_clip_path(patch)
 
             ax.text(0, -5, gtext, horizontalalignment='center',
-                    verticalalignment='top', size=20)
+                    verticalalignment='top')
             ax.text(254, -5, btext, horizontalalignment='center',
-                    verticalalignment='top', size=20)
-            ax.text(127.5, 225, rtext, horizontalalignment='center',
-                    size=20)
+                    verticalalignment='top')
+            ax.text(127.5, 225, rtext, horizontalalignment='center')
             ax.tick_params(top='off', right='off', bottom='off', left='off',
                            labelbottom='off', labelleft='off')
 
@@ -1865,255 +1860,6 @@ class PlotInterp(BasicModule):
         self.saveobj(self.kslider)
         self.saveobj(self.sslider)
         self.saveobj(self.aslider)
-
-
-def aspect2(data):
-    """
-    Aspect of a dataset.
-
-    Parameters
-    ----------
-    data : numpy MxN array
-        input data used for the aspect calculation
-
-    Returns
-    -------
-    adeg : numpy masked array
-        aspect in degrees
-    dzdx : numpy array
-        gradient in x direction
-    dzdy : numpy array
-        gradient in y direction
-    """
-    cdy = np.array([[1., 2., 1.], [0., 0., 0.], [-1., -2., -1.]])
-    cdx = np.array([[1., 0., -1.], [2., 0., -2.], [1., 0., -1.]])
-
-    dzdx = ndimage.convolve(data, cdx)  # Use convolve: matrix filtering
-    dzdy = ndimage.convolve(data, cdy)  # 'valid' gets reduced array
-
-    dzdx = ne.evaluate('dzdx/8.')
-    dzdy = ne.evaluate('dzdy/8.')
-
-    # Aspect Section
-    pi = np.pi
-    adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
-    adeg = np.ma.masked_invalid(adeg)
-    adeg[np.ma.less(adeg, 0.)] += 360.
-    adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.
-
-    return [adeg, dzdx, dzdy]
-
-
-def currentshader(data, cell=1., theta=np.pi/4., phi=-np.pi/4., alpha=1.0):
-    """
-    Blinn shader - used for sun shading.
-
-    Parameters
-    ----------
-    data : numpy array
-        Dataset to be shaded.
-    cell : float
-        between 1 and 100 - controls sunshade detail.
-    theta : float
-        sun elevation (also called g in code below)
-    phi : float
-        azimuth
-    alpha : float
-        how much incident light is reflected (0 to 1)
-
-    Returns
-    -------
-    R : numpy array
-        array containing the shaded results.
-
-        self.phi = -np.pi/4.
-        self.theta = np.pi/4.
-        self.cell = 100.
-        self.alpha = .0
-
-
-    """
-    asp = aspect2(data)
-    n = 2
-    pinit = asp[1]
-    qinit = asp[2]
-    p = ne.evaluate('pinit/cell')
-    q = ne.evaluate('qinit/cell')
-    sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
-
-    cosg2 = cos(theta/2)
-    p0 = -cos(phi)*tan(theta)
-    q0 = -sin(phi)*tan(theta)
-    sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
-    p1 = ne.evaluate('p0 / sqrttmp')
-    q1 = ne.evaluate('q0 / sqrttmp')
-
-    cosi = ne.evaluate('((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))')
-    coss = ne.evaluate('((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))')
-    Ps = ne.evaluate('coss**n')
-    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
-
-    return R
-
-
-def histcomp(img, nbr_bins=None, perc=5., uperc=None):
-    """
-    Histogram Compaction.
-
-    This compacts a % of the outliers in data, allowing for a cleaner, linear
-    representation of the data.
-
-    Parameters
-    ----------
-    img : numpy array
-        data to compact
-    nbr_bins : int
-        number of bins to use in compaction, default is None
-    perc : float
-        percentage of histogram to clip. If uperc is not None, then this is
-        the lower percentage, default is 5.
-    uperc : float
-        upper percentage to clip. If uperc is None, then it is set to the
-        same value as perc, default is None
-
-    Returns
-    -------
-    img2 : numpy array
-        compacted array
-    """
-    if uperc is None:
-        uperc = perc
-
-    if nbr_bins is None:
-        nbr_bins = max(img.shape)
-        nbr_bins = max(nbr_bins, 256)
-
-    # get image histogram
-    imask = np.ma.getmaskarray(img)
-
-    svalue, evalue = np.percentile(img.compressed(), (perc, 100-uperc))
-
-    img2 = np.empty_like(img, dtype=np.float32)
-    np.copyto(img2, img)
-
-    filt = np.ma.less(img2, svalue)
-    img2[filt] = svalue
-
-    filt = np.ma.greater(img2, evalue)
-    img2[filt] = evalue
-
-    img2 = np.ma.array(img2, mask=imask)
-
-    return img2, svalue, evalue
-
-
-def histeq(img, nbr_bins=32768):
-    """
-    Histogram Equalization.
-
-    Equalizes the histogram to colours. This allows for seeing as much data as
-    possible in the image, at the expense of knowing the real value of the
-    data at a point. It bins the data equally - flattening the distribution.
-
-    Parameters
-    ----------
-    img : numpy array
-        input data to be equalised
-    nbr_bins : integer
-        number of bins to be used in the calculation, default is 32768
-
-    Returns
-    -------
-    im2 : numpy array
-        output data
-    """
-    # get image histogram
-    imhist, bins = np.histogram(img.compressed(), nbr_bins)
-    bins = (bins[1:]-bins[:-1])/2+bins[:-1]  # get bin center point
-
-    cdf = imhist.cumsum()  # cumulative distribution function
-    cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
-    cdf = cdf.astype(np.int64)
-    cdf = nbr_bins * cdf / cdf[-1]  # norm to nbr_bins
-
-    # use linear interpolation of cdf to find new pixel values
-    im2 = np.interp(img, bins, cdf)
-    im2 = np.ma.array(im2, mask=img.mask)
-
-    return im2
-
-
-def img2rgb(img, cbar=colormaps['jet']):
-    """
-    Image to RGB.
-
-    convert image to 4 channel rgba colour image.
-
-    Parameters
-    ----------
-    img : numpy array
-        array to be converted to rgba image.
-    cbar : matplotlib colour map
-        colormap to apply to the image, default is jet.
-
-    Returns
-    -------
-    im2 : numpy array
-        output rgba image
-    """
-    im2 = img.copy()
-    im2 = norm255(im2)
-    cbartmp = cbar(range(255))
-    cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
-    cbartmp = cbartmp.round()
-    cbartmp = cbartmp.astype(np.uint8)
-    im2 = cbartmp[im2]
-    im2[:, :, 3] = np.logical_not(img.mask)*254+1
-
-    return im2
-
-
-def norm2(dat):
-    """
-    Normalise array vector between 0 and 1.
-
-    Parameters
-    ----------
-    dat : numpy array
-        array to be normalised
-
-    Returns
-    -------
-    out : numpy array of floats
-        normalised array
-    """
-    datmin = float(dat.min())
-    datptp = float(dat.ptp())
-    out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
-    out.mask = np.ma.getmaskarray(dat)
-    return out
-
-
-def norm255(dat):
-    """
-    Normalise array vector between 1 and 255.
-
-    Parameters
-    ----------
-    dat : numpy array
-        array to be normalised.
-
-    Returns
-    -------
-    out : numpy array of 8 bit integers
-        normalised array
-    """
-    datmin = float(dat.min())
-    datptp = float(dat.ptp())
-    out = ne.evaluate('254*(dat-datmin)/datptp+1')
-    out = out.round()
-    out = out.astype(np.uint8)
-    return out
 
 
 def _testfn():
