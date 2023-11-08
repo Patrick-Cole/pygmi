@@ -1598,16 +1598,14 @@ class PlotInterp(BasicModule):
                 clippercl = self.mmc.clippercl[self.mmc.hband[2]]
                 blue, _, _ = histcomp(blue, perc=clippercl, uperc=clippercu)
 
-            cmin = red.min()
-            cmax = red.max()
-            red = red.filled(0)
-            green = green.filled(0)
-            blue = blue.filled(0)
+            red = red.filled(red.min())
+            green = green.filled(green.min())
+            blue = blue.filled(blue.min())
             red = np.ma.array(red, mask=dat[0].mask)
             green = np.ma.array(green, mask=dat[1].mask)
             blue = np.ma.array(blue, mask=dat[2].mask)
 
-            img = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
+            img = np.zeros((red.shape[0], red.shape[1], 4), dtype=np.uint8)
             img[:, :, 3] = mask*254+1
 
             if 'CMY' in dtype:
@@ -1704,7 +1702,7 @@ class PlotInterp(BasicModule):
         newimg[3].dataid = 'Alpha'
 
         iodefs.export_raster(str(filename), newimg, 'GTiff', piter=self.piter,
-                             bandsort=False, updatestats=False,
+                             bandsort=False, updatestats=True,
                              showlog=self.showlog)
 
         # Section for colorbars
@@ -2103,7 +2101,7 @@ def norm255(dat):
     Parameters
     ----------
     dat : numpy array
-        array to be normalised
+        array to be normalised.
 
     Returns
     -------
@@ -2129,12 +2127,11 @@ def _testfn():
 
     # ifile = r'd:\WorkData\testdata.hdr'
     # data = iodefs.get_raster(ifile)
-
-    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_augite_gt_2.tif"
-    data1 = iodefs.get_raster(ifile)
-    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferric_gt_2.tif"
-    data2 = iodefs.get_raster(ifile)
     ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferrous_gt_2.tif"
+    data1 = iodefs.get_raster(ifile)
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_augite_gt_2.tif"
+    data2 = iodefs.get_raster(ifile)
+    ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferric_gt_2.tif"
     data3 = iodefs.get_raster(ifile)
     data = data1+data2+data3
 

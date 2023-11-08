@@ -1555,7 +1555,10 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
         for child in piter(root.findall('PAMRasterBand')):
             band = int(child.attrib['band'])-1
             datai = data[band]
-            donly = datai.data.compressed()
+            if np.ma.is_masked(datai.data):
+                donly = datai.data.compressed()
+            else:
+                donly = datai.data.flatten()
             donly = np.ma.masked_invalid(donly)
             donly = donly.compressed()
 
