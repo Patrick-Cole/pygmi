@@ -152,8 +152,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bbox_hist_blue = None
         self.shade = False
         self.ccbar = None
-        self.clippercu = 0.0
-        self.clippercl = 0.0
+        self.clippercu = {}
+        self.clippercl = {}
         self.flagresize = False
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
@@ -1406,6 +1406,9 @@ class PlotInterp(BasicModule):
             self.clippercu[i.dataid] = 0.0
             self.clippercl[i.dataid] = 0.0
 
+        self.mmc.clippercu = self.clippercu
+        self.mmc.clippercl = self.clippercl
+
         try:
             self.cmb_band1.currentIndexChanged.disconnect()
             self.cmb_band2.currentIndexChanged.disconnect()
@@ -2138,7 +2141,6 @@ def _testfn():
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
     tmp.data_init()
-    tmp.change_lclip()
 
     tmp.settings()
 
