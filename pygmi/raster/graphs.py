@@ -58,7 +58,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='constrained', dpi=150)
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -261,7 +261,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data1, ylog):
+    def update_hist(self, data1, ylog, iscum):
         """
         Update the histogram plot.
 
@@ -271,6 +271,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             raster dataset to be used
         ylog : bool
             Boolean for a log scale on y-axis.
+        iscum : bool
+            Boolean for a cumulative distribution.
 
         Returns
         -------
@@ -281,13 +283,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         dattmp = data1.data[data1.data.mask == 0].flatten()
-        self.axes.hist(dattmp, bins='sqrt')
-        self.axes.set_title(data1.dataid, fontsize=12)
-        self.axes.set_xlabel('Data Value', fontsize=8)
-        self.axes.set_ylabel('Counts', fontsize=8)
+        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum)
+        self.axes.set_title(data1.dataid)
+        self.axes.set_xlabel('Data Value')
+        self.axes.set_ylabel('Counts')
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
+
+        # self.axes.tick_params(axis='x', labelsize=14)
+        # self.axes.tick_params(axis='y', labelsize=14)
 
         if ylog is True:
             self.axes.set_yscale('log')
@@ -569,7 +574,9 @@ class PlotHist(ContextModule):
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
+        self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
         hbl.addWidget(self.cb_log)
+        hbl.addWidget(self.cb_cum)
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
 
@@ -581,6 +588,7 @@ class PlotHist(ContextModule):
 
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cb_log.stateChanged.connect(self.change_band)
+        self.cb_cum.stateChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -594,7 +602,8 @@ class PlotHist(ContextModule):
         data = self.indata['Raster']
         i = self.cmb_1.currentIndex()
         ylog = self.cb_log.isChecked()
-        self.mmc.update_hist(data[i], ylog)
+        iscum = self.cb_cum.isChecked()
+        self.mmc.update_hist(data[i], ylog, iscum)
 
     def run(self):
         """
