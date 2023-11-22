@@ -26,7 +26,6 @@
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-import matplotlib.pyplot as plt
 import geopandas as gpd
 from scipy.signal import correlate
 import shapely
@@ -34,7 +33,7 @@ from shapely.geometry import LineString
 from rasterio.features import rasterize
 
 from pygmi import menu_default
-from pygmi.misc import BasicModule, ProgressBarText
+from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, bounds_to_transform
 
 
@@ -43,18 +42,18 @@ class StructComp(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.dxy = None
-        self.dataid_text = None
 
-        self.le_dxy = QtWidgets.QLineEdit('1.0')
-        self.le_null = QtWidgets.QLineEdit('0.0')
-        self.le_bdist = QtWidgets.QLineEdit('4.0')
+        self.le_dxy = QtWidgets.QLineEdit('500.0')
+        self.le_wsize = QtWidgets.QLineEdit('3')
+        self.le_std = QtWidgets.QLineEdit('500.0')
+        self.le_extend = QtWidgets.QLineEdit('500.0')
 
-        self.cmb_dataid = QtWidgets.QComboBox()
-        self.cmb_grid_method = QtWidgets.QComboBox()
-        self.lbl_rows = QtWidgets.QLabel('Rows: 0')
-        self.lbl_cols = QtWidgets.QLabel('Columns: 0')
-        self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
+        self.cmb_method = QtWidgets.QComboBox()
+
+        self.lbl_wsize = QtWidgets.QLabel('Window Size:')
+        self.lbl_std = QtWidgets.QLabel('Intersection Density Std Deviation:')
+        self.lbl_extend = QtWidgets.QLabel('Intersection Density Line '
+                                           'Extension:')
 
         self.setupui()
 
@@ -69,88 +68,73 @@ class StructComp(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
-        lbl_band = QtWidgets.QLabel('Column to Grid:')
+        helpdocs = menu_default.HelpButton('pygmi.vector.structure.structcomp')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
-        lbl_null = QtWidgets.QLabel('Null Value:')
-        lbl_method = QtWidgets.QLabel('Gridding Method:')
+        lbl_method = QtWidgets.QLabel('Method:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
 
         self.le_dxy.setValidator(val)
-        self.le_null.setValidator(val)
+        self.le_std.setValidator(val)
+        self.le_extend.setValidator(val)
+        self.le_wsize.setValidator(QtGui.QIntValidator(1, 2147483647))
 
-        self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
-                                       'Minimum Curvature'])
+        self.cmb_method.addItems(['Feature Intersection Density',
+                                  'Feature Orientation Diversity',
+                                  'Circular Variance and Dispersion',
+                                  'Feature Fractal Dimension'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle('Dataset Gridding')
+        self.setWindowTitle('Structure Complexity')
 
         gl_main.addWidget(lbl_method, 0, 0, 1, 1)
-        gl_main.addWidget(self.cmb_grid_method, 0, 1, 1, 1)
+        gl_main.addWidget(self.cmb_method, 0, 1, 1, 1)
         gl_main.addWidget(lbl_dxy, 1, 0, 1, 1)
         gl_main.addWidget(self.le_dxy, 1, 1, 1, 1)
-        gl_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
-        gl_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
-        gl_main.addWidget(lbl_band, 4, 0, 1, 1)
-        gl_main.addWidget(self.cmb_dataid, 4, 1, 1, 1)
-        gl_main.addWidget(lbl_null, 5, 0, 1, 1)
-        gl_main.addWidget(self.le_null, 5, 1, 1, 1)
-        gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
-        gl_main.addWidget(self.le_bdist, 6, 1, 1, 1)
+        gl_main.addWidget(self.lbl_std, 2, 0, 1, 1)
+        gl_main.addWidget(self.le_std, 2, 1, 1, 1)
+        gl_main.addWidget(self.lbl_extend, 3, 0, 1, 1)
+        gl_main.addWidget(self.le_extend, 3, 1, 1, 1)
+        gl_main.addWidget(self.lbl_wsize, 4, 0, 1, 1)
+        gl_main.addWidget(self.le_wsize, 4, 1, 1, 1)
+
         gl_main.addWidget(helpdocs, 7, 0, 1, 1)
         gl_main.addWidget(buttonbox, 7, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.le_dxy.textChanged.connect(self.dxy_change)
+        self.cmb_method.currentIndexChanged.connect(self.method_change)
 
-    def dxy_change(self):
+    def method_change(self):
         """
-        When dxy is changed on the interface, this updates rows and columns.
+        When method is changed, this updated hidden controls.
 
         Returns
         -------
         None.
 
         """
-        txt = str(self.le_dxy.text())
-        if txt.replace('.', '', 1).isdigit():
-            self.dxy = float(self.le_dxy.text())
+        method = self.cmb_method.currentText()
+
+        if method == 'Feature Intersection Density':
+            self.lbl_std.show()
+            self.le_std.show()
+            self.lbl_extend.show()
+            self.le_extend.show()
+            self.lbl_wsize.hide()
+            self.le_wsize.hide()
         else:
-            return
-
-        data = self.indata['Vector'][0]
-
-        x = data.geometry.x.values
-        y = data.geometry.y.values
-
-        cols = round(x.ptp()/self.dxy)
-        rows = round(y.ptp()/self.dxy)
-
-        self.lbl_rows.setText('Rows: '+str(rows))
-        self.lbl_cols.setText('Columns: '+str(cols))
-
-    def grid_method_change(self):
-        """
-        When grid method is changed, this updated hidden controls.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.cmb_grid_method.currentText() == 'Minimum Curvature':
-            self.lbl_bdist.show()
-            self.le_bdist.show()
-        else:
-            self.lbl_bdist.hide()
-            self.le_bdist.hide()
+            self.lbl_std.hide()
+            self.le_std.hide()
+            self.lbl_extend.hide()
+            self.le_extend.hide()
+            self.lbl_wsize.show()
+            self.le_wsize.show()
 
     def settings(self, nodialog=False):
         """
@@ -174,36 +158,12 @@ class StructComp(BasicModule):
 
         data = self.indata['Vector'][0]
 
-        if data.geom_type.iloc[0] != 'Point':
-            self.showlog('No Point Data')
+        if data.geom_type.iloc[0] != 'LineString':
+            self.showlog('No Line Data')
             return False
 
-        self.cmb_dataid.clear()
+        self.method_change()
 
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
-
-        cols = list(data.columns[filt])
-        self.cmb_dataid.addItems(cols)
-
-        if self.dataid_text is None:
-            self.dataid_text = self.cmb_dataid.currentText()
-        if self.dataid_text in cols:
-            self.cmb_dataid.setCurrentText(self.dataid_text)
-
-        if self.dxy is None:
-            x = data.geometry.x.values
-            y = data.geometry.y.values
-
-            dx = x.ptp()/np.sqrt(x.size)
-            dy = y.ptp()/np.sqrt(y.size)
-            self.dxy = max(dx, dy)
-            self.dxy = min([x.ptp(), y.ptp(), self.dxy])
-
-        self.le_dxy.setText(f'{self.dxy:.8f}')
-        self.dxy_change()
-
-        self.grid_method_change()
         if not nodialog:
             tmp = self.exec()
             if tmp != 1:
@@ -211,10 +171,15 @@ class StructComp(BasicModule):
 
         try:
             float(self.le_dxy.text())
-            float(self.le_null.text())
-            float(self.le_bdist.text())
+            wsize = float(self.le_wsize.text())
+            float(self.le_extend.text())
+            float(self.le_std.text())
         except ValueError:
             self.showlog('Value Error')
+            return False
+
+        if (wsize % 2) == 0:
+            self.showlog('Only odd windows sizes allowed')
             return False
 
         self.acceptall()
@@ -231,11 +196,10 @@ class StructComp(BasicModule):
 
         """
         self.saveobj(self.le_dxy)
-        self.saveobj(self.le_null)
-        self.saveobj(self.le_bdist)
-        self.saveobj(self.dataid_text)
-        self.saveobj(self.cmb_dataid)
-        self.saveobj(self.cmb_grid_method)
+        self.saveobj(self.le_var)
+        self.saveobj(self.le_wsize)
+        self.saveobj(self.le_extend)
+        self.saveobj(self.cmb_method)
 
     def acceptall(self):
         """
@@ -248,41 +212,40 @@ class StructComp(BasicModule):
         None.
 
         """
+        method = self.cmb_method.currentText()
+        gdf = self.indata['Vector'][0]
+
         dxy = float(self.le_dxy.text())
-        method = self.cmb_grid_method.currentText()
-        nullvalue = float(self.le_null.text())
-        bdist = float(self.le_bdist.text())
-        data = self.indata['Vector'][0]
-        dataid = self.cmb_dataid.currentText()
+        wsize = float(self.le_wsize.text())
+        var = float(self.le_std.text())**2
+        extend = float(self.le_extend.text())
+
         newdat = []
+        geom = None
 
-        if bdist < 1:
-            bdist = None
-            self.showlog('Blanking distance too small.')
+        if method == 'Feature Intersection Density':
+            geom, dat = feature_intersection_density(gdf, dxy, var, extend,
+                                                     piter=self.piter)
+            newdat.append(dat)
 
-        data2 = data[['geometry', dataid]]
-        data2 = data2.dropna()
+        if method == 'Feature Orientation Diversity':
+            dat = feature_orientation_diversity(gdf, dxy, wsize,
+                                                piter=self.piter)
+            newdat.append(dat)
 
-        filt = (data2[dataid] != nullvalue)
-        x = data2.geometry.x.values[filt]
-        y = data2.geometry.y.values[filt]
-        z = data2[dataid].values[filt]
+        if method == 'Circular Variance and Dispersion':
+            Vdat, Ddat = feature_circular_stats(gdf, dxy, wsize,
+                                                piter=self.piter)
+            newdat.append(Vdat)
+            newdat.append(Ddat)
 
-
-        newdat.append(dat)
-
-        geom2, Hdat = feature_intersection_density(gdf, 500, 200000, piter=piter)
-
-        Edat = feature_orientation_diversity(gdf, 500, 3, piter=piter)
-
-        Vdat, Ddat = feature_circular_stats(gdf, 500, 3, piter=piter)
-
-        Fdat = feature_fracdim(gdf, 200, 21, piter=piter)
-
+        if method == 'Feature Fractal Dimension':
+            dat = feature_fracdim(gdf, dxy, wsize, piter=self.piter)
+            newdat.append(dat)
 
         self.outdata['Raster'] = newdat
-        self.outdata['Vector'] = self.indata['Vector']
-
+        if geom is not None:
+            self.outdata['Vector'] = [geom]
 
 
 def extendlines(gdf, length=500, piter=iter):
@@ -345,7 +308,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
 
     Returns
     -------
-    geom2 : GeoSeries
+    geom2 : GeoDataFrame
         New geometry with intersection points.
     dat : PyGMi Data
         Output raster data
@@ -377,17 +340,20 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
 
     for pnt in piter(geom2):
         G = 1/np.sqrt(2*np.pi*var)
-        xdiff = (x-pnt.x)**2/(var*2)
-        ydiff = (y-pnt.y)**2/(var*2)
+        xdiff = (x-pnt.x)**2/(2*var*2)
+        ydiff = (y-pnt.y)**2/(2*var*2)
         G = G*np.exp(-(xdiff+ydiff))
         H = H + G
 
     dat = Data()
+    dat.dataid = 'Feature Intersection Density'
     dat.data = np.ma.array(H[::-1])
     xmin = xcoords[0] - dxy/2
     ymax = ycoords[-1] + dxy/2
     dat.set_transform(dxy, xmin, dxy, ymax)
     dat.crs = gdf.crs
+
+    geom2 = gpd.GeoDataFrame(geometry=geom2)
 
     return geom2, dat
 
@@ -440,6 +406,7 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     E = -E
 
     dat = Data()
+    dat.dataid = 'Feature Orientation Diversity'
     dat.data = np.ma.array(E)
     dat.crs = gdf.crs
     dat.set_transform(transform=transform)
@@ -514,11 +481,13 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     d1 = (1-t2)/(2*r1**2)
 
     vdat = Data()
+    vdat.dataid = 'Circular Variance'
     vdat.data = np.ma.array(v1)
     vdat.crs = gdf.crs
     vdat.set_transform(transform=transform)
 
     ddat = Data()
+    ddat.dataid = 'Circular Dispersion'
     ddat.data = np.ma.masked_invalid(d1)
     ddat.crs = gdf.crs
     ddat.set_transform(transform=transform)
@@ -566,6 +535,7 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
     # num = correlate(dat, fmat, 'same', 'direct')
 
     fdat = Data()
+    fdat.dataid = 'Feature Fractal Dimension'
     fdat.data = np.ma.masked_invalid(d1)
     fdat.crs = gdf.crs
     fdat.set_transform(transform=transform)
@@ -715,10 +685,7 @@ def _testfn():
 
     SC = StructComp()
     SC.indata = IO.outdata
-    SC.ifile = sfile
     SC.settings()
-
-
 
 
 if __name__ == "__main__":

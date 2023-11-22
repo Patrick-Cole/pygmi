@@ -29,6 +29,7 @@ from PyQt5 import QtWidgets
 from pygmi.vector import iodefs
 from pygmi.vector import graphs
 from pygmi.vector import dataprep
+from pygmi.vector import structure
 
 
 class MenuWidget():
@@ -82,6 +83,10 @@ class MenuWidget():
         self.menu.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 
+        self.action_scomp = QtWidgets.QAction('Structure Complexity')
+        self.menu.addAction(self.action_scomp)
+        self.action_scomp.triggered.connect(self.scomp)
+
         # Context menus
         context_menu['Vector'].addSeparator()
 
@@ -120,6 +125,11 @@ class MenuWidget():
     def grid(self):
         """Grid datasets."""
         self.parent.item_insert('Step', 'Dataset Gridding', dataprep.DataGrid)
+
+    def scomp(self):
+        """Structure complexity."""
+        self.parent.item_insert('Step', 'Structure Complexity',
+                                structure.StructComp)
 
     def cut_data(self):
         """Cut point data."""

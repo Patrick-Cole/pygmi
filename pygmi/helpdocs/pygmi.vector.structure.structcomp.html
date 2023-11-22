@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Structure Complexity</h1>
+		<p>Structure complexity takes as input lines, from a shapefile or similar. It then produces different measures of structure complexity, in gridded form. The vector data is rasterized, and a window is passed over the rasterized version of the lines to calculate measures.</p>
+		<h2>Options</h2>
+		<ul>
+			<li>Method - This can be 'Feature Intersection Density', 'Feature Orientation Diversity', 'Circular Variance and Dispersion' or 'Feature Fractal Dimension'.</li>
+			<li>Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).</li>
+			<li>Intersection Density Standard Deviation - the variance of a gaussian centered on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).</li>
+			<li>Intersection Density Line Extension - Distance to extend features which are almost touching, so that an intersection between features is obtained.</li>
+			<li>Window Size - Size of windows to calculate measure.</li>
+		</ul>
+		<h2>References</h2>
+    <p>Holden, E. J., Wong, J. C., Kovesi, P., Wedge, D., Dentith, M., & Bagas, L. (2012). Identifying structural complexity in aeromagnetic data: An image analysis approach to greenfields gold exploration. Ore Geology Reviews, 46, 47–59. https://doi.org/10.1016/j.oregeorev.2011.11.002</p>
+    <p>Montsion, R. M., Perrouty, S., Lindsay, M. D., Jessell, M. W., & Frieman, B. M. (2021). Mapping structural complexity using geophysics: A new geostatistical approach applied to greenstone belts of the southern Superior Province, Canada. Tectonophysics, 812. https://doi.org/10.1016/j.tecto.2021.228889</p>
+		<p>Dhansay, T., Brandl, G., & de Wit, M. J. (2016). Fractal geometry of the fault network across the Soutpansberg Mountains, Limpopo, South Africa. South African Journal of Geology, 119(1), 235–242. https://doi.org/10.2113/gssajg.119.1.235</p>
+	</body>
+</html>

@@ -477,6 +477,7 @@ class ImportVector(BasicModule):
             True if successful, False otherwise.
 
         """
+        ext = ''
         if not nodialog:
             ext = ('Shapefile (*.shp);;'
                    'Zipped Shapefile (*.shp.zip);;'
@@ -490,7 +491,7 @@ class ImportVector(BasicModule):
 
         os.chdir(os.path.dirname(self.ifile))
 
-        if 'KML' in ext:
+        if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
             gdf = gpd.read_file(self.ifile,  allow_unsupported_drivers=True)
         else:
             gdf = gpd.read_file(self.ifile, engine='pyogrio')
