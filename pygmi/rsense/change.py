@@ -293,6 +293,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
     if 'Spectral Angle Mapper' in ilist and len(flist) != 2:
         showlog('Only two datasets allowed for SAM.')
+        # Add loop for maximum angle deviation and std dev.
     elif 'Spectral Angle Mapper' in ilist:
         sam1 = calc_sam(flist, showlog, piter)
         sam1.dataid += '_SAM'

@@ -46,7 +46,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ax1 = self.fig.add_subplot(111)
         self.im1 = None
         self.bands = [0, 1, 2]
-        self.parent = parent
         self.rcid = None
         self.manip = 'RGB Ternary'
         self.cbar = None
@@ -495,6 +494,7 @@ def _testfn():
     idir = r"E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic"
     idir = r"D:\Workdata\change\Planet"
     idir = r"E:\Namaqua_change\namakwa"
+    idir = r"D:\WV2_New\BRICS_NRF\change"
 
     app = QtWidgets.QApplication(sys.argv)
 

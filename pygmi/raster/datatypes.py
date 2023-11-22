@@ -105,6 +105,42 @@ def pygmi_to_numpy(tmp):
     return np.array(tmp.data)
 
 
+def bounds_to_transform(bounds, dxy):
+    """
+    Create a raster transform from vector grid bounds and dxy.
+
+    This accounts for the situation where xmax and ymax need to be readjusted
+    slightly because dxy does not divide perfectly into bounds. It also adds
+    dxy/2 buffer. Therefore it cannot be used with raster bounds.
+
+    Parameters
+    ----------
+    bounds : tuple
+        Bounds of data as (left, bottom, right, top)
+    dxy : float
+        Raster pixel size.
+
+    Returns
+    -------
+    transform : list of Affine
+        rasterio transform.
+    shape : tuple
+        tuple of rows, cols.
+
+    """
+    xmin, ymin, xmax, ymax = bounds
+    rows = int((ymax-ymin)//dxy)+1
+    cols = int((xmax-xmin)//dxy)+1
+    xmin -= dxy/2
+    ymin -= dxy/2
+    xmax = cols*dxy+xmin
+    ymax = rows*dxy+ymin
+    transform = Affine(dxy, 0, xmin, 0, -dxy, ymax)
+    shape = (rows, cols)
+
+    return transform, shape
+
+
 class Data():
     """
     PyGMI Data Object.

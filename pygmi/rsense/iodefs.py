@@ -1432,6 +1432,8 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
           ('S2A_' in bfile and ext == '.zip') or
           ('S2B_' in bfile and ext == '.zip')):
         dat = get_sentinel2(ifile, piter, showlog, tnames, metaonly)
+    elif (ext == '.xml' and 'DIM' in ifile):
+        dat = get_spot(ifile, piter, showlog, tnames, metaonly)
     elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter, showlog, tnames, metaonly)
@@ -2454,6 +2456,90 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
     return dat
 
 
+def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+    """
+    Get Spot DIMAP Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : function, optional
+        Progress bar iterable. Default is None.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    ifile = ifile[:]
+    nval = 0
+    dat = []
+
+    with rasterio.open(ifile) as dataset:
+        if dataset is None:
+            return None
+        # subdata = dataset.subdatasets
+        meta = dataset.tags()
+        datetxt = meta['DATASET_PRODUCTION_DATE']
+        date = datetime.datetime.fromisoformat(datetxt)
+
+        for i in piter(dataset.indexes):
+            bmeta = dataset.tags(i)
+            bname = f'Band {i} ({dataset.transform[0]}m)'
+            bname = bname.replace(',', ' ')
+            if tnames is not None and bname not in tnames:
+                continue
+
+            dat.append(Data())
+
+            if not metaonly:
+                rtmp = dataset.read(i)
+                gain = float(bmeta['RADIANCE_GAIN'])
+                bias = float(bmeta['RADIANCE_BIAS'])
+
+                dat[-1].data = rtmp/gain+bias
+                dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+                if dat[-1].data.mask.size == 1:
+                    dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+            dat[-1].dataid = bname
+            dat[-1].nodata = nval
+            dat[-1].meta_from_rasterio(dataset)
+            dat[-1].filename = ifile
+            dat[-1].datetime = date
+
+            bmeta['Raster'] = dat[-1].metadata['Raster']
+            bmeta['Raster']['Sensor'] = 'Spot'
+            wmin = float(bmeta['SPECTRAL_RANGE_MIN'])
+            wmax = float(bmeta['SPECTRAL_RANGE_MAX'])
+            wlen = (wmin+wmax)/2
+            bmeta['Raster']['WavelengthMin'] = wmin
+            bmeta['Raster']['WavelengthMax'] = wmax
+            bmeta['Raster']['wavelength'] = wlen
+
+            dat[-1].metadata.update(bmeta)
+
+            dat[-1].units = bmeta['RADIANCE_MEASURE_UNIT']
+
+        dataset.close()
+
+    if not dat:
+        dat = None
+
+    return dat
+
+
 def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
@@ -3301,7 +3387,9 @@ def _testfn3():
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
     # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
+    # ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
+    ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\SPOT_LIST.XML"
+    ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\PROD_SPOT7_001\VOL_SPOT7_001_A\IMG_SPOT7_MS_001_A\DIM_SPOT7_MS_201504110743560_ORT_1381943101.XML"
 
     dat = get_data(ifile)
 
@@ -3319,4 +3407,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

@@ -34,7 +34,7 @@ import sys
 
 from pygmi.main import main
 
-__version__ = '3.2.7.28'
+__version__ = '3.2.7.29'
 
 # useful regex for find: \.(?!py) in spyder.ini
 
