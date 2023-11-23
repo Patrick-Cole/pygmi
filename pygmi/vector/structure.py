@@ -29,7 +29,7 @@ import numpy as np
 import geopandas as gpd
 from scipy.signal import correlate
 import shapely
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 from rasterio.features import rasterize
 
 from pygmi import menu_default
@@ -323,8 +323,10 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     for i, line1 in enumerate(piter(geom1)):
         geom2 = gdf.loc[i+1:, 'geometry']
         for line2 in geom2:
+            if line1 == line2:
+                continue
             pnt = line1.intersection(line2)
-            if not pnt.is_empty:
+            if not pnt.is_empty and 'Point' in pnt.geom_type:
                 pnts.append(pnt)
 
     gdf2 = gpd.GeoDataFrame(geometry=pnts)
@@ -340,7 +342,10 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
 
     for pnt in piter(geom2):
         G = 1/np.sqrt(2*np.pi*var)
-        xdiff = (x-pnt.x)**2/(2*var*2)
+        try:
+            xdiff = (x-pnt.x)**2/(2*var*2)
+        except:
+            breakpoint()
         ydiff = (y-pnt.y)**2/(2*var*2)
         G = G*np.exp(-(xdiff+ydiff))
         H = H + G
@@ -674,6 +679,8 @@ def segments_to_angles(gdf, piter=iter):
 def _testfn():
     """Calculate structural complexity."""
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
+
     import sys
     from pygmi.vector.iodefs import ImportVector
 
