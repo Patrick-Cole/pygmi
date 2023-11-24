@@ -33,10 +33,13 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
+import fiona
+from pyproj import CRS, Transformer
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.misc import BasicModule, ContextModule
+from pygmi.vector.dataprep import maptobounds
 
 
 class ImportXYZ(BasicModule):
@@ -461,6 +464,71 @@ class ImportVector(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.is_import = True
+        self.crs = None
+
+        self.cmb_bounds = QtWidgets.QComboBox()
+        self.le_sfile = QtWidgets.QLineEdit('')
+        self.le_xmin = QtWidgets.QLineEdit('0.0')
+        self.le_xmax = QtWidgets.QLineEdit('1.0')
+        self.le_ymin = QtWidgets.QLineEdit('0.0')
+        self.le_ymax = QtWidgets.QLineEdit('1.0')
+        self.le_mapsheet = QtWidgets.QLineEdit('2918AA')
+        self.lbl_xmin = QtWidgets.QLabel('West:')
+        self.lbl_xmax = QtWidgets.QLabel('East:')
+        self.lbl_ymin = QtWidgets.QLabel('South:')
+        self.lbl_ymax = QtWidgets.QLabel('North:')
+        self.lbl_mapsheet = QtWidgets.QLabel('Mapsheet:')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        pb_sfile = QtWidgets.QPushButton(' Filename')
+
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_sfile.setIcon(icon)
+
+        self.setWindowTitle('Import Vector Data')
+
+        self.cmb_bounds.addItems(['None', 'Manual', 'SA Mapsheet'])
+
+        gl_1 = QtWidgets.QGridLayout(self)
+
+        gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
+        gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
+        gl_1.addWidget(QtWidgets.QLabel('Bounds:'), 2, 0, 1, 1)
+        gl_1.addWidget(self.cmb_bounds, 2, 1, 1, 1)
+        gl_1.addWidget(self.lbl_xmin, 3, 0, 1, 1)
+        gl_1.addWidget(self.le_xmin, 3, 1, 1, 1)
+        gl_1.addWidget(self.lbl_xmax, 4, 0, 1, 1)
+        gl_1.addWidget(self.le_xmax, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ymin, 5, 0, 1, 1)
+        gl_1.addWidget(self.le_ymin, 5, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ymax, 6, 0, 1, 1)
+        gl_1.addWidget(self.le_ymax, 6, 1, 1, 1)
+        gl_1.addWidget(self.lbl_mapsheet, 7, 0, 1, 1)
+        gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+
+        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_sfile.pressed.connect(self.get_sfile)
+        self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
 
     def settings(self, nodialog=False):
         """
@@ -477,24 +545,45 @@ class ImportVector(BasicModule):
             True if successful, False otherwise.
 
         """
+        bounds = None
         ext = ''
-        if not nodialog:
-            ext = ('Shapefile (*.shp);;'
-                   'Zipped Shapefile (*.shp.zip);;'
-                   'GeoPackage (*.gpkg);;'
-                   'KML or KMZ (*.kml, *.kmz)')
+        self.change_bounds()
 
-            self.ifile, ext = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
+        if not nodialog:
+            tmp = self.exec()
+
+            if tmp != 1:
+                return tmp
+
+        if not self.ifile:
+            self.showlog('No vector file specified.')
+            return False
+
+        txt = self.cmb_bounds.currentText()
+
+        if txt == 'Manual':
+            try:
+                xmin = float(self.le_xmin.text())
+                xmax = float(self.le_xmax.text())
+                ymin = float(self.le_ymin.text())
+                ymax = float(self.le_ymax.text())
+            except ValueError:
+                self.showlog('Invalid value in bounds.')
+                return False
+            bounds = (xmin, ymin, xmax, ymax)
+        elif txt == 'SA Mapsheet':
+            bounds = maptobounds(self.le_mapsheet.text(), self.crs,
+                                 self.showlog)
+            if bounds is None:
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
 
         if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
-            gdf = gpd.read_file(self.ifile,  allow_unsupported_drivers=True)
+            gdf = gpd.read_file(self.ifile,  bbox=bounds,
+                                allow_unsupported_drivers=True)
         else:
-            gdf = gpd.read_file(self.ifile, engine='pyogrio')
+            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
         gdf = gdf[gdf.geometry != None]
         gdf = gdf.explode(ignore_index=True)
 
@@ -506,6 +595,73 @@ class ImportVector(BasicModule):
 
         gdf.attrs['source'] = os.path.basename(self.ifile)
         self.outdata['Vector'] = [gdf]
+
+        return True
+
+    def change_bounds(self):
+        """Change the bounds combo."""
+        txt = self.cmb_bounds.currentText()
+
+        if txt == 'None':
+            self.le_xmin.hide()
+            self.le_xmax.hide()
+            self.le_ymin.hide()
+            self.le_ymax.hide()
+            self.le_mapsheet.hide()
+            self.lbl_xmin.hide()
+            self.lbl_xmax.hide()
+            self.lbl_ymin.hide()
+            self.lbl_ymax.hide()
+            self.lbl_mapsheet.hide()
+        elif txt == 'Manual':
+            self.le_xmin.show()
+            self.le_xmax.show()
+            self.le_ymin.show()
+            self.le_ymax.show()
+            self.le_mapsheet.hide()
+            self.lbl_xmin.show()
+            self.lbl_xmax.show()
+            self.lbl_ymin.show()
+            self.lbl_ymax.show()
+            self.lbl_mapsheet.hide()
+        elif txt == 'SA Mapsheet':
+            self.le_xmin.hide()
+            self.le_xmax.hide()
+            self.le_ymin.hide()
+            self.le_ymax.hide()
+            self.le_mapsheet.show()
+            self.lbl_xmin.hide()
+            self.lbl_xmax.hide()
+            self.lbl_ymin.hide()
+            self.lbl_ymax.hide()
+            self.lbl_mapsheet.show()
+
+    def get_sfile(self):
+        """Get the satellite filename."""
+        self.le_sfile.setText('')
+
+        ext = ('Shapefile (*.shp);;'
+               'Zipped Shapefile (*.shp.zip);;'
+               'GeoPackage (*.gpkg);;'
+               'KML or KMZ (*.kml, *.kmz)')
+
+        self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        if not self.ifile:
+            return False
+
+        self.le_sfile.setText(self.ifile)
+
+        fio = fiona.open(self.ifile)
+
+        self.crs = fio.crs
+        xmin, xmax, ymin, ymax = fio.bounds
+
+        self.le_xmin.setText(str(xmin))
+        self.le_xmax.setText(str(xmax))
+        self.le_ymin.setText(str(ymin))
+        self.le_ymax.setText(str(ymax))
 
         return True
 
@@ -695,15 +851,26 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 
 def _test():
     """Test."""
+    import sys
     from pygmi.misc import ProgressBarText
 
-    piter = ProgressBarText().iter
+    # piter = ProgressBarText().iter
     # ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
     # ifile = r"D:\Additional Survey Data\RADALL..DIR"
 
     # data = get_intrepid(ifile, print, piter)
 
     ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp1 = ImportVector()
+    # tmp1.idir = r"D:\Landsat"
+    # tmp1.idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change'
+    # tmp1.get_sfile(True)
+    tmp1.settings()
+
+    breakpoint()
 
 
 if __name__ == "__main__":

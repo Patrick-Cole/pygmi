@@ -1117,6 +1117,129 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
     return dat
 
 
+def lltomap(lat, lon):
+    """
+    Convert a latitude and longitude to a 1:50,000 sheet name.
+
+    Parameters
+    ----------
+    lat : float
+        Latitude.
+    lon : float
+        Longitude.
+
+    Returns
+    -------
+    mapsheet : str
+        Mapsheet number.
+
+    """
+    cdict = {(0, 0): 'A',
+             (0, 1): 'B',
+             (1, 0): 'C',
+             (1, 1): 'D'}
+
+    latfrac = abs(lat) % 1
+    lonfrac = lon % 1
+
+    latf = latfrac // .5
+    lonf = lonfrac // .5
+    letter1 = cdict[(latf, lonf)]
+
+    latf = latfrac % .5
+    lonf = lonfrac % .5
+
+    latf = latf // .25
+    lonf = lonf // .25
+
+    letter2 = cdict[(latf, lonf)]
+
+    mapsheet = f'{int(abs(lat))}{int(lon)}{letter1}{letter2}'
+
+    return mapsheet
+
+
+def maptobounds(mapsheet, crs_to=None, showlog=print):
+    """
+    Convert a South African map sheet name to bounds.
+
+    Parameters
+    ----------
+    mapsheet : str
+        Mapsheet number. Four numbers and up to two letters denoting NE corner
+        in latitude and longitude and quadrants (A to D). Eg, 2928AB is
+        latitude 29, longitude 28, quadrant B of quadrant A.
+    crs_to : CRS, optional
+        Destination projection. The default is None.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    bounds : list
+        outmut bounds.
+
+    """
+    i = mapsheet
+    try:
+        lat = float(i[:2])
+        lon = float(i[2:4])
+    except ValueError:
+        showlog('Invalid Map Sheet Number')
+        return None
+
+    q1 = 'A'
+    q2 = 'A'
+    latincr = 1
+    lonincr = 2
+    if len(i) > 4:
+        q1 = i[4:5]
+        lonincr = .5
+        latincr = .5
+    if len(i) > 5:
+        q2 = i[5:6]
+        lonincr = .25
+        latincr = .25
+
+    qlat1 = {'A': 0.,
+             'B': 0.,
+             'C': 0.5,
+             'D': 0.5}
+
+    qlon1 = {'A': 0.,
+             'B': 0.5,
+             'C': 0.,
+             'D': 0.5}
+
+    qlat2 = {'A': 0.,
+             'B': 0.,
+             'C': 0.25,
+             'D': 0.25}
+
+    qlon2 = {'A': 0.,
+             'B': 0.25,
+             'C': 0.,
+             'D': 0.25}
+
+    lat = -(lat + qlat1[q1] + qlat2[q2])
+    lon = lon + qlon1[q1] + qlon2[q2]
+
+    xmin = lon
+    ymin = lat-latincr
+    xmax = lon+lonincr
+    ymax = lat
+
+    if crs_to is not None:
+        crs_from = CRS.from_epsg(4326)
+        transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)
+        xmin, ymin = transformer.transform(xmin, ymin)
+        xmax, ymax = transformer.transform(xmax, ymax)
+
+    bounds = (xmin, ymin, xmax, ymax)
+
+    return bounds
+
+
 def quickgrid(x, y, z, dxy, numits=4, showlog=print):
     """
     Do a quick grid.
