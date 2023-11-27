@@ -306,7 +306,7 @@ class PlotCCoef(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Correlation Coefficients')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.mmc = MyMplCanvas(self)
@@ -352,7 +352,7 @@ class PlotRaster(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Raster Plot (Simple)')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -419,7 +419,7 @@ class PlotSurface(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Surface Plot')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -489,7 +489,7 @@ class PlotScatter(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Hexbin Plot')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -564,7 +564,7 @@ class PlotHist(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
+        self.setWindowTitle('Histogram')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()

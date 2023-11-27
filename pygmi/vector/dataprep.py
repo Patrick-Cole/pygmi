@@ -541,7 +541,7 @@ class Metadata(ContextModule):
         gl_main.addWidget(self.proj, 2, 0, 1, 4)
         gl_main.addWidget(buttonbox, 4, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.accept)
+        buttonbox.accepted.connect(self.acceptall)
         buttonbox.rejected.connect(self.reject)
 
         self.resize(-1, 320)
@@ -562,6 +562,8 @@ class Metadata(ContextModule):
                 tmp.crs = None
             else:
                 tmp.crs = CRS.from_wkt(wkt)
+
+        self.accept()
 
     def run(self):
         """
@@ -587,14 +589,16 @@ class Metadata(ContextModule):
 
         self.cmb_bandid.addItems(bandid)
 
-        tmp = self.exec()
+        self.show()
 
-        if tmp != 1:
-            return False
+        # tmp = self.exec()
 
-        self.acceptall()
+        # if tmp != 1:
+        #     return False
 
-        return True
+        # self.acceptall()
+
+        # return True
 
 
 class TextFileSplit(BasicModule):
@@ -1380,6 +1384,8 @@ def _testfn():
     MD.indata = IO.outdata
     MD.run()
 
+    app.exec()
+
 
 def _testfn_pointcut():
     """Test routine."""
@@ -1421,4 +1427,4 @@ def _testfn_filesplit():
 
 
 if __name__ == "__main__":
-    _testfn_filesplit()
+    _testfn()

@@ -587,6 +587,10 @@ class ImportVector(BasicModule):
         gdf = gdf[gdf.geometry != None]
         gdf = gdf.explode(ignore_index=True)
 
+        if gdf.size == 0:
+            self.showlog('Unable to load data. Check file or bounds.')
+            return False
+
         if gdf.geom_type.loc[0] == 'Point':
             if 'line' not in gdf.columns:
                 gdf['line'] = 'None'
@@ -653,10 +657,9 @@ class ImportVector(BasicModule):
 
         self.le_sfile.setText(self.ifile)
 
-        fio = fiona.open(self.ifile)
-
-        self.crs = fio.crs
-        xmin, xmax, ymin, ymax = fio.bounds
+        with fiona.open(self.ifile) as fio:
+            self.crs = fio.crs
+            xmin, ymin, xmax, ymax = fio.bounds
 
         self.le_xmin.setText(str(xmin))
         self.le_xmax.setText(str(xmax))
@@ -861,6 +864,7 @@ def _test():
     # data = get_intrepid(ifile, print, piter)
 
     ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
+    ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)
 

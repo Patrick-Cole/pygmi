@@ -39,6 +39,7 @@ import pytest
 from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
 from pygmi.raster import iodefs, normalisation, smooth
+from pygmi.raster.misc import aspect2
 
 APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -159,7 +160,7 @@ def test_aspect():
              [0., 0., 0., 0.],
              [0., 0., 0., 0.]]]
 
-    dat = ginterp.aspect2(data)
+    dat = aspect2(data)
 
     np.testing.assert_array_equal(dat, dat2)
 

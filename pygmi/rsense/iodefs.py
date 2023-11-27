@@ -1013,7 +1013,7 @@ class ExportBatch(ContextModule):
         gl_main.addWidget(helpdocs, 8, 0, 1, 1)
         gl_main.addWidget(buttonbox, 8, 1, 1, 3)
 
-        buttonbox.accepted.connect(self.accept)
+        buttonbox.accepted.connect(self.acceptall)
         buttonbox.rejected.connect(self.reject)
         pb_odir.pressed.connect(self.get_odir)
         self.cb_ternary.clicked.connect(self.click_ternary)
@@ -1075,10 +1075,12 @@ class ExportBatch(ContextModule):
         self.cmb_sunshade.addItems(['None', 'External File (first band)'] +
                                    bnames)
 
-        tmp = self.exec()
+        self.show()
 
-        if tmp != 1 or self.le_odir.text() == '':
-            return False
+    def acceptall(self):
+        """Accept choice."""
+        if self.le_odir.text() == '':
+            self.reject()
 
         filt = self.cmb_ofilt.currentText()
         odir = self.le_odir.text()
@@ -1121,7 +1123,8 @@ class ExportBatch(ContextModule):
 
         self.showlog('Export Data Finished!')
         self.process_is_active(False)
-        return True
+
+        self.accept()
 
     def get_odir(self, odir=''):
         """

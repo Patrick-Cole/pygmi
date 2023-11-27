@@ -1279,7 +1279,8 @@ def _testfn():
     tmp = PlotIso()
     tmp.indata = data
     tmp.run()
-    tmp.exec()
+
+    app.exec()
 
 
 if __name__ == "__main__":

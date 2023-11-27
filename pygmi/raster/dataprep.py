@@ -1444,7 +1444,7 @@ class Metadata(ContextModule):
         gl_1.addWidget(lbl_date, 12, 0, 1, 1)
         gl_1.addWidget(self.date, 12, 1, 1, 1)
 
-        buttonbox.accepted.connect(self.accept)
+        buttonbox.accepted.connect(self.acceptall)
         buttonbox.rejected.connect(self.reject)
 
         self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
@@ -1476,6 +1476,9 @@ class Metadata(ContextModule):
                         tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
                     tmp.data.mask = (tmp.data.data == i.nodata)
+
+        self.accept()
+
 
     def rename_id(self):
         """
@@ -1605,14 +1608,7 @@ class Metadata(ContextModule):
 
         self.update_vals()
 
-        tmp = self.exec()
-
-        if tmp != 1:
-            return False
-
-        self.acceptall()
-
-        return True
+        self.show()
 
 
 def check_dataid(out):
@@ -2690,6 +2686,8 @@ def _testfn():
     tmp = Metadata()
     tmp.indata['Raster'] = dat
     tmp.run()
+
+    app.exec()
 
 
 if __name__ == "__main__":

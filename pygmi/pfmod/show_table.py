@@ -117,12 +117,7 @@ class BasicStats3D(ContextModule):
 
         self.combo()
 
-        tmp = self.exec()
-
-        if tmp != 1:
-            return False
-
-        return True
+        self.show()
 
     def save(self):
         """
@@ -264,6 +259,8 @@ def _testfn():
     tmp2 = BasicStats3D()
     tmp2.indata = dat
     tmp2.run()
+
+    app.exec()
 
 
 if __name__ == "__main__":

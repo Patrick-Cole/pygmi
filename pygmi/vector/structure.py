@@ -171,7 +171,7 @@ class StructComp(BasicModule):
 
         try:
             float(self.le_dxy.text())
-            wsize = float(self.le_wsize.text())
+            wsize = int(self.le_wsize.text())
             float(self.le_extend.text())
             float(self.le_std.text())
         except ValueError:
@@ -216,7 +216,7 @@ class StructComp(BasicModule):
         gdf = self.indata['Vector'][0]
 
         dxy = float(self.le_dxy.text())
-        wsize = float(self.le_wsize.text())
+        wsize = int(self.le_wsize.text())
         var = float(self.le_std.text())**2
         extend = float(self.le_extend.text())
 

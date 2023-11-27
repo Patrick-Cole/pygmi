@@ -515,6 +515,111 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # self.figure.tight_layout()
         self.figure.canvas.draw()
 
+    def update_hist(self, data, col, ylog, iscum):
+        """
+        Update the histogram plot.
+
+        Parameters
+        ----------
+        data : dictionary
+            GeoPandas data in a dictionary.
+        col : str
+            Label for column to extract.
+        ylog : bool
+            Boolean for a log scale on y-axis.
+        iscum : bool
+            Boolean for a cumulative distribution.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        dattmp = data.loc[:, col]
+
+        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum)
+        self.axes.set_title(col)
+        self.axes.set_xlabel('Data Value')
+        self.axes.set_ylabel('Counts')
+
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
+        if ylog is True:
+            self.axes.set_yscale('log')
+
+        self.figure.canvas.draw()
+
+
+class PlotHist(ContextModule):
+    """Plot Histogram Class."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Histogram')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Bands:')
+        self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
+        self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
+        hbl.addWidget(self.cb_log)
+        hbl.addWidget(self.cb_cum)
+        hbl.addWidget(lbl_1)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cb_log.stateChanged.connect(self.change_band)
+        self.cb_cum.stateChanged.connect(self.change_band)
+
+    def change_band(self):
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
+        data = self.indata['Vector'][0]
+        col = self.cmb_1.currentText()
+        ylog = self.cb_log.isChecked()
+        iscum = self.cb_cum.isChecked()
+        self.mmc.update_hist(data, col, ylog, iscum)
+
+    def run(self):
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.show()
+        data = self.indata['Vector'][0]
+        cols = data.select_dtypes(include=np.number).columns.tolist()
+        self.cmb_1.addItems(cols)
+
+        self.cmb_1.setCurrentIndex(0)
+        self.change_band()
+
+        # tmp = self.exec()
+
 
 class PlotLines(GraphWindow):
     """Plot Lines Class."""
@@ -525,6 +630,7 @@ class PlotLines(GraphWindow):
         self.lbl_3.hide()
         self.xcol = ''
         self.ycol = ''
+        self.setWindowTitle('Plot Profiles')
 
     def change_line(self):
         """
@@ -616,6 +722,7 @@ class PlotLineMap(GraphWindow):
         self.cmb_2.hide()
         self.lbl_2.hide()
         self.cb_1.show()
+        self.setWindowTitle('Profile Map')
 
     def change_band(self):
         """
@@ -756,6 +863,7 @@ class PlotVector(GraphWindow):
         self.lbl_2.hide()
         self.spinbox.hide()
         self.lbl_3.hide()
+        self.setWindowTitle('Vector Plot')
 
     def change_band(self):
         """
@@ -897,3 +1005,29 @@ def rotate(origin, point, angle):
     qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
     qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
     return qx, qy
+
+
+def _testfn():
+    """Calculate structural complexity."""
+    import sys
+    from pygmi.vector.iodefs import ImportVector
+
+    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
+    sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    IO = ImportVector()
+    IO.ifile = sfile
+    IO.settings(True)
+
+    SC = PlotHist()
+    SC.indata = IO.outdata
+    SC.run()
+
+    app.exec()
+
+
+if __name__ == "__main__":
+    _testfn()

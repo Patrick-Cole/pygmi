@@ -30,6 +30,7 @@ from pygmi.vector import iodefs
 from pygmi.vector import graphs
 from pygmi.vector import dataprep
 from pygmi.vector import structure
+from pygmi.vector import show_table
 
 
 class MenuWidget():
@@ -95,6 +96,10 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
+        self.action_basic_stats = QtWidgets.QAction('Basic Vector Statistics')
+        context_menu['Vector'].addAction(self.action_basic_stats)
+        self.action_basic_stats.triggered.connect(self.basic_stats)
+
         self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
         context_menu['Vector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
@@ -111,6 +116,10 @@ class MenuWidget():
         self.action_show_rose_diagram = QtWidgets.QAction('Show Rose Diagram')
         context_menu['Vector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
+
+        self.action_show_hist = QtWidgets.QAction('Show Histogram')
+        context_menu['Vector'].addAction(self.action_show_hist)
+        self.action_show_hist.triggered.connect(self.show_hist)
 
         context_menu['Vector'].addSeparator()
 
@@ -182,3 +191,11 @@ class MenuWidget():
     def show_rose_diagram(self):
         """Show rose diagram."""
         self.parent.launch_context_item(graphs.PlotRose)
+
+    def show_hist(self):
+        """Show histogram."""
+        self.parent.launch_context_item(graphs.PlotHist)
+
+    def basic_stats(self):
+        """Display basic statistics."""
+        self.parent.launch_context_item(show_table.BasicStats)

@@ -202,7 +202,7 @@ class FuzzyClust(BasicModule):
                 return False
 
             self.parent.process_is_active()
-        self.run()
+        self.acceptall()
 
         if not nodialog:
             self.parent.process_is_active(False)
@@ -263,7 +263,7 @@ class FuzzyClust(BasicModule):
         self.constrain = self.dsb_constraincluster.value()
         self.fexp = self.dsb_fuzzynessexp.value()
 
-    def run(self):
+    def acceptall(self):
         """
         Run.
 

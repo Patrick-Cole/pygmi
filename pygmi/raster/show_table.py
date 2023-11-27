@@ -113,6 +113,18 @@ class BasicStats(ContextModule):
         self.tablewidget.setHorizontalHeaderLabels(cols)
         self.tablewidget.setVerticalHeaderLabels(rows)
 
+        for i, _ in enumerate(cols):
+            item = self.tablewidget.horizontalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
+
+        for i, _ in enumerate(rows):
+            item = self.tablewidget.verticalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
+
         self.combo()
         self.show()
 
@@ -290,6 +302,18 @@ class ClusterStats(ContextModule):
         self.tablewidget.setColumnCount(len(data[0]))
         self.tablewidget.setHorizontalHeaderLabels(cols)
         self.tablewidget.setVerticalHeaderLabels(rows)
+
+        for i, _ in enumerate(cols):
+            item = self.tablewidget.horizontalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
+
+        for i, _ in enumerate(rows):
+            item = self.tablewidget.verticalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
 
         self.combo()
         return True

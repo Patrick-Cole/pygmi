@@ -236,7 +236,7 @@ class Cluster(BasicModule):
             if self.parent is not None:
                 self.parent.process_is_active()
 
-        flag = self.run()
+        flag = self.acceptall()
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
@@ -300,7 +300,7 @@ class Cluster(BasicModule):
         self.bthres = self.dsb_bthres.value()
         self.branchfac = self.sb_branchfac.value()
 
-    def run(self):
+    def acceptall(self):
         """
         Run the cluster analysis.
 

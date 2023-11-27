@@ -194,7 +194,7 @@ class CrispClust(BasicModule):
                 return False
 
             self.parent.process_is_active()
-        self.run()
+        self.acceptall()
 
         if not nodialog:
             self.parent.process_is_active(False)
@@ -252,7 +252,7 @@ class CrispClust(BasicModule):
         self.runs = self.sb_repeatedruns.value()
         self.constrain = self.dsb_constraincluster.value()
 
-    def run(self):
+    def acceptall(self):
         """
         Process the data.
 
