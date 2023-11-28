@@ -79,7 +79,7 @@ class StructComp(BasicModule):
         self.le_dxy.setValidator(val)
         self.le_std.setValidator(val)
         self.le_extend.setValidator(val)
-        self.le_wsize.setValidator(QtGui.QIntValidator(1, 2147483647))
+        self.le_wsize.setValidator(QtGui.QIntValidator(3, 2147483647))
 
         self.cmb_method.addItems(['Feature Intersection Density',
                                   'Feature Orientation Diversity',
@@ -357,6 +357,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     ymax = ycoords[-1] + dxy/2
     dat.set_transform(dxy, xmin, dxy, ymax)
     dat.crs = gdf.crs
+    dat.nodata = 1e+20
 
     geom2 = gpd.GeoDataFrame(geometry=geom2)
 
@@ -415,6 +416,7 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     dat.data = np.ma.array(E)
     dat.crs = gdf.crs
     dat.set_transform(transform=transform)
+    dat.nodata = 1e+20
 
     return dat
 
@@ -490,12 +492,14 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     vdat.data = np.ma.array(v1)
     vdat.crs = gdf.crs
     vdat.set_transform(transform=transform)
+    vdat.nodata = 1e+20
 
     ddat = Data()
     ddat.dataid = 'Circular Dispersion'
     ddat.data = np.ma.masked_invalid(d1)
     ddat.crs = gdf.crs
     ddat.set_transform(transform=transform)
+    ddat.nodata = 1e+20
 
     return vdat, ddat
 
@@ -534,7 +538,7 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
 
     for i in piter(range(w, rows-w)):
         for j in range(w, cols-w):
-            wdat = dat[i-w:i+w, j-w:j+w]
+            wdat = dat[i-w:i+w+1, j-w:j+w+1]
             d1[i, j] = fractal_dimension(wdat)
 
     # num = correlate(dat, fmat, 'same', 'direct')
@@ -544,11 +548,12 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
     fdat.data = np.ma.masked_invalid(d1)
     fdat.crs = gdf.crs
     fdat.set_transform(transform=transform)
+    fdat.nodata = 1e+20
 
     return fdat
 
 
-def fractal_dimension(array, max_box_size=None, min_box_size=1,
+def fractal_dimension(warray, max_box_size=None, min_box_size=1,
                       n_samples=20, n_offsets=0):
     """
     Calculate the fractal dimension of a 3D numpy array.
@@ -557,7 +562,7 @@ def fractal_dimension(array, max_box_size=None, min_box_size=1,
 
     Parameters
     ----------
-    array : np.array
+    warray : np.array
         The array to calculate the fractal dimension of.
     max_box_size : int, optional
         The largest box size, given as the power of 2 so that 2**max_box_size
@@ -577,22 +582,25 @@ def fractal_dimension(array, max_box_size=None, min_box_size=1,
         Fractal dimension
 
     """
-    if array.ndim == 2:
-        array = np.expand_dims(array, 0)
+    if warray.ndim == 2:
+        warray = np.expand_dims(warray, 0)
 
     # determine the scales to measure on
     if max_box_size is None:
         # default max size is the largest power of 2 that fits in the
         # smallest dimension of the array:
-        max_box_size = int(np.floor(np.log2(np.min(array.shape))))
+        max_box_size = int(np.floor(np.log2(np.min(warray.shape))))
     scales = np.floor(np.logspace(max_box_size, min_box_size, num=n_samples,
                                   base=2))
     # remove duplicates that could occur as a result of the floor
     scales = np.unique(scales)
 
     # get the locations of all non-zero pixels
-    locs = np.where(array > 0)
+    locs = np.where(warray > 0)
     voxels = np.array(list(zip(*locs)))
+
+    if voxels.size == 0:
+        return np.nan
 
     # count the minimum amount of boxes touched
     Ns = []
@@ -605,9 +613,12 @@ def fractal_dimension(array, max_box_size=None, min_box_size=1,
             offsets = np.linspace(0, scale, n_offsets)
         # search over all offsets
         for offset in offsets:
-            bin_edges = [np.arange(0, i, scale) for i in array.shape]
+            bin_edges = [np.arange(0, i, scale) for i in warray.shape]
             bin_edges = [np.hstack([0-offset, x+offset]) for x in bin_edges]
-            H1, _ = np.histogramdd(voxels, bins=bin_edges)
+            try:
+                H1, _ = np.histogramdd(voxels, bins=bin_edges)
+            except:
+                breakpoint()
             touched.append(np.sum(H1 > 0))
         Ns.append(touched)
     Ns = np.array(Ns)
@@ -622,8 +633,11 @@ def fractal_dimension(array, max_box_size=None, min_box_size=1,
     Ns = Ns[Ns > 0]
     scales = scales[:len(Ns)]
 
-    # perform fit
-    coeffs = np.polyfit(np.log(1/scales), np.log(Ns), 1)
+    if Ns.size == 1:
+        return np.nan
+    else:
+        # perform fit
+        coeffs = np.polyfit(np.log(1/scales), np.log(Ns), 1)
 
     return coeffs[0]
 
@@ -693,6 +707,20 @@ def _testfn():
     SC = StructComp()
     SC.indata = IO.outdata
     SC.settings()
+
+    import matplotlib.pyplot as plt
+
+    gdf = IO.outdata['Vector'][0]
+    dat = SC.outdata['Raster'][0]
+
+    plt.figure(dpi=150)
+    ax = plt.gca()
+
+    gdf.plot(ax=ax)
+
+    plt.imshow(dat.data, extent=dat.extent)
+    plt.colorbar()
+    plt.show()
 
 
 if __name__ == "__main__":
