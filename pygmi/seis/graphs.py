@@ -650,8 +650,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         uvals = np.sort(df1.intensity.unique())
 
         X = np.transpose([x, y])
+        X = np.unique(X, axis=0)
         r = pdist(X)
-        dxy = r.min() / 10
+        # dxy = r.min() / 10
+        dxy = np.percentile(r, 10) / 10
+        # breakpoint()
 
         dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
 
@@ -1270,6 +1273,7 @@ def _testfn():
     # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
     # tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
     tmp.ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+    # tmp.ifile = r"D:\Workdata\seismology\macro\1908-09-10-1753-00.macro"
     tmp.settings(True)
 
     data = tmp.outdata

@@ -29,6 +29,7 @@ import re
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_string_dtype
 import geopandas as gpd
 
 import pygmi.seis.datatypes as sdt
@@ -239,8 +240,9 @@ def importmacro(ifile):
                                                 'code', 'postalcode',
                                                 'location'])
 
-    df1.intensity = df1.intensity.str.replace('+', '')
-    df1.intensity = df1.intensity.astype(float)
+    if is_string_dtype(df1.intensity):
+        df1.intensity = df1.intensity.str.replace('+', '')
+        df1.intensity = df1.intensity.astype(float)
 
     gdf1 = gpd.GeoDataFrame(df1, geometry=gpd.points_from_xy(df1.lon, df1.lat),
                             crs='EPSG:4326')

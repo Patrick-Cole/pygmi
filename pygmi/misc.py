@@ -290,8 +290,11 @@ class BasicModule(QtWidgets.QDialog):
         if isinstance(obj, QtWidgets.QComboBox):
             self.projdata[otxt] = obj.currentText()
 
-        if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
+        if isinstance(obj, QtWidgets.QLineEdit):
             self.projdata[otxt] = obj.text()
+
+        if isinstance(obj, QtWidgets.QTextEdit):
+            self.projdata[otxt] = obj.plainText()
 
         if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
                             QtWidgets.QSlider)):

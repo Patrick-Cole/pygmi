@@ -442,6 +442,7 @@ class DataMerge(BasicModule):
 
         self.le_idirlist = QtWidgets.QLineEdit('')
         self.le_sfile = QtWidgets.QLineEdit('')
+        self.le_nodata = QtWidgets.QLineEdit('')
         self.cb_files_diff = QtWidgets.QCheckBox(
             'Mosaic by band labels, '
             'since band order may differ, or input files have different '
@@ -494,12 +495,16 @@ class DataMerge(BasicModule):
         gl_main.addWidget(self.le_idirlist, 1, 1, 1, 1)
         gl_main.addWidget(pb_sfile, 2, 0, 1, 1)
         gl_main.addWidget(self.le_sfile, 2, 1, 1, 1)
-        gl_main.addWidget(self.cb_files_diff, 3, 0, 1, 2)
-        gl_main.addWidget(self.cb_shift_to_median, 4, 0, 1, 2)
-        gl_main.addWidget(gbox_merge_method, 5, 0, 1, 2)
-        gl_main.addWidget(self.cb_bands_to_files, 6, 0, 1, 2)
-        gl_main.addWidget(helpdocs, 7, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 7, 1, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel('Nodata Value (optional):'),
+                          3, 0, 1, 1)
+        gl_main.addWidget(self.le_nodata, 3, 1, 1, 1)
+
+        gl_main.addWidget(self.cb_files_diff, 4, 0, 1, 2)
+        gl_main.addWidget(self.cb_shift_to_median, 5, 0, 1, 2)
+        gl_main.addWidget(gbox_merge_method, 6, 0, 1, 2)
+        gl_main.addWidget(self.cb_bands_to_files, 7, 0, 1, 2)
+        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 8, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -812,14 +817,17 @@ class DataMerge(BasicModule):
                                        dtype=i2.data.dtype,
                                        transform=trans)
 
-                if np.issubdtype(i2.data.dtype, np.floating):
+                if self.le_nodata.text() != '':
+                    nodata = float(self.le_nodata.text())
+                elif np.issubdtype(i2.data.dtype, np.floating):
                     nodata = 1.0e+20
                 else:
                     nodata = -99999
 
-                tmpdat = i2.data-mval
+                tmpdat = i2.data
                 tmpdat = tmpdat.filled(nodata)
                 tmpdat = np.ma.masked_equal(tmpdat, nodata)
+                tmpdat = tmpdat-mval
 
                 raster.write(tmpdat, 1)
                 raster.write_mask(~np.ma.getmaskarray(i2.data))
@@ -941,8 +949,12 @@ class DataMerge(BasicModule):
             nodata = dataset.nodata
 
         # Start Merge
+        if self.le_nodata.text() != '':
+            nodata = float(self.le_nodata.text())
+
         mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
                                               method=self.method)
+
         mosaic = np.ma.masked_equal(mosaic, nodata)
 
         outdat = []
@@ -952,6 +964,7 @@ class DataMerge(BasicModule):
             outdat[-1].crs = crs
             outdat[-1].nodata = nodata
 
+        outdat = trim_raster(outdat)
         self.outdata['Raster'] = outdat
 
         return True

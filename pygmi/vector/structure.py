@@ -30,10 +30,12 @@ import geopandas as gpd
 from scipy.signal import correlate
 import shapely
 from shapely.geometry import LineString, Point
+from shapely.ops import linemerge
 from rasterio.features import rasterize
+import numexpr as ne
 
 from pygmi import menu_default
-from pygmi.misc import BasicModule
+from pygmi.misc import BasicModule, getinfo
 from pygmi.raster.datatypes import Data, bounds_to_transform
 
 
@@ -158,6 +160,11 @@ class StructComp(BasicModule):
 
         data = self.indata['Vector'][0]
 
+        if data.crs.is_geographic:
+            self.le_dxy.setText('0.005')
+            self.le_std.setText('0.005')
+            self.le_extend.setText('0.005')
+
         if data.geom_type.iloc[0] != 'LineString':
             self.showlog('No Line Data')
             return False
@@ -269,8 +276,12 @@ def extendlines(gdf, length=500, piter=iter):
     """
     gdf2 = gdf.copy()
 
-    for i, row in piter(gdf.iterrows()):
-        line = np.array(row.geometry.coords)
+    # for i, row in piter(gdf.iterrows()):
+    #     line = np.array(row.geometry.coords)
+    # i = -1
+    for i, row in enumerate(piter(gdf.geometry)):
+        # i += 1
+        line = np.array(row.coords)
 
         p2, p1 = line[:2]
         theta = np.arctan2(p2[1]-p1[1], p2[0]-p1[0])
@@ -315,19 +326,30 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
 
     """
     # Extend lines to make sure almost intersections are found
+    getinfo(1)
     gdf = extendlines(gdf, extend, piter=piter)
+    getinfo(2)
 
     # Find intersections
     pnts = []
     geom1 = gdf.geometry
+
     for i, line1 in enumerate(piter(geom1)):
         geom2 = gdf.loc[i+1:, 'geometry']
-        for line2 in geom2:
-            if line1 == line2:
-                continue
-            pnt = line1.intersection(line2)
-            if not pnt.is_empty and 'Point' in pnt.geom_type:
+        pnts1 = geom2.intersection(line1)
+        pnts1 = pnts1[~pnts1.is_empty]
+        for pnt in pnts1:
+            if 'Point' in pnt.geom_type:
                 pnts.append(pnt)
+
+        # for line2 in geom2:
+        #     if line1 == line2:
+        #         continue
+        #     pnt = line1.intersection(line2)
+        #     if not pnt.is_empty and 'Point' in pnt.geom_type:
+        #         pnts.append(pnt)
+
+    getinfo(3)
 
     gdf2 = gpd.GeoDataFrame(geometry=pnts)
     geom2 = gdf2.geometry.explode(index_parts=False)
@@ -337,18 +359,25 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     xcoords = np.arange(xmin, xmax, dxy)
     ycoords = np.arange(ymin, ymax, dxy)
 
-    x, y = np.meshgrid(xcoords, ycoords)
-    H = np.zeros_like(x)
+    H = np.zeros((ycoords.size, xcoords.size))
+
+    getinfo(4)
 
     for pnt in piter(geom2):
-        G = 1/np.sqrt(2*np.pi*var)
-        try:
-            xdiff = (x-pnt.x)**2/(2*var*2)
-        except:
-            breakpoint()
-        ydiff = (y-pnt.y)**2/(2*var*2)
-        G = G*np.exp(-(xdiff+ydiff))
-        H = H + G
+        xdiff = np.exp(-(xcoords-pnt.x)**2/(2*var))
+        ydiff = np.exp(-(ycoords-pnt.y)**2/(2*var))
+        x1, y1 = np.meshgrid(xdiff, ydiff, copy=False)
+        H = ne.evaluate('H+x1*y1')
+
+    # for pnt in piter(geom2):
+    #     xdiff = (x-pnt.x)**2/(2*var)
+    #     ydiff = (y-pnt.y)**2/(2*var)
+    #     H += np.exp(-(xdiff+ydiff))
+
+    getinfo(5)  # 127  # 17
+
+    G = 1/np.sqrt(2*np.pi*var)
+    H = G*H
 
     dat = Data()
     dat.dataid = 'Feature Intersection Density'
@@ -665,13 +694,13 @@ def segments_to_angles(gdf, piter=iter):
 
     """
     segments = []
-    for i, row in piter(gdf.iterrows()):
-        segments += linesplit(row.geometry)
+    for row in piter(gdf.geometry):
+        segments += linesplit(row)
     gdf2 = gpd.GeoDataFrame(geometry=segments)
     gdf2['angle'] = np.nan
 
-    for i, row in piter(gdf2.iterrows()):
-        line = np.array(row.geometry.coords)
+    for i, row in enumerate(piter(gdf2.geometry)):
+        line = np.array(row.coords)
         p2, p1 = line[:2]
 
         if np.all(p1 == p2):
@@ -693,7 +722,8 @@ def segments_to_angles(gdf, piter=iter):
 def _testfn():
     """Calculate structural complexity."""
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
+    # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
+    sfile = r"D:\Work\Programming\geochem\Cu_Project\RSA_250K_struclin_Merge.shp"
 
     import sys
     from pygmi.vector.iodefs import ImportVector
@@ -704,8 +734,12 @@ def _testfn():
     IO.ifile = sfile
     IO.settings(True)
 
+    dat = IO.outdata['Vector'][0]
+
+    dat ={'Vector': [dat[:1000]]}
+
     SC = StructComp()
-    SC.indata = IO.outdata
+    SC.indata = dat
     SC.settings()
 
     import matplotlib.pyplot as plt
