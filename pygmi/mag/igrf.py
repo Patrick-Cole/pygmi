@@ -254,6 +254,9 @@ class IGRF(BasicModule):
                                                igrfonly=False,
                                                piter=self.piter,
                                                showlog=self.showlog)
+        if odata is None:
+            return False
+
         bname = 'Magnetic Data: IGRF Corrected '
         bname = bname + f'F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}'
 
@@ -391,7 +394,10 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
                             max2[modelI], 3, gh)
 
     if wkt is not None:
-        xdat, ydat = reprojxy(xdat, ydat, wkt, 4326)
+        xdat, ydat = reprojxy(xdat, ydat, wkt, 4326, showlog)
+        if xdat is None:
+            return None, None, None, None
+
 
     for i in piter(range(xdat.size)):
         if igrf_F.mask[i]:

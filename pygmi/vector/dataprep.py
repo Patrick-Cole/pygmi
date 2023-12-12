@@ -1327,7 +1327,7 @@ def quickgrid(x, y, z, dxy, numits=4, showlog=print):
     return newz
 
 
-def reprojxy(x, y, iwkt, owkt):
+def reprojxy(x, y, iwkt, owkt, showlog=print):
     """
     Reproject x and y coordinates.
 
@@ -1360,7 +1360,12 @@ def reprojxy(x, y, iwkt, owkt):
     else:
         crs_to = CRS.from_wkt(owkt)
 
-    transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)
+    try:
+        transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)
+    except:
+        showlog('Problem reprojecting. Aborting.')
+        return None, None
+
     xout, yout = transformer.transform(x, y)
 
     return xout, yout

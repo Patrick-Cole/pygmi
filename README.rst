@@ -34,34 +34,32 @@ PyGMI should still work with Python 3.9 and Python 3.10.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.11.5
-* discretize 0.9.0
-* fiona 1.9.4.post1
-* gdal 3.7.2
-* geopandas 0.14.0
-* llvmlite 0.41.0
-* matplotlib 3.8.0
+* python 3.11.6
+* discretize 0.10.0
+* fiona 1.9.5
+* gdal 3.7.3
+* geopandas 0.14.1
+* matplotlib 3.8.2
 * mtpy 1.1.5
 * natsort 8.4.0
-* numba 0.58.0
+* numba 0.58.1
 * numexpr 2.8.7
-* numpy 1.25.2
+* numpy 1.26.1
 * openpyxl 3.1.2
-* pandas 2.1.1
-* pillow 10.0.1
-* psutil 5.9.5
-* pyogrio 0.6.0
-* pyopengl 3.1.6
+* pandas 2.1.4
+* psutil 5.9.6
+* pyogrio 0.7.2
+* pyopengl 3.1.7
 * pyproj 3.6.1
-* PyQt5 5.15.9
-* pytest 7.4.2
-* rasterio 1.3.8
+* PyQt5 5.15.10
+* pytest 7.4.3
+* rasterio 1.3.9
 * scikit-image 0.22.0
-* scikit-learn 1.3.1
+* scikit-learn 1.3.2
 * scipy 1.11.3
-* shapely 2.0.1
+* shapely 2.0.2
+* shapelysmooth 0.1.1
 * SimPEG 0.20.0.post2
-* utm 0.7.0
 
 Installation
 ------------

@@ -454,7 +454,7 @@ class PCA(BasicModule):
         return True
 
 
-def get_noise(x2d, mask, noise='', piter=iter):
+def get_noise(x2d, mask, noisetype='', piter=iter):
     """
     Calculate noise dataset from original data.
 
@@ -464,7 +464,7 @@ def get_noise(x2d, mask, noise='', piter=iter):
         Input array, of dimension (MxNxChannels).
     mask : numpy array
         mask of dimension (MxN).
-    noise : str, optional
+    noisetype : str, optional
         Noise type to calculate. Can be 'diagonal', 'hv average' or ''.
         The default is ''.
 
@@ -481,7 +481,7 @@ def get_noise(x2d, mask, noise='', piter=iter):
     pbar = piter([1, 2, 3])
     next(pbar)
 
-    if noise == 'diagonal':
+    if noisetype == 'diagonal':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, 1:]
         noise = ne.evaluate('t1-t2')
@@ -489,7 +489,7 @@ def get_noise(x2d, mask, noise='', piter=iter):
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         noise = noise[mask2]
         ncov = np.cov(noise.T)
-    elif noise == 'hv average':
+    elif noisetype == 'hv average':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, :-1]
         t3 = x2d[:-1, :-1]
@@ -895,13 +895,17 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
 def _testfn():
     """Test routine."""
+    from pygmi.misc import getinfo
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
 
-    ncmps = 10
+    ncmps = 5
 
     dat = get_data(ifile)
 
+    getinfo(1)
     pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
+    getinfo(2)
 
     for i, _ in enumerate(dat):  # [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -922,8 +926,10 @@ def _testfn():
 
 
 def _testfn2():
+    import os
     import sys
     from matplotlib import rcParams
+    from pygmi.rsense.iodefs import ImportData
 
     rcParams['figure.dpi'] = 150
 
@@ -931,15 +937,27 @@ def _testfn2():
     ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
     ifile = r'C:/Workdata/Remote Sensing/Landsat/LC09_L1TP_173080_20211110_20220119_02_T1.tar'
     # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
+    ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
 
-    dat = get_data(ifile)
+    # dat = get_data(ifile)
     # dat2 = get_data(ifile2)
 
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
+    os.chdir(os.path.dirname(ifile))
+
+    tmp = ImportData()
+    tmp.settings()
+
+    dat = tmp.outdata['Raster']
+
     # tmp = PCA()
+
+    from pygmi.misc import getinfo
+
+
     tmp = MNF()
     tmp.indata['Raster'] = dat
     tmp.settings()
@@ -983,4 +1001,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()
