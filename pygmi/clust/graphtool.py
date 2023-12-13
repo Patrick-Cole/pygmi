@@ -195,8 +195,10 @@ class GraphHist(FigureCanvasQTAgg):
         self.xcoord = self.xcoord/xstep
         self.ycoord = self.ycoord/ystep
 
-        self.xcoord = self.xcoord.astype(int)
-        self.ycoord = self.ycoord.astype(int)
+        # self.xcoord = self.xcoord.astype(int)
+        # self.ycoord = self.ycoord.astype(int)
+        self.xcoord = np.trunc(self.xcoord)
+        self.ycoord = np.trunc(self.ycoord)
 
     def setup_hist(self):
         """

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various stats."""
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 import pandas as pd
 
@@ -111,7 +111,7 @@ class BasicStats(ContextModule):
 
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
-                txt = f' {data[row, col]:,.5f}'.replace(',', ' ')
+                txt = f' {data[row, col]:,.5f}'
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignRight)
 

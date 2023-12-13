@@ -25,6 +25,7 @@
 """Routine which displays a table graphically with various stats."""
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 import numpy as np
 
 from pygmi.misc import ContextModule
@@ -35,6 +36,8 @@ class BasicStats3D(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.resize(640, 320)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
@@ -114,6 +117,29 @@ class BasicStats3D(ContextModule):
         self.tablewidget.setColumnCount(data.shape[1])
         self.tablewidget.setHorizontalHeaderLabels(cols)
         self.tablewidget.setVerticalHeaderLabels(rows)
+
+        for i, _ in enumerate(cols):
+            item = self.tablewidget.horizontalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
+
+        for i, _ in enumerate(rows):
+            item = self.tablewidget.verticalHeaderItem(i)
+            fnt = item.font()
+            fnt.setBold(True)
+            item.setFont(fnt)
+
+        for row in range(data.shape[0]):
+            for col in range(data.shape[1]):
+                txt = f' {data[row, col]:,.5f}'
+                txt = QtWidgets.QLabel(txt)
+                txt.setAlignment(Qt.AlignRight)
+
+                self.tablewidget.setCellWidget(row, col, txt)
+
+        self.tablewidget.resizeColumnsToContents()
+        self.show()
 
         self.combo()
 

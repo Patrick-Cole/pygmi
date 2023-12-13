@@ -326,9 +326,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
 
     """
     # Extend lines to make sure almost intersections are found
-    getinfo(1)
     gdf = extendlines(gdf, extend, piter=piter)
-    getinfo(2)
 
     # Find intersections
     pnts = []
@@ -349,8 +347,6 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
         #     if not pnt.is_empty and 'Point' in pnt.geom_type:
         #         pnts.append(pnt)
 
-    getinfo(3)
-
     gdf2 = gpd.GeoDataFrame(geometry=pnts)
     geom2 = gdf2.geometry.explode(index_parts=False)
 
@@ -360,8 +356,6 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     ycoords = np.arange(ymin, ymax, dxy)
 
     H = np.zeros((ycoords.size, xcoords.size))
-
-    getinfo(4)
 
     for pnt in piter(geom2):
         xdiff = np.exp(-(xcoords-pnt.x)**2/(2*var))
@@ -373,8 +367,6 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     #     xdiff = (x-pnt.x)**2/(2*var)
     #     ydiff = (y-pnt.y)**2/(2*var)
     #     H += np.exp(-(xdiff+ydiff))
-
-    getinfo(5)  # 127  # 17
 
     G = 1/np.sqrt(2*np.pi*var)
     H = G*H
