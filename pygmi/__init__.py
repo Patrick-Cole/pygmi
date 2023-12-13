@@ -8,10 +8,9 @@ datasets. It includes:
  * Remote sensing tools.
  * Cluster Analysis
  * Routines for cutting, reprojecting and doing simple modifications to data
- * Convenient display of data using pseudo-color, ternary and sunshaded representation
+ * Convenient display of data using pseudo-color, ternary and sunshading
 
 It is released under the Gnu General Public License version 3.0
 """
 
-from pygmi.main import main
 from pygmi.version import __version__

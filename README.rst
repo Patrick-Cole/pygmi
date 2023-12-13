@@ -77,9 +77,9 @@ Running pygmi can be now done at the command prompt as follows:
 
 If you are in python, you can run PyGMI by using the following commands:
 
-   import pygmi
+   from pygmi.main import main
 
-   pygmi.main()
+   main()
 
 If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:
 
@@ -153,6 +153,8 @@ The process to install is as follows:
    conda install geopandas
 
    conda install numba
+   
+   conda install natsort
 
    conda install scikit-learn
 
@@ -160,11 +162,13 @@ The process to install is as follows:
 
    conda install pyopengl
 
-   conda install natsort
-
    conda install simpeg
 
-   conda install pyshp
+   conda install shapelysmooth
+   
+   conda install pyogrio
+   
+   conda install openpyxl
 
    pip install mtpy
 

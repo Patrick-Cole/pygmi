@@ -32,11 +32,10 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
-dependencies = ['contextily',
-                'discretize',
+dependencies = ['discretize',
+                'gdal',
                 'fiona',
                 'geopandas',
-                'llvmlite',
                 'matplotlib',
                 'mtpy',
                 'natsort',
@@ -57,8 +56,8 @@ dependencies = ['contextily',
                 'scikit-learn',
                 'scipy',
                 'shapely',
-                'SimPEG',
-                'utm']
+                'shapelysmooth',
+                'SimPEG']
 
 [project.urls]
 homepage = 'http://patrick-cole.github.io/pygmi/'

@@ -29,26 +29,14 @@ This routine is used as a convenience function, typically if you do NOT
 formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
-import os
 import sys
 
 from pygmi.main import main
 
-__version__ = '3.2.7.30'
+__version__ = '3.2.7.31'
 
 # useful regex for find: \.(?!py) in spyder.ini
 
-
 if __name__ == "__main__":
-    ipth = os.path.dirname(__file__)+r'/pygmi/version.py'
-    txt = f"__version__ = '{__version__}'"
-
-    with open(ipth, 'r', encoding='utf-8') as io:
-        vtxt = io.read()
-
-    if vtxt != txt:
-        with open(ipth, 'w', encoding='utf-8') as io:
-            io.write(txt)
-
     nocgs = bool(len(sys.argv) == 2 and 'true' in sys.argv[1].lower())
     main(nocgs=nocgs)
