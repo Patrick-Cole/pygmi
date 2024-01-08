@@ -4,76 +4,76 @@ Changelog
 
 v3.2.7.16, 24 July 2023
 -----------------------
-*Fixed bugs in analyse spectra, Landsat composite, condition index.
-*Added progress bar to noise calculation section of MNF.
-*Fixed a bug exporting ternary images from batch lists
-*Import remote sensing now cleans interface when reusing same module.
-*Main interface now clears data log when not on a module.
-*Bugfix - Sentinel 5P now compatible with new vector api.
-*Bugfix - SimPEG parameter depreciation.
-*Bugfix - EM inversion, added start time in code for triangular waveforms.
-*Update, added bisecting k-means.
-*Added 3D model statistics.
-*Added support for import of .shp.zip
-*Fixed a bug for landslide index.
-*Added error message for long column names for shapefiles.
-*Fixed problem with GeoPackage export.
-*Added import/export for GeoPackage.
-*Added Excel export.
-*ImportXYZ now asks for projection
-*Shape changed to Vector in menus.
-*Added Intrepid import
-*Vector data now has a metadata dialog where you can update projection information.
-*Fixed a bug exporting batch file lists.
-*Disabled export of covariances, since its too resource intensive.
-*Wavelengths converted to nanometers on import, to ensure compatibility with ArcGIS.
-*Vector API updates.
-*Vector menu name changes, to avoid confusion between GIS and geophysical terms
-*Shapefiles are imported using pyogrio setting for increased speed.
-*Gridding has code in a function for API convenience.
-*Excel files can now be imported.
-*Point shape files are now classified as point data.
-*Added Tilt Angle of the Horizontal Gradient.
-*Batch export now allows for RGB images with sunshading.
-*Metadata will now display data type.
-*Geotiff deflate now compresses int properly.
-*Bugfix - cut raster (through bounds) now have correct coodinates.
-*Fixed a bug exporting membership data for fuzzy clustering.
-*Changed tilt depth plot and made RTP optional
-*Created GXYZ function.
-*Made trim_raster more robust
-*Bugfix - fixed a bug where saving 3d model caused a crash.
-*Improved RasterFileList code.
-*Sentinel-2 data will be imported as float32 to save space.
-*Cut raster now uses multiple polygons in a shapefile.
-*Default export changed to GeoTIFF - DEFLATE
-*Fixed a bug displaying combinations of multipolygon and polygon data.
-*Fixed aster naming convention for batch export
-*Export raster now correctly prints to log.
-*PyGMI now allows nodata to be defined as None
-*Showprocesslog and pprint changed to showlog
-*Fix bug where satellite bands were not scaled properly.
-*Added more statistics for use in ArcGIS
-*Batch ratios saves with deflate compression.
-*SUTM conversion is now supported on single file satellite import.
-*GeoTIFF deflate compression now supported.
-*Batch export now uses an improved file name convention.
-*Reprojection source parameter not necessary since it is obtained from Data.
-*Batch import can force UTM to be S.
-*Generic data can be used in batch mode.
-*Generic data can be batch imported.
-*PCA and MNF updated to new RasterFileList format.
-*Update to band ratios for new RasterFileList format.
-*Updated export batch list.
-*Import of satellite data simplified, with added band selection.
-*Fixed a bug where reprojected data did not store the original filename.
-*Updated metaonly on Landsat import.
-*Export band list now correctly exports ASTER data.
-*Ternary exports now have band numbers in the file names
-*Bugfix using batch ratio export.
-*Model to shapefile export now has all lithologies in a single file.
-*Fixed a bug in modeller causing a crash with integer data.
-*Fault plane solutions now output to a single shapefile properly.
+* Fixed bugs in analyse spectra, Landsat composite, condition index.
+* Added progress bar to noise calculation section of MNF.
+* Fixed a bug exporting ternary images from batch lists
+* Import remote sensing now cleans interface when reusing same module.
+* Main interface now clears data log when not on a module.
+* Bugfix - Sentinel 5P now compatible with new vector api.
+* Bugfix - SimPEG parameter depreciation.
+* Bugfix - EM inversion, added start time in code for triangular waveforms.
+* Update, added bisecting k-means.
+* Added 3D model statistics.
+* Added support for import of .shp.zip
+* Fixed a bug for landslide index.
+* Added error message for long column names for shapefiles.
+* Fixed problem with GeoPackage export.
+* Added import/export for GeoPackage.
+* Added Excel export.
+* ImportXYZ now asks for projection
+* Shape changed to Vector in menus.
+* Added Intrepid import
+* Vector data now has a metadata dialog where you can update projection information.
+* Fixed a bug exporting batch file lists.
+* Disabled export of covariances, since its too resource intensive.
+* Wavelengths converted to nanometers on import, to ensure compatibility with ArcGIS.
+* Vector API updates.
+* Vector menu name changes, to avoid confusion between GIS and geophysical terms
+* Shapefiles are imported using pyogrio setting for increased speed.
+* Gridding has code in a function for API convenience.
+* Excel files can now be imported.
+* Point shape files are now classified as point data.
+* Added Tilt Angle of the Horizontal Gradient.
+* Batch export now allows for RGB images with sunshading.
+* Metadata will now display data type.
+* Geotiff deflate now compresses int properly.
+* Bugfix - cut raster (through bounds) now have correct coodinates.
+* Fixed a bug exporting membership data for fuzzy clustering.
+* Changed tilt depth plot and made RTP optional
+* Created GXYZ function.
+* Made trim_raster more robust
+* Bugfix - fixed a bug where saving 3d model caused a crash.
+* Improved RasterFileList code.
+* Sentinel-2 data will be imported as float32 to save space.
+* Cut raster now uses multiple polygons in a shapefile.
+* Default export changed to GeoTIFF - DEFLATE
+* Fixed a bug displaying combinations of multipolygon and polygon data.
+* Fixed aster naming convention for batch export
+* Export raster now correctly prints to log.
+* PyGMI now allows nodata to be defined as None
+* Showprocesslog and pprint changed to showlog
+* Fix bug where satellite bands were not scaled properly.
+* Added more statistics for use in ArcGIS
+* Batch ratios saves with deflate compression.
+* SUTM conversion is now supported on single file satellite import.
+* GeoTIFF deflate compression now supported.
+* Batch export now uses an improved file name convention.
+* Reprojection source parameter not necessary since it is obtained from Data.
+* Batch import can force UTM to be S.
+* Generic data can be used in batch mode.
+* Generic data can be batch imported.
+* PCA and MNF updated to new RasterFileList format.
+* Update to band ratios for new RasterFileList format.
+* Updated export batch list.
+* Import of satellite data simplified, with added band selection.
+* Fixed a bug where reprojected data did not store the original filename.
+* Updated metaonly on Landsat import.
+* Export band list now correctly exports ASTER data.
+* Ternary exports now have band numbers in the file names
+* Bugfix using batch ratio export.
+* Model to shapefile export now has all lithologies in a single file.
+* Fixed a bug in modeller causing a crash with integer data.
+* Fault plane solutions now output to a single shapefile properly.
 
 v3.2.6.5, 29 March 2023
 -----------------------
