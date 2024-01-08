@@ -1627,6 +1627,9 @@ class PlotInterp(BasicModule):
                 continue
             indata.append(i)
 
+        if not indata:
+            return
+
         indata = dataprep.lstack(indata, showlog=self.showlog,
                                  piter=self.piter)
 

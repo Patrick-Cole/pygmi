@@ -376,7 +376,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             return False
 
         if self.text_item is not None:
-            self.text_item.setPlainText(self.my_class_name+':')
+            self.text_item.setPlainText(self.my_class_name)
 
         self.my_class.parent.process_is_active()
         self.showlog(self.my_class_name+' busy...')
@@ -388,7 +388,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.showlog(self.my_class_name+' cancelled.')
 
         if self.my_class.is_import is True and self.text_item is not None:
-            item_name = self.my_class_name
             ifile = os.path.basename(self.my_class.ifile)
             ifile = textwrap2(ifile, width=10, max_lines=2)
 

@@ -610,9 +610,15 @@ class PlotHist(ContextModule):
         None.
 
         """
-        self.show()
         data = self.indata['Vector'][0]
         cols = data.select_dtypes(include=np.number).columns.tolist()
+
+        if not cols:
+            self.showlog('No numerical columns.')
+            return
+
+        self.show()
+
         self.cmb_1.addItems(cols)
 
         self.cmb_1.setCurrentIndex(0)

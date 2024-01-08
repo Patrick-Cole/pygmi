@@ -328,7 +328,14 @@ class PlotCCoef(ContextModule):
         None.
 
         """
-        data = self.indata['Raster']
+        if 'Raster' in self.indata:
+            data = self.indata['Raster']
+        else:
+            return
+
+        if self.indata['Raster'][0].isrgb:
+            self.showlog('RGB images cannot be used in this module.')
+            return
 
         if not check_bands(data):
             QtWidgets.QMessageBox.warning(self, 'Warning',
@@ -471,12 +478,18 @@ class PlotSurface(ContextModule):
 
         """
         if 'Raster' in self.indata:
-            self.show()
             data = self.indata['Raster']
+        else:
+            return
 
-            for i in data:
-                self.cmb_1.addItem(i.dataid)
-            self.change_band()
+        if self.indata['Raster'][0].isrgb:
+            self.showlog('RGB images cannot be used in this module.')
+            return
+
+        self.show()
+        for i in data:
+            self.cmb_1.addItem(i.dataid)
+        self.change_band()
 
 
 class PlotScatter(ContextModule):
@@ -548,8 +561,16 @@ class PlotScatter(ContextModule):
         None.
 
         """
+        if 'Raster' in self.indata:
+            data = self.indata['Raster']
+        else:
+            return
+
+        if self.indata['Raster'][0].isrgb:
+            self.showlog('RGB images cannot be used in this module.')
+            return
+
         self.show()
-        data = self.indata['Raster']
         for i in data:
             self.cmb_1.addItem(i.dataid)
             self.cmb_2.addItem(i.dataid)
@@ -614,8 +635,16 @@ class PlotHist(ContextModule):
         None.
 
         """
+        if 'Raster' in self.indata:
+            data = self.indata['Raster']
+        else:
+            return
+
+        if self.indata['Raster'][0].isrgb:
+            self.showlog('RGB images cannot be used in this module.')
+            return
+
         self.show()
-        data = self.indata['Raster']
         for i in data:
             self.cmb_1.addItem(i.dataid)
 
