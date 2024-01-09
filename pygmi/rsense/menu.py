@@ -116,8 +116,6 @@ class MenuWidget():
         self.action_data_viewer.triggered.connect(self.view_change)
 
         # Context menus
-        context_menu['RasterFileList'].addSeparator()
-
         self.action_exportlist = QtWidgets.QAction('Export Raster File List')
         context_menu['RasterFileList'].addAction(self.action_exportlist)
         self.action_exportlist.triggered.connect(self.exportlist)

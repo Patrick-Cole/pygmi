@@ -91,10 +91,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 ctmp = np.abs(ctmp)
                 ctmp = ctmp.tolist()
 
-                if dmat[i, j] < 0.01:
-                    atext = f'{dmat[i, j]:.1e}'
-                else:
-                    atext = f'{dmat[i, j]:.2f}'
+                # if dmat[i, j] < 0.01:
+                #     atext = f'{dmat[i, j]:.1e}'
+                # else:
+                #     atext = f'{dmat[i, j]:.2f}'
+
+                atext = f'{dmat[i, j]:.2f}'
 
                 self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
                                ha='center', va='center')

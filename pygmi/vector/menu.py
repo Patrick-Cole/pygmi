@@ -123,8 +123,6 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_show_hist)
         self.action_show_hist.triggered.connect(self.show_hist)
 
-        # context_menu['Vector'].addSeparator()
-
         self.action_export_xyz = QtWidgets.QAction('Export XYZ Data')
         context_menu['pntVector'].addAction(self.action_export_xyz)
         self.action_export_xyz.triggered.connect(self.export_xyz)
