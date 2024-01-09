@@ -50,6 +50,8 @@ class MenuWidget():
 
         self.parent = parent
         self.parent.add_to_context('Vector')
+        self.parent.add_to_context('pntVector')
+        self.parent.add_to_context('lineVector')
         context_menu = self.parent.context_menu
 
         self.menu = QtWidgets.QMenu('Vector')
@@ -101,12 +103,12 @@ class MenuWidget():
         self.action_basic_stats.triggered.connect(self.basic_stats)
 
         self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
-        context_menu['Vector'].addAction(self.action_show_line_data)
+        context_menu['pntVector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
 
         self.action_show_line_data2 = QtWidgets.QAction('Show Profiles on a '
                                                         'Map')
-        context_menu['Vector'].addAction(self.action_show_line_data2)
+        context_menu['pntVector'].addAction(self.action_show_line_data2)
         self.action_show_line_data2.triggered.connect(self.show_line_map)
 
         self.action_show_vector_data = QtWidgets.QAction('Show Vector Data')
@@ -114,17 +116,17 @@ class MenuWidget():
         self.action_show_vector_data.triggered.connect(self.show_vector_data)
 
         self.action_show_rose_diagram = QtWidgets.QAction('Show Rose Diagram')
-        context_menu['Vector'].addAction(self.action_show_rose_diagram)
+        context_menu['lineVector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
 
         self.action_show_hist = QtWidgets.QAction('Show Histogram')
         context_menu['Vector'].addAction(self.action_show_hist)
         self.action_show_hist.triggered.connect(self.show_hist)
 
-        context_menu['Vector'].addSeparator()
+        # context_menu['Vector'].addSeparator()
 
         self.action_export_xyz = QtWidgets.QAction('Export XYZ Data')
-        context_menu['Vector'].addAction(self.action_export_xyz)
+        context_menu['pntVector'].addAction(self.action_export_xyz)
         self.action_export_xyz.triggered.connect(self.export_xyz)
 
         self.action_export_vector = QtWidgets.QAction('Export Vector Data')

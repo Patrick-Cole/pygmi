@@ -299,7 +299,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.scene().clearSelection()
         self.setSelected(True)
-        exclude = ['GenFPS', 'SceneList']
 
         tmp = self.context_menu['Basic'].actions()
         if ('Raster' in self.my_class.indata and
@@ -308,10 +307,30 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         tmplist = list(self.my_class.outdata.keys())
         for i in tmplist:
-            if i not in exclude:
-                tmp += self.context_menu[i].actions()
+            if i not in self.context_menu:
+                continue
+            tmp += self.context_menu[i].actions()
+            if (i == 'Cluster' and i in self.my_class.outdata and 'memdat' in
+                    self.my_class.outdata['Cluster'][0].metadata['Cluster']):
+                tmp += self.context_menu['memCluster'].actions()
+            if i == 'Vector':
+                gtype = self.my_class.outdata['Vector'][0].geom_type.iloc[0]
+                if gtype == 'LineString':
+                    tmp += self.context_menu['lineVector'].actions()
+                if gtype == 'Point':
+                    tmp += self.context_menu['pntVector'].actions()
+        tmp1 = []
+        tmp2 = []
+        for val in tmp:
+            if 'Export' in val.text():
+                tmp2.append(val)
+            else:
+                tmp1.append(val)
+
         local_menu = QtWidgets.QMenu()
-        local_menu.addActions(tmp)
+        local_menu.addActions(tmp1)
+        local_menu.addSeparator()
+        local_menu.addActions(tmp2)
         local_menu.exec_(event.screenPos())
 
     def mouseDoubleClickEvent(self, event):

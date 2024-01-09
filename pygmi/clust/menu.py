@@ -54,6 +54,7 @@ class MenuWidget():
 
         self.parent = parent
         self.parent.add_to_context('Cluster')
+        self.parent.add_to_context('memCluster')
         context_menu = self.parent.context_menu
 
         # Normal menus
@@ -102,9 +103,8 @@ class MenuWidget():
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
         self.action_show_membership_data = QtWidgets.QAction("Show Membership "
-                                                             "Data (Fuzzy "
-                                                             "Only)")
-        context_menu['Cluster'].addAction(self.action_show_membership_data)
+                                                             "Data")
+        context_menu['memCluster'].addAction(self.action_show_membership_data)
         self.action_show_membership_data.triggered.connect(self.show_membership_data)
 
         self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, "

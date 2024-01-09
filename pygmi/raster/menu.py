@@ -179,7 +179,7 @@ class MenuWidget():
         context_menu['Raster'].addAction(self.action_show_2d_corr_coef)
         self.action_show_2d_corr_coef.triggered.connect(self.show_ccoef)
 
-        self.action_export_data = QtWidgets.QAction('Export Data')
+        self.action_export_data = QtWidgets.QAction('Export Raster Data')
         context_menu['Raster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 

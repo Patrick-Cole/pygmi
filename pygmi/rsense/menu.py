@@ -111,14 +111,6 @@ class MenuWidget():
         self.menu2.addAction(self.action_calc_change)
         self.action_calc_change.triggered.connect(self.calc_change)
 
-        # self.action_create_list = QtWidgets.QAction('Create Scene List ')
-        # self.menu2.addAction(self.action_create_list)
-        # self.action_create_list.triggered.connect(self.create_scene)
-
-        # self.action_load_list = QtWidgets.QAction('Load Scene List')
-        # self.menu2.addAction(self.action_load_list)
-        # self.action_load_list.triggered.connect(self.load_scene)
-
         self.action_data_viewer = QtWidgets.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.view_change)
@@ -138,16 +130,6 @@ class MenuWidget():
         """Calculate change."""
         self.parent.item_insert('Step', 'Calculate Change Indices',
                                 change.CalculateChange)
-
-    # def create_scene(self):
-    #     """Create Scene."""
-    #     self.parent.item_insert('Step', 'Create Scene List',
-    #                             change.CreateSceneList)
-
-    # def load_scene(self):
-    #     """Load Scene."""
-    #     self.parent.item_insert('Io', 'Import Scene List',
-    #                             change.LoadSceneList)
 
     def view_change(self):
         """View Change Detection."""

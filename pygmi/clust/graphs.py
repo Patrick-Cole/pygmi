@@ -309,6 +309,7 @@ class PlotMembership(GraphWindow):
         data = self.indata['Cluster']
         if ('memdat' not in data[0].metadata['Cluster'] or
                 len(data[0].metadata['Cluster']['memdat']) == 0):
+            self.showlog('No membership data.')
             return
 
         self.show()

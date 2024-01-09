@@ -340,6 +340,12 @@ class ExportXYZ(ContextModule):
             self.parent.process_is_active(False)
             return False
 
+        data = self.indata['Vector'][0]
+        if data.geom_type.iloc[0] != 'Point':
+            self.showlog('No point type data.')
+            self.parent.process_is_active(False)
+            return False
+
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv);; Excel (*.xlsx)')
 
@@ -350,7 +356,6 @@ class ExportXYZ(ContextModule):
         self.showlog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
-        data = self.indata['Vector'][0]
 
         filt = (data.columns != 'geometry')
         cols = list(data.columns[filt])
