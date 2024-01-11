@@ -247,6 +247,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         vmin, vmax = np.percentile(z, [1, 99])
 
         surf = self.axes.plot_surface(x, y, z, cmap=cmap,
+                                      # rcount=rows, ccount=cols,
                                       norm=norml, vmin=vmin, vmax=vmax,
                                       shade=False, antialiased=False)
 

@@ -488,7 +488,10 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         noise = noise[mask2]
-        ncov = np.cov(noise.T)
+        # ncov = np.cov(noise.T)
+
+        ncov = blockwise_cov(noise.T)
+
     elif noisetype == 'hv average':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, :-1]
@@ -496,10 +499,14 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
         t4 = x2d[:-1, 1:]
 
         noise = ne.evaluate('(t1-t2+t3-t4)')
+
         mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
 
         noise = noise[mask2]
-        ncov = np.cov(noise.T)/4
+
+        # ncov2 = np.cov(noise.T)/4
+        ncov = blockwise_cov(noise.T) / 4
+
     else:
         t1 = x2d[:-2, :-2]
         t2 = x2d[:-2, 1:-1]
@@ -522,7 +529,9 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
                  mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
 
         noise = noise[mask2]
-        ncov = np.cov(noise.T)/81
+        # ncov = np.cov(noise.T)/81
+
+        ncov = blockwise_cov(noise.T) / 81
 
     next(pbar)
     # Calculate evecs and evals
@@ -590,7 +599,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
     x = x2d[~mask]
     del x2d
 
-    Pnorm = np.dot(x, W.T)
+    # Pnorm = np.dot(x, W.T)
+    Pnorm = blockwise_dot(x, W.T)
 
     pca = IncrementalPCA(n_components=ncmps)
 
@@ -620,7 +630,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
         showlog('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
-        x2 = np.dot(P, Winv.T)
+        x2 = blockwise_dot(P, Winv.T)
         del P
     else:
         x2dshape[-1] = ncmps
@@ -633,8 +643,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
     del x2
 
     if fwdonly:
-        odata = [i.copy(True) for i in dat]
-        odata = odata[:ncmps]
+        odata = [i.copy(True) for i in dat[:ncmps]]
+        # odata = odata[:ncmps]
     else:
         odata = [i.copy() for i in dat]
 
@@ -893,6 +903,108 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
     return odata, ev
 
 
+def _block_slices(dim_size, block_size):
+    """
+    Generate slice objects.
+
+    Generator that yields slice objects for indexing into
+    sequential blocks of an array along a particular axis.
+
+    from: https://stackoverflow.com/questions/20983882/efficient-dot-products-of-large-memory-mapped-arrays
+
+    Parameters
+    ----------
+    dim_size : int
+        Dimension size.
+    block_size : int
+        Block size.
+
+    Yields
+    ------
+    slice
+        Slice to be used in blockwise_dot.
+    """
+    count = 0
+    while True:
+        yield slice(count, count + block_size, 1)
+        count += block_size
+        if count > dim_size:
+            break
+
+
+def blockwise_cov(A):
+    """
+    Blockwise covariance.
+
+    Parameters
+    ----------
+    A : numpy array
+        Matrix.
+
+    Returns
+    -------
+    ncov : numpy array
+        Covariance matrix.
+
+    """
+    A = A - np.mean(A, axis=1, keepdims=True)
+    ncov = blockwise_dot(A, A.T) / (A.shape[1] - 1)
+
+    return ncov
+
+
+def blockwise_dot(A, B, max_elements=int(2**27)):
+    """
+    Compute the dot product of two matrices in a block-wise fashion.
+
+    Only blocks of `A` with a maximum size of `max_elements` will be
+    processed simultaneously.
+
+    from : https://stackoverflow.com/questions/20983882/efficient-dot-products-of-large-memory-mapped-arrays
+
+    Parameters
+    ----------
+    A : numpy array
+        mxn matrix.
+    B : Numpy array
+        nxo matrix.
+    max_elements : int, optional
+        Maximum number of elements in a block. The default is int(2**27).
+
+    Returns
+    -------
+    out : numpy array
+        Output dot product.
+
+    """
+    m,  n = A.shape
+    n1, o = B.shape
+
+    if n1 != n:
+        raise ValueError('matrices are not aligned')
+
+    if A.flags.f_contiguous:
+        # prioritize processing as many columns of A as possible
+        max_cols = max(1, max_elements // m)
+        max_rows = max_elements // max_cols
+
+    else:
+        # prioritize processing as many rows of A as possible
+        max_rows = max(1, max_elements // n)
+        max_cols = max_elements // max_rows
+
+    out = np.empty((m, o), dtype=np.result_type(A, B))
+
+    for mm in _block_slices(m, max_rows):
+        out[mm, :] = 0
+        for nn in _block_slices(n, max_cols):
+            A_block = A[mm, nn].copy()  # copy to force a read
+            out[mm, :] += np.dot(A_block, B[nn, :])
+            del A_block
+
+    return out
+
+
 def _testfn():
     """Test routine."""
     from pygmi.misc import getinfo
@@ -933,15 +1045,9 @@ def _testfn2():
 
     rcParams['figure.dpi'] = 150
 
-    # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
-    ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
-    ifile = r'C:/Workdata/Remote Sensing/Landsat/LC09_L1TP_173080_20211110_20220119_02_T1.tar'
-    # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
     ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
 
     # dat = get_data(ifile)
-    # dat2 = get_data(ifile2)
-
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -954,10 +1060,6 @@ def _testfn2():
     dat = tmp.outdata['Raster']
 
     # tmp = PCA()
-
-    from pygmi.misc import getinfo
-
-
     tmp = MNF()
     tmp.indata['Raster'] = dat
     tmp.settings()
