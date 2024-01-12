@@ -1343,6 +1343,7 @@ class Occam1D(BasicModule):
         self.mmc = MyMplCanvas2(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
+        self.le_occfile = QtWidgets.QLineEdit('')
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
         self.cmb_mode = QtWidgets.QComboBox()
@@ -1379,6 +1380,7 @@ class Occam1D(BasicModule):
         self.hs_profnum = MySlider()
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
 
+        pb_occ = QtWidgets.QPushButton('Occam executable location')
         lbl_1 = QtWidgets.QLabel('Station Name:')
         lbl_1.setSizePolicy(sizepolicy)
         lbl_3 = QtWidgets.QLabel('Mode:')
@@ -1403,8 +1405,10 @@ class Occam1D(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        gl_1.addWidget(lbl_1, 0, 0)
-        gl_1.addWidget(self.cmb_1, 0, 1)
+        gl_1.addWidget(pb_occ, 0, 0)
+        gl_1.addWidget(self.le_occfile, 0, 1)
+        gl_1.addWidget(lbl_1, 1, 0)
+        gl_1.addWidget(self.cmb_1, 1, 1)
         gl_1.addWidget(lbl_3, 2, 0)
         gl_1.addWidget(self.cmb_mode, 2, 1)
         gl_1.addWidget(lbl_4, 3, 0)
