@@ -4,7 +4,7 @@
 		<h1>Cluster Analysis</h1>
 		<p>The tool uses clustering methodologies implemented by the scikit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.</p>
 		<h2>Cluster Algorithm</h2>
-		<p>This can be k-means, DBSCAN or Birch.</p>
+		<p>This can be k-means, bisecting k-means, DBSCAN, OPTICS or Birch.</p>
 		<h2>Minimum Clusters and Maximum Clusters (k-means, Birch)</h2>
 		<p>It refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</p>
 		<h2>Maximum iterations (k-means)</h2>
@@ -13,8 +13,8 @@
 		<p>Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p>
 		<h2>eps (DBSCAN)</h2>
 		<p>The maximum distance between two samples for them to be considered as in the same neighborhood.</p>
-		<h2>Minimum samples (DBSCAN)</h2>
-		<p>The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.</p>
+		<h2>Minimum samples (DBSCAN, OPTICS)</h2>
+		<p>The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself. This is especially important for OPTICS. Too many classes may mean this distance is too small.</p>
 		<h2>Threshold(Birch)</h2>
 		<p>The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p>
 		<h2>Branching factor (Birch)</h2>

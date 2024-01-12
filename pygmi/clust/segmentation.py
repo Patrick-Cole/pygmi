@@ -25,7 +25,7 @@
 """Image segmentation routines."""
 
 import numpy as np
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import OPTICS
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
@@ -44,8 +44,7 @@ class ImageSeg(BasicModule):
         self.le_scale = QtWidgets.QLineEdit('1000')
         self.le_wcompact = QtWidgets.QLineEdit('0.5')
         self.le_wcolor = QtWidgets.QLineEdit('0.9')
-        self.le_eps = QtWidgets.QLineEdit('0.1')
-        self.cb_dbscan = QtWidgets.QCheckBox('Use DBSCAN to group segments')
+        self.cb_optics = QtWidgets.QCheckBox('Use OPTICS to group segments')
 
         self.setupui()
 
@@ -65,7 +64,6 @@ class ImageSeg(BasicModule):
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
-        lbl_eps = QtWidgets.QLabel('DBSCAN eps')
 
         val = QtGui.QDoubleValidator(0.0, 1.0, 2)
         val.setNotation(QtGui.QDoubleValidator.StandardNotation)
@@ -73,7 +71,7 @@ class ImageSeg(BasicModule):
 
         self.le_wcompact.setValidator(val)
         self.le_wcolor.setValidator(val)
-        self.cb_dbscan.setChecked(False)
+        self.cb_optics.setChecked(False)
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
@@ -94,10 +92,7 @@ class ImageSeg(BasicModule):
         gl_main.addWidget(lbl_scale, 2, 0, 1, 1)
         gl_main.addWidget(self.le_scale, 2, 1, 1, 1)
 
-        gl_main.addWidget(self.cb_dbscan, 3, 0, 1, 2)
-
-        gl_main.addWidget(lbl_eps, 4, 0, 1, 1)
-        gl_main.addWidget(self.le_eps, 4, 1, 1, 1)
+        gl_main.addWidget(self.cb_optics, 3, 0, 1, 2)
 
         gl_main.addWidget(helpdocs, 5, 0, 1, 1)
         gl_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -140,7 +135,7 @@ class ImageSeg(BasicModule):
         scale = float(self.le_scale.text())
         wcolor = float(self.le_wcolor.text())
         wcompact = float(self.le_wcompact.text())
-        eps = float(self.le_eps.text())
+        # eps = float(self.le_eps.text())
 
         doshape = True
 
@@ -153,7 +148,7 @@ class ImageSeg(BasicModule):
 
         self.outdata['Raster'] = [odat]
 
-        if not self.cb_dbscan.isChecked():
+        if not self.cb_optics.isChecked():
             return True
 
         means = []
@@ -165,7 +160,7 @@ class ImageSeg(BasicModule):
 
         means = np.array(means)
         means = skp.StandardScaler().fit_transform(means)
-        dbout = DBSCAN(eps=eps).fit_predict(means)
+        dbout = OPTICS().fit_predict(means)
 
         data2 = odat.data.copy()
 
@@ -313,10 +308,11 @@ class ImageSeg(BasicModule):
             elist = set(olist.keys())
 
             clen = len(elist)
-            if self.pbar is not None:
-                self.pbar.setMaximum(clen)
-                self.pbar.setMinimum(0)
-                self.pbar.setValue(0)
+            pbar = self.piter(range(clen))
+            # if self.pbar is not None:
+            #     self.pbar.setMaximum(clen)
+            #     self.pbar.setMinimum(0)
+            #     self.pbar.setValue(0)
             self.showlog('Iteration number: '+str(cnt))
             oldperc = 0
 
@@ -454,11 +450,12 @@ class ImageSeg(BasicModule):
 
                 elist.discard(hind)
 
-                cnow = clen-len(elist)
-                if cnow*1000//clen-oldperc > 0:
-                    if self.pbar is not None:
-                        self.pbar.setValue(cnow)
-                    oldperc = cnow*1000//clen
+                next(pbar)
+                # cnow = clen-len(elist)
+                # if cnow*1000//clen-oldperc > 0:
+                #     if self.pbar is not None:
+                #         self.pbar.setValue(cnow)
+                #     oldperc = cnow*1000//clen
 
                 rmin, rmax = rminmax[i]
                 cmin, cmax = cminmax[i]

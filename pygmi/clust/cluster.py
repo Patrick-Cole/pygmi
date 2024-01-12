@@ -77,7 +77,8 @@ class Cluster(BasicModule):
         self.setupui()
 
         self.cmb_alg.addItems(['Mini Batch K-Means (fast)', 'K-Means',
-                               'Bisecting K-Means', 'DBSCAN', 'Birch'])
+                               'Bisecting K-Means', 'DBSCAN', 'OPTICS',
+                               'Birch'])
         self.cmb_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
@@ -104,6 +105,7 @@ class Cluster(BasicModule):
         self.sb_maxiterations.setMaximum(1000)
         self.sb_maxiterations.setProperty('value', self.max_iter)
         self.sb_minsamples.setMinimum(2)
+        self.sb_minsamples.setMaximum(10000)
         self.sb_minsamples.setProperty('value', self.min_samples)
         self.dsb_eps.setDecimals(5)
         self.dsb_eps.setProperty('value', self.eps)
@@ -181,6 +183,9 @@ class Cluster(BasicModule):
             self.lbl_minsamples.show()
             self.sb_minsamples.show()
             self.dsb_eps.show()
+        elif i == 'OPTICS':
+            self.lbl_minsamples.show()
+            self.sb_minsamples.show()
         elif 'K-Means' in i:
             self.lbl_minclusters.show()
             self.sb_minclusters.show()
@@ -226,8 +231,8 @@ class Cluster(BasicModule):
                          'sizes. Merge the data first')
             return False
 
-        self.min_samples = len(self.indata['Raster'])+1
-        self.sb_minsamples.setProperty('value', self.min_samples)
+        # self.min_samples = len(self.indata['Raster'])+1
+        # self.sb_minsamples.setProperty('value', self.min_samples)
 
         if not nodialog:
             temp = self.exec()
@@ -339,7 +344,7 @@ class Cluster(BasicModule):
 
         dat_out = []
         for i in self.piter(no_clust):
-            if self.cltype != 'DBSCAN':
+            if self.cltype not in ['DBSCAN', 'OPTICS']:
                 self.showlog('Number of Clusters:'+str(i))
             elif i > no_clust[0]:
                 continue
@@ -363,6 +368,9 @@ class Cluster(BasicModule):
                 cfit = skc.DBSCAN(eps=self.eps,
                                   min_samples=self.min_samples).fit(X)
 
+            elif self.cltype == 'OPTICS':
+                cfit = skc.OPTICS(min_samples=self.min_samples).fit(X)
+
             elif self.cltype == 'Birch':
                 X = np.ascontiguousarray(X)  # Birch gave an error without this
                 cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
@@ -377,7 +385,7 @@ class Cluster(BasicModule):
                              'Please change settings.')
 
                 return False
-            if cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
+            if cfit.labels_.max() < 0 and self.cltype in ['DBSCAN', 'OPTICS']:
                 self.showlog('Could not find any clusters. '
                              'Please change settings.')
 
@@ -422,7 +430,7 @@ class Cluster(BasicModule):
 
         for i in dat_out:
             i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
-            if self.cltype == 'DBSCAN':
+            if self.cltype in ['DBSCAN', 'OPTICS']:
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
@@ -447,6 +455,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
 
     dat = get_raster(ifile)
 
@@ -456,7 +465,7 @@ def _testfn():
     DM.indata['Raster'] = dat
     DM.settings()
 
-    dat2 = DM.outdata['Raster']
+    dat2 = DM.outdata['Cluster']
 
     plt.figure(dpi=150)
     plt.imshow(dat2[0].data)
