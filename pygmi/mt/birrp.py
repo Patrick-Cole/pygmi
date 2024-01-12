@@ -99,16 +99,16 @@ class BIRRP(BasicModule):
 
         self.nread = QtWidgets.QLineEdit('1')
 
-        self.nfil = {}
-        self.fpar = {}
-        self.cpar = {}
-        self.arfilnam = {}
-        self.filnam = {}
-        self.nskip = {}
-        self.dstim = {}
-        self.wstim = {}
-        self.wetim = {}
-        self.npts = {}
+        self.le_nfil = {}
+        self.le_fpar = {}
+        self.le_cpar = {}
+        self.le_arfilnam = {}
+        self.le_filnam = {}
+        self.le_nskip = {}
+        self.le_dstim = {}
+        self.le_wstim = {}
+        self.le_wetim = {}
+        # self.npts = {}
         self.pb_arfilnam = {}
         self.pb_cpar = {}
         self.pb_filnam = {}
@@ -243,20 +243,20 @@ class BIRRP(BasicModule):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.cmb_nout.currentIndexChanged.connect(self.cmb_nout_changed)
-        self.cmb_nz.currentIndexChanged.connect(self.cmb_nout_changed)
-        self.cmb_jmode.currentIndexChanged.connect(self.cmb_jmode_changed)
-        self.le_nar.editingFinished.connect(self.le_nar_changed)
+        self.cmb_nout.currentIndexChanged.connect(self.nout_changed)
+        self.cmb_nz.currentIndexChanged.connect(self.nout_changed)
+        self.cmb_jmode.currentIndexChanged.connect(self.jmode_changed)
+        self.le_nar.editingFinished.connect(self.nar_changed)
         pb_importbirrp.pressed.connect(self.importbirrp)
         pb_runbirrp.pressed.connect(self.runbirrp)
 
         for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:
-            self.pb_filnam[i].pressed.connect(functools.partial(self.get_filename,
-                                                                self.le_filnam[i]))
-            self.pb_cpar[i].pressed.connect(functools.partial(self.get_filename,
-                                                              self.le_cpar[i]))
-            self.pb_arfilnam[i].pressed.connect(functools.partial(self.get_filename,
-                                                                  self.le_arfilnam[i]))
+            self.pb_filnam[i].pressed.connect(
+                functools.partial(self.get_filename, self.le_filnam[i]))
+            self.pb_cpar[i].pressed.connect(
+                functools.partial(self.get_filename, self.le_cpar[i]))
+            self.pb_arfilnam[i].pressed.connect(
+                functools.partial(self.get_filename, self.le_arfilnam[i]))
 
     def importbirrp(self):
         """
