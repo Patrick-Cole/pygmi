@@ -768,6 +768,15 @@ class MagInvert(BasicModule):
 
         topo_xyz = np.transpose([xxx, yyy, dtm.data.compressed()])
 
+        # Test
+
+        dobs2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_data.obs")
+        topo_xyz2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_topo.txt")
+
+        breakpoint()
+
+
+
         # Assign Uncertainty
         maximum_anomaly = np.max(np.abs(dobs))
         std = 0.02 * maximum_anomaly * np.ones(len(dobs))
@@ -796,13 +805,16 @@ class MagInvert(BasicModule):
         hy = [(dhxy, 5, -1.3), (dhxy, self.lmod1.numy), (dhxy, 5, 1.3)]
         hz = [(dh, 5, -1.3), (dh, self.lmod1.numz)]
 
-        x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
-        y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
+        x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
+        y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
+        # x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
+        # y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
         z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
 
-        breakpoint()
-
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
+        mesh2 = TensorMesh([hx, hy, hz], 'CCN')
+
+        breakpoint()
 
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
@@ -810,6 +822,8 @@ class MagInvert(BasicModule):
         ind_active = active_from_xyz(mesh, topo_xyz)
         nC = int(ind_active.sum())
         model_map = maps.IdentityMap(nP=nC)
+
+        # Define Starting model
         starting_model = background_susceptibility * np.ones(nC)
 
         # Define the Physics
@@ -973,9 +987,9 @@ def _testfn():
     utlx = -80
     utly = 90
     utlz = 0
-    dxy = 5.
+    dxy = 10.
     d_z = 5.
-    mht = 1.
+    mht = 10.
 
     DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
 
@@ -990,6 +1004,7 @@ def _testfn():
     DM.dsb_hdec.setValue(0)
     DM.dsb_hint.setValue(50000)
     DM.dsb_hinc.setValue(90)
+    DM.dsb_zcell.setValue(5)
 
     DM.settings(True)
 
