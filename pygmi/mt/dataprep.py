@@ -43,6 +43,10 @@ from mtpy.core.z import Z, Tipper
 from pygmi import menu_default
 from pygmi.misc import BasicModule, ContextModule
 
+# The lines below are a temporary fix for mtpy. Removed in future.
+np.float = float
+np.complex = complex
+
 
 class Metadata(ContextModule):
     """
@@ -1449,6 +1453,7 @@ class Occam1D(BasicModule):
         hbl.addLayout(gl_1)
         hbl.addLayout(vbl)
 
+        pb_occ.pressed.connect(self.get_occfile)
         pb_apply.clicked.connect(self.apply)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -1552,6 +1557,8 @@ class Occam1D(BasicModule):
             if platform.system() == 'Windows':
                 occam_path += '.exe'
 
+            occam_path = self.le_occfile.text()
+
             if not os.path.exists(occam_path):
                 text = ('No Occam1D executable found. Please place it in the '
                         'bin directory. You may need to obtain the source '
@@ -1579,6 +1586,32 @@ class Occam1D(BasicModule):
         self.hs_profnum.setMinimum(1)
 
         self.change_band()
+
+    def get_occfile(self, filename=''):
+        """
+        Get Occam executable filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Occam executable filename. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+        ext = 'Occam executable (*.exe *.)'
+
+        if filename == '':
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                    self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return
+
+        os.chdir(os.path.dirname(filename))
+
+        self.le_occfile.setText(filename)
 
     def reset_data(self):
         """
@@ -1673,6 +1706,13 @@ class Occam1D(BasicModule):
         else:
             self.showlog('No EDI data')
             return False
+
+        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
+        if platform.system() == 'Windows':
+            occam_path += '.exe'
+
+        if os.path.exists(occam_path):
+            self.le_occfile.setText(occam_path)
 
         self.cmb_1.currentIndexChanged.disconnect()
         self.cmb_1.clear()

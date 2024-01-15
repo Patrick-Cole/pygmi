@@ -793,7 +793,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     # Get list of wavelengths and data
     dat2 = []
     xval = []
-    for j in dat:
+    for j in piter(dat):
         dat2.append(j.data)
         refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
         if refl < 100.:
@@ -802,7 +802,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         xval.append(refl)
 
     xval = np.array(xval)
-    dat2 = np.ma.array(dat2)
+    dat2 = np.ma.array(dat2)  # This line is very slow.
 
     # This gets nearest wavelength and assigns to R number.
     # It does not interpolate.
@@ -1200,7 +1200,8 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    ifile = r"D:\Janine\cut_048-055_ref_rect_DEFLATE.tif"
 
     data = get_data(ifile)
 
@@ -1223,6 +1224,8 @@ def _testfn():
 
     tmp = np.histogram(dat.data[dat.data > 0])
 
+    breakpoint()
+
 
 def _testfn2():
     """Test routine."""
@@ -1243,4 +1246,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
