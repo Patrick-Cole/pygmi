@@ -770,12 +770,8 @@ class MagInvert(BasicModule):
 
         # Test
 
-        dobs2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_data.obs")
-        topo_xyz2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_topo.txt")
-
-        breakpoint()
-
-
+        # dobs2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_data.txt")
+        # topo_xyz2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_topo.txt")
 
         # Assign Uncertainty
         maximum_anomaly = np.max(np.abs(dobs))
@@ -812,9 +808,7 @@ class MagInvert(BasicModule):
         z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
 
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
-        mesh2 = TensorMesh([hx, hy, hz], 'CCN')
-
-        breakpoint()
+        # mesh2 = TensorMesh([hx, hy, hz], 'CCN')
 
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
@@ -962,8 +956,8 @@ def _testfn():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\mag.tif"
-    dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\dem.tif"
+    mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\mag.tif"
+    dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\dem.tif"
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
