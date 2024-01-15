@@ -800,6 +800,8 @@ class MagInvert(BasicModule):
         y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
         z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
 
+        breakpoint()
+
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
 
         # Starting/Reference Model and Mapping on Tensor Mesh
@@ -1048,6 +1050,8 @@ def _testfn():
     tmp = MainWidget()
     tmp.indata = DM.outdata
     tmp.settings()
+
+    # x - 15 and y + 15, -10, 20, real is 5,5 for dem and mag
 
 
 def _testfn2():
