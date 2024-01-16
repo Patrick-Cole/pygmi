@@ -1175,6 +1175,11 @@ class PlotInterp(BasicModule):
         """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
         btn_apply = QtWidgets.QPushButton('Apply Histogram')
+        btn_allclipperc = QtWidgets.QPushButton('Set current exclusion % to '
+                                                'all bands')
+
+        btn_allclipperc.setDefault(False)
+        btn_allclipperc.setAutoDefault(False)
 
         gbox_1 = QtWidgets.QGroupBox('Display Type')
         vbl_1 = QtWidgets.QVBoxLayout()
@@ -1255,6 +1260,7 @@ class PlotInterp(BasicModule):
         vbl_3.addWidget(self.le_lineclipl)
         vbl_3.addWidget(self.le_lineclipu)
         vbl_3.addWidget(self.cb_histtype)
+        vbl_3.addWidget(btn_allclipperc)
         vbl_3.addWidget(btn_apply)
         vbl_3.addWidget(self.lbl_c)
         vbl_3.addWidget(self.cmb_cbar)
@@ -1289,9 +1295,40 @@ class PlotInterp(BasicModule):
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
         btn_apply.clicked.connect(self.change_lclip)
         self.cb_histtype.clicked.connect(self.change_dtype)
+        btn_allclipperc.clicked.connect(self.change_allclip)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
+
+    def change_allclip(self):
+        """
+        Change all clip percentages to the current one.
+
+        Returns
+        -------
+        None.
+
+        """
+        utxt = self.le_lineclipu.text()
+        ltxt = self.le_lineclipl.text()
+        dattxt = self.cmb_bandh.currentText()
+
+        try:
+            lclip = float(ltxt)
+        except ValueError:
+            lclip = self.clippercl[dattxt]
+
+        try:
+            uclip = float(utxt)
+        except ValueError:
+            uclip = self.clippercu[dattxt]
+
+        for key in self.clippercl:
+            self.clippercl[key] = lclip
+            self.clippercu[key] = uclip
+
+        self.mmc.clippercu = self.clippercu
+        self.mmc.clippercl = self.clippercl
 
     def change_blue(self):
         """
@@ -2138,7 +2175,6 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'd:\WorkData\testdata.hdr'
-    ifile = r"D:\Marine\examples\qqq.tif"
     data = iodefs.get_raster(ifile)
 
     # ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferrous_gt_2.tif"
