@@ -768,11 +768,6 @@ class MagInvert(BasicModule):
 
         topo_xyz = np.transpose([xxx, yyy, dtm.data.compressed()])
 
-        # Test
-
-        # dobs2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_data.txt")
-        # topo_xyz2 = np.loadtxt(r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\magnetics_topo.txt")
-
         # Assign Uncertainty
         maximum_anomaly = np.max(np.abs(dobs))
         std = 0.02 * maximum_anomaly * np.ones(len(dobs))
@@ -803,12 +798,9 @@ class MagInvert(BasicModule):
 
         x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
         y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
-        # x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
-        # y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
         z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
 
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
-        # mesh2 = TensorMesh([hx, hy, hz], 'CCN')
 
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
