@@ -1715,19 +1715,74 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
     with open(ifile, encoding='utf-8') as inp:
         headtxt = inp.readlines()
 
+    refmult = {}
+    refadd = {}
+    radmult = {}
+    radadd = {}
+    K1 = {}
+    K2 = {}
     for i in headtxt:
         if 'DATE_ACQUIRED' in i:
             datetxt = i.split('=')[1][:-1].strip()
             date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
+        if 'REFLECTANCE_MULT_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            refmult[tmp1] = tmp2
+        if 'REFLECTANCE_ADD_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            refadd[tmp1] = tmp2
+        if 'RADIANCE_MULT_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            radmult[tmp1] = tmp2
+        if 'RADIANCE_ADD_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            radadd[tmp1] = tmp2
+        if 'K1_CONSTANT_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            K1[tmp1] = tmp2
+        if 'K2_CONSTANT_BAND' in i:
+            tmp = i.split('=')
+            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp2 = float(tmp[1].strip())
+            K2[tmp1] = tmp2
+
+    # Correct Landsat 7 thermal keys
+    allkeys = list(K1.keys())
+    for key in allkeys:
+        if 'VCID' in key:
+            key2 = key.replace('B6', 'ToABT')
+            K1[key2] = K1.pop(key)
+            K2[key2] = K2.pop(key)
+            radadd[key2] = radadd.pop(key)
+            radmult[key2] = radmult.pop(key)
+            satbands[key2] = satbands['B6']
 
     files = glob.glob(ifile[:-7]+'*.tif')
 
+    if 'LC08' in ifile or 'LC09' in ifile:
+        lstband = 'B10'
+    else:
+        lstband = 'B6'
+
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
-        if 'LC08' in ifile or 'LC09' in ifile:
-            lstband = 'B10'
-        else:
-            lstband = 'B6'
         satbands['LST'] = satbands[lstband]
+
+    # if glob.glob(ifile[:-7]+'*ST_QA.tif'):
+    #     if 'LC08' in ifile or 'LC09' in ifile:
+    #         lstband = 'B10'
+    #     else:
+    #         lstband = 'B6'
+    #     satbands['LST'] = satbands[lstband]
 
     showlog('Importing Landsat data...')
 
@@ -1740,7 +1795,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         fext = fext.replace('SR_B', 'B')
         fext = fext.replace('ST_B', 'B')
 
-        if fext == lstband:
+        if lstband in fext and 'LST' in satbands:
             fext = 'LST'
 
         if tnames is not None and fext.replace(',', ' ') not in tnames:
@@ -1775,11 +1830,27 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
                                  dat[-1].data.mask)
 
         dat[-1].units = 'DN'
+        dat[-1].dataid = fext
+
+        if 'L1TP' in ifile2:
+            if fext in K1:
+                showlog(f'Converting band {fext} to Kelvin.')
+                L = dat[-1].data*radmult[fext]+radadd[fext]
+                dat[-1].data = K2[fext]/np.log(K1[fext]/L+1)
+                dat[-1].units = 'Kelvin'
+                if not metaonly:
+                    dat[-1].dataid = fext+' ToA Brightness Temperature'
+            elif fext in satbands:
+                showlog('Converting band '+fext+' to reflectance.')
+                dat[-1].data = dat[-1].data*refmult[fext]+refadd[fext]
+                dat[-1].units = 'Reflectance'
+                if not metaonly:
+                    dat[-1].dataid = fext+' ToA Reflectance'
 
         if 'L2SP' in ifile2:
             if fext == 'LST':
-                showlog('Converting band '+lstband+' to Kelvin. '
-                        'Band renamed as LST')
+                showlog(f'Converting band {lstband} to Kelvin. '
+                        f'Band renamed as {fext}')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
             elif fext in satbands:
                 showlog('Converting band '+fext+' to reflectance.')
@@ -1804,7 +1875,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             else:
                 dat[-1].units = ''
 
-        dat[-1].dataid = fext
+
         dat[-1].nodata = nval
         dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifilet
@@ -3393,20 +3464,30 @@ def _testfn3():
     # ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
     ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\SPOT_LIST.XML"
     ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\PROD_SPOT7_001\VOL_SPOT7_001_A\IMG_SPOT7_MS_001_A\DIM_SPOT7_MS_201504110743560_ORT_1381943101.XML"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LE07_L1TP_172081_20020630_20170129_01_T1.tar.gz"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
 
-    dat = get_data(ifile)
+    app = QtWidgets.QApplication(sys.argv)
+
+    os.chdir(os.path.dirname(ifile))
+    tmp1 = ImportData()
+    tmp1.settings()
+
+    dat = tmp1.outdata['Raster']
+
+    # dat = get_data(ifile)
 
     print(dat[-1].datetime)
 
     # ofile = r'D:\tmp.hdr'
     # export_raster(ofile, dat, 'ENVI')
 
-    # for i in dat:
-    #     plt.figure(dpi=150)
-    #     plt.title(i.dataid)
-    #     plt.imshow(i.data, extent=i.extent)
-    #     plt.colorbar()
-    #     plt.show()
+    for i in dat:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data, extent=i.extent)
+        plt.colorbar()
+        plt.show()
 
 
 if __name__ == "__main__":

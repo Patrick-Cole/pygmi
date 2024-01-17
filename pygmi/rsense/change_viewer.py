@@ -57,6 +57,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(self.fig)
 
         self.setParent(parent)
+        self.parent = parent
 
         FigureCanvasQTAgg.setSizePolicy(self,
                                         QtWidgets.QSizePolicy.Expanding,
@@ -474,8 +475,12 @@ class SceneViewer(BasicModule):
         self.slider.valueChanged.disconnect()
 
         self.canvas.capture()
+        if not self.canvas.capture_active:
+            return
+
         for indx in self.df.index:
             self.slider.setValue(indx)
+            QtWidgets.QApplication.processEvents()
             self.newdata(indx)
             self.canvas.writer.grab_frame()
 
@@ -494,7 +499,7 @@ def _testfn():
     idir = r"E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic"
     idir = r"D:\Workdata\change\Planet"
     idir = r"E:\Namaqua_change\namakwa"
-    idir = r"D:\WV2_New\BRICS_NRF\change"
+    # idir = r"D:\WV2_New\BRICS_NRF\change"
 
     app = QtWidgets.QApplication(sys.argv)
 

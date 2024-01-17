@@ -353,6 +353,10 @@ def calc_mean(flist, showlog=print, piter=iter):
     for i in meandat:
         cnt[i] = None
         M[i] = None
+        cnt[i] = meandat[i].copy()
+        M[i] = meandat[i].copy()
+        cnt[i].data = cnt[i].data * 0.
+        M[i].data = M[i].data * 0.
 
     # Iteratively calculate stats
     for ifile in piter(flist[1:]):
@@ -365,11 +369,22 @@ def calc_mean(flist, showlog=print, piter=iter):
             if i not in dat:
                 showlog(f'{i} not in first dataset, skipping.')
                 continue
-            meandat[i], dat[i] = lstack([meandat[i], dat[i]], showlog=showlog,
-                                        piter=piter, checkdataid=False)
 
-            tmp = imean(meandat[i].data, dat[i].data, cnt[i], M[i])
-            meandat[i].data, cnt[i], M[i] = tmp
+            ltmp = [meandat[i], dat[i], cnt[i], M[i]]
+            ltmp = lstack(ltmp, showlog=showlog, piter=piter,
+                          checkdataid=False)
+            meandat[i], dat[i], cnt[i], M[i] = ltmp
+
+            # meandat[i], dat[i] = lstack([meandat[i], dat[i]],
+            #                             showlog=showlog,
+            #                             piter=piter, checkdataid=False)
+
+            tmp = imean(meandat[i].data, dat[i].data, cnt[i].data, M[i].data)
+            meandat[i].data, cnt[i].data, M[i].data = tmp
+
+    for i in cnt:
+        cnt[i] = cnt[i].data
+        M[i] = M[i].data
 
     return meandat, cnt, M
 
@@ -650,6 +665,7 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
+    # idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex'
     os.chdir(r'E:\\')
 
     app = QtWidgets.QApplication(sys.argv)

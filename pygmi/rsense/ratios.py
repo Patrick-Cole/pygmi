@@ -935,7 +935,8 @@ def correct_bands(rlist, sensor, bfile=None):
 
     bandmap = sdict[sensor]
     # Sort the keys so we do long names like B3A first
-    svalues = set(sorted(bandmap.keys(), key=lambda el: len(el))[::-1])
+    # svalues = set(sorted(bandmap.keys(), key=lambda el: len(el))[::-1])
+    svalues = sorted(sorted(set(bandmap.keys())), key=lambda el: len(el))[::-1]
     rlist2 = []
     for i in rlist:
         formula = i.split(' ')[0]
@@ -1201,9 +1202,13 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     green = dat[0].copy(True)
     blue = dat[0].copy(True)
 
+    red.data = red.data.astype(np.float32)
+    green.data = green.data.astype(np.float32)
+    blue.data = blue.data.astype(np.float32)
+
     red.data[:] = 3.5*BSI
-    green.data[:] = 0.3
-    blue.data[:] = 0.
+    green.data[~green.data.mask] = 0.3
+    blue.data[~blue.data.mask] = 0.
 
     filt = ((SWIR > 0.8) | (NDVI < 0.15))
     red.data[filt] = 1.5
@@ -1220,10 +1225,6 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     green.data[filt] = 0.2
     blue.data[filt] = NDWI[filt]
 
-    red.dataid = 'Landslide Index Red'
-    green.dataid = 'Landslide Index Green'
-    blue.dataid = 'Landslide Index Blue'
-
     red.data = np.ma.masked_equal(red.data.filled(1e+20), 1e+20)
     red.nodata = 1e+20
 
@@ -1233,6 +1234,10 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     blue.data = np.ma.masked_equal(blue.data.filled(1e+20), 1e+20)
     blue.nodata = 1e+20
 
+    red.dataid = 'Landslide Index Red'
+    green.dataid = 'Landslide Index Green'
+    blue.dataid = 'Landslide Index Blue'
+
     return [red, green, blue]
 
 
@@ -1240,16 +1245,18 @@ def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
     import winsound
-    from pygmi.rsense.iodefs import ImportBatch
+    from pygmi.rsense.iodefs import ImportBatch, ImportData
 
-    idir = r'd:\sentinel2'
-    os.chdir(r'D:\\')
+    # idir = r'd:\sentinel2'
+    idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
+    os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    tmp1 = ImportBatch()
-    tmp1.idir = idir
-    tmp1.get_sfile(True)
+    # tmp1 = ImportBatch()
+    tmp1 = ImportData()
+    # tmp1.idir = idir
+    # tmp1.get_sfile(True)
     tmp1.settings()
 
     SR = SatRatios()
