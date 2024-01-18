@@ -1135,6 +1135,9 @@ class PlotInterp(BasicModule):
         self.lbl_k = QtWidgets.QLabel('K value:')
         self.gbox_sun = QtWidgets.QGroupBox('Sunshading')
 
+        self.btn_allclipperc = QtWidgets.QPushButton('Set current exclusion %'
+                                                     ' to all bands')
+
         if 'MarineCopper' not in colormaps():
             newcmp = ListedColormap(copper/255, 'MarineCopper')
             colormaps.register(newcmp)
@@ -1175,11 +1178,9 @@ class PlotInterp(BasicModule):
         """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
         btn_apply = QtWidgets.QPushButton('Apply Histogram')
-        btn_allclipperc = QtWidgets.QPushButton('Set current exclusion % to '
-                                                'all bands')
 
-        btn_allclipperc.setDefault(False)
-        btn_allclipperc.setAutoDefault(False)
+        self.btn_allclipperc.setDefault(False)
+        self.btn_allclipperc.setAutoDefault(False)
 
         gbox_1 = QtWidgets.QGroupBox('Display Type')
         vbl_1 = QtWidgets.QVBoxLayout()
@@ -1260,7 +1261,7 @@ class PlotInterp(BasicModule):
         vbl_3.addWidget(self.le_lineclipl)
         vbl_3.addWidget(self.le_lineclipu)
         vbl_3.addWidget(self.cb_histtype)
-        vbl_3.addWidget(btn_allclipperc)
+        vbl_3.addWidget(self.btn_allclipperc)
         vbl_3.addWidget(btn_apply)
         vbl_3.addWidget(self.lbl_c)
         vbl_3.addWidget(self.cmb_cbar)
@@ -1295,7 +1296,7 @@ class PlotInterp(BasicModule):
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
         btn_apply.clicked.connect(self.change_lclip)
         self.cb_histtype.clicked.connect(self.change_dtype)
-        btn_allclipperc.clicked.connect(self.change_allclip)
+        self.btn_allclipperc.clicked.connect(self.change_allclip)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -1483,10 +1484,12 @@ class PlotInterp(BasicModule):
             self.le_lineclipl.hide()
             self.le_lineclipu.hide()
             self.cmb_bandh.hide()
+            self.btn_allclipperc.hide()
         else:
             self.le_lineclipl.show()
             self.le_lineclipu.show()
             self.cmb_bandh.show()
+            self.btn_allclipperc.show()
 
         self.mmc.htype = txt
         self.mmc.update_graph()

@@ -2,6 +2,88 @@
 Changelog
 =========
 
+v3.2.8.0, 18 January 2024
+-------------------------
+* Fixed a bug capturing in the change detection viewer.
+* Fixed a bug causing a crash in change detection indices.
+* Added reflectance calculation to L1 Landsat data.
+* Fixed a bug calculating some ratios with B3A.
+* Fixed a mask bug in Landslide indices.
+* Raster viewer now allows current clip % to be assigned to all bands.
+* Fixed a bug causing an offset in magnetic inversion.
+* Occam executable can now be manually linking within MT module.
+* Fixed a bug in BIRRP.
+* Added OPTICS to clustering and segmentation.
+* MNF transforms will use less memory at some stages.
+* Correlation coefficients graph will not use scientific notation, for a cleaner plot.
+* Cluster and Vector context menus will check for fuzzy, point and line related menus.
+* Some modules will no longer try to accept RGB data to avoid crashes.
+* Histograms will not try to be plotted for vector data without columns.
+* Updated statistics views.
+* Added error message to reprojxy.
+* Updated readme.rst
+* Fixed project save bug with QTextEdit.
+* Fixed macro import bug.
+* Fixed isocontour dxy bug.
+* Update - added optional bigtiff, rather than enforced bigtiff export.
+* Update - added another copper colorbar.
+* Update - added optional nodata in mosaic.
+* Added statistics for vector data.
+* Added correct window headings for raster and vector graphs.
+* Changed 'run' to 'acceptall' in older classes.
+* Added bounds option for vector import.
+* Added structure complexity.
+* Bugfix - Change view now saves to png correctly.
+* Update - Spot DIMAP import added.
+* Added cumulative histograms.
+* Raster graphs are now 150 dpi.
+* Consolidated functions used in ginterp.
+* Linear clip can now be applied to each ternary band individually.
+* Ternary images will now display values even if some bands have nulls at a location.
+* Bugfix = fixed a bug where .aux.xml was not created before statistics calculation.
+* Bugfix - Nordic2 format.
+* Update - Isolines can now be exported to shapefiles.
+* Isoseismic contours now available.
+* Added Nordic2 support.
+* Update - added import for SEISAN macro format.
+* Bugfix - fixed a bug causing slight shift in gridded data.
+* Fixed a bug where no coordinates in a SEISAN file would cause a crash when plotting some graphs.
+* File name in IO module will refresh when module is reused.
+* Update to pfinvert because of APi depreciation.
+* Fixed bug in change viewer
+* Batch file load will ignore aux.xml
+* Bugfix - fixed a problem importing old models due to new datetime property of raster data.
+* Fixed process_is_active bug.
+* Bugfix relating to changes in matplotlib API.
+* Csv in tilt depths no longer has # on header row.
+* Fixed a bug where smoothing causes a crash on tilt angles, when there was no mask present.
+* Fixed a bug where vector display crashed if file had no metadata.
+* Point clip now checks for projections.
+* Plot surfaces has improved colour mapping.
+* Fixed contour bug due to matplotlib update.
+* Fixed a bug changing from contour view.
+* Added text file splitting routine to vector menu.
+* Fixed some variable naming bugs.
+* Fixed bug with matplotlib contour allseg depreciation.
+* Fixed a bug where crs was not added to gridded data.
+* Bugfix with beachball exports.
+* Bugfix with project menu and 3D modelling.
+* Changed version location.
+* Fixed a project bug.
+* Update to project API.
+* Moved crs to pyproj.
+* Projection list uses pyproj.
+* Update to projects for some modules
+* Batch import now supports Sentinel-2 directories.
+* Added change detection indices and updated change detection viewer to work with RasterFileList.
+* Reading of KMZ/KML is now supported.
+* Added change detection.
+* Added copy method to Data.
+* Layer stacking updates datetime.
+* Landsat units updated.
+* Satellite imports now include date.
+* Metadata for date is displayed and can be edited.
+
 v3.2.7.16, 24 July 2023
 -----------------------
 * Fixed bugs in analyse spectra, Landsat composite, condition index.
