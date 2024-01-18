@@ -7,16 +7,20 @@
 		<p>The display of magnetic data or gravity data is changed upon calculation of either data type.</p>
 		<h2>Options</h2>
 		<ul>
+      <li>Lithology Notes - Each defined lithology can have some notes associated with it.</li>
 			<li>Profile Orientation- allows for the selection of the profile direction.</li>
 			<li>Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.</li>
 			<li>Layer - allows for the display and/or selection of the profile being modelled. The Altitude associated with the layer is also displayed.</li>
 			<li>Lithology List - Use this to select which lithology that you are currently drawing. To erase, simply select the Background lithology and draw with that.</li>
 			<li>Line Thickness - This allows you to change the pen thickness, which you are drawing with.</li>
 			<li>Ranged Copy - The ranged copy function allows for the copying of a lithology on the current layer over a range of layers. You can choose which layers to copy to, and which lithologies can be overwritten.</li>
-			<li>Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</li>
 			<li>Add Lithological Boundary - Adds a grid to be used as a horizontal lithological boundary. It can be used if you have, say, a grid of the crust or the bedrock to add to your model. </li>
 			<li>Export All Profiles - Export an X,Y,Z file of the profile data.</li>
 			<li>Dataset Drop Box - Allows for a dataset to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are.</li>
+			<li>Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</li>
+			<li>View Magnetic Profile - changes view to magnetic profile.</li>
+			<li>View Gravity Profile - changes view to gravity profile.</li>
+			<li>Import Borehole Logs - If boreholes have been imported via the PyGMI->Boreholes menu, they can be linked to the potential field modelling module and imported into the model here.</li>
 		</ul>
 		<h2>Calculations</h2>
 		<p>Calculations  can be done by choosing one of two options from the menu bar at the top of the program:</p>
@@ -26,6 +30,7 @@
 			<li>Calculate Magnetics - This is used if you want Magnetic data. The height chosen is the magnetic height.</li>
 			<li>Calculate Gravity (Changes Only)- This calculates only the changes to the gravity since the last calculation.</li>
 			<li>Calculate Magnetics (Changes Only)- This calculates only the changes to the magnetic data since the last calculation.</li>
+      <li>Apply Demagnetization Correction - This corrects the magnetic field.
 			<li>Save Model - Convenience option to save the model from within the interface.</li>
 		</ul>
 		<h2>Tips</h2>
