@@ -1135,7 +1135,7 @@ def lltomap(lat, lon):
     Returns
     -------
     mapsheet : str
-        Mapsheet number.
+        Map sheet number.
 
     """
     cdict = {(0, 0): 'A',
@@ -1170,7 +1170,7 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
     Parameters
     ----------
     mapsheet : str
-        Mapsheet number. Four numbers and up to two letters denoting NE corner
+        Map sheet number. Four numbers and up to two letters denoting NE corner
         in latitude and longitude and quadrants (A to D). Eg, 2928AB is
         latitude 29, longitude 28, quadrant B of quadrant A.
     crs_to : CRS, optional
@@ -1181,7 +1181,7 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
     Returns
     -------
     bounds : list
-        outmut bounds.
+        output bounds.
 
     """
     i = mapsheet

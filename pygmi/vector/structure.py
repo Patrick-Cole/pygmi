@@ -307,13 +307,13 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     Parameters
     ----------
     gdf : GeoDataFrame
-        Geodataframe of linear features.
+        GeoDataframe of linear features.
     dxy : float
         Raster cell size
     var : float
         Variance.
     extend : float
-        Distance to extend linear feaatures.
+        Distance to extend linear features.
     piter : iter
         Progressbar iterable.
 
@@ -392,7 +392,7 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     Parameters
     ----------
     gdf : GeoDataFrame
-        Geodataframe of linear features.
+        GeoDataframe of linear features.
     dxy : float
         Raster cell size
     wsize : int
@@ -449,7 +449,7 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     Parameters
     ----------
     gdf : GeoDataFrame
-        Geodataframe of linear features.
+        GeoDataframe of linear features.
     dxy : float
         Raster cell size
     wsize : int
@@ -532,7 +532,7 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
     Parameters
     ----------
     gdf : GeoDataFrame
-        Geodataframe of linear features.
+        GeoDataframe of linear features.
     dxy : float
         Raster cell size
     wsize : int
@@ -587,10 +587,10 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         The array to calculate the fractal dimension of.
     max_box_size : int, optional
         The largest box size, given as the power of 2 so that 2**max_box_size
-        gives the sidelength of the largest box. The default is None.
+        gives the side length of the largest box. The default is None.
     min_box_size : int, optional
         The smallest box size, given as the power of 2 so that 2**min_box_size
-        gives the sidelength of the smallest box. The default is 1.
+        gives the side length of the smallest box. The default is 1.
     n_samples : int, optional
         number of scales to measure over. The default is 20.
     n_offsets : int, optional

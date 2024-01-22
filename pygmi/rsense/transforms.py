@@ -965,9 +965,9 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
     Parameters
     ----------
     A : numpy array
-        mxn matrix.
+        MxN matrix.
     B : Numpy array
-        nxo matrix.
+        NxO matrix.
     max_elements : int, optional
         Maximum number of elements in a block. The default is int(2**27).
 

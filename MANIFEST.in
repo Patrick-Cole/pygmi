@@ -2,8 +2,6 @@ exclude pygmi_pypi.py
 exclude findlibs.py
 exclude builddocs.py
 include pygmi/mag/IGRF13.COF
-include pygmi/raster/gcs.csv
-include pygmi/raster/pcs.csv
 include pygmi/seis/descriptions.txt
 recursive-include pygmi *.py *.png *.ico *.html
 prune pygmi/cgs

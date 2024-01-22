@@ -270,8 +270,8 @@ class seisan_4():
 
     Columns Format Description Comments
     1 Free
-    2- 6  A5 Station Name
-    7-9   A3 Component, eg SHZ
+    2-6   A5 Station Name
+    7-9   A3 Component, e.g. SHZ
     10       Free
     11-12 A2 Network code
     13-14 A2 Location
@@ -279,21 +279,21 @@ class seisan_4():
     16    A1 Quality Indicator I, E, etc.
     17-24 A8 Phase ID PN, PG, LG, P, S, etc.
     25    I1 Weighting Indicator (1-4) 0 or blank= full weight, 1=75%, 2=50%,
-             3=25%,4=0%, 9: no weight, time (e.g. P-S).
+    -        3=25%,4=0%, 9: no weight, time (e.g. P-S).
     26       Free or flag A to indicate automatic pick, removed when picking
     27-28 I2 Hour Hour can be up to 48 to indicate next day
     29-30 I2 Minutes
     31       Free
     32-37 F6.0 Seconds
     38-44    Parameter 1. If a phase, it is polarity in column 44
-                          If phase END for coda, it is duration(s)(F)
-                          If amplitude phase, it is amplitude (G7)
-                          Amplitude is(Zero-Peak) in units of nm,
-                          nm/s, nm/s^2 or counts.
-                          If back azimuth phase (BAZ), it a back azimuth (F)
+    -                     If phase END for coda, it is duration(s)(F)
+    -                     If amplitude phase, it is amplitude (G7)
+    -                     Amplitude is(Zero-Peak) in units of nm,
+    -                     nm/s, nm/s^2 or counts.
+    -                     If back azimuth phase (BAZ), it a back azimuth (F)
     45-50    Parameter 2  If a phase or END, it is blank
-                          If an amplitude, it is period (F)
-                          If back azimuth phase, it is apparent velocity(km/s)
+    -                     If an amplitude, it is period (F)
+    -                     If back azimuth phase, it is apparent velocity(km/s)
     51         Free
     52-54 A3   Agency
     55         Free
@@ -306,6 +306,7 @@ class seisan_4():
     76 Free
     77-79 I3   Azimuth at source
     80 A1 Type of this line (" ")
+
     """
 
     def __init__(self):
@@ -366,7 +367,7 @@ class seisan_6():
 
     Columns Format Description 	Comments
     1       Free
-    2-79    A      Name(s) of file or archivereference, a-format
+    2-79    A      Name(s) of file or archive reference, a-format
     80      A1     Type of this line ("6")
     """
 
@@ -514,18 +515,18 @@ class seisan_I():
     1       Free
     2:8     Help text for the action indicator
     9:11    Last action done, so far defined:
-              ARG: AUTO Register, AUTOREG
-              ARX: From ARC extract
-              DPH: Phases deleted with DELS
-              DUP: Duplicated event
-              HIN: Updated with HYPOINVERSE
-              NEW: New event
-              REE: Register from EEV
-              REG: Register
-              SPL: Split
-              UPD: Update with HYP
-              UP : Update with HYP only from EEV
-    12      Free
+    -         ARG: AUTO Register, AUTOREG
+    -         ARX: From ARC extract
+    -         DPH: Phases deleted with DELS
+    -         DUP: Duplicated event
+    -         HIN: Updated with HYPOINVERSE
+    -         NEW: New event
+    -         REE: Register from EEV
+    -         REG: Register
+    -         SPL: Split
+    -         UPD: Update with HYP
+    -         UP : Update with HYP only from EEV
+    1       Free
     13:26   Date and time of last action
     27      Free
     28:30   Help text for operator
@@ -538,6 +539,7 @@ class seisan_I():
     -       one or more seconds different from an existing ID to avoid
     -       overwrite.
     76      Indicate if ID is locked. Blank means not locked, L means locked.
+
     """
 
     def __init__(self):

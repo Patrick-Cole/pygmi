@@ -590,7 +590,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         datd : GeoDatFrame
-            Mactoseismic data.
+            Macroseismic data.
 
         Returns
         -------
@@ -635,7 +635,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         datd : GeoDatFrame
-            Mactoseismic data.
+            Macroseismic data.
 
         Returns
         -------
