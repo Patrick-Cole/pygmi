@@ -1875,7 +1875,6 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             else:
                 dat[-1].units = ''
 
-
         dat[-1].nodata = nval
         dat[-1].meta_from_rasterio(dataset)
         dat[-1].filename = ifilet
@@ -3324,16 +3323,19 @@ def set_export_filename(dat, odir, otype=None):
         tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
         tmp = list(set(tmp))
         tmp.sort()
-        plev = ''
-        for i in tmp:
-            plev += f'_{i}'
+        # plev = ''
+        # for i in tmp:
+        #     plev += f'_{i}'
 
         tmp = filename.split('_')
-        month = tmp[2][3:5]
-        day = tmp[2][5:7]
-        year = tmp[2][7:11]
-        uid = tmp[-1]
-        ofile = f'AST{plev}_{year}{month}{day}_{uid}'
+        # month = tmp[2][3:5]
+        # day = tmp[2][5:7]
+        # year = tmp[2][7:11]
+        # uid = tmp[-1]
+        date = tmp[2][3:11]
+        time = tmp[2][11:]
+        ofile = f'AST_{date}_{time}'
+        # ofile = f'AST{plev}_{year}{month}{day}_{uid}'
     elif 'Landsat' in sensor:
         ofile = '_'.join(filename.split('_')[:4])
     elif 'Sentinel-2' in sensor:
@@ -3452,20 +3454,7 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    # ifile = r"D:\Sentinel1\S1A_IW_SLC__1SDV_20220207T170247_20220207T170314_041809_04F9FB_F500.SAFE"
-    # ifile = r"D:\ASTER\AST_05_00307102005081903_20230417033828_30889.zip"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
-    # ifile = "D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    # ifile = r"D:\Landsat\LC08_L2SP_169078_20220811_20220818_02_T1.tar"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    # ifile = r"E:\KZN Floods\Raw\one\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004.zip"
-    ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\SPOT_LIST.XML"
-    ifile = r"D:\Spot\SPOT_1381943101_AS_SP_21377_3_17_SO15010875-1\PROD_SPOT7_001\VOL_SPOT7_001_A\IMG_SPOT7_MS_001_A\DIM_SPOT7_MS_201504110743560_ORT_1381943101.XML"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LE07_L1TP_172081_20020630_20170129_01_T1.tar.gz"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3475,7 +3464,7 @@ def _testfn3():
 
     dat = tmp1.outdata['Raster']
 
-    # dat = get_data(ifile)
+    # ofile = set_export_filename(dat, odir='')
 
     print(dat[-1].datetime)
 
