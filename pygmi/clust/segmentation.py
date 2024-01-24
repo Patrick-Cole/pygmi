@@ -155,6 +155,7 @@ class ImageSeg(BasicModule):
         odat = self.indata['Raster'][0].copy(True)
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
         odat.dataid = 'Segments'
+        odat.data = odat.data + 1
 
         self.outdata['Raster'] = [odat]
 
@@ -185,7 +186,7 @@ class ImageSeg(BasicModule):
             filt = (odat.data == uvals[i])
             data2[filt] = val
 
-        odat.data = data2
+        odat.data = data2+1
         self.outdata['Raster'] = [odat]
 
         return True

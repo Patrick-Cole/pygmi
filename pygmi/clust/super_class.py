@@ -63,8 +63,12 @@ class GraphMap(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
         self.figure = Figure()
+        # self.fig = Figure(figsize=(width, height), dpi=dpi)
+
+        self.ax1 = self.figure.add_subplot(111)
 
         super().__init__(self.figure)
+
         self.setParent(parent)
 
         self.parent = parent
@@ -166,8 +170,6 @@ class GraphMap(FigureCanvasQTAgg):
         ----------
         dat : PyGMI Data
             PyGMI dataset.
-        dates : str
-            Dates to show on title.
 
         Returns
         -------
@@ -175,25 +177,24 @@ class GraphMap(FigureCanvasQTAgg):
 
         """
         if 'Ternary' in self.manip:
-            red = dat.banddict[self.bands[0]]
-            green = dat.banddict[self.bands[1]]
-            blue = dat.banddict[self.bands[2]]
+            red = dat[self.bands[0]].data
+            green = dat[self.bands[1]].data
+            blue = dat[self.bands[2]].data
 
             data = [red, green, blue]
         else:
-            data = [dat.banddict[self.bands[0]]]
+            data = [dat[self.bands[0]].data]
 
-        extent = dat.banddict[self.bands[0]].extent
+        extent = dat[self.bands[0]].extent
 
-        self.im1 = imshow(self.ax1, data, extent=extent, piter=self.piter,
-                          showlog=self.showlog)
+        self.im1 = imshow(self.ax1, data, extent=extent)
         self.im1.rgbmode = self.manip
         self.im1.rgbclip = None
         self.cbar = None
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
 
-    def update_plot(self, dat, dates):
+    def update_plot(self, dat):
         """
         Update plot.
 
@@ -201,31 +202,29 @@ class GraphMap(FigureCanvasQTAgg):
         ----------
         dat : PyGMI Data
             PyGMI dataset.
-        dates : str
-            Dates to show on title.
 
         Returns
         -------
         None.
 
         """
-        extent = dat.banddata[0].extent
+        # extent = dat.banddata[0].extent
         self.im1.rgbmode = self.manip
 
         if 'Ternary' in self.manip:
-            red = dat.banddict[self.bands[0]]
-            green = dat.banddict[self.bands[1]]
-            blue = dat.banddict[self.bands[2]]
+            red = dat[self.bands[0]]
+            green = dat[self.bands[1]]
+            blue = dat[self.bands[2]]
 
             data = [red, green, blue]
         else:
-            data = [dat.banddict[self.bands[0]]]
+            data = [dat[self.bands[0]]]
 
-        extent = dat.banddict[self.bands[0]].extent
+        extent = dat[self.bands[0]].extent
 
         self.im1.set_data(data)
         self.im1.set_extent(extent)
-        self.fig.suptitle(dates)
+        # self.fig.suptitle(dates)
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
 
@@ -494,6 +493,7 @@ class SuperClass(BasicModule):
         self.c = [0, 1, 0]
         self.m = [0, 0]
         self.df = None
+        self.data = {}
 
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
@@ -844,8 +844,8 @@ class SuperClass(BasicModule):
         None.
 
         """
-        self.m[0] = self.cmb_databand.currentIndex()
-        self.map.update_graph()
+        # self.m[0] = self.cmb_databand.currentIndex()
+        # self.map.update_graph()
 
         maniptxt = self.cmb_manip.currentText()
 
@@ -861,6 +861,7 @@ class SuperClass(BasicModule):
                           self.cmb_band3.currentText()]
 
         self.map.manip = maniptxt
+        self.map.update_plot(self.data)
         # self.newdata(self.curimage)
 
     def load_shape(self):
@@ -946,6 +947,9 @@ class SuperClass(BasicModule):
 
         self.map.data = self.indata['Raster']
 
+        for i in self.indata['Raster']:
+            self.data[i.dataid] = i
+
         bands = [i.dataid for i in self.indata['Raster']]
 
         try:
@@ -976,12 +980,18 @@ class SuperClass(BasicModule):
         self.cmb_band2.currentIndexChanged.connect(self.on_combo)
         self.cmb_band3.currentIndexChanged.connect(self.on_combo)
 
-        self.map.init_graph()
-        self.map.compute_initial_figure()
+        self.map.bands = [self.cmb_band1.currentText(),
+                          self.cmb_band2.currentText(),
+                          self.cmb_band3.currentText()]
+        self.map.manip = self.cmb_manip.currentText()
+
+        # self.map.init_graph()
+        self.map.compute_initial_figure(self.data)
 
         self.map.polyint()
         self.map.polyi.polyi_changed.connect(self.updatepoly)
-        self.map.update_graph()
+        # self.map.update_graph()
+        self.map.update_plot()
 
         tmp = self.exec()
 
