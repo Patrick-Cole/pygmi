@@ -173,7 +173,7 @@ class ImageSeg(BasicModule):
         if numclust > len(means):
             self.showlog('Aborting K-Means, you have fewer segments than '
                          'your required clusters. Outputting segents only.')
-        return True
+            return True
 
         means = np.array(means)
         means = skp.StandardScaler().fit_transform(means)
