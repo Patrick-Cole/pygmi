@@ -30,7 +30,7 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib import colormaps
+# from matplotlib import colormaps
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -63,8 +63,6 @@ class GraphMap(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
         self.figure = Figure()
-        # self.fig = Figure(figsize=(width, height), dpi=dpi)
-
         self.ax1 = self.figure.add_subplot(111)
 
         super().__init__(self.figure)
@@ -74,46 +72,12 @@ class GraphMap(FigureCanvasQTAgg):
         self.parent = parent
         self.polyi = None
         self.data = []
-        self.cdata = []
-        self.mindx = [0, 0]
-        self.csp = None
-        self.subplot = None
+        self.im1 = None
 
         self.bands = [0, 1, 2]
         self.manip = 'RGB Ternary'
 
-    def init_graph(self):
-        """
-        Initialise the graph.
-
-        Returns
-        -------
-        None.
-
-        """
-        mtmp = self.mindx
-        dat = self.data[mtmp[0]]
-
-        self.figure.clf()
-        self.subplot = self.figure.add_subplot(111)
-
-        self.csp = imshow(self.subplot, dat.data, extent=dat.extent,
-                          cmap=colormaps['jet'])
-        axes = self.figure.gca()
-
-        if dat.crs.is_geographic:
-            axes.set_xlabel('Longitude')
-            axes.set_ylabel('Latitude')
-        else:
-            axes.set_xlabel('Eastings')
-            axes.set_ylabel('Northings')
-
-        axes.xaxis.set_major_formatter(frm)
-        axes.yaxis.set_major_formatter(frm)
-
-        self.figure.canvas.draw()
-
-    def polyint(self):
+    def polyint(self, dat):
         """
         Polygon integrator.
 
@@ -122,8 +86,7 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        mtmp = self.mindx
-        dat = self.data[mtmp[0]].data
+        dat = dat[self.bands[0]].data
 
         xtmp = np.arange(dat.shape[1])
         ytmp = np.arange(dat.shape[0])
@@ -135,32 +98,7 @@ class GraphMap(FigureCanvasQTAgg):
         xmesh = xmesh.filled(np.nan)
         ymesh = ymesh.filled(np.nan)
         pntxy = np.transpose([xmesh, ymesh])
-        self.polyi = PolygonInteractor(self.subplot, pntxy)
-
-    def update_graph(self):
-        """
-        Update graph.
-
-        Returns
-        -------
-        None.
-
-        """
-        mtmp = self.mindx
-        dat = self.data[mtmp[0]]
-
-        if mtmp[1] > 0:
-            cdat = self.cdata[mtmp[1] - 1].data
-            self.csp.set_data(cdat)
-            self.csp.set_clim(cdat.min(), cdat.max())
-            self.csp.set_clim(cdat.min(), cdat.max())
-        else:
-            self.csp.set_data(dat.data)
-            self.csp.set_clim(dat.data.min(), dat.data.max())
-            self.csp.set_clim(dat.data.min(), dat.data.max())
-
-        self.csp.changed()
-        self.figure.canvas.draw()
+        self.polyi = PolygonInteractor(self.ax1, pntxy)
 
     def compute_initial_figure(self, dat):
         """
@@ -176,21 +114,50 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
+        clippercu = 1
+        clippercl = 1
+
         if 'Ternary' in self.manip:
             red = dat[self.bands[0]].data
             green = dat[self.bands[1]].data
             blue = dat[self.bands[2]].data
 
             data = [red, green, blue]
+            data = np.ma.array(data)
+            data = np.moveaxis(data, 0, -1)
+            lclip = [0, 0, 0]
+            uclip = [0, 0, 0]
+
+            lclip[0], uclip[0] = np.percentile(red.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[1], uclip[1] = np.percentile(green.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[2], uclip[2] = np.percentile(blue.compressed(),
+                                               [clippercl, 100-clippercu])
         else:
-            data = [dat[self.bands[0]].data]
+            data = dat[self.bands[0]].data
+            lclip, uclip = np.percentile(data.compressed(),
+                                         [clippercl, 100-clippercu])
 
         extent = dat[self.bands[0]].extent
 
         self.im1 = imshow(self.ax1, data, extent=extent)
         self.im1.rgbmode = self.manip
-        self.im1.rgbclip = None
-        self.cbar = None
+
+        if 'Ternary' in self.manip:
+            self.im1.rgbclip = [[lclip[0], uclip[0]],
+                                [lclip[1], uclip[1]],
+                                [lclip[2], uclip[2]]]
+        else:
+            self.im1.set_clim(lclip, uclip)
+
+        if dat[self.bands[0]].crs.is_geographic:
+            self.ax1.set_xlabel('Longitude')
+            self.ax1.set_ylabel('Latitude')
+        else:
+            self.ax1.set_xlabel('Eastings')
+            self.ax1.set_ylabel('Northings')
+
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
 
@@ -200,35 +167,55 @@ class GraphMap(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        dat : PyGMI Data
-            PyGMI dataset.
+        dat : Dictionary
+            PyGMI dataset/s in a dictionary.
 
         Returns
         -------
         None.
 
         """
-        # extent = dat.banddata[0].extent
-        self.im1.rgbmode = self.manip
+        clippercu = 1
+        clippercl = 1
 
         if 'Ternary' in self.manip:
-            red = dat[self.bands[0]]
-            green = dat[self.bands[1]]
-            blue = dat[self.bands[2]]
+            red = dat[self.bands[0]].data
+            green = dat[self.bands[1]].data
+            blue = dat[self.bands[2]].data
 
             data = [red, green, blue]
+            data = np.ma.array(data)
+            data = np.moveaxis(data, 0, -1)
+            lclip = [0, 0, 0]
+            uclip = [0, 0, 0]
+
+            lclip[0], uclip[0] = np.percentile(red.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[1], uclip[1] = np.percentile(green.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[2], uclip[2] = np.percentile(blue.compressed(),
+                                               [clippercl, 100-clippercu])
+            self.im1.rgbclip = [[lclip[0], uclip[0]],
+                                [lclip[1], uclip[1]],
+                                [lclip[2], uclip[2]]]
+
         else:
-            data = [dat[self.bands[0]]]
+            data = dat[self.bands[0]].data
+            lclip, uclip = np.percentile(data.compressed(),
+                                         [clippercl, 100-clippercu])
+
+            self.im1.set_clim(lclip, uclip)
 
         extent = dat[self.bands[0]].extent
 
+        self.im1.rgbmode = self.manip
         self.im1.set_data(data)
         self.im1.set_extent(extent)
-        # self.fig.suptitle(dates)
+
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
 
-        self.fig.canvas.draw()
+        self.figure.canvas.draw()
 
 
 class PolygonInteractor(QtCore.QObject):
@@ -491,14 +478,13 @@ class SuperClass(BasicModule):
         super().__init__(parent)
         self.m1 = 0
         self.c = [0, 1, 0]
-        self.m = [0, 0]
         self.df = None
         self.data = {}
 
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.apoly = QtWidgets.QPushButton('Add Polygon')
-        self.cmb_databand = QtWidgets.QComboBox()
+        # self.cmb_databand = QtWidgets.QComboBox()
         self.cmb_class = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.cmb_KNalgorithm = QtWidgets.QComboBox()
@@ -514,8 +500,6 @@ class SuperClass(BasicModule):
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
 
         self.setupui()
-
-        self.map.mindx = self.m
 
     def setupui(self):
         """
@@ -541,8 +525,8 @@ class SuperClass(BasicModule):
         gbox_class = QtWidgets.QGroupBox('Supervised Classification')
         gl_class = QtWidgets.QGridLayout(gbox_class)
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Expanding)
+        # spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
+        #                                QtWidgets.QSizePolicy.Expanding)
 
         vbl_2b.addWidget(self.cmb_band1)
         vbl_2b.addWidget(self.cmb_band2)
@@ -577,7 +561,6 @@ class SuperClass(BasicModule):
         self.cmb_class.clear()
         self.cmb_class.addItems(choices)
 
-        lbl_databand = QtWidgets.QLabel('Data Band:')
         lbl_class = QtWidgets.QLabel('Classifier:')
         self.lbl_1.setText('Algorithm:')
 
@@ -590,9 +573,6 @@ class SuperClass(BasicModule):
         self.cmb_SVCkernel.setHidden(True)
         self.cmb_DTcriterion.setHidden(True)
         self.cmb_RFcriterion.setHidden(True)
-
-        # gl_right.addWidget(lbl_databand, 0, 0, 1, 1)
-        # gl_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
 
         gl_right.addWidget(self.tablewidget, 1, 0, 3, 2)
         gl_right.addWidget(self.apoly, 1, 2, 1, 1)
@@ -627,6 +607,7 @@ class SuperClass(BasicModule):
         self.tablewidget.currentItemChanged.connect(self.onrowchange)
         self.tablewidget.cellChanged.connect(self.oncellchange)
         self.cmb_class.currentIndexChanged.connect(self.class_change)
+        self.cmb_manip.currentIndexChanged.connect(self.on_combo)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -988,10 +969,10 @@ class SuperClass(BasicModule):
         # self.map.init_graph()
         self.map.compute_initial_figure(self.data)
 
-        self.map.polyint()
+        self.map.polyint(self.data)
         self.map.polyi.polyi_changed.connect(self.updatepoly)
         # self.map.update_graph()
-        self.map.update_plot()
+        self.map.update_plot(self.data)
 
         tmp = self.exec()
 
@@ -1153,35 +1134,6 @@ class SuperClass(BasicModule):
         classifier.fit(X_train, y_train)
 
         return classifier, lbls, datall, X_test, y_test, tlbls
-
-    def update_map(self, polymask):
-        """
-        Update map.
-
-        Parameters
-        ----------
-        polymask : numpy array
-            Polygon mask.
-
-        Returns
-        -------
-        None.
-
-        """
-        if max(polymask) is False:
-            return
-
-        mtmp = self.cmb_databand.currentIndex()
-        mask = self.indata['Raster'][mtmp].data.mask
-
-        polymask = np.array(polymask)
-        polymask.shape = mask.shape
-        polymask = np.logical_or(polymask, mask)
-
-        dattmp = self.map.csp.get_array()
-        dattmp.mask = polymask
-        self.map.csp.changed()
-        self.map.figure.canvas.draw()
 
     def update_class_polys(self):
         """Update class poly summaries."""
