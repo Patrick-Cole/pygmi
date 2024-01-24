@@ -25,7 +25,7 @@
 """Image segmentation routines."""
 
 import numpy as np
-from sklearn.cluster import OPTICS
+from sklearn.cluster import KMeans
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
@@ -44,7 +44,8 @@ class ImageSeg(BasicModule):
         self.le_scale = QtWidgets.QLineEdit('1000')
         self.le_wcompact = QtWidgets.QLineEdit('0.5')
         self.le_wcolor = QtWidgets.QLineEdit('0.9')
-        self.cb_optics = QtWidgets.QCheckBox('Use OPTICS to group segments')
+        self.cb_optics = QtWidgets.QCheckBox('Use K-Means to group segments')
+        self.le_numclust = QtWidgets.QLineEdit('8')
 
         self.setupui()
 
@@ -64,6 +65,7 @@ class ImageSeg(BasicModule):
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
+        lbl_numclust = QtWidgets.QLabel('Number of clusters')
 
         val = QtGui.QDoubleValidator(0.0, 1.0, 2)
         val.setNotation(QtGui.QDoubleValidator.StandardNotation)
@@ -71,7 +73,7 @@ class ImageSeg(BasicModule):
 
         self.le_wcompact.setValidator(val)
         self.le_wcolor.setValidator(val)
-        self.cb_optics.setChecked(False)
+        self.cb_optics.setChecked(True)
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
@@ -93,6 +95,9 @@ class ImageSeg(BasicModule):
         gl_main.addWidget(self.le_scale, 2, 1, 1, 1)
 
         gl_main.addWidget(self.cb_optics, 3, 0, 1, 2)
+
+        gl_main.addWidget(lbl_numclust, 4, 0, 1, 1)
+        gl_main.addWidget(self.le_numclust, 4, 1, 1, 1)
 
         gl_main.addWidget(helpdocs, 5, 0, 1, 1)
         gl_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -122,6 +127,7 @@ class ImageSeg(BasicModule):
         data1 = []
         for i in self.indata['Raster']:
             data1.append(i.data.data)
+            data1[-1] = 255*(data1[-1] - data1[-1].min())/data1[-1].ptp()
 
         data1 = np.array(data1)
         data1 = np.moveaxis(data1, 0, -1)
@@ -132,10 +138,14 @@ class ImageSeg(BasicModule):
             if tmp != 1:
                 return False
 
-        scale = float(self.le_scale.text())
-        wcolor = float(self.le_wcolor.text())
-        wcompact = float(self.le_wcompact.text())
-        # eps = float(self.le_eps.text())
+        try:
+            scale = float(self.le_scale.text())
+            wcolor = float(self.le_wcolor.text())
+            wcompact = float(self.le_wcompact.text())
+            numclust = int(self.le_numclust.text())
+        except ValueError:
+            self.showlog('Error in parameter values.')
+            return False
 
         doshape = True
 
@@ -152,25 +162,22 @@ class ImageSeg(BasicModule):
             return True
 
         means = []
+        uvals = []
         for i in range(odat.data.max()+1):
             tmp = data1[odat.data == i]
             if tmp.size == 0:
                 continue
             means.append(tmp.mean(0))
+            uvals.append(i)
 
         means = np.array(means)
         means = skp.StandardScaler().fit_transform(means)
-        dbout = OPTICS().fit_predict(means)
+        dbout = KMeans(n_clusters=numclust).fit_predict(means)
 
         data2 = odat.data.copy()
 
-        newmax = dbout.max()+1
         for i, val in enumerate(dbout):
-            filt = (odat.data == i)
-            if val == -1:
-                data2[filt] = newmax
-                newmax += 1
-                continue
+            filt = (odat.data == uvals[i])
             data2[filt] = val
 
         odat.data = data2
@@ -537,5 +544,42 @@ def _testfn():
     plt.show()
 
 
+def _testfn2():
+    """Test routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.datatypes import Data
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\Segmentation\Test_20010213_bands.tif"
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    data = get_raster(ifile)
+
+    for i, _ in enumerate(data):
+        vmin, vmax = data[i].get_vmin_vmax()
+
+        plt.title(f'{i}')
+        plt.imshow(data[i].data, vmin=vmin, vmax=vmax)
+        plt.axis('off')
+        plt.show()
+
+        # plt.hist(data[i].data.compressed(), 100)
+        # plt.show()
+
+    IS = ImageSeg()
+    IS.indata = {'Raster': data}
+    IS.settings()
+
+    odata = IS.outdata['Raster'][0]
+
+    plt.imshow(odata.data)
+    plt.axis('off')
+    plt.colorbar()
+    plt.show()
+
+    breakpoint()
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

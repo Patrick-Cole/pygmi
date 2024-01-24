@@ -29,7 +29,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 
 from pygmi import menu_default
-from pygmi.raster.ginterp import histeq
+from pygmi.raster.misc import histeq
 from pygmi.misc import BasicModule
 
 warnings.simplefilter('always', RuntimeWarning)
