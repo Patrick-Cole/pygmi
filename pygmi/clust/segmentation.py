@@ -170,6 +170,11 @@ class ImageSeg(BasicModule):
             means.append(tmp.mean(0))
             uvals.append(i)
 
+        if numclust > len(means):
+            self.showlog('Aborting K-Means, you have fewer segments than '
+                         'your required clusters. Outputting segents only.')
+        return True
+
         means = np.array(means)
         means = skp.StandardScaler().fit_transform(means)
         dbout = KMeans(n_clusters=numclust).fit_predict(means)

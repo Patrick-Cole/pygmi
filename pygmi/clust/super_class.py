@@ -75,6 +75,9 @@ class GraphMap(FigureCanvasQTAgg):
         self.csp = None
         self.subplot = None
 
+        self.bands = [0, 1, 2]
+        self.manip = 'RGB Ternary'
+
     def init_graph(self):
         """
         Initialise the graph.
@@ -154,6 +157,79 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.csp.changed()
         self.figure.canvas.draw()
+
+    def compute_initial_figure(self, dat):
+        """
+        Compute initial figure.
+
+        Parameters
+        ----------
+        dat : PyGMI Data
+            PyGMI dataset.
+        dates : str
+            Dates to show on title.
+
+        Returns
+        -------
+        None.
+
+        """
+        if 'Ternary' in self.manip:
+            red = dat.banddict[self.bands[0]]
+            green = dat.banddict[self.bands[1]]
+            blue = dat.banddict[self.bands[2]]
+
+            data = [red, green, blue]
+        else:
+            data = [dat.banddict[self.bands[0]]]
+
+        extent = dat.banddict[self.bands[0]].extent
+
+        self.im1 = imshow(self.ax1, data, extent=extent, piter=self.piter,
+                          showlog=self.showlog)
+        self.im1.rgbmode = self.manip
+        self.im1.rgbclip = None
+        self.cbar = None
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
+
+    def update_plot(self, dat, dates):
+        """
+        Update plot.
+
+        Parameters
+        ----------
+        dat : PyGMI Data
+            PyGMI dataset.
+        dates : str
+            Dates to show on title.
+
+        Returns
+        -------
+        None.
+
+        """
+        extent = dat.banddata[0].extent
+        self.im1.rgbmode = self.manip
+
+        if 'Ternary' in self.manip:
+            red = dat.banddict[self.bands[0]]
+            green = dat.banddict[self.bands[1]]
+            blue = dat.banddict[self.bands[2]]
+
+            data = [red, green, blue]
+        else:
+            data = [dat.banddict[self.bands[0]]]
+
+        extent = dat.banddict[self.bands[0]].extent
+
+        self.im1.set_data(data)
+        self.im1.set_extent(extent)
+        self.fig.suptitle(dates)
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
+
+        self.fig.canvas.draw()
 
 
 class PolygonInteractor(QtCore.QObject):
@@ -430,6 +506,10 @@ class SuperClass(BasicModule):
         self.cmb_DTcriterion = QtWidgets.QComboBox()
         self.cmb_RFcriterion = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel()
+        self.cmb_band1 = QtWidgets.QComboBox()
+        self.cmb_band2 = QtWidgets.QComboBox()
+        self.cmb_band3 = QtWidgets.QComboBox()
+        self.cmb_manip = QtWidgets.QComboBox()
 
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
 
@@ -450,8 +530,28 @@ class SuperClass(BasicModule):
         gbox_map = QtWidgets.QGroupBox('Class Edit')
         gl_right = QtWidgets.QGridLayout(gbox_map)
 
+        gbox_1 = QtWidgets.QGroupBox('Display Type')
+        vbl_1b = QtWidgets.QVBoxLayout()
+        gbox_1.setLayout(vbl_1b)
+
+        gbox_2 = QtWidgets.QGroupBox('Data Bands')
+        vbl_2b = QtWidgets.QVBoxLayout()
+        gbox_2.setLayout(vbl_2b)
+
         gbox_class = QtWidgets.QGroupBox('Supervised Classification')
         gl_class = QtWidgets.QGridLayout(gbox_class)
+
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
+                                       QtWidgets.QSizePolicy.Expanding)
+
+        vbl_2b.addWidget(self.cmb_band1)
+        vbl_2b.addWidget(self.cmb_band2)
+        vbl_2b.addWidget(self.cmb_band3)
+
+        actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
+        self.cmb_manip.addItems(actions)
+
+        vbl_1b.addWidget(self.cmb_manip)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -491,8 +591,8 @@ class SuperClass(BasicModule):
         self.cmb_DTcriterion.setHidden(True)
         self.cmb_RFcriterion.setHidden(True)
 
-        gl_right.addWidget(lbl_databand, 0, 0, 1, 1)
-        gl_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
+        # gl_right.addWidget(lbl_databand, 0, 0, 1, 1)
+        # gl_right.addWidget(self.cmb_databand, 0, 1, 1, 2)
 
         gl_right.addWidget(self.tablewidget, 1, 0, 3, 2)
         gl_right.addWidget(self.apoly, 1, 2, 1, 1)
@@ -509,12 +609,14 @@ class SuperClass(BasicModule):
         gl_class.addWidget(self.cmb_RFcriterion, 1, 1, 1, 1)
         gl_class.addWidget(self.cmb_SVCkernel, 1, 1, 1, 1)
 
-        gl_main.addWidget(self.map, 0, 0, 2, 1)
-        gl_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
+        gl_main.addWidget(self.map, 0, 0, 4, 1)
+        gl_main.addWidget(self.mpl_toolbar, 4, 0, 1, 1)
 
-        gl_main.addWidget(gbox_map, 0, 1, 1, 1)
-        gl_main.addWidget(gbox_class, 1, 1, 1, 1)
-        gl_main.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_main.addWidget(gbox_1, 0, 1, 1, 1)
+        gl_main.addWidget(gbox_2, 1, 1, 1, 1)
+        gl_main.addWidget(gbox_map, 2, 1, 1, 1)
+        gl_main.addWidget(gbox_class, 3, 1, 1, 1)
+        gl_main.addWidget(buttonbox, 4, 1, 1, 1)
 
         self.apoly.clicked.connect(self.on_apoly)
         self.dpoly.clicked.connect(self.on_dpoly)
@@ -745,6 +847,22 @@ class SuperClass(BasicModule):
         self.m[0] = self.cmb_databand.currentIndex()
         self.map.update_graph()
 
+        maniptxt = self.cmb_manip.currentText()
+
+        if 'Ternary' in maniptxt:
+            self.cmb_band2.show()
+            self.cmb_band3.show()
+        else:
+            self.cmb_band2.hide()
+            self.cmb_band3.hide()
+
+        self.map.bands = [self.cmb_band1.currentText(),
+                          self.cmb_band2.currentText(),
+                          self.cmb_band3.currentText()]
+
+        self.map.manip = maniptxt
+        # self.newdata(self.curimage)
+
     def load_shape(self):
         """
         Load shapefile.
@@ -830,11 +948,36 @@ class SuperClass(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        self.cmb_databand.clear()
-        self.cmb_databand.addItems(bands)
-        self.cmb_databand.currentIndexChanged.connect(self.on_combo)
+        try:
+            self.cmb_band1.currentIndexChanged.disconnect()
+            self.cmb_band2.currentIndexChanged.disconnect()
+            self.cmb_band3.currentIndexChanged.disconnect()
+        except TypeError:
+            pass
+
+        self.cmb_band1.clear()
+        self.cmb_band2.clear()
+        self.cmb_band3.clear()
+
+        self.cmb_band1.addItems(bands)
+        self.cmb_band2.addItems(bands)
+        self.cmb_band3.addItems(bands)
+
+        if len(bands) > 3:
+            self.cmb_band1.setCurrentIndex(3)
+            self.cmb_band2.setCurrentIndex(2)
+            self.cmb_band3.setCurrentIndex(1)
+        elif len(bands) == 3:
+            self.cmb_band1.setCurrentIndex(2)
+            self.cmb_band2.setCurrentIndex(1)
+            self.cmb_band3.setCurrentIndex(0)
+
+        self.cmb_band1.currentIndexChanged.connect(self.on_combo)
+        self.cmb_band2.currentIndexChanged.connect(self.on_combo)
+        self.cmb_band3.currentIndexChanged.connect(self.on_combo)
 
         self.map.init_graph()
+        self.map.compute_initial_figure()
 
         self.map.polyint()
         self.map.polyi.polyi_changed.connect(self.updatepoly)
