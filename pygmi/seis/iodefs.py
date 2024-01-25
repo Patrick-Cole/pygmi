@@ -275,7 +275,8 @@ def importnordic(ifile, showlog=print):
 
     rnames = rnames.split('\n')
 
-    with open(ifile, encoding='utf-8') as pntfile:
+    # with open(ifile, encoding='utf-8') as pntfile:
+    with open(ifile) as pntfile:
         ltmp = pntfile.readlines()
 
     if len(ltmp[0]) < 80:

@@ -788,7 +788,7 @@ class PlotQC(GraphWindow):
             self.mmc.update_hist(self.datd['1_month'], 'Month', bins=12,
                                  rng=(0.5, 12.5))
         elif i == 'Year Histogram':
-            bins = np.unique(self.datd['1_year']).size
+            bins = max(self.datd['1_year']) - min(self.datd['1_year']) + 1
             bmin = np.nanmin(self.datd['1_year'])-0.5
             bmax = np.nanmax(self.datd['1_year'])+0.5
             self.mmc.update_hist(self.datd['1_year'], 'Year', bins=bins,
@@ -807,7 +807,7 @@ class PlotQC(GraphWindow):
                                  i, bins=bins, rng=(bmin, bmax))
         elif i == 'RMS of time residuals':
             rts = np.array(self.datd['1_rms_of_time_residuals'])
-            self.mmc.update_hist(rts, i)
+            self.mmc.update_hist(rts, i+' (sec)')
         elif i == 'ML vs Time':
             self.mmc.update_hexbin(self.datd['1_ML_time'], self.datd['1_ML'],
                                    'Time (Hours)', 'ML',
@@ -822,11 +822,11 @@ class PlotQC(GraphWindow):
             self.btn_saveshp.show()
             self.mmc.update_ellipse(self.datd, self.indata['Seis'], True)
         elif i == 'GAP':
-            self.mmc.update_hist(self.datd['E_gap'], i)
+            self.mmc.update_hist(self.datd['E_gap'], i+' (°)')
         elif i == 'Longitude Error':
-            self.mmc.update_hist(self.datd['E_longitude_error'], i)
+            self.mmc.update_hist(self.datd['E_longitude_error'], i+' (km)')
         elif i == 'Latitude Error':
-            self.mmc.update_hist(self.datd['E_latitude_error'], i)
+            self.mmc.update_hist(self.datd['E_latitude_error'], i+' (km)')
         elif i == 'b-Value':
             self.mmc.update_bvalue(self.datd['1_ML'])
         elif i == 'P-Phase Residuals':
@@ -1270,9 +1270,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
     # tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
-    tmp.ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+    # tmp.ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
     # tmp.ifile = r"D:\Workdata\seismology\macro\1908-09-10-1753-00.macro"
     tmp.settings(True)
 
@@ -1280,7 +1280,8 @@ def _testfn():
 
     # dat = import_for_plots(data)
 
-    tmp = PlotIso()
+    # tmp = PlotIso()
+    tmp = PlotQC()
     tmp.indata = data
     tmp.run()
 
