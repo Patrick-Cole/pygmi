@@ -102,6 +102,11 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_basic_stats)
         self.action_basic_stats.triggered.connect(self.basic_stats)
 
+        self.action_plot_ccoef = QtWidgets.QAction('Plot Correlation '
+                                                   'Coefficients')
+        context_menu['pntVector'].addAction(self.action_plot_ccoef)
+        self.action_plot_ccoef.triggered.connect(self.plot_ccoef)
+
         self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
         context_menu['pntVector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
@@ -175,6 +180,10 @@ class MenuWidget():
     def metadata(self):
         """Metadata."""
         self.parent.launch_context_item(dataprep.Metadata)
+
+    def plot_ccoef(self):
+        """Plot correlation coeficient data."""
+        self.parent.launch_context_item(graphs.PlotCCoef)
 
     def show_line_data(self):
         """Show line data."""

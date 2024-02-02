@@ -31,9 +31,11 @@ from scipy.stats import median_abs_deviation
 import matplotlib.collections as mc
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.colors import BoundaryNorm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import pandas as pd
+import seaborn as sns
 from sklearn.cluster import KMeans
 # from pandas.api.types import is_numeric_dtype
 
@@ -220,6 +222,59 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         r, data = self.line.get_data()
         self.update_lines(r, data)
+
+    def update_ccoef(self, data, style=None):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data : dictionary
+            GeoPandas data in a dictionary.
+        style : str or None
+            Style of colour mapping.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+
+        self.axes = self.figure.add_subplot(111, label='map')
+        # self.axes.ticklabel_format(style='plain')
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.axis('equal')
+
+        if style is None or 'Normal' in style:
+            corr = data.corr(numeric_only=True)
+            corr = (corr*100).round(0)
+
+            corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
+            corr = corr.replace(np.nan, 0)
+            corr = corr.astype(int)
+
+            cmap = colormaps['jet']
+            cmap.set_under('w')
+            cmap.set_over('w')
+
+            bounds = [50, 60, 70, 80, 90, 99]
+            norm = BoundaryNorm(bounds, cmap.N, extend='min')
+
+            mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
+
+            annot_kws = {"size": 35 / np.sqrt(len(corr))}
+            sns.set_context("paper", font_scale=0.9)
+            sns.heatmap(corr, annot=True, cmap=cmap, norm=norm, fmt='d',
+                        ax=self.axes, mask=mask,
+                        cbar_kws={'aspect': 50},
+                        annot_kws=annot_kws)
+
+            self.axes.collections[0].colorbar
+
+
+        self.figure.canvas.draw()
 
     def update_lines(self, r, data):
         """
@@ -606,6 +661,52 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.set_yscale('log')
 
         self.figure.canvas.draw()
+
+
+class PlotCCoef(GraphWindow):
+    """Plot Correlation Coefficients."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # self.lbl_1.hide()
+        self.cmb_2.hide()
+        self.lbl_2.hide()
+        self.spinbox.hide()
+        self.lbl_3.hide()
+        self.setWindowTitle('Vector Plot')
+
+    def change_band(self):
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.data is None:
+            return
+
+        style = self.cmb_1.currentText()
+        self.mmc.update_ccoef(self.data, style)
+
+    def run(self):
+        """
+        Entry point to run class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.data = self.indata['Vector'][0]
+
+        self.cmb_1.addItems(['Normal'])
+        self.lbl_1.setText('Style:')
+
+        self.show()
+
+        self.change_band()
 
 
 class PlotHist(ContextModule):
@@ -1094,11 +1195,11 @@ def _testfn():
 
     IO = ImportVector()
     IO.ifile = sfile
-    IO.cmb_bounds.setCurrentText('SA Mapsheet')
+    # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    # SC = PlotHist()
-    SC = PlotVector()
+    # SC = PlotVector()
+    SC = PlotCCoef()
     SC.indata = IO.outdata
     SC.run()
 

@@ -1080,7 +1080,8 @@ class ExportBatch(ContextModule):
     def acceptall(self):
         """Accept choice."""
         if self.le_odir.text() == '':
-            self.reject()
+            self.showlog('No output directory')
+            return
 
         filt = self.cmb_ofilt.currentText()
         odir = self.le_odir.text()
@@ -1356,8 +1357,6 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                                   showlog=showlog,
                                   tnames=tnames)
 
-        ofile = set_export_filename(dat, odir, otype)
-
         odat = []
         if tnames is not None:
             for i in tnames:
@@ -1367,6 +1366,8 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                         break
         else:
             odat = dat
+
+        ofile = set_export_filename(odat, odir, otype)
         showlog('Exporting '+os.path.basename(ofile))
 
         if otype == 'RGB':
@@ -3437,18 +3438,18 @@ def _testfn2():
 
     tmp1 = ImportBatch()
     tmp1.idir = r"D:\Landsat"
-    tmp1.idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change'
+    tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
     tmp1.get_sfile(True)
     tmp1.settings()
 
-    # dat = tmp1.outdata
+    dat = tmp1.outdata
 
-    # tmp2 = ExportBatch()
-    # tmp2.indata = dat
+    tmp2 = ExportBatch()
+    tmp2.indata = dat
     # tmp2.get_odir(r"D:\Sentinel2\test")
     # tmp2.ternary.setChecked(True)
     # tmp2.click_ternary()
-    # tmp2.run()
+    tmp2.run()
 
 
 def _testfn3():
@@ -3482,4 +3483,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()
