@@ -533,6 +533,7 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         ncov = blockwise_cov(noise.T) / 81
 
+    del noise
     next(pbar)
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
@@ -584,6 +585,9 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = list(x2d.shape)
+
+    for i in dat:
+        i.data = None
 
     mask = maskall[:, :, 0]
 
@@ -696,6 +700,9 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = list(x2d.shape)
+
+    for i in dat:
+        i.data = None
 
     mask = maskall[:, :, 0]
 
@@ -1007,7 +1014,6 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
 
 def _testfn():
     """Test routine."""
-    from pygmi.misc import getinfo
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
     ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
 
@@ -1015,9 +1021,7 @@ def _testfn():
 
     dat = get_data(ifile)
 
-    getinfo(1)
     pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
-    getinfo(2)
 
     for i, _ in enumerate(dat):  # [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -1045,7 +1049,7 @@ def _testfn2():
 
     rcParams['figure.dpi'] = 150
 
-    ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
 
     # dat = get_data(ifile)
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
@@ -1059,10 +1063,14 @@ def _testfn2():
 
     dat = tmp.outdata['Raster']
 
-    # tmp = PCA()
-    tmp = MNF()
+    tmp = PCA()
+    # tmp = MNF()
     tmp.indata['Raster'] = dat
-    tmp.settings()
+    try:
+        tmp.settings()
+    except MemoryError:
+        print("error")
+        return
 
     outdat = tmp.outdata['Raster']
 

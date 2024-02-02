@@ -343,7 +343,12 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
 
-        temp = self.settings()
+        try:
+            temp = self.settings()
+        except MemoryError:
+            self.parent.showlog('Memory Error! Process aborted.')
+            temp = False
+            self.my_class.parent.process_is_active(False)
         self.parent.scene.selected_item_info()
 
         if temp is True:

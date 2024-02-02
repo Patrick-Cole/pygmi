@@ -606,6 +606,38 @@ class ProgressBarText():
         self.printprogressbar(self.total)
 
 
+def discrete_colorbar(axes, csp, cdat, lbls=None):
+    """
+    Plot colorbar using discrete colors for a small range of values.
+
+    Parameters
+    ----------
+    axes : Matplotlib axes
+        Current axes.
+    csp : Plot routine
+        Handle to Matplotlib plotting routine.
+    cdat : numpy array
+        Array of values.
+
+    Returns
+    -------
+    None.
+
+    """
+    vals = np.unique(cdat)
+    if np.ma.isMaskedArray(vals):
+        vals = vals.compressed()
+    vals = vals[~np.isnan(vals)]
+
+    bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+
+    if len(vals) > 1:
+        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals,
+                                    ticks=vals)
+        if lbls is not None:
+            cbar.ax.set_yticklabels(lbls)
+
+
 def getinfo(txt=None, reset=False):
     """
     Get time and memory info.

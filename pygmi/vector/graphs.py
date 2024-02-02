@@ -33,9 +33,11 @@ from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+import pandas as pd
+from sklearn.cluster import KMeans
 # from pandas.api.types import is_numeric_dtype
 
-from pygmi.misc import frm, ContextModule
+from pygmi.misc import frm, ContextModule, discrete_colorbar
 
 
 class GraphWindow(ContextModule):
@@ -55,18 +57,32 @@ class GraphWindow(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_c = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
         self.lbl_1 = QtWidgets.QLabel('Bands:')
         self.lbl_2 = QtWidgets.QLabel('Bands:')
         self.lbl_3 = QtWidgets.QLabel('Value:')
+        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
         self.cb_1 = QtWidgets.QCheckBox('Option:')
 
+        tmp = sorted(m for m in colormaps())
+
+        self.cmb_c.addItem('jet')
+        self.cmb_c.addItem('viridis')
+        self.cmb_c.addItem('terrain')
+        self.cmb_c.addItem('MarineCopper')
+        self.cmb_c.addItems(tmp)
+
         self.cb_1.hide()
+        self.lbl_c.hide()
+        self.cmb_c.hide()
 
         hbl.addWidget(self.lbl_1)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_2)
         hbl.addWidget(self.cmb_2)
+        hbl.addWidget(self.lbl_c)
+        hbl.addWidget(self.cmb_c)
         hbl.addWidget(self.lbl_3)
         hbl.addWidget(self.spinbox)
 
@@ -79,6 +95,7 @@ class GraphWindow(ContextModule):
 
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_c.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
         self.cb_1.stateChanged.connect(self.change_band)
 
@@ -107,6 +124,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ind = None
         self.background = None
         self.pickevents = False
+        self.cmap = colormaps['viridis']
 
         super().__init__(fig)
 
@@ -342,7 +360,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_vector(self, data, col):
+    def update_vector(self, data, col, style=None):
         """
         Update the plot from vector data.
 
@@ -352,6 +370,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             GeoPandas data in a dictionary.
         col : str
             Label for column to extract.
+        style : str or None
+            Style of colour mapping.
 
         Returns
         -------
@@ -374,7 +394,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
-            # self.axes.axis('equal')
+
         elif 'Polygon' in data.geom_type.iloc[0]:
             tmp = []
             for j in data.geometry:
@@ -383,10 +403,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
-            # self.axes.axis('equal')
 
         elif 'Point' in data.geom_type.iloc[0]:
-            if col != '':
+            if col != '' and style is None or 'Normal' in style:
                 dstd = data[col].std()
                 dmean = data[col].mean()
                 vmin = max(dmean-2*dstd, data[col].min())
@@ -394,12 +413,47 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=data[col], vmin=vmin, vmax=vmax)
+                                         c=data[col], vmin=vmin, vmax=vmax,
+                                         cmap=self.cmap)
                 self.figure.colorbar(scat, ax=self.axes, format=frm)
+            elif col != '' and 'Standard' in style:
+                m3 = data[col].mean()
+                s3 = data[col].std()
+                x1 = data[col].min()
+                x2 = data[col].max()
 
+                r2 = int((x2-m3)//s3)
+                r2 = min(3, r2)
+
+                bnds = [m3+i*s3 for i in range(0, r2+1)]
+                lbls = [f'{i} to {i+1}' for i in range(0, r2)]
+                bnds = [x1] + bnds + [x2]
+                lbls[0] = 'mean'+lbls[0][1:]
+                lbls = ['min to mean']+lbls+[f'{r2} to max']
+
+                z3 = pd.cut(data[col], bnds, labels=False)
+                scat = self.axes.scatter(data.geometry.x,
+                                         data.geometry.y,
+                                         c=z3, cmap=self.cmap)
+                discrete_colorbar(self.axes, scat, z3, lbls)
+
+            elif col != '' and 'Quartile' in style:
+                z3 = pd.qcut(data[col], 4, labels=False)
+
+                scat = self.axes.scatter(data.geometry.x,
+                                         data.geometry.y,
+                                         c=z3+1, cmap=self.cmap)
+                discrete_colorbar(self.axes, scat, z3+1)
+
+            elif col != '' and 'K-Means' in style:
+                z1 = np.array(data[col]).reshape(-1, 1)
+                z3 = KMeans(n_clusters=5, n_init='auto').fit_predict(z1)
+                scat = self.axes.scatter(data.geometry.x,
+                                         data.geometry.y,
+                                         c=z3+1, cmap=self.cmap)
+                discrete_colorbar(self.axes, scat, z3+1)
             else:
-                self.axes.scatter(data.geometry.x,
-                                  data.geometry.y)
+                self.axes.scatter(data.geometry.x, data.geometry.y)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -865,10 +919,12 @@ class PlotVector(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         # self.lbl_1.hide()
-        self.cmb_2.hide()
-        self.lbl_2.hide()
+        # self.cmb_2.hide()
+        # self.lbl_2.hide()
         self.spinbox.hide()
         self.lbl_3.hide()
+        self.cmb_c.show()
+        self.lbl_c.show()
         self.setWindowTitle('Vector Plot')
 
     def change_band(self):
@@ -893,7 +949,12 @@ class PlotVector(GraphWindow):
             i = ''
             data = self.data
 
-        self.mmc.update_vector(data, i)
+        style = self.cmb_2.currentText()
+
+        txt = str(self.cmb_c.currentText())
+        self.mmc.cmap = colormaps[txt]
+
+        self.mmc.update_vector(data, i, style)
 
     def run(self):
         """
@@ -905,19 +966,25 @@ class PlotVector(GraphWindow):
 
         """
         self.data = self.indata['Vector'][0]
-        # self.data = self.data.select_dtypes(include='number')
-
-        # filt = ((self.data.columns != 'geometry') &
-        #         (self.data.columns != 'line'))
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
-        if len(cols) > 0:
+        if len(cols) > 0 and 'Point' in self.data.geom_type.iloc[0]:
             self.cmb_1.addItems(cols)
             self.cmb_1.setCurrentIndex(0)
         else:
             self.cmb_1.hide()
+            self.lbl_1.hide()
+            self.cmb_2.hide()
+            self.lbl_2.hide()
+            self.cmb_c.hide()
+            self.lbl_c.hide()
 
+        self.cmb_2.addItems(['Normal',
+                             'Group using Standard Deviations above Mean (0)',
+                             'Group by Quartile',
+                             'Group into K-Means Classes'])
         self.lbl_1.setText('Channel:')
+        self.lbl_2.setText('Style:')
 
         self.show()
 
@@ -1015,7 +1082,7 @@ def rotate(origin, point, angle):
 
 def _testfn():
     """Calculate structural complexity."""
-    import sys
+    import sys, os
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
@@ -1023,12 +1090,15 @@ def _testfn():
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
 
     app = QtWidgets.QApplication(sys.argv)
+    os.chdir(os.path.dirname(sfile))
 
     IO = ImportVector()
     IO.ifile = sfile
+    IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotHist()
+    # SC = PlotHist()
+    SC = PlotVector()
     SC.indata = IO.outdata
     SC.run()
 

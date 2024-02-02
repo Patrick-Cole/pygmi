@@ -589,6 +589,7 @@ class ImportVector(BasicModule):
                                 allow_unsupported_drivers=True)
         else:
             gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
+
         gdf = gdf[gdf.geometry != None]
         gdf = gdf.explode(ignore_index=True)
 
@@ -646,7 +647,7 @@ class ImportVector(BasicModule):
             self.lbl_mapsheet.show()
 
     def get_sfile(self):
-        """Get the satellite filename."""
+        """Get the filename and crs and nounds."""
         self.le_sfile.setText('')
 
         ext = ('Shapefile (*.shp);;'
@@ -873,11 +874,15 @@ def _test():
 
     app = QtWidgets.QApplication(sys.argv)
 
+    os.chdir(os.path.dirname(ifile))
+
     tmp1 = ImportVector()
     # tmp1.idir = r"D:\Landsat"
     # tmp1.idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change'
     # tmp1.get_sfile(True)
     tmp1.settings()
+
+    dat = tmp1.outdata['Vector'][0]
 
     breakpoint()
 

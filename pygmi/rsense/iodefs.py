@@ -3342,8 +3342,9 @@ def set_export_filename(dat, odir, otype=None):
         tmp = filename.split('_')
         mission = tmp[0]
         date = tmp[2].split('T')[0]
+        row = tmp[4]
         tile = tmp[5]
-        ofile = f'{mission}_{tile}_{date}'
+        ofile = f'{mission}_{tile}_{row}_{date}'
     else:
         ofile = filename
 
@@ -3464,7 +3465,8 @@ def _testfn3():
 
     dat = tmp1.outdata['Raster']
 
-    # ofile = set_export_filename(dat, odir='')
+    ofile = set_export_filename(dat, odir='')
+    breakpoint()
 
     print(dat[-1].datetime)
 
