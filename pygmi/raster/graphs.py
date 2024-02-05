@@ -69,7 +69,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         data1 : PyGMI raster Data
-            raster dataset to be used in contouring.
+            raster dataset to be used.
         dmat : numpy array
             dummy matrix of numbers to be plotted using pcolor.
 

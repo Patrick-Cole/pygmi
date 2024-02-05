@@ -245,7 +245,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # self.axes.ticklabel_format(style='plain')
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
-        self.axes.axis('equal')
+        self.axes.axis('scaled')
 
         if style is None or 'Normal' in style:
             corr = data.corr(numeric_only=True)
@@ -272,6 +272,43 @@ class MyMplCanvas(FigureCanvasQTAgg):
                         annot_kws=annot_kws)
 
             self.axes.collections[0].colorbar
+        else:
+            corr = data.corr(numeric_only=True)
+            corr = (corr*100).round(0)
+
+            corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
+            corr = corr.replace(np.nan, 0)
+            corr = corr.astype(int)
+
+            cmap = colormaps['viridis']
+            dmat = corr.to_numpy()
+            dmat = np.ma.array(dmat, mask=~np.tri(*dmat.shape).astype(bool))
+
+            rdata = self.axes.imshow(dmat[::-1], cmap=cmap)
+            # self.axes.axis('scaled')
+            self.axes.set_title('Correlation Coefficients')
+            rows, cols = corr.shape
+            # for i in range(rows):
+            #     for j in range(cols):
+            #         ctmp = np.array([1., 1., 1., 0.]) - np.array(cmap(dmat[i, j]))
+            #         ctmp = np.abs(ctmp)
+            #         ctmp = ctmp.tolist()
+
+            #         atext = f'{dmat[i, j]}'
+
+            #         self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
+            #                        ha='center', va='center')
+            dat_mat = corr.columns.tolist()
+            self.axes.set_xticks(np.array(list(range(cols))))
+
+            self.axes.set_xticklabels(dat_mat, rotation='vertical')
+            self.axes.set_yticks(np.array(list(range(rows))))
+
+            self.axes.set_yticklabels(dat_mat[::-1], rotation='horizontal')
+            self.axes.set_xlim(-0.5, cols-0.5)
+            self.axes.set_ylim(-0.5, rows-0.5)
+
+            cbar = self.figure.colorbar(rdata, format=frm)
 
 
         self.figure.canvas.draw()
