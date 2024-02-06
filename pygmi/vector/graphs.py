@@ -34,12 +34,14 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.colors import BoundaryNorm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.ticker import StrMethodFormatter
+from matplotlib import rcParams
 import pandas as pd
-import seaborn as sns
 from sklearn.cluster import KMeans
-# from pandas.api.types import is_numeric_dtype
 
 from pygmi.misc import frm, ContextModule, discrete_colorbar
+
+rcParams['savefig.dpi'] = 300
 
 
 class GraphWindow(ContextModule):
@@ -128,6 +130,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.pickevents = False
         self.cmap = colormaps['viridis']
 
+        self.ccoeflbls = None
+        self.dmat = None
+        self.texts = None
+
         super().__init__(fig)
 
     def button_release_callback(self, event):
@@ -149,6 +155,37 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if event.button != 1:
             return
         self.ind = None
+
+    def format_coord(self, x, y):
+        """
+        Set format coordinate for correlation coeffient plot.
+
+        Parameters
+        ----------
+        x : float
+            x coordinate.
+        y : float
+            y coordinate.
+
+        Returns
+        -------
+        str
+            Output string to display.
+
+        """
+        col = int(x + 0.5)
+        row = int(y + 0.5)
+        numcols = len(self.ccoeflbls)
+        numrows = len(self.ccoeflbls)
+
+        if col >= 0 and col < numcols and row >= 0 and row < numrows:
+            xlbl = self.ccoeflbls[col]
+            ylbl = self.ccoeflbls[::-1][row]
+            z = self.dmat[row, col]
+            if np.ma.is_masked(z):
+                return ''
+
+            return f'{xlbl}, {ylbl} correlation: {z}%'
 
     def motion_notify_callback(self, event):
         """
@@ -223,7 +260,39 @@ class MyMplCanvas(FigureCanvasQTAgg):
         r, data = self.line.get_data()
         self.update_lines(r, data)
 
-    def update_ccoef(self, data, style=None):
+    def textresize(self, axes):
+        """
+        Resize the text on a correlation plot when zooming.
+
+        Parameters
+        ----------
+        axes : Matplotlib axes
+            Current Matplotlib axes.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.texts is None:
+            return
+
+        xsize = np.ptp(axes.get_xlim())
+        ysize = np.ptp(axes.get_ylim())
+        xmin, xmax = axes.get_xlim()
+        ymin, ymax = axes.get_ylim()
+
+        size = 35 / np.sqrt(min(xsize, ysize))
+        for i in self.texts:
+            i.set_size(size)
+
+            xpos, ypos = i.get_position()
+            if xmin <= xpos <= xmax and ymin <= ypos <= ymax:
+                i.set_visible(True)
+            else:
+                i.set_visible(False)
+
+    def update_ccoef(self, data, style='Normal'):
         """
         Update the plot from point data.
 
@@ -231,7 +300,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         data : dictionary
             GeoPandas data in a dictionary.
-        style : str or None
+        style : str
             Style of colour mapping.
 
         Returns
@@ -240,21 +309,43 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
+        # breakpoint()
 
         self.axes = self.figure.add_subplot(111, label='map')
+        cb_registry = self.axes.callbacks
+        cb_registry.connect('ylim_changed', self.textresize)
+        cb_registry.connect('xlim_changed', self.textresize)
+
         # self.axes.ticklabel_format(style='plain')
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
         self.axes.axis('scaled')
+        self.axes.set_title('Correlation Coefficients')
 
-        if style is None or 'Normal' in style:
-            corr = data.corr(numeric_only=True)
-            corr = (corr*100).round(0)
+        self.figure.set_figwidth(7)
+        self.figure.set_figheight(7)
 
-            corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
-            corr = corr.replace(np.nan, 0)
-            corr = corr.astype(int)
+        # calculate correlations
+        corr = data.corr(numeric_only=True)
+        corr = (corr*100).round(0)
 
+        corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
+        corr = corr.replace(np.nan, 0)
+        corr = corr.astype(int)
+
+        dmat = corr.to_numpy()
+        dmat = np.ma.array(dmat, mask=~np.tri(*dmat.shape).astype(bool))
+
+        self.axes.format_coord = self.format_coord
+        self.ccoeflbls = corr.columns.tolist()
+        self.dmat = dmat[::-1]
+
+        annot_kws = {"size": 35 / np.sqrt(len(corr))}
+
+        if style == 'Normal':
+            cmap = colormaps['jet']
+            norm = None
+        else:
             cmap = colormaps['jet']
             cmap.set_under('w')
             cmap.set_over('w')
@@ -262,54 +353,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bounds = [50, 60, 70, 80, 90, 99]
             norm = BoundaryNorm(bounds, cmap.N, extend='min')
 
-            mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
+        im, cbar = heatmap(self.dmat, self.ccoeflbls[::-1], self.ccoeflbls,
+                           self.axes, cmap=cmap, cbarlabel='Correlation',
+                           norm=norm)
 
-            annot_kws = {"size": 35 / np.sqrt(len(corr))}
-            sns.set_context("paper", font_scale=0.9)
-            sns.heatmap(corr, annot=True, cmap=cmap, norm=norm, fmt='d',
-                        ax=self.axes, mask=mask,
-                        cbar_kws={'aspect': 50},
-                        annot_kws=annot_kws)
+        im.format_cursor_data = lambda x: ''
 
-            self.axes.collections[0].colorbar
-        else:
-            corr = data.corr(numeric_only=True)
-            corr = (corr*100).round(0)
-
-            corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
-            corr = corr.replace(np.nan, 0)
-            corr = corr.astype(int)
-
-            cmap = colormaps['viridis']
-            dmat = corr.to_numpy()
-            dmat = np.ma.array(dmat, mask=~np.tri(*dmat.shape).astype(bool))
-
-            rdata = self.axes.imshow(dmat[::-1], cmap=cmap)
-            # self.axes.axis('scaled')
-            self.axes.set_title('Correlation Coefficients')
-            rows, cols = corr.shape
-            # for i in range(rows):
-            #     for j in range(cols):
-            #         ctmp = np.array([1., 1., 1., 0.]) - np.array(cmap(dmat[i, j]))
-            #         ctmp = np.abs(ctmp)
-            #         ctmp = ctmp.tolist()
-
-            #         atext = f'{dmat[i, j]}'
-
-            #         self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
-            #                        ha='center', va='center')
-            dat_mat = corr.columns.tolist()
-            self.axes.set_xticks(np.array(list(range(cols))))
-
-            self.axes.set_xticklabels(dat_mat, rotation='vertical')
-            self.axes.set_yticks(np.array(list(range(rows))))
-
-            self.axes.set_yticklabels(dat_mat[::-1], rotation='horizontal')
-            self.axes.set_xlim(-0.5, cols-0.5)
-            self.axes.set_ylim(-0.5, rows-0.5)
-
-            cbar = self.figure.colorbar(rdata, format=frm)
-
+        self.texts = annotate_heatmap(im, valfmt="{x:.0f}", **annot_kws)
 
         self.figure.canvas.draw()
 
@@ -738,12 +788,14 @@ class PlotCCoef(GraphWindow):
         """
         self.data = self.indata['Vector'][0]
 
-        self.cmb_1.addItems(['Normal'])
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
         self.lbl_1.setText('Style:')
-
-        self.show()
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
         self.change_band()
+
+        self.show()
 
 
 class PlotHist(ContextModule):
@@ -1129,6 +1181,127 @@ class PlotVector(GraphWindow):
         self.change_band()
 
 
+def heatmap(data, row_labels, col_labels, ax,
+            cbar_kw=None, cbarlabel="", **kwargs):
+    """
+    Create a heatmap from a numpy array and two lists of labels.
+
+    From Matplotlib.org
+
+    Parameters
+    ----------
+    data
+        A 2D numpy array of shape (M, N).
+    row_labels
+        A list or array of length M with the labels for the rows.
+    col_labels
+        A list or array of length N with the labels for the columns.
+    ax
+        A `matplotlib.axes.Axes` instance to which the heatmap is plotted.
+    cbar_kw
+        A dictionary with arguments to `matplotlib.Figure.colorbar`.  Optional.
+    cbarlabel
+        The label for the colorbar.  Optional.
+    **kwargs
+        All other arguments are forwarded to `imshow`.
+    """
+    if cbar_kw is None:
+        cbar_kw = {}
+
+    # Plot the heatmap
+    im = ax.imshow(data, **kwargs)
+
+    # Create colorbar
+    cbar = ax.figure.colorbar(im, ax=ax, **cbar_kw)
+    cbar.ax.set_ylabel(cbarlabel, rotation=-90, va="bottom")
+
+    # Show all ticks and label them with the respective list entries.
+    ax.set_xticks(np.arange(data.shape[1]), labels=col_labels)
+    ax.set_yticks(np.arange(data.shape[0]), labels=row_labels)
+
+    # Let the horizontal axes labeling appear on top.
+    ax.tick_params(top=False, bottom=True,
+                   labeltop=False, labelbottom=True)
+
+    # Rotate the tick labels and set their alignment.
+    # plt.setp(ax.get_xticklabels(), rotation=-30, ha="right",
+    #          rotation_mode="anchor")
+
+    # Turn spines off and create white grid.
+    ax.spines[:].set_visible(False)
+
+    ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
+    ax.set_yticks(np.arange(data.shape[0]+1)-.5, minor=True)
+    # ax.grid(which="minor", color="w", linestyle='-', linewidth=3)
+    ax.tick_params(which="minor", bottom=False, left=False)
+
+    return im, cbar
+
+
+def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
+                     textcolors=("black", "white"),
+                     threshold=None, **textkw):
+    """
+    Annotate a heatmap.
+
+    From Matplotlib.org.
+
+    Parameters
+    ----------
+    im
+        The AxesImage to be labeled.
+    data
+        Data used to annotate.  If None, the image's data is used.  Optional.
+    valfmt
+        The format of the annotations inside the heatmap.  This should either
+        use the string format method, e.g. "$ {x:.2f}", or be a
+        `matplotlib.ticker.Formatter`.  Optional.
+    textcolors
+        A pair of colors.  The first is used for values below a threshold,
+        the second for those above.  Optional.
+    threshold
+        Value in data units according to which the colors from textcolors are
+        applied.  If None (the default) uses the middle of the colormap as
+        separation.  Optional.
+    **kwargs
+        All other arguments are forwarded to each call to `text` used to create
+        the text labels.
+    """
+    if not isinstance(data, (list, np.ndarray)):
+        data = im.get_array()
+
+    # Normalize the threshold to the images color range.
+    if threshold is not None:
+        threshold = im.norm(threshold)
+    else:
+        threshold = im.norm(data.max())/2.
+
+    # Set default alignment to center, but allow it to be
+    # overwritten by textkw.
+    kw = dict(horizontalalignment="center",
+              verticalalignment="center")
+    kw.update(textkw)
+
+    # Get the formatter in case a string is supplied
+    if isinstance(valfmt, str):
+        valfmt = StrMethodFormatter(valfmt)
+
+    # Loop over the data and create a `Text` for each "pixel".
+    # Change the text's color depending on the data.
+    texts = []
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            if np.ma.is_masked(data[i, j]):
+                continue
+            kw.update(color=textcolors[int(im.norm(data[i, j]) > threshold)])
+            text = im.axes.text(j, i, valfmt(data[i, j], None), **kw)
+            # tp = TextPath((j-.4, i), valfmt(data[i, j], None), size=0.4)
+            # text = im.axes.add_patch(PathPatch(tp, color='black'))
+            texts.append(text)
+
+    return texts
+
+
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     """
     Histogram.
@@ -1220,7 +1393,8 @@ def rotate(origin, point, angle):
 
 def _testfn():
     """Calculate structural complexity."""
-    import sys, os
+    import sys
+    import os
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
