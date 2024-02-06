@@ -472,6 +472,14 @@ class DataMerge(BasicModule):
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile for boundary (optional)')
 
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_sfile.setIcon(icon)
+        pb_idirlist.setIcon(icon)
+        pb_sfile.setStyleSheet('text-align:left;')
+        pb_idirlist.setStyleSheet('text-align:left;')
+
+
         self.cb_files_diff.setChecked(True)
         self.cb_shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)

@@ -186,6 +186,7 @@ class ImportData(BasicModule):
         pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
+        pb_sfile.setStyleSheet('text-align:left;')
 
         self.setWindowTitle('Import Satellite Data')
         self.cb_ensuresutm.setChecked(True)
@@ -378,6 +379,7 @@ class ImportBatch(BasicModule):
         pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
+        pb_sfile.setStyleSheet('text-align:left;')
 
         self.setWindowTitle('Import Batch Data')
         self.cb_ensuresutm.setChecked(True)

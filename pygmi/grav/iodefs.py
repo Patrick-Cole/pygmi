@@ -80,6 +80,13 @@ class ImportCG5(BasicModule):
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_gps.setIcon(icon)
+        pb_cg5.setIcon(icon)
+        pb_gps.setStyleSheet('text-align:left;')
+        pb_cg5.setStyleSheet('text-align:left;')
+
         self.cmb_line.setEnabled(False)
         self.cmb_station.setEnabled(False)
         self.cmb_xchan.setEnabled(False)
@@ -92,11 +99,11 @@ class ImportCG5(BasicModule):
 
         self.setWindowTitle(r'Import CG-5 Data')
 
-        gl_main.addWidget(self.le_cg5file, 0, 0, 1, 1)
-        gl_main.addWidget(pb_cg5, 0, 1, 1, 1)
+        gl_main.addWidget(self.le_cg5file, 0, 1, 1, 1)
+        gl_main.addWidget(pb_cg5, 0, 0, 1, 1)
 
-        gl_main.addWidget(self.le_gpsfile, 1, 0, 1, 1)
-        gl_main.addWidget(pb_gps, 1, 1, 1, 1)
+        gl_main.addWidget(self.le_gpsfile, 1, 1, 1, 1)
+        gl_main.addWidget(pb_gps, 1, 0, 1, 1)
 
         gl_main.addWidget(lbl_line, 2, 0, 1, 1)
         gl_main.addWidget(self.cmb_line, 2, 1, 1, 1)

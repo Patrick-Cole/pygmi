@@ -183,6 +183,11 @@ class TDEM1D(BasicModule):
         pb_wfile = QtWidgets.QPushButton('Load Window Times')
         pb_wdisp = QtWidgets.QPushButton('Refresh Waveform')
 
+        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_wfile.setIcon(icon)
+        pb_wfile.setStyleSheet('text-align:left;')
+
         self.le_mesh_cs = QtWidgets.QLineEdit('1')
         self.le_mesh_ncx = QtWidgets.QLineEdit('10')
         self.le_mesh_ncz = QtWidgets.QLineEdit('10')
@@ -730,9 +735,9 @@ def _testfn():
     IO = ImportXYZ()
     IO.filt = 'Tab Delimited (*.txt)'
     IO.ifile = filename
-    IO.xchan.setCurrentText('e')
-    IO.ychan.setCurrentText('n')
-    IO.nodata.setText('-99999')
+    # IO.xchan.setCurrentText('e')
+    # IO.ychan.setCurrentText('n')
+    # IO.nodata.setText('-99999')
     IO.settings(True)
 
     # Run TEM1D routine

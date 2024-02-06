@@ -500,6 +500,7 @@ class ImportVector(BasicModule):
         pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
+        pb_sfile.setStyleSheet('text-align:left;')
 
         self.setWindowTitle('Import Vector Data')
 
