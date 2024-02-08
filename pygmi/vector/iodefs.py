@@ -591,6 +591,9 @@ class ImportVector(BasicModule):
         else:
             gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
 
+        if bounds is not None:
+            gdf = gdf.clip(mask=bounds)
+
         gdf = gdf[gdf.geometry != None]
         gdf = gdf.explode(ignore_index=True)
 
@@ -674,6 +677,29 @@ class ImportVector(BasicModule):
         self.le_ymax.setText(str(ymax))
 
         return True
+
+    def set_bounds(self, bounds):
+        """
+        Set the bounds.
+
+        Parameters
+        ----------
+        bounds : list or numpy array
+            Bounds defined as (xmin, ymin, xmax, ymax).
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cmb_bounds.setCurrentText('Manual')
+
+        xmin, ymin, xmax, ymax = bounds
+
+        self.le_xmin.setText(str(xmin))
+        self.le_xmax.setText(str(xmax))
+        self.le_ymin.setText(str(ymin))
+        self.le_ymax.setText(str(ymax))
 
     def saveproj(self):
         """

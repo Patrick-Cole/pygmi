@@ -563,13 +563,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 s3 = data[col].std()
                 x1 = data[col].min()
                 x2 = data[col].max()
+                eps = (x2-x1)*0.000001
 
                 r2 = int((x2-m3)//s3)
                 r2 = min(3, r2)
 
                 bnds = [m3+i*s3 for i in range(0, r2+1)]
                 lbls = [f'{i} to {i+1}' for i in range(0, r2)]
-                bnds = [x1] + bnds + [x2]
+                bnds = [x1-eps] + bnds + [x2]
                 lbls[0] = 'mean'+lbls[0][1:]
                 lbls = ['min to mean']+lbls+[f'{r2} to max']
 
@@ -580,7 +581,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 discrete_colorbar(self.axes, scat, z3, lbls)
 
             elif col != '' and 'Quartile' in style:
-                z3 = pd.qcut(data[col], 4, labels=False)
+                z3 = pd.qcut(data[col], 4, labels=False, duplicates='drop')
 
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
