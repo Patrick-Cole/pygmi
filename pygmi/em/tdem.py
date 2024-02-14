@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        tdem.py (part of PyGMI)
+# Name:        scan_imp.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -40,7 +40,7 @@ from SimPEG.electromagnetics import time_domain
 import SimPEG.data as Sdata
 
 from pygmi import menu_default
-from pygmi.misc import QLabelVStack, BasicModule
+from pygmi.misc import QVStack2Layout, BasicModule
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
@@ -142,7 +142,7 @@ class TDEM1D(BasicModule):
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
-        gbl = QLabelVStack()
+        vsl = QVStack2Layout()
 
         self.mmc1 = MyMplCanvas2(self)
         self.mmc = MyMplCanvas2(self)
@@ -203,41 +203,41 @@ class TDEM1D(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        gbl.addWidget('Line Number:', self.cmb_line)
-        gbl.addWidget(r'Fid/Station Name:', self.cmb_fid)
-        gbl.addWidget('Bird Height:', self.cmb_balt)
-        gbl.addWidget('Data channel prefix:', self.le_datachan)
-        gbl.addWidget('Waveform Type:', self.cmb_wtype)
-        gbl.addWidget('Tx Peak time:', self.le_txpeaktime)
-        gbl.addWidget('Tx Ramp Off start time:', self.le_txrampoff1)
-        gbl.addWidget('Tx Off time:', self.le_txofftime)
-        gbl.addWidget('Source Type:', self.cmb_stype)
-        gbl.addWidget('Tx Orientation:', self.cmb_txori)
-        gbl.addWidget('Tx Area:', self.le_txarea)
-        gbl.addWidget('Number of turns in loop:', self.le_loopturns)
-        gbl.addWidget('Current in loop:', self.le_loopcurrent)
-        gbl.addWidget('Permeability of the background:', self.le_mu)
-        gbl.addWidget('Rx Orientation:', self.cmb_rxori)
-        gbl.addWidget('Mesh cell size:', self.le_mesh_cs)
-        gbl.addWidget('Mesh number cells in x direction:', self.le_mesh_ncx)
-        gbl.addWidget('Mesh number cells in z direction:', self.le_mesh_ncz)
-        gbl.addWidget('Mesh number of cells to pad:', self.le_mesh_npad)
-        gbl.addWidget('Pad cell multiplier:', self.le_mesh_padrate)
-        gbl.addWidget('Conductivity Air:', self.le_sig_air)
-        gbl.addWidget('Conductivity Halfspace:', self.le_sig_half)
-        gbl.addWidget('Data Relative Error (%):', self.le_rel_err)
-        gbl.addWidget('Data Noise Floor:', self.le_noise_floor)
-        gbl.addWidget('Optimization - maximum iterations:', self.le_maxiter)
+        vsl.addWidget('Line Number:', self.cmb_line)
+        vsl.addWidget(r'Fid/Station Name:', self.cmb_fid)
+        vsl.addWidget('Bird Height:', self.cmb_balt)
+        vsl.addWidget('Data channel prefix:', self.le_datachan)
+        vsl.addWidget('Waveform Type:', self.cmb_wtype)
+        vsl.addWidget('Tx Peak time:', self.le_txpeaktime)
+        vsl.addWidget('Tx Ramp Off start time:', self.le_txrampoff1)
+        vsl.addWidget('Tx Off time:', self.le_txofftime)
+        vsl.addWidget('Source Type:', self.cmb_stype)
+        vsl.addWidget('Tx Orientation:', self.cmb_txori)
+        vsl.addWidget('Tx Area:', self.le_txarea)
+        vsl.addWidget('Number of turns in loop:', self.le_loopturns)
+        vsl.addWidget('Current in loop:', self.le_loopcurrent)
+        vsl.addWidget('Permeability of the background:', self.le_mu)
+        vsl.addWidget('Rx Orientation:', self.cmb_rxori)
+        vsl.addWidget('Mesh cell size:', self.le_mesh_cs)
+        vsl.addWidget('Mesh number cells in x direction:', self.le_mesh_ncx)
+        vsl.addWidget('Mesh number cells in z direction:', self.le_mesh_ncz)
+        vsl.addWidget('Mesh number of cells to pad:', self.le_mesh_npad)
+        vsl.addWidget('Pad cell multiplier:', self.le_mesh_padrate)
+        vsl.addWidget('Conductivity Air:', self.le_sig_air)
+        vsl.addWidget('Conductivity Halfspace:', self.le_sig_half)
+        vsl.addWidget('Data Relative Error (%):', self.le_rel_err)
+        vsl.addWidget('Data Noise Floor:', self.le_noise_floor)
+        vsl.addWidget('Optimization - maximum iterations:', self.le_maxiter)
 
-        gbl.addWidget(pb_wfile, self.le_wfile)
-        gbl.addWidget(helpdocs, pb_apply)
+        vsl.addWidget(pb_wfile, self.le_wfile)
+        vsl.addWidget(helpdocs, pb_apply)
 
         vbl.addWidget(self.mmc1)
         vbl.addWidget(pb_wdisp)
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
 
-        hbl.addLayout(gbl.layout)
+        hbl.addLayout(vsl)
         hbl.addLayout(vbl)
 
         pb_apply.clicked.connect(self.apply)

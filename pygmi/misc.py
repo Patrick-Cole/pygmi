@@ -368,17 +368,22 @@ class ContextModule(QtWidgets.QDialog):
         """
 
 
-class QLabelVStack:
-    """QLabelVStack."""
+class QVStack2Layout(QtWidgets.QGridLayout):
+    """
+    QVStack2Layout.
+
+    This works like VBoxLayout, except each row takes two widgets.
+
+    """
 
     def __init__(self, parent=None):
-        self.layout = QtWidgets.QGridLayout(parent)
-        self.layout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        super().__init__(parent)
+        self.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.indx = 0
 
     def addWidget(self, widget1, widget2):
         """
-        Add two widgets on a row, widget1 can also be text.
+        Add two widgets on a row, widget can also be text.
 
         Parameters
         ----------
@@ -395,9 +400,16 @@ class QLabelVStack:
         if isinstance(widget1, str):
             widget1 = QtWidgets.QLabel(widget1)
 
-        self.layout.addWidget(widget1, self.indx, 0)
-        self.layout.addWidget(widget2, self.indx, 1)
+        if isinstance(widget2, str):
+            widget2 = QtWidgets.QLabel(widget2)
+
+        self.addWidgetOld(widget1, self.indx, 0)
+        self.addWidgetOld(widget2, self.indx, 1)
         self.indx += 1
+
+    def addWidgetOld(self, *args, **kwargs):
+        """Original Add Widget."""
+        super().addWidget(*args, **kwargs)
 
 
 class PTime():
