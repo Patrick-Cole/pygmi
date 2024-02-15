@@ -1202,7 +1202,7 @@ def _testfn():
 
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
     ifile = r"D:\Janine\cut_048-055_ref_rect_DEFLATE.tif"
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
 
     data = get_data(ifile)
 
