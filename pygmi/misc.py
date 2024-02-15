@@ -115,6 +115,10 @@ class BasicModule(QtWidgets.QDialog):
         reference to a progress bar.
     showlog: stdout or alternative
         reference to a way to view messages, normally stdout or a Qt text box.
+    is_import: bool
+        used to indicate whether a routine contains an import within.
+    projdata : dictionary
+        Project data.
     """
 
     def __init__(self, parent=None):
@@ -142,8 +146,9 @@ class BasicModule(QtWidgets.QDialog):
         self.parent = parent
         self.is_import = False
         self.ifile = ''
-        self.ipth = os.path.dirname(__file__)+r'/images/'
-        self.setWindowIcon(QtGui.QIcon(self.ipth+'logo256.ico'))
+
+        ipth = os.path.dirname(__file__)+r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
 
     def settings(self, nodialog=False):
         """
@@ -354,8 +359,8 @@ class ContextModule(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.ipth = os.path.dirname(__file__)+r'/images/'
-        self.setWindowIcon(QtGui.QIcon(self.ipth+'logo256.ico'))
+        ipth = os.path.dirname(__file__)+r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
 
     def run(self):
         """

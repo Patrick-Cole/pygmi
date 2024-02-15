@@ -139,7 +139,7 @@ class HelpButton(QtWidgets.QPushButton):
     """
     Help Button.
 
-    Convenience class to add an image to a pushbutton
+    Convenience class to add a Help image to a pushbutton
     """
 
     def __init__(self, htmlfile=None, parent=None):
@@ -147,11 +147,11 @@ class HelpButton(QtWidgets.QPushButton):
 
         self.htmlfile = htmlfile
 
-        self.ipth = os.path.dirname(__file__)+r'/images/'
         self.setMinimumHeight(48)
         self.setMinimumWidth(48)
 
-        self.setIcon(QtGui.QIcon(self.ipth+'help.png'))
+        ipth = os.path.dirname(__file__)+r'/images/'
+        self.setIcon(QtGui.QIcon(ipth+'help.png'))
         self.setIconSize(self.minimumSize())
         self.clicked.connect(self.help_docs)
         self.setFlat(True)

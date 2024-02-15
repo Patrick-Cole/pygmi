@@ -322,12 +322,7 @@ class ImageSeg(BasicModule):
 
             clen = len(elist)
             pbar = self.piter(range(clen))
-            # if self.pbar is not None:
-            #     self.pbar.setMaximum(clen)
-            #     self.pbar.setMinimum(0)
-            #     self.pbar.setValue(0)
             self.showlog('Iteration number: '+str(cnt))
-            oldperc = 0
 
             olist3 = olist.copy()
 
@@ -464,11 +459,6 @@ class ImageSeg(BasicModule):
                 elist.discard(hind)
 
                 next(pbar)
-                # cnow = clen-len(elist)
-                # if cnow*1000//clen-oldperc > 0:
-                #     if self.pbar is not None:
-                #         self.pbar.setValue(cnow)
-                #     oldperc = cnow*1000//clen
 
                 rmin, rmax = rminmax[i]
                 cmin, cmax = cminmax[i]
@@ -571,9 +561,6 @@ def _testfn2():
         plt.axis('off')
         plt.show()
 
-        # plt.hist(data[i].data.compressed(), 100)
-        # plt.show()
-
     IS = ImageSeg()
     IS.indata = {'Raster': data}
     IS.settings()
@@ -586,6 +573,7 @@ def _testfn2():
     plt.show()
 
     breakpoint()
+
 
 if __name__ == "__main__":
     _testfn2()

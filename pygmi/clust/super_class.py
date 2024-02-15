@@ -669,7 +669,7 @@ class SuperClass(BasicModule):
 
         qsave = QtWidgets.QMessageBox.Save
         qokay = QtWidgets.QMessageBox.Ok
-        ret = QtWidgets.QMessageBox.information(self.parent, 'Metrics',
+        ret = QtWidgets.QMessageBox.information(self, 'Metrics',
                                                 message,
                                                 buttons=qsave | qokay)
         if ret == qsave:
