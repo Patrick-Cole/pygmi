@@ -60,6 +60,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * shapely 2.0.2
 * shapelysmooth 0.1.1
 * SimPEG 0.20.0.post2
+* xlrd 2.0.1
 
 Installation
 ------------

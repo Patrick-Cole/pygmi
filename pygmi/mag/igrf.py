@@ -317,7 +317,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         Declination mean.
     """
     MAXDEG = 13
-    MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
+    MAXCOEFF = MAXDEG*(MAXDEG+2)+1
 
     gh = np.zeros([4, MAXCOEFF])
 
@@ -397,7 +397,6 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         xdat, ydat = reprojxy(xdat, ydat, wkt, 4326, showlog)
         if xdat is None:
             return None, None, None, None
-
 
     for i in piter(range(xdat.size)):
         if igrf_F.mask[i]:
@@ -766,7 +765,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
         fm = m
         if k >= 5:
             if m == n:
-                argument = (1.0 - 0.5/fm)
+                argument = 1.0 - 0.5/fm
                 aa = sqrt(argument)
                 j = k - n - 1
                 p[k] = (1.0 + 1.0/fm) * aa * clat * p[j]
@@ -797,7 +796,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
             x = x + cc * q[k]
             z = z - cc * p[k]
             if clat > 0:
-                y = (y + (aa*sl[m] - bb*cl[m])*fm*p[k]/((fn + 1.0)*clat))
+                y = y + (aa*sl[m] - bb*cl[m])*fm*p[k]/((fn + 1.0)*clat)
             else:
                 y = y + (aa*sl[m] - bb*cl[m])*q[k]*slat
             l = l + 2
@@ -878,7 +877,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r'C:/Workdata/testdata.hdr'
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
 
     dat = get_raster(ifile)
 

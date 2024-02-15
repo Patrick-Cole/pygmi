@@ -57,7 +57,8 @@ dependencies = ['discretize',
                 'scipy',
                 'shapely',
                 'shapelysmooth',
-                'SimPEG']
+                'SimPEG',
+                'xlrd']
 
 [project.urls]
 homepage = 'http://patrick-cole.github.io/pygmi/'

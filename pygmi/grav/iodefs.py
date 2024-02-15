@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import Gravity Data."""
 
 import os
 from PyQt5 import QtWidgets, QtCore
@@ -36,9 +36,9 @@ from pygmi.misc import BasicModule
 
 class ImportCG5(BasicModule):
     """
-    Import Line Data.
+    Import CG-5 data.
 
-    This class imports ASCII point data.
+    This class imports CG-5 gravimeter data with associated GPS data.
     """
 
     def __init__(self, parent):
@@ -271,7 +271,7 @@ class ImportCG5(BasicModule):
 
     def get_cg5(self, filename=''):
         """
-        Get CG-5 filename.
+        Get CG-5 filename and load data.
 
         Parameters
         ----------
@@ -320,7 +320,7 @@ class ImportCG5(BasicModule):
 
     def get_gps(self, filename=''):
         """
-        Get GPS filename.
+        Get GPS filename and load data.
 
         Parameters
         ----------

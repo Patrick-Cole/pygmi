@@ -37,7 +37,6 @@ from math import pi
 import numpy as np
 
 from PyQt5 import QtWidgets
-from matplotlib.colors import ListedColormap
 from matplotlib import colormaps
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -201,47 +200,6 @@ class TiltDepth(BasicModule):
                                           'Save completed!')
 
         return True
-
-    def change_cbar_old(self):
-        """
-        Change the colour map for the colour bar.
-
-        Returns
-        -------
-        None.
-
-        """
-        zout = self.indata['Raster'][0]
-        txt = str(self.cmb_cbar.currentText())
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.contour(self.X, self.Y, self.Z, [0])
-        self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
-        self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
-
-        cmap = colormaps[txt]
-        cmap2 = np.array([cmap(i) for i in range(cmap.N)])
-        low = int(cmap.N*(45/180))
-        high = int(cmap.N*(135/180))
-        cmap2[low:high] = cmap2[int(cmap.N/2)]
-
-        cmap3 = ListedColormap(cmap2)
-        ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
-
-        if self.x0 is not None:
-            i = 0
-            self.axes.plot(self.x1[i], self.y1[i], 'oy')
-            self.axes.plot(self.x0[i], self.y0[i], 'sy')
-            self.axes.plot(self.x2[i], self.y2[i], 'oy')
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        self.figure.colorbar(ims, format=frm, label='Tilt Angle')
-
-        self.figure.canvas.draw()
 
     def change_cbar(self):
         """
@@ -583,7 +541,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\Workdata\PyGMI Test Data\IGRF_RTP.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
 
     dat = get_raster(ifile)
 
@@ -591,7 +549,7 @@ def _testfn():
 
     tmp1 = TiltDepth()
     tmp1.indata['Raster'] = dat
-    tmp1.do_rtp.setChecked(False)
+    tmp1.cb_rtp.setChecked(False)
     tmp1.dsb_inc.setValue(-63.)
     tmp1.dsb_dec.setValue(-16.)
 

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        scan_imp.py (part of PyGMI)
+# Name:        tdem.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -93,7 +93,6 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax2.grid(True)
         ax2.legend(loc=3)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def disp_wave(self, times, wave, title):
@@ -124,7 +123,6 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         ax1.plot(times, wave)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
