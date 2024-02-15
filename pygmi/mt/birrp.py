@@ -108,7 +108,6 @@ class BIRRP(BasicModule):
         self.le_dstim = {}
         self.le_wstim = {}
         self.le_wetim = {}
-        # self.npts = {}
         self.pb_arfilnam = {}
         self.pb_cpar = {}
         self.pb_filnam = {}

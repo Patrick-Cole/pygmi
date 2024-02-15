@@ -91,11 +91,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 ctmp = np.abs(ctmp)
                 ctmp = ctmp.tolist()
 
-                # if dmat[i, j] < 0.01:
-                #     atext = f'{dmat[i, j]:.1e}'
-                # else:
-                #     atext = f'{dmat[i, j]:.2f}'
-
                 atext = f'{dmat[i, j]:.2f}'
 
                 self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
@@ -225,9 +220,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         z = data.data.copy()
         vmin, vmax = np.percentile(z.compressed(), [1, 99])
 
-        # z[z < vmin] = vmin
-        # z[z > vmax] = vmax
-
         if not np.ma.is_masked(z):
             z = np.ma.array(z)
 
@@ -247,7 +239,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         vmin, vmax = np.percentile(z, [1, 99])
 
         surf = self.axes.plot_surface(x, y, z, cmap=cmap,
-                                      # rcount=rows, ccount=cols,
                                       norm=norml, vmin=vmin, vmax=vmax,
                                       shade=False, antialiased=False)
 
@@ -293,9 +284,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
-
-        # self.axes.tick_params(axis='x', labelsize=14)
-        # self.axes.tick_params(axis='y', labelsize=14)
 
         if ylog is True:
             self.axes.set_yscale('log')

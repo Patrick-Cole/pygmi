@@ -60,7 +60,6 @@ class CorrectDescriptions(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pygmi.seis.utils.cordesc')
         pb_textfile = QtWidgets.QPushButton('Load Description List')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -72,7 +71,6 @@ class CorrectDescriptions(BasicModule):
         gl_main.addWidget(self.le_textfile, 0, 0, 1, 1)
         gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
 
-        # gl_main.addWidget(helpdocs, 5, 0, 1, 1)
         gl_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
@@ -172,12 +170,10 @@ class CorrectDescriptions(BasicModule):
             if cmatch:
                 cmatch = cmatch[0]
             else:
-                # self.showlog('No match found for '+text)
                 nomatch.append(text)
                 continue
 
             if cmatch != text:
-                # self.showlog('Correcting '+text+' to '+cmatch)
                 correction.append(text+' to '+cmatch)
                 i['3'].region = cmatch
 

@@ -309,14 +309,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        # breakpoint()
 
         self.axes = self.figure.add_subplot(111, label='map')
         cb_registry = self.axes.callbacks
         cb_registry.connect('ylim_changed', self.textresize)
         cb_registry.connect('xlim_changed', self.textresize)
 
-        # self.axes.ticklabel_format(style='plain')
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
         self.axes.axis('scaled')
@@ -707,9 +705,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bcols2 = bcols[(fcnt/bwidth).astype(int)]
             lcol = mc.LineCollection(allcrds, color=bcols2)
             ax2.add_collection(lcol)
-            ax2.autoscale(enable=True)  # , tight=True)
+            ax2.autoscale(enable=True)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hist(self, data, col, ylog, iscum):
@@ -756,7 +753,6 @@ class PlotCCoef(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.lbl_1.hide()
         self.cmb_2.hide()
         self.lbl_2.hide()
         self.spinbox.hide()
@@ -868,8 +864,6 @@ class PlotHist(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
-
-        # tmp = self.exec()
 
 
 class PlotLines(GraphWindow):
@@ -1109,9 +1103,6 @@ class PlotVector(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.lbl_1.hide()
-        # self.cmb_2.hide()
-        # self.lbl_2.hide()
         self.spinbox.hide()
         self.lbl_3.hide()
         self.cmb_c.show()

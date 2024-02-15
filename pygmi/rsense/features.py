@@ -37,7 +37,7 @@ feature['f2200'] = [2120, 2245]
 feature['f2250'] = [2230, 2280]
 feature['f2290'] = [2270, 2330]
 feature['f2320'] = [2295, 2345]
-feature['f2330'] = [2300,2349]  #[2265, 2349]
+feature['f2330'] = [2300, 2349]  # [2265, 2349]
 feature['f2350'] = [2310, 2370]
 feature['f2390'] = [2375, 2435]
 
@@ -51,7 +51,7 @@ ratio['r2160D2190'] = '(R2136+R2188)/(R2153+R2171)'  # Kaolin from non kaolin
 ratio['r2250D'] = '(R2227+R2275)/(R2241+R2259)'  # Chlorite epidote biotite
 ratio['r2380D'] = '(R2365+R2415)/(R2381+R2390)'  # Amphibole, talc
 ratio['r2320D'] = '(R2295+R2345)/(R2305+R2322)'
-ratio['r2330D'] = '(R2300+R2349)/(R2316+R2333)' #(R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
+ratio['r2330D'] = '(R2300+R2349)/(R2316+R2333)'  # (R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
 ratio['r1100D'] = '(R921+R1650)/(R1020+R1231)'   # Ferrous iron
 ratio['r1750D'] = '(R1720+R1790)/(R1740+R1760)'  # Gypsum
 ratio['r1950D'] = '(R1900+R1980)/(R1930+R1960)'   # Water feature

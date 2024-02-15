@@ -278,7 +278,7 @@ class CrispClust(BasicModule):
 # Section to deal with different bands having different null values.
 # Start with the first entry
 #         masktmp = data[0].data.mask
-# # Add the all the masks to this. This promotes False values to True.
+#   Add the all the masks to this. This promotes False values to True.
 #         for i in data:
 #             masktmp += i.data.mask
 #         for i, _ in enumerate(data):    # Apply this to all the bands

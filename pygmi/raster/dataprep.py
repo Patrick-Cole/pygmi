@@ -1732,7 +1732,6 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
-        # poly = gdf['geometry'].iloc[0]
         dext = idata.bounds
         lext = gdf['geometry'].total_bounds
 
@@ -1745,8 +1744,6 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
             return None
 
         # This section converts PolygonZ to Polygon, and takes first polygon.
-        # coords = gdf['geometry'].loc[0].exterior.coords
-        # coords = [Polygon([[p[0], p[1]] for p in coords])]
         coords = gdf['geometry']
 
         dat, trans = riomask(idata.to_mem(), coords, crop=True)
@@ -2051,53 +2048,6 @@ def getepsgcodes():
                                     geodetic_crs=geog_crs)
 
             pcodes[f'{geog_crs.name} / TM{clong}'] = proj_crs.to_wkt(pretty=True)
-
-            # if 'Cape' in datum:
-            #     wkt = ('PROJCS["Cape / TM'+str(clong)+'",'
-            #            'GEOGCS["Cape",'
-            #            'DATUM["Cape",'
-            #            'SPHEROID["Clarke 1880 (Arc)",'
-            #            '6378249.145,293.4663077,'
-            #            'AUTHORITY["EPSG","7013"]],'
-            #            'AUTHORITY["EPSG","6222"]],'
-            #            'PRIMEM["Greenwich",0,'
-            #            'AUTHORITY["EPSG","8901"]],'
-            #            'UNIT["degree",0.0174532925199433,'
-            #            'AUTHORITY["EPSG","9122"]],'
-            #            'AUTHORITY["EPSG","4222"]],'
-            #            'PROJECTION["Transverse_Mercator"],'
-            #            'PARAMETER["latitude_of_origin",0],'
-            #            'PARAMETER["central_meridian",'+str(clong)+'],'
-            #            'PARAMETER["scale_factor",1],'
-            #            'PARAMETER["false_easting",0],'
-            #            'PARAMETER["false_northing",0],'
-            #            'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-            #            'AXIS["Easting",EAST],'
-            #            'AXIS["Northing",NORTH]]')
-
-            # elif 'Hartebeesthoek94' in datum:
-            #     wkt = ('PROJCS["Hartebeesthoek94 / TM'+str(clong)+'",'
-            #            'GEOGCS["Hartebeesthoek94",'
-            #            'DATUM["Hartebeesthoek94",'
-            #            'SPHEROID["WGS 84",6378137,298.257223563,'
-            #            'AUTHORITY["EPSG","7030"]],'
-            #            'AUTHORITY["EPSG","6148"]],'
-            #            'PRIMEM["Greenwich",0,'
-            #            'AUTHORITY["EPSG","8901"]],'
-            #            'UNIT["degree",0.0174532925199433,'
-            #            'AUTHORITY["EPSG","9122"]],'
-            #            'AUTHORITY["EPSG","4148"]],'
-            #            'PROJECTION["Transverse_Mercator"],'
-            #            'PARAMETER["latitude_of_origin",0],'
-            #            'PARAMETER["central_meridian",'+str(clong)+'],'
-            #            'PARAMETER["scale_factor",1],'
-            #            'PARAMETER["false_easting",0],'
-            #            'PARAMETER["false_northing",0],'
-            #            'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-            #            'AXIS["Easting",EAST],'
-            #            'AXIS["Northing",NORTH]]')
-
-            # pcodes[datum+r' / TM'+str(clong)] = wkt
 
     return pcodes
 

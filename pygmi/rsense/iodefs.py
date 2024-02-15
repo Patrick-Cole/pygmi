@@ -812,8 +812,6 @@ class ImportSentinel5P(BasicModule):
                 continue
             if 'delta_time' in i:
                 continue
-            # if 'qa_value' in i:
-            #     continue
             if 'precision' in i:
                 continue
 
@@ -1494,17 +1492,6 @@ def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
     ifile = ldata.banddata[0].filename
     dat = get_data(ifile, piter=piter, showlog=showlog, tnames=tnames)
 
-    # ifiles = []
-    # for band in ldata.banddata:
-    #     ifiles.append(band.filename)
-
-    # ifiles = list(set(ifiles))
-
-    # dat = []
-    # for ifile in ifiles:
-    #     dat += get_data(ldata.filename, piter=piter,
-    #                     showlog=showlog, tnames=tnames)
-
     if ldata.to_sutm is True:
         dat = utm_to_south(dat)
 
@@ -1779,13 +1766,6 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
 
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
         satbands['LST'] = satbands[lstband]
-
-    # if glob.glob(ifile[:-7]+'*ST_QA.tif'):
-    #     if 'LC08' in ifile or 'LC09' in ifile:
-    #         lstband = 'B10'
-    #     else:
-    #         lstband = 'B6'
-    #     satbands['LST'] = satbands[lstband]
 
     showlog('Importing Landsat data...')
 
@@ -2375,10 +2355,6 @@ def get_sentinel1(ifile, piter=None, showlog=print, tnames=None,
         if dataset is None:
             return None
         subdata = dataset.subdatasets
-        # tmp = dataset.tags(ns='derived_subdatasets')
-
-    # subdata = [i for i in subdata if 'IW1' in i]
-    # subdata = [i for i in subdata if 'COMPLEX' not in i]
 
     nval = 0
     dat = []
@@ -2520,9 +2496,6 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
                 dat[-1].metadata['Raster']['wavelength'] = wlen
 
             dat[-1].metadata.update(bmeta)
-
-            # if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
-            #     dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
 
         dataset.close()
 
@@ -3238,7 +3211,6 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     phi = -np.pi/4.
     theta = np.pi/4.
 
-    # sundata = None
     if sundata is not None:
         sunshader = currentshader(sdata.data, cell, theta, phi, alpha)
 
@@ -3248,10 +3220,6 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
         img[:, :, 1] = img[:, :, 1]*snorm  # green
         img[:, :, 2] = img[:, :, 2]*snorm  # blue
         img = img.astype(np.uint8)
-
-    # plt.figure(dpi=150)
-    # plt.imshow(img)
-    # plt.show()
 
     newimg = [data[0].copy(),
               data[0].copy(),
@@ -3326,19 +3294,11 @@ def set_export_filename(dat, odir, otype=None):
         tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
         tmp = list(set(tmp))
         tmp.sort()
-        # plev = ''
-        # for i in tmp:
-        #     plev += f'_{i}'
 
         tmp = filename.split('_')
-        # month = tmp[2][3:5]
-        # day = tmp[2][5:7]
-        # year = tmp[2][7:11]
-        # uid = tmp[-1]
         date = tmp[2][3:11]
         time = tmp[2][11:]
         ofile = f'AST_{date}_{time}'
-        # ofile = f'AST{plev}_{year}{month}{day}_{uid}'
     elif 'Landsat' in sensor:
         ofile = '_'.join(filename.split('_')[:4])
     elif 'Sentinel-2' in sensor:
@@ -3424,12 +3384,6 @@ def _test5P():
     ax = plt.gca()
     shp.plot(ax=ax, fc='none', ec='black')
 
-    # try:
-    #     ctx.add_basemap(ax, crs=shp.crs,
-    #                     source=ctx.providers.OpenStreetMap.Mapnik)
-    # except:
-    #     print('No internet')
-
     tmp.outdata['Vector']['Point'].plot(ax=ax, column='data')
     plt.show()
 
@@ -3448,9 +3402,6 @@ def _testfn2():
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
-    # tmp2.get_odir(r"D:\Sentinel2\test")
-    # tmp2.ternary.setChecked(True)
-    # tmp2.click_ternary()
     tmp2.run()
 
 
@@ -3472,9 +3423,6 @@ def _testfn3():
     breakpoint()
 
     print(dat[-1].datetime)
-
-    # ofile = r'D:\tmp.hdr'
-    # export_raster(ofile, dat, 'ENVI')
 
     for i in dat:
         plt.figure(dpi=150)

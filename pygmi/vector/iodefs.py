@@ -809,7 +809,6 @@ def get_intrepid(ifile, showlog=print, piter=iter):
         ifile = files[j]
         vfile = vfiles[j]
         cname = os.path.basename(ifile)[:-3].lower()
-        # print(cname)
 
         with open(vfile, encoding='utf-8') as file:
             header = file.readlines()

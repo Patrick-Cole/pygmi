@@ -288,8 +288,6 @@ class TiltDepth(BasicModule):
         self.cmb_band1.clear()
         self.cmb_band1.addItems(blist)
 
-        # if nodialog is False:
-        #     self.show()
         if not nodialog:
             tmp = self.exec()
         else:
@@ -353,7 +351,6 @@ class TiltDepth(BasicModule):
         npts = int(2**nextpow2(nmax))
         dz = vertical(zout.data, npts, 1)
 
-        # dz = vertical(zout.data)
         t1 = np.arctan(dz/dxtot)
 
         self.pbar.setValue(2)

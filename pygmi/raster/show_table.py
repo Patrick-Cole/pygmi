@@ -84,13 +84,6 @@ class BasicStats(ContextModule):
         i = self.cmb_1.currentIndex()
         data = self.data[i][:, 1:]
 
-        # for row in range(data.shape[0]):
-        #     for col in range(data.shape[1]):
-        #         self.tablewidget.setCellWidget(
-        #             row, col, QtWidgets.QLabel(str(data[row, col])))
-
-        # self.tablewidget.resizeColumnsToContents()
-
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
                 txt = f' {data[row, col]:,.5f}'

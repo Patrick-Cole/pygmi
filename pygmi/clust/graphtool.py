@@ -195,8 +195,6 @@ class GraphHist(FigureCanvasQTAgg):
         self.xcoord = self.xcoord/xstep
         self.ycoord = self.ycoord/ystep
 
-        # self.xcoord = self.xcoord.astype(int)
-        # self.ycoord = self.ycoord.astype(int)
         self.xcoord = np.trunc(self.xcoord)
         self.ycoord = np.trunc(self.ycoord)
 
@@ -727,7 +725,6 @@ class ScatterPlot(BasicModule):
             self.c[0] = gstmp
             self.hist.update_graph(clearaxis=True)
             self.on_cp_dpoly()
-            # self.map.polyi.update_plots()
 
     def on_cp_combo2(self):
         """
@@ -743,7 +740,6 @@ class ScatterPlot(BasicModule):
             self.c[1] = gstmp
             self.hist.update_graph(clearaxis=True)
             self.on_cp_dpoly()
-            # self.map.polyi.update_plots()
 
     def on_cp_combo3(self):
         """
@@ -757,7 +753,6 @@ class ScatterPlot(BasicModule):
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
         self.on_cp_dpoly()
-        # self.map.polyi.update_plots()
 
     def on_map_combo(self):
         """
@@ -770,8 +765,6 @@ class ScatterPlot(BasicModule):
         """
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
-        # self.on_map_dpoly()
-        # self.hist.polyi.update_plots()
 
     def on_map_combo2(self):
         """
@@ -784,7 +777,6 @@ class ScatterPlot(BasicModule):
         """
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
-        # self.hist.polyi.update_plots()
 
     def settings(self, nodialog=False):
         """

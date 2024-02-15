@@ -276,11 +276,7 @@ def extendlines(gdf, length=500, piter=iter):
     """
     gdf2 = gdf.copy()
 
-    # for i, row in piter(gdf.iterrows()):
-    #     line = np.array(row.geometry.coords)
-    # i = -1
     for i, row in enumerate(piter(gdf.geometry)):
-        # i += 1
         line = np.array(row.coords)
 
         p2, p1 = line[:2]
@@ -340,13 +336,6 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
             if 'Point' in pnt.geom_type:
                 pnts.append(pnt)
 
-        # for line2 in geom2:
-        #     if line1 == line2:
-        #         continue
-        #     pnt = line1.intersection(line2)
-        #     if not pnt.is_empty and 'Point' in pnt.geom_type:
-        #         pnts.append(pnt)
-
     gdf2 = gpd.GeoDataFrame(geometry=pnts)
     geom2 = gdf2.geometry.explode(index_parts=False)
 
@@ -362,11 +351,6 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
         ydiff = np.exp(-(ycoords-pnt.y)**2/(2*var))
         x1, y1 = np.meshgrid(xdiff, ydiff, copy=False)
         H = ne.evaluate('H+x1*y1')
-
-    # for pnt in piter(geom2):
-    #     xdiff = (x-pnt.x)**2/(2*var)
-    #     ydiff = (y-pnt.y)**2/(2*var)
-    #     H += np.exp(-(xdiff+ydiff))
 
     G = 1/np.sqrt(2*np.pi*var)
     H = G*H
@@ -503,8 +487,6 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     s2 = s2/numall
 
     t2 = np.arctan2(s2, c2)
-    # t2[c2 < 0] += np.pi
-    # t2[np.logical_and(c2 > 0, s2 < 0)] += 2*np.pi
 
     d1 = (1-t2)/(2*r1**2)
 
@@ -561,8 +543,6 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
         for j in range(w, cols-w):
             wdat = dat[i-w:i+w+1, j-w:j+w+1]
             d1[i, j] = fractal_dimension(wdat)
-
-    # num = correlate(dat, fmat, 'same', 'direct')
 
     fdat = Data()
     fdat.dataid = 'Feature Fractal Dimension'

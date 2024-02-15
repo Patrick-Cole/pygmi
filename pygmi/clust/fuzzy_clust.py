@@ -289,7 +289,7 @@ class FuzzyClust(BasicModule):
 # #############################################################################
 # Section to deal with different bands having different null values.
 #         masktmp = data[0].data.mask   # Start with the first entry
-# # Add the masks to this.This promotes False values to True if necessary
+# Add the masks to this.This promotes False values to True if necessary
 #         for i in data:
 #             masktmp += i.data.mask
 #         for i, _ in enumerate(data):    # Apply this to all the bands

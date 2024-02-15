@@ -328,13 +328,6 @@ class BeachBall(BasicModule):
             poly0 = make_valid(poly0)
 
             layerb['geometry'].append(poly0)
-            # layer['Event'].append(i)
-            # layer['Strike'].append(np1[0])
-            # layer['Dip'].append(np1[1])
-            # layer['Rake'].append(np1[2])
-            # layer['Magnitude'].append(idat[-1])
-            # layer['Quadrant'].append('Compressional')
-            # layer['Depth'].append(depth)
 
             layer['geometry'].append(poly1)
             layer['Event'].append(i)
@@ -342,7 +335,6 @@ class BeachBall(BasicModule):
             layer['Dip'].append(np1[1])
             layer['Rake'].append(np1[2])
             layer['Magnitude'].append(idat[-1])
-            # layer['Quadrant'].append('Tensional')
             layer['Depth'].append(depth)
 
         gdf = gpd.GeoDataFrame(layer)
@@ -998,11 +990,7 @@ def _testfn():
 
 def _testfn2():
     """Test routine."""
-    import sys
     import matplotlib.pyplot as plt
-    from matplotlib.animation import FuncAnimation
-    from IPython import get_ipython
-    # get_ipython().run_line_magic('matplotlib', 'qt5')
 
     np1 = [20.77, 25, 0]
     # np1 = [150, 87, 1]
@@ -1023,15 +1011,9 @@ def _testfn2():
     ax.set_xlim((xmin, xmax))
     ax.set_ylim((ymin, ymax))
 
-    # patch = patches.Polygon(pvert1[:1], edgecolor=(0.0, 0.0, 0.0))
     patch = patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0))
     ax.add_patch(patch)
 
-    # def animate(i):
-    #     patch.set_xy(pvert1[:i])
-    #     return patch
-
-    # ani = FuncAnimation(fig, animate, frames=len(pvert1), interval=50)
     plt.show()
 
     breakpoint()

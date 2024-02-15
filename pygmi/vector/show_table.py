@@ -81,7 +81,6 @@ class BasicStats(ContextModule):
         stats1['mean'] = gdf.mean(numeric_only=True)
         stats1['std'] = gdf.std(numeric_only=True)
         stats1['median'] = gdf.median(numeric_only=True)
-        # stats1['mad'] = gdf.mad(numeric_only=True)
         stats1['min'] = gdf.min(numeric_only=True)
         stats1['max'] = gdf.max(numeric_only=True)
 

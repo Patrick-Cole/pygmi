@@ -848,8 +848,6 @@ def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None,
         datin = np.swapaxes(datin, 0, 1)
     else:
         datin.shape = (ysize, cols, bands)
-        # datin = np.swapaxes(datin, 0, 2)
-        # datin = np.swapaxes(datin, 1, 2)
         datin = np.moveaxis(datin, [0, 1, 2], [1, 2, 0])
 
     if iraster is not None:

@@ -509,16 +509,11 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    data1 = skimage.data.coffee()  # 400x600 48.5 secs
+    data1 = skimage.data.coffee()
 
     plt.imshow(data1)
     plt.axis('off')
     plt.show()
-
-    # wcolor = 0.5
-    # wcompact = 0.5
-    # doshape = True
-    # scale = 1000
 
     b1 = Data()
     b1.data = np.ma.array(data1[:, :, 0])

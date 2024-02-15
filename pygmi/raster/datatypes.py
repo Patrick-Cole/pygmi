@@ -420,7 +420,3 @@ class RasterMeta():
 
         if 'ASTER' in self.sensor:
             self.sensor = 'ASTER'
-            # if len(self.bands) == 3:
-            #     self.sensor += 'v1'
-            # else:
-            #     self.sensor += 'v2'

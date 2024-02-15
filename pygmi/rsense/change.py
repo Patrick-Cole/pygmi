@@ -153,16 +153,6 @@ class CalculateChange(BasicModule):
 
         if not datfin:
             return False
-        #     odir = os.path.dirname(ifile.filename)
-        #     odir = os.path.join(odir, 'change')
-
-        #     os.makedirs(odir, exist_ok=True)
-
-        #     ofile = set_export_filename(dat, odir, 'ratio')
-
-        #     self.showlog('Exporting to '+ofile)
-        #     export_raster(ofile, datfin, 'GTiff', piter=self.piter,
-        #                   compression='DEFLATE', showlog=self.showlog)
 
         self.outdata['Raster'] = datfin
 
@@ -246,7 +236,6 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
         showlog('You need a minimum of two datasets.')
         return None
 
-    # dat = lstack(dat, piter=piter, showlog=showlog)
     meandat = None
     std = None
     datfin = []
@@ -375,10 +364,6 @@ def calc_mean(flist, showlog=print, piter=iter):
                           checkdataid=False)
             meandat[i], dat[i], cnt[i], M[i] = ltmp
 
-            # meandat[i], dat[i] = lstack([meandat[i], dat[i]],
-            #                             showlog=showlog,
-            #                             piter=piter, checkdataid=False)
-
             tmp = imean(meandat[i].data, dat[i].data, cnt[i].data, M[i].data)
             meandat[i].data, cnt[i].data, M[i].data = tmp
 
@@ -427,20 +412,15 @@ def calc_sam(flist, showlog=print, piter=iter):
 
     # Init variables
     angle = dat1[0].copy(True)
-    # mask = angle['angle'].data.mask
     angle.data = angle.data.astype(float)
     angle.data *= 0.
 
     rows, cols = angle.data.shape
 
-    # 1844.7 sec, 583 sec
     for i in piter(range(rows)):
         for j in range(cols):
             s1 = dat1b[i, j]
             s2 = dat2b[i, j]
-            # if mask[i, j] == True:
-            #     continue
-            # angle['angle'].data[i, j] = scm(s1, s2)
             angle.data[i, j] = sam(s1, s2)
 
     angle.nodata = 0.
@@ -589,8 +569,6 @@ def sam(s1, s2):
     s1a = s1.astype('d')
     s2a = s2.astype('d')
 
-    # result = np.dot(s1, s2)/(np.sqrt(np.sum(s1**2))*np.sqrt(np.sum(s2**2)))
-
     num = np.dot(s1a, s2a)
     denom = np.sqrt(np.sum(s1a**2))*np.sqrt(np.sum(s2a**2))
 
@@ -665,7 +643,6 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
-    # idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex'
     os.chdir(r'E:\\')
 
     app = QtWidgets.QApplication(sys.argv)

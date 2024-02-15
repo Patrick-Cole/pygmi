@@ -75,7 +75,6 @@ class PointCut(BasicModule):
             self.showlog('No point data')
             return False
 
-        # nodialog = False
         if not nodialog:
             ext = 'Shape file (*.shp)'
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -591,15 +590,6 @@ class Metadata(ContextModule):
 
         self.show()
 
-        # tmp = self.exec()
-
-        # if tmp != 1:
-        #     return False
-
-        # self.acceptall()
-
-        # return True
-
 
 class TextFileSplit(BasicModule):
     """Split a text file into smaller text files."""
@@ -777,44 +767,10 @@ class TextFileSplit(BasicModule):
             True if successful, False otherwise.
 
         """
-        # self.cmb_dataid.clear()
-
-        # filt = ((data.columns != 'geometry') &
-        #         (data.columns != 'line'))
-
-        # cols = list(data.columns[filt])
-        # self.cmb_dataid.addItems(cols)
-
-        # if self.dataid_text is None:
-        #     self.dataid_text = self.cmb_dataid.currentText()
-        # if self.dataid_text in cols:
-        #     self.cmb_dataid.setCurrentText(self.dataid_text)
-
-        # if self.dxy is None:
-        #     x = data.geometry.x.values
-        #     y = data.geometry.y.values
-
-        #     dx = x.ptp()/np.sqrt(x.size)
-        #     dy = y.ptp()/np.sqrt(y.size)
-        #     self.dxy = max(dx, dy)
-        #     self.dxy = min([x.ptp(), y.ptp(), self.dxy])
-
-        # self.le_dxy.setText(f'{self.dxy:.8f}')
-        # self.dxy_change()
-
-        # self.grid_method_change()
         if not nodialog:
             tmp = self.exec()
             if tmp != 1:
                 return False
-
-        # try:
-        #     float(self.le_dxy.text())
-        #     float(self.le_null.text())
-        #     float(self.le_bdist.text())
-        # except ValueError:
-        #     self.showlog('Value Error')
-        #     return False
 
         self.acceptall()
 
@@ -1109,7 +1065,6 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
     dat = Data()
     dat.data = gdat
     dat.nodata = nullvalue
-    # dat.dataid = self.cmb_dataid.currentText()
 
     rows, _ = dat.data.shape
 

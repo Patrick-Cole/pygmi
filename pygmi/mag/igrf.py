@@ -402,15 +402,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         if igrf_F.mask[i]:
             continue
 
-        # if wkt is not None:
-        #     longitude, latitude = reprojxy(xdat[i], ydat[i], wkt, 4326)
-        # else:
-        #     longitude, latitude = xdat[i], ydat[i]
-
         longitude, latitude = xdat[i], ydat[i]
-        # if xdat1[i]-longitude != 0 or ydat1[i]-latitude != 0:
-        #     print('broken')
-
         alt = altgrid[i]
 
         # Do the first calculations

@@ -276,7 +276,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 

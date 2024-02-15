@@ -614,15 +614,12 @@ class ProfileDisplay(QtWidgets.QWidget):
 
                 data1 = self.lmod1.griddata[i].copy()
                 if data1.isrgb is True:
-                    # self.showlog(f'Skipping RGB image {data1.dataid}')
                     continue
                 if 'Calculated Gravity' in i:
                     data1.data = data1.data + self.lmod1.gregional
 
                 dtlx = data.extent[0]
                 d2tlx = data1.extent[0]
-                # dtly = data.extent[-1]
-                # d2tly = data1.extent[-1]
 
                 dbly = data.extent[-2]
                 d2bly = data1.extent[-2]
@@ -632,7 +629,6 @@ class ProfileDisplay(QtWidgets.QWidget):
                     ryyy2 = self.ryyy
                 else:
                     rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data1.xdim + 1
-                    # ryyy2 = (d2tly-dtly+self.ryyy*data.ydim)/data1.ydim + 1
                     ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data1.ydim + 1
 
                 tmp = data1.data.astype(float).filled(np.nan)
@@ -645,7 +641,6 @@ class ProfileDisplay(QtWidgets.QWidget):
                 dfall = pd.DataFrame(data2)
             else:
                 dtmp = pd.DataFrame(data2)
-                # dfall = dfall.append(dtmp)
                 dfall = pd.concat([dfall, dtmp])
 
         dfall = dfall.dropna(thresh=4)
@@ -1672,8 +1667,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             width *= self.mywidth
             height *= self.mywidth
 
-            # if curaxes == self.axes:
-            #     width *= 10
             width = int(np.ceil(width))
             height = int(np.ceil(height))
 
@@ -1809,7 +1802,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def init_grid(self, dat, dat2=None, opac=0.0):
@@ -1902,9 +1894,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.lims2.set_data(dat2.data)
             self.lims2.set_extent(dat2.extent)
 
-            # vmin = dat2.data.min()
-            # vmax = dat2.data.max()
-
             vstd = dat2.data.std()
             vmean = dat2.data.mean()
             vmin = vmean - 2.5 * vstd
@@ -1931,7 +1920,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.lims.set_visible(True)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def slide_grid(self, dat, dat2=None, opac=None):
@@ -2742,7 +2730,6 @@ class ImportPicture(BasicModule):
         x2 = self.dsb_x2.value()
         y1 = self.dsb_y1.value()
         y2 = self.dsb_y2.value()
-        # zmin = self.dsb_zmin.value()
         zmax = self.dsb_zmax.value()
 
         # Check if the profile is within the model area
@@ -2823,9 +2810,6 @@ class ImportPicture(BasicModule):
             dat.isrgb = True
 
             ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
-            # rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
-            # xdim = (rb-ra)/dat.shape[1]
-            # ydim = (zmax-zmin)/dat.shape[0]
 
             dat.set_transform(dat.xdim, ra, dat.ydim, zmax)
             self.lmod.profpics[curline] = dat

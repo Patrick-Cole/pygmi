@@ -1082,7 +1082,6 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.set_xticklabels([])
 
         self.sun, = self.axes.plot(np.pi/4., cos(np.pi/4.), 'o')
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -1552,8 +1551,6 @@ class PlotInterp(BasicModule):
             self.le_lineclipl.setText(str(clip))
             return
 
-        # self.mmc.clippercu = uclip
-        # self.mmc.clippercl = lclip
         self.clippercl[dattxt] = lclip
         self.clippercu[dattxt] = uclip
         self.mmc.clippercu = self.clippercu
@@ -2179,14 +2176,6 @@ def _testfn():
 
     ifile = r'd:\WorkData\testdata.hdr'
     data = iodefs.get_raster(ifile)
-
-    # ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferrous_gt_2.tif"
-    # data1 = iodefs.get_raster(ifile)
-    # ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_augite_gt_2.tif"
-    # data2 = iodefs.get_raster(ifile)
-    # ifile = r"D:\buglet_bugs\cut_S2A_T35KQR_KRP_20230511_ferric_gt_2.tif"
-    # data3 = iodefs.get_raster(ifile)
-    # data = data1+data2+data3
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data

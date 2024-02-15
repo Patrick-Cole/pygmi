@@ -161,12 +161,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
 
-        # try:
-        #     ctx.add_basemap(self.axes, crs=pyproj.CRS.from_epsg(4326),
-        #                     source=ctx.providers.OpenStreetMap.Mapnik)
-        # except:
-        #     print('No internet')
-
         self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2, xlbl='Time', ylbl='ML',
@@ -652,9 +646,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         X = np.transpose([x, y])
         X = np.unique(X, axis=0)
         r = pdist(X)
-        # dxy = r.min() / 10
         dxy = np.percentile(r, 10) / 10
-        # breakpoint()
 
         dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
 
@@ -953,11 +945,8 @@ class PlotIso(GraphWindow):
         None.
 
         """
-        # self.btn_saveshp.hide()
-
         i = self.cmb_1.currentText()
         if i == 'Convex Hull Method':
-            # self.btn_saveshp.show()
             self.mmc.update_isohull(self.datd)
         elif i == 'Standard Contours':
             self.mmc.update_isocontour(self.datd)
@@ -983,8 +972,6 @@ class PlotIso(GraphWindow):
         self.lbl_1.setText('Product:')
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
-
-        # self.exec()
 
     def save_shp(self):
         """

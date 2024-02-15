@@ -121,13 +121,8 @@ class GraphMap(FigureCanvasQTAgg):
             ax1.plot(self.row, self.col, '+w')
         else:
             ax1.plot(self.col, self.row, '+w')
-        # print(self.col, self.row)
 
         ax2 = self.figure.add_subplot(212)
-
-        # prof = []
-        # for i in self.datarr:
-        #     prof.append(i[self.row, self.col])
 
         prof = [i[self.row, self.col] for i in self.datarr]
 
@@ -169,7 +164,6 @@ class GraphMap(FigureCanvasQTAgg):
         rect.set_alpha(0.5)
         ax2.add_patch(rect)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -1200,7 +1194,6 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
     ifile = r"D:\Janine\cut_048-055_ref_rect_DEFLATE.tif"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
 

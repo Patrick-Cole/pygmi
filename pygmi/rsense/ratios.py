@@ -903,8 +903,6 @@ def correct_bands(rlist, sensor, bfile=None):
         List of converted ratios.
 
     """
-    # custom_indices = ['Landslide Index']
-
     sdict = {}
 
     sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
@@ -935,7 +933,6 @@ def correct_bands(rlist, sensor, bfile=None):
 
     bandmap = sdict[sensor]
     # Sort the keys so we do long names like B3A first
-    # svalues = set(sorted(bandmap.keys(), key=lambda el: len(el))[::-1])
     svalues = sorted(sorted(set(bandmap.keys())), key=lambda el: len(el))[::-1]
     rlist2 = []
     for i in rlist:
@@ -947,11 +944,6 @@ def correct_bands(rlist, sensor, bfile=None):
             for j in svalues:
                 tmp = tmp.replace('tmp'+j, bandmap[j])
 
-            # lbl = lbl.strip()
-            # if lbl in custom_indices:
-            #     tmp = ''
-            # else:
-            #     tmp += ' '
             rlist2.append(tmp+lbl)
 
     return rlist2
@@ -1247,7 +1239,6 @@ def _testfn():
     import winsound
     from pygmi.rsense.iodefs import ImportBatch, ImportData
 
-    # idir = r'd:\sentinel2'
     idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
     os.chdir(idir)
 
@@ -1255,8 +1246,6 @@ def _testfn():
 
     # tmp1 = ImportBatch()
     tmp1 = ImportData()
-    # tmp1.idir = idir
-    # tmp1.get_sfile(True)
     tmp1.settings()
 
     SR = SatRatios()

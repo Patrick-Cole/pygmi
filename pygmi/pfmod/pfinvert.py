@@ -247,7 +247,6 @@ class MagInvert(BasicModule):
         gl_extent.addWidget(self.sb_classes, 9, 1, 1, 1)
 
         hbl.addWidget(helpdocs)
-        # hbl.addWidget(self.pbar)
         hbl.addWidget(buttonbox)
 
         # Assign to main layout
@@ -1051,8 +1050,6 @@ def _testfn():
     tmp = MainWidget()
     tmp.indata = DM.outdata
     tmp.settings()
-
-    # x - 15 and y + 15, -10, 20, real is 5,5 for dem and mag
 
 
 def _testfn2():

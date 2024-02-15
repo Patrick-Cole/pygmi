@@ -176,7 +176,6 @@ class SceneViewer(BasicModule):
         self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
 
         self.mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
-        # self.slider = MySlider()
         self.slider = QtWidgets.QSlider()
         self.slider.setOrientation(QtCore.Qt.Horizontal)
 
@@ -499,7 +498,6 @@ def _testfn():
     idir = r"E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic"
     idir = r"D:\Workdata\change\Planet"
     idir = r"E:\Namaqua_change\namakwa"
-    # idir = r"D:\WV2_New\BRICS_NRF\change"
 
     app = QtWidgets.QApplication(sys.argv)
 

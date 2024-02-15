@@ -275,7 +275,6 @@ def importnordic(ifile, showlog=print):
 
     rnames = rnames.split('\n')
 
-    # with open(ifile, encoding='utf-8') as pntfile:
     with open(ifile) as pntfile:
         ltmp = pntfile.readlines()
 
@@ -328,8 +327,6 @@ def importnordic(ifile, showlog=print):
             ltype4 = 'phase'
             continue
 
-        # if ltype == ' ' and 'PRE' in i:
-        #     ltype = '1'
         if ltype == ' ':
             ltype = ltype4
 
@@ -2732,9 +2729,6 @@ def xlstomacro():
 
     geolocator = ArcGIS()
 
-    # geolocator = GoogleV3()
-    # tmp = geolocator.reverse('-29.129, 30.090')
-
     for i in piter(indx):
         df3 = df2.loc[i]
         location = str(i)[1:-1]
@@ -2746,8 +2740,6 @@ def xlstomacro():
 
         ofile = f'{year:4d}-{mon:02d}-{day:02d}-{hour:02d}{mins:02d}-00.macro'
         ofile = os.path.join(odir, ofile)
-        # if os.path.exists(ofile):
-        #     continue
 
         tmp = geolocator.reverse(location)
         tmp = tmp.raw
@@ -2788,7 +2780,6 @@ def _testfn():
     ofile = ifile[:-4]+'2.out'
 
     tmp = ImportSeisan()
-    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
     tmp.ifile = ifile
     tmp.settings(True)
 
@@ -2797,8 +2788,6 @@ def _testfn():
     tmp = ExportSeisan()
     tmp.indata['Seis'] = data
     tmp.run(ofile)
-    # ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
-    # dat = importmacro(ifile)
 
 
 if __name__ == "__main__":

@@ -231,9 +231,6 @@ class Cluster(BasicModule):
                          'sizes. Merge the data first')
             return False
 
-        # self.min_samples = len(self.indata['Raster'])+1
-        # self.sb_minsamples.setProperty('value', self.min_samples)
-
         if not nodialog:
             temp = self.exec()
             if temp == 0:
@@ -587,8 +584,6 @@ def _test_marinda2():
     colormap[:, :, 1] = norm2(cdata[1].data)
     colormap[:, :, 2] = norm2(cdata[2].data)
     colormap[:, :, 3] = np.logical_not(mask)
-
-    # colormap[:, :, 3][colormap[:, :, 0]==0] = 0
 
     plt.figure(dpi=150)
     plt.imshow(colormap)

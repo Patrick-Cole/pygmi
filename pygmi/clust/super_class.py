@@ -484,7 +484,6 @@ class SuperClass(BasicModule):
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.apoly = QtWidgets.QPushButton('Add Polygon')
-        # self.cmb_databand = QtWidgets.QComboBox()
         self.cmb_class = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.cmb_KNalgorithm = QtWidgets.QComboBox()
@@ -524,9 +523,6 @@ class SuperClass(BasicModule):
 
         gbox_class = QtWidgets.QGroupBox('Supervised Classification')
         gl_class = QtWidgets.QGridLayout(gbox_class)
-
-        # spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
-        #                                QtWidgets.QSizePolicy.Expanding)
 
         vbl_2b.addWidget(self.cmb_band1)
         vbl_2b.addWidget(self.cmb_band2)
@@ -825,9 +821,6 @@ class SuperClass(BasicModule):
         None.
 
         """
-        # self.m[0] = self.cmb_databand.currentIndex()
-        # self.map.update_graph()
-
         maniptxt = self.cmb_manip.currentText()
 
         if 'Ternary' in maniptxt:
@@ -843,7 +836,6 @@ class SuperClass(BasicModule):
 
         self.map.manip = maniptxt
         self.map.update_plot(self.data)
-        # self.newdata(self.curimage)
 
     def load_shape(self):
         """
@@ -966,12 +958,10 @@ class SuperClass(BasicModule):
                           self.cmb_band3.currentText()]
         self.map.manip = self.cmb_manip.currentText()
 
-        # self.map.init_graph()
         self.map.compute_initial_figure(self.data)
 
         self.map.polyint(self.data)
         self.map.polyi.polyi_changed.connect(self.updatepoly)
-        # self.map.update_graph()
         self.map.update_plot(self.data)
 
         tmp = self.exec()

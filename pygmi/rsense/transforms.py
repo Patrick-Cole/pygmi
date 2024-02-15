@@ -488,7 +488,6 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         noise = noise[mask2]
-        # ncov = np.cov(noise.T)
 
         ncov = blockwise_cov(noise.T)
 
@@ -504,7 +503,6 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         noise = noise[mask2]
 
-        # ncov2 = np.cov(noise.T)/4
         ncov = blockwise_cov(noise.T) / 4
 
     else:
@@ -520,16 +518,11 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)')
 
-        # noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
-        #          - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
-        #          + x2d[2:, :-2] - 2*x2d[2:, 1:-1] + x2d[2:, 2:])/9
-
         mask2 = (mask[:-2, :-2] * mask[:-2, 1:-1] * mask[:-2, 2:] *
                  mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
                  mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
 
         noise = noise[mask2]
-        # ncov = np.cov(noise.T)/81
 
         ncov = blockwise_cov(noise.T) / 81
 
@@ -540,7 +533,6 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
     next(pbar)
 
-    # return noise, mask2
     return nevals, nevecs
 
 
@@ -603,7 +595,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
     x = x2d[~mask]
     del x2d
 
-    # Pnorm = np.dot(x, W.T)
     Pnorm = blockwise_dot(x, W.T)
 
     pca = IncrementalPCA(n_components=ncmps)
@@ -648,7 +639,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
 
     if fwdonly:
         odata = [i.copy(True) for i in dat[:ncmps]]
-        # odata = odata[:ncmps]
     else:
         odata = [i.copy() for i in dat]
 
@@ -805,8 +795,6 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
         showlog('Fitting '+os.path.basename(filename))
 
-        # dat = get_data(ifile, piter=piter, showlog=showlog)
-
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
         x2d = []
@@ -841,8 +829,6 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
             filename = ifile.filename
 
         showlog('Transforming '+os.path.basename(filename))
-
-        # dat = get_data(ifile, piter=piter, showlog=showlog)
 
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
@@ -1029,7 +1015,6 @@ def _testfn():
 
         plt.figure(dpi=150)
         plt.title('█████████████████Old dat2 band'+str(i))
-        # plt.title(dat[i].dataid)
         plt.imshow(dat[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
@@ -1050,9 +1035,6 @@ def _testfn2():
     rcParams['figure.dpi'] = 150
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-
-    # dat = get_data(ifile)
-    # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1081,11 +1063,6 @@ def _testfn2():
         vmin = dat.data.mean()-dat.data.std()*2
         vmax = dat.data.mean()+dat.data.std()*2
         plt.imshow(dat.data, vmin=vmin, vmax=vmax)
-        # plt.subplot(122)
-        # plt.title(dat2[i].dataid)
-        # vmin = dat2[i].data.mean()-dat2[i].data.std()*2
-        # vmax = dat2[i].data.mean()+dat2[i].data.std()*2
-        # plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
         plt.show()
 
 
