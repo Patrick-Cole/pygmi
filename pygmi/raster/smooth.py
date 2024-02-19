@@ -158,7 +158,8 @@ class Smooth(BasicModule):
             temp = self.exec()
             if temp == 0:
                 return False
-            self.parent.process_is_active(True)
+            if self.parent is not None:
+                self.parent.process_is_active(True)
 
         self.showlog('Smoothing ')
         data = [i.copy() for i in self.indata['Raster']]
@@ -172,7 +173,7 @@ class Smooth(BasicModule):
             dat.data = self.mov_win_filt(dat.data, self.fmat, filt)
             dat.dataid = dat.dataid+' '+filt
 
-        if not nodialog:
+        if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
         self.outdata['Raster'] = data
         self.showlog('Finished!', True)
@@ -284,6 +285,7 @@ class Smooth(BasicModule):
         fmin = self.fmat.min()
         frange = self.fmat.ptp()
 
+        self.tablewidget.clear()
         self.tablewidget.setRowCount(self.fmat.shape[0])
         self.tablewidget.setColumnCount(self.fmat.shape[1])
 
@@ -477,3 +479,31 @@ def filters2d(filtertype, sze, *sigma):
         warnings.warn('Unrecognized filter type')
 
     return f
+
+
+def _test():
+    """Test."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"C:\Workdata\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp = Smooth()
+    tmp.indata['Raster'] = dat
+
+    tmp.settings()
+
+    out = tmp.outdata['Raster']
+
+    plt.figure(dpi=150)
+    plt.imshow(out[1].data)
+    plt.show()
+
+
+if __name__ == "__main__":
+    _test()

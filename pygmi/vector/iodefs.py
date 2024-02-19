@@ -34,7 +34,6 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import fiona
-from pyproj import CRS, Transformer
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
@@ -651,7 +650,7 @@ class ImportVector(BasicModule):
             self.lbl_mapsheet.show()
 
     def get_sfile(self):
-        """Get the filename and crs and nounds."""
+        """Get the filename and crs and bounds."""
         self.le_sfile.setText('')
 
         ext = ('Shapefile (*.shp);;'
@@ -767,7 +766,7 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
                     range(len(tmp2[:tmp2.index('\n')].split()))]
 
         tmp2 = tmp2.replace('*', 'NaN')
-        df1 = pd.read_csv(StringIO(tmp2), sep='\s+', names=head)
+        df1 = pd.read_csv(StringIO(tmp2), sep=r'\s+', names=head)
 
         df1['line'] = line
         dflist.append(df1)
@@ -887,7 +886,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 def _test():
     """Test."""
     import sys
-    from pygmi.misc import ProgressBarText
+    # from pygmi.misc import ProgressBarText
 
     # piter = ProgressBarText().iter
     # ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
@@ -895,7 +894,7 @@ def _test():
 
     # data = get_intrepid(ifile, print, piter)
 
-    ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
+    # ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)

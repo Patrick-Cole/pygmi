@@ -182,7 +182,7 @@ class MenuWidget():
         self.parent.launch_context_item(dataprep.Metadata)
 
     def plot_ccoef(self):
-        """Plot correlation coeficient data."""
+        """Plot correlation coefficient data."""
         self.parent.launch_context_item(graphs.PlotCCoef)
 
     def show_line_data(self):

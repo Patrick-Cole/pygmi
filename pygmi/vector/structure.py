@@ -616,10 +616,8 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         for offset in offsets:
             bin_edges = [np.arange(0, i, scale) for i in warray.shape]
             bin_edges = [np.hstack([0-offset, x+offset]) for x in bin_edges]
-            try:
-                H1, _ = np.histogramdd(voxels, bins=bin_edges)
-            except:
-                breakpoint()
+            H1, _ = np.histogramdd(voxels, bins=bin_edges)
+
             touched.append(np.sum(H1 > 0))
         Ns.append(touched)
     Ns = np.array(Ns)

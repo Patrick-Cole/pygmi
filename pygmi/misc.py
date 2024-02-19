@@ -625,7 +625,7 @@ class ProgressBarText():
 
 def discrete_colorbar(axes, csp, cdat, lbls=None):
     """
-    Plot colorbar using discrete colors for a small range of values.
+    Plot colour bar using discrete colours for a small range of values.
 
     Parameters
     ----------
