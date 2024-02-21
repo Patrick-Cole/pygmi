@@ -49,6 +49,7 @@ class Cluster(BasicModule):
         self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
         self.dsb_eps = QtWidgets.QDoubleSpinBox()
         self.dsb_bthres = QtWidgets.QDoubleSpinBox()
+        self.dsb_xi = QtWidgets.QDoubleSpinBox()
         self.sb_maxiterations = QtWidgets.QSpinBox()
         self.rb_sscale = QtWidgets.QRadioButton('Standard Scaling')
         self.rb_rscale = QtWidgets.QRadioButton('Robust Scaling')
@@ -61,6 +62,7 @@ class Cluster(BasicModule):
         self.lbl_minsamples = QtWidgets.QLabel('Minimum Samples:')
         self.lbl_bthres = QtWidgets.QLabel('Threshold:')
         self.lbl_branchfac = QtWidgets.QLabel('Branching Factor:')
+        self.lbl_xi = QtWidgets.QLabel('Xi:')
 
         self.cltype = 'k-means'
         self.min_cluster = 5
@@ -73,6 +75,7 @@ class Cluster(BasicModule):
         self.min_samples = 5
         self.bthres = 0.5
         self.branchfac = 50
+        self.xi = 0.05
 
         self.setupui()
 
@@ -112,6 +115,11 @@ class Cluster(BasicModule):
         self.dsb_eps.setSingleStep(0.1)
         self.dsb_maxerror.setDecimals(5)
         self.dsb_maxerror.setProperty('value', self.tol)
+        self.dsb_xi.setDecimals(2)
+        self.dsb_xi.setSingleStep(0.01)
+        self.dsb_xi.setMinimum(0.01)
+        self.dsb_xi.setMaximum(0.99)
+        self.dsb_xi.setProperty('value', self.xi)
         self.rb_sscale.setChecked(True)
         self.sb_branchfac.setMinimum(2)
         self.sb_branchfac.setProperty('value', self.branchfac)
@@ -139,6 +147,8 @@ class Cluster(BasicModule):
         gl_1.addWidget(self.sb_branchfac, 4, 4, 1, 1)
         gl_1.addWidget(self.lbl_eps, 1, 2, 1, 1)
         gl_1.addWidget(self.dsb_eps, 1, 4, 1, 1)
+        gl_1.addWidget(self.lbl_xi, 3, 2, 1, 1)
+        gl_1.addWidget(self.dsb_xi, 3, 4, 1, 1)
         gl_1.addWidget(self.lbl_minsamples, 2, 2, 1, 1)
         gl_1.addWidget(self.sb_minsamples, 2, 4, 1, 1)
         gl_1.addWidget(self.rb_noscale, 7, 2, 1, 1)
@@ -177,6 +187,8 @@ class Cluster(BasicModule):
         self.sb_branchfac.hide()
         self.lbl_bthres.hide()
         self.dsb_bthres.hide()
+        self.lbl_xi.hide()
+        self.dsb_xi.hide()
 
         if i == 'DBSCAN':
             self.lbl_eps.show()
@@ -186,6 +198,8 @@ class Cluster(BasicModule):
         elif i == 'OPTICS':
             self.lbl_minsamples.show()
             self.sb_minsamples.show()
+            self.lbl_xi.show()
+            self.dsb_xi.show()
         elif 'K-Means' in i:
             self.lbl_minclusters.show()
             self.sb_minclusters.show()
@@ -264,6 +278,7 @@ class Cluster(BasicModule):
         self.saveobj(self.dsb_maxerror)
         self.saveobj(self.dsb_eps)
         self.saveobj(self.dsb_bthres)
+        self.saveobj(self.dsb_xi)
         self.saveobj(self.sb_maxiterations)
 
         self.saveobj(self.cltype)
@@ -275,6 +290,7 @@ class Cluster(BasicModule):
         self.saveobj(self.min_samples)
         self.saveobj(self.bthres)
         self.saveobj(self.branchfac)
+        self.saveobj(self.xi)
 
         self.saveobj(self.rb_sscale)
         self.saveobj(self.rb_rscale)
@@ -301,6 +317,7 @@ class Cluster(BasicModule):
         self.min_samples = self.sb_minsamples.value()
         self.bthres = self.dsb_bthres.value()
         self.branchfac = self.sb_branchfac.value()
+        self.xi = self.dsb_xi.value()
 
     def acceptall(self):
         """
@@ -366,7 +383,8 @@ class Cluster(BasicModule):
                                   min_samples=self.min_samples).fit(X)
 
             elif self.cltype == 'OPTICS':
-                cfit = skc.OPTICS(min_samples=self.min_samples).fit(X)
+                cfit = skc.OPTICS(min_samples=self.min_samples,
+                                  xi=self.xi).fit(X)
 
             elif self.cltype == 'Birch':
                 X = np.ascontiguousarray(X)  # Birch gave an error without this

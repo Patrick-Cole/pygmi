@@ -59,7 +59,7 @@ class CalculateChange(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.change')
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
         self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)

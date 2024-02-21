@@ -2,6 +2,26 @@
 Changelog
 =========
 
+v3.2.8.7, 21 February 2024
+--------------------------
+* Table is cleared properly in smoothing tool.
+* Added API option to set bounds in vector import
+* Bugfix - vector display.
+* Added folder icons to buttons which were missing it.
+* Added vector correlation.
+* Added correlation plot to vector data.
+* Bugfix, RGB filename now correct.
+* PyGMI will now report memory errors in the main interface.
+* MNF and PCA use less memory.
+* Vector plots have new colour options for point data.
+* Update units on some seismology QC plots.
+* Fixed scale of year plot on QC.
+* Supervised classification now allows for ternary images.
+* Minimum segmentation class label is now 1.
+* Segmentation updated to use K-Means for more stable solution.
+* Input data is also scaled to 255 for optimal segmentation.
+* Changed ASTER output filename convention.
+
 v3.2.8.0, 18 January 2024
 -------------------------
 * Fixed a bug capturing in the change detection viewer.
