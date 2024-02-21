@@ -3,7 +3,14 @@ Seismology: Description of Modules
 
 Import SEISAN Data
 ------------------
-Imports SEISAN data stored in the NORDIC format.
+Imports SEISAN data stored in the NORDIC and NORDIC2 format, and includes .macro files for macroseismic information.
+
+Import Generic FPS
+------------------
+Imports generic fault plane solutions stored in an ASCII file. This is stored
+in a csv file. The format is as follows::
+
+   Longitude, Latitude, Strike, Dip, Rake, Magnitude
 
 Correct SEISAN Type 3 Descriptions
 ----------------------------------
@@ -22,13 +29,6 @@ Here, the SEISAN catalogue can be filtered to select relevant portions for later
 * From and To - range to filter.
 
 .. image:: _images/seisfilter.png
-
-Import Generic FPS
-------------------
-Imports generic fault plane solutions stored in an ASCII file. This is stored
-in a csv file. The format is as follows::
-
-   Longitude, Latitude, Strike, Dip, Rake, Magnitude
 
 Fault Plane Solutions
 ---------------------

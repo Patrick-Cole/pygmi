@@ -44,6 +44,22 @@ pygmi.vector.minc module
    :undoc-members:
    :show-inheritance:
 
+pygmi.vector.show\_table module
+-------------------------------
+
+.. automodule:: pygmi.vector.show_table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.structure module
+-----------------------------
+
+.. automodule:: pygmi.vector.structure
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

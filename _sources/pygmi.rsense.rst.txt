@@ -12,6 +12,14 @@ pygmi.rsense.change module
    :undoc-members:
    :show-inheritance:
 
+pygmi.rsense.change\_viewer module
+----------------------------------
+
+.. automodule:: pygmi.rsense.change_viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.rsense.features module
 ----------------------------
 

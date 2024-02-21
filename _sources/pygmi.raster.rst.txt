@@ -76,10 +76,26 @@ pygmi.raster.menu module
    :undoc-members:
    :show-inheritance:
 
+pygmi.raster.misc module
+------------------------
+
+.. automodule:: pygmi.raster.misc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.raster.modest\_image module
 ---------------------------------
 
 .. automodule:: pygmi.raster.modest_image
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.raster.modest\_ioimage module
+-----------------------------------
+
+.. automodule:: pygmi.raster.modest_ioimage
    :members:
    :undoc-members:
    :show-inheritance:

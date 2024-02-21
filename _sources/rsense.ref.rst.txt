@@ -3,6 +3,8 @@ References
 
 Berman, M., Phatak, A., & Traylen, A., 2012, Some invariance properties of the minimum noise fraction transform. Chemometrics and Intelligent Laboratory Systems, 117, 189-199.
 
+Cole, P., Coetzee, H., 2022, Innovative use of change detection in large numbers of satellite scenes, with geological applications, Quarterly Journal of Engineering Geology and Hydrogeology
+
 Green, A., Berman, M., Switzer, P., Craig, M., 1988, A transformation for ordering multispectral data in terms of image quality with implications for noise removal. IEEE Transactions on Geoscience and Remote Sensing, 26, 65-74.
 
 Haest, M. Cudahy, T., Laukamp, C., Gregory S., 2012, ‘Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the Rocklea channel iron deposit in Western Australia’, Economic Geology, 107(2), pp. 209–228. doi: 10.2113/econgeo.107.2.209.

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Vector Analysis: Description of Modules &#8212; PyGMI 3.2.7.16 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>Vector Analysis: Description of Modules &#8212; PyGMI 3.2.8.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=bc5ff33c" />
+    <script src="_static/documentation_options.js?v=13ebea9b"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="vector.ref.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
 <style>
@@ -83,13 +84,15 @@
           <div class="body" role="main">
             
   <section id="vector-analysis-description-of-modules">
-<h1>Vector Analysis: Description of Modules<a class="headerlink" href="#vector-analysis-description-of-modules" title="Permalink to this heading">¶</a></h1>
+<h1>Vector Analysis: Description of Modules<a class="headerlink" href="#vector-analysis-description-of-modules" title="Link to this heading">¶</a></h1>
 <section id="import-vector-data">
-<h2>Import Vector Data<a class="headerlink" href="#import-vector-data" title="Permalink to this heading">¶</a></h2>
+<h2>Import Vector Data<a class="headerlink" href="#import-vector-data" title="Link to this heading">¶</a></h2>
 <p>This module imports ESRI shapefiles (.shp), zipped shapefiles (.shp.zip) or GeoPackages (.gpkg). These formats are also referred to as vector data within PyGMI.</p>
+<p>Vector files can also be clipped using the bounds option. This can either be in terms of desired extents (seen below) or a <a class="reference external" href="https://ngi.dalrrd.gov.za/index.php/what-we-do/maps-and-geospatial-information/41-sa-mapsheet-referencing">mapsheet number</a>.</p>
+<img alt="_images/vectorshpimport.png" src="_images/vectorshpimport.png" />
 </section>
 <section id="import-xyz-data">
-<h2>Import XYZ Data<a class="headerlink" href="#import-xyz-data" title="Permalink to this heading">¶</a></h2>
+<h2>Import XYZ Data<a class="headerlink" href="#import-xyz-data" title="Link to this heading">¶</a></h2>
 <p>This module imports xyz/point data from a file, for example a csv or Excel file. The user must choose the x and y columns.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -101,17 +104,17 @@
 <img alt="_images/vectorimport.png" src="_images/vectorimport.png" />
 </section>
 <section id="cut-points-using-polygon">
-<h2>Cut Points using Polygon<a class="headerlink" href="#cut-points-using-polygon" title="Permalink to this heading">¶</a></h2>
+<h2>Cut Points using Polygon<a class="headerlink" href="#cut-points-using-polygon" title="Link to this heading">¶</a></h2>
 <p>This tool provides a quick way to cut out data, using a vector file as the boundary for the cut. You will need to prepare the vector file in another package first.</p>
 </section>
 <section id="reproject-vector-data">
-<h2>Reproject Vector Data<a class="headerlink" href="#reproject-vector-data" title="Permalink to this heading">¶</a></h2>
+<h2>Reproject Vector Data<a class="headerlink" href="#reproject-vector-data" title="Link to this heading">¶</a></h2>
 <p>This is a versatile routine allowing for the reprojecting of a dataset between two projections. All projections are obtained from EPSG codes.</p>
 <p>The options are the same for both input and output projections. The choice of projection is obtained through drop boxes.</p>
 <img alt="_images/vectorproj.png" src="_images/vectorproj.png" />
 </section>
 <section id="dataset-gridding">
-<h2>Dataset Gridding<a class="headerlink" href="#dataset-gridding" title="Permalink to this heading">¶</a></h2>
+<h2>Dataset Gridding<a class="headerlink" href="#dataset-gridding" title="Link to this heading">¶</a></h2>
 <p>The gridding is either nearest neighbour, linear, cubic (all from scipy) or minimum curvature. The input is a point or line or vector dataset, imported from the vector menu. Note that the x and y columns are defined when importing the line or point data.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -122,6 +125,19 @@
 <li><p>Blanking distance - This is a distance in cells from data points, beyond which the grid will be masked.</p></li>
 </ul>
 <img alt="_images/vectorgrid.png" src="_images/vectorgrid.png" />
+</section>
+<section id="structural-complexity">
+<h2>Structural Complexity<a class="headerlink" href="#structural-complexity" title="Link to this heading">¶</a></h2>
+<p>Structure complexity takes as input lines, from a shapefile or similar. It then produces different measures of structure complexity, in gridded form. The vector data is rasterized, and a window is passed over the rasterized version of the lines to calculate measures.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Method - This can be ‘Feature Intersection Density’, ‘Feature Orientation Diversity’, ‘Circular Variance and Dispersion’ or ‘Feature Fractal Dimension’.</p></li>
+<li><p>Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).</p></li>
+<li><p>Intersection Density Standard Deviation - the variance of a gaussian centered on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).</p></li>
+<li><p>Intersection Density Line Extension - Distance to extend features which are almost touching, so that an intersection between features is obtained.</p></li>
+<li><p>Window Size - Size of windows to calculate measure.</p></li>
+</ul>
+<img alt="_images/vectorstruct.png" src="_images/vectorstruct.png" />
 </section>
 </section>
 
@@ -234,11 +250,11 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2023 Council for Geoscience.
+      &#169;2024 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/vector.dm.rst.txt"

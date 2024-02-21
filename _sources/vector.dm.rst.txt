@@ -5,6 +5,10 @@ Import Vector Data
 ---------------------
 This module imports ESRI shapefiles (.shp), zipped shapefiles (.shp.zip) or GeoPackages (.gpkg). These formats are also referred to as vector data within PyGMI.
 
+Vector files can also be clipped using the bounds option. This can either be in terms of desired extents (seen below) or a `mapsheet number <https://ngi.dalrrd.gov.za/index.php/what-we-do/maps-and-geospatial-information/41-sa-mapsheet-referencing>`_.
+
+.. image:: _images/vectorshpimport.png
+
 Import XYZ Data
 -------------------------
 This module imports xyz/point data from a file, for example a csv or Excel file. The user must choose the x and y columns.
@@ -44,3 +48,16 @@ Options:
 
 .. image:: _images/vectorgrid.png
 
+Structural Complexity
+---------------------
+Structure complexity takes as input lines, from a shapefile or similar. It then produces different measures of structure complexity, in gridded form. The vector data is rasterized, and a window is passed over the rasterized version of the lines to calculate measures.
+
+Options:
+
+* Method - This can be 'Feature Intersection Density', 'Feature Orientation Diversity', 'Circular Variance and Dispersion' or 'Feature Fractal Dimension'.
+* Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).
+* Intersection Density Standard Deviation - the variance of a gaussian centered on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).
+* Intersection Density Line Extension - Distance to extend features which are almost touching, so that an intersection between features is obtained.
+* Window Size - Size of windows to calculate measure.
+
+.. image:: _images/vectorstruct.png

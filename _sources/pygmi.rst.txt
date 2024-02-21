@@ -46,6 +46,14 @@ pygmi.misc module
    :undoc-members:
    :show-inheritance:
 
+pygmi.version module
+--------------------
+
+.. automodule:: pygmi.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
