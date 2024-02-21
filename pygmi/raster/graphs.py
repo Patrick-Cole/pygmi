@@ -277,7 +277,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         dattmp = data1.data[data1.data.mask == 0].flatten()
-        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum)
+        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum,
+                       histtype='stepfilled', edgecolor='k')
         self.axes.set_title(data1.dataid)
         self.axes.set_xlabel('Data Value')
         self.axes.set_ylabel('Counts')

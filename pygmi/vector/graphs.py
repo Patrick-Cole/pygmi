@@ -122,7 +122,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -178,7 +178,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         numcols = len(self.ccoeflbls)
         numrows = len(self.ccoeflbls)
 
-        if col >= 0 and col < numcols and row >= 0 and row < numrows:
+        if 0 <= col < numcols and 0 <= row < numrows:
             xlbl = self.ccoeflbls[col]
             ylbl = self.ccoeflbls[::-1][row]
             z = self.dmat[row, col]
@@ -551,10 +551,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 vmin = max(dmean-2*dstd, data[col].min())
                 vmax = min(dmean+2*dstd, data[col].max())
 
+                # data.plot(ax=self.axes, column=col, aspect='equal',
+                #           legend=True, cmap=self.cmap, vmin=vmin,
+                #           vmax=vmax)
+
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
                                          c=data[col], vmin=vmin, vmax=vmax,
-                                         cmap=self.cmap)
+                                         cmap=self.cmap, marker='.')
                 self.figure.colorbar(scat, ax=self.axes, format=frm)
             elif col != '' and 'Standard' in style:
                 m3 = data[col].mean()
@@ -575,7 +579,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 z3 = pd.cut(data[col], bnds, labels=False)
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=z3, cmap=self.cmap)
+                                         c=z3, cmap=self.cmap, marker='.')
                 discrete_colorbar(self.axes, scat, z3, lbls)
 
             elif col != '' and 'Quartile' in style:
@@ -583,7 +587,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=z3+1, cmap=self.cmap)
+                                         c=z3+1, cmap=self.cmap, marker='.')
                 discrete_colorbar(self.axes, scat, z3+1)
 
             elif col != '' and 'K-Means' in style:
@@ -591,7 +595,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 z3 = KMeans(n_clusters=5, n_init='auto').fit_predict(z1)
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=z3+1, cmap=self.cmap)
+                                         c=z3+1, cmap=self.cmap, marker='.')
                 discrete_colorbar(self.axes, scat, z3+1)
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
@@ -734,7 +738,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         dattmp = data.loc[:, col]
 
-        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum)
+        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum,
+                       histtype='stepfilled', edgecolor='k')
         self.axes.set_title(col)
         self.axes.set_xlabel('Data Value')
         self.axes.set_ylabel('Counts')
@@ -1270,8 +1275,8 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 
     # Set default alignment to center, but allow it to be
     # overwritten by textkw.
-    kw = dict(horizontalalignment="center",
-              verticalalignment="center")
+    kw = {'horizontalalignment': 'center',
+          'verticalalignment': 'center'}
     kw.update(textkw)
 
     # Get the formatter in case a string is supplied

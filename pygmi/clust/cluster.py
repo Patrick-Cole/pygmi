@@ -466,6 +466,7 @@ def _testfn():
 
     plt.figure(dpi=150)
     plt.imshow(dat2[0].data)
+    plt.colorbar()
     plt.show()
 
 

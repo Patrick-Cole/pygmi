@@ -28,36 +28,36 @@ If you have any comments or queries, you can contact the author either through `
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.11 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.12 on Windows.
 
-PyGMI should still work with Python 3.9 and Python 3.10.
+PyGMI should still work with Python 3.11 and Python 3.10.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.11.6
+* python 3.12.2
 * discretize 0.10.0
 * fiona 1.9.5
-* gdal 3.8.2
-* geopandas 0.14.2
-* matplotlib 3.8.2
+* gdal 3.8.4
+* geopandas 0.14.3
+* matplotlib 3.8.3
 * mtpy 1.1.5
 * natsort 8.4.0
-* numba 0.58.1
-* numexpr 2.8.8
-* numpy 1.26.3
+* numba 0.59.0
+* numexpr 2.9.0
+* numpy 1.26.4
 * openpyxl 3.1.2
-* pandas 2.1.4
-* psutil 5.9.7
+* pandas 2.2.0
+* psutil 5.9.8
 * pyogrio 0.7.2
 * pyopengl 3.1.7
 * pyproj 3.6.1
 * PyQt5 5.15.10
-* pytest 7.4.4
+* pytest 8.0.1
 * rasterio 1.3.9
 * scikit-image 0.22.0
-* scikit-learn 1.3.2
-* scipy 1.11.3
-* shapely 2.0.2
+* scikit-learn 1.4.1.post1
+* scipy 1.12.0
+* shapely 2.0.3
 * shapelysmooth 0.1.1
 * SimPEG 0.20.0.post2
 * xlrd 2.0.1
@@ -127,7 +127,7 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, one
 
 The process to install is as follows:
 
-   conda create -n pygmi python=3.10
+   conda create -n pygmi python=3.12
 
    conda activate pygmi
 
@@ -170,6 +170,8 @@ The process to install is as follows:
    conda install pyogrio
    
    conda install openpyxl
+   
+   conda install xlrd
 
    pip install mtpy
 
