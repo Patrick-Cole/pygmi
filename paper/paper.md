@@ -41,5 +41,3 @@ The author would like to acknowledge the Council for Geoscience for providing re
 
 # References
 
-Singh, B. and Guptasarma, D., 2001a. Joint modelling of gravity and magnetic fields - a new computational approach. Current Science, 81(12), pp.1626–1628.
-Singh, B. and Guptasarma, D., 2001b. New method for fast computation of gravity and magnetic anomalies from arbitrary polyhedra. Geophysics, 66(2), p.521.
