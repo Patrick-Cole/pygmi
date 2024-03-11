@@ -41,6 +41,84 @@ from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import maptobounds
 
 
+class ColumnSelect(BasicModule):
+    """A combobox to select vector columns."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Band Selection')
+
+        self.vbl = QtWidgets.QVBoxLayout()
+        self.setLayout(self.vbl)
+
+        self.lw_1 = QtWidgets.QListWidget()
+        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        self.vbl.addWidget(self.lw_1)
+
+        self.buttonbox = QtWidgets.QDialogButtonBox()
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+
+        self.vbl.addWidget(self.buttonbox)
+
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        data = self.indata['Vector'][0]
+        tmp = list(data.columns)
+        tmp = [i for i in tmp if i != 'geometry']
+
+        self.lw_1.addItems(tmp)
+
+        if not tmp:
+            return False
+
+        if not nodialog:
+            tmp = self.exec()
+
+            if tmp != 1:
+                return False
+
+        atmp = [i.text() for i in self.lw_1.selectedItems()]
+        if 'geometry' in data.columns:
+            atmp.append('geometry')
+
+        data = data.loc[:, atmp]
+
+        self.outdata['Vector'] = [data]
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        # self.saveobj(self.ifile)
+
+
 class ImportXYZ(BasicModule):
     """
     Import XYZ Data.
@@ -908,6 +986,10 @@ def _test():
     tmp1.settings()
 
     dat = tmp1.outdata['Vector'][0]
+
+    tmp2 = ColumnSelect()
+    tmp2.indata = tmp1.outdata
+    tmp2.settings()
 
     breakpoint()
 

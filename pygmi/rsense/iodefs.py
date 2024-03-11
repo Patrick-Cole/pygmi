@@ -965,12 +965,12 @@ class ExportBatch(ContextModule):
         lbl_slvl = QtWidgets.QLabel('Sunshade Level:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
-        ext = ('GeoTiff', 'GeoTiff compressed using DEFLATE',
-               'GeoTiff compressed using ZSTD', 'ENVI', 'ERMapper',
+        ext = ('GeoTIFF', 'GeoTIFF compressed using DEFLATE',
+               'GeoTIFF compressed using ZSTD', 'ENVI', 'ERMapper',
                'ERDAS Imagine')
 
         self.cmb_ofilt.addItems(ext)
-        self.cmb_ofilt.setCurrentText('GeoTiff compressed using DEFLATE')
+        self.cmb_ofilt.setCurrentText('GeoTIFF compressed using DEFLATE')
         self.cmb_slvl.addItems(['Standard', 'Heavy'])
         self.cmb_slvl.setCurrentText('Standard')
 
@@ -1031,7 +1031,7 @@ class ExportBatch(ContextModule):
             self.cmb_red.setEnabled(True)
             self.cmb_green.setEnabled(True)
             self.cmb_blue.setEnabled(True)
-            self.cmb_ofilt.setCurrentText('GeoTiff')
+            self.cmb_ofilt.setCurrentText('GeoTIFF')
             self.cmb_ofilt.setEnabled(False)
             self.cmb_sunshade.setEnabled(True)
             self.cmb_slvl.setEnabled(True)
@@ -1336,18 +1336,18 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
         if sunfile in ifiles[0].bands and sunfile not in tnames:
             tnames += [sunfile]
 
-    filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
-                 'GeoTiff compressed using DEFLATE': 'GTiff',
-                 'GeoTiff': 'GTiff',
+    filt2gdal = {'GeoTIFF compressed using ZSTD': 'GTiff',
+                 'GeoTIFF compressed using DEFLATE': 'GTiff',
+                 'GeoTIFF': 'GTiff',
                  'ENVI': 'ENVI',
                  'ERMapper': 'ERS',
                  'ERDAS Imagine': 'HFA'}
 
     compression = 'NONE'
     ofilt = filt2gdal[filt]
-    if filt == 'GeoTiff compressed using ZSTD':
+    if filt == 'GeoTIFF compressed using ZSTD':
         compression = 'ZSTD'
-    elif filt == 'GeoTiff compressed using DEFLATE':
+    elif filt == 'GeoTIFF compressed using DEFLATE':
         compression = 'DEFLATE'
 
     os.makedirs(odir, exist_ok=True)

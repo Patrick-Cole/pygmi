@@ -156,7 +156,7 @@ class ImportData(BasicModule):
                    'GeoPak grid (*.grd);;'
                    'Geosoft UNCOMPRESSED grid (*.grd);;'
                    'Geosoft (*.gxf);;'
-                   'GeoTiff (*.tif *.tiff);;'
+                   'GeoTIFF (*.tif *.tiff);;'
                    'GMT netCDF grid (*.grd);;'
                    'PCI Geomatics Database File (*.pix);;'
                    'SAGA binary grid (*.sdat);;'
@@ -269,7 +269,7 @@ class ImportRGBData(BasicModule):
             True if successful, False otherwise.
 
         """
-        ext = 'GeoTiff (*.tif)'
+        ext = 'GeoTIFF (*.tif)'
 
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -1122,9 +1122,9 @@ class ExportData(BasicModule):
             self.parent.process_is_active(False)
             return False
 
-        ext = ('GeoTiff compressed using DEFLATE (*.tif);;'
-               'GeoTiff compressed using ZSTD (*.tif);;'
-               'GeoTiff (*.tif);;'
+        ext = ('GeoTIFF compressed using DEFLATE (*.tif);;'
+               'GeoTIFF compressed using ZSTD (*.tif);;'
+               'GeoTIFF (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
@@ -1168,7 +1168,7 @@ class ExportData(BasicModule):
             else:
                 export_raster(self.ofile, data, 'SAGA', piter=self.piter,
                               showlog=self.showlog)
-        if 'GeoTiff' in filt:
+        if 'GeoTIFF' in filt:
             if 'ZSTD' in filt:
                 compression = 'ZSTD'
             elif 'DEFLATE' in filt:
@@ -1403,7 +1403,7 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
     piter : function, optional
         Progressbar iterable. The default is None.
     compression : str, optional
-        Compression for GeoTiff. Can be None or ZSTD. The default is None.
+        Compression for GeoTIFF. Can be None or ZSTD. The default is None.
     bandsort : bool, optional
         sort the bands by dataid. The default is True
 

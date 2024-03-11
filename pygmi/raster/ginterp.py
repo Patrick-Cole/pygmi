@@ -27,7 +27,7 @@ Plot Raster Data.
 
 This is the raster data interpretation module.  This module allows for the
 display of raster data in a variety of modes, as well as the export of that
-display to GeoTiff format.
+display to GeoTIFF format.
 
 Currently the following is supported
  * Pseudo Colour - data mapped to a colour map
@@ -37,7 +37,7 @@ Currently the following is supported
  * Sun shaded or hill shaded images
 
 It can be very effectively used in conjunction with a GIS package which
-supports GeoTiff files.
+supports GeoTIFF files.
 """
 
 import os
@@ -1093,7 +1093,7 @@ class PlotInterp(BasicModule):
     over the sunshading.
 
     The PlotInterp class allows for the display of raster data in a variety of
-    modes, as well as the export of that display to GeoTiff format.
+    modes, as well as the export of that display to GeoTIFF format.
 
     Attributes
     ----------
@@ -1111,7 +1111,7 @@ class PlotInterp(BasicModule):
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
-        self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
+        self.btn_saveimg = QtWidgets.QPushButton('Save GeoTIFF')
         self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
                                                'lines')
         self.cmb_dtype = QtWidgets.QComboBox()
@@ -1769,7 +1769,7 @@ class PlotInterp(BasicModule):
 
     def save_img(self):
         """
-        Save image as a GeoTiff.
+        Save image as a GeoTIFF.
 
         Returns
         -------
@@ -1779,7 +1779,7 @@ class PlotInterp(BasicModule):
         """
         snorm = self.mmc.update_shade_plot()
 
-        ext = 'GeoTiff (*.tif)'
+        ext = 'GeoTIFF (*.tif)'
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
@@ -2100,7 +2100,7 @@ class PlotInterp(BasicModule):
             canvas.print_figure(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(self, 'Information',
-                                          'Save to GeoTiff is complete!',
+                                          'Save to GeoTIFF is complete!',
                                           QtWidgets.QMessageBox.Ok)
 
         return True

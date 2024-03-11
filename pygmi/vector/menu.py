@@ -65,6 +65,10 @@ class MenuWidget():
         self.menu.addAction(self.action_import_xyz)
         self.action_import_xyz.triggered.connect(self.import_xyz)
 
+        self.action_colselect = QtWidgets.QAction('Select Columns')
+        self.menu.addAction(self.action_colselect)
+        self.action_colselect.triggered.connect(self.colselect)
+
         self.menu.addSeparator()
         self.action_file_split = QtWidgets.QAction('Text File Split')
         self.menu.addAction(self.action_file_split)
@@ -135,6 +139,10 @@ class MenuWidget():
         self.action_export_vector = QtWidgets.QAction('Export Vector Data')
         context_menu['Vector'].addAction(self.action_export_vector)
         self.action_export_vector.triggered.connect(self.export_vector)
+
+    def colselect(self):
+        """Select bands."""
+        self.parent.item_insert('Step', 'Column Select', iodefs.ColumnSelect)
 
     def grid(self):
         """Grid datasets."""
