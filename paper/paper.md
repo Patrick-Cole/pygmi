@@ -13,7 +13,7 @@ affiliations:
  - name: Council for Geoscience, South Africa
    index: 1
 date: 11 March 2024
-bibliography: paper.bib
+bibliography: paper/paper.bib
 
 # Summary
 
