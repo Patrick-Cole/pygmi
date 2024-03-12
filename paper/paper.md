@@ -26,7 +26,8 @@ Geophysical data provide geoscientists with the ability to create a picture of t
 There are many techniques which can be considered here [@Bhattacharyya1964; @Guptasarma1999; @Singh2001a; @Singh2001b; @Holstein2003]. In this case the technique by @Bhattacharyya1964 was used, being most applicable for voxel modelling. The simplicity of the technique makes it well suited to rectangular prism calculations. It is described and developed into a Fortran routine, named ‘mbox’ by @Blakely1995 (pp. 200-201).
  
 ![img/3dmodel.jpg](img/3dmodel.jpg)
-![An example of a model created with PyGMI](img/figure1.png)
+
+![An example of a model created with PyGMI](img/figure1.jpg)
 
 Standard raster functions such as equations (making use of the NumExpr library, https://github.com/pydata/numexpr), smoothing, normalisation, merging of datasets and reprojections [courtesy of @gdal2020] are included. Functions unique to potential fields such as tilt angle [@Cooper2006], visibility [@Cooper2005], reduction to the pole, sun shading [@Horn1981], IGRF calculations [@igrf2015, based on code by written by A. Zunde, USGS, S.R.C. Malin & D.R. Barraclough, Institute of Geological Sciences, United Kingdom and maintained by Stefan Maus, NOAA] have all been translated into or developed in python. The sun shading tool in particular allows for sunshade detail and light reflectance to be changed. These two parameters are not normally present in other software packages which normally only allow for the changing of sun dip and azimuth.
 Gravity data processing has been developed according to the North American gravity database standards, as described by @Hinze2005. It allows for data to be imported from Scintrex CG-5 gravimeters and basic processing to Bouguer anomaly to be performed.
