@@ -292,6 +292,7 @@ class SatRatios(BasicModule):
                   r'B4/B0 Used in colour composites',
                   r'B5/B1 Used in colour composites',
                   r'B4/B7 Used in colour composites',
+                  r'B12/B14 Used in colour composites',
                   r'B3/B4 Used in colour composites']
 
         # Landslides
