@@ -26,6 +26,7 @@
 
 import os
 import sys
+import math
 import xml.etree.ElementTree as ET
 import glob
 import tarfile
@@ -1248,6 +1249,35 @@ def consolidate_aster_list(flist):
     flist = asterfiles+otherfiles
 
     return flist
+
+
+def convert_ll_to_utm(lon, lat):
+    """
+    Convert latitude and longitde to UTM.
+
+    https://stackoverflow.com/a/40140326/4556479
+
+    Parameters
+    ----------
+    lon : float
+        DESCRIPTION.
+    lat : float
+        DESCRIPTION.
+
+    Returns
+    -------
+    epsg_code : TYPE
+        DESCRIPTION.
+
+    """
+    utm_band = str((math.floor((lon + 180) / 6) % 60) + 1)
+    if len(utm_band) == 1:
+        utm_band = '0'+utm_band
+    if lat >= 0:
+        epsg_code = '326' + utm_band
+        return epsg_code
+    epsg_code = '327' + utm_band
+    return epsg_code
 
 
 def etree_to_dict(t):
@@ -2661,6 +2691,14 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
     elif 'SWIR' in zipnames[0]:
         platform += ' SWIR'
 
+    wkt_lat = None
+    wkt_lon = None
+    for zfile in zipnames:
+        if 'Latitude' in zfile:
+            wkt_lat = np.loadtxt(os.path.join(idir, zfile)).mean()
+        if 'Longitude' in zfile:
+            wkt_lon = np.loadtxt(os.path.join(idir, zfile)).mean()
+
     dat = []
     nval = 0
     for zfile in piter(zipnames):
@@ -2676,6 +2714,8 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
             showlog('Problem with '+zfile)
             continue
 
+        wkt = dataset1.crs.to_wkt()
+
         dataset = rasterio.vrt.WarpedVRT(dataset1)
         dat.append(Data())
 
@@ -2689,6 +2729,10 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         dat[-1].dataid = bname
         dat[-1].nodata = nval
         dat[-1].meta_from_rasterio(dataset)
+        if 'LOCAL_CS' in wkt and wkt_lat is not None and wkt_lon is not None:
+            epsg = convert_ll_to_utm(wkt_lon, wkt_lat)
+            dat[-1].crs = CRS.from_epsg(epsg)
+
         dat[-1].filename = ifile
         dat[-1].units = units
         dat[-1].datetime = date
@@ -3410,6 +3454,7 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
+    ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3433,4 +3478,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()
