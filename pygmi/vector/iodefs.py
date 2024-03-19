@@ -734,7 +734,8 @@ class ImportVector(BasicModule):
         ext = ('Shapefile (*.shp);;'
                'Zipped Shapefile (*.shp.zip);;'
                'GeoPackage (*.gpkg);;'
-               'KML or KMZ (*.kml, *.kmz)')
+               'KML (*.kml);;'
+               'KMZ (*.kmz)')
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -744,7 +745,7 @@ class ImportVector(BasicModule):
 
         self.le_sfile.setText(self.ifile)
 
-        with fiona.open(self.ifile) as fio:
+        with fiona.open(self.ifile, allow_unsupported_drivers=True) as fio:
             self.crs = fio.crs
             xmin, ymin, xmax, ymax = fio.bounds
 
@@ -974,6 +975,7 @@ def _test():
 
     # ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
+    ifile = r"E:\CGS-SpecLib\doc.kml"
 
     app = QtWidgets.QApplication(sys.argv)
 

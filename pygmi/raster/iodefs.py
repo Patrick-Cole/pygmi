@@ -1403,7 +1403,8 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
     piter : function, optional
         Progressbar iterable. The default is None.
     compression : str, optional
-        Compression for GeoTIFF. Can be None or ZSTD. The default is None.
+        Compression for GeoTIFF. Can be NONE, DEFLATE or ZSTD. The default is
+        NONE.
     bandsort : bool, optional
         sort the bands by dataid. The default is True
 

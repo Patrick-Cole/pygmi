@@ -1459,6 +1459,17 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
         dat = []
         for afile in ifiles:
             dat += get_aster_zip(afile, piter, showlog, tnames, metaonly)
+    # if 'AST_' in bfile:
+    #     idir = os.path.dirname(ifile)
+    #     adate = os.path.basename(ifile).split('_')[2]
+    #     ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+    #     dat = []
+    #     for afile in ifiles:
+    #         dat += get_aster_hdf(afile, piter, showlog, tnames, metaonly)
+
+    #     ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
+    #     for afile in ifiles:
+    #         dat += get_aster_zip(afile, piter, showlog, tnames, metaonly)
     elif (bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09'] and
           ('.tar' in bfile.lower() or '_MTL.txt' in bfile)):
         dat = get_landsat(ifile, piter, showlog, tnames, metaonly)
@@ -3477,5 +3488,36 @@ def _testfn3():
         plt.show()
 
 
+def _testfn4():
+
+    idir = r'D:/DRC'
+    odir = r'D:/DRC/stack'
+
+    ifiles = glob.glob(r'D:/DRC/*.zip')
+
+    for ifile in ifiles:
+        dat = get_data(ifile)
+
+        idir = os.path.dirname(ifile)
+        adate = os.path.basename(ifile).split('_')[2]
+        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+
+        dat2 = get_data(ifiles[0])
+
+        crs = dat[0].crs
+        for i in dat2:
+            i.crs = crs
+            xdim = i.transform[0]
+            ydim = i.transform[4]
+            xmin = i.transform[2]
+            ymax = i.transform[5]+10000000
+            i.set_transform(xdim, xmin, ydim, ymax)
+
+        dat = dat + dat2
+        ofile = set_export_filename(dat, odir)
+
+        export_raster(ofile+'.tif', dat)
+
+
 if __name__ == "__main__":
-    _testfn3()
+    _testfn4()
