@@ -1020,7 +1020,7 @@ def gridxyz(x, y, z, dxy, nullvalue=1e+20, method='Nearest Neighbour',
     method : str, optional
         Gridding method. The default is 'Nearest Neighbour'.
     bdist : float, optional
-        Blacking distance. The default is 4.0.
+        Blanking distance. The default is 4.0.
     showlog : function, optional
         Display information. The default is print.
 
@@ -1244,6 +1244,7 @@ def quickgrid(x, y, z, dxy, numits=4, showlog=print):
     while np.max(newmask) > 0 and j < (numits-1):
         j += 1
         jj = 2**j
+
         dxy2 = dxy*jj
         rows = int((ymax-ymin)/dxy2)+1
         cols = int((xmax-xmin)/dxy2)+1

@@ -32,7 +32,7 @@ from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
-from scipy.signal import tukey
+from scipy.signal.windows import tukey
 import rasterio
 import rasterio.merge
 import pyproj

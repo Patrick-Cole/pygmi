@@ -1564,6 +1564,11 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             donly = np.ma.masked_invalid(donly)
             donly = donly.compressed()
 
+            if donly.size == 0:
+                showlog(f'No data in band {band+1}, skipping '
+                        'statistics for this band')
+                continue
+
             # Histogram section
             dhist = np.histogram(donly, 256)
             dmin = str(dhist[1][0])

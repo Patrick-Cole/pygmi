@@ -620,6 +620,9 @@ def _testfn_rtp():
     finc = -57
     fdec = 50
 
+    finc = 17.3
+    fdec = -4.
+
     lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
     lmod.lith_index[100:200, 100:200, 0:10] = 1
     lmod.mht = 100
@@ -662,4 +665,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_rtp()
