@@ -2916,15 +2916,6 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
         dat[-1].meta_from_rasterio(dataset)
 
-        xmin = float(meta['WESTBOUNDINGCOORDINATE'])
-        xmax = float(meta['EASTBOUNDINGCOORDINATE'])
-        ymin = float(meta['SOUTHBOUNDINGCOORDINATE'])
-        ymax = float(meta['NORTHBOUNDINGCOORDINATE'])
-
-        # xmin, ymax = meta['UPPERLEFTM']
-
-        # breakpoint()
-
         dataset.close()
         dataset1.close()
 
@@ -3494,7 +3485,6 @@ def _testfn3():
 
     ofile = r'c:\\temp\\'+ofile
 
-    breakpoint()
     export_raster(ofile+'.tif', dat)
 
     print(dat[-1].datetime)
