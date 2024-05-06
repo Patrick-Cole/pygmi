@@ -2896,8 +2896,14 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
         dat.append(Data())
 
+        utmzone = float(meta['UTMZONECODE1'])
+        crssrc = CRS.from_epsg(4326)
+        crs = CRS.from_epsg(32600+utmzone)
+
         dataset1 = rasterio.open(bfile)
-        dataset = rasterio.vrt.WarpedVRT(dataset1)
+        dataset = rasterio.vrt.WarpedVRT(dataset1,
+                                         src_crs=crssrc,
+                                         crs=crs)
 
         if metaonly is False:
             dat[-1].data = dataset.read(1)
@@ -2909,6 +2915,15 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
         dat[-1].meta_from_rasterio(dataset)
+
+        xmin = float(meta['WESTBOUNDINGCOORDINATE'])
+        xmax = float(meta['EASTBOUNDINGCOORDINATE'])
+        ymin = float(meta['SOUTHBOUNDINGCOORDINATE'])
+        ymax = float(meta['NORTHBOUNDINGCOORDINATE'])
+
+        # xmin, ymax = meta['UPPERLEFTM']
+
+        # breakpoint()
 
         dataset.close()
         dataset1.close()
@@ -3465,7 +3480,7 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
-    ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
+    # ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3476,7 +3491,11 @@ def _testfn3():
     dat = tmp1.outdata['Raster']
 
     ofile = set_export_filename(dat, odir='')
+
+    ofile = r'c:\\temp\\'+ofile
+
     breakpoint()
+    export_raster(ofile+'.tif', dat)
 
     print(dat[-1].datetime)
 
@@ -3520,4 +3539,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn4()
+    _testfn3()

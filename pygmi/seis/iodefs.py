@@ -432,6 +432,47 @@ def importnordic(ifile, showlog=print):
     return dat
 
 
+def importseiscomp(ifile, showlog=print):
+    """
+    Import SeisComp data.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file to import.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    dat : list
+        SEISAN Data.
+
+    """
+    # idir = os.path.dirname(os.path.realpath(__file__))
+    # tfile = os.path.join(idir, r'descriptions.txt')
+
+    # with open(tfile, encoding='utf-8') as inp:
+    #     rnames = inp.read()
+
+    # rnames = rnames.split('\n')
+    breakpoint()
+
+    with open(ifile) as pntfile:
+        ltmp = pntfile.read()
+
+    eventtxt = ltmp.split('Event:')
+
+    for event in eventtxt:
+        if event == '':
+            continue
+        elines = event.splitlines()
+        breakpoint()
+
+
+    breakpoint()
+
+
 def read_record_type_1(i):
     """
     Read record type 1.
@@ -2790,6 +2831,13 @@ def _testfn():
     tmp.run(ofile)
 
 
+def _testfn2():
+    """Test."""
+    ifile = "D:\workdata\seismology\seiscomp\events.txt"
+
+    data = importseiscomp(ifile)
+
+
 if __name__ == "__main__":
-    # _testfn()
-    xlstomacro()
+    _testfn2()
+    # xlstomacro()

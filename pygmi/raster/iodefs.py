@@ -374,14 +374,18 @@ def get_ascii(ifile):
     isESRI = False
 
     with open(ifile, 'r', encoding='utf-8') as afile:
-        adata = afile.read()
+        adata = afile.readline()
 
-    adata = adata.split()
-
-    if adata[0] == 'ncols':
+    # The test below is valid since we only read the first line.
+    if 'ncols' in adata:
         isESRI = True
 
     if isESRI:
+        with open(ifile, 'r', encoding='utf-8') as afile:
+            adata = afile.read()
+
+        adata = adata.split()
+
         nbands = 1
         ncols = int(adata[1])
         nrows = int(adata[3])
@@ -413,6 +417,8 @@ def get_ascii(ifile):
         ulxmap = float(tmp[5].split()[-1])
         ulymap = float(tmp[6].split()[-1])
         nval = -9999.0
+
+        adata = np.loadtxt(ifile)
 
     bandid = ifile[:-4].rsplit('/')[-1]
 
@@ -1690,8 +1696,12 @@ def _filespeedtest():
     ifile = r"D:\Hyper\cut_048-055_ref_rect.hdr"
     ifile = r"D:\Hyper\103A_0825-0943_ref_rect.hdr"
     ifile = r"D:/tmp.tif"
+    ifile = r"D:\RSA_TMI_wgs84Geographic.asc"
 
     # ifile = ifile[:-4]+'_zstd.tif'
+
+    dat = get_ascii(ifile)
+
     dataset = get_raster(ifile, metaonly=False)
 
     getinfo('Start')
