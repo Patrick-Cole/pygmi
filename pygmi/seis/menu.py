@@ -56,7 +56,7 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Seismology')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_seisan = QtWidgets.QAction('Import SEISAN Data')
+        self.action_import_seisan = QtWidgets.QAction('Import Seismic Data')
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
@@ -130,8 +130,8 @@ class MenuWidget():
                                 beachball.BeachBall)
 
     def import_seisan(self):
-        """Import Seisan."""
-        self.parent.item_insert('Io', 'Import SEISAN Data',
+        """Import Seismic data."""
+        self.parent.item_insert('Io', 'Import Seismic Data',
                                 iodefs.ImportSeisan)
 
     def correct_desc(self):

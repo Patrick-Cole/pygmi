@@ -329,6 +329,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         bins2 = np.round(bins2, 1)  # gets rid of round off error.
 
         num2 = np.cumsum(num[::-1])[::-1]
+
+        if num2[-1] == 0:
+            num2 = num2[:-1]
+            bins2 = bins2[:-1]
+
         num3 = np.log10(num2)
 
         xtmp = bins2[bins2 >= cmax]
@@ -470,10 +475,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         dmean = {}
         dstd = {}
 
-        sname_list = list(A.keys())
-
         if res != 'ML':
             A = T
+
+        sname_list = list(A.keys())
+        sname_list.sort()
 
         for j, i in enumerate(sname_list):
             if np.nonzero(~np.isnan(A[i]))[0].size == 0:
@@ -1257,10 +1263,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
-    # tmp.ifile = r"D:\Workdata\seismology\Scans\pre1977\1970_sep.out"
-    # tmp.ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
-    # tmp.ifile = r"D:\Workdata\seismology\macro\1908-09-10-1753-00.macro"
+    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
+    tmp.ifile = r"E:\Workdata\seismology\seiscomp\events.txt"
+
     tmp.settings(True)
 
     data = tmp.outdata

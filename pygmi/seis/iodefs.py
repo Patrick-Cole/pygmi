@@ -131,6 +131,8 @@ def str2int(inp):
     """
     if inp.strip() == '':
         return np.nan
+    if '.' in inp:
+        return int(inp.split('.')[0])
     return int(inp)
 
 
@@ -160,6 +162,7 @@ class ImportSeisan(BasicModule):
         if not nodialog:
             ext = ('SEISAN Format (*.out);;'
                    'SEISAN macroseismic files (*.macro);;'
+                   'SeisComP extended autoloc3 (*.txt);;'
                    'All Files (*.*)')
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -171,6 +174,9 @@ class ImportSeisan(BasicModule):
         if '.macro' in self.ifile.lower():
             dat = importmacro(self.ifile)
             self.outdata['MacroSeis'] = dat
+        elif '.txt' in self.ifile.lower():
+            dat = importseiscomp(self.ifile, self.showlog)
+            self.outdata['Seis'] = dat
         else:
             dat = importnordic(self.ifile, self.showlog)
             self.outdata['Seis'] = dat
@@ -432,7 +438,7 @@ def importnordic(ifile, showlog=print):
     return dat
 
 
-def importseiscomp(ifile, showlog=print):
+def importseiscomp(ifile, showlog=print, prefmag='MLv'):
     """
     Import SeisComp data.
 
@@ -445,32 +451,218 @@ def importseiscomp(ifile, showlog=print):
 
     Returns
     -------
-    dat : list
+    sdat : list
         SEISAN Data.
 
     """
-    # idir = os.path.dirname(os.path.realpath(__file__))
-    # tfile = os.path.join(idir, r'descriptions.txt')
-
-    # with open(tfile, encoding='utf-8') as inp:
-    #     rnames = inp.read()
-
-    # rnames = rnames.split('\n')
-    breakpoint()
-
     with open(ifile) as pntfile:
         ltmp = pntfile.read()
 
     eventtxt = ltmp.split('Event:')
 
-    for event in eventtxt:
-        if event == '':
+    sdat = []
+
+    for eventrec in eventtxt:
+        event = {}
+        origin = {}
+        netmag = {}
+        phase = []
+        statmag = {}
+        sevent = {}
+        sevent['4'] = []
+
+        if eventrec == '':
             continue
-        elines = event.splitlines()
-        breakpoint()
 
+        elines = eventrec.splitlines()
+        currentsection = 'Event'
 
-    breakpoint()
+        for line in elines:
+            if line == '':
+                continue
+            if 'sta ' in line:
+                continue
+            if 'Origin:' in line:
+                currentsection = 'Origin'
+                continue
+            if 'Network magnitudes:' in line:
+                currentsection = 'Network magnitudes'
+                continue
+            if 'Phase arrivals:' in line:
+                currentsection = 'Phase arrivals'
+                continue
+            if 'Station magnitudes:' in line:
+                currentsection = 'Station magnitudes'
+                continue
+
+            if currentsection == 'Event':
+                ltype = line[:27].strip()
+                val = line[27:].strip()
+                event[ltype] = val
+
+            if currentsection == 'Origin':
+                ltype = line[:27].strip()
+                val = line[27:].strip()
+                origin[ltype] = val
+
+            if currentsection == 'Network magnitudes':
+                ltype = line[:14].strip()
+                val = line[14:].strip()
+                netmag[ltype] = val
+
+            if currentsection == 'Phase arrivals':
+                line2 = line.split()
+                tmp = {'sta': line2[0],
+                       'net': line2[1],
+                       'dist': float(line2[2]),
+                       'azi': float(line2[3]),
+                       'phase': line2[4],
+                       'time': line2[5],
+                       'res': float(line2[6]),
+                       'res2': line2[7],
+                       'wt': float(line2[8])}
+
+                phase.append(tmp)
+
+        if prefmag not in netmag:
+            showlog(f'Skipping event, {prefmag} not available.')
+            continue
+
+        # Select preferred magnitude
+        # for key in netmag:
+        #     if 'preferred' in netmag[key]:
+        #         prefmag = key
+
+        # if prefmag not in netmag.keys():
+        #     if 'MLv' in netmag.keys():
+        #         prefmag = 'MLv'
+        #     else:
+        #         prefmag = list(netmag.keys())[0]
+
+        # Import station magnitudes
+        currentsection = None
+        for line in elines:
+            if line == '':
+                continue
+            if 'sta ' in line:
+                continue
+            if 'Station magnitudes:' in line:
+                currentsection = 'Station magnitudes'
+                continue
+
+            if currentsection == 'Station magnitudes':
+                line2 = line.split()
+                tmp = {'sta': line2[0],
+                       'net': line2[1],
+                       'dist': float(line2[2]),
+                       'azi': float(line2[3]),
+                       'type': line2[4],
+                       'value': float(line2[5]),
+                       'res': float(line2[6]),
+                       'amp': float(line2[7])}
+
+                if tmp['type'] == prefmag:
+                    statmag[tmp['sta']] = tmp
+
+        # Import line type 1
+        tmp = sdt.seisan_1()
+
+        year, month, day = origin['Date'].split('-')
+
+        tmp.year = int(year)
+        tmp.month = int(month)
+        tmp.day = int(day)
+        tmp.hour = str2int(origin['Time'][:2])
+        tmp.minutes = str2int(origin['Time'][3:5])
+        tmp.seconds = str2float(origin['Time'][6:12])
+        tmp.distance_indicator = 'L'
+        tmp.latitude = str2float(origin['Latitude'].split()[0])
+        tmp.longitude = str2float(origin['Longitude'].split()[0])
+        tmp.depth = str2float(origin['Depth'].split()[0])
+        tmp.hypocenter_reporting_agency = origin['Agency']
+        tmp.rms_of_time_residuals =  str2float(origin['Residual RMS'].split()[0])
+
+        netmag1 = netmag[prefmag].split()
+        tmp.number_of_stations_used = str2int(netmag1[3])
+
+        tmp.magnitude_1 = str2float(netmag1[0])
+        if 'L' in prefmag:
+            tmp.type_of_magnitude_1 = 'L'
+        tmp.magnitude_reporting_agency_1 = origin['Agency']
+
+        # make sure coordinates have the correct range
+        tmp.longitude = ((tmp.longitude - 180) % 360) - 180
+        tmp.latitude = ((tmp.latitude - 90) % 180) - 90
+
+        sevent['1'] = tmp
+
+        # Import line type E
+        tmp = sdt.seisan_E()
+
+        if 'Azimuthal gap' in origin:
+            tmp.gap = str2int(origin['Azimuthal gap'].split()[0])
+        else:
+            tmp.gap = np.nan
+
+        tmp.latitude_error = 0.
+        tmp.longitude_error = 0.
+        tmp.depth_error = 0.
+        tmp.origin_time_error = 0.
+
+        if '+/-' in origin['Time']:
+            tmp.origin_time_error = float(origin['Time'].split()[2])
+        if '+/-' in origin['Latitude']:
+            tmp.latitude_error = float(origin['Latitude'].split()[3])
+        if '+/-' in origin['Longitude']:
+            tmp.longitude_error = float(origin['Longitude'].split()[3])
+        if '+/-' in origin['Depth']:
+            tmp.depth_error = float(origin['Depth'].split()[3])
+
+        tmp.cov_xy = 0.0
+        tmp.cov_xz = 0.0
+        tmp.cov_yz = 0.0
+
+        sevent['E'] = tmp
+
+        # import line type 4
+        for j in phase:
+            tmp = sdt.seisan_4()
+
+            tmp.station_name = j['sta']
+            # tmp.instrument_type = i[6]
+            # tmp.component = i[7]
+            # tmp.quality = i[9]
+            tmp.phase_id = j['phase']
+
+            tmp.weighting_indicator = np.nan
+
+            # tmp.flag_auto_pick = i[15]
+            # tmp.first_motion = i[16]
+
+            hour, minutes, seconds = j['time'].split(':')
+
+            tmp.hour = int(hour)
+            tmp.minutes = int(minutes)
+            tmp.seconds = float(seconds)
+
+            # tmp.duration = str2int(i[29:33])
+            # tmp.period = str2float(i[41:45])
+            # tmp.direction_of_approach = j['azi']
+            # tmp.phase_velocity = str2float(i[52:56])
+            # tmp.angle_of_incidence = str2float(i[56:60])
+            # tmp.azimuth_residual = str2int(i[60:63])
+            tmp.travel_time_residual = j['res']
+            tmp.weight = int(j['wt']*10)
+            tmp.azimuth_at_source = j['azi']
+            tmp.epicentral_distance = float(j['dist'])
+
+            if j['sta'] in statmag:
+                tmp.amplitude = float(statmag[j['sta']]['amp'])
+
+            sevent['4'].append(tmp)
+        sdat.append(sevent)
+
+    return sdat
 
 
 def read_record_type_1(i):
@@ -2833,7 +3025,7 @@ def _testfn():
 
 def _testfn2():
     """Test."""
-    ifile = "D:\workdata\seismology\seiscomp\events.txt"
+    ifile = r"D:\workdata\seismology\seiscomp\events.txt"
 
     data = importseiscomp(ifile)
 
