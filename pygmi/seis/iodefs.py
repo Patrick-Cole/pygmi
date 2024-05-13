@@ -162,7 +162,7 @@ class ImportSeisan(BasicModule):
         if not nodialog:
             ext = ('SEISAN Format (*.out);;'
                    'SEISAN macroseismic files (*.macro);;'
-                   'SeisComP extended autoloc3 (*.txt);;'
+                   'SeisComP extended autoloc3 MLv events (*.txt);;'
                    'All Files (*.*)')
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
