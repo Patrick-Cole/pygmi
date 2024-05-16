@@ -446,17 +446,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
             A1 = {}
             T1 = {}
             for rec in event['4']:
-                if (rec.quality+rec.phase_id).strip() in ['IAML', 'AML',
-                                                          'ES', 'E']:
+                i = rec.station_name
+                if rec.magnitude is not None:
+                    if i not in A:
+                        A[i] = []
+                    A[i].append(rec.magnitude_residual)
+                elif (rec.quality+rec.phase_id).strip() in ['IAML', 'AML',
+                                                            'ES', 'E']:
                     if (rec.amplitude is None or
                             rec.epicentral_distance is None):
                         continue
                     ML = (np.log10(rec.amplitude) +
                           1.149*np.log10(rec.epicentral_distance) +
                           0.00063*rec.epicentral_distance-2.04)
-                    A1[rec.station_name] = ML
+                    A1[i] = ML
                 if rec.travel_time_residual is not None:
-                    T1[rec.station_name] = rec.travel_time_residual
+                    T1[i] = rec.travel_time_residual
             if A1:
                 if np.nonzero(~np.isnan(list(A1.values())))[0].size == 0:
                     A1mean = 0

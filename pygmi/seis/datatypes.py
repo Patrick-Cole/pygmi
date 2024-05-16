@@ -342,6 +342,8 @@ class seisan_4():
         self.operator = ''
         self.magnitude_residual = None
 
+        self.magnitude = None
+
 
 class seisan_5():
     """

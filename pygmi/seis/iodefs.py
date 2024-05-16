@@ -658,6 +658,8 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
 
             if j['sta'] in statmag:
                 tmp.amplitude = float(statmag[j['sta']]['amp'])
+                tmp.magnitude_residual = float(statmag[j['sta']]['res'])
+                tmp.magnitude = float(statmag[j['sta']]['value'])
 
             sevent['4'].append(tmp)
         sdat.append(sevent)
