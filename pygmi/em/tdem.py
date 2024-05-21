@@ -30,6 +30,10 @@ import copy
 from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+import matplotlib
+
+matplotlib.numpy = np
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT

@@ -204,9 +204,7 @@ class DataCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
-        else:
+        if 'Raster' not in self.indata and 'Cluster' not in self.indata:
             self.showlog('No raster data')
             return False
 
@@ -216,13 +214,18 @@ class DataCut(BasicModule):
             if self.ifile == '':
                 return False
 
-        os.chdir(os.path.dirname(self.ifile))
-        data = cut_raster(data, self.ifile, showlog=self.showlog)
+        for datatype in ['Raster', 'Cluster']:
+            if datatype not in self.indata:
+                continue
+            data = self.indata[datatype]
 
-        if data is None:
-            return False
+            os.chdir(os.path.dirname(self.ifile))
+            data = cut_raster(data, self.ifile, showlog=self.showlog)
 
-        self.outdata['Raster'] = data
+            if data is None:
+                return False
+
+            self.outdata[datatype] = data
 
         return True
 

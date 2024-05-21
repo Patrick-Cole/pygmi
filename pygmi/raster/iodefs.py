@@ -1497,6 +1497,11 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
             kwargs['PREDICTOR'] = '3'
         else:
             kwargs['PREDICTOR'] = '2'
+        if compression == 'JPEG':
+            kwargs['TILED'] = 'YES'
+            kwargs['JPEG_QUALITY'] = '75'
+            # kwargs['PHOTOMETRIC'] = 'YCBCR'
+            # kwargs['INTERLEAVE'] = 'PIXEL'
 
     with rasterio.open(tmpfile, 'w', driver=drv,
                        width=int(dcols), height=int(drows), count=len(data),
@@ -1698,11 +1703,15 @@ def _filespeedtest():
     ifile = r"D:/tmp.tif"
     ifile = r"D:\RSA_TMI_wgs84Geographic.asc"
 
+    ifile = r"E:\Buglet\0430A_ESRI_TRUE_COLOUR_geo.tif"
+
     # ifile = ifile[:-4]+'_zstd.tif'
 
-    dat = get_ascii(ifile)
+    # dat = get_ascii(ifile)
 
     dataset = get_raster(ifile, metaonly=False)
+
+    # breakpoint()
 
     getinfo('Start')
 
@@ -1712,8 +1721,9 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
-    export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff',
-                  compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
+    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
+    # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
+    # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
 
     getinfo('End')
 
