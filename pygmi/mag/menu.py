@@ -54,7 +54,8 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Magnetics')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_tilt = QtWidgets.QAction('Tilt Angle')
+        self.action_tilt = QtWidgets.QAction('Tilt Angle and Related Edge '
+                                             'Filters')
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 

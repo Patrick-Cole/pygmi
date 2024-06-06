@@ -428,7 +428,7 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
             tmp.datetime = datetime.datetime.fromisoformat(timetxt)
 
             bmeta = tmp.metadata['Raster']
-            bmeta['Sensor'] = 'EMIT'
+            bmeta['Sensor'] = f'EMIT {var}'
 
             if 'mineral_id' in var:
                 bmeta['MineralNames'] = xr_ds.mineral_name.to_numpy()
@@ -457,9 +457,9 @@ def main():
     # ifile = r"D:/EMIT/EMIT_L1B_OBS_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L1B_RAD_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2A_MASK_001_20240430T101307_2412107_042.nc"
-    ifile = r"D:/EMIT/EMIT_L2A_RFL_001_20240430T101307_2412107_042.nc"
+    # ifile = r"D:/EMIT/EMIT_L2A_RFL_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2A_RFLUNCERT_001_20240430T101307_2412107_042.nc"
-    # ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
+    ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2B_MINUNCERT_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L3_ASA_001.nc"
 

@@ -55,11 +55,13 @@ class Tilt1(BasicModule):
 
         self.sb_azi = QtWidgets.QSpinBox()
         self.sb_s = QtWidgets.QSpinBox()
+        self.sb_k = QtWidgets.QSpinBox()
 
         self.setupui()
 
         self.sb_s.setValue(self.smooth)
         self.sb_azi.setValue(self.azi)
+        self.sb_k.setValue(2)
 
     def setupui(self):
         """
@@ -75,6 +77,7 @@ class Tilt1(BasicModule):
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
         lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
         lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
+        lbl_3 = QtWidgets.QLabel('EHGA k factor (2 or greater)')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -85,6 +88,8 @@ class Tilt1(BasicModule):
         self.sb_s.setMinimum(0)
         self.sb_s.setMaximum(100000)
         self.sb_s.setSingleStep(1)
+        self.sb_k.setMinimum(1)
+        self.sb_k.setMaximum(1000)
 
         self.setWindowTitle('Tilt Angle')
 
@@ -92,8 +97,10 @@ class Tilt1(BasicModule):
         gl_1.addWidget(self.sb_s, 0, 1, 1, 1)
         gl_1.addWidget(lbl_1, 1, 0, 1, 1)
         gl_1.addWidget(self.sb_azi, 1, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_3, 2, 0, 1, 1)
+        gl_1.addWidget(self.sb_k, 2, 1, 1, 1)
+        gl_1.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_1.addWidget(buttonbox, 3, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -124,31 +131,35 @@ class Tilt1(BasicModule):
 
         self.smooth = self.sb_s.value()
         self.azi = self.sb_azi.value()
+        kval = self.sb_k.value()
 
         data = [i.copy() for i in self.indata['Raster']]
         data2 = []
 
         for i in self.piter(range(len(data))):
-            t1, th, t2, ta, tdx, tahg = tilt1(data[i].data, self.azi,
-                                              self.smooth)
+            t1, th, t2, ta, tdx, tahg, ehga = tilt1(data[i].data, self.azi,
+                                                    self.smooth, kval)
             data2.append(data[i].copy())
             data2.append(data[i].copy())
             data2.append(data[i].copy())
             data2.append(data[i].copy())
             data2.append(data[i].copy())
             data2.append(data[i].copy())
-            data2[-6].data = t1
-            data2[-5].data = th
-            data2[-4].data = t2
-            data2[-3].data = ta
-            data2[-2].data = tdx
-            data2[-1].data = tahg
-            data2[-6].dataid += ' Standard Tilt Angle'
-            data2[-5].dataid += ' Hyperbolic Tilt Angle'
-            data2[-4].dataid += ' 2nd Order Tilt Angle'
-            data2[-3].dataid += ' Tilt Based Directional Derivative'
-            data2[-2].dataid += ' Total Derivative'
-            data2[-1].dataid += ' Tilt Angle of the Horizontal Gradient'
+            data2.append(data[i].copy())
+            data2[-7].data = t1
+            data2[-6].data = th
+            data2[-5].data = t2
+            data2[-4].data = ta
+            data2[-3].data = tdx
+            data2[-2].data = tahg
+            data2[-1].data = ehga
+            data2[-7].dataid += ' Standard Tilt Angle'
+            data2[-6].dataid += ' Hyperbolic Tilt Angle'
+            data2[-5].dataid += ' 2nd Order Tilt Angle'
+            data2[-4].dataid += ' Tilt Based Directional Derivative'
+            data2[-3].dataid += ' Total Derivative'
+            data2[-2].dataid += ' Tilt Angle of the Horizontal Gradient'
+            data2[-1].dataid += ' Enhanced Horizontal Gradient Amplitude'
 
         for i in data2:
             if i.nodata is None:
@@ -169,9 +180,10 @@ class Tilt1(BasicModule):
         """
         self.saveobj(self.sb_s)
         self.saveobj(self.sb_azi)
+        self.saveobj(self.sb_k)
 
 
-def tilt1(data, azi, s):
+def tilt1(data, azi, s, k=2):
     """
     Tilt angle calculations.
 
@@ -186,6 +198,8 @@ def tilt1(data, azi, s):
         directional filter azimuth in degrees from East
     s : int
         size of smoothing matrix to use - must be odd input 0 for no smoothing
+    k : int
+        Factor for EHGA filter. Must be > 0. Optional.
 
     Returns
     -------
@@ -199,6 +213,10 @@ def tilt1(data, azi, s):
         Tilt Based Directional Derivative
     tdx : numpy masked array
         Total Derivative
+    tahg : numpy masked array
+        Tilt Angle of the Horizontal Gradient
+    ehga : numpy masked array
+        Enhanced Horizontal Gradient Amplitude
     """
     dmin = data.min()
     dmax = data.max()
@@ -257,7 +275,15 @@ def tilt1(data, azi, s):
     dz = vertical(data, npts, 1)
     tahg = np.ma.arctan(dz/dxtot)
 
-    return t1, th, t2, ta, tdx, tahg
+    dxyztot = np.ma.sqrt(dx*dx + dy*dy + dz*dz)
+
+    ehga = np.ma.arcsin(k*(dz/dxyztot-1)+1)
+
+    ehga = k*(dz/dxyztot-1)+1
+    ehga[ehga < -1.0] = -1.0
+    ehga = np.ma.arcsin(ehga)
+
+    return t1, th, t2, ta, tdx, tahg, ehga
 
 
 def nextpow2(n):
@@ -651,18 +677,18 @@ def _testfn():
 
     dat = get_raster(ifile)[0]
 
-    t1, th, t2, ta, tdx, tahg = tilt1(dat.data, 75, 3)
+    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat.data, 75, 3)
 
     plt.figure(dpi=150)
-    plt.imshow(t2)
+    plt.imshow(tahg)
     plt.colorbar()
     plt.show()
 
     plt.figure(dpi=150)
-    plt.imshow(t1)
+    plt.imshow(ehga)
     plt.colorbar()
     plt.show()
 
 
 if __name__ == "__main__":
-    _testfn_rtp()
+    _testfn()

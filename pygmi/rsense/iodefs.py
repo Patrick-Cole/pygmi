@@ -3515,7 +3515,8 @@ def _testfn3():
     app = QtWidgets.QApplication(sys.argv)
 
     os.chdir(os.path.dirname(ifile))
-    tmp1 = ImportData()
+    tmp1 = ImportBatch()
+    # tmp1 = ImportData()
     tmp1.settings()
 
     dat = tmp1.outdata['Raster']
