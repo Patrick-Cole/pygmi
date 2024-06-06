@@ -31,7 +31,7 @@ import time
 import textwrap
 import psutil
 import numpy as np
-from matplotlib import ticker
+from matplotlib import ticker, cm, colors
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 PBAR_STYLE = """
@@ -635,6 +635,7 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
         Handle to Matplotlib plotting routine.
     cdat : numpy array
         Array of values.
+    lbls : y tick labels (optional)
 
     Returns
     -------
@@ -646,13 +647,25 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
         vals = vals.compressed()
     vals = vals[~np.isnan(vals)]
 
-    bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+    if len(vals) < 2:
+        print('Too few discrete values')
+        return
+    # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
 
-    if len(vals) > 1:
+    if hasattr(csp.norm, 'boundaries'):
+        bnds = csp.norm.boundaries
+        ticks = np.diff(bnds)/2+vals
+        cbar = axes.figure.colorbar(csp, ticks=ticks)
+    else:
+        bnds = vals.tolist() + [vals.max()+1]
+        ticks = np.diff(bnds)/2+vals
         cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals,
-                                    ticks=vals)
-        if lbls is not None:
-            cbar.ax.set_yticklabels(lbls)
+                                    ticks=ticks)
+
+    if lbls is not None:
+        cbar.ax.set_yticklabels(lbls)
+    else:
+        cbar.ax.set_yticklabels(vals)
 
 
 def getinfo(txt=None, reset=False):
@@ -757,14 +770,42 @@ frm = ticker.FuncFormatter(tick_formatter)
 
 def _testfn():
     """Test function."""
-    app = QtWidgets.QApplication(sys.argv)
 
-    tmp = BasicModule()
-    tmp.ifile = QtWidgets.QLineEdit('test')
-    tmp.saveobj(tmp.ifile)
+    # app = QtWidgets.QApplication(sys.argv)
 
-    print(tmp.projdata)
+    # tmp = BasicModule()
+    # tmp.ifile = QtWidgets.QLineEdit('test')
+    # tmp.saveobj(tmp.ifile)
 
+    # print(tmp.projdata)
+
+    import matplotlib.pyplot as plt
+
+
+    data = [[0,45,50],
+            [0,45,50],
+            [0,44,50]]
+
+    lbls = ['a', 'b', 'c', 'd']
+
+    vals = np.unique(data)
+    if np.ma.isMaskedArray(vals):
+        vals = vals.compressed()
+    vals = vals[~np.isnan(vals)]
+
+    bnds = vals.tolist() + [vals.max()+1]
+
+    cmap = cm.viridis
+    norm = colors.BoundaryNorm(bnds, cmap.N)
+
+    fig = plt.figure(dpi=200)
+    ax = fig.gca()
+    cax = ax.imshow(data, norm=norm)
+
+    discrete_colorbar(ax, cax, data, lbls)
+    plt.show()
+
+    breakpoint()
 
 if __name__ == "__main__":
     _testfn()

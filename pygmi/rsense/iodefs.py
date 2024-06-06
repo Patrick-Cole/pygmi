@@ -54,6 +54,8 @@ from pygmi.raster.ginterp import histcomp, norm255, norm2, currentshader
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.dataprep import lstack, data_reproject
 from pygmi.vector.dataprep import reprojxy
+from pygmi.rsense.emit import xr_to_pygmi, emit_xarray
+
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -273,7 +275,7 @@ class ImportData(BasicModule):
         self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
-        ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5);;')
+        ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5 *.nc);;')
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -1488,6 +1490,8 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
         dat = get_hyperion(ifile, piter, showlog, tnames, metaonly)
     elif ext == '.xml' and 'isd' in dtree:
         dat = get_worldview(ifile, piter, showlog, tnames, metaonly)
+    elif 'EMIT' in bfile and ext == '.nc':
+        dat = get_emit(ifile, piter, showlog, tnames, metaonly)
     else:
         dat = get_raster(ifile, piter=piter, showlog=showlog,
                          tnames=tnames, metaonly=metaonly)
@@ -1535,6 +1539,40 @@ def get_from_rastermeta(ldata, piter=None, showlog=print, tnames=None):
 
     if ldata.to_sutm is True:
         dat = utm_to_south(dat)
+
+    return dat
+
+
+def get_emit(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+    """
+    Get EMIT Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : function, optional
+        Progress bar iterable. Default is None.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    ds = emit_xarray(ifile, ortho=(not metaonly))
+    dat = xr_to_pygmi(ds, piter, showlog, tnames, metaonly)
+
+    if not dat:
+        dat = None
 
     return dat
 
@@ -3472,6 +3510,7 @@ def _testfn3():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
     # ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
+    ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3481,13 +3520,13 @@ def _testfn3():
 
     dat = tmp1.outdata['Raster']
 
-    ofile = set_export_filename(dat, odir='')
+    # ofile = set_export_filename(dat, odir='')
 
-    ofile = r'c:\\temp\\'+ofile
+    # ofile = r'c:\\temp\\'+ofile
 
-    export_raster(ofile+'.tif', dat)
+    # export_raster(ofile+'.tif', dat)
 
-    print(dat[-1].datetime)
+    # print(dat[-1].datetime)
 
     for i in dat:
         plt.figure(dpi=150)

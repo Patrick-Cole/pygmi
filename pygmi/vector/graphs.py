@@ -1406,8 +1406,8 @@ def _testfn():
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    # SC = PlotVector()
-    SC = PlotCCoef()
+    SC = PlotVector()
+    # SC = PlotCCoef()
     SC.indata = IO.outdata
     SC.run()
 

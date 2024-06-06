@@ -480,6 +480,8 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
         for line in elines:
             if line == '':
                 continue
+            if 'No station magnitudes' in line:
+                continue
             if 'sta ' in line:
                 continue
             if 'Origin:' in line:
@@ -495,15 +497,22 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
                 currentsection = 'Station magnitudes'
                 continue
 
-            if currentsection == 'Event':
-                ltype = line[:27].strip()
-                val = line[27:].strip()
-                event[ltype] = val
-
             if currentsection == 'Origin':
                 ltype = line[:27].strip()
                 val = line[27:].strip()
                 origin[ltype] = val
+
+            if currentsection == 'Event':
+                if 'Description' in line:
+                    continue
+
+                if 'region name:' in line:
+                    val = line.split(':')[1].strip()
+                    ltype = 'region name'
+                else:
+                    ltype = line[:27].strip()
+                    val = line[27:].strip()
+                event[ltype] = val
 
             if currentsection == 'Network magnitudes':
                 ltype = line[:14].strip()
@@ -525,7 +534,7 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
                 phase.append(tmp)
 
         if prefmag not in netmag:
-            showlog(f'Skipping event, {prefmag} not available.')
+            showlog(f'Skipping event {event["Preferred Origin ID"]}, {prefmag} not available.')
             continue
 
         # Select preferred magnitude
@@ -3028,6 +3037,7 @@ def _testfn():
 def _testfn2():
     """Test."""
     ifile = r"D:\workdata\seismology\seiscomp\events.txt"
+    ifile = r"D:\workdata\PyGMI Test Data\Seismology\events.txt"
 
     data = importseiscomp(ifile)
 
