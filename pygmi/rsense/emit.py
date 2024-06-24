@@ -29,7 +29,6 @@ It uses code by Erik Bolch, ebolch@contractor.usgs.gov
 """
 
 import os
-import winsound
 import datetime
 
 import numpy as np
@@ -51,7 +50,7 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpacked_bmask=None):
     Parameters
     ----------
     filepath : str
-        a filepath to an EMIT netCDF file.
+        a file path to an EMIT netCDF file.
     ortho : bool, optional
         Whether to orthorectify the dataset or leave in crosstrack/downtrack
         coordinates. The default is False.
@@ -503,4 +502,3 @@ if __name__ == "__main__":
     main()
 
     print('Finished!')
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)

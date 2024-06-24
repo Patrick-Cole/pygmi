@@ -1238,7 +1238,6 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
-    import winsound
     from pygmi.rsense.iodefs import ImportBatch, ImportData
 
     idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
@@ -1263,8 +1262,6 @@ def _testfn():
         plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
-
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
 
 if __name__ == "__main__":

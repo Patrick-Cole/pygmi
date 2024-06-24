@@ -136,7 +136,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
 
-        if data1.crs.is_geographic:
+        if data1.crs is not None and data1.crs.is_geographic:
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')
         else:

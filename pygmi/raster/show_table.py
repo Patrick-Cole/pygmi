@@ -86,7 +86,12 @@ class BasicStats(ContextModule):
 
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
-                txt = f' {data[row, col]:,.5f}'
+                datnum = data[row, col]
+                if isinstance(datnum, int):
+                    txt = f' {datnum}'
+                else:
+                    txt = f' {datnum:,.5f}'
+
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignRight)
 
@@ -186,17 +191,17 @@ def basicstats_calc(data):
         srow.append(dtmp.std())
         srow.append(np.median(dtmp))
         srow.append(np.median(abs(dtmp - srow[-1])))
-        srow.append(i.data.size)
+        srow.append(dtmp.size)
         srow.append(i.data.shape[1])
         srow.append(i.data.shape[0])
-        srow.append(st.skew(dtmp))
+        srow.append(st.skew(dtmp) * 1.)
         srow.append(st.kurtosis(dtmp))
-        srow = np.array(srow).tolist()
+        # srow = np.array(srow).tolist()
         stats.append([i.dataid] + srow)
 
     bands = ['Data Column']
     cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',
-            'Median Abs Dev', 'No Samples', 'No cols (samples in x-dir)',
+            'Median Abs Dev', 'No Unmasked Samples', 'No cols (samples in x-dir)',
             'No rows (samples in y-dir)', 'Skewness', 'Kurtosis']
     dattmp = [np.array(stats, dtype=object)]
     return bands, cols, dattmp

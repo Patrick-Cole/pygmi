@@ -30,37 +30,40 @@ Requirements
 ------------
 PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.12 on Windows.
 
-PyGMI should still work with Python 3.11 and Python 3.10.
+PyGMI should still work with Python 3.11.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.12.2
+* python 3.12.4
 * discretize 0.10.0
 * fiona 1.9.5
 * gdal 3.8.4
-* geopandas 0.14.3
-* matplotlib 3.8.3
+* geopandas 0.14.4
+* matplotlib 3.9.0
 * mtpy 1.1.5
 * natsort 8.4.0
-* numba 0.59.0
-* numexpr 2.9.0
+* numba 0.60.0
+* numexpr 2.10.1
 * numpy 1.26.4
 * openpyxl 3.1.2
-* pandas 2.2.0
-* psutil 5.9.8
-* pyogrio 0.7.2
+* pandas 2.2.2
+* psutil 6.0.0
+* pyogrio 0.9.0
 * pyopengl 3.1.7
 * pyproj 3.6.1
 * PyQt5 5.15.10
-* pytest 8.0.1
+* pytest 8.2.2
 * rasterio 1.3.9
-* scikit-image 0.22.0
-* scikit-learn 1.4.1.post1
-* scipy 1.12.0
+* scikit-image 0.24.0
+* scikit-learn 1.5.0
+* scipy 1.13.1
 * shapely 2.0.3
-* shapelysmooth 0.1.1
-* SimPEG 0.20.0.post2
+* shapelysmooth 0.2.0
+* SimPEG 0.21.1
 * xlrd 2.0.1
+* xarray 2024.6.0
+* h5netcdf 1.3.0
+* rioxarray 0.15.6
 
 Installation
 ------------
@@ -172,6 +175,12 @@ The process to install is as follows:
    conda install openpyxl
    
    conda install xlrd
+   
+   conda install xarray
+   
+   conda install h5netcdf
+   
+   conda install rioxarray
 
    pip install mtpy
 

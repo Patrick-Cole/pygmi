@@ -46,7 +46,7 @@ class ColumnSelect(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Band Selection')
+        self.setWindowTitle('Column Selection')
 
         self.vbl = QtWidgets.QVBoxLayout()
         self.setLayout(self.vbl)

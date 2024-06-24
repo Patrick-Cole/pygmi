@@ -2,14 +2,16 @@
 <html>
 	<body>
 		<h1>Tilt Angle Calculation</h1>
-		<p>This calculates the tilt angle of the data. It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, 2nd order tilt angle, Tilt Based Directional Derivative and the Total Derivative</p>
+		<p>This calculates the tilt angle of the data. It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, 2nd order tilt angle, Tilt Based Directional Derivative, Total Derivative, Tilt Angle of the Horizontal Gradient and Enhanced Horizontal Gradient Amplitude.</p>
 		<h2>Options</h2>
 		<ul>
 			<li>Smoothing Matrix - an odd matrix used to smooth the data</li>
 			<li>Azimuth - This is the direction of the tilt angle, in degrees from east. It is used in the tilt based directional derivative.</li>
+      <li>EHGA k factor (2 or greater) - this parameter affects the sensitivity of the EHGA method.</li>
 		</ul>
 		<h2>References</h2>
-		<p>Cooper,G.R.J., Cowan, D.R. 2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences,32, p.1585-1591</p>
+		<p>Cooper, G.R.J., Cowan, D.R. 2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences,32, p.1585-1591</p>
 		<p>Ferreira, F., Souza, J., Bongiolo, A., Castro, L. (2013). Enhancement of the total horizontal gradient of magnetic anomalies using the tilt angle. GEOPHYSICS. 78. J33-J41. 10.1190/geo2011-0441.1.</p>
+    <p>Pham, L.T, Eldosouky, A.M., Oksum, E., Saada, S.A. (2022). A new high resolution filter for source edge detection of potential field data, Geocarto International, 37:11, 3051-3068, DOI: 10.1080/10106049.2020.1849414</p>
 	</body>
 </html>

@@ -1255,21 +1255,21 @@ def consolidate_aster_list(flist):
 
 def convert_ll_to_utm(lon, lat):
     """
-    Convert latitude and longitde to UTM.
+    Convert latitude and longitude to UTM.
 
     https://stackoverflow.com/a/40140326/4556479
 
     Parameters
     ----------
     lon : float
-        DESCRIPTION.
+        Longitude.
     lat : float
-        DESCRIPTION.
+        latitude.
 
     Returns
     -------
-    epsg_code : TYPE
-        DESCRIPTION.
+    epsg_code : str
+        EPSG code.
 
     """
     utm_band = str((math.floor((lon + 180) / 6) % 60) + 1)
