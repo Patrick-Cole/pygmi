@@ -38,10 +38,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import discretize
-from SimPEG import (maps, data_misfit, regularization,
+from simpeg import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
-from SimPEG.electromagnetics import time_domain
-import SimPEG.data as Sdata
+from simpeg.electromagnetics import time_domain
+import simpeg.data as Sdata
 
 from pygmi import menu_default
 from pygmi.misc import QVStack2Layout, BasicModule

@@ -1752,8 +1752,8 @@ class PlotInterp(BasicModule):
 
         """
         if event.inaxes == self.msc.axes:
-            self.msc.sun.set_xdata(event.xdata)
-            self.msc.sun.set_ydata(event.ydata)
+            self.msc.sun.set_xdata([event.xdata])
+            self.msc.sun.set_ydata([event.ydata])
             self.msc.figure.canvas.draw()
 
             phi = -event.xdata
