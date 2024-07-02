@@ -31,9 +31,9 @@ from PyQt5 import QtWidgets, QtCore
 import scipy.interpolate as si
 from discretize import TensorMesh
 from discretize.utils import active_from_xyz
-from SimPEG.potential_fields import magnetics
-from SimPEG.utils import model_builder
-from SimPEG import (maps, data, inverse_problem, data_misfit,
+from simpeg.potential_fields import magnetics
+from simpeg.utils import model_builder
+from simpeg import (maps, data, inverse_problem, data_misfit,
                     regularization, optimization, directives,
                     inversion)
 import sklearn.cluster as skc
