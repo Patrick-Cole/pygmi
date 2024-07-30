@@ -632,8 +632,8 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
-        showlog('Warning: Your data does not have a projection. '
-                'Assigning local coordinate system.')
+        # showlog('Warning: Your data does not have a projection. '
+        #         'Assigning local coordinate system.')
         crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
                               'AUTHORITY["EPSG","9001"]],'
                               'AXIS["Easting",EAST],'
@@ -1563,7 +1563,7 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
         tree = ET.parse(xfile)
         root = tree.getroot()
 
-        showlog('Calculating statistics...')
+        # showlog('Calculating statistics...')
         # for child in piter(root):
         for child in piter(root.findall('PAMRasterBand')):
             band = int(child.attrib['band'])-1

@@ -105,7 +105,7 @@ def str2float(inp):
     output : float
         float or np.nan
     """
-    if inp.strip() == '' or inp.strip() == '*':
+    if inp.strip() == '' or inp.strip() == '*' or inp.strip() == 'N/A':
         return np.nan
 
     fval = float(inp)
@@ -523,13 +523,13 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
                 line2 = line.split()
                 tmp = {'sta': line2[0],
                        'net': line2[1],
-                       'dist': float(line2[2]),
-                       'azi': float(line2[3]),
+                       'dist': str2float(line2[2]),
+                       'azi': str2float(line2[3]),
                        'phase': line2[4],
                        'time': line2[5],
-                       'res': float(line2[6]),
+                       'res': str2float(line2[6]),
                        'res2': line2[7],
-                       'wt': float(line2[8])}
+                       'wt': str2float(line2[8])}
 
                 phase.append(tmp)
 
@@ -3038,6 +3038,7 @@ def _testfn2():
     """Test."""
     ifile = r"D:\workdata\seismology\seiscomp\events.txt"
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\events.txt"
+    ifile = r"D:\May2024.txt"
 
     data = importseiscomp(ifile)
 
