@@ -34,4 +34,5 @@ preferred-citation:
   title: "The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package"
   conference:
     name: "SciPy 2014: 13th Python in Science Conference"
+  collection-title: "SciPy 2014: 13th Python in Science Conference, Austin, Texas"
   year: 2014
