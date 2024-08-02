@@ -1,0 +1,8 @@
+@inproceedings{Cole2014,
+   author = {Patrick Cole},
+   city = {Austin, Texas},
+   booktitle = {SciPy 2014: 13th Python in Science Conference},
+   month = {7},
+   title = {The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package},
+   year = {2014},
+}

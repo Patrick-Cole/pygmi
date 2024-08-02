@@ -335,7 +335,7 @@ def calc_mean(flist, showlog=print, piter=iter):
     for val in tmp:
         meandat[val.dataid] = val
 
-    # Init variables
+    # Init variables using first file above.
     cnt = {}
     M = {}
 
@@ -344,8 +344,8 @@ def calc_mean(flist, showlog=print, piter=iter):
         M[i] = None
         cnt[i] = meandat[i].copy()
         M[i] = meandat[i].copy()
-        cnt[i].data = cnt[i].data * 0.
-        M[i].data = M[i].data * 0.
+        cnt[i].data = np.ones_like(cnt[i].data)
+        M[i].data = np.zeros_like(M[i].data)
 
     # Iteratively calculate stats
     for ifile in piter(flist[1:]):
@@ -643,6 +643,7 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
+    idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic\ratios'
     os.chdir(r'E:\\')
 
     app = QtWidgets.QApplication(sys.argv)
