@@ -30,7 +30,8 @@ preferred-citation:
   - family-names: "Cole"
     given-names: "Patrick"
     orcid: "https://orcid.org/0000-0002-3563-8704"
-  journal: "SciPy 2014: 13th Python in Science Conference"
+  conference:
+    name: "SciPy 2014: 13th Python in Science Conference"
   month: 7
   title: "The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package"
   year: 2014
