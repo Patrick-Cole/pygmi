@@ -1,10 +1,12 @@
 PyGMI
 =====
 
-.. image:: https://img.shields.io/pypi/pyversions/pygmi
+.. |pythonversion| image:: https://img.shields.io/pypi/pyversions/pygmi
    :alt: PyPI - Python Version
-.. image:: https://img.shields.io/pypi/v/pygmi
+.. |pygmiversion| image:: https://img.shields.io/pypi/v/pygmi
    :alt: PyPI - Version
+
+|pythonversion| |pygmiversion|
 
 Overview
 --------
