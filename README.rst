@@ -1,8 +1,10 @@
 PyGMI
 =====
 
+
 [![PyPI](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/)
 ![PyPI - Version](https://img.shields.io/pypi/v/pygmi)
+
 
 Overview
 --------
