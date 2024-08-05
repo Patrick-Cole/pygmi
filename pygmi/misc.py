@@ -299,7 +299,7 @@ class BasicModule(QtWidgets.QDialog):
             self.projdata[otxt] = obj.text()
 
         if isinstance(obj, QtWidgets.QTextEdit):
-            self.projdata[otxt] = obj.plainText()
+            self.projdata[otxt] = obj.toPlainText()
 
         if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
                             QtWidgets.QSlider)):
