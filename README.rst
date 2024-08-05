@@ -5,8 +5,11 @@ PyGMI
    :alt: PyPI - Python Version
 .. |pygmiversion| image:: https://img.shields.io/pypi/v/pygmi
    :alt: PyPI - Version
+.. |pygmilicence| image:: https://img.shields.io/github/license/patrick-cole/pygmi
+   :alt: GitHub License
 
-|pythonversion| |pygmiversion|
+
+|pythonversion| |pygmiversion| |pygmilicence|
 
 Overview
 --------
