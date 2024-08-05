@@ -5,11 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.clust package &#8212; PyGMI 3.2.8.0 documentation</title>
+    <title>pygmi.clust package &#8212; PyGMI 3.2.8.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=bc5ff33c" />
-    <script src="_static/documentation_options.js?v=13ebea9b"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=17ce2deb"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -521,10 +522,10 @@ min xbi is optimal</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>numpy array</em>) – input dataset</p></li>
-<li><p><strong>expo</strong> (<em>float</em>) – </p></li>
+<li><p><strong>expo</strong> (<em>float</em>)</p></li>
 <li><p><strong>uuu</strong> (<em>numpy array</em>) – membership matrix (FCM) or cluster index values (k-means)</p></li>
 <li><p><strong>center</strong> (<em>numpy array</em>) – cluster centers</p></li>
-<li><p><strong>edist</strong> (<em>numpy array</em>) – </p></li>
+<li><p><strong>edist</strong> (<em>numpy array</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -911,9 +912,9 @@ min xbi is optimal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>showverts</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>epsilon</strong> (<em>int</em>) – </p></li>
-<li><p><strong>polyi_changed</strong> (<em>signal</em>) – </p></li>
+<li><p><strong>showverts</strong> (<em>bool</em>)</p></li>
+<li><p><strong>epsilon</strong> (<em>int</em>)</p></li>
+<li><p><strong>polyi_changed</strong> (<em>signal</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1447,9 +1448,9 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>showverts</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>epsilon</strong> (<em>int</em>) – </p></li>
-<li><p><strong>polyi_changed</strong> (<em>signal</em>) – </p></li>
+<li><p><strong>showverts</strong> (<em>bool</em>)</p></li>
+<li><p><strong>epsilon</strong> (<em>int</em>)</p></li>
+<li><p><strong>polyi_changed</strong> (<em>signal</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1812,7 +1813,7 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
 <li><p><strong>data</strong> (<em>numpy array</em>) – input dataset</p></li>
 <li><p><strong>uuu</strong> (<em>numpy array</em>) – membership matrix (FCM) or cluster index values (k-means)</p></li>
 <li><p><strong>center</strong> (<em>numpy array</em>) – cluster centers</p></li>
-<li><p><strong>dist_orig</strong> (<em>numpy array</em>) – </p></li>
+<li><p><strong>dist_orig</strong> (<em>numpy array</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1851,7 +1852,7 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">PyGMI</a></h1>
 
@@ -1869,7 +1870,16 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
@@ -1917,16 +1927,6 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1943,8 +1943,8 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
       &#169;2024 Council for Geoscience.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/pygmi.clust.rst.txt"

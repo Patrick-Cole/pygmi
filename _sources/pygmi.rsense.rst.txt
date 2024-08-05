@@ -20,6 +20,14 @@ pygmi.rsense.change\_viewer module
    :undoc-members:
    :show-inheritance:
 
+pygmi.rsense.emit module
+------------------------
+
+.. automodule:: pygmi.rsense.emit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.rsense.features module
 ----------------------------
 

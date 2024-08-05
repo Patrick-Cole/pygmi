@@ -5,11 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; PyGMI 3.2.8.0 documentation</title>
+    <title>Installation &#8212; PyGMI 3.2.8.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=bc5ff33c" />
-    <script src="_static/documentation_options.js?v=13ebea9b"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=17ce2deb"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,7 +86,95 @@
             
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<p>Instructions on how to install PyGMI can be found on <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">Github</a>.</p>
+<p>Instructions on how to install PyGMI can also be found on <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">Github</a>.</p>
+<section id="general-not-anaconda">
+<h2>General (Not Anaconda)<a class="headerlink" href="#general-not-anaconda" title="Link to this heading">¶</a></h2>
+<p>The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:</p>
+<blockquote>
+<div><p>pip install pygmi</p>
+</div></blockquote>
+<p>This will download pygmi from PyPI and install it within your python repository. Depending on your operating system, and which libraries you already have installed, you may need to follow instructions in sections below. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.</p>
+<p>Running pygmi can be now done at the command prompt as follows:</p>
+<blockquote>
+<div><p>pygmi</p>
+</div></blockquote>
+<p>If you are in python, you can run PyGMI by using the following commands:</p>
+<blockquote>
+<div><p>from pygmi.main import main</p>
+<p>main()</p>
+</div></blockquote>
+<p>If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:</p>
+<blockquote>
+<div><p>python quickstart.py</p>
+</div></blockquote>
+</section>
+<section id="windows-users">
+<h2>Windows Users<a class="headerlink" href="#windows-users" title="Link to this heading">¶</a></h2>
+<p>Installers are available in <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">64-bit</a></p>
+<p>Alternatively, you can use the instructions above to run PyGMI with your local python installation. You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. You may need to install the <a class="reference external" href="https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads">Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019</a>.</p>
+<p>Examples of binaries you may need to get are:</p>
+<ul class="simple">
+<li><p>numexpr</p></li>
+<li><p>numba</p></li>
+<li><p>llvmlite</p></li>
+<li><p>GDAL</p></li>
+<li><p>discretize</p></li>
+<li><p>fiona</p></li>
+</ul>
+<p>They can be obtained from the <a class="reference external" href="https://www.cgohlke.com/">website</a> by Christoph Gohlke.</p>
+</section>
+<section id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h2>
+<p>Linux normally comes with python installed, but the additional libraries will still need to be installed.</p>
+<p>Typically, packages can be installed using pip. The process is as follows:</p>
+<blockquote>
+<div><p>sudo apt-get install pip</p>
+<p>sudo apt-get install gdal-bin</p>
+<p>sudo apt-get install libgdal-dev</p>
+<p>pip install cython</p>
+<p>pip install numpy</p>
+<p>pip install pygmi</p>
+</div></blockquote>
+</section>
+<section id="anaconda">
+<h2>Anaconda<a class="headerlink" href="#anaconda" title="Link to this heading">¶</a></h2>
+<p>Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.</p>
+<p>The process to install is as follows:</p>
+<blockquote>
+<div><p>conda create -n pygmi python=3.12</p>
+<p>conda activate pygmi</p>
+<p>conda config –add channels conda-forge</p>
+<p>conda config –set channel_priority flexible</p>
+<p>conda install pyqt</p>
+<p>conda install numpy</p>
+<p>conda install scipy</p>
+<p>conda install matplotlib</p>
+<p>conda install psutil</p>
+<p>conda install numexpr</p>
+<p>conda install pandas</p>
+<p>conda install rasterio</p>
+<p>conda install geopandas</p>
+<p>conda install numba</p>
+<p>conda install natsort</p>
+<p>conda install scikit-learn</p>
+<p>conda install scikit-image</p>
+<p>conda install pyopengl</p>
+<p>conda install simpeg</p>
+<p>conda install shapelysmooth</p>
+<p>conda install pyogrio</p>
+<p>conda install openpyxl</p>
+<p>conda install xlrd</p>
+<p>conda install xarray</p>
+<p>conda install h5netcdf</p>
+<p>conda install rioxarray</p>
+<p>pip install mtpy</p>
+<p>conda update –all</p>
+</div></blockquote>
+<p>Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:</p>
+<blockquote>
+<div><p>python quickstart.py</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -108,7 +197,7 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">PyGMI</a></h1>
 
@@ -126,7 +215,16 @@
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a></li>
@@ -172,16 +270,6 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -198,8 +286,8 @@
       &#169;2024 Council for Geoscience.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/install.rst.txt"

@@ -54,7 +54,7 @@ Two colour modes are available:
 
 In both cases, only the lower triangular portion of the heatmap is shown, since the upper triangular portion is a symmetrical duplication. This simplifies the final plot.
 
-Notice for a large number of channels, reading the values can be difficult. Two options are available for this; the user can either zoom into the plot or hover over a feature of interest to get the correlation between two channels (displayed in the botton right corner of the plot).
+Notice for a large number of channels, reading the values can be difficult. Two options are available for this; the user can either zoom into the plot or hover over a feature of interest to get the correlation between two channels (displayed in the bottom right corner of the plot).
 
 Show Rose Diagrams
 ------------------

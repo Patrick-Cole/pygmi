@@ -1,4 +1,127 @@
 Installation
 ============
 
-Instructions on how to install PyGMI can be found on `Github <https://github.com/Patrick-Cole/pygmi>`_.
+Instructions on how to install PyGMI can also be found on `Github <https://github.com/Patrick-Cole/pygmi>`_.
+
+General (Not Anaconda)
+----------------------
+The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:
+
+   pip install pygmi
+
+This will download pygmi from PyPI and install it within your python repository. Depending on your operating system, and which libraries you already have installed, you may need to follow instructions in sections below. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
+
+Running pygmi can be now done at the command prompt as follows:
+
+   pygmi
+
+If you are in python, you can run PyGMI by using the following commands:
+
+   from pygmi.main import main
+
+   main()
+
+If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:
+
+   python quickstart.py
+
+Windows Users
+-------------
+Installers are available in `64-bit <https://github.com/Patrick-Cole/pygmi/releases>`_
+
+Alternatively, you can use the instructions above to run PyGMI with your local python installation. You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
+
+Examples of binaries you may need to get are:
+
+* numexpr
+* numba
+* llvmlite
+* GDAL
+* discretize
+* fiona
+
+They can be obtained from the `website <https://www.cgohlke.com/>`_ by Christoph Gohlke.
+
+Linux
+-----
+Linux normally comes with python installed, but the additional libraries will still need to be installed.
+
+Typically, packages can be installed using pip. The process is as follows:
+
+   sudo apt-get install pip
+
+   sudo apt-get install gdal-bin
+
+   sudo apt-get install libgdal-dev
+
+   pip install cython
+
+   pip install numpy
+
+   pip install pygmi
+
+Anaconda
+--------
+Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.
+
+The process to install is as follows:
+
+   conda create -n pygmi python=3.12
+
+   conda activate pygmi
+
+   conda config --add channels conda-forge
+
+   conda config --set channel_priority flexible
+
+   conda install pyqt
+
+   conda install numpy
+
+   conda install scipy
+
+   conda install matplotlib
+
+   conda install psutil
+
+   conda install numexpr
+
+   conda install pandas
+
+   conda install rasterio
+
+   conda install geopandas
+
+   conda install numba
+   
+   conda install natsort
+
+   conda install scikit-learn
+
+   conda install scikit-image
+
+   conda install pyopengl
+
+   conda install simpeg
+
+   conda install shapelysmooth
+   
+   conda install pyogrio
+   
+   conda install openpyxl
+   
+   conda install xlrd
+   
+   conda install xarray
+   
+   conda install h5netcdf
+   
+   conda install rioxarray
+
+   pip install mtpy
+
+   conda update --all
+
+Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:
+
+   python quickstart.py

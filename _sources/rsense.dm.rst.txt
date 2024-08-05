@@ -58,7 +58,7 @@ Options:
 
 Landsat Temporal Composite
 --------------------------
-This module creates a temporal composite from a list of Landsat scenes. The aim is to substitute data from multiple scenes over areas with clouds. 
+This module creates a temporal composite from a list of Landsat scenes. The aim is to substitute data from multiple scenes over areas with clouds.
 
 Options:
 
@@ -127,7 +127,7 @@ Options are:
 
 Change Detection
 ----------------
-Change detection is an important technique used in the analysis of remote sensing data. Ordinarily, satellite data has a fixed number of bands (between 4 and 12 on average). These bands represent a light spectrum and can be utilised to study various terrestrial phenomena, from vegetation to minerals. The limits of the data are normally due to the number of bands in the data. One way to overcome this is to examine the temporal dimensions of the data. By studying the change in the data across multiple scenes, we can leverage more information. 
+Change detection is an important technique used in the analysis of remote sensing data. Ordinarily, satellite data has a fixed number of bands (between 4 and 12 on average). These bands represent a light spectrum and can be utilised to study various terrestrial phenomena, from vegetation to minerals. The limits of the data are normally due to the number of bands in the data. One way to overcome this is to examine the temporal dimensions of the data. By studying the change in the data across multiple scenes, we can leverage more information.
 
 Change detection relies on the changing nature of the earth. This can be from extreme environmental disasters such as fires and landslides, or as simple as studying the effect a seasonal change has on the target being studied.
 
@@ -159,7 +159,7 @@ The viewer options are:
 
 * Display type: sets the image to be displayed, whether single band or ternary.
 * Data bands: used to set each band to be displayed.
-* Start capture: The scenes can be exported to a gif image, at the current resolution and zoom.
+* Start capture: The scenes can be exported to a GIF image, at the current resolution and zoom.
 * Previous and Next buttons: used to select the scene to be displayed.
 * Scroll bar – used to select the scene to be displayed.
 

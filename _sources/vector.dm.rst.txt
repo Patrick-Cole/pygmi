@@ -56,7 +56,7 @@ Options:
 
 * Method - This can be 'Feature Intersection Density', 'Feature Orientation Diversity', 'Circular Variance and Dispersion' or 'Feature Fractal Dimension'.
 * Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).
-* Intersection Density Standard Deviation - the variance of a gaussian centered on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).
+* Intersection Density Standard Deviation - the variance of a gaussian centred on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).
 * Intersection Density Line Extension - Distance to extend features which are almost touching, so that an intersection between features is obtained.
 * Window Size - Size of windows to calculate measure.
 

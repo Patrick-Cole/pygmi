@@ -5,11 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.rsense package &#8212; PyGMI 3.2.8.0 documentation</title>
+    <title>pygmi.rsense package &#8212; PyGMI 3.2.8.16 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=bc5ff33c" />
-    <script src="_static/documentation_options.js?v=13ebea9b"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=17ce2deb"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -546,6 +547,131 @@
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-pygmi.rsense.emit">
+<span id="pygmi-rsense-emit-module"></span><h2>pygmi.rsense.emit module<a class="headerlink" href="#module-pygmi.rsense.emit" title="Link to this heading">¶</a></h2>
+<p>EMIT is used to import EMIT satellite data into PyGMI.</p>
+<p>It uses code by Erik Bolch, <a class="reference external" href="mailto:ebolch&#37;&#52;&#48;contractor&#46;usgs&#46;gov">ebolch<span>&#64;</span>contractor<span>&#46;</span>usgs<span>&#46;</span>gov</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.apply_glt">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">apply_glt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glt_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-9999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GLT_NODATA_VALUE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.apply_glt" title="Link to this definition">¶</a></dt>
+<dd><p>Apply GLT.</p>
+<p>This function applies the GLT array to a numpy array of either 2 or 3
+dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds_array</strong> (<em>numpy array</em>) – A numpy array of the desired variable.</p></li>
+<li><p><strong>glt_array</strong> (<em>GLT array</em>) – A GLT array constructed from EMIT GLT data.</p></li>
+<li><p><strong>fill_value</strong> (<em>int</em><em>, </em><em>optional</em>) – Fill value. The default is -9999.</p></li>
+<li><p><strong>GLT_NODATA_VALUE</strong> (<em>int</em><em>, </em><em>optional</em>) – GLT nodata value. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out_ds</strong> – a numpy array of orthorectified data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.coord_vects">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">coord_vects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.coord_vects" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Lat and Lon Vectors/Coordinate Grid.</p>
+<p>This function calculates the Lat and Lon Coordinate Vectors using the GLT
+and Metadata from an EMIT dataset read into xarray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<em>xarray.Dataset</em>) – an xarray.Dataset containing the root variable and metadata of an EMIT
+dataset.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>lon</strong> (<em>numpy array</em>) – Longitude.</p></li>
+<li><p><strong>lat</strong> (<em>numpy array</em>) – Latitude.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.emit_xarray">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">emit_xarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ortho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unpacked_bmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.emit_xarray" title="Link to this definition">¶</a></dt>
+<dd><p>EMIT xarray.</p>
+<p>This function utilizes other functions in this module to streamline
+opening an EMIT dataset as an xarray.Dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – a file path to an EMIT netCDF file.</p></li>
+<li><p><strong>ortho</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to orthorectify the dataset or leave in crosstrack/downtrack
+coordinates. The default is False.</p></li>
+<li><p><strong>qmask</strong> (<em>numpy array</em><em>, </em><em>optional</em>) – Output from the quality_mask function used to mask
+pixels based on quality flags selected in that function. Any
+non-orthorectified array with the proper crosstrack and downtrack
+dimensions can also be used. The default is None.</p></li>
+<li><p><strong>unpacked_bmask</strong> (<em>numpy array</em><em>, </em><em>optional</em>) – From the band_mask function, used to mask band-specific pixels that
+have been interpolated. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out_xr</strong> – Dataset constructed based on the parameters provided.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>xarray.Dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.main">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.main" title="Link to this definition">¶</a></dt>
+<dd><p>EMIT data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.ortho_xr">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">ortho_xr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">GLT_NODATA_VALUE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-9999</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.ortho_xr" title="Link to this definition">¶</a></dt>
+<dd><p>Use <cite>apply_glt</cite> to create an orthorectified xarray dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<em>xarray.Dataset</em>) – Dataset produced by emit_xarray.</p></li>
+<li><p><strong>GLT_NODATA_VALUE</strong> (<em>int</em><em>, </em><em>optional</em>) – No data value for the GLT tables. The default is 0.</p></li>
+<li><p><strong>fill_value</strong> (<em>int</em><em>, </em><em>optional</em>) – The fill value for EMIT datasets. The default is -9999.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out_xr</strong> – an orthocorrected xarray dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>xarray.Dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.emit.xr_to_pygmi">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.emit.</span></span><span class="sig-name descname"><span class="pre">xr_to_pygmi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xr_ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tnames=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metaonly=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.emit.xr_to_pygmi" title="Link to this definition">¶</a></dt>
+<dd><p>Xarray to PyGMI dataset.</p>
+<p>Takes an EMIT dataset read into an xarray dataset using the emit_xarray
+function and convert to PyGMI dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xr_ds</strong> (<em>xarray.Dataset</em>) – an EMIT dataset read into xarray using the emit_xarray function.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – list of pygmi Data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -1244,6 +1370,27 @@ to be used by other routines.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.iodefs.convert_ll_to_utm">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.iodefs.</span></span><span class="sig-name descname"><span class="pre">convert_ll_to_utm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.convert_ll_to_utm" title="Link to this definition">¶</a></dt>
+<dd><p>Convert latitude and longitude to UTM.</p>
+<p><a class="reference external" href="https://stackoverflow.com/a/40140326/4556479">https://stackoverflow.com/a/40140326/4556479</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon</strong> (<em>float</em>) – Longitude.</p></li>
+<li><p><strong>lat</strong> (<em>float</em>) – latitude.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>epsg_code</strong> – EPSG code.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pygmi.rsense.iodefs.etree_to_dict">
 <span class="sig-prename descclassname"><span class="pre">pygmi.rsense.iodefs.</span></span><span class="sig-name descname"><span class="pre">etree_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.etree_to_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Convert an ElementTree to dictionary.</p>
@@ -1412,6 +1559,29 @@ ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of PyGMI Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.rsense.iodefs.get_emit">
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.iodefs.</span></span><span class="sig-name descname"><span class="pre">get_emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tnames=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metaonly=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_emit" title="Link to this definition">¶</a></dt>
+<dd><p>Get EMIT Data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – filename to import</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterable. Default is None.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+<li><p><strong>tnames</strong> (<em>list</em><em>, </em><em>optional</em>) – list of band names to import, in order. The default is None.</p></li>
+<li><p><strong>metaonly</strong> (<em>bool</em><em>, </em><em>optional</em>) – Retrieve only the metadata for the file. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI raster Data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2561,7 +2731,7 @@ The default is ‘’.</p></li>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="index.html">PyGMI</a></h1>
 
@@ -2579,7 +2749,16 @@ The default is ‘’.</p></li>
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
@@ -2627,16 +2806,6 @@ The default is ‘’.</p></li>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -2653,8 +2822,8 @@ The default is ‘’.</p></li>
       &#169;2024 Council for Geoscience.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/pygmi.rsense.rst.txt"
