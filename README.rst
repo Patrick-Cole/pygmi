@@ -205,7 +205,7 @@ Once this is done, download pygmi, extract (unzip) it to a directory, and run it
 
 References
 ----------
- Cole, P. 2012, Development of a 3D Potential Field Forward Modelling System in Python, AGU fall meeting, 3-7 December, San Francisco, USA
- Cole, P. 2013, PyGMI – The use of Python in geophysical modelling and interpretation. South African Geophysical Association, 13th Biennial Conference, Skukuza Rest Camp, Kruger National Park (7-9 October)
- Cole, P. 2014, The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package, SciPy 2014, Austin, Texas (6-12 July)
- Cole, P. 2016, The continued evolution of the open source PyGMI project. 35th IGC, Cape Town.
+*Cole, P. 2012, Development of a 3D Potential Field Forward Modelling System in Python, AGU fall meeting, 3-7 December, San Francisco, USA
+*Cole, P. 2013, PyGMI – The use of Python in geophysical modelling and interpretation. South African Geophysical Association, 13th Biennial Conference, Skukuza Rest Camp, Kruger National Park (7-9 October)
+*Cole, P. 2014, The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package, SciPy 2014, Austin, Texas (6-12 July)
+*Cole, P. 2016, The continued evolution of the open source PyGMI project. 35th IGC, Cape Town.
