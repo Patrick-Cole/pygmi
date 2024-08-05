@@ -1,5 +1,11 @@
+PyGMI
+=====
+
+[![PyPI](https://img.shields.io/badge/python-3-blue.svg)](https://www.python.org/downloads/)
+![PyPI - Version](https://img.shields.io/pypi/v/pygmi)
+
 Overview
-========
+--------
 
 PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets.
 
@@ -157,7 +163,7 @@ The process to install is as follows:
    conda install geopandas
 
    conda install numba
-   
+
    conda install natsort
 
    conda install scikit-learn
@@ -169,17 +175,17 @@ The process to install is as follows:
    conda install simpeg
 
    conda install shapelysmooth
-   
+
    conda install pyogrio
-   
+
    conda install openpyxl
-   
+
    conda install xlrd
-   
+
    conda install xarray
-   
+
    conda install h5netcdf
-   
+
    conda install rioxarray
 
    pip install mtpy
