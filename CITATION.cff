@@ -1,8 +1,38 @@
-@inproceedings{Cole2014,
-   author = {Patrick Cole},
-   city = {Austin, Texas},
-   booktitle = {SciPy 2014: 13th Python in Science Conference},
-   month = {7},
-   title = {The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package},
-   year = {2014},
-}
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: PyGMI
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Patrick
+    family-names: Cole
+    name-particle: Patrick
+    email: pcole@geoscience.org.za
+    affiliation: Council for Geoscience
+    orcid: 'https://orcid.org/0000-0002-3563-8704'
+repository-code: 'https://github.com/Patrick-Cole/pygmi'
+url: 'https://patrick-cole.github.io/pygmi/'
+abstract: >-
+  PyGMI stands for Python Geoscience Modelling and
+  Interpretation. It is a modelling and interpretation suite
+  aimed at magnetic, gravity and other datasets.
+keywords:
+  - geophysics
+  - remote-sensing
+license: GPL-3.0
+preferred-citation:
+  type: conference-paper
+  authors:
+  - family-names: "Cole"
+    given-names: "Patrick"
+    orcid: "https://orcid.org/0000-0002-3563-8704"
+  month: 7
+  title: "The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package"
+  conference:
+    name: "SciPy 2014: 13th Python in Science Conference"
+  collection-title: "SciPy 2014: 13th Python in Science Conference, Austin, Texas"
+  year: 2014
