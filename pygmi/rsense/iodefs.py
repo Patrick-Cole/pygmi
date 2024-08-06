@@ -2754,7 +2754,9 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         if zfile.lower()[-4:] != '.tif':
             continue
 
-        bname = zfile[zfile.index('Band'):zfile.index('.tif')]
+        # breakpoint()
+        # bname = zfile[zfile.index('Band'):zfile.index('.tif')]
+        bname = zfile.split('.')[-2]
         if tnames is not None and bname not in tnames:
             continue
 
@@ -2790,9 +2792,10 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         fext = dat[-1].dataid[4:]
 
         bmeta['Sensor'] = f'ASTER {platform}'
-        bmeta['WavelengthMin'] = satbands[fext][0]
-        bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
+        if fext in satbands:
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
+            bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
 
         dataset.close()
         dataset1.close()
@@ -2934,14 +2937,19 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
         dat.append(Data())
 
-        utmzone = float(meta['UTMZONECODE1'])
+        for kmeta in meta:
+            if 'UTMZONECODE' in kmeta:
+                utmzone = float(meta[kmeta])
+                break
         crssrc = CRS.from_epsg(4326)
         crs = CRS.from_epsg(32600+utmzone)
 
         dataset1 = rasterio.open(bfile)
-        dataset = rasterio.vrt.WarpedVRT(dataset1,
-                                         src_crs=crssrc,
-                                         crs=crs)
+
+        if dataset1.crs is not None:
+            crssrc = dataset1.crs
+
+        dataset = rasterio.vrt.WarpedVRT(dataset1, src_crs=crssrc, crs=crs)
 
         if metaonly is False:
             dat[-1].data = dataset.read(1)
@@ -3510,13 +3518,14 @@ def _testfn3():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
     # ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
-    ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
+    # ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
+    # ifile = r"D:\AST_05_00301142023201546_20240802052134_1141077.hdf"
 
     app = QtWidgets.QApplication(sys.argv)
 
     os.chdir(os.path.dirname(ifile))
-    tmp1 = ImportBatch()
-    # tmp1 = ImportData()
+    # tmp1 = ImportBatch()
+    tmp1 = ImportData()
     tmp1.settings()
 
     dat = tmp1.outdata['Raster']
