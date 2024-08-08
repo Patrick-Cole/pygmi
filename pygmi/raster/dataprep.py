@@ -2038,6 +2038,8 @@ def getepsgcodes():
         else:
             pcodes[i.name+r' / Geodetic Geographic'] = int(i.code)
 
+    pcodes['WGS 84 / Geodetic Geographic'] = 4326
+
     for datum in [4222, 4148]:
         for clong in range(15, 35, 2):
             geog_crs = CRS.from_epsg(datum)
@@ -2653,6 +2655,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
+    ifile = r"D:\mag\merge\mag1.tif"
 
     dat = get_raster(ifile)
 
