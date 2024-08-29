@@ -31,7 +31,7 @@ It includes:
 
 It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
-The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage!
+The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage! Contributors can look `here <https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md>`_ for ways to contribute.
 
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
