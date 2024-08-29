@@ -1308,13 +1308,17 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
     """
     if isinstance(iwkt, int):
         crs_from = CRS.from_epsg(iwkt)
-    else:
+    elif isinstance(iwkt, str):
         crs_from = CRS.from_wkt(iwkt)
+    else:
+        crs_from = iwkt
 
     if isinstance(owkt, int):
         crs_to = CRS.from_epsg(owkt)
-    else:
+    elif isinstance(iwkt, str):
         crs_to = CRS.from_wkt(owkt)
+    else:
+        crs_to = owkt
 
     try:
         transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)

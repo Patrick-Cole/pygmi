@@ -428,6 +428,7 @@ class DataMerge(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.idir = None
+        self.tmpdir = None
         self.is_import = True
         self.method = merge_median
         self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
@@ -811,7 +812,10 @@ class DataMerge(BasicModule):
                                                        i2.extent[3],
                                                        i2.xdim, i2.ydim)
 
-                tmpfile = os.path.join(tempfile.gettempdir(),
+                if self.tmpdir is None:
+                    self.tmpdir = tempfile.gettempdir()
+
+                tmpfile = os.path.join(self.tmpdir,
                                        os.path.basename(i.filename))
 
                 tmpid = i2.dataid
@@ -875,7 +879,7 @@ class DataMerge(BasicModule):
             outdat[-1].datetime = datetime
 
             if self.cb_bands_to_files.isChecked():
-                export_raster(ofile, outdat, 'GTiff', compression='ZSTD',
+                export_raster(ofile, outdat, 'GTiff', compression='DEFLATE',
                               showlog=self.showlog, piter=self.piter)
 
                 del outdat
@@ -1795,6 +1799,11 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
         otransform, ocolumns, orows = calculate_default_transform(
             icrs, ocrs, src_width, src_height, *data.bounds)
 
+    if data.nodata is None:
+        nodata = data.data.fill_value
+    else:
+        nodata = data.nodata
+
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     odata, _ = reproject(source=data.data,
                          destination=odata,
@@ -1802,7 +1811,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
                          src_crs=icrs,
                          dst_transform=otransform,
                          dst_crs=ocrs,
-                         src_nodata=data.nodata,
+                         src_nodata=nodata,
                          resampling=rasterio.enums.Resampling['bilinear'])
 
     data2 = Data()
@@ -1814,8 +1823,8 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.wkt = CRS.to_wkt(ocrs)
     data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
 
-    data2.data = np.ma.masked_equal(data2.data, data.nodata)
-    data2.nodata = data.nodata
+    data2.data = np.ma.masked_equal(data2.data, nodata)
+    data2.nodata = nodata
     data2.metadata = data.metadata
 
     return data2
@@ -2130,7 +2139,7 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
             dat = check_dataid(dat)
         return dat
 
-    showlog('Merging data...')
+    # showlog('Merging data...')
     if masterid is not None:
         for i in dat:
             if i.dataid == masterid:

@@ -32,6 +32,7 @@
 
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+from numba import jit
 
 from pygmi import menu_default
 from pygmi.misc import ProgressBarText, BasicModule
@@ -475,15 +476,25 @@ def visibility2d(data, wsize, dh, piter=iter):
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
     w2 = int(np.floor(wsize/2))
-    vn = np.zeros([nr, nc])
-    vs = np.zeros([nr, nc])
-    ve = np.zeros([nr, nc])
-    vw = np.zeros([nr, nc])
-    vd1 = np.zeros([nr, nc])
-    vd2 = np.zeros([nr, nc])
-    vd3 = np.zeros([nr, nc])
-    vd4 = np.zeros([nr, nc])
-    vstd = np.zeros([nr, nc])
+    vn = np.zeros_like(data)
+    vs = np.zeros_like(data)
+    ve = np.zeros_like(data)
+    vw = np.zeros_like(data)
+    vd1 = np.zeros_like(data)
+    vd2 = np.zeros_like(data)
+    vd3 = np.zeros_like(data)
+    vd4 = np.zeros_like(data)
+    vstd = np.zeros_like(data)
+
+    # vn = np.zeros([nr, nc])
+    # vs = np.zeros([nr, nc])
+    # ve = np.zeros([nr, nc])
+    # vw = np.zeros([nr, nc])
+    # vd1 = np.zeros([nr, nc])
+    # vd2 = np.zeros([nr, nc])
+    # vd3 = np.zeros([nr, nc])
+    # vd4 = np.zeros([nr, nc])
+    # vstd = np.zeros([nr, nc])
     mask = np.ma.getmaskarray(data)
     mean = data.mean()
     data = data.data
@@ -543,6 +554,81 @@ def visibility2d(data, wsize, dh, piter=iter):
     return vtot, vstd, vsum
 
 
+@jit(nopython=True)
+def visibilitytot(data, wsize, dh):
+    """
+    Compute visibility as a textural measure.
+
+    Compute vertical derivatives by calculating the visibility at different
+    heights above the surface (see paper)
+
+    Parameters
+    ----------
+    data : numpy array
+        input dataset - numpy MxN array
+    wsize : int
+        window size, must be odd
+    dh : float
+        height of observer above surface
+    piter : function, optional
+        Progress bar iterable. The default is iter.
+
+    Returns
+    -------
+    vtot : numpy array
+        Total visibility.
+    vstd : numpy array
+        Visibility variation.
+    vsum : numpy array
+        Visibility vector resultant.
+
+    """
+    nr, nc = np.shape(data)
+    wsize = abs(np.real(wsize))
+    w2 = int(np.floor(wsize/2))
+    vtot = np.zeros_like(data)
+
+
+    # mask = np.ma.getmaskarray(data)
+    # mean = data.mean()
+    # data = data.data
+    # data[mask] = mean
+
+    for j in range(nc):    # Columns
+        for i in range(w2, nr-w2):
+            dtmp = data[i-w2:i+w2+1, j]
+            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
+            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+
+    for j in range(w2, nc-w2):    # Rows
+        for i in range(nr):
+            dtmp = data[i, j-w2:j+w2+1]
+            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
+            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+
+    for j in range(w2, nc-w2):
+        for i in range(w2, nr-w2):
+            dtmp = np.zeros(wsize)
+            for k in range(wsize):
+                dtmp[k] = data[i-w2+k, j-w2+k]
+            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
+            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+            dtmp = np.zeros(wsize)
+            for k in range(wsize):
+                dtmp[k] = data[i+w2-k, j-w2+k]
+            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
+            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+
+    # vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
+    vtot = vtot[w2:nr-w2, w2:nc-w2]
+
+    # vtot = np.ma.array(vtot)
+    # vtot.mask = mask[w2:-w2, w2:-w2]
+
+    return vtot
+
+
+@jit(nopython=True, fastmath=True)
 def __visible1(dat, nr, cp, dh):
     """
     Visible 1.
@@ -579,6 +665,7 @@ def __visible1(dat, nr, cp, dh):
     return num
 
 
+@jit(nopython=True, fastmath=True)
 def __visible2(dat, cp, dh):
     """
     Visible 2.

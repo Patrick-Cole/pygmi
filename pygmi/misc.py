@@ -572,7 +572,8 @@ class ProgressBarText():
             i += 1
 
             time2 = time.perf_counter()
-            if time2-time1 > 1 and int(i*100/self.total) > oldval:
+            # if time2-time1 > 1 and int(i*100/self.total) > oldval:
+            if int(i*100/self.total) > oldval or oldval == 0:
                 oldval = int(i*100/self.total)
 
                 tleft = (self.total-i)*(time2-self.otime)/i
