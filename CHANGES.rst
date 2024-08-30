@@ -1,11 +1,37 @@
 =========
 Changelog
 =========
-
-v3.2.8.7, 21 February 2024
---------------------------
+v3.2.8.18, 30 August 2024
+-------------------------
+* Improved performance of visibility calculation.
+* Added possibility to specify temporary directory to the mosaic API, as well as assigning a default nodata value where none exists.
+* Added CRS functionality to reproject API.
+* Bugfix - fixed a bug importing some ASTER data.
+* Bugfix - fixed a bug saving projects.
+* Fixed a bug in change detection.
+* Added SAVI, RDVI and GRVI to ratios.
+* Fixed a bug with seiscomp import.
+* SimPEG API changes.
+* Fixed a bug with sunshading, when clicking on interface.
+* Fixed bug in number of samples reported for stats.
+* Removed winsound references.
+* Added EHGA filter to tilt angle module.
+* Added import of EMIT data.
+* Fixed a bug importing SeisComp data.
+* Improved discrete colorbar function.
+* Updated gradients help file.
+* JPEG compression activated for GeoTIFFs.
+* Cluster datasets can be cut.
+* Added ML residual for SeisComp import.
+* SeisComp extended autoloc3 seismic data can be imported.
+* Fixed a bug causing some ASTER hdf data to not import properly in UTM.
+* Fixed a bug importing .asc data.
+* Will skip calculating statistics for a band if it is empty.
+* Fixed an error loading in kml/kmz.
+* ASTER zip import will attempt to assign a UTM crs if none is given.
+* User can now select vector columns.
 * Table is cleared properly in smoothing tool.
-* Added API option to set bounds in vector import
+* Added API option to set bounds in vector import.
 * Bugfix - vector display.
 * Added folder icons to buttons which were missing it.
 * Added vector correlation.
@@ -31,7 +57,7 @@ v3.2.8.0, 18 January 2024
 * Fixed a mask bug in Landslide indices.
 * Raster viewer now allows current clip % to be assigned to all bands.
 * Fixed a bug causing an offset in magnetic inversion.
-* Occam executable can now be manually linking within MT module.
+* Occam executable can now be manually linked within MT module.
 * Fixed a bug in BIRRP.
 * Added OPTICS to clustering and segmentation.
 * MNF transforms will use less memory at some stages.

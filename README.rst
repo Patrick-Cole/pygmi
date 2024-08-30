@@ -31,9 +31,9 @@ It includes:
 
 It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
-The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage! Contributors can look `here <https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md>`_ for ways to contribute.
+The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage! Contributors can check this `link <https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md>`_ for ways to contribute.
 
-The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
+The latest release version (including windows installers) can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
 You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
 
