@@ -7,14 +7,14 @@ PyGMI
 =====
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-The latest release can be downloaded `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
+The latest version can be downloaded at the `release <https://github.com/Patrick-Cole/pygmi/releases>`_ section.
 
 If there are requests or concerns, please contact me.
 
 Overview
 ========
 
-PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets.
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets. PyGMI has a graphical user interface, and is meant to be run as such.
 
 PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
 
@@ -31,9 +31,9 @@ It includes:
 
 It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
-View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
+The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage! Contributors can look `here <https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md>`_ for ways to contribute.
 
-The latest release version (including windows installers) can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
+The latest release version (including windows installers) can be found at this `link <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
 You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
 

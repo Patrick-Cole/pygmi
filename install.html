@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; PyGMI 3.2.8.16 documentation</title>
+    <title>Installation &#8212; PyGMI 3.2.8.18 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
-    <script src="_static/documentation_options.js?v=17ce2deb"></script>
+    <script src="_static/documentation_options.js?v=5bac0a30"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -86,15 +86,9 @@
             
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<p>Instructions on how to install PyGMI can also be found on <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">Github</a>.</p>
-<section id="general-not-anaconda">
-<h2>General (Not Anaconda)<a class="headerlink" href="#general-not-anaconda" title="Link to this heading">¶</a></h2>
-<p>The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:</p>
-<blockquote>
-<div><p>pip install pygmi</p>
-</div></blockquote>
-<p>This will download pygmi from PyPI and install it within your python repository. Depending on your operating system, and which libraries you already have installed, you may need to follow instructions in sections below. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.</p>
-<p>Running pygmi can be now done at the command prompt as follows:</p>
+<p>The simplest installation of PyGMI is on Windows, using a pre-built installer at <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">64-bit</a>.</p>
+<p>If you prefer building from source, you can use PyPi or Conda. Note that if you are using PyPi,  certain libraries require binaries built. To do so or download binaries manually, please see the Linux or Windows section below.</p>
+<p>Once built, running pygmi can be done at the command prompt as follows:</p>
 <blockquote>
 <div><p>pygmi</p>
 </div></blockquote>
@@ -107,26 +101,68 @@
 <blockquote>
 <div><p>python quickstart.py</p>
 </div></blockquote>
-</section>
-<section id="windows-users">
-<h2>Windows Users<a class="headerlink" href="#windows-users" title="Link to this heading">¶</a></h2>
-<p>Installers are available in <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">64-bit</a></p>
-<p>Alternatively, you can use the instructions above to run PyGMI with your local python installation. You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. You may need to install the <a class="reference external" href="https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads">Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019</a>.</p>
-<p>Examples of binaries you may need to get are:</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
+<p>PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.12 on Windows.</p>
+<p>PyGMI should still work with Python 3.11.</p>
+<p>PyGMI is developed and has been tested with the following libraries in order to function:</p>
 <ul class="simple">
-<li><p>numexpr</p></li>
-<li><p>numba</p></li>
-<li><p>llvmlite</p></li>
-<li><p>GDAL</p></li>
-<li><p>discretize</p></li>
-<li><p>fiona</p></li>
+<li><p>python 3.12.4</p></li>
+<li><p>discretize 0.10.0</p></li>
+<li><p>fiona 1.9.5</p></li>
+<li><p>gdal 3.8.4</p></li>
+<li><p>geopandas 0.14.4</p></li>
+<li><p>matplotlib 3.9.0</p></li>
+<li><p>mtpy 1.1.5</p></li>
+<li><p>natsort 8.4.0</p></li>
+<li><p>numba 0.60.0</p></li>
+<li><p>numexpr 2.10.1</p></li>
+<li><p>numpy 1.26.4</p></li>
+<li><p>openpyxl 3.1.2</p></li>
+<li><p>pandas 2.2.2</p></li>
+<li><p>psutil 6.0.0</p></li>
+<li><p>pyogrio 0.9.0</p></li>
+<li><p>pyopengl 3.1.7</p></li>
+<li><p>pyproj 3.6.1</p></li>
+<li><p>PyQt5 5.15.10</p></li>
+<li><p>pytest 8.2.2</p></li>
+<li><p>rasterio 1.3.9</p></li>
+<li><p>scikit-image 0.24.0</p></li>
+<li><p>scikit-learn 1.5.0</p></li>
+<li><p>scipy 1.13.1</p></li>
+<li><p>shapely 2.0.3</p></li>
+<li><p>shapelysmooth 0.2.0</p></li>
+<li><p>SimPEG 0.21.1</p></li>
+<li><p>xlrd 2.0.1</p></li>
+<li><p>xarray 2024.6.0</p></li>
+<li><p>h5netcdf 1.3.0</p></li>
+<li><p>rioxarray 0.15.6</p></li>
 </ul>
-<p>They can be obtained from the <a class="reference external" href="https://www.cgohlke.com/">website</a> by Christoph Gohlke.</p>
 </section>
-<section id="linux">
-<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h2>
+<section id="pypi-windows">
+<h2>PyPi - Windows<a class="headerlink" href="#pypi-windows" title="Link to this heading">¶</a></h2>
+<p>Windows users can use the <a class="reference external" href="https://winpython.github.io/">WinPython</a> distribution as an alternative to Anaconda. It comes with most libraries preinstalled, so using pip should be sufficient.</p>
+<p>Alternatively, if you are not an Anaconda or WinPython user, you will need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. Visual Studio 2022 can be used to most compile binaries, if it is in the same path as python.</p>
+<p>GDAL in particular is non-trivial to compile to binary form, so downloading a binary is recommended. Related binaries can be obtained at the <a class="reference external" href="https://github.com/cgohlke/geospatial-wheels/">website</a> by Christoph Gohlke.</p>
+<p>If you obtain binaries here, you will need to download and install:</p>
+<ul class="simple">
+<li><p>fiona</p></li>
+<li><p>GDAL</p></li>
+<li><p>pyproj</p></li>
+<li><p>rasterio</p></li>
+<li><p>Rtree</p></li>
+<li><p>shapely</p></li>
+</ul>
+<p>All these binaries should be downloaded since they have internal co-dependencies.</p>
+<p>Once this is done, install with the following command.</p>
+<blockquote>
+<div><p>pip install pygmi</p>
+</div></blockquote>
+</section>
+<section id="pypi-linux">
+<h2>PyPi - Linux<a class="headerlink" href="#pypi-linux" title="Link to this heading">¶</a></h2>
 <p>Linux normally comes with python installed, but the additional libraries will still need to be installed.</p>
-<p>Typically, packages can be installed using pip. The process is as follows:</p>
+<p>The process is as follows:</p>
 <blockquote>
 <div><p>sudo apt-get install pip</p>
 <p>sudo apt-get install gdal-bin</p>
