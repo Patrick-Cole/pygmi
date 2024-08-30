@@ -14,7 +14,7 @@ PyGMI
 Overview
 --------
 
-PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets.
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets. PyGMI has a graphical user interface, and is meant to be run as such.
 
 PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
 
@@ -39,8 +39,29 @@ You may need to install the `Microsoft Visual C++ Redistributable for Visual Stu
 
 If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
 
-Requirements
+
+Installation
 ------------
+The simplest installation of PyGMI is on Windows, using a pre-built installer at `64-bit <https://github.com/Patrick-Cole/pygmi/releases>`_.
+
+If you prefer building from source, you can use PyPi or Conda. Note that if you are using PyPi,  certain libraries require binaries built. To do so or download binaries manually, please see the Linux or Windows section below.
+
+Once built, running pygmi can be done at the command prompt as follows:
+
+   pygmi
+
+If you are in python, you can run PyGMI by using the following commands:
+
+   from pygmi.main import main
+
+   main()
+
+If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:
+
+   python quickstart.py
+
+Requirements
+^^^^^^^^^^^^
 PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.12 on Windows.
 
 PyGMI should still work with Python 3.11.
@@ -78,52 +99,35 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * h5netcdf 1.3.0
 * rioxarray 0.15.6
 
-Installation
-------------
-General (Not Anaconda)
-----------------------
-The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:
+PyPi - Windows
+^^^^^^^^^^^^^^
+Windows users can use the `WinPython <https://winpython.github.io/>`_ distribution as an alternative to Anaconda. It comes with most libraries preinstalled, so using pip should be sufficient. 
+
+Alternatively, if you are not an Anaconda or WinPython user, you will need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. Visual Studio 2022 can be used to most compile binaries, if it is in the same path as python.
+
+GDAL in particular is non-trivial to compile to binary form, so downloading a binary is recommended. Related binaries can be obtained at the `website <https://github.com/cgohlke/geospatial-wheels/>`_ by Christoph Gohlke.
+
+If you obtain binaries here, you will need to download and install:
+
+* fiona
+* GDAL
+* pyproj
+* rasterio
+* Rtree
+* shapely
+
+All these binaries should be downloaded since they have internal co-dependencies.
+
+Once this is done, install with the following command.
 
    pip install pygmi
 
-This will download pygmi from PyPI and install it within your python repository. Depending on your operating system, and which libraries you already have installed, you may need to follow instructions in sections below. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
 
-Running pygmi can be now done at the command prompt as follows:
-
-   pygmi
-
-If you are in python, you can run PyGMI by using the following commands:
-
-   from pygmi.main import main
-
-   main()
-
-If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:
-
-   python quickstart.py
-
-Windows Users
--------------
-Installers are available in `64-bit <https://github.com/Patrick-Cole/pygmi/releases>`_
-
-Alternatively, you can use the instructions above to run PyGMI with your local python installation. You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI.
-
-Examples of binaries you may need to get are:
-
-* numexpr
-* numba
-* llvmlite
-* GDAL
-* discretize
-* fiona
-
-They can be obtained from the `website <https://www.cgohlke.com/>`_ by Christoph Gohlke.
-
-Linux
------
+PyPi - Linux
+^^^^^^^^^^^^
 Linux normally comes with python installed, but the additional libraries will still need to be installed.
 
-Typically, packages can be installed using pip. The process is as follows:
+The process is as follows:
 
    sudo apt-get install pip
 
@@ -138,7 +142,7 @@ Typically, packages can be installed using pip. The process is as follows:
    pip install pygmi
 
 Anaconda
---------
+^^^^^^^^
 Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.
 
 The process to install is as follows:

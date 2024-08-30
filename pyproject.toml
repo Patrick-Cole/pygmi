@@ -9,7 +9,7 @@ authors = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 maintainers = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 description = 'Python Geoscience Modelling and Interpretation'
 readme = 'README.rst'
-requires-python = '>=3.9'
+requires-python = '>=3.11'
 license = {text = 'GNU General Public License v3 (GPLv3)'}
 keywords=['Geoscience', 'Geophysics', 'Magnetic', 'Gravity', 'Modelling',
           'Interpretation', 'Remote Sensing']
@@ -67,11 +67,14 @@ repository =  'https://github.com/Patrick-Cole/pygmi.git'
 changelog = 'https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CHANGES.rst'
 
 [project.scripts]
-pygmi-cli = 'pygmi:main'
+pygmi-cli = 'pygmi.main:main'
 
 [project.gui-scripts]
-pygmi-gui = 'pygmi:main'
-pygmi = 'pygmi:main'
+pygmi-gui = 'pygmi.main:main'
+pygmi = 'pygmi.main:main'
+
+[tool.setuptools.package-dir]
+pygmi = 'pygmi'
 
 [tool.setuptools.dynamic]
 version = {attr = 'pygmi.version.__version__'}
