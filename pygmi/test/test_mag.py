@@ -52,7 +52,7 @@ def test_tilt1():
            [1.8572654805528055e-17, 1.8572654805528055e-17]]
     tdx2 = [[0.30816907111598496, 0.30816907111598496],
             [0.30816907111598496, 0.30816907111598496]]
-    t1, th, t2, ta, tdx, _ = dataprep.tilt1(datin, 90, 0)
+    t1, th, t2, ta, tdx, _, _ = dataprep.tilt1(datin, 90, 0)
 
     np.testing.assert_array_equal(t1, t12)
     np.testing.assert_array_equal(th, th2)

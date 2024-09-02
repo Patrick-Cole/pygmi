@@ -87,6 +87,7 @@ def test_viz():
              [2.613125929752753, 2.613125929752753]]
     vtot, vstd, vsum = cooper.visibility2d(datin, 1, 0)
 
+    # breakpoint()
     np.testing.assert_array_equal(vtot, vtot2)
     np.testing.assert_array_equal(vstd, vstd2)
     np.testing.assert_array_equal(vsum, vsum2)
@@ -547,10 +548,11 @@ def test_agc():
 
 
 if __name__ == "__main__":
-    dat = Data()
-    dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
-                           mask=[[0, 0], [0, 0]])
-    dat.dataid = 'test'
-    dat.set_transform(1, 25, 1, -27)
-    dat.crs = CRS.from_epsg(4326)
-    test_io_ascii(dat)
+    # dat = Data()
+    # dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
+    #                        mask=[[0, 0], [0, 0]])
+    # dat.dataid = 'test'
+    # dat.set_transform(1, 25, 1, -27)
+    # dat.crs = CRS.from_epsg(4326)
+    # test_io_ascii(dat)
+    test_viz()

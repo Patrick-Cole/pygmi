@@ -1,6 +1,10 @@
 =========
 Changelog
 =========
+v3.2.8.19, 2 September
+----------------------
+* Fixed an error in some tests.
+
 v3.2.8.18, 30 August 2024
 -------------------------
 * Improved performance of visibility calculation.

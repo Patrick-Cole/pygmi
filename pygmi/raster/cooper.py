@@ -484,7 +484,7 @@ def visibility2d(data, wsize, dh, piter=iter):
     vd2 = np.zeros_like(data)
     vd3 = np.zeros_like(data)
     vd4 = np.zeros_like(data)
-    vstd = np.zeros_like(data)
+    # vstd = np.zeros_like(data)
 
     # vn = np.zeros([nr, nc])
     # vs = np.zeros([nr, nc])
@@ -494,7 +494,7 @@ def visibility2d(data, wsize, dh, piter=iter):
     # vd2 = np.zeros([nr, nc])
     # vd3 = np.zeros([nr, nc])
     # vd4 = np.zeros([nr, nc])
-    # vstd = np.zeros([nr, nc])
+    vstd = np.zeros([nr, nc])
     mask = np.ma.getmaskarray(data)
     mean = data.mean()
     data = data.data
