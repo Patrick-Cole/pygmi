@@ -1759,7 +1759,7 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
 
         idata.set_transform(transform=trans)
 
-    data = trim_raster(data)
+    # data = trim_raster(data)
 
     return data
 
