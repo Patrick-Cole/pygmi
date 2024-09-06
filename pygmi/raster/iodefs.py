@@ -36,6 +36,7 @@ import rasterio
 from rasterio.windows import Window
 from pyproj.crs import CRS
 
+from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
@@ -1079,7 +1080,7 @@ def get_geosoft(hfile):
     return dat
 
 
-class ExportData(BasicModule):
+class ExportData(ContextModule):
     """
     Export Data.
 
@@ -1093,6 +1094,53 @@ class ExportData(BasicModule):
         super().__init__(parent)
 
         self.ofile = ''
+        self.ofilt = ''
+        self.exportdata = None
+
+        self.cmb_ofilt = QtWidgets.QComboBox()
+        self.le_ofile = QtWidgets.QLineEdit('')
+        self.cb_bandsort = QtWidgets.QCheckBox('Sort output bands')
+        self.lw_1 = QtWidgets.QListWidget()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gl_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.exportraster')
+        pb_ofile = QtWidgets.QPushButton('Output File')
+
+        self.cb_bandsort.setChecked(False)
+        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle(r'Export Raster Data')
+
+        gl_main.addWidget(self.le_ofile, 0, 0, 1, 1)
+        gl_main.addWidget(pb_ofile, 0, 1, 1, 1)
+
+        gl_main.addWidget(QtWidgets.QLabel('Output Bands:'), 1, 0, 1, 2)
+        gl_main.addWidget(self.lw_1, 2, 0, 1, 2)
+        gl_main.addWidget(self.cb_bandsort, 3, 0, 1, 2)
+
+        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.acceptall)
+        buttonbox.rejected.connect(self.reject)
+        pb_ofile.pressed.connect(self.get_ofile)
+        # self.cb_ternary.clicked.connect(self.click_ternary)
 
     def run(self):
         """
@@ -1104,7 +1152,7 @@ class ExportData(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.parent.process_is_active(True)
+        self.process_is_active(True)
 
         if 'Cluster' in self.indata:
             data = self.indata['Cluster']
@@ -1119,37 +1167,48 @@ class ExportData(BasicModule):
                     tmp.dataid = ('Membership of class ' + str(j+1)
                                   + ': '+tmp.dataid)
                     newdat.append(tmp)
-            data = newdat
+            self.exportdata = newdat
 
         elif 'Raster' in self.indata:
-            data = self.indata['Raster']
+            self.exportdata = self.indata['Raster']
         else:
             self.showlog('No raster data')
             self.parent.process_is_active(False)
             return False
 
-        ext = ('GeoTIFF compressed using DEFLATE (*.tif);;'
-               'GeoTIFF compressed using ZSTD (*.tif);;'
-               'GeoTIFF (*.tif);;'
-               'ENVI (*.hdr);;'
-               'ERMapper (*.ers);;'
-               'Geosoft (*.gxf);;'
-               'ERDAS Imagine (*.img);;'
-               'SAGA binary grid (*.sdat);;'
-               'Surfer grid (*.grd);;'
-               'ArcInfo ASCII (*.asc);;'
-               'ASCII XYZ (*.xyz);;'
-               'ArcGIS BIL (*.bil)')
+        tmp = []
+        for i in self.exportdata:
+            tmp.append(i.dataid)
+        self.lw_1.addItems(tmp)
 
-        self.ofile, filt = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
+        for i in range(self.lw_1.count()):
+            item = self.lw_1.item(i)
+            item.setSelected(True)
+
+        self.exec()
+
+    def acceptall(self):
+        """Accept choice."""
         if self.ofile == '':
-            self.parent.process_is_active(False)
-            return False
+            self.showlog('No output file')
+            return
+
         os.chdir(os.path.dirname(self.ofile))
 
         self.showlog('Export Data Busy...')
 
+        atmp = [i.row() for i in self.lw_1.selectedIndexes()]
+
+        if atmp:
+            dtmp = []
+            for i in atmp:
+                dtmp.append(self.exportdata[i])
+            data = dtmp
+        else:
+            self.showlog('No bands selected')
+            return
+
+        filt = self.ofilt
         # Pop up save dialog box
         if filt == 'ArcInfo ASCII (*.asc)':
             self.export_ascii(data)
@@ -1173,7 +1232,8 @@ class ExportData(BasicModule):
                                   showlog=self.showlog)
             else:
                 export_raster(self.ofile, data, 'SAGA', piter=self.piter,
-                              showlog=self.showlog)
+                              showlog=self.showlog,
+                              bandsort=self.cb_bandsort.isChecked())
         if 'GeoTIFF' in filt:
             if 'ZSTD' in filt:
                 compression = 'ZSTD'
@@ -1191,8 +1251,9 @@ class ExportData(BasicModule):
                           showlog=self.showlog)
 
         self.showlog('Export Data Finished!')
-        self.parent.process_is_active(False)
-        return True
+        self.process_is_active(False)
+
+        self.accept()
 
     def export_gxf(self, data):
         """
@@ -1391,6 +1452,30 @@ class ExportData(BasicModule):
         file_out = self.ofile.rpartition('.')[0]+'_'+file_band+'.'+ext
 
         return file_out
+
+    def get_ofile(self):
+        """Get output directory."""
+        ext = ('GeoTIFF compressed using DEFLATE (*.tif);;'
+               'GeoTIFF compressed using ZSTD (*.tif);;'
+               'GeoTIFF (*.tif);;'
+               'ENVI (*.hdr);;'
+               'ERMapper (*.ers);;'
+               'Geosoft (*.gxf);;'
+               'ERDAS Imagine (*.img);;'
+               'SAGA binary grid (*.sdat);;'
+               'Surfer grid (*.grd);;'
+               'ArcInfo ASCII (*.asc);;'
+               'ASCII XYZ (*.xyz);;'
+               'ArcGIS BIL (*.bil)')
+
+        self.ofile, self.ofilt = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', ext)
+        if self.ofile == '':
+            self.parent.process_is_active(False)
+            return
+
+        self.le_ofile.setText(self.ofile)
+
 
 
 def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
@@ -1695,15 +1780,15 @@ def calccov(data, showlog=print):
 
 def _filespeedtest():
     """Test."""
+    import sys
     from pygmi.misc import getinfo
+
+    app = QtWidgets.QApplication(sys.argv)
+
+
     print('Starting')
 
-    ifile = r"D:\Hyper\cut_048-055_ref_rect.hdr"
-    ifile = r"D:\Hyper\103A_0825-0943_ref_rect.hdr"
-    ifile = r"D:/tmp.tif"
-    ifile = r"D:\RSA_TMI_wgs84Geographic.asc"
-
-    ifile = r"E:\Buglet\0430A_ESRI_TRUE_COLOUR_geo.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
 
     # ifile = ifile[:-4]+'_zstd.tif'
 
@@ -1724,6 +1809,10 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
     # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
     # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
+
+    tmp = ExportData()
+    tmp.indata['Raster'] = dataset
+    tmp.run()
 
     getinfo('End')
 

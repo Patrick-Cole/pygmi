@@ -351,7 +351,10 @@ class ContextModule(QtWidgets.QDialog):
             self.stdout_redirect = EmittingStream(parent.showlog)
             self.showlog = parent.showlog
             self.pbar = parent.pbar
-            self.process_is_active = parent.process_is_active
+            if hasattr(parent, 'process_is_active'):
+                self.process_is_active = parent.process_is_active
+            else:
+                self.process_is_active = lambda *args, **kwargs: None
 
         self.piter = self.pbar.iter
 
