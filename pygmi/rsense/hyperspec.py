@@ -650,6 +650,9 @@ class ProcFeatures(BasicModule):
 
         self.cmb_ratios.disconnect()
         self.product = features.product.copy()
+
+        self.product = dict(sorted(self.product.items()))
+
         del self.product['filter']
         self.cmb_ratios.clear()
         self.cmb_ratios.addItems(self.product)
@@ -781,8 +784,24 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         Output datasets.
 
     """
-    allfeatures = [i.split()[0] for i in product if i[0] == 'f']
-    allratios = [i.split()[0] for i in product if i[0] != 'f']
+    # allfeatures = [i.split()[0] for i in product if i[0] == 'f']
+    # allratios = [i.split()[0] for i in product if i[0] != 'f']
+
+    allfeatures = []
+    for f in feature:
+        for p in product:
+            if f in p and f not in allfeatures:
+                allfeatures.append(f)
+
+    allratios = []
+    for r in ratio:
+        for p in product:
+            if r in p and r not in allratios:
+                allratios.append(r)
+
+
+    # breakpoint()
+
 
     # Get list of wavelengths and data
     dat2 = []
@@ -817,6 +836,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     # Start processing
     depths = {}
     wvl = {}
+    dmax = {}
     for fname in allfeatures:
         if len(feature[fname]) == 4:
             fmin, fmax, lmin, lmax = feature[fname]
@@ -835,6 +855,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         _, rows, cols = dat2.shape
         dtmp = np.zeros((rows, cols))
         ptmp = np.zeros((rows, cols))
+        mtmp = np.zeros((rows, cols))
 
         tmp = np.nonzero((xdat > lmin) & (xdat < lmax))[0]
         i1a = tmp[0]
@@ -843,18 +864,25 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         fdat = np.moveaxis(fdat, 0, -1)
 
         for i in piter(range(rows)):
-            ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
-                                     xdat)
+            ptmp[i], dtmp[i], mtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
+                                     xdat, mtmp[i])
         depths[fname] = dtmp
         wvl[fname] = ptmp
         datcalc[fname] = dtmp
+        dmax[fname] = mtmp
 
     datout = None
     datout2 = None
     tmpw = None
 
     for i in product:
-        if '>' in i or '<' in i or '=' in i or i[0] == 'r':
+        if ('>' in i or '<' in i or '=' in i) and i.count('f') > 1:
+            dattmp = {}
+            for j in datcalc:
+                if j in i:
+                    dattmp[j] = datcalc[j]*dmax[j]
+            tmp = ne.evaluate(i, dattmp)
+        elif '>' in i or '<' in i or '=' in i or i[0] == 'r':
             tmp = ne.evaluate(i, datcalc)
         else:
             tmp = depths[i]
@@ -917,7 +945,7 @@ def indexcalc(formula, dat):
 
 
 @jit(nopython=True)
-def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
+def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
     """
     Feature process.
 
@@ -955,6 +983,7 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
 
         yhull = phull(yval)
         crem = yval/yhull
+        mtmp[j] = -(yval - yhull).min()
 
         imin = crem[i1a:i2a].argmin()
 
@@ -968,7 +997,7 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
         ptmp[j] = x
         dtmp[j] = 1. - y
 
-    return ptmp, dtmp
+    return ptmp, dtmp, mtmp
 
 
 @jit(nopython=True)
@@ -1194,8 +1223,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r"D:\Janine\cut_048-055_ref_rect_DEFLATE.tif"
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    ifile = r"D:\cut_048-055_ref_rect_DEFLATE.tif"
+    ifile = r"D:\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
 
@@ -1218,7 +1248,7 @@ def _testfn():
 
     tmp = np.histogram(dat.data[dat.data > 0])
 
-    breakpoint()
+    # breakpoint()
 
 
 def _testfn2():
@@ -1227,7 +1257,6 @@ def _testfn2():
     from pygmi.raster.dataprep import lstack
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
-    # ifile = r"c:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     data = get_data(ifile)
 
