@@ -43,6 +43,7 @@ from pygmi.raster.iodefs import get_raster
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense import features
+from pygmi.raster.modest_image import imshow
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -60,6 +61,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         super().__init__(self.figure)
         self.setParent(parent)
+        self.rgb = True
 
         self.parent = parent
         self.datarr = []
@@ -87,7 +89,7 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        dat = self.datarr[self.mindx]
+        dat = self.datarr[self.mindx].data
 
         if self.refl != 1.:
             dat = dat/self.refl
@@ -98,33 +100,35 @@ class GraphMap(FigureCanvasQTAgg):
         ax1 = self.figure.add_subplot(211)
         self.ax1 = ax1
 
-        ymin = dat.mean()-2*dat.std()
-        ymax = dat.mean()+2*dat.std()
+        self.compute_initial_figure()
 
-        if self.rotate is True:
-            self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax,
-                                  interpolation='none')
-            rows, cols = cols, rows
-        else:
-            self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax,
-                                  interpolation='none')
+        # ymin = dat.mean()-2*dat.std()
+        # ymax = dat.mean()+2*dat.std()
 
-        ax1.set_xlim((0, cols))
-        ax1.set_ylim((0, rows))
-        ax1.xaxis.set_visible(False)
-        ax1.yaxis.set_visible(False)
+        # if self.rotate is True:
+        #     self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax,
+        #                           interpolation='none')
+        #     rows, cols = cols, rows
+        # else:
+        #     self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax,
+        #                           interpolation='none')
 
-        ax1.xaxis.set_major_formatter(frm)
-        ax1.yaxis.set_major_formatter(frm)
+        # ax1.set_xlim((0, cols))
+        # ax1.set_ylim((0, rows))
+        # ax1.xaxis.set_visible(False)
+        # ax1.yaxis.set_visible(False)
 
-        if self.rotate is True:
-            ax1.plot(self.row, self.col, '+w')
-        else:
-            ax1.plot(self.col, self.row, '+w')
+        # ax1.xaxis.set_major_formatter(frm)
+        # ax1.yaxis.set_major_formatter(frm)
+
+        # if self.rotate is True:
+        #     ax1.plot(self.row, self.col, '+w')
+        # else:
+        #     ax1.plot(self.col, self.row, '+w')
 
         ax2 = self.figure.add_subplot(212)
 
-        prof = [i[self.row, self.col] for i in self.datarr]
+        prof = [i.data[self.row, self.col] for i in self.datarr]
 
         prof = np.ma.stack(prof).filled(0)/self.refl
 
@@ -166,6 +170,60 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
+    def compute_initial_figure(self):
+        """Compute initial figure."""
+        clippercu = 1
+        clippercl = 1
+        dat = self.datarr
+
+        redidx = (np.abs(self.wvl - 630)).argmin()
+        greenidx = (np.abs(self.wvl - 532)).argmin()
+        blueidx = (np.abs(self.wvl - 465)).argmin()
+
+        if self.rgb is True:
+            red = dat[redidx].data/self.refl
+            green = dat[greenidx].data/self.refl
+            blue = dat[blueidx].data/self.refl
+
+            data = [red, green, blue]
+            data = np.ma.array(data)
+            data = np.moveaxis(data, 0, -1)
+            lclip = [0, 0, 0]
+            uclip = [0, 0, 0]
+
+            lclip[0], uclip[0] = np.percentile(red.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[1], uclip[1] = np.percentile(green.compressed(),
+                                               [clippercl, 100-clippercu])
+            lclip[2], uclip[2] = np.percentile(blue.compressed(),
+                                               [clippercl, 100-clippercu])
+        else:
+            data = dat[self.mindx].data/self.refl
+            lclip, uclip = np.percentile(data.compressed(),
+                                         [clippercl, 100-clippercu])
+
+        extent = dat[self.mindx].extent
+        # breakpoint()
+        self.im1 = imshow(self.ax1, data, extent=extent)
+        self.im1.rgbmode = 'RGB Ternary'
+
+        if self.rgb is True:
+            self.im1.rgbclip = [[lclip[0], uclip[0]],
+                                [lclip[1], uclip[1]],
+                                [lclip[2], uclip[2]]]
+        else:
+            self.im1.set_clim(lclip, uclip)
+
+        if dat[self.mindx].crs.is_geographic:
+            self.ax1.set_xlabel('Longitude')
+            self.ax1.set_ylabel('Latitude')
+        else:
+            self.ax1.set_xlabel('Eastings')
+            self.ax1.set_ylabel('Northings')
+
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
+
 
 class AnalSpec(BasicModule):
     """Analyse spectra."""
@@ -190,7 +248,7 @@ class AnalSpec(BasicModule):
         self.lbl_info = QtWidgets.QLabel('')
         self.gbox_info = QtWidgets.QGroupBox('Information:')
         self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
-        self.cb_rot = QtWidgets.QCheckBox('Rotate View')
+        self.cb_rgb = QtWidgets.QCheckBox('True Colour Ternary')
         self.lw_speclib = QtWidgets.QListWidget()
 
         self.setupui()
@@ -217,6 +275,7 @@ class AnalSpec(BasicModule):
 
         vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
         pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
+        self.cb_rgb.setChecked(True)
 
         self.lbl_info.setWordWrap(True)
         self.lw_speclib.addItem('None')
@@ -230,7 +289,7 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(self.cmb_1, 0, 2)
         gl_main.addWidget(lbl_feature, 1, 1)
         gl_main.addWidget(self.cmb_feature, 1, 2)
-        gl_main.addWidget(self.cb_rot, 2, 1)
+        gl_main.addWidget(self.cb_rgb, 2, 1)
         gl_main.addWidget(self.cb_hull, 2, 2)
         gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
@@ -244,7 +303,7 @@ class AnalSpec(BasicModule):
 
         self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
-        self.cb_rot.clicked.connect(self.rotate_view)
+        self.cb_rgb.clicked.connect(self.rotate_view)
         pb_speclib.clicked.connect(self.load_splib)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
@@ -283,8 +342,13 @@ class AnalSpec(BasicModule):
         self.map.row = int(event.ydata)
         self.map.col = int(event.xdata)
 
-        if self.cb_rot.isChecked():
-            self.map.row, self.map.col = self.map.col, self.map.row
+        dat = self.map.datarr[self.map.mindx]
+
+        self.map.row = int((dat.extent[-1]-self.map.row)//dat.ydim)
+        self.map.col = int((self.map.col-dat.extent[0])//dat.xdim)
+
+        # if self.cb_rgb.isChecked():
+        #     self.map.row, self.map.col = self.map.col, self.map.row
 
         self.map.init_graph()
 
@@ -380,7 +444,7 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        self.map.rotate = self.cb_rot.isChecked()
+        self.map.rgb = self.cb_rgb.isChecked()
         self.map.init_graph()
 
     def settings(self, nodialog=False):
@@ -437,15 +501,16 @@ class AnalSpec(BasicModule):
             self.map.refl = float(
                 dat[0].metadata['Raster']['reflectance_scale_factor'])
 
-        dat2 = []
+        # dat2 = []
         wvl = []
         for j in dat:
-            dat2.append(j.data)
+            # dat2.append(j.data)
             wvl.append(float(j.metadata['Raster']['wavelength']))
 
         dat2 = np.ma.array(dat2)
 
-        self.map.datarr = dat2
+        # self.map.datarr = dat2
+        self.map.datarr = dat
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
@@ -799,10 +864,6 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
             if r in p and r not in allratios:
                 allratios.append(r)
 
-
-    # breakpoint()
-
-
     # Get list of wavelengths and data
     dat2 = []
     xval = []
@@ -865,7 +926,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
 
         for i in piter(range(rows)):
             ptmp[i], dtmp[i], mtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
-                                     xdat, mtmp[i])
+                                              xdat, mtmp[i])
         depths[fname] = dtmp
         wvl[fname] = ptmp
         datcalc[fname] = dtmp
@@ -882,6 +943,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
                 if j in i:
                     dattmp[j] = datcalc[j]*dmax[j]
             tmp = ne.evaluate(i, dattmp)
+            # breakpoint()
         elif '>' in i or '<' in i or '=' in i or i[0] == 'r':
             tmp = ne.evaluate(i, datcalc)
         else:
@@ -1198,6 +1260,7 @@ def readsli(ifile):
     dt2np[15] = np.uint64
 
     data = np.fromfile(ifile, dtype=dt2np[dtype])
+    data[data == -1.23e+34] = np.nan
     data = data / hdr3['reflectance scale factor']
 
     data.shape = (hdr3['lines'], hdr3['samples'])
@@ -1214,6 +1277,7 @@ def readsli(ifile):
         spectra[val] = {'wvl': hdr3['wavelength'],
                         'refl': data[i]}
 
+    # breakpoint()
     return spectra
 
 
@@ -1224,7 +1288,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
-    ifile = r"D:\cut_048-055_ref_rect_DEFLATE.tif"
+    # ifile = r"D:\cut_048-055_ref_rect_DEFLATE.tif"
     ifile = r"D:\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
@@ -1236,17 +1300,17 @@ def _testfn():
     dat = tmp.outdata['Raster'][0]
 
     plt.figure(dpi=150)
-    plt.imshow(dat.data)
+    plt.imshow(dat.data, extent=dat.extent)
     plt.colorbar()
     plt.show()
 
-    print(dat.data.mean())
+    # print(dat.data.mean())
 
-    plt.figure(dpi=150)
-    plt.hist(dat.data.flatten(), bins=200)
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.hist(dat.data.flatten(), bins=200)
+    # plt.show()
 
-    tmp = np.histogram(dat.data[dat.data > 0])
+    # tmp = np.histogram(dat.data[dat.data > 0])
 
     # breakpoint()
 
@@ -1256,11 +1320,12 @@ def _testfn2():
     from pygmi.rsense.iodefs import get_data
     from pygmi.raster.dataprep import lstack
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
+    ifile = r"D:\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
 
-    data = lstack(data)
+    # data = lstack(data)
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = AnalSpec()
@@ -1269,4 +1334,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
