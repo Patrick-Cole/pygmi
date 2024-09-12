@@ -205,13 +205,15 @@ class GraphMap(FigureCanvasQTAgg):
         extent = dat[self.mindx].extent
         # breakpoint()
         self.im1 = imshow(self.ax1, data, extent=extent)
-        self.im1.rgbmode = 'RGB Ternary'
+
 
         if self.rgb is True:
+            self.im1.rgbmode = 'RGB Ternary'
             self.im1.rgbclip = [[lclip[0], uclip[0]],
                                 [lclip[1], uclip[1]],
                                 [lclip[2], uclip[2]]]
         else:
+            self.im1.rgbmode = 'None'
             self.im1.set_clim(lclip, uclip)
 
         if dat[self.mindx].crs.is_geographic:
