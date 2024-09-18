@@ -68,7 +68,6 @@ PyGMI should still work with Python 3.11.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.12.4
 * fiona 1.9.5
 * geopandas 0.14.4
 * h5netcdf 1.3.0
