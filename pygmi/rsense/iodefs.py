@@ -1453,14 +1453,22 @@ def get_data(ifile, piter=None, showlog=print, tnames=None,
         ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
         dat = []
         for afile in ifiles:
-            dat += get_aster_hdf(afile, piter, showlog, tnames, metaonly)
+            tmp = get_aster_hdf(afile, piter, showlog, tnames, metaonly)
+            if tmp is not None:
+                dat += tmp
+            if dat == []:
+                dat = None
     elif 'AST_' in bfile and ext == '.zip':
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
         ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
         dat = []
         for afile in ifiles:
-            dat += get_aster_zip(afile, piter, showlog, tnames, metaonly)
+            tmp = get_aster_zip(afile, piter, showlog, tnames, metaonly)
+            if tmp is not None:
+                dat += tmp
+            if dat == []:
+                dat = None
     # if 'AST_' in bfile:
     #     idir = os.path.dirname(ifile)
     #     adate = os.path.basename(ifile).split('_')[2]
@@ -1606,10 +1614,16 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
     dat = []
     ifile = ifile[:]
 
-    with rasterio.open(ifile) as dataset:
-        if dataset is None:
-            return None
-        subdata = dataset.subdatasets
+    try:
+        with rasterio.open(ifile) as dataset:
+            if dataset is None:
+                return None
+            subdata = dataset.subdatasets
+    except rasterio.errors.RasterioIOError:
+        showlog('There seems to be a  problem reading the file. '
+                'This could be a driver issue with the installed GDAL '
+                'library.')
+        return None
 
     dat = []
     lulc = None
@@ -2868,9 +2882,15 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
     datetxt = os.path.basename(ifile).split('_')[2][3:]
     date = datetime.datetime.strptime(datetxt, '%m%d%Y%H%M%S')
 
-    with rasterio.open(ifile) as dataset:
-        meta = dataset.tags()
-        subdata = dataset.subdatasets
+    try:
+        with rasterio.open(ifile) as dataset:
+            meta = dataset.tags()
+            subdata = dataset.subdatasets
+    except rasterio.errors.RasterioIOError:
+        showlog('There seems to be a  problem reading the file. '
+                'This could be a driver issue with the installed GDAL '
+                'library.')
+        return None
 
     if ptype == 'L1T':
         ucc = {'ImageData1': float(meta['INCL1']),
@@ -3517,6 +3537,7 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     # ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
     # ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:\AST_05_00301142023201546_20240802052134_1141077.hdf"

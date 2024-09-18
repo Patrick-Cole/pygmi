@@ -657,7 +657,6 @@ class MainWidget(QtWidgets.QMainWindow):
                 menuimports.append(importlib.import_module(i))
             except ModuleNotFoundError as err:
                 self.showlog(f'{i} cannot be loaded, {err}')
-            # menuimports.append(importlib.import_module(i))
         start.close()
 
         self.menus = []
@@ -1311,22 +1310,6 @@ def main(nocgs=False):
     # Set environment variables.
     # The line below is to fix a problem in windows with loky library.
     os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
-
-    if 'GDAL_DATA' not in os.environ:
-        import osgeo
-        gdalpath = os.path.join(osgeo.__path__[0], r'data\gdal')
-        if os.path.exists(gdalpath):
-            os.environ['GDAL_DATA'] = gdalpath
-        else:
-            print('GDAL_PATH not set.')
-
-    if 'PROJ_DATA' not in os.environ:
-        import pyproj
-        projpath = os.path.join(pyproj.__path__[0], r'proj_dir\share\proj')
-        if os.path.exists(projpath):
-            os.environ['PROJ_DATA'] = projpath
-        else:
-            print('PROJ_DATA not set.')
 
     # Start program.
     app = QtWidgets.QApplication(sys.argv)

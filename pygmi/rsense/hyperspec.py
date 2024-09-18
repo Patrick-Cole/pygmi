@@ -203,9 +203,8 @@ class GraphMap(FigureCanvasQTAgg):
                                          [clippercl, 100-clippercu])
 
         extent = dat[self.mindx].extent
-        # breakpoint()
-        self.im1 = imshow(self.ax1, data, extent=extent)
 
+        self.im1 = imshow(self.ax1, data, extent=extent)
 
         if self.rgb is True:
             self.im1.rgbmode = 'RGB Ternary'
@@ -718,6 +717,11 @@ class ProcFeatures(BasicModule):
         self.cmb_ratios.disconnect()
         self.product = features.product.copy()
 
+        self.product = {key: value for (key, value) in self.product.items()
+                        if 'crystallinity' not in key}
+        self.cryst = {key: value for (key, value) in features.product.items()
+                      if 'crystallinity' in key}
+
         self.product = dict(sorted(self.product.items()))
 
         del self.product['filter']
@@ -771,7 +775,15 @@ class ProcFeatures(BasicModule):
         mineral = self.cmb_ratios.currentText()
         rfilt = self.cb_rfiltcheck.isChecked()
 
-        product = self.product
+        # product = self.product
+        # cryst = {key: val for (key, val) in self.cryst.items()
+        #          if key.split()[0] in mineral}
+
+        cryst = []
+        for i in self.cryst:
+            if i.split()[0] in mineral:
+                cryst = self.cryst[i]
+                break
 
         try:
             product = [int(self.tablewidget.item(0, 0).text())]
@@ -793,7 +805,7 @@ class ProcFeatures(BasicModule):
 
                 dat = get_raster(ifile)
                 datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                      product, rfilt, piter=self.piter)
+                                      product, cryst, rfilt, piter=self.piter)
 
                 ofile = (os.path.basename(ifile).split('.')[0] + '_' +
                          mineral.replace(' ', '_') + '.tif')
@@ -809,7 +821,7 @@ class ProcFeatures(BasicModule):
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
             datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                  product, rfilt, piter=self.piter)
+                                  product, cryst, rfilt, piter=self.piter)
 
         if datfin[0].data.mask.min() == True:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
@@ -822,7 +834,7 @@ class ProcFeatures(BasicModule):
         return True
 
 
-def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
+def calcfeatures(dat, mineral, feature, ratio, product, cryst=None, rfilt=True,
                  piter=iter):
     """
     Calculate feature dataset.
@@ -840,6 +852,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     product : dictionary
         Final hyperspectral products. Each dictionary value, is a list of
         features or ratios with thresholds to be combined.
+    cryst : dictionary, optional
+        Crystallinity of the product, if available
     rfilt : bool
         Flag to decide whether to filter final ratio products less than 1.0
     piter : function, optional
@@ -853,16 +867,18 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     """
     # allfeatures = [i.split()[0] for i in product if i[0] == 'f']
     # allratios = [i.split()[0] for i in product if i[0] != 'f']
+    if cryst is None:
+        cryst = []
 
     allfeatures = []
     for f in feature:
-        for p in product:
+        for p in product+cryst:
             if f in p and f not in allfeatures:
                 allfeatures.append(f)
 
     allratios = []
     for r in ratio:
-        for p in product:
+        for p in product+cryst:
             if r in p and r not in allratios:
                 allratios.append(r)
 
@@ -927,8 +943,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         fdat = np.moveaxis(fdat, 0, -1)
 
         for i in piter(range(rows)):
-            ptmp[i], dtmp[i], mtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
-                                              xdat, mtmp[i])
+            ptmp[i], dtmp[i], mtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i],
+                                              i1a, i2a, xdat, mtmp[i])
         depths[fname] = dtmp
         wvl[fname] = ptmp
         datcalc[fname] = dtmp
@@ -936,35 +952,28 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
 
     datout = None
     datout2 = None
-    tmpw = None
 
     for i in product:
-        if ('>' in i or '<' in i or '=' in i) and i.count('f') > 1:
+        if i.count('f') > 1:
             dattmp = {}
             for j in datcalc:
                 if j in i:
                     dattmp[j] = datcalc[j]*dmax[j]
             tmp = ne.evaluate(i, dattmp)
-            # breakpoint()
-        elif '>' in i or '<' in i or '=' in i or i[0] == 'r':
-            tmp = ne.evaluate(i, datcalc)
         else:
-            tmp = depths[i]
-            tmpw = wvl[i]
+            tmp = ne.evaluate(i, datcalc)
 
         if datout is None:
             datout = np.nan_to_num(tmp)
-            datout2 = np.nan_to_num(tmpw)
         else:
             if tmp.max() > 1:
                 print('Problem with filter. Max value greater that 1')
                 return datfin
             datout = datout * np.nan_to_num(tmp)
-            if datout2 is not None:
-                datout2 = datout2 * np.nan_to_num(tmp)
 
     if product[0][0] == 'f':
         label = f'{mineral} depth'
+        datout2 = np.nan_to_num(wvl[product[[0][0]]])
     else:
         label = f'{mineral} ratio'
         if rfilt is True:
@@ -975,7 +984,34 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
 
     if datout2 is not None:
         datout2 = np.ma.masked_equal(datout2, 0)
+        datout2.mask = np.logical_or(datout.mask, datout2.mask)
         datfin.append(numpy_to_pygmi(datout2, dat[0], f'{mineral} wvl'))
+
+    # Add crystallinity if present.
+    datout3 = None
+    for i in cryst:
+        if i.count('f') > 1:
+            dattmp = {}
+            for j in datcalc:
+                if j in i:
+                    dattmp[j] = datcalc[j]*dmax[j]
+            tmp = ne.evaluate(i, dattmp)
+        else:
+            tmp = ne.evaluate(i, datcalc)
+
+        if datout3 is None:
+            datout3 = np.nan_to_num(tmp)
+        else:
+            if tmp.max() > 1:
+                print('Problem with filter. Max value greater that 1')
+                return datfin
+            datout3 = datout3 * np.nan_to_num(tmp)
+
+    if datout3 is not None:
+        datout3 = np.ma.masked_equal(datout3, 0)
+        datout3.mask = np.logical_or(datout.mask, datout3.mask)
+        datfin.append(numpy_to_pygmi(datout3, dat[0],
+                                     f'{mineral} crystallinity'))
 
     return datfin
 
@@ -1279,7 +1315,6 @@ def readsli(ifile):
         spectra[val] = {'wvl': hdr3['wavelength'],
                         'refl': data[i]}
 
-    # breakpoint()
     return spectra
 
 
@@ -1299,35 +1334,24 @@ def _testfn():
     tmp.indata['Raster'] = data
     tmp.settings()
 
-    dat = tmp.outdata['Raster'][0]
+    datall = tmp.outdata['Raster']
 
-    plt.figure(dpi=150)
-    plt.imshow(dat.data, extent=dat.extent)
-    plt.colorbar()
-    plt.show()
-
-    # print(dat.data.mean())
-
-    # plt.figure(dpi=150)
-    # plt.hist(dat.data.flatten(), bins=200)
-    # plt.show()
-
-    # tmp = np.histogram(dat.data[dat.data > 0])
-
-    # breakpoint()
+    for dat in datall:
+        plt.figure(dpi=150)
+        plt.title(dat.dataid)
+        plt.imshow(dat.data, extent=dat.extent)
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
 
 
 def _testfn2():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
-    from pygmi.raster.dataprep import lstack
 
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
     ifile = r"D:\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
-
-    # data = lstack(data)
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = AnalSpec()
@@ -1336,4 +1360,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

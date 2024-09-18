@@ -199,7 +199,7 @@ class ImportXYZ(BasicModule):
 
         """
         if not nodialog:
-            ext = ('Common formats (*.xlsx, *.csv);;'
+            ext = ('Common formats (*.xlsx *.csv);;'
                    'Excel (*.xlsx);;'
                    'Comma Delimited (*.csv);;'
                    'Geosoft XYZ (*.xyz);;'

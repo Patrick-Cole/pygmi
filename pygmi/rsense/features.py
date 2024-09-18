@@ -70,9 +70,9 @@ product['white mica'] = ['f2200', 'r2350De > 1.02', 'r2160D2190 < 1.005',
 #                             'f2200 > .01']
 product['smectite'] = ['f2200', 'r2350De < 1.0', 'r2160D2190 < 1.005',
                        'r2200D > 1.01']
-product['kaolin-2200'] = ['f2200', 'r2160D2190 > 1.005']
-product['kaolin-2200new'] = ['f2200', 'f2160 < f2200p',
-                             'f2200 > 0.01', 'r2160D2190 > 1.005']
+# product['kaolin-2200'] = ['f2200', 'r2160D2190 > 1.005']
+product['kaolin-2200'] = ['f2200', 'f2160 < f2200p',
+                          'f2200 > 0.01', 'r2160D2190 > 1.005']
 # product['kaolin-2160'] = ['f2160', 'r2160D2190 > 1.005']
 product['chlorite-2250'] = ['f2250', 'r2330D > 1.0', 'r2250D > 1.005',
                             'r1550D < 1.01']
@@ -82,7 +82,7 @@ product['epidote'] = ['f1550', 'r1550D > 1.01', 'r2330D > 1.0', 'r2250D > 1.0']
 product['amphibole'] = ['f2390', 'r2380D > 1.02', 'r2320D > 1.01',
                         'r2160D2190 < 1.005', 'r2200D < 1.1', 'r2250D < 1.01']
 product['ferrous iron'] = ['r1100D']
-product['kaolin group crystallinity'] = ['rkgrpcrys']
+product['kaolin crystallinity'] = ['rkgrpcrys']
 product['ferric iron'] = ['f900']
 product['carbonate'] = ['f2320', 'r2250D < 1.009', 'r2380D < 1.0',
                         'r2200D < 1.0']
