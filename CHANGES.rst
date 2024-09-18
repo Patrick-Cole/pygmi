@@ -1,6 +1,17 @@
 =========
 Changelog
 =========
+
+v3.2.8.20, 18 September 2024
+----------------------------
+* Updated requirements for simpler install
+* Beachball.py now does not depend on GDAL explicitly
+* Bugfix - import xyz now accepts xlsx in common formats
+* Added RGB images to hyperspectral analyze spectra
+* Feature update
+* Added kaolin crystallinity and pyrophyllite
+* Added a new export raster dialogue
+
 v3.2.8.19, 2 September
 ----------------------
 * Fixed an error in some tests.
