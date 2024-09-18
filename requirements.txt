@@ -17,4 +17,4 @@ rioxarray>=0.15.6
 scikit-image>=0.24.0
 shapelysmooth>=0.2.0
 simpeg>=0.21.1
-xarray>=2024.6.0
+

@@ -44,9 +44,9 @@ Installation
 ------------
 The simplest installation of PyGMI is on Windows, using a pre-built installer at `64-bit <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
-If you prefer building from source, you can use PyPi or Conda. Note that if you are using PyPi,  certain libraries require binaries built. To do so or download binaries manually, please see the Linux or Windows section below.
+If you prefer building from source, you can use PyPi or Conda.
 
-Once built, running pygmi can be done at the command prompt as follows:
+Once built using PyPi, running pygmi can be done at the command prompt as follows:
 
    pygmi
 
@@ -69,45 +69,35 @@ PyGMI should still work with Python 3.11.
 PyGMI is developed and has been tested with the following libraries in order to function:
 
 * python 3.12.4
-* discretize 0.10.0
 * fiona 1.9.5
-* gdal 3.8.4
 * geopandas 0.14.4
+* h5netcdf 1.3.0
 * matplotlib 3.9.0
 * mtpy 1.1.5
 * natsort 8.4.0
-* numba 0.60.0
 * numexpr 2.10.1
-* numpy 1.26.4
 * openpyxl 3.1.2
-* pandas 2.2.2
 * psutil 6.0.0
-* pyogrio 0.9.0
 * pyopengl 3.1.7
-* pyproj 3.6.1
-* PyQt5 5.15.10
+* pyqt5 5.15.10
 * pytest 8.2.2
 * rasterio 1.3.9
-* scikit-image 0.24.0
-* scikit-learn 1.5.0
-* scipy 1.13.1
-* shapely 2.0.3
-* shapelysmooth 0.2.0
-* SimPEG 0.21.1
-* xlrd 2.0.1
-* xarray 2024.6.0
-* h5netcdf 1.3.0
 * rioxarray 0.15.6
+* scikit-image 0.24.0
+* shapelysmooth 0.2.0
+* simpeg 0.21.1
 
 PyPi - Windows
 ^^^^^^^^^^^^^^
-Windows users can use the `WinPython <https://winpython.github.io/>`_ distribution as an alternative to Anaconda. It comes with most libraries preinstalled, so using pip should be sufficient. 
+Windows users can use the `WinPython <https://winpython.github.io/>`_ distribution as an alternative to Anaconda. It comes with most libraries preinstalled, so using pip should be sufficient.
 
-Alternatively, if you are not an Anaconda or WinPython user, you will need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. Visual Studio 2022 can be used to most compile binaries, if it is in the same path as python.
+Install with the following command.
 
-GDAL in particular is non-trivial to compile to binary form, so downloading a binary is recommended. Related binaries can be obtained at the `website <https://github.com/cgohlke/geospatial-wheels/>`_ by Christoph Gohlke.
+   pip install pygmi
 
-If you obtain binaries here, you will need to download and install:
+Should you wish to manually install binaries, related binaries can be obtained at the `website <https://github.com/cgohlke/geospatial-wheels/>`_ by Christoph Gohlke.
+
+If you wish to update GDAL, you will need to download and install:
 
 * fiona
 * GDAL
@@ -117,10 +107,6 @@ If you obtain binaries here, you will need to download and install:
 * shapely
 
 All these binaries should be downloaded since they have internal co-dependencies.
-
-Once this is done, install with the following command.
-
-   pip install pygmi
 
 
 PyPi - Linux
@@ -157,9 +143,7 @@ The process to install is as follows:
 
    conda install pyqt
 
-   conda install numpy
-
-   conda install scipy
+   conda install fiona
 
    conda install matplotlib
 
@@ -167,17 +151,11 @@ The process to install is as follows:
 
    conda install numexpr
 
-   conda install pandas
-
    conda install rasterio
 
    conda install geopandas
 
-   conda install numba
-
    conda install natsort
-
-   conda install scikit-learn
 
    conda install scikit-image
 
@@ -187,17 +165,13 @@ The process to install is as follows:
 
    conda install shapelysmooth
 
-   conda install pyogrio
-
    conda install openpyxl
-
-   conda install xlrd
-
-   conda install xarray
 
    conda install h5netcdf
 
    conda install rioxarray
+
+   conda install pytest
 
    pip install mtpy
 

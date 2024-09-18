@@ -34,6 +34,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import fiona
+# from pyogrio import read_info
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
@@ -663,7 +664,7 @@ class ImportVector(BasicModule):
         os.chdir(os.path.dirname(self.ifile))
 
         if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
-            gdf = gpd.read_file(self.ifile,  bbox=bounds,
+            gdf = gpd.read_file(self.ifile,  bbox=bounds, engine='fiona',
                                 allow_unsupported_drivers=True)
         else:
             gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
@@ -748,6 +749,10 @@ class ImportVector(BasicModule):
         with fiona.open(self.ifile, allow_unsupported_drivers=True) as fio:
             self.crs = fio.crs
             xmin, ymin, xmax, ymax = fio.bounds
+
+        # tmp = read_info(self.ifile, force_total_bounds=True)
+        # self.crs = tmp['crs']
+        # xmin, ymin, xmax, ymax = tmp['total_bounds']
 
         self.le_xmin.setText(str(xmin))
         self.le_xmax.setText(str(xmax))
@@ -975,7 +980,9 @@ def _test():
 
     # ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
-    ifile = r"E:\CGS-SpecLib\doc.kml"
+    # ifile = r"E:\CGS-SpecLib\doc.kml"
+    ifile = r"E:\WorkProjects\ST-2021-1351 CCUS\2021\CGS_CDNGI_BLOCKS.kml"
+    ifile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\DRC\Katanga\Katanga_boundary.kmz"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -989,11 +996,11 @@ def _test():
 
     dat = tmp1.outdata['Vector'][0]
 
-    tmp2 = ColumnSelect()
-    tmp2.indata = tmp1.outdata
-    tmp2.settings()
+    # tmp2 = ColumnSelect()
+    # tmp2.indata = tmp1.outdata
+    # tmp2.settings()
 
-    breakpoint()
+    # breakpoint()
 
 
 if __name__ == "__main__":
