@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.raster package &#8212; PyGMI 3.2.8.18 documentation</title>
+    <title>pygmi.raster package &#8212; PyGMI 3.2.8.20 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
-    <script src="_static/documentation_options.js?v=5bac0a30"></script>
+    <script src="_static/documentation_options.js?v=d56f49f3"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -3411,7 +3411,7 @@ menu. The following are supported:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
 <p>Export Data.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData.ofile">
@@ -3422,6 +3422,12 @@ menu. The following are supported:</p>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept choice.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -3501,6 +3507,12 @@ menu. The following are supported:</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData.get_ofile">
+<span class="sig-name descname"><span class="pre">get_ofile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.get_ofile" title="Link to this definition">¶</a></dt>
+<dd><p>Get output directory.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.run" title="Link to this definition">¶</a></dt>
 <dd><p>Run.</p>
@@ -3510,6 +3522,17 @@ menu. The following are supported:</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.iodefs.ExportData.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.rsense package &#8212; PyGMI 3.2.8.18 documentation</title>
+    <title>pygmi.rsense package &#8212; PyGMI 3.2.8.20 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
-    <script src="_static/documentation_options.js?v=5bac0a30"></script>
+    <script src="_static/documentation_options.js?v=d56f49f3"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -828,6 +828,12 @@ function and convert to PyGMI dataset.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pygmi.rsense.hyperspec.GraphMap.compute_initial_figure">
+<span class="sig-name descname"><span class="pre">compute_initial_figure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.GraphMap.compute_initial_figure" title="Link to this definition">¶</a></dt>
+<dd><p>Compute initial figure.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pygmi.rsense.hyperspec.GraphMap.init_graph">
 <span class="sig-name descname"><span class="pre">init_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.GraphMap.init_graph" title="Link to this definition">¶</a></dt>
 <dd><p>Initialise the graph.</p>
@@ -911,7 +917,7 @@ function and convert to PyGMI dataset.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygmi.rsense.hyperspec.calcfeatures">
-<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.hyperspec.</span></span><span class="sig-name descname"><span class="pre">calcfeatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineral</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rfilt=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.calcfeatures" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.hyperspec.</span></span><span class="sig-name descname"><span class="pre">calcfeatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineral</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cryst=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rfilt=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.calcfeatures" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate feature dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -922,6 +928,7 @@ function and convert to PyGMI dataset.</p>
 <li><p><strong>ratio</strong> (<em>dictionary</em>) – Dictionary containing string definitions of ratios.</p></li>
 <li><p><strong>product</strong> (<em>dictionary</em>) – Final hyperspectral products. Each dictionary value, is a list of
 features or ratios with thresholds to be combined.</p></li>
+<li><p><strong>cryst</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – Crystallinity of the product, if available</p></li>
 <li><p><strong>rfilt</strong> (<em>bool</em>) – Flag to decide whether to filter final ratio products less than 1.0</p></li>
 <li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterable. The default is iter.</p></li>
 </ul>
@@ -959,7 +966,7 @@ features or ratios with thresholds to be combined.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygmi.rsense.hyperspec.fproc">
-<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.hyperspec.</span></span><span class="sig-name descname"><span class="pre">fproc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i1a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i2a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.fproc" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygmi.rsense.hyperspec.</span></span><span class="sig-name descname"><span class="pre">fproc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i1a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i2a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtmp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.hyperspec.fproc" title="Link to this definition">¶</a></dt>
 <dd><p>Feature process.</p>
 <p>This function finds the minimum value of a feature.</p>
 <dl class="field-list simple">
