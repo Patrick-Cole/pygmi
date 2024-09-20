@@ -124,7 +124,7 @@ Once installed, running pygmi can be done at the command prompt as follows:
 
    pygmi
 
-If you get the following error: *qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.*, then you can try the following command, since this is linux issue:
+If you get the following error: *qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.*, then you can try the following command, since this is Linux issue:
 
    sudo apt-get install libxcb-xinerama0
 
