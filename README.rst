@@ -114,17 +114,19 @@ Linux normally comes with python installed, but the additional libraries will st
 
 The process is as follows:
 
-   sudo apt-get install pip
+   sudo apt-get install pipx
+   
+   pipx ensurepath
 
-   sudo apt-get install gdal-bin
+   pipx install pygmi
 
-   sudo apt-get install libgdal-dev
+Once installed, running pygmi can be done at the command prompt as follows:
 
-   pip install cython
+   pygmi
 
-   pip install numpy
+If you get the following error: *qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.*, then you can try the following command, since this is linux issue:
 
-   pip install pygmi
+   sudo apt-get install libxcb-xinerama0
 
 Anaconda
 ^^^^^^^^
