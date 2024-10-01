@@ -366,7 +366,7 @@ class TDEM1D(BasicModule):
 
         if stype == 'CircularLoop':
             srclist = [time_domain.Src.CircularLoop(rxlist,
-                                                    N=loopturns,
+                                                    n_turns=loopturns,
                                                     mu=mu,
                                                     current=loopcurrent,
                                                     location=srcloc,
