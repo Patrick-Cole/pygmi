@@ -38,6 +38,7 @@ pygmi packages.
 import json
 import sys
 import os
+import gc
 import textwrap
 import pkgutil
 import math
@@ -790,6 +791,8 @@ class MainWidget(QtWidgets.QMainWindow):
             if isinstance(item, DiagramItem):
                 item.remove_arrows()
             self.scene.removeItem(item)
+            # del item
+        # breakpoint()
 
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
@@ -797,6 +800,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 if (item.my_class.indata == {} and
                         item.my_class.is_import is False):
                     item.setBrush(self.scene.my_item_color)
+        gc.collect()
 
     def keyPressEvent(self, event):
         """
