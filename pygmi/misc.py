@@ -564,20 +564,18 @@ class ProgressBarText():
             self.total = 1
 
         self.otime = time.perf_counter()
-        time1 = self.otime
-        time2 = self.otime
 
         i = 0
-        oldval = 0
+        oldperc = 0
         gottototal = False
         for obj in iterable:
             yield obj
             i += 1
 
             time2 = time.perf_counter()
-            # if time2-time1 > 1 and int(i*100/self.total) > oldval:
-            if int(i*100/self.total) > oldval or oldval == 0:
-                oldval = int(i*100/self.total)
+            curperc = int(i*100/self.total)
+            if curperc > oldperc or oldperc == 0:
+                oldperc = curperc
 
                 tleft = (self.total-i)*(time2-self.otime)/i
                 if tleft > 60:
@@ -587,7 +585,6 @@ class ProgressBarText():
                 timestr += f' {time2-self.otime:.1f} sec total      '
 
                 self.printprogressbar(i, suffix=timestr)
-                time1 = time2
                 if i == self.total:
                     gottototal = True
 
@@ -774,7 +771,6 @@ frm = ticker.FuncFormatter(tick_formatter)
 
 def _testfn():
     """Test function."""
-
     # app = QtWidgets.QApplication(sys.argv)
 
     # tmp = BasicModule()
@@ -785,10 +781,9 @@ def _testfn():
 
     import matplotlib.pyplot as plt
 
-
-    data = [[0,45,50],
-            [0,45,50],
-            [0,44,50]]
+    data = [[0, 45, 50],
+            [0, 45, 50],
+            [0, 44, 50]]
 
     lbls = ['a', 'b', 'c', 'd']
 
