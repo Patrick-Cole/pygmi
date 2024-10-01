@@ -54,6 +54,7 @@ from pygmi.misc import ProgressBar, textwrap2
 
 rcParams['axes.formatter.limits'] = [-12, 12]
 rcParams['axes.formatter.useoffset'] = False
+rcParams['font.size'] = 8
 interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
