@@ -4,7 +4,7 @@ EM processing makes use of the SimPEG library.
 
 TDEM 1D Inversion
 -----------------
-TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.
+TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import XYZ Data tool in the Vector menu.
 
 Options are as follows:
 
