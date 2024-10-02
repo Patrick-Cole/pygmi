@@ -2,6 +2,11 @@
 Changelog
 =========
 
+v3.2.8.21, 01 October 2024
+--------------------------
+* Changed default font size for graphs from 10 to 8.
+* Fixed a crash caused by an update of SimPEG API
+
 v3.2.8.20, 18 September 2024
 ----------------------------
 * Updated requirements for simpler install

@@ -138,9 +138,7 @@ The process to install is as follows:
 
    conda activate pygmi
 
-   conda config --add channels conda-forge
-
-   conda config --set channel_priority flexible
+   conda config --env --add channels conda-forge
 
    conda install pyqt
 
