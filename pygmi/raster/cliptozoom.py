@@ -59,6 +59,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure(layout='constrained', dpi=150)
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
+        self.fwidth = self.figure.get_figwidth()
+        self.fheight = self.figure.get_figheight()
 
     def update_raster(self, data1, cmap):
         """
@@ -77,6 +79,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
+        self.figure.set_figwidth(self.fwidth)
+        self.figure.set_figheight(self.fheight)
+
         self.axes = self.figure.add_subplot(111)
 
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
