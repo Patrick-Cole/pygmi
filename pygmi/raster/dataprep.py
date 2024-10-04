@@ -1723,13 +1723,16 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
     if deepcopy is True:
         data = [i.copy() for i in data]
 
-    try:
-        gdf = gpd.read_file(ifile)
-    except:
-        showlog('There was a problem importing the shapefile. Please make '
-                'sure you have at all the individual files which make up '
-                'the shapefile.')
-        return None
+    if isinstance(ifile, gpd.GeoDataFrame):
+        gdf = ifile
+    else:
+        try:
+            gdf = gpd.read_file(ifile)
+        except:
+            showlog('There was a problem importing the shapefile. Please make '
+                    'sure you have at all the individual files which make up '
+                    'the shapefile.')
+            return None
 
     gdf = gdf[gdf.geometry != None]
 

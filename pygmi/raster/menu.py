@@ -36,6 +36,7 @@ from pygmi.raster import show_table
 from pygmi.raster import dataprep
 from pygmi.raster import iodefs
 from pygmi.raster import anaglyph
+from pygmi.raster import cliptozoom
 
 
 class MenuWidget():
@@ -117,6 +118,11 @@ class MenuWidget():
         self.action_cut_data = QtWidgets.QAction('Cut Raster using Polygon')
         self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
+
+        self.action_clip_zoom = QtWidgets.QAction('Clip Raster to '
+                                                  'Zoom Extents')
+        self.menu.addAction(self.action_clip_zoom)
+        self.action_clip_zoom.triggered.connect(self.clip_zoom)
 
         self.menu.addSeparator()
 
@@ -203,6 +209,10 @@ class MenuWidget():
     def cut_data(self):
         """Cut data."""
         self.parent.item_insert('Step', 'Cut Data', dataprep.DataCut)
+
+    def clip_zoom(self):
+        """Clip to zoom."""
+        self.parent.item_insert('Step', 'Clip to Zoom', cliptozoom.ClipToZoom)
 
     def get_prof(self):
         """Get profile."""
