@@ -118,7 +118,7 @@ class ClipToZoom(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Clip to Zoom')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
@@ -179,6 +179,7 @@ class ClipToZoom(BasicModule):
         elif 'Cluster' in self.indata:
             data = self.indata['Cluster']
 
+        self.cmb_1.clear()
         for i in data:
             self.cmb_1.addItem(i.dataid)
 
