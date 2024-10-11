@@ -87,6 +87,7 @@ class ColumnSelect(BasicModule):
         tmp = list(data.columns)
         tmp = [i for i in tmp if i != 'geometry']
 
+        self.lw_1.clear()
         self.lw_1.addItems(tmp)
 
         if not tmp:
@@ -273,6 +274,9 @@ class ImportXYZ(BasicModule):
         if xind == -1:
             xind = 0
             yind = 1
+
+        self.cmb_xchan.clear()
+        self.cmb_ychan.clear()
 
         self.cmb_xchan.addItems(gdf.columns.values)
         self.cmb_ychan.addItems(gdf.columns.values)

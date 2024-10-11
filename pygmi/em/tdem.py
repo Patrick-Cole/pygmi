@@ -594,6 +594,7 @@ class TDEM1D(BasicModule):
 
         line = self.cmb_line.currentText()
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
+        self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
     def settings(self, nodialog=False):
@@ -627,6 +628,7 @@ class TDEM1D(BasicModule):
 
         cnames = list(self.data.columns[filt])
 
+        self.cmb_balt.clear()
         self.cmb_balt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
@@ -636,12 +638,14 @@ class TDEM1D(BasicModule):
                 break
 
         lines = list(self.data.line.unique().astype(str))
+        self.cmb_line.clear()
         self.cmb_line.addItems(lines)
 
         self.cmb_line.setCurrentIndex(0)
         line = self.cmb_line.currentText()
 
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
+        self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
         self.cmb_line.currentIndexChanged.connect(self.change_line)

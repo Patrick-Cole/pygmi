@@ -89,6 +89,7 @@ class BandSelect(ContextModule):
         tmp = []
         for i in data['Raster']:
             tmp.append(i.dataid)
+        self.lw_1.clear()
         self.lw_1.addItems(tmp)
 
         if not tmp:
@@ -1179,6 +1180,7 @@ class ExportData(ContextModule):
         tmp = []
         for i in self.exportdata:
             tmp.append(i.dataid)
+        self.lw_1.clear()
         self.lw_1.addItems(tmp)
 
         for i in range(self.lw_1.count()):

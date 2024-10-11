@@ -331,6 +331,9 @@ class MergeMod3D(BasicModule):
         for i in self.indata['Model3D']:
             tmp.append(i.name)
 
+        self.cmb_master.clear()
+        self.cmb.slave.clear()
+
         self.cmb_master.addItems(tmp)
         self.cmb_slave.addItems(tmp)
 

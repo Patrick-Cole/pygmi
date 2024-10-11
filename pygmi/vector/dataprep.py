@@ -256,6 +256,7 @@ class DataGrid(BasicModule):
                 (data.columns != 'line'))
 
         cols = list(data.columns[filt])
+        self.cmb_dataid.clear()
         self.cmb_dataid.addItems(cols)
 
         if self.dataid_text is None:
@@ -586,6 +587,7 @@ class Metadata(ContextModule):
             else:
                 bandid.append('Unknown')
 
+        self.cmb_bandid.clear()
         self.cmb_bandid.addItems(bandid)
 
         self.show()

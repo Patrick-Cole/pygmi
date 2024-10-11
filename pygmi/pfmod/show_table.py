@@ -112,6 +112,7 @@ class BasicStats3D(ContextModule):
         if len(self.data) == 1:
             self.cmb_1.hide()
 
+        self.cmb_1.clear()
         self.cmb_1.addItems(self.bands)
         self.tablewidget.setRowCount(data.shape[0])
         self.tablewidget.setColumnCount(data.shape[1])

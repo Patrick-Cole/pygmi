@@ -1072,6 +1072,11 @@ class ExportBatch(ContextModule):
         if 'Explained Variance Ratio' in bnames[0]:
             bnames = [i.split('Explained Variance Ratio')[0] for i in bnames]
 
+        self.cmb_red.clear()
+        self.cmb_green.clear()
+        self.cmb_blue.clear()
+        self.cmb_sunshade.clear()
+
         self.cmb_red.addItems(bnames)
         self.cmb_green.addItems(bnames)
         self.cmb_blue.addItems(bnames)
@@ -1786,7 +1791,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
                 return None
             showlog('Extracting tar...')
 
-            tar.extractall(idir)
+            tar.extractall(idir, filter=tarfile.data_filter)
             ifile = os.path.join(idir, ifile)
     elif '_MTL.txt' in ifilet:
         ifile = ifilet
@@ -1805,6 +1810,10 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
     K1 = {}
     K2 = {}
     for i in headtxt:
+        if 'SUN_AZIMUTH' in i:
+            azimuth = float(i.split('=')[1].strip())
+        if 'SUN_ELEVATION' in i:
+            zenith = 90 - float(i.split('=')[1].strip())
         if 'DATE_ACQUIRED' in i:
             datetxt = i.split('=')[1][:-1].strip()
             date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
@@ -1960,6 +1969,9 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
 
         platform = os.path.basename(ifilet)[:4]
         bmeta['Sensor'] = f'Landsat {platform}'
+        bmeta['Solar Azimuth'] = azimuth
+        bmeta['Solar Zenith'] = zenith
+        bmeta['DEM'] = 'None'
 
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
@@ -2014,6 +2026,9 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
 
     platform = dtree['isd']['TIL']['BANDID']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
+    azimuth = float(dtree['isd']['IMD']['IMAGE']['MEANSUNAZ'])
+    zenith = 90 - float(dtree['isd']['IMD']['IMAGE']['MEANSUNEL'])
+
     datetxt = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
     date = datetime.datetime.fromisoformat(datetxt)
 
@@ -2111,6 +2126,9 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         bmeta = dat[-1].metadata['Raster']
 
         bmeta['Sensor'] = f'WorldView {satid} {platform}'
+        bmeta['Solar Azimuth'] = azimuth
+        bmeta['Solar Zenith'] = zenith
+        bmeta['DEM'] = 'None'
 
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
@@ -2527,7 +2545,9 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         piter = ProgressBarText().iter
 
     ifile = ifile[:]
+    gmeta = get_sentinel2_metadata(ifile)
 
+    # Get general metadata
     with rasterio.open(ifile) as dataset:
         if dataset is None:
             return None
@@ -2536,6 +2556,7 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         datetxt = meta['PRODUCT_STOP_TIME']
         date = datetime.datetime.fromisoformat(datetxt)
 
+    # Read in data
     subdata = [i for i in subdata if 'TCI' not in i]  # TCI is true color
 
     nval = 0
@@ -2550,6 +2571,8 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
 
         for i in piter(dataset.indexes):
             bmeta = dataset.tags(i)
+            # allns = dataset.tag_namespaces()
+            # breakpoint()
 
             bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bname = bname.replace(',', ' ')
@@ -2588,6 +2611,7 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
                 bmeta['Raster']['WavelengthMax'] = wlen + bwidth/2
                 dat[-1].metadata['Raster']['wavelength'] = wlen
 
+            bmeta['Raster'].update(gmeta)
             dat[-1].metadata.update(bmeta)
 
         dataset.close()
@@ -2596,6 +2620,49 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         dat = None
 
     return dat
+
+
+def get_sentinel2_metadata(ifile):
+    """
+    Get extra metadata from xml files which rasterio does not access.
+
+    Parameters
+    ----------
+    ifile : str
+        Input filename.
+
+    Returns
+    -------
+    meta : dictionary
+        Output metadata.
+
+    """
+    meta = {}
+    for mfile in ['MTD_TL', 'MTD_DS']:
+        if ifile.lower()[-3:] == 'zip':
+            with zipfile.ZipFile(ifile) as zfile:
+                zipnames = zfile.namelist()
+                gfile = [i for i in zipnames if mfile in i][0]
+                with zfile.open(gfile) as myfile:
+                    gmeta = myfile.read()
+            root = ET.fromstring(gmeta)
+        else:
+            gmeta = glob.glob(os.path.dirname(ifile)+f'\\**\\{mfile}.xml',
+                              recursive=True)[0]
+
+            tree = ET.parse(gmeta)
+            root = tree.getroot()
+
+        if mfile == 'MTD_TL':
+            meta['Solar Zenith'] = root.find('.//Tile_Angles//Mean_Sun_Angle'
+                                             '//ZENITH_ANGLE').text
+            meta['Solar Azimuth'] = root.find('.//Tile_Angles//Mean_Sun_Angle'
+                                              '//AZIMUTH_ANGLE').text
+
+        if mfile == 'MTD_DS':
+            meta['DEM'] = root.find('.//PRODUCTION_DEM_TYPE').text
+
+    return meta
 
 
 def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
@@ -2768,7 +2835,8 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         if zfile.lower()[-4:] != '.tif':
             continue
 
-        # breakpoint()
+        gmeta = get_aster_metadata(zfile)
+
         # bname = zfile[zfile.index('Band'):zfile.index('.tif')]
         bname = zfile.split('.')[-2]
         if tnames is not None and bname not in tnames:
@@ -2806,6 +2874,8 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         fext = dat[-1].dataid[4:]
 
         bmeta['Sensor'] = f'ASTER {platform}'
+        bmeta.update(gmeta)
+
         if fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
@@ -2819,6 +2889,58 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         os.remove(os.path.join(idir, zfile))
 
     return dat
+
+
+def get_aster_metadata(ifile):
+    """
+    Get extra metadata from met files which rasterio does not access.
+
+    Parameters
+    ----------
+    ifile : str
+        Input filename.
+
+    Returns
+    -------
+    meta : dictionary
+        Output metadata.
+
+    """
+    meta = {}
+
+    with open(ifile+'.met') as myfile:
+        mdat = myfile.read()
+
+    mdat = mdat.split('\n')
+    mdat = [i for i in mdat if '=' in i]
+
+    mdatdict = {}
+
+    def makegroup(mdat, mdatdict):
+        while mdat:
+            name, val = mdat.pop(0).split('=')
+            name = name.strip()
+            val = val.strip()
+            if name in ['GROUP', 'OBJECT']:
+                mdatdict[val] = {}
+                makegroup(mdat, mdatdict[val])
+            elif 'END' in name:
+                return
+            elif name == 'VALUE':
+                mdatdict[name] = val
+
+    makegroup(mdat, mdatdict)
+
+    meta['Solar Azimuth'] = float(mdatdict['INVENTORYMETADATA']
+                                  ['PRODUCTSPECIFICMETADATA']
+                                  ['SOLAR_AZIMUTH_ANGLE']['VALUE'])
+    meta['Solar Zenith'] = 90. - float(mdatdict['INVENTORYMETADATA']
+                                       ['PRODUCTSPECIFICMETADATA']
+                                       ['SOLAR_ELEVATION_ANGLE']['VALUE'])
+
+    meta['DEM'] = 'None'
+
+    return meta
 
 
 def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
@@ -2910,6 +3032,10 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
     solarelev = float(meta['SOLARDIRECTION'].split()[1])
     cdate = meta['CALENDARDATE']
+
+    azimuth = float(meta['Solar_Azimuth_Angle'])
+    zenith = 90. - float(meta['Solar_Elevation_Angle'])
+
     if len(cdate) == 8:
         fmt = '%Y%m%d'
     else:
@@ -3001,6 +3127,9 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
             platform = os.path.basename(ifile).split('_')[1]
             bmeta['Sensor'] = f'ASTER {platform}'
+            bmeta['Solar Azimuth'] = azimuth
+            bmeta['Solar Zenith'] = zenith
+            bmeta['DEM'] = 'None'
 
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
@@ -3537,10 +3666,15 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    # ifile = r"D:\AST_05_00307292006082045_20240308070825_1288044.zip"
-    # ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
-    # ifile = r"D:\AST_05_00301142023201546_20240802052134_1141077.hdf"
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    # ifile = r"D:\dem\L1C\S2B_MSIL2A_20220329T073609_N9999_R092_T36JTM_20241009T082013.SAFE\MTD_MSIL2A.xml"
+    # ifile = r"D:\dem\L1C\S2B_MSIL2A_20220329T073609_N9999_R092_T36JTM_20241009T082013.SAFE.zip"
+    # ifile = r"D:\dem\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTN_20220329T104004.SAFE\MTD_MSIL2A.xml"
+
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+
+    # meta = get_sentinel2_metadata(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3550,6 +3684,8 @@ def _testfn3():
     tmp1.settings()
 
     dat = tmp1.outdata['Raster']
+
+    print(dat[-1].metadata)
 
     # ofile = set_export_filename(dat, odir='')
 

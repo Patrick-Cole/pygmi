@@ -791,6 +791,7 @@ class PlotCCoef(GraphWindow):
         self.data = self.indata['Vector'][0]
 
         self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_1.clear()
         self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
         self.lbl_1.setText('Style:')
         self.cmb_1.currentIndexChanged.connect(self.change_band)
@@ -864,7 +865,7 @@ class PlotHist(ContextModule):
             return
 
         self.show()
-
+        self.cmb_1.clear()
         self.cmb_1.addItems(cols)
 
         self.cmb_1.setCurrentIndex(0)
@@ -949,6 +950,8 @@ class PlotLines(GraphWindow):
         cols = list(self.data.columns[filt])
         lines = self.data.line[self.data.line != 'nan'].unique()
 
+        self.cmb_1.clear()
+        self.cmb_2.clear()
         self.cmb_1.addItems(lines)
         self.cmb_2.addItems(cols)
 
@@ -1021,6 +1024,7 @@ class PlotLineMap(GraphWindow):
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
         cols = list(data.columns[filt])
+        self.cmb_1.clear()
         self.cmb_1.addItems(cols)
 
         self.cb_1.setText('Show Line Labels:')
@@ -1156,6 +1160,7 @@ class PlotVector(GraphWindow):
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
         if len(cols) > 0 and 'Point' in self.data.geom_type.iloc[0]:
+            self.cmb_1.clear()
             self.cmb_1.addItems(cols)
             self.cmb_1.setCurrentIndex(0)
         else:
@@ -1166,6 +1171,7 @@ class PlotVector(GraphWindow):
             self.cmb_c.hide()
             self.lbl_c.hide()
 
+        self.cmb_2.clear()
         self.cmb_2.addItems(['Normal',
                              'Group using Standard Deviations above Mean (0)',
                              'Group by Quartile',

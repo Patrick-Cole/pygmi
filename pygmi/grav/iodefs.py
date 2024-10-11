@@ -369,6 +369,12 @@ class ImportCG5(BasicModule):
             elif 'line' in tmp.lower():
                 lind = i
 
+        self.cmb_line.clear()
+        self.cmb_station.clear()
+        self.cmb_xchan.clear()
+        self.cmb_ychan.clear()
+        self.cmb_zchan.clear()
+
         self.cmb_line.addItems(ltmp)
         self.cmb_station.addItems(ltmp)
         self.cmb_xchan.addItems(ltmp)

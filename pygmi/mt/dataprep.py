@@ -237,6 +237,7 @@ class Metadata(ContextModule):
             self.dataid[i] = i
 
         self.cmb_bandid.currentIndexChanged.disconnect()
+        self.cmb_bandid.clear()
         self.cmb_bandid.addItems(bandid)
         indx = self.cmb_bandid.currentIndex()
         self.oldtxt = self.cmb_bandid.itemText(indx)

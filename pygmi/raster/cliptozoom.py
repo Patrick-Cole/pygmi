@@ -118,7 +118,6 @@ class ClipToZoom(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle('Clip to Zoom')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned

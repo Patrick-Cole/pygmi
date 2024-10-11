@@ -418,6 +418,7 @@ class PlotVRCetc(GraphWindow):
             self.showlog('Your dataset does not qualify')
             return
 
+        self.cmb_1.clear()
         self.cmb_1.addItems(items)
 
         self.lbl_1.setText('Graph Type:')
