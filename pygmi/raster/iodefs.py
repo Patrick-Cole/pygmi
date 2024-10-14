@@ -38,7 +38,7 @@ from pyproj.crs import CRS
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 
 warnings.filterwarnings("ignore",
@@ -1797,8 +1797,6 @@ def _filespeedtest():
     # dat = get_ascii(ifile)
 
     dataset = get_raster(ifile, metaonly=False)
-
-    # breakpoint()
 
     getinfo('Start')
 

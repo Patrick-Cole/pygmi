@@ -63,7 +63,7 @@ from pygmi.raster import iodefs, dataprep
 from pygmi import menu_default
 from pygmi.raster.modest_image import imshow
 from pygmi.raster.misc import currentshader, histcomp, histeq, img2rgb
-from pygmi.raster.misc import norm2, norm255
+from pygmi.raster.misc import norm2, norm255, lstack
 
 
 copper = np.array([[255., 236., 184.],
@@ -1667,8 +1667,7 @@ class PlotInterp(BasicModule):
         if not indata:
             return
 
-        indata = dataprep.lstack(indata, showlog=self.showlog,
-                                 piter=self.piter)
+        indata = lstack(indata, showlog=self.showlog, piter=self.piter)
 
         # Add membership data.
         if 'Cluster' in self.indata:

@@ -1258,8 +1258,6 @@ def _testiso():
              facecolor='none', legend_kwds={'label': 'Intensity'})
     plt.show()
 
-    breakpoint()
-
 
 def _testfn():
     """Test routine."""

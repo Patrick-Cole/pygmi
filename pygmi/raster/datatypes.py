@@ -219,6 +219,32 @@ class Data():
 
         return data
 
+    def in_bounds(self, bounds):
+        """
+        Check if dataset is in bounds supplied.
+
+        Parameters
+        ----------
+        bounds : tuple
+            Bounds of data as (left, bottom, right, top)
+
+        Returns
+        -------
+        bool
+            True if within bounds, otherwise False.
+
+        """
+        if self.bounds is None:
+            return False
+
+        xmin, ymin, xmax, ymax = self.bounds
+        xmin1, ymin1, xmax1, ymax1 = bounds
+
+        if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
+            return False
+
+        return True
+
     def meta_from_rasterio(self, dataset):
         """
         Set transform, bounds, extent, xdim and ydim from a rasterio dataset.

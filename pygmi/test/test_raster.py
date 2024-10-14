@@ -39,7 +39,7 @@ import pytest
 from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
 from pygmi.raster import iodefs, normalisation, smooth
-from pygmi.raster.misc import aspect2
+from pygmi.raster.misc import aspect2, check_dataid
 
 APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -87,7 +87,6 @@ def test_viz():
              [2.613125929752753, 2.613125929752753]]
     vtot, vstd, vsum = cooper.visibility2d(datin, 1, 0)
 
-    # breakpoint()
     np.testing.assert_array_equal(vtot, vtot2)
     np.testing.assert_array_equal(vstd, vstd2)
     np.testing.assert_array_equal(vsum, vsum2)
@@ -97,7 +96,7 @@ def test_check_dataid():
     """test check dataid."""
     datin = [Data(), Data()]
 
-    dat = dataprep.check_dataid(datin)
+    dat = check_dataid(datin)
     assert dat[0].dataid == '(1)'
     assert dat[1].dataid == '(2)'
 

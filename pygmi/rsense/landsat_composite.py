@@ -28,11 +28,10 @@ import os
 import glob
 from datetime import datetime
 import numpy as np
-import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, QtCore
 
 from pygmi.rsense.iodefs import get_data
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.misc import ProgressBarText, BasicModule
 import pygmi.menu_default as menu_default
 

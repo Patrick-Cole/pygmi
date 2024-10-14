@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 from pygmi.misc import BasicModule
 from pygmi import menu_default
 from pygmi.raster.iodefs import export_raster
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_data
 from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.rsense.iodefs import set_export_filename

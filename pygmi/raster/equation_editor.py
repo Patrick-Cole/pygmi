@@ -29,7 +29,7 @@ import numpy as np
 import numexpr as ne
 
 from pygmi.misc import BasicModule
-from pygmi.raster import dataprep
+from pygmi.raster.misc import lstack
 
 
 class EquationEditor(BasicModule):
@@ -359,7 +359,7 @@ class EquationEditor(BasicModule):
             self.showlog('No raster data.')
             return False
 
-        indata = dataprep.lstack(self.indata[intype])
+        indata = lstack(self.indata[intype])
 
         for j, i in enumerate(indata):
             self.cmb_1.addItem(i.dataid)

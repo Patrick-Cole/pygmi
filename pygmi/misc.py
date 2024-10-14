@@ -804,7 +804,6 @@ def _testfn():
     discrete_colorbar(ax, cax, data, lbls)
     plt.show()
 
-    breakpoint()
 
 if __name__ == "__main__":
     _testfn()

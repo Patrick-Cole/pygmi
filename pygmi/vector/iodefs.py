@@ -37,7 +37,7 @@ import fiona
 # from pyogrio import read_info
 
 from pygmi import menu_default
-from pygmi.raster.dataprep import GroupProj
+from pygmi.raster.misc import GroupProj
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import maptobounds
 
@@ -1003,8 +1003,6 @@ def _test():
     # tmp2 = ColumnSelect()
     # tmp2.indata = tmp1.outdata
     # tmp2.settings()
-
-    # breakpoint()
 
 
 if __name__ == "__main__":

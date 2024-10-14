@@ -52,8 +52,9 @@ from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.raster.ginterp import histcomp, norm255, norm2, currentshader
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
-from pygmi.raster.dataprep import lstack, data_reproject
+from pygmi.raster.dataprep import data_reproject
 from pygmi.vector.dataprep import reprojxy
+from pygmi.raster.misc import lstack
 from pygmi.rsense.emit import xr_to_pygmi, emit_xarray
 
 
@@ -2572,7 +2573,6 @@ def get_sentinel2(ifile, piter=None, showlog=print, tnames=None,
         for i in piter(dataset.indexes):
             bmeta = dataset.tags(i)
             # allns = dataset.tag_namespaces()
-            # breakpoint()
 
             bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bname = bname.replace(',', ' ')

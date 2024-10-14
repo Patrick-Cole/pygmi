@@ -45,7 +45,7 @@ from numba import jit
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.cooper import vertical
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.mag.dataprep import rtp, nextpow2
 from pygmi.vector.dataprep import quickgrid
 from pygmi.misc import frm, ProgressBar, BasicModule

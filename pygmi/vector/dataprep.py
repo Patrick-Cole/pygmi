@@ -36,7 +36,7 @@ import geopandas as gpd
 from pyproj import CRS, Transformer
 
 from pygmi import menu_default
-from pygmi.raster.dataprep import GroupProj
+from pygmi.raster.misc import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
 from pygmi.misc import BasicModule, ContextModule, ProgressBarText
@@ -1295,10 +1295,10 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
         x coordinates
     y : numpy array or float
         y coordinates
-    iwkt : str, int
-        Input wkt description or EPSG code (int)
-    owkt : str, int
-        Output wkt description or EPSG code (int)
+    iwkt : str, int, CRS
+        Input wkt description or EPSG code (int) or CRS
+    owkt : str, int, CRS
+        Output wkt description or EPSG code (int) or CRS
 
     Returns
     -------

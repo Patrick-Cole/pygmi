@@ -29,13 +29,11 @@ This module allows a raster dataset to be clipped to the current zoomed
 extents.
 """
 
-import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
-import matplotlib.colors as mcolors
 from shapely import Polygon
 import geopandas as gpd
 
@@ -214,7 +212,6 @@ def _testfn():
     """Test."""
     import sys
     from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
 
     app = QtWidgets.QApplication(sys.argv)
 

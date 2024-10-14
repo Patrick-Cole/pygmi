@@ -792,7 +792,6 @@ class MainWidget(QtWidgets.QMainWindow):
                 item.remove_arrows()
             self.scene.removeItem(item)
             # del item
-        # breakpoint()
 
         for item in self.scene.items():
             if isinstance(item, DiagramItem):

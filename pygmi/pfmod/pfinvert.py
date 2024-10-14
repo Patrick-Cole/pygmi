@@ -41,7 +41,7 @@ import sklearn.cluster as skc
 from pygmi import menu_default
 from pygmi.misc import BasicModule
 from pygmi.pfmod.datatypes import LithModel
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.pfmod.grvmag3d import quick_model
 
 

@@ -33,7 +33,7 @@ from PyQt5 import QtWidgets, QtCore
 
 from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta
-from pygmi.raster.dataprep import lstack
+from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
 
 
