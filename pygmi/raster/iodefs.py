@@ -1191,9 +1191,10 @@ class ExportData(ContextModule):
 
     def acceptall(self):
         """Accept choice."""
+        self.hide()
         if self.ofile == '':
             self.showlog('No output file')
-            return
+            return False
 
         os.chdir(os.path.dirname(self.ofile))
 

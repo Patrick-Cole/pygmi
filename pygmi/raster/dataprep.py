@@ -747,7 +747,7 @@ class DataMerge(BasicModule):
         if bfile[-3:] == 'shp':
             bounds = get_shape_bounds(bfile, crs, self.showlog)
         else:
-            dattmp = get_raster(bfile, metaonly=True)
+            dattmp = get_raster(bfile, piter=iter, metaonly=True)
             if dattmp is None:
                 bounds = None
             else:

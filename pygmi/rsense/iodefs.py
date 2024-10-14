@@ -1088,9 +1088,10 @@ class ExportBatch(ContextModule):
 
     def acceptall(self):
         """Accept choice."""
+        self.hide()
         if self.le_odir.text() == '':
             self.showlog('No output directory')
-            return
+            return False
 
         filt = self.cmb_ofilt.currentText()
         odir = self.le_odir.text()

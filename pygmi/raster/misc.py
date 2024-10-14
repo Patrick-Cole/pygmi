@@ -692,3 +692,20 @@ def norm255(dat):
     out = out.round()
     out = out.astype(np.uint8)
     return out
+
+
+def _testfn():
+    """Test."""
+    from pygmi.raster.iodefs import get_raster
+
+    ifile1 = r"D:\Landslides\JTNdem.tif"
+    ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
+
+    dat1 = get_raster(ifile1)
+    dat2 = get_raster(ifile2)
+
+    dat3 = lstack(dat1+dat2, dxy=10, commonmask=True)
+
+
+if __name__ == "__main__":
+    _testfn()

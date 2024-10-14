@@ -792,6 +792,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 item.remove_arrows()
             self.scene.removeItem(item)
             # del item
+        item.my_class.outdata.clear()
 
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
@@ -887,6 +888,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item = DiagramItem(item_type, self.scene.my_item_menu,
                            class_name_active, self)
+
         item_color = self.scene.my_item_color
 
         item_name = textwrap.wrap(item_name, width=13, break_long_words=False)
@@ -951,7 +953,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         # Enable moving
         self.scene.my_mode = 'MoveItem'
-        return item
+        # return item
 
     def launch_context_item(self, newitem):
         """
