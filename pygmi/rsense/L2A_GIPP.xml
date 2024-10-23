@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Level-2A_Ground_Image_Processing_Parameter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="L2A_GIPP.xsd">
+  <Common_Section>
+    <Log_Level>INFO</Log_Level>
+    <!-- can be: NOTSET, DEBUG, INFO, WARNING, ERROR, CRITICAL -->
+    <Region_Of_Interest>
+        <row0>OFF</row0>
+        <col0>OFF</col0>
+        <nrow_win>1200</nrow_win>
+        <ncol_win>1200</ncol_win>
+    <!-- this defines a configurable Region of Interest (ROI) -->
+        <!-- if row0 == OFF: standard processing without ROI detection -->
+        <!-- if row0 == AUTO: region of interest is detected automatically via an algorithm -->
+        <!-- else: row0, col0: specifies the midpoint of the region of interest -->
+        <!-- if not OFF or AUTO: nrow_win, ncol_win defines a rectangle around the midpoint in pixel -->
+        <!-- row0, col0, nrow_win and ncol_win must be integer divisible by 6, to prevent rounding errors for downsampling -->
+        <!-- specify always a 10m resolution ROI, it will be automatically adapted to the lower resolutions -->
+    </Region_Of_Interest>
+    <Product_DOI>https://doi.org/10.5270/S2_-znk9xsj</Product_DOI>
+      <!-- A dedicted Digital Object Identifier, to be inserted in the Level 2A DS and Product metadata -->
+    <Nr_Threads>AUTO</Nr_Threads>
+    <!-- Nr_Treads determines the number of threads used for reading the OpenJPEG2 images. This is a new
+         feature implemented with OpenJPEG 2.3., improving the speed for importing the Bands.
+         If AUTO is chosen, the number of treads are deduced, using cpu_count().
+         Set this to 1 up to a maximum of 8, if this automatic mode will not fit to your platform -->
+    <Product_Generator>NONE</Product_Generator>
+    <!-- should be either a directory in the sen2cor home folder or 'NONE'. If NONE, Toolbox mode of operation will be used-->
+    <DEM_Directory>NONE</DEM_Directory>
+    <!-- should be either a directory in the sen2cor home folder or 'NONE'.
+        1) To use previously downloaded CDSE DGED DEM, set <DEM_Directory> to the local path where the DEM files are stored (e.g. dem/CopernicusDEM90_DGED).
+        2) To use the Copernicus DEM hosted by AWS, set <DEM_Directory> to the local path where the DEM files are stored (e.g. dem/CopernicusDEM90_AWS).
+        3) If not DEM is used, <DEM_Directory> should be set to 'NONE'.
+    -->
+    <DEM_Reference>NONE</DEM_Reference>
+    <!-- DEM_Reference is used to 1) reference the DEM in the L2A Metadata and, alternatively, 2) to set the url where DEM can be automatically downloaded.
+        1) To use previously downloaded CDSE DGED DEM, set <DEM_Reference> to 'CDSE-GLO-30' or 'CDSE-GLO-90' (resolution, 30/90, is mandatory).
+        2) To use the Copernicus DEM hosted by AWS, set <DEM_Reference>https://copernicus-dem-90m.s3.eu-central-1.amazonaws.com/</DEM_Reference>.
+        3) If no DEM is used, <DEM_Reference> should be set to 'NONE'.
+     -->
+    <Generate_DEM_Output>FALSE</Generate_DEM_Output>
+    <!-- FALSE: no DEM output, TRUE: store DEM in the AUX data directory -->
+    <Force_Exit_On_DEM_Error>FALSE</Force_Exit_On_DEM_Error>
+    <!-- FALSE: Processing continues with a flat surface, TRUE: processing will be stopped -->
+    <Generate_TCI_Output>TRUE</Generate_TCI_Output>
+    <!-- FALSE: no TCI output, TRUE: store TCI in the IMAGE data directory -->
+    <Generate_DDV_Output>FALSE</Generate_DDV_Output>
+    <!-- FALSE: no DDV output, TRUE: store DDV in the QI_DATA directory -->
+    <Handle_L1C_QLT_Mask>TRUE</Handle_L1C_QLT_Mask>
+    <!-- FALSE: no handling of L1C Quality Mask, TRUE: handling L1C Quality Mask -->
+    <Downsample_20_to_60>TRUE</Downsample_20_to_60>
+    <!-- TRUE: create additional 60m bands when 20m is processed -->
+    <PSD_Version>DEFAULT</PSD_Version>
+    <!-- Special entry for forcing a special PSD Version to be processed
+         leave it to DEFAULT if you are not 100 % sure that you need a dedicated version -->
+    <PSD_Scheme PSD_Version="14.2" PSD_Reference="S2-PDGS-TAS-DI-PSD-V14.2_Schema">
+		<UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+		<UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+		<Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+		<Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+		<DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+		<DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+    </PSD_Scheme>
+    <PSD_Scheme PSD_Version="14.6" PSD_Reference="S2-PDGS-TAS-DI-PSD-V14.6_Schema">
+		<UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+		<UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+		<Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+		<Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+		<DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+		<DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+	</PSD_Scheme>
+          <PSD_Scheme PSD_Version="14.7" PSD_Reference="S2-PDGS-TAS-DI-PSD-V14.7_Schema">
+		<UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+		<UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+		<Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+		<Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+		<DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+		<DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+	</PSD_Scheme>
+          <PSD_Scheme PSD_Version="14.8" PSD_Reference="S2-PDGS-TAS-DI-PSD-V14.8_Schema">
+		<UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+		<UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+		<Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+		<Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+		<DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+		<DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+	</PSD_Scheme>
+          <PSD_Scheme PSD_Version="14.9" PSD_Reference="S2-PDGS-TAS-DI-PSD-V14.9_Schema">
+        <UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+        <UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+        <Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+        <Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+        <DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+        <DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+    </PSD_Scheme>
+          <PSD_Scheme PSD_Version="15.0" PSD_Reference="S2-PDGS-CS-DI-PSD-V15.0_Schema">
+        <UP_Scheme_1C>S2_User_Product_Level-1C_Metadata</UP_Scheme_1C>
+        <UP_Scheme_2A>S2_User_Product_Level-2A_Metadata</UP_Scheme_2A>
+        <Tile_Scheme_1C>S2_PDI_Level-1C_Tile_Metadata</Tile_Scheme_1C>
+        <Tile_Scheme_2A>S2_PDI_Level-2A_Tile_Metadata</Tile_Scheme_2A>
+        <DS_Scheme_1C>S2_PDI_Level-1C_Datastrip_Metadata</DS_Scheme_1C>
+        <DS_Scheme_2A>S2_PDI_Level-2A_Datastrip_Metadata</DS_Scheme_2A>
+    </PSD_Scheme>
+    <GIPP_Scheme>L2A_GIPP</GIPP_Scheme>
+    <SC_Scheme>L2A_CAL_SC_GIPP</SC_Scheme>
+    <AC_Scheme>L2A_CAL_AC_GIPP</AC_Scheme>
+    <PB_Scheme>L2A_PB_GIPP</PB_Scheme>
+    <QI_Scheme>L2A_QUALITY</QI_Scheme>
+  </Common_Section>
+  <Scene_Classification>
+    <Filters>
+      <Median_Filter>0</Median_Filter>
+    </Filters>
+  </Scene_Classification>
+  <Atmospheric_Correction>
+    <Look_Up_Tables>
+      <Aerosol_Type>RURAL</Aerosol_Type>
+      <!-- RURAL, MARITIME, AUTO -->
+      <Mid_Latitude>AUTO</Mid_Latitude>
+      <!-- SUMMER, WINTER, AUTO -->
+      <Ozone_Content>0</Ozone_Content>
+      <!-- The atmospheric temperature profile and ozone content in Dobson Unit (DU)
+      	0: to get the best approximation from metadata
+      	(this is the smallest difference between metadata and column DU),
+      	else select one of:
+      	==========================================
+        For midlatitude summer (MS) atmosphere:
+        250, 290, 331 (standard MS), 370, 410, 450
+        ==========================================
+        For midlatitude winter (MW) atmosphere:
+        250, 290, 330, 377 (standard MW), 420, 460
+        ==========================================
+       -->
+    </Look_Up_Tables>
+    <Flags>
+      <WV_Correction>1</WV_Correction>
+      <!-- 0: No WV correction, 1: correction with 940 nm band (default) -->
+      <VIS_Update_Mode>1</VIS_Update_Mode>
+      <!-- 0: constant, 1: variable visibility -->
+      <WV_Watermask>1</WV_Watermask>
+      <!-- 0: not replaced, 1: land-average, 2: line-average -->
+      <Cirrus_Correction>FALSE</Cirrus_Correction>
+      <!-- FALSE: no cirrus correction applied, TRUE: cirrus correction applied -->
+      <DEM_Terrain_Correction>TRUE</DEM_Terrain_Correction>
+      <!--Use DEM for Terrain Correction, otherwise only used for WVP and AOT -->
+      <BRDF_Correction>0</BRDF_Correction>
+      <!-- 0: no BRDF correction, 1, 2: see IODD for explanation -->
+      <BRDF_Lower_Bound>0.22</BRDF_Lower_Bound>
+      <!-- In most cases, g=0.2 to 0.25 is adequate, in extreme cases of overcorrection g=0.1 should be applied -->
+    </Flags>
+    <Calibration>
+      <Adj_Km>1.000</Adj_Km>
+      <!-- Adjancency Range [km] -->
+      <Visibility>40.0</Visibility>
+      <!-- visibility (5 <= visib <= 120 km) -->
+      <Altitude>0.100</Altitude>
+      <!-- [km] -->
+      <Smooth_WV_Map>100.0</Smooth_WV_Map>
+      <!-- length of square box, [meters] -->
+      <WV_Threshold_Cirrus>0.25</WV_Threshold_Cirrus>
+      <!-- water vapor threshold to switch off cirrus algorithm [cm]Range: 0.1-1.0 -->
+      <Database_Compression_Level>0</Database_Compression_Level>
+      <!-- zlib compression level for image database [0-9, 0: best speed, 9: best size] -->
+    </Calibration>
+  </Atmospheric_Correction>
+</Level-2A_Ground_Image_Processing_Parameter>

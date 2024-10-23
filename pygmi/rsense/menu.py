@@ -27,7 +27,7 @@
 from PyQt5 import QtWidgets
 
 from pygmi.rsense import change, change_viewer
-from pygmi.rsense import iodefs
+from pygmi.rsense import iodefs, dataprep
 from pygmi.rsense import ratios
 from pygmi.rsense import hyperspec
 from pygmi.rsense import transforms
@@ -68,6 +68,17 @@ class MenuWidget():
         self.action_batch_list = QtWidgets.QAction('Create Batch List')
         self.menu.addAction(self.action_batch_list)
         self.action_batch_list.triggered.connect(self.batch_list)
+
+        self.menu.addSeparator()
+
+        self.action_sen2cor = QtWidgets.QAction('Sen2Cor: Sentinel-2 '
+                                                'Atmospheric Correction')
+        self.menu.addAction(self.action_sen2cor)
+        self.action_sen2cor.triggered.connect(self.sen2cor)
+
+        self.action_topo = QtWidgets.QAction('Topographic Correction')
+        self.menu.addAction(self.action_topo)
+        self.action_topo.triggered.connect(self.topo)
 
         self.menu.addSeparator()
 
@@ -128,6 +139,15 @@ class MenuWidget():
         """Calculate change."""
         self.parent.item_insert('Step', 'Calculate Change Indices',
                                 change.CalculateChange)
+
+    def topo(self):
+        """Topographic correction."""
+        self.parent.item_insert('Step', 'Topographic Correction',
+                                dataprep.TopoCorrect)
+
+    def sen2cor(self):
+        """Sen2Cor."""
+        self.parent.item_insert('Step', 'Sen2Cor', dataprep.Sen2Cor)
 
     def view_change(self):
         """View Change Detection."""

@@ -1618,22 +1618,25 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
+                
+                out.update_tags(i+1, **rmeta)
+                
                 if 'wavelength' in rmeta:
-                    out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
+                    # out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
                     wavelength.append(rmeta['wavelength'])
 
-                if 'fwhm' in rmeta:
-                    fwhm.append(rmeta['fwhm'])
+                # if 'fwhm' in rmeta:
+                #     fwhm.append(rmeta['fwhm'])
 
-                if 'reflectance_scale_factor' in rmeta:
-                    out.update_tags(i+1,
-                                    reflectance_scale_factor=str(rmeta['reflectance_scale_factor']))
+                # if 'reflectance_scale_factor' in rmeta:
+                #     out.update_tags(i+1,
+                #                     reflectance_scale_factor=str(rmeta['reflectance_scale_factor']))
 
-                if 'WavelengthMin' in rmeta:
-                    out.update_tags(i+1,
-                                    WavelengthMin=str(rmeta['WavelengthMin']))
-                    out.update_tags(i+1,
-                                    WavelengthMax=str(rmeta['WavelengthMax']))
+                # if 'WavelengthMin' in rmeta:
+                #     out.update_tags(i+1,
+                #                     WavelengthMin=str(rmeta['WavelengthMin']))
+                #     out.update_tags(i+1,
+                #                     WavelengthMax=str(rmeta['WavelengthMax']))
 
                 if datai.datetime != datetime.datetime(1900, 1, 1):
                     adatetxt = datai.datetime.strftime('%Y-%m-%d %H:%M:%S')

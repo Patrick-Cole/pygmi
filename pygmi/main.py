@@ -1248,10 +1248,12 @@ class MainWidget(QtWidgets.QMainWindow):
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg += '\n'
         txtmsg += txt
+        txtmsg = txtmsg.strip()
         txtobj.setPlainText(txtmsg)
         tmp = txtobj.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
+        QtWidgets.QApplication.processEvents()
 
     def update_pdlg(self, dlg):
         """

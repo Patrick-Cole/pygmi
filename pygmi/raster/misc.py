@@ -290,6 +290,72 @@ def currentshader(data, cell=1., theta=np.pi/4., phi=-np.pi/4., alpha=1.0):
     return R
 
 
+def data_reproject(data, ocrs, otransform=None, orows=None,
+                   ocolumns=None, icrs=None):
+    """
+    Reproject dataset.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI dataset.
+    ocrs : CRS
+        output crs.
+    otransform : Affine, optional
+        Output affine transform. The default is None.
+    orows : int, optional
+        output rows. The default is None.
+    ocolumns : int, optional
+        output columns. The default is None.
+    icrs : CRS, optional
+        input crs. The default is None.
+
+    Returns
+    -------
+    data2 : PyGMI Data
+        Reprojected dataset.
+
+    """
+    if icrs is None:
+        icrs = data.crs
+
+    if otransform is None:
+        src_height, src_width = data.data.shape
+
+        otransform, ocolumns, orows = calculate_default_transform(
+            icrs, ocrs, src_width, src_height, *data.bounds)
+
+    if data.nodata is None:
+        nodata = data.data.fill_value
+    else:
+        nodata = data.nodata
+
+    odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
+    odata, _ = reproject(source=data.data,
+                         destination=odata,
+                         src_transform=data.transform,
+                         src_crs=icrs,
+                         dst_transform=otransform,
+                         dst_crs=ocrs,
+                         src_nodata=nodata,
+                         resampling=rasterio.enums.Resampling['bilinear'])
+
+    data2 = Data()
+    data2.data = odata
+    data2.crs = ocrs
+    data2.set_transform(transform=otransform)
+    data2.data = data2.data.astype(data.data.dtype)
+    data2.dataid = data.dataid
+    data2.wkt = CRS.to_wkt(ocrs)
+    data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
+
+    data2.data = np.ma.masked_equal(data2.data, nodata)
+    data2.nodata = nodata
+    data2.metadata = data.metadata
+
+    return data2
+
+
 def getepsgcodes():
     """
     Routine used to get a list of EPSG codes.
@@ -581,51 +647,53 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
         data.data.set_fill_value(data.nodata)
         data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
 
-        if data.data.min() <= 0:
-            doffset = data.data.min()-1.
-            data.data = data.data - doffset
-
         trans0 = data.transform
+        if trans0 == trans:
+            dat2.append(data.copy())
+        else:
+            if data.data.min() <= 0:
+                doffset = data.data.min()-1.
+                data.data = data.data - doffset
+            height, width = data.data.shape
 
-        height, width = data.data.shape
+            odata = np.zeros((rows, cols), dtype=data.data.dtype)
+            odata, _ = reproject(source=data.data,
+                                 destination=odata,
+                                 src_transform=trans0,
+                                 src_crs=data.crs,
+                                 src_nodata=data.nodata,
+                                 dst_transform=trans,
+                                 dst_crs=data.crs,
+                                 resampling=resampling)
 
-        odata = np.zeros((rows, cols), dtype=data.data.dtype)
-        odata, _ = reproject(source=data.data,
-                             destination=odata,
-                             src_transform=trans0,
-                             src_crs=data.crs,
-                             src_nodata=data.nodata,
-                             dst_transform=trans,
-                             dst_crs=data.crs,
-                             resampling=resampling)
+            data2 = Data()
+            data2.data = np.ma.masked_equal(odata, data.nodata)
+            data2.data.mask = np.ma.getmaskarray(data2.data)
+            data2.nodata = data.nodata
+            data2.crs = data.crs
+            data2.set_transform(transform=trans)
+            data2.data = data2.data.astype(data.data.dtype)
+            data2.dataid = data.dataid
+            data2.filename = data.filename
+            data2.datetime = data.datetime
 
-        data2 = Data()
-        data2.data = np.ma.masked_equal(odata, data.nodata)
-        data2.data.mask = np.ma.getmaskarray(data2.data)
-        data2.nodata = data.nodata
-        data2.crs = data.crs
-        data2.set_transform(transform=trans)
-        data2.data = data2.data.astype(data.data.dtype)
-        data2.dataid = data.dataid
-        data2.filename = data.filename
-        data2.datetime = data.datetime
+            dat2.append(data2)
 
-        dat2.append(data2)
+            dat2[-1].metadata = data.metadata
+            dat2[-1].data = dat2[-1].data + doffset
+
+            dat2[-1].nodata = data.nodata
+            dat2[-1].data.set_fill_value(data.nodata)
+            dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
+                                        mask=dat2[-1].data.mask)
+
+            if doffset != 0.:
+                data.data = data.data + doffset
 
         if cmask is None:
             cmask = dat2[-1].data.mask
         else:
             cmask = np.logical_or(cmask, dat2[-1].data.mask)
-
-        dat2[-1].metadata = data.metadata
-        dat2[-1].data = dat2[-1].data + doffset
-
-        dat2[-1].nodata = data.nodata
-        dat2[-1].data.set_fill_value(data.nodata)
-        dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
-                                    mask=dat2[-1].data.mask)
-
-        data.data = data.data + doffset
 
     if commonmask is True:
         for idat in piter(dat2):
@@ -638,7 +706,6 @@ def lstack(dat, piter=None, dxy=None, showlog=print, commonmask=False,
         out = dat2
 
     return out
-
 
 
 def norm2(dat, datmin=None, datmax=None):

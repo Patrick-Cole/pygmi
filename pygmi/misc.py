@@ -619,6 +619,14 @@ class ProgressBarText():
         if iteration == self.total:
             print()
 
+    def setMaximum(self, val):
+        """Set the maximum value."""
+        self.total = int(val)
+
+    def setValue(self, val):
+        """Set the progressbar value."""
+        self.printprogressbar(int(val))
+
     def to_max(self):
         """Set the progress to maximum."""
         self.printprogressbar(self.total)

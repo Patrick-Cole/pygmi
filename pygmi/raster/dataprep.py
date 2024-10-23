@@ -35,7 +35,7 @@ from scipy.signal.windows import tukey
 import rasterio
 import rasterio.merge
 from pyproj.crs import CRS
-from rasterio.warp import calculate_default_transform, reproject
+from rasterio.warp import calculate_default_transform
 from rasterio.mask import mask as riomask
 import geopandas as gpd
 from shapely import LineString
@@ -46,7 +46,8 @@ from pygmi.misc import ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.vector.dataprep import reprojxy
-from pygmi.raster.misc import GroupProj, lstack
+from pygmi.raster.misc import GroupProj, lstack, data_reproject
+from pygmi.rsense.iodefs import get_data
 
 
 class Continuation(BasicModule):
@@ -344,7 +345,7 @@ class DataLayerStack(BasicModule):
 
         """
         if 'RasterFileList' in self.indata:
-            from pygmi.rsense.iodefs import get_data
+            # from pygmi.rsense.iodefs import get_data
 
             ifiles = self.indata['RasterFileList']
             self.showlog('Warning: Layer stacking a file list assumes '
@@ -475,7 +476,8 @@ class DataMerge(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
-        pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary (optional)')
+        pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
+                                         '(optional)')
 
         pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
@@ -711,10 +713,9 @@ class DataMerge(BasicModule):
 
             for ifile in self.piter(ifiles):
                 indata += get_raster(ifile, piter=iter, metaonly=True)
-            
+
             if len(indata) == len(ifiles):
                 self.singleband = True
-    
 
         if indata is None:
             self.showlog('No input datasets')
@@ -902,10 +903,10 @@ class DataMerge(BasicModule):
             # x0, y0, x1, y1 = bounds
             # poly = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)])
             # gdf = gpd.GeoDataFrame({'geometry': [poly]})
-            
+
             # if self.le_sfile.text()[-3:] == 'shp':
-            #     gdf = self.le_sfile.text()           
-            
+            #     gdf = self.le_sfile.text()
+
             outdat = cut_raster(outdat, self.le_sfile.text(), deepcopy=False)
 
         if outdat:
@@ -998,7 +999,7 @@ class DataMerge(BasicModule):
             outdat[-1].crs = crs
             outdat[-1].nodata = nodata
 
-        outdat = trim_raster(outdat)
+        # outdat = trim_raster(outdat)
         self.outdata['Raster'] = outdat
 
         return True
@@ -1396,7 +1397,6 @@ class Metadata(ContextModule):
 
         self.accept()
 
-
     def rename_id(self):
         """
         Rename the band name.
@@ -1627,70 +1627,70 @@ def cut_raster(data, ifile, showlog=print, deepcopy=True):
     return data
 
 
-def data_reproject(data, ocrs, otransform=None, orows=None,
-                   ocolumns=None, icrs=None):
-    """
-    Reproject dataset.
+# def data_reproject(data, ocrs, otransform=None, orows=None,
+#                    ocolumns=None, icrs=None):
+#     """
+#     Reproject dataset.
 
-    Parameters
-    ----------
-    data : PyGMI Data
-        PyGMI dataset.
-    ocrs : CRS
-        output crs.
-    otransform : Affine, optional
-        Output affine transform. The default is None.
-    orows : int, optional
-        output rows. The default is None.
-    ocolumns : int, optional
-        output columns. The default is None.
-    icrs : CRS, optional
-        input crs. The default is None.
+#     Parameters
+#     ----------
+#     data : PyGMI Data
+#         PyGMI dataset.
+#     ocrs : CRS
+#         output crs.
+#     otransform : Affine, optional
+#         Output affine transform. The default is None.
+#     orows : int, optional
+#         output rows. The default is None.
+#     ocolumns : int, optional
+#         output columns. The default is None.
+#     icrs : CRS, optional
+#         input crs. The default is None.
 
-    Returns
-    -------
-    data2 : PyGMI Data
-        Reprojected dataset.
+#     Returns
+#     -------
+#     data2 : PyGMI Data
+#         Reprojected dataset.
 
-    """
-    if icrs is None:
-        icrs = data.crs
+#     """
+#     if icrs is None:
+#         icrs = data.crs
 
-    if otransform is None:
-        src_height, src_width = data.data.shape
+#     if otransform is None:
+#         src_height, src_width = data.data.shape
 
-        otransform, ocolumns, orows = calculate_default_transform(
-            icrs, ocrs, src_width, src_height, *data.bounds)
+#         otransform, ocolumns, orows = calculate_default_transform(
+#             icrs, ocrs, src_width, src_height, *data.bounds)
 
-    if data.nodata is None:
-        nodata = data.data.fill_value
-    else:
-        nodata = data.nodata
+#     if data.nodata is None:
+#         nodata = data.data.fill_value
+#     else:
+#         nodata = data.nodata
 
-    odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
-    odata, _ = reproject(source=data.data,
-                         destination=odata,
-                         src_transform=data.transform,
-                         src_crs=icrs,
-                         dst_transform=otransform,
-                         dst_crs=ocrs,
-                         src_nodata=nodata,
-                         resampling=rasterio.enums.Resampling['bilinear'])
+#     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
+#     odata, _ = reproject(source=data.data,
+#                          destination=odata,
+#                          src_transform=data.transform,
+#                          src_crs=icrs,
+#                          dst_transform=otransform,
+#                          dst_crs=ocrs,
+#                          src_nodata=nodata,
+#                          resampling=rasterio.enums.Resampling['bilinear'])
 
-    data2 = Data()
-    data2.data = odata
-    data2.crs = ocrs
-    data2.set_transform(transform=otransform)
-    data2.data = data2.data.astype(data.data.dtype)
-    data2.dataid = data.dataid
-    data2.wkt = CRS.to_wkt(ocrs)
-    data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
+#     data2 = Data()
+#     data2.data = odata
+#     data2.crs = ocrs
+#     data2.set_transform(transform=otransform)
+#     data2.data = data2.data.astype(data.data.dtype)
+#     data2.dataid = data.dataid
+#     data2.wkt = CRS.to_wkt(ocrs)
+#     data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
 
-    data2.data = np.ma.masked_equal(data2.data, nodata)
-    data2.nodata = nodata
-    data2.metadata = data.metadata
+#     data2.data = np.ma.masked_equal(data2.data, nodata)
+#     data2.nodata = nodata
+#     data2.metadata = data.metadata
 
-    return data2
+#     return data2
 
 
 def fftprep(data):
@@ -1725,7 +1725,7 @@ def fftprep(data):
     x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
 
-    for j in range(2):
+    for _ in range(2):
         z1[0] = 0
         z1[-1] = 0
         z1[:, 0] = 0
@@ -1820,7 +1820,7 @@ def fftcont(data, h):
 
     fftmod = np.fft.fft2(ndat)
 
-    ny, nx = fftmod.shape
+    # ny, nx = fftmod.shape
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
     k = np.sqrt(KX**2+KY**2)
@@ -2046,7 +2046,7 @@ def redistribute_vertices(geom, distance):
         parts = [redistribute_vertices(part, distance)
                  for part in geom]
         return type(geom)([p for p in parts if not p.is_empty])
-    raise ValueError('unhandled geometry %s', (geom.geom_type,))
+    raise ValueError(f'unhandled geometry {geom.geom_type}')
 
 
 def taylorcont(data, h):
@@ -2127,7 +2127,7 @@ def trim_raster(olddata):
                 break
             colend -= 1
 
-        drows, dcols = data.data.shape
+        # drows, dcols = data.data.shape
         data.data = data.data[rowstart:rowend, colstart:colend]
         data.data.mask = mask[rowstart:rowend, colstart:colend]
 
@@ -2237,7 +2237,6 @@ def _testfft():
     from matplotlib import colormaps
     import scipy
     from IPython import get_ipython
-    from pygmi.raster.iodefs import get_raster
 
     get_ipython().run_line_magic('matplotlib', 'inline')
 
@@ -2253,7 +2252,7 @@ def _testfft():
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, rdiff, cdiff, datamedian = fftprep(data)
+    ndat, _, _, datamedian = fftprep(data)
 
     datamedian = np.ma.median(data.data)
     ndat = data.data - datamedian
@@ -2296,7 +2295,6 @@ def _testfft():
 def _testfn():
     """Test."""
     import sys
-    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
     ifile = r"D:\mag\merge\mag1.tif"
