@@ -833,6 +833,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
 
         rect = None
+        rect2 = None
         if event.button != 1:
             xxx, yyy = self.line.get_data()
             xxx = [event.xdata, event.xdata]

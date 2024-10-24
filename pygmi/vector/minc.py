@@ -73,7 +73,7 @@ def minc(x, y, z, dxy, showlog=print, extent=None, bdist=None,
     z = z.astype(float)
 
     filt = np.isnan(x) | np.isnan(y) | np.isnan(z)
-    if filt.max() == True:
+    if np.any(filt):
         filt = ~filt
         x = x[filt]
         y = y[filt]
@@ -637,20 +637,20 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
 
-    IO = ImportXYZ()
-    IO.ifile = ifile
-    IO.filt = 'Geosoft XYZ (*.xyz)'
-    IO.settings(True)
+    tmp = ImportXYZ()
+    tmp.ifile = ifile
+    tmp.filt = 'Geosoft XYZ (*.xyz)'
+    tmp.settings(True)
 
-    dat = IO.outdata['Vector']
+    dat = tmp.outdata['Vector'][0]
 
     x = dat.geometry.x.to_numpy()
     y = dat.geometry.y.to_numpy()
-    z = dat['Column 8'].to_numpy()
+    z = dat['MAGMICROLEVEL'].to_numpy()
 
-    dxy = 125
+    dxy = 0.001
 
     extent = np.array([x.min(), x.max(), y.min(), y.max()])
 

@@ -614,7 +614,7 @@ def currentshader(data, cell, theta, phi, alpha):
     cosg2 = np.cos(theta/2)
     p0 = -np.cos(phi)*np.tan(theta)
     q0 = -np.sin(phi)*np.tan(theta)
-    sqrttmp = (1+np.sqrt(1+p0**2+q0**2))
+    sqrttmp = 1+np.sqrt(1+p0**2+q0**2)
     p1 = p0 / sqrttmp
     q1 = q0 / sqrttmp
 
@@ -664,8 +664,7 @@ def histcomp(img, nbr_bins=256, perc=5.):
     scnt = min(scnt, sindx)
 
     ecnt = perc*(nbr_bins-1)
-    if ecnt > ((nbr_bins-1)-eindx):
-        ecnt = (nbr_bins-1)-eindx
+    ecnt = min(ecnt, nbr_bins-1-eindx)
 
     img2 = np.empty_like(img, dtype=np.float32)
     np.copyto(img2, img)
@@ -698,15 +697,15 @@ def anaglyph(red, blue, atype='dubois'):
         Output dataset.
 
     """
-    if 'Dubois' in atype:
-        mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
-                        [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
-                        [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
+    # Dubois' is the default.
+    mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
+                    [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
+                    [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
 
-        mat = np.array([[456, 500, 176, -43, -88, -2],
-                        [-40, -38, -16, 378, 734, -18],
-                        [-15, -21, -5, -72, -113, 1226]])/1000.
-    elif 'Green-Magenta' in atype:
+    mat = np.array([[456, 500, 176, -43, -88, -2],
+                    [-40, -38, -16, 378, 734, -18],
+                    [-15, -21, -5, -72, -113, 1226]])/1000.
+    if 'Green-Magenta' in atype:
         mat = np.array([[-62, -158, -39, 529, 705, 24],
                         [284, 668, 143, -16, -15, -65],
                         [-15, -27, 21, 9, 75, 937]])/1000.

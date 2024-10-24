@@ -136,7 +136,7 @@ class ModestImage(mi.AxesImage):
         self._pixel2world_cache = None
         self._world2pixel_cache = None
 
-    def set_extent(self, extent):
+    def set_extent(self, extent, **kwargs):
         """
         Set extent.
 

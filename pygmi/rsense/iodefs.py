@@ -50,7 +50,8 @@ from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.raster.misc import histcomp, norm255, norm2, currentshader
-from pygmi.raster.misc import data_reproject, lstack
+from pygmi.raster.misc import lstack
+from pygmi.raster.reproj import data_reproject
 from pygmi.vector.dataprep import reprojxy
 from pygmi.rsense.emit import xr_to_pygmi, emit_xarray
 
@@ -176,7 +177,7 @@ class ImportData(BasicModule):
         self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
-        ext = ('Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5 *.nc);;')
+        ext = 'Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5 *.nc);;'
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -964,7 +965,7 @@ class ExportBatch(ContextModule):
         if 'RasterFileList' not in self.indata:
             self.showlog('No raster file list')
             self.process_is_active(False)
-            return False
+            return
 
         dat = self.indata['RasterFileList'][0]
         bnames = dat.tnames
@@ -992,7 +993,7 @@ class ExportBatch(ContextModule):
         self.hide()
         if self.le_odir.text() == '':
             self.showlog('No output directory')
-            return False
+            return
 
         filt = self.cmb_ofilt.currentText()
         odir = self.le_odir.text()
@@ -1019,7 +1020,7 @@ class ExportBatch(ContextModule):
                 sunfile, _ = QtWidgets.QFileDialog.getOpenFileName(
                     self.parent, 'Open File', '.', ext)
                 if sunfile == '':
-                    return False
+                    return
         else:
             otype = None
             tnames = None

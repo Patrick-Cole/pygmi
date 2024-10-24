@@ -30,9 +30,9 @@ import copy
 from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-import matplotlib
+# import matplotlib
 
-matplotlib.numpy = np
+# matplotlib.numpy = np
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -364,6 +364,7 @@ class TDEM1D(BasicModule):
 
         wform = self.update_wave()
 
+        srclist = []
         if stype == 'CircularLoop':
             srclist = [time_domain.Src.CircularLoop(rxlist,
                                                     n_turns=loopturns,
@@ -432,7 +433,6 @@ class TDEM1D(BasicModule):
         # inv = inversion.BaseInversion(invprob, directiveList=[beta, betaest])
         inv = inversion.BaseInversion(invprob, directiveList=[target])
 
-        # inv = inversion.BaseInversion(invprob, directiveList=[target])
         opt.remember('xc')
 
         # run the inversion
@@ -489,6 +489,7 @@ class TDEM1D(BasicModule):
         offtime = float(self.le_txofftime.text())
         times = np.linspace(0, offtime, 1000)
         wtype = self.cmb_wtype.currentText()
+        title = ''
 
         wform = self.update_wave()
 
@@ -531,6 +532,7 @@ class TDEM1D(BasicModule):
         rampoff = np.array([rampoff1, offtime])
 
         wtype = self.cmb_wtype.currentText()
+        wform = None
 
         if wtype == 'VTEMWaveform':
             wform = time_domain.sources.VTEMWaveform(off_time=offtime,

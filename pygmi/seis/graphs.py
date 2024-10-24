@@ -35,14 +35,14 @@ from PyQt5 import QtWidgets, QtCore
 import geopandas as gpd
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
+from scipy.spatial.distance import pdist
+from scipy.spatial import ConvexHull
 from scipy.stats import linregress
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
 from shapelysmooth import catmull_rom_smooth
-from scipy.spatial.distance import pdist
-from scipy.spatial import ConvexHull
 
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
@@ -138,12 +138,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
                    np.cos(np.arctan2(vecs[2, :],
                                      np.sqrt(vecs[0, :]**2+vecs[1, :]**2))))
 
-            if abc[0] == abc.max():
-                ang = np.rad2deg(np.arctan2(vecs[1, 0], vecs[0, 0]))
-            if abc[1] == abc.max():
-                ang = np.rad2deg(np.arctan2(vecs[1, 1], vecs[0, 1]))
-            if abc[2] == abc.max():
-                ang = np.rad2deg(np.arctan2(vecs[1, 2], vecs[0, 2]))
+            idx = np.argmax(abc)
+            ang = np.rad2deg(np.arctan2(vecs[1, idx], vecs[0, idx]))
 
             abc[::-1].sort()  # sort in reverse order
             emaj = abc[0]
@@ -198,7 +194,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = np.ma.masked_invalid(data1)
         y = np.ma.masked_invalid(data2)
 
-        if y.mask.min() == True or x.mask.min() == True:
+        if np.all(y.mask) or np.all(x.mask):
             self.figure.canvas.draw()
             return
 
@@ -442,6 +438,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         A = {}
         T = {}
+        A1mean = 0
+
         for event in dat:
             A1 = {}
             T1 = {}
@@ -606,7 +604,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         x = df1.lon.to_numpy()
         y = df1.lat.to_numpy()
-        z = df1.intensity.to_numpy()
+        # z = df1.intensity.to_numpy()
 
         plist = []
         uvals = np.sort(df1.intensity.unique())
@@ -1045,7 +1043,7 @@ def contourtopoly(cntr):
                 x = polypoints[:, 0]
                 y = polypoints[:, 1]
 
-                poly = Polygon([coords for coords in zip(x, y)])
+                poly = Polygon(list(zip(x, y)))
 
                 if not poly.is_valid:
                     poly = poly.buffer(0.)
@@ -1146,13 +1144,6 @@ def eigsorted(cov):
 def _testiso():
     """Test creation of isoseismal maps."""
     import matplotlib.pyplot as plt
-    import matplotlib.tri as tri
-    from scipy.spatial.distance import pdist
-    from pygmi.vector.dataprep import gridxyz
-    from shapelysmooth import catmull_rom_smooth
-    import rasterio as rio
-    from contourpy import contour_generator
-    from scipy.spatial import ConvexHull
 
     ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
 
@@ -1266,8 +1257,8 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    # tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
-    tmp.ifile = r"E:\Workdata\seismology\seiscomp\events.txt"
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
+    # tmp.ifile = r"E:\Workdata\seismology\seiscomp\events.txt"
 
     tmp.settings(True)
 

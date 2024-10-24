@@ -1189,6 +1189,11 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     datfin = calc_ratios(dat, rlist, showlog=showlog, piter=piter)
 
+    NDVI = None
+    NDWI = None
+    SWIR = None
+    BSI = None
+
     for i in datfin:
         if 'NDVI' in i.dataid:
             NDVI = i.data

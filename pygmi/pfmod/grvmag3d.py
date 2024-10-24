@@ -45,7 +45,7 @@ from matplotlib import colormaps
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from pygmi.raster.dataprep import data_reproject
+from pygmi.raster.reproj import data_reproject
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 from pygmi.misc import frm

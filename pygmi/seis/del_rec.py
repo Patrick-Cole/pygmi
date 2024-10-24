@@ -98,9 +98,6 @@ class DeleteRecord(BasicModule):
         self.showlog('Input Filename: '+ifile)
         self.showlog('Output Filename: '+ofile)
 
-        outputf = open(ofile, 'w', encoding='utf-8')
-        inputf = open(ifile, encoding='utf-8')
-
         skey = QtWidgets.QInputDialog.getText(
             self.parent, 'Delete Criteria',
             'Please input the terms used to decide on lines to delete',
@@ -114,16 +111,15 @@ class DeleteRecord(BasicModule):
         skey = skey.replace(' ', '')
         skey = skey.split(',')
 
-        idata = inputf.readlines()
+        with open(ifile, encoding='utf-8') as inputf:
+            idata = inputf.readlines()
+
         odata = idata
         for j in skey:
             odata = [i for i in odata if i.find(j) < 0]
 
-        outputf.writelines(odata)  # Insert a blank line
-
-        # Close files
-        inputf.close()
-        outputf.close()
+        with open(ofile, 'w', encoding='utf-8') as outputf:
+            outputf.writelines(odata)
 
         self.showlog('Completed!')
 

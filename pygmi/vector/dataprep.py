@@ -36,7 +36,7 @@ import geopandas as gpd
 from pyproj import CRS, Transformer
 
 from pygmi import menu_default
-from pygmi.raster.misc import GroupProj
+from pygmi.raster.reproj import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
 from pygmi.misc import BasicModule, ContextModule, ProgressBarText
@@ -733,13 +733,13 @@ class TextFileSplit(BasicModule):
         None.
 
         """
-        ext = ('Common formats (*.txt *.xyz *.csv);;')
+        ext = 'Common formats (*.txt *.xyz *.csv);;'
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
 
         if not self.ifile:
-            return False
+            return
 
         self.le_ifile.setText(self.ifile)
         fsize = os.path.getsize(self.ifile)
@@ -809,8 +809,8 @@ class TextFileSplit(BasicModule):
         """
         method = self.cmb_method.currentText()
 
-        totlines = int(self.lbl_totlines.text().replace(',', ''))
-        totbytes = int(self.lbl_totsize.text().replace(',', ''))
+        # totlines = int(self.lbl_totlines.text().replace(',', ''))
+        # totbytes = int(self.lbl_totsize.text().replace(',', ''))
 
         try:
             numfiles = int(self.le_files.text().replace(',', ''))
@@ -970,6 +970,8 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
 
     fsize = os.path.getsize(ifile)
     fname, fext = os.path.splitext(ifile)
+    numfiles = 0
+    numcnt = 0
 
     if mode == 'files':
         numfiles = num
@@ -988,7 +990,7 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
             if txt == '':
                 continue
 
-            with open(f'{fname}_{i+1}{fext}', 'w') as writer:
+            with open(f'{fname}_{i+1}{fext}', 'w', encoding='utf-8') as writer:
                 fread = 0
                 while fread < numcnt:
                     txt = reader.readline()

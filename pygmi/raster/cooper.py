@@ -588,7 +588,6 @@ def visibilitytot(data, wsize, dh):
     w2 = int(np.floor(wsize/2))
     vtot = np.zeros_like(data)
 
-
     # mask = np.ma.getmaskarray(data)
     # mean = data.mean()
     # data = data.data

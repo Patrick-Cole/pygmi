@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Code for the 3d model creation."""
 
-import ctypes
+# import ctypes
 import os
 import sys
 import numpy as np

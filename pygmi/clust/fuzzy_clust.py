@@ -366,6 +366,11 @@ class FuzzyClust(BasicModule):
 
         cnt = -1
         dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
+        clu = None
+        clcent = None
+        clnce = None
+        clxbi = None
+        clvrc = None
 
         for i in range(no_clust[0], no_clust[1] + 1):
             self.showlog(f'Number of Clusters: {i}')
@@ -779,7 +784,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
 
         ddd = np.sqrt(np.array(dtmp))
     ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster center
-    if (ddd == np.inf).max() == True:
+    if np.any(ddd == np.inf):
         ddd[ddd == np.inf] = np.random.normal() * 1e-10  # solve break
 
     return ddd

@@ -46,7 +46,8 @@ from pygmi.misc import ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.vector.dataprep import reprojxy
-from pygmi.raster.misc import GroupProj, lstack, data_reproject
+from pygmi.raster.misc import lstack
+from pygmi.raster.reproj import GroupProj, data_reproject
 from pygmi.rsense.iodefs import get_data
 
 

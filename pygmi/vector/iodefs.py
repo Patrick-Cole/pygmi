@@ -37,7 +37,7 @@ import fiona
 # from pyogrio import read_info
 
 from pygmi import menu_default
-from pygmi.raster.misc import GroupProj
+from pygmi.raster.reproj import GroupProj
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import maptobounds
 
@@ -891,6 +891,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
     data = {}
     numbands = {}
     nodata = {}
+    celltype = 'IEEE4ByteReal'
 
     for j in piter(range(len(files))):
         ifile = files[j]

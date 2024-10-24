@@ -79,6 +79,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.rotate = False
         self.nodata = 0.
         self.ax1 = None
+        self.im1 = None
 
     def init_graph(self):
         """
@@ -94,37 +95,11 @@ class GraphMap(FigureCanvasQTAgg):
         if self.refl != 1.:
             dat = dat/self.refl
 
-        rows, cols = dat.shape
-
         self.figure.clf()
         ax1 = self.figure.add_subplot(211)
         self.ax1 = ax1
 
         self.compute_initial_figure()
-
-        # ymin = dat.mean()-2*dat.std()
-        # ymax = dat.mean()+2*dat.std()
-
-        # if self.rotate is True:
-        #     self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax,
-        #                           interpolation='none')
-        #     rows, cols = cols, rows
-        # else:
-        #     self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax,
-        #                           interpolation='none')
-
-        # ax1.set_xlim((0, cols))
-        # ax1.set_ylim((0, rows))
-        # ax1.xaxis.set_visible(False)
-        # ax1.yaxis.set_visible(False)
-
-        # ax1.xaxis.set_major_formatter(frm)
-        # ax1.yaxis.set_major_formatter(frm)
-
-        # if self.rotate is True:
-        #     ax1.plot(self.row, self.col, '+w')
-        # else:
-        #     ax1.plot(self.col, self.row, '+w')
 
         ax2 = self.figure.add_subplot(212)
 
@@ -561,6 +536,7 @@ class ProcFeatures(BasicModule):
         self.product = {}
         self.ratio = {}
         self.feature = None
+        self.cryst = None
 
         self.cmb_ratios = QtWidgets.QComboBox()
         self.cb_rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
@@ -810,7 +786,7 @@ class ProcFeatures(BasicModule):
                 ofile = (os.path.basename(ifile).split('.')[0] + '_' +
                          mineral.replace(' ', '_') + '.tif')
                 ofile = os.path.join(odir, ofile)
-                if datfin[0].data.mask.min() == True:
+                if np.all(datfin[0].data.mask):
                     self.showlog(' Could not find any ' + mineral +
                                  '. No data to export.')
                 else:
@@ -823,7 +799,7 @@ class ProcFeatures(BasicModule):
             datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
                                   product, cryst, rfilt, piter=self.piter)
 
-        if datfin[0].data.mask.min() == True:
+        if np.all(datfin[0].data.mask):
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' Could not find any ' + mineral +
                                           '. No data to export.',
@@ -1087,7 +1063,7 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
 
         imin = crem[i1a:i2a].argmin()
 
-        if imin == 0 or imin == (i2a-i1a-1):
+        if imin in (0, i2a-i1a-1):
             dtmp[j] = 1. - crem[i1a:i2a][imin]
             ptmp[j] = xdat[i1a:i2a][imin]
             continue
@@ -1324,9 +1300,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\071_0818-0932_ref_rect_BSQ.hdr"
-    # ifile = r"D:\cut_048-055_ref_rect_DEFLATE.tif"
-    ifile = r"D:\Cu-hyperspec-testarea.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
 
@@ -1349,7 +1323,7 @@ def _testfn2():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
 
-    ifile = r"D:\Cu-hyperspec-testarea.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
 
@@ -1360,4 +1334,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

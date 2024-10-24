@@ -33,7 +33,7 @@ from PyQt5 import QtWidgets, QtCore
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.misc import lstack
 from pygmi.misc import ProgressBarText, BasicModule
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 
 
 class LandsatComposite(BasicModule):

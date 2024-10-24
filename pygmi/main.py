@@ -791,8 +791,7 @@ class MainWidget(QtWidgets.QMainWindow):
             if isinstance(item, DiagramItem):
                 item.remove_arrows()
             self.scene.removeItem(item)
-            # del item
-        item.my_class.outdata.clear()
+            item.my_class.outdata.clear()
 
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
@@ -953,7 +952,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         # Enable moving
         self.scene.my_mode = 'MoveItem'
-        # return item
+        return item
 
     def launch_context_item(self, newitem):
         """

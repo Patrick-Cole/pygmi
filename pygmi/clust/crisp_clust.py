@@ -356,6 +356,10 @@ class CrispClust(BasicModule):
         cnt = -1
         dat_out = [Data() for i in range(no_clust[0], no_clust[1]+1)]
 
+        clidx = None
+        clcent = None
+        clvrc = None
+
         for i in range(no_clust[0], no_clust[1]+1):
             self.showlog('Number of Clusters:'+str(i))
             cnt = cnt + 1

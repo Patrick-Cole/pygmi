@@ -368,9 +368,9 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
         # Add band parameter information to metadata (ie wavelengths/obs etc.)
         for m in meta_vars:
-            if m == "wavelengths" or m == "radiance_wl":
+            if m in ("wavelengths", "radiance_wl"):
                 metadata["wavelength"] = np.array(xr_ds[m].data).astype(str).tolist()
-            elif m == "fwhm" or m == "radiance_fwhm":
+            elif m in ("fwhm",  "radiance_fwhm"):
                 metadata["fwhm"] = np.array(xr_ds[m].data).astype(str).tolist()
             elif m == "good_wavelengths":
                 metadata["good_wavelengths"] = (

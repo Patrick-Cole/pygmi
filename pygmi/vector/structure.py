@@ -29,13 +29,12 @@ import numpy as np
 import geopandas as gpd
 from scipy.signal import correlate
 import shapely
-from shapely.geometry import LineString, Point
-from shapely.ops import linemerge
+from shapely.geometry import LineString
 from rasterio.features import rasterize
 import numexpr as ne
 
 from pygmi import menu_default
-from pygmi.misc import BasicModule, getinfo
+from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, bounds_to_transform
 
 
@@ -634,9 +633,9 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
 
     if Ns.size == 1:
         return np.nan
-    else:
-        # perform fit
-        coeffs = np.polyfit(np.log(1/scales), np.log(Ns), 1)
+
+    # perform fit
+    coeffs = np.polyfit(np.log(1/scales), np.log(Ns), 1)
 
     return coeffs[0]
 

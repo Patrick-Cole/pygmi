@@ -1009,13 +1009,13 @@ def _testfn():
 
     pmnf, _ = mnf_calc(dat, ncmps=ncmps, fwdonly=False)
 
-    for i, _ in enumerate(dat):  # [0, 5, 10, 13, 14, 15, 20, 25]:
-        vmax = dat[i].data.max()
-        vmin = dat[i].data.min()
+    for i, dati in enumerate(dat):  # [0, 5, 10, 13, 14, 15, 20, 25]:
+        vmax = dati.data.max()
+        vmin = dati.data.min()
 
         plt.figure(dpi=150)
         plt.title('█████████████████Old dat2 band'+str(i))
-        plt.imshow(dat[i].data, vmin=vmin, vmax=vmax)
+        plt.imshow(dati.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
@@ -1027,7 +1027,6 @@ def _testfn():
 
 
 def _testfn2():
-    import os
     import sys
     from matplotlib import rcParams
     from pygmi.rsense.iodefs import ImportData

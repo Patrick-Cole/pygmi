@@ -643,6 +643,7 @@ def get_raster(ifile, nval=None, piter=None, showlog=print,
 
     # Perform BIL or BIP with internal routine, because its faster.
     isbil = False
+    datin = None
     if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
             dataid is None and metaonly is False):
         interleave = istruct['INTERLEAVE']
@@ -1175,7 +1176,7 @@ class ExportData(ContextModule):
         else:
             self.showlog('No raster data')
             self.parent.process_is_active(False)
-            return False
+            return
 
         tmp = []
         for i in self.exportdata:
@@ -1194,7 +1195,7 @@ class ExportData(ContextModule):
         self.hide()
         if self.ofile == '':
             self.showlog('No output file')
-            return False
+            return
 
         os.chdir(os.path.dirname(self.ofile))
 
@@ -1618,9 +1619,9 @@ def export_raster(ofile, dat, drv='GTiff', piter=None, compression='NONE',
 
             if 'Raster' in datai.metadata:
                 rmeta = datai.metadata['Raster']
-                
+
                 out.update_tags(i+1, **rmeta)
-                
+
                 if 'wavelength' in rmeta:
                     # out.update_tags(i+1, wavelength=str(rmeta['wavelength']))
                     wavelength.append(rmeta['wavelength'])

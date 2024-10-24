@@ -539,7 +539,6 @@ def _testfn2():
     """Test routine."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.raster.datatypes import Data
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Segmentation\Test_20010213_bands.tif"
@@ -548,11 +547,11 @@ def _testfn2():
 
     data = get_raster(ifile)
 
-    for i, _ in enumerate(data):
-        vmin, vmax = data[i].get_vmin_vmax()
+    for i, datai in enumerate(data):
+        vmin, vmax = datai.get_vmin_vmax()
 
         plt.title(f'{i}')
-        plt.imshow(data[i].data, vmin=vmin, vmax=vmax)
+        plt.imshow(datai.data, vmin=vmin, vmax=vmax)
         plt.axis('off')
         plt.show()
 

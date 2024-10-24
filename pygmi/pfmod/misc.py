@@ -30,7 +30,7 @@ import numpy as np
 import rasterio
 
 from pygmi import menu_default
-from pygmi.raster.dataprep import data_reproject
+from pygmi.raster.reproj import data_reproject
 from pygmi.misc import BasicModule
 
 
@@ -375,6 +375,9 @@ class MergeMod3D(BasicModule):
             self.showlog('Your master dataset must be different'
                          ' to the slave dataset!')
             return False
+
+        datmaster = self.indata['Model3D'][0]
+        datslave = self.indata['Model3D'][1]
 
         for data in self.indata['Model3D']:
             if data.name == self.cmb_master.currentText():

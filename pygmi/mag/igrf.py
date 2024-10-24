@@ -231,7 +231,7 @@ class IGRF(BasicModule):
                 return False
 
         i = self.cmb_mag.currentIndex()
-
+        dxy = 1
         for i in data:
             if i.dataid == self.cmb_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
@@ -239,6 +239,8 @@ class IGRF(BasicModule):
         data = dp.lstack(data, dxy=dxy, piter=self.piter,
                          showlog=self.showlog)
 
+        wkt = ''
+        maggrid = None
         for i in data:
             if i.dataid == self.cmb_mag.currentText():
                 maggrid = i
@@ -719,6 +721,10 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
     l = 0
     n = 0
     m = 1
+    # Initialise to avoid loop warning
+    fn = 0
+    rr = 1
+
     npq = int((nmax * (nmax + 3)) / 2)
     if igdgc == 1:
         aa = a2 * clat * clat

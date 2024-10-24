@@ -240,14 +240,10 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
     std = None
     datfin = []
 
-    if 'Mean' in ilist:
-        meandat, cnt, M = calc_mean(flist, showlog, piter)
+    meandat, cnt, M = calc_mean(flist, showlog, piter)
 
     if 'Standard Deviation' in ilist:
         showlog('Calculating STD...')
-
-        if meandat is None:
-            meandat, cnt, M = calc_mean(flist, showlog, piter)
 
         std = {}
         for i in meandat:
@@ -259,8 +255,6 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
     if 'Coefficient of Variation' in ilist:
         showlog('Calculating CV...')
 
-        if meandat is None:
-            meandat, cnt, M = calc_mean(flist, showlog, piter)
         if std is None:
             std = {}
             for i in meandat:

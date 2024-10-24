@@ -1062,11 +1062,11 @@ class SuperClass(BasicModule):
 
         """
         ctext = self.cmb_class.currentText()
+        # Default classifier
+        alg = self.cmb_KNalgorithm.currentText()
+        classifier = KNeighborsClassifier(algorithm=alg)
 
-        if ctext == 'K Neighbors Classifier':
-            alg = self.cmb_KNalgorithm.currentText()
-            classifier = KNeighborsClassifier(algorithm=alg)
-        elif ctext == 'Decision Tree Classifier':
+        if ctext == 'Decision Tree Classifier':
             crit = self.cmb_DTcriterion.currentText()
             classifier = DecisionTreeClassifier(criterion=crit)
         elif ctext == 'Random Forest Classifier':

@@ -296,7 +296,7 @@ class BeachBall(BasicModule):
                  'geometry': []}
 
         # Calculate BeachBall
-        for i, idat in enumerate(indata):
+        for idat in indata:
             pxy = idat[:2]
             np1 = idat[3:-1]
             depth = idat[2]
@@ -566,6 +566,8 @@ def beachball(fm, centerx, centery, diam, isgeog, showlog=print):
 
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
+    xx = None
+    yy = None
 
     if isgeog:
         ampy = 1.0
@@ -788,17 +790,15 @@ def TDL(AN, BN):
     fdh = 57.2957795
     if abs(ZN) < aaa:
         FD = 90.
-        axn = abs(XN)
-        if axn > 1.0:
-            axn = 1.0
+        axn = min(abs(XN), 1.0)
         FT = np.arcsin(axn)*fdh
         ST = -XN
         CT = YN
-        if ST >= 0. and CT < 0:
+        if CT < 0. <= ST:
             FT = 180.-FT
         if ST < 0. and CT <= 0:
             FT = 180.+FT
-        if ST < 0. and CT > 0:
+        if ST < 0. < CT:
             FT = 360.-FT
         FL = np.arcsin(abs(ZE))*fdh
         SL = -ZE
@@ -806,11 +806,11 @@ def TDL(AN, BN):
             CL = XE/YN
         else:
             CL = -YE/XN
-        if SL >= 0. and CL < 0:
+        if CL < 0. <= SL:
             FL = 180.-FL
         if SL < 0. and CL <= 0:
             FL = FL-180.
-        if SL < 0. and CL > 0:
+        if SL < 0. < CL:
             FL = -FL
     else:
         if -ZN > 1.0:
@@ -822,20 +822,16 @@ def TDL(AN, BN):
             return None
         ST = -XN/SD
         CT = YN/SD
-        SX = abs(ST)
-        if SX > 1.0:
-            SX = 1.0
+        SX = min(abs(ST), 1.0)
         FT = np.arcsin(SX)*fdh
-        if ST >= 0. and CT < 0:
+        if CT < 0. <= ST:
             FT = 180.-FT
         if ST < 0. and CT <= 0:
             FT = 180.+FT
-        if ST < 0. and CT > 0:
+        if ST < 0. < CT:
             FT = 360.-FT
         SL = -ZE/SD
-        SX = np.abs(SL)
-        if SX > 1.0:
-            SX = 1.0
+        SX = min(np.abs(SL), 1.0)
         FL = np.arcsin(SX)*fdh
         if ST == 0:
             CL = XE/CT
@@ -844,11 +840,11 @@ def TDL(AN, BN):
             CL = -SD*xxx/XN
             if CT == 0:
                 CL = YE/ST
-        if SL >= 0. and CL < 0:
+        if CL < 0. <= SL:
             FL = 180.-FL
         if SL < 0. and CL <= 0:
             FL = FL-180.
-        if SL < 0. and CL > 0:
+        if SL < 0. < CL:
             FL = -FL
 
     return FT, FD, FL
@@ -883,7 +879,7 @@ def _testfn2():
     pvert1 = np.transpose([yyy, xxx])
     pvert0 = np.transpose([xxx2, yyy2])
 
-    fig = plt.figure()
+    plt.figure(dpi=200)
     ax = plt.gca()
     ax.set_aspect('equal')
 
@@ -900,6 +896,6 @@ def _testfn2():
 
     plt.show()
 
-    
+
 if __name__ == "__main__":
     _testfn()

@@ -780,6 +780,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.image.rgbmode = self.gmode
         self.image.kval = self.kval
 
+        sun = None
         dat = [None, None, None]
         for i in self.data:
             if i.dataid == self.hband[3]:
@@ -904,6 +905,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         clippercu = self.clippercu[self.hband[0]]
         clippercl = self.clippercl[self.hband[0]]
 
+        sun = None
         for i in self.data:
             if i.dataid == self.hband[0]:
                 pseudo = i.data
@@ -997,6 +999,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         pseudo = self.image._full_res
+        sun = None
+
         for i in self.data:
             if i.dataid == self.hband[3]:
                 sun = i.data
@@ -1030,6 +1034,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if self.shade is not True:
             return 1
 
+        sun = None
         for i in self.sdata:
             if i.dataid == self.hband[3]:
                 sun = i.data
