@@ -988,6 +988,7 @@ def _test():
     # ifile = r"E:\CGS-SpecLib\doc.kml"
     ifile = r"E:\WorkProjects\ST-2021-1351 CCUS\2021\CGS_CDNGI_BLOCKS.kml"
     ifile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\DRC\Katanga\Katanga_boundary.kmz"
+    ifile = r"D:\temp\Limpopo_magintero_lineaments.shp"
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1004,6 +1005,8 @@ def _test():
     # tmp2 = ColumnSelect()
     # tmp2.indata = tmp1.outdata
     # tmp2.settings()
+
+    breakpoint()
 
 
 if __name__ == "__main__":

@@ -150,9 +150,12 @@ class DataGrid(BasicModule):
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+        val2 = QtGui.QDoubleValidator(-1.0e308, 1.0e308, 9)
+        val2.setNotation(QtGui.QDoubleValidator.ScientificNotation)
+        val2.setLocale(QtCore.QLocale(QtCore.QLocale.C))
 
         self.le_dxy.setValidator(val)
-        self.le_null.setValidator(val)
+        self.le_null.setValidator(val2)
 
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
@@ -181,6 +184,7 @@ class DataGrid(BasicModule):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.le_dxy.textChanged.connect(self.dxy_change)
+        self.cmb_grid_method.currentIndexChanged.connect(self.grid_method_change)
 
     def dxy_change(self):
         """
@@ -1350,11 +1354,17 @@ def _testfn():
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
-    MD = Metadata()
-    MD.indata = IO.outdata
-    MD.run()
+    # MD = Metadata()
+    # MD.indata = IO.outdata
+    # MD.run()
 
-    app.exec()
+    MD = DataGrid()
+    MD.indata = IO.outdata
+    MD.settings()
+
+
+
+    # app.exec()
 
 
 def _testfn_pointcut():
