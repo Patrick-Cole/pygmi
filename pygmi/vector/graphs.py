@@ -57,6 +57,7 @@ class GraphWindow(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
+
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -320,8 +321,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.axis('scaled')
         self.axes.set_title('Correlation Coefficients')
 
-        self.figure.set_figwidth(7)
-        self.figure.set_figheight(7)
+        # self.figure.set_figwidth(7)
+        # self.figure.set_figheight(7)
 
         # calculate correlations
         corr = data.corr(numeric_only=True)
@@ -360,6 +361,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.texts = annotate_heatmap(im, valfmt="{x:.0f}", **annot_kws)
 
         self.figure.canvas.draw()
+        # self.draw_idle()
 
     def update_lines(self, r, data):
         """
@@ -1403,6 +1405,7 @@ def _testfn():
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
+    sfile = r"D:\temp\geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))
@@ -1412,8 +1415,8 @@ def _testfn():
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotVector()
-    # SC = PlotCCoef()
+    # SC = PlotVector()
+    SC = PlotCCoef()
     SC.indata = IO.outdata
     SC.run()
 
