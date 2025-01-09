@@ -82,9 +82,12 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * pytest 8.2.2
 * rasterio 1.3.9
 * rioxarray 0.15.6
+* scikit-learn 1.6.0
 * scikit-image 0.24.0
 * shapelysmooth 0.2.0
 * simpeg 0.21.1
+* numba 0.60.0
+* pywin32 308 (for windows users)
 
 PyPi - Windows
 ^^^^^^^^^^^^^^

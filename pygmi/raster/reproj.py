@@ -166,7 +166,7 @@ class GroupProj(QtWidgets.QWidget):
 
 
 def data_reproject(data, ocrs, otransform=None, orows=None,
-                   ocolumns=None, icrs=None, showlog=print):
+                   ocolumns=None, icrs=None, showlog=print, forcereproj=False):
     """
     Reproject dataset.
 
@@ -196,7 +196,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     if icrs is None:
         icrs = data.crs
 
-    if icrs == ocrs:
+    if icrs == ocrs and forcereproj is False:
         showlog('Input and output projections are the same, skipping...')
         return data
 

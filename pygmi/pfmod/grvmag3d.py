@@ -883,7 +883,8 @@ def gridmatch(lmod, ctxt, rtxt):
 
     rows2, cols2 = data2.data.shape
 
-    dat = data_reproject(data, data2.crs, data2.transform, rows2, cols2)
+    dat = data_reproject(data, data2.crs, data2.transform, rows2, cols2,
+                         forcereproj=True)
 
     return dat.data
 
@@ -1080,6 +1081,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Calculated Gravity'].data *= 0.
 
     if 'Magnetic Dataset' in lmod.griddata:
+        # breakpoint()
         ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
         lmod.griddata['Magnetic Residual'] = lmod.griddata['Magnetic Dataset'].copy()
         lmod.griddata['Magnetic Residual'].data = (
