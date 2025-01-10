@@ -687,7 +687,8 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
             dat.append(Data())
 
             # Determine units
-            dat[-1].units = dataset.units[i]
+            if dataset.units[i] is not None:
+                dat[-1].units = dataset.units[i]
 
             # Get data
             if isbil is True and metaonly is False:
