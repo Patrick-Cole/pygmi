@@ -57,7 +57,7 @@ class Gradients(BasicModule):
         self.azi = 45
         self.order = 1
 
-        self.sb_order = QtWidgets.QSpinBox()
+        self.sb_order = QtWidgets.QDoubleSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
         self.rb_ddir = QtWidgets.QRadioButton('Directional Derivative')
         self.rb_vgrad = QtWidgets.QRadioButton('Vertical Derivative')
@@ -84,7 +84,7 @@ class Gradients(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
-        self.sb_order.setMinimum(1)
+        self.sb_order.setMinimum(0.1)
         self.sb_azi.setPrefix('')
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
@@ -282,7 +282,7 @@ def derivative_ratio(data, azi, order):
         input numpy data array
     azi : float
         Filter direction (degrees)
-    order : int
+    order : float
         Order of DR filter - see paper. Try 1 first.
 
     Returns
