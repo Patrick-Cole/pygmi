@@ -1105,7 +1105,11 @@ class Metadata(ContextModule):
 
         """
         odata = self.banddata[self.oldtxt]
-        odata.units = self.le_led_units.text()
+
+        utxt = self.le_led_units.text()
+        if utxt.lower() == 'none':
+            utxt = ''
+        odata.units = utxt
 
         try:
             if self.le_txt_null.text().lower() != 'none':
