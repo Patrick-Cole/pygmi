@@ -599,7 +599,7 @@ def norm255(dat):
         normalised array
     """
     datmin = float(dat.min())
-    datptp = float(np.ptp(dat))
+    datptp = float(np.ma.ptp(dat))
     out = ne.evaluate('254*(dat-datmin)/datptp+1')
     out = out.round()
     out = out.astype(np.uint8)

@@ -134,7 +134,7 @@ class Normalisation(BasicModule):
         elif self.rb_8bit.isChecked():
             for i in data:
                 i.data = histeq(i.data)
-                i.data = 255*(i.data/np.ptp(i.data))
+                i.data = 255*(i.data/np.ma.ptp(i.data))
 
         # Correct the null value
         for i in data:

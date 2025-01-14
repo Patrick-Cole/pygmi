@@ -61,6 +61,7 @@ class GraphHist(FigureCanvasQTAgg):
         self.cindx = [0, 1, 0]
         self.cdata = []
         self.csp = None
+        self.nbins = 100
 
     def get_hist(self, bins):
         """
@@ -148,7 +149,7 @@ class GraphHist(FigureCanvasQTAgg):
         self.setup_hist()
 
         # Compressed eliminates the masked values so that hist
-        xymahist = self.get_hist(50)
+        xymahist = self.get_hist(self.nbins)
 
         self.axscatter.get_xaxis().set_visible(False)
         self.axscatter.get_yaxis().set_visible(False)
@@ -188,10 +189,10 @@ class GraphHist(FigureCanvasQTAgg):
         self.ycoord = self.data[self.cindx[1]].data.flatten()
         self.xcoord -= self.xcoord.min()
         self.ycoord -= self.ycoord.min()
-        xptp = np.ptp(self.xcoord)
-        yptp = np.ptp(self.ycoord)
-        xstep = xptp / 50
-        ystep = yptp / 50
+        xptp = np.ma.ptp(self.xcoord)
+        yptp = np.ma.ptp(self.ycoord)
+        xstep = xptp / self.nbins
+        ystep = yptp / self.nbins
         self.xcoord = self.xcoord/xstep
         self.ycoord = self.ycoord/ystep
 
@@ -213,8 +214,8 @@ class GraphHist(FigureCanvasQTAgg):
         self.axhisty.xaxis.set_major_formatter(self.nullfmt)
         xrng = [self.xcoord.min(), self.xcoord.max()]
         yrng = [self.ycoord.min(), self.ycoord.max()]
-        self.histx = self.axhistx.hist(self.xcoord.compressed(), 50)
-        self.histy = self.axhisty.hist(self.ycoord.compressed(), 50,
+        self.histx = self.axhistx.hist(self.xcoord.compressed(), self.nbins)
+        self.histy = self.axhisty.hist(self.ycoord.compressed(), self.nbins,
                                        orientation='horizontal')
         self.axhistx.set_xlim(xrng)
         self.axhisty.set_ylim(yrng[::-1])
@@ -242,9 +243,9 @@ class GraphHist(FigureCanvasQTAgg):
             self.setup_hist()
 
         if self.cindx[2] > 0:
-            xymahist = self.get_clust_scat(50, self.cdata, self.cindx)
+            xymahist = self.get_clust_scat(self.nbins, self.cdata, self.cindx)
         else:
-            xymahist = self.get_hist(50)
+            xymahist = self.get_hist(self.nbins)
 
         if self.csp is None:
             return

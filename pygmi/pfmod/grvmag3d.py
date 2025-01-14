@@ -315,7 +315,7 @@ class GravMag():
         mmin = magtmp.mean()-2*magtmp.std()
         mmax = magtmp.mean()+2*magtmp.std()
         mint = (magtmp.std()*4)/10.
-        if np.ptp(magtmp) > 0:
+        if np.ma.ptp(magtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
             plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
         cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
@@ -329,7 +329,7 @@ class GravMag():
         mmax = grvtmp.mean()+2*grvtmp.std()
         mint = (grvtmp.std()*4)/10.
 
-        if np.ptp(grvtmp) > 0:
+        if np.ma.ptp(grvtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
             plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
         cbar = plt.colorbar(ims, orientation='horizontal', format=frm)

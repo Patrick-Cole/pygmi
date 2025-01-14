@@ -699,7 +699,7 @@ class SuperClass(BasicModule):
         if row == -1:
             return
 
-        self.df.loc[row] = pd.Series(dtype='object')
+        # self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
         xycoords = self.map.polyi.poly.xy
@@ -727,8 +727,8 @@ class SuperClass(BasicModule):
         if self.tablewidget.currentItem() is None or col != 0:
             return
 
-        if row not in self.df.index:
-            self.df.loc[row] = pd.Series(dtype='object')
+        # if row not in self.df.index:
+        #     self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
     def onrowchange(self, current, previous):
@@ -786,7 +786,7 @@ class SuperClass(BasicModule):
         self.update_class_polys()
         self.map.polyi.new_poly([[1, 1]])
 
-        self.df.loc[row] = pd.Series(dtype='object')
+        # self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
         self.df.loc[row, 'geometry'] = Polygon([])
 
