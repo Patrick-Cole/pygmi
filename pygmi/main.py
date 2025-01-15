@@ -315,6 +315,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             if (i == 'Cluster' and i in self.my_class.outdata and 'memdat' in
                     self.my_class.outdata['Cluster'][0].metadata['Cluster']):
                 tmp += self.context_menu['memCluster'].actions()
+            if (i == 'Cluster' and i in self.my_class.outdata and 'super_type'
+                    not in
+                    self.my_class.outdata['Cluster'][0].metadata['Cluster']):
+                tmp += self.context_menu['objCluster'].actions()
             if i == 'Vector':
                 gtype = self.my_class.outdata['Vector'][0].geom_type.iloc[0]
                 if gtype == 'LineString':

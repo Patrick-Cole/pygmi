@@ -55,6 +55,7 @@ class MenuWidget():
         self.parent = parent
         self.parent.add_to_context('Cluster')
         self.parent.add_to_context('memCluster')
+        self.parent.add_to_context('objCluster')
         context_menu = self.parent.context_menu
 
         # Normal menus
@@ -110,7 +111,7 @@ class MenuWidget():
         self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, "
                                                                 "VRC, NCE, "
                                                                 "XBI Graphs")
-        context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
+        context_menu['objCluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 
         self.action_export_data = QtWidgets.QAction('Export Class Data')

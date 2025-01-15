@@ -1008,6 +1008,7 @@ class SuperClass(BasicModule):
 
         dat_out[-1].metadata['Cluster']['center'] = np.array(m)
         dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
+        dat_out[-1].metadata['Cluster']['super_type'] = self.cmb_class.currentText()
 
         dat_out[-1].crs = data[0].crs
         dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])

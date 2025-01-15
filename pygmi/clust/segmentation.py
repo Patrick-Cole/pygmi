@@ -126,8 +126,9 @@ class ImageSeg(BasicModule):
 
         data1 = []
         for i in self.indata['Raster']:
-            data1.append(i.data.data)
-            data1[-1] = 255*(data1[-1] - data1[-1].min())/np.ma.ptp(data1[-1])
+            data1.append(None)
+            data1[-1] = 255*(i.data-i.data.min())/np.ma.ptp(i.data)
+            # data1[-1] = 255*(data1[-1] - data1[-1].min())/np.ma.ptp(data1[-1])
 
         data1 = np.array(data1)
         data1 = np.moveaxis(data1, 0, -1)
@@ -569,4 +570,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
