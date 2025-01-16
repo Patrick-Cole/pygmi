@@ -969,7 +969,7 @@ class SuperClass(BasicModule):
         if tmp == 0:
             return False
 
-        classifier, lbls, datall, _, _, _ = self.init_classifier()
+        classifier, lbls, datall, _, _, tlbls = self.init_classifier()
 
         mask = self.map.data[0].data.mask
         yout = np.zeros_like(datall[:, :, 0], dtype=int)
@@ -995,6 +995,7 @@ class SuperClass(BasicModule):
 
         dat_out[-1].data = zonal
         dat_out[-1].nodata = zonal.fill_value
+        dat_out[-1].metadata['Cluster']['labels'] = tlbls
         dat_out[-1].metadata['Cluster']['no_clusters'] = i
         dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
         dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i,

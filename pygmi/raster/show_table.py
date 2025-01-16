@@ -221,6 +221,7 @@ class ClusterStats(ContextModule):
         self.setupui()
         self.data = None
         self.cols = None
+        self.rows = None
         self.bands = None
 
     def setupui(self):
@@ -258,9 +259,14 @@ class ClusterStats(ContextModule):
         """
         i = self.cmb_1.currentIndex()
         data = self.data[i]
+        data1 = self.indata['Cluster'][i]
 
         self.tablewidget.setRowCount(len(data))
-        rows = ['Class '+str(j+1) for j in range(len(data))]
+
+        if 'labels' in data1.metadata['Cluster']:
+            rows = data1.metadata['Cluster']['labels']
+        else:
+            rows = ['Class '+str(j+1) for j in range(len(data))]
         self.tablewidget.setVerticalHeaderLabels(rows)
 
         for row, _ in enumerate(data):
@@ -302,10 +308,13 @@ class ClusterStats(ContextModule):
                     val[j][k] = f'{val[j][k]:,.4f} : {std[j][k]:,.4f}'
             self.data.append(val)
 
-        data = self.data[0]
-        rows = ['Class '+str(j+1) for j in range(len(data))]
+        if 'labels' in data[0].metadata['Cluster']:
+            rows = data[0].metadata['Cluster']['labels']
+        else:
+            rows = ['Class '+str(j+1) for j in range(len(self.data[0]))]
         cols = self.cols
 
+        data = self.data[0]
         if len(self.data) == 1:
             self.cmb_1.hide()
 
@@ -386,3 +395,33 @@ def savetable(ofile, bands, cols, data):
                     rtmp += ','+str(data[k][i][j])
                 fobj.write(rtmp+'\n')
             fobj.write('\n')
+
+
+def _testfn():
+    """Test."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.clust.cluster import Cluster
+
+    ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+
+    data = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Cluster()
+    DM.indata['Raster'] = data
+    DM.settings()
+
+    dat = DM.outdata
+    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+
+    tmp2 = ClusterStats()
+    tmp2.indata = dat
+    tmp2.run()
+
+    app.exec()
+
+
+if __name__ == "__main__":
+    _testfn()

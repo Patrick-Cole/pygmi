@@ -458,9 +458,10 @@ def main():
     # ifile = r"D:/EMIT/EMIT_L2A_MASK_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2A_RFL_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2A_RFLUNCERT_001_20240430T101307_2412107_042.nc"
-    ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
+    # ifile = r"D:/EMIT/EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L2B_MINUNCERT_001_20240430T101307_2412107_042.nc"
-    # ifile = r"D:/EMIT/EMIT_L3_ASA_001.nc"
+    # ifile = r"D:/EMIT/EMIT_L3_ASA_001.nc"\
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\EMIT\EMIT_L2B_MIN_001_20240430T101307_2412107_042.nc"
 
     getinfo()
     ds = emit_xarray(ifile)

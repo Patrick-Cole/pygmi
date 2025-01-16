@@ -434,12 +434,15 @@ class Cluster(BasicModule):
 
             m = []
             s = []
+            lbls = []
             for i2 in range(cfit.labels_.max()+1):
                 m.append(X[cfit.labels_ == i2].mean(0))
                 s.append(X[cfit.labels_ == i2].std(0))
+                lbls.append(f'Class {i2+1}')
 
             dat_out[-1].metadata['Cluster']['center'] = np.array(m)
             dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
+            dat_out[-1].metadata['Cluster']['labels'] = lbls
 
             self.log = f'Cluster complete ({self.cltype})'
 

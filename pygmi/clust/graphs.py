@@ -32,7 +32,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 
-from pygmi.misc import frm, ContextModule
+from pygmi.misc import frm, ContextModule  # , discrete_colorbar
 from pygmi.raster.modest_image import imshow
 
 
@@ -71,19 +71,30 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
+        self.axes = self.figure.add_subplot(111, label='map')
 
         cdat = data1.data
-        csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
-                     extent=data1.extent)
+        # csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
+        #              extent=data1.extent)
+
+        # cannot use modestimage when changing colorbar labels
+        csp = self.axes.imshow(cdat, cmap=colormaps['jet'],
+                               extent=data1.extent)
 
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]
 
+        if 'labels' in data1.metadata['Cluster']:
+            lbls = data1.metadata['Cluster']['labels']
+            csp.format_cursor_data = (lambda z: f'{lbls[int(z)-1]}' if not
+                                      np.ma.is_masked(z) else 'masked')
+        else:
+            lbls = None
+
         if len(vals) > 1:
-            self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
-                                      ticks=vals)
+            cbar = self.axes.figure.colorbar(csp, boundaries=bnds)
+            cbar.set_ticks(vals, labels=lbls)
 
         if data1.crs.is_geographic:
             self.axes.set_xlabel('Longitude')
@@ -263,11 +274,15 @@ class PlotRaster(GraphWindow):
         None.
 
         """
-        self.show()
         data = self.indata['Cluster']
 
+        self.cmb_1.currentIndexChanged.disconnect()
         for i in data:
             self.cmb_1.addItem(i.dataid)
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+        self.show()
         self.change_band()
 
 
@@ -424,3 +439,33 @@ class PlotVRCetc(GraphWindow):
         self.lbl_1.setText('Graph Type:')
         self.cmb_1.setCurrentIndex(0)
         self.show()
+
+
+def _testfn():
+    """Test."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.clust.cluster import Cluster
+
+    ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+
+    data = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Cluster()
+    DM.indata['Raster'] = data
+    DM.settings()
+
+    dat = DM.outdata
+    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+
+    tmp2 = PlotRaster()
+    tmp2.indata = dat
+    tmp2.run()
+
+    app.exec()
+
+
+if __name__ == "__main__":
+    _testfn()
