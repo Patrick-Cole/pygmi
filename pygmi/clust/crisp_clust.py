@@ -31,6 +31,7 @@ import numpy as np
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
 from pygmi.misc import BasicModule
+from pygmi import menu_default
 
 
 class CrispClust(BasicModule):
@@ -78,6 +79,7 @@ class CrispClust(BasicModule):
         None.
 
         """
+        helpdocs = menu_default.HelpButton('pygmi.clust.crisp')
         gl_1 = QtWidgets.QGridLayout(self)
         vbl = QtWidgets.QVBoxLayout(self.gbox)
 
@@ -135,6 +137,7 @@ class CrispClust(BasicModule):
         gl_1.addWidget(self.lbl_7, 6, 2, 1, 1)
         gl_1.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
         gl_1.addWidget(self.gbox, 8, 2, 1, 3)
+        gl_1.addWidget(helpdocs, 9, 2, 1, 1)
         gl_1.addWidget(buttonbox, 9, 4, 1, 1)
 
         vbl.addWidget(self.rb_random)

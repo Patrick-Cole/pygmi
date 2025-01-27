@@ -57,7 +57,7 @@ class Gradients(BasicModule):
         self.azi = 45
         self.order = 1
 
-        self.sb_order = QtWidgets.QDoubleSpinBox()
+        self.dsb_order = QtWidgets.QDoubleSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
         self.rb_ddir = QtWidgets.QRadioButton('Directional Derivative')
         self.rb_vgrad = QtWidgets.QRadioButton('Vertical Derivative')
@@ -69,7 +69,7 @@ class Gradients(BasicModule):
         self.setupui()
 
         self.sb_azi.setValue(self.azi)
-        self.sb_order.setValue(self.order)
+        self.dsb_order.setValue(self.order)
 
     def setupui(self):
         """
@@ -84,14 +84,14 @@ class Gradients(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
-        self.sb_order.setMinimum(0.1)
+        self.dsb_order.setMinimum(0.1)
         self.sb_azi.setPrefix('')
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.rb_ddir.setChecked(True)
-        self.sb_order.hide()
+        self.dsb_order.hide()
         self.lbl_or.hide()
 
         self.setWindowTitle('Gradient Calculation')
@@ -103,7 +103,7 @@ class Gradients(BasicModule):
         gl_1.addWidget(self.lbl_az, 4, 0, 1, 1)
         gl_1.addWidget(self.sb_azi, 4, 1, 1, 1)
         gl_1.addWidget(self.lbl_or, 5, 0, 1, 1)
-        gl_1.addWidget(self.sb_order, 5, 1, 1, 1)
+        gl_1.addWidget(self.dsb_order, 5, 1, 1, 1)
         gl_1.addWidget(helpdocs, 6, 0, 1, 1)
         gl_1.addWidget(buttonbox, 6, 1, 1, 1)
 
@@ -140,7 +140,7 @@ class Gradients(BasicModule):
                 return False
 
         self.azi = self.sb_azi.value()
-        self.order = self.sb_order.value()
+        self.order = self.dsb_order.value()
 
         data = [i.copy() for i in self.indata['Raster']]
 
@@ -185,7 +185,7 @@ class Gradients(BasicModule):
         """
         self.saveobj(self.azi)
         self.saveobj(self.order)
-        self.saveobj(self.sb_order)
+        self.saveobj(self.dsb_order)
         self.saveobj(self.sb_azi)
         self.saveobj(self.rb_ddir)
         self.saveobj(self.rb_vgrad)
@@ -201,13 +201,13 @@ class Gradients(BasicModule):
         None.
 
         """
-        self.sb_order.hide()
+        self.dsb_order.hide()
         self.lbl_or.hide()
         self.sb_azi.hide()
         self.lbl_az.hide()
 
         if self.rb_dratio.isChecked():
-            self.sb_order.show()
+            self.dsb_order.show()
             self.lbl_or.show()
             self.sb_azi.show()
             self.lbl_az.show()

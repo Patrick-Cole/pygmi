@@ -292,6 +292,9 @@ class PlotMembership(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.lbl_1.setText('Number of Clusters:')
+        self.lbl_2.setText('Membership:')
+
     def change_band(self):
         """
         Combo to change band.

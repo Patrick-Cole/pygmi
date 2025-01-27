@@ -549,7 +549,7 @@ class SuperClass(BasicModule):
         self.apoly.setAutoDefault(False)
         self.dpoly.setAutoDefault(False)
 
-        choices = ['K Neighbors Classifier',
+        choices = ['K Neighbours Classifier',
                    'Decision Tree Classifier',
                    'Random Forest Classifier',
                    'Support Vector Classifier']

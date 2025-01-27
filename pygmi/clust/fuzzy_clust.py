@@ -31,6 +31,7 @@ import numpy as np
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.misc import BasicModule
+from pygmi import menu_default
 
 
 class FuzzyClust(BasicModule):
@@ -81,6 +82,7 @@ class FuzzyClust(BasicModule):
         None.
 
         """
+        helpdocs = menu_default.HelpButton('pygmi.clust.fuzzy')
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox(self)
         vbl = QtWidgets.QVBoxLayout(gbox)
@@ -121,7 +123,7 @@ class FuzzyClust(BasicModule):
         lbl_6.setText('Repeated Runs:')
         self.lbl_7.setText('Constrain Cluster Shape (0: unconstrained, '
                            '1: spherical)')
-        lbl_8.setText('Fuzzyness Exponent')
+        lbl_8.setText('Fuzziness Exponent')
         self.rb_random.setText('Random')
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
@@ -144,6 +146,7 @@ class FuzzyClust(BasicModule):
         gl_1.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
         gl_1.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
         gl_1.addWidget(self.dsb_fuzzynessexp, 7, 4, 1, 1)
+        gl_1.addWidget(helpdocs, 10, 2, 1, 1)
         gl_1.addWidget(buttonbox, 10, 4, 1, 1)
 
         vbl.addWidget(self.rb_random)

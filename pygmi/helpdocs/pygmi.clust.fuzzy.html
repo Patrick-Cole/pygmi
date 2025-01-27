@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Fuzzy Clustering</h1>
+		<p>In crisp clustering a sample can only belong to one cluster whereas in fuzzy clustering a sample is assigned to all clusters but it has probability assigned to it of belonging to a certain cluster (Paasche and Eberle, 2009). This is referred to as the membership of a sample to a cluster. Higher membership means the sample is closer to the centre of the cluster (Paasche and Eberle, 2009). If a sample falls in between two classes, it may have a 50% probability that it belongs to either of the two classes. There are different ways of defining the classes that are similar to crisp clustering, e.g. fuzzy C-means, advanced fuzzy C-means and Gustafson Kessel.</p>
+    <h2>Options</h2>
+      <ul>
+        <li>Cluster Algorithm - This can be fuzzy c-means, advanced fuzzy c-means or Gustafson-Kessel.</li>      
+        <li>Minimum Clusters and Maximum Clusters - It refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</li>
+        <li>Maximum iterations - Maximum number of iterations to use when generating a solution.</li>
+        <li>Terminate if relative change is less than. – Threshold for termination.</li>
+        <li>Repeated runs – Run the algorithm a number of times to ensure robustness with regards to the initial guess.</li>
+        <li>Constrain cluster shape (Gustafson-Kessel ony) - 0 is unconstrained, 1 is spherical.</li>
+        <li>Fuzziness exponent – the degree of fuzziness in the membership of a sample. It can be any number between 1 and infinity but is typically between 1 and 2.</li>        
+      </ul>
+		<h2>References</h2>
+		<p>Paasche, H., Eberle, D.G. 2009. Rapid integration of large airborne geophysical data suites using a fuzzy partitioning cluster algorithm: a tool for geological mapping and mineral exploration targeting. Exploration Geophysics, 40, 277-287.</p>
+	</body>
+</html>

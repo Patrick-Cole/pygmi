@@ -176,6 +176,14 @@ class EquationEditor(BasicModule):
         neweq = neweq.replace('^', '**')
         neweq = neweq.replace('nodata', str(indata[0].nodata))
 
+        if 'log' in neweq:
+            self.showlog('Warning, if you have invalid log values, they will '
+                         'be masked out.')
+
+        if 'sqrt' in neweq:
+            self.showlog('Warning, if you have invalid sqrt values, they will '
+                         'be masked out.')
+
         return neweq
 
     def mean(self, eq, localdict):
@@ -518,7 +526,7 @@ def _test():
 
     out = EE.outdata['Raster']
 
-    plt.figure(dpi=150)
+    plt.figure(dpi=300)
     plt.imshow(out[0].data)
     plt.show()
 
