@@ -1142,6 +1142,64 @@ def eigsorted(cov):
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]
 
+def bvalue(data1a, bins='doane'):
+    """
+    Update the b value plot.
+
+    Parameters
+    ----------
+    data1a : numpy array
+        Data array.
+    bins : int or str, optional
+        Number of bins or binning strategy. See matplotlib.pyplot.hist.
+        The default is 'doane'.
+
+    Returns
+    -------
+    None.
+
+    """
+    data1 = np.ma.masked_invalid(data1a)
+    data1 = data1.compressed()
+
+    # Magnitude of completeness
+    dval, dcnt = np.unique(data1, return_counts=True)
+    cmax = dval[dcnt == dcnt.max()][0]
+
+    # Least squares a and b value
+    bins = np.arange(data1.min()-0.05, data1.max()+.15, 0.1)
+
+    num, bins2 = np.histogram(data1, bins)
+    bins2 = bins2[:-1] + 0.05
+    bins2 = np.round(bins2, 1)  # gets rid of round off error.
+
+    num2 = np.cumsum(num[::-1])[::-1]
+
+    if num2[-1] == 0:
+        num2 = num2[:-1]
+        bins2 = bins2[:-1]
+
+    num3 = np.log10(num2)
+
+    xtmp = bins2[bins2 >= cmax]
+    ytmp = num3[bins2 >= cmax]
+
+    abvals = np.polyfit(xtmp, ytmp, 1)
+    aval = np.around(abvals, 2)[1]
+    bval = -np.around(abvals, 2)[0]
+
+    # Maximum likelihood
+    data2 = data1[data1 >= cmax]
+    b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
+    b_mle = np.around(b_mle, 2)
+
+    # Plotting
+    txt = (f'a-value (Least Squares): {aval}\n'
+           f'b-value (Least Squares): {bval}\n'
+           f'b-value (Maximum Likelihood): {b_mle}')
+
+    return aval, bval, b_mle
+
 
 def _testiso():
     """Test creation of isoseismal maps."""
@@ -1252,7 +1310,7 @@ def _testiso():
     plt.show()
 
 
-def _testfn():
+def _testfn1():
     """Test routine."""
     import sys
     from pygmi.seis.iodefs import ImportSeisan
@@ -1274,6 +1332,41 @@ def _testfn():
     tmp.run()
 
     app.exec()
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from datetime import datetime, date
+    from pygmi.seis.iodefs import ImportSeisan
+
+    app = QtWidgets.QApplication(sys.argv)
+    tmp = ImportSeisan()
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
+    tmp.ifile = r"D:\seis\events.txt"
+
+    tmp.settings(True)
+
+    dat1 = tmp.outdata['Seis']
+
+    dat2 = import_for_plots(dat1)
+
+    year = dat2['1_year']
+    mon = dat2['1_month']
+    day = dat2['1_day']
+    hour = dat2['1_hour']
+    mins = dat2['1_minutes']
+    secs = dat2['1_seconds']
+
+    edate = []
+    for i in range(len(year)):
+        txt = f'{year[i]}-{mon[i]:02}-{day[i]:02}T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}'
+        edate.append(txt)
+
+    # a1, b1, b2 = bvalue(dat2['1_ML'])
+    edate = np.array(edate, dtype='datetime64')
+
+
+    breakpoint()
 
 
 if __name__ == "__main__":

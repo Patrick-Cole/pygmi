@@ -343,7 +343,7 @@ class Data():
         Parameters
         ----------
         mask : array
-            Boolean array of new mak to modify old one.
+            Boolean array of new mask to modify old one.
         oper : str, optional
             Logical operation to be performed between masks. Can be 'or' or
             'and'. The default is 'or'.
@@ -370,7 +370,7 @@ class Data():
         Parameters
         ----------
         mask : array
-            Boolean array of new mak to modify old one.
+            Boolean array of new mask to modify old one.
 
         Returns
         -------

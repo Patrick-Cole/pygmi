@@ -72,7 +72,7 @@ class PointCut(BasicModule):
         if 'Vector' in self.indata:
             data = copy.deepcopy(self.indata['Vector'][0])
         else:
-            self.showlog('No point data')
+            self.showlog('No point or vector data')
             return False
 
         if not nodialog:
@@ -917,12 +917,22 @@ def cut_point(data, ifile, showlog=print):
         showlog('No polygons in shapefile.')
         return None
 
+    if data.crs is None:
+        showlog('Your vectors need a projection assigned.')
+        return None
+
+    if gdf.crs is None:
+        gdf = gdf.set_crs(data.crs)
+    else:
+        gdf = gdf.to_crs(data.crs)
+
     if data.crs != gdf.crs:
         showlog('Your shapefile does not have the same projection as the data '
                 'to be clipped.')
         return None
 
     data = gpd.clip(data, gdf)
+    data = data.explode()
 
     return data
 
@@ -1370,7 +1380,7 @@ def _testfn():
 def _testfn_pointcut():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportXYZ, ImportVector
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1380,6 +1390,14 @@ def _testfn_pointcut():
     IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
+    IO.settings(True)
+
+    ifile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\MP_mag_lineaments_utm36s.shp"
+    sfile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\3D study area.shp"
+
+    IO = ImportVector()
+    IO.ifile = ifile
+    # IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)
 
     DR = PointCut()
@@ -1407,4 +1425,4 @@ def _testfn_filesplit():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_pointcut()

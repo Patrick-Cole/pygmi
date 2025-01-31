@@ -364,6 +364,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     dat.nodata = 1e+20
 
     geom2 = gpd.GeoDataFrame(geometry=geom2)
+    geom2['Intersection'] = geom2.index+1
 
     return geom2, dat
 
@@ -694,6 +695,8 @@ def _testfn():
     # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
     sfile = r"D:\Work\Programming\geochem\Cu_Project\RSA_250K_struclin_Merge.shp"
 
+    sfile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\3D study lines.shp"
+
     import sys
     from pygmi.vector.iodefs import ImportVector
 
@@ -703,9 +706,9 @@ def _testfn():
     IO.ifile = sfile
     IO.settings(True)
 
-    dat = IO.outdata['Vector'][0]
+    dat = IO.outdata
 
-    dat ={'Vector': [dat[:1000]]}
+    # dat ={'Vector': [dat[:1000]]}
 
     SC = StructComp()
     SC.indata = dat
@@ -724,6 +727,8 @@ def _testfn():
     plt.imshow(dat.data, extent=dat.extent)
     plt.colorbar()
     plt.show()
+
+    breakpoint()
 
 
 if __name__ == "__main__":

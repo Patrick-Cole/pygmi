@@ -1566,7 +1566,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
     Parameters
     ----------
     dat : list
-        List of PyGMI databands to be merged. Can be empty if idir is provided.
+        List of PyGMI data bands to be merged. Can be empty if idir is provided.
     idir : str, optional
         Directory where file to be mosaiced are found. The default is None.
     bfile : str, optional

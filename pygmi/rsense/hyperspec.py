@@ -1170,7 +1170,7 @@ def phulljit(sample1):
     """
     Hull Calculation.
 
-    This is only here to be called from ther jit routines
+    This is only here to be called from the jit routines
 
     Parameters
     ----------
