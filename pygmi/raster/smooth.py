@@ -76,7 +76,7 @@ class Smooth(BasicModule):
         gbox_2 = QtWidgets.QGroupBox('Filter Type')
         gbox_3 = QtWidgets.QGroupBox('Filter Shape')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.smooth')
+        helpdocs = menu_default.HelpButton('raster.dm.smoothing')
 
         self.sb_x.setMinimum(1)
         self.sb_x.setMaximum(999999)

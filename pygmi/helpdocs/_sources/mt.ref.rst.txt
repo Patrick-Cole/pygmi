@@ -1,0 +1,9 @@
+References
+----------
+ Kirkby, A.L., Zhang, F., Peacock, J., Hassan, R., Duan, J., 2019. The MTPy software package for magnetotelluric data analysis and visualisation. Journal of Open Source Software, 4(37), 1358. https://doi.org/10.21105/joss.01358
+
+ Krieger, L., and Peacock, J., 2014. MTpy: A Python toolbox for magnetotellurics. Computers and Geosciences, 72, p167-175. https://doi.org/10.1016/j.cageo.2014.07.013
+
+ Key, K., 2009, 1D inversion of multicomponent, multi-frequency marine CSEM data: Methodology and synthetic studies for resolving thin resistive layers: Geophysics, 74, F9-F20.
+
+ Constable, S. C., R. L. Parker, and C. G. Constable, 1987, Occam's inversion - A practical algorithm for generating smooth models from electromagnetic sounding data, Geophysics, 52 (03), 289-300.

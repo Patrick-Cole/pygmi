@@ -64,7 +64,7 @@ class Normalisation(BasicModule):
         vbl_1 = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
+        helpdocs = menu_default.HelpButton('raster.dm.norm')
 
         self.rb_interval.setChecked(True)
 

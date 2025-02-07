@@ -1,0 +1,49 @@
+.. PyGMI documentation master file, created by
+   sphinx-quickstart on Thu Sep 11 13:43:52 2014.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+PyGMI
+=====
+Welcome to the PyGMI website! It contains more information, including API documentation for the project.
+
+The latest version can be downloaded at the `release <https://github.com/Patrick-Cole/pygmi/releases>`_ section.
+
+If there are requests or concerns, please contact me.
+
+Overview
+========
+
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets. PyGMI has a graphical user interface, and is meant to be run as such.
+
+PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
+
+It includes:
+
+* Magnetic and Gravity 3D forward modelling.
+* Cluster Analysis, including use of scikit-learn libraries.
+* Routines for cutting, reprojecting and doing simple modifications to data.
+* Convenient display of data using pseudo-colour, ternary and sunshaded representation.
+* MT processing and 1D inversion using MTpy.
+* Gravity processing.
+* Seismological functions for SEISAN data.
+* Remote sensing ratios and improved imports.
+
+It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
+
+The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage! Contributors can look `here <https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md>`_ for ways to contribute.
+
+The latest release version (including windows installers) can be found at this `link <https://github.com/Patrick-Cole/pygmi/releases>`_.
+
+You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
+
+If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
+
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    wiki
+    api
+

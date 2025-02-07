@@ -1,0 +1,36 @@
+Potential Field Modelling: Context Menu
+=======================================
+The potential field modelling context menus are available for modules which
+have output 3D model data. Output data is only available on green modules. To
+access the context menu, simply **right-click** a green module.
+
+
+3D Model Display
+----------------
+The 3D model display menu provides a viewer for 3D voxel data. The model can be
+rotated using the left and right click buttons on your mouse. The
+**mouse wheel** provides zooming of the model.
+
+By default all lithologies are selected. The viewer provides a means to save an image of the model to a .jpg or .png file format.
+
+* Vertical slider - used to adjust the z scale of the model.
+* Light Position - this is the position of a light, controlling shadow effects on the model.
+* Smooth model - applied smoothing to the model, showing a more aesthetically pleasing version
+* Orthographic projection
+* Display axis
+* Save to image file
+* Refresh model - this is used to update the viewer while actively modelling.
+
+.. image:: _images/pfmod3d.png
+
+Export 3D Model
+---------------
+This provides a means to export the model in one of 3 formats:
+
+* npz - this is the format adopted for 3D models in PyGMI.
+* kmz - this is Google Earth's 3D format.
+* xyz - this is an ASCII format, supplied to export the model in a generic
+  fashion.
+* shapefile - this exports each lithology to a separate shapefile.
+
+.. image:: _images/pfmodgearth.jpg

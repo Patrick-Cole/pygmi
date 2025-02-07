@@ -351,6 +351,12 @@ def importnordic(ifile, showlog=print):
             file_errors.append(errs)
             continue
 
+        if ltype == '1' and tmp.seconds >= 60.0:
+            errs = ['Error: Seconds cannot be greater or equal to 60, '
+                    f'on line: {iii+1}', i]
+            file_errors.append(errs)
+            continue
+
         if ltype == '1' and (np.isnan(tmp.latitude) or
                              np.isnan(tmp.longitude)):
             errs = ['Warning: Incomplete data (not latitude or longitude) '

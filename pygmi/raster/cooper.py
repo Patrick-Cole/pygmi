@@ -82,7 +82,7 @@ class Gradients(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
+        helpdocs = menu_default.HelpButton('raster.dm.grad')
 
         self.dsb_order.setMinimum(0.1)
         self.sb_azi.setPrefix('')
@@ -341,7 +341,7 @@ class Visibility2d(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
+        helpdocs = menu_default.HelpButton('raster.dm.visibility')
         lbl_1 = QtWidgets.QLabel('Viewing Height (% std dev)')
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
@@ -805,7 +805,7 @@ class AGC(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.AGC')
+        helpdocs = menu_default.HelpButton('raster.dm.agc')
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
         self.sb_wsize.setPrefix('')

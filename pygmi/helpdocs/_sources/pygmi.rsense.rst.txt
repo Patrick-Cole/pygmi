@@ -1,0 +1,101 @@
+pygmi.rsense package
+====================
+
+Submodules
+----------
+
+pygmi.rsense.change module
+--------------------------
+
+.. automodule:: pygmi.rsense.change
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.change\_viewer module
+----------------------------------
+
+.. automodule:: pygmi.rsense.change_viewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.dataprep module
+----------------------------
+
+.. automodule:: pygmi.rsense.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.emit module
+------------------------
+
+.. automodule:: pygmi.rsense.emit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.features module
+----------------------------
+
+.. automodule:: pygmi.rsense.features
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.hyperspec module
+-----------------------------
+
+.. automodule:: pygmi.rsense.hyperspec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.iodefs module
+--------------------------
+
+.. automodule:: pygmi.rsense.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.landsat\_composite module
+--------------------------------------
+
+.. automodule:: pygmi.rsense.landsat_composite
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.menu module
+------------------------
+
+.. automodule:: pygmi.rsense.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.ratios module
+--------------------------
+
+.. automodule:: pygmi.rsense.ratios
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.transforms module
+------------------------------
+
+.. automodule:: pygmi.rsense.transforms
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.rsense
+   :members:
+   :undoc-members:
+   :show-inheritance:

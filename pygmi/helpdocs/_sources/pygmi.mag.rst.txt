@@ -1,0 +1,45 @@
+pygmi.mag package
+=================
+
+Submodules
+----------
+
+pygmi.mag.dataprep module
+-------------------------
+
+.. automodule:: pygmi.mag.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mag.igrf module
+---------------------
+
+.. automodule:: pygmi.mag.igrf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mag.menu module
+---------------------
+
+.. automodule:: pygmi.mag.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mag.tiltdepth module
+--------------------------
+
+.. automodule:: pygmi.mag.tiltdepth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.mag
+   :members:
+   :undoc-members:
+   :show-inheritance:

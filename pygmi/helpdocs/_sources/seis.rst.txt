@@ -1,0 +1,17 @@
+Seismology
+==========
+
+Introduction
+------------
+The Seismology Menu is a where operations on earthquake seismology data reside.
+Here, SEISAN data can be imported, and some basic operations performed on it.
+
+Subpackages
+-----------
+
+.. toctree::
+
+    seis.dm
+    seis.cm
+    seis.ref
+

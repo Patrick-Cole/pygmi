@@ -1130,7 +1130,7 @@ class ExportData(ContextModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.exportraster')
+        helpdocs = menu_default.HelpButton('raster.cm.export')
         pb_ofile = QtWidgets.QPushButton('Output File')
 
         self.cb_bandsort.setChecked(False)

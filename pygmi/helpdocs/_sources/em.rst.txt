@@ -1,0 +1,15 @@
+Electromagnetics
+================
+
+Introduction
+------------
+The electromagnetic section adds some inversion capability, based on the SimPEG library (Cockett et al., 2015; Heagy et al., 2017).
+
+Subpackages
+-----------
+
+.. toctree::
+
+    em.dm
+    em.ref
+

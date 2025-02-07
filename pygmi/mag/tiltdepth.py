@@ -38,10 +38,12 @@ import numpy as np
 
 from PyQt5 import QtWidgets
 from matplotlib import colormaps
+from matplotlib import cm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
+import geopandas as gpd
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.cooper import vertical
@@ -201,6 +203,47 @@ class TiltDepth(BasicModule):
 
         return True
 
+    def change_cbar1(self):
+        """
+        Change the colour map for the colour bar.
+
+        Returns
+        -------
+        None.
+
+        """
+        zout = self.indata['Raster'][0]
+        txt = str(self.cmb_cbar.currentText())
+
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        self.axes.contour(self.X, self.Y, self.Z, [0])
+        self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
+        self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
+
+        cmap = colormaps.get_cmap(txt)
+        cmap2 = np.array([cmap(i) for i in range(cmap.N)])
+        low = int(cmap.N*(45/180))
+        high = int(cmap.N*(135/180))
+        cmap2[low:high] = cmap2[int(cmap.N/2)]
+
+        cmap3 = cm.colors.ListedColormap(cmap2)
+        ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
+
+        if self.x0 is not None:
+            i = 0
+            self.axes.plot(self.x1[i], self.y1[i], 'oy')
+            self.axes.plot(self.x0[i], self.y0[i], 'sy')
+            self.axes.plot(self.x2[i], self.y2[i], 'oy')
+
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
+        self.figure.colorbar(ims, format=frm)
+
+        self.figure.canvas.draw()
+
     def change_cbar(self):
         """
         Change the colour map for the colour bar.
@@ -210,10 +253,11 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        if 'Raster' not in self.outdata:
+        if 'Vector' not in self.outdata:
             return
 
-        zout = self.outdata['Raster'][0]
+        gdf = self.outdata['Vector'][0]
+        zout = self.indata['Raster'][0]
         txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
@@ -224,13 +268,31 @@ class TiltDepth(BasicModule):
         vmin = zout.data.mean() - 2.5*zout.data.std()
         vmax = zout.data.mean() + 2.5*zout.data.std()
 
-        ims = self.axes.imshow(zout.data, extent=zout.extent, cmap=cmap,
-                               interpolation='nearest', vmin=vmin, vmax=vmax)
+        self.axes.imshow(zout.data, extent=zout.extent, cmap='gray',
+                         interpolation='nearest', vmin=vmin, vmax=vmax)
+
+        cmap = colormaps.get_cmap(txt)
+        cmap2 = np.array([cmap(i) for i in range(cmap.N)])
+        low = int(cmap.N*(45/180))
+        high = int(cmap.N*(135/180))
+        cmap2[low:high] = cmap2[int(cmap.N/2)]
+
+        cmap3 = cm.colors.ListedColormap(cmap2)
+        # ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
+
+        # breakpoint()
+
+
+
+        # self.axes.plot(self.x0, self.y0, '.k')
+        ims = self.axes.scatter(gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.colorbar(ims, format=frm, label='Depth')
+        self.figure.colorbar(ims, format=frm, label='Depth (m)')
+
+        self.figure.tight_layout()
 
         self.figure.canvas.draw()
 
@@ -427,20 +489,25 @@ class TiltDepth(BasicModule):
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
-        tmp = quickgrid(gx0, gy0, dist, data.xdim,
-                        showlog=self.showlog)
+        # tmp = quickgrid(gx0, gy0, dist, data.xdim,
+        #                 showlog=self.showlog)
 
-        mask = np.ma.getmaskarray(tmp)
-        gdat = tmp.data
+        # mask = np.ma.getmaskarray(tmp)
+        # gdat = tmp.data
 
-        dat = Data()
-        dat.data = np.ma.masked_invalid(gdat[::-1])
-        dat.data.mask = mask[::-1]
-        dat.nodata = dat.data.fill_value
-        dat.set_transform(data.xdim, gx0.min(), data.ydim, gy0.max())
-        dat.dataid = data.dataid+' depths'
+        # dat = Data()
+        # dat.data = np.ma.masked_invalid(gdat[::-1])
+        # dat.data.mask = mask[::-1]
+        # dat.nodata = dat.data.fill_value
+        # dat.set_transform(data.xdim, gx0.min(), data.ydim, gy0.max())
+        # dat.dataid = data.dataid+' depths'
 
-        self.outdata['Raster'] = [dat]
+        # self.outdata['Raster'] = [dat]
+
+        tmp = {'x': gx0, 'y': gy0, 'id': cntid0.astype(int), 'depth': dist}
+
+        gdf = gpd.GeoDataFrame(tmp, geometry=gpd.points_from_xy(gx0, gy0))
+        self.outdata['Vector'] = [gdf]
 
 
 @jit(nopython=True)
@@ -538,7 +605,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
+    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
 
     dat = get_raster(ifile)
 

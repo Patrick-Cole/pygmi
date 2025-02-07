@@ -37,12 +37,13 @@ from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
 from scipy.spatial.distance import pdist
 from scipy.spatial import ConvexHull
-from scipy.stats import linregress
+from scipy.stats import linregress, zscore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
 from shapelysmooth import catmull_rom_smooth
+from sklearn.linear_model import HuberRegressor
 
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
@@ -311,53 +312,29 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.figure.canvas.draw()
             return
 
+        out = bvalue(data1a)
         data1 = np.ma.masked_invalid(data1a)
         data1 = data1.compressed()
 
-        # Magnitude of completeness
-        dval, dcnt = np.unique(data1, return_counts=True)
-        cmax = dval[dcnt == dcnt.max()][0]
-
-        # Least squares a and b value
-        bins = np.arange(data1.min()-0.05, data1.max()+.15, 0.1)
-
-        num, bins2 = np.histogram(data1, bins)
-        bins2 = bins2[:-1] + 0.05
-        bins2 = np.round(bins2, 1)  # gets rid of round off error.
-
-        num2 = np.cumsum(num[::-1])[::-1]
-
-        if num2[-1] == 0:
-            num2 = num2[:-1]
-            bins2 = bins2[:-1]
-
-        num3 = np.log10(num2)
-
-        xtmp = bins2[bins2 >= cmax]
-        ytmp = num3[bins2 >= cmax]
-
-        abvals = np.polyfit(xtmp, ytmp, 1)
-        aval = np.around(abvals, 2)[1]
-        bval = -np.around(abvals, 2)[0]
-
-        # Maximum likelihood
-        data2 = data1[data1 >= cmax]
-        b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
-        b_mle = np.around(b_mle, 2)
+        xtmp = out['binctr'][out['binctr'] >= out['cmax']]
 
         # Plotting
         self.axes.hist(data1, bins, edgecolor='black',
                        label='Actual distribution')
         self.axes.set_yscale('log')
-        self.axes.plot(bins2, num2, '.', label='Cumulative distribution')
 
-        self.axes.plot([cmax, cmax], [0, num2.max()], 'k--',
-                       label=f'Magnitude of completeness: {cmax}\n')
+        self.axes.plot(out['binctr'], out['cumnum'], '.',
+                       label='Cumulative distribution')
 
-        txt = (f'a-value (Least Squares): {aval}\n'
-               f'b-value (Least Squares): {bval}\n'
-               f'b-value (Maximum Likelihood): {b_mle}')
-        self.axes.plot(xtmp, 10**np.poly1d(abvals)(xtmp), 'k', label=txt)
+        self.axes.plot([out['cmax'], out['cmax']],
+                       [0, out['cumnum'].max()], 'k--',
+                       label=f'Magnitude of completeness: {out["cmax"]}\n')
+
+        txt = (f'a-value (Least Squares): {out["aval"]}\n'
+               f'b-value (Least Squares): {out["bval"]}\n'
+               f'b-value (Maximum Likelihood): {out["b_mle"]}')
+        self.axes.plot(xtmp, 10**np.poly1d(out['abvals'])(xtmp),
+                       'k', label=txt)
 
         self.axes.set_xlabel('ML', fontsize=8)
         self.axes.set_ylabel('Number of observations', fontsize=8)
@@ -1142,7 +1119,8 @@ def eigsorted(cov):
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]
 
-def bvalue(data1a, bins='doane'):
+
+def bvalue(data1a, mbin=0.1, bins='doane'):
     """
     Update the b value plot.
 
@@ -1156,49 +1134,145 @@ def bvalue(data1a, bins='doane'):
 
     Returns
     -------
-    None.
+    out : dict
+        Dictionary containing 'a-value', 'b-value' etc.
 
     """
     data1 = np.ma.masked_invalid(data1a)
     data1 = data1.compressed()
 
+    data1 = data1[abs(zscore(data1)) < 2.5]
+
+    # Frequency Magnitude Distribution.
+    bins = np.arange(np.round(data1.min(), 1)-mbin/2,
+                     np.round(data1.max(), 1)+mbin*1.5, mbin)
+
+    num, binsedges = np.histogram(data1, bins)
+    binctr = binsedges[:-1] + mbin/2
+    binctr = np.round(binctr, 1)  # gets rid of round off error.
+
+    # breakpoint()
+
+    cumnum = np.cumsum(num[::-1])[::-1]
+
     # Magnitude of completeness
-    dval, dcnt = np.unique(data1, return_counts=True)
-    cmax = dval[dcnt == dcnt.max()][0]
+    cmax = binctr[np.argmax(num)]
 
     # Least squares a and b value
-    bins = np.arange(data1.min()-0.05, data1.max()+.15, 0.1)
+    idx = np.nonzero(cumnum)[0]
+    cumnum = cumnum[idx]
+    binctr = binctr[idx]
 
-    num, bins2 = np.histogram(data1, bins)
-    bins2 = bins2[:-1] + 0.05
-    bins2 = np.round(bins2, 1)  # gets rid of round off error.
+    logcumnum = np.log10(cumnum)
 
-    num2 = np.cumsum(num[::-1])[::-1]
+    xtmp = binctr[binctr >= cmax]
+    ytmp = logcumnum[binctr >= cmax]
 
-    if num2[-1] == 0:
-        num2 = num2[:-1]
-        bins2 = bins2[:-1]
+    # xtmp = xtmp[ytmp > 0]
+    # ytmp = ytmp[ytmp > 0]
 
-    num3 = np.log10(num2)
-
-    xtmp = bins2[bins2 >= cmax]
-    ytmp = num3[bins2 >= cmax]
+    if xtmp.size < 2:
+        print('No enough magnitudes above magnitude of completeness')
+        return np.nan, np.nan, np.nan
 
     abvals = np.polyfit(xtmp, ytmp, 1)
-    aval = np.around(abvals, 2)[1]
-    bval = -np.around(abvals, 2)[0]
+    aval = abvals[1]
+    bval = -abvals[0]
 
-    # Maximum likelihood
+    aval = np.around(aval, 2)
+    bval = np.around(bval, 2)
+
+    # Maximum likelihood (Utsu)
     data2 = data1[data1 >= cmax]
-    b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
-    b_mle = np.around(b_mle, 2)
 
-    # Plotting
-    txt = (f'a-value (Least Squares): {aval}\n'
-           f'b-value (Least Squares): {bval}\n'
-           f'b-value (Maximum Likelihood): {b_mle}')
+    if (data2.mean()-data2.min()) == 0:
+        b_mle = np.nan
+        b_gh = np.nan
+    else:
+        dmean = data2.mean()
+        # b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
+        b_mle = np.log10(np.exp(1)) / (dmean - (cmax-mbin/2))
+        b_mle = np.around(b_mle, 2)
 
-    return aval, bval, b_mle
+        b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
+        # breakpoint()
+
+    out = {}
+    out['aval'] = aval
+    out['bval'] = bval
+    out['b_mle'] = b_mle
+    out['b_gh'] = b_gh
+    out['binctr'] = binctr
+    out['cumnum'] = cumnum
+    out['cmax'] = cmax
+    out['abvals'] = abvals
+
+    return out
+
+
+def fmd(mag, mbin=0.1):
+    """
+    Frequency magnitude distribution.
+
+    Mignan, A. & Woessner, Jochen. (2012). Estimating the magnitude of
+    completeness for earthquake catalogs. Community Online Resource for
+    Statistical Seismicity Analysis. 10.5078/corssa-00180805.
+
+    Parameters
+    ----------
+    mag : numpy array
+        Data array of magnitudes.
+    mbin : float, optional
+        Length of magnitude bin in FMD. The default is 0.1.
+
+    Returns
+    -------
+    res : dict
+        Dictionary containing M  vs cumulative and non cumulative counts.
+
+    """
+    mi = np.arange(np.min(np.round(mag / mbin) * mbin),
+                   np.max(np.round(mag / mbin) * mbin) + mbin, mbin)
+
+    # breakpoint()
+    nbm = len(mi)
+    cumnbmag = np.zeros(nbm)
+    nbmag = np.zeros(nbm)
+
+    for i in range(nbm):
+        cumnbmag[i] = np.sum(mag > (mi[i] - mbin / 2))
+
+    cumnbmagtmp = np.append(cumnbmag, 0)
+    nbmag = np.abs(np.diff(cumnbmagtmp))
+
+    res = {'m': mi, 'cum': cumnbmag, 'noncum': nbmag}
+    return res
+
+
+def maxc(mag, mbin=0.1):
+    """
+    MAXC method to find magntude of completeness.
+
+    Mignan, A. & Woessner, Jochen. (2012). Estimating the magnitude of
+    completeness for earthquake catalogs. Community Online Resource for
+    Statistical Seismicity Analysis. 10.5078/corssa-00180805.
+
+    Parameters
+    ----------
+    mag : numpy array
+        Data array of magnitudes.
+    mbin : float, optional
+        Length of magnitude bin in FMD. The default is 0.1.
+
+    Returns
+    -------
+    Mc : float
+        Magnitude of completeness.
+
+    """
+    FMD = fmd(mag, mbin)
+    Mc = FMD['m'][np.argmax(FMD['noncum'])]
+    return Mc
 
 
 def _testiso():
@@ -1318,7 +1392,7 @@ def _testfn1():
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    tmp.ifile = r"D:\seis\events.txt"
+    # tmp.ifile = r"D:\seis\events.txt"
 
     tmp.settings(True)
 
@@ -1333,16 +1407,23 @@ def _testfn1():
 
     app.exec()
 
+
 def _testfn():
     """Test routine."""
     import sys
-    from datetime import datetime, date
+    import pandas as pd
+    import matplotlib.pyplot as plt
     from pygmi.seis.iodefs import ImportSeisan
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
+    # ifile = r"D:\seis\events.txt"
+    window_size = 300
+    maxrec = 318
+    # maxrec = -1
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    tmp.ifile = r"D:\seis\events.txt"
+    tmp.ifile = ifile
 
     tmp.settings(True)
 
@@ -1359,14 +1440,101 @@ def _testfn():
 
     edate = []
     for i in range(len(year)):
-        txt = f'{year[i]}-{mon[i]:02}-{day[i]:02}T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}'
+        txt = (f'{year[i]}-{mon[i]:02}-{day[i]:02}'
+               f'T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}')
         edate.append(txt)
 
-    # a1, b1, b2 = bvalue(dat2['1_ML'])
-    edate = np.array(edate, dtype='datetime64')
+    seq = sorted(list(zip(edate, dat2['1_ML'])))
+    tseq = list(zip(*seq))
+    dates, ml = tseq
 
+    # dates = dates[:maxrec]
+    # ml = ml[:maxrec]
+    b3tot = []
+    b1tot = []
+    b2tot = []
+    datetot = []
 
-    breakpoint()
+    for i in range(len(dates) - window_size + 1):
+        if i < 18:
+            continue
+
+        mlwin = ml[i: i + window_size]
+        windates = dates[i: i + window_size]
+
+        mlwin = np.ma.masked_invalid(mlwin)
+        windates = np.ma.array(windates, mask=mlwin.mask)
+        mlwin = mlwin.compressed()
+        windates = windates.compressed()
+        windates = windates.astype(np.datetime64)
+
+        # windates = pd.to_datetime(windates)
+        # meandate = windates.mean()
+
+        meandate = windates[-1]
+
+        out = bvalue(mlwin)
+
+        b1tot.append(out['bval'])
+        b2tot.append(out['b_mle'])
+        b3tot.append(out['b_gh'])
+        datetot.append(meandate)
+##################################
+        continue
+        data1 = mlwin
+        xtmp = out['binctr'][out['binctr'] >= out['cmax']]
+        bins = 'doane'
+        # Plotting
+        plt.figure(dpi=300)
+        axes = plt.gca()
+
+        axes.hist(data1, bins, edgecolor='black',
+                  label='Actual distribution')
+
+        axes.set_yscale('log')
+
+        axes.plot(out['binctr'], out['cumnum'], '.',
+                  label='Cumulative distribution')
+
+        axes.plot([out['cmax'], out['cmax']],
+                  [0, out['cumnum'].max()], 'k--',
+                  label=f'Magnitude of completeness: {out["cmax"]}\n')
+
+        txt = (f'a-value (Least Squares): {out["aval"]}\n'
+               f'b-value (Least Squares): {out["bval"]}\n'
+               f'b-value (Maximum Likelihood): {out["b_mle"]}')
+        axes.plot(xtmp, 10**np.poly1d(out['abvals'])(xtmp),
+                  'k', label=txt)
+
+        axes.set_xlabel('ML', fontsize=8)
+        axes.set_ylabel('Number of observations', fontsize=8)
+
+        axes.legend()
+
+        plt.show()
+
+###################################
+    b3tot = np.array(b3tot)
+    b1tot = np.array(b1tot)
+    b2tot = np.array(b2tot)
+
+    plt.figure(dpi=300)
+    ax1 = plt.gca()
+
+    lns1 = ax1.plot(datetot, b3tot, 'r', label='b-value')
+    lns2 = ax1.plot(datetot, b2tot, 'g', label='b-value (maximum likelihood)')
+    plt.xticks(rotation=90)
+
+    # dates = np.array(dates, dtype=np.datetime64)
+    # ax2 = ax1.twinx()
+
+    # lns3 = ax2.plot(dates, ml, '+-', label='ML', alpha=0.5)
+
+    # lns = lns1+lns2+lns3
+    # labs = [i.get_label() for i in lns]
+    # ax1.legend(lns, labs, loc=0)
+
+    plt.show()
 
 
 if __name__ == "__main__":

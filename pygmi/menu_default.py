@@ -183,48 +183,51 @@ class HelpDocs(QtWidgets.QDialog):
         self.outdata = {}
 
         ipth = os.path.dirname(__file__)+r'/helpdocs/'
-        opth = os.getcwd()
+        # opth = os.getcwd()
 
         if helptxt is None:
             helptxt = 'No Help Available.'
         else:
-            os.chdir(ipth)
-            with open(helptxt+'.html', encoding='utf-8') as itxt:
-                helptxt = itxt.read()
+            # os.chdir(ipth)
+            hfile = os.path.join(ipth,helptxt+'.html')
+            webbrowser.open(hfile)
+            # with open(helptxt+'.html', encoding='utf-8') as itxt:
+            #     helptxt = itxt.read()
 
         # create GUI
-        self.setWindowTitle('Help!')
+        # self.setWindowTitle('Help!')
 
-        self.vbl = QtWidgets.QVBoxLayout()
-        self.setLayout(self.vbl)
+        # self.vbl = QtWidgets.QVBoxLayout()
+        # self.setLayout(self.vbl)
 
-        self.text = QtWidgets.QTextBrowser()
-        self.text.setOpenExternalLinks(True)
-        self.text.append(helptxt)
-        self.text.setMinimumWidth(480)
-        self.text.setMinimumHeight(360)
-        self.text.setFrameShape(QtWidgets.QFrame.NoFrame)
-        cursor = QtGui.QTextCursor()
-        cursor.setPosition(0)
-        self.text.setTextCursor(cursor)
+        # self.text = QtWidgets.QTextBrowser()
+        # self.text.setOpenExternalLinks(True)
+        # self.text.append(helptxt)
+        # self.text.setMinimumWidth(480)
+        # self.text.setMinimumHeight(360)
+        # self.text.setFrameShape(QtWidgets.QFrame.NoFrame)
+        # cursor = QtGui.QTextCursor()
+        # cursor.setPosition(0)
+        # self.text.setTextCursor(cursor)
 
-        ptmp = self.text.palette()
-        ptmp.setColor(0, 9, ptmp.color(10))
-        ptmp.setColor(1, 9, ptmp.color(10))
-        ptmp.setColor(2, 9, ptmp.color(10))
-        self.text.setPalette(ptmp)
+        # ptmp = self.text.palette()
+        # ptmp.setColor(0, 9, ptmp.color(10))
+        # ptmp.setColor(1, 9, ptmp.color(10))
+        # ptmp.setColor(2, 9, ptmp.color(10))
+        # self.text.setPalette(ptmp)
 
-        self.vbl.addWidget(self.text)
+        # self.vbl.addWidget(self.text)
 
-        self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
+        # self.buttonbox = QtWidgets.QDialogButtonBox()
+        # self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        # self.buttonbox.setCenterButtons(True)
+        # self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
 
-        self.vbl.addWidget(self.buttonbox)
+        # self.vbl.addWidget(self.buttonbox)
 
-        self.buttonbox.accepted.connect(self.accept)
+        # self.buttonbox.accepted.connect(self.accept)
 
-        self.exec()
+        # self.exec()
 
-        os.chdir(opth)
+        # os.chdir(opth)
+

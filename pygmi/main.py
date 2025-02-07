@@ -856,7 +856,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def help_docs(self):
         """Help Routine."""
-        menu_default.HelpDocs(self, 'pygmi.main')
+        menu_default.HelpDocs(self, 'interface')
 
     def item_insert(self, item_type, item_name, class_name,
                     projimport=False, **kwargs):

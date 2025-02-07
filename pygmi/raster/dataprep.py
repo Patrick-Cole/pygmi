@@ -72,7 +72,7 @@ class Continuation(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
+        helpdocs = menu_default.HelpButton('raster.dm..cont')
         lbl_band = QtWidgets.QLabel('Band to perform continuation:')
         lbl_cont = QtWidgets.QLabel('Continuation type:')
         lbl_height = QtWidgets.QLabel('Continuation distance:')
@@ -272,8 +272,7 @@ class DataLayerStack(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.'
-                                           'datalayerstack')
+        helpdocs = menu_default.HelpButton('raster.dm.layerstack')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.dsb_dxy.setMaximum(9999999999.0)
@@ -472,7 +471,7 @@ class DataMerge(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        helpdocs = menu_default.HelpButton('raster.dm.mosiac')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
                                          '(optional)')
@@ -706,7 +705,7 @@ class DataReproj(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
+        helpdocs = menu_default.HelpButton('raster.dm.reproj')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)

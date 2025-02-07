@@ -1,0 +1,69 @@
+pygmi.vector package
+====================
+
+Submodules
+----------
+
+pygmi.vector.dataprep module
+----------------------------
+
+.. automodule:: pygmi.vector.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.graphs module
+--------------------------
+
+.. automodule:: pygmi.vector.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.iodefs module
+--------------------------
+
+.. automodule:: pygmi.vector.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.menu module
+------------------------
+
+.. automodule:: pygmi.vector.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.minc module
+------------------------
+
+.. automodule:: pygmi.vector.minc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.show\_table module
+-------------------------------
+
+.. automodule:: pygmi.vector.show_table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.vector.structure module
+-----------------------------
+
+.. automodule:: pygmi.vector.structure
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.vector
+   :members:
+   :undoc-members:
+   :show-inheritance:
