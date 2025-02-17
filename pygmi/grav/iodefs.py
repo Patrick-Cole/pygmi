@@ -70,7 +70,7 @@ class ImportCG5(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('gravity.dm.import')
         lbl_line = QtWidgets.QLabel('Line:')
         lbl_station = QtWidgets.QLabel('Station:')
         lbl_xchan = QtWidgets.QLabel('Longitude:')

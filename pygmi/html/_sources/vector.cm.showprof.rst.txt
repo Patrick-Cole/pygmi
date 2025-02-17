@@ -1,0 +1,6 @@
+Show Profile Data
+-----------------
+This module displays line data or vector point data in profile form. The line and column can be chosen for display.
+
+.. image:: _images/vectorlinedataprof.png
+

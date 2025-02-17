@@ -1,0 +1,4 @@
+Create Batch List
+-----------------
+This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it only imports metadata, and not band data.  The user must select a directory as input. The options are similar to the regular satellite data import.
+

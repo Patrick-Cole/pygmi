@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hyperspectral Imaging &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Change Detection" href="rsense.dm.change.html" />
+    <link rel="prev" title="Minimum Noise Fraction" href="rsense.dm.mnf.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="rsense.dm.mnf.html" title="Previous document">Minimum Noise Fraction</a>
+        </li>
+        <li>
+          <a href="rsense.dm.change.html" title="Next document">Change Detection</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="hyperspectral-imaging">
+<h1>Hyperspectral Imaging<a class="headerlink" href="#hyperspectral-imaging" title="Link to this heading">¶</a></h1>
+<section id="analyse-spectra">
+<h2>Analyse Spectra<a class="headerlink" href="#analyse-spectra" title="Link to this heading">¶</a></h2>
+<p>This module allows for a user to select a spectrum from a dataset, and compare it with library spectra. Different features can be highlighted, and a hull can be removed from the spectrum. This tool is essentially a viewer, allowing for the user to strategize interpretation strategies.</p>
+<p>Options are:</p>
+<ul class="simple">
+<li><p>Display band – choice of which data wavelength to display.</p></li>
+<li><p>Feature – highlight a standard spectral feature.</p></li>
+<li><p>Rotate view – Allows a dataset to be rotated for display purposes.</p></li>
+<li><p>Remove hull – allows for the hull removed representation of a spectrum.</p></li>
+<li><p>Load ENVI spectral library. This can be any spectral library in ENVI spectral library format. The user then chooses the appropriate reference spectrum to compare with.</p></li>
+</ul>
+<img alt="_images/rsenseanalyse.png" src="_images/rsenseanalyse.png" />
+</section>
+<section id="process-features">
+<h2>Process Features<a class="headerlink" href="#process-features" title="Link to this heading">¶</a></h2>
+<p>This module takes as input hyperspectral data, and allows for a standard set of feature definitions to be calculated (Haest et al. 2012). Currently this includes mica, spectate, kaolin, chlorine, epidote and ferrous iron. Once a product is selected, the details of the various datasets which make up the calculation are shown on a table, including feature name, filter, threshold and description. The user is able to alter details such as the respective dataset threshold.</p>
+<p>Options are:</p>
+<ul class="simple">
+<li><p>Product - includes mica, spectate, kaolin, chlorine, epidote and ferrous iron.</p></li>
+<li><p>Details - including feature name, filter, threshold and description. The user is able to alter the respective dataset threshold.</p></li>
+</ul>
+<img alt="_images/rsensefproc.png" src="_images/rsensefproc.png" />
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="rsense.dm.mnf.html" title="Previous document">Minimum Noise Fraction</a>
+        </li>
+        <li>
+          <a href="rsense.dm.change.html" title="Next document">Change Detection</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="rsense.html">Remote Sensing</a><ul>
+      <li>Previous: <a href="rsense.dm.mnf.html" title="previous chapter">Minimum Noise Fraction</a></li>
+      <li>Next: <a href="rsense.dm.change.html" title="next chapter">Change Detection</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/rsense.dm.hyper.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

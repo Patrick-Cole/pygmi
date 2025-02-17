@@ -22,7 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Fuzzy clustering."""
+"""
+Fuzzy clustering is a set of clustering routines, making use of fuzzy logic.
+"""
 
 import os
 from PyQt5 import QtWidgets, QtCore
@@ -35,7 +37,14 @@ from pygmi import menu_default
 
 
 class FuzzyClust(BasicModule):
-    """Fuzzy Clustering class."""
+    """
+    Fuzzy clustering GUI class.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -82,7 +91,7 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('pygmi.clust.fuzzy')
+        helpdocs = menu_default.HelpButton('cluster.dm.fuzzy')
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox(self)
         vbl = QtWidgets.QVBoxLayout(gbox)
@@ -158,7 +167,7 @@ class FuzzyClust(BasicModule):
 
     def combo(self):
         """
-        Set up combo box.
+        Set up combo box to choose algorthim.
 
         Returns
         -------
@@ -482,7 +491,8 @@ class FuzzyClust(BasicModule):
             i.data += 1
             i.crs = data[0].crs
 
-        self.showlog(f'Fuzzy Cluster complete ({self.cltype} {self.init_type})')
+        self.showlog(f'Fuzzy Cluster complete ({self.cltype} '
+                     f'{self.init_type})')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -658,7 +668,7 @@ class FuzzyClust(BasicModule):
 
 def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     """
-    Fuzzy distance.
+    Fuzzy distance calculation.
 
     Parameters
     ----------
@@ -795,11 +805,10 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
 
 def xie_beni(data, expo, uuu, center, edist):
     """
-    Xie Beni.
+    Calculate the Xie-Beni index.
 
-    Calculates the Xie-Beni index
-    accepts missing values when given as nan elements in the data base)
-    min xbi is optimal
+    Accepts missing values when given as nan elements in the data base). A
+    small Xie-Beni index is optimal.
 
     Parameters
     ----------

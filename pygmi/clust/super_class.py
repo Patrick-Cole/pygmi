@@ -53,12 +53,12 @@ from pygmi.raster.modest_image import imshow
 
 class GraphMap(FigureCanvasQTAgg):
     """
-    Graph Map.
+    Graph map widget.
 
-    Attributes
+    Parameters
     ----------
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -106,8 +106,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        dat : PyGMI Data
-            PyGMI dataset.
+        dat : dict
+            PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
 
         Returns
         -------
@@ -167,8 +167,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        dat : Dictionary
-            PyGMI dataset/s in a dictionary.
+        dat : dict
+            PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
 
         Returns
         -------
@@ -224,13 +224,20 @@ class PolygonInteractor(QtCore.QObject):
 
     Parameters
     ----------
-        showverts : bool
-        epsilon : int
-        polyi_changed : signal
+    axtmp : matplotlib.axes._axes.Axes
+        Matplotlib axis.
+    pntxy : numpy array
+        X and Y mouse coordinates in N by 2  array.
+
+    Attributes
+    ----------
+    epsilon : int
+        Epsilon tolerance for index detection.
+    polyi_changed : QtCore.pyqtSignal
+        Qt signal when polygon has changed.
 
     """
 
-    showverts = True
     epsilon = 5
     polyi_changed = QtCore.pyqtSignal(list)  #: polygon changed signal.
 
@@ -472,7 +479,14 @@ class PolygonInteractor(QtCore.QObject):
 
 
 class SuperClass(BasicModule):
-    """Main Supervised Classification Tool Routine."""
+    """
+    Main supervised classification GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -814,7 +828,7 @@ class SuperClass(BasicModule):
 
     def on_combo(self):
         """
-        On combo.
+        On combo to choose type of plot for data.
 
         Returns
         -------

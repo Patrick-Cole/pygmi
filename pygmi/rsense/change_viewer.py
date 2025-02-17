@@ -38,7 +38,21 @@ from pygmi.raster.modest_ioimage import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """Simple canvas with a sine plot."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    width : float
+        Width of the plot.
+    height : float
+        Height of the plot.
+    dpi : int
+        Dots per inch of the plot
+
+    """
 
     def __init__(self, parent=None, width=10, height=8, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
@@ -94,7 +108,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        dat : PyGMI Data
+        dat : pygmi.raster.datatypes.Data
             PyGMI dataset.
         dates : str
             Dates to show on title.
@@ -131,7 +145,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        dat : PyGMI Data
+        dat : pygmi.raster.datatypes.Data
             PyGMI dataset.
         dates : str
             Dates to show on title.

@@ -1,0 +1,14 @@
+Import Satellite Data
+---------------------
+Satellite data can be imported here. Once the file is selected, the user can select which band to import. In addition, a conversion from UTM to SUTM is available.
+
+This imports include:
+
+* ASTER data; note that this is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.
+* Landsat data; note that this is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.
+* Sentinel 2 data; note that this is the data as obtained from https://earthexplorer.usgs.gov. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).
+* MODIS data.
+* Hyperion L1T data.
+* WorldView Tile data; the tiles will be merged into a single dataset.
+* ASTER Global Emissivity data.
+

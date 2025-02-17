@@ -1531,7 +1531,7 @@ def dat_extent(dat, axes):
 
     Parameters
     ----------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster dataset.
     axes : matplotlib.axes._subplots.AxesSubplot
         Matplotlib axes.

@@ -44,13 +44,12 @@ from pygmi.raster.misc import cut_raster
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
 
-    Attributes
+    Parameters
     ----------
-    axes : matplotlib subplot
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):

@@ -61,7 +61,7 @@ class SatRatios(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        helpdocs = menu_default.HelpButton('rsense.dm.ratios')
         lbl_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Ratios:')
 
@@ -373,7 +373,7 @@ class ConditionIndices(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.cind')
+        helpdocs = menu_default.HelpButton('rsense.dm.calccondind')
         lbl_index = QtWidgets.QLabel('Index:')
         lbl_ratios = QtWidgets.QLabel('Condition Indices:')
         lbl_sensor = QtWidgets.QLabel('Sensor:')
@@ -771,7 +771,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
     rlist : list
         List of strings, containing ratios to calculate..
@@ -782,7 +782,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
     Returns
     -------
-    datfin : list of PyGMI Data.
+    datfin : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
 
     """
@@ -1057,12 +1057,12 @@ def get_TCI(lst):
 
     Parameters
     ----------
-    lst : list of PyGMI Data.
+    lst : list of pygmi.raster.datatypes.Data.
         list of PyGMI datasets - land surface temperatures.
 
     Returns
     -------
-    tci : list of PyGMI Data.
+    tci : list of pygmi.raster.datatypes.Data.
         output TCI datasets.
 
     """
@@ -1093,14 +1093,14 @@ def get_VCI(evi, index):
 
     Parameters
     ----------
-    evi : list of PyGMI Data
+    evi : list of pygmi.raster.datatypes.Data
         list of EVI datasets.
     index : str
         index for dataid.
 
     Returns
     -------
-    vci : list of PyGMI Data
+    vci : list of pygmi.raster.datatypes.Data
         output VCI datasets.
 
     """
@@ -1140,7 +1140,7 @@ def get_VHI(tci, vci, alpha=0.5):
 
     Returns
     -------
-    vhi : list of PyGMI Data
+    vhi : list of pygmi.raster.datatypes.Data
         Output VHI datasets.
 
     """
@@ -1166,7 +1166,7 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
     showlog : function, optional
         Display information. The default is print.
@@ -1175,7 +1175,7 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     Returns
     -------
-    datfin : list of PyGMI Data.
+    datfin : list of pygmi.raster.datatypes.Data.
         Red, green and blue PyGMI Data.
 
     """

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Structural Complexity &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Display/Edit Vector Metadata" href="vector.cm.meta.html" />
+    <link rel="prev" title="Dataset Gridding" href="vector.dm.gridding.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="vector.dm.gridding.html" title="Previous document">Dataset Gridding</a>
+        </li>
+        <li>
+          <a href="vector.cm.meta.html" title="Next document">Display/Edit Vector Metadata</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="structural-complexity">
+<h1>Structural Complexity<a class="headerlink" href="#structural-complexity" title="Link to this heading">¶</a></h1>
+<p>Geological structural complexity is a study of the interrelationships between structures found in geology. It is an important concept, since certain types of mineral deposits are associated with structures, or groups of structures. Structural complexity maps revolve around rasterising certain structural relationships, such as intersection density, orientation diversity, circular variance, circular dispersion, and feature fractal dimension.</p>
+<p><strong>Structural Complexity</strong> takes as input lines from a shapefile or similar. It then produces different measures of structure complexity in gridded form. The vector data is rasterized, and a window is passed over the rasterized version of the lines to calculate the complexity measures.</p>
+<p>Four structural complexity measures are available, namely <strong>Feature Intersection Density</strong> (Holden et al., 2012), <strong>Feature Orientation Diversity</strong> (Holden et al., 2012), <strong>Circular Variance and Dispersion</strong> (Montsion et al., 2021) or <strong>Feature Fractal Dimension</strong> (Dhansay et al., 2016). The options in the Structural Complexity dialog depend on the method that was selected.</p>
+<p><strong>Feature Intersection Density</strong> examines all structural intersections (or structures close to intersecting) and calculates a Gaussian taper with specified standard deviations. All Gaussians from all intersections are summed, resulting in a map where high values denote areas of multiple intersections.</p>
+<p><strong>Feature Orientation Diversity</strong> counts the number of different orientations in the neighbourhood of a pixel.</p>
+<p><strong>Circular Variance</strong> uses circular statistics and is a measure of how much the strike of structures found in a neighbourhood (measured in radians) varies about their mean.</p>
+<p><strong>Circular Dispersion</strong> also uses circular statistics, is more general and gives information about the overall spread of data points.</p>
+<p><strong>Fractal Dimension</strong> is a mathematical measurement of how complex a fractal pattern is, and how it changes in scale. It’s used to describe the roughness and complexity of shapes like coastlines, leaves, city outlines and geological structures. <strong>Fractal Dimension</strong> is calculated in a window (area). This window is moved over the dataset, resulting in a fractal dimension map. Care must be taken to ensure that the window is not too small, or the calculation may not be accurate.</p>
+<p>The options on the <strong>Structural Complexity</strong> interface are:</p>
+<ul class="simple">
+<li><p><strong>Method</strong> - This can be <strong>Feature Intersection Density</strong>, <strong>Feature Orientation Diversity</strong>, <strong>Circular Variance and Dispersion</strong> or <strong>Feature Fractal Dimension</strong>.</p></li>
+<li><p><strong>Cell Size</strong> - This represents the size of a square raster grid cell for the output dataset, in the units of the grid (normally meters).</p></li>
+<li><p>Method-dependent options:</p>
+<ul>
+<li><p><strong>Feature Intersection Density</strong>:</p>
+<ul>
+<li><p><strong>Intersection Density Standard Deviation</strong> - the variance of a Gaussian centred on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).</p></li>
+<li><p><strong>Intersection Density Line Extension</strong> - Distance to extend features which are almost touching, so that an intersection between features is obtained.</p></li>
+</ul>
+</li>
+<li><p><strong>Feature Orientation Diversity</strong>, <strong>Circular Variance and Dispersion</strong> and <strong>Feature Fractal Dimension</strong>:</p>
+<ul>
+<li><p><strong>Window Size</strong> - Size of the window, in terms of cell size, that will be passed over the data to calculate the measure.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img alt="_images/vectorstruct.png" src="_images/vectorstruct.png" />
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>Dhansay, T., Brandl, G., &amp; de Wit, M. J. (2016). Fractal geometry of the fault network across the Soutpansberg Mountains, Limpopo, South Africa. South African Journal of Geology, 119(1), 235–242. <a class="reference external" href="https://doi.org/10.2113/gssajg.119.1.235">https://doi.org/10.2113/gssajg.119.1.235</a></p>
+<p>Holden, E. J., Wong, J. C., Kovesi, P., Wedge, D., Dentith, M., &amp; Bagas, L. (2012). Identifying structural complexity in aeromagnetic data: An image analysis approach to greenfields gold exploration. Ore Geology Reviews, 46, 47–59. <a class="reference external" href="https://doi.org/10.1016/j.oregeorev.2011.11.002">https://doi.org/10.1016/j.oregeorev.2011.11.002</a></p>
+<p>Montsion, R. M., Perrouty, S., Lindsay, M. D., Jessell, M. W., &amp; Frieman, B. M. (2021). Mapping structural complexity using geophysics: A new geostatistical approach applied to greenstone belts of the southern Superior Province, Canada. Tectonophysics, 812. <a class="reference external" href="https://doi.org/10.1016/j.tecto.2021.228889">https://doi.org/10.1016/j.tecto.2021.228889</a></p>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="vector.dm.gridding.html" title="Previous document">Dataset Gridding</a>
+        </li>
+        <li>
+          <a href="vector.cm.meta.html" title="Next document">Display/Edit Vector Metadata</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="vector.html">Vector Data Analysis</a><ul>
+      <li>Previous: <a href="vector.dm.gridding.html" title="previous chapter">Dataset Gridding</a></li>
+      <li>Next: <a href="vector.cm.meta.html" title="next chapter">Display/Edit Vector Metadata</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/vector.dm.structcomp.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

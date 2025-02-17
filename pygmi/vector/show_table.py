@@ -68,7 +68,7 @@ class BasicStats(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

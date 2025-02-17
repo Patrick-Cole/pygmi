@@ -367,7 +367,7 @@ class Mod3dDisplay(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

@@ -52,14 +52,12 @@ from pygmi.seis.iodefs import importmacro
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
 
-    Attributes
+    Parameters
     ----------
-    axes : matplotlib axes
-        axes for matplotlib subplot
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -822,7 +820,7 @@ class PlotQC(GraphWindow):
 
     def run(self):
         """
-        Entry point to run routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -941,7 +939,7 @@ class PlotIso(GraphWindow):
 
     def run(self):
         """
-        Entry point to run routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1251,7 +1249,7 @@ def fmd(mag, mbin=0.1):
 
 def maxc(mag, mbin=0.1):
     """
-    MAXC method to find magntude of completeness.
+    MAXC method to find magnitude of completeness.
 
     Mignan, A. & Woessner, Jochen. (2012). Estimating the magnitude of
     completeness for earthquake catalogs. Community Online Resource for
@@ -1521,10 +1519,12 @@ def _testfn():
     plt.figure(dpi=300)
     ax1 = plt.gca()
 
-    lns1 = ax1.plot(datetot, b3tot, 'r', label='b-value')
+    # lns1 = ax1.plot(datetot, b3tot, 'r', label='b-value')
     lns2 = ax1.plot(datetot, b2tot, 'g', label='b-value (maximum likelihood)')
     plt.xticks(rotation=90)
-
+    ax1.legend()
+    ax1.set_xlabel('Date', fontsize=8)
+    ax1.set_ylabel('b-value', fontsize=8)
     # dates = np.array(dates, dtype=np.datetime64)
     # ax2 = ax1.twinx()
 

@@ -1,0 +1,2794 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pygmi.seis package &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
+    <link rel="prev" title="pygmi.rsense package" href="pygmi.rsense.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.rsense.html" title="Previous document">pygmi.rsense package</a>
+        </li>
+        <li>
+          <a href="pygmi.test.html" title="Next document">pygmi.test package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="pygmi-seis-package">
+<h1>pygmi.seis package<a class="headerlink" href="#pygmi-seis-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-pygmi.seis.beachball">
+<span id="pygmi-seis-beachball-module"></span><h2>pygmi.seis.beachball module<a class="headerlink" href="#module-pygmi.seis.beachball" title="Link to this heading">¶</a></h2>
+<p>Plot fault plane solutions.</p>
+<p>The code below is translated from bb.m written by Andy Michael and Oliver Boyd
+at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">BeachBall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Create shapefiles with beachballs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.change_alg">
+<span class="sig-name descname"><span class="pre">change_alg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.change_alg" title="Link to this definition">¶</a></dt>
+<dd><p>Change algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.data_init">
+<span class="sig-name descname"><span class="pre">data_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.data_init" title="Link to this definition">¶</a></dt>
+<dd><p>Initialise Data - entry point into routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.save_shp">
+<span class="sig-name descname"><span class="pre">save_shp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.save_shp" title="Link to this definition">¶</a></dt>
+<dd><p>Save Beachballs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.BeachBall.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.MyMplCanvas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">MyMplCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.MyMplCanvas" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the actual plot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.MyMplCanvas.init_graph">
+<span class="sig-name descname"><span class="pre">init_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.MyMplCanvas.init_graph" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.TDL">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">TDL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">AN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BN</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.TDL" title="Link to this definition">¶</a></dt>
+<dd><p>TDL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>AN</strong> (<em>numpy array</em>) – array comprising XN, YN, ZN</p></li>
+<li><p><strong>BN</strong> (<em>numpy array</em>) – array comprising XE, YE, ZE</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>FT</strong> (<em>float</em>) – relates to strike (360 - ft)</p></li>
+<li><p><strong>FD</strong> (<em>float</em>) – dip</p></li>
+<li><p><strong>FL</strong> (<em>float</em>) – relates to rake (180 - fl)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.auxplane">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">auxplane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.auxplane" title="Link to this definition">¶</a></dt>
+<dd><p>Get Strike and dip of second plane.</p>
+<p>Adapted from Andy Michael bothplanes.c</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s1</strong> (<em>numpy array</em>) – Strike 1.</p></li>
+<li><p><strong>d1</strong> (<em>numpy array</em>) – Dip 1.</p></li>
+<li><p><strong>r1</strong> (<em>numpy array</em>) – Rake 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>strike</strong> (<em>numpy array</em>) – Strike of second plane.</p></li>
+<li><p><strong>dip</strong> (<em>numpy array</em>) – Dip of second plane.</p></li>
+<li><p><strong>rake</strong> (<em>numpy array</em>) – Rake of second plane.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.beachball">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">beachball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centerx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isgeog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.beachball" title="Link to this definition">¶</a></dt>
+<dd><p>Beachball.</p>
+<p>Source code provided here are adopted from MatLab script
+<cite>bb.m</cite> written by Andy Michael and Oliver Boyd.</p>
+<p>function bb(fm, centerx, centery, diam, ta, color)
+Draws beachball diagram of earthquake double-couple focal mechanism(s).
+S1, D1, and R1, the strike, dip and rake of one of the focal planes, can
+be vectors of multiple focal mechanisms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fm</strong> (<em>numpy array</em>) – focal mechanism that is either number of mechanisms (NM) by 3
+(strike, dip, and rake) or NM x 6 (mxx, myy, mzz, mxy, mxz, myz -
+the six independent components of the moment tensor). The strike is
+of the first plane, clockwise relative to north. The dip is of the
+first plane, defined clockwise and perpendicular to strike, relative
+to horizontal such that 0 is horizontal and 90 is vertical. The rake is
+of the first focal plane solution. 90 moves the hanging wall up-dip
+(thrust), 0 moves it in the strike direction (left-lateral), -90 moves
+it down-dip (normal), and 180 moves it opposite to strike
+(right-lateral).</p></li>
+<li><p><strong>centerx</strong> (<em>float</em>) – place beachball(s) at position centerx</p></li>
+<li><p><strong>centery</strong> (<em>float</em>) – place beachball(s) at position centery</p></li>
+<li><p><strong>diam</strong> (<em>float</em>) – draw beachball with this diameter.</p></li>
+<li><p><strong>isgeog</strong> (<em>bool</em>) – True if in geographic coordinates, False otherwise.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy array</em>) – array of x coordinates for vertices</p></li>
+<li><p><strong>Y</strong> (<em>numpy array</em>) – array of y coordinates for vertices</p></li>
+<li><p><strong>xx</strong> (<em>numpy array</em>) – array of x coordinates for vertices</p></li>
+<li><p><strong>yy</strong> (<em>numpy array</em>) – array of y coordinates for vertices</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.mij2sdr">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">mij2sdr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mxx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">myy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mzz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mxz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">myz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.mij2sdr" title="Link to this definition">¶</a></dt>
+<dd><p>Adapted from code, mij2d.f, created by Chen Ji.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>float</strong> (<em>myz -</em>) – independent component of the moment tensor</p></li>
+<li><p><strong>float</strong> – independent component of the moment tensor</p></li>
+<li><p><strong>float</strong> – independent component of the moment tensor</p></li>
+<li><p><strong>float</strong> – independent component of the moment tensor</p></li>
+<li><p><strong>float</strong> – independent component of the moment tensor</p></li>
+<li><p><strong>float</strong> – independent component of the moment tensor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>strike</strong> (<em>float</em>) – strike of first focal plane (degrees)</p></li>
+<li><p><strong>dip</strong> (<em>float</em>) – dip of first focal plane (degrees)</p></li>
+<li><p><strong>rake</strong> (<em>float</em>) – rake of first focal plane (degrees)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.pol2cart">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">pol2cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.pol2cart" title="Link to this definition">¶</a></dt>
+<dd><p>Polar to cartesian coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phi</strong> (<em>numpy array</em>) – Polar angles in radians.</p></li>
+<li><p><strong>rho</strong> (<em>numpy array</em>) – Polar r values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xxx</strong> (<em>numpy array</em>) – X values.</p></li>
+<li><p><strong>yyy</strong> (<em>numpy array</em>) – Y values.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.beachball.strikedip">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.beachball.</span></span><span class="sig-name descname"><span class="pre">strikedip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.strikedip" title="Link to this definition">¶</a></dt>
+<dd><p>Find strike and dip of plane given normal vector.</p>
+<p>Adapted from Andy Michaels stridip.c</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>numpy array</em>) – North coordinates for normal vector.</p></li>
+<li><p><strong>e</strong> (<em>numpy array</em>) – East coordinate for normal vector.</p></li>
+<li><p><strong>u</strong> (<em>numpy array</em>) – Up coordinate for normal vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>strike</strong> (<em>numpy array</em>) – Strike of plane.</p></li>
+<li><p><strong>dip</strong> (<em>numpy array</em>) – Dip of plane.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.datatypes">
+<span id="pygmi-seis-datatypes-module"></span><h2>pygmi.seis.datatypes module<a class="headerlink" href="#module-pygmi.seis.datatypes" title="Link to this heading">¶</a></h2>
+<p>Class for seismic data types.</p>
+<p>Docstring information is from SEISAN documentation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_1">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_1</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_1" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to hold Seisan Type 1 data.</p>
+<p>Type 1 Line Format:</p>
+<p>Columns Format Description                    Comments
+1              Free
+2-5      I4    Year
+6              Free
+7-8      I2    Month
+9-10     I2    Day of Month
+11             Fix o. time                    Normally blank, an F fixes
+-                                             origin time
+12-13    I2    Hour
+14-15    I2    Minutes
+16             Free
+17-20    F4.1  Seconds
+21             Location model indicator       Any character
+22       A1    Distance Indicator             L = Local, R = Regional,
+-                                             D = Distant, etc.
+23       A1    Event ID                       E = Confirmed explosion
+-                                             P = Probable explosion
+-                                             V = Volcanic
+-                                             Q = Confirmed earthquake
+-                                             ‘ ‘ = Presumed earthquake
+-                                             X = Landslide
+24-30    F7.3  Latitude                       Degrees (+ N)
+31-38    F8.3  Longitude                      Degrees (+ E)
+39-43    F5.1  Depth                          Km
+44       A1    Depth Indicator                F = Fixed, S = Starting value
+45       A1    Locating indicator             —————————-,
+-                                             * do not locate
+46-48    A3    Hypocenter Reporting Agency
+49-51          Number of Stations Used
+52-55          RMS of Time Residuals
+56-59   F4.1   Magnitude No. 1
+60 A1          Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
+-                                G=MbLg (not used by SEISAN), C=Mc
+61-63   A3     Magnitude Reporting Agency
+64-67   F4.1   Magnitude No. 2
+68 A1          Type of Magnitude
+69-71   A3     Magnitude Reporting Agency
+72-75   F4.1   Magnitude No. 3
+76 A1          Type of Magnitude
+77-79   A3     Magnitude Reporting Agency
+80 A1          Type of this line (“1”), can be blank if first
+-              line of event</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_2">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_2</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_2" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type 2 line (Macroseismic information).</p>
+<p>Cols Format Description
+1-5           Blank
+6-20          a Any descriptive text
+21            Free
+22    a1      Diastrophism code (PDE type)
+-                    F = Surface faulting
+-                    U = Uplift or subsidence
+-                    D = Faulting and Uplift/Subsidence
+23    a1      Tsunami code (PDE type)
+-                    T = Tsunami generated
+-                    Q = Possible tsunami
+24    a1      Seiche code (PDE type)
+-                    S = Seiche
+-                    Q = Possible seiche
+25    a1      Cultural effects (PDE type)
+-                    C = Casualties reported
+-                    D = Damage reported
+-                    F = Earthquake was felt
+-                    H = Earthquake was heard
+26    a1      Unusual events (PDE type)
+-                    L = Liquefaction
+-                    G = Geyser/fumarole
+-                    S = Landslides/Avalanches
+-                    B = Sand blows
+-                    C = Cracking in the ground (not normal faulting).
+-                    V = Visual phenomena
+-                    O = Olfactory phenomena
+-                    M = More than one of the above observed.
+27            Free
+28-29 i2      Max Intensity
+30    a1      Max Intensity qualifier
+-                    (+ or - indicating more precisely the intensity)
+31-32 a2      Intensity scale (ISC type definitions)
+-                    MM = Modified Mercalli
+-                    RF = Rossi Forel
+-                    CS = Mercalli - Cancani - Seberg
+-                    SK = Medevev - Sponheur - Karnik
+33            Free
+34-39 f6.2    Macroseismic latitude (Decimal)
+40            Free
+41-47 f7.2    Macroseismic longitude (Decimal)
+48            Free
+49-51 f3.1    Macroseismic magnitude
+52    a1      Type of magnitude
+-                    I = Magnitude based on maximum Intensity.
+-                    A = Magnitude based on felt area.
+-                    R = Magnitude based on radius of felt area.
+-                    * = Magnitude calculated by use of special formulas
+-                        developed by some person for a certain area.
+-                        Further info should be given on line 3.
+53-56 f4.2    Logarithm (base 10) of radius of felt area.
+57-61 f5.2    Logarithm (base 10) of area (km**2) number 1 where
+-                    earthquake was felt exceeding a given intensity.
+62-63 i2      Intensity bordering the area number 1.
+64-68 f5.2    Logarithm (base 10) of area (km**2) number 2 where
+-                    earthquake was felt exceeding a given intensity.
+69-70 i2      Intensity bordering the area number 2.
+71            Free
+72    a1      Quality rank of the report (A, B, C, D)
+73-75 a3      Reporting agency
+76-79         Free
+80    a1      Type of this line (“2”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_3">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_3</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_3" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type 3 Line (Optional).</p>
+<p>Columns Format Description Comments
+1               Free
+2-79    A       Text      Anything
+80      A1      Type of this line (“3”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_4">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_4</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_4" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type 4 (phase) line.</p>
+<p>Columns Format Description Comments</p>
+<p>1               Free
+2- 6    A5      Station Name    Blank = End of readings = end of event
+7       A1      Instrument Type S = SP, I = IP, L = LP etc
+8       A1      Component    Z, N, E ,T, R, 1, 2
+9               Free or weight, see note below
+10      A1      Quality Indicator   I, E, etc.
+11-14   A2      Phase ID    PN, PG, LG, P, S, etc. **
+15      I1      Weighting Indicator (1-4) 0 or blank= full weight, 1=75%,
+-               2=50%, 3=25%, 4=0%, 9: no weight, use difference time
+-               (e.g. P-S).
+16              Free or flag A to indicate automatic pick, removed when
+-               picking
+17      A1      First Motion    C, D
+18              Note: Currently 15 to 18 can also be used for phase
+-               assuming column 11-14 is not blank. See note ** below.
+19-20   I2      Hour        Hour can be up to 48 to indicate next day
+21-22   I2      Minutes
+23-28   F6.0    Seconds
+29              Free
+30-33   I4      Duration (to noise)         Seconds
+34-40   g7.1    Amplitude (Zero-Peak) in units of nm, nm/s, nm/s^2 or
+-               counts.
+41              Free
+42-45   F4.0    Period      Seconds
+46              Free
+47-51   F5.0    Direction of Approach       Degrees
+52              Free
+53-56   F4.0    Phase Velocity      Km/second
+57-60   F4.0    Angle of incidence (was Signal to noise ratio before
+-               version 8)
+61-63   I3      Azimuth residual
+64-68   F5.1    Travel time residual
+69-70   I2      Weight
+71-75   F5.0    Epicentral distance(km)
+76              Free
+77-79   I3      Azimuth at source
+80      A1      Type of this line (“4”), can be blank, which it is most
+-               often.</p>
+<p>Type 4 cards should be followed by a Blank Card (Type 0)</p>
+<p>Nordic 2:</p>
+<p>Columns Format Description Comments
+1 Free
+2-6   A5 Station Name
+7-9   A3 Component, e.g. SHZ
+10       Free
+11-12 A2 Network code
+13-14 A2 Location
+15       Free
+16    A1 Quality Indicator I, E, etc.
+17-24 A8 Phase ID PN, PG, LG, P, S, etc.
+25    I1 Weighting Indicator (1-4) 0 or blank= full weight, 1=75%, 2=50%,
+-        3=25%,4=0%, 9: no weight, time (e.g. P-S).
+26       Free or flag A to indicate automatic pick, removed when picking
+27-28 I2 Hour Hour can be up to 48 to indicate next day
+29-30 I2 Minutes
+31       Free
+32-37 F6.0 Seconds
+38-44    Parameter 1. If a phase, it is polarity in column 44
+-                     If phase END for coda, it is duration(s)(F)
+-                     If amplitude phase, it is amplitude (G7)
+-                     Amplitude is(Zero-Peak) in units of nm,
+-                     nm/s, nm/s^2 or counts.
+-                     If back azimuth phase (BAZ), it a back azimuth (F)
+45-50    Parameter 2  If a phase or END, it is blank
+-                     If an amplitude, it is period (F)
+-                     If back azimuth phase, it is apparent velocity(km/s)
+51         Free
+52-54 A3   Agency
+55         Free
+56-58 A3   Operator
+59         Free
+60-63 F4.0 Angle of incidence
+64-68 F5.1 Residual, can be travel time, back azimuth or magnitude
+69-70 I2   Weight used, like 05 is 0.5
+71-75 F5.0 Epicentral distance(km)
+76 Free
+77-79 I3   Azimuth at source
+80 A1 Type of this line (” “)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_5">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_5</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_5" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type 5 line (optional).</p>
+<p>Error estimates of previous line, currently not used by any SEISAN
+programs.</p>
+<p>Columns Format Description  Comments
+1       Free
+2-79    Error estimates in same format as previous line, normally type 4
+80 A1   Type of this line (“5”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_6">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_6</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_6" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type 6 Line (Optional).</p>
+<p>Columns Format Description  Comments
+1       Free
+2-79    A      Name(s) of file or archive reference, a-format
+80      A1     Type of this line (“6”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_E">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_E</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_E" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type E Line (Optional): Hyp error estimates.</p>
+<p>Before version 12.0 there was only one E-line in S-file which could only
+belong to the main hypocenter. In order to know which E-line belongs to
+which 1-line, the location program indicator and the agency must match.
+If only one E-line and no agency, it is assumed it belongs to the main
+hypocenter. This ensures backwards compatibility. Multiple E-lines can be
+used in both Nordic and Nordic2 format.</p>
+<p>Columns Format Description</p>
+<p>1     Free
+2-5   A4 The text GAP=
+6-8   I3 Gap
+10:10 A1 Location program indicator, blank for Hypocenter (new from version 12)
+11:11 Free
+12:14 A3 Agency (new from version 12)
+15-20 F6.2 Origin time error
+25-30 F6.1 Latitude (y) error
+31-32 Free
+33-38 F6.1 Longitude (x) error (km)
+39-43 F5.1 Depth (z) error (km)
+44-55 E12.4 Covariance (x,y) km*km
+56-67 E12.4 Covariance (x,z) km*km
+68-79 E14.4 Covariance (y,z) km*km</p>
+<p>covariance matrix:
+var(1,1)=erx*erx
+var(2,2)=ery*ery
+var(3,3)=erz*erz
+var(1,2)=cvxy
+var(1,3)=cvxz
+var(2,3)=cvyz
+var(2,1)=var(1,2)
+var(3,1)=var(1,3)
+var(3,2)=var(2,3)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_F">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_F</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_F" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type F Line (Optional): Fault plane solution.</p>
+<p>Columns Format Description</p>
+<p>1:30    3F10.0 Strike, dip and rake, Aki convention
+31:45   3F5.1  Error in strike dip and rake (HASH), error in fault plane
+-              and aux. plane (FPFIT)
+46:50   F5.1   Fit error:  FPFIT and HASH (F-fit)
+51:55   F5.1   Station distribution ratio (FPFIT, HASH)
+56:60   F5.1   Amplitude ratio fit (HASH, FOCMEC)
+61:65   I2     Number of bad polarities (FOCMEC, PINV)
+64.65   I2     Number of bad amplitude  ratios (FOCMEC)
+67:69   A3     Agency code
+71:77   A7     Program used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     F</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_H">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_H</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_H" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type H line, High accuracy hypocenter line.</p>
+<p>Columns Format Description
+1:15    As type 1 line including program used in column 6 (new from version 12)
+16      Free
+17      f6.3    Seconds
+23      Free
+24:32   f9.5    Latitude
+33      Free
+34:43   f10.5   Longitude
+44      Free
+45:52   f8.3    Depth
+53      Free
+54:59   f6.3    RMS
+61:63 Agency, A3 (new from version 12)
+62:79   Free
+80      H</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_I">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_I</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_I" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type I Line, ID line.</p>
+<p>Columns Description
+1       Free
+2:8     Help text for the action indicator
+9:11    Last action done, so far defined:
+-         ARG: AUTO Register, AUTOREG
+-         ARX: From ARC extract
+-         DPH: Phases deleted with DELS
+-         DUP: Duplicated event
+-         HIN: Updated with HYPOINVERSE
+-         NEW: New event
+-         REE: Register from EEV
+-         REG: Register
+-         SPL: Split
+-         UPD: Update with HYP
+-         UP : Update with HYP only from EEV
+1       Free
+13:26   Date and time of last action
+27      Free
+28:30   Help text for operator
+36:42   Help text for status
+43:56   Status flags, not yet defined
+57      Free
+58:60   Help text for ID
+61:74   ID, year to second
+75      If d, this indicate that a new file id had to be created which was
+-       one or more seconds different from an existing ID to avoid
+-       overwrite.
+76      Indicate if ID is locked. Blank means not locked, L means locked.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_M">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_M</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_M" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type M Line (Optional): Moment tensor solution.</p>
+<p>Note: the type M lines are pairs of lines with one line that gives the
+hypocenter time, and one line that gives the moment tensor values:</p>
+<p>The first moment tensor line:
+Columns Format Description
+1:1            Free
+2:5     I4     Year
+7:8     I2     Month
+9:10    I2     Day of Month
+12:13   I2     Hour
+14:15   I2     Minutes
+17:20   F4.1   Seconds
+24:30   F7.3   Latitude                       Degrees (+ N)
+31:38   F8.3   Longitude                      Degrees (+ E)
+39:43   F5.1   Depth                          Km
+46:48   A3     Reporting Agency
+56:59   F4.1   Magnitude
+60      A1     Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
+61:63   A3     Magnitude Reporting Agency
+71:77   A7     Method used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     M</p>
+<p>The second moment tensor line:
+Columns Format Description
+1:1            Free
+2:3     A2     MT
+4:9     F6.3   Mrr or Mzz [Nm]
+11:16   F6.3   Mtt or Mxx [Nm]
+18:23   F6.3   Mpp or Myy [Nm]
+25:30   F6.3   Mrt or Mzx [Nm]
+32:37   F6.3   Mrp or Mzy [Nm]
+39:44   F6.3   Mtp or Mxy [Nm]
+46:48   A3     Reporting Agency
+49:49   A1     MT coordinate system (S=spherical, C=Cartesian)
+50:51   i2     Exponential
+53:62   G6.3   Scalar Moment [Nm]
+71:77   A7     Method used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     M</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_P">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_P</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_P" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type P line, file name of a picture file.</p>
+<p>Columns Description
+1:1      Free
+2:79     File name
+80:80    P</p>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.del_rec">
+<span id="pygmi-seis-del-rec-module"></span><h2>pygmi.seis.del_rec module<a class="headerlink" href="#module-pygmi.seis.del_rec" title="Link to this heading">¶</a></h2>
+<p>Delete SEISAN records.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.DeleteRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.del_rec.</span></span><span class="sig-name descname"><span class="pre">DeleteRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Main form which does the GUI and the program.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.DeleteRecord.delrec">
+<span class="sig-name descname"><span class="pre">delrec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.delrec" title="Link to this definition">¶</a></dt>
+<dd><p>Delete record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – Input filename.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.DeleteRecord.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.DeleteRecord.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.del_rec.</span></span><span class="sig-name descname"><span class="pre">Quarry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Main form which does the GUI and the program.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.calcrq2">
+<span class="sig-name descname"><span class="pre">calcrq2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.calcrq2" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Rq value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>newevents</strong> – New events</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.calcrq2b">
+<span class="sig-name descname"><span class="pre">calcrq2b</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.calcrq2b" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the Rq value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>newevents</strong> – New events</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.randrq">
+<span class="sig-name descname"><span class="pre">randrq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrq" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate random Rq values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nmax</strong> (<em>int</em>) – DESCRIPTION.</p></li>
+<li><p><strong>nstep</strong> (<em>int</em>) – DESCRIPTION.</p></li>
+<li><p><strong>nrange</strong> (<em>list</em>) – DESCRIPTION.</p></li>
+<li><p><strong>day</strong> (<em>tuple</em>) – DESCRIPTION.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>rperc</strong> – Percentiles</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.randrqb">
+<span class="sig-name descname"><span class="pre">randrqb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrqb" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate random Rq values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>N1</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>day</strong> (<em>tuple</em>) – DESCRIPTION.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – DESCRIPTION.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>rperc</strong> – Percentiles</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.Quarry.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.del_rec.import_for_plots">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.del_rec.</span></span><span class="sig-name descname"><span class="pre">import_for_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.import_for_plots" title="Link to this definition">¶</a></dt>
+<dd><p>Import data to plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file name.</p></li>
+<li><p><strong>dind</strong> (<em>str</em><em>, </em><em>optional</em>) – Distance indicator. The default is ‘R’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>datd</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.graphs">
+<span id="pygmi-seis-graphs-module"></span><h2>pygmi.seis.graphs module<a class="headerlink" href="#module-pygmi.seis.graphs" title="Link to this heading">¶</a></h2>
+<p>Plot Seismology Data.</p>
+<p>This module provides a variety of methods to plot raster data via the context
+menu.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.GraphWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">GraphWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Graph Window - The QDialog window which will contain our image.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.GraphWindow.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.GraphWindow.save_shp">
+<span class="sig-name descname"><span class="pre">save_shp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow.save_shp" title="Link to this definition">¶</a></dt>
+<dd><p>Save shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">MyMplCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the actual plot.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.axes">
+<span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.axes" title="Link to this definition">¶</a></dt>
+<dd><p>axes for matplotlib subplot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.parent" title="Link to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_bvalue">
+<span class="sig-name descname"><span class="pre">update_bvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'doane'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_bvalue" title="Link to this definition">¶</a></dt>
+<dd><p>Update the b value plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1a</strong> (<em>numpy array</em>) – Data array.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist.
+The default is ‘doane’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_ellipse">
+<span class="sig-name descname"><span class="pre">update_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_ellipse" title="Link to this definition">¶</a></dt>
+<dd><p>Update error ellipse plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datd</strong> (<em>dictionary</em>) – Dictionary containing latitudes and longitudes</p></li>
+<li><p><strong>dats</strong> (<em>list</em>) – Data list.</p></li>
+<li><p><strong>nodepth</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to determine if there are depths. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_hexbin">
+<span class="sig-name descname"><span class="pre">update_hexbin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ML'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hexbin" title="Link to this definition">¶</a></dt>
+<dd><p>Update the hexbin plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>numpy array</em>) – raster dataset to be used</p></li>
+<li><p><strong>data2</strong> (<em>numpy array</em>) – raster dataset to be used</p></li>
+<li><p><strong>xlbl</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label. The default is ‘Time’.</p></li>
+<li><p><strong>ylbl</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label. The default is ‘ML’.</p></li>
+<li><p><strong>xbin</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins in the x direction. The default is None.</p></li>
+<li><p><strong>xrng</strong> (<em>list</em><em>, </em><em>optional</em>) – X-range. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_hist">
+<span class="sig-name descname"><span class="pre">update_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Data</span> <span class="pre">Value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Number</span> <span class="pre">of</span> <span class="pre">Observations'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'doane'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hist" title="Link to this definition">¶</a></dt>
+<dd><p>Update the histogram plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>numpy array.</em>) – raster dataset to be used</p></li>
+<li><p><strong>xlbl</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label. The default is ‘Data Value’.</p></li>
+<li><p><strong>ylbl</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label. The default is ‘Number of Observations’.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist.
+The default is ‘doane’.</p></li>
+<li><p><strong>rng</strong> (<em>tuple</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Bin range. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_isocontour">
+<span class="sig-name descname"><span class="pre">update_isocontour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_isocontour" title="Link to this definition">¶</a></dt>
+<dd><p>Update isoseismic plot using contours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datd</strong> (<em>GeoDatFrame</em>) – Macroseismic data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_isohull">
+<span class="sig-name descname"><span class="pre">update_isohull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_isohull" title="Link to this definition">¶</a></dt>
+<dd><p>Update isoseismic plot using convex hull method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>datd</strong> (<em>GeoDatFrame</em>) – Macroseismic data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_pres">
+<span class="sig-name descname"><span class="pre">update_pres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'P'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_pres" title="Link to this definition">¶</a></dt>
+<dd><p>Update the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>numpy array</em>) – Data array.</p></li>
+<li><p><strong>phase</strong> (<em>str</em><em>, </em><em>optional</em>) – Phase. The default is ‘P’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_residual">
+<span class="sig-name descname"><span class="pre">update_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ML'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_residual" title="Link to this definition">¶</a></dt>
+<dd><p>Update the residual plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>numpy array</em>) – Data array.</p></li>
+<li><p><strong>res</strong> (<em>str</em><em>, </em><em>optional</em>) – Response type. The default is ‘ML’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.MyMplCanvas.update_wadati">
+<span class="sig-name descname"><span class="pre">update_wadati</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_wad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_vps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.53</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_vps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.93</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_wadati" title="Link to this definition">¶</a></dt>
+<dd><p>Update the wadati plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>list</em>) – List of events.</p></li>
+<li><p><strong>min_wad</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum data length for plot. The default is 5.</p></li>
+<li><p><strong>min_vps</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum VPS. The default is 1.53.</p></li>
+<li><p><strong>max_vps</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum VPS. The default is 1.93.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotIso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.seis.graphs.GraphWindow" title="pygmi.seis.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Hist Class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso.lbl_2">
+<span class="sig-name descname"><span class="pre">lbl_2</span></span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso.lbl_2" title="Link to this definition">¶</a></dt>
+<dd><p>reference to GraphWindow’s lbl_2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QLabel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso.cmb_2">
+<span class="sig-name descname"><span class="pre">cmb_2</span></span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso.cmb_2" title="Link to this definition">¶</a></dt>
+<dd><p>reference to GraphWindow’s cmb_2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotIso.save_shp">
+<span class="sig-name descname"><span class="pre">save_shp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotIso.save_shp" title="Link to this definition">¶</a></dt>
+<dd><p>Save shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotQC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.seis.graphs.GraphWindow" title="pygmi.seis.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Hist Class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC.lbl_2">
+<span class="sig-name descname"><span class="pre">lbl_2</span></span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.lbl_2" title="Link to this definition">¶</a></dt>
+<dd><p>reference to GraphWindow’s lbl_2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QLabel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC.cmb_2">
+<span class="sig-name descname"><span class="pre">cmb_2</span></span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.cmb_2" title="Link to this definition">¶</a></dt>
+<dd><p>reference to GraphWindow’s cmb_2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.PlotQC.save_shp">
+<span class="sig-name descname"><span class="pre">save_shp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.save_shp" title="Link to this definition">¶</a></dt>
+<dd><p>Save shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.bvalue">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">bvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'doane'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.bvalue" title="Link to this definition">¶</a></dt>
+<dd><p>Update the b value plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1a</strong> (<em>numpy array</em>) – Data array.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist.
+The default is ‘doane’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out</strong> – Dictionary containing ‘a-value’, ‘b-value’ etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.contourtopoly">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">contourtopoly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cntr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.contourtopoly" title="Link to this definition">¶</a></dt>
+<dd><p>Convert Matplotlib contours to Polygons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cntr</strong> (<em>Matplotlib countour</em>) – Contour collection.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>plist</strong> – List of Polygon objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.eigsorted">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">eigsorted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cov</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.eigsorted" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate and sort eigenvalues.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cov</strong> (<em>numpy array</em>) – matrix to perform calculations on.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>vals</strong> (<em>numpy array</em>) – Sorted eigenvalues.</p></li>
+<li><p><strong>vecs</strong> (<em>numpy array</em>) – Sorted eigenvectors.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.fmd">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">fmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.fmd" title="Link to this definition">¶</a></dt>
+<dd><p>Frequency magnitude distribution.</p>
+<p>Mignan, A. &amp; Woessner, Jochen. (2012). Estimating the magnitude of
+completeness for earthquake catalogs. Community Online Resource for
+Statistical Seismicity Analysis. 10.5078/corssa-00180805.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>numpy array</em>) – Data array of magnitudes.</p></li>
+<li><p><strong>mbin</strong> (<em>float</em><em>, </em><em>optional</em>) – Length of magnitude bin in FMD. The default is 0.1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>res</strong> – Dictionary containing M  vs cumulative and non cumulative counts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.import_for_plots">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">import_for_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.import_for_plots" title="Link to this definition">¶</a></dt>
+<dd><p>Import data to plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dat</strong> (<em>list</em>) – List of events.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>datd</strong> – Dictionary of data to plot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.graphs.maxc">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.graphs.</span></span><span class="sig-name descname"><span class="pre">maxc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.maxc" title="Link to this definition">¶</a></dt>
+<dd><p>MAXC method to find magnitude of completeness.</p>
+<p>Mignan, A. &amp; Woessner, Jochen. (2012). Estimating the magnitude of
+completeness for earthquake catalogs. Community Online Resource for
+Statistical Seismicity Analysis. 10.5078/corssa-00180805.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>numpy array</em>) – Data array of magnitudes.</p></li>
+<li><p><strong>mbin</strong> (<em>float</em><em>, </em><em>optional</em>) – Length of magnitude bin in FMD. The default is 0.1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Mc</strong> – Magnitude of completeness.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.iodefs">
+<span id="pygmi-seis-iodefs-module"></span><h2>pygmi.seis.iodefs module<a class="headerlink" href="#module-pygmi.seis.iodefs" title="Link to this heading">¶</a></h2>
+<p>Import Seismology Data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportCSV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Export SEISAN Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_1">
+<span class="sig-name descname"><span class="pre">write_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_2">
+<span class="sig-name descname"><span class="pre">write_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_3">
+<span class="sig-name descname"><span class="pre">write_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 3.</p>
+<p>This changes depending on the preceding line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tmp</strong> (<em>str</em>) – Data string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_4">
+<span class="sig-name descname"><span class="pre">write_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmpfin</strong> – List of output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_5">
+<span class="sig-name descname"><span class="pre">write_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_6">
+<span class="sig-name descname"><span class="pre">write_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_7">
+<span class="sig-name descname"><span class="pre">write_record_type_7</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_7" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 7.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_e">
+<span class="sig-name descname"><span class="pre">write_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_f">
+<span class="sig-name descname"><span class="pre">write_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_h">
+<span class="sig-name descname"><span class="pre">write_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_i">
+<span class="sig-name descname"><span class="pre">write_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_m">
+<span class="sig-name descname"><span class="pre">write_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_p">
+<span class="sig-name descname"><span class="pre">write_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Export SEISAN Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_1">
+<span class="sig-name descname"><span class="pre">write_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_2">
+<span class="sig-name descname"><span class="pre">write_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_3">
+<span class="sig-name descname"><span class="pre">write_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 3.</p>
+<p>This changes depending on the preceding line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_4">
+<span class="sig-name descname"><span class="pre">write_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_5">
+<span class="sig-name descname"><span class="pre">write_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_6">
+<span class="sig-name descname"><span class="pre">write_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_7">
+<span class="sig-name descname"><span class="pre">write_record_type_7</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_7" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 7.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_e">
+<span class="sig-name descname"><span class="pre">write_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_f">
+<span class="sig-name descname"><span class="pre">write_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_h">
+<span class="sig-name descname"><span class="pre">write_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_i">
+<span class="sig-name descname"><span class="pre">write_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_m">
+<span class="sig-name descname"><span class="pre">write_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_p">
+<span class="sig-name descname"><span class="pre">write_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_phase">
+<span class="sig-name descname"><span class="pre">write_record_type_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_phase" title="Link to this definition">¶</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSummary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummary" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Export SEISAN Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSummary.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummary.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">FilterSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Filter Data.</p>
+<p>This filters data using thresholds.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.dind_click">
+<span class="sig-name descname"><span class="pre">dind_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.dind_click" title="Link to this definition">¶</a></dt>
+<dd><p>Check checkboxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>int</em>) – State of checkbox.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.get_limits">
+<span class="sig-name descname"><span class="pre">get_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.get_limits" title="Link to this definition">¶</a></dt>
+<dd><p>Get limits for SEISAN data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.recdesc_init">
+<span class="sig-name descname"><span class="pre">recdesc_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init" title="Link to this definition">¶</a></dt>
+<dd><p>Change Description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>str</em>) – Text.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.rectype_init">
+<span class="sig-name descname"><span class="pre">rectype_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init" title="Link to this definition">¶</a></dt>
+<dd><p>Change combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>str</em>) – Text.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportGenericFPS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Import Generic Fault Plane Solution Data.</p>
+<p>This is stored in a csv file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Import SEISAN Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importmacro">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importmacro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importmacro" title="Link to this definition">¶</a></dt>
+<dd><p>Import macro format.</p>
+<ol class="arabic simple">
+<li><p>Line
+Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+‘GMT’,1x,i4,1x,2i2,1x,2i2,1x,i2,1x,’Local time’</p></li>
+<li><p>Line Comments</p></li>
+<li><p>Line Observations: Latitude, Longitude,intensity, code for scale,
+postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+Note the postal code is an ascii string and left justified (a10).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – Input macro file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gdf1</strong> – List of locations with intensities.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoPandas dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importnordic">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importnordic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importnordic" title="Link to this definition">¶</a></dt>
+<dd><p>Import Nordic and Nordic2 data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file to import.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – SEISAN Data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importseiscomp">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importseiscomp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefmag='MLv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importseiscomp" title="Link to this definition">¶</a></dt>
+<dd><p>Import SeisComp data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file to import.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sdat</strong> – SEISAN Data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.mercalli">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">mercalli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.mercalli" title="Link to this definition">¶</a></dt>
+<dd><p>Return Mercalli index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mag</strong> (<em>float</em>) – Local magnitude.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>merc</strong> – Mercalli index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.merge_m">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">merge_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rec1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.merge_m" title="Link to this definition">¶</a></dt>
+<dd><p>Merge M records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rec1</strong> (<em>sdt.seisan_M</em>) – SEISAN M record.</p></li>
+<li><p><strong>rec2</strong> (<em>sdt.seisan_M</em>) – SEISAN M record.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>rec1</strong> – SEISAN M record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_M</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_1">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_1" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 1 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_2">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_2" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 2 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_3">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_3" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_4">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_4" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_5">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_5" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 5 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_5</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_6">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_6" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 6 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_6</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_e">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_e" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN E record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_E</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_f">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_f" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out</strong> – Dictionary with a SEISAN F record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_h">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_h" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN H record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_H</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_i">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_i" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN I record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_I</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_m">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_m" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN M record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_M</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_p">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_p" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN P record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_P</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_phase">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_phase" title="Link to this definition">¶</a></dt>
+<dd><p>Read record type phase (nordic2 type 4).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.sform">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">sform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-999</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.sform" title="Link to this definition">¶</a></dt>
+<dd><p>Format strings.</p>
+<p>Formats strings according with a mod for values containing the value -999
+or None. In that case it will output spaces instead. In the case of strings
+being output, they are truncated to fit the format statement. This routine
+also puts the new strings in the correct columns</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strform</strong> (<em>python format string</em>) – This string must be of the form {0:4.1f}, where 4.1f can be changed.</p></li>
+<li><p><strong>val</strong> (<em>float</em><em>, </em><em>int</em><em>, </em><em>str</em>) – input value</p></li>
+<li><p><strong>tmp</strong> (<em>str</em>) – Input string</p></li>
+<li><p><strong>col1</strong> (<em>int</em>) – start column (1 is first column)</p></li>
+<li><p><strong>col2</strong> (<em>int</em>) – end column. The default is None.</p></li>
+<li><p><strong>nval</strong> (<em>float</em><em>, </em><em>int</em>) – null value which gets substituted by spaces. The default is -999.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output formatted string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.str2float">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">str2float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2float" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a number  float, or returns NaN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – string with a float in it</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – float or np.nan</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.str2int">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">str2int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2int" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a number to integer, or returns NaN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – string with an integer in it</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – integer or np.nan</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.xlstomacro">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">xlstomacro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.xlstomacro" title="Link to this definition">¶</a></dt>
+<dd><p>Convert an excel file to macro file.</p>
+<ol class="arabic simple">
+<li><p>Line
+Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+‘GMT’,1x,i4,1x,2i2,1x,2i2,1x,i2,1x,’Local time’</p></li>
+<li><p>Line Comments</p></li>
+<li><p>Line Observations: Latitude, Longitude,intensity, code for scale,
+postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+Note the postal code is an ascii string and left justified (a10).</p></li>
+</ol>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.menu">
+<span id="pygmi-seis-menu-module"></span><h2>pygmi.seis.menu module<a class="headerlink" href="#module-pygmi.seis.menu" title="Link to this heading">¶</a></h2>
+<p>Seis Menu Routines.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.menu.</span></span><span class="sig-name descname"><span class="pre">MenuWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface.</p>
+<p>This widget class creates the seismology menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.parent" title="Link to this definition">¶</a></dt>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.beachball">
+<span class="sig-name descname"><span class="pre">beachball</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.beachball" title="Link to this definition">¶</a></dt>
+<dd><p>Create Beachballs from Fault Plane Solutions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.correct_desc">
+<span class="sig-name descname"><span class="pre">correct_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.correct_desc" title="Link to this definition">¶</a></dt>
+<dd><p>Correct Seisan descriptions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.delete_recs">
+<span class="sig-name descname"><span class="pre">delete_recs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.delete_recs" title="Link to this definition">¶</a></dt>
+<dd><p>Delete Records.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.export_csv">
+<span class="sig-name descname"><span class="pre">export_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.export_csv" title="Link to this definition">¶</a></dt>
+<dd><p>Export Seisan data to csv.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.export_seisan">
+<span class="sig-name descname"><span class="pre">export_seisan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.export_seisan" title="Link to this definition">¶</a></dt>
+<dd><p>Export Seisan data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.filter_seisan">
+<span class="sig-name descname"><span class="pre">filter_seisan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.filter_seisan" title="Link to this definition">¶</a></dt>
+<dd><p>Filter Seisan.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.import_genfps">
+<span class="sig-name descname"><span class="pre">import_genfps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.import_genfps" title="Link to this definition">¶</a></dt>
+<dd><p>Import Generic Fault Plane Solution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.import_seisan">
+<span class="sig-name descname"><span class="pre">import_seisan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.import_seisan" title="Link to this definition">¶</a></dt>
+<dd><p>Import Seismic data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.quarry">
+<span class="sig-name descname"><span class="pre">quarry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.quarry" title="Link to this definition">¶</a></dt>
+<dd><p>Remove quarry events.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.sexport">
+<span class="sig-name descname"><span class="pre">sexport</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.sexport" title="Link to this definition">¶</a></dt>
+<dd><p>Export Summary data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.show_QC_plots">
+<span class="sig-name descname"><span class="pre">show_QC_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.show_QC_plots" title="Link to this definition">¶</a></dt>
+<dd><p>Show QC plots.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.menu.MenuWidget.show_iso_plots">
+<span class="sig-name descname"><span class="pre">show_iso_plots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.show_iso_plots" title="Link to this definition">¶</a></dt>
+<dd><p>Show QC plots.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis.utils">
+<span id="pygmi-seis-utils-module"></span><h2>pygmi.seis.utils module<a class="headerlink" href="#module-pygmi.seis.utils" title="Link to this heading">¶</a></h2>
+<p>Module for miscellaneous utilities relating to earthquake seismology.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.utils.</span></span><span class="sig-name descname"><span class="pre">CorrectDescriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Correct SEISAN descriptions.</p>
+<p>This compares the descriptions found in SEISAN type 3 lines to a custom
+list.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions.get_textfile">
+<span class="sig-name descname"><span class="pre">get_textfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.get_textfile" title="Link to this definition">¶</a></dt>
+<dd><p>Get description list filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Filename submitted for testing. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.utils.CorrectDescriptions.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pygmi.seis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.seis" title="Link to this heading">¶</a></h2>
+<p>Seismology Routines.</p>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.rsense.html" title="Previous document">pygmi.rsense package</a>
+        </li>
+        <li>
+          <a href="pygmi.test.html" title="Next document">pygmi.test package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">PyGMI API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api.html">PyGMI API</a><ul>
+  <li><a href="pygmi.html">pygmi package</a><ul>
+      <li>Previous: <a href="pygmi.rsense.html" title="previous chapter">pygmi.rsense package</a></li>
+      <li>Next: <a href="pygmi.test.html" title="next chapter">pygmi.test package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/pygmi.seis.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Raster Data Display &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Select Input Raster Bands" href="raster.cm.selectbands.html" />
+    <link rel="prev" title="Extract Profile from Raster" href="raster.dm.proffromraster.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="raster.dm.proffromraster.html" title="Previous document">Extract Profile from Raster</a>
+        </li>
+        <li>
+          <a href="raster.cm.selectbands.html" title="Next document">Select Input Raster Bands</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="raster-data-display">
+<h1>Raster Data Display<a class="headerlink" href="#raster-data-display" title="Link to this heading">¶</a></h1>
+<p>This allows for the display of raster data in a variety of ways common to most image processing packages. The resultant dataset can then be exported as a <strong>GeoTIFF</strong> for vector interpretation in a Graphical Information System (GIS) package.</p>
+<p>The <strong>Raster Data Display</strong> interface has the following elements:</p>
+<ol class="arabic simple">
+<li><p>Raster display – the raster is displayed using the settings selected on the left of the interface.</p></li>
+<li><p>Histogram display – a histogram of the data distribution coloured using the selected colour bar. When the mouse pointer hovers over the raster display the data value at the pointer location appears in the top right corner of the histogram display.</p></li>
+<li><p>Coordinates - when the mouse pointer hovers over the raster display the coordinates of the pointer appears here.</p></li>
+<li><p><strong>Display Type</strong> – the type of data displayed in the raster display. Options are <strong>Single Colour Map</strong>, <strong>Contour</strong>, <strong>RGB Ternary</strong> and <strong>CMY Ternary</strong>.</p></li>
+<li><p><strong>Data Bands</strong> - the bands to be used in the main display are selected here. When a ternary displayed type is selected the user has the ability to select three bands to display.</p></li>
+<li><p><strong>Histogram Stretch</strong> – settings that determine the type of histogram stretch.</p></li>
+<li><p><strong>Colour Bar</strong> – a dropdown box allows the user to select from a long list of colour bars.</p></li>
+<li><p><strong>Sunshading</strong> - this option applies a sunshade algorithm to the data.</p></li>
+<li><p><strong>Save GeoTIFF</strong> – Once the user is satisfied with the raster display they can save the data to a georeferenced image in <strong>GeoTIFF</strong> format. Note that this is an RGB image and does not contain actual data values.</p></li>
+<li><p>Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, etc.</p></li>
+</ol>
+<img alt="_images/rasterinterp.png" src="_images/rasterinterp.png" />
+<p>Some of the elements will now be discussed in more detail.</p>
+<section id="display-type">
+<h2>Display Type<a class="headerlink" href="#display-type" title="Link to this heading">¶</a></h2>
+<p>The four Display Types available in this module are:</p>
+<ol class="arabic simple">
+<li><p><strong>Single Colour Map</strong> - This displays a single band of data by mapping its values to a colour map or colour table. Other packages often refer to it as a pseudo colour map.</p></li>
+<li><p><strong>Contour</strong> - This has the same options as the single colour map but displays the data using contours instead.</p></li>
+<li><p><strong>RGB Ternary</strong> - This option displays three bands, one red, one green and one blue. Because of this, no colour map can be chosen. Three bands must be chosen. Histogram stretch is the same as for previous sections.</p></li>
+<li><p><strong>CMY Ternary</strong> - This option displays three bands, one cyan, one magenta and one yellow. As before, no colour map can be chosen, and three bands must be chosen. Histogram stretch is the same as for previous sections.</p></li>
+</ol>
+<img alt="_images/rasterinterp2.png" src="_images/rasterinterp2.png" />
+</section>
+<section id="histogram-stretch">
+<h2>Histogram Stretch<a class="headerlink" href="#histogram-stretch" title="Link to this heading">¶</a></h2>
+<p>The preference of how to map the data to the colour bar is chosen here. The options are:</p>
+<ol class="arabic simple">
+<li><p>Two histogram stretches are available:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Linear with Percent Clip</strong> – the percentage clips determine the percentage of outliers that will be removed from the stretch.</p></li>
+<li><p><strong>Histogram Equalisation</strong> - all colours are assigned the same amount of data samples so that maximum change is seen in the map.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Percentage of low values to exclude when using the <strong>Linear with Percent Clip</strong> option.</p></li>
+<li><p>Percentage of high values to exclude when using the <strong>Linear with Percent Clip</strong> option.</p></li>
+<li><p><strong>Full histogram with clip lines</strong> - this allows the user to see the full histogram, even after percent clipping. The positions of the clip lines are indicated. This option is only applicable when using the <strong>Linear with Percent Clip</strong> option.</p></li>
+<li><p>The <strong>Apply Histogram</strong> button must be clicked for any changes to take effect.</p></li>
+</ol>
+<img alt="_images/rasterinterp3.png" src="_images/rasterinterp3.png" />
+<p>For ternary images, when using the <strong>Linear with Percent Clip</strong> option the user can specify the lower and upper exclusion limits separately for each band or apply the same limits for all bands by clicking on the <strong>Set current exclusion % to all bands</strong>.</p>
+</section>
+<section id="sunshading">
+<h2>Sunshading<a class="headerlink" href="#sunshading" title="Link to this heading">¶</a></h2>
+<p>This option applies a sunshade algorithm to the data. The shader used is Blinn’s formula (Horn, 1981). The user can control three aspects of the way the dataset is shaded, namely the sun angle, the level of detail and the light reflectance:</p>
+<ol class="arabic simple">
+<li><p><strong>Sunshade data</strong> - This is the band to use for sunshading. For a multiband dataset the band can be different from the band used for the colour image.</p></li>
+<li><p><strong>Sun Angle</strong> - This is chosen by clicking on a small circular map. A blue dot denotes the sun’s azimuth and elevation.</p></li>
+<li><p><strong>Sunshade Detail</strong> - Controls how much sunshade detail is present. Move the slider to the left to increase the detail.</p></li>
+<li><p><strong>Light Reflectance</strong> - Controls the light reflectance of the surface. Move the slider to the left to increase the reflectance.</p></li>
+</ol>
+<img alt="_images/rasterinterp4.png" src="_images/rasterinterp4.png" />
+</section>
+<section id="save-geotiff">
+<h2>Save GeoTIFF<a class="headerlink" href="#save-geotiff" title="Link to this heading">¶</a></h2>
+<p>Use this to save your final maps as a <strong>GeoTIFF</strong> image. This will also save two colour bars (one vertical and one horizontal) or a ternary colour bar. The size of the colour bar relates to how big you wish it to be on the paper map. Note that the GeoTIFF image is an RGB image and does not contain actual data values.</p>
+<p>The user is prompted for the following information:</p>
+<ol class="arabic simple">
+<li><p>The length of the colour bar in inches.</p></li>
+<li><p>For a <strong>Single Colour Map</strong> or <strong>Contour</strong> map the user must enter the data units. This will appear next to the colour bar.</p></li>
+<li><p>For an <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong> image the user must enter the names that will appear at each colour on the ternary colour bar.</p></li>
+<li><p>The image as been saved once the <strong>Save to GeoTIFF is complete!</strong> message appears.</p></li>
+</ol>
+<img alt="_images/rasterinterp5.png" src="_images/rasterinterp5.png" />
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>Horn, B. K. P., 1981. Hill shading and the reflectance map. Proceedings of the IEEE, 69(1), 14-47. doi:10.1109/PROC.1981.11918</p>
+</div></blockquote>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="raster.dm.proffromraster.html" title="Previous document">Extract Profile from Raster</a>
+        </li>
+        <li>
+          <a href="raster.cm.selectbands.html" title="Next document">Select Input Raster Bands</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="raster.html">Raster Data Analysis</a><ul>
+      <li>Previous: <a href="raster.dm.proffromraster.html" title="previous chapter">Extract Profile from Raster</a></li>
+      <li>Next: <a href="raster.cm.selectbands.html" title="next chapter">Select Input Raster Bands</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/raster.dm.rasterdisplay.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

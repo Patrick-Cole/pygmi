@@ -166,7 +166,7 @@ def datacommon(data, tmp1, tmp2):
 
     Parameters
     ----------
-    data : PyGMI Data.
+    data : pygmi.raster.datatypes.Data.
         PyGMI raster dataset.
     tmp1 : float
         Parameter 1. Can be min, mean or median.
@@ -175,7 +175,7 @@ def datacommon(data, tmp1, tmp2):
 
     Returns
     -------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         PyGMI raster dataset.
     transform : numpy array.
         Transformation applied to data.

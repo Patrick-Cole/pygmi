@@ -48,13 +48,12 @@ from pygmi.raster.modest_image import imshow
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
 
-    Attributes
+    Parameters
     ----------
-    axes : matplotlib subplot
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -313,7 +312,7 @@ class PlotCCoef(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -394,7 +393,7 @@ class PlotRaster(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -462,7 +461,7 @@ class PlotSurface(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -546,7 +545,7 @@ class PlotScatter(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -620,7 +619,7 @@ class PlotHist(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -650,7 +649,7 @@ def check_bands(data):
 
     Parameters
     ----------
-    data : list of PyGMI Data
+    data : list of pygmi.raster.datatypes.Data
         PyGMI raster dataset.
 
     Returns

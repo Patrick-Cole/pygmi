@@ -59,7 +59,7 @@ class CalculateChange(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.change')
+        helpdocs = menu_default.HelpButton('rsense.dm.change')
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
         self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)
@@ -228,7 +228,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
     Returns
     -------
-    datfin : list of PyGMI Data
+    datfin : list of pygmi.raster.datatypes.Data
         List of PyGMI Data.
 
     """
@@ -316,7 +316,7 @@ def calc_mean(flist, showlog=print, piter=iter):
 
     Returns
     -------
-    meandat : dictionary of PyGMI Data.
+    meandat : dictionary of pygmi.raster.datatypes.Data.
         PyGMI Data representing means.
     cnt : dictionary of numpy arrays
         Count of values which made up mean.
@@ -383,7 +383,7 @@ def calc_sam(flist, showlog=print, piter=iter):
 
     Returns
     -------
-    angle : PyGMI Data
+    angle : pygmi.raster.datatypes.Data
         PyGMI Data of SAM angles.
 
     """
@@ -518,9 +518,9 @@ def match_data(flist, showlog=print, piter=iter):
 
     Returns
     -------
-    dat1 : list of PyGMI Data
+    dat1 : list of pygmi.raster.datatypes.Data
         First dataset with matched bands only.
-    dat2 : list of PyGMI Data
+    dat2 : list of pygmi.raster.datatypes.Data
         Second dataset with matched bands only.
 
     """

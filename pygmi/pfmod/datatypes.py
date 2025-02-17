@@ -245,7 +245,7 @@ class LithModel():
 
         Returns
         -------
-        grid : PyGMI Data
+        grid : pygmi.raster.datatypes.Data
             PyGMI raster dataset.
 
         """

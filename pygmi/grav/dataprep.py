@@ -65,7 +65,7 @@ class ProcessData(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
+        helpdocs = menu_default.HelpButton('gravity.dm.process')
         lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
         lbl_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
                                        '(mGal):')

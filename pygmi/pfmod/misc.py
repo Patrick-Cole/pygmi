@@ -285,9 +285,9 @@ class MergeMod3D(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        lbl_master = QtWidgets.QLabel('Master Dataset:')
-        lbl_slave = QtWidgets.QLabel('Slave Dataset:')
+        helpdocs = menu_default.HelpButton('pfmod.dm.merge3dmodels')
+        lbl_master = QtWidgets.QLabel('Primary Dataset:')
+        lbl_slave = QtWidgets.QLabel('Secondary Dataset:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -473,9 +473,9 @@ def gmerge(master, slave, xrange=None, yrange=None):
 
     Parameters
     ----------
-    master : PyGMI Data
+    master : pygmi.raster.datatypes.Data
         PyGMI raster dataset.
-    slave : PyGMI Data
+    slave : pygmi.raster.datatypes.Data
         PyGMI raster dataset.
     xrange : list, optional
         List containing range of minimum and maximum X. The default is None.
@@ -484,7 +484,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
 
     Returns
     -------
-    PyGMI Data
+    pygmi.raster.datatypes.Data
         PyGMI raster dataset.
 
     """

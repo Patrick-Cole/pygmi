@@ -141,7 +141,7 @@ class DataGrid(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
+        helpdocs = menu_default.HelpButton('vector.dm.grdding')
         lbl_band = QtWidgets.QLabel('Column to Grid:')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_null = QtWidgets.QLabel('Null Value:')
@@ -384,7 +384,7 @@ class DataReproj(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
+        helpdocs = menu_default.HelpButton('vector.dm.reproj')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -572,7 +572,7 @@ class Metadata(ContextModule):
 
     def run(self):
         """
-        Entry point to start this routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -631,7 +631,7 @@ class TextFileSplit(BasicModule):
         pb_ifile = QtWidgets.QPushButton(' Filename')
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.filesplit')
+        helpdocs = menu_default.HelpButton('vector.dm.txtfilesplit')
         lbl_files = QtWidgets.QLabel('Number of files:')
         lbl_lines = QtWidgets.QLabel('Max lines per file:')
         lbl_bytes = QtWidgets.QLabel('Max bytes per file:')
@@ -1045,7 +1045,7 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
 
     Returns
     -------
-    dat : PyGMI Data.
+    dat : pygmi.raster.datatypes.Data.
         Output raster dataset.
 
     """

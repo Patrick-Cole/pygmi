@@ -151,8 +151,7 @@ class ImportXYZ(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.'
-                                           'importxyzdata')
+        helpdocs = menu_default.HelpButton('vector.dm.importxyzdata')
         lbl_xchan = QtWidgets.QLabel('X Channel:')
         lbl_ychan = QtWidgets.QLabel('Y Channel:')
         lbl_nodata = QtWidgets.QLabel('Nodata Value:')
@@ -407,7 +406,7 @@ class ExportXYZ(ContextModule):
 
     def run(self):
         """
-        Run routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -481,7 +480,7 @@ class ExportVector(ContextModule):
 
     def run(self):
         """
-        Run routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

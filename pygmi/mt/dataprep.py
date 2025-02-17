@@ -221,7 +221,7 @@ class Metadata(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -272,7 +272,14 @@ class Metadata(ContextModule):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """MPL Canvas class."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         fig = Figure(layout='constrained')
@@ -372,7 +379,7 @@ class StaticShiftEDI(BasicModule):
         self.data = None
 
         self.setWindowTitle('Remove Static Shift')
-        helpdocs = menu_default.HelpButton('pygmi.mt.static')
+        helpdocs = menu_default.HelpButton('mt.dm.removesshift')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -591,7 +598,7 @@ class RotateEDI(BasicModule):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        helpdocs = menu_default.HelpButton('pygmi.mt.rotate')
+        helpdocs = menu_default.HelpButton('mt.dm.rotateedi')
 
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
@@ -745,9 +752,14 @@ class RotateEDI(BasicModule):
 
 class MyMplCanvasPick(FigureCanvasQTAgg):
     """
-    MPL Canvas class.
+    Matplotlib canvas widget for the actual plot.
 
     This routine will also allow the picking and movement of nodes of data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -1019,7 +1031,7 @@ class EditEDI(BasicModule):
         self.data = None
 
         self.setWindowTitle('Mask and Interpolate')
-        helpdocs = menu_default.HelpButton('pygmi.mt.edit')
+        helpdocs = menu_default.HelpButton('mt.dm.mask')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -1245,7 +1257,14 @@ class MySlider(QtWidgets.QSlider):
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
-    """MPL Canvas class."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         fig = Figure(layout='constrained')
@@ -1335,7 +1354,7 @@ class Occam1D(BasicModule):
         self.cursoln = 0
 
         self.setWindowTitle('Occam 1D Inversion')
-        helpdocs = menu_default.HelpButton('pygmi.mt.occam1d')
+        helpdocs = menu_default.HelpButton('mt.dm.occam')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Fixed)

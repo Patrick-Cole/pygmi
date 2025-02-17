@@ -45,7 +45,7 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
     data : numpy array
         MxN array
 
-    pdata : Data
+    pdata : pygmi.raster.datatypes.Data
         PyGMI raster dataset
 
     dataid: str or None
@@ -53,7 +53,7 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
 
     Returns
     -------
-    tmp : Data
+    tmp : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if data.ndim != 2:
@@ -95,7 +95,7 @@ def pygmi_to_numpy(tmp):
 
     Parameters
     ----------
-    tmp : Data
+    tmp : pygmi.raster.datatypes.Data
         PyGMI raster dataset
 
     Returns
@@ -264,7 +264,7 @@ class Data():
 
         Returns
         -------
-        data : PyGMI Data
+        data : pygmi.raster.datatypes.Data
             PyGMI data type.
 
         """
@@ -533,7 +533,7 @@ class RasterMeta():
 
         Parameters
         ----------
-        dat : PyGMI Data
+        dat : pygmi.raster.datatypes.Data
             PyGMI data object.
 
         Returns

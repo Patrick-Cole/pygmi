@@ -490,7 +490,7 @@ class ExportMod3D(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1182,14 +1182,14 @@ class Exportkmz(QtWidgets.QDialog):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')
+        # helpdocs = menu_default.HelpButton('pfmod.cm.exportkmz')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(self.cb_smooth, 1, 0, 1, 2)
-        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
+        # gl_1.addWidget(helpdocs, 2, 0, 1, 1)
         gl_1.addWidget(buttonbox, 2, 1, 1, 1)
 
         self.setWindowTitle('Google Earth kmz Export')

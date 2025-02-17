@@ -68,7 +68,7 @@ class LandsatComposite(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.landsat_composite')
+        helpdocs = menu_default.HelpButton('rsense.dm.ltc')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
         lbl_tday = QtWidgets.QLabel('Target Day:')
@@ -213,7 +213,7 @@ def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
 
     Returns
     -------
-    datfin : list of PyGMI Data.
+    datfin : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
 
     """

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Installation Instructions &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Interface Overview" href="interface.html" />
+    <link rel="prev" title="PyGMI Wiki" href="wiki.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="wiki.html" title="Previous document">PyGMI Wiki</a>
+        </li>
+        <li>
+          <a href="interface.html" title="Next document">User Interface Overview</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="installation-instructions">
+<h1>Installation Instructions<a class="headerlink" href="#installation-instructions" title="Link to this heading">¶</a></h1>
+<p>The PyGMI software is available for download from <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">https://github.com/Patrick-Cole/pygmi/releases</a>. A pre-built Windows installer or source code can be downloaded. Linux users will need to download the source code from <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">https://github.com/Patrick-Cole/pygmi</a> or install via <a class="reference external" href="https://pypi.org/project/pygmi/">https://pypi.org/project/pygmi/</a></p>
+<section id="hardware-requirements">
+<h2>Hardware requirements<a class="headerlink" href="#hardware-requirements" title="Link to this heading">¶</a></h2>
+<p>The hardware required for running PyGMI depends on the application. 32 GB is adequate for most applications but more memory (at least 64 GB) is recommended when processing large data sets such as satellite imagery.</p>
+</section>
+<section id="software-requirements">
+<h2>Software requirements<a class="headerlink" href="#software-requirements" title="Link to this heading">¶</a></h2>
+<p>PyGMI will run on both Windows and Linux. The software has been tested on Windows 10 and 11 and Ubuntu 24.10. It should be noted that the main development is done in Python 3 on Windows. For the latest version information regarding PyGMI, Python and the libraries used in PyGMI, please visit the the GitHub repository (<a class="reference external" href="https://github.com/Patrick-Cole/pygmi">https://github.com/Patrick-Cole/pygmi</a>).</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<p>The simplest installation of PyGMI is on Windows, using a pre-built 64-bit installer (<a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">PyGMIx64_&lt;version number&gt;.exe</a>).</p>
+<p>If you prefer building from source, you can use PyPi or Conda.</p>
+<p>Once built using PyPi, running pygmi can be done at the command prompt as follows:</p>
+<blockquote>
+<div><p>pygmi</p>
+</div></blockquote>
+<p>If you are in python, you can run PyGMI by using the following commands:</p>
+<blockquote>
+<div><p>from pygmi.main import main</p>
+<p>main()</p>
+</div></blockquote>
+<p>If you prefer not to install pygmi as a library, download the source code and execute the following command to run it manually:</p>
+<blockquote>
+<div><p>python quickstart.py</p>
+</div></blockquote>
+<section id="pypi-windows">
+<h3>PyPi - Windows<a class="headerlink" href="#pypi-windows" title="Link to this heading">¶</a></h3>
+<p>Windows users can use the <a class="reference external" href="https://winpython.github.io/">WinPython</a> distribution as an alternative to Anaconda. It comes with most libraries preinstalled, so using pip should be sufficient.</p>
+<p>Install with the following command.</p>
+<blockquote>
+<div><p>pip install pygmi</p>
+</div></blockquote>
+<p>Should you wish to manually install binaries, related binaries can be obtained at the <a class="reference external" href="https://github.com/cgohlke/geospatial-wheels/">website</a> by Christoph Gohlke.</p>
+<p>If you wish to update GDAL, you will need to download and install:</p>
+<ul class="simple">
+<li><p>fiona</p></li>
+<li><p>GDAL</p></li>
+<li><p>pyproj</p></li>
+<li><p>rasterio</p></li>
+<li><p>Rtree</p></li>
+<li><p>shapely</p></li>
+</ul>
+<p>All these binaries should be downloaded since they have internal co-dependencies.</p>
+</section>
+<section id="pypi-linux">
+<h3>PyPi - Linux<a class="headerlink" href="#pypi-linux" title="Link to this heading">¶</a></h3>
+<p>Linux normally comes with python installed, but the additional libraries will still need to be installed.</p>
+<p>The process is as follows:</p>
+<blockquote>
+<div><p>sudo apt-get install pipx</p>
+<p>pipx ensurepath</p>
+<p>pipx install pygmi</p>
+</div></blockquote>
+<p>Once installed, running pygmi can be done at the command prompt as follows:</p>
+<blockquote>
+<div><p>pygmi</p>
+</div></blockquote>
+<p>If you get the following error: <em>qt.qpa.plugin: Could not load the Qt platform plugin “xcb” in “” even though it was found.</em>, then you can try the following command, since this is Linux issue:</p>
+<blockquote>
+<div><p>sudo apt-get install libxcb-xinerama0</p>
+</div></blockquote>
+</section>
+<section id="anaconda">
+<h3>Anaconda<a class="headerlink" href="#anaconda" title="Link to this heading">¶</a></h3>
+<p>Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.</p>
+<p>The process to install is as follows:</p>
+<blockquote>
+<div><p>conda create -n pygmi python=3.12</p>
+<p>conda activate pygmi</p>
+<p>conda config –env –add channels conda-forge</p>
+<p>conda install pyqt</p>
+<p>conda install fiona</p>
+<p>conda install matplotlib</p>
+<p>conda install psutil</p>
+<p>conda install numexpr</p>
+<p>conda install rasterio</p>
+<p>conda install geopandas</p>
+<p>conda install natsort</p>
+<p>conda install scikit-image</p>
+<p>conda install pyopengl</p>
+<p>conda install simpeg</p>
+<p>conda install shapelysmooth</p>
+<p>conda install openpyxl</p>
+<p>conda install h5netcdf</p>
+<p>conda install rioxarray</p>
+<p>conda install pytest</p>
+<p>pip install mtpy</p>
+<p>conda update –all</p>
+</div></blockquote>
+<p>Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:</p>
+<blockquote>
+<div><p>python quickstart.py</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="wiki.html" title="Previous document">PyGMI Wiki</a>
+        </li>
+        <li>
+          <a href="interface.html" title="Next document">User Interface Overview</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+      <li>Previous: <a href="wiki.html" title="previous chapter">PyGMI Wiki</a></li>
+      <li>Next: <a href="interface.html" title="next chapter">User Interface Overview</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/install.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

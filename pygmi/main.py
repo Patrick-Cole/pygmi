@@ -830,8 +830,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        idata : list of PyGMI Data
-            Input list of PyGMI Data
+        idata : list
+            Input list of PyGMI Data (pygmi.raster.datatypes.Data)
         """
         idata = []
         for item in self.scene.selectedItems():
@@ -845,8 +845,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        odata : list of PyGMI Data
-            Output list of PyGMI Data
+        odata : list
+            Output list of PyGMI Data (pygmi.raster.datatypes.Data)
         """
         odata = []
         for item in self.scene.selectedItems():

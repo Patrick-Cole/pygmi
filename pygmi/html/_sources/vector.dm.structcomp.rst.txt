@@ -1,0 +1,44 @@
+Structural Complexity
+---------------------
+Geological structural complexity is a study of the interrelationships between structures found in geology. It is an important concept, since certain types of mineral deposits are associated with structures, or groups of structures. Structural complexity maps revolve around rasterising certain structural relationships, such as intersection density, orientation diversity, circular variance, circular dispersion, and feature fractal dimension.
+
+**Structural Complexity** takes as input lines from a shapefile or similar. It then produces different measures of structure complexity in gridded form. The vector data is rasterized, and a window is passed over the rasterized version of the lines to calculate the complexity measures.
+
+Four structural complexity measures are available, namely **Feature Intersection Density** (Holden et al., 2012), **Feature Orientation Diversity** (Holden et al., 2012), **Circular Variance and Dispersion** (Montsion et al., 2021) or **Feature Fractal Dimension** (Dhansay et al., 2016). The options in the Structural Complexity dialog depend on the method that was selected.
+
+**Feature Intersection Density** examines all structural intersections (or structures close to intersecting) and calculates a Gaussian taper with specified standard deviations. All Gaussians from all intersections are summed, resulting in a map where high values denote areas of multiple intersections.
+
+**Feature Orientation Diversity** counts the number of different orientations in the neighbourhood of a pixel.
+
+**Circular Variance** uses circular statistics and is a measure of how much the strike of structures found in a neighbourhood (measured in radians) varies about their mean.
+
+**Circular Dispersion** also uses circular statistics, is more general and gives information about the overall spread of data points.
+
+**Fractal Dimension** is a mathematical measurement of how complex a fractal pattern is, and how it changes in scale. It's used to describe the roughness and complexity of shapes like coastlines, leaves, city outlines and geological structures. **Fractal Dimension** is calculated in a window (area). This window is moved over the dataset, resulting in a fractal dimension map. Care must be taken to ensure that the window is not too small, or the calculation may not be accurate.
+
+The options on the **Structural Complexity** interface are:
+
+* **Method** - This can be **Feature Intersection Density**, **Feature Orientation Diversity**, **Circular Variance and Dispersion** or **Feature Fractal Dimension**.
+* **Cell Size** - This represents the size of a square raster grid cell for the output dataset, in the units of the grid (normally meters).
+* Method-dependent options:
+
+  * **Feature Intersection Density**:
+  
+    * **Intersection Density Standard Deviation** - the variance of a Gaussian centred on each intersection. It represents the area of influence each intersection has. It is in the units of the grid (normally meters).
+    * **Intersection Density Line Extension** - Distance to extend features which are almost touching, so that an intersection between features is obtained.
+    
+  * **Feature Orientation Diversity**, **Circular Variance and Dispersion** and **Feature Fractal Dimension**:
+  
+    * **Window Size** - Size of the window, in terms of cell size, that will be passed over the data to calculate the measure.
+
+
+.. image:: _images/vectorstruct.png
+
+References
+^^^^^^^^^^
+Dhansay, T., Brandl, G., & de Wit, M. J. (2016). Fractal geometry of the fault network across the Soutpansberg Mountains, Limpopo, South Africa. South African Journal of Geology, 119(1), 235–242. https://doi.org/10.2113/gssajg.119.1.235
+
+Holden, E. J., Wong, J. C., Kovesi, P., Wedge, D., Dentith, M., & Bagas, L. (2012). Identifying structural complexity in aeromagnetic data: An image analysis approach to greenfields gold exploration. Ore Geology Reviews, 46, 47–59. https://doi.org/10.1016/j.oregeorev.2011.11.002
+
+Montsion, R. M., Perrouty, S., Lindsay, M. D., Jessell, M. W., & Frieman, B. M. (2021). Mapping structural complexity using geophysics: A new geostatistical approach applied to greenstone belts of the southern Superior Province, Canada. Tectonophysics, 812. https://doi.org/10.1016/j.tecto.2021.228889
+

@@ -1312,7 +1312,7 @@ class ExportSeisan(ContextModule):
 
     def run(self, filename=None):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1903,7 +1903,7 @@ class ExportCSV(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -2444,7 +2444,7 @@ class ExportSummary(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -2622,7 +2622,7 @@ class FilterSeisan(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        helpdocs = menu_default.HelpButton('seis.dm.sfilt')
         lbl_rectype = QtWidgets.QLabel('Record Type:')
         lbl_recdesc = QtWidgets.QLabel('Description:')
         lbl_from = QtWidgets.QLabel('From')

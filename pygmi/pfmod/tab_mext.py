@@ -74,7 +74,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         self.setWindowTitle('Model Extent Parameters')
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
+        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()

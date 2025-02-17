@@ -564,7 +564,7 @@ class ProcFeatures(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.pfeat')
+        helpdocs = menu_default.HelpButton('rsense.dm.hyper')
         lbl_ratios = QtWidgets.QLabel('Product:')
         lbl_details = QtWidgets.QLabel('Details:')
 
@@ -825,7 +825,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
 
     Parameters
     ----------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         Input PyGMI data.
     mineral : str
         Mineral description.
@@ -845,7 +845,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
 
     Returns
     -------
-    datfin : list of PyGMI Data.
+    datfin : list of pygmi.raster.datatypes.Data.
         Output datasets.
 
     """

@@ -485,8 +485,7 @@ class ImportSentinel5P(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.'
-                                           'importsentinel5p')
+        helpdocs = menu_default.HelpButton('rsense.dm.imports5p')
         lbl_subdata = QtWidgets.QLabel('Product:')
         lbl_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
@@ -844,7 +843,7 @@ class ExportBatch(ContextModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.exportbatch')
+        helpdocs = menu_default.HelpButton('rsense.dm.exportdata')
         lbl_ofilt = QtWidgets.QLabel('Output Format:')
         lbl_red = QtWidgets.QLabel('Red Band:')
         lbl_green = QtWidgets.QLabel('Green Band:')
@@ -934,7 +933,7 @@ class ExportBatch(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1053,14 +1052,14 @@ def calculate_toa(dat, showlog=print):
 
     Parameters
     ----------
-    dat : Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     showlog : function, optional
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    out : Data
+    out : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
@@ -1471,7 +1470,7 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
 
     Returns
     -------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         dataset imported
     """
     ifile = ifile[:]
@@ -1558,7 +1557,7 @@ def get_from_rastermeta(ldata, *, piter=None, showlog=print, tnames=None,
 
     Parameters
     ----------
-    ldata : RasterMeta or Data
+    ldata : RasterMeta or pygmi.raster.datatypes.Data
         RasterMeta item.
     piter : function, optional
         Progress bar iterable. Default is None.
@@ -1573,7 +1572,7 @@ def get_from_rastermeta(ldata, *, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    dat : list  of PyGMI Data
+    dat : list  of pygmi.raster.datatypes.Data
         List of data.
 
     """
@@ -1779,7 +1778,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : Data
+    out : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -2055,7 +2054,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : Data
+    out : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -2293,7 +2292,7 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : Data
+    out : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -3452,7 +3451,7 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
 
     Parameters
     ----------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         PyGMI Data.
     sunfile : str, optional
         Sunshading band or filename. The default is None.
@@ -3467,7 +3466,7 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
 
     Returns
     -------
-    newimg : list of PyGMI Data.
+    newimg : list of pygmi.raster.datatypes.Data.
         list of PyGMI data.
 
     """
@@ -3579,7 +3578,7 @@ def set_export_filename(dat, odir, otype=None):
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI data.
     odir : str
         Output directory.
@@ -3646,12 +3645,12 @@ def utm_to_south(dat):
 
     Parameters
     ----------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         List of Data.
 
     Returns
     -------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         List of Data.
 
     """

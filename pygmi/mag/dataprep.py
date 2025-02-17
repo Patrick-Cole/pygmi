@@ -74,7 +74,7 @@ class Tilt1(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
+        helpdocs = menu_default.HelpButton('mag.dm.tilt')
         lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
         lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
         lbl_3 = QtWidgets.QLabel('EHGA k factor (2 or greater)')
@@ -390,7 +390,7 @@ class RTP(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
+        helpdocs = menu_default.HelpButton('mag.dm.rtp')
         lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
         lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
@@ -590,7 +590,7 @@ def rtp(data, I_deg, D_deg):
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         PyGMI raster data.
     I_deg : float
         Magnetic inclination.
@@ -599,7 +599,7 @@ def rtp(data, I_deg, D_deg):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster data.
 
     """

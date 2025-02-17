@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Time Domain EM."""
+"""Time Domain EM, based on the SimPEG library."""
 
 import sys
 import os
@@ -30,9 +30,6 @@ import copy
 from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-# import matplotlib
-
-# matplotlib.numpy = np
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -48,7 +45,14 @@ from pygmi.misc import QVStack2Layout, BasicModule
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
-    """MPL Canvas class."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         fig = Figure(layout='constrained')
@@ -131,7 +135,14 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
 
 class TDEM1D(BasicModule):
-    """Occam 1D inversion."""
+    """
+    TDEM 1D inversion GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -140,7 +151,7 @@ class TDEM1D(BasicModule):
         self.times = None
 
         self.setWindowTitle('TDEM 1D Inversion')
-        helpdocs = menu_default.HelpButton('pygmi.em.tdem1d')
+        helpdocs = menu_default.HelpButton('em.dm.tdem1dinv')
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
@@ -479,7 +490,7 @@ class TDEM1D(BasicModule):
 
     def disp_wave(self):
         """
-        Display waveform.
+        Display the waveform.
 
         Returns
         -------
@@ -515,7 +526,7 @@ class TDEM1D(BasicModule):
 
     def update_wave(self):
         """
-        Update waveform.
+        Update the waveform.
 
         Returns
         -------
@@ -558,7 +569,7 @@ class TDEM1D(BasicModule):
 
     def get_wfile(self, filename=''):
         """
-        Get window time filename.
+        Get the window time filename.
 
         Parameters
         ----------

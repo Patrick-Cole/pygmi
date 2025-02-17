@@ -73,7 +73,7 @@ class MNF(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.mnf')
+        helpdocs = menu_default.HelpButton('rsense.dm.mnf')
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
@@ -275,7 +275,7 @@ class PCA(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.pca')
+        helpdocs = menu_default.HelpButton('rsense.dm.pca')
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
@@ -543,7 +543,7 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print, piter=ite
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -560,7 +560,7 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print, piter=ite
 
     Returns
     -------
-    odata : list of PyGMI Data.
+    odata : list of pygmi.raster.datatypes.Data.
         Output list of PyGMI Data. Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.
@@ -659,7 +659,7 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -673,7 +673,7 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
 
     Returns
     -------
-    odata : list of PyGMI Data.
+    odata : list of pygmi.raster.datatypes.Data.
         Output list of PyGMI Data. Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.
@@ -759,7 +759,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
     Parameters
     ----------
-    dat : list of PyGMI Data.
+    dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
@@ -773,7 +773,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
 
     Returns
     -------
-    odata : list of PyGMI Data.
+    odata : list of pygmi.raster.datatypes.Data.
         Output list of PyGMI Data.Can be forward or inverse transformed data.
     ev : numpy array
         Explained variance, from PCA.

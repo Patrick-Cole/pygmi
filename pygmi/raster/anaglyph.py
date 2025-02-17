@@ -39,13 +39,12 @@ from pygmi.raster.misc import norm2, currentshader, histcomp
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
 
-    Attributes
+    Parameters
     ----------
-    axes : matplotlib subplot
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -485,7 +484,7 @@ class PlotAnaglyph(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

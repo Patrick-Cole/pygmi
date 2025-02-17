@@ -104,7 +104,7 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
+        helpdocs = menu_default.HelpButton('mag.dm.tiltdepth')
         lbl_2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
         lbl_c = QtWidgets.QLabel('Colour Bar:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
@@ -382,7 +382,7 @@ class TiltDepth(BasicModule):
 
         Parameters
         ----------
-        data : PyGMI Data.
+        data : pygmi.raster.datatypes.Data
             PyGMI raster dataset.
 
         Returns

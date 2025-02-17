@@ -172,7 +172,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         PyGMI dataset.
     ocrs : CRS
         output crs.
@@ -189,7 +189,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
 
     Returns
     -------
-    data2 : PyGMI Data
+    data2 : pygmi.raster.datatypes.Data
         Reprojected dataset.
 
     """

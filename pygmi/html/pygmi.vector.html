@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pygmi.vector package &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="quickstart module" href="quickstart.html" />
+    <link rel="prev" title="pygmi.test package" href="pygmi.test.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.test.html" title="Previous document">pygmi.test package</a>
+        </li>
+        <li>
+          <a href="quickstart.html" title="Next document">quickstart module</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="pygmi-vector-package">
+<h1>pygmi.vector package<a class="headerlink" href="#pygmi-vector-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-pygmi.vector.dataprep">
+<span id="pygmi-vector-dataprep-module"></span><h2>pygmi.vector.dataprep module<a class="headerlink" href="#module-pygmi.vector.dataprep" title="Link to this heading">¶</a></h2>
+<p>Data Preparation for Vector Data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Grid Point Data.</p>
+<p>This class grids point data using a nearest neighbourhood technique.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.dxy_change">
+<span class="sig-name descname"><span class="pre">dxy_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.dxy_change" title="Link to this definition">¶</a></dt>
+<dd><p>When dxy is changed on the interface, this updates rows and columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.grid_method_change">
+<span class="sig-name descname"><span class="pre">grid_method_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.grid_method_change" title="Link to this definition">¶</a></dt>
+<dd><p>When grid method is changed, this updated hidden controls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataReproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Reprojections.</p>
+<p>This class reprojects datasets using the rasterio routines.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Edit Metadata.</p>
+<p>This class allows the editing of the metadata for a vector dataset using a
+GUI.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata.banddata">
+<span class="sig-name descname"><span class="pre">banddata</span></span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata.banddata" title="Link to this definition">¶</a></dt>
+<dd><p>band data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata.bandid">
+<span class="sig-name descname"><span class="pre">bandid</span></span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata.bandid" title="Link to this definition">¶</a></dt>
+<dd><p>dictionary of strings containing band names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to start this routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tmp</strong> – True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.PointCut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">PointCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Cut Data using shapefiles.</p>
+<p>This class cuts point datasets using a boundary defined by a polygon
+shapefile.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.PointCut.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.PointCut.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">TextFileSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Split a text file into smaller text files.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.change_method">
+<span class="sig-name descname"><span class="pre">change_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.change_method" title="Link to this definition">¶</a></dt>
+<dd><p>Update fields when method changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.get_ifile">
+<span class="sig-name descname"><span class="pre">get_ifile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.get_ifile" title="Link to this definition">¶</a></dt>
+<dd><p>Get input file information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.blanking">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">blanking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nullvalue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.blanking" title="Link to this definition">¶</a></dt>
+<dd><p>Blanks area further than a defined number of cells from input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdat</strong> (<em>numpy array</em>) – grid data to blank.</p></li>
+<li><p><strong>x</strong> (<em>numpy array</em>) – x coordinates.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – y coordinates.</p></li>
+<li><p><strong>bdist</strong> (<em>int</em>) – Blanking distance in units for cell.</p></li>
+<li><p><strong>extent</strong> (<em>list</em>) – extent of grid.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Cell size.</p></li>
+<li><p><strong>Nullvalue</strong> (<em>float</em>) – Null or nodata value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mask</strong> – Mask to be used for blanking.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.cut_point">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">cut_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.cut_point" title="Link to this definition">¶</a></dt>
+<dd><p>Cuts a point dataset.</p>
+<p>Cut a point dataset using a shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>GeoDataFrame</em>) – GeoPandas GeoDataFrame</p></li>
+<li><p><strong>ifile</strong> (<em>str</em>) – shapefile used to cut data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – GeoPandas GeoDataFrame</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.filesplit">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">filesplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode='bytes'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.filesplit" title="Link to this definition">¶</a></dt>
+<dd><p>Split an input file into a number of output files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input filename.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – Number of bytes or lines to split by.</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Can be ‘bytes’, ‘files’ or ‘lines’. The default is ‘bytes’.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em><em>, </em><em>optional</em>) – Progress iterator. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.gridxyz">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">gridxyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nullvalue=1e+20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method='Nearest</span> <span class="pre">Neighbour'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdist=4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.gridxyz" title="Link to this definition">¶</a></dt>
+<dd><p>Grid xyz data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – X coordinate values.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Y coordinate values.</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – Z or data values.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Grid cell size, in distance units.</p></li>
+<li><p><strong>nullvalue</strong> (<em>float</em><em>, </em><em>optional</em>) – null or nodata value. The default is 1e+20.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Gridding method. The default is ‘Nearest Neighbour’.</p></li>
+<li><p><strong>bdist</strong> (<em>float</em><em>, </em><em>optional</em>) – Blanking distance. The default is 4.0.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – Output raster dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI Data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.lltomap">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">lltomap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.lltomap" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a latitude and longitude to a 1:50,000 sheet name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – Latitude.</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – Longitude.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mapsheet</strong> – Map sheet number.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.maptobounds">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">maptobounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapsheet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs_to=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.maptobounds" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a South African map sheet name to bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapsheet</strong> (<em>str</em>) – Map sheet number. Four numbers and up to two letters denoting NE corner
+in latitude and longitude and quadrants (A to D). Eg, 2928AB is
+latitude 29, longitude 28, quadrant B of quadrant A.</p></li>
+<li><p><strong>crs_to</strong> (<em>CRS</em><em>, </em><em>optional</em>) – Destination projection. The default is None.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bounds</strong> – output bounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.quickgrid">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">quickgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numits=4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.quickgrid" title="Link to this definition">¶</a></dt>
+<dd><p>Do a quick grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – array of x coordinates</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – array of y coordinates</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – array of z values - this is the column being gridded</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – cell size for the grid, in both the x and y direction.</p></li>
+<li><p><strong>numits</strong> (<em>int</em>) – number of iterations. By default its 4. If this is negative, a maximum
+will be calculated and used.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>newz</strong> – M x N array of z values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.reprojxy">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">reprojxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iwkt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owkt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.reprojxy" title="Link to this definition">¶</a></dt>
+<dd><p>Reproject x and y coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em><em> or </em><em>float</em>) – x coordinates</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em><em> or </em><em>float</em>) – y coordinates</p></li>
+<li><p><strong>iwkt</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>CRS</em>) – Input wkt description or EPSG code (int) or CRS</p></li>
+<li><p><strong>owkt</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>CRS</em>) – Output wkt description or EPSG code (int) or CRS</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>xout</strong> (<em>numpy array</em>) – x coordinates.</p></li>
+<li><p><strong>yout</strong> (<em>numpy array</em>) – y coordinates.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.txtlinecnt">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">txtlinecnt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.txtlinecnt" title="Link to this definition">¶</a></dt>
+<dd><p>Count lines in text file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – filename of text file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total number of lines in a file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.graphs">
+<span id="pygmi-vector-graphs-module"></span><h2>pygmi.vector.graphs module<a class="headerlink" href="#module-pygmi.vector.graphs" title="Link to this heading">¶</a></h2>
+<p>Plot Vector Data using Matplotlib.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.GraphWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">GraphWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.GraphWindow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Graph Window - Main QT Dialog class for graphs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.GraphWindow.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.GraphWindow.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">MyMplCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FigureCanvasQTAgg</span></code></p>
+<p>MPL Canvas class.</p>
+<p>This routine will also allow the picking and movement of nodes of data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.button_release_callback">
+<span class="sig-name descname"><span class="pre">button_release_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.button_release_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Mouse button release callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib.backend_bases.MouseEvent</em>) – Button release event.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.format_coord">
+<span class="sig-name descname"><span class="pre">format_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.format_coord" title="Link to this definition">¶</a></dt>
+<dd><p>Set format coordinate for correlation coefficient plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – x coordinate.</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – y coordinate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Output string to display.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.motion_notify_callback">
+<span class="sig-name descname"><span class="pre">motion_notify_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.motion_notify_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Move mouse callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib.backend_bases.MouseEvent</em>) – Motion notify event.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.onpick">
+<span class="sig-name descname"><span class="pre">onpick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.onpick" title="Link to this definition">¶</a></dt>
+<dd><p>Picker event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib.backend_bases.PickEvent</em>) – Pick event.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return TRUE if pick succeeded, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.resizeline">
+<span class="sig-name descname"><span class="pre">resizeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.resizeline" title="Link to this definition">¶</a></dt>
+<dd><p>Resize event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib.backend_bases.ResizeEvent</em>) – Resize event.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.textresize">
+<span class="sig-name descname"><span class="pre">textresize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.textresize" title="Link to this definition">¶</a></dt>
+<dd><p>Resize the text on a correlation plot when zooming.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>Matplotlib axes</em>) – Current Matplotlib axes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_ccoef">
+<span class="sig-name descname"><span class="pre">update_ccoef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Normal'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_ccoef" title="Link to this definition">¶</a></dt>
+<dd><p>Update the plot from point data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary.</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – Style of colour mapping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_hist">
+<span class="sig-name descname"><span class="pre">update_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_hist" title="Link to this definition">¶</a></dt>
+<dd><p>Update the histogram plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary.</p></li>
+<li><p><strong>col</strong> (<em>str</em>) – Label for column to extract.</p></li>
+<li><p><strong>ylog</strong> (<em>bool</em>) – Boolean for a log scale on y-axis.</p></li>
+<li><p><strong>iscum</strong> (<em>bool</em>) – Boolean for a cumulative distribution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_lines">
+<span class="sig-name descname"><span class="pre">update_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_lines" title="Link to this definition">¶</a></dt>
+<dd><p>Update the plot from point data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>numpy array</em>) – array of distances, for the x-axis</p></li>
+<li><p><strong>data</strong> (<em>numpy array</em>) – array of data to be plotted on the y-axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_lmap">
+<span class="sig-name descname"><span class="pre">update_lmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ival</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uselabels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_lmap" title="Link to this definition">¶</a></dt>
+<dd><p>Update the plot from line data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>Pandas dataframe</em>) – Line data</p></li>
+<li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key representing the line data channel to be plotted.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – scale of exaggeration for the profile data on the map.</p></li>
+<li><p><strong>uselabels</strong> (<em>bool</em>) – boolean choice whether to use labels or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_rose">
+<span class="sig-name descname"><span class="pre">update_rose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_rose" title="Link to this definition">¶</a></dt>
+<dd><p>Update the rose diagram plot using vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary. It should be ‘LineString’</p></li>
+<li><p><strong>rtype</strong> (<em>int</em>) – Rose diagram type. Can be either 0 or 1.</p></li>
+<li><p><strong>nbins</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins used in rose diagram. The default is 8.</p></li>
+<li><p><strong>equal</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option for an equal area rose diagram. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.MyMplCanvas.update_vector">
+<span class="sig-name descname"><span class="pre">update_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Update the plot from vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary</em>) – GeoPandas data in a dictionary.</p></li>
+<li><p><strong>col</strong> (<em>str</em>) – Label for column to extract.</p></li>
+<li><p><strong>style</strong> (<em>str</em><em> or </em><em>None</em>) – Style of colour mapping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotCCoef">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotCCoef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotCCoef" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Correlation Coefficients.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotCCoef.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotCCoef.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotCCoef.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotCCoef.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotHist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotHist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotHist" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Plot Histogram Class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotHist.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotHist.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotHist.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotHist.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLineMap">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotLineMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLineMap" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Lines Map Class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLineMap.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLineMap.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLineMap.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLineMap.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLines">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotLines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Lines Class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLines.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLines.change_line">
+<span class="sig-name descname"><span class="pre">change_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_line" title="Link to this definition">¶</a></dt>
+<dd><p>Combo to change line number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotLines.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotRose">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotRose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Rose Class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotRose.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotRose.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotVector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">PlotVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphWindow</span></code></a></p>
+<p>Plot Vector Class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotVector.change_band">
+<span class="sig-name descname"><span class="pre">change_band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector.change_band" title="Link to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.PlotVector.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector.run" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point to run class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.annotate_heatmap">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">annotate_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{x:.2f}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textcolors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('black',</span> <span class="pre">'white')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">textkw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.annotate_heatmap" title="Link to this definition">¶</a></dt>
+<dd><p>Annotate a heatmap.</p>
+<p>From Matplotlib.org.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im</strong> – The AxesImage to be labelled.</p></li>
+<li><p><strong>data</strong> – Data used to annotate.  If None, the image’s data is used.  Optional.</p></li>
+<li><p><strong>valfmt</strong> – The format of the annotations inside the heatmap.  This should either
+use the string format method, e.g. “$ {x:.2f}”, or be a
+<cite>matplotlib.ticker.Formatter</cite>.  Optional.</p></li>
+<li><p><strong>textcolors</strong> – A pair of colours.  The first is used for values below a threshold,
+the second for those above.  Optional.</p></li>
+<li><p><strong>threshold</strong> – Value in data units according to which the colours from textcolors are
+applied.  If None (the default) uses the middle of the colormap as
+separation.  Optional.</p></li>
+<li><p><strong>**kwargs</strong> – All other arguments are forwarded to each call to <cite>text</cite> used to create
+the text labels.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.heatmap">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbarlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.heatmap" title="Link to this definition">¶</a></dt>
+<dd><p>Create a heatmap from a numpy array and two lists of labels.</p>
+<p>From Matplotlib.org</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – A 2D numpy array of shape (M, N).</p></li>
+<li><p><strong>row_labels</strong> – A list or array of length M with the labels for the rows.</p></li>
+<li><p><strong>col_labels</strong> – A list or array of length N with the labels for the columns.</p></li>
+<li><p><strong>ax</strong> – A <cite>matplotlib.axes.Axes</cite> instance to which the heatmap is plotted.</p></li>
+<li><p><strong>cbar_kw</strong> – A dictionary with arguments to <cite>matplotlib.Figure.colorbar</cite>.  Optional.</p></li>
+<li><p><strong>cbarlabel</strong> – The label for the colorbar.  Optional.</p></li>
+<li><p><strong>**kwargs</strong> – All other arguments are forwarded to <cite>imshow</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.histogram">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.histogram" title="Link to this definition">¶</a></dt>
+<dd><p>Histogram.</p>
+<p>Calculate histogram of a set of data. It is different from a
+conventional histogram in that instead of summing elements of
+specific values, this allows the sum of weights/probabilities on a per
+element basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – Input data</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Input data weights. The default is None.</p></li>
+<li><p><strong>xmin</strong> (<em>float</em>) – Lower value for the bins. The default is None.</p></li>
+<li><p><strong>xmax</strong> (<em>float</em>) – Upper value for the bins. The default is None.</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – number of bins. The default is 10.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>hist</strong> (<em>numpy array</em>) – The values of the histogram</p></li>
+<li><p><strong>bin_edges</strong> (<em>numpy array</em>) – bin edges of the histogram</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.graphs.rotate">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.graphs.</span></span><span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.rotate" title="Link to this definition">¶</a></dt>
+<dd><p>Rotate a point counterclockwise by a given angle around a given origin.</p>
+<p>The angle should be given in radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin</strong> (<em>list</em>) – List containing origin point (ox, oy)</p></li>
+<li><p><strong>point</strong> (<em>list</em>) – List containing point to be rotated (px, py)</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Angle in radians.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>qx</strong> (<em>float</em>) – Rotated x-coordinate.</p></li>
+<li><p><strong>qy</strong> (<em>float</em>) – Rotated y-coordinate.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.iodefs">
+<span id="pygmi-vector-iodefs-module"></span><h2>pygmi.vector.iodefs module<a class="headerlink" href="#module-pygmi.vector.iodefs" title="Link to this heading">¶</a></h2>
+<p>Import Data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ColumnSelect">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ColumnSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ColumnSelect" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>A combobox to select vector columns.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ColumnSelect.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ColumnSelect.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ColumnSelect.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ColumnSelect.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportVector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Export Vector Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportVector.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVector.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportXYZ">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportXYZ" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Export XYZ Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportXYZ.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportXYZ.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Import Vector Data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.change_bounds">
+<span class="sig-name descname"><span class="pre">change_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.change_bounds" title="Link to this definition">¶</a></dt>
+<dd><p>Change the bounds combo.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.get_sfile">
+<span class="sig-name descname"><span class="pre">get_sfile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.get_sfile" title="Link to this definition">¶</a></dt>
+<dd><p>Get the filename and crs and bounds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.set_bounds">
+<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.set_bounds" title="Link to this definition">¶</a></dt>
+<dd><p>Set the bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bounds</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Bounds defined as (xmin, ymin, xmax, ymax).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Import XYZ Data.</p>
+<p>This class imports tabular data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.get_GXYZ">
+<span class="sig-name descname"><span class="pre">get_GXYZ</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.get_GXYZ" title="Link to this definition">¶</a></dt>
+<dd><p>Get Geosoft XYZ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – Pandas dataframe.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.get_delimited">
+<span class="sig-name descname"><span class="pre">get_delimited</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.get_delimited" title="Link to this definition">¶</a></dt>
+<dd><p>Get a delimited file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>delimiter</strong> (<em>str</em><em>, </em><em>optional</em>) – Delimiter type. The default is ‘,’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gdf</strong> – Pandas dataframe.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.get_excel">
+<span class="sig-name descname"><span class="pre">get_excel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.get_excel" title="Link to this definition">¶</a></dt>
+<dd><p>Get an Excel spreadsheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> – Pandas dataframe.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.get_GXYZ">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">get_GXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.get_GXYZ" title="Link to this definition">¶</a></dt>
+<dd><p>Get Geosoft XYZ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df2</strong> – Pandas dataframe.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.get_intrepid">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">get_intrepid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.get_intrepid" title="Link to this definition">¶</a></dt>
+<dd><p>Get Intrepid Database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> – Pandas Dataframe.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.menu">
+<span id="pygmi-vector-menu-module"></span><h2>pygmi.vector.menu module<a class="headerlink" href="#module-pygmi.vector.menu" title="Link to this heading">¶</a></h2>
+<p>Vector Menu Routines.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.menu.</span></span><span class="sig-name descname"><span class="pre">MenuWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface.</p>
+<p>This widget class creates the vector menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.parent" title="Link to this definition">¶</a></dt>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.basic_stats">
+<span class="sig-name descname"><span class="pre">basic_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.basic_stats" title="Link to this definition">¶</a></dt>
+<dd><p>Display basic statistics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.colselect">
+<span class="sig-name descname"><span class="pre">colselect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.colselect" title="Link to this definition">¶</a></dt>
+<dd><p>Select bands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.cut_data">
+<span class="sig-name descname"><span class="pre">cut_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.cut_data" title="Link to this definition">¶</a></dt>
+<dd><p>Cut point data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.export_vector">
+<span class="sig-name descname"><span class="pre">export_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.export_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Export line data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.export_xyz">
+<span class="sig-name descname"><span class="pre">export_xyz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.export_xyz" title="Link to this definition">¶</a></dt>
+<dd><p>Export XYZ data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.file_split">
+<span class="sig-name descname"><span class="pre">file_split</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.file_split" title="Link to this definition">¶</a></dt>
+<dd><p>Text file split.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.grid">
+<span class="sig-name descname"><span class="pre">grid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.grid" title="Link to this definition">¶</a></dt>
+<dd><p>Grid datasets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.import_vector">
+<span class="sig-name descname"><span class="pre">import_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.import_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Import shape data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.import_xyz">
+<span class="sig-name descname"><span class="pre">import_xyz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.import_xyz" title="Link to this definition">¶</a></dt>
+<dd><p>Import XYZ data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.plot_ccoef">
+<span class="sig-name descname"><span class="pre">plot_ccoef</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.plot_ccoef" title="Link to this definition">¶</a></dt>
+<dd><p>Plot correlation coefficient data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.reproject">
+<span class="sig-name descname"><span class="pre">reproject</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.reproject" title="Link to this definition">¶</a></dt>
+<dd><p>Reproject point data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.scomp">
+<span class="sig-name descname"><span class="pre">scomp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.scomp" title="Link to this definition">¶</a></dt>
+<dd><p>Structure complexity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.show_hist">
+<span class="sig-name descname"><span class="pre">show_hist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.show_hist" title="Link to this definition">¶</a></dt>
+<dd><p>Show histogram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.show_line_data">
+<span class="sig-name descname"><span class="pre">show_line_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.show_line_data" title="Link to this definition">¶</a></dt>
+<dd><p>Show line data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.show_line_map">
+<span class="sig-name descname"><span class="pre">show_line_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.show_line_map" title="Link to this definition">¶</a></dt>
+<dd><p>Show line map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.show_rose_diagram">
+<span class="sig-name descname"><span class="pre">show_rose_diagram</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.show_rose_diagram" title="Link to this definition">¶</a></dt>
+<dd><p>Show rose diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.menu.MenuWidget.show_vector_data">
+<span class="sig-name descname"><span class="pre">show_vector_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.show_vector_data" title="Link to this definition">¶</a></dt>
+<dd><p>Show vector data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.minc">
+<span id="pygmi-vector-minc-module"></span><h2>pygmi.vector.minc module<a class="headerlink" href="#module-pygmi.vector.minc" title="Link to this heading">¶</a></h2>
+<p>Minimum Curvature Gridding Routine.</p>
+<p>Based on the work by:</p>
+<p>Briggs, I. C., 1974, Machine contouring using minimum curvature, Geophysics
+vol. 39, No. 1, pp. 39-48</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.get_b">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">get_b</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.get_b" title="Link to this definition">¶</a></dt>
+<dd><p>Get b values for input data.</p>
+<p>Calculates the b values based on the distance between the data point and
+the nearest node. Distances are expressed in units of cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>e5</strong> (<em>float</em>) – x distance error.</p></li>
+<li><p><strong>n5</strong> (<em>float</em>) – y distance error.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>b1</strong> (<em>float</em>) – b1 value.</p></li>
+<li><p><strong>b2</strong> (<em>float</em>) – b2 value.</p></li>
+<li><p><strong>b3</strong> (<em>float</em>) – b3 value.</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – b4 value.</p></li>
+<li><p><strong>b5</strong> (<em>float</em>) – b5 value.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.mcurv">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">mcurv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ufixed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.mcurv" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing.</p>
+<p>This routine smooths the data between fixed data nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
+<li><p><strong>ufixed</strong> (<em>numpy array</em>) – 2D grid of fixed node values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>u</strong> – 2D grid of z values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.minc">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">minc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdist=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiters=100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.minc" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum Curvature Gridding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – 1D array with x coordinates.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – 1D array with y coordinates.</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – 1D array with z coordinates.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Cell x and y dimension.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+<li><p><strong>extent</strong> (<em>list</em><em>, </em><em>optional</em>) – Extent defined as (left, right, bottom, top). The default is None.</p></li>
+<li><p><strong>bdist</strong> (<em>float</em><em>, </em><em>optional</em>) – Blanking distance in units of cell. The default is None.</p></li>
+<li><p><strong>maxiters</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations. The default is 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>u</strong> – 2D numpy array with gridding z values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.morg">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">morg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.morg" title="Link to this definition">¶</a></dt>
+<dd><p>Organise coordinates and calculate b values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x2</strong> (<em>numpy array</em>) – 1D array with x coordinates.</p></li>
+<li><p><strong>y2</strong> (<em>numpy array</em>) – 1D array with y coordinates.</p></li>
+<li><p><strong>z2</strong> (<em>numpy array</em>) – 1D array with z coordinates.</p></li>
+<li><p><strong>extent</strong> (<em>list</em>) – Extent defined as (left, right, bottom, top).</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Cell x and y dimension.</p></li>
+<li><p><strong>rows</strong> (<em>int</em>) – Number of rows.</p></li>
+<li><p><strong>cols</strong> (<em>int</em>) – Number of columns.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>coords</strong> (<em>list</em>) – List containing iint, jint, r and zval.</p></li>
+<li><p><strong>b</strong> (<em>list</em>) – List of b values.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.off_grid">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">off_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.off_grid" title="Link to this definition">¶</a></dt>
+<dd><p>Node value calculation when data value is too far from node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Current Column.</p></li>
+<li><p><strong>wn</strong> (<em>float</em>) – Data value.</p></li>
+<li><p><strong>b</strong> (<em>list</em>) – List of b values for calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Output value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_corner">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_corner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_corner" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for corner point.</p>
+<p>It is defined as:</p>
+<p>2*u[i, j]+u[i, j+2] + u[i+2, j] - 2*(u[i, j+1] + u[i+1, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_edge">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for edges.</p>
+<p>It is defined as:</p>
+<p>u[i-2, j] + u[i+2, j] + u[i, j+2] + u[i-1, j+1] + u[i+1, j+1] -
+4*(u[i-1, j] + u[i, j+1] + u[i+1, j]) + 7*u[i, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_edge_next_to_corner">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_edge_next_to_corner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_edge_next_to_corner" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for edge next to corner.</p>
+<p>It is defined as:</p>
+<p>u[i, j+2] + u[i+1, j+1] + u[i-1, j+1] + u[i+2, j] - 2*u[i-1, j] -
+4*(u[i+1, j] + u[i, j+1]) + 6*u[i, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_next_to_corner">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_next_to_corner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_next_to_corner" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for next to corner.</p>
+<p>It is defined as:</p>
+<p>u[i, j+2] + u[i+2, j] + u[i-1, j+1] + u[i+1, j-1] + 2*u[i+1, j+1] -
+8*(u[i, j+1] + u[i+1, j]) - 4*([i, j-1]+u[i-1, j]) + 18*u[i, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_normal">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_normal" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for normal cases.</p>
+<p>It is defined as:</p>
+<p>u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
+2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
+8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]) + 20*u[i, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
+<li><p><strong>j</strong> (<em>int</em>) – Current Column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.minc.u_one_row_from_edge">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.minc.</span></span><span class="sig-name descname"><span class="pre">u_one_row_from_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.minc.u_one_row_from_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Minimum curvature smoothing for one row from edge.</p>
+<p>It is defined as:</p>
+<p>u[i-2, j] + u[i+2, j] + u[i, j+2] +
+2*(u[i-1, j+1] + u[i+1, j+1]) + u[i-1, j-1]+u[i+1, j-1] -
+8*([i-1, j]+u[i, j+1]+u[i+1, j]) - 4*u[i, j-1] + 19*u[i, j] = 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> (<em>numpy array</em>) – 2D grid of z values.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Current row.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>uij</strong> – Smoothed value to replace in master grid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.show_table">
+<span id="pygmi-vector-show-table-module"></span><h2>pygmi.vector.show_table module<a class="headerlink" href="#module-pygmi.vector.show_table" title="Link to this heading">¶</a></h2>
+<p>Routine which displays a table graphically with various stats.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.show_table.BasicStats">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.show_table.</span></span><span class="sig-name descname"><span class="pre">BasicStats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.show_table.BasicStats" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContextModule</span></code></a></p>
+<p>Show a summary of basic stats.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.show_table.BasicStats.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.show_table.BasicStats.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.show_table.BasicStats.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.show_table.BasicStats.save" title="Link to this definition">¶</a></dt>
+<dd><p>Save Table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.show_table.BasicStats.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.show_table.BasicStats.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector.structure">
+<span id="pygmi-vector-structure-module"></span><h2>pygmi.vector.structure module<a class="headerlink" href="#module-pygmi.vector.structure" title="Link to this heading">¶</a></h2>
+<p>Structure complexity routines.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">StructComp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pygmi.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasicModule</span></code></a></p>
+<p>Structure complexity.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp.acceptall" title="Link to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp.method_change">
+<span class="sig-name descname"><span class="pre">method_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp.method_change" title="Link to this definition">¶</a></dt>
+<dd><p>When method is changed, this updated hidden controls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp.saveproj" title="Link to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp.settings" title="Link to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.structure.StructComp.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.StructComp.setupui" title="Link to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.extendlines">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">extendlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length=500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.extendlines" title="Link to this definition">¶</a></dt>
+<dd><p>Extent lines from GeoPandas dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – A dataframe containing LINESTRINGs.</p></li>
+<li><p><strong>length</strong> (<em>float</em>) – distance in metres to extend the line on either side.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gdf2</strong> – A dataframe containing extended LINESTRINGs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.feature_circular_stats">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">feature_circular_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wsize=3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.feature_circular_stats" title="Link to this definition">¶</a></dt>
+<dd><p>Feature circular variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – GeoDataframe of linear features.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Raster cell size</p></li>
+<li><p><strong>wsize</strong> (<em>int</em>) – Window size (must be odd)</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – Output raster data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.feature_fracdim">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">feature_fracdim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wsize=21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.feature_fracdim" title="Link to this definition">¶</a></dt>
+<dd><p>Feature fractal dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – GeoDataframe of linear features.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Raster cell size</p></li>
+<li><p><strong>wsize</strong> (<em>int</em>) – Window size (must be odd)</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – Output raster data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.feature_intersection_density">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">feature_intersection_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend=500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.feature_intersection_density" title="Link to this definition">¶</a></dt>
+<dd><p>Feature intersection density.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – GeoDataframe of linear features.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Raster cell size</p></li>
+<li><p><strong>var</strong> (<em>float</em>) – Variance.</p></li>
+<li><p><strong>extend</strong> (<em>float</em>) – Distance to extend linear features.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>geom2</strong> (<em>GeoDataFrame</em>) – New geometry with intersection points.</p></li>
+<li><p><strong>dat</strong> (<em>PyGMi Data</em>) – Output raster data</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.feature_orientation_diversity">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">feature_orientation_diversity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wsize=3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.feature_orientation_diversity" title="Link to this definition">¶</a></dt>
+<dd><p>Feature orientation diversity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – GeoDataframe of linear features.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Raster cell size</p></li>
+<li><p><strong>wsize</strong> (<em>int</em>) – Window size (must be odd)</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – Output raster data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.fractal_dimension">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">fractal_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">warray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_box_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_box_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.fractal_dimension" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the fractal dimension of a 3D numpy array.</p>
+<p>From: <a class="reference external" href="https://github.com/ChatzigeorgiouGroup/FractalDimension">https://github.com/ChatzigeorgiouGroup/FractalDimension</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>warray</strong> (<em>np.array</em>) – The array to calculate the fractal dimension of.</p></li>
+<li><p><strong>max_box_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The largest box size, given as the power of 2 so that 2**max_box_size
+gives the side length of the largest box. The default is None.</p></li>
+<li><p><strong>min_box_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The smallest box size, given as the power of 2 so that 2**min_box_size
+gives the side length of the smallest box. The default is 1.</p></li>
+<li><p><strong>n_samples</strong> (<em>int</em><em>, </em><em>optional</em>) – number of scales to measure over. The default is 20.</p></li>
+<li><p><strong>n_offsets</strong> (<em>int</em><em>, </em><em>optional</em>) – number of offsets to search over to find the smallest set N(s) to
+cover all voxels&gt;0. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>coeffs[0]</strong> – Fractal dimension</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.linesplit">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">linesplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.linesplit" title="Link to this definition">¶</a></dt>
+<dd><p>Split LineString into segments.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.structure.segments_to_angles">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.structure.</span></span><span class="sig-name descname"><span class="pre">segments_to_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.structure.segments_to_angles" title="Link to this definition">¶</a></dt>
+<dd><p>Get line segment angles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em>) – GeoDataFrame with line segments.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em>) – Progressbar iterable.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gdf2</strong> – GeoDataFrame with angles added.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pygmi.vector">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.vector" title="Link to this heading">¶</a></h2>
+<p>Vector data routines.</p>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.test.html" title="Previous document">pygmi.test package</a>
+        </li>
+        <li>
+          <a href="quickstart.html" title="Next document">quickstart module</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">PyGMI API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api.html">PyGMI API</a><ul>
+  <li><a href="pygmi.html">pygmi package</a><ul>
+      <li>Previous: <a href="pygmi.test.html" title="previous chapter">pygmi.test package</a></li>
+      <li>Next: <a href="quickstart.html" title="next chapter">quickstart module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/pygmi.vector.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

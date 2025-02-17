@@ -71,10 +71,16 @@ class GraphWindow(ContextModule):
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    MPL Canvas class.
+    Matplotlib canvas widget for the actual plot.
 
     This routine will also allow the picking and movement of nodes of data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
     """
+
 
     def __init__(self, parent=None):
         fig = Figure(layout='constrained')
@@ -301,7 +307,7 @@ class PlotPoints(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

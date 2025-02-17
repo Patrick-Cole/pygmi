@@ -68,7 +68,7 @@ class TopoCorrect(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.topo')
+        helpdocs = menu_default.HelpButton('rsense.dm.topo')
 
         lbl_dem = QtWidgets.QLabel('Digital Elevation Model:')
         lbl_azi = QtWidgets.QLabel('Solar Azimuth:')
@@ -221,7 +221,7 @@ class Sen2Cor(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.sen2cor')
+        helpdocs = menu_default.HelpButton('rsense.dm.sen2cor')
 
         pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
@@ -378,9 +378,9 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
 
     Parameters
     ----------
-    data : PyGMI Data type
+    data : pygmi.raster.datatypes.Data
         Data to be corrected.
-    dem : PyGMI Data type
+    dem : pygmi.raster.datatypes.Data
         DEM data used in correction.
     azimuth : float
         Solar azimuth in degrees.

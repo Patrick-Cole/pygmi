@@ -1504,7 +1504,14 @@ class ProfileDisplay(QtWidgets.QWidget):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib Canvas."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         fig = Figure(layout='tight')
@@ -1812,7 +1819,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         dat : numpy array
             Raster dataset.
-        dat2 : PyGMI Data, optional
+        dat2 : pygmi.raster.datatypes.Data, optional
             PyGMI raster dataset. The default is None.
         opac : float, optional
             Opacity between 0 and 100. The default is 0.0.
@@ -2365,7 +2372,7 @@ class RangedCopy(QtWidgets.QDialog):
 
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
+        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
         lbl_1 = QtWidgets.QLabel('Range Start')
         lbl_2 = QtWidgets.QLabel('Master Profile')
@@ -2601,7 +2608,7 @@ class ImportPicture(BasicModule):
         gl_2 = QtWidgets.QGridLayout(self)
         gl_3 = QtWidgets.QGridLayout(gbox)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
+        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
         pb_import = QtWidgets.QPushButton('Load picture (optional)')
 
@@ -2835,9 +2842,9 @@ def gridmatch2(cgrv, rgrv):
 
     Parameters
     ----------
-    cgrv : PyGMI Data.
+    cgrv : pygmi.raster.datatypes.Data.
         Raster dataset.
-    rgrv : PyGMI Data
+    rgrv : pygmi.raster.datatypes.Data
         Raster dataset.
 
     Returns

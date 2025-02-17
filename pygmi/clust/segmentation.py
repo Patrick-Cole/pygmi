@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Image segmentation routines."""
+"""Image segmentation routines, following the technique by Baatz and Schäpe (2000)."""
 
 import numpy as np
 from sklearn.cluster import KMeans
@@ -36,7 +36,14 @@ from pygmi.misc import BasicModule
 
 
 class ImageSeg(BasicModule):
-    """Image Segmentation."""
+    """
+    Image Segmentation GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -60,7 +67,7 @@ class ImageSeg(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.clust.segmentation')
+        helpdocs = menu_default.HelpButton('cluster.dm.seg')
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
@@ -150,8 +157,9 @@ class ImageSeg(BasicModule):
 
         doshape = True
 
-        omap = self.segment1(data1, scale=scale, wcolor=wcolor,
-                             wcompact=wcompact, doshape=doshape)
+        omap = segment1(data1, scale=scale, wcolor=wcolor,
+                        wcompact=wcompact, doshape=doshape,
+                        showlog=self.showlog, piter=self.piter)
 
         odat = self.indata['Raster'][0].copy(True)
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
@@ -207,268 +215,275 @@ class ImageSeg(BasicModule):
         self.saveobj(self.le_eps)
         self.saveobj(self.cb_dbscan)
 
-    def segment1(self, data, *, scale=500, wcolor=0.5, wcompact=0.5,
-                 doshape=True):
-        """
-        Segment Part 1.
 
-        Parameters
-        ----------
-        data : numpy array
-            Input data.
-        scale : int, optional
-            Scale. The default is 500.
-        wcolor : float, optional
-            Colour weight. The default is 0.5.
-        wcompact : float, optional
-            Compactness weight. The default is 0.5.
-        doshape : bool, optional
-            Perform shape segmentation. The default is True.
+def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,
+             doshape=True, showlog=print, piter=iter):
+    """
+    Perform image segmentation.
 
-        Returns
-        -------
-        omap : numpy array
-            Output data.
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+    scale : int, optional
+        Scale. The default is 500.
+    wcolor : float, optional
+        Colour weight. The default is 0.5.
+    wcompact : float, optional
+        Compactness weight. The default is 0.5.
+    doshape : bool, optional
+        Perform shape segmentation. The default is True.
+    showlog : function, optional
+        Display information. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
-        """
-        rows, cols, bands = data.shape
+    Returns
+    -------
+    omap : numpy array
+        Output data.
 
-        self.showlog('Initialising...')
+    """
+    rows, cols, bands = data.shape
 
-        olist = {}
-        slist = {}
-        mlist = {}
-        nlist = {}
-        omap = np.zeros((rows, cols))
+    showlog('Initialising...')
 
-        for i in range(rows):
-            for j in range(cols):
-                tmp = []
-                for ii in range(max(i-1, 0), min(i+2, rows)):
-                    for jj in range(max(j-1, 0), min(j+2, cols)):
-                        if ii == i and jj == j:
-                            continue
-                        tmp.append(ii*cols+jj)
-                olist[i*cols+j] = set(tmp)
-                for k in range(bands):
-                    slist[(k, i*cols+j)] = 0
-                    mlist[(k, i*cols+j)] = data[i, j, k]
-                    nlist[(k, i*cols+j)] = 1
-                omap[i, j] = i*cols+j
+    olist = {}
+    slist = {}
+    mlist = {}
+    nlist = {}
+    omap = np.zeros((rows, cols))
 
-        self.showlog('merging...')
-
-        omap = self._segment2(omap, olist, slist, mlist, nlist, bands,
-                              doshape=doshape, wcompact=wcompact,
-                              wcolor=wcolor, scale=scale)
-
-        self.showlog('renumbering...')
-        tmp = np.unique(omap)
-
-        for i, val in enumerate(tmp):
-            omap[omap == val] = i
-
-        return omap.astype(int)
-
-    def _segment2(self, omap, olist, slist, mlist, nlist, bands, *,
-                  doshape=True, wcompact=0.5, wcolor=0.5, scale=500):
-        """
-        Segment Part 2.
-
-        Parameters
-        ----------
-        omap : numpy array
-            output data from segment1.
-        olist : dictionary
-            olist from segment1.
-        slist : dictionary
-            slist from segment1.
-        mlist : dictionary
-            mlist from segment1.
-        nlist : dictionary
-            nlist from segment1.
-        bands : int
-            Number of bands in data.
-        doshape : bool, optional
-            Perform shape segmentation. The default is True.
-        wcompact : float, optional
-            Compactness weight. The default is 0.5.
-        wcolor : float, optional
-            Colour weight. The default is 0.5.
-        scale : int, optional
-            Scale. The default is 500.
-
-
-        Returns
-        -------
-        omap : numpy array
-            output data.
-
-        """
-        wband = np.ones(bands)/bands
-
-        cnt = 0
-        oldlen = len(olist.keys())+1
-
-        _, cols = omap.shape
-        rminmax = {}
-        cminmax = {}
-        for i in olist:
-            rminmax[i] = [i//cols]*2
-            cminmax[i] = [i-rminmax[i][0]*cols]*2
-
-        while len(olist.keys()) != oldlen:
-            oldlen = len(olist.keys())
-            cnt += 1
-            elist = set(olist.keys())
-
-            clen = len(elist)
-            pbar = self.piter(range(clen))
-            self.showlog('Iteration number: '+str(cnt))
-
-            olist3 = olist.copy()
-
-            while elist:
-                i = elist.pop()
-
-                if not olist3[i]:
-                    continue
-
-                hcolor = 0.
-                sm2 = []
-                nm2 = []
-                mean2 = []
-                ollist = list(olist3[i])
-                for k in range(bands):
-                    s2 = np.array([slist[(k, j)] for j in ollist])
-                    x2 = np.array([mlist[(k, j)] for j in ollist])
-                    n2 = np.array([nlist[(k, j)] for j in ollist])
-
-                    n1 = nlist[(k, i)]
-                    x1 = mlist[(k, i)]
-                    s1 = slist[(k, i)]
-                    nm = (n1+n2)
-
-                    mean = (n1*x1+n2*x2)/nm
-                    sm = np.sqrt((n1*(s1**2+(x1-mean)**2) +
-                                  n2*(s2**2+(x2-mean)**2))/nm)
-                    hcolor += np.abs(wband[k]*(nm*sm-(n1*s1+n2*s2)))
-
-                    sm2.append(sm)
-                    mean2.append(mean)
-                    nm2.append(nm)
-
-                if cnt > 1 and doshape is True:
-                    rmin, rmax = rminmax[i]
-                    cmin, cmax = cminmax[i]
-
-                    somap = omap[max(0, rmin-1):rmax+2, max(0, cmin-1):cmax+2]
-
-                    l1 = get_l(somap == i)
-                    b1 = (rmax-rmin+cmax-cmin+2)*2
-
-                    l1, b1 = 2, 4
-
-                    l2 = []
-                    b2 = []
-                    lm = []
-                    bm = []
-
-                    for ol in ollist:
-                        rmin1, rmax1 = rminmax[ol]
-                        cmin1, cmax1 = cminmax[ol]
-
-                        somap = omap[max(0, rmin1-1):rmax1+2,
-                                     max(0, cmin1-1):cmax1+2]
-
-                        ltmp = get_l(somap == ol)
-                        btmp = (rmax1-rmin1+cmax1-cmin1+2)*2
-
-                        ltmp, btmp = 4, 2
-
-                        l2.append(ltmp)
-                        b2.append(btmp)
-
-                        rmin2 = min(rmin1, rmin)
-                        rmax2 = max(rmax1, rmax)
-                        cmin2 = min(cmin1, cmin)
-                        cmax2 = max(cmax1, cmax)
-
-                        somap = omap[max(0, rmin2-1):rmax2+2,
-                                     max(0, cmin2-1):cmax2+2]
-
-                        filt = (somap == ol) + (somap == i)
-                        ltmp2 = get_l(filt)
-                        btmp2 = (rmax2-rmin2+cmax2-cmin2+2)*2
-
-                        ltmp2, btmp2 = ltmp+l1, btmp+b1
-
-                        lm.append(ltmp2)
-                        bm.append(btmp2)
-
-                    l2 = np.array(l2)
-                    b2 = np.array(b2)
-                    lm = np.array(lm)
-                    bm = np.array(bm)
-
-                    hsmooth = nm*lm/bm-(n1*l1/b1+n2*l2/b2)
-                    hcompact = np.sqrt(nm)*lm-(np.sqrt(n1)*l1+np.sqrt(n2)*l2)
-
-                    hshape = wcompact*hcompact + (1-wcompact)*hsmooth
-                    hdiff = wcolor*hcolor+(1-wcolor)*hshape
-
-                else:
-                    hdiff = hcolor
-
-                if hdiff.min() > scale:
-                    continue
-
-                mindiff = hdiff.argmin()
-                hind = ollist[mindiff]
-
-                olist[i] = olist[i] | olist[hind]
-                olist[i].remove(i)
-                olist[i].remove(hind)
-                olist3[i] = olist[i].copy()
-
-                rmm1 = min(rminmax[i][0], rminmax[hind][0])
-                rmm2 = max(rminmax[i][1], rminmax[hind][1])
-                rminmax[i] = [rmm1, rmm2]
-
-                cmm1 = min(cminmax[i][0], cminmax[hind][0])
-                cmm2 = max(cminmax[i][1], cminmax[hind][1])
-                cminmax[i] = [cmm1, cmm2]
-
-                for k in range(bands):
-                    slist[(k, i)] = sm2[k][mindiff]
-                    mlist[(k, i)] = mean2[k][mindiff]
-                    nlist[(k, i)] = nm2[k][mindiff]
-                    del slist[(k, hind)]
-                    del mlist[(k, hind)]
-                    del nlist[(k, hind)]
-
-                for j in olist[hind]:
-                    if j == i:
+    for i in range(rows):
+        for j in range(cols):
+            tmp = []
+            for ii in range(max(i-1, 0), min(i+2, rows)):
+                for jj in range(max(j-1, 0), min(j+2, cols)):
+                    if ii == i and jj == j:
                         continue
-                    olist[j].discard(hind)
-                    olist[j].add(i)
+                    tmp.append(ii*cols+jj)
+            olist[i*cols+j] = set(tmp)
+            for k in range(bands):
+                slist[(k, i*cols+j)] = 0
+                mlist[(k, i*cols+j)] = data[i, j, k]
+                nlist[(k, i*cols+j)] = 1
+            omap[i, j] = i*cols+j
 
-                    olist3[j] = olist[j].copy()
-                    olist3[j].discard(i)
+    showlog('merging...')
 
-                del olist[hind]
+    omap = _segment2(omap, olist, slist, mlist, nlist, bands,
+                     doshape=doshape, wcompact=wcompact,
+                     wcolor=wcolor, scale=scale, showlog=showlog, piter=piter)
 
-                elist.discard(hind)
+    showlog('renumbering...')
+    tmp = np.unique(omap)
 
-                next(pbar)
+    for i, val in enumerate(tmp):
+        omap[omap == val] = i
 
+    return omap.astype(int)
+
+
+def _segment2(omap, olist, slist, mlist, nlist, bands, *,
+              doshape=True, wcompact=0.5, wcolor=0.5, scale=500,
+              showlog=print, piter=iter):
+    """
+    Segment Part 2.
+
+    Parameters
+    ----------
+    omap : numpy array
+        output data from segment1.
+    olist : dictionary
+        olist from segment1.
+    slist : dictionary
+        slist from segment1.
+    mlist : dictionary
+        mlist from segment1.
+    nlist : dictionary
+        nlist from segment1.
+    bands : int
+        Number of bands in data.
+    doshape : bool, optional
+        Perform shape segmentation. The default is True.
+    wcompact : float, optional
+        Compactness weight. The default is 0.5.
+    wcolor : float, optional
+        Colour weight. The default is 0.5.
+    scale : int, optional
+        Scale. The default is 500.
+
+
+    Returns
+    -------
+    omap : numpy array
+        output data.
+
+    """
+    wband = np.ones(bands)/bands
+
+    cnt = 0
+    oldlen = len(olist.keys())+1
+
+    _, cols = omap.shape
+    rminmax = {}
+    cminmax = {}
+    for i in olist:
+        rminmax[i] = [i//cols]*2
+        cminmax[i] = [i-rminmax[i][0]*cols]*2
+
+    while len(olist.keys()) != oldlen:
+        oldlen = len(olist.keys())
+        cnt += 1
+        elist = set(olist.keys())
+
+        clen = len(elist)
+        pbar = piter(range(clen))
+        showlog('Iteration number: '+str(cnt))
+
+        olist3 = olist.copy()
+
+        while elist:
+            i = elist.pop()
+
+            if not olist3[i]:
+                continue
+
+            hcolor = 0.
+            sm2 = []
+            nm2 = []
+            mean2 = []
+            ollist = list(olist3[i])
+            for k in range(bands):
+                s2 = np.array([slist[(k, j)] for j in ollist])
+                x2 = np.array([mlist[(k, j)] for j in ollist])
+                n2 = np.array([nlist[(k, j)] for j in ollist])
+
+                n1 = nlist[(k, i)]
+                x1 = mlist[(k, i)]
+                s1 = slist[(k, i)]
+                nm = (n1+n2)
+
+                mean = (n1*x1+n2*x2)/nm
+                sm = np.sqrt((n1*(s1**2+(x1-mean)**2) +
+                              n2*(s2**2+(x2-mean)**2))/nm)
+                hcolor += np.abs(wband[k]*(nm*sm-(n1*s1+n2*s2)))
+
+                sm2.append(sm)
+                mean2.append(mean)
+                nm2.append(nm)
+
+            if cnt > 1 and doshape is True:
                 rmin, rmax = rminmax[i]
                 cmin, cmax = cminmax[i]
 
-                omap[rmin:rmax+1, cmin:cmax+1][omap[rmin:rmax+1,
-                                                    cmin:cmax+1] == hind] = i
+                somap = omap[max(0, rmin-1):rmax+2, max(0, cmin-1):cmax+2]
 
-        return omap
+                l1 = get_l(somap == i)
+                b1 = (rmax-rmin+cmax-cmin+2)*2
+
+                l1, b1 = 2, 4
+
+                l2 = []
+                b2 = []
+                lm = []
+                bm = []
+
+                for ol in ollist:
+                    rmin1, rmax1 = rminmax[ol]
+                    cmin1, cmax1 = cminmax[ol]
+
+                    somap = omap[max(0, rmin1-1):rmax1+2,
+                                 max(0, cmin1-1):cmax1+2]
+
+                    ltmp = get_l(somap == ol)
+                    btmp = (rmax1-rmin1+cmax1-cmin1+2)*2
+
+                    ltmp, btmp = 4, 2
+
+                    l2.append(ltmp)
+                    b2.append(btmp)
+
+                    rmin2 = min(rmin1, rmin)
+                    rmax2 = max(rmax1, rmax)
+                    cmin2 = min(cmin1, cmin)
+                    cmax2 = max(cmax1, cmax)
+
+                    somap = omap[max(0, rmin2-1):rmax2+2,
+                                 max(0, cmin2-1):cmax2+2]
+
+                    filt = (somap == ol) + (somap == i)
+                    ltmp2 = get_l(filt)
+                    btmp2 = (rmax2-rmin2+cmax2-cmin2+2)*2
+
+                    ltmp2, btmp2 = ltmp+l1, btmp+b1
+
+                    lm.append(ltmp2)
+                    bm.append(btmp2)
+
+                l2 = np.array(l2)
+                b2 = np.array(b2)
+                lm = np.array(lm)
+                bm = np.array(bm)
+
+                hsmooth = nm*lm/bm-(n1*l1/b1+n2*l2/b2)
+                hcompact = np.sqrt(nm)*lm-(np.sqrt(n1)*l1+np.sqrt(n2)*l2)
+
+                hshape = wcompact*hcompact + (1-wcompact)*hsmooth
+                hdiff = wcolor*hcolor+(1-wcolor)*hshape
+
+            else:
+                hdiff = hcolor
+
+            if hdiff.min() > scale:
+                continue
+
+            mindiff = hdiff.argmin()
+            hind = ollist[mindiff]
+
+            olist[i] = olist[i] | olist[hind]
+            olist[i].remove(i)
+            olist[i].remove(hind)
+            olist3[i] = olist[i].copy()
+
+            rmm1 = min(rminmax[i][0], rminmax[hind][0])
+            rmm2 = max(rminmax[i][1], rminmax[hind][1])
+            rminmax[i] = [rmm1, rmm2]
+
+            cmm1 = min(cminmax[i][0], cminmax[hind][0])
+            cmm2 = max(cminmax[i][1], cminmax[hind][1])
+            cminmax[i] = [cmm1, cmm2]
+
+            for k in range(bands):
+                slist[(k, i)] = sm2[k][mindiff]
+                mlist[(k, i)] = mean2[k][mindiff]
+                nlist[(k, i)] = nm2[k][mindiff]
+                del slist[(k, hind)]
+                del mlist[(k, hind)]
+                del nlist[(k, hind)]
+
+            for j in olist[hind]:
+                if j == i:
+                    continue
+                olist[j].discard(hind)
+                olist[j].add(i)
+
+                olist3[j] = olist[j].copy()
+                olist3[j].discard(i)
+
+            del olist[hind]
+
+            elist.discard(hind)
+
+            next(pbar)
+
+            rmin, rmax = rminmax[i]
+            cmin, cmax = cminmax[i]
+
+            omap[rmin:rmax+1, cmin:cmax+1][omap[rmin:rmax+1,
+                                                cmin:cmax+1] == hind] = i
+
+    return omap
 
 
 @jit(nopython=True, fastmath=True)
@@ -506,7 +521,9 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
     from matplotlib import rcParams
+    from pygmi.misc import getinfo
 
+    getinfo('Start')
     rcParams['figure.dpi'] = 300
 
     app = QtWidgets.QApplication(sys.argv)
@@ -535,6 +552,8 @@ def _testfn():
     plt.imshow(odata.data)
     plt.axis('off')
     plt.show()
+
+    getinfo('Finished')
 
 
 def _testfn2():

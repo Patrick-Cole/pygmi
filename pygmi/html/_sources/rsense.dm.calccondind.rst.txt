@@ -1,0 +1,13 @@
+Calculate Condition Indices
+---------------------------
+This module allows the user to calculate condition indices such as TCI, VCI and VHI using indexes such as EVI, NDVI and MSAVI2. It requires as input two or more datasets over the same area, defined as a batch file list.
+
+Options:
+
+* Sensor - this is the satellite sensor being used. Depending on the sensor, different indices will result.
+* Index - This can be EVI, NDVI or MSAVI2
+* Condition Indices - A list of indices to calculate
+* Invert selection - convenience button to invert the condition indices selection.
+
+.. image:: _images/rsensecind.png
+

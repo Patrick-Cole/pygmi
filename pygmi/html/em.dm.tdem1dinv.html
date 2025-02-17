@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TDEM 1D Inversion &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Gravity" href="gravity.html" />
+    <link rel="prev" title="Electromagnetics" href="em.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="em.html" title="Previous document">Electromagnetics</a>
+        </li>
+        <li>
+          <a href="gravity.html" title="Next document">Gravity</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="tdem-1d-inversion">
+<h1>TDEM 1D Inversion<a class="headerlink" href="#tdem-1d-inversion" title="Link to this heading">¶</a></h1>
+<p>TDEM (time domain electromagnetic) inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Since the inversion is 1D, it inverts data at a single station/sampling point. Line data can be imported using the <strong>Import XYZ Data</strong> module in the Vector menu.</p>
+<p>The SkyTEM Bookpurnong TDEM data used in this example are downloaded from the SimPEG website (<a class="reference external" href="https://docs.simpeg.xyz">https://docs.simpeg.xyz</a>). It consists of an airborne TDEM data in a tab-delimited <strong>TXT</strong> file with an accompanying <strong>TXT</strong> file with the window times. A header file (<strong>HDR</strong>) contains the survey information including the projection information that is required during data import.</p>
+<p>The EM interface has the following sections and options:</p>
+<ol class="arabic simple">
+<li><p>Data selection, sensor specifications and model settings:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Line Number</strong> – The line number along which the station/sampling point is located.</p></li>
+<li><p><strong>Fid/Station Name</strong> – The unique identifier of the sampling point or station name that will be modelled.</p></li>
+<li><p><strong>Bird Height</strong> – The height of the sensor above the terrain.</p></li>
+<li><p><strong>Data channel prefix</strong> – The prefix in the ASCII data file, indicating a data channel.</p></li>
+<li><p><strong>Waveform Type</strong> – An option to select the waveform from a list of standard types.  This can be <strong>VTEM Waveform</strong>, <strong>RampOffWaveform</strong>, <strong>TrapezoidWaveform</strong>, <strong>QuarterSineRampOnWaveform</strong>, <strong>TriangularWaveform</strong> and <strong>HalfSineWaveform</strong>.</p></li>
+<li><p><strong>Tx Peak time</strong> – The time when the input waveform is at its maximum.</p></li>
+<li><p><strong>Tx Ramp Off start time</strong> – The time at which the input waveform turns off.</p></li>
+<li><p><strong>Tx Off Time</strong> –  The time when the waveform is completely off.</p></li>
+<li><p><strong>Source Type</strong> – Can be <strong>CircularLoop</strong> or <strong>MagDipole</strong>.</p></li>
+<li><p><strong>Tx Orientation</strong> – The transmitter orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
+<li><p><strong>Tx Area</strong> – The transmitter area (only for a circular loop source).</p></li>
+<li><p><strong>Number of turns in loop</strong> – Only available for a circular loop source.</p></li>
+<li><p><strong>Current in loop</strong> – Only available for a circular loop source.</p></li>
+<li><p><strong>Permeability of the background</strong></p></li>
+<li><p><strong>Rx Orientation</strong> – Receiver orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
+<li><p><strong>Mesh properties</strong> – The dimensional properties of the mesh that will be used to discretise the solutions:</p>
+<ul>
+<li><p><strong>Mesh cell size</strong></p></li>
+<li><p><strong>Mesh number cells in x direction</strong></p></li>
+<li><p><strong>Mesh number cells in z direction</strong></p></li>
+<li><p><strong>Mesh number of cells to pad</strong></p></li>
+<li><p><strong>Pad cell multiplier</strong></p></li>
+</ul>
+</li>
+<li><p><strong>Conductivity Air</strong> – In S/m.</p></li>
+<li><p><strong>Conductivity Halfspace</strong> – In S/m.</p></li>
+<li><p><strong>Data Relative Error (%)</strong></p></li>
+<li><p><strong>Data Noise Floor</strong> – In V/Am<sup>4</sup> .</p></li>
+<li><p><strong>Optimization</strong>: Maximum number of iterations.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p><strong>Load window times</strong>: Select the text file with the window times.</p></li>
+<li><p><strong>Invert Station</strong>: Click on this to start the inversion process. The <strong>Process Log</strong> window in the main PyGMI interface displays the progress and some inversion parameters.</p></li>
+<li><p>The waveform used by the TDEM system.</p></li>
+<li><p>The inversion results showing the model and the fit of the modelled data to the observed data.</p></li>
+<li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.</p></li>
+</ol>
+<img alt="_images/eminv.png" src="_images/eminv.png" />
+<img alt="_images/eminv2.png" src="_images/eminv2.png" />
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>Cockett, Rowan, Seogi Kang, Lindsey J. Heagy, Adam Pidlisecky, and Douglas W. Oldenburg. “SimPEG: An Open Source Framework for Simulation and Gradient Based Parameter Estimation in Geophysical Applications” Computers &amp; Geosciences, September 2015. doi:10.1016/j.cageo.2015.09.015.</p>
+<p>Lindsey J. Heagy, Rowan Cockett, Seogi Kang, Gudni K. Rosenkjaer, Douglas W. Oldenburg. “A framework for simulation and inversion in electromagnetics” Computers &amp; Geosciences, September 2017. doi:10.1016/j.cageo.2017.06.018</p>
+</div></blockquote>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="em.html" title="Previous document">Electromagnetics</a>
+        </li>
+        <li>
+          <a href="gravity.html" title="Next document">Gravity</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="em.html">Electromagnetics</a><ul>
+      <li>Previous: <a href="em.html" title="previous chapter">Electromagnetics</a></li>
+      <li>Next: <a href="gravity.html" title="next chapter">Gravity</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/em.dm.tdem1dinv.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

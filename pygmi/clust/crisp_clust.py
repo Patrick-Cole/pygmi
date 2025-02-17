@@ -22,7 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Main Crisp Clustering set of routines."""
+"""
+Crisp clustering is a set of clustering routines, using standard statistical
+methods, as opposed to fuzzy methods.
+"""
 
 import os
 from PyQt5 import QtWidgets, QtCore
@@ -35,7 +38,14 @@ from pygmi import menu_default
 
 
 class CrispClust(BasicModule):
-    """Crisp Cluster Class."""
+    """
+    Crisp cluster GUI class.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -79,7 +89,7 @@ class CrispClust(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('pygmi.clust.crisp')
+        helpdocs = menu_default.HelpButton('cluster.dm.crisp')
         gl_1 = QtWidgets.QGridLayout(self)
         vbl = QtWidgets.QVBoxLayout(self.gbox)
 
@@ -149,7 +159,7 @@ class CrispClust(BasicModule):
 
     def combo(self):
         """
-        Set up combo box.
+        Set up combo box to choose algorithm.
 
         Returns
         -------

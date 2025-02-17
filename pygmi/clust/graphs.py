@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Plot Cluster Data."""
+"""Routines to plot cluster data."""
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -38,13 +38,12 @@ from pygmi.raster.modest_image import imshow
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
 
-    Attributes
+    Parameters
     ----------
-    axes : matplotlib subplot
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -58,11 +57,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_classes(self, data1):
         """
-        Update the plot.
+        Update the class plot.
 
         Parameters
         ----------
-        data1 : PyGMI Data.
+        data1 : pygmi.raster.datatypes.Data
             Input raster dataset.
 
         Returns
@@ -139,7 +138,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_wireframe(self, x, y, z):
         """
-        Update wireframe plot.
+        Update the wireframe plot.
 
         Parameters
         ----------
@@ -172,7 +171,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        data1 : PyGMI Data.
+        data1 : pygmi.raster.datatypes.Data
             Raster dataset.
         mem : int
             Membership.
@@ -202,7 +201,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class GraphWindow(ContextModule):
-    """Graph Window."""
+    """
+    Graph Window GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -245,7 +251,14 @@ class GraphWindow(ContextModule):
 
 
 class PlotRaster(GraphWindow):
-    """Plot Raster Class."""
+    """
+    Plot Raster Class GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -267,7 +280,7 @@ class PlotRaster(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -287,7 +300,14 @@ class PlotRaster(GraphWindow):
 
 
 class PlotMembership(GraphWindow):
-    """Plot Fuzzy Membership data."""
+    """
+    Plot Fuzzy Membership data GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -317,7 +337,7 @@ class PlotMembership(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -347,7 +367,14 @@ class PlotMembership(GraphWindow):
 
 
 class PlotVRCetc(GraphWindow):
-    """Plot VRC, NCE, OBJ and XBI."""
+    """
+    Plot VRC, NCE, OBJ and XBI GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -409,7 +436,7 @@ class PlotVRCetc(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

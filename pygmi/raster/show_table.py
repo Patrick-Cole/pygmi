@@ -101,7 +101,7 @@ class BasicStats(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -167,7 +167,7 @@ def basicstats_calc(data):
 
     Parameters
     ----------
-    data : PyGMI Data.
+    data : pygmi.raster.datatypes.Data.
         PyGMI raster dataset.
 
     Returns
@@ -278,7 +278,7 @@ class ClusterStats(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

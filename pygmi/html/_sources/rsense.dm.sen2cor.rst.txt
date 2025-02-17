@@ -1,0 +1,9 @@
+Sen2Cor - Sentinel 2 Atmospheric Correction
+-------------------------------------------
+Sen2Cor is software provided by the European Space Agency in order to perform atmospheric corrections on Sentinel-2 data. For convenience, PyGMI provides a simple interface to this software. Sen2Cor can also provide a topographic corrections, but this is disabled in the PyGMI implementation.
+
+Options:
+
+* Sen2Cor Directory - this is the installation directory of Sen2Cor.
+* Sentinel-2 L1C .SAFE Directory - data to be corrected.
+

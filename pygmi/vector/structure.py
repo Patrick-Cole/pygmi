@@ -69,7 +69,7 @@ class StructComp(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.structure.structcomp')
+        helpdocs = menu_default.HelpButton('vector.dm.structcomp')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_method = QtWidgets.QLabel('Method:')
 
@@ -316,7 +316,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     -------
     geom2 : GeoDataFrame
         New geometry with intersection points.
-    dat : PyGMi Data
+    dat : pygmi.raster.datatypes.Data
         Output raster data
 
     """
@@ -386,7 +386,7 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         Output raster data
 
     """
@@ -443,7 +443,7 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         Output raster data
 
     """
@@ -524,7 +524,7 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         Output raster data
 
     """

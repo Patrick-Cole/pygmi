@@ -326,7 +326,12 @@ copper = np.array([[255., 236., 184.],
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the actual plot.
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
 
     Attributes
     ----------
@@ -336,9 +341,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         string indicating the histogram stretch to apply to the sun data
     cbar : matplotlib colour map
         colour map to be used for pseudo colour bars
-    data : list of PyGMI Data
+    data : list of pygmi.raster.datatypes.Data
         list of PyGMI raster data objects - used for colour images
-    sdata : list of PyGMI Data
+    sdata : list of pygmi.raster.datatypes.Data
         list of PyGMI raster data objects - used for shaded images
     gmode : str
         string containing the graphics mode - Contour, Ternary, Sunshade,
@@ -1767,7 +1772,7 @@ class PlotInterp(BasicModule):
             self.mmc.update_shade()
 
     def run(self):
-        """Run the module as a context menu."""
+        """Entry point into the routine, used to run context menu item."""
         self.data_init()
         self.settings()
 

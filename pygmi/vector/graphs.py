@@ -378,9 +378,14 @@ class GraphWindow(ContextModule):
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """
-    MPL Canvas class.
+    Matplotlib canvas widget for the actual plot.
 
     This routine will also allow the picking and movement of nodes of data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -1044,7 +1049,7 @@ class PlotCCoef(GraphWindow):
 
     def run(self):
         """
-        Entry point to run class.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1113,7 +1118,7 @@ class PlotHist(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1186,7 +1191,7 @@ class PlotLines(GraphWindow):
 
     def run(self):
         """
-        Entry point to run class.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1260,7 +1265,7 @@ class PlotLineMap(GraphWindow):
 
     def run(self):
         """
-        Entry point to run class.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1343,7 +1348,7 @@ class PlotRose(GraphWindow):
 
     def run(self):
         """
-        Entry point to run class.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1412,7 +1417,7 @@ class PlotVector(GraphWindow):
 
     def run(self):
         """
-        Entry point to run class.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------

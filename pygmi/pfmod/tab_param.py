@@ -251,7 +251,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         """
         self.setWindowTitle('Geophysical Parameters')
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.param')
+        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Preferred)

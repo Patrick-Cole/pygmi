@@ -162,7 +162,7 @@ class EquationEditor(BasicModule):
 
         Parameters
         ----------
-        indata : list of PyGMI Data.
+        indata : list of pygmi.raster.datatypes.Data.
             PyGMI raster dataset.
 
         Returns

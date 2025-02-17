@@ -73,7 +73,7 @@ class BandSelect(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -335,12 +335,12 @@ def clusterprep(dat):
 
     Parameters
     ----------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         List of PyGMI datasets.
 
     Returns
     -------
-    dat2 : list of PyGMI Data
+    dat2 : list of pygmi.raster.datatypes.Data
         List of PyGMI datasets.
 
     """
@@ -491,7 +491,7 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
 
     Returns
     -------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         Raster dataset imported
     """
     # Exclusions
@@ -889,7 +889,7 @@ def get_geopak(hfile):
 
     Returns
     -------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         PyGMI raster dataset.
 
     """
@@ -1002,7 +1002,7 @@ def get_geosoft(hfile):
 
     Returns
     -------
-    dat : list of PyGMI Data
+    dat : list of pygmi.raster.datatypes.Data
         Dataset imported
     """
     with open(hfile, mode='rb') as f:
@@ -1159,7 +1159,7 @@ class ExportData(ContextModule):
 
     def run(self):
         """
-        Run.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1763,7 +1763,7 @@ def calccov(data, showlog=print):
 
     Parameters
     ----------
-    data : list of PyGMI Data
+    data : list of pygmi.raster.datatypes.Data
         List of PyGMI data.
 
     Returns

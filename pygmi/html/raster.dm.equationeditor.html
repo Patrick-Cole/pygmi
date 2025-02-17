@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Equation Editor &#8212; PyGMI 3.2.8.28 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=8a155b59" />
+    <script src="_static/documentation_options.js?v=f6fc7afc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Smoothing" href="raster.dm.smoothing.html" />
+    <link rel="prev" title="Import RGB Image" href="raster.dm.importrgbimage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="raster.dm.importrgbimage.html" title="Previous document">Import RGB Image</a>
+        </li>
+        <li>
+          <a href="raster.dm.smoothing.html" title="Next document">Smoothing</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <section id="equation-editor">
+<h1>Equation Editor<a class="headerlink" href="#equation-editor" title="Link to this heading">¶</a></h1>
+<p>The <strong>Equation Editor</strong> allows for script operations to be performed on either single or multiple bands of data. It makes use of the powerful <em>numexpr</em> library for the scripting.</p>
+<p>The interface consists of the following:</p>
+<ol class="arabic simple">
+<li><p><strong>Output Equation</strong> box where the equation is typed out. The variables iall, i1, i2 etc. represents the bands of the input dataset in formulas.</p></li>
+<li><p><strong>Data Band Key</strong> combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the bands in the data set are listed. When selecting a band the variable associated with the band is shown to the right of the combo box. The variable name is for information purposes only, the user must type the equation manually in the equation box. If you want to apply an equation to all the bands in a data set, use iall.</p></li>
+<li><p><strong>Output Data Type</strong> combo box. This allows the user to specify the data type of the equation output. The auto option keeps the data type of the input data set.</p></li>
+<li><p><strong>Examples</strong> of some commonly used equations and <strong>Commands</strong> that are available.</p></li>
+</ol>
+<img alt="_images/rastereq.png" src="_images/rastereq.png" />
+<section id="examples">
+<h2>Examples:<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<p>Sum:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i1</span> <span class="o">+</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+<p>Threshold between values 1 and 98, substituting -999 as a nodata value:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">where</span><span class="p">((</span><span class="n">i1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">i1</span> <span class="o">&lt;</span> <span class="mi">98</span><span class="p">)</span> <span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="o">-</span><span class="mi">999</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Mean (can be any number of arguments):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span><span class="p">(</span><span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mean</span><span class="p">(</span><span class="n">iall</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Standard Deviation (can be any number of arguments):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="p">(</span><span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">std</span><span class="p">(</span><span class="n">iall</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="commands">
+<h2>Commands:<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Logical operators: &amp;, | , ~</p></li>
+<li><p>Comparison operators: &lt;;, &lt;=, ==, !=, &gt;=, &gt;</p></li>
+<li><p>Arithmetic operators: +, -, <em>, /, *</em>, %, &lt;&lt;, &gt;&gt;</p></li>
+<li><p>where(bool, number1, number2) : number1 if the bool condition is true, number2 otherwise.</p></li>
+<li><p>sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arctan2, arcsinh,</p></li>
+<li><p>arccosh, arctanh</p></li>
+<li><p>log, log10, log1p, exp, expm1</p></li>
+<li><p>sqrt, abs</p></li>
+<li><p>mosaic, two arguments, e.g. mosaic(i0, i1)</p></li>
+<li><p>mean, any number of arguments, e.g. mean(i0, i1, i2) or mean(iall)</p></li>
+<li><p>std, any number of arguments, e.g. std(i0, i1, i2) or std(iall)</p></li>
+<li><p>No data or null value: nodata</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="raster.dm.importrgbimage.html" title="Previous document">Import RGB Image</a>
+        </li>
+        <li>
+          <a href="raster.dm.smoothing.html" title="Next document">Smoothing</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="raster.html">Raster Data Analysis</a><ul>
+      <li>Previous: <a href="raster.dm.importrgbimage.html" title="previous chapter">Import RGB Image</a></li>
+      <li>Next: <a href="raster.dm.smoothing.html" title="next chapter">Smoothing</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025 Council for Geoscience.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/raster.dm.equationeditor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

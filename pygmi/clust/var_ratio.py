@@ -32,9 +32,7 @@ def var_ratio(data, uuu, center, dist_orig):
     Variance Ratio.
 
     Calculates the Variance ratio criterion after Calinski and Harabasz,
-    1974. Does not accept missing data.
-    Max VRC is optimal.
-    U can either be membership matrix (FCM) or cluster index values (k-means)
+    1974. Does not accept missing data. Max VRC is optimal.
 
     Parameters
     ----------

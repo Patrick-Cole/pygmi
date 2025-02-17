@@ -46,7 +46,14 @@ from pygmi.misc import BasicModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """Canvas for the actual plot."""
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         fig = Figure()

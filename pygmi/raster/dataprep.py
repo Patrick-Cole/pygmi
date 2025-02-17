@@ -1147,7 +1147,7 @@ class Metadata(ContextModule):
 
     def run(self):
         """
-        Entry point to start this routine.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -1215,13 +1215,13 @@ def cluster_to_raster(indata):
 
     Parameters
     ----------
-    indata : Data
-        PyGMI raster dataset
+    indata : dict
+        Dictionary of PyGMI datasets.
 
     Returns
     -------
-    indata : Data
-        PyGMI raster dataset
+    indata : dict
+        Dictionary of PyGMI datasets.
 
     """
     if 'Cluster' not in indata:
@@ -1242,7 +1242,7 @@ def fftprep(data):
 
     Parameters
     ----------
-    data : PyGMI Data type
+    data : pygmi.raster.datatypes.Data
         Input dataset.
 
     Returns
@@ -1345,14 +1345,14 @@ def fftcont(data, h):
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         PyGMI raster data.
     h : float
         Height.
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster data.
 
     """
@@ -1865,14 +1865,14 @@ def taylorcont(data, h):
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         PyGMI raster data.
     h : float
         Height.
 
     Returns
     -------
-    dat : PyGMI Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster data.
 
     """
@@ -1902,13 +1902,13 @@ def trim_raster(olddata):
 
     Parameters
     ----------
-    olddata : list of PyGMI Data
-        PyGMI dataset
+    olddata : list of pygmi.raster.datatypes.Data
+        PyGMI dataset.
 
     Returns
     -------
-    olddata : list of PyGMI Data
-        PyGMI dataset
+    olddata : list of pygmi.raster.datatypes.Data
+        PyGMI dataset.
     """
     for data in olddata:
         mask = np.ma.getmaskarray(data.data)

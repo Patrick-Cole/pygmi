@@ -22,7 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Main Clustering set of routines."""
+"""
+The cluster module performs unsupervised classification using the
+scikit-learn library.
+"""
 
 import os
 from PyQt5 import QtWidgets, QtCore
@@ -37,7 +40,14 @@ from pygmi.misc import BasicModule
 
 
 class Cluster(BasicModule):
-    """Cluster Class."""
+    """
+    Cluster analysis GUI.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -94,7 +104,7 @@ class Cluster(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('pygmi.clust.cluster')
+        helpdocs = menu_default.HelpButton('cluster.dm.clust')
         gl_1 = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -162,7 +172,7 @@ class Cluster(BasicModule):
 
     def combo(self):
         """
-        Set up combo box.
+        Set up combo box, used to choose clustering algorithm.
 
         Returns
         -------

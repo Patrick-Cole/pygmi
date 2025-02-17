@@ -38,7 +38,14 @@ from pygmi.misc import BasicModule
 
 
 class GraphHist(FigureCanvasQTAgg):
-    """Graph Hist."""
+    """
+    Histogram graph widget.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         self.figure = Figure()
@@ -95,8 +102,8 @@ class GraphHist(FigureCanvasQTAgg):
         ----------
         bins : int
             Number of bins.
-        dattmp : list of PyGMI Data
-            Data.
+        dattmp : list
+            List of PyGMI raster data (pygmi.raster.datatypes.Data).
         ctmp : list
             Cluster indices.
 
@@ -260,12 +267,12 @@ class GraphHist(FigureCanvasQTAgg):
 
 class GraphMap(FigureCanvasQTAgg):
     """
-    Graph Map.
+    Map widget.
 
-    Attributes
+    Parameters
     ----------
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):
@@ -373,13 +380,18 @@ class PolygonInteractor(QtCore.QObject):
 
     Parameters
     ----------
-        showverts : bool
-        epsilon : int
-        polyi_changed : signal
+    parent : parent
+        Reference to the parent routine.
+
+    Attributes
+    ----------
+    epsilon : int
+        Epsilon tolerance for index detection.
+    polyi_changed : QtCore.pyqtSignal
+        Qt signal when polygon has changed.
 
     """
 
-    showverts = True
     epsilon = 5
     polyi_changed = QtCore.pyqtSignal()  #: polygon changed signal.
 
@@ -610,7 +622,14 @@ class PolygonInteractor(QtCore.QObject):
 
 
 class ScatterPlot(BasicModule):
-    """Main Graph Tool Routine."""
+    """
+    Main graph tool GUI routine.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -680,7 +699,7 @@ class ScatterPlot(BasicModule):
 
     def on_cp_dpoly(self):
         """
-        On cp delete polygon.
+        On cross plot, delete polygon.
 
         Returns
         -------
@@ -714,7 +733,7 @@ class ScatterPlot(BasicModule):
 
     def on_cp_combo(self):
         """
-        On cp combo.
+        On cross plot, combo.
 
         Returns
         -------
@@ -729,7 +748,7 @@ class ScatterPlot(BasicModule):
 
     def on_cp_combo2(self):
         """
-        On cp combo 2.
+        On cross plot, combo 2.
 
         Returns
         -------
@@ -744,7 +763,7 @@ class ScatterPlot(BasicModule):
 
     def on_cp_combo3(self):
         """
-        On cp combo 3.
+        On cross plot, combo 3.
 
         Returns
         -------
@@ -911,7 +930,7 @@ class ScatterPlot(BasicModule):
 
 def dist_point_to_segment(p, s0, s1):
     """
-    Dist point to segment.
+    Distance of a point to a line segment.
 
     Reimplementation of Matplotlib's dist_point_to_segment, after it was
     depreciated. Follows http://geomalgorithms.com/a02-_lines.html

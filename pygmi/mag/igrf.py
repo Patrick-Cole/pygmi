@@ -154,7 +154,7 @@ class IGRF(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
+        helpdocs = menu_default.HelpButton('mag.dm.igrf')
 
         lbl_0 = QtWidgets.QLabel('Sensor clearance above ground')
         lbl_1 = QtWidgets.QLabel('Date')
@@ -292,7 +292,7 @@ def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
 
     Parameters
     ----------
-    data : PyGMI Data
+    data : pygmi.raster.datatypes.Data
         Input magnetic data.
     sdate : Date
         Survey date.
@@ -309,8 +309,8 @@ def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
 
     Returns
     -------
-    outdata : list of PyGMI Data.
-        Output PyGMI Data.
+    outdata : list
+        List of output PyGMI Data (pygmi.raster.datatypes.Data).
     fmean : float
         Total intensity mean.
     imean : float

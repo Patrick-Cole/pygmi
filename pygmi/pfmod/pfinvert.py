@@ -93,7 +93,7 @@ class MagInvert(BasicModule):
 
         """
         self.setWindowTitle('Inverse Modelling Parameters')
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.minv')
+        helpdocs = menu_default.HelpButton('pfmod.dm.inv3d')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
