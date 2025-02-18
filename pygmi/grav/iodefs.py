@@ -39,6 +39,11 @@ class ImportCG5(BasicModule):
     Import CG-5 data.
 
     This class imports CG-5 gravimeter data with associated GPS data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
     """
 
     def __init__(self, parent):

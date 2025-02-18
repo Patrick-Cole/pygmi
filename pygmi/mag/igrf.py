@@ -80,55 +80,9 @@ class IGRF(BasicModule):
 
     Parameters
     ----------
-    altmin : Double
-        Minimum height of selected model.
-    altmax : Double array
-        array of MAXMOD Maximum height of model.
-    maxalt : Double
-        Maximum height of selected model.
-    d : float
-        Declination of the field from the geographic north (deg).
-    sdate : float
-        start date inputted
-    ddot : float
-        annual rate of change of decl. (arc-min/yr)
-    alt : float
-        altitude above WGS84 Ellipsoid
-    epoch : list
-        list of MAXMOD epoch of model.
-    latitude : float
-        Latitude.
-    longitude : float
-        Longitude.
-    gh : numpy array
-        Schmidt quasi-normal internal spherical harmonic coeff.
-        Schmidt quasi-normal internal spherical harmonic coeff.
-        Coefficients of resulting model.
-        Coefficients of rate of change model.
-    i : float
-        Inclination (deg).
-    idot : float
-        Rate of change of i (arc-min/yr).
-    igdgc : int
-        Flag for geodetic or geocentric coordinate choice.
-    irec_pos : int array
-        array of MAXMOD Record counter for header
-    fileline : int
-        Current line in file (for errors)
-    max1 : list, int
-        array of MAXMOD Main field coefficient.
-    max2 : list, int
-        array of MAXMOD Secular variation coefficient.
-    max3 : list, int
-        array of MAXMOD Acceleration coefficient.
-    minyr : float
-        Min year of all models
-    maxyr : float
-        Max year of all models
-    yrmax : list, float
-        array of MAXMOD  Max year of model.
-    yrmin : list, float
-        array of MAXMOD  Min year of model.
+    parent : parent
+        Reference to the parent routine.
+
     """
 
     def __init__(self, parent=None):
@@ -318,6 +272,58 @@ def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
     dmean : float
         Declination mean.
     """
+    # Attributes
+    # ----------
+    # altmin : Double
+    #     Minimum height of selected model.
+    # altmax : Double array
+    #     array of MAXMOD Maximum height of model.
+    # maxalt : Double
+    #     Maximum height of selected model.
+    # d : float
+    #     Declination of the field from the geographic north (deg).
+    # sdate : float
+    #     start date inputted
+    # ddot : float
+    #     annual rate of change of decl. (arc-min/yr)
+    # alt : float
+    #     altitude above WGS84 Ellipsoid
+    # epoch : list
+    #     list of MAXMOD epoch of model.
+    # latitude : float
+    #     Latitude.
+    # longitude : float
+    #     Longitude.
+    # gh : numpy array
+    #     Schmidt quasi-normal internal spherical harmonic coeff.
+    #     Schmidt quasi-normal internal spherical harmonic coeff.
+    #     Coefficients of resulting model.
+    #     Coefficients of rate of change model.
+    # i : float
+    #     Inclination (deg).
+    # idot : float
+    #     Rate of change of i (arc-min/yr).
+    # igdgc : int
+    #     Flag for geodetic or geocentric coordinate choice.
+    # irec_pos : int array
+    #     array of MAXMOD Record counter for header
+    # fileline : int
+    #     Current line in file (for errors)
+    # max1 : list, int
+    #     array of MAXMOD Main field coefficient.
+    # max2 : list, int
+    #     array of MAXMOD Secular variation coefficient.
+    # max3 : list, int
+    #     array of MAXMOD Acceleration coefficient.
+    # minyr : float
+    #     Min year of all models
+    # maxyr : float
+    #     Max year of all models
+    # yrmax : list, float
+    #     array of MAXMOD  Max year of model.
+    # yrmin : list, float
+    #     array of MAXMOD  Min year of model.
+
     MAXDEG = 13
     MAXCOEFF = MAXDEG*(MAXDEG+2)+1
 

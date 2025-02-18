@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""EM Menu Routines."""
+"""MT Menu Routines."""
 
 from PyQt5 import QtWidgets
 
@@ -39,7 +39,7 @@ class MenuWidget():
     This widget class creates menus to be found on the main
     interface. Normal as well as context menus are defined here.
 
-    Attributes
+    Parameters
     ----------
     parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
@@ -55,9 +55,9 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('MT')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
-        self.menu.addAction(self.action_birrp)
-        self.action_birrp.triggered.connect(self.birrp)
+        # self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
+        # self.menu.addAction(self.action_birrp)
+        # self.action_birrp.triggered.connect(self.birrp)
 
         self.menu.addSeparator()
 

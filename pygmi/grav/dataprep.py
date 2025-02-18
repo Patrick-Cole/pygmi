@@ -39,6 +39,11 @@ class ProcessData(BasicModule):
     Process Gravity Data.
 
     This class processes gravity data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
     """
 
     def __init__(self, parent=None):

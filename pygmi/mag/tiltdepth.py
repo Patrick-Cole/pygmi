@@ -45,11 +45,9 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
 import geopandas as gpd
 
-from pygmi.raster.datatypes import Data
 from pygmi.raster.cooper import vertical
 from pygmi.raster.misc import lstack
 from pygmi.mag.dataprep import rtp, nextpow2
-from pygmi.vector.dataprep import quickgrid
 from pygmi.misc import frm, ProgressBar, BasicModule
 from pygmi import menu_default
 
@@ -57,6 +55,11 @@ from pygmi import menu_default
 class TiltDepth(BasicModule):
     """
     Primary class for the Tilt Depth.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
 
     Attributes
     ----------

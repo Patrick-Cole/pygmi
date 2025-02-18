@@ -1643,7 +1643,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
         wkt.append(i.crs.to_wkt())
         crs.append(i.crs)
-        nodata = i.nodata
+        # nodata = i.nodata
 
     wkt, iwkt, numwkt = np.unique(wkt, return_index=True,
                                   return_counts=True)
@@ -1703,10 +1703,13 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             metadata = i.metadata
             datetime = i.datetime
 
-            x = [bounds[0], bounds[2]]
-            y = [bounds[1], bounds[3]]
-            x, y = reprojxy(x, y, crs, i.crs)
-            bounds2 = [x[0], y[0], x[1], y[1]]
+            if bounds is not None:
+                x = [bounds[0], bounds[2]]
+                y = [bounds[1], bounds[3]]
+                x, y = reprojxy(x, y, crs, i.crs)
+                bounds2 = [x[0], y[0], x[1], y[1]]
+            else:
+                bounds2 = None
 
             i2 = get_data(i.filename, piter=iter, tnames=[i.dataid],
                           bounds=bounds2, showlog=showlog)
@@ -1767,11 +1770,14 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             elif nodata is None:
                 nodata = -99999
 
+            if i2.data.dtype == np.float32:
+                nodata = np.float32(nodata)
+
             tmpdat = i2.data
             tmpdat = tmpdat.filled(nodata)
             tmpdat = np.ma.masked_equal(tmpdat, nodata)
             tmpdat = tmpdat-mval
-
+            # breakpoint()
             raster.write(tmpdat, 1)
             raster.write_mask(~np.ma.getmaskarray(i2.data))
 
@@ -2109,14 +2115,17 @@ def _testfn():
     ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
     ifile = r"D:\mag\merge\mag1.tif"
 
-    dat = get_raster(ifile)
+    # dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    tmp = Metadata()
-    tmp.indata['Raster'] = dat
-    tmp.run()
+    # tmp = Metadata()
+    # tmp.indata['Raster'] = dat
+    # tmp.run()
 
-    app.exec()
+    # app.exec()
+
+    tmp = DataMerge()
+    tmp.settings()
 
 
 if __name__ == "__main__":

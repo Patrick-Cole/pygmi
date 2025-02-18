@@ -39,6 +39,11 @@ class Tilt1(BasicModule):
     """
     Class used to gather information via a GUI, for function tilt1.
 
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+
     Attributes
     ----------
     azi : float
@@ -368,7 +373,14 @@ def vertical(data, npts=None, xint=1, order=1):
 
 
 class RTP(BasicModule):
-    """Perform Reduction to the Pole on Magnetic data."""
+    """
+    Perform Reduction to the Pole on Magnetic data.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

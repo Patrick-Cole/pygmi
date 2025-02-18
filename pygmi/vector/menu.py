@@ -40,7 +40,7 @@ class MenuWidget():
     This widget class creates the vector menus to be found on the main
     interface. Normal as well as context menus are defined here.
 
-    Attributes
+    Parameters
     ----------
     parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
