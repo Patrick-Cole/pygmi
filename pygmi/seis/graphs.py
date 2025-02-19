@@ -56,8 +56,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -671,7 +672,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class GraphWindow(ContextModule):
-    """Graph Window - The QDialog window which will contain our image."""
+    """
+    Graph Window class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -729,7 +738,12 @@ class GraphWindow(ContextModule):
 
 class PlotQC(GraphWindow):
     """
-    Plot Hist Class.
+    GUI to plot QC graphs.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -905,7 +919,12 @@ class PlotQC(GraphWindow):
 
 class PlotIso(GraphWindow):
     """
-    Plot Hist Class.
+    GUI to plot isolines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------

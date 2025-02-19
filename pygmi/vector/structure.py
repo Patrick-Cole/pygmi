@@ -39,7 +39,15 @@ from pygmi.raster.datatypes import Data, bounds_to_transform
 
 
 class StructComp(BasicModule):
-    """Structure complexity."""
+    """
+    GUI for structure complexity.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

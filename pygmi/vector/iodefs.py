@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import and export vector data."""
 
 import os
 import glob
@@ -43,7 +43,15 @@ from pygmi.vector.dataprep import maptobounds
 
 
 class ColumnSelect(BasicModule):
-    """A combobox to select vector columns."""
+    """
+    A combobox to select vector columns.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -123,9 +131,15 @@ class ColumnSelect(BasicModule):
 
 class ImportXYZ(BasicModule):
     """
-    Import XYZ Data.
+    GUI to import XYZ data.
 
     This class imports tabular data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -399,7 +413,15 @@ class ImportXYZ(BasicModule):
 
 
 class ExportXYZ(ContextModule):
-    """Export XYZ Data."""
+    """
+    GUI to export XYZ data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -473,7 +495,15 @@ class ExportXYZ(ContextModule):
 
 
 class ExportVector(ContextModule):
-    """Export Vector Data."""
+    """
+    GUI to export vector data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -545,7 +575,15 @@ class ExportVector(ContextModule):
 
 
 class ImportVector(BasicModule):
-    """Import Vector Data."""
+    """
+    GUI to import vector data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

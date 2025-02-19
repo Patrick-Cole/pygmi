@@ -59,6 +59,12 @@ class GravMag():
 
     Routine that will calculate the final versions of the field. Other,
     related code is here as well, such as the inversion routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -381,6 +387,26 @@ class GeoData():
     The is a class which contains the geophysical information for a single
     lithology. This includes the final calculated field for that lithology
     only.
+
+    Parameters
+    ----------
+    parent : parent
+        Reference to the parent routine.
+    ncols : int
+        Number of columns in the model.
+    nrows : int
+        Number of rows in the model.
+    numz : int
+        Number of layer in the model.
+    dxy : float
+        X and Y size of each voxel.
+    d_z : float
+        Layer thickness.
+    mht : float
+        Magnetic sensor height.
+    ght : float
+        Gravity sensor height.
+
     """
 
     def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,

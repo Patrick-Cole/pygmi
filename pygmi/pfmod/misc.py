@@ -68,7 +68,17 @@ def update_lith_lw(lmod, lwidget):
 
 
 class ProgressBar():
-    """Wrapper for a progress bar. It consists of two progress bars."""
+    """
+    Wrapper for a progress bar. It consists of two progress bars.
+
+    Parameters
+    ----------
+    par : pygmi.misc.ProgressBar
+        Progress bar.
+    pbarmain : pygmi.misc.ProgressBar
+        Main progress bar.
+
+    """
 
     def __init__(self, pbar, pbarmain):
         self.pbar = pbar
@@ -264,7 +274,15 @@ class ProgressBar():
 
 
 class MergeMod3D(BasicModule):
-    """Perform Merge of two models."""
+    """
+    Perform Merge of two models.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

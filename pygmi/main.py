@@ -65,6 +65,15 @@ class Arrow(QtWidgets.QGraphicsLineItem):
     """
     Class responsible for drawing arrows on the main interface.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    start_item : DiagramItem
+        Starting DiagramItem object.
+    end_item : DiagramItem
+        End DiagramItem object.
+
     Attributes
     ----------
     arrow_head : QPolygonF
@@ -182,6 +191,18 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     """
     Diagram Item.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    diagram_type : str
+        string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
+        'Step'
+    context_menu : dict
+        Dictionary of contect menu options
+    my_class : object
+        Class that the diagram item is linked to.
+
     Attributes
     ----------
     arrows : list
@@ -189,11 +210,12 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     diagram_type : str
         string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
-    context_menu = context_menu
+    context_menu : dict
+        Dictionary of context menu options
     my_class : object
         Class that the diagram item is linked to.
-
-    text_item : None
+    text_item : None or QtWidgets.QGraphicsTextItem
+        Text label associated with item.
     my_class_name : str
         Class name being referenced
     """
@@ -428,7 +450,16 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
 
 class DiagramScene(QtWidgets.QGraphicsScene):
-    """Diagram Scene."""
+    """
+    Diagram Scene.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    item_menu : QtWidgets.QMenu
+        Item menu.
+    """
 
     def __init__(self, item_menu, parent=None):
         super().__init__(parent)
@@ -583,6 +614,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 class MainWidget(QtWidgets.QMainWindow):
     """
     Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -1283,7 +1319,17 @@ class MainWidget(QtWidgets.QMainWindow):
 
 
 class Startup(QtWidgets.QDialog):
-    """Class to provide a startup display while PyGMI loads into memory."""
+    """
+    Class to provide a startup display while PyGMI loads into memory.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    pbarmax : int
+        Progress bar maximum value.
+
+    """
 
     def __init__(self, pbarmax, parent=None):
         super().__init__(parent)

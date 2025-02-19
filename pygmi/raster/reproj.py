@@ -37,9 +37,15 @@ from pygmi.raster.datatypes import Data
 
 class GroupProj(QtWidgets.QWidget):
     """
-    Group Proj.
+    Group Projection GUI widget.
 
-    Custom widget
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    title : str
+        Title for groupbox - self.gbox.
+
     """
 
     def __init__(self, title='Projection', parent=None):
@@ -118,7 +124,7 @@ class GroupProj(QtWidgets.QWidget):
 
     def combo_datum_change(self):
         """
-        Change Combo.
+        Change datum combo.
 
         Returns
         -------
@@ -186,6 +192,8 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
         input crs. The default is None.
     showlog : function, optional
         Display information. The default is print.
+    forcereproj : bool, optional
+        Force a reprojection, the default is False.
 
     Returns
     -------

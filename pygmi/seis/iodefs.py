@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Seismology Data."""
+"""Import and export seismology data."""
 
 import os
 import re
@@ -137,7 +137,15 @@ def str2int(inp):
 
 
 class ImportSeisan(BasicModule):
-    """Import SEISAN Data."""
+    """
+    GUI to import SEISAN and SeisComP data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1199,9 +1207,15 @@ def read_record_type_p(i):
 
 class ImportGenericFPS(BasicModule):
     """
-    Import Generic Fault Plane Solution Data.
+    GUI to import Generic Fault Plane Solution data.
 
     This is stored in a csv file.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -1302,7 +1316,15 @@ class ImportGenericFPS(BasicModule):
 
 
 class ExportSeisan(ContextModule):
-    """Export SEISAN Data."""
+    """
+    GUI to export SEISAN data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1893,7 +1915,15 @@ class ExportSeisan(ContextModule):
 
 
 class ExportCSV(ContextModule):
-    """Export SEISAN Data."""
+    """
+    GUI export seismic data to CSV.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -2434,7 +2464,15 @@ class ExportCSV(ContextModule):
 
 
 class ExportSummary(ContextModule):
-    """Export SEISAN Data."""
+    """
+    GUI to export a seismic data summary.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -2588,9 +2626,15 @@ def mercalli(mag):
 
 class FilterSeisan(BasicModule):
     """
-    Filter Data.
+    GUI to filter seismic data events.
 
     This filters data using thresholds.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):

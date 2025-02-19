@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""A collection of routines by Gordon Cooper.
+"""A collection of routines by Gordon Cooper for filtering raster data.
 
 |    School of Geosciences, University of the Witwatersrand
 |    Johannesburg, South Africa
@@ -41,6 +41,11 @@ from pygmi.misc import ProgressBarText, BasicModule
 class Gradients(BasicModule):
     """
     Class used to gather information via a GUI, for function gradients.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -308,6 +313,11 @@ def derivative_ratio(data, azi, order):
 class Visibility2d(BasicModule):
     """
     Class used to gather information via a GUI, for function visibility2d.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -774,6 +784,11 @@ def vertical(data, npts=None, xint=1, order=1):
 class AGC(BasicModule):
     """
     Class used to gather information via a GUI, for function AGC.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------

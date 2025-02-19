@@ -34,6 +34,7 @@ from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 import geopandas as gpd
 from pyproj import CRS, Transformer
+from shapely import Polygon
 
 from pygmi import menu_default
 from pygmi.raster.reproj import GroupProj
@@ -44,10 +45,16 @@ from pygmi.misc import BasicModule, ContextModule, ProgressBarText
 
 class PointCut(BasicModule):
     """
-    Cut Data using shapefiles.
+    GUI to cut data using shapefiles.
 
     This class cuts point datasets using a boundary defined by a polygon
     shapefile.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -108,9 +115,15 @@ class PointCut(BasicModule):
 
 class DataGrid(BasicModule):
     """
-    Grid Point Data.
+    GUI to grid point data.
 
     This class grids point data using a nearest neighbourhood technique.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -358,9 +371,15 @@ class DataGrid(BasicModule):
 
 class DataReproj(BasicModule):
     """
-    Reprojections.
+    GUI to reproject vector data.
 
-    This class reprojects datasets using the rasterio routines.
+    This class reprojects datasets using the GeoPandas routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -500,10 +519,15 @@ class DataReproj(BasicModule):
 
 class Metadata(ContextModule):
     """
-    Edit Metadata.
+    GUI to display and edit vector metadata.
 
     This class allows the editing of the metadata for a vector dataset using a
     GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -599,7 +623,15 @@ class Metadata(ContextModule):
 
 
 class TextFileSplit(BasicModule):
-    """Split a text file into smaller text files."""
+    """
+    GUI to split a text file into smaller text files.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1218,6 +1250,38 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
     return bounds
 
 
+def maptovector(maplist):
+    """
+    Create a vector layer from map numbers.
+
+    Parameters
+    ----------
+    maplist : list
+        List of strings containing map sheet numbers.
+
+    Returns
+    -------
+    data : GeoDataFrame
+        GeoPandas GeoDataFrame
+
+    """
+    allpolys = []
+    for i in maplist:
+        bounds = maptobounds(i)
+        x0, y0, x1, y1 = bounds
+
+        poly = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)])
+
+        allpolys.append(poly)
+
+    data = gpd.GeoDataFrame({'geometry': allpolys})
+    newgeom = [data.union_all()]
+    data = gpd.GeoDataFrame({'geometry': newgeom})
+
+    data = data.set_crs(4326)
+
+    return data
+
 def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     """
     Do a quick grid.
@@ -1357,24 +1421,15 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\SPECARCHIVE.XYZ"
+    ofile = r"D:\mining_guidelines\2430\2430.shp"
 
-    IO = ImportXYZ()
-    IO.ifile = ifile
-    IO.filt = 'Geosoft XYZ (*.xyz)'
-    IO.settings(True)
-
-    # MD = Metadata()
-    # MD.indata = IO.outdata
-    # MD.run()
-
-    MD = DataGrid()
-    MD.indata = IO.outdata
-    MD.settings()
+    maplist = ['2430DA', '2430DB', '2430DC', '2430DD']
+    data = maptovector(maplist)
 
 
+    data.to_file(ofile)
 
-    # app.exec()
+    # breakpoint()
 
 
 def _testfn_pointcut():
@@ -1425,4 +1480,4 @@ def _testfn_filesplit():
 
 
 if __name__ == "__main__":
-    _testfn_pointcut()
+    _testfn()

@@ -33,7 +33,15 @@ from pygmi import menu_default
 
 
 class MergeLith(QtWidgets.QDialog):
-    """Class to call up a dialog for ranged copying."""
+    """
+    Class to call up a dialog for ranged copying.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -76,7 +84,15 @@ class MergeLith(QtWidgets.QDialog):
 
 
 class LithNotes(QtWidgets.QDialog):
-    """Class to call up a dialog for lithology descriptions."""
+    """
+    Class to call up a dialog for lithology descriptions.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -204,7 +220,15 @@ class LithNotes(QtWidgets.QDialog):
 
 
 class ParamDisplay(QtWidgets.QDialog):
-    """Widget class to call the main interface."""
+    """
+    Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

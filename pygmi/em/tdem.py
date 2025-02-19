@@ -50,8 +50,9 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -140,8 +141,9 @@ class TDEM1D(BasicModule):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):

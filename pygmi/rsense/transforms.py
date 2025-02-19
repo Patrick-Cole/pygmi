@@ -41,7 +41,15 @@ from pygmi.rsense.iodefs import set_export_filename
 
 
 class MNF(BasicModule):
-    """Perform MNF Transform."""
+    """
+    GUI to perform MNF transform.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -249,7 +257,15 @@ class MNF(BasicModule):
 
 
 class PCA(BasicModule):
-    """Perform PCA Transform."""
+    """
+    GUI to perform PCA transform.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

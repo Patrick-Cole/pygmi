@@ -51,7 +51,15 @@ from pygmi.rsense.iodefs import get_data, get_from_rastermeta
 
 
 class Continuation(BasicModule):
-    """Perform upward and downward continuation on potential field data."""
+    """
+    GUI to perform upward and downward continuation on potential field data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -181,10 +189,16 @@ class Continuation(BasicModule):
 
 class DataCut(BasicModule):
     """
-    Cut Data using shapefiles.
+    GUI to Cut Data using shapefiles.
 
     This class cuts raster datasets using a boundary defined by a polygon
     shapefile.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -244,10 +258,16 @@ class DataCut(BasicModule):
 
 class DataLayerStack(BasicModule):
     """
-    Data Layer Stack.
+    Data Layer Stack GUI.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -418,10 +438,16 @@ class DataLayerStack(BasicModule):
 
 class DataMerge(BasicModule):
     """
-    Data Merge.
+    Data merge or mosaic GUI.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -679,9 +705,15 @@ class DataMerge(BasicModule):
 
 class DataReproj(BasicModule):
     """
-    Reprojections.
+    Raster reprojection GUI.
 
     This class reprojects datasets using the rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -813,9 +845,15 @@ class DataReproj(BasicModule):
 
 class GetProf(BasicModule):
     """
-    Get a Profile.
+    GUI to extract a profile from a raster dataset.
 
     This class extracts a profile from a raster dataset using a line shapefile.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -922,10 +960,15 @@ class GetProf(BasicModule):
 
 class Metadata(ContextModule):
     """
-    Edit Metadata.
+    Edit raster metadata.
 
     This class allows the editing of the metadata for a raster dataset using a
     GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------

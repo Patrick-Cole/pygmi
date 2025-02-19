@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import raster data."""
+"""Import and export routines for raster data."""
 
 import warnings
 import os
@@ -46,7 +46,15 @@ warnings.filterwarnings("ignore",
 
 
 class BandSelect(ContextModule):
-    """A combobox to select data bands."""
+    """
+    A combobox to select data bands.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -120,7 +128,19 @@ class BandSelect(ContextModule):
 
 
 class ImportData(BasicModule):
-    """Import Data - Interfaces with rasterio routines."""
+    """
+    Import Data GUI - Interfaces with rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    ifile : str, optional
+        Input file. The default is ''.
+    filt : str, optional
+        File filter. The default is ''.
+
+    """
 
     def __init__(self, parent=None, ifile='', filt=''):
         super().__init__(parent)
@@ -250,7 +270,15 @@ class ImportData(BasicModule):
 
 
 class ImportRGBData(BasicModule):
-    """Import RGB Image - Interfaces with rasterio routines."""
+    """
+    Import RGB Image GUI- Interfaces with rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1097,7 +1125,12 @@ def get_geosoft(hfile):
 
 class ExportData(ContextModule):
     """
-    Export Data.
+    Export Data GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -1514,6 +1547,10 @@ def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
         NONE.
     bandsort : bool, optional
         sort the bands by dataid. The default is True
+    showlog : function, optional
+        Show information using a function. The default is print.
+    updatestats : bool, optional
+        Update statistics in exported file.
 
     Returns
     -------
@@ -1765,6 +1802,8 @@ def calccov(data, showlog=print):
     ----------
     data : list of pygmi.raster.datatypes.Data
         List of PyGMI data.
+    showlog : function, optional
+        Show information using a function. The default is print.
 
     Returns
     -------

@@ -37,6 +37,12 @@ class CorrectDescriptions(BasicModule):
 
     This compares the descriptions found in SEISAN type 3 lines to a custom
     list.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):

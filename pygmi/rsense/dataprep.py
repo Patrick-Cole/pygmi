@@ -37,14 +37,18 @@ from pygmi.raster.misc import lstack, aspect2
 from pygmi.raster.iodefs import get_raster
 from pygmi import menu_default
 from pygmi.misc import BasicModule
-import matplotlib.pyplot as plt
-# import warnings
-
-# warnings.filterwarnings('error')
 
 
 class TopoCorrect(BasicModule):
-    """Calculate topographic correction."""
+    """
+    GUI to calculate topographic correction.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -197,7 +201,15 @@ class TopoCorrect(BasicModule):
 
 
 class Sen2Cor(BasicModule):
-    """Calculate topographic correction."""
+    """
+    GUI to calculate atmospheric correction using Sen2Cor.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

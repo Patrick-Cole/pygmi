@@ -46,7 +46,15 @@ from pygmi.pfmod.grvmag3d import quick_model
 
 
 class MagInvert(BasicModule):
-    """MextDisplay - Widget class to call the main interface."""
+    """
+    MagInvert - GUI class for magnetic inversion.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

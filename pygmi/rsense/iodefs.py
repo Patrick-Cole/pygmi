@@ -61,7 +61,15 @@ warnings.filterwarnings("ignore",
 
 
 class ImportData(BasicModule):
-    """Import Data - Interfaces with rasterio routines."""
+    """
+    Import Data GUI - Interfaces with rasterio routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -244,6 +252,11 @@ class ImportBatch(BasicModule):
 
     This does not actually import data, but rather defines a list of datasets
     to be used by other routines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -447,7 +460,15 @@ class ImportBatch(BasicModule):
 
 
 class ImportSentinel5P(BasicModule):
-    """Import Sentinel 5P data to shapefile."""
+    """
+    GUI import Sentinel 5P data and export to shapefile.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -816,7 +837,15 @@ class ImportSentinel5P(BasicModule):
 
 
 class ExportBatch(ContextModule):
-    """Export Raster File List."""
+    """
+    GUI to export Raster File List.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -3619,11 +3648,14 @@ def set_export_filename(dat, odir, otype=None):
         ofile = '_'.join(filename.split('_')[:4])
     elif 'Sentinel-2' in sensor:
         tmp = filename.split('_')
-        mission = tmp[0]
-        date = tmp[2].split('T')[0]
-        row = tmp[4]
-        tile = tmp[5]
-        ofile = f'{mission}_{tile}_{row}_{date}'
+        if len(tmp) < 6:
+            ofile = filename
+        else:
+            mission = tmp[0]
+            date = tmp[2].split('T')[0]
+            row = tmp[4]
+            tile = tmp[5]
+            ofile = f'{mission}_{tile}_{row}_{date}'
     else:
         ofile = filename
 

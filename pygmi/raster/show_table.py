@@ -33,7 +33,15 @@ from pygmi.misc import ContextModule
 
 
 class BasicStats(ContextModule):
-    """Show a summary of basic stats."""
+    """
+    Show a summary of basic stats.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -209,7 +217,15 @@ def basicstats_calc(data):
 
 
 class ClusterStats(ContextModule):
-    """Show a summary of basic statistics."""
+    """
+    Show a summary of basic statistics.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

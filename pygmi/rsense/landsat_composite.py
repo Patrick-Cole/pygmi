@@ -40,6 +40,11 @@ class LandsatComposite(BasicModule):
     """
     Landsat Composite Interface.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     Attributes
     ----------
     idir : str

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Calculate remote sensing ratios."""
+"""Calculate remote sensing ratios and condition indices."""
 
 import os
 import sys
@@ -39,7 +39,15 @@ from pygmi.misc import BasicModule
 
 
 class SatRatios(BasicModule):
-    """Calculate Satellite Ratios."""
+    """
+    GUI to calculate satellite ratios.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -348,7 +356,15 @@ class SatRatios(BasicModule):
 
 
 class ConditionIndices(BasicModule):
-    """Calculate Satellite Condition Indices."""
+    """
+    GUI to calculate satellite condition indices.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

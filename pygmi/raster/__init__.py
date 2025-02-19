@@ -1,2 +1,2 @@
-"""Raster Routines."""
+"""General routines related to raster data."""
 

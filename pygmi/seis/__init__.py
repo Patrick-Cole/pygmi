@@ -1,1 +1,1 @@
-"""Seismology Routines."""
+"""Seismology routines using primarily SEISAN data."""

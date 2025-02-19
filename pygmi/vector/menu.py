@@ -42,8 +42,8 @@ class MenuWidget():
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget
-        Reference to MainWidget class found in main.py
+    parent : pygmi.main.MainWidget, optional
+        Reference to MainWidget class found in main.py. The default is None.
     """
 
     def __init__(self, parent=None):

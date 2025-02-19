@@ -35,7 +35,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
 
@@ -51,12 +50,13 @@ from pygmi.raster.modest_image import imshow
 
 class GraphMap(FigureCanvasQTAgg):
     """
-    Graph Map.
+    Graph Map widget.
 
-    Attributes
+    Parameters
     ----------
-    parent : parent
-        reference to the parent routine
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -205,7 +205,15 @@ class GraphMap(FigureCanvasQTAgg):
 
 
 class AnalSpec(BasicModule):
-    """Analyse spectra."""
+    """
+    Analyse spectra GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -531,7 +539,15 @@ class AnalSpec(BasicModule):
 
 
 class ProcFeatures(BasicModule):
-    """Process Hyperspectral Features."""
+    """
+    GUI to process hyperspectral features.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

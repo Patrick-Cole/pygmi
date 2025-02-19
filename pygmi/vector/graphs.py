@@ -302,7 +302,15 @@ copper = np.array([[255., 236., 184.],
                    [0.,   0.,   0.]])
 
 class GraphWindow(ContextModule):
-    """Graph Window - Main QT Dialog class for graphs."""
+    """
+    Graph Window - Main QT Dialog class for graphs.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -384,8 +392,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -1022,7 +1031,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotCCoef(GraphWindow):
-    """Plot Correlation Coefficients."""
+    """
+    GUI to plot correlation coefficients.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1070,7 +1087,15 @@ class PlotCCoef(GraphWindow):
 
 
 class PlotHist(ContextModule):
-    """Plot Histogram Class."""
+    """
+    GUI to plot histogram from vectors.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1141,7 +1166,15 @@ class PlotHist(ContextModule):
 
 
 class PlotLines(GraphWindow):
-    """Plot Lines Class."""
+    """
+    GUI to plot lines.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1236,7 +1269,15 @@ class PlotLines(GraphWindow):
 
 
 class PlotLineMap(GraphWindow):
-    """Plot Lines Map Class."""
+    """
+    GUI to plot a line map.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1312,7 +1353,15 @@ class PlotLineMap(GraphWindow):
 
 
 class PlotRose(GraphWindow):
-    """Plot Rose Class."""
+    """
+    GUI to plot rose diagrams.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1376,7 +1425,15 @@ class PlotRose(GraphWindow):
 
 
 class PlotVector(GraphWindow):
-    """Plot Vector Class."""
+    """
+    GUI to plot vectors.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

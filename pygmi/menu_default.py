@@ -31,7 +31,7 @@ It also includes the about box.
 from datetime import date
 import os
 import webbrowser
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtGui
 
 
 class FileMenu():
@@ -43,8 +43,9 @@ class FileMenu():
 
     Attributes
     ----------
-    parent : pygmi.main.MainWidget
-        Reference to MainWidget class found in main.py
+    parent : pygmi.main.MainWidget, optional
+        Reference to MainWidget class found in main.py. Default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -73,10 +74,11 @@ class HelpMenu():
     """
     Widget class to call the main interface.
 
-    Attributes
+    Parameters
     ----------
-    parent : parent
-        reference to the parent routine
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -140,6 +142,13 @@ class HelpButton(QtWidgets.QPushButton):
     Help Button.
 
     Convenience class to add a Help image to a pushbutton
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    htmlfile : str
+        Html help file name.
     """
 
     def __init__(self, htmlfile=None, parent=None):
@@ -164,6 +173,13 @@ class HelpButton(QtWidgets.QPushButton):
 class HelpDocs(QtWidgets.QDialog):
     """
     A basic combo box application.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    helptxt : str
+        Help filename.
 
     Attributes
     ----------

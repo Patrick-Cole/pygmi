@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""The main program for the modelling package."""
+"""The main program for the potential field 3D modelling package."""
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -38,7 +38,15 @@ import pygmi.misc as pmisc
 
 
 class MainWidget(QtWidgets.QMainWindow):
-    """MainWidget - Widget class to call the main interface."""
+    """
+    MainWidget - Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

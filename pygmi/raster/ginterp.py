@@ -330,8 +330,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -1054,7 +1054,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 class MySunCanvas(FigureCanvasQTAgg):
     """
-    Canvas for the sunshading tool.
+    Canvas widget for the sunshading tool.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -1097,13 +1102,18 @@ class MySunCanvas(FigureCanvasQTAgg):
 
 class PlotInterp(BasicModule):
     """
-    The primary class for the raster data interpretation module.
+    The primary GUI class for the raster data interpretation module.
 
     The main interface is set up from here, as well as monitoring of the mouse
     over the sunshading.
 
     The PlotInterp class allows for the display of raster data in a variety of
     modes, as well as the export of that display to GeoTIFF format.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Normalisation function."""
+"""Raster normalisation routine."""
 
 import warnings
 from PyQt5 import QtWidgets, QtCore
@@ -36,7 +36,15 @@ warnings.simplefilter('always', RuntimeWarning)
 
 
 class Normalisation(BasicModule):
-    """Class Normalisation."""
+    """
+    Class Normalisation GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

@@ -38,7 +38,15 @@ from pygmi.misc import BasicModule
 
 
 class CalculateChange(BasicModule):
-    """Calculate Change Indices."""
+    """
+    GUI to calculate change indices.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

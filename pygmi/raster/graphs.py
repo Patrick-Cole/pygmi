@@ -52,8 +52,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
     """
 
     def __init__(self, parent=None):
@@ -292,7 +292,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotCCoef(ContextModule):
-    """Plot 2D Correlation Coefficients."""
+    """
+    Plot 2D Correlation Coefficients.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -345,7 +353,15 @@ class PlotCCoef(ContextModule):
 
 
 class PlotRaster(ContextModule):
-    """Plot Raster Class."""
+    """
+    Plot Raster Class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -412,7 +428,15 @@ class PlotRaster(ContextModule):
 
 
 class PlotSurface(ContextModule):
-    """Plot Surface Class."""
+    """
+    Plot Surface Class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -488,6 +512,12 @@ class PlotScatter(ContextModule):
     Plot Hexbin Class.
 
     A Hexbin is a type of scatter plot which is raster.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -571,7 +601,14 @@ class PlotScatter(ContextModule):
 
 
 class PlotHist(ContextModule):
-    """Plot Histogram Class."""
+    """
+    Plot Histogram Class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

@@ -48,7 +48,15 @@ from pygmi.vector.dataprep import reprojxy
 
 
 class ProfileDisplay(QtWidgets.QWidget):
-    """Widget class to call the main interface."""
+    """
+    Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1509,8 +1517,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent
-        Reference to the parent routine.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -2133,6 +2142,12 @@ class MySlider(QtWidgets.QSlider):
 
     Custom class which allows clicking on a horizontal slider bar with slider
     moving to click in a single step.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -2180,7 +2195,15 @@ class MySlider(QtWidgets.QSlider):
 
 
 class LithBound(QtWidgets.QDialog):
-    """Class to call up a dialog for lithological boundary."""
+    """
+    Class to call up a dialog for lithological boundary.
+
+    Parameters
+    ----------
+    lmod : pygmi.pfmod.datatypes.LithModel
+        Reference to the lithology model.
+
+    """
 
     def __init__(self, lmod):
         super().__init__(None)
@@ -2269,7 +2292,17 @@ class LithBound(QtWidgets.QDialog):
 
 
 class PlotScale(QtWidgets.QDialog):
-    """Class to call up a dialog for plot axis scale."""
+    """
+    Class to call up a dialog for plot axis scale.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    lmod : pygmi.pfmod.datatypes.LithModel
+        Reference to the lithology model.
+
+    """
 
     def __init__(self, parent, lmod):
         super().__init__(parent)
@@ -2341,7 +2374,15 @@ class PlotScale(QtWidgets.QDialog):
 
 
 class RangedCopy(QtWidgets.QDialog):
-    """Class to call up a dialog for ranged copying."""
+    """
+    Class to call up a dialog for ranged copying.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -2457,7 +2498,15 @@ class RangedCopy(QtWidgets.QDialog):
 
 
 class MyToolbar(NavigationToolbar2QT):
-    """Custom Matplotlib toolbar."""
+    """
+    Custom Matplotlib toolbar.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     toolitems = copy.copy(NavigationToolbar2QT.toolitems)
     toolitems += ((None, None, None, None),
@@ -2564,7 +2613,15 @@ class GaugeWidget(QtWidgets.QDial):
 
 
 class ImportPicture(BasicModule):
-    """Import Picture dialog."""
+    """
+    Import Picture dialog.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

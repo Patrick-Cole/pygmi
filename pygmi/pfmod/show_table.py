@@ -32,7 +32,15 @@ from pygmi.misc import ContextModule
 
 
 class BasicStats3D(ContextModule):
-    """Show a summary of basic stats."""
+    """
+    Show a summary of basic stats.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

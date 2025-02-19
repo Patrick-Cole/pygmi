@@ -34,7 +34,15 @@ from pygmi.misc import BasicModule
 
 
 class DeleteRecord(BasicModule):
-    """Main form which does the GUI and the program."""
+    """
+    GUI to delete records.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -125,7 +133,15 @@ class DeleteRecord(BasicModule):
 
 
 class Quarry(BasicModule):
-    """Main form which does the GUI and the program."""
+    """
+    GUI to implement quarry event filtering.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

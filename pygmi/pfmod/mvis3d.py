@@ -45,7 +45,15 @@ from pygmi.misc import ContextModule
 
 
 class Mod3dDisplay(ContextModule):
-    """Widget class to call the main interface."""
+    """
+    Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -724,7 +732,15 @@ class Mod3dDisplay(ContextModule):
 
 
 class GLWidget(QtOpenGL.QGLWidget):
-    """OpenGL Widget."""
+    """
+    OpenGL Widget.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1274,6 +1290,11 @@ class GLWidget(QtOpenGL.QGLWidget):
 class MySunCanvas(FigureCanvasQTAgg):
     """
     Canvas for the sunshading tool.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------

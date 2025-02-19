@@ -51,7 +51,15 @@ sys.modules['datatypes'] = datatypes
 
 
 class ImportMod3D(BasicModule):
-    """Import Data."""
+    """
+    Import Data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -480,7 +488,14 @@ class ImportMod3D(BasicModule):
 
 
 class ExportMod3D(ContextModule):
-    """Export Data."""
+    """
+    Export 3D model data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1160,7 +1175,17 @@ class ExportMod3D(ContextModule):
 
 
 class Exportkmz(QtWidgets.QDialog):
-    """Export kmz dialog."""
+    """
+    Export kmz dialog.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    wkt : str
+        Well Known Text (wkt) representation of the projection.
+
+    """
 
     def __init__(self, wkt, parent=None):
         super().__init__(parent)
@@ -1203,10 +1228,18 @@ class MessageCombo(QtWidgets.QDialog):
     """
     Message combo box.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    combotext : list
+        List of text for combo.
+
     Attributes
     ----------
     parent : parent
-        reference to the parent routine
+        Reference to the parent routine.
+
     """
 
     def __init__(self, combotext, parent=None):

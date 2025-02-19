@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Smooth Data."""
+"""Routines to smooth raster data."""
 
 import warnings
 from PyQt5 import QtWidgets
@@ -34,7 +34,15 @@ from pygmi.misc import BasicModule
 
 
 class Smooth(BasicModule):
-    """Smooth."""
+    """
+    Smooth rasters.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

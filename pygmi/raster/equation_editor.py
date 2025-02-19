@@ -40,6 +40,11 @@ class EquationEditor(BasicModule):
     variables. This is commonly done in remote sensing applications, where
     there is a requirement for band ratioing etc. It uses the numexpr library.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     Attributes
     ----------
     equation : str

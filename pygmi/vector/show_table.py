@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Routine which displays a table graphically with various stats."""
+"""Routine which displays a table graphically with various statistics."""
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -32,7 +32,15 @@ from pygmi.misc import ContextModule
 
 
 class BasicStats(ContextModule):
-    """Show a summary of basic stats."""
+    """
+    GUI to show a summary of basic statistics.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

@@ -33,7 +33,15 @@ import pygmi.misc as pmisc
 
 
 class MextDisplay(QtWidgets.QDialog):
-    """MextDisplay - Widget class to call the main interface."""
+    """
+    MextDisplay - Widget class to call the main interface.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

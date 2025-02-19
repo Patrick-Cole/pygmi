@@ -55,7 +55,15 @@ PTIME = None
 
 
 class EmittingStream(QtCore.QObject):
-    """Class to intercept stdout for later use in a textbox."""
+    """
+    Class to intercept stdout for later use in a textbox.
+
+    Parameters
+    ----------
+    textwritten : str
+        Text written to stdout.
+
+    """
 
     def __init__(self, textWritten):
         self.textWritten = textWritten
@@ -102,6 +110,11 @@ class EmittingStream(QtCore.QObject):
 class BasicModule(QtWidgets.QDialog):
     """
     Basic Module.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -328,6 +341,11 @@ class ContextModule(QtWidgets.QDialog):
     """
     Context Module.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     Attributes
     ----------
     parent : parent
@@ -382,9 +400,14 @@ class ContextModule(QtWidgets.QDialog):
 
 class QVStack2Layout(QtWidgets.QGridLayout):
     """
-    QVStack2Layout.
+    QVStack2Layout custom Qt QGridLayot.
 
     This works like VBoxLayout, except each row takes two widgets.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
 
     """
 
@@ -485,16 +508,23 @@ class PTime():
 
 class ProgressBar(QtWidgets.QProgressBar):
     """
-    Progress bar.
+    Qt custom progress bar.
 
     Progress Bar routine which expands the QProgressBar class slightly so that
     there is a time function as well as a convenient of calling it via an
     iterable.
 
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
     Attributes
     ----------
-    otime : integer
+    otime : intr
         This is the original time recorded when the progress bar starts.
+    total : int
+        Maximum progress bar value. The default is 100.
     """
 
     def __init__(self, parent=None):
@@ -549,7 +579,17 @@ class ProgressBar(QtWidgets.QProgressBar):
 
 
 class ProgressBarText():
-    """Text Progress bar."""
+    """
+    Text Progress bar.
+
+    Attributes
+    ----------
+    otime : int
+        This is the original time recorded when the progress bar starts.
+    total : int
+        Maximum progress bar value. The default is 100.
+
+    """
 
     def __init__(self):
         self.otime = 0
