@@ -171,7 +171,8 @@ class ImportSeisan(BasicModule):
             ext = ('SEISAN Format (*.out);;'
                    'SEISAN macroseismic files (*.macro);;'
                    'SeisComP extended autoloc3 MLv events (*.txt);;'
-                   'All Files (*.*)')
+                   'Simple event list in Excel (*.xlsx)')
+
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
             if self.ifile == '':
@@ -184,6 +185,9 @@ class ImportSeisan(BasicModule):
             self.outdata['MacroSeis'] = dat
         elif '.txt' in self.ifile.lower():
             dat = importseiscomp(self.ifile, self.showlog)
+            self.outdata['Seis'] = dat
+        elif '.xlsx' in self.ifile.lower():
+            dat = importxlsx(self.ifile, self.showlog)
             self.outdata['Seis'] = dat
         else:
             dat = importnordic(self.ifile, self.showlog)
@@ -697,6 +701,71 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
 
             sevent['4'].append(tmp)
         sdat.append(sevent)
+
+    return sdat
+
+
+def importxlsx(ifile, showlog=print):
+    """
+    Import Excel summary.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file to import.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    sdat : list
+        SEISAN Data.
+
+    """
+    df = pd.read_excel(ifile)
+    df.columns = df.columns.str.lower()
+
+    colcor = {'cyear': 'year',
+              'lat': 'latitude',
+              'lon': 'longitude',
+              'long': 'longitude',
+              'minutes': 'minute',
+              'seconds': 'second',
+              'mins': 'minute',
+              'secs': 'seconds'}
+
+    df = df.rename(columns=colcor)
+
+    sdat = []
+    colnames = ['year', 'month', 'day', 'hour', 'minute', 'second',
+                'latitude', 'longitude', 'depth', 'ml']
+
+    for i in colnames:
+        if i not in df.columns:
+            showlog(f'Cannot import; you are missing the {i} column.')
+            return sdat
+
+    for row in df.itertuples(name='event'):
+        dat = sdt.seisan_1()
+
+        dat.year = row.year
+        dat.month = row.month
+        dat.day = row.day
+        dat.hour = row.hour
+        dat.minutes = row.minute
+        dat.seconds = row.second
+
+        if dat.seconds == 60.:
+            dat.seconds = 59.999
+        dat.latitude = row.latitude
+        dat.longitude = row.longitude
+        dat.depth = row.depth
+        dat.hypocenter_reporting_agency = row.agency
+
+        dat.magnitude_1 = row.ml
+        dat.type_of_magnitude_1 = 'L'
+
+        sdat.append({'1': dat})
 
     return sdat
 
@@ -3109,7 +3178,13 @@ def _testfn2():
     ifile = r"D:\May2024.txt"
     ifile = r"D:\seis\events.txt"
 
-    data = importseiscomp(ifile)
+    # data = importseiscomp(ifile)
+
+    ifile = r"D:\seis\Lesotho_catalog.xlsx"
+
+    data = importxlsx(ifile)
+
+    breakpoint()
 
 
 if __name__ == "__main__":

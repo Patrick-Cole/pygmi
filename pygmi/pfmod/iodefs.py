@@ -720,7 +720,7 @@ class ExportMod3D(ContextModule):
                                           QtWidgets.QMessageBox.Ok)
             return
 
-        smooth = prjkmz.checkbox_smooth.isChecked()
+        smooth = prjkmz.cb_smooth.isChecked()
 
         orig_wkt = prjkmz.proj.wkt
 
@@ -793,7 +793,7 @@ class ExportMod3D(ContextModule):
 
             points = mvis_3d.gpoints[lith]
 
-            if points == []:
+            if not isinstance(points, np.ndarray):
                 continue
 
             points -= mvis_3d.origin
@@ -1051,7 +1051,7 @@ class ExportMod3D(ContextModule):
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
-        prjkmz.checkbox_smooth.hide()
+        prjkmz.cb_smooth.hide()
 
         if nodialog is False:
             tmp = prjkmz.exec()

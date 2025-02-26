@@ -1085,7 +1085,7 @@ class PlotTempB(ContextModule):
             return
         if window_size > numrecs:
             window_size = numrecs
-            self.le1.setText(str(numrecs))
+            self.le_1.setText(str(numrecs))
             self.showlog('Error: window size too large, resetting to '
                          f'{numrecs}')
 
@@ -1590,6 +1590,7 @@ def _testfn():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
     # ifile = r"D:\seis\events.txt"
+    ifile = r"D:\seis\Lesotho_catalog.xlsx"
     window_size = 300
 
     app = QtWidgets.QApplication(sys.argv)
