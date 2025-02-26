@@ -904,12 +904,13 @@ def gridmatch(lmod, ctxt, rtxt):
         Numpy array of data.
 
     """
-    data = lmod.griddata[rtxt]
-    data2 = lmod.griddata[ctxt]
+    rdata = lmod.griddata[rtxt]
+    cdata = lmod.griddata[ctxt]
 
-    rows2, cols2 = data2.data.shape
+    rows, cols = cdata.data.shape
 
-    dat = data_reproject(data, data2.crs, data2.transform, rows2, cols2,
+    # breakpoint()
+    dat = data_reproject(rdata, cdata.crs, cdata.transform, rows, cols,
                          forcereproj=True)
 
     return dat.data

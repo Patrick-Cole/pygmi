@@ -168,7 +168,7 @@ class FuzzyClust(BasicModule):
 
     def combo(self):
         """
-        Set up combo box to choose algorthim.
+        Set up combo box to choose algorithm.
 
         Returns
         -------

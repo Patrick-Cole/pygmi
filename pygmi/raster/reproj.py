@@ -44,7 +44,7 @@ class GroupProj(QtWidgets.QWidget):
     parent : parent, optional
         Reference to the parent routine. The default is None.
     title : str
-        Title for groupbox - self.gbox.
+        Title for QGroupBox - self.gbox.
 
     """
 
@@ -222,6 +222,8 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
         nodata = data.nodata
 
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
+    data.data.mask = np.ma.getmaskarray(data.data)
+
     odata, _ = reproject(source=data.data,
                          destination=odata,
                          src_transform=data.transform,

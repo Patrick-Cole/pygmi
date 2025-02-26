@@ -543,6 +543,8 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
         maximum degree and order of base model
     nmax2 : int
         maximum degree and order of rate-of-change model
+    igh : int
+        Index of gh.
     gh  : numpy array
         Schmidt quasi-normal internal spherical harmonic coefficients of
         base model and rate-of-change model

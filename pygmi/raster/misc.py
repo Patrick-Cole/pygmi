@@ -238,7 +238,7 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
     return data
 
 
-def histcomp(img, nbr_bins=None, perc=5., uperc=None):
+def histcomp(img, perc=5., uperc=None):
     """
     Histogram Compaction.
 
@@ -249,8 +249,6 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     ----------
     img : numpy array
         data to compact
-    nbr_bins : int
-        number of bins to use in compaction, default is None
     perc : float
         percentage of histogram to clip. If uperc is not None, then this is
         the lower percentage, default is 5.
@@ -270,10 +268,6 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     """
     if uperc is None:
         uperc = perc
-
-    if nbr_bins is None:
-        nbr_bins = max(img.shape)
-        nbr_bins = max(nbr_bins, 256)
 
     # get image histogram
     imask = np.ma.getmaskarray(img)
@@ -296,7 +290,7 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     return img2, svalue, evalue
 
 
-def histeq(img, nbr_bins=32768):
+def histeq(img, nbrbins=32768):
     """
     Histogram Equalization.
 
@@ -308,7 +302,7 @@ def histeq(img, nbr_bins=32768):
     ----------
     img : numpy array
         input data to be equalised
-    nbr_bins : integer
+    nbrbins : integer
         number of bins to be used in the calculation, default is 32768
 
     Returns
@@ -317,13 +311,13 @@ def histeq(img, nbr_bins=32768):
         output data
     """
     # get image histogram
-    imhist, bins = np.histogram(img.compressed(), nbr_bins)
+    imhist, bins = np.histogram(img.compressed(), nbrbins)
     bins = (bins[1:]-bins[:-1])/2+bins[:-1]  # get bin center point
 
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
     cdf = cdf.astype(np.int64)
-    cdf = nbr_bins * cdf / cdf[-1]  # norm to nbr_bins
+    cdf = nbrbins * cdf / cdf[-1]  # norm to nbr_bins
 
     # use linear interpolation of cdf to find new pixel values
     im2 = np.interp(img, bins, cdf)
@@ -491,6 +485,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
         doffset = 0.0
         data.data.set_fill_value(data.nodata)
         data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
+        data.data.mask = np.ma.getmaskarray(data.data)
 
         trans0 = data.transform
         if trans0 == trans and data.data.shape == (rows, cols):

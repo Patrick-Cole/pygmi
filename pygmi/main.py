@@ -199,7 +199,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
     context_menu : dict
-        Dictionary of contect menu options
+        Dictionary of context menu options
     my_class : object
         Class that the diagram item is linked to.
 

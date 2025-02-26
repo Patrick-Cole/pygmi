@@ -392,7 +392,8 @@ class ImportMod3D(BasicModule):
             lmod.profpics = indict[pre+'profpics'].item()
 
             for i in lmod.profpics:
-                lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
+                if lmod.profpics[i] is not None:
+                    lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
 
         # This gets rid of a legacy variable names and updates to new ones
         for i in lmod.griddata:

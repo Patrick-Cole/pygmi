@@ -148,7 +148,7 @@ class HelpButton(QtWidgets.QPushButton):
     parent : parent, optional
         Reference to the parent routine. The default is None.
     htmlfile : str
-        Html help file name.
+        HTML help file name.
     """
 
     def __init__(self, htmlfile=None, parent=None):

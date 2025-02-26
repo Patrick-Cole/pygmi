@@ -40,7 +40,7 @@ from pygmi.raster.datatypes import Data
 # needs xarray, h5netcdf, rioxarray
 
 
-def emit_xarray(filepath, ortho=False, qmask=None, unpacked_bmask=None):
+def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
     """
     EMIT xarray.
 
@@ -59,7 +59,7 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpacked_bmask=None):
         pixels based on quality flags selected in that function. Any
         non-orthorectified array with the proper crosstrack and downtrack
         dimensions can also be used. The default is None.
-    unpacked_bmask : numpy array, optional
+    unpackedbmask : numpy array, optional
         From the band_mask function, used to mask band-specific pixels that
         have been interpolated. The default is None.
 
@@ -129,8 +129,8 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpacked_bmask=None):
     for var in list(ds.data_vars):
         if qmask is not None:
             out_xr[var].data[qmask == 1] = np.nan
-        if unpacked_bmask is not None:
-            out_xr[var].data[unpacked_bmask == 1] = np.nan
+        if unpackedbmask is not None:
+            out_xr[var].data[unpackedbmask == 1] = np.nan
         out_xr[var].data[out_xr[var].data == -9999] = np.nan
 
     if ortho is True:
@@ -319,7 +319,7 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
     return out_xr
 
 
-def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
+def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
     """
     Xarray to PyGMI dataset.
 
@@ -328,7 +328,7 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
     Parameters
     ----------
-    xr_ds: xarray.Dataset
+    xrds: xarray.Dataset
         an EMIT dataset read into xarray using the emit_xarray function.
 
     Returns
@@ -338,45 +338,45 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
     """
     dat = []
-    var_names = list(xr_ds.data_vars)
+    var_names = list(xrds.data_vars)
 
     # Loop through variable names
     for var in var_names:
         nbands = 1
-        if len(xr_ds[var].data.shape) > 2:
-            nbands = xr_ds[var].data.shape[2]
+        if len(xrds[var].data.shape) > 2:
+            nbands = xrds[var].data.shape[2]
 
         # Start building metadata
         metadata = {
-            "lines": xr_ds[var].data.shape[0],
-            "samples": xr_ds[var].data.shape[1],
+            "lines": xrds[var].data.shape[0],
+            "samples": xrds[var].data.shape[1],
             "bands": nbands,
             "header offset": 0,
             "file type": "ENVI Standard",
-            # "data type": envi_typemap[str(xr_ds[var].data.dtype)],
+            # "data type": envi_typemap[str(xrds[var].data.dtype)],
             "byte order": 0,
         }
 
-        for key in list(xr_ds.attrs.keys()):
+        for key in list(xrds.attrs.keys()):
             if key == "summary":
-                metadata["description"] = xr_ds.attrs[key]
+                metadata["description"] = xrds.attrs[key]
             elif key not in ["geotransform", "spatial_ref"]:
-                metadata[key] = f"{{ {xr_ds.attrs[key]} }}"
+                metadata[key] = f"{{ {xrds.attrs[key]} }}"
 
         # List all variables in dataset (including coordinate variables)
-        meta_vars = list(xr_ds.variables)
+        meta_vars = list(xrds.variables)
 
         # Add band parameter information to metadata (ie wavelengths/obs etc.)
         for m in meta_vars:
             if m in ("wavelengths", "radiance_wl"):
-                metadata["wavelength"] = np.array(xr_ds[m].data).astype(str).tolist()
+                metadata["wavelength"] = np.array(xrds[m].data).astype(str).tolist()
             elif m in ("fwhm",  "radiance_fwhm"):
-                metadata["fwhm"] = np.array(xr_ds[m].data).astype(str).tolist()
+                metadata["fwhm"] = np.array(xrds[m].data).astype(str).tolist()
             elif m == "good_wavelengths":
                 metadata["good_wavelengths"] = (
-                    np.array(xr_ds[m].data).astype(int).tolist())
+                    np.array(xrds[m].data).astype(int).tolist())
             elif m == "observation_bands":
-                metadata["band names"] = np.array(xr_ds[m].data).astype(str).tolist()
+                metadata["band names"] = np.array(xrds[m].data).astype(str).tolist()
             elif m == "mask_bands":
                 if var == "band_mask":
                     metadata["band names"] = [
@@ -384,7 +384,7 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
                         for bn in np.arange(285 / 8).astype(str).tolist()]
                 else:
                     metadata["band names"] = (
-                        np.array(xr_ds[m].data).astype(str).tolist()
+                        np.array(xrds[m].data).astype(str).tolist()
                     )
         if "band names" not in metadata:
             if "wavelength" in metadata:
@@ -398,9 +398,9 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
         # Replace NaN values in each layer with fill_value
         nval = -9999
         if not metaonly:
-            np.nan_to_num(xr_ds[var].data, copy=False, nan=nval)
+            np.nan_to_num(xrds[var].data, copy=False, nan=nval)
 
-            xrdat = xr_ds[var].data
+            xrdat = xrds[var].data
             if len(xrdat.shape) == 2:
                 xrdat = xrdat.reshape((xrdat.shape[0], xrdat.shape[1], 1))
             # rows, cols, nbands = xrdat.shape
@@ -430,7 +430,7 @@ def xr_to_pygmi(xr_ds, piter=iter, showlog=print, tnames=None, metaonly=False):
             bmeta['Sensor'] = f'EMIT {var}'
 
             if 'mineral_id' in var:
-                bmeta['MineralNames'] = xr_ds.mineral_name.to_numpy()
+                bmeta['MineralNames'] = xrds.mineral_name.to_numpy()
                 bmeta['MineralNames'] = np.insert(bmeta['MineralNames'], 0,
                                                   'None')
             if 'wavelength' in metadata:

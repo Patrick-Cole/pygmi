@@ -31,7 +31,7 @@ menu.
 
 import os
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import geopandas as gpd
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist
@@ -43,7 +43,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
 from shapelysmooth import catmull_rom_smooth
-from sklearn.linear_model import HuberRegressor
 
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
@@ -670,6 +669,34 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.isolines = gdf
 
+    def update_tempb(self, btot, datetot):
+        """
+        Update temporal b value plot.
+
+        Parameters
+        ----------
+        btot : numpy array
+            Array of b values.
+        datetot : list
+            list of dates.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        self.axes.plot(datetot, btot, 'g',
+                       label='b-value (maximum likelihood)')
+        self.axes.legend()
+        self.axes.set_xlabel('Date', fontsize=8)
+        self.axes.set_ylabel('b-value', fontsize=8)
+        self.axes.tick_params(axis='x', rotation=90)
+
+        self.figure.canvas.draw()
+
 
 class GraphWindow(ContextModule):
     """
@@ -745,12 +772,6 @@ class PlotQC(GraphWindow):
     parent : parent, optional
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    lbl_2 : QLabel
-        reference to GraphWindow's lbl_2
-    cmb_2 : QComboBox
-        reference to GraphWindow's cmb_2
     """
 
     def __init__(self, parent=None):
@@ -926,12 +947,6 @@ class PlotIso(GraphWindow):
     parent : parent, optional
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    lbl_2 : QLabel
-        reference to GraphWindow's lbl_2
-    cmb_2 : QComboBox
-        reference to GraphWindow's cmb_2
     """
 
     def __init__(self, parent=None):
@@ -977,6 +992,151 @@ class PlotIso(GraphWindow):
         self.lbl_1.setText('Product:')
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
+
+    def save_shp(self):
+        """
+        Save shapefile.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'Shape file (*.shp)'
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(os.path.dirname(filename))
+
+        ifile = str(filename)
+
+        if os.path.isfile(ifile):
+            tmp = ifile[:-4]
+            os.remove(tmp+'.shp')
+            os.remove(tmp+'.shx')
+            os.remove(tmp+'.prj')
+            os.remove(tmp+'.dbf')
+
+        gdf = self.mmc.isolines
+        gdf = gdf.set_crs(4326)
+
+        gdf.to_file(filename)
+
+        return True
+
+
+class PlotTempB(ContextModule):
+    """
+    GUI to plot temporal b-values.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Temporal b value')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.le_1 = QtWidgets.QLineEdit('300')
+        self.le_1.setValidator(QtGui.QIntValidator(self))
+        lbl_1 = QtWidgets.QLabel('Window size:')
+        btn_apply = QtWidgets.QPushButton('Apply')
+        self.hbl.addWidget(lbl_1)
+        self.hbl.addWidget(self.le_1)
+        self.hbl.addWidget(btn_apply)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(self.hbl)
+
+        self.setFocus()
+
+        btn_apply.clicked.connect(self.change_window)
+
+    def change_window(self):
+        """
+        Edit box to change window length.
+
+        Returns
+        -------
+        None.
+
+        """
+        dat2 = self.data
+        numrecs = len(dat2['1_year'])
+
+        try:
+            window_size = int(self.le_1.text())
+        except ValueError:
+            self.showlog('Error: invalid window size')
+            return
+        if window_size > numrecs:
+            window_size = numrecs
+            self.le1.setText(str(numrecs))
+            self.showlog('Error: window size too large, resetting to '
+                         f'{numrecs}')
+
+        year = dat2['1_year']
+        mon = dat2['1_month']
+        day = dat2['1_day']
+        hour = dat2['1_hour']
+        mins = dat2['1_minutes']
+        secs = dat2['1_seconds']
+
+        edate = []
+        for i in range(len(year)):
+            txt = (f'{year[i]}-{mon[i]:02}-{day[i]:02}'
+                   f'T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}')
+            edate.append(txt)
+
+        seq = sorted(list(zip(edate, dat2['1_ML'])))
+        tseq = list(zip(*seq))
+        dates, ml = tseq
+
+        b2tot = []
+        datetot = []
+
+        for i in range(len(dates) - window_size + 1):
+            mlwin = ml[i: i + window_size]
+            mlwin = np.ma.masked_invalid(mlwin)
+            mlwin = mlwin.compressed()
+            meandate = np.datetime64(dates[i + window_size-1])
+
+            out = bvalue(mlwin)
+
+            b2tot.append(out['b_mle'])
+            datetot.append(meandate)
+
+        b2tot = np.array(b2tot)
+        self.mmc.update_tempb(b2tot, datetot)
+
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        None.
+
+        """
+        dat1 = self.indata['Seis']
+        self.data = import_for_plots(dat1)
+
+        self.show()
+        self.change_window()
 
     def save_shp(self):
         """
@@ -1168,8 +1328,6 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     binctr = binsedges[:-1] + mbin/2
     binctr = np.round(binctr, 1)  # gets rid of round off error.
 
-    # breakpoint()
-
     cumnum = np.cumsum(num[::-1])[::-1]
 
     # Magnitude of completeness
@@ -1204,21 +1362,20 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
 
     if (data2.mean()-data2.min()) == 0:
         b_mle = np.nan
-        b_gh = np.nan
+        # b_gh = np.nan
     else:
         dmean = data2.mean()
         # b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
         b_mle = np.log10(np.exp(1)) / (dmean - (cmax-mbin/2))
         b_mle = np.around(b_mle, 2)
 
-        b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
-        # breakpoint()
+        # b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
 
     out = {}
     out['aval'] = aval
     out['bval'] = bval
     out['b_mle'] = b_mle
-    out['b_gh'] = b_gh
+    # out['b_gh'] = b_gh
     out['binctr'] = binctr
     out['cumnum'] = cumnum
     out['cmax'] = cmax
@@ -1428,15 +1585,12 @@ def _testfn1():
 def _testfn():
     """Test routine."""
     import sys
-    import pandas as pd
     import matplotlib.pyplot as plt
     from pygmi.seis.iodefs import ImportSeisan
 
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
     # ifile = r"D:\seis\events.txt"
     window_size = 300
-    maxrec = 318
-    # maxrec = -1
 
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
@@ -1444,6 +1598,13 @@ def _testfn():
 
     tmp.settings(True)
 
+    tmp1 = PlotTempB()
+    tmp1.indata = tmp.outdata
+    tmp1.run()
+
+    app.exec()
+
+    return
     dat1 = tmp.outdata['Seis']
 
     dat2 = import_for_plots(dat1)
@@ -1465,8 +1626,6 @@ def _testfn():
     tseq = list(zip(*seq))
     dates, ml = tseq
 
-    # dates = dates[:maxrec]
-    # ml = ml[:maxrec]
     b3tot = []
     b1tot = []
     b2tot = []
@@ -1484,9 +1643,6 @@ def _testfn():
         mlwin = mlwin.compressed()
         windates = windates.compressed()
         windates = windates.astype(np.datetime64)
-
-        # windates = pd.to_datetime(windates)
-        # meandate = windates.mean()
 
         meandate = windates[-1]
 
