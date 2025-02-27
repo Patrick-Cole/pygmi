@@ -350,7 +350,7 @@ class MergeMod3D(BasicModule):
             tmp.append(i.name)
 
         self.cmb_master.clear()
-        self.cmb.slave.clear()
+        self.cmb_slave.clear()
 
         self.cmb_master.addItems(tmp)
         self.cmb_slave.addItems(tmp)
