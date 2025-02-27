@@ -1351,6 +1351,32 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.dial_prof_dir.setValue(dirval)
         self.prof_dir()
 
+    def update_combo_overview(self, curtext=None):
+        """
+        Update the overview combo.
+
+        Parameters
+        ----------
+        curtext : str, optional
+            Current text in combo. Default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        citems = list(self.lmod1.griddata.keys())
+        self.cmb_overview.clear()
+        self.cmb_overview.addItems(citems)
+
+        if curtext is None:
+            curtext = self.cmb_overview.currentText()
+        cindex = self.cmb_overview.findText(curtext,
+                                            QtCore.Qt.MatchFixedString)
+        if cindex == -1:
+            cindex = 0
+        self.cmb_overview.setCurrentIndex(cindex)
+
     def update_plot(self, slide=False):
         """
         Update the profile on the model view.

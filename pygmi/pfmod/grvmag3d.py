@@ -137,6 +137,8 @@ class GravMag():
 
         # now do the calculations
         self.calc_field2(True, True)
+
+        self.parent.profile.update_combo_overview('Calculated Magnetics')
         self.parent.profile.update_plot()
 
         self.actioncalculate4.setEnabled(True)
@@ -159,6 +161,7 @@ class GravMag():
 
         # now do the calculations
         self.calc_field2(True)
+        self.parent.profile.update_combo_overview('Calculated Gravity')
         self.parent.profile.update_plot()
 
         self.actioncalculate3.setEnabled(True)
@@ -1108,7 +1111,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Calculated Gravity'].data *= 0.
 
     if 'Magnetic Dataset' in lmod.griddata:
-        # breakpoint()
         ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
         lmod.griddata['Magnetic Residual'] = lmod.griddata['Magnetic Dataset'].copy()
         lmod.griddata['Magnetic Residual'].data = (
