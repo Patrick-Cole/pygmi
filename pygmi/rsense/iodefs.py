@@ -1548,9 +1548,9 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
                             metaonly=metaonly, bounds=bounds)
     elif (ext == '.xml' and 'DIM' in ifile):
         dat = get_spot(ifile, piter, showlog, tnames, metaonly)
-    elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
-          '.006.' in bfile):
-        dat = get_modisv6(ifile, piter, showlog, tnames, metaonly)
+    # elif (('MOD' in bfile or 'MCD' in bfile) and ext == '.hdf' and
+    #       '.006.' in bfile):
+    #     dat = get_modisv6(ifile, piter, showlog, tnames, metaonly)
     elif 'AG1' in bfile and ext == '.h5':
         dat = get_aster_ged(ifile, piter, showlog, tnames, metaonly)
     elif ext == '.zip' and 'EO1H' in bfile:
