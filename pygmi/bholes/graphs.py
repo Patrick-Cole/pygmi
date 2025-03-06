@@ -150,7 +150,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         rank = rank1[indx][idx]
 
     # Do hatch legend
-        ax.text(0.5, 0.7, 'Lithology', size=13)
+        ax.text(0.5, 0.7, 'Lithology', size=8)
         for j in np.arange(0, len(lith)):
             pverts, pcodes = hatch[lith[j]]
 
@@ -169,19 +169,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
             ax.add_patch(rect)
             rect = mpatches.Rectangle([0.5, j*2+1], 4, 1, fc='none', ec='k')
             ax.add_patch(rect)
-            ax.text(4.7, j*2+1.9, clith[lith[j]])
+            ax.text(4.7, j*2+1.9, clith[lith[j]], size=6)
 
     # do color legend
-        ax.text(15., 0.7, 'Stratigraphy', size=13)
+        ax.text(15., 0.7, 'Stratigraphy', size=8)
         for j in np.arange(0, len(strat)):
             scol = '#'+col[stratcol[strat[j]]]
             rect = mpatches.Rectangle([15, j*2+1], 4, 1, fc=scol, ec='k')
             ax.add_patch(rect)
             if strat[j] == 'none':
-                ax.text(19.2, j*2+1.9, strat[j].capitalize())
+                ax.text(19.2, j*2+1.9, strat[j].capitalize(), size=6)
             else:
                 ax.text(19.2, j*2+1.9,
-                        strat[j].capitalize()+' '+rlookup[rank[j]])
+                        strat[j].capitalize()+' '+rlookup[rank[j]], size=6)
 
         self.figure.canvas.draw()
 
@@ -212,7 +212,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         pageheight = 8
         dpp = 25  # depth per page
-        fontsize = 10
+        fontsize = 6
         dpi = (fontsize/72)*(dpp/pageheight)
 
     ###########################################################################
@@ -295,7 +295,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             texty = lithdpos[np.nonzero(indx == i)[0][0]]
             ax.plot([4, 5], [dfrom, texty], 'k', linewidth=1.0)
             ax.text(5.2, texty, '{0:.2f}'.format(dfrom)+' '+lithd[i],
-                    va='center')
+                    va='center', size=fontsize)
 
             rect = mpatches.Rectangle([0, dto], 4, (dfrom-dto), fc=scol,
                                       ec='k')
@@ -373,9 +373,9 @@ class PlotLog(ContextModule):
         hbl_2.addWidget(self.lbl_bottomleft)
         hbl_2.addWidget(self.lbl_bottomright)
         vbl.addLayout(hbl_1)
-        vbl.addWidget(self.scroll)
+        vbl.addWidget(self.scroll, stretch=2)
         vbl.addLayout(hbl_2)
-        vbl.addWidget(self.mmc2)
+        vbl.addWidget(self.mmc2, stretch=1)
         vbl.addLayout(self.hbl)
 
         self.setFocus()
