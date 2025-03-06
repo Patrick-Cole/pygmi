@@ -1070,7 +1070,7 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
         self.sun = None

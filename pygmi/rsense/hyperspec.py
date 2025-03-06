@@ -60,7 +60,7 @@ class GraphMap(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        self.figure = Figure(layout='constrained')
+        self.figure = Figure(layout='tight')
 
         super().__init__(self.figure)
         self.setParent(parent)

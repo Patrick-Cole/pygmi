@@ -283,7 +283,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
     def update_line(self, data, ival, itype):
@@ -1270,7 +1270,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
     def update_line(self, x, pdata, rdata, *,

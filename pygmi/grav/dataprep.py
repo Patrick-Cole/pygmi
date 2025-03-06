@@ -73,7 +73,7 @@ class ProcessData(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('gravity.dm.process')
         lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
-        lbl_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
+        lbl_absbase = QtWidgets.QLabel('Local Base Station Absolute Gravity '
                                        '(mGal):')
         lbl_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         lbl_kstat = QtWidgets.QLabel('Known Base Station Number:')

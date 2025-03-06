@@ -62,7 +62,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
 
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
 
         self.ellipses = []
@@ -1566,8 +1566,7 @@ def _testfn1():
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    # tmp.ifile = r"D:\seis\events.txt"
-
+    tmp.ifile = r"D:\seis\sino_select.out"
     tmp.settings(True)
 
     data = tmp.outdata
@@ -1714,5 +1713,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn1()
     # _testiso()

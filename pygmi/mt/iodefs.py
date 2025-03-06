@@ -168,7 +168,8 @@ class ExportEDI(ContextModule):
         ext = 'EDI (*.edi)'
 
         self.ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
+            self.parent, 'Save File', '.', ext,
+            options=QtWidgets.QFileDialog.DontConfirmOverwrite)
 
         if self.ofile == '':
             self.parent.process_is_active(False)

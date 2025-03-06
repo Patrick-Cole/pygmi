@@ -2421,8 +2421,8 @@ class RangedCopy(QtWidgets.QDialog):
         self.lw_lithdel = QtWidgets.QListWidget()
         self.lw_lithcopy = QtWidgets.QListWidget()
         self.sb_end = QtWidgets.QSpinBox()
-        self.rb_sideview = QtWidgets.QRadioButton('Side View')
-        self.rb_overview = QtWidgets.QRadioButton('Top View')
+        self.rb_sideview = QtWidgets.QRadioButton('Profile View')
+        self.rb_overview = QtWidgets.QRadioButton('Layer View')
 
         self.setupui()
 

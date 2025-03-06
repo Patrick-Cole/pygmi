@@ -56,7 +56,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained')
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
     def update_line(self, sigma, z, times_off, zobs, zpred):
@@ -89,6 +89,10 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax1.set_ylabel("Depth (m)")
         ax1.set_xlabel("Conductivity (S/m)")
         ax1.set_title("Recovered Model")
+        ax1.tick_params(axis='x', which='major', labelsize=6, labelrotation=90)
+        ax1.tick_params(axis='x', which='minor', labelsize=6, labelrotation=90)
+        ax1.tick_params(axis='y', which='major', labelsize=6)
+        ax1.tick_params(axis='y', which='minor', labelsize=6)
 
         ax2 = self.figure.add_subplot(122)
         ax2.grid(True, 'both')
@@ -101,6 +105,10 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax2.set_title("High-moment")
         ax2.grid(True)
         ax2.legend(loc=3)
+        ax2.tick_params(axis='x', which='major', labelsize=6, labelrotation=90)
+        ax2.tick_params(axis='x', which='minor', labelsize=6, labelrotation=90)
+        ax2.tick_params(axis='y', which='major', labelsize=6)
+        ax2.tick_params(axis='y', which='minor', labelsize=6)
 
         self.figure.canvas.draw()
 
@@ -129,6 +137,8 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax1.set_ylabel('Amplitude')
         ax1.set_xlabel('Time (s)')
         ax1.set_title(title)
+        ax1.tick_params(axis='both', which='major', labelsize=6)
+        ax1.tick_params(axis='both', which='minor', labelsize=6)
 
         ax1.plot(times, wave)
 
@@ -231,7 +241,7 @@ class TDEM1D(BasicModule):
         vsl.addWidget('Tx Area:', self.le_txarea)
         vsl.addWidget('Number of turns in loop:', self.le_loopturns)
         vsl.addWidget('Current in loop:', self.le_loopcurrent)
-        vsl.addWidget('Permeability of the background:', self.le_mu)
+        vsl.addWidget('Magnetic permeability of the background:', self.le_mu)
         vsl.addWidget('Rx Orientation:', self.cmb_rxori)
         vsl.addWidget('Mesh cell size:', self.le_mesh_cs)
         vsl.addWidget('Mesh number cells in x direction:', self.le_mesh_ncx)

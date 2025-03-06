@@ -57,7 +57,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='constrained', dpi=150)
+        fig = Figure(layout='tight', dpi=150)
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
