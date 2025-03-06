@@ -2749,6 +2749,8 @@ def get_sentinel2_metadata(ifile):
 
         if mfile == 'MTD_DS':
             meta['DEM'] = root.find('.//PRODUCTION_DEM_TYPE').text
+            if 'MSIL1C' in ifile:
+                meta['DEM'] = 'None'
 
     return meta
 

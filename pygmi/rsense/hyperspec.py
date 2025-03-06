@@ -222,11 +222,14 @@ class AnalSpec(BasicModule):
         self.feature = {}
         self.feature[900] = [776, 1050, 850, 910]
         self.feature[1300] = [1260, 1420]
-        self.feature[1800] = [1740, 1820]
+        self.feature[1550] = [1510, 1610]
+        self.feature[1760] = [1730, 1790]
         self.feature[2080] = [2000, 2150]
         self.feature[2200] = [2120, 2245]
+        self.feature[2250] = [2230, 2280]
         self.feature[2290] = [2270, 2330]
         self.feature[2330] = [2120, 2370]
+        self.feature[2390] = [2375, 2435]
 
         self.map = GraphMap(self)
         self.cmb_1 = QtWidgets.QComboBox()

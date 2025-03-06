@@ -66,7 +66,7 @@ class MenuWidget():
         self.menu.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
 
-        self.action_batch_list = QtWidgets.QAction('Create Batch List')
+        self.action_batch_list = QtWidgets.QAction('Import Batch List')
         self.menu.addAction(self.action_batch_list)
         self.action_batch_list.triggered.connect(self.batch_list)
 

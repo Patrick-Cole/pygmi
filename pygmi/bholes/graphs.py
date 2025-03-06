@@ -347,6 +347,8 @@ class PlotLog(ContextModule):
         self.mmc = MyMplCanvas(self)
         self.mmc2 = MyMplCanvas(self)
 
+        # breakpoint()
+
         self.lbl_topleft = QtWidgets.QLabel()
         self.lbl_topright = QtWidgets.QLabel()
         self.lbl_bottomleft = QtWidgets.QLabel()
@@ -359,6 +361,7 @@ class PlotLog(ContextModule):
         self.scroll = QtWidgets.QScrollArea(self)
         self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.scroll.setWidget(self.mmc)
+        # self.scroll.resize(900,600)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Borehole ID:')
@@ -617,3 +620,29 @@ def chkname(iname):
         iname = iname.replace(ichar, nchar)
 
     return iname
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from matplotlib import rcParams
+    from pygmi.bholes.iodefs import get_CGS
+
+    # rcParams['font.size'] = 4
+
+    lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
+    hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    data = get_CGS(lfile, hfile)
+
+    tmp1 = PlotLog()
+    tmp1.indata = {'Borehole': data}
+    tmp1.run()
+
+    app.exec()
+
+
+if __name__ == "__main__":
+    _testfn()
