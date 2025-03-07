@@ -63,10 +63,8 @@ class GraphMap(FigureCanvasQTAgg):
         self.figure = Figure(layout='tight')
 
         super().__init__(self.figure)
-        self.setParent(parent)
         self.rgb = True
 
-        self.parent = parent
         self.datarr = []
         self.wvl = []
         self.mindx = 0
@@ -1407,4 +1405,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

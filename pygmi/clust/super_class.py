@@ -68,9 +68,6 @@ class GraphMap(FigureCanvasQTAgg):
 
         super().__init__(self.figure)
 
-        self.setParent(parent)
-
-        self.parent = parent
         self.polyi = None
         self.data = []
         self.im1 = None

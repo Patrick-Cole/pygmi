@@ -83,8 +83,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes = fig.add_subplot(111)
 
-        self.setParent(parent)
-
         FigureCanvasQTAgg.setSizePolicy(self,
                                         QtWidgets.QSizePolicy.Expanding,
                                         QtWidgets.QSizePolicy.Expanding)

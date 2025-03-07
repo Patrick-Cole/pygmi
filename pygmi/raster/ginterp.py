@@ -440,8 +440,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig.subplots_adjust(wspace=0.05)
         fig.subplots_adjust(hspace=0.05)
 
-        self.setParent(parent)
-
         FigureCanvasQTAgg.setSizePolicy(self,
                                         QtWidgets.QSizePolicy.Expanding,
                                         QtWidgets.QSizePolicy.Expanding)
@@ -1076,7 +1074,6 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.sun = None
         self.axes = fig.add_subplot(111, polar=True)
 
-        self.setParent(parent)
         self.setMaximumSize(200, 200)
         self.setMinimumSize(120, 120)
 

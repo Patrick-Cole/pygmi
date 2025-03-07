@@ -53,8 +53,6 @@ class GraphHist(FigureCanvasQTAgg):
 
         super().__init__(self.figure)
 
-        self.setParent(parent)
-
         self.nullfmt = NullFormatter()
         self.pntxy = None
         self.polyi = None
@@ -281,9 +279,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.figure = Figure()
 
         super().__init__(self.figure)
-        self.setParent(parent)
 
-        self.parent = parent
         self.polyi = None
         self.data = []
         self.cdata = []

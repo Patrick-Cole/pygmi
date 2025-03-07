@@ -268,7 +268,7 @@ class ImportBatch(BasicModule):
         super().__init__(parent)
 
         self.idir = ''
-        self.tnames = None
+        # self.tnames = None
         self.filelist = []
         self.bands = {}
         self.tnames = {}
@@ -389,6 +389,17 @@ class ImportBatch(BasicModule):
         self.bands, self.tnames, self.filelist = files_to_rastermeta(allfiles,
                                                                      self.piter,
                                                                      self.showlog)
+
+        for sensor in self.tnames:
+            tmp = []
+            for i in self.tnames[sensor]:
+                if i[0] == 'B':
+                    tmp.append(i)
+
+            if tmp:
+                self.tnames[sensor] = tmp
+
+        # breakpoint()
         self.cmb_sensor.disconnect()
         self.cmb_sensor.clear()
         self.cmb_sensor.addItems(self.bands.keys())
@@ -3743,9 +3754,9 @@ def _testfn2():
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\Landsat"
-    tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
-    tmp1.get_sfile(True)
+    tmp1.idir = r"D:\aaa"
+    # tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
+    # tmp1.get_sfile(True)
     tmp1.settings()
 
     dat = tmp1.outdata
@@ -3830,4 +3841,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

@@ -1312,7 +1312,6 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111, polar=True)
         fig.set_facecolor('None')
 
-        self.setParent(parent)
         self.setMaximumSize(200, 200)
         self.setMinimumSize(120, 120)
 

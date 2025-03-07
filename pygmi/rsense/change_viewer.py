@@ -70,9 +70,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         super().__init__(self.fig)
 
-        self.setParent(parent)
-        self.parent = parent
-
         FigureCanvasQTAgg.setSizePolicy(self,
                                         QtWidgets.QSizePolicy.Expanding,
                                         QtWidgets.QSizePolicy.Expanding)
@@ -92,7 +89,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if self.capture_active:
             ext = 'GIF (*.gif)'
             wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
-                self.parent, 'Save File', '.', ext)
+                None, 'Save File', '.', ext)
             if wfile == '':
                 self.capture_active = not self.capture_active
                 return
@@ -171,6 +168,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.im1.set_data(data)
         self.im1.set_extent(extent)
+        self.im1.rgbclip = None
         self.fig.suptitle(dates)
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
@@ -517,9 +515,10 @@ def _testfn():
     import sys
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r"E:\WorkProjects\ST-2020-1339 Landslides\change\mosaic"
-    idir = r"D:\Workdata\change\Planet"
-    idir = r"E:\Namaqua_change\namakwa"
+    idir = r"D:\workdata\PyGMI Test Data\change\mosaic"
+    idir = r"D:\bbb"
+    # idir = r"D:\Workdata\change\Planet"
+    # idir = r"E:\Namaqua_change\namakwa"
 
     app = QtWidgets.QApplication(sys.argv)
 
