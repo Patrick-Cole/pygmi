@@ -75,6 +75,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * mtpy 1.1.5
 * natsort 8.4.0
 * numexpr 2.10.1
+* numba 0.61.0
 * openpyxl 3.1.2
 * psutil 6.0.0
 * pyopengl 3.1.7

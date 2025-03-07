@@ -2078,8 +2078,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             xpnt = cproflim[0]
             ypnt = cproflim[1]
             self.lprfc[0].set_data([xpnt, ypnt])
+        # else:
+        #     self.lprfc[0].set_data([0, 0])
 
         self.laxes.draw_artist(self.lprfc[0])
+
 
 # This section is just for the profile line plot
 
