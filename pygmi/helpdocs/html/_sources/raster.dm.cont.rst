@@ -1,0 +1,13 @@
+Continuation
+------------
+This function performs an upward and downward continuation for Magnetic and Gravity data. Upward continuation is achieved using the standard Fast Fourier transform (FFT), while downward continuation uses a Taylor expansion for extra stability.
+
+Options:
+
+* **Band to perform continuation** - This should be magnetic or gravity data.
+* **Continuation type** - This can be upward or downward.
+* **Continuation distance** - a positive number denoting the continuation distance in metres. The dataset must be in a projection, not in geographic/geodetic coordinates.
+
+.. figure:: _images/rastercont.png
+
+   Continuation options.

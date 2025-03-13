@@ -1,0 +1,2160 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pygmi.seis.iodefs &#8212; PyGMI 3.2.8.30 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/documentation_options.js?v=09bf96d3"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/seis/iodefs/index';</script>
+    <link rel="icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="pygmi.seis.menu" href="../menu/index.html" />
+    <link rel="prev" title="pygmi.seis.graphs" href="../graphs/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="../../../../index.html">
+<img src="../../../../_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="../../../../_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="../../../../index.html">
+<img src="../../../../_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PyGMI 3.2.8.30 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Patrick-Cole/pygmi" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/pyversions/pygmi" title="PyPI - Python Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/pyversions/pygmi" class="icon-link-image" alt="PyPI - Python Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/v/pygmi" title="PyPI - Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/v/pygmi" class="icon-link-image" alt="PyPI - Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/github/license/patrick-cole/pygmi" title="GitHub License" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/github/license/patrick-cole/pygmi" class="icon-link-image" alt="GitHub License"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../wiki.html">PyGMI Wiki</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../file.html">File Menu</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrasterdata.html">Import Raster Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrgbimage.html">Import RGB Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.equationeditor.html">Equation Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.smoothing.html">Smoothing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.agc.html">Automatic Gain Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.norm.html">Normalisation/Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.grad.html">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.visibility.html">Visibility Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.mosaic.html">Dataset Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.reproj.html">Dataset Reprojection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.stats.html">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showanaglyph.html">Show Anaglyph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsurface.html">Show Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhexbin.html">Show Hexbin Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showcorr.html">Show 2D Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.export.html">Export Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.structcomp.html">Structural Complexity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.meta.html">Display/Edit Vector Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.stats.html">Basic Vector Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showvector.html">Show Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showrose.html">Show Rose Diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.clust.html">Cluster Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.crisp.html">Crisp Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.seg.html">Image Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.super.html">Supervised Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.scatter.html">Scatter Plot Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.stat.html">Cluster Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.exportclass.html">Export Class Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../em.html">Electromagnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.importedi.html">Import EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.rotateedi.html">Rotate EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.removesshift.html">Remove Static Shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.mask.html">Mask and Interpolate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.occam.html">Occam 1D Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../pfmod.dm.modelcreate.html">Model Creation and Editing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.mext.html">Model Extent Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.gparam.html">Geophysical Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.editor.html">Editor overview</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.import3dmodel.html">Import 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.merge3dmodels.html">Merge two 3D Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.inv3d.html">3D Magnetic Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.show3dmodel.html">3D Model Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.stat.html">3D Model Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../rsense.html">Remote Sensing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.importdata.html">Import Satellite Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.createbatchlist.html">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ratios.html">Calculate Band Ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.topo.html">Topographic Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ltc.html">Landsat Temporal Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.pca.html">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.mnf.html">Minimum Noise Fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.hyper.html">Hyperspectral Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.change.html">Change Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.cm.exportdata.html">Export Raster File List</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importfps.html">Import Generic FPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.sfilt.html">Filter SEISAN data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.fps.html">Fault Plane Solutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">pygmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../bholes/index.html">pygmi.bholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/graphs/index.html">pygmi.bholes.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/iodefs/index.html">pygmi.bholes.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/menu/index.html">pygmi.bholes.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../clust/index.html">pygmi.clust</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/cluster/index.html">pygmi.clust.cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/crisp_clust/index.html">pygmi.clust.crisp_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/fuzzy_clust/index.html">pygmi.clust.fuzzy_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphs/index.html">pygmi.clust.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphtool/index.html">pygmi.clust.graphtool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/menu/index.html">pygmi.clust.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/segmentation/index.html">pygmi.clust.segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/super_class/index.html">pygmi.clust.super_class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/var_ratio/index.html">pygmi.clust.var_ratio</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../em/index.html">pygmi.em</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../em/menu/index.html">pygmi.em.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../em/tdem/index.html">pygmi.em.tdem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/menu/index.html">pygmi.grav.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../main/index.html">pygmi.main</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../menu_default/index.html">pygmi.menu_default</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc/index.html">pygmi.misc</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mt/index.html">pygmi.mt</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/birrp/index.html">pygmi.mt.birrp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/dataprep/index.html">pygmi.mt.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/graphs/index.html">pygmi.mt.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/iodefs/index.html">pygmi.mt.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/menu/index.html">pygmi.mt.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pfmod/index.html">pygmi.pfmod</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/datatypes/index.html">pygmi.pfmod.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/grvmag3d/index.html">pygmi.pfmod.grvmag3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/iodefs/index.html">pygmi.pfmod.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/menu/index.html">pygmi.pfmod.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/misc/index.html">pygmi.pfmod.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/mvis3d/index.html">pygmi.pfmod.mvis3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfinvert/index.html">pygmi.pfmod.pfinvert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfmod/index.html">pygmi.pfmod.pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/show_table/index.html">pygmi.pfmod.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_mext/index.html">pygmi.pfmod.tab_mext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_param/index.html">pygmi.pfmod.tab_param</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_prof/index.html">pygmi.pfmod.tab_prof</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/menu/index.html">pygmi.raster.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/misc/index.html">pygmi.raster.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/modest_image/index.html">pygmi.raster.modest_image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/modest_ioimage/index.html">pygmi.raster.modest_ioimage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/normalisation/index.html">pygmi.raster.normalisation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/reproj/index.html">pygmi.raster.reproj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/show_table/index.html">pygmi.raster.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/smooth/index.html">pygmi.raster.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../rsense/index.html">pygmi.rsense</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change/index.html">pygmi.rsense.change</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change_viewer/index.html">pygmi.rsense.change_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/dataprep/index.html">pygmi.rsense.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/emit/index.html">pygmi.rsense.emit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/features/index.html">pygmi.rsense.features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/hyperspec/index.html">pygmi.rsense.hyperspec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/iodefs/index.html">pygmi.rsense.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/landsat_composite/index.html">pygmi.rsense.landsat_composite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/menu/index.html">pygmi.rsense.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/ratios/index.html">pygmi.rsense.ratios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/transforms/index.html">pygmi.rsense.transforms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.seis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../beachball/index.html">pygmi.seis.beachball</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datatypes/index.html">pygmi.seis.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../del_rec/index.html">pygmi.seis.del_rec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.seis.graphs</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.seis.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.seis.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html">pygmi.seis.utils</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../_sources/autoapi/pygmi/seis/iodefs/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>pygmi.seis.iodefs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.sform"><code class="docutils literal notranslate"><span class="pre">sform()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.str2float"><code class="docutils literal notranslate"><span class="pre">str2float()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.str2int"><code class="docutils literal notranslate"><span class="pre">str2int()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan"><code class="docutils literal notranslate"><span class="pre">ImportSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan.settings"><code class="docutils literal notranslate"><span class="pre">ImportSeisan.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportSeisan.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importmacro"><code class="docutils literal notranslate"><span class="pre">importmacro()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importnordic"><code class="docutils literal notranslate"><span class="pre">importnordic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importseiscomp"><code class="docutils literal notranslate"><span class="pre">importseiscomp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importxlsx"><code class="docutils literal notranslate"><span class="pre">importxlsx()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_1"><code class="docutils literal notranslate"><span class="pre">read_record_type_1()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_2"><code class="docutils literal notranslate"><span class="pre">read_record_type_2()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_3"><code class="docutils literal notranslate"><span class="pre">read_record_type_3()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_4"><code class="docutils literal notranslate"><span class="pre">read_record_type_4()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_phase"><code class="docutils literal notranslate"><span class="pre">read_record_type_phase()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_5"><code class="docutils literal notranslate"><span class="pre">read_record_type_5()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_6"><code class="docutils literal notranslate"><span class="pre">read_record_type_6()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_e"><code class="docutils literal notranslate"><span class="pre">read_record_type_e()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_f"><code class="docutils literal notranslate"><span class="pre">read_record_type_f()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_h"><code class="docutils literal notranslate"><span class="pre">read_record_type_h()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_i"><code class="docutils literal notranslate"><span class="pre">read_record_type_i()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_m"><code class="docutils literal notranslate"><span class="pre">read_record_type_m()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.merge_m"><code class="docutils literal notranslate"><span class="pre">merge_m()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_p"><code class="docutils literal notranslate"><span class="pre">read_record_type_p()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS.settings"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan"><code class="docutils literal notranslate"><span class="pre">ExportSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.run"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_1()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_2()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_3()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_4()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_phase"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_phase()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_5()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_6()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_7"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_7()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_e()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_f()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_h()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_i()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_m()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_p()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV"><code class="docutils literal notranslate"><span class="pre">ExportCSV</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.run"><code class="docutils literal notranslate"><span class="pre">ExportCSV.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_1()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_2()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_3()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_4()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_5()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_6()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_7"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_7()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_e()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_f()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_h()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_i()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_m()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_p()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSummary"><code class="docutils literal notranslate"><span class="pre">ExportSummary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSummary.run"><code class="docutils literal notranslate"><span class="pre">ExportSummary.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.mercalli"><code class="docutils literal notranslate"><span class="pre">mercalli()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan"><code class="docutils literal notranslate"><span class="pre">FilterSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.setupui"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.dind_click"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.dind_click()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.rectype_init()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.recdesc_init()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.get_limits"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.get_limits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.settings"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.saveproj"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.acceptall"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.xlstomacro"><code class="docutils literal notranslate"><span class="pre">xlstomacro()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pygmi.seis.iodefs">
+<span id="pygmi-seis-iodefs"></span><h1>pygmi.seis.iodefs<a class="headerlink" href="#module-pygmi.seis.iodefs" title="Link to this heading">#</a></h1>
+<p>Import and export seismology data.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.ImportSeisan" title="pygmi.seis.iodefs.ImportSeisan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportSeisan</span></code></a></p></td>
+<td><p>GUI to import SEISAN and SeisComP data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.ImportGenericFPS" title="pygmi.seis.iodefs.ImportGenericFPS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportGenericFPS</span></code></a></p></td>
+<td><p>GUI to import Generic Fault Plane Solution data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.ExportSeisan" title="pygmi.seis.iodefs.ExportSeisan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportSeisan</span></code></a></p></td>
+<td><p>GUI to export SEISAN data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.ExportCSV" title="pygmi.seis.iodefs.ExportCSV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportCSV</span></code></a></p></td>
+<td><p>GUI export seismic data to CSV.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.ExportSummary" title="pygmi.seis.iodefs.ExportSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportSummary</span></code></a></p></td>
+<td><p>GUI to export a seismic data summary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.FilterSeisan" title="pygmi.seis.iodefs.FilterSeisan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FilterSeisan</span></code></a></p></td>
+<td><p>GUI to filter seismic data events.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.sform" title="pygmi.seis.iodefs.sform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sform</span></code></a>(strform, val, tmp, col1[, col2, nval])</p></td>
+<td><p>Format strings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.str2float" title="pygmi.seis.iodefs.str2float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str2float</span></code></a>(inp)</p></td>
+<td><p>Convert a number  float, or returns NaN.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.str2int" title="pygmi.seis.iodefs.str2int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str2int</span></code></a>(inp)</p></td>
+<td><p>Convert a number to integer, or returns NaN.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.importmacro" title="pygmi.seis.iodefs.importmacro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importmacro</span></code></a>(ifile)</p></td>
+<td><p>Import macro format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.importnordic" title="pygmi.seis.iodefs.importnordic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importnordic</span></code></a>(ifile[, showlog])</p></td>
+<td><p>Import Nordic and Nordic2 data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.importseiscomp" title="pygmi.seis.iodefs.importseiscomp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importseiscomp</span></code></a>(ifile[, showlog, prefmag])</p></td>
+<td><p>Import SeisComp data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.importxlsx" title="pygmi.seis.iodefs.importxlsx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importxlsx</span></code></a>(ifile[, showlog])</p></td>
+<td><p>Import Excel summary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_1" title="pygmi.seis.iodefs.read_record_type_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_1</span></code></a>(i)</p></td>
+<td><p>Read record type 1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_2" title="pygmi.seis.iodefs.read_record_type_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_2</span></code></a>(i)</p></td>
+<td><p>Read record type 2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_3" title="pygmi.seis.iodefs.read_record_type_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_3</span></code></a>(i)</p></td>
+<td><p>Read record type 3.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_4" title="pygmi.seis.iodefs.read_record_type_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_4</span></code></a>(i)</p></td>
+<td><p>Read record type 4.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_phase" title="pygmi.seis.iodefs.read_record_type_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_phase</span></code></a>(i)</p></td>
+<td><p>Read record type phase (nordic2 type 4).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_5" title="pygmi.seis.iodefs.read_record_type_5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_5</span></code></a>(i)</p></td>
+<td><p>Read record type 5.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_6" title="pygmi.seis.iodefs.read_record_type_6"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_6</span></code></a>(i)</p></td>
+<td><p>Read record type 6.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_e" title="pygmi.seis.iodefs.read_record_type_e"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_e</span></code></a>(i)</p></td>
+<td><p>Read record type E.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_f" title="pygmi.seis.iodefs.read_record_type_f"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_f</span></code></a>(i)</p></td>
+<td><p>Read record type F.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_h" title="pygmi.seis.iodefs.read_record_type_h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_h</span></code></a>(i)</p></td>
+<td><p>Read record type H.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_i" title="pygmi.seis.iodefs.read_record_type_i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_i</span></code></a>(i)</p></td>
+<td><p>Read record type I.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_m" title="pygmi.seis.iodefs.read_record_type_m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_m</span></code></a>(i)</p></td>
+<td><p>Read record type M.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.merge_m" title="pygmi.seis.iodefs.merge_m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_m</span></code></a>(rec1, rec2)</p></td>
+<td><p>Merge M records.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.read_record_type_p" title="pygmi.seis.iodefs.read_record_type_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_record_type_p</span></code></a>(i)</p></td>
+<td><p>Read record type P.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.mercalli" title="pygmi.seis.iodefs.mercalli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mercalli</span></code></a>(mag)</p></td>
+<td><p>Return Mercalli index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.iodefs.xlstomacro" title="pygmi.seis.iodefs.xlstomacro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xlstomacro</span></code></a>()</p></td>
+<td><p>Convert an excel file to macro file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.sform">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">sform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-999</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.sform" title="Link to this definition">#</a></dt>
+<dd><p>Format strings.</p>
+<p>Formats strings according with a mod for values containing the value -999
+or None. In that case it will output spaces instead. In the case of strings
+being output, they are truncated to fit the format statement. This routine
+also puts the new strings in the correct columns</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strform</strong> (<em>python format string</em>) – This string must be of the form {0:4.1f}, where 4.1f can be changed.</p></li>
+<li><p><strong>val</strong> (<em>float</em><em>, </em><em>int</em><em>, </em><em>str</em>) – input value</p></li>
+<li><p><strong>tmp</strong> (<em>str</em>) – Input string</p></li>
+<li><p><strong>col1</strong> (<em>int</em>) – start column (1 is first column)</p></li>
+<li><p><strong>col2</strong> (<em>int</em>) – end column. The default is None.</p></li>
+<li><p><strong>nval</strong> (<em>float</em><em>, </em><em>int</em>) – null value which gets substituted by spaces. The default is -999.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output formatted string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.str2float">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">str2float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2float" title="Link to this definition">#</a></dt>
+<dd><p>Convert a number  float, or returns NaN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – string with a float in it</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – float or np.nan</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.str2int">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">str2int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2int" title="Link to this definition">#</a></dt>
+<dd><p>Convert a number to integer, or returns NaN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>inp</strong> (<em>str</em>) – string with an integer in it</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>output</strong> – integer or np.nan</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to import SEISAN and SeisComP data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportSeisan.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importmacro">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importmacro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importmacro" title="Link to this definition">#</a></dt>
+<dd><p>Import macro format.</p>
+<ol class="arabic simple">
+<li><p>Line
+Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+‘GMT’,1x,i4,1x,2i2,1x,2i2,1x,i2,1x,’Local time’</p></li>
+<li><p>Line Comments</p></li>
+<li><p>Line Observations: Latitude, Longitude,intensity, code for scale,
+postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+Note the postal code is an ascii string and left justified (a10).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – Input macro file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gdf1</strong> – List of locations with intensities.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoPandas dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importnordic">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importnordic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importnordic" title="Link to this definition">#</a></dt>
+<dd><p>Import Nordic and Nordic2 data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file to import.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – SEISAN Data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importseiscomp">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importseiscomp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefmag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MLv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importseiscomp" title="Link to this definition">#</a></dt>
+<dd><p>Import SeisComp data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file to import.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sdat</strong> – SEISAN Data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.importxlsx">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">importxlsx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.importxlsx" title="Link to this definition">#</a></dt>
+<dd><p>Import Excel summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file to import.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sdat</strong> – SEISAN Data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_1">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_1" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 1 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_2">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_2" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 2 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_3">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_3" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_4">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_4" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_phase">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_phase" title="Link to this definition">#</a></dt>
+<dd><p>Read record type phase (nordic2 type 4).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 4 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_5">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_5" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 5 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_5</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_6">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_6" title="Link to this definition">#</a></dt>
+<dd><p>Read record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN 6 record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_6</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_e">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_e" title="Link to this definition">#</a></dt>
+<dd><p>Read record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN E record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_E</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_f">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_f" title="Link to this definition">#</a></dt>
+<dd><p>Read record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out</strong> – Dictionary with a SEISAN F record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_h">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_h" title="Link to this definition">#</a></dt>
+<dd><p>Read record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN H record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_H</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_i">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_i" title="Link to this definition">#</a></dt>
+<dd><p>Read record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN I record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_I</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_m">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_m" title="Link to this definition">#</a></dt>
+<dd><p>Read record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN M record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_M</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.merge_m">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">merge_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rec1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.merge_m" title="Link to this definition">#</a></dt>
+<dd><p>Merge M records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rec1</strong> (<em>sdt.seisan_M</em>) – SEISAN M record.</p></li>
+<li><p><strong>rec2</strong> (<em>sdt.seisan_M</em>) – SEISAN M record.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>rec1</strong> – SEISAN M record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_M</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.read_record_type_p">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">read_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_p" title="Link to this definition">#</a></dt>
+<dd><p>Read record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>str</em>) – String to read from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – SEISAN P record.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sdt.seisan_P</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportGenericFPS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to import Generic Fault Plane Solution data.</p>
+<p>This is stored in a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ImportGenericFPS.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>GUI to export SEISAN data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.run" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into the routine, used to run context menu item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_1">
+<span class="sig-name descname"><span class="pre">write_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_2">
+<span class="sig-name descname"><span class="pre">write_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_3">
+<span class="sig-name descname"><span class="pre">write_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 3.</p>
+<p>This changes depending on the preceding line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_4">
+<span class="sig-name descname"><span class="pre">write_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_phase">
+<span class="sig-name descname"><span class="pre">write_record_type_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_phase" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_5">
+<span class="sig-name descname"><span class="pre">write_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_6">
+<span class="sig-name descname"><span class="pre">write_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_7">
+<span class="sig-name descname"><span class="pre">write_record_type_7</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_7" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 7.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_e">
+<span class="sig-name descname"><span class="pre">write_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e" title="Link to this definition">#</a></dt>
+<dd><p>Write record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_f">
+<span class="sig-name descname"><span class="pre">write_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f" title="Link to this definition">#</a></dt>
+<dd><p>Write record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_h">
+<span class="sig-name descname"><span class="pre">write_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h" title="Link to this definition">#</a></dt>
+<dd><p>Write record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_i">
+<span class="sig-name descname"><span class="pre">write_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i" title="Link to this definition">#</a></dt>
+<dd><p>Write record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_m">
+<span class="sig-name descname"><span class="pre">write_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m" title="Link to this definition">#</a></dt>
+<dd><p>Write record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSeisan.write_record_type_p">
+<span class="sig-name descname"><span class="pre">write_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p" title="Link to this definition">#</a></dt>
+<dd><p>Write record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportCSV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>GUI export seismic data to CSV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.run" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into the routine, used to run context menu item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_1">
+<span class="sig-name descname"><span class="pre">write_record_type_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_2">
+<span class="sig-name descname"><span class="pre">write_record_type_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_3">
+<span class="sig-name descname"><span class="pre">write_record_type_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 3.</p>
+<p>This changes depending on the preceding line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tmp</strong> (<em>str</em>) – Data string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_4">
+<span class="sig-name descname"><span class="pre">write_record_type_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmpfin</strong> – List of output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_5">
+<span class="sig-name descname"><span class="pre">write_record_type_5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_6">
+<span class="sig-name descname"><span class="pre">write_record_type_6</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 6.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_7">
+<span class="sig-name descname"><span class="pre">write_record_type_7</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_7" title="Link to this definition">#</a></dt>
+<dd><p>Write record type 7.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_e">
+<span class="sig-name descname"><span class="pre">write_record_type_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e" title="Link to this definition">#</a></dt>
+<dd><p>Write record type E.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_f">
+<span class="sig-name descname"><span class="pre">write_record_type_f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f" title="Link to this definition">#</a></dt>
+<dd><p>Write record type F.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_h">
+<span class="sig-name descname"><span class="pre">write_record_type_h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h" title="Link to this definition">#</a></dt>
+<dd><p>Write record type H.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_i">
+<span class="sig-name descname"><span class="pre">write_record_type_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i" title="Link to this definition">#</a></dt>
+<dd><p>Write record type I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_m">
+<span class="sig-name descname"><span class="pre">write_record_type_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m" title="Link to this definition">#</a></dt>
+<dd><p>Write record type M.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportCSV.write_record_type_p">
+<span class="sig-name descname"><span class="pre">write_record_type_p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p" title="Link to this definition">#</a></dt>
+<dd><p>Write record type P.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dictionary</em>) – Dictionary of record types.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSummary">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummary" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>GUI to export a seismic data summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.ExportSummary.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummary.run" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into the routine, used to run context menu item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.mercalli">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">mercalli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.mercalli" title="Link to this definition">#</a></dt>
+<dd><p>Return Mercalli index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mag</strong> (<em>float</em>) – Local magnitude.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>merc</strong> – Mercalli index</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">FilterSeisan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to filter seismic data events.</p>
+<p>This filters data using thresholds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.dind_click">
+<span class="sig-name descname"><span class="pre">dind_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.dind_click" title="Link to this definition">#</a></dt>
+<dd><p>Check checkboxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>int</em>) – State of checkbox.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.rectype_init">
+<span class="sig-name descname"><span class="pre">rectype_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init" title="Link to this definition">#</a></dt>
+<dd><p>Change combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>str</em>) – Text.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.recdesc_init">
+<span class="sig-name descname"><span class="pre">recdesc_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init" title="Link to this definition">#</a></dt>
+<dd><p>Change Description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>str</em>) – Text.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.get_limits">
+<span class="sig-name descname"><span class="pre">get_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.get_limits" title="Link to this definition">#</a></dt>
+<dd><p>Get limits for SEISAN data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.FilterSeisan.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.acceptall" title="Link to this definition">#</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.seis.iodefs.xlstomacro">
+<span class="sig-prename descclassname"><span class="pre">pygmi.seis.iodefs.</span></span><span class="sig-name descname"><span class="pre">xlstomacro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.xlstomacro" title="Link to this definition">#</a></dt>
+<dd><p>Convert an excel file to macro file.</p>
+<ol class="arabic simple">
+<li><p>Line
+Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
+‘GMT’,1x,i4,1x,2i2,1x,2i2,1x,i2,1x,’Local time’</p></li>
+<li><p>Line Comments</p></li>
+<li><p>Line Observations: Latitude, Longitude,intensity, code for scale,
+postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
+Note the postal code is an ascii string and left justified (a10).</p></li>
+</ol>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../graphs/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pygmi.seis.graphs</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../menu/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pygmi.seis.menu</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.sform"><code class="docutils literal notranslate"><span class="pre">sform()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.str2float"><code class="docutils literal notranslate"><span class="pre">str2float()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.str2int"><code class="docutils literal notranslate"><span class="pre">str2int()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan"><code class="docutils literal notranslate"><span class="pre">ImportSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan.settings"><code class="docutils literal notranslate"><span class="pre">ImportSeisan.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportSeisan.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportSeisan.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importmacro"><code class="docutils literal notranslate"><span class="pre">importmacro()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importnordic"><code class="docutils literal notranslate"><span class="pre">importnordic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importseiscomp"><code class="docutils literal notranslate"><span class="pre">importseiscomp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.importxlsx"><code class="docutils literal notranslate"><span class="pre">importxlsx()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_1"><code class="docutils literal notranslate"><span class="pre">read_record_type_1()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_2"><code class="docutils literal notranslate"><span class="pre">read_record_type_2()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_3"><code class="docutils literal notranslate"><span class="pre">read_record_type_3()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_4"><code class="docutils literal notranslate"><span class="pre">read_record_type_4()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_phase"><code class="docutils literal notranslate"><span class="pre">read_record_type_phase()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_5"><code class="docutils literal notranslate"><span class="pre">read_record_type_5()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_6"><code class="docutils literal notranslate"><span class="pre">read_record_type_6()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_e"><code class="docutils literal notranslate"><span class="pre">read_record_type_e()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_f"><code class="docutils literal notranslate"><span class="pre">read_record_type_f()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_h"><code class="docutils literal notranslate"><span class="pre">read_record_type_h()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_i"><code class="docutils literal notranslate"><span class="pre">read_record_type_i()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_m"><code class="docutils literal notranslate"><span class="pre">read_record_type_m()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.merge_m"><code class="docutils literal notranslate"><span class="pre">merge_m()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.read_record_type_p"><code class="docutils literal notranslate"><span class="pre">read_record_type_p()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS.settings"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ImportGenericFPS.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportGenericFPS.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan"><code class="docutils literal notranslate"><span class="pre">ExportSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.run"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_1()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_2()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_3()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_4()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_phase"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_phase()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_5()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_6()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_7"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_7()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_e()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_f()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_h()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_i()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_m()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p"><code class="docutils literal notranslate"><span class="pre">ExportSeisan.write_record_type_p()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV"><code class="docutils literal notranslate"><span class="pre">ExportCSV</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.run"><code class="docutils literal notranslate"><span class="pre">ExportCSV.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_1()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_2()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_3()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_4()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_5()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_6()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_7"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_7()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_e()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_f()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_h()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_i()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_m()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p"><code class="docutils literal notranslate"><span class="pre">ExportCSV.write_record_type_p()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSummary"><code class="docutils literal notranslate"><span class="pre">ExportSummary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.ExportSummary.run"><code class="docutils literal notranslate"><span class="pre">ExportSummary.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.mercalli"><code class="docutils literal notranslate"><span class="pre">mercalli()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan"><code class="docutils literal notranslate"><span class="pre">FilterSeisan</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.setupui"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.dind_click"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.dind_click()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.rectype_init()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.recdesc_init()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.get_limits"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.get_limits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.settings"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.saveproj"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.FilterSeisan.acceptall"><code class="docutils literal notranslate"><span class="pre">FilterSeisan.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.iodefs.xlstomacro"><code class="docutils literal notranslate"><span class="pre">xlstomacro()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Patrick Cole
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025 Council for Geoscience.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

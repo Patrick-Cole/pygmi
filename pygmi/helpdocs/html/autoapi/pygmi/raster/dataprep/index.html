@@ -1,0 +1,1765 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pygmi.raster.dataprep &#8212; PyGMI 3.2.8.30 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/documentation_options.js?v=09bf96d3"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/raster/dataprep/index';</script>
+    <link rel="icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="pygmi.raster.datatypes" href="../datatypes/index.html" />
+    <link rel="prev" title="pygmi.raster.cooper" href="../cooper/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="../../../../index.html">
+<img src="../../../../_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="../../../../_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="../../../../index.html">
+<img src="../../../../_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PyGMI 3.2.8.30 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Patrick-Cole/pygmi" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/pyversions/pygmi" title="PyPI - Python Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/pyversions/pygmi" class="icon-link-image" alt="PyPI - Python Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/v/pygmi" title="PyPI - Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/v/pygmi" class="icon-link-image" alt="PyPI - Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/github/license/patrick-cole/pygmi" title="GitHub License" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/github/license/patrick-cole/pygmi" class="icon-link-image" alt="GitHub License"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../wiki.html">PyGMI Wiki</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../file.html">File Menu</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrasterdata.html">Import Raster Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrgbimage.html">Import RGB Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.equationeditor.html">Equation Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.smoothing.html">Smoothing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.agc.html">Automatic Gain Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.norm.html">Normalisation/Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.grad.html">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.visibility.html">Visibility Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.mosaic.html">Dataset Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.reproj.html">Dataset Reprojection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.stats.html">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showanaglyph.html">Show Anaglyph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsurface.html">Show Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhexbin.html">Show Hexbin Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showcorr.html">Show 2D Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.export.html">Export Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.structcomp.html">Structural Complexity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.meta.html">Display/Edit Vector Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.stats.html">Basic Vector Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showvector.html">Show Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showrose.html">Show Rose Diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.clust.html">Cluster Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.crisp.html">Crisp Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.seg.html">Image Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.super.html">Supervised Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.scatter.html">Scatter Plot Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.stat.html">Cluster Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.exportclass.html">Export Class Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../em.html">Electromagnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.importedi.html">Import EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.rotateedi.html">Rotate EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.removesshift.html">Remove Static Shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.mask.html">Mask and Interpolate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.occam.html">Occam 1D Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../pfmod.dm.modelcreate.html">Model Creation and Editing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.mext.html">Model Extent Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.gparam.html">Geophysical Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.editor.html">Editor overview</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.import3dmodel.html">Import 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.merge3dmodels.html">Merge two 3D Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.inv3d.html">3D Magnetic Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.show3dmodel.html">3D Model Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.stat.html">3D Model Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../rsense.html">Remote Sensing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.importdata.html">Import Satellite Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.createbatchlist.html">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ratios.html">Calculate Band Ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.topo.html">Topographic Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ltc.html">Landsat Temporal Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.pca.html">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.mnf.html">Minimum Noise Fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.hyper.html">Hyperspectral Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.change.html">Change Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.cm.exportdata.html">Export Raster File List</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importfps.html">Import Generic FPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.sfilt.html">Filter SEISAN data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.fps.html">Fault Plane Solutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">pygmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../bholes/index.html">pygmi.bholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/graphs/index.html">pygmi.bholes.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/iodefs/index.html">pygmi.bholes.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/menu/index.html">pygmi.bholes.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../clust/index.html">pygmi.clust</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/cluster/index.html">pygmi.clust.cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/crisp_clust/index.html">pygmi.clust.crisp_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/fuzzy_clust/index.html">pygmi.clust.fuzzy_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphs/index.html">pygmi.clust.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphtool/index.html">pygmi.clust.graphtool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/menu/index.html">pygmi.clust.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/segmentation/index.html">pygmi.clust.segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/super_class/index.html">pygmi.clust.super_class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/var_ratio/index.html">pygmi.clust.var_ratio</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../em/index.html">pygmi.em</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../em/menu/index.html">pygmi.em.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../em/tdem/index.html">pygmi.em.tdem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/menu/index.html">pygmi.grav.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../main/index.html">pygmi.main</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../menu_default/index.html">pygmi.menu_default</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc/index.html">pygmi.misc</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mt/index.html">pygmi.mt</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/birrp/index.html">pygmi.mt.birrp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/dataprep/index.html">pygmi.mt.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/graphs/index.html">pygmi.mt.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/iodefs/index.html">pygmi.mt.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/menu/index.html">pygmi.mt.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pfmod/index.html">pygmi.pfmod</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/datatypes/index.html">pygmi.pfmod.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/grvmag3d/index.html">pygmi.pfmod.grvmag3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/iodefs/index.html">pygmi.pfmod.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/menu/index.html">pygmi.pfmod.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/misc/index.html">pygmi.pfmod.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/mvis3d/index.html">pygmi.pfmod.mvis3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfinvert/index.html">pygmi.pfmod.pfinvert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfmod/index.html">pygmi.pfmod.pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/show_table/index.html">pygmi.pfmod.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_mext/index.html">pygmi.pfmod.tab_mext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_param/index.html">pygmi.pfmod.tab_param</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_prof/index.html">pygmi.pfmod.tab_prof</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.raster</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../anaglyph/index.html">pygmi.raster.anaglyph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cooper/index.html">pygmi.raster.cooper</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.raster.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datatypes/index.html">pygmi.raster.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ginterp/index.html">pygmi.raster.ginterp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.raster.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iodefs/index.html">pygmi.raster.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.raster.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../misc/index.html">pygmi.raster.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../modest_image/index.html">pygmi.raster.modest_image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../modest_ioimage/index.html">pygmi.raster.modest_ioimage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../normalisation/index.html">pygmi.raster.normalisation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reproj/index.html">pygmi.raster.reproj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../show_table/index.html">pygmi.raster.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../smooth/index.html">pygmi.raster.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../rsense/index.html">pygmi.rsense</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change/index.html">pygmi.rsense.change</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change_viewer/index.html">pygmi.rsense.change_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/dataprep/index.html">pygmi.rsense.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/emit/index.html">pygmi.rsense.emit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/features/index.html">pygmi.rsense.features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/hyperspec/index.html">pygmi.rsense.hyperspec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/iodefs/index.html">pygmi.rsense.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/landsat_composite/index.html">pygmi.rsense.landsat_composite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/menu/index.html">pygmi.rsense.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/ratios/index.html">pygmi.rsense.ratios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/transforms/index.html">pygmi.rsense.transforms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../seis/index.html">pygmi.seis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/beachball/index.html">pygmi.seis.beachball</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/datatypes/index.html">pygmi.seis.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/del_rec/index.html">pygmi.seis.del_rec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/graphs/index.html">pygmi.seis.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/iodefs/index.html">pygmi.seis.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/menu/index.html">pygmi.seis.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../seis/utils/index.html">pygmi.seis.utils</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../_sources/autoapi/pygmi/raster/dataprep/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>pygmi.raster.dataprep</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation"><code class="docutils literal notranslate"><span class="pre">Continuation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.setupui"><code class="docutils literal notranslate"><span class="pre">Continuation.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.settings"><code class="docutils literal notranslate"><span class="pre">Continuation.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.saveproj"><code class="docutils literal notranslate"><span class="pre">Continuation.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.acceptall"><code class="docutils literal notranslate"><span class="pre">Continuation.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut"><code class="docutils literal notranslate"><span class="pre">DataCut</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut.settings"><code class="docutils literal notranslate"><span class="pre">DataCut.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut.saveproj"><code class="docutils literal notranslate"><span class="pre">DataCut.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack"><code class="docutils literal notranslate"><span class="pre">DataLayerStack</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.setupui"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.dxy_change"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.dxy_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.settings"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.saveproj"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.acceptall"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge"><code class="docutils literal notranslate"><span class="pre">DataMerge</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.setupui"><code class="docutils literal notranslate"><span class="pre">DataMerge.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.method_change"><code class="docutils literal notranslate"><span class="pre">DataMerge.method_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.get_idir"><code class="docutils literal notranslate"><span class="pre">DataMerge.get_idir()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.get_sfile"><code class="docutils literal notranslate"><span class="pre">DataMerge.get_sfile()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.settings"><code class="docutils literal notranslate"><span class="pre">DataMerge.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.saveproj"><code class="docutils literal notranslate"><span class="pre">DataMerge.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.merge_different"><code class="docutils literal notranslate"><span class="pre">DataMerge.merge_different()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj"><code class="docutils literal notranslate"><span class="pre">DataReproj</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.setupui"><code class="docutils literal notranslate"><span class="pre">DataReproj.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.acceptall"><code class="docutils literal notranslate"><span class="pre">DataReproj.acceptall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.settings"><code class="docutils literal notranslate"><span class="pre">DataReproj.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.saveproj"><code class="docutils literal notranslate"><span class="pre">DataReproj.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf"><code class="docutils literal notranslate"><span class="pre">GetProf</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf.settings"><code class="docutils literal notranslate"><span class="pre">GetProf.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf.saveproj"><code class="docutils literal notranslate"><span class="pre">GetProf.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata"><code class="docutils literal notranslate"><span class="pre">Metadata</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.banddata"><code class="docutils literal notranslate"><span class="pre">Metadata.banddata</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.bandid"><code class="docutils literal notranslate"><span class="pre">Metadata.bandid</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.setupui"><code class="docutils literal notranslate"><span class="pre">Metadata.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.acceptall"><code class="docutils literal notranslate"><span class="pre">Metadata.acceptall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.rename_id"><code class="docutils literal notranslate"><span class="pre">Metadata.rename_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.update_vals"><code class="docutils literal notranslate"><span class="pre">Metadata.update_vals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.run"><code class="docutils literal notranslate"><span class="pre">Metadata.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.cluster_to_raster"><code class="docutils literal notranslate"><span class="pre">cluster_to_raster()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fftprep"><code class="docutils literal notranslate"><span class="pre">fftprep()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fft_getkxy"><code class="docutils literal notranslate"><span class="pre">fft_getkxy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fftcont"><code class="docutils literal notranslate"><span class="pre">fftcont()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.get_shape_bounds"><code class="docutils literal notranslate"><span class="pre">get_shape_bounds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_median"><code class="docutils literal notranslate"><span class="pre">merge_median()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_min"><code class="docutils literal notranslate"><span class="pre">merge_min()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_max"><code class="docutils literal notranslate"><span class="pre">merge_max()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.mosaic"><code class="docutils literal notranslate"><span class="pre">mosaic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.redistribute_vertices"><code class="docutils literal notranslate"><span class="pre">redistribute_vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.taylorcont"><code class="docutils literal notranslate"><span class="pre">taylorcont()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.trim_raster"><code class="docutils literal notranslate"><span class="pre">trim_raster()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.verticalp"><code class="docutils literal notranslate"><span class="pre">verticalp()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pygmi.raster.dataprep">
+<span id="pygmi-raster-dataprep"></span><h1>pygmi.raster.dataprep<a class="headerlink" href="#module-pygmi.raster.dataprep" title="Link to this heading">#</a></h1>
+<p>A set of Raster Data Preparation routines.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.Continuation" title="pygmi.raster.dataprep.Continuation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Continuation</span></code></a></p></td>
+<td><p>GUI to perform upward and downward continuation on potential field data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.DataCut" title="pygmi.raster.dataprep.DataCut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataCut</span></code></a></p></td>
+<td><p>GUI to Cut Data using shapefiles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.DataLayerStack" title="pygmi.raster.dataprep.DataLayerStack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataLayerStack</span></code></a></p></td>
+<td><p>Data Layer Stack GUI.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.DataMerge" title="pygmi.raster.dataprep.DataMerge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataMerge</span></code></a></p></td>
+<td><p>Data merge or mosaic GUI.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.DataReproj" title="pygmi.raster.dataprep.DataReproj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataReproj</span></code></a></p></td>
+<td><p>Raster reprojection GUI.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.GetProf" title="pygmi.raster.dataprep.GetProf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetProf</span></code></a></p></td>
+<td><p>GUI to extract a profile from a raster dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.Metadata" title="pygmi.raster.dataprep.Metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Metadata</span></code></a></p></td>
+<td><p>Edit raster metadata.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.cluster_to_raster" title="pygmi.raster.dataprep.cluster_to_raster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cluster_to_raster</span></code></a>(indata)</p></td>
+<td><p>Convert cluster datasets to raster datasets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.fftprep" title="pygmi.raster.dataprep.fftprep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fftprep</span></code></a>(data)</p></td>
+<td><p>FFT preparation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.fft_getkxy" title="pygmi.raster.dataprep.fft_getkxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_getkxy</span></code></a>(fftmod, xdim, ydim)</p></td>
+<td><p>Get KX and KY.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.fftcont" title="pygmi.raster.dataprep.fftcont"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fftcont</span></code></a>(data, h)</p></td>
+<td><p>Continuation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.get_shape_bounds" title="pygmi.raster.dataprep.get_shape_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_shape_bounds</span></code></a>(sfile[, crs, showlog])</p></td>
+<td><p>Get bounds from a shape file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.merge_median" title="pygmi.raster.dataprep.merge_median"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_median</span></code></a>(merged_data, new_data, merged_mask, new_mask)</p></td>
+<td><p>Merge using median for rasterio, taking minimum value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.merge_min" title="pygmi.raster.dataprep.merge_min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_min</span></code></a>(merged_data, new_data, merged_mask, new_mask)</p></td>
+<td><p>Merge using minimum for rasterio, taking minimum value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.merge_max" title="pygmi.raster.dataprep.merge_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_max</span></code></a>(merged_data, new_data, merged_mask, new_mask)</p></td>
+<td><p>Merge using maximum for rasterio, taking maximum value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.mosaic" title="pygmi.raster.dataprep.mosaic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mosaic</span></code></a>(dat, *[, idir, bfile, bandstofiles, piter, ...])</p></td>
+<td><p>Merge files with different numbers of bands and/or band order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.redistribute_vertices" title="pygmi.raster.dataprep.redistribute_vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">redistribute_vertices</span></code></a>(geom, distance)</p></td>
+<td><p>Redistribute vertices in a geometry.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.taylorcont" title="pygmi.raster.dataprep.taylorcont"><code class="xref py py-obj docutils literal notranslate"><span class="pre">taylorcont</span></code></a>(data, h)</p></td>
+<td><p>Taylor Continuation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.trim_raster" title="pygmi.raster.dataprep.trim_raster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_raster</span></code></a>(olddata)</p></td>
+<td><p>Trim nulls from a raster dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.raster.dataprep.verticalp" title="pygmi.raster.dataprep.verticalp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">verticalp</span></code></a>(data[, order])</p></td>
+<td><p>Vertical derivative.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Continuation">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">Continuation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Continuation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to perform upward and downward continuation on potential field data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Continuation.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Continuation.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Continuation.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Continuation.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Continuation.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Continuation.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Continuation.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Continuation.acceptall" title="Link to this definition">#</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataCut">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataCut" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to Cut Data using shapefiles.</p>
+<p>This class cuts raster datasets using a boundary defined by a polygon
+shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataCut.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataCut.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataLayerStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>Data Layer Stack GUI.</p>
+<p>This class merges datasets which have different rows and columns. It
+resamples them so that they have the same rows and columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack.dxy_change">
+<span class="sig-name descname"><span class="pre">dxy_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack.dxy_change" title="Link to this definition">#</a></dt>
+<dd><p>Update dxy.</p>
+<p>This is the size of a grid cell in the x and y directions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataLayerStack.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataLayerStack.acceptall" title="Link to this definition">#</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataMerge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>Data merge or mosaic GUI.</p>
+<p>This class merges datasets which have different rows and columns. It
+resamples them so that they have the same rows and columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.method_change">
+<span class="sig-name descname"><span class="pre">method_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.method_change" title="Link to this definition">#</a></dt>
+<dd><p>Change method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.get_idir">
+<span class="sig-name descname"><span class="pre">get_idir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.get_idir" title="Link to this definition">#</a></dt>
+<dd><p>Get the input directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.get_sfile">
+<span class="sig-name descname"><span class="pre">get_sfile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.get_sfile" title="Link to this definition">#</a></dt>
+<dd><p>Get the input shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataMerge.merge_different">
+<span class="sig-name descname"><span class="pre">merge_different</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.merge_different" title="Link to this definition">#</a></dt>
+<dd><p>Merge files with different numbers of bands and/or band order.</p>
+<p>This uses more memory, but is flexible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Success of routine.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataReproj">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataReproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>Raster reprojection GUI.</p>
+<p>This class reprojects datasets using the rasterio routines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataReproj.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataReproj.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.acceptall" title="Link to this definition">#</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataReproj.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.DataReproj.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.GetProf">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">GetProf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GetProf" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to extract a profile from a raster dataset.</p>
+<p>This class extracts a profile from a raster dataset using a line shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.GetProf.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.GetProf.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>Edit raster metadata.</p>
+<p>This class allows the editing of the metadata for a raster dataset using a
+GUI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.banddata">
+<span class="sig-name descname"><span class="pre">banddata</span></span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.banddata" title="Link to this definition">#</a></dt>
+<dd><p>band data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.bandid">
+<span class="sig-name descname"><span class="pre">bandid</span></span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.bandid" title="Link to this definition">#</a></dt>
+<dd><p>dictionary of strings containing band names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.acceptall">
+<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.acceptall" title="Link to this definition">#</a></dt>
+<dd><p>Accept option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.rename_id">
+<span class="sig-name descname"><span class="pre">rename_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.rename_id" title="Link to this definition">#</a></dt>
+<dd><p>Rename the band name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.update_vals">
+<span class="sig-name descname"><span class="pre">update_vals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.update_vals" title="Link to this definition">#</a></dt>
+<dd><p>Update the values on the interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.Metadata.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.run" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into the routine, used to run context menu item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tmp</strong> – True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.cluster_to_raster">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">cluster_to_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.cluster_to_raster" title="Link to this definition">#</a></dt>
+<dd><p>Convert cluster datasets to raster datasets.</p>
+<p>Some routines will not understand the datasets produced by cluster
+analysis routines, since they are designated ‘Cluster’ and not ‘Raster’.
+This provides a work-around for that.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>indata</strong> (<em>dict</em>) – Dictionary of PyGMI datasets.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>indata</strong> – Dictionary of PyGMI datasets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.fftprep">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">fftprep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.fftprep" title="Link to this definition">#</a></dt>
+<dd><p>FFT preparation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – Input dataset.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>zfin</strong> (<em>numpy array.</em>) – Output prepared data.</p></li>
+<li><p><strong>rdiff</strong> (<em>int</em>) – rows divided by 2.</p></li>
+<li><p><strong>cdiff</strong> (<em>int</em>) – columns divided by 2.</p></li>
+<li><p><strong>datamedian</strong> (<em>float</em>) – Median of data.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.fft_getkxy">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">fft_getkxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fftmod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.fft_getkxy" title="Link to this definition">#</a></dt>
+<dd><p>Get KX and KY.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fftmod</strong> (<em>numpy array</em>) – FFT data.</p></li>
+<li><p><strong>xdim</strong> (<em>float</em>) – cell x dimension.</p></li>
+<li><p><strong>ydim</strong> (<em>float</em>) – cell y dimension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>KX</strong> (<em>numpy array</em>) – x sample frequencies.</p></li>
+<li><p><strong>KY</strong> (<em>numpy array</em>) – y sample frequencies.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.fftcont">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">fftcont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.fftcont" title="Link to this definition">#</a></dt>
+<dd><p>Continuation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – PyGMI raster data.</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – Height.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – PyGMI raster data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">pygmi.raster.datatypes.Data</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.get_shape_bounds">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">get_shape_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.get_shape_bounds" title="Link to this definition">#</a></dt>
+<dd><p>Get bounds from a shape file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sfile</strong> (<em>str</em>) – Filename for shapefile.</p></li>
+<li><p><strong>crs</strong> (<em>rasterio CRS</em>) – target crs for shapefile</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bounds</strong> – Rasterio bounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.merge_median">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">merge_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merged_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.merge_median" title="Link to this definition">#</a></dt>
+<dd><p>Merge using median for rasterio, taking minimum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>merged_data</strong> (<em>numpy array</em>) – Old data.</p></li>
+<li><p><strong>new_data</strong> (<em>numpy array</em>) – New data to merge to old data.</p></li>
+<li><p><strong>merged_mask</strong> (<em>float</em>) – Old mask.</p></li>
+<li><p><strong>new_mask</strong> (<em>float</em>) – New mask.</p></li>
+<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – index of the current dataset within the merged dataset collection.
+The default is None.</p></li>
+<li><p><strong>roff</strong> (<em>int</em><em>, </em><em>optional</em>) – row offset in base array. The default is None.</p></li>
+<li><p><strong>coff</strong> (<em>int</em><em>, </em><em>optional</em>) – col offset in base array. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.merge_min">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">merge_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merged_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.merge_min" title="Link to this definition">#</a></dt>
+<dd><p>Merge using minimum for rasterio, taking minimum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>merged_data</strong> (<em>numpy array</em>) – Old data.</p></li>
+<li><p><strong>new_data</strong> (<em>numpy array</em>) – New data to merge to old data.</p></li>
+<li><p><strong>merged_mask</strong> (<em>float</em>) – Old mask.</p></li>
+<li><p><strong>new_mask</strong> (<em>float</em>) – New mask.</p></li>
+<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – index of the current dataset within the merged dataset collection.
+The default is None.</p></li>
+<li><p><strong>roff</strong> (<em>int</em><em>, </em><em>optional</em>) – row offset in base array. The default is None.</p></li>
+<li><p><strong>coff</strong> (<em>int</em><em>, </em><em>optional</em>) – col offset in base array. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.merge_max">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">merge_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merged_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merged_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.merge_max" title="Link to this definition">#</a></dt>
+<dd><p>Merge using maximum for rasterio, taking maximum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>merged_data</strong> (<em>numpy array</em>) – Old data.</p></li>
+<li><p><strong>new_data</strong> (<em>numpy array</em>) – New data to merge to old data.</p></li>
+<li><p><strong>merged_mask</strong> (<em>float</em>) – Old mask.</p></li>
+<li><p><strong>new_mask</strong> (<em>float</em>) – New mask.</p></li>
+<li><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – index of the current dataset within the merged dataset collection.
+The default is None.</p></li>
+<li><p><strong>roff</strong> (<em>int</em><em>, </em><em>optional</em>) – row offset in base array. The default is None.</p></li>
+<li><p><strong>coff</strong> (<em>int</em><em>, </em><em>optional</em>) – col offset in base array. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.mosaic">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">mosaic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">idir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandstofiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singleband</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcetype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shifttomedian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.mosaic" title="Link to this definition">#</a></dt>
+<dd><p>Merge files with different numbers of bands and/or band order.</p>
+<p>This uses more memory, but is flexible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>list</em>) – List of PyGMI data bands to be merged. Can be empty if idir is provided.</p></li>
+<li><p><strong>idir</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where file to be mosaiced are found. The default is None.</p></li>
+<li><p><strong>bfile</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to boundary file. Can be shapefile or raster. The default is None.</p></li>
+<li><p><strong>bandstofiles</strong> (<em>bool</em><em>, </em><em>optional</em>) – Export output bands to files. The default is False.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterable. The default is iter.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Function for printing text. The default is print.</p></li>
+<li><p><strong>singleband</strong> (<em>bool</em><em>, </em><em>optional</em>) – Ignore band names, since there is only one band. The default is False.</p></li>
+<li><p><strong>forcetype</strong> (<em>bool</em><em>, </em><em>optional</em>) – Force input data type. The default is None.</p></li>
+<li><p><strong>shifttomedian</strong> (<em>bool</em><em>, </em><em>optional</em>) – Shift bands to median value. The default is False.</p></li>
+<li><p><strong>tmpdir</strong> (<em>str</em><em>, </em><em>optional</em>) – Alternate directory for temporary files. The default is None.</p></li>
+<li><p><strong>nodata</strong> (<em>float</em><em>, </em><em>optional</em>) – Nodata value. The default is None.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Mosaic method. Can be ‘first’, ‘last’, ‘merge_min’, ‘merge_max’ or
+‘merge_median. The default is ‘first’.</p></li>
+<li><p><strong>res</strong> (<em>float</em><em>, </em><em>optional</em>) – Output resolution. Can be a tuple. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>outdat</strong> – Output mosaiced dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PyGMI raster data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.redistribute_vertices">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">redistribute_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.redistribute_vertices" title="Link to this definition">#</a></dt>
+<dd><p>Redistribute vertices in a geometry.</p>
+<p>From <a class="reference external" href="https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely">https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely</a>,
+and by Mike-T.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geom</strong> (<em>shapely geometry</em>) – Geometry from geopandas.</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – sampling distance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Error when there is an unknown geometry.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>New geometry.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>shapely geometry</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.taylorcont">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">taylorcont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.taylorcont" title="Link to this definition">#</a></dt>
+<dd><p>Taylor Continuation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – PyGMI raster data.</p></li>
+<li><p><strong>h</strong> (<em>float</em>) – Height.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – PyGMI raster data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">pygmi.raster.datatypes.Data</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.trim_raster">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">trim_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">olddata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.trim_raster" title="Link to this definition">#</a></dt>
+<dd><p>Trim nulls from a raster dataset.</p>
+<p>This function trims entire rows or columns of data which are masked,
+and are on the edges of the dataset. Masked values are set to the null
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>olddata</strong> (<em>list</em><em> of </em><a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – PyGMI dataset.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>olddata</strong> – PyGMI dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="../datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">pygmi.raster.datatypes.Data</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.raster.dataprep.verticalp">
+<span class="sig-prename descclassname"><span class="pre">pygmi.raster.dataprep.</span></span><span class="sig-name descname"><span class="pre">verticalp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.verticalp" title="Link to this definition">#</a></dt>
+<dd><p>Vertical derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>order</strong> (<em>float</em><em>, </em><em>optional</em>) – Order. The default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dout</strong> – Output data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../cooper/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pygmi.raster.cooper</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../datatypes/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pygmi.raster.datatypes</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation"><code class="docutils literal notranslate"><span class="pre">Continuation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.setupui"><code class="docutils literal notranslate"><span class="pre">Continuation.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.settings"><code class="docutils literal notranslate"><span class="pre">Continuation.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.saveproj"><code class="docutils literal notranslate"><span class="pre">Continuation.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Continuation.acceptall"><code class="docutils literal notranslate"><span class="pre">Continuation.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut"><code class="docutils literal notranslate"><span class="pre">DataCut</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut.settings"><code class="docutils literal notranslate"><span class="pre">DataCut.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataCut.saveproj"><code class="docutils literal notranslate"><span class="pre">DataCut.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack"><code class="docutils literal notranslate"><span class="pre">DataLayerStack</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.setupui"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.dxy_change"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.dxy_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.settings"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.saveproj"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataLayerStack.acceptall"><code class="docutils literal notranslate"><span class="pre">DataLayerStack.acceptall()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge"><code class="docutils literal notranslate"><span class="pre">DataMerge</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.setupui"><code class="docutils literal notranslate"><span class="pre">DataMerge.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.method_change"><code class="docutils literal notranslate"><span class="pre">DataMerge.method_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.get_idir"><code class="docutils literal notranslate"><span class="pre">DataMerge.get_idir()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.get_sfile"><code class="docutils literal notranslate"><span class="pre">DataMerge.get_sfile()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.settings"><code class="docutils literal notranslate"><span class="pre">DataMerge.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.saveproj"><code class="docutils literal notranslate"><span class="pre">DataMerge.saveproj()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataMerge.merge_different"><code class="docutils literal notranslate"><span class="pre">DataMerge.merge_different()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj"><code class="docutils literal notranslate"><span class="pre">DataReproj</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.setupui"><code class="docutils literal notranslate"><span class="pre">DataReproj.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.acceptall"><code class="docutils literal notranslate"><span class="pre">DataReproj.acceptall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.settings"><code class="docutils literal notranslate"><span class="pre">DataReproj.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.DataReproj.saveproj"><code class="docutils literal notranslate"><span class="pre">DataReproj.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf"><code class="docutils literal notranslate"><span class="pre">GetProf</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf.settings"><code class="docutils literal notranslate"><span class="pre">GetProf.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.GetProf.saveproj"><code class="docutils literal notranslate"><span class="pre">GetProf.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata"><code class="docutils literal notranslate"><span class="pre">Metadata</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.banddata"><code class="docutils literal notranslate"><span class="pre">Metadata.banddata</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.bandid"><code class="docutils literal notranslate"><span class="pre">Metadata.bandid</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.setupui"><code class="docutils literal notranslate"><span class="pre">Metadata.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.acceptall"><code class="docutils literal notranslate"><span class="pre">Metadata.acceptall()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.rename_id"><code class="docutils literal notranslate"><span class="pre">Metadata.rename_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.update_vals"><code class="docutils literal notranslate"><span class="pre">Metadata.update_vals()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.Metadata.run"><code class="docutils literal notranslate"><span class="pre">Metadata.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.cluster_to_raster"><code class="docutils literal notranslate"><span class="pre">cluster_to_raster()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fftprep"><code class="docutils literal notranslate"><span class="pre">fftprep()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fft_getkxy"><code class="docutils literal notranslate"><span class="pre">fft_getkxy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.fftcont"><code class="docutils literal notranslate"><span class="pre">fftcont()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.get_shape_bounds"><code class="docutils literal notranslate"><span class="pre">get_shape_bounds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_median"><code class="docutils literal notranslate"><span class="pre">merge_median()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_min"><code class="docutils literal notranslate"><span class="pre">merge_min()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.merge_max"><code class="docutils literal notranslate"><span class="pre">merge_max()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.mosaic"><code class="docutils literal notranslate"><span class="pre">mosaic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.redistribute_vertices"><code class="docutils literal notranslate"><span class="pre">redistribute_vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.taylorcont"><code class="docutils literal notranslate"><span class="pre">taylorcont()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.trim_raster"><code class="docutils literal notranslate"><span class="pre">trim_raster()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.dataprep.verticalp"><code class="docutils literal notranslate"><span class="pre">verticalp()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Patrick Cole
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025 Council for Geoscience.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

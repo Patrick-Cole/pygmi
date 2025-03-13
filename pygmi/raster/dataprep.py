@@ -219,7 +219,8 @@ class DataCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata and 'Cluster' not in self.indata:
+        if ('Raster' not in self.indata and 'Cluster' not in self.indata
+                and 'RasterFileList' not in self.indata):
             self.showlog('No raster data')
             return False
 
@@ -241,6 +242,28 @@ class DataCut(BasicModule):
                 return False
 
             self.outdata[datatype] = data
+
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            for ifile in flist:
+                data = get_from_rastermeta(ifile, piter=self.piter,
+                                           showlog=self.showlog)
+                os.chdir(os.path.dirname(self.ifile))
+                data = cut_raster(data, self.ifile, showlog=self.showlog)
+
+                if data:
+                    odir = os.path.dirname(data[0].filename)
+                    odir = os.path.join(odir, 'cut')
+
+                    os.makedirs(odir, exist_ok=True)
+
+                    ofile = os.path.basename(data[0].filename)
+                    ofile = os.path.join(odir, ofile)
+
+                    self.showlog('Exporting to '+ofile)
+                    export_raster(ofile, data, drv='GTiff', piter=self.piter,
+                                  compression='DEFLATE', showlog=self.showlog)
+                    self.outdata['Raster'] = data
 
         return True
 

@@ -1,3 +1,0 @@
-Import 3D Model
----------------
-This model imported model created in PyGMI. The models use the Numpy .npz format. Each .npz file will contain the voxel model, along with raster datasets associated with that model.

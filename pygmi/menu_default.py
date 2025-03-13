@@ -198,7 +198,7 @@ class HelpDocs(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
 
-        ipth = os.path.dirname(__file__)+r'/helpdocs/'
+        ipth = os.path.dirname(__file__)+r'//helpdocs//html'
         # opth = os.getcwd()
 
         if helptxt is None:

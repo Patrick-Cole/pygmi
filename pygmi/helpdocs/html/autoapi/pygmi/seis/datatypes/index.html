@@ -1,0 +1,1259 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pygmi.seis.datatypes &#8212; PyGMI 3.2.8.30 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../../_static/documentation_options.js?v=09bf96d3"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/seis/datatypes/index';</script>
+    <link rel="icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="pygmi.seis.del_rec" href="../del_rec/index.html" />
+    <link rel="prev" title="pygmi.seis.beachball" href="../beachball/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="../../../../index.html">
+<img src="../../../../_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="../../../../_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="../../../../index.html">
+<img src="../../../../_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PyGMI 3.2.8.30 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Patrick-Cole/pygmi" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/pyversions/pygmi" title="PyPI - Python Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/pyversions/pygmi" class="icon-link-image" alt="PyPI - Python Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/v/pygmi" title="PyPI - Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/v/pygmi" class="icon-link-image" alt="PyPI - Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/github/license/patrick-cole/pygmi" title="GitHub License" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/github/license/patrick-cole/pygmi" class="icon-link-image" alt="GitHub License"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../wiki.html">PyGMI Wiki</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../file.html">File Menu</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrasterdata.html">Import Raster Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.importrgbimage.html">Import RGB Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.equationeditor.html">Equation Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.smoothing.html">Smoothing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.agc.html">Automatic Gain Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.norm.html">Normalisation/Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.grad.html">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.visibility.html">Visibility Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.mosaic.html">Dataset Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.reproj.html">Dataset Reprojection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.stats.html">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showanaglyph.html">Show Anaglyph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showsurface.html">Show Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhexbin.html">Show Hexbin Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.showcorr.html">Show 2D Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.export.html">Export Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.structcomp.html">Structural Complexity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.meta.html">Display/Edit Vector Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.stats.html">Basic Vector Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showvector.html">Show Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showrose.html">Show Rose Diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.clust.html">Cluster Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.crisp.html">Crisp Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.seg.html">Image Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.super.html">Supervised Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.dm.scatter.html">Scatter Plot Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.stat.html">Cluster Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cluster.cm.exportclass.html">Export Class Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../em.html">Electromagnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.importedi.html">Import EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.rotateedi.html">Rotate EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.removesshift.html">Remove Static Shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.mask.html">Mask and Interpolate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.dm.occam.html">Occam 1D Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../pfmod.dm.modelcreate.html">Model Creation and Editing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.mext.html">Model Extent Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.gparam.html">Geophysical Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../pfmod.dm.mc.editor.html">Editor overview</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.import3dmodel.html">Import 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.merge3dmodels.html">Merge two 3D Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.dm.inv3d.html">3D Magnetic Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.show3dmodel.html">3D Model Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.stat.html">3D Model Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../rsense.html">Remote Sensing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.importdata.html">Import Satellite Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.createbatchlist.html">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ratios.html">Calculate Band Ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.topo.html">Topographic Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.ltc.html">Landsat Temporal Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.pca.html">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.mnf.html">Minimum Noise Fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.hyper.html">Hyperspectral Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.dm.change.html">Change Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../rsense.cm.exportdata.html">Export Raster File List</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.importfps.html">Import Generic FPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.sfilt.html">Filter SEISAN data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.fps.html">Fault Plane Solutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">pygmi</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../bholes/index.html">pygmi.bholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/graphs/index.html">pygmi.bholes.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/iodefs/index.html">pygmi.bholes.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../bholes/menu/index.html">pygmi.bholes.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../clust/index.html">pygmi.clust</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/cluster/index.html">pygmi.clust.cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/crisp_clust/index.html">pygmi.clust.crisp_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/fuzzy_clust/index.html">pygmi.clust.fuzzy_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphs/index.html">pygmi.clust.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/graphtool/index.html">pygmi.clust.graphtool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/menu/index.html">pygmi.clust.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/segmentation/index.html">pygmi.clust.segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/super_class/index.html">pygmi.clust.super_class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../clust/var_ratio/index.html">pygmi.clust.var_ratio</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../em/index.html">pygmi.em</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../em/menu/index.html">pygmi.em.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../em/tdem/index.html">pygmi.em.tdem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../grav/menu/index.html">pygmi.grav.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../main/index.html">pygmi.main</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../menu_default/index.html">pygmi.menu_default</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../misc/index.html">pygmi.misc</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../mt/index.html">pygmi.mt</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/birrp/index.html">pygmi.mt.birrp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/dataprep/index.html">pygmi.mt.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/graphs/index.html">pygmi.mt.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/iodefs/index.html">pygmi.mt.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mt/menu/index.html">pygmi.mt.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pfmod/index.html">pygmi.pfmod</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/datatypes/index.html">pygmi.pfmod.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/grvmag3d/index.html">pygmi.pfmod.grvmag3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/iodefs/index.html">pygmi.pfmod.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/menu/index.html">pygmi.pfmod.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/misc/index.html">pygmi.pfmod.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/mvis3d/index.html">pygmi.pfmod.mvis3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfinvert/index.html">pygmi.pfmod.pfinvert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/pfmod/index.html">pygmi.pfmod.pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/show_table/index.html">pygmi.pfmod.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_mext/index.html">pygmi.pfmod.tab_mext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_param/index.html">pygmi.pfmod.tab_param</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pfmod/tab_prof/index.html">pygmi.pfmod.tab_prof</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/menu/index.html">pygmi.raster.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/misc/index.html">pygmi.raster.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/modest_image/index.html">pygmi.raster.modest_image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/modest_ioimage/index.html">pygmi.raster.modest_ioimage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/normalisation/index.html">pygmi.raster.normalisation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/reproj/index.html">pygmi.raster.reproj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/show_table/index.html">pygmi.raster.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/smooth/index.html">pygmi.raster.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../rsense/index.html">pygmi.rsense</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change/index.html">pygmi.rsense.change</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/change_viewer/index.html">pygmi.rsense.change_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/dataprep/index.html">pygmi.rsense.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/emit/index.html">pygmi.rsense.emit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/features/index.html">pygmi.rsense.features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/hyperspec/index.html">pygmi.rsense.hyperspec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/iodefs/index.html">pygmi.rsense.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/landsat_composite/index.html">pygmi.rsense.landsat_composite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/menu/index.html">pygmi.rsense.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/ratios/index.html">pygmi.rsense.ratios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../rsense/transforms/index.html">pygmi.rsense.transforms</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.seis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../beachball/index.html">pygmi.seis.beachball</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.seis.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../del_rec/index.html">pygmi.seis.del_rec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.seis.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iodefs/index.html">pygmi.seis.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.seis.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html">pygmi.seis.utils</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../../_sources/autoapi/pygmi/seis/datatypes/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>pygmi.seis.datatypes</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_1"><code class="docutils literal notranslate"><span class="pre">seisan_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_2"><code class="docutils literal notranslate"><span class="pre">seisan_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_3"><code class="docutils literal notranslate"><span class="pre">seisan_3</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_4"><code class="docutils literal notranslate"><span class="pre">seisan_4</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_5"><code class="docutils literal notranslate"><span class="pre">seisan_5</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_6"><code class="docutils literal notranslate"><span class="pre">seisan_6</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_E"><code class="docutils literal notranslate"><span class="pre">seisan_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_F"><code class="docutils literal notranslate"><span class="pre">seisan_F</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_H"><code class="docutils literal notranslate"><span class="pre">seisan_H</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_I"><code class="docutils literal notranslate"><span class="pre">seisan_I</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_M"><code class="docutils literal notranslate"><span class="pre">seisan_M</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_P"><code class="docutils literal notranslate"><span class="pre">seisan_P</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pygmi.seis.datatypes">
+<span id="pygmi-seis-datatypes"></span><h1>pygmi.seis.datatypes<a class="headerlink" href="#module-pygmi.seis.datatypes" title="Link to this heading">#</a></h1>
+<p>Class for seismic data types.</p>
+<p>Docstring information is from SEISAN documentation.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_1" title="pygmi.seis.datatypes.seisan_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_1</span></code></a></p></td>
+<td><p>Class to hold Seisan Type 1 data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_2" title="pygmi.seis.datatypes.seisan_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_2</span></code></a></p></td>
+<td><p>Type 2 line (Macroseismic information).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_3" title="pygmi.seis.datatypes.seisan_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_3</span></code></a></p></td>
+<td><p>Type 3 Line (Optional).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_4" title="pygmi.seis.datatypes.seisan_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_4</span></code></a></p></td>
+<td><p>Type 4 (phase) line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_5" title="pygmi.seis.datatypes.seisan_5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_5</span></code></a></p></td>
+<td><p>Type 5 line (optional).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_6" title="pygmi.seis.datatypes.seisan_6"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_6</span></code></a></p></td>
+<td><p>Type 6 Line (Optional).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_E" title="pygmi.seis.datatypes.seisan_E"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_E</span></code></a></p></td>
+<td><p>Type E Line (Optional): Hyp error estimates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_F" title="pygmi.seis.datatypes.seisan_F"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_F</span></code></a></p></td>
+<td><p>Type F Line (Optional): Fault plane solution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_H" title="pygmi.seis.datatypes.seisan_H"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_H</span></code></a></p></td>
+<td><p>Type H line, High accuracy hypocenter line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_I" title="pygmi.seis.datatypes.seisan_I"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_I</span></code></a></p></td>
+<td><p>Type I Line, ID line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_M" title="pygmi.seis.datatypes.seisan_M"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_M</span></code></a></p></td>
+<td><p>Type M Line (Optional): Moment tensor solution.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.seis.datatypes.seisan_P" title="pygmi.seis.datatypes.seisan_P"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seisan_P</span></code></a></p></td>
+<td><p>Type P line, file name of a picture file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_1</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_1" title="Link to this definition">#</a></dt>
+<dd><p>Class to hold Seisan Type 1 data.</p>
+<p>Type 1 Line Format:</p>
+<p>Columns Format Description                    Comments
+1              Free
+2-5      I4    Year
+6              Free
+7-8      I2    Month
+9-10     I2    Day of Month
+11             Fix o. time                    Normally blank, an F fixes
+-                                             origin time
+12-13    I2    Hour
+14-15    I2    Minutes
+16             Free
+17-20    F4.1  Seconds
+21             Location model indicator       Any character
+22       A1    Distance Indicator             L = Local, R = Regional,
+-                                             D = Distant, etc.
+23       A1    Event ID                       E = Confirmed explosion
+-                                             P = Probable explosion
+-                                             V = Volcanic
+-                                             Q = Confirmed earthquake
+-                                             ‘ ‘ = Presumed earthquake
+-                                             X = Landslide
+24-30    F7.3  Latitude                       Degrees (+ N)
+31-38    F8.3  Longitude                      Degrees (+ E)
+39-43    F5.1  Depth                          Km
+44       A1    Depth Indicator                F = Fixed, S = Starting value
+45       A1    Locating indicator             —————————-,
+-                                             * do not locate
+46-48    A3    Hypocenter Reporting Agency
+49-51          Number of Stations Used
+52-55          RMS of Time Residuals
+56-59   F4.1   Magnitude No. 1
+60 A1          Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
+-                                G=MbLg (not used by SEISAN), C=Mc
+61-63   A3     Magnitude Reporting Agency
+64-67   F4.1   Magnitude No. 2
+68 A1          Type of Magnitude
+69-71   A3     Magnitude Reporting Agency
+72-75   F4.1   Magnitude No. 3
+76 A1          Type of Magnitude
+77-79   A3     Magnitude Reporting Agency
+80 A1          Type of this line (“1”), can be blank if first
+-              line of event</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_2">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_2</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_2" title="Link to this definition">#</a></dt>
+<dd><p>Type 2 line (Macroseismic information).</p>
+<p>Cols Format Description
+1-5           Blank
+6-20          a Any descriptive text
+21            Free
+22    a1      Diastrophism code (PDE type)
+-                    F = Surface faulting
+-                    U = Uplift or subsidence
+-                    D = Faulting and Uplift/Subsidence
+23    a1      Tsunami code (PDE type)
+-                    T = Tsunami generated
+-                    Q = Possible tsunami
+24    a1      Seiche code (PDE type)
+-                    S = Seiche
+-                    Q = Possible seiche
+25    a1      Cultural effects (PDE type)
+-                    C = Casualties reported
+-                    D = Damage reported
+-                    F = Earthquake was felt
+-                    H = Earthquake was heard
+26    a1      Unusual events (PDE type)
+-                    L = Liquefaction
+-                    G = Geyser/fumarole
+-                    S = Landslides/Avalanches
+-                    B = Sand blows
+-                    C = Cracking in the ground (not normal faulting).
+-                    V = Visual phenomena
+-                    O = Olfactory phenomena
+-                    M = More than one of the above observed.
+27            Free
+28-29 i2      Max Intensity
+30    a1      Max Intensity qualifier
+-                    (+ or - indicating more precisely the intensity)
+31-32 a2      Intensity scale (ISC type definitions)
+-                    MM = Modified Mercalli
+-                    RF = Rossi Forel
+-                    CS = Mercalli - Cancani - Seberg
+-                    SK = Medevev - Sponheur - Karnik
+33            Free
+34-39 f6.2    Macroseismic latitude (Decimal)
+40            Free
+41-47 f7.2    Macroseismic longitude (Decimal)
+48            Free
+49-51 f3.1    Macroseismic magnitude
+52    a1      Type of magnitude
+-                    I = Magnitude based on maximum Intensity.
+-                    A = Magnitude based on felt area.
+-                    R = Magnitude based on radius of felt area.
+-                    * = Magnitude calculated by use of special formulas
+-                        developed by some person for a certain area.
+-                        Further info should be given on line 3.
+53-56 f4.2    Logarithm (base 10) of radius of felt area.
+57-61 f5.2    Logarithm (base 10) of area (km**2) number 1 where
+-                    earthquake was felt exceeding a given intensity.
+62-63 i2      Intensity bordering the area number 1.
+64-68 f5.2    Logarithm (base 10) of area (km**2) number 2 where
+-                    earthquake was felt exceeding a given intensity.
+69-70 i2      Intensity bordering the area number 2.
+71            Free
+72    a1      Quality rank of the report (A, B, C, D)
+73-75 a3      Reporting agency
+76-79         Free
+80    a1      Type of this line (“2”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_3">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_3</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_3" title="Link to this definition">#</a></dt>
+<dd><p>Type 3 Line (Optional).</p>
+<p>Columns Format Description Comments
+1               Free
+2-79    A       Text      Anything
+80      A1      Type of this line (“3”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_4">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_4</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_4" title="Link to this definition">#</a></dt>
+<dd><p>Type 4 (phase) line.</p>
+<p>Columns Format Description Comments</p>
+<p>1               Free
+2- 6    A5      Station Name    Blank = End of readings = end of event
+7       A1      Instrument Type S = SP, I = IP, L = LP etc
+8       A1      Component    Z, N, E ,T, R, 1, 2
+9               Free or weight, see note below
+10      A1      Quality Indicator   I, E, etc.
+11-14   A2      Phase ID    PN, PG, LG, P, S, etc. **
+15      I1      Weighting Indicator (1-4) 0 or blank= full weight, 1=75%,
+-               2=50%, 3=25%, 4=0%, 9: no weight, use difference time
+-               (e.g. P-S).
+16              Free or flag A to indicate automatic pick, removed when
+-               picking
+17      A1      First Motion    C, D
+18              Note: Currently 15 to 18 can also be used for phase
+-               assuming column 11-14 is not blank. See note ** below.
+19-20   I2      Hour        Hour can be up to 48 to indicate next day
+21-22   I2      Minutes
+23-28   F6.0    Seconds
+29              Free
+30-33   I4      Duration (to noise)         Seconds
+34-40   g7.1    Amplitude (Zero-Peak) in units of nm, nm/s, nm/s^2 or
+-               counts.
+41              Free
+42-45   F4.0    Period      Seconds
+46              Free
+47-51   F5.0    Direction of Approach       Degrees
+52              Free
+53-56   F4.0    Phase Velocity      Km/second
+57-60   F4.0    Angle of incidence (was Signal to noise ratio before
+-               version 8)
+61-63   I3      Azimuth residual
+64-68   F5.1    Travel time residual
+69-70   I2      Weight
+71-75   F5.0    Epicentral distance(km)
+76              Free
+77-79   I3      Azimuth at source
+80      A1      Type of this line (“4”), can be blank, which it is most
+-               often.</p>
+<p>Type 4 cards should be followed by a Blank Card (Type 0)</p>
+<p>Nordic 2:</p>
+<p>Columns Format Description Comments
+1 Free
+2-6   A5 Station Name
+7-9   A3 Component, e.g. SHZ
+10       Free
+11-12 A2 Network code
+13-14 A2 Location
+15       Free
+16    A1 Quality Indicator I, E, etc.
+17-24 A8 Phase ID PN, PG, LG, P, S, etc.
+25    I1 Weighting Indicator (1-4) 0 or blank= full weight, 1=75%, 2=50%,
+-        3=25%,4=0%, 9: no weight, time (e.g. P-S).
+26       Free or flag A to indicate automatic pick, removed when picking
+27-28 I2 Hour Hour can be up to 48 to indicate next day
+29-30 I2 Minutes
+31       Free
+32-37 F6.0 Seconds
+38-44    Parameter 1. If a phase, it is polarity in column 44
+-                     If phase END for coda, it is duration(s)(F)
+-                     If amplitude phase, it is amplitude (G7)
+-                     Amplitude is(Zero-Peak) in units of nm,
+-                     nm/s, nm/s^2 or counts.
+-                     If back azimuth phase (BAZ), it a back azimuth (F)
+45-50    Parameter 2  If a phase or END, it is blank
+-                     If an amplitude, it is period (F)
+-                     If back azimuth phase, it is apparent velocity(km/s)
+51         Free
+52-54 A3   Agency
+55         Free
+56-58 A3   Operator
+59         Free
+60-63 F4.0 Angle of incidence
+64-68 F5.1 Residual, can be travel time, back azimuth or magnitude
+69-70 I2   Weight used, like 05 is 0.5
+71-75 F5.0 Epicentral distance(km)
+76 Free
+77-79 I3   Azimuth at source
+80 A1 Type of this line (” “)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_5">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_5</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_5" title="Link to this definition">#</a></dt>
+<dd><p>Type 5 line (optional).</p>
+<p>Error estimates of previous line, currently not used by any SEISAN
+programs.</p>
+<p>Columns Format Description  Comments
+1       Free
+2-79    Error estimates in same format as previous line, normally type 4
+80 A1   Type of this line (“5”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_6">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_6</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_6" title="Link to this definition">#</a></dt>
+<dd><p>Type 6 Line (Optional).</p>
+<p>Columns Format Description  Comments
+1       Free
+2-79    A      Name(s) of file or archive reference, a-format
+80      A1     Type of this line (“6”)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_E">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_E</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_E" title="Link to this definition">#</a></dt>
+<dd><p>Type E Line (Optional): Hyp error estimates.</p>
+<p>Before version 12.0 there was only one E-line in S-file which could only
+belong to the main hypocenter. In order to know which E-line belongs to
+which 1-line, the location program indicator and the agency must match.
+If only one E-line and no agency, it is assumed it belongs to the main
+hypocenter. This ensures backwards compatibility. Multiple E-lines can be
+used in both Nordic and Nordic2 format.</p>
+<p>Columns Format Description</p>
+<p>1     Free
+2-5   A4 The text GAP=
+6-8   I3 Gap
+10:10 A1 Location program indicator, blank for Hypocenter (new from version 12)
+11:11 Free
+12:14 A3 Agency (new from version 12)
+15-20 F6.2 Origin time error
+25-30 F6.1 Latitude (y) error
+31-32 Free
+33-38 F6.1 Longitude (x) error (km)
+39-43 F5.1 Depth (z) error (km)
+44-55 E12.4 Covariance (x,y) km*km
+56-67 E12.4 Covariance (x,z) km*km
+68-79 E14.4 Covariance (y,z) km*km</p>
+<p>covariance matrix:
+var(1,1)=erx*erx
+var(2,2)=ery*ery
+var(3,3)=erz*erz
+var(1,2)=cvxy
+var(1,3)=cvxz
+var(2,3)=cvyz
+var(2,1)=var(1,2)
+var(3,1)=var(1,3)
+var(3,2)=var(2,3)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_F">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_F</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_F" title="Link to this definition">#</a></dt>
+<dd><p>Type F Line (Optional): Fault plane solution.</p>
+<p>Columns Format Description</p>
+<p>1:30    3F10.0 Strike, dip and rake, Aki convention
+31:45   3F5.1  Error in strike dip and rake (HASH), error in fault plane
+-              and aux. plane (FPFIT)
+46:50   F5.1   Fit error:  FPFIT and HASH (F-fit)
+51:55   F5.1   Station distribution ratio (FPFIT, HASH)
+56:60   F5.1   Amplitude ratio fit (HASH, FOCMEC)
+61:65   I2     Number of bad polarities (FOCMEC, PINV)
+64.65   I2     Number of bad amplitude  ratios (FOCMEC)
+67:69   A3     Agency code
+71:77   A7     Program used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     F</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_H">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_H</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_H" title="Link to this definition">#</a></dt>
+<dd><p>Type H line, High accuracy hypocenter line.</p>
+<p>Columns Format Description
+1:15    As type 1 line including program used in column 6 (new from version 12)
+16      Free
+17      f6.3    Seconds
+23      Free
+24:32   f9.5    Latitude
+33      Free
+34:43   f10.5   Longitude
+44      Free
+45:52   f8.3    Depth
+53      Free
+54:59   f6.3    RMS
+61:63 Agency, A3 (new from version 12)
+62:79   Free
+80      H</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_I">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_I</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_I" title="Link to this definition">#</a></dt>
+<dd><p>Type I Line, ID line.</p>
+<p>Columns Description
+1       Free
+2:8     Help text for the action indicator
+9:11    Last action done, so far defined:
+-         ARG: AUTO Register, AUTOREG
+-         ARX: From ARC extract
+-         DPH: Phases deleted with DELS
+-         DUP: Duplicated event
+-         HIN: Updated with HYPOINVERSE
+-         NEW: New event
+-         REE: Register from EEV
+-         REG: Register
+-         SPL: Split
+-         UPD: Update with HYP
+-         UP : Update with HYP only from EEV
+1       Free
+13:26   Date and time of last action
+27      Free
+28:30   Help text for operator
+36:42   Help text for status
+43:56   Status flags, not yet defined
+57      Free
+58:60   Help text for ID
+61:74   ID, year to second
+75      If d, this indicate that a new file id had to be created which was
+-       one or more seconds different from an existing ID to avoid
+-       overwrite.
+76      Indicate if ID is locked. Blank means not locked, L means locked.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_M">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_M</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_M" title="Link to this definition">#</a></dt>
+<dd><p>Type M Line (Optional): Moment tensor solution.</p>
+<p>Note: the type M lines are pairs of lines with one line that gives the
+hypocenter time, and one line that gives the moment tensor values:</p>
+<p>The first moment tensor line:
+Columns Format Description
+1:1            Free
+2:5     I4     Year
+7:8     I2     Month
+9:10    I2     Day of Month
+12:13   I2     Hour
+14:15   I2     Minutes
+17:20   F4.1   Seconds
+24:30   F7.3   Latitude                       Degrees (+ N)
+31:38   F8.3   Longitude                      Degrees (+ E)
+39:43   F5.1   Depth                          Km
+46:48   A3     Reporting Agency
+56:59   F4.1   Magnitude
+60      A1     Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
+61:63   A3     Magnitude Reporting Agency
+71:77   A7     Method used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     M</p>
+<p>The second moment tensor line:
+Columns Format Description
+1:1            Free
+2:3     A2     MT
+4:9     F6.3   Mrr or Mzz [Nm]
+11:16   F6.3   Mtt or Mxx [Nm]
+18:23   F6.3   Mpp or Myy [Nm]
+25:30   F6.3   Mrt or Mzx [Nm]
+32:37   F6.3   Mrp or Mzy [Nm]
+39:44   F6.3   Mtp or Mxy [Nm]
+46:48   A3     Reporting Agency
+49:49   A1     MT coordinate system (S=spherical, C=Cartesian)
+50:51   i2     Exponential
+53:62   G6.3   Scalar Moment [Nm]
+71:77   A7     Method used
+78:78   A1     Quality of solution, A (best), B C or D (worst), added
+-              manually
+79:79   A1     Blank, can be used by user
+80:80   A1     M</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.seis.datatypes.seisan_P">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.seis.datatypes.</span></span><span class="sig-name descname"><span class="pre">seisan_P</span></span><a class="headerlink" href="#pygmi.seis.datatypes.seisan_P" title="Link to this definition">#</a></dt>
+<dd><p>Type P line, file name of a picture file.</p>
+<p>Columns Description
+1:1      Free
+2:79     File name
+80:80    P</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../beachball/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pygmi.seis.beachball</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../del_rec/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pygmi.seis.del_rec</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_1"><code class="docutils literal notranslate"><span class="pre">seisan_1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_2"><code class="docutils literal notranslate"><span class="pre">seisan_2</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_3"><code class="docutils literal notranslate"><span class="pre">seisan_3</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_4"><code class="docutils literal notranslate"><span class="pre">seisan_4</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_5"><code class="docutils literal notranslate"><span class="pre">seisan_5</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_6"><code class="docutils literal notranslate"><span class="pre">seisan_6</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_E"><code class="docutils literal notranslate"><span class="pre">seisan_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_F"><code class="docutils literal notranslate"><span class="pre">seisan_F</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_H"><code class="docutils literal notranslate"><span class="pre">seisan_H</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_I"><code class="docutils literal notranslate"><span class="pre">seisan_I</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_M"><code class="docutils literal notranslate"><span class="pre">seisan_M</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.seis.datatypes.seisan_P"><code class="docutils literal notranslate"><span class="pre">seisan_P</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Patrick Cole
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025 Council for Geoscience.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

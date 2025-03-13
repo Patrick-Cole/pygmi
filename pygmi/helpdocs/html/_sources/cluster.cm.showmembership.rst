@@ -1,0 +1,14 @@
+Show Membership Data (Fuzzy Only)
+---------------------------------
+The results of fuzzy clustering contain information on the degree of membership of data points to a specific class. Higher values show higher degrees of membership to a specific class.
+
+The interface has the following options:
+
+1. **Number of Clusters** – If the classification was done for a range of clusters the results for each number of clusters can be selected via the dropdown menu.
+2. **Membership** – The membership of data to each class. Higher values indicate that the data belongs to a certain class with a high degree of certainty. Data corresponding to medium values may belong to a class but may also be part of another class. Low values mean the data definitely does not belong to the class.
+3. Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.
+
+.. figure:: _images/clustshowmemb.png
+
+   Show Membership Data interface.
+
