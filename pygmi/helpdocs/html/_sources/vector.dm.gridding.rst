@@ -1,6 +1,6 @@
 Dataset Gridding
 ----------------
-This module grids data using nearest neighbour, linear, cubic (all from SciPy) or minimum curvature (Briggs, 1974) algorithms. The input is a point or line or vector dataset, imported from the vector menu. Note that the x and y columns are defined when importing the line or point data.
+This module grids data using nearest neighbour, linear, cubic (all from SciPy) or minimum curvature (Briggs, 1974) algorithms. The input is a point or line or vector dataset, imported from the vector menu. Note that the x and y columns are defined when :doc:`importing<vector.dm.importxyzdata>` the line or point data.
 
 The gridding options are:
 

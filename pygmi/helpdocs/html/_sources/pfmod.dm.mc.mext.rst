@@ -4,9 +4,9 @@ If the aim is to create a synthetic model, no input datasets are required althou
 
 It is important to ensure the following:
 
-* All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the raster’s metadata.
-* Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the raster’s metadata.
-* If you use magnetic data, make sure that it is not total magnetic intensity data. The IGRF must be removed. 
+* All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the :doc:`raster’s metadata<raster.cm.meta>`.
+* Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the :doc:`raster’s metadata<raster.cm.meta>`.
+* If you use magnetic data, make sure that it is not total magnetic intensity data. The :doc:`IGRF must be removed<mag.dm.igrf>`. 
 
 .. figure:: _images/pfmodmext1.png
 

@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Export Summary to CSV</a></li>
@@ -660,7 +666,34 @@ document.write(`
                   
   <section id="export-summary-to-csv">
 <h1>Export Summary to CSV<a class="headerlink" href="#export-summary-to-csv" title="Link to this heading">#</a></h1>
-<p>A summary of the events in the database can be exported here.</p>
+<p>A summary of the events in the database can be exported to a <strong>CSV</strong>, Microsoft Excel (<strong>XLSX</strong>) or shapefile. The summary consists rows of events with the following information in the columns:</p>
+<ul class="simple">
+<li><p>Year</p></li>
+<li><p>Month</p></li>
+<li><p>Day</p></li>
+<li><p>Hour</p></li>
+<li><p>Minute</p></li>
+<li><p>Second</p></li>
+<li><p>Latitude</p></li>
+<li><p>Longitude</p></li>
+<li><p>Depth</p></li>
+<li><p>Ml</p></li>
+<li><p>Mw</p></li>
+<li><p>Md</p></li>
+<li><p>Mb</p></li>
+<li><p>Ms</p></li>
+<li><p>RMS</p></li>
+<li><p>LatitudeError</p></li>
+<li><p>LongitudeError</p></li>
+<li><p>DepthError</p></li>
+<li><p>Mo</p></li>
+<li><p>SourceRadius</p></li>
+<li><p>StressDrop</p></li>
+<li><p>StdDeviation</p></li>
+<li><p>Mercalli</p></li>
+<li><p>Agency</p></li>
+<li><p>Description</p></li>
+</ul>
 </section>
 
 

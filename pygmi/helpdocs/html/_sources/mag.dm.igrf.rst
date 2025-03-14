@@ -38,7 +38,7 @@ The IGRF parameters are also shown in the **Process Log** window of the main PyG
 
    IGRF parameters listed in the Process Log window.
 
-The resulting dataset can be exported by right-clicking on the function and selecting **Export Raster**.
+The resulting dataset can be exported by right-clicking on the function and selecting :doc:`Export Raster<raster.cm.export>`.
 
 References
 ^^^^^^^^^^

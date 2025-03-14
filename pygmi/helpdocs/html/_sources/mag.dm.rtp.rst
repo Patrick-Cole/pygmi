@@ -12,3 +12,5 @@ The parameters on the interfaced are:
 .. figure:: _images/rtp.png
 
    Reduction to the Pole interface.
+
+The resulting dataset can be exported by right-clicking on the function and selecting :doc:`Export Raster<raster.cm.export>`.

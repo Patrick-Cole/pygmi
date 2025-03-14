@@ -1,6 +1,6 @@
 Show QC Plots
 -------------
-A series of graph routines were developed to assess the SEISAN catalogue data. The following graphs are available:
+A series of graph routines were developed to assess the SEISAN catalogue data. The following graphs are available for QC purposes:
 
 * Events by Hour - Histogram
 * Events by Month - Histogram
@@ -21,4 +21,13 @@ A series of graph routines were developed to assess the SEISAN catalogue data. T
 * Time Residual - Plot with error bars
 * Wadati plot - Line and points
 
-.. image:: _images/seisplots.png
+These graphs are accessible through a dropdown list in the graph window. For the graphs displaying error ellipses, an option is available to save the ellipses to a shapefile.
+
+.. figure:: _images/seisplots.png
+
+   QC Plot window. 
+
+.. figure:: _images/seisplots2.png
+
+   QC Plot window with the option of storing the error ellipses in a shapefile.
+

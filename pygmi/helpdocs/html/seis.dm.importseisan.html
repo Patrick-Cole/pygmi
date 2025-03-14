@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Import SEISAN Data &#8212; PyGMI 3.2.8.30 documentation</title>
+    <title>Import Seismic Data &#8212; PyGMI 3.2.8.30 documentation</title>
   
   
   
@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Import SEISAN Data</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -644,7 +650,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Import SEISAN Data</h1>
+    <h1>Import Seismic Data</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -658,9 +664,33 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="import-seisan-data">
-<h1>Import SEISAN Data<a class="headerlink" href="#import-seisan-data" title="Link to this heading">#</a></h1>
-<p>Imports SEISAN data stored in the NORDIC and NORDIC2 format, and includes .macro files for macroseismic information.</p>
+  <section id="import-seismic-data">
+<h1>Import Seismic Data<a class="headerlink" href="#import-seismic-data" title="Link to this heading">#</a></h1>
+<p>Imports SEISAN data stored in the <strong>NORDIC</strong> and NORDIC2** format, including <strong>MACRO</strong> files for macroseismic information. The figure below shows the full list of input formats.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/seisimp.png" src="_images/seisimp.png" />
+<figcaption>
+<p><span class="caption-text">Formats of seismological data that can be imported.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>For the <strong>Simple event list in Excel (*.xlsx)</strong> option, the spreadsheet must have columns with the following headings:</p>
+<ul class="simple">
+<li><p>Cyear or Year</p></li>
+<li><p>Month</p></li>
+<li><p>Day</p></li>
+<li><p>Hour</p></li>
+<li><p>Minute</p></li>
+<li><p>Second</p></li>
+<li><p>Latitude</p></li>
+<li><p>Longitude</p></li>
+<li><p>Depth</p></li>
+<li><p>Ml</p></li>
+<li><p>Mw</p></li>
+<li><p>Md</p></li>
+<li><p>Mb</p></li>
+<li><p>Ms</p></li>
+<li><p>Agency</p></li>
+</ul>
 </section>
 
 

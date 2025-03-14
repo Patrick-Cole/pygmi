@@ -23,4 +23,4 @@ The options are:
 
 * **View Magnetic Profile** – Select the show the magnetic data for the profile.
 * **View Gravity Profile** – Select the show the gravity data for the profile.
-* **Import Borehole Logs** - Import borehole logs (imported from the borehole menu, and connected to the modelling module)
+* **Import Borehole Logs** - :doc:`Import borehole logs<bholes.dm.import>` (imported from the borehole menu, and connected to the modelling module)

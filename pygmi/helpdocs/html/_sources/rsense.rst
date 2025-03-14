@@ -23,7 +23,7 @@ The **Remote Sensing** menu gives a variety of tools to make working with remote
     
 Context Menu
 ------------
-Remote sensing data are in raster format and therefore the context menu (accessed by right-clicking on remote sensing modules that have been executed) are the same as the context menu for raster data. The only exception is the context menu for the **Import Batch List** function.
+Remote sensing data are in raster format and therefore the context menu (accessed by right-clicking on remote sensing modules that have been executed) are the same as the context menu for raster data. The only exception is the context menu for the :doc:`Create Batch List<rsense.dm.createbatchlist>` module.
 
 .. toctree::
     :titlesonly:

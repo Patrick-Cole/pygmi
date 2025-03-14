@@ -300,7 +300,7 @@ class ImportBatch(BasicModule):
         pb_sfile.setIcon(icon)
         pb_sfile.setStyleSheet('text-align:left;')
 
-        self.setWindowTitle('Import Batch Data')
+        self.setWindowTitle('Create Batch List')
         self.cb_ensuresutm.setChecked(True)
 
         gl_1 = QtWidgets.QGridLayout(self)

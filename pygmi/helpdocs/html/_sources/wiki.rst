@@ -15,7 +15,7 @@ Remember the following:
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    install
    interface
@@ -23,6 +23,7 @@ Contents:
    file
    raster
    vector
+   bholes
    cluster
    em
    gravity

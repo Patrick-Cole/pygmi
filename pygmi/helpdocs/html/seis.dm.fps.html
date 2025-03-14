@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -660,19 +666,21 @@ document.write(`
                   
   <section id="fault-plane-solutions">
 <h1>Fault Plane Solutions<a class="headerlink" href="#fault-plane-solutions" title="Link to this heading">#</a></h1>
-<p>This module allows for the display of fault plane solutions as beachball plots.
-The beachball plots can be exported to shapefiles. Note that two shapefiles are
-exported - one for the actual beachballs and one for a boundary of the
-beachballs.</p>
-<p>The core code is translated from bb.m written by Andy Michael and Oliver Boyd
-at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
-<p>Option are:</p>
-<ul class="simple">
-<li><p>FPS Algorithm - can be FOCMEC or FPFIT</p></li>
-<li><p>Width scale factor - option to scale the “beachballs”</p></li>
-<li><p>Geographic units or Projected units.</p></li>
-</ul>
+<p>This module allows for the display of fault plane solutions as beachball plots. The beachball plots can be exported to shapefiles. Note that two shapefiles are exported - one for the actual beachballs and one for a boundary of the beachballs.</p>
+<p>The core code is translated from bb.m written by Andy Michael and Oliver Boyd at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
+<p>Options are:</p>
+<ol class="arabic simple">
+<li><p><strong>FPS Algorithm</strong> – Can be FOCMEC (focal mechanism) or FPFIT (double-couple FPS, Reasenberg and Oppenheimer, 1985).</p></li>
+<li><p><strong>Width scale factor</strong> – Option to scale the “beachballs”</p></li>
+<li><p><strong>Geographic units</strong> or <strong>Projected units</strong>. – Select based on input data.</p></li>
+<li><p><strong>Save Shapefile</strong> – Export the beachballs to shapefiles.</p></li>
+</ol>
+<figure class="align-default" id="id1">
 <img alt="_images/seisfps.png" src="_images/seisfps.png" />
+<figcaption>
+<p><span class="caption-text">Fault Plane Solution interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 
 

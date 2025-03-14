@@ -45,7 +45,7 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Import SEISAN Data" href="seis.dm.importseisan.html" />
+    <link rel="next" title="Import Seismic Data" href="seis.dm.importseisan.html" />
     <link rel="prev" title="Export Raster File List" href="rsense.cm.exportdata.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -673,10 +679,10 @@ document.write(`
 <h1>Seismology<a class="headerlink" href="#seismology" title="Link to this heading">#</a></h1>
 <section id="description-of-modules">
 <h2>Description of Modules<a class="headerlink" href="#description-of-modules" title="Link to this heading">#</a></h2>
-<p>The Seismology Menu is a where operations on earthquake seismology data reside. Here, SEISAN data can be imported, and some basic operations performed on it.</p>
+<p>The <strong>Seismology</strong> menu is a where operations on earthquake seismology data reside. Here, SEISAN data can be imported, and some basic operations performed on it.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
@@ -687,10 +693,17 @@ document.write(`
 </section>
 <section id="context-menu">
 <h2>Context Menu<a class="headerlink" href="#context-menu" title="Link to this heading">#</a></h2>
-<p>The seismology context menus are available for modules which have seismology output data. Output data is only available on green modules. To access the context menu, simply right-click a green module.</p>
+<p>The seismology context menus are available for modules which have seismology output data. Output data is only available on modules that have been executed (green modules). To access the context menu, simply right-click a green module.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/seiscm.png" src="_images/seiscm.png" />
+<figcaption>
+<p><span class="caption-text">Context menu for the Seismology modules.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l1"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -724,7 +737,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Import SEISAN Data</p>
+        <p class="prev-next-title">Import Seismic Data</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

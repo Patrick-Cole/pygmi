@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -670,7 +676,7 @@ document.write(`
                   
   <section id="tdem-1d-inversion">
 <h1>TDEM 1D Inversion<a class="headerlink" href="#tdem-1d-inversion" title="Link to this heading">#</a></h1>
-<p>TDEM (time domain electromagnetic) inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Since the inversion is 1D, it inverts data at a single station/sampling point. Line data can be imported using the <strong>Import XYZ Data</strong> module in the Vector menu.</p>
+<p>TDEM (time domain electromagnetic) inversion makes use of the SimPEG library (Cockett et al., 2015; Heagy et al., 2017). Since the inversion is 1D, it inverts data at a single station/sampling point. Line data can be imported using the <a class="reference internal" href="vector.dm.importxyzdata.html"><span class="doc">Import XYZ Data</span></a> module in the Vector menu.</p>
 <p>The SkyTEM Bookpurnong TDEM data used in this example are downloaded from the SimPEG website (<a class="reference external" href="https://docs.simpeg.xyz">https://docs.simpeg.xyz</a>). It consists of an airborne TDEM data in a tab-delimited <strong>TXT</strong> file with an accompanying <strong>TXT</strong> file with the window times. A header file (<strong>HDR</strong>) contains the survey information including the projection information that is required during data import.</p>
 <p>The EM interface has the following sections and options:</p>
 <ol class="arabic simple">

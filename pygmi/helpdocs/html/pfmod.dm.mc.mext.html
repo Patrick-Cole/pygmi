@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -663,9 +669,9 @@ document.write(`
 <p>If the aim is to create a synthetic model, no input datasets are required although a digital elevation model (DEM) can be used to provide the surface and locality of the synthetic model. When modelling observed data, the first step is to import the datasets that will be used for the modelling. In this example we will use magnetic, gravity and DEM data, and we also have an RGB image of the area’s geology.</p>
 <p>It is important to ensure the following:</p>
 <ul class="simple">
-<li><p>All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the raster’s metadata.</p></li>
-<li><p>Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the raster’s metadata.</p></li>
-<li><p>If you use magnetic data, make sure that it is not total magnetic intensity data. The IGRF must be removed.</p></li>
+<li><p>All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster’s metadata</span></a>.</p></li>
+<li><p>Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster’s metadata</span></a>.</p></li>
+<li><p>If you use magnetic data, make sure that it is not total magnetic intensity data. The <a class="reference internal" href="mag.dm.igrf.html"><span class="doc">IGRF must be removed</span></a>.</p></li>
 </ul>
 <figure class="align-default" id="id1">
 <img alt="_images/pfmodmext1.png" src="_images/pfmodmext1.png" />

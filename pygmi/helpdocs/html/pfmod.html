@@ -241,7 +241,7 @@
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html"><span class="xref std std-doc">Import Raster Data</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.smoothing.html">Smoothing</a></li>
@@ -289,6 +289,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -674,13 +680,13 @@ document.write(`
                   
   <section id="potential-field-modelling">
 <h1>Potential Field Modelling<a class="headerlink" href="#potential-field-modelling" title="Link to this heading">#</a></h1>
-<p>Potential field modelling within PyGMI is used to model magnetic and gravity data in three dimensions. The model consists of voxels and the response of each voxel is calculated using the code developed by Blakely (1996). The full 3D model is displayed using a context menu for the corresponding module.</p>
+<p>Potential field modelling within PyGMI is used to model magnetic and gravity data in three dimensions. The model consists of voxels and the response of each voxel is calculated using the code developed by Blakely (1996). The full 3D model is displayed using a context menu for the <a class="reference internal" href="pfmod.cm.show3dmodel.html"><span class="doc">corresponding module</span></a>.</p>
 <section id="description-of-modules">
 <h2>Description of Modules<a class="headerlink" href="#description-of-modules" title="Link to this heading">#</a></h2>
 <p>The <strong>Potential Field Modelling</strong> module can be used to create synthetic models without observed data and to create geological models based on observed gravity and/or magnetic data. Furthermore, a DEM can be used to define the surface of the model. The specific options on the <strong>Potential Field Modelling</strong> menu are:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="pfmod.dm.import3dmodel.html"><span class="doc">Import 3D Model</span></a> – Imports a model created in PyGMI. The models use the NumPy <strong>NPZ</strong> format. Each <strong>NPZ</strong> file contains the voxel model and the raster datasets associated with that model. These rasters are the DEM and/or magnetic and/or gravity and/or gravity regional data, and/or RGB images (e.g. a geological map) that have been loaded into the model previously.</p></li>
-<li><p><a class="reference internal" href="pfmod.dm.modelcreate.html"><span class="doc">Model Creation and Editing</span></a> – This module is the potential field modelling section of PyGMI. It is used to create a model or edit an existing model imported using the <strong>Import 3D Model</strong> option. The output from here is a voxel model which can be displayed in 3D using the right-click context menu on a green module. The module comprises a series of Tabs, which are described below. The actual calculation of the magnetic and gravity field data is based on the work by Blakely (1996).</p></li>
+<li><p><a class="reference internal" href="pfmod.dm.modelcreate.html"><span class="doc">Model Creation and Editing</span></a> – This module is the potential field modelling section of PyGMI. It is used to create a model or edit an existing model imported using the <a class="reference internal" href="pfmod.dm.import3dmodel.html"><span class="doc">Import 3D Model</span></a> option. The output from here is a voxel model which can be <a class="reference internal" href="pfmod.cm.show3dmodel.html"><span class="doc">displayed in 3D</span></a> using the right-click context menu on a green module. The module comprises a series of Tabs, which are described below. The actual calculation of the magnetic and gravity field data is based on the work by Blakely (1996).</p></li>
 <li><p><a class="reference internal" href="pfmod.dm.merge3dmodels.html"><span class="doc">Merge two 3D Models</span></a> – This allows for two 3D models to be merged into one single model.</p></li>
 <li><p><a class="reference internal" href="pfmod.dm.inv3d.html"><span class="doc">3D Magnetic Inversion</span></a> – A user interface that set up the parameters for the inversion routine of the SimPEG library (Cockett et al., 2015).</p></li>
 </ul>
@@ -690,7 +696,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.mc.mext.html">Model Extent Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.mc.gparam.html">Geophysical Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.mc.editor.html">Editor overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.mc.toolbar.html">1. Top toolbar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.mc.toolbar.html">1. Top Toolbar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.mc.lpviews.html">2. Layer and profile views</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.mc.lpcontrols.html">3. Profile and layer control</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.mc.modeltools.html">4. Modelling tools</a></li>

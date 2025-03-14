@@ -1,4 +1,4 @@
-:doc:`Import Raster Data<raster.dm.importrasterdata>`
+Import Raster Data
 ------------------
 This module imports raster data using the GDAL library, including **ENVI**, **ER Mapper**, **GeoTIFF**, **Geosoft GXF** and **Surfer**. It is possible to connect multiple imports to another module, thereby creating a 'layer stacked' dataset. Please note that satellite image imports take place in the **Remote Sensing menu**.
 

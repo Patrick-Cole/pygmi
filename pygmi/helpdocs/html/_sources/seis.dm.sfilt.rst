@@ -1,12 +1,13 @@
 Filter SEISAN data
 ------------------
-Here, the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:
+With this function the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:
 
-* Distance indicator - this can be any combination of local, regional or distant events.
-* Record type - choose the record type to use for the filter
-* Description - choose which column in the record type to filter on.
-* Include or Exclude - specify type of filtering operation
-* From and To - range to filter.
+1. **Distance indicator** – This can be any combination of local, regional or distant events. The indicators is selected automatically based on the input file.
+2. **Record type** – Choose the record type to use for the filter
+3. **Description** – Choose which column in the record type to filter on.
+4. **Include** or **Exclude** – Specify type of filtering operation.
+5. **From** and **To** – Range to filter.
 
-.. image:: _images/seisfilter.png
+.. figure:: _images/seisfilter.png
 
+   Data Filtering interface.

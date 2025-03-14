@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -673,45 +679,58 @@ document.write(`
   <section id="change-detection">
 <h1>Change Detection<a class="headerlink" href="#change-detection" title="Link to this heading">#</a></h1>
 <p>Change detection is an important technique used in the analysis of remote sensing data. Ordinarily, satellite data has a fixed number of bands (between 4 and 12 on average). These bands represent a light spectrum and can be utilised to study various terrestrial phenomena, from vegetation to minerals. The limits of the data are normally due to the number of bands in the data. One way to overcome this is to examine the temporal dimensions of the data. By studying the change in the data across multiple scenes, we can leverage more information.</p>
-<p>Change detection relies on the changing nature of the earth. This can be from extreme environmental disasters such as fires and landslides, or as simple as studying the effect a seasonal change has on the target being studied.</p>
-<p>This includes:
-1) Landslides.
-2) Environmental studies.
-3) Land use and land cover.
-4) Mineral outcrop (by using change detection as a process of elimination).</p>
+<p>Change detection relies on the changing nature of the earth. This can be from extreme environmental disasters such as fires and landslides, or as simple as studying the effect a seasonal change has on the target being studied, land use and land cover change and mineral outcrops by using change detection as a process of elimination (Cole and Coetzee, 2022).</p>
+<p>The <strong>Change Detection</strong> menu has two functions, namely <strong>Calculate Change Indices</strong> and <strong>View Change Data</strong>.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/changefuncs.png" src="_images/changefuncs.png" />
+<figcaption>
+<p><span class="caption-text">Change Detection functions.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <section id="calculate-change-indices">
 <h2>Calculate Change Indices<a class="headerlink" href="#calculate-change-indices" title="Link to this heading">#</a></h2>
-<p>Change Detection Indices give a measure of change in an area. The input to this module is a list of datasets loaded using the batch importer. Each dataset must also have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the metadata context menu. A variety of change indices can be calculated:</p>
-<p>Indices:</p>
+<p><strong>Change Detection Indices</strong> give a measure of change in an area. The input to this module is a list of datasets loaded using the batch importer. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">metadata</span></a> context menu.</p>
+<p>The following indices can be calculated:</p>
 <ul class="simple">
-<li><p>Difference - calculates the difference between two dates.</p></li>
-<li><p>Mean - average pixel value image over all dates.</p></li>
-<li><p>Standard Deviation - shows pixel variation though standard deviation.</p></li>
-<li><p>Coefficient of Variation - measure of variation, taking mean into account.</p></li>
-<li><p>Spectral Angle Mapper - find spectral angle between two scenes.</p></li>
+<li><p><strong>Difference</strong> – Calculates the difference between two dates (latter date minus earlier date).</p></li>
+<li><p><strong>Mean</strong> – Average pixel value image over all dates.</p></li>
+<li><p><strong>Standard Deviation</strong> – Shows pixel variation through standard deviation.</p></li>
+<li><p><strong>Coefficient of Variation</strong> – Measure of variation, taking mean into account.</p></li>
+<li><p><strong>Spectral Angle Mapper</strong> – Find spectral angle between two scenes.</p></li>
 </ul>
-<figure class="align-default">
+<p>Note that for <strong>Difference</strong> and <strong>Spectral Angle Mapper</strong> calculations only two datasets are allowed.</p>
+<figure class="align-default" id="id2">
 <img alt="_images/changeindices.png" src="_images/changeindices.png" />
+<figcaption>
+<p><span class="caption-text">Change indices that can be calculated.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
 </figure>
+<p>The result is a multiband raster file consisting of all the indices calculated for all bands. It can be exported by right-clicking on the <strong>Calculate Change Indices</strong> module and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster Data</span></a>.</p>
 </section>
 <section id="view-change-data">
 <h2>View Change Data<a class="headerlink" href="#view-change-data" title="Link to this heading">#</a></h2>
-<p>The visualisation of change is an obvious need for change detection. Often an end user wishes to see the scenes in sequence, rather than an index. As such a viewer is needed for this. The viewer requires only a batch list, coupled with associated dates for each scene. The viewer loads in the scene at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in GeoTIFF format. The main display also shows the date and time stamp for the scene.</p>
+<p>Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a batch list coupled with associated dates for each scene (defined in the raster file’s metadata). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in <strong>GeoTIFF</strong> format. The main display also shows the date and time stamp for the scene.</p>
 <p>The viewer options are:</p>
-<ul class="simple">
-<li><p>Display type: sets the image to be displayed, whether single band or ternary.</p></li>
-<li><p>Data bands: used to set each band to be displayed.</p></li>
-<li><p>Start capture: The scenes can be exported to a GIF image, at the current resolution and zoom.</p></li>
-<li><p>Previous and Next buttons: used to select the scene to be displayed.</p></li>
-<li><p>Scroll bar – used to select the scene to be displayed.</p></li>
-</ul>
-<figure class="align-default">
+<ol class="arabic simple">
+<li><p><strong>Display Type</strong> – sets the image to be displayed, whether <strong>Single Colour Map</strong>, <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong>.</p></li>
+<li><p><strong>Data Bands</strong> – Select the bands to be displayed.</p></li>
+<li><p><strong>Start Capture</strong> – The scenes can be exported to a <strong>GIF</strong> image, at the current resolution and zoom.</p></li>
+<li><p><strong>Scroll bar</strong> – Drag the slider to select the scene to display.</p></li>
+<li><p><strong>Previous Scene and Next Scene</strong> – Use these buttons to move forward and backward through the scenes.</p></li>
+<li><p>Standard image display settings that allow the user to zoom into specific areas of the image , move the zoomed in area around, return to the full image, save the image with the colour bar, etc.</p></li>
+</ol>
+<figure class="align-default" id="id3">
 <img alt="_images/changeviewer.png" src="_images/changeviewer.png" />
+<figcaption>
+<p><span class="caption-text">Change detection data viewer.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
 </figure>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
-<p>Cole, P., Coetzee, H., 2022, Innovative use of change detection in large numbers of satellite scenes, with geological applications, Quarterly Journal of Engineering Geology and Hydrogeology</p>
+<blockquote>
+<div><p>Cole, P., Coetzee, H., 2022, Innovative use of change detection in large numbers of satellite scenes, with geological applications, Quarterly Journal of Engineering Geology and Hydrogeology</p>
+</div></blockquote>
 </section>
 </section>
 

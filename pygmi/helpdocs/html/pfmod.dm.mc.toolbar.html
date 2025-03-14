@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1. Top toolbar &#8212; PyGMI 3.2.8.30 documentation</title>
+    <title>Top toolbar &#8212; PyGMI 3.2.8.30 documentation</title>
   
   
   
@@ -45,7 +45,7 @@
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Layer and profile views" href="pfmod.dm.mc.lpviews.html" />
+    <link rel="next" title="Layer and profile views" href="pfmod.dm.mc.lpviews.html" />
     <link rel="prev" title="Editor overview" href="pfmod.dm.mc.editor.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -659,7 +665,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="top-toolbar">
-<h1><span class="section-number">1. </span>Top toolbar<a class="headerlink" href="#top-toolbar" title="Link to this heading">#</a></h1>
+<h1>Top toolbar<a class="headerlink" href="#top-toolbar" title="Link to this heading">#</a></h1>
 <p>The toolbar gives options to modify the model parameters and perform calculations (Figure 125).</p>
 <figure class="align-default" id="id1">
 <img alt="_images/pfmodtoolbar1.png" src="_images/pfmodtoolbar1.png" />
@@ -669,8 +675,8 @@ document.write(`
 </figure>
 <p>It has the following menus:</p>
 <ul class="simple">
-<li><p><strong>Model Extent Parameters</strong> – This brings up the <strong>Model Extent Parameters</strong> dialog box where the user can adjust the dimensions and location of the model, as well as the datasets.</p></li>
-<li><p><strong>Geophysical Parameters</strong> – Parameters for gravity and magnetic modelling are set here.</p></li>
+<li><p><a class="reference internal" href="pfmod.dm.mc.mext.html"><span class="doc">Model Extent Parameters</span></a> – This brings up the <a class="reference internal" href="pfmod.dm.mc.mext.html"><span class="doc">Model Extent Parameters</span></a> dialog box where the user can adjust the dimensions and location of the model, as well as the datasets.</p></li>
+<li><p><a class="reference internal" href="pfmod.dm.mc.gparam.html"><span class="doc">Geophysical Parameters</span></a> – Parameters for gravity and magnetic modelling are set here.</p></li>
 <li><p><strong>Lithology Notes</strong> – A simple interface to store lithology notes. Each lithology can have a lithology code and lithology notes assigned to it.</p></li>
 </ul>
 <figure class="align-default" id="id2">
@@ -731,7 +737,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">2. </span>Layer and profile views</p>
+        <p class="prev-next-title">Layer and profile views</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

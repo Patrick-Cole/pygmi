@@ -1,6 +1,6 @@
 TDEM 1D Inversion
 -----------------
-TDEM (time domain electromagnetic) inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Since the inversion is 1D, it inverts data at a single station/sampling point. Line data can be imported using the **Import XYZ Data** module in the Vector menu. 
+TDEM (time domain electromagnetic) inversion makes use of the SimPEG library (Cockett et al., 2015; Heagy et al., 2017). Since the inversion is 1D, it inverts data at a single station/sampling point. Line data can be imported using the :doc:`Import XYZ Data<vector.dm.importxyzdata>` module in the Vector menu. 
 
 The SkyTEM Bookpurnong TDEM data used in this example are downloaded from the SimPEG website (https://docs.simpeg.xyz). It consists of an airborne TDEM data in a tab-delimited **TXT** file with an accompanying **TXT** file with the window times. A header file (**HDR**) contains the survey information including the projection information that is required during data import.
 

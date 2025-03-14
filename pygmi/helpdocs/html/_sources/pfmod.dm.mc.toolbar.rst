@@ -9,8 +9,8 @@ The toolbar gives options to modify the model parameters and perform calculation
 
 It has the following menus:
 
-* **Model Extent Parameters** – This brings up the **Model Extent Parameters** dialog box where the user can adjust the dimensions and location of the model, as well as the datasets.
-* **Geophysical Parameters** – Parameters for gravity and magnetic modelling are set here.
+* :doc:`Model Extent Parameters<pfmod.dm.mc.mext>` – This brings up the :doc:`Model Extent Parameters<pfmod.dm.mc.mext>` dialog box where the user can adjust the dimensions and location of the model, as well as the datasets.
+* :doc:`Geophysical Parameters<pfmod.dm.mc.gparam>` – Parameters for gravity and magnetic modelling are set here.
 * **Lithology Notes** – A simple interface to store lithology notes. Each lithology can have a lithology code and lithology notes assigned to it.
 
 .. figure:: _images/pfmodtoolbar2.png

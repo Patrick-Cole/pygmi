@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -660,7 +666,21 @@ document.write(`
                   
   <section id="create-batch-list">
 <h1>Create Batch List<a class="headerlink" href="#create-batch-list" title="Link to this heading">#</a></h1>
-<p>This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it only imports metadata, and not band data. The user must select a directory as input. The options are similar to the regular satellite data import.</p>
+<p>This option allows the user to import multiple datasets from the same sensor for use in other remote sensing modules that support batch processing. All the datasets must be in one folder.   Note that it only imports metadata, and not band data. The data can be original satellite data files in their respective formats or datasets that have been exported to standard raster format, e.g. <strong>GeoTIFF</strong>.</p>
+<p>The user must select a directory as input. The options are similar to the regular <a class="reference internal" href="rsense.dm.importdata.html"><span class="doc">Satellite Data Import</span></a> except that the user enters the folder (directory) where the data are stored instead of an individual file.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/rsensebatch1.png" src="_images/rsensebatch1.png" />
+<figcaption>
+<p><span class="caption-text">Import Batch List interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The raster file list can be seen in the <strong>Dataset Information</strong> window when clicking on the <strong>Create Batch List</strong> module.</p>
+<figure class="align-default" id="id2">
+<img alt="_images/rsensebatch2.png" src="_images/rsensebatch2.png" />
+<figcaption>
+<p><span class="caption-text">List of datasets that will be used in the batch processing.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 
 

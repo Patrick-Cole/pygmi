@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -660,15 +666,20 @@ document.write(`
                   
   <section id="filter-seisan-data">
 <h1>Filter SEISAN data<a class="headerlink" href="#filter-seisan-data" title="Link to this heading">#</a></h1>
-<p>Here, the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:</p>
-<ul class="simple">
-<li><p>Distance indicator - this can be any combination of local, regional or distant events.</p></li>
-<li><p>Record type - choose the record type to use for the filter</p></li>
-<li><p>Description - choose which column in the record type to filter on.</p></li>
-<li><p>Include or Exclude - specify type of filtering operation</p></li>
-<li><p>From and To - range to filter.</p></li>
-</ul>
+<p>With this function the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:</p>
+<ol class="arabic simple">
+<li><p><strong>Distance indicator</strong> – This can be any combination of local, regional or distant events. The indicators is selected automatically based on the input file.</p></li>
+<li><p><strong>Record type</strong> – Choose the record type to use for the filter</p></li>
+<li><p><strong>Description</strong> – Choose which column in the record type to filter on.</p></li>
+<li><p><strong>Include</strong> or <strong>Exclude</strong> – Specify type of filtering operation.</p></li>
+<li><p><strong>From</strong> and <strong>To</strong> – Range to filter.</p></li>
+</ol>
+<figure class="align-default" id="id1">
 <img alt="_images/seisfilter.png" src="_images/seisfilter.png" />
+<figcaption>
+<p><span class="caption-text">Data Filtering interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 
 

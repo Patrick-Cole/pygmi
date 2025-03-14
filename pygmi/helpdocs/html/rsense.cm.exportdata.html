@@ -291,6 +291,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -660,18 +666,33 @@ document.write(`
                   
   <section id="export-raster-file-list">
 <h1>Export Raster File List<a class="headerlink" href="#export-raster-file-list" title="Link to this heading">#</a></h1>
-<p>Raster Batch Lists can be exported to other formats, and to a ternary if desired.</p>
-<p>Options:</p>
-<ul class="simple">
-<li><p>Output Directory - location for output files.</p></li>
-<li><p>Output format - file format to export data to.</p></li>
-<li><p>Ternary Export - checkbox if only three band are to be exported.</p></li>
-<li><p>Red Band - used in ternary export.</p></li>
-<li><p>Green Band - used in ternary export.</p></li>
-<li><p>Blue Band - used in ternary export.</p></li>
-<li><p>Sunshade Band - the band used for the sunshading layer. This can be an external dataset.</p></li>
-<li><p>Sunshade Level - used to set the severity of sun shading.</p></li>
+<p>Data imported using <a class="reference internal" href="rsense.dm.createbatchlist.html"><span class="doc">Create Batch List</span></a> can be exported to other raster formats, and to a ternary image if desired.</p>
+<p>The options are:</p>
+<ol class="arabic simple">
+<li><p><strong>Output Directory</strong> – The folder where the output files will be stored.</p></li>
+<li><p><strong>Output Format</strong> – File format to export data to. The options are <strong>GeoTIFF</strong>, <strong>GeoTIFF compressed using DEFLATE</strong>, <strong>GeoTIFF compressed using ZSTD</strong>, <strong>ENVI</strong>, <strong>ERMapper</strong>, <strong>ERDAS Imagine</strong>.</p></li>
+<li><p><strong>Ternary Export</strong> – Checkbox to select ternary images to be exported. If this is not selected, the data will be exported to the specified folder with the word _stack appended to the filename. The filename depends on the sensor type and the conventions are as follows:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>ASTER – &lt;AST&gt;_&lt;Acquisition date (yyyymmdd)&gt;_&lt;Acquisition time (hhmmss)&gt;</p></li>
+<li><p>Sentinel-2 – &lt;Sentinel mission (S2A/S2B)&gt;_&lt;Tile name&gt;_&lt;Orbit number&gt;_ &lt;Acquisition date (yyyymmdd)&gt;</p></li>
+<li><p>Landsat – &lt;Landsat sensors (LT04/LT05/LE07/L08/L09)&gt;_&lt;Processing level&gt;_&lt;WRS path and row&gt;_&lt;Acquisition date (yyyymmdd)&gt;</p></li>
+<li><p>EMIT – None</p></li>
 </ul>
+</div></blockquote>
+<p>If <strong>Ternary Export</strong> is selected, the exported image files will be exported to the specified folder with the band combination appended to the filename.</p>
+<ol class="arabic simple" start="4">
+<li><p>Band selection for the ternary image.</p></li>
+<li><p><strong>Sunshade Band</strong> – The band used for the sun shading layer. This can be an external dataset.</p></li>
+<li><p><strong>Sunshade Level</strong> – The severity of sun shading. It can be <strong>Standard</strong> or <strong>Heavy</strong>.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<img alt="_images/rsenseexport.png" src="_images/rsenseexport.png" />
+<figcaption>
+<p><span class="caption-text">Export Raster File List interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 
 

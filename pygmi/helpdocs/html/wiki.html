@@ -241,7 +241,7 @@
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html"><span class="xref std std-doc">Import Raster Data</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.smoothing.html">Smoothing</a></li>
@@ -289,6 +289,11 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -364,13 +369,14 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -673,20 +679,225 @@ issues and fundamental principles are covered there.</p>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#hardware-requirements">Hardware requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#software-requirements">Software requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#pypi-windows">PyPi - Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#pypi-linux">PyPi - Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#anaconda">Anaconda</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="file.html">File Menu</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster.html">Classification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gravity.html">Gravity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mag.html">Magnetics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html#import-raster-data"><span class="xref std std-doc">Import Raster Data</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html#add-a-second-module-and-connect-it-to-the-first-module">Add a second module and connect it to the first module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html#export-the-result">Export the result</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file.html">File Menu</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="raster.html">Raster Data Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="raster.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.smoothing.html">Smoothing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.agc.html">Automatic Gain Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.norm.html">Normalisation/Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.grad.html">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.visibility.html">Visibility Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.mosaic.html">Dataset Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.reproj.html">Dataset Reprojection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.stats.html">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showanaglyph.html">Show Anaglyph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showsurface.html">Show Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showhexbin.html">Show Hexbin Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showcorr.html">Show 2D Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.export.html">Export Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vector.html">Vector Data Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vector.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.structcomp.html">Structural Complexity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.meta.html">Display/Edit Vector Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.stats.html">Basic Vector Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showvector.html">Show Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showrose.html">Show Rose Diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bholes.html">Boreholes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cluster.html">Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.seg.html">Image Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.super.html">Supervised Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.scatter.html">Scatter Plot Tool</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.stat.html">Cluster Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.exportclass.html">Export Class Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="em.html">Electromagnetics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="em.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="em.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gravity.html">Gravity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mag.html">Magnetics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mag.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mt.html">Magnetotellurics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mt.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.importedi.html">Import EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.rotateedi.html">Rotate EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.removesshift.html">Remove Static Shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.mask.html">Mask and Interpolate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.occam.html">Occam 1D Inversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.modelcreate.html">Model Creation and Editing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.import3dmodel.html">Import 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.merge3dmodels.html">Merge two 3D Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.inv3d.html">3D Magnetic Inversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.show3dmodel.html">3D Model Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.stat.html">3D Model Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rsense.html">Remote Sensing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.importdata.html">Import Satellite Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.createbatchlist.html">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.ratios.html">Calculate Band Ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.topo.html">Topographic Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.ltc.html">Landsat Temporal Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.pca.html">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.mnf.html">Minimum Noise Fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.hyper.html">Hyperspectral Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.change.html">Change Detection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="seis.html">Seismology</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="seis.html#description-of-modules">Description of Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html#context-menu">Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

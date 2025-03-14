@@ -22,7 +22,7 @@ Geophysical Parameters
   * List of lithologies – The current list of lithologies defined in the model. The lithology colour can be changed by double-clicking on a lithology. The petrophysical properties of the selected lithology are displayed on the right-hand side.
   * **Rename Current Definition** – To change the name of a lithology, select the lithology by clicking on it and then click on **Rename Current Definition**.
   * **Remove Current Definition** – Click on this to remove the currently selected lithology.
-  * **Merge Definitions** – Lithologies can be merged. A dialog box with two windows appears (Figure 127). In the top window the **Master Lithology** is selected. All the properties of this lithology will be retained. In the bottom window the user can select all the lithologies to merge with the **Master Lithology**. The selected lithologies will disappear from the list of lithologies.
+  * **Merge Definitions** – Lithologies can be merged. A dialog box with two windows appears. In the top window the **Master Lithology** is selected. All the properties of this lithology will be retained. In the bottom window the user can select all the lithologies to merge with the **Master Lithology**. The selected lithologies will disappear from the list of lithologies.
 
 .. figure:: _images/pfmodgparam2.png
 

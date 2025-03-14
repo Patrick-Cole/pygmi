@@ -5,7 +5,7 @@ Description of Modules
 ----------------------
 Cluster analysis and segmentation are useful machine learning or multivariate statistical analysis techniques which can perform an automatic interpretation of multi-band raster data.
 
-A multiple band raster dataset, imported through the raster menu is input. If more than one dataset is imported, they must first be merged/stacked into a multiband dataset. It is also important to normalise the data prior to classification to ensure that the data values of the different datasets fall in the same range. If this is not done, the results will be biased towards datasets with large values, e.g. magnetic data. 
+A multiple band raster dataset, :doc:`imported<raster.dm.importrasterdata>` through the raster menu is input. If more than one dataset is imported, they must first be :doc:`merged/stacked<raster.dm.layerstack>` into a multiband dataset. It is also important to normalise the data prior to classification to ensure that the data values of the different datasets fall in the same :doc:`range<raster.dm.norm>`. If this is not done, the results will be biased towards datasets with large values, e.g. magnetic data. 
 
 The Classification menu provides several classification/clustering tools.
 

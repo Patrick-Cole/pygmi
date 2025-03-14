@@ -12,7 +12,7 @@ The options available on the interface are:
 
    The Tilt Angle and Related Edge Filters interface.
 
-The resulting multiband dataset can be exported by right-clicking on the function and selecting **Export Raster**.
+The resulting multiband dataset can be exported by right-clicking on the function and selecting :doc:`Export Raster<raster.cm.export>`.
 
 References
 ^^^^^^^^^^
