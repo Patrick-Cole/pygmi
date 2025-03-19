@@ -2,7 +2,7 @@ Getting Started Guide: Example Of A Basic Workflow In PyGMI
 ===========================================================
 This example shows how to import a raster dataset, view it, select a processing task to perform on the data, connect this module to the input data and export the result.
 
-:doc:`Import Raster Data<raster.dm.importrasterdata>`
+Import Raster Data
 ------------------
 
 1. In the Raster menu click on :doc:`Import Raster Data<raster.dm.importrasterdata>`.

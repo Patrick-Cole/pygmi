@@ -186,7 +186,7 @@ class ImportData(BasicModule):
         self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
-        ext = 'Common formats (*.zip *.hdf *.tar *.tar.gz *.xml *.h5 *.nc);;'
+        ext = 'Common formats (*.zip *.tar *.tar.gz *.xml *.h5 *.nc);;'
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -377,7 +377,7 @@ class ImportBatch(BasicModule):
 
         self.le_sfile.setText(self.idir)
 
-        types = ['*.tif', '*.hdr', '*.hdf', '*.zip', '*.tar', '*.tar.gz',
+        types = ['*.tif', '*.hdr', '*.zip', '*.tar', '*.tar.gz',
                  '*[!aux].xml', '*.h5', '*.SAFE/MTD_MSIL*.xml']
 
         allfiles = []
@@ -399,7 +399,6 @@ class ImportBatch(BasicModule):
             if tmp:
                 self.tnames[sensor] = tmp
 
-        # breakpoint()
         self.cmb_sensor.disconnect()
         self.cmb_sensor.clear()
         self.cmb_sensor.addItems(self.bands.keys())
@@ -1246,7 +1245,7 @@ def consolidate_aster_list(flist):
         List of filenames.
 
     """
-    asterhfiles = []
+    # asterhfiles = []
     asterzfiles = []
     otherfiles = []
 
@@ -1254,8 +1253,8 @@ def consolidate_aster_list(flist):
         bfile = os.path.basename(ifile)
         ext = os.path.splitext(ifile)[1].lower()
 
-        if 'AST_' in bfile and ext == '.hdf':
-            asterhfiles.append(ifile)
+        # if 'AST_' in bfile and ext == '.hdf':
+        #     asterhfiles.append(ifile)
         if 'AST_' in bfile and ext == '.zip':
             asterzfiles.append(ifile)
         else:
@@ -1269,11 +1268,11 @@ def consolidate_aster_list(flist):
         tmp[adate] = ifile
     asterfiles += list(tmp.values())
 
-    for ifile in asterhfiles:
-        adate = os.path.basename(ifile).split('_')[2]
-        tmp[adate] = ifile
+    # for ifile in asterhfiles:
+    #     adate = os.path.basename(ifile).split('_')[2]
+    #     tmp[adate] = ifile
 
-    asterfiles += list(tmp.values())
+    # asterfiles += list(tmp.values())
 
     flist = asterfiles+otherfiles
 
@@ -1526,18 +1525,18 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
     if '.xml' in bfile.lower():
         dtree = etree_to_dict(ET.parse(ifile).getroot())
 
-    if 'AST_' in bfile and ext == '.hdf':
-        idir = os.path.dirname(ifile)
-        adate = os.path.basename(ifile).split('_')[2]
-        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
-        dat = []
-        for afile in ifiles:
-            tmp = get_aster_hdf(afile, piter, showlog, tnames, metaonly)
-            if tmp is not None:
-                dat += tmp
-            if dat == []:
-                dat = None
-    elif 'AST_' in bfile and ext == '.zip':
+    # if 'AST_' in bfile and ext == '.hdf':
+    #     idir = os.path.dirname(ifile)
+    #     adate = os.path.basename(ifile).split('_')[2]
+    #     ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+    #     dat = []
+    #     for afile in ifiles:
+    #         tmp = get_aster_hdf(afile, piter, showlog, tnames, metaonly)
+    #         if tmp is not None:
+    #             dat += tmp
+    #         if dat == []:
+    #             dat = None
+    if 'AST_' in bfile and ext == '.zip':
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
         ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
@@ -3290,7 +3289,6 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
             showlog('Date uncertian, setting it to 2000-01-01')
             date = datetime.date(2000, 1, 1)
 
-    i = -1
     for ifile2 in subdata:
         units = ''
 
@@ -3303,15 +3301,11 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
             bandid = 'Observations'
             units = 'number per pixel'
 
-        if tnames is not None and bandid not in tnames:
-            continue
-
-        dataset = rasterio.open(ifile2)
-
         nbands = 1
-
         if metaonly is False:
-            rtmp2 = dataset.read()
+            with rasterio.open(ifile2) as dataset:
+                rtmp2 = dataset.read()
+
             if 'Latitude' in ifile2:
                 ymax = rtmp2.max()
                 ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
@@ -3328,51 +3322,53 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
             if rtmp2.ndim == 3:
                 nbands = rtmp2.shape[0]
 
+        if tnames is not None and bandid not in tnames:
+            continue
+
         for i2 in range(nbands):
             nval = -9999
-            i += 1
 
             dat.append(Data())
             if metaonly is False:
                 if rtmp2.ndim == 3:
-                    dat[i].data = rtmp2[i2]
+                    dat[-1].data = rtmp2[i2]
                 else:
-                    dat[i].data = rtmp2
+                    dat[-1].data = rtmp2
 
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data)
-                                | (dat[i].data == nval))
-            if dat[i].data.mask.size == 1:
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+            dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data)
+                                 | (dat[-1].data == nval))
+            if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-            dat[i].data = dat[i].data * 1.0
+            dat[-1].data = dat[-1].data * 1.0
             if 'Emissivity/Mean' in ifile2:
                 bandid = 'Emissivity_mean_band_'+str(10+i2)
-                dat[i].data = dat[i].data * 0.001
+                dat[-1].data = dat[-1].data * 0.001
             if 'Emissivity/SDev' in ifile2:
                 bandid = 'Emissivity_std_dev_band_'+str(10+i2)
-                dat[i].data = dat[i].data * 0.0001
+                dat[-1].data = dat[-1].data * 0.0001
             if 'NDVI/Mean' in ifile2:
                 bandid = 'NDVI_mean'
-                dat[i].data = dat[i].data * 0.01
+                dat[-1].data = dat[-1].data * 0.01
             if 'NDVI/SDev' in ifile2:
                 bandid = 'NDVI_std_dev'
-                dat[i].data = dat[i].data * 0.01
+                dat[-1].data = dat[-1].data * 0.01
             if 'Temperature/Mean' in ifile2:
                 bandid = 'Temperature_mean'
                 units = 'Kelvin'
-                dat[i].data = dat[i].data * 0.01
+                dat[-1].data = dat[-1].data * 0.01
             if 'Temperature/SDev' in ifile2:
                 bandid = 'Temperature_std_dev'
                 units = 'Kelvin'
-                dat[i].data = dat[i].data * 0.01
+                dat[-1].data = dat[-1].data * 0.01
 
-            dat[i].dataid = bandid
-            dat[i].nodata = nval
-            dat[i].crs = CRS.from_epsg(4326)  # WGS84 geodetic
-            dat[i].units = units
-            dat[i].metadata['Raster']['Sensor'] = 'ASTER GED'
-            dat[i].datetime = date
+            dat[-1].dataid = bandid
+            dat[-1].nodata = nval
+            dat[-1].crs = CRS.from_epsg(4326)  # WGS84 geodetic
+            dat[-1].units = units
+            dat[-1].metadata['Raster']['Sensor'] = 'ASTER GED'
+            dat[-1].datetime = date
         dataset.close()
 
     if metaonly is False:
@@ -3754,16 +3750,18 @@ def _testfn2():
     app = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\aaa"
+    tmp1.idir = r"D:\batch"
     # tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
     # tmp1.get_sfile(True)
     tmp1.settings()
 
     dat = tmp1.outdata
 
-    tmp2 = ExportBatch()
-    tmp2.indata = dat
-    tmp2.run()
+    breakpoint()
+
+    # tmp2 = ExportBatch()
+    # tmp2.indata = dat
+    # tmp2.run()
 
 
 def _testfn3():
@@ -3779,12 +3777,12 @@ def _testfn3():
     # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
     # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
 
-    ifile = r"D:\AST_05_00303212023211451_20241118053911_2383184.zip"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
     # meta = get_sentinel2_metadata(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
 
-    # os.chdir(os.path.dirname(ifile))
+    os.chdir(os.path.dirname(ifile))
     # tmp1 = ImportBatch()
     tmp1 = ImportData()
     tmp1.settings()

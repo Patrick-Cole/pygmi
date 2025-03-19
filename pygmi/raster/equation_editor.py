@@ -189,6 +189,8 @@ class EquationEditor(BasicModule):
             self.showlog('Warning, if you have invalid sqrt values, they will '
                          'be masked out.')
 
+        neweq = neweq.strip()
+
         return neweq
 
     def mean(self, eq, localdict):

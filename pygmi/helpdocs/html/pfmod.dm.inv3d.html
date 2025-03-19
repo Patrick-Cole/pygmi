@@ -382,6 +382,16 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="faq.html">FAQs and Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="faq.importxyz.html">Imported XYZ point data display shows a single colour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tut.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut.class.html">Classification Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.3dmodel.html">3D Modelling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.importaster.html">Importing ASTER data</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -679,11 +689,11 @@ document.write(`
 <p>This dialog sets up the parameters for 3D magnetic inversion which uses the SimPEG library (Cockett et al., 2015) (<a class="reference external" href="https://simpeg.xyz/">https://simpeg.xyz/</a>). The routine uses magnetic and DTM data as input, and these datasets should be imported using <a class="reference internal" href="raster.dm.importrasterdata.html"><span class="doc">Import Raster Data</span></a>. Data are output as a number of classes, in line with the lithology principle which PyGMI uses. The output from inversion can therefore be directly input into the modelling module.</p>
 <p>It is important to ensure the following:</p>
 <ul class="simple">
-<li><p>All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the raster’s metadata.</p></li>
-<li><p>Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the raster’s metadata.</p></li>
-<li><p>If you use magnetic data, make sure that it is not total magnetic intensity data. The IGRF must be removed.</p></li>
+<li><p>All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster’s metadata</span></a>.</p></li>
+<li><p>Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster’s metadata</span></a>.</p></li>
+<li><p>If you use magnetic data, make sure that it is not total magnetic intensity data. The <a class="reference internal" href="mag.dm.igrf.html"><span class="doc">IGRF must be removed</span></a>.</p></li>
 </ul>
-<p>Select the <strong>3D Magnetic Inversion</strong> function from the <strong>Potential Field Modelling</strong> menu and connect the input rasters to this module. Double-click on the <strong>3D Magnetic Inversion</strong> module to bring up the <strong>Inverse Modelling Parameters</strong> interface:</p>
+<p>Select the <strong>3D Magnetic Inversion</strong> function from the <a class="reference internal" href="pfmod.html"><span class="doc">Potential Field Modelling</span></a> menu and connect the input rasters to this module. Double-click on the <strong>3D Magnetic Inversion</strong> module to bring up the <strong>Inverse Modelling Parameters</strong> interface:</p>
 <ol class="arabic simple">
 <li><p><strong>Dataset Information</strong> – The imported rasters are connected to the correct datasets.</p></li>
 </ol>
@@ -709,7 +719,7 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of the datasets.</p></li>
+<li><p><strong>Get Study Area from following Dataset</strong> - Usually the DTM dataset is chosen, but it can be any of the datasets.</p></li>
 <li><p><strong>Upper Top Left X Coordinate</strong> – The north-west corner’s X coordinate of the model in metres.</p></li>
 <li><p><strong>Upper Top Left Y Coordinate</strong> – The north-west corner’s Y coordinate of your model in meters.</p></li>
 <li><p><strong>Upper Top Left Z Coordinate</strong> – The north-west corner Z coordinate of the model in metres above sea level.</p></li>
@@ -733,10 +743,10 @@ document.write(`
 <ol class="arabic simple" start="5">
 <li><p><strong>Number of output classes</strong> – The number of classes (lithologies) generated during the inversion process.</p></li>
 </ol>
-<figure class="align-default" id="id3">
+<figure class="align-default" id="id1">
 <img alt="_images/pfmodinvmag.png" src="_images/pfmodinvmag.png" />
 <figcaption>
-<p><span class="caption-text">Inverse Modelling Parameters interface for 3D inversion of magnetic data.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+<p><span class="caption-text">Inverse Modelling Parameters interface for 3D inversion of magnetic data.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="admonition tip">

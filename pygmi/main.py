@@ -43,6 +43,7 @@ import textwrap
 import pkgutil
 import math
 import importlib
+import webbrowser
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import psutil
@@ -892,7 +893,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def help_docs(self):
         """Help Routine."""
-        menu_default.HelpDocs(self, 'interface')
+        ipth = os.path.dirname(__file__)+r'//helpdocs//html'
+        hfile = os.path.join(ipth, 'interface.html')
+        webbrowser.open(hfile)
 
     def item_insert(self, item_type, item_name, class_name,
                     projimport=False, **kwargs):

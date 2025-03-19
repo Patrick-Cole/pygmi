@@ -23,4 +23,4 @@ The options are:
 
 * **View Magnetic Profile** – Select the show the magnetic data for the profile.
 * **View Gravity Profile** – Select the show the gravity data for the profile.
-* **Import Borehole Logs** - :doc:`Import borehole logs<bholes.dm.import>` (imported from the borehole menu, and connected to the modelling module)
+* **Import Borehole Logs** - Display borehole logs imported using :doc:`Import Borehole Data<bholes.dm.import>`. The imported borehole data module must be connected to the modelling module. When **Import Borehole Logs** is selected in the **Profile viewing options** the localities of the boreholes will be shown in the :doc:`Layer View<pfmod.dm.mc.lpviews>` and the borehole lithologies are added to the relevant profiles. The lithologies in the borehole will be added to the lithologies of the model defined in :doc:`Geophysical Parameters<pfmod.dm.mc.gparam>`. The user needs to enter the petrophysical parameters for these lithologies.

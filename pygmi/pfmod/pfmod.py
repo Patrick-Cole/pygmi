@@ -119,7 +119,7 @@ class MainWidget(QtWidgets.QMainWindow):
         vbl = QtWidgets.QVBoxLayout(centralwidget)
         hbl = QtWidgets.QHBoxLayout()
 
-        helpdocs = menu_default.HelpButton()
+        helpdocs = menu_default.HelpButton('pfmod.dm.mc.editor')
 
         self.setStatusBar(self.statusbar)
         self.setCentralWidget(centralwidget)
@@ -136,8 +136,8 @@ class MainWidget(QtWidgets.QMainWindow):
         vbl.addWidget(self.pbar_sub)
         vbl.addWidget(self.pbar_main)
 
-        helpdocs.clicked.disconnect()
-        helpdocs.clicked.connect(self.help_docs)
+        # helpdocs.clicked.disconnect()
+        # helpdocs.clicked.connect(self.help_docs)
         self.actionsave.triggered.connect(self.savemodel)
 
         if self.parent is not None:

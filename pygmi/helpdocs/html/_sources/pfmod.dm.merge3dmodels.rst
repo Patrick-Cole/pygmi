@@ -14,7 +14,7 @@ Options:
 * Primary Dataset - This is the dataset which will be added to. Its values are not changed.
 * Secondary Dataset - This dataset is incorporated into the Master.
 
-Two models must be imported using **Import 3D Model** in the **Potential Field Modelling** menu. **Merge two 3D Models** must then be selected and the two input models must be connected to it.
+Two models must be imported using :doc:`Import 3D Model<pfmod.dm.import3dmodel>` in the :doc:`Potential Field Modelling<pfmod>` menu. **Merge two 3D Models** must then be selected and the two input models must be connected to it.
 
 .. figure:: _images/pfmod3dmerge.png
 

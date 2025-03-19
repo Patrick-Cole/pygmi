@@ -1,6 +1,6 @@
 Import Sentinel 5-P
 -------------------
-Sentinel-5P data is imported here, but unlike other imports, this converts data to a vector data format, from where it can be exported to a shapefile using the context menu. It accepts **NC** data. Sentinel-5P come in large swaths and therefore the import also allows the user to cut the data according to a bounding box that is defined by the user or imported in the form of a shapefile. 
+Sentinel-5P data is imported here, but unlike other imports, this converts data to a vector data format, from where it can be :doc:`exported to a shapefile<vector.cm.exportvector>` using the context menu. It accepts **NC** data. Sentinel-5P come in large swaths and therefore the import also allows the user to cut the data according to a bounding box that is defined by the user or imported in the form of a shapefile. 
 
 The options are:
 

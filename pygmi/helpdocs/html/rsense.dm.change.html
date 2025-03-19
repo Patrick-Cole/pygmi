@@ -382,6 +382,16 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="faq.html">FAQs and Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="faq.importxyz.html">Imported XYZ point data display shows a single colour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tut.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut.class.html">Classification Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.3dmodel.html">3D Modelling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.importaster.html">Importing ASTER data</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -689,7 +699,7 @@ document.write(`
 </figure>
 <section id="calculate-change-indices">
 <h2>Calculate Change Indices<a class="headerlink" href="#calculate-change-indices" title="Link to this heading">#</a></h2>
-<p><strong>Change Detection Indices</strong> give a measure of change in an area. The input to this module is a list of datasets loaded using the batch importer. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">metadata</span></a> context menu.</p>
+<p><strong>Change Detection Indices</strong> give a measure of change in an area. The input to this module is a list of datasets loaded using the <a class="reference internal" href="rsense.dm.createbatchlist.html"><span class="doc">batch importer</span></a>. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">metadata</span></a> context menu.</p>
 <p>The following indices can be calculated:</p>
 <ul class="simple">
 <li><p><strong>Difference</strong> – Calculates the difference between two dates (latter date minus earlier date).</p></li>
@@ -709,7 +719,7 @@ document.write(`
 </section>
 <section id="view-change-data">
 <h2>View Change Data<a class="headerlink" href="#view-change-data" title="Link to this heading">#</a></h2>
-<p>Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a batch list coupled with associated dates for each scene (defined in the raster file’s metadata). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in <strong>GeoTIFF</strong> format. The main display also shows the date and time stamp for the scene.</p>
+<p>Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a <a class="reference internal" href="rsense.dm.createbatchlist.html"><span class="doc">batch list</span></a> coupled with associated dates for each scene (defined in the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster file’s metadata</span></a>). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in <strong>GeoTIFF</strong> format. The main display also shows the date and time stamp for the scene.</p>
 <p>The viewer options are:</p>
 <ol class="arabic simple">
 <li><p><strong>Display Type</strong> – sets the image to be displayed, whether <strong>Single Colour Map</strong>, <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong>.</p></li>

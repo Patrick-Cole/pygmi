@@ -13,4 +13,4 @@ This displays graphs of the station data.
 
 .. figure:: _images/mtgraphs.png
 
-   Graphs displayed when selecting Show Graphs in the MT context menu. The coordinates in the bottom-right corner displayes the period and value of any point the user hovers over with the mouse pointer, in this case a point in the Tipper Angle.
+   Graphs displayed when selecting Show Graphs in the MT context menu. The coordinates in the bottom-right corner displays the period and value of any point the user hovers over with the mouse pointer, in this case a point in the Tipper Angle.

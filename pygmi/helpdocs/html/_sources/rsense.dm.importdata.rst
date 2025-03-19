@@ -8,7 +8,7 @@ PyGMI can import data from the following remote sensing sensors:
 * Hyperion L1T data – Data downloaded from https://earthexplorer.usgs.gov. It is imported as a **ZIP** file containing **GeoTIFF** images.
 * WorldView Tile data (**TIL**) – The tiles will be merged into a single dataset.
 * ASTER Global Emissivity data – Data downloaded from https://earthdata.nasa.gov in **H5** format.
-* EMIT data – Fata downloaded from https://earthdata.nasa.gov. The data are in **NC** format.
+* EMIT data – Data downloaded from https://earthdata.nasa.gov. The data are in **NC** format.
 
 When selecting this function the user has the following options:
 

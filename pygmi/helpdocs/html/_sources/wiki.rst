@@ -32,4 +32,6 @@ Contents:
    pfmod
    rsense
    seis
+   faq
+   tut
 

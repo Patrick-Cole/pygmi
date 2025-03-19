@@ -12,7 +12,7 @@ The gridding options are:
 
 .. figure:: _images/vectorgrid.png
 
-   Dataset Gridding options. The options on the left are available for Nearest neighbour, Linear and Cubic griding, while the options on the right apply to Minimum Curvature gridding.
+   Dataset Gridding options. The options on the left are available for Nearest neighbour, Linear and Cubic gridding, while the options on the right apply to Minimum Curvature gridding.
 
 References
 ^^^^^^^^^^

@@ -4,11 +4,11 @@ This dialog sets up the parameters for 3D magnetic inversion which uses the SimP
 
 It is important to ensure the following:
 
-* All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the raster’s metadata.
-* Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the raster’s metadata.
-* If you use magnetic data, make sure that it is not total magnetic intensity data. The IGRF must be removed.
+* All datasets must be projected (not in geographic coordinates) and they must be in the same projection. To check the projection of each dataset, look at the :doc:`raster’s metadata<raster.cm.meta>`.
+* Ensure that the band names are distinct and that they clearly identify the type of data. This can be changed by accessing the :doc:`raster’s metadata<raster.cm.meta>`.
+* If you use magnetic data, make sure that it is not total magnetic intensity data. The :doc:`IGRF must be removed<mag.dm.igrf>`.
 
-Select the **3D Magnetic Inversion** function from the **Potential Field Modelling** menu and connect the input rasters to this module. Double-click on the **3D Magnetic Inversion** module to bring up the **Inverse Modelling Parameters** interface:
+Select the **3D Magnetic Inversion** function from the :doc:`Potential Field Modelling<pfmod>` menu and connect the input rasters to this module. Double-click on the **3D Magnetic Inversion** module to bring up the **Inverse Modelling Parameters** interface:
 
 1. **Dataset Information** – The imported rasters are connected to the correct datasets. 
 
@@ -24,7 +24,7 @@ Select the **3D Magnetic Inversion** function from the **Potential Field Modelli
 
 3. **Model Extent Properties** – The model extents control the area size, depth and resolution of the model. Typically, one of your datasets are used to fill in most of the fields automatically.
 
-  * **Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of the datasets.
+  * **Get Study Area from following Dataset** - Usually the DTM dataset is chosen, but it can be any of the datasets.
   * **Upper Top Left X Coordinate** – The north-west corner’s X coordinate of the model in metres.
   * **Upper Top Left Y Coordinate** – The north-west corner’s Y coordinate of your model in meters.
   * **Upper Top Left Z Coordinate** – The north-west corner Z coordinate of the model in metres above sea level.

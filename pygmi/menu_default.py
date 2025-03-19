@@ -134,7 +134,8 @@ class HelpMenu():
 
     def webhelp(self):
         """Help File."""
-        webbrowser.open(self.webpage)
+        ipth = os.path.dirname(__file__)+r'//helpdocs//html//wiki.html'
+        webbrowser.open(ipth)
 
 
 class HelpButton(QtWidgets.QPushButton):
@@ -167,83 +168,9 @@ class HelpButton(QtWidgets.QPushButton):
 
     def help_docs(self):
         """Help Routine."""
-        HelpDocs(self, self.htmlfile)
-
-
-class HelpDocs(QtWidgets.QDialog):
-    """
-    A basic combo box application.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-    helptxt : str
-        Help filename.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent=None, helptxt=None):
-        super().__init__(parent)
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-        ipth = os.path.dirname(__file__)+r'//helpdocs//html'
-        # opth = os.getcwd()
-
-        if helptxt is None:
-            helptxt = 'No Help Available.'
-        else:
-            # os.chdir(ipth)
-            hfile = os.path.join(ipth,helptxt+'.html')
+        # HelpDocs(self, self.htmlfile)
+        if self.htmlfile is not None:
+            ipth = os.path.dirname(__file__)+r'//helpdocs//html'
+            hfile = os.path.join(ipth, self.htmlfile+'.html')
             webbrowser.open(hfile)
-            # with open(helptxt+'.html', encoding='utf-8') as itxt:
-            #     helptxt = itxt.read()
-
-        # create GUI
-        # self.setWindowTitle('Help!')
-
-        # self.vbl = QtWidgets.QVBoxLayout()
-        # self.setLayout(self.vbl)
-
-        # self.text = QtWidgets.QTextBrowser()
-        # self.text.setOpenExternalLinks(True)
-        # self.text.append(helptxt)
-        # self.text.setMinimumWidth(480)
-        # self.text.setMinimumHeight(360)
-        # self.text.setFrameShape(QtWidgets.QFrame.NoFrame)
-        # cursor = QtGui.QTextCursor()
-        # cursor.setPosition(0)
-        # self.text.setTextCursor(cursor)
-
-        # ptmp = self.text.palette()
-        # ptmp.setColor(0, 9, ptmp.color(10))
-        # ptmp.setColor(1, 9, ptmp.color(10))
-        # ptmp.setColor(2, 9, ptmp.color(10))
-        # self.text.setPalette(ptmp)
-
-        # self.vbl.addWidget(self.text)
-
-        # self.buttonbox = QtWidgets.QDialogButtonBox()
-        # self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        # self.buttonbox.setCenterButtons(True)
-        # self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
-
-        # self.vbl.addWidget(self.buttonbox)
-
-        # self.buttonbox.accepted.connect(self.accept)
-
-        # self.exec()
-
-        # os.chdir(opth)
 

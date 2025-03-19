@@ -13,7 +13,7 @@ The **Change Detection** menu has two functions, namely **Calculate Change Indic
 
 Calculate Change Indices
 ^^^^^^^^^^^^^^^^^^^^^^^^
-**Change Detection Indices** give a measure of change in an area. The input to this module is a list of datasets loaded using the batch importer. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the :doc:`metadata<raster.cm.meta>` context menu. 
+**Change Detection Indices** give a measure of change in an area. The input to this module is a list of datasets loaded using the :doc:`batch importer<rsense.dm.createbatchlist>`. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the :doc:`metadata<raster.cm.meta>` context menu. 
 
 The following indices can be calculated:
 
@@ -33,7 +33,7 @@ The result is a multiband raster file consisting of all the indices calculated f
 
 View Change Data
 ^^^^^^^^^^^^^^^^
-Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a batch list coupled with associated dates for each scene (defined in the raster file’s metadata). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in **GeoTIFF** format. The main display also shows the date and time stamp for the scene.
+Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a :doc:`batch list<rsense.dm.createbatchlist>` coupled with associated dates for each scene (defined in the :doc:`raster file’s metadata<raster.cm.meta>`). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in **GeoTIFF** format. The main display also shows the date and time stamp for the scene.
 
 The viewer options are:
 
