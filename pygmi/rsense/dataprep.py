@@ -31,7 +31,7 @@ import platform
 # from contextlib import redirect_stdout
 from subprocess import Popen, PIPE
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from pygmi.raster.misc import lstack, aspect2
 from pygmi.raster.iodefs import get_raster
@@ -78,9 +78,9 @@ class TopoCorrect(BasicModule):
         lbl_azi = QtWidgets.QLabel('Solar Azimuth:')
         lbl_zen = QtWidgets.QLabel('Solar Zenith:')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Topographic Correction')
 
@@ -235,7 +235,7 @@ class Sen2Cor(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('rsense.dm.sen2cor')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
 
         self.pb_sdir.setIcon(icon)
@@ -243,9 +243,9 @@ class Sen2Cor(BasicModule):
         self.pb_sen2cor.setIcon(icon)
         self.pb_sen2cor.setStyleSheet('text-align:left;')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Sen2Cor - Sentinel 2 Atmospheric Correction')
 

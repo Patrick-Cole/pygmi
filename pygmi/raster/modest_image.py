@@ -570,7 +570,7 @@ def _testfn():
     from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
     # from IPython import get_ipython
-    # get_ipython().magic('matplotlib qt5')
+    # get_ipython().magic('matplotlib qt')
 
     ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
     ifile = r'd:\workdata\testdata.hdr'

@@ -28,7 +28,7 @@ methods, as opposed to fuzzy methods.
 """
 
 import os
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 
 from pygmi.raster.datatypes import Data
@@ -113,8 +113,8 @@ class CrispClust(BasicModule):
         self.dsb_maxerror.setProperty('value', 1e-05)
         self.sb_repeatedruns.setMinimum(1)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_random.setChecked(True)
         self.gbox.hide()
 

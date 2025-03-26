@@ -26,7 +26,7 @@
 
 import difflib
 import os
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from pygmi.misc import BasicModule
 
@@ -68,9 +68,9 @@ class CorrectDescriptions(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         pb_textfile = QtWidgets.QPushButton('Load Description List')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Correct Descriptions')
 

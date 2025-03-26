@@ -28,7 +28,7 @@ import os
 import glob
 from datetime import datetime
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.misc import lstack
@@ -82,9 +82,9 @@ class LandsatComposite(BasicModule):
         self.sb_tday.setMaximum(366)
         self.sb_tday.setValue(1)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Landsat Temporal Composite')
 

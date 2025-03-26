@@ -36,12 +36,12 @@ import os
 from math import pi
 import numpy as np
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 from matplotlib import colormaps
 from matplotlib import cm
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from numba import jit
 import geopandas as gpd
 
@@ -126,8 +126,8 @@ class TiltDepth(BasicModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                       QtWidgets.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
         tmp = sorted(colormaps.keys())
         self.cmb_cbar.addItem('viridis')
         self.cmb_cbar.addItems(tmp)

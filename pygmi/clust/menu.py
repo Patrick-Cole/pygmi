@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Clustering Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.clust import cluster
 from pygmi.clust import graphtool
@@ -63,59 +63,59 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Classification')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_clustering = QtWidgets.QAction('Cluster Analysis')
+        self.action_clustering = QtGui.QAction('Cluster Analysis')
         self.menu.addAction(self.action_clustering)
         self.action_clustering.triggered.connect(self.cluster)
 
-        self.action_crisp_clustering = QtWidgets.QAction("Crisp Clustering")
+        self.action_crisp_clustering = QtGui.QAction("Crisp Clustering")
         self.menu.addAction(self.action_crisp_clustering)
         self.action_crisp_clustering.triggered.connect(self.crisp_cluster)
 
-        self.action_fuzzy_clustering = QtWidgets.QAction("Fuzzy Clustering")
+        self.action_fuzzy_clustering = QtGui.QAction("Fuzzy Clustering")
         self.menu.addAction(self.action_fuzzy_clustering)
         self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
 
         self.menu.addSeparator()
 
-        self.action_segmentation = QtWidgets.QAction('Image Segmentation')
+        self.action_segmentation = QtGui.QAction('Image Segmentation')
         self.menu.addAction(self.action_segmentation)
         self.action_segmentation.triggered.connect(self.segmentation)
 
-        self.action_super_class = QtWidgets.QAction("Supervised "
+        self.action_super_class = QtGui.QAction("Supervised "
                                                     "Classification")
         self.menu.addAction(self.action_super_class)
         self.action_super_class.triggered.connect(self.super_class)
 
         self.menu.addSeparator()
 
-        self.action_scatter_plot = QtWidgets.QAction('Scatter Plot Tool')
+        self.action_scatter_plot = QtGui.QAction('Scatter Plot Tool')
         self.menu.addAction(self.action_scatter_plot)
         self.action_scatter_plot.triggered.connect(self.scatter_plot)
 
 # Context menus
         context_menu['Cluster'].addSeparator()
 
-        self.action_cluster_statistics = QtWidgets.QAction('Cluster '
+        self.action_cluster_statistics = QtGui.QAction('Cluster '
                                                            'Statistics')
         context_menu['Cluster'].addAction(self.action_cluster_statistics)
         self.action_cluster_statistics.triggered.connect(self.cluster_stats)
 
-        self.action_show_class_data = QtWidgets.QAction('Show Class Data')
+        self.action_show_class_data = QtGui.QAction('Show Class Data')
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_membership_data = QtWidgets.QAction("Show Membership "
+        self.action_show_membership_data = QtGui.QAction("Show Membership "
                                                              "Data")
         context_menu['memCluster'].addAction(self.action_show_membership_data)
         self.action_show_membership_data.triggered.connect(self.show_membership_data)
 
-        self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, "
+        self.action_show_objvrcncexbigraphs = QtGui.QAction("Show OBJ, "
                                                                 "VRC, NCE, "
                                                                 "XBI Graphs")
         context_menu['objCluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 
-        self.action_export_data = QtWidgets.QAction('Export Class Data')
+        self.action_export_data = QtGui.QAction('Export Class Data')
         context_menu['Cluster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 

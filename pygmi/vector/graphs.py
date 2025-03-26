@@ -26,14 +26,14 @@
 
 import math
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from scipy.stats import median_abs_deviation
 import matplotlib.collections as mc
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import BoundaryNorm
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import StrMethodFormatter
 from matplotlib import rcParams
 from matplotlib.colors import ListedColormap
@@ -314,7 +314,7 @@ class GraphWindow(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
         self.data = None
@@ -1099,7 +1099,7 @@ class PlotHist(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Histogram')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned

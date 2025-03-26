@@ -45,14 +45,14 @@ import sys
 import copy
 from math import cos
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 from matplotlib import gridspec
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
@@ -441,8 +441,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig.subplots_adjust(hspace=0.05)
 
         FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Expanding,
-                                        QtWidgets.QSizePolicy.Expanding)
+                                        QtWidgets.QSizePolicy.Policy.Expanding,
+                                        QtWidgets.QSizePolicy.Policy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
@@ -1141,9 +1141,9 @@ class PlotInterp(BasicModule):
         self.le_lineclipu = QtWidgets.QLineEdit()
         self.le_lineclipl = QtWidgets.QLineEdit()
         self.cmb_cbar = QtWidgets.QComboBox(self)
-        self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # CMYK
-        self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
-        self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.kslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # CMYK
+        self.sslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # sunshade
+        self.aslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.lbl_4 = QtWidgets.QLabel('Sunshade Data:')
         self.lbl_s = QtWidgets.QLabel('Sunshade Detail')
         self.lbl_a = QtWidgets.QLabel('Light Reflectance')
@@ -1210,14 +1210,14 @@ class PlotInterp(BasicModule):
         vbl_3 = QtWidgets.QVBoxLayout()
         gbox_3.setLayout(vbl_3)
 
-        gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                             QtWidgets.QSizePolicy.Preferred)
-        gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                             QtWidgets.QSizePolicy.Preferred)
-        gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                             QtWidgets.QSizePolicy.Preferred)
-        self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                    QtWidgets.QSizePolicy.Preferred)
+        gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                             QtWidgets.QSizePolicy.Policy.Preferred)
+        gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                             QtWidgets.QSizePolicy.Policy.Preferred)
+        gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                             QtWidgets.QSizePolicy.Policy.Preferred)
+        self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                                    QtWidgets.QSizePolicy.Policy.Preferred)
 
         vbl_4 = QtWidgets.QVBoxLayout()
         self.gbox_sun.setLayout(vbl_4)
@@ -1229,8 +1229,8 @@ class PlotInterp(BasicModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Fixed,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)

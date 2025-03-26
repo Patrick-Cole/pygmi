@@ -35,11 +35,11 @@ menu. The following are supported:
 """
 
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 
 from pygmi.misc import frm, ContextModule
@@ -304,7 +304,7 @@ class PlotCCoef(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Correlation Coefficients')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
@@ -365,13 +365,13 @@ class PlotRaster(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Raster Plot (Simple)')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
@@ -440,7 +440,7 @@ class PlotSurface(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Surface Plot')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
@@ -522,7 +522,7 @@ class PlotScatter(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Hexbin Plot')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
@@ -612,7 +612,7 @@ class PlotHist(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Histogram')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned

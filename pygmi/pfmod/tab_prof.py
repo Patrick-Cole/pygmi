@@ -27,12 +27,12 @@
 import copy
 import os
 import random
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from scipy import ndimage
 from scipy import interpolate
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import colormaps
 import pandas as pd
@@ -119,10 +119,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         None.
 
         """
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                           QtWidgets.QSizePolicy.Fixed)
-        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored,
-                                            QtWidgets.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                           QtWidgets.QSizePolicy.Policy.Fixed)
+        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
+                                            QtWidgets.QSizePolicy.Policy.Fixed)
 
         self.lw_prof_defs.setFixedWidth(220)
 
@@ -148,23 +148,23 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.hs_overview.setMaximum(100)
         self.hs_overview.setProperty('value', 0)
-        self.hs_overview.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_overview.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         self.hs_sideview.setMaximum(100)
         self.hs_sideview.setProperty('value', 0)
-        self.hs_sideview.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_sideview.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         self.hs_layer.setSizePolicy(sizepolicy)
-        self.hs_layer.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_layer.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         self.hs_profnum.setSizePolicy(sizepolicy)
-        self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_profnum.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         self.sb_profnum.setPrefix('Profile: ')
         self.sb_profnum.setWrapping(True)
 
         self.hs_cprofnum.setSizePolicy(sizepolicy)
-        self.hs_cprofnum.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_cprofnum.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.hs_cprofnum.setHidden(True)
 
         self.sb_cprofnum.setPrefix('Custom: ')
@@ -1372,7 +1372,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if curtext is None:
             curtext = self.cmb_overview.currentText()
         cindex = self.cmb_overview.findText(curtext,
-                                            QtCore.Qt.MatchFixedString)
+                                            QtCore.Qt.MatchFlag.MatchFixedString)
         if cindex == -1:
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
@@ -1503,7 +1503,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         curtext = self.cmb_overview.currentText()
         cindex = self.cmb_overview.findText(curtext,
-                                            QtCore.Qt.MatchFixedString)
+                                            QtCore.Qt.MatchFlag.MatchFixedString)
         if cindex == -1:
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
@@ -1676,7 +1676,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         curaxes = event.inaxes
         if curaxes not in (self.axes, self.laxes):
-            self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+            self.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.ArrowCursor))
             return
 
         if curaxes == self.axes:
@@ -1713,7 +1713,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             height = int(np.ceil(height))
 
             cbit = QtGui.QBitmap(width, height)
-            cbit.fill(QtCore.Qt.color1)
+            cbit.fill(QtCore.Qt.GlobalColor.color1)
             self.setCursor(QtGui.QCursor(cbit))
 
         if self.press is True:
@@ -2262,15 +2262,16 @@ class LithBound(QtWidgets.QDialog):
 
         gl_1.addWidget(lbl_3, 0, 0, 1, 1)
         self.lw_lithupper.setSelectionMode(
-            QtWidgets.QAbstractItemView.SingleSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         gl_1.addWidget(self.lw_lithupper, 0, 1, 1, 1)
         gl_1.addWidget(lbl_4, 1, 0, 1, 1)
         self.lw_lithlower.setSelectionMode(
-            QtWidgets.QAbstractItemView.SingleSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         gl_1.addWidget(self.lw_lithlower, 1, 1, 1, 1)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            self.buttonbox.StandardButton.Cancel |
+            self.buttonbox.StandardButton.Ok)
 
         self.rb_depth.setChecked(True)
 
@@ -2371,9 +2372,10 @@ class PlotScale(QtWidgets.QDialog):
         self.dsb_axis_custmax.setMinimum(-1000000.)
         self.dsb_axis_custmax.setMaximum(1000000.)
 
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel |
-                                          QtWidgets.QDialogButtonBox.Ok)
+        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonbox.setStandardButtons(
+            self.buttonbox.StandardButton.Cancel |
+            self.buttonbox.StandardButton.Ok)
 
         vl_scale = QtWidgets.QVBoxLayout(self)
         vl_scale.addWidget(self.rb_axis_allmax)
@@ -2452,10 +2454,10 @@ class RangedCopy(QtWidgets.QDialog):
 
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
-        self.lw_lithcopy.setSelectionMode(self.lw_lithcopy.MultiSelection)
-        self.lw_lithdel.setSelectionMode(self.lw_lithdel.MultiSelection)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        self.lw_lithcopy.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_lithdel.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.sb_end.setMaximum(999999999)
 
         self.rb_sideview.setChecked(True)
@@ -2628,7 +2630,7 @@ class GaugeWidget(QtWidgets.QDial):
 
         """
         painter = QtGui.QPainter(self)
-        painter.setRenderHint(painter.Antialiasing)
+        painter.setRenderHint(painter.RenderHint.Antialiasing)
         rect = event.rect()
 
         gauge_rect = QtCore.QRect(rect)
@@ -2698,8 +2700,8 @@ class ImportPicture(BasicModule):
 
         pb_import = QtWidgets.QPushButton('Load picture (optional)')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.dsb_x1.setDecimals(6)
         self.dsb_x1.setMinimum(-999999999.0)

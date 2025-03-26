@@ -32,7 +32,7 @@ import textwrap
 import psutil
 import numpy as np
 from matplotlib import ticker, cm, colors
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 if os.name == 'nt':
     import win32api
@@ -413,7 +413,7 @@ class QVStack2Layout(QtWidgets.QGridLayout):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.indx = 0
 
     def addWidget(self, widget1, widget2):

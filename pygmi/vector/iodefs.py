@@ -29,7 +29,7 @@ import glob
 import re
 from io import StringIO
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -61,15 +61,17 @@ class ColumnSelect(BasicModule):
         self.setLayout(self.vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
-        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_1.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.vbl.addWidget(self.lw_1)
 
         self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel |
+            QtWidgets.QDialogbuttonbox.StandardButton.Ok)
 
         self.vbl.addWidget(self.buttonbox)
 
@@ -170,12 +172,13 @@ class ImportXYZ(BasicModule):
         lbl_ychan = QtWidgets.QLabel('Y Channel:')
         lbl_nodata = QtWidgets.QLabel('Nodata Value:')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
-        self.cmb_xchan.setSizeAdjustPolicy(3)
-        self.cmb_ychan.setSizeAdjustPolicy(3)
+        # self.cmb_xchan.setSizeAdjustPolicy(3)
+        # self.cmb_ychan.setSizeAdjustPolicy(3)
         self.cmb_xchan.setMinimumSize = 10
         self.cmb_ychan.setMinimumSize = 10
 
@@ -616,7 +619,7 @@ class ImportVector(BasicModule):
         """
         pb_sfile = QtWidgets.QPushButton(' Filename')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
         pb_sfile.setStyleSheet('text-align:left;')
@@ -643,10 +646,10 @@ class ImportVector(BasicModule):
         gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(buttonbox, 9, 0, 1, 2)
 

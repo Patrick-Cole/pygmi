@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Vector Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.vector import iodefs
 from pygmi.vector import graphs
@@ -57,86 +57,86 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Vector')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_vector = QtWidgets.QAction('Import Vector Data')
+        self.action_import_vector = QtGui.QAction('Import Vector Data')
         self.menu.addAction(self.action_import_vector)
         self.action_import_vector.triggered.connect(self.import_vector)
 
-        self.action_import_xyz = QtWidgets.QAction('Import XYZ Data')
+        self.action_import_xyz = QtGui.QAction('Import XYZ Data')
         self.menu.addAction(self.action_import_xyz)
         self.action_import_xyz.triggered.connect(self.import_xyz)
 
-        self.action_colselect = QtWidgets.QAction('Select Columns')
+        self.action_colselect = QtGui.QAction('Select Columns')
         self.menu.addAction(self.action_colselect)
         self.action_colselect.triggered.connect(self.colselect)
 
         self.menu.addSeparator()
-        self.action_file_split = QtWidgets.QAction('Text File Split')
+        self.action_file_split = QtGui.QAction('Text File Split')
         self.menu.addAction(self.action_file_split)
         self.action_file_split.triggered.connect(self.file_split)
 
         self.menu.addSeparator()
 
-        self.action_cut_data = QtWidgets.QAction('Cut Points using Polygon')
+        self.action_cut_data = QtGui.QAction('Cut Points using Polygon')
         self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
-        self.action_reproject = QtWidgets.QAction('Reproject Vector Data')
+        self.action_reproject = QtGui.QAction('Reproject Vector Data')
         self.menu.addAction(self.action_reproject)
         self.action_reproject.triggered.connect(self.reproject)
 
         self.menu.addSeparator()
 
-        self.action_grid = QtWidgets.QAction('Dataset Gridding')
+        self.action_grid = QtGui.QAction('Dataset Gridding')
         self.menu.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 
-        self.action_scomp = QtWidgets.QAction('Structure Complexity')
+        self.action_scomp = QtGui.QAction('Structure Complexity')
         self.menu.addAction(self.action_scomp)
         self.action_scomp.triggered.connect(self.scomp)
 
         # Context menus
         context_menu['Vector'].addSeparator()
 
-        self.action_metadata = QtWidgets.QAction('Display/Edit Vector '
+        self.action_metadata = QtGui.QAction('Display/Edit Vector '
                                                  'Metadata')
         context_menu['Vector'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
-        self.action_basic_stats = QtWidgets.QAction('Basic Vector Statistics')
+        self.action_basic_stats = QtGui.QAction('Basic Vector Statistics')
         context_menu['Vector'].addAction(self.action_basic_stats)
         self.action_basic_stats.triggered.connect(self.basic_stats)
 
-        self.action_plot_ccoef = QtWidgets.QAction('Plot Correlation '
+        self.action_plot_ccoef = QtGui.QAction('Plot Correlation '
                                                    'Coefficients')
         context_menu['pntVector'].addAction(self.action_plot_ccoef)
         self.action_plot_ccoef.triggered.connect(self.plot_ccoef)
 
-        self.action_show_line_data = QtWidgets.QAction('Show Profile Data')
+        self.action_show_line_data = QtGui.QAction('Show Profile Data')
         context_menu['pntVector'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
 
-        self.action_show_line_data2 = QtWidgets.QAction('Show Profiles on a '
+        self.action_show_line_data2 = QtGui.QAction('Show Profiles on a '
                                                         'Map')
         context_menu['pntVector'].addAction(self.action_show_line_data2)
         self.action_show_line_data2.triggered.connect(self.show_line_map)
 
-        self.action_show_vector_data = QtWidgets.QAction('Show Vector Data')
+        self.action_show_vector_data = QtGui.QAction('Show Vector Data')
         context_menu['Vector'].addAction(self.action_show_vector_data)
         self.action_show_vector_data.triggered.connect(self.show_vector_data)
 
-        self.action_show_rose_diagram = QtWidgets.QAction('Show Rose Diagram')
+        self.action_show_rose_diagram = QtGui.QAction('Show Rose Diagram')
         context_menu['lineVector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
 
-        self.action_show_hist = QtWidgets.QAction('Show Histogram')
+        self.action_show_hist = QtGui.QAction('Show Histogram')
         context_menu['Vector'].addAction(self.action_show_hist)
         self.action_show_hist.triggered.connect(self.show_hist)
 
-        self.action_export_xyz = QtWidgets.QAction('Export XYZ Data')
+        self.action_export_xyz = QtGui.QAction('Export XYZ Data')
         context_menu['pntVector'].addAction(self.action_export_xyz)
         self.action_export_xyz.triggered.connect(self.export_xyz)
 
-        self.action_export_vector = QtWidgets.QAction('Export Vector Data')
+        self.action_export_vector = QtGui.QAction('Export Vector Data')
         context_menu['Vector'].addAction(self.action_export_vector)
         self.action_export_vector.triggered.connect(self.export_vector)
 

@@ -28,7 +28,7 @@ scikit-learn library.
 """
 
 import os
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import sklearn.cluster as skc
 from sklearn.metrics import calinski_harabasz_score
@@ -137,8 +137,8 @@ class Cluster(BasicModule):
         self.dsb_bthres.setDecimals(5)
         self.dsb_bthres.setProperty('value', self.bthres)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Cluster Analysis')
 

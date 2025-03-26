@@ -29,7 +29,7 @@ import os
 import copy
 import datetime
 import xml.etree.ElementTree as ET
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
 import rasterio
@@ -64,15 +64,16 @@ class BandSelect(ContextModule):
         self.setLayout(self.vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
-        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.vbl.addWidget(self.lw_1)
 
         self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            self.buttonbox.StandardButton.Cancel |
+            self.buttonbox.StandardButton.Ok)
 
         self.vbl.addWidget(self.buttonbox)
 
@@ -1167,11 +1168,11 @@ class ExportData(ContextModule):
         pb_ofile = QtWidgets.QPushButton('Output File')
 
         self.cb_bandsort.setChecked(False)
-        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Export Raster Data')
 

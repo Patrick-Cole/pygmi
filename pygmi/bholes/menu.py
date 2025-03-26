@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Borehole Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 from pygmi.bholes import iodefs
 from pygmi.bholes import graphs
 
@@ -52,7 +52,7 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Boreholes')
         self.parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtWidgets.QAction('Import Borehole Data')
+        self.action_import_data = QtGui.QAction('Import Borehole Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
@@ -61,7 +61,7 @@ class MenuWidget():
 # Context menus
         context_menu['Borehole'].addSeparator()
 
-        self.action_show_log = QtWidgets.QAction('Show Borehole Log')
+        self.action_show_log = QtGui.QAction('Show Borehole Log')
         context_menu['Borehole'].addAction(self.action_show_log)
         self.action_show_log.triggered.connect(self.show_log)
 

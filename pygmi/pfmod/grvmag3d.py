@@ -37,7 +37,7 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 """
 
 import tempfile
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 import numpy as np
 from numba import jit, prange
@@ -50,7 +50,7 @@ from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 from pygmi.misc import frm
 
-mpl.use('Qt5Agg')
+mpl.use('QtAgg')
 
 
 class GravMag():
@@ -81,13 +81,13 @@ class GravMag():
         self.oldlithindex = None
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtWidgets.QAction('Regional\nTest')
-        self.actioncalculate = QtWidgets.QAction('Calculate\nGravity\n(All)')
-        self.actioncalculate2 = QtWidgets.QAction('Calculate\nMagnetics\n'
+        self.actionregionaltest = QtGui.QAction('Regional\nTest')
+        self.actioncalculate = QtGui.QAction('Calculate\nGravity\n(All)')
+        self.actioncalculate2 = QtGui.QAction('Calculate\nMagnetics\n'
                                                   '(All)')
-        self.actioncalculate3 = QtWidgets.QAction('Calculate\nGravity\n'
+        self.actioncalculate3 = QtGui.QAction('Calculate\nGravity\n'
                                                   '(Changes Only)')
-        self.actioncalculate4 = QtWidgets.QAction('Calculate\nMagnetics\n'
+        self.actioncalculate4 = QtGui.QAction('Calculate\nMagnetics\n'
                                                   '(Changes Only)')
         self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\n'
                                             'Correction')

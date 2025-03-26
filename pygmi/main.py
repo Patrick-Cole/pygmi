@@ -44,7 +44,7 @@ import pkgutil
 import math
 import importlib
 import webbrowser
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import psutil
 from matplotlib import rcParams
@@ -83,7 +83,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         Starting DiagramItem object. This will send information to my_end_item
     my_end_item : DiagramItem
         End DiagramItem object. This will get information from my_start_item
-    my_color : QtCore colour (default is QtCore.Qt.black)
+    my_color : QtCore colour
         Color
     """
 
@@ -94,10 +94,11 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
         self.my_start_item = start_item
         self.my_end_item = end_item
-        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
-        self.my_color = QtCore.Qt.black
-        self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.SolidLine,
-                               QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.my_color = QtCore.Qt.GlobalColor.black
+        self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.PenStyle.SolidLine,
+                               QtCore.Qt.PenCapStyle.RoundCap,
+                               QtCore.Qt.PenJoinStyle.RoundJoin))
 
     def boundingRect(self):
         """
@@ -151,8 +152,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         for i in end_polygon:
             p2 = i + self.my_end_item.pos()
             poly_line = QtCore.QLineF(p1, p2)
-            intersect_type = poly_line.intersect(center_line, intersect_point)
-            if intersect_type == QtCore.QLineF.BoundedIntersection:
+            intersect_type, intersect_point = poly_line.intersects(center_line)
+            if intersect_type == QtCore.QLineF.IntersectionType.BoundedIntersection:
                 break
             p1 = p2
 
@@ -180,7 +181,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         painter.drawLine(line)
         painter.drawPolygon(self.arrow_head)
         if self.isSelected():
-            painter.setPen(QtGui.QPen(self.my_color, 1, QtCore.Qt.DashLine))
+            painter.setPen(QtGui.QPen(self.my_color, 1,
+                                      QtCore.Qt.PenStyle.DashLine))
             my_line = QtCore.QLineF(line)
             my_line.translate(0, 4.0)
             painter.drawLine(my_line)
@@ -283,8 +285,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.my_polygon = QtGui.QPolygonF(my_points)
 
         self.setPolygon(self.my_polygon)
-        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
-        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
         """Add Arrow.
@@ -360,7 +362,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         local_menu.addActions(tmp1)
         local_menu.addSeparator()
         local_menu.addActions(tmp2)
-        local_menu.exec_(event.screenPos())
+        local_menu.exec(event.screenPos())
 
     def mouseDoubleClickEvent(self, event):
         """
@@ -470,9 +472,9 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         self.my_item_type = 'Step'
         self.line = None
         self.text_item = None
-        self.my_item_color = QtCore.Qt.cyan
-        self.my_text_color = QtCore.Qt.black
-        self.my_line_color = QtCore.Qt.black
+        self.my_item_color = QtCore.Qt.GlobalColor.cyan
+        self.my_text_color = QtCore.Qt.GlobalColor.black
+        self.my_line_color = QtCore.Qt.GlobalColor.black
         self.my_font = QtGui.QFont()
         self.parent = parent
 
@@ -485,7 +487,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         mouse_event: QGraphicsSceneMouseEvent
             mouse event.
         """
-        if mouse_event.button() != QtCore.Qt.LeftButton:
+        if mouse_event.button() != QtCore.Qt.MouseButton.LeftButton:
             return
         if self.my_mode == 'InsertLine':
             self.line = QtWidgets.QGraphicsLineItem(
@@ -649,14 +651,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_processlog = QtWidgets.QTextBrowser()
         self.pbar = ProgressBar()
 
-        self.action_run = QtWidgets.QAction(self)
-        self.action_help = QtWidgets.QAction(self)
-        self.action_delete = QtWidgets.QAction(self)
-        self.action_bring_to_front = QtWidgets.QAction(self)
-        self.action_send_to_back = QtWidgets.QAction(self)
-        self.action_pointer = QtWidgets.QAction(self)
-        self.action_linepointer = QtWidgets.QAction(self)
-        self.actiongroup_pointer = QtWidgets.QActionGroup(self)
+        self.action_run = QtGui.QAction(self)
+        self.action_help = QtGui.QAction(self)
+        self.action_delete = QtGui.QAction(self)
+        self.action_bring_to_front = QtGui.QAction(self)
+        self.action_send_to_back = QtGui.QAction(self)
+        self.action_pointer = QtGui.QAction(self)
+        self.action_linepointer = QtGui.QAction(self)
+        self.actiongroup_pointer = QtGui.QActionGroup(self)
         self.actiongroup_pointer.addAction(self.action_pointer)
         self.actiongroup_pointer.addAction(self.action_linepointer)
         self.action_pointer.setCheckable(True)
@@ -733,8 +735,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         self.resize(800, 600)
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                           QtWidgets.QSizePolicy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -742,7 +744,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.graphics_view.setSizePolicy(sizepolicy)
         self.graphics_view.setTransformationAnchor(
-            QtWidgets.QGraphicsView.AnchorUnderMouse)
+            QtWidgets.QGraphicsView.ViewportAnchor.AnchorUnderMouse)
 
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
@@ -765,7 +767,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralwidget)
         self.setMenuBar(self.menubar)
         self.setStatusBar(self.statusbar)
-        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+        self.addToolBar(QtCore.Qt.ToolBarArea.TopToolBarArea, self.toolbar)
 
         self.toolbar.addAction(self.action_delete)
         self.toolbar.addAction(self.action_bring_to_front)
@@ -856,7 +858,7 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-        if event.key() == QtCore.Qt.Key_Delete:
+        if event.key() == QtCore.Qt.Key.Key_Delete:
             self.delete_item()
 
         event.accept()
@@ -1336,7 +1338,7 @@ class Startup(QtWidgets.QDialog):
 
     def __init__(self, pbarmax, parent=None):
         super().__init__(parent)
-        self.setWindowFlags(QtCore.Qt.ToolTip)
+        self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
 
         self.vbl_main = QtWidgets.QVBoxLayout(self)
         self.lbl_info = QtWidgets.QLabel(self)
@@ -1348,7 +1350,7 @@ class Startup(QtWidgets.QDialog):
 
         labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
-        fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Bold)
+        fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Weight.Bold)
         self.lbl_info.setFont(fnt)
         self.lbl_info.setText(labeltext)
         self.vbl_main.addWidget(self.lbl_info)
@@ -1373,9 +1375,10 @@ def main(nocgs=False):
 
     # Start program.
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
+    # app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    screen_resolution = app.desktop().screenGeometry()
+    screen_resolution = app.primaryScreen().geometry()
     width, height = screen_resolution.width(), screen_resolution.height()
     width = int(width*0.75)
     height = int(height*0.75)
@@ -1383,8 +1386,8 @@ def main(nocgs=False):
     wid = MainWidget(nocgs=nocgs)
     wid.resize(width, height)
 
-    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
-                       QtCore.Qt.WindowActive)
+    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowState.WindowMinimized |
+                       QtCore.Qt.WindowState.WindowActive)
 
     # this will activate the window
     wid.show()

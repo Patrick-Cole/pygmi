@@ -25,7 +25,7 @@
 """Routines to smooth raster data."""
 
 import warnings
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
 
@@ -102,7 +102,7 @@ class Smooth(BasicModule):
         self.rb_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Smoothing Filters')
 

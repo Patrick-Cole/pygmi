@@ -28,7 +28,7 @@ import tempfile
 import math
 import os
 import glob
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 from scipy.signal.windows import tukey
@@ -91,9 +91,9 @@ class Continuation(BasicModule):
         self.cmb_cont.clear()
         self.cmb_cont.addItems(['Upward', 'Downward'])
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Continuation')
 
@@ -322,9 +322,9 @@ class DataLayerStack(BasicModule):
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
         self.dsb_dxy.setValue(40.)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.cb_cmask.setChecked(True)
 
@@ -525,7 +525,7 @@ class DataMerge(BasicModule):
         pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
                                          '(optional)')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
         pb_idirlist.setIcon(icon)
@@ -535,9 +535,9 @@ class DataMerge(BasicModule):
         self.cb_shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Mosaic')
 
@@ -762,9 +762,9 @@ class DataReproj(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('raster.dm.reproj')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Reprojection')
 
@@ -1056,12 +1056,12 @@ class Metadata(ContextModule):
         lbl_dtype = QtWidgets.QLabel('Data Type:')
         lbl_date = QtWidgets.QLabel('Acquisition Date:')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                           QtWidgets.QSizePolicy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         gbox.setSizePolicy(sizepolicy)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Metadata')
         self.date.setCalendarPopup(True)

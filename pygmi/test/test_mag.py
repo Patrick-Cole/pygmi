@@ -28,7 +28,7 @@ the tests.
 """
 
 import sys
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 from pyproj.crs import CRS
 

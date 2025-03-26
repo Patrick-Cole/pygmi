@@ -57,7 +57,7 @@ from math import sqrt
 from math import atan2
 
 from numba import jit
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 
 import pygmi.raster.dataprep as dp
@@ -115,8 +115,8 @@ class IGRF(BasicModule):
         lbl_2 = QtWidgets.QLabel('Digital Elevation Model')
         lbl_3 = QtWidgets.QLabel('Magnetic Data')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.dsb_alt.setMaximum(99999.9)
 

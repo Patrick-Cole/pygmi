@@ -30,7 +30,7 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 from numba import jit
 
@@ -93,8 +93,8 @@ class Gradients(BasicModule):
         self.sb_azi.setPrefix('')
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_ddir.setChecked(True)
         self.dsb_order.hide()
         self.lbl_or.hide()
@@ -361,8 +361,8 @@ class Visibility2d(BasicModule):
         self.sb_wsize.setMinimum(5)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Visibility')
 
@@ -829,8 +829,8 @@ class AGC(BasicModule):
         self.sb_wsize.setSingleStep(2)
         self.sb_wsize.setValue(self.wsize)
         self.rb_mean.setChecked(True)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Automatic Gain Control')
 

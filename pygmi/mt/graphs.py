@@ -24,10 +24,10 @@
 # -----------------------------------------------------------------------------
 """Plot Data using Matplotlib."""
 
-from PyQt5 import QtWidgets, QtCore
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from PyQt6 import QtWidgets, QtCore
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import ContextModule
 
@@ -38,7 +38,7 @@ class GraphWindow(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned

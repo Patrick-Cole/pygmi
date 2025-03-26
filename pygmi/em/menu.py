@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """EM Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.em import tdem
 
@@ -51,7 +51,7 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('EM')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_tdem1d = QtWidgets.QAction('TDEM 1D Inversion')
+        self.action_tdem1d = QtGui.QAction('TDEM 1D Inversion')
         self.menu.addAction(self.action_tdem1d)
         self.action_tdem1d.triggered.connect(self.tdem1d)
 

@@ -63,7 +63,7 @@ Note, it will still be necessary for the end-user to compile the code.
 
 import os
 import functools
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 from pygmi.misc import BasicModule
 
@@ -174,9 +174,9 @@ class BIRRP(BasicModule):
             self.le_nfil[i].setValidator(QtGui.QIntValidator(self))
             self.le_nfil[i].editingFinished.connect(self.nfil_changed)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
 #        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'BIRRP Processing')
 

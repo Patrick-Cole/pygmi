@@ -32,10 +32,10 @@ import re
 import textwrap
 import numpy as np
 import pandas as pd
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from matplotlib.path import Path
 import matplotlib.patches as mpatches
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from pygmi.misc import ContextModule
@@ -337,7 +337,7 @@ class PlotLog(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Borehole Log')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
@@ -353,13 +353,13 @@ class PlotLog(ContextModule):
         self.lbl_topright = QtWidgets.QLabel()
         self.lbl_bottomleft = QtWidgets.QLabel()
         self.lbl_bottomright = QtWidgets.QLabel()
-        self.lbl_topright.setAlignment(QtCore.Qt.AlignRight |
-                                       QtCore.Qt.AlignVCenter)
-        self.lbl_bottomright.setAlignment(QtCore.Qt.AlignRight |
-                                          QtCore.Qt.AlignVCenter)
+        self.lbl_topright.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight |
+                                       QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.lbl_bottomright.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight |
+                                          QtCore.Qt.AlignmentFlag.AlignVCenter)
 
         self.scroll = QtWidgets.QScrollArea(self)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll.setWidget(self.mmc)
         # self.scroll.resize(900,600)
 

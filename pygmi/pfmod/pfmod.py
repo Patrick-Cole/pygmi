@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """The main program for the potential field 3D modelling package."""
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 from pygmi.pfmod import misc
 from pygmi.pfmod import tab_prof
@@ -72,7 +72,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
-        self.actionsave = QtWidgets.QAction('Save Model')
+        self.actionsave = QtGui.QAction('Save Model')
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
         tmp = list(set(self.lmod1.griddata.values()))
@@ -84,22 +84,22 @@ class MainWidget(QtWidgets.QMainWindow):
         self.profile = tab_prof.ProfileDisplay(self)
 
         # Toolbars
-        self.action_mext = QtWidgets.QAction('Model\nExtent\nParameters')
+        self.action_mext = QtGui.QAction('Model\nExtent\nParameters')
         self.toolbardock.addAction(self.action_mext)
         self.action_mext.triggered.connect(self.mext.tab_activate)
 
-        self.action_param = QtWidgets.QAction('Geophysical\nParameters')
+        self.action_param = QtGui.QAction('Geophysical\nParameters')
         self.toolbardock.addAction(self.action_param)
         self.action_param.triggered.connect(self.param.tab_activate)
 
-        self.action_lnotes = QtWidgets.QAction('Lithology\nNotes')
+        self.action_lnotes = QtGui.QAction('Lithology\nNotes')
         self.toolbardock.addAction(self.action_lnotes)
         self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
 
         # Dock Widgets
         dock = QtWidgets.QDockWidget('Editor')
         dock.setWidget(self.profile)
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.TopDockWidgetArea, dock)
         self.toolbardock.addAction(dock.toggleViewAction())
 
         self.grvmag = grvmag3d.GravMag(self)
@@ -125,7 +125,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setCentralWidget(centralwidget)
 
         self.addToolBar(self.toolbardock)
-        self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.textbrowser.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.toolbardock.addAction(self.actionsave)
 
         self.setWindowTitle('Potential Field Modelling')

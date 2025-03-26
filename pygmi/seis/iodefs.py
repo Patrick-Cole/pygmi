@@ -26,7 +26,7 @@
 
 import os
 import re
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_string_dtype
@@ -2747,9 +2747,9 @@ class FilterSeisan(BasicModule):
         vbl.addWidget(self.cb_dind_D)
         gbox_dind.setLayout(vbl)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Data Filtering')
         self.cb_dind_D.setChecked(True)

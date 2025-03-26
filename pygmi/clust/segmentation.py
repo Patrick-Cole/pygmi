@@ -29,7 +29,7 @@ from sklearn.cluster import KMeans
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 from pygmi import menu_default
 from pygmi.misc import BasicModule
@@ -76,8 +76,8 @@ class ImageSeg(BasicModule):
         lbl_numclust = QtWidgets.QLabel('Number of clusters')
 
         val = QtGui.QDoubleValidator(0.0, 1.0, 2)
-        val.setNotation(QtGui.QDoubleValidator.StandardNotation)
-        val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+        val.setNotation(QtGui.QDoubleValidator.Notation.StandardNotation)
+        val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
         self.le_wcompact.setValidator(val)
         self.le_wcolor.setValidator(val)
@@ -87,9 +87,9 @@ class ImageSeg(BasicModule):
         val.setBottom = 0
         self.le_scale.setValidator(QtGui.QIntValidator(self))
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Image Segmentation')
 

@@ -25,7 +25,7 @@
 """Import Gravity Data."""
 
 import os
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -85,7 +85,7 @@ class ImportCG5(BasicModule):
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_gps.setIcon(icon)
         pb_cg5.setIcon(icon)
@@ -98,9 +98,9 @@ class ImportCG5(BasicModule):
         self.cmb_ychan.setEnabled(False)
         self.cmb_zchan.setEnabled(False)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Import CG-5 Data')
 

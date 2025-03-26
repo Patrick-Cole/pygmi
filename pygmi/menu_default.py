@@ -31,7 +31,7 @@ It also includes the about box.
 from datetime import date
 import os
 import webbrowser
-from PyQt5 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui
 
 
 class FileMenu():
@@ -57,15 +57,15 @@ class FileMenu():
         self.menu = QtWidgets.QMenu('File')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_save = QtWidgets.QAction('Save Project')
+        self.action_save = QtGui.QAction('Save Project')
         self.menu.addAction(self.action_save)
         self.action_save.triggered.connect(parent.save)
 
-        self.action_load = QtWidgets.QAction('Load Project')
+        self.action_load = QtGui.QAction('Load Project')
         self.menu.addAction(self.action_load)
         self.action_load.triggered.connect(parent.load)
 
-        self.action_exit = QtWidgets.QAction('Exit')
+        self.action_exit = QtGui.QAction('Exit')
         self.menu.addAction(self.action_exit)
         self.action_exit.triggered.connect(parent.close)
 
@@ -89,8 +89,8 @@ class HelpMenu():
         self.menu = QtWidgets.QMenu('Help')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_help = QtWidgets.QAction('Help')
-        self.action_about = QtWidgets.QAction('About')
+        self.action_help = QtGui.QAction('Help')
+        self.action_about = QtGui.QAction('About')
 
         self.menu.addAction(self.action_help)
         self.menu.addAction(self.action_about)

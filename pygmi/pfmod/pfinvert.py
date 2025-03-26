@@ -27,7 +27,7 @@
 import sys
 from contextlib import redirect_stdout
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import scipy.interpolate as si
 from discretize import TensorMesh
 from discretize.utils import active_from_xyz
@@ -106,13 +106,13 @@ class MagInvert(BasicModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Preferred)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        buttonbox.button(buttonbox.Ok).setText('Run Inversion')
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.button(buttonbox.StandardButton.Ok).setText('Run Inversion')
 
         # Current Models Groupbox
         hbl_model = QtWidgets.QHBoxLayout()
@@ -1053,7 +1053,7 @@ def _testfn():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    get_ipython().run_line_magic('matplotlib', 'Qt5')
+    get_ipython().run_line_magic('matplotlib', 'Qt')
 
     tmp = MainWidget()
     tmp.indata = DM.outdata
@@ -1172,7 +1172,7 @@ def _testfn2():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    get_ipython().run_line_magic('matplotlib', 'Qt5')
+    get_ipython().run_line_magic('matplotlib', 'Qt')
 
     tmp = MainWidget()
     tmp.indata = DM.outdata

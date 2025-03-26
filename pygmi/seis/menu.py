@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Seis Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.seis import del_rec
 from pygmi.seis import iodefs
@@ -56,32 +56,32 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Seismology')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_seisan = QtWidgets.QAction('Import Seismic Data')
+        self.action_import_seisan = QtGui.QAction('Import Seismic Data')
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
-        self.action_import_genfps = QtWidgets.QAction('Import Generic FPS')
+        self.action_import_genfps = QtGui.QAction('Import Generic FPS')
         self.menu.addAction(self.action_import_genfps)
         self.action_import_genfps.triggered.connect(self.import_genfps)
 
         self.menu.addSeparator()
 
-        self.action_check_desc = QtWidgets.QAction('Correct SEISAN Type 3'
+        self.action_check_desc = QtGui.QAction('Correct SEISAN Type 3'
                                                    ' Descriptions')
         self.menu.addAction(self.action_check_desc)
         self.action_check_desc.triggered.connect(self.correct_desc)
 
-        self.action_filter_seisan = QtWidgets.QAction('Filter SEISAN Data')
+        self.action_filter_seisan = QtGui.QAction('Filter SEISAN Data')
         self.menu.addAction(self.action_filter_seisan)
         self.action_filter_seisan.triggered.connect(self.filter_seisan)
 
         self.menu.addSeparator()
 
-        self.action_beachball = QtWidgets.QAction('Fault Plane Solutions')
+        self.action_beachball = QtGui.QAction('Fault Plane Solutions')
         self.menu.addAction(self.action_beachball)
         self.action_beachball.triggered.connect(self.beachball)
 
-        self.action_quarry = QtWidgets.QAction('Remove Quarry Events')
+        self.action_quarry = QtGui.QAction('Remove Quarry Events')
         self.menu.addAction(self.action_quarry)
         self.action_quarry.triggered.connect(self.quarry)
 
@@ -89,30 +89,30 @@ class MenuWidget():
 
         context_menu['MacroSeis'].addSeparator()
 
-        self.action_show_iso_plots = QtWidgets.QAction('Show Isoseismic Plots')
+        self.action_show_iso_plots = QtGui.QAction('Show Isoseismic Plots')
         context_menu['MacroSeis'].addAction(self.action_show_iso_plots)
         self.action_show_iso_plots.triggered.connect(self.show_iso_plots)
 
         context_menu['Seis'].addSeparator()
 
-        self.action_show_QC_plots = QtWidgets.QAction('Show QC Plots')
+        self.action_show_QC_plots = QtGui.QAction('Show QC Plots')
         context_menu['Seis'].addAction(self.action_show_QC_plots)
         self.action_show_QC_plots.triggered.connect(self.show_QC_plots)
 
-        self.action_show_TP_plots = QtWidgets.QAction('Show Temporal b-value '
+        self.action_show_TP_plots = QtGui.QAction('Show Temporal b-value '
                                                       'Plots')
         context_menu['Seis'].addAction(self.action_show_TP_plots)
         self.action_show_TP_plots.triggered.connect(self.show_TP_plots)
 
-        self.action_export_seisan = QtWidgets.QAction('Export SEISAN Data')
+        self.action_export_seisan = QtGui.QAction('Export SEISAN Data')
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
 
-        self.action_export_csv = QtWidgets.QAction('Export to CSV')
+        self.action_export_csv = QtGui.QAction('Export to CSV')
         context_menu['Seis'].addAction(self.action_export_csv)
         self.action_export_csv.triggered.connect(self.export_csv)
 
-        self.action_sexport = QtWidgets.QAction('Export Summary to CSV, XLSX '
+        self.action_sexport = QtGui.QAction('Export Summary to CSV, XLSX '
                                                 'or SHP')
         context_menu['Seis'].addAction(self.action_sexport)
         self.action_sexport.triggered.connect(self.sexport)

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Gravity Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.grav import iodefs
 from pygmi.grav import dataprep
@@ -52,13 +52,13 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Gravity')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtWidgets.QAction('Import CG-5 Data')
+        self.action_import_data = QtGui.QAction('Import CG-5 Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
-        self.action_process = QtWidgets.QAction('Process Gravity Data')
+        self.action_process = QtGui.QAction('Process Gravity Data')
         self.menu.addAction(self.action_process)
         self.action_process.triggered.connect(self.process_data)
 

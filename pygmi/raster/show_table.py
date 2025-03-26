@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various stats."""
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt6 import QtWidgets
+from PyQt6.QtCore import Qt
 import numpy as np
 import scipy.stats.mstats as st
 
@@ -101,7 +101,7 @@ class BasicStats(ContextModule):
                     txt = f' {datnum:,.5f}'
 
                 txt = QtWidgets.QLabel(txt)
-                txt.setAlignment(Qt.AlignRight)
+                txt.setAlignment(Qt.AlignmentFlag.AlignRight)
 
                 self.tablewidget.setCellWidget(row, col, txt)
 

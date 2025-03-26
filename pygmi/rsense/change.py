@@ -29,7 +29,7 @@ import os
 import sys
 import numpy as np
 from numba import jit
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta
@@ -70,11 +70,12 @@ class CalculateChange(BasicModule):
         helpdocs = menu_default.HelpButton('rsense.dm.change')
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
-        self.lw_indices.setSelectionMode(self.lw_indices.MultiSelection)
+        self.lw_indices.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Calculate Change Indices')
 

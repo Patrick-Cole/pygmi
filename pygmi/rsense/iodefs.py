@@ -35,7 +35,7 @@ import datetime
 from collections import defaultdict
 import warnings
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
 import pandas as pd
@@ -96,7 +96,7 @@ class ImportData(BasicModule):
         """
         pb_sfile = QtWidgets.QPushButton(' Filename')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
         pb_sfile.setStyleSheet('text-align:left;')
@@ -106,7 +106,7 @@ class ImportData(BasicModule):
 
         gl_1 = QtWidgets.QGridLayout(self)
 
-        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
@@ -115,10 +115,11 @@ class ImportData(BasicModule):
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            buttonbox.StandardButton.Cancel |
+            buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(buttonbox, 9, 0, 1, 2)
 
@@ -295,7 +296,7 @@ class ImportBatch(BasicModule):
         """
         pb_sfile = QtWidgets.QPushButton(' Directory')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
         pb_sfile.setStyleSheet('text-align:left;')
@@ -305,7 +306,7 @@ class ImportBatch(BasicModule):
 
         gl_1 = QtWidgets.QGridLayout(self)
 
-        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
@@ -315,10 +316,11 @@ class ImportBatch(BasicModule):
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+            buttonbox.StandardButton.Cancel |
+            buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(buttonbox, 9, 0, 1, 2)
 
@@ -520,9 +522,9 @@ class ImportSentinel5P(BasicModule):
         lbl_subdata = QtWidgets.QLabel('Product:')
         lbl_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_cclip.setChecked(True)
         self.lbl_sfile.hide()
         self.le_shpfile.hide()
@@ -907,9 +909,9 @@ class ExportBatch(ContextModule):
         self.cmb_sunshade.setEnabled(False)
         self.cmb_slvl.setEnabled(False)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Export File List')
 
@@ -1411,6 +1413,8 @@ def export_batch(indata, odir, filt, *, tnames=None, piter=None,
     os.makedirs(odir, exist_ok=True)
 
     for ifile in ifiles:
+        if tnames is None:
+            tnames = ifile.tnames
         dat = get_from_rastermeta(ifile, piter=piter,
                                   showlog=showlog,
                                   tnames=tnames)
@@ -3757,11 +3761,13 @@ def _testfn2():
 
     dat = tmp1.outdata
 
-    breakpoint()
+    # breakpoint()
 
-    # tmp2 = ExportBatch()
-    # tmp2.indata = dat
-    # tmp2.run()
+    tmp2 = ExportBatch()
+    tmp2.indata = dat
+    tmp2.run()
+
+    tmp2.exec()
 
 
 def _testfn3():

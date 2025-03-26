@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Model Extents Display Routines."""
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
 
@@ -87,14 +87,14 @@ class MextDisplay(QtWidgets.QDialog):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Preferred)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        buttonbox.button(buttonbox.Cancel).setText('No changes')
-        buttonbox.button(buttonbox.Ok).setText('Apply changes '
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.button(buttonbox.StandardButton.Cancel).setText('No changes')
+        buttonbox.button(buttonbox.StandardButton.Ok).setText('Apply changes '
                                                '(reset calculations)')
 
         # Current Models Groupbox

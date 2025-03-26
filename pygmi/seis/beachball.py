@@ -32,13 +32,13 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
 import os
 import numpy as np
 import numexpr as ne
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 import geopandas as gpd
 from shapely import Polygon, make_valid
 from matplotlib import colormaps
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib import patches
 import scipy.spatial.distance as sdist
 
@@ -84,8 +84,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
 
         FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Expanding,
-                                        QtWidgets.QSizePolicy.Expanding)
+                                        QtWidgets.QSizePolicy.Policy.Expanding,
+                                        QtWidgets.QSizePolicy.Policy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
     def init_graph(self):
@@ -248,8 +248,8 @@ class BeachBall(BasicModule):
 
         self.rb_geog.setChecked(True)
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                       QtWidgets.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
 
         self.setWindowTitle('Fault Plane Solution (FPS)')
 

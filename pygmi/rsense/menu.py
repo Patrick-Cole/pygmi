@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Remote Sensing Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.rsense import change, change_viewer
 from pygmi.rsense import iodefs, dataprep
@@ -58,60 +58,60 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_sat = QtWidgets.QAction('Import Satellite Data')
+        self.action_import_sat = QtGui.QAction('Import Satellite Data')
         self.menu.addAction(self.action_import_sat)
         self.action_import_sat.triggered.connect(self.import_sat)
 
-        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
+        self.action_import_sentinel5p = QtGui.QAction('Import Sentinel-5P')
         self.menu.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
 
-        self.action_batch_list = QtWidgets.QAction('Create Batch List')
+        self.action_batch_list = QtGui.QAction('Create Batch List')
         self.menu.addAction(self.action_batch_list)
         self.action_batch_list.triggered.connect(self.batch_list)
 
         self.menu.addSeparator()
 
-        self.action_sen2cor = QtWidgets.QAction('Sen2Cor: Sentinel-2 '
+        self.action_sen2cor = QtGui.QAction('Sen2Cor: Sentinel-2 '
                                                 'Atmospheric Correction')
         self.menu.addAction(self.action_sen2cor)
         self.action_sen2cor.triggered.connect(self.sen2cor)
 
-        self.action_topo = QtWidgets.QAction('Topographic Correction')
+        self.action_topo = QtGui.QAction('Topographic Correction')
         self.menu.addAction(self.action_topo)
         self.action_topo.triggered.connect(self.topo)
 
         self.menu.addSeparator()
 
-        self.action_calc_ratios = QtWidgets.QAction('Calculate Band Ratios')
+        self.action_calc_ratios = QtGui.QAction('Calculate Band Ratios')
         self.menu.addAction(self.action_calc_ratios)
         self.action_calc_ratios.triggered.connect(self.calc_ratios)
 
-        self.action_calc_ci = QtWidgets.QAction('Calculate Condition Indices')
+        self.action_calc_ci = QtGui.QAction('Calculate Condition Indices')
         self.menu.addAction(self.action_calc_ci)
         self.action_calc_ci.triggered.connect(self.calc_ci)
 
-        self.action_lsat_comp = QtWidgets.QAction('Calculate Landsat '
+        self.action_lsat_comp = QtGui.QAction('Calculate Landsat '
                                                   'Temporal Composite')
         self.menu.addAction(self.action_lsat_comp)
         self.action_lsat_comp.triggered.connect(self.lsat_comp)
 
-        self.action_mnf = QtWidgets.QAction('MNF Transform')
+        self.action_mnf = QtGui.QAction('MNF Transform')
         self.menu.addAction(self.action_mnf)
         self.action_mnf.triggered.connect(self.mnf)
 
-        self.action_pca = QtWidgets.QAction('PCA Transform')
+        self.action_pca = QtGui.QAction('PCA Transform')
         self.menu.addAction(self.action_pca)
         self.action_pca.triggered.connect(self.pca)
         self.menu.addSeparator()
 
         self.menu4 = self.menu.addMenu('Hyperspectral Imaging')
 
-        self.action_anal_spec = QtWidgets.QAction('Analyse Spectra')
+        self.action_anal_spec = QtGui.QAction('Analyse Spectra')
         self.menu4.addAction(self.action_anal_spec)
         self.action_anal_spec.triggered.connect(self.anal_spec)
 
-        self.action_proc_features = QtWidgets.QAction('Process Features')
+        self.action_proc_features = QtGui.QAction('Process Features')
         self.menu4.addAction(self.action_proc_features)
         self.action_proc_features.triggered.connect(self.proc_features)
 
@@ -119,16 +119,16 @@ class MenuWidget():
 
         self.menu2 = self.menu.addMenu('Change Detection')
 
-        self.action_calc_change = QtWidgets.QAction('Calculate Change Indices')
+        self.action_calc_change = QtGui.QAction('Calculate Change Indices')
         self.menu2.addAction(self.action_calc_change)
         self.action_calc_change.triggered.connect(self.calc_change)
 
-        self.action_data_viewer = QtWidgets.QAction('View Change Data')
+        self.action_data_viewer = QtGui.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.view_change)
 
         # Context menus
-        self.action_exportlist = QtWidgets.QAction('Export Raster File List')
+        self.action_exportlist = QtGui.QAction('Export Raster File List')
         context_menu['RasterFileList'].addAction(self.action_exportlist)
         self.action_exportlist.triggered.connect(self.exportlist)
 

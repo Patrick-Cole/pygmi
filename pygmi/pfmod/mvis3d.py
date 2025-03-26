@@ -29,7 +29,8 @@ import os
 import sys
 import numpy as np
 
-from PyQt5 import QtCore, QtWidgets, QtOpenGL, QtGui
+from PyQt6 import QtCore, QtWidgets, QtOpenGL, QtGui
+from PyQt6.QtOpenGLWidgets import QOpenGLWidget
 from OpenGL import GL
 from OpenGL import GLU
 # from OpenGL import GLUT
@@ -37,7 +38,7 @@ from OpenGL.arrays import vbo
 from scipy.ndimage import zoom, convolve
 from numba import jit
 from PIL import Image
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 from pygmi.pfmod import misc
@@ -120,22 +121,22 @@ class Mod3dDisplay(ContextModule):
 
         self.vslider_3dmodel.setMinimum(1)
         self.vslider_3dmodel.setMaximum(1000)
-        self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
-        vbl_cmodel.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                           QtWidgets.QSizePolicy.Fixed)
+        self.vslider_3dmodel.setOrientation(QtCore.Qt.Orientation.Vertical)
+        vbl_cmodel.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                                           QtWidgets.QSizePolicy.Policy.Fixed)
 
-        sizepolicy_pb = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum,
-                                              QtWidgets.QSizePolicy.Maximum)
+        sizepolicy_pb = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
+                                              QtWidgets.QSizePolicy.Policy.Maximum)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
-            QtWidgets.QAbstractItemView.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
         self.lw_3dmod_defs.setFixedWidth(220)
         self.cb_smooth.setSizePolicy(sizepolicy)
         self.pb_save.setSizePolicy(sizepolicy_pb)
         self.pb_refresh.setSizePolicy(sizepolicy_pb)
-        self.pbar.setOrientation(QtCore.Qt.Vertical)
+        self.pbar.setOrientation(QtCore.Qt.Orientation.Vertical)
 
         self.cb_ortho.setChecked(True)
         self.cb_axis.setChecked(True)
@@ -435,7 +436,8 @@ class Mod3dDisplay(ContextModule):
         self.gdata = self.lmod1.lith_index[::1, ::1, ::-1]
 
         # update colors
-        i = self.lw_3dmod_defs.findItems('*', QtCore.Qt.MatchWildcard)
+        i = self.lw_3dmod_defs.findItems('*',
+                                         QtCore.Qt.MatchFlag.MatchWildcard)
         itxt = [j.text()[2:] for j in i]
         itmp = []
         for i in itxt:
@@ -731,7 +733,7 @@ class Mod3dDisplay(ContextModule):
         self.glwidget.updateGL()
 
 
-class GLWidget(QtOpenGL.QGLWidget):
+class GLWidget(QOpenGLWidget):
     """
     OpenGL Widget.
 
@@ -1234,10 +1236,10 @@ class GLWidget(QtOpenGL.QGLWidget):
         dxx = event.x() - self.lastPos.x()
         dyy = event.y() - self.lastPos.y()
 
-        if event.buttons() & QtCore.Qt.LeftButton:
+        if event.buttons() & QtCore.Qt.MouseButton.LeftButton:
             self.setXRotation(self.xRot + 8 * dyy)
             self.setYRotation(self.yRot + 8 * dxx)
-        elif event.buttons() & QtCore.Qt.RightButton:
+        elif event.buttons() & QtCore.Qt.MouseButton.RightButton:
             self.setXRotation(self.xRot + 8 * dyy)
             self.setZRotation(self.zRot + 8 * dxx)
 
@@ -2079,8 +2081,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
     wid = Mod3dDisplay()
-    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
-                       QtCore.Qt.WindowActive)
+    wid.setWindowState(wid.windowState() &
+                       ~QtCore.Qt.WindowState.WindowMinimized |
+                       QtCore.Qt.WindowState.WindowActive)
 
     faces = np.array(faces)
     vtx = np.array(vtx)

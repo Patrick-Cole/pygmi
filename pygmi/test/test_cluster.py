@@ -30,7 +30,7 @@ the tests.
 import os
 import psutil
 import sys
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data

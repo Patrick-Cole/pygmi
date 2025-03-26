@@ -29,7 +29,7 @@ the tests .
 
 import os
 import sys
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.grav import iodefs, dataprep

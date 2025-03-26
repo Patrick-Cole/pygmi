@@ -29,7 +29,7 @@ import sys
 import re
 import numexpr as ne
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
@@ -73,16 +73,16 @@ class SatRatios(BasicModule):
         lbl_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Ratios:')
 
-        self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
+        self.lw_ratios.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.cmb_sensor.addItems(['ASTER',
                                   'Landsat 8 and 9 (OLI)',
                                   'Landsat 7 (ETM+)',
                                   'Landsat 4 and 5 (TM)',
                                   'Sentinel-2', 'WorldView', 'Unknown'])
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Band Ratio Calculations')
 
@@ -394,7 +394,7 @@ class ConditionIndices(BasicModule):
         lbl_ratios = QtWidgets.QLabel('Condition Indices:')
         lbl_sensor = QtWidgets.QLabel('Sensor:')
 
-        self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
+        self.lw_ratios.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.cmb_index.addItems(['EVI',
                                  'NDVI',
@@ -407,9 +407,9 @@ class ConditionIndices(BasicModule):
                                   'Landsat (All)',
                                   'Sentinel-2', 'WorldView', 'Unknown'])
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Condition Indices Calculations')
 

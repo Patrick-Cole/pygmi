@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Equation editor."""
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import numexpr as ne
 
@@ -87,15 +87,24 @@ class EquationEditor(BasicModule):
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         ptmp = self.textbrowser2.palette()
-        ptmp.setColor(0, 9, ptmp.color(10))
-        ptmp.setColor(1, 9, ptmp.color(10))
-        ptmp.setColor(2, 9, ptmp.color(10))
+
+        ptmp.setColor(ptmp.ColorGroup.Active,
+                      ptmp.ColorRole.Base,
+                      ptmp.color(QtGui.QPalette.ColorRole.Window))
+        ptmp.setColor(ptmp.ColorGroup.Disabled,
+                      ptmp.ColorRole.Base,
+                      ptmp.color(QtGui.QPalette.ColorRole.Window))
+        ptmp.setColor(ptmp.ColorGroup.Inactive,
+                      ptmp.ColorRole.Base,
+                      ptmp.color(QtGui.QPalette.ColorRole.Window))
+
         self.textbrowser2.setPalette(ptmp)
-        self.textbrowser2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textbrowser2.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
 
         self.setWindowTitle('Equation Editor')
         self.textbrowser.setText('iall')

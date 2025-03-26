@@ -27,7 +27,7 @@ Fuzzy clustering is a set of clustering routines, making use of fuzzy logic.
 """
 
 import os
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 
 from pygmi.raster.datatypes import Data
@@ -118,8 +118,8 @@ class FuzzyClust(BasicModule):
         self.dsb_maxerror.setProperty('value', 1e-05)
         self.dsb_fuzzynessexp.setProperty('value', 1.5)
         self.rb_random.setChecked(True)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Fuzzy Clustering')
         gbox.setTitle('Initial Guess')

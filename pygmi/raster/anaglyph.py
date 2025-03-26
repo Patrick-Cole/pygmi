@@ -24,14 +24,14 @@
 # -----------------------------------------------------------------------------
 """Anaglyph routine."""
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 # from scipy import ndimage
 import numpy as np
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib import collections as mc
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.misc import norm2, currentshader, histcomp
@@ -63,8 +63,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.z = None
         self.cnum = 10
 
-        FigureCanvasQTAgg.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding,
-                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvasQTAgg.setSizePolicy(self, QtWidgets.QSizePolicy.Policy.Expanding,
+                                        QtWidgets.QSizePolicy.Policy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
     def update_contours(self, data1, scale=7, rotang=10):
@@ -296,11 +296,11 @@ class PlotAnaglyph(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Anaglyph (3D Image: Glasses Needed)')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
-                                           QtWidgets.QSizePolicy.Minimum)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
+                                           QtWidgets.QSizePolicy.Policy.Minimum)
 
         # Define Layouts
         hbl = QtWidgets.QHBoxLayout(self)  # self is where layout is assigned
@@ -349,18 +349,18 @@ class PlotAnaglyph(ContextModule):
         self.rb_doimage.setChecked(True)
         self.slider_cnt.setMinimum(3)
         self.slider_cnt.setMaximum(30)
-        self.slider_cnt.setOrientation(QtCore.Qt.Horizontal)
-        self.slider_cnt.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.slider_cnt.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.slider_cnt.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_cnt.setValue(10)
         self.slider_scale.setMinimum(1)
         self.slider_scale.setMaximum(30)
-        self.slider_scale.setOrientation(QtCore.Qt.Horizontal)
-        self.slider_scale.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.slider_scale.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.slider_scale.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_scale.setValue(5)
         self.slider_angle.setMinimum(1)
         self.slider_angle.setMaximum(20)
-        self.slider_angle.setOrientation(QtCore.Qt.Horizontal)
-        self.slider_angle.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.slider_angle.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.slider_angle.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_angle.setValue(10)
 
         # Add widgets to layout

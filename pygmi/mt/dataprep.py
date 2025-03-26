@@ -30,11 +30,11 @@ import copy
 import glob
 import platform
 from contextlib import redirect_stdout
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
 from mtpy.modeling import occam1d
 from mtpy.core.mt import MT
@@ -104,12 +104,12 @@ class Metadata(ContextModule):
         lbl_rot = QtWidgets.QLabel('Rotation:')
         lbl_bandid = QtWidgets.QLabel('Station Name:')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                           QtWidgets.QSizePolicy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         gbox.setSizePolicy(sizepolicy)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Metadata')
 
@@ -411,9 +411,9 @@ class StaticShiftEDI(BasicModule):
         pb_reset = QtWidgets.QPushButton('Reset data')
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
@@ -595,9 +595,9 @@ class RotateEDI(BasicModule):
         pb_reset = QtWidgets.QPushButton('Reset data')
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         helpdocs = menu_default.HelpButton('mt.dm.rotateedi')
 
@@ -1052,9 +1052,9 @@ class EditEDI(BasicModule):
         pb_reset = QtWidgets.QPushButton('Reset data')
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
@@ -1359,14 +1359,14 @@ class Occam1D(BasicModule):
         self.setWindowTitle('Occam 1D Inversion')
         helpdocs = menu_default.HelpButton('mt.dm.occam')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                           QtWidgets.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                                           QtWidgets.QSizePolicy.Policy.Fixed)
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
         hbl_2 = QtWidgets.QHBoxLayout()
         gl_1 = QtWidgets.QGridLayout()
-        gl_1.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        gl_1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.mmc = MyMplCanvas2(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1405,7 +1405,7 @@ class Occam1D(BasicModule):
         self.cb_remove_out_quad.setChecked(True)
 
         self.hs_profnum = MySlider()
-        self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_profnum.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         pb_occ = QtWidgets.QPushButton('Occam executable location')
         lbl_1 = QtWidgets.QLabel('Station Name:')
@@ -1428,9 +1428,9 @@ class Occam1D(BasicModule):
         pb_apply = QtWidgets.QPushButton('Invert Station')
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(pb_occ, 0, 0)
         gl_1.addWidget(self.le_occfile, 0, 1)

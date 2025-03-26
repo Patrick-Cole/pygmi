@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Structure complexity routines."""
 
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import geopandas as gpd
 from scipy.signal import correlate
@@ -82,8 +82,8 @@ class StructComp(BasicModule):
         lbl_method = QtWidgets.QLabel('Method:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
-        val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
-        val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+        val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
+        val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
         self.le_dxy.setValidator(val)
         self.le_std.setValidator(val)
@@ -95,9 +95,9 @@ class StructComp(BasicModule):
                                   'Circular Variance and Dispersion',
                                   'Feature Fractal Dimension'])
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Structure Complexity')
 

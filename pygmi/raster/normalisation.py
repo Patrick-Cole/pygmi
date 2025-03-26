@@ -25,7 +25,7 @@
 """Raster normalisation routine."""
 
 import warnings
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 
 from pygmi import menu_default
@@ -79,8 +79,8 @@ class Normalisation(BasicModule):
         gbox = QtWidgets.QGroupBox('Normalisation/Scaling')
         vbl_2 = QtWidgets.QVBoxLayout(gbox)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         vbl_2.addWidget(self.rb_interval)
         vbl_2.addWidget(self.rb_mean)

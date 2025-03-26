@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various statistics."""
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt6 import QtWidgets
+from PyQt6.QtCore import Qt
 import pandas as pd
 
 from pygmi.misc import ContextModule
@@ -120,7 +120,7 @@ class BasicStats(ContextModule):
             for col in range(data.shape[1]):
                 txt = f' {data[row, col]:,.5f}'
                 txt = QtWidgets.QLabel(txt)
-                txt.setAlignment(Qt.AlignRight)
+                txt.setAlignment(Qt.AlignmentFlag.AlignRight)
 
                 self.tablewidget.setCellWidget(row, col, txt)
 

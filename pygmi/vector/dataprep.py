@@ -28,7 +28,7 @@ import os
 import copy
 import glob
 from functools import partial
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
@@ -161,11 +161,11 @@ class DataGrid(BasicModule):
         lbl_method = QtWidgets.QLabel('Gridding Method:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
-        val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
-        val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+        val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
+        val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
         val2 = QtGui.QDoubleValidator(-1.0e308, 1.0e308, 9)
-        val2.setNotation(QtGui.QDoubleValidator.ScientificNotation)
-        val2.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+        val2.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
+        val2.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
         self.le_dxy.setValidator(val)
         self.le_null.setValidator(val2)
@@ -173,9 +173,9 @@ class DataGrid(BasicModule):
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Gridding')
 
@@ -405,9 +405,9 @@ class DataReproj(BasicModule):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('vector.dm.reproj')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Reprojection')
 
@@ -559,9 +559,9 @@ class Metadata(ContextModule):
 
         lbl_bandid = QtWidgets.QLabel('Source:')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Vector Dataset Metadata')
 
@@ -682,9 +682,9 @@ class TextFileSplit(BasicModule):
 
         self.cmb_method.addItems(['Files', 'Bytes', 'Lines'])
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Text File Split')
 

@@ -28,7 +28,7 @@ import datetime
 import sys
 import os
 import zipfile
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -1210,8 +1210,8 @@ class Exportkmz(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         # helpdocs = menu_default.HelpButton('pfmod.cm.exportkmz')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(self.cb_smooth, 1, 0, 1, 2)
@@ -1268,9 +1268,9 @@ class MessageCombo(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         lbl_master = QtWidgets.QLabel()
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Model Choice')
         lbl_master.setText('Choose Model:')

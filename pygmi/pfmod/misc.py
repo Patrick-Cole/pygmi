@@ -25,7 +25,7 @@
 """These are miscellaneous functions for the program."""
 
 import time
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import rasterio
 
@@ -307,9 +307,9 @@ class MergeMod3D(BasicModule):
         lbl_master = QtWidgets.QLabel('Primary Dataset:')
         lbl_slave = QtWidgets.QLabel('Secondary Dataset:')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('3D Model Merge')
 

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Magnetic Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.mag import dataprep
 from pygmi.mag import igrf
@@ -55,20 +55,20 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Magnetics')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_tilt = QtWidgets.QAction('Tilt Angle and Related Edge '
+        self.action_tilt = QtGui.QAction('Tilt Angle and Related Edge '
                                              'Filters')
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 
-        self.action_rtp = QtWidgets.QAction('Reduction to the Pole')
+        self.action_rtp = QtGui.QAction('Reduction to the Pole')
         self.menu.addAction(self.action_rtp)
         self.action_rtp.triggered.connect(self.rtp)
 
-        self.action_igrf = QtWidgets.QAction('Calculate IGRF Corrected Data')
+        self.action_igrf = QtGui.QAction('Calculate IGRF Corrected Data')
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
 
-        self.action_depth_susc = QtWidgets.QAction('Tilt Depth Interpretation')
+        self.action_depth_susc = QtGui.QAction('Tilt Depth Interpretation')
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
 

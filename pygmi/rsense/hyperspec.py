@@ -30,10 +30,10 @@ import os
 import numpy as np
 import numexpr as ne
 from numba import njit
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import matplotlib.patches as mpatches
 from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
@@ -258,8 +258,8 @@ class AnalSpec(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
         pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
@@ -287,7 +287,8 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
 
-        gl_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
+        gl_main.addWidget(buttonbox, 12, 0, 1, 1,
+                          QtCore.Qt.AlignmentFlag.AlignLeft)
 
         self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
@@ -593,9 +594,9 @@ class ProcFeatures(BasicModule):
         self.cb_filtercheck.setChecked(True)
         self.cb_rfiltcheck.setChecked(True)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Process Hyperspectral Features')
 
@@ -640,15 +641,15 @@ class ProcFeatures(BasicModule):
                                                     'Description'])
 
         item = QtWidgets.QTableWidgetItem(str(product[0]))
-        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 0, item)
 
         item = QtWidgets.QTableWidgetItem('None')
-        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 1, item)
 
         item = QtWidgets.QTableWidgetItem('None')
-        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 2, item)
 
         if product[0] in self.feature:
@@ -659,7 +660,7 @@ class ProcFeatures(BasicModule):
             desc = 'None'
 
         item = QtWidgets.QTableWidgetItem(desc)
-        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 3, item)
 
         for i in range(1, numrows):
@@ -672,7 +673,7 @@ class ProcFeatures(BasicModule):
 
             cmb_1.setCurrentText(txt2[1])
             item = QtWidgets.QTableWidgetItem(txt2[0])
-            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.tablewidget.setItem(i, 0, item)
             item = QtWidgets.QTableWidgetItem(txt2[2])
             self.tablewidget.setItem(i, 2, item)
@@ -682,7 +683,7 @@ class ProcFeatures(BasicModule):
             else:
                 desc = 'Feature between ' + str(self.feature[txt2[0]])
             item = QtWidgets.QTableWidgetItem(desc)
-            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.tablewidget.setItem(i, 3, item)
 
         self.tablewidget.resizeColumnsToContents()

@@ -25,7 +25,7 @@
 """Reprojection functions."""
 
 import numpy as np
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 import pyproj
 from pyproj.crs import CRS, ProjectedCRS
 from pyproj.crs.coordinate_operation import TransverseMercatorConversion
@@ -59,7 +59,7 @@ class GroupProj(QtWidgets.QWidget):
         self.cmb_proj = QtWidgets.QComboBox()
 
         self.lbl_wkt = QtWidgets.QTextBrowser()
-        self.lbl_wkt.setWordWrapMode(0)
+        self.lbl_wkt.setWordWrapMode(QtGui.QTextOption.WrapMode.NoWrap)
 
         self.gl_1.addWidget(self.gbox, 1, 0, 1, 2)
 

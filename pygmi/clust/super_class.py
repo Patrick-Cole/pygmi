@@ -27,14 +27,14 @@
 import os
 import sys
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 # from matplotlib import colormaps
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Polygon
@@ -547,8 +547,8 @@ class SuperClass(BasicModule):
         vbl_1b.addWidget(self.cmb_manip)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         loadshape = QtWidgets.QPushButton('Load Class Shapefile')
         saveshape = QtWidgets.QPushButton('Save Class Shapefile')
@@ -793,7 +793,7 @@ class SuperClass(BasicModule):
         self.tablewidget.setItem(row, 0, item)
 
         item = QtWidgets.QTableWidgetItem('1')
-        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(row, 1, item)
 
         self.update_class_polys()

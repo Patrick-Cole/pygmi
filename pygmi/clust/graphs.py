@@ -25,11 +25,11 @@
 """Routines to plot cluster data."""
 
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 
 from pygmi.misc import frm, ContextModule  # , discrete_colorbar
@@ -214,7 +214,7 @@ class GraphWindow(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned

@@ -28,12 +28,12 @@ import sys
 import os
 import copy
 from contextlib import redirect_stdout
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import discretize
 from simpeg import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
@@ -208,7 +208,7 @@ class TDEM1D(BasicModule):
         pb_wfile = QtWidgets.QPushButton('Load Window Times')
         pb_wdisp = QtWidgets.QPushButton('Refresh Waveform')
 
-        pixmapi = QtWidgets.QStyle.SP_DialogOpenButton
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_wfile.setIcon(icon)
         pb_wfile.setStyleSheet('text-align:left;')
@@ -224,9 +224,9 @@ class TDEM1D(BasicModule):
         pb_apply = QtWidgets.QPushButton('Invert Station')
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         vsl.addWidget('Line Number:', self.cmb_line)
         vsl.addWidget(r'Fid/Station Name:', self.cmb_fid)

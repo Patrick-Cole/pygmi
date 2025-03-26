@@ -25,7 +25,7 @@
 """A set of data processing routines for gravity."""
 
 import sys
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -81,9 +81,9 @@ class ProcessData(BasicModule):
                                      '(mGal):')
         pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Gravity Data Processing')
 

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """A set of Magnetic Data routines."""
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
 from scipy.signal.windows import tukey
 import scipy.interpolate as si
@@ -84,8 +84,8 @@ class Tilt1(BasicModule):
         lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
         lbl_3 = QtWidgets.QLabel('EHGA k factor (2 or greater)')
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.sb_azi.setProperty('value', 0)
@@ -415,9 +415,9 @@ class RTP(BasicModule):
         self.dsb_inc.setValue(-62.5)
         self.dsb_dec.setValue(-16.75)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Reduction to the Pole')
 

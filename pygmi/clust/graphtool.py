@@ -25,14 +25,14 @@
 """Multi-function graphing tool for use with cluster analysis."""
 
 import numpy as np
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 from matplotlib import colormaps
 from matplotlib.patches import Polygon
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 from pygmi.misc import BasicModule
 

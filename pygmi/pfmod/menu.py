@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Potential Field Modelling menus."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.pfmod import pfmod
 from pygmi.pfmod import mvis3d
@@ -58,38 +58,38 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Potential Field Modelling')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_mod3d = QtWidgets.QAction('Import 3D Model')
+        self.action_import_mod3d = QtGui.QAction('Import 3D Model')
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
-        self.action_pfmod = QtWidgets.QAction('Model Creation and Editing')
+        self.action_pfmod = QtGui.QAction('Model Creation and Editing')
         self.menu.addAction(self.action_pfmod)
         self.action_pfmod.triggered.connect(self.pfmod)
 
         self.menu.addSeparator()
 
-        self.action_merge_mod3d = QtWidgets.QAction('Merge two 3D Models')
+        self.action_merge_mod3d = QtGui.QAction('Merge two 3D Models')
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
         self.menu.addSeparator()
 
-        self.action_maginv = QtWidgets.QAction('3D Magnetic Inversion')
+        self.action_maginv = QtGui.QAction('3D Magnetic Inversion')
         self.menu.addAction(self.action_maginv)
         self.action_maginv.triggered.connect(self.maginv)
 
         # Context Menu
         context_menu['Model3D'].addSeparator()
 
-        self.action_mod3d = QtWidgets.QAction('3D Model Display')
+        self.action_mod3d = QtGui.QAction('3D Model Display')
         context_menu['Model3D'].addAction(self.action_mod3d)
         self.action_mod3d.triggered.connect(self.mod3d)
 
-        self.action_stat3d = QtWidgets.QAction('3D Model Statisitics')
+        self.action_stat3d = QtGui.QAction('3D Model Statisitics')
         context_menu['Model3D'].addAction(self.action_stat3d)
         self.action_stat3d.triggered.connect(self.stat3d)
 
-        self.action_export_mod3d = QtWidgets.QAction('Export 3D Model')
+        self.action_export_mod3d = QtGui.QAction('Export 3D Model')
         context_menu['Model3D'].addAction(self.action_export_mod3d)
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
 

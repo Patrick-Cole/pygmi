@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """MT Menu Routines."""
 
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 from pygmi.mt import iodefs
 from pygmi.mt import dataprep
@@ -56,48 +56,48 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('MT')
         parent.menubar.addAction(self.menu.menuAction())
 
-        # self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
+        # self.action_birrp = QtGui.QAction('BIRRP - Beta')
         # self.menu.addAction(self.action_birrp)
         # self.action_birrp.triggered.connect(self.birrp)
 
         self.menu.addSeparator()
 
-        self.action_import_data = QtWidgets.QAction('Import EDI Data')
+        self.action_import_data = QtGui.QAction('Import EDI Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
-        self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
+        self.action_rotate_data = QtGui.QAction('Rotate EDI Data')
         self.menu.addAction(self.action_rotate_data)
         self.action_rotate_data.triggered.connect(self.rotate_data)
 
-        self.action_sshift_data = QtWidgets.QAction('Remove Static Shift')
+        self.action_sshift_data = QtGui.QAction('Remove Static Shift')
         self.menu.addAction(self.action_sshift_data)
         self.action_sshift_data.triggered.connect(self.sshift_data)
 
-        self.action_mi_data = QtWidgets.QAction('Mask and Interpolate')
+        self.action_mi_data = QtGui.QAction('Mask and Interpolate')
         self.menu.addAction(self.action_mi_data)
         self.action_mi_data.triggered.connect(self.mi_data)
 
         self.menu.addSeparator()
 
-        self.action_occam1d = QtWidgets.QAction('Occam 1D Inversion')
+        self.action_occam1d = QtGui.QAction('Occam 1D Inversion')
         self.menu.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
         # Context menus
         context_menu['MT - EDI'].addSeparator()
 
-        self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')
+        self.action_metadata = QtGui.QAction('Display/Edit Metadata')
         context_menu['MT - EDI'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
-        self.action_show_graphs = QtWidgets.QAction('Show Graphs')
+        self.action_show_graphs = QtGui.QAction('Show Graphs')
         context_menu['MT - EDI'].addAction(self.action_show_graphs)
         self.action_show_graphs.triggered.connect(self.show_graphs)
 
-        self.action_export_data = QtWidgets.QAction('Export EDI')
+        self.action_export_data = QtGui.QAction('Export EDI')
         context_menu['MT - EDI'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 

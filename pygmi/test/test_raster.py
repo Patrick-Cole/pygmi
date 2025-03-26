@@ -31,7 +31,7 @@ import os
 import glob
 import sys
 import tempfile
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 import numpy as np
 from pyproj.crs import CRS
 import pytest

@@ -25,12 +25,12 @@
 """Change Detection Viewer."""
 
 import datetime
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 import pandas as pd
 from matplotlib.figure import Figure
 import matplotlib.animation as manimation
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import frm
 from pygmi.misc import BasicModule
@@ -71,8 +71,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(self.fig)
 
         FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Expanding,
-                                        QtWidgets.QSizePolicy.Expanding)
+                                        QtWidgets.QSizePolicy.Policy.Expanding,
+                                        QtWidgets.QSizePolicy.Policy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
     def capture(self):
@@ -197,7 +197,7 @@ class SceneViewer(BasicModule):
 
         self.mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
         self.slider = QtWidgets.QSlider()
-        self.slider.setOrientation(QtCore.Qt.Horizontal)
+        self.slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
         self.button1 = QtWidgets.QPushButton('Start Capture')
         self.button2 = QtWidgets.QPushButton('Previous Scene')
@@ -234,8 +234,8 @@ class SceneViewer(BasicModule):
         vbl_2b = QtWidgets.QVBoxLayout()
         gbox_2.setLayout(vbl_2b)
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Fixed,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
 
         vbl_2b.addWidget(self.cmb_band1)
         vbl_2b.addWidget(self.cmb_band2)

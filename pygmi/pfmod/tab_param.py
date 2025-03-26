@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Parameter Display Tab Routines."""
 
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 
 from pygmi.pfmod import grvmag3d
@@ -66,10 +66,10 @@ class MergeLith(QtWidgets.QDialog):
         lbl_1 = QtWidgets.QLabel('Master Lithology')
         lbl_2 = QtWidgets.QLabel('Lithologies To Merge')
 
-        self.lw_lithmaster.setSelectionMode(self.lw_lithmaster.SingleSelection)
-        self.lw_lithmerge.setSelectionMode(self.lw_lithmerge.MultiSelection)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        self.lw_lithmaster.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+        self.lw_lithmerge.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Merge Lithologies')
 
@@ -124,8 +124,8 @@ class LithNotes(QtWidgets.QDialog):
         lbl_1 = QtWidgets.QLabel('Lithology Code')
         lbl_2 = QtWidgets.QLabel('Notes')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                                           QtWidgets.QSizePolicy.Policy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -133,12 +133,12 @@ class LithNotes(QtWidgets.QDialog):
 
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
-            QtWidgets.QAbstractItemView.NoEditTriggers)
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.lithcode.setMaximum(9999999)
 
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Lithology Notes')
 
@@ -277,8 +277,8 @@ class ParamDisplay(QtWidgets.QDialog):
         self.setWindowTitle('Geophysical Parameters')
         helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                                           QtWidgets.QSizePolicy.Policy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -288,8 +288,8 @@ class ParamDisplay(QtWidgets.QDialog):
         hbl = QtWidgets.QHBoxLayout()
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         # General Properties
         gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
@@ -339,7 +339,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
-            QtWidgets.QAbstractItemView.NoEditTriggers)
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
 
         gl_lith_prop.addWidget(self.pb_add_def, 0, 0, 1, 1)
         gl_lith_prop.addWidget(self.gbox_lithprops, 0, 1, 5, 1)
