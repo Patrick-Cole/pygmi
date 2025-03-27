@@ -1,0 +1,12 @@
+Clip Raster to Zoom Extents
+---------------------------
+With this tool the user can zoom into a specific section of a raster and clip the raster to the zoom extent. A raster display window opens when this module is run.
+
+Process:
+
+1. Zoom to the area of interest.
+2. **Left-click** on **Clip** button.
+
+.. figure:: _images/rasterclip2zoom.png
+
+   Clip Raster to Zoom interface.

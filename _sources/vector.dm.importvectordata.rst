@@ -1,0 +1,12 @@
+Import Vector Data
+---------------------
+This module imports ESRI shapefiles (.SHP), zipped shapefiles (.SHP.ZIP), GeoPackages (.GPKG), Keyhole Markup Language (.KML) and zipped KMLs (.KMZ). These formats are also referred to as **vector data** within PyGMI.
+
+When selecting the **Import Vector Data** menu entry, the user is prompted for the following information:
+
+1. Folder locality, filename and format of the input vector file.
+2. **Bounds** - Vector files can be clipped using the bounds option. This can either be in terms of desired extents entered manually or a `mapsheet number <https://ngi.dalrrd.gov.za/index.php/what-we-do/maps-and-geospatial-information/41-sa-mapsheet-referencing>`_.
+
+.. figure:: _images/vectorshpimport.png
+
+   Import Vector Data dialog, options and file formats.

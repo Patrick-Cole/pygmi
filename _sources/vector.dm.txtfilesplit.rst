@@ -1,0 +1,19 @@
+Text File Split
+---------------
+Text files can be split into a series of smaller files, either by number of files, bytes per file of lines per file.
+
+The options are:
+
+1. **Filename** – select the text file to split.
+2. **Split method** – this can be **File**, **Bytes** or **Lines**.
+3. Select the splitting parameters:
+
+  * **Number of files** – editable using **Files** method
+  * **Max lines per file** – editable using **Lines** method
+  * **Max bytes per file** – editable using **Bytes** method
+  
+4. **Split all files with same extension in current directory** – will use specifications of the original file on all subsequent files.
+
+.. figure:: _images/vectortxtsplit.png
+
+   Text File Split interface.
