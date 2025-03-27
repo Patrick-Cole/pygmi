@@ -1803,7 +1803,7 @@ class PlotInterp(BasicModule):
 
         text, okay = QtWidgets.QInputDialog.getText(
             self, 'Colorbar', 'Enter length in inches:',
-            QtWidgets.QLineEdit.Normal, '4')
+            QtWidgets.QLineEdit.EchoMode.Normal, '4')
 
         if not okay:
             return False
@@ -1827,7 +1827,7 @@ class PlotInterp(BasicModule):
         if 'Ternary' not in dtype:
             text, okay = QtWidgets.QInputDialog.getText(
                 self, 'Colorbar', 'Enter colorbar unit label:',
-                QtWidgets.QLineEdit.Normal,
+                QtWidgets.QLineEdit.EchoMode.Normal,
                 self.units[str(self.cmb_band1.currentText())])
 
             if not okay:
@@ -1836,7 +1836,7 @@ class PlotInterp(BasicModule):
             units = str(self.cmb_band1.currentText())
             rtext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter red/cyan label:',
-                QtWidgets.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.EchoMode.Normal, units)
 
             if not okay:
                 return False
@@ -1844,7 +1844,7 @@ class PlotInterp(BasicModule):
             units = str(self.cmb_band2.currentText())
             gtext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter green/magenta label:',
-                QtWidgets.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.EchoMode.Normal, units)
 
             if not okay:
                 return False
@@ -1852,7 +1852,7 @@ class PlotInterp(BasicModule):
             units = str(self.cmb_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
                 self, 'Ternary Colorbar', 'Enter blue/yelow label:',
-                QtWidgets.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.EchoMode.Normal, units)
 
             if not okay:
                 return False

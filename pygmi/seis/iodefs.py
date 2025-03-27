@@ -1652,7 +1652,8 @@ class ExportSeisan(ContextModule):
                 param1 = dat.duration
                 param2 = None
                 residual = dat.magnitude_residual
-            elif 'AMP' in dat.phase_id or 'AML' in dat.phase_id:
+            # elif 'AMP' in dat.phase_id or 'AML' in dat.phase_id:
+            elif dat.amplitude is not None:
                 param1 = dat.amplitude
                 param2 = dat.period
                 residual = dat.magnitude_residual
@@ -1676,10 +1677,10 @@ class ExportSeisan(ContextModule):
             tmp = sform('{0:1s}', dat.flag_auto_pick, tmp, 26)
             tmp = sform('{0:2d}', dat.hour, tmp, 27, 28, 0)
             tmp = sform('{0:2d}', dat.minutes, tmp, 29, 30, 0)
-            tmp = sform('{0:>6.2f}', dat.seconds, tmp, 32, 37, 0)
+            tmp = sform('{0:>6.3f}', dat.seconds, tmp, 32, 37, 0)
 
-            tmp = sform('{0:7s}', str(param1), tmp, 38, 44)
-            tmp = sform('{0:6s}', str(param2), tmp, 45, 50)
+            tmp = sform('{0:>7s}', str(param1), tmp, 38, 44)
+            tmp = sform('{0:>6s}', str(param2), tmp, 45, 50)
 
             tmp = sform('{0:3s}', dat.agency, tmp, 52, 54)
             tmp = sform('{0:3s}', dat.operator, tmp, 56, 58)

@@ -109,7 +109,7 @@ class DeleteRecord(BasicModule):
         skey = QtWidgets.QInputDialog.getText(
             self.parent, 'Delete Criteria',
             'Please input the terms used to decide on lines to delete',
-            QtWidgets.QLineEdit.Normal, 'AML, IAML')[0]
+            QtWidgets.QLineEdit.EchoMode.Normal, 'AML, IAML')[0]
 
         skey = str(skey).upper()
 

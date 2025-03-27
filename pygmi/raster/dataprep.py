@@ -1148,7 +1148,7 @@ class Metadata(ContextModule):
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
             'Please type in the new name for the band',
-            QtWidgets.QLineEdit.Normal, ctxt)
+            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
 
         if isokay:
             self.cmb_bandid.currentIndexChanged.disconnect()

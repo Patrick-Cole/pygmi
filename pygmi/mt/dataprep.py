@@ -165,7 +165,7 @@ class Metadata(ContextModule):
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Station Name',
             'Please type in the new name for the station',
-            QtWidgets.QLineEdit.Normal, ctxt)
+            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
 
         if isokay:
             self.cmb_bandid.currentIndexChanged.disconnect()

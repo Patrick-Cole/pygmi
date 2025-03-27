@@ -849,7 +849,7 @@ class ParamDisplay(QtWidgets.QDialog):
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Definition',
             'Please type in the new name for the definition',
-            QtWidgets.QLineEdit.Normal, ctxt)
+            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
 
         if isokay:
             self.lw_param_defs.currentItem().setText(skey)
