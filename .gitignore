@@ -1,3 +1,5 @@
+autoapi/
+_sources/
 __pycache__/
 _modules/
 .doctrees/
