@@ -329,7 +329,7 @@ class Smooth(BasicModule):
 
         """
         QtWidgets.QMessageBox.warning(self.parent, title, message,
-                                      QtWidgets.QMessageBox.Ok)
+                                      QtWidgets.QMessageBox.StandardButton.Ok)
 
     def mov_win_filt(self, dat, fmat, itype):
         """

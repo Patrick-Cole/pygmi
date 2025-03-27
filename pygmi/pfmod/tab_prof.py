@@ -2895,7 +2895,7 @@ class ImportPicture(BasicModule):
             if dat is None:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the image.',
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
                 return curline
 
             dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,

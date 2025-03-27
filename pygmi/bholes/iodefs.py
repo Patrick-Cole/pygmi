@@ -91,7 +91,7 @@ class ImportData(BasicModule):
                                               'Could not import dataset. '
                                               'Please make sure it not '
                                               'another format.',
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'Borehole'

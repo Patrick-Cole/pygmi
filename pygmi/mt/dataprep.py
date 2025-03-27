@@ -1590,7 +1590,7 @@ class Occam1D(BasicModule):
                         'and compile it. It should be called occam1d for '
                         'non-windows platforms and occam1d.exe for windows.')
                 QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
                 return
 
             self.mmc.figure.clear()

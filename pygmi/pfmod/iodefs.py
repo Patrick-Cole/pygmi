@@ -717,7 +717,7 @@ class ExportMod3D(ContextModule):
         if prjkmz.proj.wkt == '':
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need a projection!',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         smooth = prjkmz.cb_smooth.isChecked()

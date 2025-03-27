@@ -829,7 +829,7 @@ class ProcFeatures(BasicModule):
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' Could not find any ' + mineral +
                                           '. No data to export.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         self.outdata['Raster'] = datfin

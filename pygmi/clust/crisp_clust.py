@@ -330,8 +330,8 @@ class CrispClust(BasicModule):
             if dat_in.shape[1] != co0 or ro0 != ro1:
                 QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                               ' Incorrect matrix size!',
-                                              QtWidgets.QMessageBox.Ok,
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok,
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
                 smtmp = np.zeros(i)
@@ -347,7 +347,8 @@ class CrispClust(BasicModule):
                 QtWidgets.QMessageBox.warning(
                     self.parent, 'Warning',
                     'Running cluster analysis without constraints',
-                    QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
+                    QtWidgets.QMessageBox.StandardButton.Ok,
+                    QtWidgets.QMessageBox.StandardButton.Ok)
             else:
                 os.chdir(os.path.dirname(filename))
                 ifile = str(filename)
@@ -357,8 +358,8 @@ class CrispClust(BasicModule):
                 if dat_in.shape[1] != co0 or ro0 != ro1:
                     QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                                   ' Incorrect matrix size!',
-                                                  QtWidgets.QMessageBox.Ok,
-                                                  QtWidgets.QMessageBox.Ok)
+                                                  QtWidgets.QMessageBox.StandardButton.Ok,
+                                                  QtWidgets.QMessageBox.StandardButton.Ok)
                 cnt = -1
                 for i in range(no_clust[0], no_clust[1] + 1):
                     smtmp = np.zeros(i)

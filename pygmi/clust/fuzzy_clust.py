@@ -341,8 +341,8 @@ class FuzzyClust(BasicModule):
             if dat_in.shape[1] != col or row != ro1:
                 QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                               ' Incorrect matrix size!',
-                                              QtWidgets.QMessageBox.Ok,
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok,
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
 
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
@@ -359,7 +359,8 @@ class FuzzyClust(BasicModule):
                 QtWidgets.QMessageBox.warning(
                     self.parent, 'Warning',
                     'Running cluster analysis without constraints',
-                    QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
+                    QtWidgets.QMessageBox.StandardButton.Ok,
+                    QtWidgets.QMessageBox.StandardButton.Ok)
             else:
                 ifile = str(filename)
                 dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
@@ -368,7 +369,8 @@ class FuzzyClust(BasicModule):
                 if dat_in.shape[1] != col or row != ro1:
                     QtWidgets.QMessageBox.warning(
                         self.parent, 'Warning', ' Incorrect matrix size!',
-                        QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
+                        QtWidgets.QMessageBox.StandardButton.Ok,
+                        QtWidgets.QMessageBox.StandardButton.Ok)
                 cnt = -1
                 for i in range(no_clust[0], no_clust[1] + 1):
                     smtmp = np.zeros(i)

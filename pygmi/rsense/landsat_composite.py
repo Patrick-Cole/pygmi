@@ -132,7 +132,7 @@ class LandsatComposite(BasicModule):
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No *MTL.txt in the directory or '
                                           'subdirectories.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         mean = self.sb_tday.value()

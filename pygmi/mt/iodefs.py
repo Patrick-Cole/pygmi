@@ -84,7 +84,7 @@ class ImportEDI(BasicModule):
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import dataset. ',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'MT - EDI'

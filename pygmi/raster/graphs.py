@@ -341,7 +341,7 @@ class PlotCCoef(ContextModule):
                                           'Different size input datasets. '
                                           'Merge and resample your input data '
                                           'to fix this.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.show()
@@ -568,7 +568,7 @@ class PlotScatter(ContextModule):
                                           'Different size input datasets. '
                                           'Merge and resample your input data '
                                           'to fix this.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.mmc.update_hexbin(x, y)

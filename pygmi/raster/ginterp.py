@@ -1813,7 +1813,7 @@ class PlotInterp(BasicModule):
         except ValueError:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Invalid value.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         bwid = blen/16.
@@ -2118,7 +2118,7 @@ class PlotInterp(BasicModule):
 
         QtWidgets.QMessageBox.information(self, 'Information',
                                           'Save to GeoTIFF is complete!',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
 
         return True
 

@@ -442,7 +442,7 @@ class EquationEditor(BasicModule):
                 self.parent, 'Error',
                 'Nothing processed! '
                 'Your equation most likely had an error.',
-                QtWidgets.QMessageBox.Ok)
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         outdata = []
@@ -452,7 +452,7 @@ class EquationEditor(BasicModule):
                 self.parent, 'Warning',
                 ' Nothing processed! Your equation outputs a single ' +
                 'value instead of a minimum of one band.',
-                QtWidgets.QMessageBox.Ok)
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
         if findat.ndim == 2:
             findat.shape = (1, findat.shape[0], findat.shape[1])

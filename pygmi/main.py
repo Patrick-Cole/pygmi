@@ -427,7 +427,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         if self.my_class.indata == {} and self.my_class.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if self.text_item is not None:
@@ -1372,6 +1372,27 @@ def main(nocgs=False):
     # Set environment variables.
     # The line below is to fix a problem in windows with loky library.
     os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
+
+
+    from rasterio import logging
+
+    log = logging.getLogger()
+    log.setLevel(logging.ERROR)
+    # if 'GDAL_DATA' not in os.environ:
+    #     import rasterio
+    #     gdalpath = os.path.join(rasterio.__path__[0], r'gdal_data')
+    #     if os.path.exists(gdalpath):
+    #         os.environ['GDAL_DATA'] = gdalpath
+    #     else:
+    #         print('GDAL_PATH not set.')
+
+    # if 'PROJ_DATA' not in os.environ:
+    #     import pyproj
+    #     projpath = os.path.join(pyproj.__path__[0], r'proj_dir\share\proj')
+    #     if os.path.exists(projpath):
+    #         os.environ['PROJ_DATA'] = projpath
+    #     else:
+    #         print('PROJ_DATA not set.')
 
     # Start program.
     app = QtWidgets.QApplication(sys.argv)

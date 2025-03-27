@@ -676,8 +676,8 @@ class SuperClass(BasicModule):
         message += '<p>Accuracy: '+str(accuracy)+'</p>'
         message += '<p>Kappa:\t  '+str(kappa)+'</p>'
 
-        qsave = QtWidgets.QMessageBox.Save
-        qokay = QtWidgets.QMessageBox.Ok
+        qsave = QtWidgets.QMessageBox.StandardButton.Save
+        qokay = QtWidgets.QMessageBox.StandardButton.Ok
         ret = QtWidgets.QMessageBox.information(self, 'Metrics',
                                                 message,
                                                 buttons=qsave | qokay)

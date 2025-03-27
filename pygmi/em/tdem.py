@@ -287,7 +287,7 @@ class TDEM1D(BasicModule):
         if self.times is None:
             text = 'You need to load window times first.'
             QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.disp_wave()
@@ -333,7 +333,7 @@ class TDEM1D(BasicModule):
         if not datachans:
             text = 'Could not find data channels, your prefix may be wrong'
             QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         # ------------------ Mesh ------------------ #
@@ -464,7 +464,7 @@ class TDEM1D(BasicModule):
                 mopt_sky = inv.run(m0)
         except Exception as e:
             QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         dpred_sky = np.array(invprob.dpred)

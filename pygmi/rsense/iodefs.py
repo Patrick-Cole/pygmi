@@ -170,7 +170,7 @@ class ImportData(BasicModule):
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the data.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if self.cb_ensuresutm.isChecked() is True:
@@ -356,7 +356,7 @@ class ImportBatch(BasicModule):
         if not self.filelist:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         self.setsensor()

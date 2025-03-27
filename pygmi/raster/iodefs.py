@@ -235,11 +235,11 @@ class ImportData(BasicModule):
                                               'export your grid to '
                                               'this format using the Geosoft '
                                               'Viewer.',
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
             else:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the grid.',
-                                              QtWidgets.QMessageBox.Ok)
+                                              QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'Raster'
@@ -316,13 +316,13 @@ class ImportRGBData(BasicModule):
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the image.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if len(dat) < 3:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Not RGB Image, less than 3 bands.',
-                                          QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'Raster'
