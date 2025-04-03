@@ -35,6 +35,7 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.misc import norm2, currentshader, histcomp
+from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -378,6 +379,7 @@ class PlotAnaglyph(ContextModule):
         vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
         vbl_left.addWidget(self.slider_angle)
         vbl_left.addWidget(self.cb_shade)
+        vbl_left.addWidget(menu_default.HelpButton('raster.cm.showanaglyph'))
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl.addLayout(vbl_left)

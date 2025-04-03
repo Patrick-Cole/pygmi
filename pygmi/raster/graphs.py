@@ -44,6 +44,7 @@ import matplotlib.colors as mcolors
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
+from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -307,12 +308,17 @@ class PlotCCoef(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Correlation Coefficients')
 
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        helpdocs = menu_default.HelpButton('raster.cm.stats')
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        hbl.addWidget(mpl_toolbar)
+        hbl.addWidget(menu_default.HelpButton('raster.cm.showcorr'))
+        vbl.addLayout(hbl)
 
         self.setMinimumSize(600, 600)
 
@@ -368,19 +374,21 @@ class PlotRaster(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Raster Plot (Simple)')
 
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
+        hbl.addWidget(menu_default.HelpButton('raster.cm.showsimple'))
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
         lbl_2 = QtWidgets.QLabel('Colormap:')
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
         self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
@@ -448,14 +456,16 @@ class PlotSurface(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
+        hbl.addWidget(menu_default.HelpButton('raster.cm.showsurface'))
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
         lbl_2 = QtWidgets.QLabel('Colormap:')
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
         self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
@@ -530,13 +540,15 @@ class PlotScatter(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
+        hbl.addWidget(menu_default.HelpButton('raster.cm.showhexbin'))
+
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('X Band:')
         lbl_2 = QtWidgets.QLabel('Y Band:')
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
@@ -620,13 +632,15 @@ class PlotHist(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
+        hbl.addWidget(menu_default.HelpButton('raster.cm.showhist'))
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
         self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
         hbl.addWidget(self.cb_log)
         hbl.addWidget(self.cb_cum)
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)

@@ -40,7 +40,7 @@ Module Contents
 
 .. py:class:: EmittingStream(textWritten)
 
-   Bases: :py:obj:`PyQt5.QtCore.QObject`
+   Bases: :py:obj:`PyQt6.QtCore.QObject`
 
 
    Class to intercept stdout for later use in a textbox.
@@ -79,7 +79,7 @@ Module Contents
 
 .. py:class:: BasicModule(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    Basic Module.
@@ -201,7 +201,7 @@ Module Contents
 
 .. py:class:: ContextModule(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    Context Module.
@@ -256,7 +256,7 @@ Module Contents
 
 .. py:class:: QVStack2Layout(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QGridLayout`
+   Bases: :py:obj:`PyQt6.QtWidgets.QGridLayout`
 
 
    QVStack2Layout custom Qt QGridLayot.
@@ -327,7 +327,7 @@ Module Contents
 
 .. py:class:: ProgressBar(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QProgressBar`
+   Bases: :py:obj:`PyQt6.QtWidgets.QProgressBar`
 
 
    Qt custom progress bar.

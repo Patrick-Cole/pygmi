@@ -154,7 +154,7 @@ class DataGrid(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.grdding')
+        helpdocs = menu_default.HelpButton('vector.dm.gridding')
         lbl_band = QtWidgets.QLabel('Column to Grid:')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_null = QtWidgets.QLabel('Null Value:')
@@ -175,7 +175,8 @@ class DataGrid(BasicModule):
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Gridding')
 
@@ -407,7 +408,8 @@ class DataReproj(BasicModule):
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Reprojection')
 
@@ -556,19 +558,21 @@ class Metadata(ContextModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-
+        helpdocs = menu_default.HelpButton('vector.dm.reproj')
         lbl_bandid = QtWidgets.QLabel('Source:')
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Vector Dataset Metadata')
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gl_main.addWidget(self.proj, 2, 0, 1, 4)
-        gl_main.addWidget(buttonbox, 4, 0, 1, 4)
+        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 4, 1, 1, 3)
 
         buttonbox.accepted.connect(self.acceptall)
         buttonbox.rejected.connect(self.reject)
@@ -684,7 +688,8 @@ class TextFileSplit(BasicModule):
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Text File Split')
 
@@ -949,22 +954,27 @@ def cut_point(data, ifile, showlog=print):
         showlog('No polygons in shapefile.')
         return None
 
-    if data.crs is None:
+    if data.crs is None and gdf.crs is not None:
+        showlog('Your vectors need a projection assigned, assuming it is the '
+                'same as the shapefile.')
+        data = data.set_crs(gdf.crs)
+    elif data.crs is None:
         showlog('Your vectors need a projection assigned.')
         return None
 
     if gdf.crs is None:
+        showlog('Your shapefile needs a projection assigned, assuming it is '
+                'the same as your vectors.')
         gdf = gdf.set_crs(data.crs)
     else:
         gdf = gdf.to_crs(data.crs)
 
-    if data.crs != gdf.crs:
-        showlog('Your shapefile does not have the same projection as the data '
-                'to be clipped.')
-        return None
-
     data = gpd.clip(data, gdf)
     data = data.explode()
+
+    if data.size == 0:
+        showlog('Nothing found in the clip area.')
+        return None
 
     return data
 
@@ -1282,6 +1292,7 @@ def maptovector(maplist):
 
     return data
 
+
 def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     """
     Do a quick grid.
@@ -1417,7 +1428,6 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
 def _testfn():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1426,10 +1436,7 @@ def _testfn():
     maplist = ['2430DA', '2430DB', '2430DC', '2430DD']
     data = maptovector(maplist)
 
-
     data.to_file(ofile)
-
-    # breakpoint()
 
 
 def _testfn_pointcut():
@@ -1447,18 +1454,19 @@ def _testfn_pointcut():
     IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)
 
-    ifile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\MP_mag_lineaments_utm36s.shp"
-    sfile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\3D study area.shp"
+    # ifile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\MP_mag_lineaments_utm36s.shp"
+    # sfile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\3D study area.shp"
 
-    IO = ImportVector()
-    IO.ifile = ifile
-    # IO.filt = 'Comma Delimited (*.csv)'
-    IO.settings(True)
+    # IO = ImportVector()
+    # IO.ifile = ifile
+    # IO.settings(True)
 
     DR = PointCut()
     DR.indata = IO.outdata
     DR.ifile = sfile
     DR.settings(True)
+
+    # dat = DR.outdata['Vector']
 
 
 def _testfn_filesplit():
@@ -1480,4 +1488,4 @@ def _testfn_filesplit():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_pointcut()

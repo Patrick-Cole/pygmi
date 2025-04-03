@@ -672,7 +672,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_send_to_back.setIcon(QtGui.QIcon(ipth+'sendtoback.png'))
         self.action_pointer.setIcon(QtGui.QIcon(ipth+'pointer.png'))
         self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
-        self.action_help.setIcon(QtGui.QIcon(ipth+'help.png'))
+        self.action_help.setIcon(QtGui.QIcon(ipth+'Qhelp.png'))
 
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
         self.setupui()
@@ -1373,11 +1373,6 @@ def main(nocgs=False):
     # The line below is to fix a problem in windows with loky library.
     os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
 
-
-    from rasterio import logging
-
-    log = logging.getLogger()
-    log.setLevel(logging.ERROR)
     # if 'GDAL_DATA' not in os.environ:
     #     import rasterio
     #     gdalpath = os.path.join(rasterio.__path__[0], r'gdal_data')
@@ -1396,7 +1391,7 @@ def main(nocgs=False):
 
     # Start program.
     app = QtWidgets.QApplication(sys.argv)
-    # app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
+
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     screen_resolution = app.primaryScreen().geometry()

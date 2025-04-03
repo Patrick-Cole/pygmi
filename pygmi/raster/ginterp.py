@@ -1192,7 +1192,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('raster.dm.rasaterdisplay')
+        helpdocs = menu_default.HelpButton('raster.dm.rasterdisplay')
         btn_apply = QtWidgets.QPushButton('Apply Histogram')
 
         self.btn_allclipperc.setDefault(False)

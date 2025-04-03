@@ -29,7 +29,7 @@ This module allows a raster dataset to be clipped to the current zoomed
 extents.
 """
 
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtCore
 from matplotlib import colormaps
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -40,6 +40,7 @@ import geopandas as gpd
 from pygmi.misc import frm, BasicModule
 from pygmi.raster.modest_image import imshow
 from pygmi.raster.misc import cut_raster
+from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -131,14 +132,16 @@ class ClipToZoom(BasicModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
+        hbl.addWidget(menu_default.HelpButton('raster.dm.cliptozoom'))
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
         lbl_2 = QtWidgets.QLabel('Colormap:')
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
         self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
@@ -224,11 +227,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
-    ifile = r"D:\Landslides\dem.tif"
 
     data = get_raster(ifile)
-
-    # breakpoint()
 
     tmp = ClipToZoom()
     tmp.indata['Raster'] = data

@@ -2196,9 +2196,10 @@ class MySlider(QtWidgets.QSlider):
         None.
 
         """
+        xpos = int(event.position().x())
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
-                                                               event.x(),
+                                                               xpos,
                                                                self.width()))
 
     def mouseMoveEvent(self, event):
@@ -2217,9 +2218,10 @@ class MySlider(QtWidgets.QSlider):
         None.
 
         """
+        xpos = int(event.position().x())
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
-                                                               event.x(),
+                                                               xpos,
                                                                self.width()))
 
 

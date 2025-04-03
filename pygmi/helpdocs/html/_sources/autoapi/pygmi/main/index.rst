@@ -42,7 +42,7 @@ Module Contents
 
 .. py:class:: Arrow(start_item, end_item, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QGraphicsLineItem`
+   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsLineItem`
 
 
    Class responsible for drawing arrows on the main interface.
@@ -76,7 +76,7 @@ Module Contents
 
       Color
 
-      :type: QtCore colour (default is QtCore.Qt.black)
+      :type: QtCore colour
 
 
    .. py:method:: boundingRect()
@@ -106,7 +106,7 @@ Module Contents
 
 .. py:class:: DiagramItem(diagram_type, context_menu, my_class, parent)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QGraphicsPolygonItem`
+   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsPolygonItem`
 
 
    Diagram Item.
@@ -223,7 +223,7 @@ Module Contents
 
 .. py:class:: DiagramScene(item_menu, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QGraphicsScene`
+   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsScene`
 
 
    Diagram Scene.
@@ -269,7 +269,7 @@ Module Contents
 
 .. py:class:: MainWidget(parent=None, nocgs=True)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QMainWindow`
+   Bases: :py:obj:`PyQt6.QtWidgets.QMainWindow`
 
 
    Widget class to call the main interface.
@@ -488,7 +488,7 @@ Module Contents
 
 .. py:class:: Startup(pbarmax, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    Class to provide a startup display while PyGMI loads into memory.

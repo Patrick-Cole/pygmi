@@ -97,7 +97,8 @@ class StructComp(BasicModule):
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Structure Complexity')
 
@@ -112,7 +113,8 @@ class StructComp(BasicModule):
         gl_main.addWidget(self.lbl_wsize, 4, 0, 1, 1)
         gl_main.addWidget(self.le_wsize, 4, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 7, 0, 1, 1)
+        gl_main.addWidget(helpdocs, 7, 0, 1, 1,
+                          QtCore.Qt.AlignmentFlag.AlignLeft)
         gl_main.addWidget(buttonbox, 7, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)

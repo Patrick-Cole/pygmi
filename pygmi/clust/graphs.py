@@ -32,8 +32,9 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 
-from pygmi.misc import frm, ContextModule  # , discrete_colorbar
+from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
+from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -201,58 +202,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class GraphWindow(ContextModule):
-    """
-    Graph Window GUI.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel('Bands:')
-        self.lbl_2 = QtWidgets.QLabel('Bands:')
-
-        hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.cmb_2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """
-        Combo to change band.
-
-        Returns
-        -------
-        None.
-
-        """
-
-
-class PlotRaster(GraphWindow):
+class PlotRaster(ContextModule):
     """
     Plot Raster Class GUI.
 
@@ -265,8 +215,30 @@ class PlotRaster(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.lbl_2.hide()
-        self.cmb_2.hide()
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Class Data')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Bands:')
+
+        hbl.addWidget(menu_default.HelpButton('cluster.cm.showclass'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -302,7 +274,7 @@ class PlotRaster(GraphWindow):
         self.change_band()
 
 
-class PlotMembership(GraphWindow):
+class PlotMembership(ContextModule):
     """
     Plot Fuzzy Membership data GUI.
 
@@ -316,8 +288,34 @@ class PlotMembership(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.lbl_1.setText('Number of Clusters:')
-        self.lbl_2.setText('Membership:')
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Membership Data')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Number of Clusters:')
+        lbl_2 = QtWidgets.QLabel('Membership:')
+
+        hbl.addWidget(menu_default.HelpButton('cluster.cm.showmembership'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band_two)
 
     def change_band(self):
         """
@@ -370,7 +368,7 @@ class PlotMembership(GraphWindow):
         self.mmc.update_membership(data[i], j)
 
 
-class PlotVRCetc(GraphWindow):
+class PlotVRCetc(ContextModule):
     """
     Plot VRC, NCE, OBJ and XBI GUI.
 
@@ -383,8 +381,30 @@ class PlotVRCetc(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.cmb_2.hide()
-        self.lbl_2.hide()
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Cluster Analysis Graphs')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Graph Type:')
+
+        hbl.addWidget(menu_default.HelpButton('cluster.cm.showgraphs'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -471,9 +491,48 @@ class PlotVRCetc(GraphWindow):
         self.cmb_1.clear()
         self.cmb_1.addItems(items)
 
-        self.lbl_1.setText('Graph Type:')
         self.cmb_1.setCurrentIndex(0)
         self.show()
+
+
+
+def _testfn_bars():
+    """Test."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.clust.cluster import Cluster
+
+    ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+
+    data = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Cluster()
+    DM.indata['Raster'] = data
+    DM.settings()
+
+    dat = DM.outdata
+    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+
+
+    for cdat in dat['Cluster']:
+        bdat = {}
+        for rdat in dat['Raster']:
+            bdat[rdat.dataid] = []
+            for mval in range(1, cdat.metadata['Cluster']['no_clusters']+1):
+                cmin = rdat.data[cdat.data==mval].min()
+                cmax = rdat.data[cdat.data==mval].max()
+
+
+
+    breakpoint()
+
+    # tmp2 = PlotRaster()
+    # tmp2.indata = dat
+    # tmp2.run()
+
+    # app.exec()
 
 
 def _testfn():
@@ -503,4 +562,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_bars()

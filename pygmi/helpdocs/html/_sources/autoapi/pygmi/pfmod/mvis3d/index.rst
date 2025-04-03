@@ -169,7 +169,7 @@ Module Contents
 
 .. py:class:: GLWidget(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtOpenGL.QGLWidget`
+   Bases: :py:obj:`PyQt6.QtOpenGLWidgets.QOpenGLWidget`
 
 
    OpenGL Widget.
@@ -378,7 +378,7 @@ Module Contents
 
 .. py:class:: MySunCanvas(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Canvas for the sunshading tool.

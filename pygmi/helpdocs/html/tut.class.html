@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Classification Preparation &#8212; PyGMI 3.2.8.30 documentation</title>
+    <title>Classification Preparation &#8212; PyGMI 3.2.8.32 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=09bf96d3"></script>
+    <script src="_static/documentation_options.js?v=a53794a8"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.8.30 documentation</p>
+    <p class="title logo__title">PyGMI 3.2.8.32 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -735,20 +735,22 @@ document.write(`
 <p><span class="caption-text">Histograms of the input datasets. (a) DEM; (b) First vertical derivative of the magnetic data; (c) Smoothed potassium data; (d) Equivalent thorium data; (e) Skewness and kurtosis for the distributions.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p>The dipolar nature of magnetic data presents another challenge. A positive and negative anomaly is linked to the same source but will be considered as two separate bodies during cluster analysis. One option is to <a class="reference internal" href="mag.dm.rtp.html"><span class="doc">reduce the data to the pole</span></a>, but the presence of remanent magnetisation will diminish the effectiveness of this method. Paasche and Eberle (2009) addressed this problem by calculating the absolute value of the magnetic first vertical derivative. This results in a very skewed distribution.
-.. figure:: _images/tutclass4.png</p>
-<blockquote>
-<div><p>Histogram and statistics of the absolute value of the magnetic first vertical derivative data.</p>
-</div></blockquote>
+<p>The dipolar nature of magnetic data presents another challenge. A positive and negative anomaly is linked to the same source but will be considered as two separate bodies during cluster analysis. One option is to <a class="reference internal" href="mag.dm.rtp.html"><span class="doc">reduce the data to the pole</span></a>, but the presence of remanent magnetisation will diminish the effectiveness of this method. Paasche and Eberle (2009) addressed this problem by calculating the absolute value of the magnetic first vertical derivative. This results in a very skewed distribution.</p>
+<figure class="align-default" id="id4">
+<img alt="_images/tutclass4.png" src="_images/tutclass4.png" />
+<figcaption>
+<p><span class="caption-text">Histogram and statistics of the absolute value of the magnetic first vertical derivative data.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="step-4-transform-the-data-as-required-to-approximate-normal-distributions">
 <h3>Step 4: Transform the data as required to approximate normal distributions<a class="headerlink" href="#step-4-transform-the-data-as-required-to-approximate-normal-distributions" title="Link to this heading">#</a></h3>
 <p>If the same transformation will be applied to all datasets, the individual datasets can first be <a class="reference internal" href="raster.dm.layerstack.html"><span class="doc">merged/stacked</span></a> into a single multiband dataset and the transformation applied in a single step. However, at times different transformations need to be applied (as in our example case) and it is simpler to transform each dataset separately.</p>
 <p>For this example, the DEM will not be transformed since none of the transformations influenced the distribution. The absolute value of the magnetic data and eTh were transformed using the decadal logarithm. The histograms for the transformed data are less skewed and therefore better approximations to a normal distribution. Since the potassium data is left-skewed an exponential transform was applied but the result was a histogram with two peaks. The data were then reflected and the decadal logarithm calculated, after which the data were reflected back to restore the original order. The left tail remained but is somewhat shorter than for the original data.</p>
-<figure class="align-default" id="id4">
+<figure class="align-default" id="id5">
 <img alt="_images/tutclass5.png" src="_images/tutclass5.png" />
 <figcaption>
-<p><span class="caption-text">Histograms of the transformed datasets. (a) First vertical derivative of the magnetic data; (b) Potassium data; (c) Equivalent thorium data; (d) Skewness and kurtosis for the distributions.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+<p><span class="caption-text">Histograms of the transformed datasets. (a) First vertical derivative of the magnetic data; (b) Potassium data; (c) Equivalent thorium data; (d) Skewness and kurtosis for the distributions.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -759,17 +761,17 @@ document.write(`
 <section id="step-6-normalise-the-data">
 <h3>Step 6: Normalise the data<a class="headerlink" href="#step-6-normalise-the-data" title="Link to this heading">#</a></h3>
 <p>It is important to <a class="reference internal" href="raster.dm.norm.html"><span class="doc">normalise</span></a> the data prior to classification to ensure that the data values of the different datasets fall in the same range. If this is not done, the results will be biased towards datasets with larger values. The example data were normalised using a mean of zero and standard deviation of 1. This dataset was then <a class="reference internal" href="raster.cm.export.html"><span class="doc">stored</span></a>.</p>
-<figure class="align-default" id="id5">
+<figure class="align-default" id="id6">
 <img alt="_images/tutclass6.png" src="_images/tutclass6.png" />
 <figcaption>
-<p><span class="caption-text">Histograms of the normalised datasets. (a) DEM; (b) Absolute value of the first vertical derivative of the magnetic data; (c) Potassium data; (d) Equivalent thorium data; (e) Skewness and kurtosis for the distributions.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-text">Histograms of the normalised datasets. (a) DEM; (b) Absolute value of the first vertical derivative of the magnetic data; (c) Potassium data; (d) Equivalent thorium data; (e) Skewness and kurtosis for the distributions.</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The next figure shows the whole data preparation workflow in PyGMI.</p>
-<figure class="align-default" id="id6">
+<figure class="align-default" id="id7">
 <img alt="_images/tutclass7.png" src="_images/tutclass7.png" />
 <figcaption>
-<p><span class="caption-text">Data preparation workflow in PyGMI. Red text indicates the options selected for a module and user inputs.</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+<p><span class="caption-text">Data preparation workflow in PyGMI. Red text indicates the options selected for a module and user inputs.</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>

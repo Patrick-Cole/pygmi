@@ -34,7 +34,7 @@ Module Contents
 
 .. py:class:: MyMplCanvas(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.

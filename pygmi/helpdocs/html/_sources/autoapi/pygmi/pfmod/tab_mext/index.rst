@@ -22,7 +22,7 @@ Module Contents
 
 .. py:class:: MextDisplay(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    MextDisplay - Widget class to call the main interface.

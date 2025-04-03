@@ -30,6 +30,7 @@ import numpy as np
 import scipy.stats.mstats as st
 
 from pygmi.misc import ContextModule
+from pygmi import menu_default
 
 
 class BasicStats(ContextModule):
@@ -68,9 +69,11 @@ class BasicStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
+        helpdocs = menu_default.HelpButton('raster.cm.stats')
 
         vbl.addWidget(self.pushbutton_save)
         vbl.addWidget(self.cmb_1)
+        vbl.addWidget(helpdocs)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
@@ -251,9 +254,11 @@ class ClusterStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
+        helpdocs = menu_default.HelpButton('cluster.cm.stat')
 
         vbl.addWidget(self.pushbutton_save)
         vbl.addWidget(self.cmb_1)
+        vbl.addWidget(helpdocs)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)

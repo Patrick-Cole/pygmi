@@ -41,6 +41,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from pygmi.misc import frm, ContextModule, discrete_colorbar
+from pygmi import menu_default
 
 rcParams['savefig.dpi'] = 300
 
@@ -300,88 +301,6 @@ copper = np.array([[255., 236., 184.],
                    [16.,   6.,   0.],
                    [11.,   3.,   0.],
                    [0.,   0.,   0.]])
-
-class GraphWindow(ContextModule):
-    """
-    Graph Window - Main QT Dialog class for graphs.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
-
-        self.data = None
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.cmb_c = QtWidgets.QComboBox()
-        self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel('Bands:')
-        self.lbl_2 = QtWidgets.QLabel('Bands:')
-        self.lbl_3 = QtWidgets.QLabel('Value:')
-        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
-        self.cb_1 = QtWidgets.QCheckBox('Option:')
-
-        tmp = sorted(m for m in colormaps())
-
-        self.cmb_c.addItem('jet')
-        self.cmb_c.addItem('viridis')
-        self.cmb_c.addItem('terrain')
-        self.cmb_c.addItem('MarineCopper')
-        self.cmb_c.addItems(tmp)
-
-        if 'MarineCopper' not in colormaps():
-            newcmp = ListedColormap(copper/255, 'MarineCopper')
-            colormaps.register(newcmp)
-
-        self.cb_1.hide()
-        self.lbl_c.hide()
-        self.cmb_c.hide()
-
-        hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.cmb_2)
-        hbl.addWidget(self.lbl_c)
-        hbl.addWidget(self.cmb_c)
-        hbl.addWidget(self.lbl_3)
-        hbl.addWidget(self.spinbox)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.cb_1)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-        self.cmb_c.currentIndexChanged.connect(self.change_band)
-        self.spinbox.valueChanged.connect(self.change_band)
-        self.cb_1.stateChanged.connect(self.change_band)
-
-    def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -1030,7 +949,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotCCoef(GraphWindow):
+class PlotCCoef(ContextModule):
     """
     GUI to plot correlation coefficients.
 
@@ -1043,11 +962,34 @@ class PlotCCoef(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.cmb_2.hide()
-        self.lbl_2.hide()
-        self.spinbox.hide()
-        self.lbl_3.hide()
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Vector Plot')
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Style:')
+
+        self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.pltcorr'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -1075,14 +1017,7 @@ class PlotCCoef(GraphWindow):
         """
         self.data = self.indata['Vector'][0]
 
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.cmb_1.clear()
-        self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
-        self.lbl_1.setText('Style:')
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
         self.change_band()
-
         self.show()
 
 
@@ -1102,7 +1037,7 @@ class PlotHist(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Histogram')
 
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
@@ -1111,9 +1046,12 @@ class PlotHist(ContextModule):
         lbl_1 = QtWidgets.QLabel('Bands:')
         self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
         self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.showhist'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
         hbl.addWidget(self.cb_log)
         hbl.addWidget(self.cb_cum)
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)
@@ -1165,7 +1103,7 @@ class PlotHist(ContextModule):
         self.change_band()
 
 
-class PlotLines(GraphWindow):
+class PlotLines(ContextModule):
     """
     GUI to plot lines.
 
@@ -1178,21 +1116,40 @@ class PlotLines(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.spinbox.hide()
-        self.lbl_3.hide()
-        self.xcol = ''
-        self.ycol = ''
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Plot Profiles')
 
-    def change_line(self):
-        """
-        Combo to change line number.
+        self.data = None
 
-        Returns
-        -------
-        None.
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
 
-        """
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Line:')
+        lbl_2 = QtWidgets.QLabel('Column:')
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.showprof'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+
+        self.xcol = ''
+        self.ycol = ''
 
     def change_band(self):
         """
@@ -1256,9 +1213,6 @@ class PlotLines(GraphWindow):
         self.cmb_1.addItems(lines)
         self.cmb_2.addItems(cols)
 
-        self.lbl_1.setText('Line:')
-        self.lbl_2.setText('Column:')
-
         self.cmb_1.setCurrentIndex(0)
         self.cmb_2.setCurrentIndex(0)
 
@@ -1268,7 +1222,7 @@ class PlotLines(GraphWindow):
         self.cmb_2.currentIndexChanged.connect(self.change_band)
 
 
-class PlotLineMap(GraphWindow):
+class PlotLineMap(ContextModule):
     """
     GUI to plot a line map.
 
@@ -1281,10 +1235,40 @@ class PlotLineMap(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.cmb_2.hide()
-        self.lbl_2.hide()
-        self.cb_1.show()
         self.setWindowTitle('Profile Map')
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.lbl_1 = QtWidgets.QLabel('Column:')
+        self.lbl_3 = QtWidgets.QLabel('Scale:')
+        self.cb_1 = QtWidgets.QCheckBox('Show Line Labels:')
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.showmapprof'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.spinbox)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.cb_1)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -1336,9 +1320,6 @@ class PlotLineMap(GraphWindow):
         self.cmb_1.clear()
         self.cmb_1.addItems(cols)
 
-        self.cb_1.setText('Show Line Labels:')
-        self.lbl_1.setText('Column:')
-        self.lbl_3.setText('Scale:')
         self.spinbox.setMinimum(1)
         self.spinbox.setMaximum(1000000)
         self.spinbox.setValue(100)
@@ -1352,7 +1333,7 @@ class PlotLineMap(GraphWindow):
         self.cb_1.stateChanged.connect(self.change_band)
 
 
-class PlotRose(GraphWindow):
+class PlotRose(ContextModule):
     """
     GUI to plot rose diagrams.
 
@@ -1365,18 +1346,45 @@ class PlotRose(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.cmb_2.hide()
-        self.lbl_2.hide()
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.lbl_1 = QtWidgets.QLabel('Rose Diagram Type:')
+        self.lbl_3 = QtWidgets.QLabel('Value:')
+        self.cb_1 = QtWidgets.QCheckBox('Equal Area Rose Diagram')
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.showrose'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.spinbox)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.cb_1)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
+
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
-        self.cb_1.show()
 
         self.setWindowTitle('Rose Diagram')
-        if parent is None:
-            self.showlog = print
-        else:
-            self.showlog = parent.showlog
 
     def change_band(self):
         """
@@ -1419,12 +1427,10 @@ class PlotRose(GraphWindow):
         self.show()
         self.cmb_1.addItem('Average Angle per Feature')
         self.cmb_1.addItem('Angle per segment in Feature')
-        self.cb_1.setText('Equal Area Rose Diagram')
-        self.lbl_1.setText('Rose Diagram Type:')
         self.cmb_1.setCurrentIndex(0)
 
 
-class PlotVector(GraphWindow):
+class PlotVector(ContextModule):
     """
     GUI to plot vectors.
 
@@ -1437,10 +1443,60 @@ class PlotVector(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.spinbox.hide()
-        self.lbl_3.hide()
-        self.cmb_c.show()
-        self.lbl_c.show()
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_c = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.lbl_1 = QtWidgets.QLabel('Channel:')
+        self.lbl_2 = QtWidgets.QLabel('Style:')
+        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
+
+        self.cmb_2.addItems(['Normal',
+                             'Group using Standard Deviations above Mean (0)',
+                             'Group by Quartile',
+                             'Group into K-Means Classes'])
+
+        tmp = sorted(m for m in colormaps())
+
+        self.cmb_c.addItem('jet')
+        self.cmb_c.addItem('viridis')
+        self.cmb_c.addItem('terrain')
+        self.cmb_c.addItem('MarineCopper')
+        self.cmb_c.addItems(tmp)
+
+        if 'MarineCopper' not in colormaps():
+            newcmp = ListedColormap(copper/255, 'MarineCopper')
+            colormaps.register(newcmp)
+
+        hbl.addWidget(menu_default.HelpButton('vector.cm.showvector'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+        hbl.addWidget(self.lbl_c, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_c)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_c.currentIndexChanged.connect(self.change_band)
+
         self.setWindowTitle('Vector Plot')
 
     def change_band(self):
@@ -1495,14 +1551,6 @@ class PlotVector(GraphWindow):
             self.lbl_2.hide()
             self.cmb_c.hide()
             self.lbl_c.hide()
-
-        self.cmb_2.clear()
-        self.cmb_2.addItems(['Normal',
-                             'Group using Standard Deviations above Mean (0)',
-                             'Group by Quartile',
-                             'Group into K-Means Classes'])
-        self.lbl_1.setText('Channel:')
-        self.lbl_2.setText('Style:')
 
         self.show()
 
@@ -1726,9 +1774,8 @@ def _testfn():
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
+    # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
-    sfile = r"D:\temp\geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))
@@ -1738,8 +1785,7 @@ def _testfn():
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    # SC = PlotVector()
-    SC = PlotCCoef()
+    SC = PlotVector()
     SC.indata = IO.outdata
     SC.run()
 

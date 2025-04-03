@@ -1217,7 +1217,7 @@ class GLWidget(QOpenGLWidget):
         None.
 
         """
-        self.lastPos = event.pos()
+        self.lastPos = event.position()
 
     def mouseMoveEvent(self, event):
         """
@@ -1233,8 +1233,8 @@ class GLWidget(QOpenGLWidget):
         None.
 
         """
-        dxx = event.x() - self.lastPos.x()
-        dyy = event.y() - self.lastPos.y()
+        dxx = event.position().x() - self.lastPos.x()
+        dyy = event.position().y() - self.lastPos.y()
 
         if event.buttons() & QtCore.Qt.MouseButton.LeftButton:
             self.setXRotation(self.xRot + 8 * dyy)

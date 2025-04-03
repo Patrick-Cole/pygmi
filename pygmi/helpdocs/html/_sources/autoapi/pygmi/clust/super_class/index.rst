@@ -32,7 +32,7 @@ Module Contents
 
 .. py:class:: GraphMap(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Graph map widget.
@@ -73,7 +73,7 @@ Module Contents
 
 .. py:class:: PolygonInteractor(axtmp, pntxy)
 
-   Bases: :py:obj:`PyQt5.QtCore.QObject`
+   Bases: :py:obj:`PyQt6.QtCore.QObject`
 
 
    Polygon Interactor for the supervised classification tool.

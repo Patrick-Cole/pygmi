@@ -12,7 +12,8 @@ Remember the following:
 * **Double-click** to run or activate an object.
 * **Right-click** to query an object, displaying graphs, images and statistics.
 
-Contents:
+Table of Contents
+-----------------
 
 .. toctree::
    :maxdepth: 3

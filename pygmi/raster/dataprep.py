@@ -80,7 +80,7 @@ class Continuation(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm..cont')
+        helpdocs = menu_default.HelpButton('raster.dm.cont')
         lbl_band = QtWidgets.QLabel('Band to perform continuation:')
         lbl_cont = QtWidgets.QLabel('Continuation type:')
         lbl_height = QtWidgets.QLabel('Continuation distance:')
@@ -520,7 +520,7 @@ class DataMerge(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.mosiac')
+        helpdocs = menu_default.HelpButton('raster.dm.mosaic')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
                                          '(optional)')
@@ -1039,6 +1039,7 @@ class Metadata(ContextModule):
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         gbox = QtWidgets.QGroupBox('Dataset')
+        helpdocs = menu_default.HelpButton('raster.cm.meta')
 
         gl_1 = QtWidgets.QGridLayout(gbox)
         lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
@@ -1056,12 +1057,16 @@ class Metadata(ContextModule):
         lbl_dtype = QtWidgets.QLabel('Data Type:')
         lbl_date = QtWidgets.QLabel('Acquisition Date:')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                           QtWidgets.QSizePolicy.Policy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Expanding)
         gbox.setSizePolicy(sizepolicy)
+        self.proj.setSizePolicy(sizepolicy)
+
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Metadata')
         self.date.setCalendarPopup(True)
@@ -1071,7 +1076,8 @@ class Metadata(ContextModule):
         gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gl_main.addWidget(gbox, 2, 0, 1, 2)
         gl_main.addWidget(self.proj, 2, 2, 1, 2)
-        gl_main.addWidget(buttonbox, 4, 0, 1, 4)
+        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gl_main.addWidget(buttonbox, 4, 1, 1, 3)
 
         gl_1.addWidget(lbl_tlx, 0, 0, 1, 1)
         gl_1.addWidget(self.le_tlx, 0, 1, 1, 1)
@@ -1813,7 +1819,8 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
                 tmpdir = tempfile.gettempdir()
 
             if i.meta['driver'] == 'SENTINEL2':
-                tmpfile = os.path.join(tmpdir, os.path.basename(os.path.dirname(i.filename)))
+                tmpfile = os.path.join(tmpdir,
+                                       os.path.basename(os.path.dirname(i.filename)))
             else:
                 tmpfile = os.path.join(tmpdir, os.path.basename(i.filename))
 
@@ -2178,20 +2185,19 @@ def _testfn():
     """Test."""
     import sys
 
-    ifile = r"D:\WC\ASTER\Original_data\AST_05_07XT_20060411_15908_stack.tif"
-    ifile = r"D:\mag\merge\mag1.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
 
-    # dat = get_raster(ifile)
+    dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    # tmp = Metadata()
-    # tmp.indata['Raster'] = dat
-    # tmp.run()
+    tmp = Metadata()
+    tmp.indata['Raster'] = dat
+    tmp.run()
 
-    # app.exec()
+    app.exec()
 
-    tmp = DataMerge()
-    tmp.settings()
+    # tmp = DataMerge()
+    # tmp.settings()
 
 
 if __name__ == "__main__":

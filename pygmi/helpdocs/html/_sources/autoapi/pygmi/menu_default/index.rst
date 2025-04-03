@@ -19,7 +19,6 @@ Classes
    pygmi.menu_default.FileMenu
    pygmi.menu_default.HelpMenu
    pygmi.menu_default.HelpButton
-   pygmi.menu_default.HelpDocs
 
 
 Module Contents
@@ -61,7 +60,7 @@ Module Contents
 
 .. py:class:: HelpButton(htmlfile=None, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QPushButton`
+   Bases: :py:obj:`PyQt6.QtWidgets.QPushButton`
 
 
    Help Button.
@@ -78,36 +77,5 @@ Module Contents
 
       Help Routine.
 
-
-
-.. py:class:: HelpDocs(parent=None, helptxt=None)
-
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
-
-
-   A basic combo box application.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-   :param helptxt: Help filename.
-   :type helptxt: str
-
-   .. attribute:: parent
-
-      reference to the parent routine
-
-      :type: parent
-
-   .. attribute:: indata
-
-      dictionary of input datasets
-
-      :type: dictionary
-
-   .. attribute:: outdata
-
-      dictionary of output datasets
-
-      :type: dictionary
 
 

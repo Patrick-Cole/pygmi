@@ -57,26 +57,28 @@ class ColumnSelect(BasicModule):
         super().__init__(parent)
         self.setWindowTitle('Column Selection')
 
-        self.vbl = QtWidgets.QVBoxLayout()
-        self.setLayout(self.vbl)
+        vbl = QtWidgets.QVBoxLayout()
+        hbl = QtWidgets.QHBoxLayout()
+        self.setLayout(vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
         self.lw_1.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
-        self.vbl.addWidget(self.lw_1)
+        vbl.addWidget(self.lw_1)
 
-        self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel |
-            QtWidgets.QDialogbuttonbox.StandardButton.Ok)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
 
-        self.vbl.addWidget(self.buttonbox)
+        hbl.addWidget(menu_default.HelpButton('vector.dm.colsel'))
+        hbl.addWidget(buttonbox)
+        vbl.addLayout(hbl)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def settings(self, nodialog=False):
         """
@@ -651,7 +653,10 @@ class ImportVector(BasicModule):
         buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
                                      buttonbox.StandardButton.Ok)
 
-        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
+        gl_1.addWidget(buttonbox, 9, 1, 1, 1)
+
+        helpdocs = menu_default.HelpButton('vector.dm.importvectordata')
+        gl_1.addWidget(helpdocs, 9, 0, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

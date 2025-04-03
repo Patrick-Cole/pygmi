@@ -38,7 +38,7 @@ Module Contents
 
 .. py:class:: GraphMap(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Graph Map widget.

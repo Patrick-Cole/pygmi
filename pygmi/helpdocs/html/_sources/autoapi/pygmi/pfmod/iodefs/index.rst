@@ -162,7 +162,7 @@ Module Contents
 
 .. py:class:: Exportkmz(wkt, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    Export kmz dialog.
@@ -183,7 +183,7 @@ Module Contents
 
 .. py:class:: MessageCombo(combotext, parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QDialog`
+   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
 
 
    Message combo box.

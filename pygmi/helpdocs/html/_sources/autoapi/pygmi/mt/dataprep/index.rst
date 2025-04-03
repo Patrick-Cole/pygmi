@@ -101,7 +101,7 @@ Module Contents
 
 .. py:class:: MyMplCanvas(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
@@ -251,7 +251,7 @@ Module Contents
 
 .. py:class:: MyMplCanvasPick(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
@@ -397,7 +397,7 @@ Module Contents
 
 .. py:class:: MySlider(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QSlider`
+   Bases: :py:obj:`PyQt6.QtWidgets.QSlider`
 
 
    My Slider.
@@ -430,7 +430,7 @@ Module Contents
 
 .. py:class:: MyMplCanvas2(parent=None)
 
-   Bases: :py:obj:`matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg`
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.

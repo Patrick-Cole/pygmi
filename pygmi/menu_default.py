@@ -157,8 +157,8 @@ class HelpButton(QtWidgets.QPushButton):
 
         self.htmlfile = htmlfile
 
-        self.setMinimumHeight(48)
-        self.setMinimumWidth(48)
+        self.setMinimumHeight(32)
+        self.setMinimumWidth(52)
 
         ipth = os.path.dirname(__file__)+r'/images/'
         self.setIcon(QtGui.QIcon(ipth+'help.png'))

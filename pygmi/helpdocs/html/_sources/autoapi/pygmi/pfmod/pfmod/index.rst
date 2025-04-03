@@ -22,7 +22,7 @@ Module Contents
 
 .. py:class:: MainWidget(parent=None)
 
-   Bases: :py:obj:`PyQt5.QtWidgets.QMainWindow`
+   Bases: :py:obj:`PyQt6.QtWidgets.QMainWindow`
 
 
    MainWidget - Widget class to call the main interface.
