@@ -75,7 +75,13 @@ Module Contents
 
    .. py:method:: show_raster_data()
 
-      Show raster data.
+      Show class data.
+
+
+
+   .. py:method:: show_class_range()
+
+      Show class ranges.
 
 
 

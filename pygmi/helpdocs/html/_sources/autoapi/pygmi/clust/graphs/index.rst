@@ -15,8 +15,8 @@ Classes
 .. autoapisummary::
 
    pygmi.clust.graphs.MyMplCanvas
-   pygmi.clust.graphs.GraphWindow
    pygmi.clust.graphs.PlotRaster
+   pygmi.clust.graphs.PlotBars
    pygmi.clust.graphs.PlotMembership
    pygmi.clust.graphs.PlotVRCetc
 
@@ -41,6 +41,19 @@ Module Contents
 
       :param data1: Input raster dataset.
       :type data1: pygmi.raster.datatypes.Data
+
+      :rtype: None.
+
+
+
+   .. py:method:: update_bars(data1, rdata)
+
+      Update the class plot.
+
+      :param data1: Input raster dataset containing classes.
+      :type data1: pygmi.raster.datatypes.Data
+      :param rdata: Input raster dataset containing data.
+      :type rdata: pygmi.raster.datatypes.Data
 
       :rtype: None.
 
@@ -87,28 +100,9 @@ Module Contents
 
 
 
-.. py:class:: GraphWindow(parent=None)
-
-   Bases: :py:obj:`pygmi.misc.ContextModule`
-
-
-   Graph Window GUI.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-
-
-   .. py:method:: change_band()
-
-      Combo to change band.
-
-      :rtype: None.
-
-
-
 .. py:class:: PlotRaster(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Plot Raster Class GUI.
@@ -133,9 +127,36 @@ Module Contents
 
 
 
+.. py:class:: PlotBars(parent=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   Plot Bar Class GUI.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: change_band()
+
+      Combo to change band.
+
+      :rtype: None.
+
+
+
+   .. py:method:: run()
+
+      Entry point into the routine, used to run context menu item.
+
+      :rtype: None.
+
+
+
 .. py:class:: PlotMembership(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Plot Fuzzy Membership data GUI.
@@ -168,7 +189,7 @@ Module Contents
 
 .. py:class:: PlotVRCetc(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Plot VRC, NCE, OBJ and XBI GUI.

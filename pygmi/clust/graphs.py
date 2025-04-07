@@ -108,6 +108,68 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
 
+    def update_bars(self, data1, rdata):
+        """
+        Update the class plot.
+
+        Parameters
+        ----------
+        data1 : pygmi.raster.datatypes.Data
+            Input raster dataset containing classes.
+        rdata : pygmi.raster.datatypes.Data
+            Input raster dataset containing data.
+
+        Returns
+        -------
+        None.
+
+        """
+        cnr = data1.metadata['Cluster']['no_clusters']
+        x = range(cnr)
+
+        if 'labels' in data1.metadata['Cluster']:
+            lbls = data1.metadata['Cluster']['labels']
+        else:
+            lbls = [f'{i+1}' for i in x]
+
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111, label='map')
+
+        cdata = {}
+        cdatab = {}
+        for i in x:
+            cdata[lbls[i]] = []
+            cdatab[lbls[i]] = []
+
+        for rdat in rdata:
+            for i in x:
+                cmin = rdat.data[data1.data == (i+1)].min()
+                cmax = rdat.data[data1.data == (i+1)].max()
+                cdata[lbls[i]].append(cmax-cmin)
+                cdatab[lbls[i]].append(cmin)
+
+        dataids = [i.dataid for i in rdata]
+
+        x = np.arange(len(dataids))
+        width = .8/cnr
+        multiplier = 0
+
+        for attribute, measurement in cdata.items():
+            bottom = cdatab[attribute]
+            offset = width * multiplier
+            rects = self.axes.bar(x + offset, measurement, width, bottom,
+                                  label=attribute)
+            # ax.bar_label(rects, padding=5)
+            multiplier += 1
+
+        # Add some text for labels, title and custom x-axis tick labels, etc.
+        self.axes.set_ylabel('Value')
+        self.axes.set_title(f'Dataset ranges for {cnr} classes')
+        self.axes.set_xticks(x+.4, dataids)
+        self.axes.legend(loc='upper left')
+
+        self.figure.canvas.draw()
+
     def update_scatter(self, x, y):
         """
         Update the scatter plot.
@@ -272,6 +334,79 @@ class PlotRaster(ContextModule):
 
         self.show()
         self.change_band()
+
+
+class PlotBars(ContextModule):
+    """
+    Plot Bar Class GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Class Dataset Ranges')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel('Bands:')
+
+        hbl.addWidget(menu_default.HelpButton('cluster.cm.showbars'), 0,
+                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+    def change_band(self):
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
+        i = self.cmb_1.currentIndex()
+        data = self.indata['Cluster']
+        self.mmc.update_bars(data[i], self.indata['Raster'])
+
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        None.
+
+        """
+        data = self.indata['Cluster']
+
+        self.cmb_1.currentIndexChanged.disconnect()
+        for i in data:
+            self.cmb_1.addItem(i.dataid)
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+        self.show()
+        self.change_band()
+
 
 
 class PlotMembership(ContextModule):
@@ -499,6 +634,7 @@ class PlotVRCetc(ContextModule):
 def _testfn_bars():
     """Test."""
     import sys
+    import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
     from pygmi.clust.cluster import Cluster
 
@@ -515,24 +651,115 @@ def _testfn_bars():
     dat = DM.outdata
     dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
 
+    width = 0.25
+    multiplier = 0
 
-    for cdat in dat['Cluster']:
-        bdat = {}
-        for rdat in dat['Raster']:
-            bdat[rdat.dataid] = []
-            for mval in range(1, cdat.metadata['Cluster']['no_clusters']+1):
-                cmin = rdat.data[cdat.data==mval].min()
-                cmax = rdat.data[cdat.data==mval].max()
+    cdat = dat['Cluster'][0]
+
+    cnr = cdat.metadata['Cluster']['no_clusters']
+
+    x = range(cnr)
+    cdata = {}
+    cdatab = {}
+    for i in x:
+        cdata[f'{i+1}'] = []
+        cdatab[f'{i+1}'] = []
+
+    for rdat in dat['Raster']:
+        for i in x:
+            cmin = rdat.data[cdat.data == (i+1)].min()
+            cmax = rdat.data[cdat.data == (i+1)].max()
+            cdata[f'{i+1}'].append(cmax-cmin)
+            cdatab[f'{i+1}'].append(cmin)
+
+    dataids = [i.dataid for i in dat['Raster']]
+
+    x = np.arange(len(dataids))
+    width = .8/cnr
+    multiplier = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for attribute, measurement in cdata.items():
+        bottom = cdatab[attribute]
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, bottom, label=attribute)
+        # ax.bar_label(rects, padding=5)
+        multiplier += 1
+        # break
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Value')
+    ax.set_title(f'Dataset ranges for {cnr} classes')
+    ax.set_xticks(x+.4, dataids)
+    ax.legend(loc='upper left', ncols=3)
+    # ax.set_ylim(0, 250)
+
+    plt.show()
+
+    # breakpoint()
 
 
+def _testfn_viol():
+    """Test."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.clust.cluster import Cluster
 
-    breakpoint()
+    ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
-    # tmp2 = PlotRaster()
-    # tmp2.indata = dat
-    # tmp2.run()
+    data = get_raster(ifile)
 
-    # app.exec()
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Cluster()
+    DM.indata['Raster'] = data
+    DM.settings()
+
+    dat = DM.outdata
+    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+
+    width = 0.25
+    multiplier = 0
+
+    cdat = dat['Cluster'][0]
+
+    cnr = cdat.metadata['Cluster']['no_clusters']
+
+    cdata = {}
+    cdatab = {}
+    for i in range(cnr):
+        cdata[f'{i+1}'] = []
+        cdatab[f'{i+1}'] = []
+
+    dataids = [i.dataid for i in dat['Raster']]
+
+    x = np.arange(len(dataids))
+    width = .8/cnr
+    multiplier = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for rdat in dat['Raster']:
+        offset = 1 * multiplier
+        for i in range(cnr):
+            data = rdat.data[cdat.data == (i+1)].compressed()
+            # breakpoint()
+            ax.violinplot(data, [i*width+offset], widths=width,
+                          showmeans=False, showmedians=False, showextrema=False)
+        multiplier += 1
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Value')
+    ax.set_title(f'Dataset ranges for {cnr} classes')
+    ax.set_xticks(x+.4, dataids)
+    ax.legend(loc='upper left', ncols=3)
+    # ax.set_ylim(0, 250)
+
+    plt.show()
+
+    # breakpoint()
 
 
 def _testfn():
@@ -552,9 +779,9 @@ def _testfn():
     DM.settings()
 
     dat = DM.outdata
-    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
 
-    tmp2 = PlotRaster()
+    tmp2 = PlotBars()
     tmp2.indata = dat
     tmp2.run()
 
@@ -562,4 +789,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn_bars()
+    _testfn()

@@ -138,13 +138,13 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, one
 
 The process to install is as follows:
 
-   conda create -n pygmi python=3.12
+   conda create -n pygmi python=3.13
 
    conda activate pygmi
 
    conda config --env --add channels conda-forge
 
-   conda install pyqt
+   conda install -c anaconda pyqt=6.7.1
 
    conda install fiona
 
@@ -159,6 +159,8 @@ The process to install is as follows:
    conda install geopandas
 
    conda install natsort
+   
+   conda install numba
 
    conda install scikit-image
 

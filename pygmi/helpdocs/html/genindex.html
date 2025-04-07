@@ -304,6 +304,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.scatter.html">Scatter Plot Tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.stat.html">Cluster Statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showbars.html">Show Class Dataset Ranges</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.exportclass.html">Export Class Data</a></li>
@@ -1043,7 +1044,7 @@ document.write(`
       <li><a href="autoapi/pygmi/bholes/graphs/index.html#pygmi.bholes.graphs.PlotLog.change_band">change_band() (pygmi.bholes.graphs.PlotLog method)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.GraphWindow.change_band">(pygmi.clust.graphs.GraphWindow method)</a>
+        <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotBars.change_band">(pygmi.clust.graphs.PlotBars method)</a>
 </li>
         <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotMembership.change_band">(pygmi.clust.graphs.PlotMembership method)</a>
 </li>
@@ -1078,8 +1079,6 @@ document.write(`
         <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.PlotIso.change_band">(pygmi.seis.graphs.PlotIso method)</a>
 </li>
         <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.PlotQC.change_band">(pygmi.seis.graphs.PlotQC method)</a>
-</li>
-        <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.GraphWindow.change_band">(pygmi.vector.graphs.GraphWindow method)</a>
 </li>
         <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.PlotCCoef.change_band">(pygmi.vector.graphs.PlotCCoef method)</a>
 </li>
@@ -1135,17 +1134,13 @@ document.write(`
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.change_lclip">change_lclip() (pygmi.raster.ginterp.PlotInterp method)</a>
 </li>
       <li><a href="autoapi/pygmi/em/tdem/index.html#pygmi.em.tdem.TDEM1D.change_line">change_line() (pygmi.em.tdem.TDEM1D method)</a>
-
-      <ul>
-        <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.PlotLines.change_line">(pygmi.vector.graphs.PlotLines method)</a>
 </li>
-      </ul></li>
       <li><a href="autoapi/pygmi/pfmod/tab_param/index.html#pygmi.pfmod.tab_param.ParamDisplay.change_magnetization">change_magnetization() (pygmi.pfmod.tab_param.ParamDisplay method)</a>
+</li>
+      <li><a href="autoapi/pygmi/vector/dataprep/index.html#pygmi.vector.dataprep.TextFileSplit.change_method">change_method() (pygmi.vector.dataprep.TextFileSplit method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/pygmi/vector/dataprep/index.html#pygmi.vector.dataprep.TextFileSplit.change_method">change_method() (pygmi.vector.dataprep.TextFileSplit method)</a>
-</li>
       <li><a href="autoapi/pygmi/pfmod/tab_param/index.html#pygmi.pfmod.tab_param.ParamDisplay.change_qratio">change_qratio() (pygmi.pfmod.tab_param.ParamDisplay method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.change_red">change_red() (pygmi.raster.ginterp.PlotInterp method)</a>
@@ -1800,10 +1795,10 @@ document.write(`
 </li>
       <li><a href="autoapi/pygmi/rsense/iodefs/index.html#pygmi.rsense.iodefs.get_modisv6">get_modisv6() (in module pygmi.rsense.iodefs)</a>
 </li>
-      <li><a href="autoapi/pygmi/rsense/transforms/index.html#pygmi.rsense.transforms.get_noise">get_noise() (in module pygmi.rsense.transforms)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/pygmi/rsense/transforms/index.html#pygmi.rsense.transforms.get_noise">get_noise() (in module pygmi.rsense.transforms)</a>
+</li>
       <li><a href="autoapi/pygmi/mt/dataprep/index.html#pygmi.mt.dataprep.Occam1D.get_occfile">get_occfile() (pygmi.mt.dataprep.Occam1D method)</a>
 </li>
       <li><a href="autoapi/pygmi/rsense/iodefs/index.html#pygmi.rsense.iodefs.ExportBatch.get_odir">get_odir() (pygmi.rsense.iodefs.ExportBatch method)</a>
@@ -1898,14 +1893,10 @@ document.write(`
         <li><a href="autoapi/pygmi/rsense/hyperspec/index.html#pygmi.rsense.hyperspec.GraphMap">(class in pygmi.rsense.hyperspec)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.GraphWindow">GraphWindow (class in pygmi.clust.graphs)</a>
+      <li><a href="autoapi/pygmi/mt/graphs/index.html#pygmi.mt.graphs.GraphWindow">GraphWindow (class in pygmi.mt.graphs)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mt/graphs/index.html#pygmi.mt.graphs.GraphWindow">(class in pygmi.mt.graphs)</a>
-</li>
         <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.GraphWindow">(class in pygmi.seis.graphs)</a>
-</li>
-        <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.GraphWindow">(class in pygmi.vector.graphs)</a>
 </li>
       </ul></li>
       <li><a href="autoapi/pygmi/pfmod/grvmag3d/index.html#pygmi.pfmod.grvmag3d.GravMag">GravMag (class in pygmi.pfmod.grvmag3d)</a>
@@ -2969,6 +2960,8 @@ document.write(`
 </li>
       <li><a href="autoapi/pygmi/raster/anaglyph/index.html#pygmi.raster.anaglyph.PlotAnaglyph">PlotAnaglyph (class in pygmi.raster.anaglyph)</a>
 </li>
+      <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotBars">PlotBars (class in pygmi.clust.graphs)</a>
+</li>
       <li><a href="autoapi/pygmi/raster/graphs/index.html#pygmi.raster.graphs.PlotCCoef">PlotCCoef (class in pygmi.raster.graphs)</a>
 
       <ul>
@@ -3298,6 +3291,8 @@ document.write(`
         <li><a href="autoapi/pygmi/mt/index.html#module-pygmi.mt">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pygmi.mt.birrp
 
@@ -3305,8 +3300,6 @@ document.write(`
         <li><a href="autoapi/pygmi/mt/birrp/index.html#module-pygmi.mt.birrp">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pygmi.mt.dataprep
 
@@ -3924,10 +3917,10 @@ document.write(`
 </li>
       <li><a href="autoapi/pygmi/raster/anaglyph/index.html#pygmi.raster.anaglyph.rot_and_clean">rot_and_clean() (in module pygmi.raster.anaglyph)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.rotate">rotate() (in module pygmi.vector.graphs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.rotate2d">rotate2d() (in module pygmi.pfmod.tab_prof)</a>
 </li>
       <li><a href="autoapi/pygmi/mt/menu/index.html#pygmi.mt.menu.MenuWidget.rotate_data">rotate_data() (pygmi.mt.menu.MenuWidget method)</a>
@@ -3949,6 +3942,8 @@ document.write(`
       <li><a href="autoapi/pygmi/bholes/graphs/index.html#pygmi.bholes.graphs.PlotLog.run">run() (pygmi.bholes.graphs.PlotLog method)</a>
 
       <ul>
+        <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotBars.run">(pygmi.clust.graphs.PlotBars method)</a>
+</li>
         <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotMembership.run">(pygmi.clust.graphs.PlotMembership method)</a>
 </li>
         <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.PlotRaster.run">(pygmi.clust.graphs.PlotRaster method)</a>
@@ -4670,6 +4665,8 @@ document.write(`
 </li>
       <li><a href="autoapi/pygmi/raster/menu/index.html#pygmi.raster.menu.MenuWidget.show_ccoef">show_ccoef() (pygmi.raster.menu.MenuWidget method)</a>
 </li>
+      <li><a href="autoapi/pygmi/clust/menu/index.html#pygmi.clust.menu.MenuWidget.show_class_range">show_class_range() (pygmi.clust.menu.MenuWidget method)</a>
+</li>
       <li><a href="autoapi/pygmi/mt/menu/index.html#pygmi.mt.menu.MenuWidget.show_graphs">show_graphs() (pygmi.mt.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/vector/menu/index.html#pygmi.vector.menu.MenuWidget.show_hist">show_hist() (pygmi.vector.menu.MenuWidget method)</a>
@@ -4983,6 +4980,8 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="autoapi/pygmi/raster/anaglyph/index.html#pygmi.raster.anaglyph.MyMplCanvas.update_atype">update_atype() (pygmi.raster.anaglyph.MyMplCanvas method)</a>
+</li>
+      <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.MyMplCanvas.update_bars">update_bars() (pygmi.clust.graphs.MyMplCanvas method)</a>
 </li>
       <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.MyMplCanvas.update_bvalue">update_bvalue() (pygmi.seis.graphs.MyMplCanvas method)</a>
 </li>

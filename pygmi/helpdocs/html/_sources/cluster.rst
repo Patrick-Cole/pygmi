@@ -34,6 +34,7 @@ Classification context menus contain the raster data context menu that acts on t
 
     cluster.cm.stat
     cluster.cm.showclass
+    cluster.cm.showbars
     cluster.cm.showgraphs
     cluster.cm.showmembership
     cluster.cm.exportclass

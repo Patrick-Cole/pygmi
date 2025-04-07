@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>PyGMI &#8212; PyGMI 3.2.8.32 documentation</title>
+    <title>Show Class Dataset Ranges &#8212; PyGMI 3.2.8.32 documentation</title>
   
   
   
@@ -41,11 +41,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cluster.cm.showbars';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PyGMI Wiki" href="wiki.html" />
+    <link rel="next" title="Show OBJ, VRC, NCE, XBI Graphs" href="cluster.cm.showgraphs.html" />
+    <link rel="prev" title="Show Class Data" href="cluster.cm.showclass.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -76,7 +77,7 @@
             left: 0;
             top: 0;">
 
-<a href="#">
+<a href="index.html">
 <img src="_static/logo.png" class="image1"/>
 </a>
 
@@ -84,7 +85,7 @@
 <img src="_static/cgslogo.png" class="image2"/>
 </a>
 
-<a href="#">
+<a href="index.html">
 <img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
@@ -144,8 +145,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -164,7 +163,7 @@
     
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="index.html">
   
   
   
@@ -235,8 +234,8 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
@@ -297,7 +296,7 @@
 <li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="cluster.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="cluster.html">Classification</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
@@ -306,7 +305,7 @@
 <li class="toctree-l3"><a class="reference internal" href="cluster.dm.scatter.html">Scatter Plot Tool</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.stat.html">Cluster Statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showclass.html">Show Class Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showbars.html">Show Class Dataset Ranges</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Show Class Dataset Ranges</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cluster.cm.exportclass.html">Export Class Data</a></li>
@@ -580,7 +579,7 @@
       
       
       
-      <li><a href="_sources/index.rst" target="_blank"
+      <li><a href="_sources/cluster.cm.showbars.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -651,9 +650,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -664,21 +661,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>PyGMI</h1>
+    <h1>Show Class Dataset Ranges</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PyGMI</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-</ul>
-
-            </nav>
         </div>
     </div>
 </div>
@@ -688,34 +675,20 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="pygmi">
-<h1>PyGMI<a class="headerlink" href="#pygmi" title="Link to this heading">#</a></h1>
-<p>Welcome to the PyGMI website! It contains more information, including API documentation for the project.</p>
-<p>The latest version can be downloaded at the <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">release</a> section.</p>
-<p>If there are requests or concerns, please contact me.</p>
-</section>
-<section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h1>
-<p>PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets. PyGMI has a graphical user interface, and is meant to be run as such.</p>
-<p>PyGMI is developed at the <a class="reference external" href="http://www.geoscience.org.za">Council for Geoscience</a> (Geological Survey of South Africa).</p>
-<p>It includes:</p>
-<ul class="simple">
-<li><p>Magnetic and Gravity 3D forward modelling.</p></li>
-<li><p>Cluster Analysis, including use of scikit-learn libraries.</p></li>
-<li><p>Routines for cutting, reprojecting and doing simple modifications to data.</p></li>
-<li><p>Convenient display of data using pseudo-colour, ternary and sunshaded representation.</p></li>
-<li><p>MT processing and 1D inversion using MTpy.</p></li>
-<li><p>Gravity processing.</p></li>
-<li><p>Seismological functions for SEISAN data.</p></li>
-<li><p>Remote sensing ratios, hyperspectral processing, change detection and improved imports.</p></li>
-</ul>
-<p>It is released under the <a class="reference external" href="http://www.gnu.org/copyleft/gpl.html">Gnu General Public License version 3.0</a></p>
-<p>The PyGMI <a class="reference internal" href="wiki.html"><span class="doc">Wiki</span></a> pages, include installation and full usage! Contributors can look <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/blob/pygmi3/CONTRIBUTING.md">here</a> for ways to contribute.</p>
-<p>The latest release version (including windows installers) can be found at this <a class="reference external" href="https://github.com/Patrick-Cole/pygmi/releases">link</a>.</p>
-<p>You may need to install the <a class="reference external" href="https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads">Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019</a>.</p>
-<p>If you have any comments or queries, you can contact the author either through <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">GitHub</a> or via email at <a class="reference external" href="mailto:pcole&#37;&#52;&#48;geoscience&#46;org&#46;za">pcole<span>&#64;</span>geoscience<span>&#46;</span>org<span>&#46;</span>za</a></p>
-<div class="toctree-wrapper compound">
-</div>
+  <section id="show-class-dataset-ranges">
+<h1>Show Class Dataset Ranges<a class="headerlink" href="#show-class-dataset-ranges" title="Link to this heading">#</a></h1>
+<p>This provides a quick bar chart graphical representation of the dataset ranges for each class.</p>
+<p>The options on this interface are:</p>
+<ol class="arabic simple">
+<li><p><strong>Bands</strong> – If the classification was done for a range of clusters the results for each number of clusters can be selected via the dropdown menu.</p></li>
+<li><p>Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<img alt="_images/clustbars.png" src="_images/clustbars.png" />
+<figcaption>
+<p><span class="caption-text">Show Class Data interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 
 
@@ -729,12 +702,21 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="cluster.cm.showclass.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Show Class Data</p>
+      </div>
+    </a>
     <a class="right-next"
-       href="wiki.html"
+       href="cluster.cm.showgraphs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">PyGMI Wiki</p>
+        <p class="prev-next-title">Show OBJ, VRC, NCE, XBI Graphs</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -744,23 +726,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">PyGMI</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-</ul>
-
-  </nav></div>
-
-</div></div>
               
             
           </div>

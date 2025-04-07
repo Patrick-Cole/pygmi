@@ -104,6 +104,10 @@ class MenuWidget():
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
+        self.action_show_class_range = QtGui.QAction('Show Class Data Ranges')
+        context_menu['Cluster'].addAction(self.action_show_class_range)
+        self.action_show_class_range.triggered.connect(self.show_class_range)
+
         self.action_show_membership_data = QtGui.QAction("Show Membership "
                                                              "Data")
         context_menu['memCluster'].addAction(self.action_show_membership_data)
@@ -152,8 +156,12 @@ class MenuWidget():
                                 graphtool.ScatterPlot)
 
     def show_raster_data(self):
-        """Show raster data."""
+        """Show class data."""
         self.parent.launch_context_item(graphs.PlotRaster)
+
+    def show_class_range(self):
+        """Show class ranges."""
+        self.parent.launch_context_item(graphs.PlotBars)
 
     def show_membership_data(self):
         """Show membership data."""

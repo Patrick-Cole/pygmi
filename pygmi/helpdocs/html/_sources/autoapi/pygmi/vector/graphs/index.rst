@@ -14,7 +14,6 @@ Classes
 
 .. autoapisummary::
 
-   pygmi.vector.graphs.GraphWindow
    pygmi.vector.graphs.MyMplCanvas
    pygmi.vector.graphs.PlotCCoef
    pygmi.vector.graphs.PlotHist
@@ -37,25 +36,6 @@ Functions
 
 Module Contents
 ---------------
-
-.. py:class:: GraphWindow(parent=None)
-
-   Bases: :py:obj:`pygmi.misc.ContextModule`
-
-
-   Graph Window - Main QT Dialog class for graphs.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-
-
-   .. py:method:: change_band()
-
-      Combo box to choose band.
-
-      :rtype: None.
-
-
 
 .. py:class:: MyMplCanvas(parent=None)
 
@@ -234,7 +214,7 @@ Module Contents
 
 .. py:class:: PlotCCoef(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot correlation coefficients.
@@ -288,21 +268,13 @@ Module Contents
 
 .. py:class:: PlotLines(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot lines.
 
    :param parent: Reference to the parent routine. The default is None.
    :type parent: parent, optional
-
-
-   .. py:method:: change_line()
-
-      Combo to change line number.
-
-      :rtype: None.
-
 
 
    .. py:method:: change_band()
@@ -323,7 +295,7 @@ Module Contents
 
 .. py:class:: PlotLineMap(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot a line map.
@@ -350,7 +322,7 @@ Module Contents
 
 .. py:class:: PlotRose(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot rose diagrams.
@@ -377,7 +349,7 @@ Module Contents
 
 .. py:class:: PlotVector(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot vectors.
