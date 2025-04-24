@@ -28,14 +28,12 @@ import os
 import sys
 import glob
 import platform
-# from contextlib import redirect_stdout
 from subprocess import Popen, PIPE
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 
 from pygmi.raster.misc import lstack, aspect2
 from pygmi.raster.iodefs import get_raster
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 
 
@@ -70,17 +68,12 @@ class TopoCorrect(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.topo'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.topo')
 
         lbl_dem = QtWidgets.QLabel('Digital Elevation Model:')
         lbl_azi = QtWidgets.QLabel('Solar Azimuth:')
         lbl_zen = QtWidgets.QLabel('Solar Zenith:')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Topographic Correction')
 
@@ -91,11 +84,7 @@ class TopoCorrect(BasicModule):
         gl_main.addWidget(lbl_zen, 3, 0, 1, 1)
         gl_main.addWidget(self.le_zen, 3, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -231,9 +220,8 @@ class Sen2Cor(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.sen2cor'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.sen2cor')
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
@@ -243,10 +231,6 @@ class Sen2Cor(BasicModule):
         self.pb_sen2cor.setIcon(icon)
         self.pb_sen2cor.setStyleSheet('text-align:left;')
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Sen2Cor - Sentinel 2 Atmospheric Correction')
 
         gl_main.addWidget(self.pb_sen2cor, 1, 0, 1, 1)
@@ -254,11 +238,8 @@ class Sen2Cor(BasicModule):
         gl_main.addWidget(self.pb_sdir, 2, 0, 1, 1)
         gl_main.addWidget(self.le_sdir, 2, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.pb_sdir.pressed.connect(self.get_sdir)
         self.pb_sen2cor.pressed.connect(self.get_sen2cor)
 
@@ -488,78 +469,78 @@ def _testfn():
     from pygmi.raster.misc import norm2
     from pygmi.misc import frm
 
-    # ifile1 = r"D:\Landslides\JTNdem.tif"
-    # ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
+    ifile1 = r"D:\Landslides\old\JTNdem.tif"
+    ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
     # ifile2 = r"D:\Landslides\test.tif"
 
-    # dat1 = get_raster(ifile1)
-    # dat2 = get_raster(ifile2)
-    # dat = dat1+dat2
+    dat1 = get_raster(ifile1)
+    dat2 = get_raster(ifile2)
+    dat = dat1+dat2
 
-    # app = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
-    # tmp1 = TopoCorrect()
-    # tmp1.indata['Raster'] = dat
-    # tmp1.settings()
+    tmp1 = TopoCorrect()
+    tmp1.indata['Raster'] = dat
+    tmp1.settings()
 
-    ifile = r"D:\Landslides\oneclip.tif"
-    zenith = 42.7956361279988
-    azimuth = 44.8154655713449
+    # ifile = r"D:\Landslides\oneclip.tif"
+    # zenith = 42.7956361279988
+    # azimuth = 44.8154655713449
 
-    data = get_raster(ifile)
-    dem = data.pop(-1)
+    # data = get_raster(ifile)
+    # dem = data.pop(-1)
 
-    data = lstack(data)
-    dem = lstack(data+[dem], masterid=data[0].dataid)
-    dem = dem.pop(-1)
+    # data = lstack(data)
+    # dem = lstack(data+[dem], masterid=data[0].dataid)
+    # dem = dem.pop(-1)
 
-    data2 = c_correction(data, dem, azimuth, zenith)
+    # data2 = c_correction(data, dem, azimuth, zenith)
 
-    for dat in [data, data2]:
-        plt.figure(dpi=200)
-        ax = plt.gca()
+    # for dat in [data, data2]:
+    #     plt.figure(dpi=200)
+    #     ax = plt.gca()
 
-        red = dat[3].data
-        green = dat[2].data
-        blue = dat[1].data
+    #     red = dat[3].data
+    #     green = dat[2].data
+    #     blue = dat[1].data
 
-        rmin, rmax = .1, .2
-        gmin, gmax = .1, .2
-        bmin, bmax = .1, .2
+    #     rmin, rmax = .1, .2
+    #     gmin, gmax = .1, .2
+    #     bmin, bmax = .1, .2
 
-        img = np.zeros((red.shape[0], red.shape[1], 3), dtype=np.uint8)
+    #     img = np.zeros((red.shape[0], red.shape[1], 3), dtype=np.uint8)
 
-        img[:, :, 0] = norm2(red, rmin, rmax)*255
-        img[:, :, 1] = norm2(green, gmin, gmax)*255
-        img[:, :, 2] = norm2(blue, bmin, bmax)*255
+    #     img[:, :, 0] = norm2(red, rmin, rmax)*255
+    #     img[:, :, 1] = norm2(green, gmin, gmax)*255
+    #     img[:, :, 2] = norm2(blue, bmin, bmax)*255
 
-        plt.imshow(img, extent=dat[0].extent)
+    #     plt.imshow(img, extent=dat[0].extent)
 
-        ax.set_xlabel('Eastings')
-        ax.set_ylabel('Northings')
+    #     ax.set_xlabel('Eastings')
+    #     ax.set_ylabel('Northings')
 
-        ax.xaxis.set_major_formatter(frm)
-        ax.yaxis.set_major_formatter(frm)
+    #     ax.xaxis.set_major_formatter(frm)
+    #     ax.yaxis.set_major_formatter(frm)
 
-        plt.show()
+    #     plt.show()
 
-    for i, _ in enumerate(data):
+    # for i, _ in enumerate(data):
 
-        dat = data[i]
-        dat2 = data2[i]
+    #     dat = data[i]
+    #     dat2 = data2[i]
 
-        plt.figure(dpi=200)
-        ax = plt.subplot(121)
+    #     plt.figure(dpi=200)
+    #     ax = plt.subplot(121)
 
-        vmin, vmax = dat.get_vmin_vmax()
-        plt.imshow(dat.data, vmin=vmin, vmax=vmax)
+    #     vmin, vmax = dat.get_vmin_vmax()
+    #     plt.imshow(dat.data, vmin=vmin, vmax=vmax)
 
-        ax = plt.subplot(122)
+    #     ax = plt.subplot(122)
 
-        vmin, vmax = dat2.get_vmin_vmax()
-        plt.imshow(dat2.data, vmin=vmin, vmax=vmax)
+    #     vmin, vmax = dat2.get_vmin_vmax()
+    #     plt.imshow(dat2.data, vmin=vmin, vmax=vmax)
 
-        plt.show()
+    #     plt.show()
 
 
 def _testfn3():
@@ -624,4 +605,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

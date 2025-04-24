@@ -235,6 +235,9 @@ class BeachBall(BasicModule):
         None.
 
         """
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'seis.dm.fps'
+
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
@@ -248,7 +251,8 @@ class BeachBall(BasicModule):
 
         self.rb_geog.setChecked(True)
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum,
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Minimum,
                                        QtWidgets.QSizePolicy.Policy.Expanding)
 
         self.setWindowTitle('Fault Plane Solution (FPS)')
@@ -261,6 +265,7 @@ class BeachBall(BasicModule):
         vbl_raster.addWidget(self.rb_proj)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveshp)
+        vbl_raster.addWidget(self.buttonbox)
         vbl_right = QtWidgets.QVBoxLayout()
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)

@@ -26,13 +26,12 @@
 
 import os
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 from sklearn.decomposition import IncrementalPCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
 from pygmi.misc import BasicModule
-from pygmi import menu_default
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_data
@@ -68,7 +67,7 @@ class MNF(BasicModule):
 
         self.setupui()
 
-        self.resize(500, 350)
+        # self.resize(500, 350)
 
     def setupui(self):
         """
@@ -79,19 +78,14 @@ class MNF(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.mnf'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.mnf')
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
         self.rb_noise_hv.setChecked(True)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Minimum Noise Fraction')
 
@@ -102,11 +96,7 @@ class MNF(BasicModule):
         gl_main.addWidget(self.rb_noise_diag, 4, 0, 1, 2)
         gl_main.addWidget(self.rb_noise_quad, 5, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -278,7 +268,7 @@ class PCA(BasicModule):
 
         self.setupui()
 
-        self.resize(500, 350)
+        # self.resize(500, 350)
 
     def setupui(self):
         """
@@ -289,9 +279,8 @@ class PCA(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.pca'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.pca')
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
@@ -300,10 +289,6 @@ class PCA(BasicModule):
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Principal Component Analysis')
 
         gl_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
@@ -311,11 +296,7 @@ class PCA(BasicModule):
         gl_main.addWidget(self.sb_comps, 2, 1, 1, 1)
         gl_main.addWidget(self.cb_fitlist, 3, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -552,8 +533,8 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
     return nevals, nevecs
 
 
-def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print, piter=iter,
-             fwdonly=True):
+def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
+             piter=iter, fwdonly=True):
     """
     MNF Calculation.
 
@@ -906,8 +887,8 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         ofile = set_export_filename(dat, odir, 'pca')
 
         showlog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odata, drv='GTiff', piter=piter, compression='ZSTD',
-                      showlog=showlog)
+        export_raster(ofile, odata, drv='GTiff', piter=piter,
+                      compression='ZSTD', showlog=showlog)
 
     return odata, ev
 
@@ -1060,8 +1041,8 @@ def _testfn2():
 
     dat = tmp.outdata['Raster']
 
-    tmp = PCA()
-    # tmp = MNF()
+    # tmp = PCA()
+    tmp = MNF()
     tmp.indata['Raster'] = dat
     try:
         tmp.settings()

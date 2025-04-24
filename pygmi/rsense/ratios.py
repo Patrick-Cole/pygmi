@@ -29,9 +29,8 @@ import sys
 import re
 import numexpr as ne
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 
-from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
@@ -66,10 +65,9 @@ class SatRatios(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.ratios'
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.ratios')
         lbl_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Ratios:')
 
@@ -80,9 +78,6 @@ class SatRatios(BasicModule):
                                   'Landsat 7 (ETM+)',
                                   'Landsat 4 and 5 (TM)',
                                   'Sentinel-2', 'WorldView', 'Unknown'])
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Band Ratio Calculations')
 
@@ -92,11 +87,8 @@ class SatRatios(BasicModule):
         gl_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
         gl_main.addWidget(btn_invert, 2, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
@@ -386,15 +378,15 @@ class ConditionIndices(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.calccondind'
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.calccondind')
         lbl_index = QtWidgets.QLabel('Index:')
         lbl_ratios = QtWidgets.QLabel('Condition Indices:')
         lbl_sensor = QtWidgets.QLabel('Sensor:')
 
-        self.lw_ratios.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_ratios.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.cmb_index.addItems(['EVI',
                                  'NDVI',
@@ -407,10 +399,6 @@ class ConditionIndices(BasicModule):
                                   'Landsat (All)',
                                   'Sentinel-2', 'WorldView', 'Unknown'])
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Condition Indices Calculations')
 
         gl_main.addWidget(lbl_sensor, 0, 0, 1, 2)
@@ -421,11 +409,8 @@ class ConditionIndices(BasicModule):
         gl_main.addWidget(self.lw_ratios, 2, 1, 1, 1)
         gl_main.addWidget(btn_invert, 3, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)

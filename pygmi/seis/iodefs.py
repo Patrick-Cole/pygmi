@@ -26,14 +26,13 @@
 
 import os
 import re
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_string_dtype
 import geopandas as gpd
 
 import pygmi.seis.datatypes as sdt
-from pygmi import menu_default
 from pygmi.misc import ContextModule, BasicModule
 
 
@@ -233,6 +232,7 @@ def importmacro(ifile):
     with open(ifile, encoding='utf-8') as io:
         line1a = io.readline()
         comment = io.readline()
+        events = io.readlines()
 
     line1 = line1a.split()
     line1.pop(-1)
@@ -254,9 +254,32 @@ def importmacro(ifile):
 
     location = line1a.split(year)[0]
 
-    df1 = pd.read_fwf(ifile, skiprows=2, names=['lat', 'lon', 'intensity',
-                                                'code', 'postalcode',
-                                                'location'])
+    evd = {'lat': [],
+           'lon': [],
+           'intensity': [],
+           'code': [],
+           'postalcode': [],
+           'location': []}
+
+    for event in events:
+        tmp = event.split()
+        if len(tmp) >= 6:
+            lat, lon, intensity, code, pcode, location = event.split()[:6]
+        else:
+            lat, lon, intensity, code, location = event.split()[:5]
+            pcode = ''
+
+        evd['location'].append(event[event.index(location):-1])
+        evd['lat'].append(float(lat))
+        evd['lon'].append(float(lon))
+        evd['intensity'].append(float(intensity))
+        evd['code'].append(code)
+        evd['postalcode'].append(pcode)
+
+    df1 = pd.DataFrame(evd)
+    # df1 = pd.read_fwf(ifile, skiprows=2, sep=' ',
+    #                   names=['lat', 'lon', 'intensity', 'code', 'postalcode',
+    #                          'location'])
 
     if is_string_dtype(df1.intensity):
         df1.intensity = df1.intensity.str.replace('+', '')
@@ -2734,9 +2757,8 @@ class FilterSeisan(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'seis.dm.sfilt'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('seis.dm.sfilt')
         lbl_rectype = QtWidgets.QLabel('Record Type:')
         lbl_recdesc = QtWidgets.QLabel('Description:')
         lbl_from = QtWidgets.QLabel('From')
@@ -2747,10 +2769,6 @@ class FilterSeisan(BasicModule):
         vbl.addWidget(self.cb_dind_R)
         vbl.addWidget(self.cb_dind_D)
         gbox_dind.setLayout(vbl)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Data Filtering')
         self.cb_dind_D.setChecked(True)
@@ -2775,11 +2793,8 @@ class FilterSeisan(BasicModule):
         gl_main.addWidget(self.dsb_from, 4, 1, 1, 1)
         gl_main.addWidget(lbl_to, 5, 0, 1, 1)
         gl_main.addWidget(self.dsb_to, 5, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cb_dind_L.stateChanged.connect(self.dind_click)
         self.cb_dind_R.stateChanged.connect(self.dind_click)
         self.cb_dind_D.stateChanged.connect(self.dind_click)
@@ -3167,9 +3182,9 @@ def _testfn():
 
     data = tmp.outdata['Seis']
 
-    tmp = ExportSeisan()
+    tmp = FilterSeisan()
     tmp.indata['Seis'] = data
-    tmp.run(ofile)
+    tmp.settings()
 
 
 def _testfn2():
@@ -3189,5 +3204,5 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
     # xlstomacro()

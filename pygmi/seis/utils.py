@@ -64,23 +64,17 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'seis.dm.corrtyp3'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
         pb_textfile = QtWidgets.QPushButton('Load Description List')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Correct Descriptions')
 
         gl_main.addWidget(self.le_textfile, 0, 0, 1, 1)
         gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
 
-        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_textfile.pressed.connect(self.get_textfile)
 
     def get_textfile(self, filename=''):
@@ -195,48 +189,21 @@ def _testfn():
     None.
 
     """
+    import sys
     from pygmi.seis import iodefs
 
-    idir = os.path.dirname(os.path.realpath(__file__))
-    tfile = os.path.join(idir, r'descriptions.txt')
+    app = QtWidgets.QApplication(sys.argv)
 
-    with open(tfile, encoding='utf-8') as fno:
-        tmp = fno.read()
+    ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 
-    masterlist = tmp.split('\n')
+    IO = iodefs.ImportSeisan()
+    IO.ifile = ifile
+    IO.settings(True)
+    data = IO.outdata
 
-    ifile = r'd:\WorkData\seismology\2000to2018.out'
-
-    IO = iodefs.ImportSeisan(None)
-    IO.settings(ifile)
-    data = IO.outdata['Seis']
-
-    nomatch = []
-    correction = []
-
-    for i in data:
-        if '3' not in i:
-            continue
-        text = i['3'].region
-
-        cmatch = difflib.get_close_matches(text, masterlist, 1, cutoff=0.7)
-        if cmatch:
-            cmatch = cmatch[0]
-        else:
-            nomatch.append(text)
-            continue
-
-        if cmatch != text:
-            correction.append(text+' to '+cmatch)
-
-    print('len nomatch', len(nomatch))
-    print('len correction', len(correction))
-
-    nomatch = list(set(nomatch))
-    correction = list(set(correction))
-
-    print('len nomatch', len(nomatch))
-    print('len correction', len(correction))
+    tmp = CorrectDescriptions()
+    tmp.indata = data
+    tmp.settings()
 
 
 if __name__ == "__main__":

@@ -587,7 +587,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for i in uvals:
             df2 = df1[df1.intensity >= i]
-            hull = df2.unary_union.convex_hull
+            hull = df2.union_all(method='unary').convex_hull
             hull = catmull_rom_smooth(hull)
 
             plist.append(hull)
@@ -698,72 +698,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class GraphWindow(ContextModule):
-    """
-    Graph Window class.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel('Bands:')
-        self.lbl_2 = QtWidgets.QLabel('Bands:')
-        self.hbl.addWidget(self.lbl_1)
-        self.hbl.addWidget(self.cmb_1)
-        self.hbl.addWidget(self.lbl_2)
-        self.hbl.addWidget(self.cmb_2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
-        vbl.addWidget(self.btn_saveshp)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-        self.btn_saveshp.clicked.connect(self.save_shp)
-
-    def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
-
-    def save_shp(self):
-        """
-        Save shapefile.
-
-        Returns
-        -------
-        None.
-
-        """
-
-
-class PlotQC(GraphWindow):
+class PlotQC(ContextModule):
     """
     GUI to plot QC graphs.
 
@@ -777,9 +712,35 @@ class PlotQC(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.lbl_2.hide()
-        self.cmb_2.hide()
         self.datd = None
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('QC Plots')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'seis.cm.showqc'
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.lbl_1 = QtWidgets.QLabel('Product:')
+        self.hbl.addWidget(self.buttonbox)
+        self.hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        self.hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(self.hbl)
+        vbl.addWidget(self.btn_saveshp)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
         """
@@ -894,7 +855,6 @@ class PlotQC(GraphWindow):
         for i in products:
             self.cmb_1.addItem(i)
 
-        self.lbl_1.setText('Product:')
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
 
@@ -938,7 +898,7 @@ class PlotQC(GraphWindow):
         return True
 
 
-class PlotIso(GraphWindow):
+class PlotIso(ContextModule):
     """
     GUI to plot isolines.
 
@@ -952,9 +912,35 @@ class PlotIso(GraphWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.lbl_2.hide()
-        self.cmb_2.hide()
         self.datd = None
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Isoseismic Plots')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = ''
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.lbl_1 = QtWidgets.QLabel('Product:')
+        hbl.addWidget(self.buttonbox)
+        hbl.addWidget(self.btn_saveshp)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
         """
@@ -980,6 +966,10 @@ class PlotIso(GraphWindow):
         None.
 
         """
+        if 'MacroSeis' not in self.indata:
+            self.showlog('No macroseismic data')
+            return False
+
         self.show()
         self.datd = self.indata['MacroSeis']
 
@@ -989,7 +979,6 @@ class PlotIso(GraphWindow):
         for i in products:
             self.cmb_1.addItem(i)
 
-        self.lbl_1.setText('Product:')
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
 
@@ -1045,8 +1034,11 @@ class PlotTempB(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Temporal b value')
 
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'seis.cm.showtempb'
+
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtWidgets.QHBoxLayout()
+        hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1054,13 +1046,15 @@ class PlotTempB(ContextModule):
         self.le_1.setValidator(QtGui.QIntValidator(self))
         lbl_1 = QtWidgets.QLabel('Window size:')
         btn_apply = QtWidgets.QPushButton('Apply')
-        self.hbl.addWidget(lbl_1)
-        self.hbl.addWidget(self.le_1)
-        self.hbl.addWidget(btn_apply)
+
+        hbl.addWidget(self.buttonbox)
+        hbl.addWidget(lbl_1)
+        hbl.addWidget(self.le_1)
+        hbl.addWidget(btn_apply)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
+        vbl.addLayout(hbl)
 
         self.setFocus()
 
@@ -1566,15 +1560,15 @@ def _testfn1():
     app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    tmp.ifile = r"D:\seis\sino_select.out"
+    tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\1908-02-02-2225-00.macro"
     tmp.settings(True)
 
     data = tmp.outdata
 
     # dat = import_for_plots(data)
 
-    # tmp = PlotIso()
-    tmp = PlotQC()
+    tmp = PlotIso()
+    # tmp = PlotQC()
     tmp.indata = data
     tmp.run()
 
@@ -1713,5 +1707,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn1()
+    _testfn()
     # _testiso()

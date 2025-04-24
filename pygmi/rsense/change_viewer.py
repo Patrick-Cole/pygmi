@@ -218,6 +218,8 @@ class SceneViewer(BasicModule):
         None.
 
         """
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'rsense.dm.change.html#view-change-data'
         vbl_1 = QtWidgets.QVBoxLayout()
         vbl_2 = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout()
@@ -234,7 +236,8 @@ class SceneViewer(BasicModule):
         vbl_2b = QtWidgets.QVBoxLayout()
         gbox_2.setLayout(vbl_2b)
 
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Fixed,
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Fixed,
                                        QtWidgets.QSizePolicy.Policy.Expanding)
 
         vbl_2b.addWidget(self.cmb_band1)
@@ -258,6 +261,7 @@ class SceneViewer(BasicModule):
         vbl_2.addWidget(gbox_2)
         vbl_2.addWidget(self.button1)
         vbl_2.addItem(spacer)
+        vbl_2.addWidget(self.buttonbox)
 
         hblmain.addLayout(vbl_2)
         hblmain.addLayout(vbl_1)
@@ -516,9 +520,6 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r"D:\workdata\PyGMI Test Data\change\mosaic"
-    idir = r"D:\bbb"
-    # idir = r"D:\Workdata\change\Planet"
-    # idir = r"E:\Namaqua_change\namakwa"
 
     app = QtWidgets.QApplication(sys.argv)
 

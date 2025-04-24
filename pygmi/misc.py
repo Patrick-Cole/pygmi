@@ -26,6 +26,7 @@
 
 import os
 import sys
+import subprocess
 import types
 import time
 import textwrap
@@ -453,9 +454,11 @@ class PButtonBox(QtWidgets.QWidget):
     def help_docs(self):
         """Help Routine."""
         if self.htmlfile is not None:
-            ipth = os.path.dirname(__file__)+r'//helpdocs//html'
-            hfile = os.path.join(ipth, self.htmlfile+'.html')
-            webbrowser.open(hfile)
+            ipth = os.path.dirname(__file__)+r'/helpdocs/html'
+            if '.html' not in self.htmlfile:
+                self.htmlfile = self.htmlfile+'.html'
+            hfile = os.path.join(ipth, self.htmlfile)
+            webbrowser.open('file://' + hfile)
 
 
 class QVStack2Layout(QtWidgets.QGridLayout):

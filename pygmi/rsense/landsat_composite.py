@@ -33,7 +33,6 @@ from PyQt6 import QtWidgets, QtCore
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.misc import lstack
 from pygmi.misc import ProgressBarText, BasicModule
-from pygmi import menu_default
 
 
 class LandsatComposite(BasicModule):
@@ -71,9 +70,8 @@ class LandsatComposite(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.ltc'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.ltc')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
         lbl_tday = QtWidgets.QLabel('Target Day:')
@@ -82,21 +80,14 @@ class LandsatComposite(BasicModule):
         self.sb_tday.setMaximum(366)
         self.sb_tday.setValue(1)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Landsat Temporal Composite')
 
         gl_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gl_main.addWidget(self.le_idirlist, 1, 1, 1, 1)
         gl_main.addWidget(lbl_tday, 2, 0, 1, 1)
         gl_main.addWidget(self.sb_tday, 2, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 5, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
 
     def settings(self, nodialog=False):

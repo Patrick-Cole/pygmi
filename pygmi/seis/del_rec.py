@@ -567,8 +567,11 @@ def import_for_plots(ifile, dind='R'):
 
 def _testfn():
     """Routine for testing."""
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
     ifile = r'd:\Work\Workdata\review\seismology\pygmi.out'
-    # ifile = r'd:\Work\Workdata\review\seismology\collect.out'
+    ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 
     quarry = Quarry()
 

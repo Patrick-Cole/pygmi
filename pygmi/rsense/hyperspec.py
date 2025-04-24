@@ -39,9 +39,7 @@ from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
 
 from pygmi.misc import frm, BasicModule
-from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta
-# from pygmi.raster.iodefs import get_raster
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense import features
@@ -233,8 +231,8 @@ class AnalSpec(BasicModule):
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
-        self.lbl_info = QtWidgets.QLabel('')
-        self.gbox_info = QtWidgets.QGroupBox('Information:')
+        # self.lbl_info = QtWidgets.QLabel('')
+        # self.gbox_info = QtWidgets.QGroupBox('Information:')
         self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
         self.cb_rgb = QtWidgets.QCheckBox('True Colour Ternary')
         self.lw_speclib = QtWidgets.QListWidget()
@@ -255,23 +253,20 @@ class AnalSpec(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = r'rsense.dm.hyper.html#analyse-spectra'
         gl_main = QtWidgets.QGridLayout(self)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
-        vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
+        # vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
         pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
         self.cb_rgb.setChecked(True)
 
-        self.lbl_info.setWordWrap(True)
+        # self.lbl_info.setWordWrap(True)
         self.lw_speclib.addItem('None')
         self.setWindowTitle('Analyse Features')
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_feature = QtWidgets.QLabel('Feature:')
 
-        vbl_info.addWidget(self.lbl_info)
+        # vbl_info.addWidget(self.lbl_info)
 
         gl_main.addWidget(lbl_combo, 0, 1)
         gl_main.addWidget(self.cmb_1, 0, 2)
@@ -282,22 +277,18 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
 
-        gl_main.addWidget(self.gbox_info, 5, 1, 8, 2)
+        # gl_main.addWidget(self.gbox_info, 5, 1, 8, 2)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
 
-        gl_main.addWidget(buttonbox, 12, 0, 1, 1,
-                          QtCore.Qt.AlignmentFlag.AlignLeft)
+        gl_main.addWidget(self.buttonbox, 12, 0, 1, 3)
 
         self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
         self.cb_rgb.clicked.connect(self.rotate_view)
         pb_speclib.clicked.connect(self.load_splib)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def button_press_callback(self, event):
         """
@@ -580,9 +571,8 @@ class ProcFeatures(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.hyper.html#process-features'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.hyper')
         lbl_ratios = QtWidgets.QLabel('Product:')
         lbl_details = QtWidgets.QLabel('Details:')
 
@@ -594,10 +584,6 @@ class ProcFeatures(BasicModule):
         self.cb_filtercheck.setChecked(True)
         self.cb_rfiltcheck.setChecked(True)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Process Hyperspectral Features')
 
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
@@ -607,13 +593,10 @@ class ProcFeatures(BasicModule):
         gl_main.addWidget(self.cb_filtercheck, 3, 0, 1, 2)
         gl_main.addWidget(self.cb_rfiltcheck, 4, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
         self.cmb_ratios.currentIndexChanged.connect(self.product_change)
         self.cb_filtercheck.stateChanged.connect(self.product_change)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def product_change(self):
         """
@@ -826,10 +809,10 @@ class ProcFeatures(BasicModule):
                                   piter=self.piter)
 
         if np.all(datfin[0].data.mask):
-            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' Could not find any ' + mineral +
-                                          '. No data to export.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Warning', ' Could not find any ' + mineral +
+                '. No data to export.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         self.outdata['Raster'] = datfin

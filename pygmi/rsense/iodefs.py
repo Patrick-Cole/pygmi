@@ -35,7 +35,7 @@ import datetime
 from collections import defaultdict
 import warnings
 
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import numexpr as ne
 import pandas as pd
@@ -45,7 +45,6 @@ import rasterio
 from natsort import natsorted
 from pyproj.crs import CRS
 
-from pygmi import menu_default
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 from pygmi.raster.datatypes import Data, RasterMeta, bounds_intersection
 from pygmi.raster.iodefs import get_raster, export_raster
@@ -94,6 +93,7 @@ class ImportData(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.importdata'
         pb_sfile = QtWidgets.QPushButton(' Filename')
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
@@ -106,25 +106,16 @@ class ImportData(BasicModule):
 
         gl_1 = QtWidgets.QGridLayout(self)
 
-        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_tnames.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
         gl_1.addWidget(self.lbl_ftype, 2, 0, 1, 2)
         gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
+        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel |
-            buttonbox.StandardButton.Ok)
-
-        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_sfile.pressed.connect(self.get_sfile)
 
     def settings(self, nodialog=False):
@@ -168,9 +159,9 @@ class ImportData(BasicModule):
                        tnames=tnames)
 
         if dat is None:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the data.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'Could not import the data.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if self.cb_ensuresutm.isChecked() is True:
@@ -294,6 +285,7 @@ class ImportBatch(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.createbatchlist'
         pb_sfile = QtWidgets.QPushButton(' Directory')
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
@@ -306,7 +298,8 @@ class ImportBatch(BasicModule):
 
         gl_1 = QtWidgets.QGridLayout(self)
 
-        self.lw_tnames.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_tnames.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
@@ -314,18 +307,8 @@ class ImportBatch(BasicModule):
         gl_1.addWidget(self.cmb_sensor, 2, 1, 1, 1)
         gl_1.addWidget(self.lw_tnames, 3, 0, 1, 2)
         gl_1.addWidget(self.cb_ensuresutm, 4, 0, 1, 2)
+        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel |
-            buttonbox.StandardButton.Ok)
-
-        gl_1.addWidget(buttonbox, 9, 0, 1, 2)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
 
@@ -354,9 +337,9 @@ class ImportBatch(BasicModule):
                 return tmp
 
         if not self.filelist:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'No valid files in the directory.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'No valid files in the directory.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         self.setsensor()
@@ -388,9 +371,8 @@ class ImportBatch(BasicModule):
 
         allfiles = consolidate_aster_list(allfiles)
 
-        self.bands, self.tnames, self.filelist = files_to_rastermeta(allfiles,
-                                                                     self.piter,
-                                                                     self.showlog)
+        self.bands, self.tnames, self.filelist = files_to_rastermeta(
+            allfiles, self.piter, self.showlog)
 
         for sensor in self.tnames:
             tmp = []
@@ -516,15 +498,11 @@ class ImportSentinel5P(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.imports5p'
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.imports5p')
         lbl_subdata = QtWidgets.QLabel('Product:')
         lbl_qathres = QtWidgets.QLabel('QA Threshold (0-100):')
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_cclip.setChecked(True)
         self.lbl_sfile.hide()
         self.le_shpfile.hide()
@@ -555,11 +533,8 @@ class ImportSentinel5P(BasicModule):
         gl_main.addWidget(lbl_qathres, 8, 0, 1, 1)
         gl_main.addWidget(self.le_qathres, 8, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 10, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 10, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 10, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.rb_cclip.clicked.connect(self.clipchoice)
         self.rb_sclip.clicked.connect(self.clipchoice)
         self.lbl_sfile.clicked.connect(self.loadshp)
@@ -882,9 +857,9 @@ class ExportBatch(ContextModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.cm.exportdata'
+
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.exportdata')
         lbl_ofilt = QtWidgets.QLabel('Output Format:')
         lbl_red = QtWidgets.QLabel('Red Band:')
         lbl_green = QtWidgets.QLabel('Green Band:')
@@ -908,10 +883,6 @@ class ExportBatch(ContextModule):
         self.cmb_blue.setEnabled(False)
         self.cmb_sunshade.setEnabled(False)
         self.cmb_slvl.setEnabled(False)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Export File List')
 
@@ -938,11 +909,8 @@ class ExportBatch(ContextModule):
         gl_main.addWidget(lbl_slvl, 7, 0, 1, 1)
         gl_main.addWidget(self.cmb_slvl, 7, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.acceptall)
-        buttonbox.rejected.connect(self.reject)
         pb_odir.pressed.connect(self.get_odir)
         self.cb_ternary.clicked.connect(self.click_ternary)
 
@@ -3845,4 +3813,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _test5P()

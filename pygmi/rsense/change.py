@@ -29,9 +29,8 @@ import os
 import sys
 import numpy as np
 from numba import jit
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 
-from pygmi import menu_default
 from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
@@ -64,18 +63,13 @@ class CalculateChange(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'rsense.dm.change.html#calculate-change-indices'
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('rsense.dm.change')
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
-        self.lw_indices.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
+        self.lw_indices.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.setWindowTitle('Calculate Change Indices')
 
@@ -83,11 +77,8 @@ class CalculateChange(BasicModule):
         gl_main.addWidget(self.lw_indices, 1, 1, 1, 1)
         gl_main.addWidget(btn_invert, 2, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.lw_indices.clicked.connect(self.set_selected_indices)
         btn_invert.clicked.connect(self.invert_selection)
 

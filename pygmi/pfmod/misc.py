@@ -548,7 +548,7 @@ def _testfn():
 
     MM = MergeMod3D()
     MM.indata = data
-    MM.settings(True)
+    MM.settings()
 
     for i in MM.outdata['Raster']:
         print(i.dataid)
