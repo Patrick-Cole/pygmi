@@ -27,7 +27,7 @@
 import sys
 from contextlib import redirect_stdout
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import scipy.interpolate as si
 from discretize import TensorMesh
 from discretize.utils import active_from_xyz
@@ -38,7 +38,6 @@ from simpeg import (maps, data, inverse_problem, data_misfit,
                     inversion)
 import sklearn.cluster as skc
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.misc import lstack
@@ -101,18 +100,13 @@ class MagInvert(BasicModule):
 
         """
         self.setWindowTitle('Inverse Modelling Parameters')
-        helpdocs = menu_default.HelpButton('pfmod.dm.inv3d')
+        self.buttonbox.htmlfile = 'pfmod.dm.inv3d'
 
         vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
-                                           QtWidgets.QSizePolicy.Policy.Preferred)
-
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-        buttonbox.button(buttonbox.StandardButton.Ok).setText('Run Inversion')
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred)
 
         # Current Models Groupbox
         hbl_model = QtWidgets.QHBoxLayout()
@@ -143,10 +137,14 @@ class MagInvert(BasicModule):
         gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gbox_gen_prop)
 
-        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic')
-        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
-        lbl_5 = QtWidgets.QLabel('Magnetic Inclination')
-        lbl_6 = QtWidgets.QLabel('Magnetic Declination')
+        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic:')
+        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT):')
+        lbl_5 = QtWidgets.QLabel('Magnetic Inclination:')
+        lbl_6 = QtWidgets.QLabel('Magnetic Declination:')
+
+        gl_gen_prop.setColumnStretch(0, 1)
+        gl_gen_prop.setColumnStretch(1, 1)
+        gl_gen_prop.setColumnStretch(2, 1)
 
         gl_gen_prop.addWidget(lbl_3, 3, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_mht, 3, 1, 1, 1)
@@ -254,14 +252,11 @@ class MagInvert(BasicModule):
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
         gl_extent.addWidget(self.sb_classes, 9, 1, 1, 1)
 
-        hbl.addWidget(helpdocs)
-        hbl.addWidget(buttonbox)
-
         # Assign to main layout
         vbl.addWidget(gbox_data_info)
         vbl.addWidget(gbox_gen_prop)
         vbl.addWidget(gbox_extent)
-        vbl.addLayout(hbl)
+        vbl.addWidget(self.buttonbox)
 
         # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)
@@ -275,9 +270,6 @@ class MagInvert(BasicModule):
         self.cmb_dataset.currentIndexChanged.connect(self.get_area)
         self.cmb_dtm.currentIndexChanged.connect(self.choose_dtm)
         self.cmb_model.currentIndexChanged.connect(self.choose_model)
-
-        buttonbox.accepted.connect(self.apply_changes)
-        buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
         """

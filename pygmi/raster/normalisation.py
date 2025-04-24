@@ -25,10 +25,9 @@
 """Raster normalisation routine."""
 
 import warnings
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 
-from pygmi import menu_default
 from pygmi.raster.misc import histeq
 from pygmi.misc import BasicModule
 
@@ -70,33 +69,23 @@ class Normalisation(BasicModule):
 
         """
         vbl_1 = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.norm')
+
+        self.buttonbox.htmlfile = 'raster.dm.norm'
 
         self.rb_interval.setChecked(True)
 
         gbox = QtWidgets.QGroupBox('Normalisation/Scaling')
         vbl_2 = QtWidgets.QVBoxLayout(gbox)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         vbl_2.addWidget(self.rb_interval)
         vbl_2.addWidget(self.rb_mean)
         vbl_2.addWidget(self.rb_median)
         vbl_2.addWidget(self.rb_8bit)
 
-        hbl.addWidget(helpdocs)
-        hbl.addWidget(buttonbox)
-
         vbl_1.addWidget(gbox)
-        vbl_1.addLayout(hbl)
+        vbl_1.addWidget(self.buttonbox)
 
         self.setWindowTitle('Normalisation')
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def settings(self, nodialog=False):
         """
@@ -202,3 +191,22 @@ def datacommon(data, tmp1, tmp2):
         data.data = np.ma.array(dtmp, mask=mtmp)
 
     return data, transform
+
+
+def _testfn():
+    import sys
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = Normalisation()
+    DM.indata['Raster'] = dat
+    DM.settings()
+
+
+if __name__ == "__main__":
+    _testfn()

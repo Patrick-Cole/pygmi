@@ -29,7 +29,6 @@ from PyQt6 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 
 
@@ -83,8 +82,8 @@ class Smooth(BasicModule):
         gl_2 = QtWidgets.QGridLayout(gbox)
         gbox_2 = QtWidgets.QGroupBox('Filter Type')
         gbox_3 = QtWidgets.QGroupBox('Filter Shape')
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.smoothing')
+
+        self.buttonbox.htmlfile = 'raster.dm.smoothing'
 
         self.sb_x.setMinimum(1)
         self.sb_x.setMaximum(999999)
@@ -102,7 +101,6 @@ class Smooth(BasicModule):
         self.rb_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Smoothing Filters')
 
@@ -127,8 +125,7 @@ class Smooth(BasicModule):
         gl_1.addWidget(gbox_2, 2, 0, 1, 1)
         gl_1.addWidget(gbox_3, 2, 1, 1, 1)
         gl_1.addWidget(gbox, 2, 2, 1, 1)
-        gl_1.addWidget(buttonbox, 3, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 3, 0, 1, 1)
+        gl_1.addWidget(self.buttonbox, 3, 0, 1, 3)
 
         self.rb_2dmean.clicked.connect(self.choosefilter)
         self.rb_2dmedian.clicked.connect(self.choosefilter)
@@ -139,8 +136,6 @@ class Smooth(BasicModule):
         self.sb_y.valueChanged.connect(self.choosefilter)
         self.sb_radius.valueChanged.connect(self.choosefilter)
         self.sb_stddev.valueChanged.connect(self.choosefilter)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def settings(self, nodialog=False):
         """

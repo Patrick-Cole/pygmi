@@ -25,11 +25,10 @@
 """A set of data processing routines for gravity."""
 
 import sys
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pygmi import menu_default
 from pygmi.grav import iodefs
 from pygmi.misc import BasicModule
 
@@ -70,8 +69,8 @@ class ProcessData(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('gravity.dm.process')
+        self.buttonbox.htmlfile = 'gravity.dm.process'
+
         lbl_density = QtWidgets.QLabel('Background Density (kg/m3):')
         lbl_absbase = QtWidgets.QLabel('Local Base Station Absolute Gravity '
                                        '(mGal):')
@@ -80,10 +79,6 @@ class ProcessData(BasicModule):
         lbl_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity '
                                      '(mGal):')
         pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Gravity Data Processing')
 
@@ -100,11 +95,8 @@ class ProcessData(BasicModule):
         gl_main.addWidget(self.le_absbase, 4, 1, 1, 1)
         gl_main.addWidget(lbl_bthres, 5, 0, 1, 1)
         gl_main.addWidget(self.le_basethres, 5, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 6, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 6, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_calcbase.pressed.connect(self.calcbase)
 
     def settings(self, nodialog=False):
@@ -526,32 +518,26 @@ def _testfn():
     """Test routine."""
     app = QtWidgets.QApplication(sys.argv)
 
-    grvfile = r'd:\Workdata\gravity\skeifontein 2018.txt'
-    gpsfile = r'd:\Workdata\gravity\skei_dgps.csv'
+    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
+    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
     kbase = '88888'
     bthres = '10000'
 
-    grvfile = r"D:\Workdata\bugs\grav\Combined_Profile1_Processed.txt"
-    gpsfile = r"D:/Workdata/bugs/grav/GPS profil 1 lat lon.csv"
-    kbase = '111111'
-    bthres = '100000'
-
     # Import Data
     IO = iodefs.ImportCG5(None)
-    IO.basethres.setText(bthres)
+    IO.le_basethres.setText(bthres)
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
-    IO.settings(True)
+    IO.settings()
 
     # Process Data
     PD = ProcessData()
     PD.indata = IO.outdata
-    PD.basethres.setText(bthres)
-    PD.knownstat.setText(kbase)
-    PD.knownbase.setText('978794.53')
-    PD.calcbase()
+    PD.le_basethres.setText(bthres)
+    PD.le_knownstat.setText(kbase)
+    PD.le_knownbase.setText('978794.53')
 
-    PD.settings(True)
+    PD.settings()
 
     datout = PD.outdata['Vector']
 

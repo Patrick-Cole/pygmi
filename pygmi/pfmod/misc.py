@@ -29,7 +29,6 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import rasterio
 
-from pygmi import menu_default
 from pygmi.raster.reproj import data_reproject
 from pygmi.misc import BasicModule
 
@@ -302,14 +301,10 @@ class MergeMod3D(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pfmod.dm.merge3dmodels')
+        self.buttonbox.htmlfile = 'pfmod.dm.merge3dmodels'
+
         lbl_master = QtWidgets.QLabel('Primary Dataset:')
         lbl_slave = QtWidgets.QLabel('Secondary Dataset:')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('3D Model Merge')
 
@@ -318,11 +313,7 @@ class MergeMod3D(BasicModule):
 
         gl_main.addWidget(lbl_slave, 1, 0, 1, 1)
         gl_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 3, 0, 1, 4)
 
     def settings(self, nodialog=False):
         """

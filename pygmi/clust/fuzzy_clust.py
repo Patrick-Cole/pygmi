@@ -27,13 +27,12 @@ Fuzzy clustering is a set of clustering routines, making use of fuzzy logic.
 """
 
 import os
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.misc import BasicModule
-from pygmi import menu_default
 
 
 class FuzzyClust(BasicModule):
@@ -92,12 +91,11 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('cluster.dm.fuzzy')
+        self.buttonbox.htmlfile = 'cluster.dm.fuzzy'
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox(self)
         vbl = QtWidgets.QVBoxLayout(gbox)
 
-        buttonbox = QtWidgets.QDialogButtonBox(self)
         lbl_1 = QtWidgets.QLabel()
         lbl_2 = QtWidgets.QLabel()
         lbl_3 = QtWidgets.QLabel()
@@ -118,8 +116,6 @@ class FuzzyClust(BasicModule):
         self.dsb_maxerror.setProperty('value', 1e-05)
         self.dsb_fuzzynessexp.setProperty('value', 1.5)
         self.rb_random.setChecked(True)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Fuzzy Clustering')
         gbox.setTitle('Initial Guess')
@@ -138,33 +134,29 @@ class FuzzyClust(BasicModule):
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
 
-        gl_1.addWidget(lbl_1, 0, 2, 1, 1)
-        gl_1.addWidget(lbl_2, 1, 2, 1, 1)
-        gl_1.addWidget(lbl_3, 2, 2, 1, 1)
-        gl_1.addWidget(lbl_4, 3, 2, 1, 1)
-        gl_1.addWidget(lbl_5, 4, 2, 1, 1)
-        gl_1.addWidget(lbl_6, 5, 2, 1, 1)
-        gl_1.addWidget(self.lbl_7, 6, 2, 1, 1)
-        gl_1.addWidget(lbl_8, 7, 2, 1, 1)
-        gl_1.addWidget(gbox, 9, 2, 1, 3)
+        gl_1.addWidget(lbl_1, 0, 0, 1, 1)
+        gl_1.addWidget(lbl_2, 1, 0, 1, 1)
+        gl_1.addWidget(lbl_3, 2, 0, 1, 1)
+        gl_1.addWidget(lbl_4, 3, 0, 1, 1)
+        gl_1.addWidget(lbl_5, 4, 0, 1, 1)
+        gl_1.addWidget(lbl_6, 5, 0, 1, 1)
+        gl_1.addWidget(self.lbl_7, 6, 0, 1, 1)
+        gl_1.addWidget(lbl_8, 7, 0, 1, 1)
+        gl_1.addWidget(gbox, 9, 0, 1, 2)
 
-        gl_1.addWidget(self.cmb_alg, 0, 4, 1, 1)
-        gl_1.addWidget(self.sb_minclusters, 1, 4, 1, 1)
-        gl_1.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
-        gl_1.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
-        gl_1.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
-        gl_1.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
-        gl_1.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
-        gl_1.addWidget(self.dsb_fuzzynessexp, 7, 4, 1, 1)
-        gl_1.addWidget(helpdocs, 10, 2, 1, 1)
-        gl_1.addWidget(buttonbox, 10, 4, 1, 1)
+        gl_1.addWidget(self.cmb_alg, 0, 1, 1, 1)
+        gl_1.addWidget(self.sb_minclusters, 1, 1, 1, 1)
+        gl_1.addWidget(self.sb_maxclusters, 2, 1, 1, 1)
+        gl_1.addWidget(self.sb_maxiterations, 3, 1, 1, 1)
+        gl_1.addWidget(self.dsb_maxerror, 4, 1, 1, 1)
+        gl_1.addWidget(self.sb_repeatedruns, 5, 1, 1, 1)
+        gl_1.addWidget(self.dsb_constraincluster, 6, 1, 1, 1)
+        gl_1.addWidget(self.dsb_fuzzynessexp, 7, 1, 1, 1)
+        gl_1.addWidget(self.buttonbox, 10, 0, 1, 2)
 
         vbl.addWidget(self.rb_random)
         vbl.addWidget(self.rb_manual)
         vbl.addWidget(self.rb_datadriven)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """
@@ -864,3 +856,30 @@ def xie_beni(data, expo, uuu, center, edist):
     min_cdist = cdist1.min()
     xbi = numerator / (data.shape[0] * min_cdist)
     return xbi
+
+
+def _testfn():
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = FuzzyClust()
+    DM.indata['Raster'] = dat
+    DM.settings()
+
+    dat2 = DM.outdata['Cluster']
+
+    plt.figure(dpi=150)
+    plt.imshow(dat2[0].data)
+    plt.colorbar()
+    plt.show()
+
+if __name__ == "__main__":
+    _testfn()

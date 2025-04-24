@@ -28,7 +28,7 @@ import sys
 import os
 import copy
 from contextlib import redirect_stdout
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
@@ -40,7 +40,6 @@ from simpeg import (maps, data_misfit, regularization,
 from simpeg.electromagnetics import time_domain
 import simpeg.data as Sdata
 
-from pygmi import menu_default
 from pygmi.misc import QVStack2Layout, BasicModule
 
 
@@ -163,7 +162,8 @@ class TDEM1D(BasicModule):
         self.times = None
 
         self.setWindowTitle('TDEM 1D Inversion')
-        helpdocs = menu_default.HelpButton('em.dm.tdem1dinv')
+        self.buttonbox.htmlfile = 'em.dm.tdem1dinv'
+        self.buttonbox.buttonbox.hide()
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
@@ -223,11 +223,6 @@ class TDEM1D(BasicModule):
 
         pb_apply = QtWidgets.QPushButton('Invert Station')
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         vsl.addWidget('Line Number:', self.cmb_line)
         vsl.addWidget(r'Fid/Station Name:', self.cmb_fid)
         vsl.addWidget('Bird Height:', self.cmb_balt)
@@ -255,7 +250,7 @@ class TDEM1D(BasicModule):
         vsl.addWidget('Optimization - maximum iterations:', self.le_maxiter)
 
         vsl.addWidget(pb_wfile, self.le_wfile)
-        vsl.addWidget(helpdocs, pb_apply)
+        vsl.addWidget(self.buttonbox, pb_apply)
 
         vbl.addWidget(self.mmc1)
         vbl.addWidget(pb_wdisp)
@@ -564,9 +559,8 @@ class TDEM1D(BasicModule):
             wform = time_domain.sources.TrapezoidWaveform(ramp_on=rampon,
                                                           ramp_off=rampoff)
         elif wtype == 'TriangularWaveform':
-            wform = time_domain.sources.TriangularWaveform(start_time=starttime,
-                                                           peak_time=peaktime,
-                                                           off_time=offtime)
+            wform = time_domain.sources.TriangularWaveform(
+                start_time=starttime, peak_time=peaktime, off_time=offtime)
         elif wtype == 'QuarterSineRampOnWaveform':
             wform = time_domain.sources.QuarterSineRampOnWaveform(
                 ramp_on=rampon, ramp_off=rampoff)

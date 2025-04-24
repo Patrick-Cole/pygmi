@@ -28,14 +28,13 @@ scikit-learn library.
 """
 
 import os
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import sklearn.cluster as skc
 from sklearn.metrics import calinski_harabasz_score
 import sklearn.preprocessing as skp
 
 from pygmi.raster.datatypes import Data
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 
 
@@ -105,10 +104,9 @@ class Cluster(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('cluster.dm.clust')
+        self.buttonbox.htmlfile = 'cluster.dm.clust'
         gl_1 = QtWidgets.QGridLayout(self)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
         lbl_1 = QtWidgets.QLabel('Cluster Algorithm:')
 
         self.sb_minclusters.setMinimum(1)
@@ -137,39 +135,32 @@ class Cluster(BasicModule):
         self.dsb_bthres.setDecimals(5)
         self.dsb_bthres.setProperty('value', self.bthres)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Cluster Analysis')
 
-        gl_1.addWidget(lbl_1, 0, 2, 1, 1)
-        gl_1.addWidget(self.cmb_alg, 0, 4, 1, 1)
-        gl_1.addWidget(self.lbl_minclusters, 1, 2, 1, 1)
-        gl_1.addWidget(self.sb_minclusters, 1, 4, 1, 1)
-        gl_1.addWidget(self.lbl_maxclusters, 2, 2, 1, 1)
-        gl_1.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
-        gl_1.addWidget(self.lbl_maxiter, 3, 2, 1, 1)
-        gl_1.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
-        gl_1.addWidget(self.lbl_maxerror, 4, 2, 1, 1)
-        gl_1.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
-        gl_1.addWidget(self.lbl_bthres, 3, 2, 1, 1)
-        gl_1.addWidget(self.dsb_bthres, 3, 4, 1, 1)
-        gl_1.addWidget(self.lbl_branchfac, 4, 2, 1, 1)
-        gl_1.addWidget(self.sb_branchfac, 4, 4, 1, 1)
-        gl_1.addWidget(self.lbl_eps, 1, 2, 1, 1)
-        gl_1.addWidget(self.dsb_eps, 1, 4, 1, 1)
-        gl_1.addWidget(self.lbl_xi, 3, 2, 1, 1)
-        gl_1.addWidget(self.dsb_xi, 3, 4, 1, 1)
-        gl_1.addWidget(self.lbl_minsamples, 2, 2, 1, 1)
-        gl_1.addWidget(self.sb_minsamples, 2, 4, 1, 1)
-        gl_1.addWidget(self.rb_noscale, 7, 2, 1, 1)
-        gl_1.addWidget(self.rb_sscale, 8, 2, 1, 1)
-        gl_1.addWidget(self.rb_rscale, 9, 2, 1, 1)
-        gl_1.addWidget(helpdocs, 10, 2, 1, 1)
-        gl_1.addWidget(buttonbox, 10, 4, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_1.addWidget(lbl_1, 0, 0, 1, 1)
+        gl_1.addWidget(self.cmb_alg, 0, 1, 1, 1)
+        gl_1.addWidget(self.lbl_minclusters, 1, 0, 1, 1)
+        gl_1.addWidget(self.sb_minclusters, 1, 1, 1, 1)
+        gl_1.addWidget(self.lbl_maxclusters, 2, 0, 1, 1)
+        gl_1.addWidget(self.sb_maxclusters, 2, 1, 1, 1)
+        gl_1.addWidget(self.lbl_maxiter, 3, 0, 1, 1)
+        gl_1.addWidget(self.sb_maxiterations, 3, 1, 1, 1)
+        gl_1.addWidget(self.lbl_maxerror, 4, 0, 1, 1)
+        gl_1.addWidget(self.dsb_maxerror, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_bthres, 3, 0, 1, 1)
+        gl_1.addWidget(self.dsb_bthres, 3, 1, 1, 1)
+        gl_1.addWidget(self.lbl_branchfac, 4, 0, 1, 1)
+        gl_1.addWidget(self.sb_branchfac, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_eps, 1, 0, 1, 1)
+        gl_1.addWidget(self.dsb_eps, 1, 1, 1, 1)
+        gl_1.addWidget(self.lbl_xi, 3, 0, 1, 1)
+        gl_1.addWidget(self.dsb_xi, 3, 1, 1, 1)
+        gl_1.addWidget(self.lbl_minsamples, 2, 0, 1, 1)
+        gl_1.addWidget(self.sb_minsamples, 2, 1, 1, 1)
+        gl_1.addWidget(self.rb_noscale, 7, 0, 1, 1)
+        gl_1.addWidget(self.rb_sscale, 8, 0, 1, 1)
+        gl_1.addWidget(self.rb_rscale, 9, 0, 1, 1)
+        gl_1.addWidget(self.buttonbox, 10, 0, 1, 2)
 
     def combo(self):
         """

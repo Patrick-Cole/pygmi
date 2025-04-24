@@ -108,7 +108,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\svg\\' + str(int(cgs[i]))+'.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
@@ -240,7 +240,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\svg\\' + str(int(cgs[i]))+'.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
@@ -347,8 +347,6 @@ class PlotLog(ContextModule):
         self.mmc = MyMplCanvas(self)
         self.mmc2 = MyMplCanvas(self)
 
-        # breakpoint()
-
         self.lbl_topleft = QtWidgets.QLabel()
         self.lbl_topright = QtWidgets.QLabel()
         self.lbl_bottomleft = QtWidgets.QLabel()
@@ -359,13 +357,18 @@ class PlotLog(ContextModule):
                                           QtCore.Qt.AlignmentFlag.AlignVCenter)
 
         self.scroll = QtWidgets.QScrollArea(self)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scroll.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll.setWidget(self.mmc)
         # self.scroll.resize(900,600)
 
+        self.buttonbox.htmlfile = 'bholes.cm.showlog'
+        self.buttonbox.buttonbox.hide()
+        self.hbl.addWidget(self.buttonbox)
+
         self.cmb_1 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Borehole ID:')
-        self.hbl.addWidget(self.lbl_1)
+        self.hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         self.hbl.addWidget(self.cmb_1)
 
         hbl_1.addWidget(self.lbl_topleft)
@@ -429,13 +432,13 @@ class PlotLog(ContextModule):
         None.
 
         """
-        self.show()
         data = []
         if 'Borehole' in self.indata:
             data = self.indata['Borehole']
 
-        for i in data:
-            self.cmb_1.addItem(i)
+        self.cmb_1.addItems(list(data.keys()))
+
+        self.show()
         self.change_band()
 
 

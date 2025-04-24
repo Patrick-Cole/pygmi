@@ -23,18 +23,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Crisp clustering is a set of clustering routines, using standard statistical
-methods, as opposed to fuzzy methods.
+Crisp clustering is a set of clustering routines.
+
+This uses standard statistical methods, as opposed to fuzzy methods.
 """
 
 import os
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
 from pygmi.misc import BasicModule
-from pygmi import menu_default
 
 
 class CrispClust(BasicModule):
@@ -90,11 +90,10 @@ class CrispClust(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('cluster.dm.crisp')
+        self.buttonbox.htmlfile = 'cluster.dm.crisp'
         gl_1 = QtWidgets.QGridLayout(self)
         vbl = QtWidgets.QVBoxLayout(self.gbox)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
         lbl_1 = QtWidgets.QLabel()
         lbl_2 = QtWidgets.QLabel()
         lbl_3 = QtWidgets.QLabel()
@@ -113,8 +112,6 @@ class CrispClust(BasicModule):
         self.dsb_maxerror.setProperty('value', 1e-05)
         self.sb_repeatedruns.setMinimum(1)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_random.setChecked(True)
         self.gbox.hide()
 
@@ -133,30 +130,26 @@ class CrispClust(BasicModule):
         self.rb_manual.setText('Manual')
         self.rb_datadriven.setText('Data Driven')
 
-        gl_1.addWidget(lbl_1, 0, 2, 1, 1)
-        gl_1.addWidget(self.cmb_alg, 0, 4, 1, 1)
-        gl_1.addWidget(lbl_2, 1, 2, 1, 1)
-        gl_1.addWidget(self.sb_minclusters, 1, 4, 1, 1)
-        gl_1.addWidget(lbl_3, 2, 2, 1, 1)
-        gl_1.addWidget(self.sb_maxclusters, 2, 4, 1, 1)
-        gl_1.addWidget(lbl_4, 3, 2, 1, 1)
-        gl_1.addWidget(self.sb_maxiterations, 3, 4, 1, 1)
-        gl_1.addWidget(lbl_5, 4, 2, 1, 1)
-        gl_1.addWidget(self.dsb_maxerror, 4, 4, 1, 1)
-        gl_1.addWidget(lbl_6, 5, 2, 1, 1)
-        gl_1.addWidget(self.sb_repeatedruns, 5, 4, 1, 1)
-        gl_1.addWidget(self.lbl_7, 6, 2, 1, 1)
-        gl_1.addWidget(self.dsb_constraincluster, 6, 4, 1, 1)
-        gl_1.addWidget(self.gbox, 8, 2, 1, 3)
-        gl_1.addWidget(helpdocs, 9, 2, 1, 1)
-        gl_1.addWidget(buttonbox, 9, 4, 1, 1)
+        gl_1.addWidget(lbl_1, 0, 0, 1, 1)
+        gl_1.addWidget(self.cmb_alg, 0, 1, 1, 1)
+        gl_1.addWidget(lbl_2, 1, 0, 1, 1)
+        gl_1.addWidget(self.sb_minclusters, 1, 1, 1, 1)
+        gl_1.addWidget(lbl_3, 2, 0, 1, 1)
+        gl_1.addWidget(self.sb_maxclusters, 2, 1, 1, 1)
+        gl_1.addWidget(lbl_4, 3, 0, 1, 1)
+        gl_1.addWidget(self.sb_maxiterations, 3, 1, 1, 1)
+        gl_1.addWidget(lbl_5, 4, 0, 1, 1)
+        gl_1.addWidget(self.dsb_maxerror, 4, 1, 1, 1)
+        gl_1.addWidget(lbl_6, 5, 0, 1, 1)
+        gl_1.addWidget(self.sb_repeatedruns, 5, 1, 1, 1)
+        gl_1.addWidget(self.lbl_7, 6, 0, 1, 1)
+        gl_1.addWidget(self.dsb_constraincluster, 6, 1, 1, 1)
+        gl_1.addWidget(self.gbox, 8, 0, 1, 3)
+        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
         vbl.addWidget(self.rb_random)
         vbl.addWidget(self.rb_manual)
         vbl.addWidget(self.rb_datadriven)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """
@@ -328,10 +321,10 @@ class CrispClust(BasicModule):
             [ro0, co0] = np.shape(dummy_mod)
             ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
             if dat_in.shape[1] != co0 or ro0 != ro1:
-                QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                              ' Incorrect matrix size!',
-                                              QtWidgets.QMessageBox.StandardButton.Ok,
-                                              QtWidgets.QMessageBox.StandardButton.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Warning', ' Incorrect matrix size!',
+                    QtWidgets.QMessageBox.StandardButton.Ok,
+                    QtWidgets.QMessageBox.StandardButton.Ok)
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
                 smtmp = np.zeros(i)
@@ -756,3 +749,31 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
             ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
         bigd = np.sqrt(ddd)
     return bigd.real
+
+
+def _testfn():
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    DM = CrispClust()
+    DM.indata['Raster'] = dat
+    DM.settings()
+
+    dat2 = DM.outdata['Cluster']
+
+    plt.figure(dpi=150)
+    plt.imshow(dat2[0].data)
+    plt.colorbar()
+    plt.show()
+
+
+if __name__ == "__main__":
+    _testfn()

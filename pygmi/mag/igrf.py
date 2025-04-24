@@ -57,11 +57,10 @@ from math import sqrt
 from math import atan2
 
 from numba import jit
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 
 import pygmi.raster.dataprep as dp
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 from pygmi.vector.dataprep import reprojxy
 
@@ -107,16 +106,12 @@ class IGRF(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('mag.dm.igrf')
+        self.buttonbox.htmlfile = 'mag.dm.igrf'
 
-        lbl_0 = QtWidgets.QLabel('Sensor clearance above ground')
-        lbl_1 = QtWidgets.QLabel('Date')
-        lbl_2 = QtWidgets.QLabel('Digital Elevation Model')
-        lbl_3 = QtWidgets.QLabel('Magnetic Data')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        lbl_0 = QtWidgets.QLabel('Sensor clearance above ground (m):')
+        lbl_1 = QtWidgets.QLabel('Date:')
+        lbl_2 = QtWidgets.QLabel('Digital Elevation Model (m):')
+        lbl_3 = QtWidgets.QLabel('Magnetic Data:')
 
         self.dsb_alt.setMaximum(99999.9)
 
@@ -125,17 +120,13 @@ class IGRF(BasicModule):
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(lbl_0, 2, 0, 1, 1)
         gl_1.addWidget(self.dsb_alt, 2, 1, 1, 1)
-        gl_1.addWidget(lbl_1, 3, 0, 1, 1)
-        gl_1.addWidget(self.dateedit, 3, 1, 1, 1)
+        gl_1.addWidget(lbl_1, 1, 0, 1, 1)
+        gl_1.addWidget(self.dateedit, 1, 1, 1, 1)
         gl_1.addWidget(lbl_2, 4, 0, 1, 1)
         gl_1.addWidget(self.cmb_dtm, 4, 1, 1, 1)
         gl_1.addWidget(lbl_3, 5, 0, 1, 1)
         gl_1.addWidget(self.cmb_mag, 5, 1, 1, 1)
-        gl_1.addWidget(buttonbox, 6, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 6, 0, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_1.addWidget(self.buttonbox, 6, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -206,8 +197,8 @@ class IGRF(BasicModule):
         sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
         alt = self.dsb_alt.value()
 
-        odata, fmean, imean, dmean = calc_igrf(data, sdate, alt=alt, wkt=wkt,
-                                               igrfonly=False,
+        odata, fmean, imean, dmean = calc_igrf(data, sdate, sen_alt=alt,
+                                               wkt=wkt, igrfonly=False,
                                                piter=self.piter,
                                                showlog=self.showlog)
         if odata is None:
@@ -239,7 +230,7 @@ class IGRF(BasicModule):
         self.saveobj(self.cmb_mag)
 
 
-def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
+def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
               showlog=print):
     """
     Calculate IGRF.
@@ -247,10 +238,10 @@ def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
     Parameters
     ----------
     data : pygmi.raster.datatypes.Data
-        Input magnetic data.
+        Input DTM data.
     sdate : Date
         Survey date.
-    alt : float, optional
+    sen_alt : float, optional
         Sensor clearance. The default is 100.
     wkt : str, optional
         WKT projection. The default is None.
@@ -359,7 +350,7 @@ def calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter,
             altmax.append(float(i2[8]))
             irec_pos.append(fileline)
 
-    altgrid = data.data.flatten() * 0.001  # in km
+    altgrid = (data.data.flatten() + sen_alt) * 0.001  # in km
 
     maxyr = max(yrmax)
 

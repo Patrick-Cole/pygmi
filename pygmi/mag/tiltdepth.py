@@ -49,7 +49,6 @@ from pygmi.raster.cooper import vertical
 from pygmi.raster.misc import lstack
 from pygmi.mag.dataprep import rtp, nextpow2
 from pygmi.misc import frm, ProgressBar, BasicModule
-from pygmi import menu_default
 
 
 class TiltDepth(BasicModule):
@@ -107,7 +106,8 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('mag.dm.tiltdepth')
+        self.buttonbox.htmlfile = 'mag.dm.tiltdepth'
+        self.buttonbox.buttonbox.hide()
         lbl_2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
         lbl_c = QtWidgets.QLabel('Colour Bar:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
@@ -126,7 +126,8 @@ class TiltDepth(BasicModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum,
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Minimum,
                                        QtWidgets.QSizePolicy.Policy.Expanding)
         tmp = sorted(colormaps.keys())
         self.cmb_cbar.addItem('viridis')
@@ -148,7 +149,7 @@ class TiltDepth(BasicModule):
         vbl_raster.addWidget(self.pbar)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_save)
-        vbl_raster.addWidget(helpdocs)
+        vbl_raster.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
 
@@ -282,10 +283,6 @@ class TiltDepth(BasicModule):
 
         cmap3 = cm.colors.ListedColormap(cmap2)
         # ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
-
-        # breakpoint()
-
-
 
         # self.axes.plot(self.x0, self.y0, '.k')
         ims = self.axes.scatter(gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)

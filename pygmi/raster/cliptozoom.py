@@ -40,7 +40,6 @@ import geopandas as gpd
 from pygmi.misc import frm, BasicModule
 from pygmi.raster.modest_image import imshow
 from pygmi.raster.misc import cut_raster
-from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -132,7 +131,9 @@ class ClipToZoom(BasicModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        hbl.addWidget(menu_default.HelpButton('raster.dm.cliptozoom'))
+        self.buttonbox.htmlfile = 'raster.dm.cliptozoom'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')

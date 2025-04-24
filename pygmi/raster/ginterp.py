@@ -60,7 +60,6 @@ from matplotlib.colors import ListedColormap
 
 from pygmi.misc import BasicModule
 from pygmi.raster import iodefs, dataprep
-from pygmi import menu_default
 from pygmi.raster.modest_image import imshow
 from pygmi.raster.misc import currentshader, histcomp, histeq, img2rgb
 from pygmi.raster.misc import norm2, norm255, lstack
@@ -1192,7 +1191,8 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        helpdocs = menu_default.HelpButton('raster.dm.rasterdisplay')
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.dm.rasterdisplay'
         btn_apply = QtWidgets.QPushButton('Apply Histogram')
 
         self.btn_allclipperc.setDefault(False)
@@ -1229,7 +1229,8 @@ class PlotInterp(BasicModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Fixed,
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Fixed,
                                        QtWidgets.QSizePolicy.Policy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
@@ -1245,7 +1246,6 @@ class PlotInterp(BasicModule):
         self.le_lineclipu.setPlaceholderText('% of high values to exclude')
         self.le_lineclipl.setPlaceholderText('% of low values to exclude')
         self.btn_saveimg.setAutoDefault(False)
-        helpdocs.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 
         tmp = sorted(m for m in colormaps())
@@ -1293,7 +1293,7 @@ class PlotInterp(BasicModule):
         vbl_4.addWidget(self.aslider)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveimg)
-        vbl_raster.addWidget(helpdocs)
+        vbl_raster.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
 
@@ -1811,9 +1811,9 @@ class PlotInterp(BasicModule):
         try:
             blen = float(text)
         except ValueError:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Invalid value.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'Invalid value.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         bwid = blen/16.

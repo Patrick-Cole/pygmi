@@ -24,13 +24,12 @@
 # -----------------------------------------------------------------------------
 """Equation editor."""
 
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtGui
 import numpy as np
 import numexpr as ne
 
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
-from pygmi import menu_default
 
 
 class EquationEditor(BasicModule):
@@ -78,20 +77,16 @@ class EquationEditor(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
+
         lbl_1 = QtWidgets.QLabel('Data Band Key:')
         lbl_2 = QtWidgets.QLabel('Output Equation:')
         lbl_3 = QtWidgets.QLabel('Output Data Type:')
         self.cmb_dtype.addItems(['auto', 'uint8', 'int16', 'int32',
                                  'float32', 'float64'])
-        helpdocs = menu_default.HelpButton('raster.dm.equationeditor')
+        self.buttonbox.htmlfile = 'raster.dm.equationeditor'
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
 
         ptmp = self.textbrowser2.palette()
 
@@ -153,12 +148,9 @@ class EquationEditor(BasicModule):
         gl_1.addWidget(self.cmb_dtype, 6, 0, 1, 1)
         gl_1.addWidget(lbl_3, 5, 0, 1, 1)
         gl_1.addWidget(self.textbrowser2, 7, 0, 1, 2)
-        gl_1.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 8, 1, 1, 1)
+        gl_1.addWidget(self.buttonbox, 8, 0, 1, 2)
 
         self.cmb_1.currentIndexChanged.connect(self.combo)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """

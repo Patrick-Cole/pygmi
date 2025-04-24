@@ -232,7 +232,7 @@ class BIRRP(BasicModule):
         hbl_1.addLayout(self.lay3)
 
         hbl_2 = QtWidgets.QHBoxLayout()
-#        hbl_2.addWidget(helpdocs)
+#        hbl_2.addWidget(helpdocs, QtCore.Qt.AlignmentFlag.AlignLeft)
         hbl_2.addWidget(buttonbox)
 
         vbl.addWidget(pb_importbirrp)

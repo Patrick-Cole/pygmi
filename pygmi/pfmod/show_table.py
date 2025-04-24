@@ -68,8 +68,11 @@ class BasicStats3D(ContextModule):
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
 
+        self.buttonbox.buttonbox.hide()
+
         vbl.addWidget(self.pushbutton_save)
         vbl.addWidget(self.cmb_1)
+        vbl.addWidget(self.buttonbox)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)

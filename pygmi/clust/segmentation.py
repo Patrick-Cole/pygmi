@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Image segmentation routines, following the technique by Baatz and Schäpe (2000)."""
+"""Image segmentation routines, following Baatz and Schäpe (2000)."""
 
 import numpy as np
 from sklearn.cluster import KMeans
@@ -31,7 +31,6 @@ import sklearn.preprocessing as skp
 from numba import jit
 from PyQt6 import QtWidgets, QtCore, QtGui
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 
 
@@ -67,8 +66,7 @@ class ImageSeg(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('cluster.dm.seg')
+        self.buttonbox.htmlfile = 'cluster.dm.seg'
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
@@ -87,10 +85,6 @@ class ImageSeg(BasicModule):
         val.setBottom = 0
         self.le_scale.setValidator(QtGui.QIntValidator(self))
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle(r'Image Segmentation')
 
         gl_main.addWidget(lbl_wcompact, 0, 0, 1, 1)
@@ -107,11 +101,7 @@ class ImageSeg(BasicModule):
         gl_main.addWidget(lbl_numclust, 4, 0, 1, 1)
         gl_main.addWidget(self.le_numclust, 4, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 4)
 
     def settings(self, nodialog=False):
         """

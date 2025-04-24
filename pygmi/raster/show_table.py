@@ -30,7 +30,6 @@ import numpy as np
 import scipy.stats.mstats as st
 
 from pygmi.misc import ContextModule
-from pygmi import menu_default
 
 
 class BasicStats(ContextModule):
@@ -69,11 +68,12 @@ class BasicStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        helpdocs = menu_default.HelpButton('raster.cm.stats')
+        self.buttonbox.htmlfile = 'raster.cm.stats'
+        self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
         vbl.addWidget(self.cmb_1)
-        vbl.addWidget(helpdocs)
+        vbl.addWidget(self.buttonbox)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
@@ -213,7 +213,8 @@ def basicstats_calc(data):
 
     bands = ['Data Column']
     cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',
-            'Median Abs Dev', 'No Unmasked Samples', 'No cols (samples in x-dir)',
+            'Median Abs Dev', 'No Unmasked Samples',
+            'No cols (samples in x-dir)',
             'No rows (samples in y-dir)', 'Skewness', 'Kurtosis']
     dattmp = [np.array(stats, dtype=object)]
     return bands, cols, dattmp
@@ -254,11 +255,12 @@ class ClusterStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        helpdocs = menu_default.HelpButton('cluster.cm.stat')
+        self.buttonbox.htmlfile = 'cluster.cm.stat'
+        self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
         vbl.addWidget(self.cmb_1)
-        vbl.addWidget(helpdocs)
+        vbl.addWidget(self.buttonbox)
 
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
@@ -422,7 +424,7 @@ def _testfn():
     """Test."""
     import sys
     from pygmi.raster.iodefs import get_raster
-    from pygmi.clust.cluster import Cluster
+    # from pygmi.clust.cluster import Cluster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
@@ -430,15 +432,15 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    DM = Cluster()
-    DM.indata['Raster'] = data
-    DM.settings()
+    # DM = Cluster()
+    # DM.indata['Raster'] = data
+    # DM.settings()
 
-    dat = DM.outdata
+    # dat = DM.outdata
     # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
 
-    tmp2 = ClusterStats()
-    tmp2.indata = dat
+    tmp2 = BasicStats()
+    tmp2.indata['Raster'] = data
     tmp2.run()
 
     app.exec()

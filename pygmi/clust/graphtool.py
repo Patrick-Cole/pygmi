@@ -693,6 +693,10 @@ class ScatterPlot(BasicModule):
         gl_main.addWidget(gbox_cp, 1, 0, 1, 1)
         gl_main.addWidget(gbox_map, 1, 1, 1, 1)
 
+        self.buttonbox.htmlfile = 'cluster.dm.scatter'
+
+        gl_main.addWidget(self.buttonbox, 2, 0, 1, 2)
+
         self.cp_dpoly.clicked.connect(self.on_cp_dpoly)
         self.map_dpoly.clicked.connect(self.on_map_dpoly)
 

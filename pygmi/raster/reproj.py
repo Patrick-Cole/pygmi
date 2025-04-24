@@ -212,9 +212,12 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
 
     if otransform is None:
         src_height, src_width = data.data.shape
-
-        otransform, ocolumns, orows = calculate_default_transform(
-            icrs, ocrs, src_width, src_height, *data.bounds)
+        try:
+            otransform, ocolumns, orows = calculate_default_transform(
+                icrs, ocrs, src_width, src_height, *data.bounds)
+        except rasterio.errors.CRSError:
+            showlog('Problem with projection,aborting....')
+            return None
 
     if data.nodata is None:
         nodata = data.data.fill_value
@@ -291,9 +294,11 @@ def _testfn():
     """Test."""
     from pygmi.raster.iodefs import get_raster
 
-    ifile1 = r"D:\Landslides\JTNdem.tif"
+    ifile1 = r"D:\AST_10092000_082754_stack.tif"
 
     dat1 = get_raster(ifile1)
+
+    dat2 = data_reproject(dat1[0], 4326)
 
 
 if __name__ == "__main__":

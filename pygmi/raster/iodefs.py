@@ -36,7 +36,6 @@ import rasterio
 from rasterio.windows import Window
 from pyproj.crs import CRS
 
-from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import lstack
 from pygmi.misc import ProgressBarText, ContextModule, BasicModule
@@ -64,7 +63,8 @@ class BandSelect(ContextModule):
         self.setLayout(self.vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
-        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_1.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.vbl.addWidget(self.lw_1)
 
@@ -227,19 +227,16 @@ class ImportData(BasicModule):
 
         if dat is None:
             if self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the grid. '
-                                              'Please make sure it is a '
-                                              'Geosoft FLOAT grid, and not a '
-                                              'compressed grid. You can '
-                                              'export your grid to '
-                                              'this format using the Geosoft '
-                                              'Viewer.',
-                                              QtWidgets.QMessageBox.StandardButton.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error',
+                    'Could not import the grid. Please make sure it is a '
+                    'Geosoft FLOAT grid, and not a compressed grid. You can '
+                    'export your grid to this format using the Geosoft '
+                    'Viewer.', QtWidgets.QMessageBox.StandardButton.Ok)
             else:
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the grid.',
-                                              QtWidgets.QMessageBox.StandardButton.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', 'Could not import the data.',
+                    QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'Raster'
@@ -720,16 +717,20 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
                 dat[-1].units = dataset.units[i]
 
             # Get data
-            if isbil is True and metaonly is False:
-                dat[-1].data = datin[i]
-            elif iraster is None and metaonly is False:
-                dat[-1].data = dataset.read(index, out_shape=out_shape)
-            elif metaonly is False:
-                xoff, yoff, xsize, ysize = iraster
-                dat[-1].data = dataset.read(index,
-                                            window=Window(xoff, yoff,
-                                                          xsize, ysize),
-                                            out_shape=out_shape)
+            try:
+                if isbil is True and metaonly is False:
+                    dat[-1].data = datin[i]
+                elif iraster is None and metaonly is False:
+                    dat[-1].data = dataset.read(index, out_shape=out_shape)
+                elif metaonly is False:
+                    xoff, yoff, xsize, ysize = iraster
+                    dat[-1].data = dataset.read(index,
+                                                window=Window(xoff, yoff,
+                                                              xsize, ysize),
+                                                out_shape=out_shape)
+            except rasterio.errors.RasterioIOError:
+                showlog('Error: Problem reading the file.')
+                return None
 
             # Set Null Value
             if nval is None:
@@ -1163,16 +1164,12 @@ class ExportData(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.cm.export')
+        self.buttonbox.htmlfile = 'raster.cm.export'
         pb_ofile = QtWidgets.QPushButton('Output File')
 
         self.cb_bandsort.setChecked(False)
-        self.lw_1.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        self.lw_1.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.setWindowTitle(r'Export Raster Data')
 
@@ -1183,13 +1180,10 @@ class ExportData(ContextModule):
         gl_main.addWidget(self.lw_1, 2, 0, 1, 2)
         gl_main.addWidget(self.cb_bandsort, 3, 0, 1, 2)
 
-        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.acceptall)
-        buttonbox.rejected.connect(self.reject)
+        self.buttonbox.buttonbox.accepted.connect(self.acceptall)
         pb_ofile.pressed.connect(self.get_ofile)
-        # self.cb_ternary.clicked.connect(self.click_ternary)
 
     def run(self):
         """
@@ -1279,7 +1273,8 @@ class ExportData(ContextModule):
             if len(data) > 1:
                 for i, dat in enumerate(data):
                     file_out = self.get_filename(dat, 'sdat')
-                    export_raster(file_out, [dat], drv='SAGA', piter=self.piter,
+                    export_raster(file_out, [dat], drv='SAGA',
+                                  piter=self.piter,
                                   showlog=self.showlog)
             else:
                 export_raster(self.ofile, data, drv='SAGA', piter=self.piter,
@@ -1580,11 +1575,16 @@ def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
     trans = data[0].transform
     crs = data[0].crs
 
+    if dtype == np.int64:
+        for i in data:
+            i.data = i.data.astype(np.int32)
+        dtype = data[0].data.dtype
+
     if nodata is not None:
         try:
             nodata = dtype.type(nodata)
         except OverflowError:
-            print(f'Invalid nodata for {dtype}, resetting to None')
+            showlog(f'Invalid nodata for {dtype}, resetting to None')
             nodata = None
 
     if trans is None:
@@ -1848,7 +1848,7 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
-
+    ifile = r"D:\2621CC_ESRI_TRUE_COLOUR_geo.tif"
     # ifile = ifile[:-4]+'_zstd.tif'
 
     # dat = get_ascii(ifile)
@@ -1856,7 +1856,7 @@ def _filespeedtest():
     dataset = get_raster(ifile)
 
     print(dataset[0].data.max())
-    return
+    # return
 
     getinfo('Start')
 

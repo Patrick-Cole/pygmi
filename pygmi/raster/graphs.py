@@ -41,10 +41,11 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import matplotlib.colors as mcolors
+import pyvista as pv
+from pyvistaqt import QtInteractor
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
-from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -313,11 +314,12 @@ class PlotCCoef(ContextModule):
 
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-        helpdocs = menu_default.HelpButton('raster.cm.stats')
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.cm.showcorr'
 
         vbl.addWidget(self.mmc)
         hbl.addWidget(mpl_toolbar)
-        hbl.addWidget(menu_default.HelpButton('raster.cm.showcorr'))
+        hbl.addWidget(self.buttonbox)
         vbl.addLayout(hbl)
 
         self.setMinimumSize(600, 600)
@@ -343,11 +345,10 @@ class PlotCCoef(ContextModule):
             return
 
         if not check_bands(data):
-            QtWidgets.QMessageBox.warning(self, 'Warning',
-                                          'Different size input datasets. '
-                                          'Merge and resample your input data '
-                                          'to fix this.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self, 'Warning', 'Different size input datasets. '
+                'Merge and resample your input data to fix this.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.show()
@@ -379,7 +380,10 @@ class PlotRaster(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
-        hbl.addWidget(menu_default.HelpButton('raster.cm.showsimple'))
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.cm.showsimple'
+
+        hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
@@ -453,10 +457,14 @@ class PlotSurface(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        hbl2 = QtWidgets.QHBoxLayout()
 
-        hbl.addWidget(menu_default.HelpButton('raster.cm.showsurface'))
+        self.plotter = QtInteractor(self)
+        self.vslider = QtWidgets.QSlider()
+
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.cm.showsurface'
+        hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
@@ -469,14 +477,17 @@ class PlotSurface(ContextModule):
         hbl.addWidget(self.cmb_2)
         self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
 
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        hbl2.addWidget(self.vslider)
+        hbl2.addWidget(self.plotter)
+
+        vbl.addLayout(hbl2)
         vbl.addLayout(hbl)
 
         self.setFocus()
 
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.vslider.valueChanged.connect(self.slider)
 
     def change_band(self):
         """
@@ -489,9 +500,76 @@ class PlotSurface(ContextModule):
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
-            self.mmc.update_surface(data[i], cmap)
+        if 'Raster' not in self.indata:
+            return
+
+        dat = self.indata['Raster'][i]
+        dat.data = dat.data.astype(float)
+
+        rows, cols = dat.data.shape
+        dxy = dat.xdim
+
+        xmin, xmax, ymin, ymax = dat.extent
+
+        x = np.arange(xmin, xmax, dxy)
+        y = np.arange(ymax, ymin, -dxy)
+
+        x, y = np.meshgrid(x, y)
+        z = dat.data.astype(float)
+
+        zmin = z.min()
+        zmax = z.max()
+
+        z = z.filled(np.nan)
+
+        grid = pv.StructuredGrid(x, y, z)
+        grid['values'] = z.T.flatten()
+
+        xptp = xmax-xmin
+        yptp = ymax-ymin
+        zptp = zmax-zmin
+
+        ptp = max(xptp, yptp, zptp)
+        n_labels = 5
+        label_dist = ptp/5
+
+        n_xlabels = max(2, round(xptp/label_dist))
+        n_ylabels = max(2, round(yptp/label_dist))
+        n_zlabels = max(2, round(zptp/label_dist))
+
+        bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
+
+        sargs = dict(title_font_size=20,
+                     label_font_size=16,
+                     shadow=True,
+                     n_labels=5,
+                     italic=True,
+                     fmt="%.1f",
+                     font_family="arial",
+                     vertical=True,
+                     title=dat.units,
+                     )
+
+        self.plotter.clear()
+        self.plotter.add_mesh(grid, cmap=cmap, scalars='values',
+                              scalar_bar_args=sargs,)
+        # self.plotter.show_grid(xtitle='Eastings (m)',
+        #                        ytitle='Northings (m)',
+        #                        ztitle='',
+        #                        fmt='{:,.1f}',
+        #                        axes_ranges=bounds,
+        #                        # n_xlabels=n_xlabels,
+        #                        # n_ylabels=n_ylabels,
+        #                        # n_zlabels=n_zlabels,
+        #                        font_family='times',
+        #                        font_size=4,
+        #                        bold=False,
+        #                        padding=.1,
+        #                        use_3d_text=False,
+        #                        grid='back',
+        #                        location='outer'
+                               # )
+        self.plotter.set_scale(zscale=20)
 
     def run(self):
         """
@@ -515,6 +593,10 @@ class PlotSurface(ContextModule):
         for i in data:
             self.cmb_1.addItem(i.dataid)
         self.change_band()
+
+    def slider(self):
+        """Vertical slider used to scale 3d view."""
+        self.plotter.set_scale(zscale=self.vslider.value())
 
 
 class PlotScatter(ContextModule):
@@ -540,7 +622,9 @@ class PlotScatter(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        hbl.addWidget(menu_default.HelpButton('raster.cm.showhexbin'))
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.cm.showhexbin'
+        hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -632,7 +716,9 @@ class PlotHist(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        hbl.addWidget(menu_default.HelpButton('raster.cm.showhist'))
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'raster.cm.showhist'
+        hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
@@ -760,21 +846,19 @@ def corr2d(dat1, dat2):
 
 def _testfn():
     """Test."""
+    import sys
     from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
 
-    ifile = r"d:/Workdata/LULC/2001_stack_norm.tif"
-
+    ifile = r'd:\WorkData\testdata.hdr'
+    app = QtWidgets.QApplication(sys.argv)
     data = get_raster(ifile)
 
-    cormat = np.array([[corr2d(i.data, j.data) for j in data] for i in data])
+    data = data[1:]
 
-    print(cormat)
-
-    plt.figure(dpi=150)
-    plt.imshow(cormat, cmap='jet')
-    plt.colorbar()
-    plt.show()
+    tmp = PlotSurface()
+    tmp.indata['Raster'] = data
+    tmp.run()
+    tmp.exec()
 
 
 if __name__ == "__main__":

@@ -36,7 +36,6 @@ import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely import Polygon
 
-from pygmi import menu_default
 from pygmi.raster.reproj import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
@@ -153,8 +152,8 @@ class DataGrid(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.gridding')
+
+        self.buttonbox.htmlfile = 'vector.dm.gridding'
         lbl_band = QtWidgets.QLabel('Column to Grid:')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_null = QtWidgets.QLabel('Null Value:')
@@ -173,11 +172,6 @@ class DataGrid(BasicModule):
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Dataset Gridding')
 
         gl_main.addWidget(lbl_method, 0, 0, 1, 1)
@@ -192,13 +186,11 @@ class DataGrid(BasicModule):
         gl_main.addWidget(self.le_null, 5, 1, 1, 1)
         gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
         gl_main.addWidget(self.le_bdist, 6, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 7, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 7, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 7, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.le_dxy.textChanged.connect(self.dxy_change)
-        self.cmb_grid_method.currentIndexChanged.connect(self.grid_method_change)
+        self.cmb_grid_method.currentIndexChanged.connect(
+            self.grid_method_change)
 
     def dxy_change(self):
         """
@@ -403,23 +395,14 @@ class DataReproj(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.reproj')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
+        self.buttonbox.htmlfile = 'vector.dm.reproj'
 
         self.setWindowTitle('Dataset Reprojection')
 
         gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 1, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 1, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
         """
@@ -557,25 +540,15 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.reproj')
+        self.buttonbox.htmlfile = 'vector.cm.meta'
         lbl_bandid = QtWidgets.QLabel('Source:')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Vector Dataset Metadata')
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
         gl_main.addWidget(self.proj, 2, 0, 1, 4)
-        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 4, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.acceptall)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
         self.resize(-1, 320)
 
@@ -666,8 +639,8 @@ class TextFileSplit(BasicModule):
         """
         pb_ifile = QtWidgets.QPushButton(' Filename')
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.txtfilesplit')
+
+        self.buttonbox.htmlfile = 'vector.dm.txtfilesplit'
         lbl_files = QtWidgets.QLabel('Number of files:')
         lbl_lines = QtWidgets.QLabel('Max lines per file:')
         lbl_bytes = QtWidgets.QLabel('Max bytes per file:')
@@ -686,11 +659,6 @@ class TextFileSplit(BasicModule):
 
         self.cmb_method.addItems(['Files', 'Bytes', 'Lines'])
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Text File Split')
 
         gl_main.addWidget(pb_ifile, 0, 0, 1, 1)
@@ -708,11 +676,8 @@ class TextFileSplit(BasicModule):
         gl_main.addWidget(lbl_bytes, 6, 0, 1, 1)
         gl_main.addWidget(self.le_bytes, 6, 1, 1, 1)
         gl_main.addWidget(self.chk_allfiles, 7, 0, 1, 2)
-        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_ifile.pressed.connect(self.get_ifile)
 
         self.le_files.textChanged.connect(self.change_method)

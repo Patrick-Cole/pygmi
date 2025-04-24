@@ -34,7 +34,6 @@ from matplotlib.ticker import MaxNLocator
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
-from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -289,8 +288,10 @@ class PlotRaster(ContextModule):
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
 
-        hbl.addWidget(menu_default.HelpButton('cluster.cm.showclass'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'cluster.cm.showclass'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
@@ -361,8 +362,10 @@ class PlotBars(ContextModule):
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
 
-        hbl.addWidget(menu_default.HelpButton('cluster.cm.showbars'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'cluster.cm.showbars'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
@@ -408,7 +411,6 @@ class PlotBars(ContextModule):
         self.change_band()
 
 
-
 class PlotMembership(ContextModule):
     """
     Plot Fuzzy Membership data GUI.
@@ -436,8 +438,10 @@ class PlotMembership(ContextModule):
         lbl_1 = QtWidgets.QLabel('Number of Clusters:')
         lbl_2 = QtWidgets.QLabel('Membership:')
 
-        hbl.addWidget(menu_default.HelpButton('cluster.cm.showmembership'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'cluster.cm.showmembership'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -528,8 +532,10 @@ class PlotVRCetc(ContextModule):
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Graph Type:')
 
-        hbl.addWidget(menu_default.HelpButton('cluster.cm.showgraphs'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'cluster.cm.showgraphs'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
@@ -628,7 +634,6 @@ class PlotVRCetc(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.show()
-
 
 
 def _testfn_bars():
@@ -747,7 +752,8 @@ def _testfn_viol():
             data = rdat.data[cdat.data == (i+1)].compressed()
             # breakpoint()
             ax.violinplot(data, [i*width+offset], widths=width,
-                          showmeans=False, showmedians=False, showextrema=False)
+                          showmeans=False, showmedians=False,
+                          showextrema=False)
         multiplier += 1
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
@@ -758,8 +764,6 @@ def _testfn_viol():
     # ax.set_ylim(0, 250)
 
     plt.show()
-
-    # breakpoint()
 
 
 def _testfn():

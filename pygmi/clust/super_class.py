@@ -26,11 +26,11 @@
 
 import os
 import sys
+
 import numpy as np
 from PyQt6 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-# from matplotlib import colormaps
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
@@ -522,6 +522,8 @@ class SuperClass(BasicModule):
         None.
 
         """
+        self.buttonbox.htmlfile = 'cluster.dm.super'
+
         gl_main = QtWidgets.QGridLayout(self)
         gbox_map = QtWidgets.QGroupBox('Class Edit')
         gl_right = QtWidgets.QGridLayout(gbox_map)
@@ -545,10 +547,6 @@ class SuperClass(BasicModule):
         self.cmb_manip.addItems(actions)
 
         vbl_1b.addWidget(self.cmb_manip)
-
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         loadshape = QtWidgets.QPushButton('Load Class Shapefile')
         saveshape = QtWidgets.QPushButton('Save Class Shapefile')
@@ -601,11 +599,11 @@ class SuperClass(BasicModule):
         gl_main.addWidget(self.map, 0, 0, 4, 1)
         gl_main.addWidget(self.mpl_toolbar, 4, 0, 1, 1)
 
-        gl_main.addWidget(gbox_1, 0, 1, 1, 1)
-        gl_main.addWidget(gbox_2, 1, 1, 1, 1)
-        gl_main.addWidget(gbox_map, 2, 1, 1, 1)
-        gl_main.addWidget(gbox_class, 3, 1, 1, 1)
-        gl_main.addWidget(buttonbox, 4, 1, 1, 1)
+        gl_main.addWidget(gbox_1, 0, 1, 1, 2)
+        gl_main.addWidget(gbox_2, 1, 1, 1, 2)
+        gl_main.addWidget(gbox_map, 2, 1, 1, 2)
+        gl_main.addWidget(gbox_class, 3, 1, 1, 2)
+        gl_main.addWidget(self.buttonbox, 4, 1, 1, 2)
 
         self.apoly.clicked.connect(self.on_apoly)
         self.dpoly.clicked.connect(self.on_dpoly)
@@ -617,9 +615,6 @@ class SuperClass(BasicModule):
         self.tablewidget.cellChanged.connect(self.oncellchange)
         self.cmb_class.currentIndexChanged.connect(self.class_change)
         self.cmb_manip.currentIndexChanged.connect(self.on_combo)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def class_change(self):
         """

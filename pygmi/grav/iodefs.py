@@ -25,12 +25,11 @@
 """Import Gravity Data."""
 
 import os
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 
 
@@ -74,8 +73,8 @@ class ImportCG5(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('gravity.dm.import')
+        self.buttonbox.htmlfile = 'gravity.dm.import'
+
         lbl_line = QtWidgets.QLabel('Line:')
         lbl_station = QtWidgets.QLabel('Station:')
         lbl_xchan = QtWidgets.QLabel('Longitude:')
@@ -97,10 +96,6 @@ class ImportCG5(BasicModule):
         self.cmb_xchan.setEnabled(False)
         self.cmb_ychan.setEnabled(False)
         self.cmb_zchan.setEnabled(False)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'Import CG-5 Data')
 
@@ -128,11 +123,8 @@ class ImportCG5(BasicModule):
         gl_main.addWidget(lbl_bthres, 7, 0, 1, 1)
         gl_main.addWidget(self.le_basethres, 7, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 8, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 4)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_cg5.pressed.connect(self.get_cg5)
         pb_gps.pressed.connect(self.get_gps)
 

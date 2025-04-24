@@ -24,22 +24,18 @@
 # -----------------------------------------------------------------------------
 """Code for the 3d model creation."""
 
-# import ctypes
 import os
 import sys
 import numpy as np
 
-from PyQt6 import QtCore, QtWidgets, QtOpenGL, QtGui
-from PyQt6.QtOpenGLWidgets import QOpenGLWidget
-from OpenGL import GL
-from OpenGL import GLU
-# from OpenGL import GLUT
-from OpenGL.arrays import vbo
-from scipy.ndimage import zoom, convolve
+from PyQt6 import QtCore, QtWidgets
+
+from scipy.ndimage import convolve
 from numba import jit
-from PIL import Image
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+import pyvista as pv
+from pyvistaqt import QtInteractor
 
 from pygmi.pfmod import misc
 from pygmi.misc import ContextModule
@@ -71,7 +67,6 @@ class Mod3dDisplay(ContextModule):
 
         self.corners = []
         self.faces = {}
-        self.norms = []
         self.gdata = np.zeros([4, 3, 2])
         self.gdata[0, 0, 0] = -1
         self.sliths = np.array([])  # selected lithologies
@@ -90,6 +85,8 @@ class Mod3dDisplay(ContextModule):
         self.mesh = {}
         self.opac = 0.0
         self.cust_z = None
+        self.pvmesh = None
+        self.light = pv.Light()
 
         # Back to normal stuff
         self.lw_3dmod_defs = QtWidgets.QListWidget()
@@ -100,7 +97,8 @@ class Mod3dDisplay(ContextModule):
         self.cb_ortho = QtWidgets.QCheckBox('Orthographic Projection')
         self.cb_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
-        self.glwidget = GLWidget()
+        self.plotter = QtInteractor(self)  # , lighting='none')
+
         self.vslider_3dmodel = QtWidgets.QSlider()
         self.msc = MySunCanvas(self)
 
@@ -115,23 +113,28 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'pfmod.cm.show3dmodel'
         hbl = QtWidgets.QHBoxLayout(self)
         vbl_cmodel = QtWidgets.QVBoxLayout()
         vbl = QtWidgets.QVBoxLayout()
 
         self.vslider_3dmodel.setMinimum(1)
-        self.vslider_3dmodel.setMaximum(1000)
+        self.vslider_3dmodel.setMaximum(20)
+        self.vslider_3dmodel.setTickInterval(1)
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Orientation.Vertical)
-        vbl_cmodel.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
+        vbl_cmodel.setSizeConstraint(
+            QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
                                            QtWidgets.QSizePolicy.Policy.Fixed)
 
-        sizepolicy_pb = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
-                                              QtWidgets.QSizePolicy.Policy.Maximum)
+        sizepolicy_pb = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Maximum,
+            QtWidgets.QSizePolicy.Policy.Maximum)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.NoSelection)
         self.lw_3dmod_defs.setFixedWidth(220)
         self.cb_smooth.setSizePolicy(sizepolicy)
         self.pb_save.setSizePolicy(sizepolicy_pb)
@@ -146,18 +149,19 @@ class Mod3dDisplay(ContextModule):
         vbl.addWidget(self.msc)
         vbl.addWidget(self.pb_resetlight)
         vbl.addWidget(self.cb_smooth)
-        vbl.addWidget(self.cb_ortho)
-        vbl.addWidget(self.cb_axis)
+        # vbl.addWidget(self.cb_ortho)
+        # vbl.addWidget(self.cb_axis)
         vbl.addWidget(self.pb_save)
         vbl.addWidget(self.pb_refresh)
-        vbl_cmodel.addWidget(self.glwidget)
+        vbl.addWidget(self.buttonbox)
+        vbl_cmodel.addWidget(self.plotter)
         hbl.addWidget(self.vslider_3dmodel)
         hbl.addLayout(vbl_cmodel)
         hbl.addLayout(vbl)
         hbl.addWidget(self.pbar)
 
         self.lw_3dmod_defs.clicked.connect(self.change_defs)
-        self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
+        self.vslider_3dmodel.valueChanged.connect(self.mod3d_vs)
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.pb_resetlight.clicked.connect(self.resetlight)
@@ -165,6 +169,23 @@ class Mod3dDisplay(ContextModule):
         self.cb_ortho.stateChanged.connect(self.update_model2)
         self.cb_axis.stateChanged.connect(self.update_model2)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.sunclick)
+
+    def closeEvent(self, QCloseEvent):
+        """
+        Close event.
+
+        Parameters
+        ----------
+        QCloseEvent : TYPE
+            Close event.
+
+        Returns
+        -------
+        None.
+
+        """
+        super().closeEvent(QCloseEvent)
+        self.plotter.close()
 
     def save(self):
         """
@@ -181,20 +202,7 @@ class Mod3dDisplay(ContextModule):
             return
         os.chdir(os.path.dirname(filename))
 
-        ftype = 'JPEG'
-
-        if 'PNG' in filename:
-            ftype = 'PNG'
-
-        self.glwidget.init_object()
-        self.glwidget.updateGL()
-
-        width = self.glwidget.width()
-        height = self.glwidget.height()
-        tmp = self.glwidget.readPixels()
-        image = Image.frombytes('RGB', (width, height), tmp)
-        image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        image.save(filename, ftype)
+        self.plotter.screenshot(filename)
 
     def update_for_kmz(self):
         """
@@ -221,7 +229,7 @@ class Mod3dDisplay(ContextModule):
 
     def change_defs(self):
         """
-        List box routine.
+        List widget routine.
 
         Returns
         -------
@@ -232,6 +240,7 @@ class Mod3dDisplay(ContextModule):
             return
         self.set_selected_liths()
         self.update_color()
+        QtWidgets.QApplication.processEvents()
 
     def data_init(self):
         """
@@ -253,16 +262,19 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
+        item = self.lw_3dmod_defs.currentItem()
+
+        if item.text()[0] == ' ':
+            item.setText('\u2713' + item.text()[1:])
+        else:
+            item.setText(' ' + item.text()[1:])
+
+        itxt = []
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
-            if item.isSelected():
-                item.setText('\u2713' + item.text()[1:])
-            else:
-                item.setText(' ' + item.text()[1:])
+            if '\u2713' in item.text():
+                itxt.append(item.text()[2:])
 
-        i = self.lw_3dmod_defs.selectedItems()
-
-        itxt = [j.text()[2:] for j in i]
         lith = [self.lmod1.lith_list[j] for j in itxt]
         lith3d = [j.lith_index for j in lith]
 
@@ -270,18 +282,7 @@ class Mod3dDisplay(ContextModule):
 
     def mod3d_vs(self):
         """Vertical slider used to scale 3d view."""
-        perc = (float(self.vslider_3dmodel.value()) /
-                float(self.vslider_3dmodel.maximum()))
-
-        zdist = self.lmod1.numz*self.lmod1.d_z
-        if self.lmod1.numx > self.lmod1.numy:
-            xydist = self.lmod1.numx*self.lmod1.dxy
-        else:
-            xydist = self.lmod1.numy*self.lmod1.dxy
-        xy_z_ratio = xydist/zdist
-
-        self.zmult = 1.0 + perc*xy_z_ratio
-        self.update_model2()
+        self.plotter.set_scale(zscale=self.vslider_3dmodel.value())
 
     def resetlight(self):
         """
@@ -292,18 +293,11 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
-        xdata, ydata = self.msc.sun.get_data()
+        self.msc.init_graph()
 
-        phi = -xdata[0]
-        theta = np.pi/2.-ydata[0]
-
-        x = np.cos(phi)
-        y = -np.sin(phi)
-        z = np.sin(theta)
-
-        self.glwidget.setlightdir(x, y, z)
-        self.glwidget.init_object()
-        self.glwidget.updateGL()
+        elev = 45
+        azim = 45
+        self.light.set_direction_angle(elev, azim)
 
     def sunclick(self, event):
         """
@@ -319,16 +313,10 @@ class Mod3dDisplay(ContextModule):
             self.msc.sun.set_ydata([event.ydata])
             self.msc.figure.canvas.draw()
 
-            phi = -event.xdata
-            theta = np.pi/2.-event.ydata
+            azim = np.rad2deg(event.xdata)
+            elev = -np.rad2deg(event.ydata)
 
-            x = np.cos(phi)
-            y = -np.sin(phi)
-            z = np.sin(theta)
-
-            self.glwidget.setlightdir(x, y, z)
-            self.glwidget.init_object()
-            self.glwidget.updateGL()
+            self.light.set_direction_angle(elev, azim)
 
     def update_color(self):
         """
@@ -340,19 +328,16 @@ class Mod3dDisplay(ContextModule):
 
         """
         liths = np.unique(self.gdata)
-        liths = liths[liths < 900]
+        liths = liths[liths > 0]
 
-        if liths.max() == -1:
+        if liths.size == 0:
             return
-        if liths[0] == -1:
-            liths = liths[1:]
-        if liths[0] == 0:
-            liths = liths[1:]
 
-        lut = self.lut[:, [0, 1, 2]]/255.
+        lut = self.lut[:, :3].astype(np.uint8)
 
-        clr = np.array([])
         lcheck = np.unique(self.lmod1.lith_index)
+
+        clr = []
 
         for lno in liths:
             if lno not in lcheck:
@@ -360,19 +345,17 @@ class Mod3dDisplay(ContextModule):
             if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
-                clrtmp = lut[lno].tolist()+[1.]
+                clrtmp = lut[lno].tolist()+[255]
             else:
-                clrtmp = lut[lno].tolist()+[self.opac]
+                clrtmp = lut[lno].tolist()+[0]
 
-            clr = np.append(clr,
-                            np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
+            clr = np.append(clr, self.faces[lno].shape[0]*[clrtmp])
 
         clr.shape = (clr.shape[0]//4, 4)
+        clr = clr.astype(np.uint8)
 
-        self.glwidget.cubeClrArray = clr
-
-        self.glwidget.init_object()
-        self.glwidget.updateGL()
+        self.pvmesh['clr'] = clr
+        # breakpoint()
 
     def run(self):
         """
@@ -393,16 +376,12 @@ class Mod3dDisplay(ContextModule):
 
         liths = np.unique(self.lmod1.lith_index[::1, ::1, ::-1])
         liths = np.array(liths).astype(int)  # needed for use in faces array
-        if liths[0] == -1:
-            liths = liths[1:]
-        if liths[0] == 0:
-            liths = liths[1:]
+        liths = liths[liths > 0]
+
         if liths.size == 0:
             self.showlog('No 3D model. You need to draw in at least '
                          'part of a lithology first.')
             return False
-
-        self.show()
 
         misc.update_lith_lw(self.lmod1, self.lw_3dmod_defs)
         for i in range(self.lw_3dmod_defs.count()-1, -1, -1):
@@ -411,9 +390,11 @@ class Mod3dDisplay(ContextModule):
 
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
-            item.setSelected(True)
+            # item.setSelected(True)
             item.setText('\u2713 ' + item.text())
 
+        self.show()
+        self.lw_3dmod_defs.setFocus()
         self.update_plot()
 
         return True
@@ -451,16 +432,45 @@ class Mod3dDisplay(ContextModule):
 
         self.lut = tmp
 
+        self.set_selected_liths()
+
         if self.lmod1.lith_list:
             self.set_selected_liths()
             self.update_model()
-            self.update_model2()
+            points, cells, clr = self.update_model2()
+            if points is None:
+                return
 
-        self.glwidget.xRot = 0*16
-        self.glwidget.zRot = 0*16
+            if self.cb_smooth.isChecked():
+                psides = 3
+                ctype = pv.CellType.TRIANGLE
+            else:
+                psides = 4
+                ctype = pv.CellType.QUAD
+            numcells = cells.size//psides
+            cells.shape = (numcells, psides)
 
-        self.glwidget.init_object()
-        self.glwidget.updateGL()
+            tmp = np.full(numcells, psides).reshape(-1, 1)
+            cells = np.hstack([tmp, cells]).ravel()
+
+            celltypes = np.full(numcells, ctype, dtype=np.uint8)
+
+            self.pvmesh = pv.UnstructuredGrid(cells, celltypes, points)
+            self.pvmesh['clr'] = clr
+
+            self.plotter.clear()
+            self.plotter.enable_depth_peeling()
+            self.plotter.add_mesh(self.pvmesh, scalars='clr', rgb=True,
+                                  name='mymesh')
+
+            self.plotter.set_scale(zscale=self.vslider_3dmodel.value())
+            self.plotter.add_axes()
+
+            elev = 45
+            azim = 45
+            self.light.set_direction_angle(elev, azim)
+            self.plotter.add_light(self.light)
+            # self.plotter.show_grid(use_2d=True)
 
     def update_model(self, issmooth=None):
         """
@@ -485,7 +495,6 @@ class Mod3dDisplay(ContextModule):
             issmooth = self.cb_smooth.isChecked()
 
         self.faces = {}
-        self.norms = {}
         self.corners = {}
 
         liths = np.unique(self.gdata)
@@ -536,75 +545,7 @@ class Mod3dDisplay(ContextModule):
                 gdat2 = tmpdat.copy()
                 gdat2[gdat2 != lno] = -0.5
                 gdat2[gdat2 == lno] = 0.5
-
-                newfaces = []
-
-                ndiff = np.diff(gdat2, 1, 2).astype(int)
-                nd1 = ndiff[1:, 1:]
-                nd2 = ndiff[:-1, 1:]
-                nd3 = ndiff[:-1, :-1]
-                nd4 = ndiff[1:, :-1]
-
-                c_1 = cindx[nd1 == 1]
-                c_2 = cindx[nd2 == 1]
-                c_3 = cindx[nd3 == 1]
-                c_4 = cindx[nd4 == 1]
-                ccc = np.transpose([c_1, c_4, c_3, c_2])
-                newfaces = np.append(newfaces, ccc)
-
-                c_1 = cindx[nd1 == -1]
-                c_2 = cindx[nd2 == -1]
-                c_3 = cindx[nd3 == -1]
-                c_4 = cindx[nd4 == -1]
-                ccc = np.transpose([c_1, c_2, c_3, c_4])
-                newfaces = np.append(newfaces, ccc)
-
-                ndiff = np.diff(gdat2, 1, 1).astype(int)
-                nd1 = ndiff[1:, :, 1:]
-                nd2 = ndiff[:-1, :, 1:]
-                nd3 = ndiff[:-1, :, :-1]
-                nd4 = ndiff[1:, :, :-1]
-
-                c_1 = cindx[nd1 == 1]
-                c_2 = cindx[nd2 == 1]
-                c_3 = cindx[nd3 == 1]
-                c_4 = cindx[nd4 == 1]
-                ccc = np.transpose([c_1, c_2, c_3, c_4])
-                newfaces = np.append(newfaces, ccc)
-
-                c_1 = cindx[nd1 == -1]
-                c_2 = cindx[nd2 == -1]
-                c_3 = cindx[nd3 == -1]
-                c_4 = cindx[nd4 == -1]
-                ccc = np.transpose([c_1, c_4, c_3, c_2])
-                newfaces = np.append(newfaces, ccc)
-
-                ndiff = np.diff(gdat2, 1, 0).astype(int)
-                nd1 = ndiff[:, 1:, 1:]
-                nd2 = ndiff[:, 1:, :-1]
-                nd3 = ndiff[:, :-1, :-1]
-                nd4 = ndiff[:, :-1, 1:]
-
-                c_1 = cindx[nd1 == 1]
-                c_2 = cindx[nd2 == 1]
-                c_3 = cindx[nd3 == 1]
-                c_4 = cindx[nd4 == 1]
-                ccc = np.transpose([c_1, c_2, c_3, c_4])
-                newfaces = np.append(newfaces, ccc)
-
-                c_1 = cindx[nd1 == -1]
-                c_2 = cindx[nd2 == -1]
-                c_3 = cindx[nd3 == -1]
-                c_4 = cindx[nd4 == -1]
-                ccc = np.transpose([c_1, c_4, c_3, c_2])
-                newfaces = np.append(newfaces, ccc)
-
-                uuu, i = np.unique(newfaces, return_inverse=True)
-                uuu = uuu.astype(int)
-                n_f = np.arange(uuu.size)
-                newfaces = n_f[i]
-                newcorners = cloc[uuu]
-                newfaces.shape = (newfaces.size//4, 4)
+                newcorners, newfaces = updatemod(gdat2, cindx, cloc)
 
                 self.faces[lno] = newfaces
                 self.corners[lno] = newcorners
@@ -631,7 +572,7 @@ class Mod3dDisplay(ContextModule):
 
                     self.faces[lno] = []
                     self.corners[lno] = []
-                    self.norms[lno] = []
+
                     continue
 
                 self.faces[lno] = faces
@@ -640,8 +581,6 @@ class Mod3dDisplay(ContextModule):
                 vtx[:, 2] += zz.max()
 
                 self.corners[lno] = vtx[:, [1, 0, 2]] + self.origin
-
-            self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
         """
@@ -652,25 +591,21 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
-        self.glwidget.is_ortho = self.cb_ortho.isChecked()
-        self.glwidget.has_axis = self.cb_axis.isChecked()
-
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
         liths = liths[liths < 900]
 
         if liths.max() == -1:
-            return
+            return None, None, None
         if liths[0] == -1:
             liths = liths[1:]
         if liths[0] == 0:
             liths = liths[1:]
 
-        lut = self.lut[:, [0, 1, 2]]/255.
+        lut = (self.lut[:, [0, 1, 2]]).astype(np.uint8)
 
         vtx = np.array([])
         clr = np.array([])
-        nrm = np.array([])
         idx = np.array([])
         idxmax = 0
         lcheck = np.unique(self.lmod1.lith_index)
@@ -688,26 +623,19 @@ class Mod3dDisplay(ContextModule):
             if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
-                clrtmp = lut[lno].tolist()+[1.]
+                clrtmp = lut[lno].tolist()+[255]
             else:
-                clrtmp = lut[lno].tolist()+[self.opac]
+                clrtmp = lut[lno].tolist()+[0]
 
             vtx = np.append(vtx, self.corners[lno])
-            clr = np.append(clr,
-                            np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
+            clr = np.append(clr, self.faces[lno].shape[0]*[clrtmp])
 
-            nrm2 = calc_norms(self.faces[lno], self.corners[lno] *
-                              [1, 1, self.zmult])
-
-            nrm = np.append(nrm, nrm2)
             idx = np.append(idx, self.faces[lno].flatten()+idxmax)
             idxmax = idx.max()+1
 
         vtx.shape = (vtx.shape[0]//3, 3)
         clr.shape = (clr.shape[0]//4, 4)
-
-        zmax = vtx[:, -1].max()
-        zmin = vtx[:, -1].min()
+        clr = clr.astype(np.uint8)
 
         vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
 
@@ -716,577 +644,9 @@ class Mod3dDisplay(ContextModule):
         cptpd2 = np.ptp(vtx, 0)/2.
         vtx = (vtx-cmin-cptpd2)/cptp
 
-        vadd = cmin+cptpd2
-        vmult = cptp
+        idx = idx.astype(np.uint32)
 
-        self.glwidget.hastriangles = self.cb_smooth.isChecked()
-        self.glwidget.cubeVtxArray = vtx
-        self.glwidget.cubeClrArray = clr
-        self.glwidget.cubeNrmArray = nrm
-        self.glwidget.cubeIdxArray = idx.astype(np.uint32)
-        self.glwidget.vmult = vmult
-        self.glwidget.vadd = vadd
-        self.glwidget.zmin = zmin
-        self.glwidget.zmax = zmax
-
-        self.glwidget.init_object()
-        self.glwidget.updateGL()
-
-
-class GLWidget(QOpenGLWidget):
-    """
-    OpenGL Widget.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.data = None
-        self.idx = None
-        self.data_buffer = None
-        self.indx_buffer = None
-        self.xRot = 0
-        self.yRot = 0
-        self.zRot = 0
-        self.zoomfactor = 1.0
-        self.aspect = 1.
-        self.glist = None
-        self.hastriangles = False
-        self.vmult = 1.0
-        self.vadd = np.array([0.0, 0.0, 0.0])
-        self.zmin = 0.
-        self.zmax = 1.
-        self.has_axis = True
-        self.is_ortho = True
-        self.lightpos = [1, 1, 1, 0]
-
-        self.cubeVtxArray = np.array([[0.0, 0.0, 0.0],
-                                      [1.0, 0.0, 0.0],
-                                      [1.0, 1.0, 0.0],
-                                      [0.0, 1.0, 0.0],
-                                      [0.0, 0.0, 1.0],
-                                      [1.0, 0.0, 1.0],
-                                      [1.0, 1.0, 1.0],
-                                      [0.0, 1.0, 1.0]])
-
-        self.cubeIdxArray = np.array([0, 1, 2, 3,
-                                      3, 2, 6, 7,
-                                      1, 0, 4, 5,
-                                      2, 1, 5, 6,
-                                      0, 3, 7, 4,
-                                      7, 6, 5, 4])
-
-        self.cubeClrArray = np.array([[0.0, 0.0, 0.0, 0.0],
-                                      [1.0, 0.0, 0.0, 0.0],
-                                      [1.0, 1.0, 0.0, 0.0],
-                                      [0.0, 1.0, 0.0, 0.0],
-                                      [0.0, 0.0, 1.0, 0.0],
-                                      [1.0, 0.0, 1.0, 0.0],
-                                      [1.0, 1.0, 1.0, 0.0],
-                                      [0.0, 1.0, 1.0, 0.0]])
-
-        self.cubeNrmArray = np.array([[0.0, 0.0, 0.0],
-                                      [1.0, 0.0, 0.0],
-                                      [0.0, 1.0, 0.0],
-                                      [0.0, 1.0, 0.0],
-                                      [0.0, 0.0, 1.0],
-                                      [0.0, 0.0, 1.0],
-                                      [1.0, 0.0, 0.0],
-                                      [0.0, 1.0, 0.0]])
-
-        self.lastPos = QtCore.QPoint()
-
-    def minimumSizeHint(self):
-        """
-        Minimum size hint.
-
-        Returns
-        -------
-        QtCore.QSize
-            Returns a size of (50, 50)
-
-        """
-        return QtCore.QSize(50, 50)
-
-    def sizeHint(self):
-        """
-        Size hint.
-
-        Returns
-        -------
-        QtCore.QSize
-            Returns a size of (400, 400)
-
-        """
-        return QtCore.QSize(400, 400)
-
-    def setXRotation(self, angle):
-        """
-        Set X rotation.
-
-        Parameters
-        ----------
-        angle : float
-            X angle of rotation.
-
-        Returns
-        -------
-        None.
-
-        """
-        angle = self.normalizeAngle(angle)
-        if angle != self.xRot:
-            self.xRot = angle
-
-    def setYRotation(self, angle):
-        """
-        Set Y Rotation.
-
-        Parameters
-        ----------
-        angle : float
-            Y angle of rotation.
-
-        Returns
-        -------
-        None.
-
-        """
-        angle = self.normalizeAngle(angle)
-        if angle != self.yRot:
-            self.yRot = angle
-
-    def setZRotation(self, angle):
-        """
-        Set Z rotation.
-
-        Parameters
-        ----------
-        angle : float
-            Z angle of rotation.
-
-        Returns
-        -------
-        None.
-
-        """
-        angle = self.normalizeAngle(angle)
-        if angle != self.zRot:
-            self.zRot = angle
-
-    def initializeGL(self):
-        """
-        Initialise OpenGL.
-
-        Returns
-        -------
-        None.
-
-        """
-        # GLUT.glutInit()
-        ctmp = QtGui.QColor.fromCmykF(0., 0., 0., 0.0)
-        self.qglClearColor(ctmp)
-        self.initGeometry()
-
-        # Blend allows transparency
-        GL.glEnable(GL.GL_ALPHA_TEST)
-        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glDepthMask(GL.GL_TRUE)
-        GL.glDepthFunc(GL.GL_LEQUAL)
-
-        GL.glEnable(GL.GL_CULL_FACE)
-
-        GL.glEnable(GL.GL_COLOR_MATERIAL)
-        GL.glEnable(GL.GL_LIGHTING)
-        GL.glEnable(GL.GL_LIGHT0)
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION,
-                     [-0.7071, -0.7071, 0.7071, 0.])
-
-    def setlightdir(self, x, y, z):
-        """
-        Set light direction.
-
-        Parameters
-        ----------
-        x : float
-            X light position.
-        y : float
-            Y light position.
-        z : float
-            Z light position.
-
-        Returns
-        -------
-        None.
-
-        """
-        lightpos = [x, y, z, 0]
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightpos)
-
-    def initGeometry(self):
-        """
-        Initialise geometry.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.init_object()
-
-    def init_object(self):
-        """
-        Initialise VBO.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.cubeNrmArray.shape = self.cubeVtxArray.shape
-
-        data = np.hstack((self.cubeVtxArray,
-                          self.cubeClrArray,
-                          self.cubeNrmArray))
-
-        data = data.astype(np.float32)
-        idx = self.cubeIdxArray.astype(np.uint32)
-
-        if self.data_buffer is None:
-            self.data_buffer = vbo.VBO(data)
-            self.indx_buffer = vbo.VBO(idx, target='GL_ELEMENT_ARRAY_BUFFER')
-        else:
-            self.data_buffer.set_array(data)
-            self.indx_buffer.set_array(idx)
-
-        self.init_projection()
-
-    def paintGL(self):
-        """
-        Paint OpenGL.
-
-        Returns
-        -------
-        None.
-
-        """
-        float_size = 4
-        voff = 0 * float_size
-        coff = 3 * float_size
-        noff = 7 * float_size
-        record_len = 10 * float_size
-
-        GL.glLineWidth(1.0)
-
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-
-        self.data_buffer.bind()
-        self.indx_buffer.bind()
-
-        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glEnableClientState(GL.GL_COLOR_ARRAY)
-        GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
-        GL.glVertexPointer(3, GL.GL_FLOAT, record_len, self.data_buffer + voff)
-        GL.glColorPointer(4, GL.GL_FLOAT, record_len, self.data_buffer + coff)
-        GL.glNormalPointer(GL.GL_FLOAT, record_len, self.data_buffer + noff)
-
-        GL.glLoadIdentity()
-        GL.glTranslated(0.0, 0.0, -100.0)
-        GL.glRotated(self.xRot / 16.0, 1.0, 0.0, 0.0)
-        GL.glRotated(self.yRot / 16.0, 0.0, 1.0, 0.0)
-        GL.glRotated(self.zRot / 16.0, 0.0, 0.0, 1.0)
-
-        if self.hastriangles:
-            GL.glDrawElements(GL.GL_TRIANGLES, self.cubeIdxArray.size,
-                              GL.GL_UNSIGNED_INT, self.indx_buffer)
-        else:
-            GL.glDrawElements(GL.GL_QUADS, self.cubeIdxArray.size,
-                              GL.GL_UNSIGNED_INT, self.indx_buffer)
-
-        self.data_buffer.unbind()
-        self.indx_buffer.unbind()
-
-        GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glDisableClientState(GL.GL_COLOR_ARRAY)
-        GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
-
-        if self.has_axis is True:
-            self.draw_with_axis()
-
-    def draw_with_axis(self):
-        """
-        Draw with a set of axes.
-
-        Returns
-        -------
-        None.
-
-        """
-        GL.glDisable(GL.GL_LIGHTING)
-
-        xmin, ymin, zmin = self.cubeVtxArray.min(0)
-        xmax, ymax, zmax = self.cubeVtxArray.max(0)
-
-        xmin *= 1.5
-        ymin *= 1.5
-        zmin *= 1.5
-
-        xmax *= 1.5
-        ymax *= 1.5
-        zmax *= 1.5
-
-        dx = (xmax-xmin)/5
-        dy = (ymax-ymin)/5
-        dz = (zmax-zmin)/4
-
-        GL.glBegin(GL.GL_LINES)
-        GL.glColor3f(0.5, .5, .5)
-
-        GL.glVertex3f(xmin, ymin, zmin)
-        GL.glVertex3f(xmin, ymin, zmax)
-
-        GL.glVertex3f(xmin, ymin, zmin)
-        GL.glVertex3f(xmax, ymin, zmin)
-
-        for i in np.arange(xmin, xmax, dx):
-            GL.glVertex3f(i+dx, ymin, zmin)
-            GL.glVertex3f(i+dx, ymax, zmin)
-
-        for i in np.arange(ymin, ymax, dy):
-            GL.glVertex3f(xmin, i+dy, zmin)
-            GL.glVertex3f(xmax, i+dy, zmin)
-
-            GL.glVertex3f(xmin, i+dy, zmin)
-            GL.glVertex3f(xmin, i+dy, zmax)
-
-        for i in np.arange(zmin, zmax, dz):
-            GL.glVertex3f(xmin, ymin, i+dz)
-            GL.glVertex3f(xmin, ymax, i+dz)
-
-        GL.glEnd()
-
-        GL.glLineWidth(4.)
-
-        GL.glBegin(GL.GL_LINES)
-        GL.glColor3f(1.0, 0, 0)
-
-        GL.glVertex3f(xmin, ymax, zmin)
-        GL.glVertex3f(xmax, ymax, zmin)
-
-        GL.glColor3f(0.0, 1.0, 0)
-        GL.glVertex3f(xmin, ymin, zmin)
-        GL.glVertex3f(xmin, ymax, zmin)
-
-        GL.glColor3f(0.0, 0, 1.0)
-        GL.glVertex3f(xmin, ymax, zmin)
-        GL.glVertex3f(xmin, ymax, zmax)
-
-        GL.glEnd()
-
-        GL.glColor3f(0, 0, 0)
-
-        # self.print_string(xmax+6, ymax, zmin, 'X')
-        # self.print_string(xmin, ymin-10, zmin, 'Y')
-        # self.print_string(xmin, ymax, zmax+6, 'Z')
-
-        # dz1 = (self.zmax-self.zmin)/5
-
-        # for i in np.arange(xmin, xmax-dx, dx):
-        #     text = str(round((i+dx)*self.vmult+self.vadd[0], 1))
-        #     self.print_string(i+dx, ymax+4, zmin, text)
-
-        # for i in np.arange(ymin, ymax-dy, dy):
-        #     text = str(round((i+dy)*self.vmult+self.vadd[1], 1))
-        #     self.print_string(xmax, i+dy, zmin, text)
-
-        # tmp = self.zmin
-        # for i in np.arange(zmin, zmax-dz, dz):
-        #     tmp += dz1
-        #     text = str(round(tmp, 1))
-        #     self.print_string(xmin, ymax+4, i+dz, text)
-
-        GL.glEnable(GL.GL_LIGHTING)
-
-    def print_string(self, x, y, z, text):
-        """
-        Print a 2D text string.
-
-        Parameters
-        ----------
-        x : float
-            X coordinate.
-        y : float
-            Y coordinate.
-        z : float
-            Z coordinate.
-        text : str
-            Text string.
-
-        Returns
-        -------
-        None.
-
-        """
-        GL.glRasterPos3f(x, y, z)
-        # for _, ch in enumerate(text):
-        #     GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
-        #                              ctypes.c_int(ord(ch)))
-
-    def resizeGL(self, width, height):
-        """
-        Resize OpenGL.
-
-        Parameters
-        ----------
-        width : float
-            Width of side.
-        height : float
-            Height of side.
-
-        Returns
-        -------
-        None.
-
-        """
-        side = min(width, height)
-        if side < 0:
-            return
-
-        GL.glViewport((width - side) // 2, (height - side) // 2, side, side)
-        self.aspect = width / float(height)
-
-        self.init_projection()
-
-    def init_projection(self):
-        """
-        Initialise the projection.
-
-        Returns
-        -------
-        None.
-
-        """
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glLoadIdentity()
-
-        xmin, ymin, _ = self.cubeVtxArray.min(0)
-        xmax, ymax, _ = self.cubeVtxArray.max(0)
-
-        if self.is_ortho is True:
-            GL.glOrtho(xmin*self.zoomfactor,
-                       xmax*self.zoomfactor,
-                       ymin*self.zoomfactor,
-                       ymax*self.zoomfactor, -201, 301.0)
-        else:
-            GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
-
-        GL.glMatrixMode(GL.GL_MODELVIEW)
-
-    def readPixels(self):
-        """
-        Read pixels from the window.
-
-        Returns
-        -------
-        data : numpy array
-            Returned pixel data.
-
-        """
-        data = GL.glReadPixels(0, 0, self.width(), self.height(), GL.GL_RGB,
-                               GL.GL_UNSIGNED_BYTE)
-        return data
-
-    def mousePressEvent(self, event):
-        """
-        Mouse press event.
-
-        Parameters
-        ----------
-        event : QMouseEvent
-            Mouse event.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.lastPos = event.position()
-
-    def mouseMoveEvent(self, event):
-        """
-        Mouse move event.
-
-        Parameters
-        ----------
-        event : QMouseEvent
-            Mouse event.
-
-        Returns
-        -------
-        None.
-
-        """
-        dxx = event.position().x() - self.lastPos.x()
-        dyy = event.position().y() - self.lastPos.y()
-
-        if event.buttons() & QtCore.Qt.MouseButton.LeftButton:
-            self.setXRotation(self.xRot + 8 * dyy)
-            self.setYRotation(self.yRot + 8 * dxx)
-        elif event.buttons() & QtCore.Qt.MouseButton.RightButton:
-            self.setXRotation(self.xRot + 8 * dyy)
-            self.setZRotation(self.zRot + 8 * dxx)
-
-        self.updateGL()
-        self.lastPos = event.pos()
-
-    def wheelEvent(self, event):
-        """
-        Mouse wheel event.
-
-        Parameters
-        ----------
-        event : QWheelEvent
-            Mouse wheel event.
-
-        Returns
-        -------
-        None.
-
-        """
-        angle = event.angleDelta().y()/8
-        self.zoomfactor -= angle/1000.
-
-        self.init_projection()
-
-        self.updateGL()
-
-    def normalizeAngle(self, angle):
-        """
-        Corrects an angle to between 0 and 360*16.
-
-        Parameters
-        ----------
-        angle : float
-            Input angle.
-
-        Returns
-        -------
-        angle : float
-            Output angle.
-
-        """
-        while angle < 0:
-            angle += 360 * 16
-        while angle > 360 * 16:
-            angle -= 360 * 16
-        return angle
+        return vtx, idx, clr
 
 
 class MySunCanvas(FigureCanvasQTAgg):
@@ -1307,7 +667,7 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure()
+        fig = Figure(layout='constrained')
         super().__init__(fig)
 
         self.sun = None
@@ -1329,71 +689,111 @@ class MySunCanvas(FigureCanvasQTAgg):
 
         """
         self.axes.clear()
-        self.axes.xaxis.set_tick_params(labelsize=8)
+        self.axes.xaxis.set_tick_params(labelsize=6)
         self.axes.tick_params(labelleft=False, labelright=False)
 
         self.axes.set_autoscaley_on(False)
         self.axes.set_rmax(np.pi/2.)
-        self.axes.set_rmin(0.0)
+        self.axes.set_rmin(-np.pi/2.)
+        self.axes.set_yticks([-np.pi/4, 0, np.pi/4])
+        self.axes.tick_params(axis='x', pad=0)
 
-        self.sun, = self.axes.plot(5*np.pi/4., np.pi/4., 'yo')
+        self.sun, = self.axes.plot(np.pi/4., -np.pi/4., 'yo')
         self.figure.canvas.draw()
 
 
-def calc_norms(faces, vtx):
+def updatemod(gdat2, cindx, cloc):
     """
-    Calculate normals.
+    Update model without smooothing.
 
     Parameters
     ----------
-    faces : numpy array
-        Array of faces.
-    vtx : numpy array.
-        Array of vertices.
+    gdat2 : numpy array
+        Model values.
+    cindx : numpy array
+        Corner index.
+    cloc : numpy array
+        Corner location.
 
     Returns
     -------
-    None.
+    newcorners : numpy array
+        New corner coordinates.
+    newfaces : numpy array
+        New face indices.
 
     """
-    nrm = np.zeros(vtx.shape, dtype=np.float64)
-    tris = vtx[faces]
-    n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
-                 tris[::, 0])
-    n = normalize_v3(n)
+    newfaces = []
 
-    nrm[faces[:, 0]] += n
-    nrm[faces[:, 1]] += n
-    nrm[faces[:, 2]] += n
+    ndiff = gdat2[:, :, 1:]-gdat2[:, :, :-1]
 
-    nrm = normalize_v3(nrm)
+    nd1 = ndiff[1:, 1:]
+    nd2 = ndiff[:-1, 1:]
+    nd3 = ndiff[:-1, :-1]
+    nd4 = ndiff[1:, :-1]
 
-    return nrm
+    c_1 = cindx[nd1 == 1]
+    c_2 = cindx[nd2 == 1]
+    c_3 = cindx[nd3 == 1]
+    c_4 = cindx[nd4 == 1]
+    ccc = np.transpose([c_1, c_4, c_3, c_2])
+    newfaces = np.append(newfaces, ccc)
 
+    c_1 = cindx[nd1 == -1]
+    c_2 = cindx[nd2 == -1]
+    c_3 = cindx[nd3 == -1]
+    c_4 = cindx[nd4 == -1]
+    ccc = np.transpose([c_1, c_2, c_3, c_4])
+    newfaces = np.append(newfaces, ccc)
 
-def normalize_v3(arr):
-    """
-    Normalize a numpy array of 3 component vectors shape=(n,3).
+    ndiff = gdat2[:, 1:, :]-gdat2[:, :-1, :]
+    nd1 = ndiff[1:, :, 1:]
+    nd2 = ndiff[:-1, :, 1:]
+    nd3 = ndiff[:-1, :, :-1]
+    nd4 = ndiff[1:, :, :-1]
 
-    Parameters
-    ----------
-    arr : numpy array
-        Array of 3 component vectors.
+    c_1 = cindx[nd1 == 1]
+    c_2 = cindx[nd2 == 1]
+    c_3 = cindx[nd3 == 1]
+    c_4 = cindx[nd4 == 1]
+    ccc = np.transpose([c_1, c_2, c_3, c_4])
+    newfaces = np.append(newfaces, ccc)
 
-    Returns
-    -------
-    arr : numpy array
-        Output array of 3 component vectors.
+    c_1 = cindx[nd1 == -1]
+    c_2 = cindx[nd2 == -1]
+    c_3 = cindx[nd3 == -1]
+    c_4 = cindx[nd4 == -1]
+    ccc = np.transpose([c_1, c_4, c_3, c_2])
+    newfaces = np.append(newfaces, ccc)
 
-    """
-    arr = arr.astype(np.float64)
+    ndiff = gdat2[1:, :, :]-gdat2[:-1, :, :]
+    nd1 = ndiff[:, 1:, 1:]
+    nd2 = ndiff[:, 1:, :-1]
+    nd3 = ndiff[:, :-1, :-1]
+    nd4 = ndiff[:, :-1, 1:]
 
-    lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
-    lens[lens == 0] = 1  # Get rid of divide by zero.
+    c_1 = cindx[nd1 == 1]
+    c_2 = cindx[nd2 == 1]
+    c_3 = cindx[nd3 == 1]
+    c_4 = cindx[nd4 == 1]
+    ccc = np.transpose([c_1, c_2, c_3, c_4])
+    newfaces = np.append(newfaces, ccc)
 
-    arr /= lens[:, np.newaxis]
+    c_1 = cindx[nd1 == -1]
+    c_2 = cindx[nd2 == -1]
+    c_3 = cindx[nd3 == -1]
+    c_4 = cindx[nd4 == -1]
+    ccc = np.transpose([c_1, c_4, c_3, c_2])
+    newfaces = np.append(newfaces, ccc)
 
-    return arr
+    uuu, i = np.unique(newfaces, return_inverse=True)
+    uuu = uuu.astype(int)
+    n_f = np.arange(uuu.size)
+    newfaces = n_f[i]
+    newcorners = cloc[uuu]
+    newfaces.shape = (newfaces.size//4, 4)
+
+    return newcorners, newfaces
 
 
 def MarchingCubes(x, y, z, c, iso, *, showlog=print):
@@ -2068,89 +1468,19 @@ def GetTables():
 
 
 def _testfn():
-    """Test routine."""
-    c = np.zeros([5, 5, 5])
-    c[1:4, 1:4, 1:4] = 1
-    c = zoom(c, 1, order=1)
-
-    x = np.arange(c.shape[1])
-    y = np.arange(c.shape[0])
-    z = np.arange(c.shape[2])
-    xx, yy, zz = np.meshgrid(x, y, z)
-    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
-
-    app = QtWidgets.QApplication(sys.argv)
-    wid = Mod3dDisplay()
-    wid.setWindowState(wid.windowState() &
-                       ~QtCore.Qt.WindowState.WindowMinimized |
-                       QtCore.Qt.WindowState.WindowActive)
-
-    faces = np.array(faces)
-    vtx = np.array(vtx)
-# Create a zeroed array with the same type and shape as our vertices i.e.,
-# per vertex normal
-    norm = np.zeros(vtx.shape, dtype=vtx.dtype)
-# Create an indexed view into the vertex array using the array of three indices
-# for triangles
-    tris = vtx[faces]
-# Calculate the normal for all the triangles, by taking the cross product of
-# the vectors v1-v0, and v2-v0 in each triangle
-    n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
-# n is now an array of normals per triangle. The length of each normal is
-# dependent the vertices, we need to normalize these, so that our next step
-# weights each normal equally.
-    n = normalize_v3(n)
-#    n[2] *= -1
-# now we have a normalized array of normals, one per triangle, i.e., per
-# triangle normals. But instead of one per triangle (i.e., flat shading), we
-# add to each vertex in that triangle, the triangles' normal. Multiple
-# triangles would then contribute to every vertex, so we need to normalize
-# again afterwards. The cool part, we can actually add the normals through an
-# indexed view of our (zeroed) per vertex normal array.
-
-    norm[faces[:, 0]] += n
-    norm[faces[:, 1]] += n
-    norm[faces[:, 2]] += n
-    norm = normalize_v3(norm)
-
-# Now we have a vertex array, vertices, a normal array, norm, and the index
-# array, faces, and we are ready to pass it on to our rendering algorithm.
-# To render without the index list, we create a flattened array where
-# the triangle indices are replaced with the actual vertices.
-
-    cptp = np.ptp(vtx, 0).max()/100
-    cmin = vtx.min(0)
-    cptpd2 = np.ptp(vtx, 0)/2.
-    vtx = (vtx-cmin-cptpd2)/cptp
-
-    wid.glwidget.hastriangles = True
-    wid.glwidget.cubeVtxArray = vtx
-    wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
-                                 np.array([0.9, 0.4, 0.0, 0.5]))
-    wid.glwidget.cubeNrmArray = norm
-
-    wid.glwidget.cubeIdxArray = faces.flatten().astype(np.uint32)
-
-    wid.glwidget.zmax = vtx[:, -1].max()
-    wid.glwidget.zmin = vtx[:, -1].min()
-
-    # This activates the opengl stuff
-
-    wid.show()
-    sys.exit(app.exec())
-
-
-def _testfn2():
     """Test function."""
     from pygmi.pfmod.iodefs import ImportMod3D
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
 
     IM = ImportMod3D()
     IM.ifile = ifile
     IM.settings(True)
+
+    print('Model loaded')
 
     M3D = Mod3dDisplay()
     M3D.indata = IM.outdata
@@ -2160,4 +1490,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

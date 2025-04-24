@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """Plot Data using Matplotlib."""
 
+import numpy as np
 from PyQt6 import QtWidgets, QtCore
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -31,42 +32,9 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import ContextModule
 
-
-class GraphWindow(ContextModule):
-    """Graph Window - Main QT Dialog class for graphs."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel('Bands:')
-        self.lbl_2 = QtWidgets.QLabel('Bands:')
-
-        hbl.addWidget(self.lbl_1)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_2)
-        hbl.addWidget(self.cmb_2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo box to choose band."""
+# The lines below are a temporary fix for mtpy. Removed in future.
+np.float = float
+np.complex = complex
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -82,8 +50,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None):
-        fig = Figure(layout='tight')
+    def __init__(self, parent=None, width=8, height=6, dpi=100):
+        fig = Figure(layout='constrained', figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -285,11 +253,41 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class PlotPoints(GraphWindow):
+class PlotPoints(ContextModule):
     """Plot points class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.lbl_1 = QtWidgets.QLabel('Station Name:')
+        self.lbl_2 = QtWidgets.QLabel('Graph Type:')
+
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'mt.cm.showgraphs'
+
+        hbl.addWidget(self.buttonbox)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -321,100 +319,28 @@ class PlotPoints(GraphWindow):
         for i in ['xy, yx', 'xx, yy']:
             self.cmb_2.addItem(i)
 
-        self.lbl_1.setText('Station Name:')
-        self.lbl_2.setText('Graph Type:')
         self.cmb_1.setCurrentIndex(0)
         self.cmb_2.setCurrentIndex(0)
 
 
 def _testfn():
     """Test routine."""
-    import numpy as np
-    import glob
-    import matplotlib.pyplot as plt
+    import sys
     from mtpy.core.mt import MT
-    from mtpy.imaging.plotresponse import PlotResponse
 
-    datadir = r'd:\Work\workdata\MT\\'
-    allfiles = glob.glob(datadir+'\\*.edi')
+    datadir = r'd:\workdata\MT\\'
+    edi_file = datadir+r"synth02.edi"
 
-    edi_file = allfiles[2]
-    print(edi_file)
-    data1 = MT(edi_file)
-    PlotResponse(fn=edi_file, plot_tipper='yr')
-    plt.show()
+    # Create an MT object
+    mt_obj = MT(edi_file)
 
-    arrow_direction = 0  # this is 0 for toward a conductor, and 1 for away
+    print('loading complete')
 
-    txr = data1.Tipper.mag_real*np.sin(data1.Tipper.angle_real*np.pi/180 +
-                                       np.pi*arrow_direction)
-    tyr = data1.Tipper.mag_real*np.cos(data1.Tipper.angle_real*np.pi/180 +
-                                       np.pi*arrow_direction)
-
-    txi = data1.Tipper.mag_imag*np.sin(data1.Tipper.angle_imag*np.pi/180 +
-                                       np.pi*arrow_direction)
-    tyi = data1.Tipper.mag_imag*np.cos(data1.Tipper.angle_imag*np.pi/180 +
-                                       np.pi*arrow_direction)
-
-    num = len(txr)
-
-    x = 1/data1.Z.freq
-    x10 = np.log10(x)
-
-    ax1 = plt.gca()
-    for i in range(num):
-        plt.arrow(x10[i], 0, txr[i], tyr[i])
-
-    plt.tight_layout()
-    plt.grid(True)
-    plt.show()
-
-    ax1 = plt.gca()
-    ax1.set_xscale('log', base=10)
-    ax1.set_yscale('linear')
-
-    for i in range(num):
-        plt.plot(x[i], tyr[i])
-
-    ax, bx = ax1.get_xlim()
-
-    ax1.set_ylim((-0.02, 0.02))
-
-    ay, by = ax1.get_ylim()
-
-    ty = (tyr-ay)/(by-ay)
-    ty0 = -ay/(by-ay)
-
-    for i in range(num):
-        tx0 = (np.log(x[i])-np.log(ax))/(np.log(bx)-np.log(ax))
-
-        plt.arrow(tx0, ty0, 2*txr[i], 2*tyr[i], transform=ax1.transAxes)
-
-    plt.tight_layout()
-    plt.grid(True)
-    plt.show()
-
-    ax1 = plt.gca()
-    ax1.set_xscale('log', base=10)
-    ax1.set_yscale('linear')
-
-    plt.plot(x, data1.Tipper.mag_real, 'b.-', label='real')
-    plt.plot(x, data1.Tipper.mag_imag, 'r.-', label='imaginary')
-
-    plt.tight_layout()
-    plt.grid(True)
-    plt.show()
-
-    ax1 = plt.gca()
-    ax1.set_xscale('log', base=10)
-    ax1.set_yscale('linear')
-
-    plt.plot(x, data1.Tipper.angle_real, 'b.-', label='real')
-    plt.plot(x, data1.Tipper.angle_imag, 'r.-', label='imaginary')
-
-    plt.tight_layout()
-    plt.grid(True)
-    plt.show()
+    app = QtWidgets.QApplication(sys.argv)
+    tmp = PlotPoints()
+    tmp.indata['MT - EDI'] = {'SYNTH02': mt_obj}
+    tmp.run()
+    tmp.exec()
 
 
 if __name__ == "__main__":

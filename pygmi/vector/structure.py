@@ -33,7 +33,6 @@ from shapely.geometry import LineString
 from rasterio.features import rasterize
 import numexpr as ne
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, bounds_to_transform
 
@@ -76,8 +75,8 @@ class StructComp(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.structcomp')
+
+        self.buttonbox.htmlfile = 'vector.dm.structcomp'
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_method = QtWidgets.QLabel('Method:')
 
@@ -95,11 +94,6 @@ class StructComp(BasicModule):
                                   'Circular Variance and Dispersion',
                                   'Feature Fractal Dimension'])
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Structure Complexity')
 
         gl_main.addWidget(lbl_method, 0, 0, 1, 1)
@@ -112,13 +106,8 @@ class StructComp(BasicModule):
         gl_main.addWidget(self.le_extend, 3, 1, 1, 1)
         gl_main.addWidget(self.lbl_wsize, 4, 0, 1, 1)
         gl_main.addWidget(self.le_wsize, 4, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 7, 0, 1, 4)
 
-        gl_main.addWidget(helpdocs, 7, 0, 1, 1,
-                          QtCore.Qt.AlignmentFlag.AlignLeft)
-        gl_main.addWidget(buttonbox, 7, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cmb_method.currentIndexChanged.connect(self.method_change)
 
     def method_change(self):

@@ -28,7 +28,7 @@ import tempfile
 import math
 import os
 import glob
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import pandas as pd
 from scipy.signal.windows import tukey
@@ -39,7 +39,6 @@ from rasterio.warp import calculate_default_transform
 import geopandas as gpd
 from shapely import LineString
 
-from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
@@ -79,8 +78,7 @@ class Continuation(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.cont')
+        self.buttonbox.htmlfile = 'raster.dm.cont'
         lbl_band = QtWidgets.QLabel('Band to perform continuation:')
         lbl_cont = QtWidgets.QLabel('Continuation type:')
         lbl_height = QtWidgets.QLabel('Continuation distance:')
@@ -91,10 +89,6 @@ class Continuation(BasicModule):
         self.cmb_cont.clear()
         self.cmb_cont.addItems(['Upward', 'Downward'])
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Continuation')
 
         gl_main.addWidget(lbl_band, 0, 0, 1, 1)
@@ -104,11 +98,7 @@ class Continuation(BasicModule):
         gl_main.addWidget(self.cmb_cont, 1, 1, 1, 1)
         gl_main.addWidget(lbl_height, 2, 0, 1, 1)
         gl_main.addWidget(self.dsb_height, 2, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 3, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -314,17 +304,14 @@ class DataLayerStack(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.layerstack')
+
+        self.buttonbox.htmlfile = 'raster.dm.layerstack'
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
         self.dsb_dxy.setValue(40.)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.cb_cmask.setChecked(True)
 
@@ -335,11 +322,8 @@ class DataLayerStack(BasicModule):
         gl_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
         gl_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
         gl_main.addWidget(self.cb_cmask, 3, 0, 1, 2)
-        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 4, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
@@ -519,8 +503,7 @@ class DataMerge(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.mosaic')
+        self.buttonbox.htmlfile = 'raster.dm.mosaic'
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
                                          '(optional)')
@@ -534,10 +517,6 @@ class DataMerge(BasicModule):
 
         self.cb_shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Mosaic')
 
@@ -564,11 +543,8 @@ class DataMerge(BasicModule):
         gl_main.addWidget(self.cb_shift_to_median, 5, 0, 1, 2)
         gl_main.addWidget(gbox_merge_method, 6, 0, 1, 2)
         gl_main.addWidget(self.cb_bands_to_files, 7, 0, 1, 2)
-        gl_main.addWidget(helpdocs, 8, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 8, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 8, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
         pb_sfile.pressed.connect(self.get_sfile)
 
@@ -759,22 +735,14 @@ class DataReproj(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.reproj')
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        self.buttonbox.htmlfile = 'raster.dm.reproj'
 
         self.setWindowTitle('Dataset Reprojection')
 
         gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 1, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 1, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
 
     def acceptall(self):
         """
@@ -805,6 +773,8 @@ class DataReproj(BasicModule):
         dat = []
         for data in self.piter(self.indata['Raster']):
             data2 = data_reproject(data, dst_crs, icrs=src_crs)
+            if data2 is None:
+                return
 
             dat.append(data2)
 
@@ -1037,9 +1007,8 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
         gbox = QtWidgets.QGroupBox('Dataset')
-        helpdocs = menu_default.HelpButton('raster.cm.meta')
+        self.buttonbox.htmlfile = 'raster.cm.meta'
 
         gl_1 = QtWidgets.QGridLayout(gbox)
         lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
@@ -1063,11 +1032,6 @@ class Metadata(ContextModule):
         gbox.setSizePolicy(sizepolicy)
         self.proj.setSizePolicy(sizepolicy)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Dataset Metadata')
         self.date.setCalendarPopup(True)
 
@@ -1076,8 +1040,7 @@ class Metadata(ContextModule):
         gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
         gl_main.addWidget(gbox, 2, 0, 1, 2)
         gl_main.addWidget(self.proj, 2, 2, 1, 2)
-        gl_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 4, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
         gl_1.addWidget(lbl_tlx, 0, 0, 1, 1)
         gl_1.addWidget(self.le_tlx, 0, 1, 1, 1)
@@ -1106,8 +1069,7 @@ class Metadata(ContextModule):
         gl_1.addWidget(lbl_date, 12, 0, 1, 1)
         gl_1.addWidget(self.date, 12, 1, 1, 1)
 
-        buttonbox.accepted.connect(self.acceptall)
-        buttonbox.rejected.connect(self.reject)
+        self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
         self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
@@ -1793,10 +1755,12 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
             if i2.crs != crs:
                 src_height, src_width = i2.data.shape
-
-                transform, width, height = calculate_default_transform(
-                    i2.crs, crs, src_width, src_height, *i2.bounds)
-
+                try:
+                    transform, width, height = calculate_default_transform(
+                        i2.crs, crs, src_width, src_height, *i2.bounds)
+                except rasterio.errors.CRSError:
+                    showlog('Problem with projection,aborting....')
+                    return False
                 i2 = data_reproject(i2, crs, transform, height, width)
 
             if forcetype is not None:
@@ -1819,8 +1783,8 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
                 tmpdir = tempfile.gettempdir()
 
             if i.meta['driver'] == 'SENTINEL2':
-                tmpfile = os.path.join(tmpdir,
-                                       os.path.basename(os.path.dirname(i.filename)))
+                tmpfile = os.path.join(
+                    tmpdir, os.path.basename(os.path.dirname(i.filename)))
             else:
                 tmpfile = os.path.join(tmpdir, os.path.basename(i.filename))
 
@@ -2190,13 +2154,14 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
+
     tmp = Metadata()
     tmp.indata['Raster'] = dat
     tmp.run()
-
     app.exec()
 
-    # tmp = DataMerge()
+    # tmp = DataReproj()
+    # tmp.indata['Raster'] = dat
     # tmp.settings()
 
 

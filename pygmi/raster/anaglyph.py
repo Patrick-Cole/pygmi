@@ -35,7 +35,6 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.misc import norm2, currentshader, histcomp
-from pygmi import menu_default
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -64,8 +63,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.z = None
         self.cnum = 10
 
-        FigureCanvasQTAgg.setSizePolicy(self, QtWidgets.QSizePolicy.Policy.Expanding,
-                                        QtWidgets.QSizePolicy.Policy.Expanding)
+        FigureCanvasQTAgg.setSizePolicy(
+            self, QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
     def update_contours(self, data1, scale=7, rotang=10):
@@ -300,8 +300,9 @@ class PlotAnaglyph(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Anaglyph (3D Image: Glasses Needed)')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
-                                           QtWidgets.QSizePolicy.Policy.Minimum)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Minimum)
 
         # Define Layouts
         hbl = QtWidgets.QHBoxLayout(self)  # self is where layout is assigned
@@ -361,7 +362,8 @@ class PlotAnaglyph(ContextModule):
         self.slider_angle.setMinimum(1)
         self.slider_angle.setMaximum(20)
         self.slider_angle.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_angle.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_angle.setTickPosition(
+            QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_angle.setValue(10)
 
         # Add widgets to layout
@@ -379,7 +381,10 @@ class PlotAnaglyph(ContextModule):
         vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
         vbl_left.addWidget(self.slider_angle)
         vbl_left.addWidget(self.cb_shade)
-        vbl_left.addWidget(menu_default.HelpButton('raster.cm.showanaglyph'))
+
+        self.buttonbox.htmlfile = 'raster.cm.showanaglyph'
+        self.buttonbox.buttonbox.hide()
+        vbl_left.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl.addLayout(vbl_left)

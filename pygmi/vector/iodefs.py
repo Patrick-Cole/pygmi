@@ -29,14 +29,12 @@ import glob
 import re
 from io import StringIO
 
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 import pandas as pd
 import geopandas as gpd
 import fiona
-# from pyogrio import read_info
 
-from pygmi import menu_default
 from pygmi.raster.reproj import GroupProj
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import maptobounds
@@ -58,7 +56,6 @@ class ColumnSelect(BasicModule):
         self.setWindowTitle('Column Selection')
 
         vbl = QtWidgets.QVBoxLayout()
-        hbl = QtWidgets.QHBoxLayout()
         self.setLayout(vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
@@ -67,18 +64,8 @@ class ColumnSelect(BasicModule):
 
         vbl.addWidget(self.lw_1)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
-        hbl.addWidget(menu_default.HelpButton('vector.dm.colsel'))
-        hbl.addWidget(buttonbox)
-        vbl.addLayout(hbl)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        self.buttonbox.htmlfile = 'vector.dm.colsel'
+        vbl.addWidget(self.buttonbox)
 
     def settings(self, nodialog=False):
         """
@@ -168,19 +155,11 @@ class ImportXYZ(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('vector.dm.importxyzdata')
+        self.buttonbox.htmlfile = 'vector.dm.importxyzdata'
         lbl_xchan = QtWidgets.QLabel('X Channel:')
         lbl_ychan = QtWidgets.QLabel('Y Channel:')
         lbl_nodata = QtWidgets.QLabel('Nodata Value:')
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
-
-        # self.cmb_xchan.setSizeAdjustPolicy(3)
-        # self.cmb_ychan.setSizeAdjustPolicy(3)
         self.cmb_xchan.setMinimumSize = 10
         self.cmb_ychan.setMinimumSize = 10
 
@@ -195,13 +174,9 @@ class ImportXYZ(BasicModule):
         gl_main.addWidget(lbl_nodata, 2, 0, 1, 1)
         gl_main.addWidget(self.le_nodata, 2, 1, 1, 1)
 
-        gl_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 4)
 
         gl_main.addWidget(self.proj, 3, 0, 1, 4)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
     def settings(self, nodialog=False):
         """
@@ -647,19 +622,9 @@ class ImportVector(BasicModule):
         gl_1.addWidget(self.lbl_mapsheet, 7, 0, 1, 1)
         gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
+        self.buttonbox.htmlfile = 'vector.dm.importvectordata'
+        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
-        gl_1.addWidget(buttonbox, 9, 1, 1, 1)
-
-        helpdocs = menu_default.HelpButton('vector.dm.importvectordata')
-        gl_1.addWidget(helpdocs, 9, 0, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
 

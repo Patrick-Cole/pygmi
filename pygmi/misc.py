@@ -30,6 +30,7 @@ import types
 import time
 import textwrap
 import psutil
+import webbrowser
 import numpy as np
 from matplotlib import ticker, cm, colors
 from PyQt6 import QtWidgets, QtCore, QtGui
@@ -166,6 +167,10 @@ class BasicModule(QtWidgets.QDialog):
 
         ipth = os.path.dirname(__file__)+r'/images/'
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
+
+        self.buttonbox = PButtonBox(self)
+        self.buttonbox.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.buttonbox.rejected.connect(self.reject)
 
     def settings(self, nodialog=False):
         """
@@ -387,6 +392,10 @@ class ContextModule(QtWidgets.QDialog):
         ipth = os.path.dirname(__file__)+r'/images/'
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
 
+        self.buttonbox = PButtonBox(self)
+        self.buttonbox.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.buttonbox.rejected.connect(self.reject)
+
     def run(self):
         """
         Run context menu item.
@@ -396,6 +405,57 @@ class ContextModule(QtWidgets.QDialog):
         None.
 
         """
+
+
+class PButtonBox(QtWidgets.QWidget):
+    """
+    Custom buttonbox with help.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = QtWidgets.QPushButton()
+
+        self.htmlfile = None
+
+        helpdocs.setMinimumHeight(32)
+        helpdocs.setMinimumWidth(52)
+
+        ipth = os.path.dirname(__file__)+r'/images/'
+
+        helpdocs.setIcon(QtGui.QIcon(ipth+'help.png'))
+        helpdocs.setIconSize(helpdocs.minimumSize())
+        helpdocs.clicked.connect(self.help_docs)
+        helpdocs.setFlat(True)
+
+        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
+                                     buttonbox.StandardButton.Ok)
+
+        hbl = QtWidgets.QHBoxLayout()
+
+        hbl.addWidget(helpdocs, 0, QtCore.Qt.AlignmentFlag.AlignLeft)
+        hbl.addWidget(buttonbox, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+
+        self.setLayout(hbl)
+        self.buttonbox = buttonbox
+        self.helpdocs = helpdocs
+
+    def help_docs(self):
+        """Help Routine."""
+        if self.htmlfile is not None:
+            ipth = os.path.dirname(__file__)+r'//helpdocs//html'
+            hfile = os.path.join(ipth, self.htmlfile+'.html')
+            webbrowser.open(hfile)
 
 
 class QVStack2Layout(QtWidgets.QGridLayout):

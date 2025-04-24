@@ -29,7 +29,6 @@ from PyQt6.QtCore import Qt
 import pandas as pd
 
 from pygmi.misc import ContextModule
-from pygmi import menu_default
 
 
 class BasicStats(ContextModule):
@@ -66,10 +65,11 @@ class BasicStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        helpdocs = menu_default.HelpButton('vector.cm.stats')
+        self.buttonbox.htmlfile = 'vector.cm.stats'
+        self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
-        vbl.addWidget(helpdocs)
+        vbl.addWidget(self.buttonbox)
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 

@@ -168,7 +168,6 @@ class HelpButton(QtWidgets.QPushButton):
 
     def help_docs(self):
         """Help Routine."""
-        # HelpDocs(self, self.htmlfile)
         if self.htmlfile is not None:
             ipth = os.path.dirname(__file__)+r'//helpdocs//html'
             hfile = os.path.join(ipth, self.htmlfile+'.html')

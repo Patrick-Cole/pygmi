@@ -30,11 +30,10 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 from numba import jit
 
-from pygmi import menu_default
 from pygmi.misc import ProgressBarText, BasicModule
 
 
@@ -86,15 +85,12 @@ class Gradients(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.grad')
+        self.buttonbox.htmlfile = 'raster.dm.grad'
 
         self.dsb_order.setMinimum(0.1)
         self.sb_azi.setPrefix('')
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.rb_ddir.setChecked(True)
         self.dsb_order.hide()
         self.lbl_or.hide()
@@ -109,11 +105,8 @@ class Gradients(BasicModule):
         gl_1.addWidget(self.sb_azi, 4, 1, 1, 1)
         gl_1.addWidget(self.lbl_or, 5, 0, 1, 1)
         gl_1.addWidget(self.dsb_order, 5, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 6, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 6, 1, 1, 1)
+        gl_1.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.rb_ddir.clicked.connect(self.radiochange)
         self.rb_dratio.clicked.connect(self.radiochange)
         self.rb_vgrad.clicked.connect(self.radiochange)
@@ -350,8 +343,7 @@ class Visibility2d(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.visibility')
+        self.buttonbox.htmlfile = 'raster.dm.visibility'
         lbl_1 = QtWidgets.QLabel('Viewing Height (% std dev)')
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
@@ -361,8 +353,6 @@ class Visibility2d(BasicModule):
         self.sb_wsize.setMinimum(5)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Visibility')
 
@@ -370,11 +360,7 @@ class Visibility2d(BasicModule):
         gl_1.addWidget(self.sb_wsize, 0, 1, 1, 1)
         gl_1.addWidget(lbl_1, 1, 0, 1, 1)
         gl_1.addWidget(self.sb_dh, 1, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 2, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_1.addWidget(self.buttonbox, 2, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -819,8 +805,7 @@ class AGC(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('raster.dm.agc')
+        self.buttonbox.htmlfile = 'raster.dm.agc'
         lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
 
         self.sb_wsize.setPrefix('')
@@ -829,8 +814,6 @@ class AGC(BasicModule):
         self.sb_wsize.setSingleStep(2)
         self.sb_wsize.setValue(self.wsize)
         self.rb_mean.setChecked(True)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Automatic Gain Control')
 
@@ -839,11 +822,7 @@ class AGC(BasicModule):
         gl_1.addWidget(self.rb_rms, 2, 0, 1, 1)
         gl_1.addWidget(lbl_2, 3, 0, 1, 1)
         gl_1.addWidget(self.sb_wsize, 3, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 4, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 4, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_1.addWidget(self.buttonbox, 4, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -969,9 +948,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.misc import getinfo
 
-    ifile = r"d:\Workdata\testmag.tif"
-    ifile = r"d:\Workdata\people\mikedentith\perth_surf_win.grd"
-    ifile = r'C:/Workdata/raster/ER Mapper/magmicrolevel.PD.ers'
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
 
     piter = ProgressBarText().iter
 
@@ -982,7 +959,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    V2D = Visibility2d()
+    V2D = Gradients()
     V2D.indata['Raster'] = dat
 
     getinfo()

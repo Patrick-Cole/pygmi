@@ -39,7 +39,6 @@ from shapely.geometry import Polygon
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import mvis3d
-from pygmi import menu_default
 import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import reprojxy
@@ -715,9 +714,9 @@ class ExportMod3D(ContextModule):
             return
 
         if prjkmz.proj.wkt == '':
-            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' You need a projection!',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Warning', ' You need a projection!',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         smooth = prjkmz.cb_smooth.isChecked()
@@ -1175,7 +1174,7 @@ class ExportMod3D(ContextModule):
         self.showlog('Shapefile export complete!')
 
 
-class Exportkmz(QtWidgets.QDialog):
+class Exportkmz(ContextModule):
     """
     Export kmz dialog.
 
@@ -1207,22 +1206,14 @@ class Exportkmz(QtWidgets.QDialog):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pfmod.cm.exportkmz')
-
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        self.buttonbox.htmlfile = 'pfmod.cm.export3dmodel'
 
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(self.cb_smooth, 1, 0, 1, 2)
-        # gl_1.addWidget(helpdocs, 2, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 2, 1, 1, 1)
+        gl_1.addWidget(self.buttonbox, 2, 0, 1, 2)
 
         self.setWindowTitle('Google Earth kmz Export')
         self.cb_smooth.setText('Smooth Model')
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
 
 class MessageCombo(QtWidgets.QDialog):

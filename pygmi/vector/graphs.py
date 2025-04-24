@@ -41,7 +41,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 from pygmi.misc import frm, ContextModule, discrete_colorbar
-from pygmi import menu_default
 
 rcParams['savefig.dpi'] = 300
 
@@ -978,8 +977,9 @@ class PlotCCoef(ContextModule):
 
         self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.pltcorr'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.pltcorr'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
@@ -1047,8 +1047,10 @@ class PlotHist(ContextModule):
         self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
         self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.showhist'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.showhist'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(self.cb_log)
         hbl.addWidget(self.cb_cum)
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -1132,8 +1134,10 @@ class PlotLines(ContextModule):
         lbl_1 = QtWidgets.QLabel('Line:')
         lbl_2 = QtWidgets.QLabel('Column:')
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.showprof'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.showprof'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -1252,8 +1256,10 @@ class PlotLineMap(ContextModule):
         self.lbl_3 = QtWidgets.QLabel('Scale:')
         self.cb_1 = QtWidgets.QCheckBox('Show Line Labels:')
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.showmapprof'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.showmapprof'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -1350,7 +1356,7 @@ class PlotRose(ContextModule):
 
         self.data = None
 
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
 
@@ -1362,8 +1368,10 @@ class PlotRose(ContextModule):
         self.lbl_3 = QtWidgets.QLabel('Value:')
         self.cb_1 = QtWidgets.QCheckBox('Equal Area Rose Diagram')
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.showrose'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.showrose'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -1478,8 +1486,10 @@ class PlotVector(ContextModule):
             newcmp = ListedColormap(copper/255, 'MarineCopper')
             colormaps.register(newcmp)
 
-        hbl.addWidget(menu_default.HelpButton('vector.cm.showvector'), 0,
-                      QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.buttonbox.htmlfile = 'vector.cm.showvector'
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
         hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(self.lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)

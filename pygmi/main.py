@@ -425,22 +425,24 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         """
         if self.my_class.indata == {} and self.my_class.is_import is False:
-            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' You need to connect data first!',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Warning', ' You need to connect data first!',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if self.text_item is not None:
             self.text_item.setPlainText(self.my_class_name)
 
+        my_class_name = ' '.join(self.my_class_name.split())
+
         self.my_class.parent.process_is_active()
-        self.showlog(self.my_class_name+' busy...')
+        self.showlog(my_class_name+' busy...')
         iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
-            self.showlog(self.my_class_name+' finished!')
+            self.showlog(my_class_name+' finished!')
         else:
-            self.showlog(self.my_class_name+' cancelled.')
+            self.showlog(my_class_name+' cancelled.')
 
         if self.my_class.is_import is True and self.text_item is not None:
             ifile = os.path.basename(self.my_class.ifile)
@@ -781,7 +783,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
-            'PyGMI - Python Geoscience Modelling and Interpretation')
+            'PyGMI - Python Geoscience Modelling and Interpretation (' +
+            pygmi.__version__ + ')')
         self.action_delete.setText('Delete')
         self.action_bring_to_front.setText('Bring to Front')
         self.action_send_to_back.setText('Send to Back')
@@ -1341,8 +1344,10 @@ class Startup(QtWidgets.QDialog):
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
 
         self.vbl_main = QtWidgets.QVBoxLayout(self)
-        self.lbl_info = QtWidgets.QLabel(self)
-        self.lbl_pic = QtWidgets.QLabel(self)
+        self.lbl_info = QtWidgets.QLabel()
+        self.lbl_pic = QtWidgets.QLabel()
+        self.lbl_ver = QtWidgets.QLabel("<font color='brown'>" +
+                                        pygmi.__version__ + "</font>")
         self.lbl_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
                                              r'/images/logo256.ico'))
         self.lbl_info.setScaledContents(True)
@@ -1353,8 +1358,12 @@ class Startup(QtWidgets.QDialog):
         fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Weight.Bold)
         self.lbl_info.setFont(fnt)
         self.lbl_info.setText(labeltext)
+        self.lbl_ver.setFont(QtGui.QFont('Arial', 18, QtGui.QFont.Weight.Bold))
         self.vbl_main.addWidget(self.lbl_info)
-        self.vbl_main.addWidget(self.lbl_pic)
+        self.vbl_main.addWidget(self.lbl_pic, 0,
+                                QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.vbl_main.addWidget(self.lbl_ver, 0,
+                                QtCore.Qt.AlignmentFlag.AlignHCenter)
 
         self.pbar.setMaximum(pbarmax - 1)
         self.vbl_main.addWidget(self.pbar)

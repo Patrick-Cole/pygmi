@@ -40,7 +40,6 @@ from mtpy.modeling import occam1d
 from mtpy.core.mt import MT
 from mtpy.core.z import Z, Tipper
 
-from pygmi import menu_default
 from pygmi.misc import BasicModule, ContextModule
 
 # The lines below are a temporary fix for mtpy. Removed in future.
@@ -91,7 +90,7 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
+        self.buttonbox.htmlfile = 'mt.cm.meta'
         gbox = QtWidgets.QGroupBox('Dataset')
 
         gl_1 = QtWidgets.QGridLayout(gbox)
@@ -104,20 +103,18 @@ class Metadata(ContextModule):
         lbl_rot = QtWidgets.QLabel('Rotation:')
         lbl_bandid = QtWidgets.QLabel('Station Name:')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                           QtWidgets.QSizePolicy.Policy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Expanding)
         gbox.setSizePolicy(sizepolicy)
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Dataset Metadata')
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
-        gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
-        gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
+        gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 1)
+        gl_main.addWidget(self.pb_rename_id, 1, 1, 1, 1)
         gl_main.addWidget(gbox, 2, 0, 1, 2)
-        gl_main.addWidget(buttonbox, 4, 0, 1, 4)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
         gl_1.addWidget(lbl_lat, 0, 0, 1, 1)
         gl_1.addWidget(self.le_lat, 0, 1, 1, 1)
@@ -133,9 +130,6 @@ class Metadata(ContextModule):
         gl_1.addWidget(self.le_utmzone, 5, 1, 1, 1)
         gl_1.addWidget(lbl_rot, 6, 0, 1, 1)
         gl_1.addWidget(self.le_rot, 6, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
 
         self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
@@ -282,8 +276,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None):
-        fig = Figure(layout='tight')
+    def __init__(self, parent=None, width=8, height=6, dpi=100):
+        fig = Figure(layout='constrained', figsize=(width, height), dpi=dpi)
         super().__init__(fig)
 
     def update_line(self, data, ival, itype):
@@ -380,7 +374,7 @@ class StaticShiftEDI(BasicModule):
         self.data = None
 
         self.setWindowTitle('Remove Static Shift')
-        helpdocs = menu_default.HelpButton('mt.dm.removesshift')
+        self.buttonbox.htmlfile = 'mt.dm.removesshift'
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -410,11 +404,6 @@ class StaticShiftEDI(BasicModule):
         pb_apply = QtWidgets.QPushButton('Remove Static Shift')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
@@ -425,7 +414,6 @@ class StaticShiftEDI(BasicModule):
         hbl_3.addWidget(lbl_4)
         hbl_3.addWidget(self.dsb_shifty)
 
-        hbl_2.addWidget(helpdocs)
         hbl_2.addWidget(pb_reset)
         hbl_2.addWidget(pb_apply)
 
@@ -435,12 +423,10 @@ class StaticShiftEDI(BasicModule):
         vbl.addLayout(hbl)
         vbl.addLayout(hbl_3)
         vbl.addLayout(hbl_2)
-        vbl.addWidget(buttonbox)
+        vbl.addWidget(self.buttonbox)
 
         pb_apply.clicked.connect(self.apply)
         pb_reset.clicked.connect(self.reset_data)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
 
@@ -594,12 +580,7 @@ class RotateEDI(BasicModule):
         pb_apply = QtWidgets.QPushButton('Apply rotation')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
-        helpdocs = menu_default.HelpButton('mt.dm.rotateedi')
+        self.buttonbox.htmlfile = 'mt.dm.rotateedi'
 
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
@@ -608,7 +589,6 @@ class RotateEDI(BasicModule):
         hbl.addWidget(lbl_3)
         hbl.addWidget(self.dsb_rotangle)
 
-        hbl_2.addWidget(helpdocs)
         hbl_2.addWidget(pb_reset)
         hbl_2.addWidget(pb_apply)
 
@@ -617,12 +597,10 @@ class RotateEDI(BasicModule):
         vbl.addWidget(self.cb_applyall)
         vbl.addLayout(hbl)
         vbl.addLayout(hbl_2)
-        vbl.addWidget(buttonbox)
+        vbl.addWidget(self.buttonbox)
 
         pb_apply.clicked.connect(self.apply)
         pb_reset.clicked.connect(self.reset_data)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
@@ -1033,7 +1011,7 @@ class EditEDI(BasicModule):
         self.data = None
 
         self.setWindowTitle('Mask and Interpolate')
-        helpdocs = menu_default.HelpButton('mt.dm.mask')
+        self.buttonbox.htmlfile = 'mt.dm.mask'
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -1051,17 +1029,11 @@ class EditEDI(BasicModule):
         pb_apply = QtWidgets.QPushButton('Mask and Interpolate')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         hbl.addWidget(lbl_1)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2)
         hbl.addWidget(self.cmb_2)
 
-        hbl_2.addWidget(helpdocs)
         hbl_2.addWidget(pb_reset)
         hbl_2.addWidget(pb_apply)
 
@@ -1069,12 +1041,10 @@ class EditEDI(BasicModule):
         vbl.addWidget(mpl_toolbar)
         vbl.addLayout(hbl)
         vbl.addLayout(hbl_2)
-        vbl.addWidget(buttonbox)
+        vbl.addWidget(self.buttonbox)
 
         pb_apply.clicked.connect(self.apply)
         pb_reset.clicked.connect(self.reset_data)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
@@ -1359,10 +1329,7 @@ class Occam1D(BasicModule):
         self.cursoln = 0
 
         self.setWindowTitle('Occam 1D Inversion')
-        helpdocs = menu_default.HelpButton('mt.dm.occam')
-
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                                           QtWidgets.QSizePolicy.Policy.Fixed)
+        self.buttonbox.htmlfile = 'mt.dm.occam'
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
@@ -1379,31 +1346,20 @@ class Occam1D(BasicModule):
         self.cmb_mode.addItems(['TE', 'TM', 'DET'])
         self.cmb_mode.setCurrentIndex(0)
         self.le_errres = QtWidgets.QLineEdit('data')
-        self.le_errres.setSizePolicy(sizepolicy)
         self.le_errphase = QtWidgets.QLineEdit('data')
-        self.le_errphase.setSizePolicy(sizepolicy)
         self.le_errfloorres = QtWidgets.QLineEdit('4.')
-        self.le_errfloorres.setSizePolicy(sizepolicy)
         self.le_errfloorphase = QtWidgets.QLineEdit('2.')
-        self.le_errfloorphase.setSizePolicy(sizepolicy)
         self.cb_remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
                                                       r'Phase values out of '
                                                       r'1st/3rd Quadrant')
 
         self.le_targetdepth = QtWidgets.QLineEdit('40000.')
-        self.le_targetdepth.setSizePolicy(sizepolicy)
         self.le_nlayers = QtWidgets.QLineEdit('100')
-        self.le_nlayers.setSizePolicy(sizepolicy)
         self.le_bottomlayer = QtWidgets.QLineEdit('100000.')
-        self.le_bottomlayer.setSizePolicy(sizepolicy)
         self.le_airlayer = QtWidgets.QLineEdit('10000.')
-        self.le_airlayer.setSizePolicy(sizepolicy)
         self.le_z1layer = QtWidgets.QLineEdit('10.')
-        self.le_z1layer.setSizePolicy(sizepolicy)
         self.le_maxiter = QtWidgets.QLineEdit('200')
-        self.le_maxiter.setSizePolicy(sizepolicy)
         self.le_targetrms = QtWidgets.QLineEdit('1.')
-        self.le_targetrms.setSizePolicy(sizepolicy)
         self.cb_remove_out_quad.setChecked(True)
 
         self.hs_profnum = MySlider()
@@ -1411,7 +1367,6 @@ class Occam1D(BasicModule):
 
         pb_occ = QtWidgets.QPushButton('Occam executable location')
         lbl_1 = QtWidgets.QLabel('Station Name:')
-        lbl_1.setSizePolicy(sizepolicy)
         lbl_3 = QtWidgets.QLabel('Mode:')
         lbl_4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
         lbl_5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
@@ -1428,11 +1383,6 @@ class Occam1D(BasicModule):
         self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
 
         pb_apply = QtWidgets.QPushButton('Invert Station')
-
-        buttonbox = QtWidgets.QDialogButtonBox()
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         gl_1.addWidget(pb_occ, 0, 0)
         gl_1.addWidget(self.le_occfile, 0, 1)
@@ -1465,9 +1415,8 @@ class Occam1D(BasicModule):
         gl_1.addWidget(self.cb_remove_out_quad, 14, 0, 1, 2)
 
         gl_1.addWidget(pb_apply, 15, 0, 1, 2)
-        gl_1.addWidget(buttonbox, 16, 0, 1, 2)
+        gl_1.addWidget(self.buttonbox, 16, 0, 1, 2)
 
-        hbl_2.addWidget(helpdocs)
         hbl_2.addWidget(self.lbl_profnum)
         hbl_2.addWidget(self.hs_profnum)
 
@@ -1480,8 +1429,6 @@ class Occam1D(BasicModule):
 
         pb_occ.pressed.connect(self.get_occfile)
         pb_apply.clicked.connect(self.apply)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.hs_profnum.valueChanged.connect(self.snum)
 
@@ -1591,8 +1538,9 @@ class Occam1D(BasicModule):
                         'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
                         'and compile it. It should be called occam1d for '
                         'non-windows platforms and occam1d.exe for windows.')
-                QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                              QtWidgets.QMessageBox.StandardButton.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', text,
+                    QtWidgets.QMessageBox.StandardButton.Ok)
                 return
 
             self.mmc.figure.clear()
@@ -1842,19 +1790,20 @@ def _testfn_occam():
 
 def _testfn():
     """Test routine."""
-    datadir = r'd:\Work\workdata\MT\\'
-    allfiles = glob.glob(datadir+'\\*.edi')
+    datadir = r'd:\workdata\MT\\'
+    edi_file = datadir+r"synth02.edi"
 
-    for edi_file in allfiles:
-        mt_obj = MT(edi_file)
+    # Create an MT object
+    mt_obj = MT(edi_file)
 
     print('loading complete')
 
     app = QtWidgets.QApplication(sys.argv)
-    test = Occam1D(None)
+    test = EditEDI(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
+    # test.run()
 
 
 if __name__ == "__main__":
-    _testfn_occam()
+    _testfn()

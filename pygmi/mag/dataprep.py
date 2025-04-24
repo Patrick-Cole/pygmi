@@ -24,12 +24,11 @@
 # -----------------------------------------------------------------------------
 """A set of Magnetic Data routines."""
 
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 import numpy as np
 from scipy.signal.windows import tukey
 import scipy.interpolate as si
 from scipy import signal
-from pygmi import menu_default
 
 from pygmi.raster.datatypes import Data
 from pygmi.misc import BasicModule
@@ -78,14 +77,12 @@ class Tilt1(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('mag.dm.tilt')
+        self.buttonbox.htmlfile = 'mag.dm.tilt'
+
         lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
         lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
         lbl_3 = QtWidgets.QLabel('EHGA k factor (2 or greater)')
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.sb_azi.setProperty('value', 0)
@@ -104,11 +101,7 @@ class Tilt1(BasicModule):
         gl_1.addWidget(self.sb_azi, 1, 1, 1, 1)
         gl_1.addWidget(lbl_3, 2, 0, 1, 1)
         gl_1.addWidget(self.sb_k, 2, 1, 1, 1)
-        gl_1.addWidget(helpdocs, 3, 0, 1, 1)
-        gl_1.addWidget(buttonbox, 3, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
     def settings(self, nodialog=False):
         """
@@ -402,8 +395,8 @@ class RTP(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('mag.dm.rtp')
+        self.buttonbox.htmlfile = 'mag.dm.rtp'
+
         lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
         lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
@@ -415,10 +408,6 @@ class RTP(BasicModule):
         self.dsb_inc.setValue(-62.5)
         self.dsb_dec.setValue(-16.75)
 
-        buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-
         self.setWindowTitle('Reduction to the Pole')
 
         gl_main.addWidget(lbl_band, 0, 0, 1, 1)
@@ -428,11 +417,7 @@ class RTP(BasicModule):
         gl_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
         gl_main.addWidget(lbl_dec, 2, 0, 1, 1)
         gl_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
-        gl_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gl_main.addWidget(buttonbox, 3, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
+        gl_main.addWidget(self.buttonbox, 3, 0, 1, 4)
 
     def settings(self, nodialog=False):
         """

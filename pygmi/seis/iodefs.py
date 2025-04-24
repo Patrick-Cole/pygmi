@@ -1419,7 +1419,7 @@ class ExportSeisan(ContextModule):
             self.parent.process_is_active(True)
 
         data = self.indata['Seis']
-        filt = 'Nordic2'
+        filt = 'Nordic'
 
         if filename is None:
             ext = ('Nordic2 format (*.out);;'
@@ -1610,15 +1610,15 @@ class ExportSeisan(ContextModule):
             tmp = sform('{0:2d}', dat.minutes, tmp, 21, 22, 0)
             tmp = sform('{0:>6.2f}', dat.seconds, tmp, 23, 28, 0)
             tmp = sform('{0:4d}', dat.duration, tmp, 30, 33)
-            tmp = sform('{0:>7.4g}', dat.amplitude, tmp, 34, 40, 0)
-            tmp = sform('{0:4.3g}', dat.period, tmp, 42, 45, 0)
-            tmp = sform('{0:5.1f}', dat.direction_of_approach, tmp, 47, 51)
+            tmp = sform('{0:>7.1f}', dat.amplitude, tmp, 34, 40, 0)
+            tmp = sform('{0:4.0f}', dat.period, tmp, 42, 45, 0)
+            tmp = sform('{0:5.0f}', dat.direction_of_approach, tmp, 47, 51)
             tmp = sform('{0:4.0f}', dat.phase_velocity, tmp, 53, 56)
             tmp = sform('{0:4.0f}', dat.angle_of_incidence, tmp, 57, 60)
             tmp = sform('{0:3d}', dat.azimuth_residual, tmp, 61, 63)
-            tmp = sform('{0:5.2f}', dat.travel_time_residual, tmp, 64, 68, 0)
+            tmp = sform('{0:5.1f}', dat.travel_time_residual, tmp, 64, 68, 0)
             tmp = sform('{0:2d}', dat.weight, tmp, 69, 70)
-            tmp = sform('{0:5.4g}', dat.epicentral_distance, tmp, 71, 75, 0)
+            tmp = sform('{0:5.0f}', dat.epicentral_distance, tmp, 71, 75, 0)
             tmp = sform('{0:3d}', dat.azimuth_at_source, tmp, 77, 79, 0)
 
             self.fobj.write(tmp)
