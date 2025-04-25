@@ -68,27 +68,27 @@ PyGMI should still work with Python 3.11.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* fiona 1.9.5
-* geopandas 0.14.4
-* h5netcdf 1.3.0
-* matplotlib 3.9.0
-* mtpy 1.1.5
-* natsort 8.4.0
-* numexpr 2.10.1
-* numba 0.61.0
-* openpyxl 3.1.2
-* psutil 6.0.0
-* pyopengl 3.1.7
-* pyqt5 5.15.10
-* pytest 8.2.2
-* rasterio 1.3.9
-* rioxarray 0.15.6
-* scikit-learn 1.6.0
-* scikit-image 0.24.0
-* shapelysmooth 0.2.0
-* simpeg 0.21.1
-* numba 0.60.0
-* pywin32 308 (for windows users)
+* fiona>=1.10.1
+* geopandas>=1.0.1
+* h5netcdf>=1.6.1
+* matplotlib>=3.10.1
+* mtpy>=1.1.5
+* natsort>=8.4.0
+* numba>=0.61.2
+* numexpr>=2.10.2
+* openpyxl>=3.1.5
+* psutil>=7.0.0
+* pyqt6>=6.9.0
+* pytest>=8.3.5
+* pyvista>='0.45.0
+* pyvistaqt>0.11.2'
+* rasterio>=1.4.3
+* rioxarray>=0.19.0
+* scikit-learn>=1.6.1
+* scikit-image>=0.25.2
+* shapelysmooth>=0.2.1
+* simpeg>=0.24.0
+* pywin32>=310 (for windows users)
 
 PyPi - Windows
 ^^^^^^^^^^^^^^
@@ -110,7 +110,6 @@ If you wish to update GDAL, you will need to download and install:
 * shapely
 
 All these binaries should be downloaded since they have internal co-dependencies.
-
 
 PyPi - Linux
 ^^^^^^^^^^^^
@@ -159,12 +158,16 @@ The process to install is as follows:
    conda install geopandas
 
    conda install natsort
-   
+
    conda install numba
+
+   conda install scikit-learn
 
    conda install scikit-image
 
-   conda install pyopengl
+   conda install pyvista
+
+   conda install pyvistaqt
 
    conda install simpeg
 

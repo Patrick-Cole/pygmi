@@ -2,6 +2,95 @@
 Changelog
 =========
 
+v3.2.9.0, 25 April 2025
+-----------------------
+* Connected help to pfmod, rsense and seis.
+* Fixed a bug importing some macroseismic data.
+* Updated show surface to PyVista.
+* Updated 3D model display to PyVista.
+* Linked help to raster, vector, boreholes, classification, EM, gravity, magnetics, and MT menus.
+* Added class dataset range plot for cluster analysis.
+* Fixed a bug when exporting amplitudes in Nordic2.
+* Updated from Qt5 to Qt6.
+* Updated help files
+* Fixed a bug where ASTER files were duplicated in batch mode.
+* Fixed a bug in equation editor where a leading space caused errors
+* Batch file list now works with cut raster
+* Fixed a bug causing strange colours on change viewer.
+* Fixed bugs causing matplotlib save image to not work.
+* Importing satellite data in batch mode will select bands starting with B
+* Updated dependencies
+* Changed borehole font size and log size
+* Added feature for analyse spectra
+* Changed 'Create Batch' to 'Import Batch' in remote sensing menu.
+* L1C sentinel data can be topographically corrected.
+* Modis 6.0 support removed.
+* Added borehole menu
+* Added Local to Base station label in gravity
+* Saving EDI file will not give overwrite warning,
+* Test contours are thinner in 3D modelling.
+* Ranged copy now references layer and profile view.
+* Plots now use tight layout and not constrained.
+* Magnetic residual and gravity residual now appears immediately in overview combo of modelling after calculation.
+* Fixed a bug causing a crash while merging models
+* Added temporal b-value and simple event import
+* Fixed bugs exporting models to shapefiles or kmz files
+* Fixed a bug where reprojecting crashed for data without nodata.
+* Fixed a bug where a missing profile picture on a model cashed a crash.
+* Updated docstrings
+* Fixed a bug in mosaic relating to bounds.
+* Fixed a bug in mosaic relating to float32 nodata.
+* Started changing PyGMI help to browser based help
+* Tilt depth now display and exports depth points
+* Clipping a vector using a polygon no longer needs identical projections.
+* Fixed a bug where Feature Intersection Density geometries could not be used.
+* Equation editor shows warning about negative logs and sqrt
+* Gradients now accepts float order parameter.
+* Help files updated and added to fuzzy and crisp clustering
+* Membership plot has better labels for choices
+* Results from supervised classification will have their class names correctly displayed on class maps and statistics.
+* Obj graph will no longer apply to supervised classification
+* Bugfix - fixed scaling bug in segmentation.
+* Fixed a bug on the graph tool where ptp calculation should have been ma.ptp.
+* Other locations updated as well.
+* MarineCopper colormap now works for vector display
+* Derivative ratio now accepts float order.
+* Fixed a bug where raster band units could be set to the string 'None' in the metadata interface.
+* Bugfix - fixed a display problem on correlation coefficient graph.
+* Negative null values can now be specified for gridding, Blanking distance now displays properly.
+* Fixed a bug causing a crash in magnetic calculation
+* Fixed a bug preventing raterfilelists from being used in hyperspectral feature processing.
+* Fixed a bug causing rasterfilelists to import slowly.
+* Seisan export will now include line type 2,3,5,6
+* Fixed a bug when change detection has no matching bands
+* Added set_mask to Data
+* SeisComp import bugfix
+* Fixed a bug clipping data to zoom extents
+* Importing Sentinel-2 via directory will now correctly show the directory name.
+* Change detection now only calculated mean when necessary.
+* Limit_memory added to API to test when PyGMI runs on less memory
+* Fixed bugs in aster import and layer stacking
+* Added modify_mask
+* Made sure nodata is float32 when data is float32
+* Added improved phull and renamed old function to phulljit
+* Update cut_raster to include bounds
+* Get_from_rastermeta accepts Data as input for convenience.
+* Files_to_rastermeta added.
+* Mosaic is now accessible as function
+* Sentinel2 can be imported to set bounds
+* Function added to find where a new set of bounds intersects a dataset.
+* Miscellaneous bugfixes
+* Update ptp in line with numpy 2.
+* Added improved hull calculation
+* Added Sen2Cor interface
+* Added topographic correction
+* Fixed a memory leak with data on main interface
+* Moved GroupProj, check_dataid, getepsgcodes and lstack from raster.dataprep to raster.misc to avoid circular dependencies
+* Comboboxes will make sure their lists are clear before adding items
+* ASTER, Landsat, Sentinel-2 and Worldview files now store azimuth and zenith information when imported
+* Bugfix for cliptozoom
+* Added Clip to Zoom for raster data.
+
 v3.2.8.21, 01 October 2024
 --------------------------
 * Changed default font size for graphs from 10 to 8.
