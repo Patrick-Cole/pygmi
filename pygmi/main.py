@@ -61,6 +61,8 @@ interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
+os.environ['QT_API'] = 'pyqt6'
+
 
 class Arrow(QtWidgets.QGraphicsLineItem):
     """
@@ -699,6 +701,7 @@ class MainWidget(QtWidgets.QMainWindow):
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
                 continue
+            # print(i)
             start.update()
             try:
                 menuimports.append(importlib.import_module(i))

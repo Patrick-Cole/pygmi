@@ -1489,5 +1489,54 @@ def _testfn():
     M3D.exec()
 
 
+def _testfn2():
+    """Test function."""
+    from pygmi.pfmod.iodefs import ImportMod3D
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
+    ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
+
+    IM = ImportMod3D()
+    IM.ifile = ifile
+    IM.settings(True)
+
+    print('Model loaded')
+
+    lmod1 = IM.outdata['Model3D'][0]
+
+    values = lmod1.lith_index[::1, ::1, ::-1]
+
+    opac = values.copy()
+    opac[opac>0] = 1.
+    opac[opac<1] = 0.
+
+    # opac= opac.flatten()
+
+    # Create the spatial reference
+    grid = pv.ImageData()
+    grid.dimensions = values.shape
+
+    grid.origin = (lmod1.xrange[0], lmod1.yrange[0], lmod1.zrange[0])
+    grid.spacing = (lmod1.dxy, lmod1.dxy, lmod1.d_z)
+
+
+    grid.point_data['values'] = values.flatten(order='F')  # Flatten the array
+    grid.point_data['opac'] = opac.flatten(order='F')  # Flatten the array
+
+
+    # breakpoint()
+    # Now plot the grid
+    # grid.plot(show_edges=False)
+    vol = grid
+    p = pv.Plotter()
+    # p.add_mesh_slice(vol)
+    p.add_mesh_clip_plane(grid, scalars='values', opacity='opac')
+
+
+    p.show()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

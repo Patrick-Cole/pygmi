@@ -37,12 +37,15 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import matplotlib.patches as mpatches
 from scipy.spatial import ConvexHull
 from scipy.interpolate import interp1d
+from bs4 import BeautifulSoup
 
+from pygmi.rsense.render_html import render_in_browser as ren
 from pygmi.misc import frm, BasicModule
 from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense import features
+from pygmi.rsense.usgs import SPECPR
 from pygmi.raster.modest_image import imshow
 
 
@@ -257,7 +260,8 @@ class AnalSpec(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
 
         # vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
-        pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
+        pb_speclib = QtWidgets.QPushButton('Load Spectral Library')
+        pb_specd = QtWidgets.QPushButton('Current Spectrum Description')
         self.cb_rgb.setChecked(True)
 
         # self.lbl_info.setWordWrap(True)
@@ -276,7 +280,7 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(self.cb_hull, 2, 2)
         gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
-
+        gl_main.addWidget(pb_specd, 5, 1, 1, 2)
         # gl_main.addWidget(self.gbox_info, 5, 1, 8, 2)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
@@ -288,6 +292,7 @@ class AnalSpec(BasicModule):
         self.cb_hull.clicked.connect(self.hull)
         self.cb_rgb.clicked.connect(self.rotate_view)
         pb_speclib.clicked.connect(self.load_splib)
+        pb_specd.clicked.connect(self.showtext)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
     def button_press_callback(self, event):
@@ -386,14 +391,19 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        ext = 'ENVI Spectral Library (*.sli)'
+        ext = 'USGS SPECPR (*);; ENVI Spectral Library (*.sli)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return
 
-        self.spectra = readsli(filename)
+        if filt == 'ENVI Spectral Library (*.sli)':
+            self.spectra = readsli(filename)
+        elif filt == 'USGS SPECPR (*)':
+            self.spectra = SPECPR(filename)
+        else:
+            return
 
         self.lw_speclib.disconnect()
         self.lw_speclib.clear()
@@ -529,6 +539,33 @@ class AnalSpec(BasicModule):
         None.
 
         """
+
+    def showtext(self):
+        """
+        Show spectrum description in browser.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.lw_speclib.currentItem() is None:
+            return
+
+        title = self.lw_speclib.currentItem().text()
+        if title not in self.spectra:
+            return
+        if 'text' not in self.spectra[title]:
+            self.showlog('No description.')
+            return
+
+        text = self.spectra[title]['text']
+
+        soup = BeautifulSoup(text, 'html.parser')
+        for a in soup.find_all('a', href=True):
+            a.decompose()
+
+        ren(str(soup))
 
 
 class ProcFeatures(BasicModule):
@@ -1389,4 +1426,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

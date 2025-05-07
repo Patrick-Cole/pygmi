@@ -80,14 +80,15 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * psutil>=7.0.0
 * pyqt6>=6.9.0
 * pytest>=8.3.5
-* pyvista>='0.45.0
-* pyvistaqt>0.11.2'
+* pyvista>=0.45.0
+* pyvistaqt>0.11.2
 * rasterio>=1.4.3
 * rioxarray>=0.19.0
 * scikit-learn>=1.6.1
 * scikit-image>=0.25.2
 * shapelysmooth>=0.2.1
 * simpeg>=0.24.0
+* beautifulsoup4>=4.13.4
 * pywin32>=310 (for windows users)
 
 PyPi - Windows
