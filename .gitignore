@@ -3,7 +3,6 @@ seis/
 dist/
 data/
 build/
-pygmi/
 docs/
 .doctrees/
 .pylint.d/

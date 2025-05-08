@@ -1,0 +1,781 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Show Class Dataset Ranges &#8212; PyGMI 3.2.9.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=252627f5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cluster.cm.showbars';</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Show OBJ, VRC, NCE, XBI Graphs" href="cluster.cm.showgraphs.html" />
+    <link rel="prev" title="Show Class Data" href="cluster.cm.showclass.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Patrick-Cole/pygmi" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/pyversions/pygmi" title="PyPI - Python Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/pyversions/pygmi" class="icon-link-image" alt="PyPI - Python Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/pypi/v/pygmi" title="PyPI - Version" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/pypi/v/pygmi" class="icon-link-image" alt="PyPI - Version"/></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://img.shields.io/github/license/patrick-cole/pygmi" title="GitHub License" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="https://img.shields.io/github/license/patrick-cole/pygmi" class="icon-link-image" alt="GitHub License"/></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.smoothing.html">Smoothing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.agc.html">Automatic Gain Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.norm.html">Normalisation/Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.grad.html">Gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.visibility.html">Visibility Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.mosaic.html">Dataset Mosaic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.reproj.html">Dataset Reprojection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.stats.html">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showanaglyph.html">Show Anaglyph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showsurface.html">Show Surface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showhexbin.html">Show Hexbin Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.showcorr.html">Show 2D Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.export.html">Export Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.structcomp.html">Structural Complexity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.meta.html">Display/Edit Vector Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.stats.html">Basic Vector Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showvector.html">Show Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showhist.html">Show Histogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showrose.html">Show Rose Diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bholes.dm.import.html">Import Borehole Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bholes.cm.showlog.html">Show Borehole Log</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="cluster.html">Classification</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.crisp.html">Crisp Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.fuzzy.html">Fuzzy Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.seg.html">Image Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.super.html">Supervised Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.dm.scatter.html">Scatter Plot Tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.stat.html">Cluster Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showclass.html">Show Class Data</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Show Class Dataset Ranges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showgraphs.html">Show OBJ, VRC, NCE, XBI Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.showmembership.html">Show Membership Data (Fuzzy Only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cluster.cm.exportclass.html">Export Class Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="em.html">Electromagnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.importedi.html">Import EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.rotateedi.html">Rotate EDI Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.removesshift.html">Remove Static Shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.mask.html">Mask and Interpolate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.dm.occam.html">Occam 1D Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="pfmod.dm.modelcreate.html">Model Creation and Editing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.mc.mext.html">Model Extent Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.mc.gparam.html">Geophysical Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.mc.editor.html">Editor overview</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.import3dmodel.html">Import 3D Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.merge3dmodels.html">Merge two 3D Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.inv3d.html">3D Magnetic Inversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.show3dmodel.html">3D Model Display</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.stat.html">3D Model Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="rsense.html">Remote Sensing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.importdata.html">Import Satellite Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.createbatchlist.html">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.ratios.html">Calculate Band Ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.topo.html">Topographic Correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.ltc.html">Landsat Temporal Composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.pca.html">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.mnf.html">Minimum Noise Fraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.hyper.html">Hyperspectral Imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.change.html">Change Detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.sfilt.html">Filter SEISAN data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.fps.html">Fault Plane Solutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="faq.html">FAQs and Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="faq.importxyz.html">Imported XYZ point data display shows a single colour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="tut.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut.class.html">Classification Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.3dmodel.html">3D Modelling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut.importaster.html">Importing ASTER data</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/pygmi/index.html">pygmi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/bholes/index.html">pygmi.bholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/bholes/graphs/index.html">pygmi.bholes.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/bholes/iodefs/index.html">pygmi.bholes.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/bholes/menu/index.html">pygmi.bholes.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/clust/index.html">pygmi.clust</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/cluster/index.html">pygmi.clust.cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/crisp_clust/index.html">pygmi.clust.crisp_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/fuzzy_clust/index.html">pygmi.clust.fuzzy_clust</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/graphs/index.html">pygmi.clust.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/graphtool/index.html">pygmi.clust.graphtool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/menu/index.html">pygmi.clust.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/segmentation/index.html">pygmi.clust.segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/super_class/index.html">pygmi.clust.super_class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/clust/var_ratio/index.html">pygmi.clust.var_ratio</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/em/index.html">pygmi.em</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/em/menu/index.html">pygmi.em.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/em/tdem/index.html">pygmi.em.tdem</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/menu/index.html">pygmi.grav.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/main/index.html">pygmi.main</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/menu_default/index.html">pygmi.menu_default</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/misc/index.html">pygmi.misc</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mt/index.html">pygmi.mt</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mt/birrp/index.html">pygmi.mt.birrp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mt/dataprep/index.html">pygmi.mt.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mt/graphs/index.html">pygmi.mt.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mt/iodefs/index.html">pygmi.mt.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mt/menu/index.html">pygmi.mt.menu</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/pfmod/index.html">pygmi.pfmod</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/datatypes/index.html">pygmi.pfmod.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/grvmag3d/index.html">pygmi.pfmod.grvmag3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/iodefs/index.html">pygmi.pfmod.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/menu/index.html">pygmi.pfmod.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/misc/index.html">pygmi.pfmod.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/mvis3d/index.html">pygmi.pfmod.mvis3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/pfinvert/index.html">pygmi.pfmod.pfinvert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/pfmod/index.html">pygmi.pfmod.pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/show_table/index.html">pygmi.pfmod.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/tab_mext/index.html">pygmi.pfmod.tab_mext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/tab_param/index.html">pygmi.pfmod.tab_param</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/pfmod/tab_prof/index.html">pygmi.pfmod.tab_prof</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cooper/index.html">pygmi.raster.cooper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/graphs/index.html">pygmi.raster.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/menu/index.html">pygmi.raster.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/misc/index.html">pygmi.raster.misc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/modest_image/index.html">pygmi.raster.modest_image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/modest_ioimage/index.html">pygmi.raster.modest_ioimage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/normalisation/index.html">pygmi.raster.normalisation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/reproj/index.html">pygmi.raster.reproj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/show_table/index.html">pygmi.raster.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/smooth/index.html">pygmi.raster.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/rsense/index.html">pygmi.rsense</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/change/index.html">pygmi.rsense.change</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/change_viewer/index.html">pygmi.rsense.change_viewer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/dataprep/index.html">pygmi.rsense.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/emit/index.html">pygmi.rsense.emit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/features/index.html">pygmi.rsense.features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/hyperspec/index.html">pygmi.rsense.hyperspec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/iodefs/index.html">pygmi.rsense.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/landsat_composite/index.html">pygmi.rsense.landsat_composite</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/menu/index.html">pygmi.rsense.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/ratios/index.html">pygmi.rsense.ratios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/render_html/index.html">pygmi.rsense.render_html</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/transforms/index.html">pygmi.rsense.transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/rsense/usgs/index.html">pygmi.rsense.usgs</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/seis/index.html">pygmi.seis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/beachball/index.html">pygmi.seis.beachball</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/datatypes/index.html">pygmi.seis.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/del_rec/index.html">pygmi.seis.del_rec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/graphs/index.html">pygmi.seis.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/iodefs/index.html">pygmi.seis.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/menu/index.html">pygmi.seis.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/seis/utils/index.html">pygmi.seis.utils</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/graphs/index.html">pygmi.vector.graphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/menu/index.html">pygmi.vector.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/minc/index.html">pygmi.vector.minc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/show_table/index.html">pygmi.vector.show_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/structure/index.html">pygmi.vector.structure</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/cluster.cm.showbars.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Show Class Dataset Ranges</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="show-class-dataset-ranges">
+<h1>Show Class Dataset Ranges<a class="headerlink" href="#show-class-dataset-ranges" title="Link to this heading">#</a></h1>
+<p>This provides a quick bar chart graphical representation of the dataset ranges for each class.</p>
+<p>The options on this interface are:</p>
+<ol class="arabic simple">
+<li><p><strong>Bands</strong> – If the classification was done for a range of clusters the results for each number of clusters can be selected via the dropdown menu.</p></li>
+<li><p>Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<img alt="_images/clustbars.png" src="_images/clustbars.png" />
+<figcaption>
+<p><span class="caption-text">Show Class Data interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cluster.cm.showclass.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Show Class Data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="cluster.cm.showgraphs.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Show OBJ, VRC, NCE, XBI Graphs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Patrick Cole
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025 Council for Geoscience.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

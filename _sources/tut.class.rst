@@ -39,6 +39,7 @@ Data can be transformed to have a distribution approximating a normal distributi
    Histograms of the input datasets. (a) DEM; (b) First vertical derivative of the magnetic data; (c) Smoothed potassium data; (d) Equivalent thorium data; (e) Skewness and kurtosis for the distributions.
    
 The dipolar nature of magnetic data presents another challenge. A positive and negative anomaly is linked to the same source but will be considered as two separate bodies during cluster analysis. One option is to :doc:`reduce the data to the pole<mag.dm.rtp>`, but the presence of remanent magnetisation will diminish the effectiveness of this method. Paasche and Eberle (2009) addressed this problem by calculating the absolute value of the magnetic first vertical derivative. This results in a very skewed distribution.
+
 .. figure:: _images/tutclass4.png
 
    Histogram and statistics of the absolute value of the magnetic first vertical derivative data.
