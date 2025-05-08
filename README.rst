@@ -181,6 +181,8 @@ The process to install is as follows:
    conda install rioxarray
 
    conda install pytest
+   
+   conda install beautifulsoup4
 
    pip install mtpy
 
