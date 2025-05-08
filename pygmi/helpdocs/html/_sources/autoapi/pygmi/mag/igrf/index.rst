@@ -104,16 +104,16 @@ Module Contents
 
 
 
-.. py:function:: calc_igrf(data, sdate, *, alt=100, wkt=None, igrfonly=True, piter=iter, showlog=print)
+.. py:function:: calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter, showlog=print)
 
    Calculate IGRF.
 
-   :param data: Input magnetic data.
+   :param data: Input DTM data.
    :type data: pygmi.raster.datatypes.Data
    :param sdate: Survey date.
    :type sdate: Date
-   :param alt: Sensor clearance. The default is 100.
-   :type alt: float, optional
+   :param sen_alt: Sensor clearance. The default is 100.
+   :type sen_alt: float, optional
    :param wkt: WKT projection. The default is None.
    :type wkt: str, optional
    :param igrfonly: Output IGRF only. The default is True.

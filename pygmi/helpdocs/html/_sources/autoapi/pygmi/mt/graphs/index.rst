@@ -14,7 +14,6 @@ Classes
 
 .. autoapisummary::
 
-   pygmi.mt.graphs.GraphWindow
    pygmi.mt.graphs.MyMplCanvas
    pygmi.mt.graphs.PlotPoints
 
@@ -22,21 +21,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: GraphWindow(parent=None)
-
-   Bases: :py:obj:`pygmi.misc.ContextModule`
-
-
-   Graph Window - Main QT Dialog class for graphs.
-
-
-   .. py:method:: change_band()
-
-      Combo box to choose band.
-
-
-
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas(parent=None, width=8, height=6, dpi=100)
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
@@ -100,7 +85,7 @@ Module Contents
 
 .. py:class:: PlotPoints(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Plot points class.

@@ -15,7 +15,6 @@ Classes
 .. autoapisummary::
 
    pygmi.pfmod.mvis3d.Mod3dDisplay
-   pygmi.pfmod.mvis3d.GLWidget
    pygmi.pfmod.mvis3d.MySunCanvas
 
 
@@ -24,8 +23,7 @@ Functions
 
 .. autoapisummary::
 
-   pygmi.pfmod.mvis3d.calc_norms
-   pygmi.pfmod.mvis3d.normalize_v3
+   pygmi.pfmod.mvis3d.updatemod
    pygmi.pfmod.mvis3d.MarchingCubes
    pygmi.pfmod.mvis3d.InterpolateVertices
    pygmi.pfmod.mvis3d.fancyindex
@@ -58,6 +56,17 @@ Module Contents
 
 
 
+   .. py:method:: closeEvent(QCloseEvent)
+
+      Close event.
+
+      :param QCloseEvent: Close event.
+      :type QCloseEvent: TYPE
+
+      :rtype: None.
+
+
+
    .. py:method:: save()
 
       Save a jpg.
@@ -76,7 +85,7 @@ Module Contents
 
    .. py:method:: change_defs()
 
-      List box routine.
+      List widget routine.
 
       :rtype: None.
 
@@ -167,215 +176,6 @@ Module Contents
 
 
 
-.. py:class:: GLWidget(parent=None)
-
-   Bases: :py:obj:`PyQt6.QtOpenGLWidgets.QOpenGLWidget`
-
-
-   OpenGL Widget.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-
-
-   .. py:method:: minimumSizeHint()
-
-      Minimum size hint.
-
-      :returns: Returns a size of (50, 50)
-      :rtype: QtCore.QSize
-
-
-
-   .. py:method:: sizeHint()
-
-      Size hint.
-
-      :returns: Returns a size of (400, 400)
-      :rtype: QtCore.QSize
-
-
-
-   .. py:method:: setXRotation(angle)
-
-      Set X rotation.
-
-      :param angle: X angle of rotation.
-      :type angle: float
-
-      :rtype: None.
-
-
-
-   .. py:method:: setYRotation(angle)
-
-      Set Y Rotation.
-
-      :param angle: Y angle of rotation.
-      :type angle: float
-
-      :rtype: None.
-
-
-
-   .. py:method:: setZRotation(angle)
-
-      Set Z rotation.
-
-      :param angle: Z angle of rotation.
-      :type angle: float
-
-      :rtype: None.
-
-
-
-   .. py:method:: initializeGL()
-
-      Initialise OpenGL.
-
-      :rtype: None.
-
-
-
-   .. py:method:: setlightdir(x, y, z)
-
-      Set light direction.
-
-      :param x: X light position.
-      :type x: float
-      :param y: Y light position.
-      :type y: float
-      :param z: Z light position.
-      :type z: float
-
-      :rtype: None.
-
-
-
-   .. py:method:: initGeometry()
-
-      Initialise geometry.
-
-      :rtype: None.
-
-
-
-   .. py:method:: init_object()
-
-      Initialise VBO.
-
-      :rtype: None.
-
-
-
-   .. py:method:: paintGL()
-
-      Paint OpenGL.
-
-      :rtype: None.
-
-
-
-   .. py:method:: draw_with_axis()
-
-      Draw with a set of axes.
-
-      :rtype: None.
-
-
-
-   .. py:method:: print_string(x, y, z, text)
-
-      Print a 2D text string.
-
-      :param x: X coordinate.
-      :type x: float
-      :param y: Y coordinate.
-      :type y: float
-      :param z: Z coordinate.
-      :type z: float
-      :param text: Text string.
-      :type text: str
-
-      :rtype: None.
-
-
-
-   .. py:method:: resizeGL(width, height)
-
-      Resize OpenGL.
-
-      :param width: Width of side.
-      :type width: float
-      :param height: Height of side.
-      :type height: float
-
-      :rtype: None.
-
-
-
-   .. py:method:: init_projection()
-
-      Initialise the projection.
-
-      :rtype: None.
-
-
-
-   .. py:method:: readPixels()
-
-      Read pixels from the window.
-
-      :returns: **data** -- Returned pixel data.
-      :rtype: numpy array
-
-
-
-   .. py:method:: mousePressEvent(event)
-
-      Mouse press event.
-
-      :param event: Mouse event.
-      :type event: QMouseEvent
-
-      :rtype: None.
-
-
-
-   .. py:method:: mouseMoveEvent(event)
-
-      Mouse move event.
-
-      :param event: Mouse event.
-      :type event: QMouseEvent
-
-      :rtype: None.
-
-
-
-   .. py:method:: wheelEvent(event)
-
-      Mouse wheel event.
-
-      :param event: Mouse wheel event.
-      :type event: QWheelEvent
-
-      :rtype: None.
-
-
-
-   .. py:method:: normalizeAngle(angle)
-
-      Corrects an angle to between 0 and 360*16.
-
-      :param angle: Input angle.
-      :type angle: float
-
-      :returns: **angle** -- Output angle.
-      :rtype: float
-
-
-
 .. py:class:: MySunCanvas(parent=None)
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
@@ -407,27 +207,19 @@ Module Contents
 
 
 
-.. py:function:: calc_norms(faces, vtx)
+.. py:function:: updatemod(gdat2, cindx, cloc)
 
-   Calculate normals.
+   Update model without smooothing.
 
-   :param faces: Array of faces.
-   :type faces: numpy array
-   :param vtx: Array of vertices.
-   :type vtx: numpy array.
+   :param gdat2: Model values.
+   :type gdat2: numpy array
+   :param cindx: Corner index.
+   :type cindx: numpy array
+   :param cloc: Corner location.
+   :type cloc: numpy array
 
-   :rtype: None.
-
-
-.. py:function:: normalize_v3(arr)
-
-   Normalize a numpy array of 3 component vectors shape=(n,3).
-
-   :param arr: Array of 3 component vectors.
-   :type arr: numpy array
-
-   :returns: **arr** -- Output array of 3 component vectors.
-   :rtype: numpy array
+   :returns: * **newcorners** (*numpy array*) -- New corner coordinates.
+             * **newfaces** (*numpy array*) -- New face indices.
 
 
 .. py:function:: MarchingCubes(x, y, z, c, iso, *, showlog=print)

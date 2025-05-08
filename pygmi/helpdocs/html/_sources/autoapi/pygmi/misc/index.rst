@@ -17,6 +17,7 @@ Classes
    pygmi.misc.EmittingStream
    pygmi.misc.BasicModule
    pygmi.misc.ContextModule
+   pygmi.misc.PButtonBox
    pygmi.misc.QVStack2Layout
    pygmi.misc.PTime
    pygmi.misc.ProgressBar
@@ -251,6 +252,23 @@ Module Contents
       Run context menu item.
 
       :rtype: None.
+
+
+
+.. py:class:: PButtonBox(parent=None)
+
+   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+
+
+   Custom buttonbox with help.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: help_docs()
+
+      Help Routine.
 
 
 

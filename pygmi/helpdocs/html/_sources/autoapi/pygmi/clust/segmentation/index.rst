@@ -5,7 +5,7 @@ pygmi.clust.segmentation
 
 .. autoapi-nested-parse::
 
-   Image segmentation routines, following the technique by Baatz and Schäpe (2000).
+   Image segmentation routines, following Baatz and Schäpe (2000).
 
 
 

@@ -193,6 +193,12 @@ Module Contents
 
 
 
+   .. py:method:: slider()
+
+      Vertical slider used to scale 3d view.
+
+
+
 .. py:class:: PlotScatter(parent=None)
 
    Bases: :py:obj:`pygmi.misc.ContextModule`

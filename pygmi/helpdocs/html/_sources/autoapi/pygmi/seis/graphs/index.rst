@@ -18,7 +18,6 @@ Classes
 .. autoapisummary::
 
    pygmi.seis.graphs.MyMplCanvas
-   pygmi.seis.graphs.GraphWindow
    pygmi.seis.graphs.PlotQC
    pygmi.seis.graphs.PlotIso
    pygmi.seis.graphs.PlotTempB
@@ -199,36 +198,9 @@ Module Contents
 
 
 
-.. py:class:: GraphWindow(parent=None)
-
-   Bases: :py:obj:`pygmi.misc.ContextModule`
-
-
-   Graph Window class.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-
-
-   .. py:method:: change_band()
-
-      Combo box to choose band.
-
-      :rtype: None.
-
-
-
-   .. py:method:: save_shp()
-
-      Save shapefile.
-
-      :rtype: None.
-
-
-
 .. py:class:: PlotQC(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot QC graphs.
@@ -264,7 +236,7 @@ Module Contents
 
 .. py:class:: PlotIso(parent=None)
 
-   Bases: :py:obj:`GraphWindow`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    GUI to plot isolines.

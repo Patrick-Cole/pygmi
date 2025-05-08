@@ -162,6 +162,14 @@ Module Contents
 
 
 
+   .. py:method:: showtext()
+
+      Show spectrum description in browser.
+
+      :rtype: None.
+
+
+
 .. py:class:: ProcFeatures(parent=None)
 
    Bases: :py:obj:`pygmi.misc.BasicModule`

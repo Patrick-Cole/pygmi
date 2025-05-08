@@ -5,8 +5,9 @@ pygmi.clust.crisp_clust
 
 .. autoapi-nested-parse::
 
-   Crisp clustering is a set of clustering routines, using standard statistical
-   methods, as opposed to fuzzy methods.
+   Crisp clustering is a set of clustering routines.
+
+   This uses standard statistical methods, as opposed to fuzzy methods.
 
 
 

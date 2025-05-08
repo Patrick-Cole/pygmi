@@ -162,7 +162,7 @@ Module Contents
 
 .. py:class:: Exportkmz(wkt, parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Export kmz dialog.

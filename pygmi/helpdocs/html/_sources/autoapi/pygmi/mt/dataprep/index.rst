@@ -99,7 +99,7 @@ Module Contents
 
 
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas(parent=None, width=8, height=6, dpi=100)
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 

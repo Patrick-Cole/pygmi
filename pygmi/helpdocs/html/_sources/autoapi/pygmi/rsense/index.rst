@@ -25,6 +25,8 @@ Submodules
    /autoapi/pygmi/rsense/landsat_composite/index
    /autoapi/pygmi/rsense/menu/index
    /autoapi/pygmi/rsense/ratios/index
+   /autoapi/pygmi/rsense/render_html/index
    /autoapi/pygmi/rsense/transforms/index
+   /autoapi/pygmi/rsense/usgs/index
 
 
