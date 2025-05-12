@@ -2,6 +2,11 @@
 Changelog
 =========
 
+v3.2.9.2, 12 May 2025
+---------------------
+* Added some different icons for dark themes.
+* Added import of SPECPR library.
+
 v3.2.9.0, 25 April 2025
 -----------------------
 * Connected help to pfmod, rsense and seis.

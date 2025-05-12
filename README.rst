@@ -62,9 +62,9 @@ If you prefer not to install pygmi as a library, download the source code and ex
 
 Requirements
 ^^^^^^^^^^^^
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.12 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.13 on Windows.
 
-PyGMI should still work with Python 3.11.
+PyGMI should still work with Python 3.10.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
