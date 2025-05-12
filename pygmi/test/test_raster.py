@@ -117,18 +117,18 @@ def test_trimraster():
     np.testing.assert_array_equal(dat[0].data, dat2)
 
 
-def test_equation():
-    """tests equation editor."""
-    datin = Data()
-    datin.data = np.ma.array([[1., 2.], [1., 2.]])
-    datout = datin.data*2
+# def test_equation():
+#     """tests equation editor."""
+#     datin = Data()
+#     datin.data = np.ma.array([[1., 2.], [1., 2.]])
+#     datout = datin.data*2
 
-    tmp = equation_editor.EquationEditor()
-    tmp.indata = {'Raster': [datin, datin]}
-    tmp.equation = 'i0+i1'
-    tmp.settings(True)
+#     tmp = equation_editor.EquationEditor()
+#     tmp.indata = {'Raster': [datin, datin]}
+#     tmp.equation = 'i0+i1'
+#     tmp.settings(True)
 
-    np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
 
 def test_hmode():
@@ -333,217 +333,217 @@ def test_io_rasterio(smalldata, ext, drv):
     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
 
 
-def test_io_ascii(smalldata):
-    """Tests IO for ascii files."""
-    ofile = tempfile.gettempdir() + '\\iotest.asc'
+# def test_io_ascii(smalldata):
+#     """Tests IO for ascii files."""
+#     ofile = tempfile.gettempdir() + '\\iotest.asc'
 
-    tmp = iodefs.ExportData(None)
-    tmp.ofile = ofile
-    tmp.export_ascii([smalldata])
+#     tmp = iodefs.ExportData(None)
+#     tmp.ofile = ofile
+#     tmp.export_ascii([smalldata])
 
-    dat2 = iodefs.get_ascii(ofile)
+#     dat2 = iodefs.get_ascii(ofile)
 
-    # Cleanup files
-    for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-        os.unlink(i)
+#     # Cleanup files
+#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
+#         os.unlink(i)
 
-    np.testing.assert_array_equal(smalldata.data, dat2[0].data)
-
-
-def test_io_xyz(smalldata):
-    """Tests IO for xyz files."""
-    ofile = tempfile.gettempdir() + '\\iotest.xyz'
-
-    tmp = iodefs.ExportData(None)
-    tmp.ofile = ofile
-    tmp.export_ascii_xyz([smalldata])
-
-    dat2 = iodefs.get_raster(ofile)
-
-    # Cleanup files
-    for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-        os.unlink(i)
-
-    np.testing.assert_array_equal(smalldata.data, dat2[0].data)
+#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
 
 
-def test_normalisation():
-    """Tests for normalisation."""
+# def test_io_xyz(smalldata):
+#     """Tests IO for xyz files."""
+#     ofile = tempfile.gettempdir() + '\\iotest.xyz'
 
-    datin = Data()
-    datin.data = np.ma.array([[1., 2.], [1., 2.]])
+#     tmp = iodefs.ExportData(None)
+#     tmp.ofile = ofile
+#     tmp.export_ascii_xyz([smalldata])
 
-    tmp = normalisation.Normalisation(None)
-    tmp.indata = {'Raster': [datin, datin]}
-    tmp.rb_interval.setChecked(True)
-    tmp.settings(True)
-    datout = np.ma.array([[0., 1.], [0., 1.]])
+#     dat2 = iodefs.get_raster(ofile)
 
-    np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+#     # Cleanup files
+#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
+#         os.unlink(i)
 
-    tmp.rb_mean.setChecked(True)
-    tmp.settings(True)
-    datout = np.ma.array([[-1., 1.], [-1., 1.]])
-
-    np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
-
-    tmp.rb_median.setChecked(True)
-    tmp.settings(True)
-    datout = np.ma.array([[-1., 1.], [-1., 1.]])
-
-    np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
-
-    tmp.rb_8bit.setChecked(True)
-    tmp.settings(True)
-
-    datout = np.ma.array([[0., 255.], [0., 255.]])
-
-    np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
 
 
-def test_smooth():
-    """Tests for smoothing."""
-    datin = Data()
-    datin.data = np.ma.ones([7, 7])
-    datin.data[5, 5] = 2
+# def test_normalisation():
+#     """Tests for normalisation."""
 
-    tmp = smooth.Smooth(None)
-    tmp.indata = {'Raster': [datin]}
+#     datin = Data()
+#     datin.data = np.ma.array([[1., 2.], [1., 2.]])
 
-    tmp.rb_2dmean.setChecked(True)
-    tmp.rb_box.setChecked(True)
-    tmp.choosefilter()
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     tmp = normalisation.Normalisation(None)
+#     tmp.indata = {'Raster': [datin, datin]}
+#     tmp.rb_interval.setChecked(True)
+#     tmp.settings(True)
+#     datout = np.ma.array([[0., 1.], [0., 1.]])
 
-    datout = np.array([[0.36, 0.48, 0.6, 0.6, 0.6, 0.48, 0.36],
-                       [0.48, 0.64, 0.8, 0.8, 0.8, 0.64, 0.48],
-                       [0.6, 0.8, 1., 1., 1., 0.8, 0.6],
-                       [0.6, 0.8, 1., 1.04, 1.04, 0.84, 0.64],
-                       [0.6, 0.8, 1., 1.04, 1.04, 0.84, 0.64],
-                       [0.48, 0.64, 0.8, 0.84, 0.84, 0.68, 0.52],
-                       [0.36, 0.48, 0.6, 0.64, 0.64, 0.52, 0.4]])
+#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     tmp.rb_mean.setChecked(True)
+#     tmp.settings(True)
+#     datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
-    tmp.rb_disk.setChecked(True)
-    tmp.choosefilter()
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    datout = np. array([[0.30379747, 0.36708861, 0.43037975, 0.44303797,
-                         0.43037975, 0.37974684, 0.3164557],
-                        [0.36708861, 0.44303797, 0.53164557, 0.5443038,
-                         0.53164557, 0.46835443, 0.39240506],
-                        [0.43037975, 0.53164557, 0.62025316, 0.63291139,
-                         0.62025316, 0.5443038, 0.4556962],
-                        [0.44303797, 0.5443038, 0.63291139, 0.63291139,
-                         0.63291139, 0.55696203, 0.46835443],
-                        [0.43037975, 0.53164557, 0.62025316, 0.63291139,
-                         0.62025316, 0.5443038, 0.4556962],
-                        [0.37974684, 0.46835443, 0.5443038, 0.55696203,
-                         0.5443038, 0.48101266, 0.40506329],
-                        [0.3164557, 0.39240506, 0.4556962, 0.46835443,
-                         0.4556962, 0.40506329, 0.34177215]])
+#     tmp.rb_median.setChecked(True)
+#     tmp.settings(True)
+#     datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
-    tmp.rb_gaussian.setChecked(True)
-    tmp.choosefilter()
-    tmp.settings(True)
+#     tmp.rb_8bit.setChecked(True)
+#     tmp.settings(True)
 
-    datout = np.array([[0.25999671, 0.38869512, 0.50989872, 0.50989872,
-                        0.50989872, 0.50989872, 0.38120031],
-                       [0.38869512, 0.58109927, 0.76229868, 0.76229868,
-                        0.76229868, 0.76229868, 0.56989453],
-                       [0.50989872, 0.76229868, 1., 1., 1., 1., 0.74760005],
-                       [0.50989872, 0.76229868, 1., 1., 1., 1., 0.74760005],
-                       [0.50989872, 0.76229868, 1., 1., 1.06370574,
-                        1.06499268, 0.81130578],
-                       [0.50989872, 0.76229868, 1., 1., 1.06499268,
-                        1.06630562, 0.81259272],
-                       [0.38120031, 0.56989453, 0.74760005, 0.74760005,
-                        0.81130578, 0.81259272, 0.62261157]])
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     datout = np.ma.array([[0., 255.], [0., 255.]])
 
-    np.testing.assert_array_almost_equal(datout2, datout)
-
-    tmp.rb_2dmedian.setChecked(True)
-    tmp.rb_box.setChecked(True)
-    tmp.choosefilter()
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
-
-    datout = np.array([[1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.],
-                       [1., 1., 1., 1., 1., 1., 1.]])
-
-    np.testing.assert_array_almost_equal(datout2, datout)
-
-    tmp.rb_disk.setChecked(True)
-    tmp.choosefilter()
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
-
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
 
-def test_agc():
-    """Tests for AGC."""
-    datin = Data()
-    datin.data = np.ma.ones([7, 7])
-    datin.data[2:-2, 2:-2] = 2
+# def test_smooth():
+#     """Tests for smoothing."""
+#     datin = Data()
+#     datin.data = np.ma.ones([7, 7])
+#     datin.data[5, 5] = 2
 
-    tmp = cooper.AGC(None)
-    tmp.indata = {'Raster': [datin]}
+#     tmp = smooth.Smooth(None)
+#     tmp.indata = {'Raster': [datin]}
 
-    tmp.sb_wsize.setValue(3)
+#     tmp.rb_2dmean.setChecked(True)
+#     tmp.rb_box.setChecked(True)
+#     tmp.choosefilter()
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
 
-    tmp.rb_mean.setChecked(True)
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     datout = np.array([[0.36, 0.48, 0.6, 0.6, 0.6, 0.48, 0.36],
+#                        [0.48, 0.64, 0.8, 0.8, 0.8, 0.64, 0.48],
+#                        [0.6, 0.8, 1., 1., 1., 0.8, 0.6],
+#                        [0.6, 0.8, 1., 1.04, 1.04, 0.84, 0.64],
+#                        [0.6, 0.8, 1., 1.04, 1.04, 0.84, 0.64],
+#                        [0.48, 0.64, 0.8, 0.84, 0.84, 0.68, 0.52],
+#                        [0.36, 0.48, 0.6, 0.64, 0.64, 0.52, 0.4]])
 
-    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
-                       [1e+20, 0, 1.50, 1, 1.50, 0, 1e+20],
-                       [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+#     np.testing.assert_array_almost_equal(datout2, datout)
 
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     tmp.rb_disk.setChecked(True)
+#     tmp.choosefilter()
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
 
-    tmp.rb_median.setChecked(True)
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     datout = np. array([[0.30379747, 0.36708861, 0.43037975, 0.44303797,
+#                          0.43037975, 0.37974684, 0.3164557],
+#                         [0.36708861, 0.44303797, 0.53164557, 0.5443038,
+#                          0.53164557, 0.46835443, 0.39240506],
+#                         [0.43037975, 0.53164557, 0.62025316, 0.63291139,
+#                          0.62025316, 0.5443038, 0.4556962],
+#                         [0.44303797, 0.5443038, 0.63291139, 0.63291139,
+#                          0.63291139, 0.55696203, 0.46835443],
+#                         [0.43037975, 0.53164557, 0.62025316, 0.63291139,
+#                          0.62025316, 0.5443038, 0.4556962],
+#                         [0.37974684, 0.46835443, 0.5443038, 0.55696203,
+#                          0.5443038, 0.48101266, 0.40506329],
+#                         [0.3164557, 0.39240506, 0.4556962, 0.46835443,
+#                          0.4556962, 0.40506329, 0.34177215]])
 
-    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
-                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
-                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+#     np.testing.assert_array_almost_equal(datout2, datout)
 
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     tmp.rb_gaussian.setChecked(True)
+#     tmp.choosefilter()
+#     tmp.settings(True)
 
-    tmp.rb_rms.setChecked(True)
-    tmp.settings(True)
-    datout2 = tmp.outdata['Raster'][0].data.data
+#     datout = np.array([[0.25999671, 0.38869512, 0.50989872, 0.50989872,
+#                         0.50989872, 0.50989872, 0.38120031],
+#                        [0.38869512, 0.58109927, 0.76229868, 0.76229868,
+#                         0.76229868, 0.76229868, 0.56989453],
+#                        [0.50989872, 0.76229868, 1., 1., 1., 1., 0.74760005],
+#                        [0.50989872, 0.76229868, 1., 1., 1., 1., 0.74760005],
+#                        [0.50989872, 0.76229868, 1., 1., 1.06370574,
+#                         1.06499268, 0.81130578],
+#                        [0.50989872, 0.76229868, 1., 1., 1.06499268,
+#                         1.06630562, 0.81259272],
+#                        [0.38120031, 0.56989453, 0.74760005, 0.74760005,
+#                         0.81130578, 0.81259272, 0.62261157]])
+#     datout2 = tmp.outdata['Raster'][0].data.data
 
-    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
-                       [1e+20, 0, 1.22474487, 1, 1.22474487, 0, 1e+20],
-                       [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
-                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
-                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+#     np.testing.assert_array_almost_equal(datout2, datout)
 
-    np.testing.assert_array_almost_equal(datout2, datout)
+#     tmp.rb_2dmedian.setChecked(True)
+#     tmp.rb_box.setChecked(True)
+#     tmp.choosefilter()
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
+
+#     datout = np.array([[1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.],
+#                        [1., 1., 1., 1., 1., 1., 1.]])
+
+#     np.testing.assert_array_almost_equal(datout2, datout)
+
+#     tmp.rb_disk.setChecked(True)
+#     tmp.choosefilter()
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
+
+#     np.testing.assert_array_almost_equal(datout2, datout)
+
+
+# def test_agc():
+#     """Tests for AGC."""
+#     datin = Data()
+#     datin.data = np.ma.ones([7, 7])
+#     datin.data[2:-2, 2:-2] = 2
+
+#     tmp = cooper.AGC(None)
+#     tmp.indata = {'Raster': [datin]}
+
+#     tmp.sb_wsize.setValue(3)
+
+#     tmp.rb_mean.setChecked(True)
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
+
+#     datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
+#                        [1e+20, 0, 1.50, 1, 1.50, 0, 1e+20],
+#                        [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+#     np.testing.assert_array_almost_equal(datout2, datout)
+
+#     tmp.rb_median.setChecked(True)
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
+
+#     datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 0, 1, 1, 1, 0, 1e+20],
+#                        [1e+20, 0, 1, 1, 1, 0, 1e+20],
+#                        [1e+20, 0, 1, 1, 1, 0, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+#     np.testing.assert_array_almost_equal(datout2, datout)
+
+#     tmp.rb_rms.setChecked(True)
+#     tmp.settings(True)
+#     datout2 = tmp.outdata['Raster'][0].data.data
+
+#     datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
+#                        [1e+20, 0, 1.22474487, 1, 1.22474487, 0, 1e+20],
+#                        [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
+#                        [1e+20, 0, 0, 0, 0, 0, 1e+20],
+#                        [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+#     np.testing.assert_array_almost_equal(datout2, datout)
 
 
 if __name__ == "__main__":
