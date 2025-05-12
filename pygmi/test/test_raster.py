@@ -29,9 +29,9 @@ the tests.
 
 import os
 import glob
-import sys
+# import sys
 import tempfile
-from PyQt6 import QtWidgets
+# from PyQt6 import QtWidgets
 import numpy as np
 from pyproj.crs import CRS
 import pytest
@@ -41,7 +41,7 @@ from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
 from pygmi.raster import iodefs, normalisation, smooth
 from pygmi.raster.misc import aspect2, check_dataid
 
-APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+# APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_gradients():

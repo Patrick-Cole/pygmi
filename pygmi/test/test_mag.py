@@ -27,8 +27,8 @@ These are tests. Run pytest on this file from within this directory to do
 the tests.
 """
 
-import sys
-from PyQt6 import QtWidgets, QtCore
+# import sys
+from PyQt6 import QtCore
 import numpy as np
 from pyproj.crs import CRS
 
@@ -36,7 +36,7 @@ from pygmi.raster.datatypes import Data
 from pygmi.mag import dataprep
 from pygmi.mag import igrf, tiltdepth
 
-APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+# APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_tilt1():

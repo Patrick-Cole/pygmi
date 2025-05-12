@@ -29,14 +29,14 @@ the tests.
 
 import os
 import psutil
-import sys
-from PyQt6 import QtWidgets
+# import sys
+# from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data
 from pygmi.clust import cluster, crisp_clust, fuzzy_clust
 
-APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+# APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
 

@@ -28,13 +28,13 @@ the tests .
 """
 
 import os
-import sys
-from PyQt6 import QtWidgets
+# import sys
+# from PyQt6 import QtWidgets
 import numpy as np
 
 from pygmi.grav import iodefs, dataprep
 
-APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+# APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_process_data():
