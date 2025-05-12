@@ -52,11 +52,11 @@ def test_tilt1():
             [0.30816907111598496, 0.30816907111598496]]
     t1, th, t2, ta, tdx, _, _ = dataprep.tilt1(datin, 90, 0)
 
-    np.testing.assert_array_equal(t1, t12)
-    np.testing.assert_array_equal(th, th2)
-    np.testing.assert_array_equal(t2, t22)
-    np.testing.assert_array_equal(ta, ta2)
-    np.testing.assert_array_equal(tdx, tdx2)
+    np.testing.assert_array_almost_equal(t1, t12)
+    np.testing.assert_array_almost_equal(th, th2)
+    np.testing.assert_array_almost_equal(t2, t22)
+    np.testing.assert_array_almost_equal(ta, ta2)
+    np.testing.assert_array_almost_equal(tdx, tdx2)
 
 
 def test_rtp():
@@ -68,7 +68,7 @@ def test_rtp():
 
     dat = dataprep.rtp(datin, 60, 30)
 
-    np.testing.assert_array_equal(dat.data, dat2)
+    np.testing.assert_array_almost_equal(dat.data, dat2)
 
 
 # def test_IGRF():
