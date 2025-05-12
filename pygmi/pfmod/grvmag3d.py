@@ -42,7 +42,7 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from numba import jit, prange
 from matplotlib import colormaps
-import matplotlib as mpl
+# import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from pygmi.raster.reproj import data_reproject
@@ -50,7 +50,7 @@ from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 from pygmi.misc import frm
 
-mpl.use('QtAgg')
+# mpl.use('QtAgg')
 
 
 class GravMag():
