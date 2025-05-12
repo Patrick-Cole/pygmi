@@ -315,10 +315,10 @@ def smalldata():
     return dat
 
 
-@pytest.mark.parametrize("ext, drv", [('.bil', 'EHdr'), ('.tif', 'GTiff'),
-                                      ('.ers', 'ERS'), ('.hdr', 'ENVI'),
-                                      ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
-                                      ('.img', 'HFA')])
+# @pytest.mark.parametrize("ext, drv", [('.bil', 'EHdr'), ('.tif', 'GTiff'),
+#                                       ('.ers', 'ERS'), ('.hdr', 'ENVI'),
+#                                       ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
+#                                       ('.img', 'HFA')])
 # def test_io_rasterio(smalldata, ext, drv):
 #     """Tests IO for rasterio files."""
 #     ofile = tempfile.gettempdir() + '\\iotest'+ext
