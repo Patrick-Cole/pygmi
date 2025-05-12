@@ -50,7 +50,7 @@ from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 from pygmi.misc import frm
 
-mpl.use('QtAgg')
+# mpl.use('QtAgg')
 
 
 class GravMag():
