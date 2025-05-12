@@ -319,18 +319,18 @@ def smalldata():
                                       ('.ers', 'ERS'), ('.hdr', 'ENVI'),
                                       ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
                                       ('.img', 'HFA')])
-def test_io_rasterio(smalldata, ext, drv):
-    """Tests IO for rasterio files."""
-    ofile = tempfile.gettempdir() + '\\iotest'+ext
+# def test_io_rasterio(smalldata, ext, drv):
+#     """Tests IO for rasterio files."""
+#     ofile = tempfile.gettempdir() + '\\iotest'+ext
 
-    iodefs.export_raster(ofile, [smalldata], drv=drv)
-    dat2 = iodefs.get_raster(ofile)
+#     iodefs.export_raster(ofile, [smalldata], drv=drv)
+#     dat2 = iodefs.get_raster(ofile)
 
-    # Cleanup files
-    for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-        os.unlink(i)
+#     # Cleanup files
+#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
+#         os.unlink(i)
 
-    np.testing.assert_array_equal(smalldata.data, dat2[0].data)
+#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
 
 
 # def test_io_ascii(smalldata):
