@@ -9,7 +9,7 @@ authors = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 maintainers = [{name = 'Patrick Cole', email = 'pcole@geoscience.org.za'}]
 description = 'Python Geoscience Modelling and Interpretation'
 readme = 'README.rst'
-requires-python = '>=3.12'
+requires-python = '>=3.10'
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE.txt"]
 keywords=['Geoscience', 'Geophysics', 'Magnetic', 'Gravity', 'Modelling',

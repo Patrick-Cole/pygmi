@@ -92,12 +92,18 @@ class Arrow(QtWidgets.QGraphicsLineItem):
     def __init__(self, start_item, end_item, parent=None):
         super().__init__(parent)
 
+        app = QtWidgets.QApplication.instance()
+        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
+
         self.arrow_head = QtGui.QPolygonF()
 
         self.my_start_item = start_item
         self.my_end_item = end_item
         self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
-        self.my_color = QtCore.Qt.GlobalColor.black
+        if isdark:
+            self.my_color = QtCore.Qt.GlobalColor.white
+        else:
+            self.my_color = QtCore.Qt.GlobalColor.black
         self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.PenStyle.SolidLine,
                                QtCore.Qt.PenCapStyle.RoundCap,
                                QtCore.Qt.PenJoinStyle.RoundJoin))
@@ -470,6 +476,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     def __init__(self, item_menu, parent=None):
         super().__init__(parent)
+        app = QtWidgets.QApplication.instance()
+        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
 
         self.my_item_menu = item_menu
         self.my_mode = 'MoveItem'
@@ -477,8 +485,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         self.line = None
         self.text_item = None
         self.my_item_color = QtCore.Qt.GlobalColor.cyan
-        self.my_text_color = QtCore.Qt.GlobalColor.black
-        self.my_line_color = QtCore.Qt.GlobalColor.black
+
+        if isdark:
+            self.my_text_color = QtCore.Qt.GlobalColor.black
+            self.my_line_color = QtCore.Qt.GlobalColor.white
+        else:
+            self.my_text_color = QtCore.Qt.GlobalColor.black
+            self.my_line_color = QtCore.Qt.GlobalColor.black
         self.my_font = QtGui.QFont()
         self.parent = parent
 
@@ -643,6 +656,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
+        app = QtWidgets.QApplication.instance()
+        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
+
         self.menubar = QtWidgets.QMenuBar()
 
         self.statusbar = QtWidgets.QStatusBar()
@@ -669,13 +685,18 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_linepointer.setCheckable(True)
         self.action_pointer.setChecked(True)
 
-        self.action_run.setIcon(QtGui.QIcon(ipth+'play.png'))
+        if isdark:
+            self.action_run.setIcon(QtGui.QIcon(ipth+'playdark.png'))
+            self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointerdark.png'))
+        else:
+            self.action_run.setIcon(QtGui.QIcon(ipth+'play.png'))
+            self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
+
         self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
         self.action_bring_to_front.setIcon(
             QtGui.QIcon(ipth+'bringtofront.png'))
         self.action_send_to_back.setIcon(QtGui.QIcon(ipth+'sendtoback.png'))
         self.action_pointer.setIcon(QtGui.QIcon(ipth+'pointer.png'))
-        self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
         self.action_help.setIcon(QtGui.QIcon(ipth+'Qhelp.png'))
 
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
