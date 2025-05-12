@@ -42,7 +42,7 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from numba import jit, prange
 import matplotlib as mpl
-mpl.use('QtAgg')
+# mpl.use('QtAgg')
 
 from matplotlib import colormaps
 import matplotlib.pyplot as plt
