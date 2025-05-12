@@ -26,6 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
+        sudo apt-get -y install libgl1
         sudo apt-get -y install libegl1
         python -m pip install --upgrade pip
         pip install flake8 pytest
