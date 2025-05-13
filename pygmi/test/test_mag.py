@@ -27,8 +27,6 @@ These are tests. Run pytest on this file from within this directory to do
 the tests.
 """
 
-# import sys
-# from PyQt6 import QtCore
 import numpy as np
 from pyproj.crs import CRS
 
@@ -71,66 +69,60 @@ def test_rtp():
     np.testing.assert_array_almost_equal(dat.data, dat2)
 
 
-# def test_IGRF():
-#     """Tests IGRF Calculation."""
-#     dat = Data()
-#     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
-#                            mask=[[0, 0], [0, 0]])
+def test_IGRF():
+    """Tests IGRF Calculation."""
+    dat = Data()
+    dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
+                           mask=[[0, 0], [0, 0]])
 
-#     dat.set_transform(1, 25, 1, -27)
-#     dat.crs = CRS.from_epsg(4326)
-#     dat.dataid = 'mag'
+    dat.set_transform(1, 25, 1, -27)
+    dat.crs = CRS.from_epsg(4326)
+    dat.dataid = 'mag'
 
-#     datin2 = Data()
-#     datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
+    datin2 = Data()
+    datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
 
-#     datin2.set_transform(1, 25, 1, -27)
-#     datin2.crs = CRS.from_epsg(4326)
-#     datin2.dataid = 'dtm'
+    datin2.set_transform(1, 25, 1, -27)
+    datin2.crs = CRS.from_epsg(4326)
+    datin2.dataid = 'dtm'
 
-#     dat2 = [[940.640983, 864.497698],
-#             [1164.106631, 1079.494023]]
+    dat2 = [[940.640983, 864.497698],
+            [1164.106631, 1079.494023]]
 
-#     tmp = igrf.IGRF()
-#     tmp.indata = {'Raster': [dat, datin2]}
-#     tmp.dateedit.setDate(QtCore.QDate(2000, 1, 1))
-#     tmp.dsb_alt.setValue(0.)
-#     tmp.settings(True)
+    sdate = 2000.0027322404371
+    odata, fmean, imean, dmean = igrf.calc_igrf(datin2, sdate, sen_alt=0.,
+                                                igrfonly=False)
 
-#     dat = tmp.outdata['Raster'][-1].data
+    dat = dat.data - odata[0].data
 
-#     np.testing.assert_array_almost_equal(dat, dat2)
+    np.testing.assert_array_almost_equal(dat, dat2)
 
 
-# def test_tilt():
-#     """test tilt depth."""
+def test_tilt():
+    """test tilt depth."""
 
-#     datin = Data()
-#     datin.data = np.ma.array([[0, 0, .1, .5, 1],
-#                               [0, .1, .5, 1, .5],
-#                               [.1, .5, 1, .5, .1],
-#                               [.5, 1, .5, .1, 0],
-#                               [1, .5, .1, 0, 0]])
+    datin = Data()
+    datin.data = np.ma.array([[0, 0, .1, .5, 1],
+                              [0, .1, .5, 1, .5],
+                              [.1, .5, 1, .5, .1],
+                              [.5, 1, .5, .1, 0],
+                              [1, .5, .1, 0, 0]])
 
-#     tmp = tiltdepth.TiltDepth(None)
-#     tmp.indata = {'Raster': [datin]}
-#     tmp.dsb_dec.setValue(0.)
-#     tmp.dsb_inc.setValue(90.)
-#     tmp.settings(True)
-#     tmp.calculate()
+    tmp = tiltdepth.tiltdepth(datin, 90., 0.)
+    del tmp['geometry']
 
-#     datout2 = tmp.depths
+    datout2 = tmp.to_numpy()
 
-#     datout = np.array([[3.93612464, -1.99438548, 1., 0.32962923],
-#                        [3.49438548, -2.49438548, 1., 0.34958333],
-#                        [2.99438548, -2.99438548, 1., 0.34958333],
-#                        [2.49438548, -3.49438548, 1., 0.34958333],
-#                        [1.99438548, -3.93612464, 1., 0.32962923],
-#                        [1.48759916, -2.48888969, 2., 0.36542720],
-#                        [1.98888969, -1.98888969, 2., 0.36451351],
-#                        [2.48888969, -1.48759916, 2., 0.36542720]])
+    datout = np.array([[3.93612464, -1.99438548, 1., 0.32962923],
+                       [3.49438548, -2.49438548, 1., 0.34958333],
+                       [2.99438548, -2.99438548, 1., 0.34958333],
+                       [2.49438548, -3.49438548, 1., 0.34958333],
+                       [1.99438548, -3.93612464, 1., 0.32962923],
+                       [1.48759916, -2.48888969, 2., 0.36542720],
+                       [1.98888969, -1.98888969, 2., 0.36451351],
+                       [2.48888969, -1.48759916, 2., 0.36542720]])
 
-#     np.testing.assert_array_almost_equal(datout2, datout)
+    np.testing.assert_array_almost_equal(datout2, datout)
 
 
 # if __name__ == "__main__":

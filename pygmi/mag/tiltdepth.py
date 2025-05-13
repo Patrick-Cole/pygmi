@@ -42,13 +42,14 @@ from matplotlib import cm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
+import matplotlib.pyplot as plt
 from numba import jit
 import geopandas as gpd
 
 from pygmi.raster.cooper import vertical
 from pygmi.raster.misc import lstack
 from pygmi.mag.dataprep import rtp, nextpow2
-from pygmi.misc import frm, ProgressBar, BasicModule
+from pygmi.misc import frm, BasicModule, ProgressBarText, ProgressBar
 
 
 class TiltDepth(BasicModule):
@@ -199,54 +200,12 @@ class TiltDepth(BasicModule):
             return False
 
         os.chdir(os.path.dirname(filename))
-        np.savetxt(filename, self.depths, delimiter=',',
-                   header='x, y, id, depth', comments='')
+        self.depths.to_csv(filename, index=False)
 
         QtWidgets.QMessageBox.information(self.parent, 'Information',
                                           'Save completed!')
 
         return True
-
-    def change_cbar1(self):
-        """
-        Change the colour map for the colour bar.
-
-        Returns
-        -------
-        None.
-
-        """
-        zout = self.indata['Raster'][0]
-        txt = str(self.cmb_cbar.currentText())
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.contour(self.X, self.Y, self.Z, [0])
-        self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
-        self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
-
-        cmap = colormaps.get_cmap(txt)
-        cmap2 = np.array([cmap(i) for i in range(cmap.N)])
-        low = int(cmap.N*(45/180))
-        high = int(cmap.N*(135/180))
-        cmap2[low:high] = cmap2[int(cmap.N/2)]
-
-        cmap3 = cm.colors.ListedColormap(cmap2)
-        ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
-
-        if self.x0 is not None:
-            i = 0
-            self.axes.plot(self.x1[i], self.y1[i], 'oy')
-            self.axes.plot(self.x0[i], self.y0[i], 'sy')
-            self.axes.plot(self.x2[i], self.y2[i], 'oy')
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        self.figure.colorbar(ims, format=frm)
-
-        self.figure.canvas.draw()
 
     def change_cbar(self):
         """
@@ -281,10 +240,6 @@ class TiltDepth(BasicModule):
         high = int(cmap.N*(135/180))
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
-        cmap3 = cm.colors.ListedColormap(cmap2)
-        # ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
-
-        # self.axes.plot(self.x0, self.y0, '.k')
         ims = self.axes.scatter(gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
 
         self.axes.xaxis.set_major_formatter(frm)
@@ -315,7 +270,15 @@ class TiltDepth(BasicModule):
                 dat = i
                 break
 
-        self.tiltdepth(dat)
+        if self.cb_rtp.isChecked():
+            inc = self.dsb_inc.value()
+            dec = self.dsb_dec.value()
+        else:
+            inc = None
+            dec = None
+
+        self.depths = tiltdepth(dat, inc, dec, self.pbar)
+        self.outdata['Vector'] = [self.depths]
         self.change_cbar()
 
         self.btn_apply.setEnabled(True)
@@ -374,140 +337,115 @@ class TiltDepth(BasicModule):
         self.saveobj(self.dsb_inc)
         self.saveobj(self.dsb_dec)
 
-    def tiltdepth(self, data):
-        """
-        Calculate tilt depth.
 
-        Output is stored in self.outdata.
+def tiltdepth(data, inc=None, dec=None, pbar=None):
+    """
+    Calculate tilt depth.
 
-        Parameters
-        ----------
-        data : pygmi.raster.datatypes.Data
-            PyGMI raster dataset.
+    Output is stored in self.outdata.
 
-        Returns
-        -------
-        None.
+    Parameters
+    ----------
+    data : pygmi.raster.datatypes.Data
+        PyGMI raster dataset.
 
-        """
-        self.pbar.setValue(0)
-        self.pbar.setMaximum(4)
+    Returns
+    -------
+    None.
 
-        # RTP
-        inc = self.dsb_inc.value()
-        dec = self.dsb_dec.value()
+    """
+    if pbar is None:
+        pbar = ProgressBarText()
 
-        if self.cb_rtp.isChecked():
-            zout = rtp(data, inc, dec)
-        else:
-            zout = data
+    pbar.setValue(0)
+    pbar.setMaximum(4)
 
-        # Tilt
-        self.pbar.setValue(1)
+    # RTP
+    if inc is not None and dec is not None:
+        zout = rtp(data, inc, dec)
+    else:
+        zout = data
 
-        nr, nc = zout.data.shape
-        dy, dx = np.gradient(zout.data)
-        dxtot = np.ma.sqrt(dx**2+dy**2)
+    # Tilt
+    pbar.setValue(1)
 
-        nmax = np.max([nr, nc])
-        npts = int(2**nextpow2(nmax))
-        dz = vertical(zout.data, npts, 1)
+    nr, nc = zout.data.shape
+    dy, dx = np.gradient(zout.data)
+    dxtot = np.ma.sqrt(dx**2+dy**2)
 
-        t1 = np.arctan(dz/dxtot)
+    nmax = np.max([nr, nc])
+    npts = int(2**nextpow2(nmax))
+    dz = vertical(zout.data, npts, 1)
 
-        self.pbar.setValue(2)
-        # A negative number implies we are straddling 0
+    t1 = np.arctan(dz/dxtot)
 
-        # Contour tilt
-        x = zout.extent[0] + np.arange(nc)*zout.xdim+zout.xdim/2
-        y = zout.extent[-1] - np.arange(nr)*zout.ydim-zout.ydim/2
+    pbar.setValue(2)
+    # A negative number implies we are straddling 0
 
-        X, Y = np.meshgrid(x, y)
-        Z = np.rad2deg(t1)
-        self.X = X
-        self.Y = Y
-        self.Z = Z
+    # Contour tilt
+    x = zout.extent[0] + np.arange(nc)*zout.xdim+zout.xdim/2
+    y = zout.extent[-1] - np.arange(nr)*zout.ydim-zout.ydim/2
 
-        cnt0 = self.axes.contour(X, Y, Z, [0])
-        cnt45 = self.axes.contour(X, Y, Z, [45], alpha=0)
-        cntm45 = self.axes.contour(X, Y, Z, [-45], alpha=0)
+    X, Y = np.meshgrid(x, y)
+    Z = np.rad2deg(t1)
 
-        self.pbar.setValue(3)
+    cnt0 = plt.contour(X, Y, Z, [0])
+    cnt45 = plt.contour(X, Y, Z, [45], alpha=0)
+    cntm45 = plt.contour(X, Y, Z, [-45], alpha=0)
 
-        gx0, gy0, cgrad0, cntid0 = vgrad(cnt0)
-        gx45, gy45, _, _ = vgrad(cnt45)
-        gxm45, gym45, _, _ = vgrad(cntm45)
+    pbar.setValue(3)
 
-        g0 = np.transpose([gx0, gy0])
+    gx0, gy0, cgrad0, cntid0 = vgrad(cnt0)
+    gx45, gy45, _, _ = vgrad(cnt45)
+    gxm45, gym45, _, _ = vgrad(cntm45)
 
-        self.pbar.setValue(4)
+    g0 = np.transpose([gx0, gy0])
 
-        dmin1 = []
-        dmin2 = []
+    pbar.setValue(4)
 
-        for i, j in self.pbar.iter(g0):
-            dmin1.append(distpc(gx45, gy45, i, j, 0))
-            dmin2.append(distpc(gxm45, gym45, i, j, 0))
+    dmin1 = []
+    dmin2 = []
 
-        dx1 = gx45[dmin1] - gx0
-        dy1 = gy45[dmin1] - gy0
+    for i, j in pbar.iter(g0):
+        dmin1.append(distpc(gx45, gy45, i, j, 0))
+        dmin2.append(distpc(gxm45, gym45, i, j, 0))
 
-        dx2 = gxm45[dmin2] - gx0
-        dy2 = gym45[dmin2] - gy0
+    dx1 = gx45[dmin1] - gx0
+    dy1 = gy45[dmin1] - gy0
 
-        grad = np.arctan2(dy1, dx1)*180/pi
-        grad[grad > 90] -= 180
-        grad[grad < -90] += 180
-        gtmp1 = np.abs(90-np.abs(grad-cgrad0))
+    dx2 = gxm45[dmin2] - gx0
+    dy2 = gym45[dmin2] - gy0
 
-        grad = np.arctan2(dy2, dx2)*180/pi
-        grad[grad > 90] -= 180
-        grad[grad < -90] += 180
-        gtmp2 = np.abs(90-np.abs(grad-cgrad0))
+    grad = np.arctan2(dy1, dx1)*180/pi
+    grad[grad > 90] -= 180
+    grad[grad < -90] += 180
+    gtmp1 = np.abs(90-np.abs(grad-cgrad0))
 
-        gtmp = np.logical_and(gtmp1 <= 10, gtmp2 <= 10)
+    grad = np.arctan2(dy2, dx2)*180/pi
+    grad[grad > 90] -= 180
+    grad[grad < -90] += 180
+    gtmp2 = np.abs(90-np.abs(grad-cgrad0))
 
-        gx0 = gx0[gtmp]
-        gy0 = gy0[gtmp]
-        cntid0 = cntid0[gtmp]
-        dx1 = dx1[gtmp]
-        dy1 = dy1[gtmp]
-        dx2 = dx2[gtmp]
-        dy2 = dy2[gtmp]
+    gtmp = np.logical_and(gtmp1 <= 10, gtmp2 <= 10)
 
-        dist1 = np.sqrt(dx1**2+dy1**2)
-        dist2 = np.sqrt(dx2**2+dy2**2)
+    gx0 = gx0[gtmp]
+    gy0 = gy0[gtmp]
+    cntid0 = cntid0[gtmp]
+    dx1 = dx1[gtmp]
+    dy1 = dy1[gtmp]
+    dx2 = dx2[gtmp]
+    dy2 = dy2[gtmp]
 
-        dist = np.min([dist1, dist2], 0)
+    dist1 = np.sqrt(dx1**2+dy1**2)
+    dist2 = np.sqrt(dx2**2+dy2**2)
 
-        self.x0 = gx0
-        self.x1 = dx1+gx0
-        self.x2 = dx2+gx0
-        self.y0 = gy0
-        self.y1 = dy1+gy0
-        self.y2 = dy2+gy0
+    dist = np.min([dist1, dist2], 0)
 
-        self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
+    tmp = {'x': gx0, 'y': gy0, 'id': cntid0.astype(int), 'depth': dist}
 
-        # tmp = quickgrid(gx0, gy0, dist, data.xdim,
-        #                 showlog=self.showlog)
+    gdf = gpd.GeoDataFrame(tmp, geometry=gpd.points_from_xy(gx0, gy0))
 
-        # mask = np.ma.getmaskarray(tmp)
-        # gdat = tmp.data
-
-        # dat = Data()
-        # dat.data = np.ma.masked_invalid(gdat[::-1])
-        # dat.data.mask = mask[::-1]
-        # dat.nodata = dat.data.fill_value
-        # dat.set_transform(data.xdim, gx0.min(), data.ydim, gy0.max())
-        # dat.dataid = data.dataid+' depths'
-
-        # self.outdata['Raster'] = [dat]
-
-        tmp = {'x': gx0, 'y': gy0, 'id': cntid0.astype(int), 'depth': dist}
-
-        gdf = gpd.GeoDataFrame(tmp, geometry=gpd.points_from_xy(gx0, gy0))
-        self.outdata['Vector'] = [gdf]
+    return gdf
 
 
 @jit(nopython=True)

@@ -33,19 +33,19 @@ import numpy as np
 from pygmi.grav import iodefs, dataprep
 
 
-# def test_process_data():
-#     """test process gravity data."""
+def test_process_data():
+    """test process gravity data."""
 
-#     idir = os.path.dirname(os.path.realpath(__file__))
+    idir = os.path.dirname(os.path.realpath(__file__))
 
-#     grvfile = os.path.join(idir, r'testdata\GravityCG5.txt')
-#     gpsfile = os.path.join(idir, r'testdata\GravityDGPS.csv')
+    grvfile = os.path.join(idir, r'testdata\GravityCG5.txt')
+    gpsfile = os.path.join(idir, r'testdata\GravityDGPS.csv')
 
-#     # Import Data
-#     IO = iodefs.ImportCG5(None)
-#     IO.get_cg5(grvfile)
-#     IO.get_gps(gpsfile)
-#     IO.settings(True)
+    # Import Data
+    # IO = iodefs.ImportCG5(None)
+    # IO.get_cg5(grvfile)
+    # IO.get_gps(gpsfile)
+    # IO.settings(True)
 
 #     # Process Data
 #     PD = dataprep.ProcessData()

@@ -42,15 +42,117 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from numba import jit, prange
 from matplotlib import colormaps
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+
 
 from pygmi.raster.reproj import data_reproject
 from pygmi.pfmod.datatypes import LithModel
-from pygmi.misc import PTime
-from pygmi.misc import frm
+from pygmi.misc import PTime, frm, ContextModule
 
-# mpl.use('QtAgg')
+
+class MyMplCanvas(FigureCanvasQTAgg):
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    """
+
+    def __init__(self, parent=None):
+        fig = Figure(layout='tight', dpi=150)
+        self.axes = fig.add_subplot(111)
+        super().__init__(fig)
+
+    def update_raster(self, lmod2):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        lmod2 : PyGMI lithology data
+            Lithology dataset to be used.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+
+        magtmp = lmod2.griddata['Calculated Magnetics'].data
+        grvtmp = lmod2.griddata['Calculated Gravity'].data
+
+        axes = self.figure.add_subplot(121)
+        etmp = dat_extent(lmod2.griddata['Calculated Magnetics'], axes)
+        axes.set_title('Magnetic Data')
+        ims = axes.imshow(magtmp, extent=etmp)
+        mmin = magtmp.mean()-2*magtmp.std()
+        mmax = magtmp.mean()+2*magtmp.std()
+        mint = (magtmp.std()*4)/10.
+        if np.ma.ptp(magtmp) > 0:
+            csrange = np.arange(mmin, mmax, mint)
+            axes.contour(magtmp, levels=csrange, colors='b', extent=etmp,
+                         linewidths=0.5)
+        cbar = self.figure.colorbar(ims, orientation='horizontal', format=frm)
+        cbar.set_label('nT')
+
+        axes = self.figure.add_subplot(122)
+        etmp = dat_extent(lmod2.griddata['Calculated Gravity'], axes)
+        axes.set_title('Gravity Data')
+        ims = axes.imshow(grvtmp, extent=etmp)
+        mmin = grvtmp.mean()-2*grvtmp.std()
+        mmax = grvtmp.mean()+2*grvtmp.std()
+        mint = (grvtmp.std()*4)/10.
+
+        if np.ma.ptp(grvtmp) > 0:
+            csrange = np.arange(mmin, mmax, mint)
+            axes.contour(grvtmp, levels=csrange, colors='y', extent=etmp,
+                         linewidths=0.5)
+        cbar = self.figure.colorbar(ims, orientation='horizontal', format=frm)
+        cbar.set_label('mGal')
+
+        self.figure.canvas.draw()
+
+
+class PlotTest(ContextModule):
+    """
+    Plot Raster Class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None, data=None):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Test Plot')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        # hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+
+        # self.buttonbox.buttonbox.hide()
+        # self.buttonbox.htmlfile = 'raster.cm.showsimple'
+        self.buttonbox.hide()
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        # vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.show()
+        if data is not None:
+            self.mmc.update_raster(data)
 
 
 class GravMag():
@@ -84,11 +186,11 @@ class GravMag():
         self.actionregionaltest = QtGui.QAction('Regional\nTest')
         self.actioncalculate = QtGui.QAction('Calculate\nGravity\n(All)')
         self.actioncalculate2 = QtGui.QAction('Calculate\nMagnetics\n'
-                                                  '(All)')
+                                              '(All)')
         self.actioncalculate3 = QtGui.QAction('Calculate\nGravity\n'
-                                                  '(Changes Only)')
+                                              '(Changes Only)')
         self.actioncalculate4 = QtGui.QAction('Calculate\nMagnetics\n'
-                                                  '(Changes Only)')
+                                              '(Changes Only)')
         self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\n'
                                             'Correction')
         self.setupui()
@@ -313,43 +415,8 @@ class GravMag():
 
         self.calc_regional()
 
-        magtmp = self.lmod2.griddata['Calculated Magnetics'].data
-        grvtmp = self.lmod2.griddata['Calculated Gravity'].data
-
-        regplt = plt.figure()
-        axes = plt.subplot(121)
-        etmp = dat_extent(self.lmod2.griddata['Calculated Magnetics'], axes)
-        plt.title('Magnetic Data')
-        ims = plt.imshow(magtmp, extent=etmp)
-        mmin = magtmp.mean()-2*magtmp.std()
-        mmax = magtmp.mean()+2*magtmp.std()
-        mint = (magtmp.std()*4)/10.
-        if np.ma.ptp(magtmp) > 0:
-            csrange = np.arange(mmin, mmax, mint)
-            plt.contour(magtmp, levels=csrange, colors='b', extent=etmp,
-                        linewidths=0.5)
-        cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
-        cbar.set_label('nT')
-
-        axes = plt.subplot(122)
-        etmp = dat_extent(self.lmod2.griddata['Calculated Gravity'], axes)
-        plt.title('Gravity Data')
-        ims = plt.imshow(grvtmp, extent=etmp)
-        mmin = grvtmp.mean()-2*grvtmp.std()
-        mmax = grvtmp.mean()+2*grvtmp.std()
-        mint = (grvtmp.std()*4)/10.
-
-        if np.ma.ptp(grvtmp) > 0:
-            csrange = np.arange(mmin, mmax, mint)
-            plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp,
-                        linewidths=0.5)
-        cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
-        cbar.set_label('mGal')
-        plt.tight_layout()
-
-        plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
-
-        regplt.show()
+        ptest = PlotTest(data=self.lmod2)
+        ptest.exec()
 
     def update_graph(self, grvval, magval, modind):
         """
