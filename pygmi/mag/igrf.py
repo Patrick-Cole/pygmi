@@ -320,7 +320,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
 
     gh = np.zeros([4, MAXCOEFF])
 
-    with open(os.path.join(os.path.dirname(__file__), 'IGRF13.cof'),
+    with open(os.path.join(os.path.dirname(__file__), 'IGRF13.COF'),
               encoding='utf-8') as mdf:
         modbuff = mdf.readlines()
     fileline = -1                            # First line will be 1
