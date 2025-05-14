@@ -165,188 +165,6 @@ class EquationEditor(BasicModule):
         if txt != '':
             self.lbl_bands.setText(': ' + self.bands[txt])
 
-    def eq_fix(self, indata):
-        """
-        Corrects names in equation to variable names.
-
-        Parameters
-        ----------
-        indata : list of pygmi.raster.datatypes.Data.
-            PyGMI raster dataset.
-
-        Returns
-        -------
-        neweq : str
-            Corrected equation.
-
-        """
-        neweq = str(self.equation)
-        neweq = neweq.replace('ln', 'log')
-        neweq = neweq.replace('^', '**')
-        neweq = neweq.replace('nodata', str(indata[0].nodata))
-
-        if 'log' in neweq:
-            self.showlog('Warning, if you have invalid log values, they will '
-                         'be masked out.')
-
-        if 'sqrt' in neweq:
-            self.showlog('Warning, if you have invalid sqrt values, they will '
-                         'be masked out.')
-
-        neweq = neweq.strip()
-
-        return neweq
-
-    def mean(self, eq, localdict):
-        """
-        Get mean pixel value of all input bands.
-
-        Parameters
-        ----------
-        eq : str
-            Equation with std command.
-        localdict : dictionary
-            Dictionary of data.
-
-        Returns
-        -------
-        findat : numpy array
-            Output array.
-
-        """
-        idx = eq.index('mean(') + 5
-        eq2 = eq[idx:]
-        idx = eq2.index(')')
-        eq2 = eq2[:idx]
-        eq2 = eq2.replace(' ', '')
-        eq3 = eq2.split(',')
-
-        stack = []
-        mask = None
-        for i in localdict:
-            if i not in eq3:
-                continue
-            if mask is None:
-                mask = localdict[i].mask
-            else:
-                mask = np.logical_and(mask, localdict[i].mask)
-
-            if i == 'iall':
-                stack.append(localdict[i])
-            else:
-                stack.append([localdict[i]])
-
-        stack = np.ma.vstack(stack)
-        findat = np.ma.mean(stack, 0)
-        findat.mask = mask
-
-        return findat
-
-    def std(self, eq, localdict):
-        """
-        Get standard deviation pixel value of all input bands.
-
-        Parameters
-        ----------
-        eq : str
-            Equation with std command.
-        localdict : dictionary
-            Dictionary of data.
-
-        Returns
-        -------
-        findat : numpy array
-            Output array.
-
-        """
-        idx = eq.index('std(') + 4
-        eq2 = eq[idx:]
-        idx = eq2.index(')')
-        eq2 = eq2[:idx]
-        eq2 = eq2.replace(' ', '')
-        eq3 = eq2.split(',')
-
-        stack = []
-        mask = None
-        for i in localdict:
-            if i not in eq3:
-                continue
-            if mask is None:
-                mask = localdict[i].mask
-            else:
-                mask = np.logical_and(mask, localdict[i].mask)
-
-            if i == 'iall':
-                stack.append(localdict[i])
-            else:
-                stack.append([localdict[i]])
-
-        stack = np.ma.vstack(stack)
-        findat = np.ma.std(stack, 0)
-        findat.mask = mask
-
-        return findat
-
-    def mosaic(self, eq, localdict):
-        """
-        Mosaics data into a single band dataset.
-
-        Parameters
-        ----------
-        eq : str
-            Equation with mosaic command.
-        localdict : dictionary
-            Dictionary of data.
-
-        Returns
-        -------
-        findat : numpy array
-            Output array.
-
-        """
-        idx = eq.index('mosaic(') + 7
-        eq2 = eq[idx:]
-        idx = eq2.index(')')
-        eq2 = eq2[:idx]
-        eq2 = eq2.replace(' ', '')
-        eq3 = eq2.split(',')
-
-        localdict_list = list(localdict.keys())
-
-        # Check for problems
-        if 'iall' in eq:
-            return None
-
-        if len(eq3) < 2:
-            return None
-
-        eq4 = []
-        mask = []
-        for i in eq3:
-            usedbands = []
-            for j in localdict_list:
-                if j in i:
-                    usedbands.append(j)
-            mask1 = None
-            for j in usedbands:
-                if mask1 is None:
-                    mask1 = localdict[j].mask
-                else:
-                    mask1 = np.logical_or(mask1, localdict[j].mask)
-
-            mask.append(mask1)
-            try:
-                eq4.append(ne.evaluate(i, localdict))
-            except Exception:
-                return None
-            eq4[-1] = np.ma.array(eq4[-1], mask=mask[-1])
-
-        master = eq4.pop()
-        for i in eq4[::-1]:
-            master[~i.mask] = i.data[~i.mask]
-
-        return master
-
     def settings(self, nodialog=False):
         """
         Entry point into item.
@@ -362,8 +180,6 @@ class EquationEditor(BasicModule):
             True if successful, False otherwise.
 
         """
-        localdict = {}
-        bandsall = []
         self.bands = {}
         self.bands['all data'] = 'iall'
 
@@ -378,16 +194,11 @@ class EquationEditor(BasicModule):
             self.showlog('No raster data.')
             return False
 
-        indata = lstack(self.indata[intype])
+        indata = self.indata[intype]
 
         for j, i in enumerate(indata):
             self.cmb_1.addItem(i.dataid)
             self.bands[i.dataid] = 'i' + str(j)
-            bandsall.append(i.data)
-            localdict['i' + str(j)] = i.data
-
-        localdict_list = list(localdict.keys())
-        localdict['iall'] = np.ma.array(bandsall)
 
         if not nodialog:
             temp = self.exec()
@@ -398,79 +209,12 @@ class EquationEditor(BasicModule):
             self.equation = self.textbrowser.toPlainText()
 
         if self.equation == '':
+            self.showlog('Error: You need to enter an equation.')
             return False
-
-        if 'iall' in self.equation:
-            usedbands = localdict_list
-        else:
-            usedbands = []
-            for i in localdict_list:
-                if i in self.equation:
-                    usedbands.append(i)
-
-        mask = None
-        for i in usedbands:
-            if mask is None:
-                mask = localdict[i].mask
-            else:
-                mask = np.logical_or(mask, localdict[i].mask)
-
-        neweq = self.eq_fix(indata)
-
-        if 'mosaic' in neweq:
-            findat = self.mosaic(neweq, localdict)
-            mask = findat.mask
-        elif 'mean' in neweq:
-            findat = self.mean(neweq, localdict)
-            mask = findat.mask
-        elif 'std' in neweq:
-            findat = self.std(neweq, localdict)
-            mask = findat.mask
-        else:
-            try:
-                findat = ne.evaluate(neweq, localdict)
-            except Exception:
-                findat = None
-
-        if findat is None:
-            QtWidgets.QMessageBox.warning(
-                self.parent, 'Error',
-                'Nothing processed! '
-                'Your equation most likely had an error.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
-            return False
-
-        outdata = []
-
-        if np.size(findat) == 1:
-            QtWidgets.QMessageBox.warning(
-                self.parent, 'Warning',
-                ' Nothing processed! Your equation outputs a single ' +
-                'value instead of a minimum of one band.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
-            return False
-        if findat.ndim == 2:
-            findat.shape = (1, findat.shape[0], findat.shape[1])
-
-        for i, findati in enumerate(findat):
-            findati = findati.astype(indata[i].data.dtype)
-            findati[mask] = indata[i].nodata
-
-            outdata.append(indata[i].copy())
-            outdata[-1].data = np.ma.masked_equal(findati,
-                                                  indata[i].nodata)
-            outdata[-1].nodata = indata[i].nodata
 
         dtype = self.cmb_dtype.currentText()
-        # This is needed to get rid of bad, unmasked values etc.
-        for i, outdatai in enumerate(outdata):
-            outdatai.data.set_fill_value(indata[i].nodata)
-            outdatai.data = np.ma.fix_invalid(outdatai.data)
-            if dtype != 'auto':
-                outdatai.data = outdatai.data.astype(dtype)
 
-        if len(outdata) == 1:
-            outdata[0].dataid = self.equation
+        outdata = eqedit(indata, self.equation, dtype, self.showlog)
 
         self.outdata[intype] = outdata
 
@@ -487,6 +231,147 @@ class EquationEditor(BasicModule):
         """
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
+
+
+def eqedit(data, equation, dtype='auto', showlog=print):
+    """
+    Use equations on raster data.
+
+    Parameters
+    ----------
+    data : list
+        List of PyGMI raster data.
+    equation : str
+        Equation to compute.
+    dtype : str, optional
+        The data type of the output dataset. The default is 'auto'.
+    showlog : function, optional
+        Show information using a function. The default is print.
+
+    Returns
+    -------
+    list
+        List of PyGMI raster data.
+
+    """
+    localdict = {}
+    bandsall = []
+    indata = lstack(data)
+
+    for j, i in enumerate(indata):
+        # self.bands[i.dataid] = 'i' + str(j)
+        bandsall.append(i.data)
+        localdict['i' + str(j)] = i.data
+
+    localdict_list = list(localdict.keys())
+    localdict['iall'] = np.ma.array(bandsall)
+
+    if equation == '':
+        return None
+
+    if 'iall' in equation:
+        usedbands = localdict_list
+    else:
+        usedbands = []
+        for i in localdict_list:
+            if i in equation:
+                usedbands.append(i)
+
+    mask = None
+    for i in usedbands:
+        if mask is None:
+            mask = localdict[i].mask
+        else:
+            mask = np.logical_or(mask, localdict[i].mask)
+
+    neweq = eq_fix(indata, equation, showlog)
+
+    if 'mosaic' in neweq:
+        findat = mosaic(neweq, localdict)
+        mask = findat.mask
+    elif 'mean' in neweq:
+        findat = mean(neweq, localdict)
+        mask = findat.mask
+    elif 'std' in neweq:
+        findat = std(neweq, localdict)
+        mask = findat.mask
+    else:
+        try:
+            findat = ne.evaluate(neweq, localdict)
+        except Exception:
+            findat = None
+
+    if findat is None:
+        showlog('Error: Nothing processed! '
+                'Your equation most likely had an error.')
+        return False
+
+    outdata = []
+
+    if np.size(findat) == 1:
+        showlog('Warning: Nothing processed! Your equation outputs a single '
+                'value instead of a minimum of one band.')
+        return False
+    if findat.ndim == 2:
+        findat.shape = (1, findat.shape[0], findat.shape[1])
+
+    for i, findati in enumerate(findat):
+        findati = findati.astype(indata[i].data.dtype)
+        findati[mask] = indata[i].nodata
+
+        outdata.append(indata[i].copy())
+        outdata[-1].data = np.ma.masked_equal(findati,
+                                              indata[i].nodata)
+        outdata[-1].nodata = indata[i].nodata
+
+    # This is needed to get rid of bad, unmasked values etc.
+    for i, outdatai in enumerate(outdata):
+        outdatai.data.set_fill_value(indata[i].nodata)
+        outdatai.data = np.ma.fix_invalid(outdatai.data)
+        if dtype != 'auto':
+            outdatai.data = outdatai.data.astype(dtype)
+
+    if len(outdata) == 1:
+        outdata[0].dataid = equation
+
+    return outdata
+
+
+def eq_fix(indata, equation, showlog=print):
+    """
+    Corrects names in equation to variable names.
+
+    Parameters
+    ----------
+    indata : list of PyGMI Data.
+        PyGMI raster dataset.
+    equation : str
+        Equation to fix.
+    showlog : function, optional
+        Show information using a function. The default is print.
+
+    Returns
+    -------
+    neweq : str
+        Corrected equation.
+
+    """
+    neweq = str(equation)
+    neweq = neweq.replace('ln', 'log')
+    neweq = neweq.replace('^', '**')
+    neweq = neweq.replace('nodata', str(indata[0].nodata))
+
+    if 'log' in neweq:
+        showlog('Warning, if you have invalid log values, they will '
+                'be masked out.')
+
+    if 'sqrt' in neweq:
+        showlog('Warning, if you have invalid sqrt values, they will '
+                'be masked out.')
+
+    neweq = neweq.strip()
+
+    return neweq
 
 
 def hmode(data):
@@ -515,6 +400,159 @@ def hmode(data):
     mode2 = (mmax - mmin) / 2 + mmin
 
     return mode2
+
+
+def mosaic(eq, localdict):
+    """
+    Mosaics data into a single band dataset.
+
+    Parameters
+    ----------
+    eq : str
+        Equation with mosaic command.
+    localdict : dictionary
+        Dictionary of data.
+
+    Returns
+    -------
+    findat : numpy array
+        Output array.
+
+    """
+    idx = eq.index('mosaic(') + 7
+    eq2 = eq[idx:]
+    idx = eq2.index(')')
+    eq2 = eq2[:idx]
+    eq2 = eq2.replace(' ', '')
+    eq3 = eq2.split(',')
+
+    localdict_list = list(localdict.keys())
+
+    # Check for problems
+    if 'iall' in eq:
+        return None
+
+    if len(eq3) < 2:
+        return None
+
+    eq4 = []
+    mask = []
+    for i in eq3:
+        usedbands = []
+        for j in localdict_list:
+            if j in i:
+                usedbands.append(j)
+        mask1 = None
+        for j in usedbands:
+            if mask1 is None:
+                mask1 = localdict[j].mask
+            else:
+                mask1 = np.logical_or(mask1, localdict[j].mask)
+
+        mask.append(mask1)
+        try:
+            eq4.append(ne.evaluate(i, localdict))
+        except Exception:
+            return None
+        eq4[-1] = np.ma.array(eq4[-1], mask=mask[-1])
+
+    master = eq4.pop()
+    for i in eq4[::-1]:
+        master[~i.mask] = i.data[~i.mask]
+
+    return master
+
+
+def mean(eq, localdict):
+    """
+    Get mean pixel value of all input bands.
+
+    Parameters
+    ----------
+    eq : str
+        Equation with std command.
+    localdict : dictionary
+        Dictionary of data.
+
+    Returns
+    -------
+    findat : numpy array
+        Output array.
+
+    """
+    idx = eq.index('mean(') + 5
+    eq2 = eq[idx:]
+    idx = eq2.index(')')
+    eq2 = eq2[:idx]
+    eq2 = eq2.replace(' ', '')
+    eq3 = eq2.split(',')
+
+    stack = []
+    mask = None
+    for i in localdict:
+        if i not in eq3:
+            continue
+        if mask is None:
+            mask = localdict[i].mask
+        else:
+            mask = np.logical_and(mask, localdict[i].mask)
+
+        if i == 'iall':
+            stack.append(localdict[i])
+        else:
+            stack.append([localdict[i]])
+
+    stack = np.ma.vstack(stack)
+    findat = np.ma.mean(stack, 0)
+    findat.mask = mask
+
+    return findat
+
+
+def std(eq, localdict):
+    """
+    Get standard deviation pixel value of all input bands.
+
+    Parameters
+    ----------
+    eq : str
+        Equation with std command.
+    localdict : dictionary
+        Dictionary of data.
+
+    Returns
+    -------
+    findat : numpy array
+        Output array.
+
+    """
+    idx = eq.index('std(') + 4
+    eq2 = eq[idx:]
+    idx = eq2.index(')')
+    eq2 = eq2[:idx]
+    eq2 = eq2.replace(' ', '')
+    eq3 = eq2.split(',')
+
+    stack = []
+    mask = None
+    for i in localdict:
+        if i not in eq3:
+            continue
+        if mask is None:
+            mask = localdict[i].mask
+        else:
+            mask = np.logical_and(mask, localdict[i].mask)
+
+        if i == 'iall':
+            stack.append(localdict[i])
+        else:
+            stack.append([localdict[i]])
+
+    stack = np.ma.vstack(stack)
+    findat = np.ma.std(stack, 0)
+    findat.mask = mask
+
+    return findat
 
 
 def _test():

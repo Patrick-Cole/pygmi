@@ -114,28 +114,19 @@ class Normalisation(BasicModule):
         data = [i.copy() for i in self.indata['Raster']]
 
         if self.rb_interval.isChecked():
-            for i in data:
-                tmp1 = i.data.min()
-                tmp2 = i.data.max() - i.data.min()
-                i, _ = datacommon(i, tmp1, tmp2)
+            ntype = 'interval'
         elif self.rb_mean.isChecked():
-            for i in data:
-                tmp1 = i.data.mean()
-                tmp2 = i.data.std()
-                i, _ = datacommon(i, tmp1, tmp2)
+            ntype = 'mean'
         elif self.rb_median.isChecked():
-            for i in data:
-                tmp1 = np.median(i.data.compressed())
-                tmp2 = np.median(abs(i.data.compressed() - tmp1))
-                i, _ = datacommon(i, tmp1, tmp2)
+            ntype = 'median'
         elif self.rb_8bit.isChecked():
-            for i in data:
-                i.data = histeq(i.data)
-                i.data = 255 * (i.data / np.ma.ptp(i.data))
+            ntype = '8bit'
 
         # Correct the null value
         for i in data:
             i.data.data[i.data.mask] = i.nodata
+
+        data = norm(data, ntype)
 
         self.outdata['Raster'] = data
         if self.pbar is not None:
@@ -191,6 +182,50 @@ def datacommon(data, tmp1, tmp2):
         data.data = np.ma.array(dtmp, mask=mtmp)
 
     return data, transform
+
+
+def norm(data, ntype):
+    """
+    Normalise data.
+
+    Parameters
+    ----------
+    data : list
+        PyGMI Data in a list.
+    ntype : str
+        Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
+
+    Returns
+    -------
+    data : list
+        PyGMI Data in a list.
+
+    """
+    if ntype == 'interval':
+        for i in data:
+            tmp1 = i.data.min()
+            tmp2 = i.data.max() - i.data.min()
+            i, _ = datacommon(i, tmp1, tmp2)
+    elif ntype == 'mean':
+        for i in data:
+            tmp1 = i.data.mean()
+            tmp2 = i.data.std()
+            i, _ = datacommon(i, tmp1, tmp2)
+    elif ntype == 'median':
+        for i in data:
+            tmp1 = np.median(i.data.compressed())
+            tmp2 = np.median(abs(i.data.compressed() - tmp1))
+            i, _ = datacommon(i, tmp1, tmp2)
+    elif ntype == '8bit':
+        for i in data:
+            i.data = histeq(i.data)
+            i.data = 255 * (i.data / np.ma.ptp(i.data))
+
+    # Correct the null value
+    for i in data:
+        i.data.data[i.data.mask] = i.nodata
+
+    return data
 
 
 def _testfn():

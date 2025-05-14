@@ -37,7 +37,7 @@ import pytest
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
-from pygmi.raster import iodefs, normalisation, smooth
+from pygmi.raster import normalisation, smooth
 from pygmi.raster.misc import aspect2, check_dataid
 
 
@@ -114,18 +114,17 @@ def test_trimraster():
     np.testing.assert_array_equal(dat[0].data, dat2)
 
 
-# def test_equation():
-#     """tests equation editor."""
-#     datin = Data()
-#     datin.data = np.ma.array([[1., 2.], [1., 2.]])
-#     datout = datin.data*2
+def test_equation():
+    """tests equation editor."""
+    datin = Data()
+    datin.data = np.ma.array([[1., 2.], [1., 2.]])
+    datout = datin.data * 2
 
-#     tmp = equation_editor.EquationEditor()
-#     tmp.indata = {'Raster': [datin, datin]}
-#     tmp.equation = 'i0+i1'
-#     tmp.settings(True)
+    indata = [datin, datin]
+    eq = 'i0+i1'
+    outdata = equation_editor.eqedit(indata, eq)
 
-#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+    np.testing.assert_array_equal(outdata[0].data, datout)
 
 
 def test_hmode():
@@ -312,38 +311,32 @@ def smalldata():
     return dat
 
 
-# def test_normalisation():
-#     """Tests for normalisation."""
+def test_normalisation():
+    """Tests for normalisation."""
 
-#     datin = Data()
-#     datin.data = np.ma.array([[1., 2.], [1., 2.]])
+    datin = Data()
+    datin.data = np.ma.array([[1., 2.], [1., 2.]])
+    indata = [datin, datin]
 
-#     tmp = normalisation.Normalisation(None)
-#     tmp.indata = {'Raster': [datin, datin]}
-#     tmp.rb_interval.setChecked(True)
-#     tmp.settings(True)
-#     datout = np.ma.array([[0., 1.], [0., 1.]])
+    outdata = normalisation.norm(indata, 'interval')
+    datout = np.ma.array([[0., 1.], [0., 1.]])
 
-#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+    np.testing.assert_array_equal(outdata[0].data, datout)
 
-#     tmp.rb_mean.setChecked(True)
-#     tmp.settings(True)
-#     datout = np.ma.array([[-1., 1.], [-1., 1.]])
+    outdata = normalisation.norm(indata, 'mean')
+    datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
-#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+    np.testing.assert_array_equal(outdata[0].data, datout)
 
-#     tmp.rb_median.setChecked(True)
-#     tmp.settings(True)
-#     datout = np.ma.array([[-1., 1.], [-1., 1.]])
+    outdata = normalisation.norm(indata, 'median')
+    datout = np.ma.array([[-1., 1.], [-1., 1.]])
 
-#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+    np.testing.assert_array_equal(outdata[0].data, datout)
 
-#     tmp.rb_8bit.setChecked(True)
-#     tmp.settings(True)
+    outdata = normalisation.norm(indata, '8bit')
+    datout = np.ma.array([[0., 255.], [0., 255.]])
 
-#     datout = np.ma.array([[0., 255.], [0., 255.]])
-
-#     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
+    np.testing.assert_array_equal(outdata[0].data, datout)
 
 
 # def test_smooth():
