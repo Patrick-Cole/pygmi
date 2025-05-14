@@ -199,8 +199,8 @@ class GraphHist(FigureCanvasQTAgg):
         yptp = np.ma.ptp(self.ycoord)
         xstep = xptp / self.nbins
         ystep = yptp / self.nbins
-        self.xcoord = self.xcoord/xstep
-        self.ycoord = self.ycoord/ystep
+        self.xcoord = self.xcoord / xstep
+        self.ycoord = self.ycoord / ystep
 
         self.xcoord = np.trunc(self.xcoord)
         self.ycoord = np.trunc(self.ycoord)
@@ -968,8 +968,8 @@ def dist_point_to_segment(p, s0, s1):
     if c2 <= c1:
         return np.linalg.norm(p - s1)
 
-    b = c1/c2
-    pb = s0 + b*v
+    b = c1 / c2
+    pb = s0 + b * v
 
     return np.linalg.norm(p - pb)
 
@@ -983,7 +983,7 @@ def _testfn():
 
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
-    dat = dat1+dat2
+    dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
 

@@ -42,7 +42,6 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from numba import jit, prange
 from matplotlib import colormaps
-# import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -91,9 +90,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         etmp = dat_extent(lmod2.griddata['Calculated Magnetics'], axes)
         axes.set_title('Magnetic Data')
         ims = axes.imshow(magtmp, extent=etmp)
-        mmin = magtmp.mean()-2*magtmp.std()
-        mmax = magtmp.mean()+2*magtmp.std()
-        mint = (magtmp.std()*4)/10.
+        mmin = magtmp.mean() - 2 * magtmp.std()
+        mmax = magtmp.mean() + 2 * magtmp.std()
+        mint = (magtmp.std() * 4) / 10.
         if np.ma.ptp(magtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
             axes.contour(magtmp, levels=csrange, colors='b', extent=etmp,
@@ -105,9 +104,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         etmp = dat_extent(lmod2.griddata['Calculated Gravity'], axes)
         axes.set_title('Gravity Data')
         ims = axes.imshow(grvtmp, extent=etmp)
-        mmin = grvtmp.mean()-2*grvtmp.std()
-        mmax = grvtmp.mean()+2*grvtmp.std()
-        mint = (grvtmp.std()*4)/10.
+        mmin = grvtmp.mean() - 2 * grvtmp.std()
+        mmax = grvtmp.mean() + 2 * grvtmp.std()
+        mint = (grvtmp.std() * 4) / 10.
 
         if np.ma.ptp(grvtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
@@ -548,20 +547,20 @@ class GeoData():
 
         """
         if self.modified is True:
-            numx = self.g_cols*self.g_dxy
-            numy = self.g_rows*self.g_dxy
+            numx = self.g_cols * self.g_dxy
+            numy = self.g_rows * self.g_dxy
 
 # The 2 lines below ensure that the profile goes over the center of the grid
 # cell
-            xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
+            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
-                              -1*self.g_dxy, dtype=float)
+            ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
+                              -1 * self.g_dxy, dtype=float)
 
             if hcor is None:
                 hcor2 = 0
             else:
-                hcor2 = int(self.numz-hcor.max())
+                hcor2 = int(self.numz - hcor.max())
 
             self.showtext('   Calculate gravity origin field')
             self.gboxmain(xdist, ydist, self.zobsg, hcor2)
@@ -583,22 +582,22 @@ class GeoData():
 
         """
         if self.modified is True:
-            numx = self.g_cols*self.g_dxy
-            numy = self.g_rows*self.g_dxy
+            numx = self.g_cols * self.g_dxy
+            numy = self.g_rows * self.g_dxy
 
 # The 2 lines below ensure that the profile goes over the center of the grid
 # cell
-            xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
+            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
-                              -1*self.g_dxy, dtype=float)
+            ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
+                              -1 * self.g_dxy, dtype=float)
 
             self.showtext('   Calculate magnetic origin field')
 
             if hcor is None:
                 hcor2 = 0
             else:
-                hcor2 = int(self.numz-hcor.max())
+                hcor2 = int(self.numz - hcor.max())
 
             self.mboxmain(xdist, ydist, self.zobsm, hcor2, demag)
 
@@ -648,8 +647,8 @@ class GeoData():
 
         """
         self.modified = modified
-        self.g_cols = ncols*2+1
-        self.g_rows = nrows*2+1
+        self.g_cols = ncols * 2 + 1
+        self.g_rows = nrows * 2 + 1
         self.numz = numz
         self.g_dxy = g_dxy
         self.d_z = d_z
@@ -674,15 +673,15 @@ class GeoData():
         None.
 
         """
-        numx = self.g_cols*self.g_dxy
-        numy = self.g_rows*self.g_dxy
-        numz = self.numz*self.d_z
+        numx = self.g_cols * self.g_dxy
+        numy = self.g_rows * self.g_dxy
+        numz = self.numz * self.d_z
         dxy = self.dxy
         d_z = self.d_z
 
-        self.x12 = np.array([numx/2-dxy/2, numx/2+dxy/2])
-        self.y12 = np.array([numy/2-dxy/2, numy/2+dxy/2])
-        self.z12 = np.arange(-numz, numz+d_z, d_z)
+        self.x12 = np.array([numx / 2 - dxy / 2, numx / 2 + dxy / 2])
+        self.y12 = np.array([numy / 2 - dxy / 2, numy / 2 + dxy / 2])
+        self.z12 = np.arange(-numz, numz + d_z, d_z)
 
     def gboxmain(self, xobs, yobs, zobs, hcor):
         """
@@ -827,13 +826,13 @@ class GeoData():
         fa, fb, fc = dircos(self.finc, self.fdec, self.theta)
 
         mr = self.mstrength * np.array([ma, mb, mc]) * 100
-        mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (4*np.pi)
-        m3 = mr+mi
+        mi = self.susc * self.hintn * np.array([fa, fb, fc]) / (4 * np.pi)
+        m3 = mr + mi
 
         if demag is True:
             m3 = calc_demag(m3, self.susc,
-                            np.abs(self.x12[1]-self.x12[0]),
-                            np.abs(self.z12[1]-self.z12[0]))
+                            np.abs(self.x12[1] - self.x12[0]),
+                            np.abs(self.z12[1] - self.z12[0]))
 
         mt = np.sqrt(m3 @ m3)
         if mt > 0:
@@ -841,17 +840,17 @@ class GeoData():
 
         ma, mb, mc = m3
 
-        fm1 = ma*fb + mb*fa
-        fm2 = ma*fc + mc*fa
-        fm3 = mb*fc + mc*fb
-        fm4 = ma*fa
-        fm5 = mb*fb
-        fm6 = mc*fc
+        fm1 = ma * fb + mb * fa
+        fm2 = ma * fc + mc * fa
+        fm3 = mb * fc + mc * fb
+        fm4 = ma * fa
+        fm5 = mb * fb
+        fm6 = mc * fc
 
         if zobs == 0:
             zobs = -0.01
 
-        z1122 = np.append(z1122, [2*z1122[-1]-z1122[-2]])
+        z1122 = np.append(z1122, [2 * z1122[-1] - z1122[-2]])
 
         for z1 in piter(z1122):
             if z1 < z1122[hcor]:
@@ -866,7 +865,7 @@ class GeoData():
             mlayers.append(mval)
 
         self.mlayers = np.array(mlayers) * mt
-        self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
+        self.mlayers = self.mlayers[:-1] - self.mlayers[1:]
 
 
 def calc_demag(mvec, k, dxy, dz):
@@ -899,9 +898,9 @@ def calc_demag(mvec, k, dxy, dz):
     # Ndy = 4*np.pi*(d*t/(d*t+2*Y*t+2*Y*d))
     # Ndx = 4*np.pi*(2*Y*d/(d*t+2*Y*t+2*Y*d))
 
-    Ndz = 4*np.pi*(t/(2*d+t))
-    Ndy = 4*np.pi*(d/(2*d+t))
-    Ndx = 4*np.pi*(d/(2*d+t))
+    Ndz = 4 * np.pi * (t / (2 * d + t))
+    Ndy = 4 * np.pi * (d / (2 * d + t))
+    Ndx = 4 * np.pi * (d / (2 * d + t))
 
     Jx, Jy, Jz = mvec
 
@@ -917,9 +916,9 @@ def calc_demag(mvec, k, dxy, dz):
     # Jy2 = Jdy2
     # Jz2 = Jdz2
 
-    Jz2 = Jz/(1+Ndz*k)
-    Jy2 = Jy/(1+Ndy*k)
-    Jx2 = Jx/(1+Ndx*k)
+    Jz2 = Jz / (1 + Ndz * k)
+    Jy2 = Jy / (1 + Ndy * k)
+    Jx2 = Jx / (1 + Ndx * k)
 
     outvec = np.array([Jx2, Jy2, Jz2])
 
@@ -1018,7 +1017,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if showtext is None:
         showtext = print
     if pbars is not None:
-        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
+        pbars.resetall(mmax=2 * (len(lmod.lith_list) - 1) + 1)
         piter = pbars.iter
     else:
         piter = iter
@@ -1074,7 +1073,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
             continue
         if mlist[0] != 'Background':
             mlist[1].modified = True
-            showtext(mlist[0]+':')
+            showtext(mlist[0] + ':')
             if parent is not None:
                 mlist[1].parent = parent
                 mlist[1].pbars = parent.pbars
@@ -1094,14 +1093,14 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     # Get mlayers and glayers with correct rho and netmagn
 
     if pbars is not None:
-        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
+        pbars.resetsub(maximum=(len(lmod.lith_list) - 1))
         piter = pbars.iter
 
-    mgvalin = np.zeros(numx*numy)
-    mgval = np.zeros(numx*numy)
+    mgvalin = np.zeros(numx * numy)
+    mgval = np.zeros(numx * numy)
 
-    hcorflat = numz-hcor.flatten()
-    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
+    hcorflat = numz - hcor.flatten()
+    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx * numy])
 
     # These two lines are to eliminate background and improve time estimate.
     lith_list = lmod.lith_list.copy()
@@ -1120,9 +1119,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         if magcalc:
             mglayers = mfile['mlayers']
         else:
-            mglayers = mfile['glayers']*mlist[1].rho()
+            mglayers = mfile['glayers'] * mlist[1].rho()
 
-        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
+        showtext('Summing ' + mlist[0] + ' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
         if modindmax > -1 and mijk in modind:
@@ -1201,15 +1200,16 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         pbars.maxall()
 
     tdiff = ptime.since_last_call(show=False)
-    mins = int(tdiff/60)
-    secs = tdiff-mins*60
+    mins = int(tdiff / 60)
+    secs = tdiff - mins * 60
 
     if magcalc:
         lmod.lith_index_mag_old = np.copy(lmod.lith_index)
     else:
         lmod.lith_index_grv_old = np.copy(lmod.lith_index)
 
-    showtext('Total Time: '+str(mins)+' minutes and '+str(secs)+' seconds')
+    showtext('Total Time: ' + str(mins) +
+             ' minutes and ' + str(secs) + ' seconds')
 
     return lmod.griddata
 
@@ -1249,20 +1249,20 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
         Output summed data.
 
     """
-    b = numx*numy
+    b = numx * numy
     for j in range(b):
         mgval[j] = 0.
 
     for i in range(numx):
-        xoff = numx-i
+        xoff = numx - i
         for j in range(numy):
-            yoff = numy-j
+            yoff = numy - j
             if (modind[i, j, k] != mijk):
                 continue
             for ijk in prange(b):
                 xoff2 = xoff + aaa0[ijk]
-                yoff2 = aaa1[ijk]+yoff
-                hcor2 = hcorflat[ijk]+k
+                yoff2 = aaa1[ijk] + yoff
+                hcor2 = hcorflat[ijk] + k
                 mgval[ijk] += mlayers[hcor2, xoff2, yoff2]
 
     return mgval
@@ -1346,7 +1346,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     if len(inputliths) == 1:
         clrtmp = np.array([0])
     else:
-        clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
+        clrtmp = np.arange(len(inputliths)) / (len(inputliths) - 1)
     clrtmp = colormaps['jet'](clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)
@@ -1354,19 +1354,19 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
 
     for i in inputliths:
         j += 1
-        lmod.mlut[j] = clrtmp[j-1]
+        lmod.mlut[j] = clrtmp[j - 1]
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
-        lmod.lith_list[i].susc = susc[j-1]
-        lmod.lith_list[i].density = dens[j-1]
+        lmod.lith_list[i].susc = susc[j - 1]
+        lmod.lith_list[i].density = dens[j - 1]
         lmod.lith_list[i].lith_index = j
         lmod.lith_list[i].finc = finc
         lmod.lith_list[i].fdec = fdec
         lmod.lith_list[i].hintn = hintn
         if mstrength is not None:
-            lmod.lith_list[i].minc = minc[j-1]
-            lmod.lith_list[i].mdec = mdec[j-1]
-            lmod.lith_list[i].mstrength = mstrength[j-1]
+            lmod.lith_list[i].minc = minc[j - 1]
+            lmod.lith_list[i].mdec = mdec[j - 1]
+            lmod.lith_list[i].mstrength = mstrength[j - 1]
 
     return lmod
 
@@ -1456,15 +1456,15 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
         Calculated magnetic values.
 
     """
-    h = z1-z0
+    h = z1 - z0
     hsq = h**2
 
     for ii in range(numx):
-        alpha[0] = x1-xobs[ii]
-        alpha[1] = x2-xobs[ii]
+        alpha[0] = x1 - xobs[ii]
+        alpha[1] = x2 - xobs[ii]
         for jj in range(numy):
-            beta[0] = y1-yobs[jj]
-            beta[1] = y2-yobs[jj]
+            beta[0] = y1 - yobs[jj]
+            beta[1] = y2 - yobs[jj]
             t = 0.
 
             for i in range(2):
@@ -1473,21 +1473,21 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
                     sign = 1.
                     if i != j:
                         sign = -1.
-                    r0sq = alphasq+beta[j]**2+hsq
+                    r0sq = alphasq + beta[j]**2 + hsq
                     r0 = np.sqrt(r0sq)
-                    r0h = r0*h
-                    alphabeta = alpha[i]*beta[j]
-                    arg1 = (r0-alpha[i])/(r0+alpha[i])
-                    arg2 = (r0-beta[j])/(r0+beta[j])
-                    arg3 = alphasq+r0h+hsq
-                    arg4 = r0sq+r0h-alphasq
-                    tlog = (fm3*np.log(arg1)/2.+fm2*np.log(arg2)/2. -
-                            fm1*np.log(r0+h))
-                    tatan = (-fm4*np.arctan2(alphabeta, arg3) -
-                             fm5*np.arctan2(alphabeta, arg4) +
-                             fm6*np.arctan2(alphabeta, r0h))
+                    r0h = r0 * h
+                    alphabeta = alpha[i] * beta[j]
+                    arg1 = (r0 - alpha[i]) / (r0 + alpha[i])
+                    arg2 = (r0 - beta[j]) / (r0 + beta[j])
+                    arg3 = alphasq + r0h + hsq
+                    arg4 = r0sq + r0h - alphasq
+                    tlog = (fm3 * np.log(arg1) / 2. + fm2 * np.log(arg2) / 2. -
+                            fm1 * np.log(r0 + h))
+                    tatan = (-fm4 * np.arctan2(alphabeta, arg3) -
+                             fm5 * np.arctan2(alphabeta, arg4) +
+                             fm6 * np.arctan2(alphabeta, r0h))
 
-                    t = t+sign*(tlog+tatan)
+                    t = t + sign * (tlog + tatan)
             mval[ii, jj] = t
 
     return mval
@@ -1560,30 +1560,30 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
         Calculated gravity values.
 
     """
-    z[0] = z_0-z_1
-    z[1] = z_0-z_2
+    z[0] = z_0 - z_1
+    z[1] = z_0 - z_2
 
     for ii in range(numx):
-        x[0] = xobs[ii]-x_1
-        x[1] = xobs[ii]-x_2
+        x[0] = xobs[ii] - x_1
+        x[1] = xobs[ii] - x_2
         for jj in range(numy):
-            y[0] = yobs[jj]-y_1
-            y[1] = yobs[jj]-y_2
+            y[0] = yobs[jj] - y_1
+            y[1] = yobs[jj] - y_2
             sumi = 0.
             for i in range(2):
                 for j in range(2):
                     for k in range(2):
-                        rijk = np.sqrt(x[i]*x[i]+y[j]*y[j]+z[k]*z[k])
-                        ijk = isign[i]*isign[j]*isign[k]
-                        arg1 = np.arctan2(x[i]*y[j], z[k]*rijk)
+                        rijk = np.sqrt(x[i] * x[i] + y[j] * y[j] + z[k] * z[k])
+                        ijk = isign[i] * isign[j] * isign[k]
+                        arg1 = np.arctan2(x[i] * y[j], z[k] * rijk)
 
                         if arg1 < 0.:
                             arg1 = arg1 + 2 * np.pi
-                        arg2 = rijk+y[j]
-                        arg3 = rijk+x[i]
+                        arg2 = rijk + y[j]
+                        arg3 = rijk + x[i]
                         arg2 = np.log(arg2)
                         arg3 = np.log(arg3)
-                        sumi += ijk*(z[k]*arg1-x[i]*arg2-y[j]*arg3)
+                        sumi += ijk * (z[k] * arg1 - x[i] * arg2 - y[j] * arg3)
             gval[ii, jj] = sumi
 
     return gval
@@ -1612,12 +1612,12 @@ def dircos(incl, decl, azim):
         Third direction cosine.
 
     """
-    d2rad = np.pi/180.
-    xincl = incl*d2rad
-    xdecl = decl*d2rad
-    xazim = azim*d2rad
-    aaa = np.cos(xincl)*np.cos(xdecl-xazim)
-    bbb = np.cos(xincl)*np.sin(xdecl-xazim)
+    d2rad = np.pi / 180.
+    xincl = incl * d2rad
+    xdecl = decl * d2rad
+    xazim = azim * d2rad
+    aaa = np.cos(xincl) * np.cos(xdecl - xazim)
+    bbb = np.cos(xincl) * np.sin(xdecl - xazim)
     ccc = np.sin(xincl)
 
     return aaa, bbb, ccc
@@ -1648,7 +1648,7 @@ def dat_extent(dat, axes):
     """
     left, right, bottom, top = dat.extent
 
-    if (right-left) > 10000 or (top-bottom) > 10000:
+    if (right - left) > 10000 or (top - bottom) > 10000:
         axes.xaxis.set_label_text('Eastings (km)')
         axes.yaxis.set_label_text('Northings (km)')
         left /= 1000.

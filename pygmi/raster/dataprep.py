@@ -209,8 +209,8 @@ class DataCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if ('Raster' not in self.indata and 'Cluster' not in self.indata
-                and 'RasterFileList' not in self.indata):
+        if ('Raster' not in self.indata and 'Cluster' not in self.indata and
+                'RasterFileList' not in self.indata):
             self.showlog('No raster data')
             return False
 
@@ -250,7 +250,7 @@ class DataCut(BasicModule):
                     ofile = os.path.basename(data[0].filename)
                     ofile = os.path.join(odir, ofile)
 
-                    self.showlog('Exporting to '+ofile)
+                    self.showlog('Exporting to ' + ofile)
                     export_raster(ofile, data, drv='GTiff', piter=self.piter,
                                   compression='DEFLATE', showlog=self.showlog)
                     self.outdata['Raster'] = data
@@ -349,11 +349,11 @@ class DataLayerStack(BasicModule):
             ymin = min(ymin, ymin0)
             ymax = max(ymax, ymax0)
 
-        cols = int((xmax - xmin)/dxy)
-        rows = int((ymax - ymin)/dxy)
+        cols = int((xmax - xmin) / dxy)
+        rows = int((ymax - ymin) / dxy)
 
-        self.lbl_rows.setText('Rows: '+str(rows))
-        self.lbl_cols.setText('Columns: '+str(cols))
+        self.lbl_rows.setText('Rows: ' + str(rows))
+        self.lbl_cols.setText('Columns: ' + str(cols))
 
     def settings(self, nodialog=False):
         """
@@ -376,7 +376,7 @@ class DataLayerStack(BasicModule):
                          'all datasets overlap in the same area')
             self.indata['Raster'] = []
             for ifile in ifiles:
-                self.showlog('Processing '+os.path.basename(ifile))
+                self.showlog('Processing ' + os.path.basename(ifile))
                 dat = get_data(ifile, piter=self.piter,
                                showlog=self.showlog)
                 # for i in dat:
@@ -584,7 +584,7 @@ class DataMerge(BasicModule):
 
         """
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-             self.parent, 'Select Directory')
+            self.parent, 'Select Directory')
 
         self.le_idirlist.setText(self.idir)
 
@@ -1295,11 +1295,11 @@ def fftprep(data):
     ndat = data.data - datamedian
 
     nr, nc = data.data.shape
-    cdiff = nc//2
-    rdiff = nr//2
+    cdiff = nc // 2
+    rdiff = nr // 2
 
-    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))+np.nan
-    x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
+    z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) + np.nan
+    x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
 
     for _ in range(2):
@@ -1365,8 +1365,8 @@ def fft_getkxy(fftmod, xdim, ydim):
 
     """
     ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, xdim)*2*np.pi
-    ky = np.fft.fftfreq(ny, ydim)*2*np.pi
+    kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
+    ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
 
     KX, KY = np.meshgrid(kx, ky)
     KY = -KY
@@ -1400,11 +1400,11 @@ def fftcont(data, h):
     # ny, nx = fftmod.shape
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
-    k = np.sqrt(KX**2+KY**2)
+    k = np.sqrt(KX**2 + KY**2)
 
-    filt = np.exp(-np.abs(k)*h)
+    filt = np.exp(-np.abs(k) * h)
 
-    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = np.real(np.fft.ifft2(fftmod * filt))
     zout = zout[rdiff:-rdiff, cdiff:-cdiff]
 
     zout = zout + datamedian
@@ -1415,7 +1415,7 @@ def fftcont(data, h):
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
-    dat.dataid = 'Upward_'+str(h)+'_'+data.dataid
+    dat.dataid = 'Upward_' + str(h) + '_' + data.dataid
     dat.set_transform(transform=data.transform)
     dat.crs = data.crs
 
@@ -1714,12 +1714,12 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
     outdat = []
     for dataid in bandlist:
-        showlog('Extracting '+dataid+'...')
+        showlog('Extracting ' + dataid + '...')
 
         if bandstofiles:
             odir = os.path.join(idir, 'mosaic')
             os.makedirs(odir, exist_ok=True)
-            ofile = dataid+'.tif'
+            ofile = dataid + '.tif'
             ofile = ofile.replace(' ', '_')
             ofile = ofile.replace(',', '_')
             ofile = ofile.replace('*', 'mult')
@@ -1794,7 +1794,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             tmpid = tmpid.replace('*', 'mult')
             tmpid = tmpid.replace(r'/', 'div')
 
-            tmpfile = tmpfile[:-4]+'_'+tmpid+'.tif'
+            tmpfile = tmpfile[:-4] + '_' + tmpid + '.tif'
 
             raster = rasterio.open(tmpfile, 'w', driver='GTiff',
                                    height=i2.data.shape[0],
@@ -1813,7 +1813,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             tmpdat = i2.data
             tmpdat = tmpdat.filled(nodata)
             tmpdat = np.ma.masked_equal(tmpdat, nodata)
-            tmpdat = tmpdat-mval
+            tmpdat = tmpdat - mval
             # breakpoint()
             raster.write(tmpdat, 1)
             raster.write_mask(~np.ma.getmaskarray(i2.data))
@@ -1823,10 +1823,10 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             del i2
 
         if len(ifiles) < 2:
-            showlog('Too few bands of name '+dataid)
+            showlog('Too few bands of name ' + dataid)
             continue
 
-        showlog('Mosaicing '+dataid+'...')
+        showlog('Mosaicing ' + dataid + '...')
 
         with rasterio.Env(CPL_DEBUG=True):
             datmos, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
@@ -1836,8 +1836,8 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         for j in ifiles:
             if os.path.exists(j):
                 os.remove(j)
-            if os.path.exists(j+'.msk'):
-                os.remove(j+'.msk')
+            if os.path.exists(j + '.msk'):
+                os.remove(j + '.msk')
 
         datmos = datmos.squeeze()
         datmos = np.ma.masked_equal(datmos, nodata)
@@ -1922,14 +1922,14 @@ def taylorcont(data, h):
     dz = verticalp(data, order=1)
     dz2 = verticalp(data, order=2)
     dz3 = verticalp(data, order=3)
-    zout = (data.data + h*dz + h**2*dz2/math.factorial(2) +
-            h**3*dz3/math.factorial(3))
+    zout = (data.data + h * dz + h**2 * dz2 / math.factorial(2) +
+            h**3 * dz3 / math.factorial(3))
 
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
-    dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
+    dat.dataid = 'Downward_' + str(h) + '_' + data.dataid
     dat.set_transform(transform=data.transform)
     dat.crs = data.crs
     return dat
@@ -1963,7 +1963,7 @@ def trim_raster(olddata):
             rowstart += 1
 
         rowend = mask.shape[0]
-        for i in range(mask.shape[0]-1, -1, -1):
+        for i in range(mask.shape[0] - 1, -1, -1):
             if bool(mask[i].min()) is False:
                 break
             rowend -= 1
@@ -1975,7 +1975,7 @@ def trim_raster(olddata):
             colstart += 1
 
         colend = mask.shape[1]
-        for i in range(mask.shape[1]-1, -1, -1):
+        for i in range(mask.shape[1] - 1, -1, -1):
             if bool(mask[:, i].min()) is False:
                 break
             colend -= 1
@@ -1984,8 +1984,8 @@ def trim_raster(olddata):
         data.data = data.data[rowstart:rowend, colstart:colend]
         data.data.mask = mask[rowstart:rowend, colstart:colend]
 
-        xmin = data.extent[0] + colstart*data.xdim
-        ymax = data.extent[-1] - rowstart*data.ydim
+        xmin = data.extent[0] + colstart * data.xdim
+        ymax = data.extent[-1] - rowstart * data.ydim
 
         data.set_transform(data.xdim, xmin, data.ydim, ymax)
 
@@ -2017,10 +2017,10 @@ def verticalp(data, order=1):
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
-    k = np.sqrt(KX**2+KY**2)
+    k = np.sqrt(KX**2 + KY**2)
     filt = k**order
 
-    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = np.real(np.fft.ifft2(fftmod * filt))
     zout = zout[rdiff:-rdiff, cdiff:-cdiff]
 
     return zout
@@ -2074,8 +2074,8 @@ def _testdown():
 
     # downward, taylor
     h = -h
-    zdown = (z.data + h*dz + h**2*dz2/math.factorial(2) +
-             h**3*dz3/math.factorial(3))
+    zdown = (z.data + h * dz + h**2 * dz2 / math.factorial(2) +
+             h**3 * dz3 / math.factorial(3))
 
     # Plotting
     plt.plot(downz0.data[50], 'r.')
@@ -2114,12 +2114,12 @@ def _testfft():
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
-    vmin = fftmod.real.mean()-2*fftmod.real.std()
-    vmax = fftmod.real.mean()+2*fftmod.real.std()
+    vmin = fftmod.real.mean() - 2 * fftmod.real.std()
+    vmax = fftmod.real.mean() + 2 * fftmod.real.std()
     plt.imshow(np.fft.fftshift(fftmod.real), vmin=vmin, vmax=vmax)
     plt.show()
 
-    knrm = np.sqrt(KX**2+KY**2)
+    knrm = np.sqrt(KX**2 + KY**2)
 
     plt.imshow(knrm)
 
@@ -2133,13 +2133,13 @@ def _testfft():
     plt.yscale('log')
     plt.show()
 
-    bins = max(fftmod.shape)//2
+    bins = max(fftmod.shape) // 2
 
     abins, bedge, _ = scipy.stats.binned_statistic(knrm, fftamp,
                                                    statistic='mean',
                                                    bins=bins)
 
-    bins = (bedge[:-1] + bedge[1:])/2
+    bins = (bedge[:-1] + bedge[1:]) / 2
     plt.plot(bins, abins)
     plt.yscale('log')
     plt.show()

@@ -71,11 +71,11 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     slen = int(re.findall('[0-9]+', strform)[1])
 
     if val == nval or val is None:
-        tmp2 = slen*' '
+        tmp2 = slen * ' '
     elif 's' in strform:
         tmp2 = strform.format(val[:slen])
     elif np.isnan(val):
-        tmp2 = slen*' '
+        tmp2 = slen * ' '
     else:
         tmp2 = strform.format(val)
 
@@ -85,7 +85,7 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     if len(tmp2) > slen and 'e+' in tmp2:
         tmp2 = tmp2.replace('e+', 'e')
 
-    tmp = tmp[:col1-1]+tmp2[:slen]+tmp[col2:]
+    tmp = tmp[:col1 - 1] + tmp2[:slen] + tmp[col2:]
 
     return tmp
 
@@ -358,7 +358,7 @@ def importnordic(ifile, showlog=print):
 
         # Fix short lines
         if len(i) < 81:
-            i = i[:-1].ljust(80)+'\n'
+            i = i[:-1].ljust(80) + '\n'
 
         ltype = i[79]
 
@@ -378,24 +378,24 @@ def importnordic(ifile, showlog=print):
             tmp = read_record_type[ltype](i)
         except KeyError:
             errs = ['Error: Invalid line type: ' + str(ltype) +
-                    ' on line '+str(iii+1), i]
+                    ' on line ' + str(iii + 1), i]
             file_errors.append(errs)
             continue
         except ValueError:
-            errs = ['Error: Problem on line: '+str(iii+1), i]
+            errs = ['Error: Problem on line: ' + str(iii + 1), i]
             file_errors.append(errs)
             continue
 
         if ltype == '1' and tmp.seconds >= 60.0:
             errs = ['Error: Seconds cannot be greater or equal to 60, '
-                    f'on line: {iii+1}', i]
+                    f'on line: {iii + 1}', i]
             file_errors.append(errs)
             continue
 
         if ltype == '1' and (np.isnan(tmp.latitude) or
                              np.isnan(tmp.longitude)):
             errs = ['Warning: Incomplete data (not latitude or longitude) '
-                    f'on line: {iii+1}', i]
+                    f'on line: {iii + 1}', i]
             file_errors.append(errs)
 
         if ltype == 'F':
@@ -410,10 +410,10 @@ def importnordic(ifile, showlog=print):
                 event[ltype] = tmp
                 if tmp.region not in rnames:
                     errs = ['Warning: Possible spelling error on on '
-                            'line: '+str(iii+1)+'. Make sure the region '
+                            'line: ' + str(iii + 1) + '. Make sure the region '
                             'spelling, case and punctuation '
                             'matches exactly the definitions '
-                            'in '+tfile, i]
+                            'in ' + tfile, i]
                     file_errors.append(errs)
         else:
             event[ltype] = tmp
@@ -421,26 +421,26 @@ def importnordic(ifile, showlog=print):
         # IP errors
         if ltype == '4' and tmp.quality == 'I':
             if tmp.phase_id[0] == 'S':
-                errs = ['Warning: IP error on line: '+str(iii+1), i]
+                errs = ['Warning: IP error on line: ' + str(iii + 1), i]
                 file_errors.append(errs)
             elif (tmp.phase_id[0] == 'P' and
                   tmp.first_motion not in ['C', 'D']):
                 errs = ['Warning: IP error (first motion must be C or D)'
-                        ' on line: '+str(iii+1), i]
+                        ' on line: ' + str(iii + 1), i]
                 file_errors.append(errs)
 
         # EP/S phase errors
         if ltype == '4' and tmp.quality == 'E':
             if tmp.first_motion in ['C', 'D']:
                 errs = [r'Warning: EP/S error (first motion must be empty)'
-                        ' on line: '+str(iii+1), i]
+                        ' on line: ' + str(iii + 1), i]
                 file_errors.append(errs)
 
         # High time residuals
         if ltype == '4' and tmp.quality == 'E':
             if tmp.travel_time_residual > 3:
                 errs = [r'Warning: Travel time residual > 3 on '
-                        'line: '+str(iii+1), i]
+                        'line: ' + str(iii + 1), i]
                 file_errors.append(errs)
 
         if ltype == '4' and len(event['4']) > 1:
@@ -449,7 +449,7 @@ def importnordic(ifile, showlog=print):
             if dat1.station_name == dat2.station_name:
                 if 'AML' in dat1.phase_id and dat2.phase_id[0] != ' ':
                     errs = [r'Warning: Phases may be out of order on '
-                            'line: '+str(iii+1), i]
+                            'line: ' + str(iii + 1), i]
                     file_errors.append(errs)
 
     has_errors = any('Error' in s for s in file_errors)
@@ -458,15 +458,15 @@ def importnordic(ifile, showlog=print):
         if has_errors is False:
             showlog('Warning: Problem with file')
             showlog('Process will continue, but please '
-                    'see warnings in '+ifile+'.log')
+                    'see warnings in ' + ifile + '.log')
         else:
             showlog('Error: Problem with file')
             showlog('Process stopping, please see errors '
-                    'in '+ifile+'.log')
-        with open(ifile+'.log', 'w', encoding='utf-8') as fout:
+                    'in ' + ifile + '.log')
+        with open(ifile + '.log', 'w', encoding='utf-8') as fout:
             for i in file_errors:
-                fout.write(i[0]+'\n')
-                fout.write(i[1]+'\n')
+                fout.write(i[0] + '\n')
+                fout.write(i[1] + '\n')
 
         if has_errors is True:
             return False
@@ -639,7 +639,8 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
         tmp.depth = str2float(origin['Depth'].split()[0])
         tmp.hypocenter_reporting_agency = origin['Agency']
         if 'Residual RMS' in origin:
-            tmp.rms_of_time_residuals = str2float(origin['Residual RMS'].split()[0])
+            tmp.rms_of_time_residuals = str2float(
+                origin['Residual RMS'].split()[0])
         else:
             tmp.rms_of_time_residuals = np.nan
 
@@ -713,7 +714,7 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
             # tmp.angle_of_incidence = str2float(i[56:60])
             # tmp.azimuth_residual = str2int(i[60:63])
             tmp.travel_time_residual = j['res']
-            tmp.weight = int(j['wt']*10)
+            tmp.weight = int(j['wt'] * 10)
             tmp.azimuth_at_source = j['azi']
             tmp.epicentral_distance = float(j['dist'])
 
@@ -1497,7 +1498,7 @@ class ExportSeisan(ContextModule):
             return
         dat = data['1']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
         tmp = sform('{0:2d}', dat.day, tmp, 9, 10)
@@ -1547,7 +1548,7 @@ class ExportSeisan(ContextModule):
             return
         dat = data['2']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:15s}', dat.description, tmp, 6, 20)
         tmp = sform('{0:1s}', dat.diastrophism_code, tmp, 22)
         tmp = sform('{0:1s}', dat.tsunami_code, tmp, 23)
@@ -1593,7 +1594,7 @@ class ExportSeisan(ContextModule):
 
         dat = data['3']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.text[:78], tmp, 2, 79)
         tmp = sform('{0:1s}', '3', tmp, 80)
 
@@ -1620,7 +1621,7 @@ class ExportSeisan(ContextModule):
         self.write_record_type_7()
 
         for dat in data['4']:
-            tmp = ' '*80+'\n'
+            tmp = ' ' * 80 + '\n'
             tmp = sform('{0:5s}', dat.station_name, tmp, 2, 6)
             tmp = sform('{0:1s}', dat.instrument_type, tmp, 7)
             tmp = sform('{0:1s}', dat.component, tmp, 8)
@@ -1689,7 +1690,7 @@ class ExportSeisan(ContextModule):
                 param2 = None
                 residual = dat.travel_time_residual
 
-            tmp = ' '*80+'\n'
+            tmp = ' ' * 80 + '\n'
             tmp = sform('{0:5s}', dat.station_name, tmp, 2, 6)
             tmp = sform('{0:3s}', dat.component, tmp, 7, 9)
             tmp = sform('{0:2s}', dat.network_code, tmp, 11, 12)
@@ -1734,7 +1735,7 @@ class ExportSeisan(ContextModule):
             return
         dat = data['5']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.text, tmp, 2, 79)
         tmp = sform('{0:1s}', '5', tmp, 80)
 
@@ -1758,7 +1759,7 @@ class ExportSeisan(ContextModule):
             return
         dat = data['6']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.tracedata_files, tmp, 2, 79)
         tmp = sform('{0:1s}', '6', tmp, 80)
 
@@ -1798,7 +1799,7 @@ class ExportSeisan(ContextModule):
         if dat.latitude_error == -999 or dat.latitude_error is None:
             return
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:4s}', 'GAP=', tmp, 2, 5)
         tmp = sform('{0:3d}', dat.gap, tmp, 6, 8)
         tmp = sform('{0:6.2f}', dat.origin_time_error, tmp, 15, 20)
@@ -1830,7 +1831,7 @@ class ExportSeisan(ContextModule):
             return
 
         for dat in data['F'].values():
-            tmp = ' '*80+'\n'
+            tmp = ' ' * 80 + '\n'
             tmp = sform('{0:10.1f}', dat.strike, tmp, 1, 10)
             tmp = sform('{0:10.1f}', dat.dip, tmp, 11, 20)
             tmp = sform('{0:10.1f}', dat.rake, tmp, 21, 30)
@@ -1870,7 +1871,7 @@ class ExportSeisan(ContextModule):
 
         dat = data['1']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
         tmp = sform('{0:2d}', dat.day, tmp, 9, 10)
@@ -1905,7 +1906,7 @@ class ExportSeisan(ContextModule):
 
         dat = data['I']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:7s}', 'ACTION:', tmp, 2, 8)
         tmp = sform('{0:3s}', dat.last_action_done, tmp, 9, 11)
         tmp = sform('{0:14s}', dat.date_time_of_last_action, tmp, 13, 26)
@@ -1940,7 +1941,7 @@ class ExportSeisan(ContextModule):
 
         dat = data['M']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
 
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
@@ -1962,7 +1963,7 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
 
         tmp = sform('{0:2s}', 'MT', tmp, 2, 3)
         tmp = sform('{0:6.3f}', dat.mrr_mzz, tmp, 4, 9)
@@ -2000,7 +2001,7 @@ class ExportSeisan(ContextModule):
 
         dat = data['P']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.filename, tmp, 2, 79)
         tmp = sform('{0:1s}', 'P', tmp, 80)
 
@@ -2073,7 +2074,7 @@ class ExportCSV(ContextModule):
                  'weight, epicentral_distance, azimuth_at_source, ')
 
         with open(filename, 'w', encoding='utf-8') as self.fobj:
-            self.fobj.write(headi+head1+heade+head4+'\n')
+            self.fobj.write(headi + head1 + heade + head4 + '\n')
 
             for i in self.piter(data):
                 reci = self.write_record_type_i(i)
@@ -2081,7 +2082,7 @@ class ExportCSV(ContextModule):
                 rece = self.write_record_type_e(i)
                 rec4 = self.write_record_type_4(i)
                 for j in rec4:
-                    jtmp = reci+rec1+rece+j+'\n'
+                    jtmp = reci + rec1 + rece + j + '\n'
                     jtmp = jtmp.replace('nan', '')
                     self.fobj.write(jtmp)
 
@@ -2104,36 +2105,36 @@ class ExportCSV(ContextModule):
 
         """
         if '1' not in data:
-            return ', '*27
+            return ', ' * 27
 
         dat = data['1']
-        tmp = str(dat.year)+', '
-        tmp += str(dat.month)+', '
-        tmp += str(dat.day)+', '
-        tmp += str(dat.fixed_origin_time)+', '
-        tmp += str(dat.hour)+', '
-        tmp += str(dat.minutes)+', '
-        tmp += str(dat.seconds)+', '
-        tmp += str(dat.location_model_indicator)+', '
-        tmp += str(dat.distance_indicator)+', '
-        tmp += str(dat.event_id)+', '
-        tmp += str(dat.latitude)+', '
-        tmp += str(dat.longitude)+', '
-        tmp += str(dat.depth)+', '
-        tmp += str(dat.depth_indicator)+', '
-        tmp += str(dat.locating_indicator)+', '
-        tmp += str(dat.hypocenter_reporting_agency)+', '
-        tmp += str(dat.number_of_stations_used)+', '
-        tmp += str(dat.rms_of_time_residuals)+', '
-        tmp += str(dat.magnitude_1)+', '
-        tmp += str(dat.type_of_magnitude_1)+', '
-        tmp += str(dat.magnitude_reporting_agency_1)+', '
-        tmp += str(dat.magnitude_2)+', '
-        tmp += str(dat.type_of_magnitude_2)+', '
-        tmp += str(dat.magnitude_reporting_agency_2)+', '
-        tmp += str(dat.magnitude_3)+', '
-        tmp += str(dat.type_of_magnitude_3)+', '
-        tmp += str(dat.magnitude_reporting_agency_3)+', '
+        tmp = str(dat.year) + ', '
+        tmp += str(dat.month) + ', '
+        tmp += str(dat.day) + ', '
+        tmp += str(dat.fixed_origin_time) + ', '
+        tmp += str(dat.hour) + ', '
+        tmp += str(dat.minutes) + ', '
+        tmp += str(dat.seconds) + ', '
+        tmp += str(dat.location_model_indicator) + ', '
+        tmp += str(dat.distance_indicator) + ', '
+        tmp += str(dat.event_id) + ', '
+        tmp += str(dat.latitude) + ', '
+        tmp += str(dat.longitude) + ', '
+        tmp += str(dat.depth) + ', '
+        tmp += str(dat.depth_indicator) + ', '
+        tmp += str(dat.locating_indicator) + ', '
+        tmp += str(dat.hypocenter_reporting_agency) + ', '
+        tmp += str(dat.number_of_stations_used) + ', '
+        tmp += str(dat.rms_of_time_residuals) + ', '
+        tmp += str(dat.magnitude_1) + ', '
+        tmp += str(dat.type_of_magnitude_1) + ', '
+        tmp += str(dat.magnitude_reporting_agency_1) + ', '
+        tmp += str(dat.magnitude_2) + ', '
+        tmp += str(dat.type_of_magnitude_2) + ', '
+        tmp += str(dat.magnitude_reporting_agency_2) + ', '
+        tmp += str(dat.magnitude_3) + ', '
+        tmp += str(dat.type_of_magnitude_3) + ', '
+        tmp += str(dat.magnitude_reporting_agency_3) + ', '
 
         tmp = tmp.replace('None', '')
         return tmp
@@ -2158,7 +2159,7 @@ class ExportCSV(ContextModule):
 
         dat = data['2']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:15s}', dat.description, tmp, 6, 20)
         tmp = sform('{0:1s}', dat.diastrophism_code, tmp, 22)
         tmp = sform('{0:1s}', dat.tsunami_code, tmp, 23)
@@ -2204,7 +2205,7 @@ class ExportCSV(ContextModule):
         if '3' not in tmp:
             return None
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:1s}', '3', tmp, 80)
 
         return tmp
@@ -2225,7 +2226,7 @@ class ExportCSV(ContextModule):
 
         """
         if '4' not in data:
-            return [', '*22]
+            return [', ' * 22]
 
         dat = data['4']
 
@@ -2233,28 +2234,28 @@ class ExportCSV(ContextModule):
 
         tmpfin = []
         for dat in data['4']:
-            tmp = str(dat.station_name)+', '
-            tmp += str(dat.instrument_type)+', '
-            tmp += str(dat.component)+', '
-            tmp += str(dat.quality)+', '
-            tmp += str(dat.phase_id)+', '
-            tmp += str(dat.weighting_indicator)+', '
-            tmp += str(dat.flag_auto_pick)+', '
-            tmp += str(dat.first_motion)+', '
-            tmp += str(dat.hour)+', '
-            tmp += str(dat.minutes)+', '
-            tmp += str(dat.seconds)+', '
-            tmp += str(dat.duration)+', '
-            tmp += str(dat.amplitude)+', '
-            tmp += str(dat.period)+', '
-            tmp += str(dat.direction_of_approach)+', '
-            tmp += str(dat.phase_velocity)+', '
-            tmp += str(dat.angle_of_incidence)+', '
-            tmp += str(dat.azimuth_residual)+', '
-            tmp += str(dat.travel_time_residual)+', '
-            tmp += str(dat.weight)+', '
-            tmp += str(dat.epicentral_distance)+', '
-            tmp += str(dat.azimuth_at_source)+', '
+            tmp = str(dat.station_name) + ', '
+            tmp += str(dat.instrument_type) + ', '
+            tmp += str(dat.component) + ', '
+            tmp += str(dat.quality) + ', '
+            tmp += str(dat.phase_id) + ', '
+            tmp += str(dat.weighting_indicator) + ', '
+            tmp += str(dat.flag_auto_pick) + ', '
+            tmp += str(dat.first_motion) + ', '
+            tmp += str(dat.hour) + ', '
+            tmp += str(dat.minutes) + ', '
+            tmp += str(dat.seconds) + ', '
+            tmp += str(dat.duration) + ', '
+            tmp += str(dat.amplitude) + ', '
+            tmp += str(dat.period) + ', '
+            tmp += str(dat.direction_of_approach) + ', '
+            tmp += str(dat.phase_velocity) + ', '
+            tmp += str(dat.angle_of_incidence) + ', '
+            tmp += str(dat.azimuth_residual) + ', '
+            tmp += str(dat.travel_time_residual) + ', '
+            tmp += str(dat.weight) + ', '
+            tmp += str(dat.epicentral_distance) + ', '
+            tmp += str(dat.azimuth_at_source) + ', '
             tmp = tmp.replace('None', '')
 
             tmpfin.append(tmp)
@@ -2280,7 +2281,7 @@ class ExportCSV(ContextModule):
             return None
         dat = data['5']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.text, tmp, 2, 79)
         tmp = sform('{0:1s}', '5', tmp, 80)
 
@@ -2305,7 +2306,7 @@ class ExportCSV(ContextModule):
             return None
         dat = data['6']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.tracedata_files, tmp, 2, 79)
         tmp = sform('{0:1s}', '6', tmp, 80)
 
@@ -2346,21 +2347,21 @@ class ExportCSV(ContextModule):
 
         """
         if 'E' not in data:
-            return ', '*8
+            return ', ' * 8
 
         dat = data['E']
 
         if dat.latitude_error == -999 or dat.latitude_error is None:
-            return ', '*8
+            return ', ' * 8
 
-        tmp = str(dat.gap)+', '
-        tmp += str(dat.origin_time_error)+', '
-        tmp += str(dat.latitude_error)+', '
-        tmp += str(dat.longitude_error)+', '
-        tmp += str(dat.depth_error)+', '
-        tmp += str(dat.cov_xy)+', '
-        tmp += str(dat.cov_xz)+', '
-        tmp += str(dat.cov_yz)+', '
+        tmp = str(dat.gap) + ', '
+        tmp += str(dat.origin_time_error) + ', '
+        tmp += str(dat.latitude_error) + ', '
+        tmp += str(dat.longitude_error) + ', '
+        tmp += str(dat.depth_error) + ', '
+        tmp += str(dat.cov_xy) + ', '
+        tmp += str(dat.cov_xz) + ', '
+        tmp += str(dat.cov_yz) + ', '
         tmp = tmp.replace('None', '')
 
         return tmp
@@ -2384,7 +2385,7 @@ class ExportCSV(ContextModule):
             return None
 
         for dat in data['F'].values():
-            tmp = ' '*80+'\n'
+            tmp = ' ' * 80 + '\n'
             tmp = sform('{0:10.1f}', dat.strike, tmp, 1, 10)
             tmp = sform('{0:10.1f}', dat.dip, tmp, 11, 20)
             tmp = sform('{0:10.1f}', dat.rake, tmp, 21, 30)
@@ -2425,7 +2426,7 @@ class ExportCSV(ContextModule):
 
         dat = data['1']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
         tmp = sform('{0:2d}', dat.day, tmp, 9, 10)
@@ -2457,17 +2458,17 @@ class ExportCSV(ContextModule):
 
         """
         if 'I' not in data:
-            return ', '*7
+            return ', ' * 7
 
         dat = data['I']
 
-        tmp = str(dat.last_action_done)+', '
-        tmp += str(dat.date_time_of_last_action)+', '
-        tmp += str(dat.operator)+', '
-        tmp += str(dat.status)+', '
-        tmp += str(dat.id)+', '
-        tmp += str(dat.new_id_created)+', '
-        tmp += str(dat.id_locked)+', '
+        tmp = str(dat.last_action_done) + ', '
+        tmp += str(dat.date_time_of_last_action) + ', '
+        tmp += str(dat.operator) + ', '
+        tmp += str(dat.status) + ', '
+        tmp += str(dat.id) + ', '
+        tmp += str(dat.new_id_created) + ', '
+        tmp += str(dat.id_locked) + ', '
 
         return tmp
 
@@ -2491,7 +2492,7 @@ class ExportCSV(ContextModule):
 
         dat = data['M']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
 
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
@@ -2511,7 +2512,7 @@ class ExportCSV(ContextModule):
 
         tmp = sform('{0:1s}', 'M', tmp, 80)
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
 
         tmp = sform('{0:2s}', 'MT', tmp, 2, 3)
         tmp = sform('{0:6.3f}', dat.mrr_mzz, tmp, 4, 9)
@@ -2549,7 +2550,7 @@ class ExportCSV(ContextModule):
             return None
         dat = data['P']
 
-        tmp = ' '*80+'\n'
+        tmp = ' ' * 80 + '\n'
         tmp = sform('{0:78s}', dat.filename, tmp, 2, 79)
         tmp = sform('{0:1s}', 'P', tmp, 80)
 
@@ -2876,7 +2877,7 @@ class FilterSeisan(BasicModule):
             minval = 0
             maxval = 0
         else:
-            rectxt = self.cmb_rectype.currentText()+'_'+txt
+            rectxt = self.cmb_rectype.currentText() + '_' + txt
             minval, maxval = self.datlimits[rectxt]
 
         self.dsb_from.setMinimum(minval)
@@ -2917,7 +2918,7 @@ class FilterSeisan(BasicModule):
                             continue
                         if tmp[j] is None or np.isnan(tmp[j]):
                             continue
-                        newkey = rectype+'_'+j
+                        newkey = rectype + '_' + j
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
@@ -2929,7 +2930,7 @@ class FilterSeisan(BasicModule):
                                 continue
                             if tmp[j] is None or np.isnan(tmp[j]):
                                 continue
-                            newkey = rectype+'_'+j
+                            newkey = rectype + '_' + j
                             if newkey not in datd:
                                 datd[newkey] = []
                             datd[newkey].append(tmp[j])
@@ -3149,7 +3150,7 @@ def xlstomacro():
 
         txt = (f'{location:35s} {year:4d} {mon:2d}{day:2d} '
                f'{hour:2d}{mins:2d} 00.0 GMT {mon:2d}{day:2d} '
-               f'{hour-2:2d}{mins:2d} 00.0 Local Time\n Comment\n')
+               f'{hour - 2:2d}{mins:2d} 00.0 Local Time\n Comment\n')
         for row in df3.iterrows():
             lat = float(row[1].lat)
             lon = float(row[1].lon)
@@ -3174,7 +3175,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\seismology\nordic2\collect.out"
-    ofile = ifile[:-4]+'2.out'
+    ofile = ifile[:-4] + '2.out'
 
     tmp = ImportSeisan()
     tmp.ifile = ifile

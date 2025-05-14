@@ -90,11 +90,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.rotang = rotang
         self.extent = data1.extent
 
-        self.z = data1.data*scale
+        self.z = data1.data * scale
         dxy = data1.xdim
         y, x = np.indices(self.z.shape)
-        self.x = x*int(dxy) + data1.extent[0]
-        y = data1.extent[-1] - y*int(dxy)
+        self.x = x * int(dxy) + data1.extent[0]
+        y = data1.extent[-1] - y * int(dxy)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -120,8 +120,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for j in cnt:
                 x1 = j[:, 0]
                 y1 = j[:, 1]
-                z1 = [lvls[i]]*x1.size
-                x1 = x1-xmin
+                z1 = [lvls[i]] * x1.size
+                x1 = x1 - xmin
                 t = np.transpose([x1, y1, z1])
                 x1, y1, _ = np.transpose(t @ m)
                 x1 = x1 + xmin
@@ -141,8 +141,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for j in cnt:
                 x1 = j[:, 0]
                 y1 = j[:, 1]
-                z1 = [lvls[i]]*x1.size
-                x1 = x1-xmax
+                z1 = [lvls[i]] * x1.size
+                x1 = x1 - xmax
                 t = np.transpose([x1, y1, z1])
                 x1, y1, _ = np.transpose(t @ m)
                 x1 = x1 + xmax
@@ -194,11 +194,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.extent = data1.extent
 
-        self.z = data1.data*scale
+        self.z = data1.data * scale
         dxy = data1.xdim
         y, x = np.indices(self.z.shape)
-        self.x = x*int(dxy)
-        y = y*int(dxy)
+        self.x = x * int(dxy)
+        y = y * int(dxy)
 
         self.red1 = rot_and_clean(self.x, y, self.z, rotang, 'red')
         self.blue1 = rot_and_clean(self.x, y, self.z, rotang, 'blue')
@@ -352,12 +352,14 @@ class PlotAnaglyph(ContextModule):
         self.slider_cnt.setMinimum(3)
         self.slider_cnt.setMaximum(30)
         self.slider_cnt.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_cnt.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_cnt.setTickPosition(
+            QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_cnt.setValue(10)
         self.slider_scale.setMinimum(1)
         self.slider_scale.setMaximum(30)
         self.slider_scale.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_scale.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_scale.setTickPosition(
+            QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_scale.setValue(5)
         self.slider_angle.setMinimum(1)
         self.slider_angle.setMaximum(20)
@@ -522,7 +524,7 @@ class PlotAnaglyph(ContextModule):
         self.exec()
 
 
-def sunshade(data, *, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
+def sunshade(data, *, azim=-np.pi / 4., elev=np.pi / 4., alpha=1, cell=100,
              cmap=colormaps['terrain']):
     """
     Perform Sunshading on data.
@@ -553,12 +555,12 @@ def sunshade(data, *, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
 
     sunshader = currentshader(data, cell, elev, azim, alpha)
     snorm = norm2(sunshader)
-    pnorm = np.uint8(norm2(histcomp(data)[0])*255)
+    pnorm = np.uint8(norm2(histcomp(data)[0]) * 255)
 
     colormap = cmap(pnorm)
-    colormap[:, :, 0] = colormap[:, :, 0]*snorm
-    colormap[:, :, 1] = colormap[:, :, 1]*snorm
-    colormap[:, :, 2] = colormap[:, :, 2]*snorm
+    colormap[:, :, 0] = colormap[:, :, 0] * snorm
+    colormap[:, :, 1] = colormap[:, :, 1] * snorm
+    colormap[:, :, 2] = colormap[:, :, 2] * snorm
     colormap[:, :, 3] = np.logical_not(mask)
 
     return colormap
@@ -590,15 +592,15 @@ def anaglyph(red, blue, atype='dubois'):
 
     mat = np.array([[456, 500, 176, -43, -88, -2],
                     [-40, -38, -16, 378, 734, -18],
-                    [-15, -21, -5, -72, -113, 1226]])/1000.
+                    [-15, -21, -5, -72, -113, 1226]]) / 1000.
     if 'Green-Magenta' in atype:
         mat = np.array([[-62, -158, -39, 529, 705, 24],
                         [284, 668, 143, -16, -15, -65],
-                        [-15, -27, 21, 9, 75, 937]])/1000.
+                        [-15, -27, 21, 9, 75, 937]]) / 1000.
     elif 'Amber-Blue' in atype:
         mat = np.array([[1062, -205, 299, -16, -123, -17],
                         [-26, 908, 68, 6, 62, -17],
-                        [-38, -173, 22, 94, 185, 911]])/1000.
+                        [-38, -173, 22, 94, 185, 911]]) / 1000.
     elif 'True' in atype:
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -613,7 +615,7 @@ def anaglyph(red, blue, atype='dubois'):
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
 
-    newshape = (red.shape[0]*red.shape[1], 3)
+    newshape = (red.shape[0] * red.shape[1], 3)
     data1 = red[:, :, :3].copy()
     data2 = blue[:, :, :3].copy()
     data1.shape = newshape
@@ -671,9 +673,9 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red'):
     a = np.deg2rad(rotang)
     m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
 
-    x = x-x.min()
-    y = y-y.min()
-    z = z-np.mean(z)
+    x = x - x.min()
+    y = y - y.min()
+    z = z - np.mean(z)
 
     z.set_fill_value(0)
     z = z.filled()

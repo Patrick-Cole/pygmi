@@ -109,13 +109,16 @@ class MenuWidget():
         self.action_show_membership_data = QtGui.QAction("Show Membership "
                                                          "Data")
         context_menu['memCluster'].addAction(self.action_show_membership_data)
-        self.action_show_membership_data.triggered.connect(self.show_membership_data)
+        self.action_show_membership_data.triggered.connect(
+            self.show_membership_data)
 
         self.action_show_objvrcncexbigraphs = QtGui.QAction("Show OBJ, "
                                                             "VRC, NCE, "
                                                             "XBI Graphs")
-        context_menu['objCluster'].addAction(self.action_show_objvrcncexbigraphs)
-        self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
+        context_menu['objCluster'].addAction(
+            self.action_show_objvrcncexbigraphs)
+        self.action_show_objvrcncexbigraphs.triggered.connect(
+            self.show_vrc_etc)
 
         self.action_export_data = QtGui.QAction('Export Class Data')
         context_menu['Cluster'].addAction(self.action_export_data)

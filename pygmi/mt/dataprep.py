@@ -306,7 +306,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         ax1.set_title(ival)
         ax1.grid(True, 'both')
-        x = 1/data1.Z.freq
+        x = 1 / data1.Z.freq
 
         if itype == 'xy, yx':
             res1 = data1.Z.resistivity[:, 0, 1]
@@ -836,11 +836,11 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             self.line2.set_data(xxx, yyy)
         elif event.button == 1:
             xxx, yyy = self.line.get_data()
-            rect = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0],
-                             yyy[1]-yyy[0])
+            rect = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0],
+                             yyy[1] - yyy[0])
             xxx, yyy = self.line2.get_data()
-            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0],
-                              yyy[1]-yyy[0])
+            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0],
+                              yyy[1] - yyy[0])
             self.maskrange = np.sort([xxx[0], event.xdata])
 
         self.figure.canvas.restore_region(self.background)
@@ -930,7 +930,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         ax1.set_title(ival)
         self.axes = ax1
-        x = 1/data1.Z.freq
+        x = 1 / data1.Z.freq
 
         if itype == 'xy, yx':
             res1 = data1.Z.resistivity[:, 0, 1]
@@ -1078,7 +1078,7 @@ class EditEDI(BasicModule):
         x0 = self.mmc.maskrange[0]
         x1 = self.mmc.maskrange[1]
 
-        xcrds = 1/self.data[i].Z.freq
+        xcrds = 1 / self.data[i].Z.freq
 
         mask = ~np.logical_and(xcrds > x0, xcrds < x1)
 
@@ -1093,7 +1093,7 @@ class EditEDI(BasicModule):
                                freq=mt_obj.Tipper.freq[mask])
 
         if x1 < xcrds.max():
-            new_freq_list = 1/xcrds
+            new_freq_list = 1 / xcrds
             new_Z_obj, new_Tipper_obj = mt_obj.interpolate(new_freq_list)
             self.data[i].Z = new_Z_obj
             self.data[i].Tipper = new_Tipper_obj
@@ -1314,7 +1314,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax3.set_ylabel(r'Depth (km)')
 
         if depths is not None:
-            ax3.plot(res, np.array(depths)/1000)
+            ax3.plot(res, np.array(depths) / 1000)
 
         self.figure.canvas.draw()
 
@@ -1489,10 +1489,10 @@ class Occam1D(BasicModule):
         i = self.cmb_1.currentText()
         edi_file = self.data[i].fn
 
-        save_path = edi_file[:-4]+'-'+mode
+        save_path = edi_file[:-4] + '-' + mode
 
         if os.path.exists(save_path):
-            r = glob.glob(save_path+r'\*')
+            r = glob.glob(save_path + r'\*')
             for i in r:
                 os.remove(i)
         else:
@@ -1525,7 +1525,7 @@ class Occam1D(BasicModule):
 
             s1.write_startup_file()
 
-            occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
+            occam_path = os.path.dirname(__file__)[:-2] + r'\bin\occam1d'
             if platform.system() == 'Windows':
                 occam_path += '.exe'
 
@@ -1554,7 +1554,7 @@ class Occam1D(BasicModule):
 
         self.mmc.figure.set_facecolor('w')
 
-        allfiles = glob.glob(save_path+r'\*.resp')
+        allfiles = glob.glob(save_path + r'\*.resp')
         self.hs_profnum.setMaximum(len(allfiles))
         self.hs_profnum.setMinimum(1)
 
@@ -1578,7 +1578,7 @@ class Occam1D(BasicModule):
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                    self.parent, 'Open File', '.', ext)
+                self.parent, 'Open File', '.', ext)
             if filename == '':
                 return
 
@@ -1613,19 +1613,19 @@ class Occam1D(BasicModule):
         n = self.hs_profnum.value()
 
         edi_file = self.data[i].fn
-        save_path = edi_file[:-4]+'-'+mode
+        save_path = edi_file[:-4] + '-' + mode
 
         if not os.path.exists(save_path):
             return
         if os.path.exists(save_path):
-            r = glob.glob(save_path+r'\*.resp')
+            r = glob.glob(save_path + r'\*.resp')
             if len(r) == 0:
                 return
 
-        iterfn = os.path.join(save_path, mode+'_'+f'{n:03}'+'.iter')
-        respfn = os.path.join(save_path, mode+'_'+f'{n:03}'+'.resp')
+        iterfn = os.path.join(save_path, mode + '_' + f'{n:03}' + '.iter')
+        respfn = os.path.join(save_path, mode + '_' + f'{n:03}' + '.resp')
         model_fn = os.path.join(save_path, 'Model1D')
-        data_fn = os.path.join(save_path, 'Occam1d_DataFile_'+mode+'.dat')
+        data_fn = os.path.join(save_path, 'Occam1d_DataFile_' + mode + '.dat')
 
         oc1m = occam1d.Model(model_fn=model_fn)
         oc1m.read_iter_file(iterfn)
@@ -1638,7 +1638,7 @@ class Occam1D(BasicModule):
         rough = f'{rough:.1f}'
         rms = f'{rms:.1f}'
 
-        title = 'RMS: '+rms+'    Roughness: '+rough
+        title = 'RMS: ' + rms + '    Roughness: ' + rough
 
         depths = []
         res = []
@@ -1647,13 +1647,13 @@ class Occam1D(BasicModule):
             if i == 0:
                 continue
             if i > 1:
-                depths.append(-oc1m.model_depth[i-1])
+                depths.append(-oc1m.model_depth[i - 1])
                 res.append(val)
 
             depths.append(-oc1m.model_depth[i])
             res.append(val)
 
-        x = 1/oc1d.freq
+        x = 1 / oc1d.freq
         rdata = [oc1d.data['resxy'][0], oc1d.data['resxy'][2]]
         pdata = [oc1d.data['phasexy'][0], oc1d.data['phasexy'][2]]
 
@@ -1681,7 +1681,7 @@ class Occam1D(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
+        occam_path = os.path.dirname(__file__)[:-2] + r'\bin\occam1d'
         if platform.system() == 'Windows':
             occam_path += '.exe'
 
@@ -1700,10 +1700,10 @@ class Occam1D(BasicModule):
         i = self.cmb_1.currentText()
         mode = self.cmb_mode.currentText()
         edi_file = self.data[i].fn
-        save_path = edi_file[:-4]+'-'+mode
+        save_path = edi_file[:-4] + '-' + mode
 
         if os.path.exists(save_path):
-            allfiles = glob.glob(save_path+r'\*.resp')
+            allfiles = glob.glob(save_path + r'\*.resp')
             if len(allfiles) > 0:
                 self.hs_profnum.setMaximum(len(allfiles))
                 self.hs_profnum.setMinimum(1)
@@ -1775,7 +1775,7 @@ def tonumber(test, alttext=None):
 def _testfn_occam():
     """Test routine."""
     datadir = r'd:\workdata\MT\\'
-    edi_file = datadir+r"synth02.edi"
+    edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
     mt_obj = MT(edi_file)
@@ -1791,7 +1791,7 @@ def _testfn_occam():
 def _testfn():
     """Test routine."""
     datadir = r'd:\workdata\MT\\'
-    edi_file = datadir+r"synth02.edi"
+    edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
     mt_obj = MT(edi_file)

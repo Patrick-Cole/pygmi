@@ -73,7 +73,7 @@ class MenuWidget():
         self.menu.addSeparator()
 
         self.action_sen2cor = QtGui.QAction('Sen2Cor: Sentinel-2 '
-                                                'Atmospheric Correction')
+                                            'Atmospheric Correction')
         self.menu.addAction(self.action_sen2cor)
         self.action_sen2cor.triggered.connect(self.sen2cor)
 
@@ -92,7 +92,7 @@ class MenuWidget():
         self.action_calc_ci.triggered.connect(self.calc_ci)
 
         self.action_lsat_comp = QtGui.QAction('Calculate Landsat '
-                                                  'Temporal Composite')
+                                              'Temporal Composite')
         self.menu.addAction(self.action_lsat_comp)
         self.action_lsat_comp.triggered.connect(self.lsat_comp)
 

@@ -87,7 +87,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if 'labels' in data1.metadata['Cluster']:
             lbls = data1.metadata['Cluster']['labels']
-            csp.format_cursor_data = (lambda z: f'{lbls[int(z)-1]}' if not
+            csp.format_cursor_data = (lambda z: f'{lbls[int(z) - 1]}' if not
                                       np.ma.is_masked(z) else 'masked')
         else:
             lbls = None
@@ -129,7 +129,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if 'labels' in data1.metadata['Cluster']:
             lbls = data1.metadata['Cluster']['labels']
         else:
-            lbls = [f'{i+1}' for i in x]
+            lbls = [f'{i + 1}' for i in x]
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, label='map')
@@ -142,15 +142,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for rdat in rdata:
             for i in x:
-                cmin = rdat.data[data1.data == (i+1)].min()
-                cmax = rdat.data[data1.data == (i+1)].max()
-                cdata[lbls[i]].append(cmax-cmin)
+                cmin = rdat.data[data1.data == (i + 1)].min()
+                cmax = rdat.data[data1.data == (i + 1)].max()
+                cdata[lbls[i]].append(cmax - cmin)
                 cdatab[lbls[i]].append(cmin)
 
         dataids = [i.dataid for i in rdata]
 
         x = np.arange(len(dataids))
-        width = .8/cnr
+        width = .8 / cnr
         multiplier = 0
 
         for attribute, measurement in cdata.items():
@@ -164,7 +164,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # Add some text for labels, title and custom x-axis tick labels, etc.
         self.axes.set_ylabel('Value')
         self.axes.set_title(f'Dataset ranges for {cnr} classes')
-        self.axes.set_xticks(x+.4, dataids)
+        self.axes.set_xticks(x + .4, dataids)
         self.axes.legend(loc='upper left')
 
         self.figure.canvas.draw()
@@ -667,20 +667,20 @@ def _testfn_bars():
     cdata = {}
     cdatab = {}
     for i in x:
-        cdata[f'{i+1}'] = []
-        cdatab[f'{i+1}'] = []
+        cdata[f'{i + 1}'] = []
+        cdatab[f'{i + 1}'] = []
 
     for rdat in dat['Raster']:
         for i in x:
-            cmin = rdat.data[cdat.data == (i+1)].min()
-            cmax = rdat.data[cdat.data == (i+1)].max()
-            cdata[f'{i+1}'].append(cmax-cmin)
-            cdatab[f'{i+1}'].append(cmin)
+            cmin = rdat.data[cdat.data == (i + 1)].min()
+            cmax = rdat.data[cdat.data == (i + 1)].max()
+            cdata[f'{i + 1}'].append(cmax - cmin)
+            cdatab[f'{i + 1}'].append(cmin)
 
     dataids = [i.dataid for i in dat['Raster']]
 
     x = np.arange(len(dataids))
-    width = .8/cnr
+    width = .8 / cnr
     multiplier = 0
 
     fig, ax = plt.subplots(layout='constrained')
@@ -696,7 +696,7 @@ def _testfn_bars():
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Value')
     ax.set_title(f'Dataset ranges for {cnr} classes')
-    ax.set_xticks(x+.4, dataids)
+    ax.set_xticks(x + .4, dataids)
     ax.legend(loc='upper left', ncols=3)
     # ax.set_ylim(0, 250)
 
@@ -735,13 +735,13 @@ def _testfn_viol():
     cdata = {}
     cdatab = {}
     for i in range(cnr):
-        cdata[f'{i+1}'] = []
-        cdatab[f'{i+1}'] = []
+        cdata[f'{i + 1}'] = []
+        cdatab[f'{i + 1}'] = []
 
     dataids = [i.dataid for i in dat['Raster']]
 
     x = np.arange(len(dataids))
-    width = .8/cnr
+    width = .8 / cnr
     multiplier = 0
 
     fig, ax = plt.subplots(layout='constrained')
@@ -749,9 +749,9 @@ def _testfn_viol():
     for rdat in dat['Raster']:
         offset = 1 * multiplier
         for i in range(cnr):
-            data = rdat.data[cdat.data == (i+1)].compressed()
+            data = rdat.data[cdat.data == (i + 1)].compressed()
             # breakpoint()
-            ax.violinplot(data, [i*width+offset], widths=width,
+            ax.violinplot(data, [i * width + offset], widths=width,
                           showmeans=False, showmedians=False,
                           showextrema=False)
         multiplier += 1
@@ -759,7 +759,7 @@ def _testfn_viol():
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Value')
     ax.set_title(f'Dataset ranges for {cnr} classes')
-    ax.set_xticks(x+.4, dataids)
+    ax.set_xticks(x + .4, dataids)
     ax.legend(loc='upper left', ncols=3)
     # ax.set_ylim(0, 250)
 

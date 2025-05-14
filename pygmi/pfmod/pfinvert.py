@@ -344,7 +344,7 @@ class MagInvert(BasicModule):
             curgrid = self.inraster[ctxt]
 
             self.dsb_utlz.setValue(curgrid.data.max())
-            zextent = np.ma.ptp(curgrid.data)+self.dsb_zcell.value()
+            zextent = np.ma.ptp(curgrid.data) + self.dsb_zcell.value()
             if zextent > self.dsb_zextent.value():
                 self.dsb_zextent.setValue(zextent)
 
@@ -422,10 +422,10 @@ class MagInvert(BasicModule):
             dxy = max(curgrid.xdim, curgrid.ydim)
             utlx = curgrid.extent[0]
             utly = curgrid.extent[-1]
-            xextent = ccols*curgrid.xdim
-            yextent = crows*curgrid.ydim
-            cols = xextent/self.dsb_xycell.value()
-            rows = yextent/self.dsb_xycell.value()
+            xextent = ccols * curgrid.xdim
+            yextent = crows * curgrid.ydim
+            cols = xextent / self.dsb_xycell.value()
+            rows = yextent / self.dsb_xycell.value()
 
             self.dsb_utlx.setValue(utlx)
             self.dsb_utly.setValue(utly)
@@ -448,9 +448,9 @@ class MagInvert(BasicModule):
         self.dsb_utlx.setValue(self.lmod1.xrange[0])
         self.dsb_utly.setValue(self.lmod1.yrange[-1])
         self.dsb_utlz.setValue(self.lmod1.zrange[-1])
-        self.dsb_xextent.setValue(self.lmod1.numx*self.lmod1.dxy)
-        self.dsb_yextent.setValue(self.lmod1.numy*self.lmod1.dxy)
-        self.dsb_zextent.setValue(self.lmod1.numz*self.lmod1.d_z)
+        self.dsb_xextent.setValue(self.lmod1.numx * self.lmod1.dxy)
+        self.dsb_yextent.setValue(self.lmod1.numy * self.lmod1.dxy)
+        self.dsb_zextent.setValue(self.lmod1.numz * self.lmod1.d_z)
         self.dsb_xycell.setValue(self.lmod1.dxy)
         self.dsb_zcell.setValue(self.lmod1.d_z)
         self.sb_cols.setValue(self.lmod1.numx)
@@ -472,9 +472,9 @@ class MagInvert(BasicModule):
         dxy = self.dsb_xycell.value()
         d_z = self.dsb_zcell.value()
 
-        numx = int(xextent/dxy)
-        numy = int(yextent/dxy)
-        numz = int(zextent/d_z)
+        numx = int(xextent / dxy)
+        numy = int(yextent / dxy)
+        numz = int(zextent / d_z)
         self.sb_cols.setValue(numx)
         self.sb_rows.setValue(numy)
         self.sb_layers.setValue(numz)
@@ -581,9 +581,9 @@ class MagInvert(BasicModule):
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
         utlz = self.lmod1.zrange[1]
-        xextent = self.lmod1.xrange[1]-self.lmod1.xrange[0]
-        yextent = self.lmod1.yrange[1]-self.lmod1.yrange[0]
-        zextent = self.lmod1.zrange[1]-self.lmod1.zrange[0]
+        xextent = self.lmod1.xrange[1] - self.lmod1.xrange[0]
+        yextent = self.lmod1.yrange[1] - self.lmod1.yrange[0]
+        zextent = self.lmod1.zrange[1] - self.lmod1.zrange[0]
 
         self.dsb_utlx.setValue(utlx)
         self.dsb_utly.setValue(utly)
@@ -753,8 +753,8 @@ class MagInvert(BasicModule):
 
         rows, cols = mag.data.shape
 
-        xxx = np.linspace(xmin, xmax, cols, False) + xdim/2
-        yyy = np.linspace(ymin, ymax, rows, False) + ydim/2
+        xxx = np.linspace(xmin, xmax, cols, False) + xdim / 2
+        yyy = np.linspace(ymin, ymax, rows, False) + ydim / 2
 
         xy = np.meshgrid(xxx, yyy[::-1])
         z = dtm.data + self.dsb_mht.value()
@@ -795,9 +795,10 @@ class MagInvert(BasicModule):
         hy = [(dhxy, 5, -1.3), (dhxy, self.lmod1.numy), (dhxy, 5, 1.3)]
         hz = [(dh, 5, -1.3), (dh, self.lmod1.numz)]
 
-        x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
-        y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)]))
-        z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
+        x0 = xmin - (np.sum([dhxy * 1.3**(i + 1) for i in range(5)]))
+        y0 = ymin - (np.sum([dhxy * 1.3**(i + 1) for i in range(5)]))
+        z0 = -(dh * self.lmod1.numz) - \
+            (np.sum([dh * 1.3**(i + 1) for i in range(5)]))
 
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
 
@@ -851,7 +852,7 @@ class MagInvert(BasicModule):
             with redirect_stdout(self.stdout_redirect):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
-            self.showlog('Error: '+str(e))
+            self.showlog('Error: ' + str(e))
             return False
 
         # Recreate True Model
@@ -889,10 +890,10 @@ class MagInvert(BasicModule):
         r4 = np.moveaxis(r3, [0, 1, 2], [2, 1, 0])
         r4 = r4.filled(-1)
 
-        cnt = cfit.labels_.max()+1
-        susc = [0.]*cnt
-        inputliths = ['']*cnt
-        dens = [2.67]*cnt
+        cnt = cfit.labels_.max() + 1
+        susc = [0.] * cnt
+        inputliths = [''] * cnt
+        dens = [2.67] * cnt
         for i2 in range(cnt):
             susc[i2] = X[cfit.labels_ == i2].mean()
             inputliths[i2] = str(susc[i2])
@@ -959,7 +960,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     DM = MagInvert()
-    DM.indata['Raster'] = mdat+ddat
+    DM.indata['Raster'] = mdat + ddat
 
     for i in DM.indata['Raster']:
         DM.inraster[i.dataid] = i
@@ -1073,7 +1074,7 @@ def _testfn2():
     ddat[0].dataid = 'dem'
 
     DM = MagInvert()
-    DM.indata['Raster'] = mdat+ddat
+    DM.indata['Raster'] = mdat + ddat
 
     for i in DM.indata['Raster']:
         DM.inraster[i.dataid] = i

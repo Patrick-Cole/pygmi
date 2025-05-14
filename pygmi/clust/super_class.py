@@ -127,15 +127,15 @@ class GraphMap(FigureCanvasQTAgg):
             uclip = [0, 0, 0]
 
             lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
         else:
             data = dat[self.bands[0]].data
             lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100-clippercu])
+                                         [clippercl, 100 - clippercu])
 
         extent = dat[self.bands[0]].extent
 
@@ -188,11 +188,11 @@ class GraphMap(FigureCanvasQTAgg):
             uclip = [0, 0, 0]
 
             lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             self.im1.rgbclip = [[lclip[0], uclip[0]],
                                 [lclip[1], uclip[1]],
                                 [lclip[2], uclip[2]]]
@@ -200,7 +200,7 @@ class GraphMap(FigureCanvasQTAgg):
         else:
             data = dat[self.bands[0]].data
             lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100-clippercu])
+                                         [clippercl, 100 - clippercu])
 
             self.im1.set_clim(lclip, uclip)
 
@@ -668,8 +668,8 @@ class SuperClass(BasicModule):
 
         message = '<p>Confusion Matrix:</p>'
         message += pd.DataFrame(cmat, columns=tlbls, index=tlbls).to_html()
-        message += '<p>Accuracy: '+str(accuracy)+'</p>'
-        message += '<p>Kappa:\t  '+str(kappa)+'</p>'
+        message += '<p>Accuracy: ' + str(accuracy) + '</p>'
+        message += '<p>Kappa:\t  ' + str(kappa) + '</p>'
 
         qsave = QtWidgets.QMessageBox.StandardButton.Save
         qokay = QtWidgets.QMessageBox.StandardButton.Ok
@@ -784,7 +784,7 @@ class SuperClass(BasicModule):
 
         row = self.tablewidget.rowCount()
         self.tablewidget.insertRow(row)
-        item = QtWidgets.QTableWidgetItem('Class '+str(row+1))
+        item = QtWidgets.QTableWidgetItem('Class ' + str(row + 1))
         self.tablewidget.setItem(row, 0, item)
 
         item = QtWidgets.QTableWidgetItem('1')
@@ -1020,7 +1020,8 @@ class SuperClass(BasicModule):
         dat_out[-1].metadata['Cluster']['super_type'] = self.cmb_class.currentText()
 
         dat_out[-1].crs = data[0].crs
-        dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])
+        dat_out[-1].dataid = 'Clusters: ' + \
+            str(dat_out[-1].metadata['Cluster']['no_clusters'])
         dat_out[-1].nodata = data[0].nodata
         dat_out[-1].set_transform(transform=data[0].transform)
 
@@ -1090,9 +1091,9 @@ class SuperClass(BasicModule):
         masks = {}
         for _, row in self.df.iterrows():
             pixels = np.array(row['geometry'].exterior.coords)
-            pixels[:, 0] = pixels[:, 0]-self.map.data[0].extent[0]
+            pixels[:, 0] = pixels[:, 0] - self.map.data[0].extent[0]
             pixels[:, 0] /= self.map.data[0].xdim
-            pixels[:, 1] = self.map.data[0].extent[3]-pixels[:, 1]
+            pixels[:, 1] = self.map.data[0].extent[3] - pixels[:, 1]
             pixels[:, 1] /= self.map.data[0].ydim
 
             pixels = tuple(map(tuple, pixels))
@@ -1118,7 +1119,7 @@ class SuperClass(BasicModule):
         x = []
         tlbls = []
         for i, lbl in enumerate(masks):
-            y += [i]*masks[lbl].sum()
+            y += [i] * masks[lbl].sum()
             x.append(datall[masks[lbl]])
             tlbls.append(lbl)
 
@@ -1189,8 +1190,8 @@ def dist_point_to_segment(p, s0, s1):
     if c2 <= c1:
         return np.linalg.norm(p - s1)
 
-    b = c1/c2
-    pb = s0 + b*v
+    b = c1 / c2
+    pb = s0 + b * v
 
     return np.linalg.norm(p - pb)
 

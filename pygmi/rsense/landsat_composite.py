@@ -28,7 +28,7 @@ import os
 import glob
 from datetime import datetime
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.misc import lstack
@@ -144,7 +144,7 @@ class LandsatComposite(BasicModule):
 
         """
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-             self.parent, 'Select Directory')
+            self.parent, 'Select Directory')
 
         self.le_idirlist.setText(self.idir)
 
@@ -295,7 +295,7 @@ def import_and_score(ifile, dreq, mean, std, *, showlog=print, piter=None):
     if piter is None:
         piter = ProgressBarText().iter
 
-    bands = [f'B{i+1}' for i in range(11)]
+    bands = [f'B{i + 1}' for i in range(11)]
 
     dat = {}
     tmp = get_data(ifile, piter=piter, showlog=showlog)
@@ -316,7 +316,7 @@ def import_and_score(ifile, dreq, mean, std, *, showlog=print, piter=None):
     cdist2 = dat['cdist'].data.copy()
     cdist2[cdist2 > dreq] = dreq
 
-    cdist2 = 1/(1+np.exp(-0.2*(cdist2-(dreq-dmin)/2)))
+    cdist2 = 1 / (1 + np.exp(-0.2 * (cdist2 - (dreq - dmin) / 2)))
 
     # Get day of year
     sdate = os.path.basename(ifile).split('_')[3]
@@ -326,8 +326,8 @@ def import_and_score(ifile, dreq, mean, std, *, showlog=print, piter=None):
     cdistscore.data = np.ma.masked_equal(cdist2.filled(0), 0)
     cdistscore.nodata = 0
 
-    dayscore = (1/(std*np.sqrt(2*np.pi)) *
-                np.exp(-0.5*((datday-mean)/std)**2))
+    dayscore = (1 / (std * np.sqrt(2 * np.pi)) *
+                np.exp(-0.5 * ((datday - mean) / std)**2))
     dat['score'] = cdistscore
     dat['score'].data += dayscore
 

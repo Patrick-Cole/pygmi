@@ -303,7 +303,7 @@ class SceneViewer(BasicModule):
 
         dates = self.df.Datetime[self.curimage]
 
-        self.slider.setMaximum(len(self.df)-1)
+        self.slider.setMaximum(len(self.df) - 1)
 
         dat = self.df.Filename[self.curimage]
         dat.banddict = {}
@@ -444,7 +444,7 @@ class SceneViewer(BasicModule):
         None.
 
         """
-        self.slider.setValue(self.slider.value()+1)
+        self.slider.setValue(self.slider.value() + 1)
 
     def prevscene(self):
         """
@@ -455,7 +455,7 @@ class SceneViewer(BasicModule):
         None.
 
         """
-        self.slider.setValue(self.slider.value()-1)
+        self.slider.setValue(self.slider.value() - 1)
 
     def newdata(self, indx):
         """

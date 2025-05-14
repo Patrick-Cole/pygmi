@@ -59,7 +59,7 @@ def update_lith_lw(lmod, lwidget):
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
-        L = (tcol[0]*299 + tcol[1]*587 + tcol[2]*114)/1000.
+        L = (tcol[0] * 299 + tcol[1] * 587 + tcol[2] * 114) / 1000.
         if L > 128.:
             tmp.setForeground(QtGui.QColor('black'))
         else:
@@ -142,15 +142,15 @@ class ProgressBar():
             i += 1
 
             time2 = time.perf_counter()
-            if time2-time1 > 1:
+            if time2 - time1 > 1:
                 self.pbar.setValue(i)
-                tleft = (total-i)*(time2-self.otime)/i
+                tleft = (total - i) * (time2 - self.otime) / i
                 if tleft > 60:
                     tleft = int(tleft // 60)
-                    self.pbar.setFormat('%p% '+str(tleft)+'min left')
+                    self.pbar.setFormat('%p% ' + str(tleft) + 'min left')
                 else:
                     tleft = int(tleft)
-                    self.pbar.setFormat('%p% '+str(tleft)+'s left')
+                    self.pbar.setFormat('%p% ' + str(tleft) + 's left')
                 QtWidgets.QApplication.processEvents()
                 time1 = time2
 
@@ -180,13 +180,13 @@ class ProgressBar():
 
         n = self.mvalue
         total = self.mmax
-        tleft = (total-n)*(time.perf_counter()-self.mtime)/n
+        tleft = (total - n) * (time.perf_counter() - self.mtime) / n
         if tleft > 60:
             tleft = int(tleft // 60)
-            self.pbarmain.setFormat('%p% '+str(tleft)+'min left')
+            self.pbarmain.setFormat('%p% ' + str(tleft) + 'min left')
         else:
             tleft = int(tleft)
-            self.pbarmain.setFormat('%p% '+str(tleft)+'s left')
+            self.pbarmain.setFormat('%p% ' + str(tleft) + 's left')
         QtWidgets.QApplication.processEvents()
 
     def maxall(self):
@@ -411,13 +411,13 @@ class MergeMod3D(BasicModule):
         utly = yrange[-1]
         utlz = zrange[-1]
 
-        xextent = xrange[-1]-xrange[0]
-        yextent = yrange[-1]-yrange[0]
-        zextent = zrange[-1]-zrange[0]
+        xextent = xrange[-1] - xrange[0]
+        yextent = yrange[-1] - yrange[0]
+        zextent = zrange[-1] - zrange[0]
 
-        cols = int(xextent//dxy)
-        rows = int(yextent//dxy)
-        layers = int(zextent//d_z)
+        cols = int(xextent // dxy)
+        rows = int(yextent // dxy)
+        layers = int(zextent // d_z)
 
         self.outdata['Raster'] = []
 
@@ -508,9 +508,9 @@ def gmerge(master, slave, xrange=None, yrange=None):
     ymin = yrange[0]
     ymax = yrange[-1]
 
-    cols = int((xmax - xmin)//xdim)+1
-    rows = int((ymax - ymin)//ydim)+1
-    otransform = rasterio.Affine(xdim, 0, xmin, 0, -1*ydim, ymax)
+    cols = int((xmax - xmin) // xdim) + 1
+    rows = int((ymax - ymin) // ydim) + 1
+    otransform = rasterio.Affine(xdim, 0, xmin, 0, -1 * ydim, ymax)
 
     dat = []
 
@@ -543,8 +543,8 @@ def _testfn():
     IO2.ifile = ifile2
     IO2.settings(True)
 
-    data = {'Model3D': IO1.outdata['Model3D']+IO2.outdata['Model3D'],
-            'Raster': IO1.outdata['Raster']+IO2.outdata['Raster']}
+    data = {'Model3D': IO1.outdata['Model3D'] + IO2.outdata['Model3D'],
+            'Raster': IO1.outdata['Raster'] + IO2.outdata['Raster']}
 
     MM = MergeMod3D()
     MM.indata = data

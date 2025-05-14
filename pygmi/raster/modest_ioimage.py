@@ -201,7 +201,7 @@ class ModestImage(mi.AxesImage):
 
         if 0 <= col < numcols and 0 <= row < numrows:
             # -1 because we are reversing rows.
-            z = self._full_res[numrows-row-1, col]
+            z = self._full_res[numrows - row - 1, col]
             return z
 
         return np.nan
@@ -295,8 +295,8 @@ class ModestImage(mi.AxesImage):
 
         ytot = self._full_res.shape[0]
 
-        out_shape = ((y1-y0)//sy, (x1-x0)//sx)
-        iraster = (x0, ytot-y1, (x1-x0), (y1-y0))
+        out_shape = ((y1 - y0) // sy, (x1 - x0) // sx)
+        iraster = (x0, ytot - y1, (x1 - x0), (y1 - y0))
         tnames = [i.dataid for i in self.dmeta]
         ifile = self.dmeta[0].filename
 
@@ -404,9 +404,9 @@ class ModestImage(mi.AxesImage):
                                       self.rgbclip[2][0], self.rgbclip[2][1])
 
         if 'CMY' in self.rgbmode:
-            colormap[:, :, 0] = (1-colormap[:, :, 0])*(1-self.kval)
-            colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
-            colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
+            colormap[:, :, 0] = (1 - colormap[:, :, 0]) * (1 - self.kval)
+            colormap[:, :, 1] = (1 - colormap[:, :, 1]) * (1 - self.kval)
+            colormap[:, :, 2] = (1 - colormap[:, :, 2]) * (1 - self.kval)
 
         if np.ma.isMaskedArray(self._A):
             mask = np.logical_or(self._A[:, :, 0].mask,
@@ -471,8 +471,8 @@ class ModestImage(mi.AxesImage):
 
         vstd = self._A.std()
         vmean = self._A.mean()
-        vmin = vmean - mult*vstd
-        vmax = vmean + mult*vstd
+        vmin = vmean - mult * vstd
+        vmax = vmean + mult * vstd
 
         self.set_clim(vmin, vmax)
         self.set_clim(vmin, vmax)

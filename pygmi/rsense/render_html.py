@@ -28,9 +28,11 @@ import webbrowser
 import tempfile
 import os
 
+
 class BrowserNotFoundException(Exception):
     def __init__(self, browser: str):
-        super(BrowserNotFoundException, self).__init__(f"Browser not found: {browser}")
+        super(BrowserNotFoundException, self).__init__(
+            f"Browser not found: {browser}")
 
 
 class UnknownBrowserException(Exception):
@@ -38,6 +40,7 @@ class UnknownBrowserException(Exception):
         super(UnknownBrowserException, self).__init__(
             f"Unknown webbrowser exception: {str(e)}"
         )
+
 
 def _open_in_browser(file_path: str, browser: str | None = None) -> None:
     """

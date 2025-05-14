@@ -289,7 +289,7 @@ class ClusterStats(ContextModule):
         if 'labels' in data1.metadata['Cluster']:
             rows = data1.metadata['Cluster']['labels']
         else:
-            rows = ['Class '+str(j+1) for j in range(len(data))]
+            rows = ['Class ' + str(j + 1) for j in range(len(data))]
         self.tablewidget.setVerticalHeaderLabels(rows)
 
         for row, _ in enumerate(data):
@@ -334,7 +334,7 @@ class ClusterStats(ContextModule):
         if 'labels' in data[0].metadata['Cluster']:
             rows = data[0].metadata['Cluster']['labels']
         else:
-            rows = ['Class '+str(j+1) for j in range(len(self.data[0]))]
+            rows = ['Class ' + str(j + 1) for j in range(len(self.data[0]))]
         cols = self.cols
 
         data = self.data[0]
@@ -410,13 +410,13 @@ def savetable(ofile, bands, cols, data):
             htmp += ',' + i
 
         for k, bandsk in enumerate(bands):
-            fobj.write(bandsk+'\n')
-            fobj.write(htmp+'\n')
+            fobj.write(bandsk + '\n')
+            fobj.write(htmp + '\n')
             for i, _ in enumerate(data[k]):
                 rtmp = str(data[k][i][0])
                 for j in range(1, len(data[k][0])):
-                    rtmp += ','+str(data[k][i][j])
-                fobj.write(rtmp+'\n')
+                    rtmp += ',' + str(data[k][i][j])
+                fobj.write(rtmp + '\n')
             fobj.write('\n')
 
 

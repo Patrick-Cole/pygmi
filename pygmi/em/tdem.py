@@ -98,7 +98,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax2.loglog(times_off, zobs, 'b-', label="Observed")
         ax2.loglog(times_off, zpred, 'bo', ms=4,
                    markeredgecolor='k', markeredgewidth=0.5, label="Predicted")
-        ax2.set_xlim(times_off.min()*1.2, times_off.max()*1.1)
+        ax2.set_xlim(times_off.min() * 1.2, times_off.max() * 1.1)
         ax2.set_xlabel(r"Time ($\mu s$)")
         ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
         ax2.set_title("High-moment")
@@ -305,7 +305,7 @@ class TDEM1D(BasicModule):
         npad = float(self.le_mesh_npad.text())
         sig_half = float(self.le_sig_half.text())
         sig_air = float(self.le_sig_air.text())
-        rel_err = float(self.le_rel_err.text())/100.
+        rel_err = float(self.le_rel_err.text()) / 100.
         floor = float(self.le_noise_floor.text())
         maxiter = int(self.le_maxiter.text())
 
@@ -344,7 +344,7 @@ class TDEM1D(BasicModule):
 
         # cs, ncx, ncz, npad = 1., 10., 10., 20
         hx = [(cs, ncx), (cs, npad, padrate)]
-        hz = [(cs, npad, -padrate), (cs, ncz*2), (cs, npad, padrate)]
+        hz = [(cs, npad, -padrate), (cs, ncz * 2), (cs, npad, padrate)]
         mesh = discretize.CylindricalMesh([hx, 1, hz], '00C')
 
         # Step2: Set a SurjectVertical1D mapping
@@ -369,7 +369,7 @@ class TDEM1D(BasicModule):
         srcloc = np.array([0., 0., src_height])
 
         # Radius of the source loop
-        radius = np.sqrt(txarea/np.pi)
+        radius = np.sqrt(txarea / np.pi)
         rxloc = np.array([[radius, 0., src_height]])
 
         # Parameters for current waveform
@@ -402,8 +402,8 @@ class TDEM1D(BasicModule):
         # solve the problem at these times
         dtimes = np.diff(times).tolist()
 
-        timesteps = ([peaktime/5]*5 +               # On time section
-                     [(offtime-peaktime)/5]*5 +     # Off time section
+        timesteps = ([peaktime / 5] * 5 +               # On time section
+                     [(offtime - peaktime) / 5] * 5 +     # Off time section
                      dtimes + [dtimes[-1]])         # Current zero from here
 
         survey = time_domain.Survey(srclist)
@@ -429,7 +429,8 @@ class TDEM1D(BasicModule):
         dmisfit = data_misfit.L2DataMisfit(data=data, simulation=sim)
 
         # Regularization
-        regmesh = discretize.TensorMesh([mesh.h[2][mapping.maps[-1].indActive]])
+        regmesh = discretize.TensorMesh(
+            [mesh.h[2][mapping.maps[-1].indActive]])
         # reg = regularization.Simple(regmesh, mapping=maps.IdentityMap(regmesh))
         # reg.alpha_s = 1e-2
         # reg.alpha_x = 1.
@@ -469,9 +470,9 @@ class TDEM1D(BasicModule):
         z = np.r_[mesh.cell_centers_z[active][0], z,
                   mesh.cell_centers_z[active][-1]]
 
-        times_off = (times - offtime)*1e6
-        zobs = dobs_sky/txarea
-        zpred = -dpred_sky/txarea
+        times_off = (times - offtime) * 1e6
+        zobs = dobs_sky / txarea
+        zpred = -dpred_sky / txarea
 
         self.mmc.update_line(sigma, z, times_off, zobs, zpred)
 
@@ -612,7 +613,8 @@ class TDEM1D(BasicModule):
         self.cmb_fid.clear()
 
         line = self.cmb_line.currentText()
-        fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
+        fid = self.data.fid[self.data.line.astype(
+            str) == line].values.astype(str)
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
@@ -663,7 +665,8 @@ class TDEM1D(BasicModule):
         self.cmb_line.setCurrentIndex(0)
         line = self.cmb_line.currentText()
 
-        fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
+        fid = self.data.fid[self.data.line.astype(
+            str) == line].values.astype(str)
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 

@@ -88,15 +88,15 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
     showlog('Setting up grid...')
 
     # Add buffer
-    extent[0] -= dxy*3
-    extent[1] += dxy*3
-    extent[2] -= dxy*3
-    extent[3] += dxy*3
+    extent[0] -= dxy * 3
+    extent[1] += dxy * 3
+    extent[2] -= dxy * 3
+    extent[3] += dxy * 3
 
     # Make new start grid
 
-    xxx = np.arange(extent[0], extent[1]+dxy/2, dxy)
-    yyy = np.arange(extent[2], extent[3]+dxy/2, dxy)
+    xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
+    yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
 
     xxx, yyy = np.meshgrid(xxx, yyy)
     rows, cols = xxx.shape
@@ -141,7 +141,7 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
         coords[iint, jint].append([bmax, r, zval, b])
 
     if excludedpnts > 0:
-        showlog(str(excludedpnts)+' point(s) excluded.')
+        showlog(str(excludedpnts) + ' point(s) excluded.')
     # Choose only the closest coordinate per cell
     ijxyz = []
     for key in coords:
@@ -152,7 +152,7 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
             u[iint, jint] = zval
             ufixed[iint, jint] = True
             continue
-        if 1 < iint < rows-2 and 1 < jint < cols-2:
+        if 1 < iint < rows - 2 and 1 < jint < cols - 2:
             coords[key].sort()
             _, _, zval, b = coords[key][0]
             ijxyz.append([iint, jint, zval, b])
@@ -161,10 +161,10 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
     uold = np.zeros((rows, cols))
 
     # mean error per cell
-    errdiff1 = np.abs(u-uold)
-    errdiff = np.sum(errdiff1)/(rows*cols)
-    errold = errdiff*1.1  # Starting 'old' error.
-    errstd = errdiff1.std()*2.5
+    errdiff1 = np.abs(u - uold)
+    errdiff = np.sum(errdiff1) / (rows * cols)
+    errold = errdiff * 1.1  # Starting 'old' error.
+    errstd = errdiff1.std() * 2.5
 
     iters = 0
     while errdiff < errold and iters < maxiters:
@@ -177,7 +177,7 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
                 i, j, w, b = vals
                 tmp = off_grid(uold, i, j, w, b)
 
-                if (abs(tmp-uold[i, j]) > errdiff1[i, j]+errstd and iters > 1):
+                if (abs(tmp - uold[i, j]) > errdiff1[i, j] + errstd and iters > 1):
                     ufixed[i, j] = False
                 else:
                     ufixed[i, j] = True
@@ -185,9 +185,9 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
 
         u = mcurv(u, ufixed)
 
-        errdiff1 = np.abs(u-uold)
-        errstd = errdiff1.std()*2.5
-        errdiff = np.sum(errdiff1)/(rows*cols)
+        errdiff1 = np.abs(u - uold)
+        errstd = errdiff1.std() * 2.5
+        errdiff = np.sum(errdiff1) / (rows * cols)
         showlog(f'Solution Error: {errdiff:.5f}')
 
         if errdiff > errold:
@@ -236,9 +236,10 @@ def u_normal(u, i, j):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
-            2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
-            8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]))/20
+    uij = -(u[i + 2, j] + u[i, j + 2] + u[i - 2, j] + u[i, j - 2] +
+            2 * (u[i + 1, j + 1] + u[i - 1, j + 1] + u[i + 1, j - 1] +
+                 u[i - 1, j - 1]) -
+            8 * (u[i + 1, j] + u[i - 1, j] + u[i, j + 1] + u[i, j - 1])) / 20
     return uij
 
 
@@ -265,8 +266,8 @@ def u_edge(u, i):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[i-2, 0] + u[i+2, 0] + u[i, 2] + u[i-1, 1] + u[i+1, 1] -
-            4*(u[i-1, 0] + u[i, 1] + u[i+1, 0]))/7
+    uij = -(u[i - 2, 0] + u[i + 2, 0] + u[i, 2] + u[i - 1, 1] + u[i + 1, 1] -
+            4 * (u[i - 1, 0] + u[i, 1] + u[i + 1, 0])) / 7
     return uij
 
 
@@ -294,9 +295,9 @@ def u_one_row_from_edge(u, i):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[i-2, 1] + u[i+2, 1] + u[i, 3] +
-            2*(u[i-1, 2] + u[i+1, 2]) + u[i-1, 0] + u[i+1, 0] -
-            8*(u[i-1, 1]+u[i, 2]+u[i+1, 1]) - 4*u[i, 0])/19
+    uij = -(u[i - 2, 1] + u[i + 2, 1] + u[i, 3] +
+            2 * (u[i - 1, 2] + u[i + 1, 2]) + u[i - 1, 0] + u[i + 1, 0] -
+            8 * (u[i - 1, 1] + u[i, 2] + u[i + 1, 1]) - 4 * u[i, 0]) / 19
     return uij
 
 
@@ -320,7 +321,7 @@ def u_corner(u):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[0, 2] + u[2, 0] - 2*(u[0, 1] + u[1, 0]))/2
+    uij = -(u[0, 2] + u[2, 0] - 2 * (u[0, 1] + u[1, 0])) / 2
     return uij
 
 
@@ -345,8 +346,8 @@ def u_next_to_corner(u):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[1, 3] + u[3, 1] + u[0, 2] + u[2, 0] + 2*u[2, 2] -
-            8*(u[1, 2] + u[2, 1]) - 4*(u[1, 0]+u[0, 1]))/18
+    uij = -(u[1, 3] + u[3, 1] + u[0, 2] + u[2, 0] + 2 * u[2, 2] -
+            8 * (u[1, 2] + u[2, 1]) - 4 * (u[1, 0] + u[0, 1])) / 18
     return uij
 
 
@@ -371,8 +372,8 @@ def u_edge_next_to_corner(u):
         Smoothed value to replace in master grid.
 
     """
-    uij = -(u[2, 3] + u[3, 2] + u[1, 2] + u[4, 1] - 2*u[1, 1] -
-            4*(u[3, 1] + u[2, 2]))/6
+    uij = -(u[2, 3] + u[3, 2] + u[1, 2] + u[4, 1] - 2 * u[1, 1] -
+            4 * (u[3, 1] + u[2, 2])) / 6
     return uij
 
 
@@ -407,26 +408,24 @@ def off_grid(u, i, j, wn, b):
     bd1, bd2, bd3, bd4, bd5 = bd
     be1, be2, be3, be4, be5 = be
 
-    uij = ((4*ba1*u[i + 1, j - 1] + 4*ba2*u[i, j - 1] + 4*ba3*u[i - 1, j] +
-            4*ba4*u[i - 1, j + 1] + 4*ba5*wn
-
-            + bb1*u[i - 1, j]
-            - bb1*u[i, j - 1] - bb2*u[i - 1, j - 1] + bb2*u[i - 1, j]
-            + bb3*u[i - 1, j] - bb3*u[i - 2, j] + bb4*u[i - 1, j]
-            - bb4*u[i - 2, j + 1] - bb5*wn + bb5*u[i - 1, j]
-
-            + bc1*u[i + 1, j] - bc1*u[i + 2, j - 1] - bc2*u[i + 1, j - 1]
-            + bc2*u[i + 1, j] + bc3*u[i + 1, j] + bc4*u[i + 1, j]
-            - bc4*u[i, j + 1] - bc5*wn + bc5*u[i + 1, j]
-
-            - bd1*u[i + 1, j - 2] + bd1*u[i, j - 1] + bd2*u[i, j - 1]
-            - bd2*u[i, j - 2] - bd3*u[i - 1, j - 1] + bd3*u[i, j - 1]
-            - bd4*u[i - 1, j] + bd4*u[i, j - 1] - bd5*wn + bd5*u[i, j - 1]
-
-            - be1*u[i + 1, j] + be1*u[i, j + 1] + be2*u[i, j + 1]
-            - be3*u[i - 1, j + 1] + be3*u[i, j + 1] - be4*u[i - 1, j + 2]
-            + be4*u[i, j + 1] - be5*wn + be5*u[i, j + 1]) /
-           (4*ba1 + 4*ba2 + 4*ba3 + 4*ba4 + 4*ba5 + bc3 + be2))
+    uij = ((4 * ba1 * u[i + 1, j - 1] + 4 * ba2 * u[i, j - 1] +
+            4 * ba3 * u[i - 1, j] +
+            4 * ba4 * u[i - 1, j + 1] + 4 * ba5 * wn +
+            bb1 * u[i - 1, j] -
+            bb1 * u[i, j - 1] - bb2 * u[i - 1, j - 1] + bb2 * u[i - 1, j] +
+            bb3 * u[i - 1, j] - bb3 * u[i - 2, j] + bb4 * u[i - 1, j] -
+            bb4 * u[i - 2, j + 1] - bb5 * wn + bb5 * u[i - 1, j] +
+            bc1 * u[i + 1, j] - bc1 * u[i + 2, j - 1] - bc2 * u[i + 1, j - 1] +
+            bc2 * u[i + 1, j] + bc3 * u[i + 1, j] + bc4 * u[i + 1, j] -
+            bc4 * u[i, j + 1] - bc5 * wn + bc5 * u[i + 1, j] -
+            bd1 * u[i + 1, j - 2] + bd1 * u[i, j - 1] + bd2 * u[i, j - 1] -
+            bd2 * u[i, j - 2] - bd3 * u[i - 1, j - 1] + bd3 * u[i, j - 1] -
+            bd4 * u[i - 1, j] + bd4 * u[i, j - 1] - bd5 * wn +
+            bd5 * u[i, j - 1] -
+            be1 * u[i + 1, j] + be1 * u[i, j + 1] + be2 * u[i, j + 1] -
+            be3 * u[i - 1, j + 1] + be3 * u[i, j + 1] - be4 * u[i - 1, j + 2] +
+            be4 * u[i, j + 1] - be5 * wn + be5 * u[i, j + 1]) /
+           (4 * ba1 + 4 * ba2 + 4 * ba3 + 4 * ba4 + 4 * ba5 + bc3 + be2))
 
     return uij
 
@@ -461,16 +460,16 @@ def get_b(e5, n5):
 
     """
     d2 = e5 + n5 + 1
-    d1 = d2*(n5 + e5)
+    d1 = d2 * (n5 + e5)
 
     if d1 == 0.0 or d2 == 0:
         return None
 
-    b1 = (-e5**2 + 2*e5*n5 - e5 + n5**2 + n5)/d1
-    b2 = 2*(e5 - n5 + 1)/d2
-    b3 = 2*(-e5 + n5 + 1)/d2
-    b4 = (e5**2 + 2*e5*n5 + e5 - n5**2 - n5)/d1
-    b5 = 4/d1
+    b1 = (-e5**2 + 2 * e5 * n5 - e5 + n5**2 + n5) / d1
+    b2 = 2 * (e5 - n5 + 1) / d2
+    b3 = 2 * (-e5 + n5 + 1) / d2
+    b4 = (e5**2 + 2 * e5 * n5 + e5 - n5**2 - n5) / d1
+    b5 = 4 / d1
 
     return b1, b2, b3, b4, b5
 
@@ -501,60 +500,60 @@ def mcurv(u, ufixed):
             if ufixed[i, j] == True:
                 continue
 
-            if 1 < i < rows-2 and 0 < j < cols-2:
+            if 1 < i < rows - 2 and 0 < j < cols - 2:
                 u[i, j] = u_normal(u, i, j)
 
-            elif j == 0 and 1 < i < rows-2:
+            elif j == 0 and 1 < i < rows - 2:
                 u[i, j] = u_edge(u, i)
-            elif j == cols-1 and 1 < i < rows-2:
+            elif j == cols - 1 and 1 < i < rows - 2:
                 u[i, j] = u_edge(u[:, ::-1], i)
-            elif i == 0 and 1 < j < cols-2:
+            elif i == 0 and 1 < j < cols - 2:
                 u[i, j] = u_edge(u.T, j)
-            elif i == rows-1 and 1 < j < cols-2:
+            elif i == rows - 1 and 1 < j < cols - 2:
                 u[i, j] = u_edge(u.T[:, ::-1], j)
 
-            elif j == 1 and 1 < i < rows-2:
+            elif j == 1 and 1 < i < rows - 2:
                 u[i, j] = u_one_row_from_edge(u, i)
-            elif j == cols-2 and 1 < i < rows-2:
+            elif j == cols - 2 and 1 < i < rows - 2:
                 u[i, j] = u_one_row_from_edge(u[:, ::-1], i)
-            elif i == 1 and 1 < j < cols-2:
+            elif i == 1 and 1 < j < cols - 2:
                 u[i, j] = u_one_row_from_edge(u.T, j)
-            elif i == rows-2 and 1 < j < cols-2:
+            elif i == rows - 2 and 1 < j < cols - 2:
                 u[i, j] = u_one_row_from_edge(u.T[:, ::-1], j)
 
             elif i == 0 and j == 0:
                 u[i, j] = u_corner(u)
-            elif i == 0 and j == cols-1:
+            elif i == 0 and j == cols - 1:
                 u[i, j] = u_corner(u[:, ::-1])
-            elif i == rows-1 and j == 0:
+            elif i == rows - 1 and j == 0:
                 u[i, j] = u_corner(u[::-1])
-            elif i == rows-1 and j == cols-1:
+            elif i == rows - 1 and j == cols - 1:
                 u[i, j] = u_corner(u[::-1, ::-1])
 
             elif i == 1 and j == 1:
                 u[i, j] = u_next_to_corner(u)
-            elif i == 1 and j == cols-2:
+            elif i == 1 and j == cols - 2:
                 u[i, j] = u_next_to_corner(u[:, ::-1])
-            elif i == rows-2 and j == 1:
+            elif i == rows - 2 and j == 1:
                 u[i, j] = u_next_to_corner(u[::-1])
-            elif i == rows-2 and j == cols-2:
+            elif i == rows - 2 and j == cols - 2:
                 u[i, j] = u_next_to_corner(u[::-1, ::-1])
 
             elif i == 2 and j == 1:
                 u[i, j] = u_edge_next_to_corner(u)
             elif i == 1 and j == 2:
                 u[i, j] = u_edge_next_to_corner(u.T)
-            elif i == 2 and j == cols-1:
+            elif i == 2 and j == cols - 1:
                 u[i, j] = u_edge_next_to_corner(u[:, ::-1])
-            elif i == 1 and j == cols-2:
+            elif i == 1 and j == cols - 2:
                 u[i, j] = u_edge_next_to_corner(u[:, ::-1].T)
-            elif i == rows-1 and j == 2:
+            elif i == rows - 1 and j == 2:
                 u[i, j] = u_edge_next_to_corner(u[::-1])
-            elif i == rows-2 and j == 1:
+            elif i == rows - 2 and j == 1:
                 u[i, j] = u_edge_next_to_corner(u[::-1].T)
-            elif i == rows-1 and j == cols-2:
+            elif i == rows - 1 and j == cols - 2:
                 u[i, j] = u_edge_next_to_corner(u[::-1, ::-1])
-            elif i == rows-2 and j == cols-1:
+            elif i == rows - 2 and j == cols - 1:
                 u[i, j] = u_edge_next_to_corner(u[::-1, ::-1].T)
     return u
 
@@ -592,20 +591,20 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
     coords = []
     b = []
     for k, zval in enumerate(z2):
-        i = (extent[3] - y2[k])/dxy
-        j = (x2[k]-extent[0])/dxy
+        i = (extent[3] - y2[k]) / dxy
+        j = (x2[k] - extent[0]) / dxy
 
         iint = round(i)
         jint = round(j)
 
         # Ignore values outside extents
-        if iint < 0 or jint < 0 or iint >= rows-1 or jint >= cols-1:
+        if iint < 0 or jint < 0 or iint >= rows - 1 or jint >= cols - 1:
             continue
 
-        n5 = i-iint
-        e5 = j-jint
+        n5 = i - iint
+        e5 = j - jint
 
-        r = np.sqrt(e5**2+n5**2)
+        r = np.sqrt(e5**2 + n5**2)
         if r >= 0.75:
             continue
 
@@ -615,11 +614,11 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
 
             continue
 
-        blist = [get_b(i-iint, j-jint),
-                 get_b(i-(iint-1), j-jint),
-                 get_b(i-(iint+1), j-jint),
-                 get_b(i-iint, j-(jint-1)),
-                 get_b(i-iint, j-(jint+1))]
+        blist = [get_b(i - iint, j - jint),
+                 get_b(i - (iint - 1), j - jint),
+                 get_b(i - (iint + 1), j - jint),
+                 get_b(i - iint, j - (jint - 1)),
+                 get_b(i - iint, j - (jint + 1))]
 
         b.append(blist)
 
@@ -656,8 +655,8 @@ def _testfn():
 
     odat = minc(x, y, z, dxy, extent=extent, bdist=4)
 
-    vmin = odat.mean()-2*odat.std()
-    vmax = odat.mean()+2*odat.std()
+    vmin = odat.mean() - 2 * odat.std()
+    vmax = odat.mean() + 2 * odat.std()
 
     plt.figure(dpi=150)
     plt.imshow(odat, extent=extent, vmin=vmin, vmax=vmax)

@@ -101,10 +101,10 @@ class DeleteRecord(BasicModule):
         None.
 
         """
-        ofile = ifile[:-4]+'_new.out'
+        ofile = ifile[:-4] + '_new.out'
 
-        self.showlog('Input Filename: '+ifile)
-        self.showlog('Output Filename: '+ofile)
+        self.showlog('Input Filename: ' + ifile)
+        self.showlog('Output Filename: ' + ofile)
 
         skey = QtWidgets.QInputDialog.getText(
             self.parent, 'Delete Criteria',
@@ -113,7 +113,7 @@ class DeleteRecord(BasicModule):
 
         skey = str(skey).upper()
 
-        self.showlog('Delete Criteria: '+skey)
+        self.showlog('Delete Criteria: ' + skey)
         self.showlog('Working...')
 
         skey = skey.replace(' ', '')
@@ -234,8 +234,8 @@ class Quarry(BasicModule):
 
         lon = np.array(lon)
         lat = np.array(lat)
-        ld = day[1]-day[0]  # number of daylight hours
-        ln = 24-ld  # number of nightime hours
+        ld = day[1] - day[0]  # number of daylight hours
+        ln = 24 - ld  # number of nightime hours
         # rdist = 0.2  # max distance for event to qualify. In degrees
         stayinloop = True
         N = 50
@@ -243,7 +243,7 @@ class Quarry(BasicModule):
         nmin = 50
         nmax = 400
         nstep = 50
-        nrange = list(range(nmin, nmax+nstep, nstep))
+        nrange = list(range(nmin, nmax + nstep, nstep))
         rperc = self.randrq(nmax, nstep, nrange, day)
 
         # use DBscan to identify cluster centers and numbers of clusters.
@@ -281,7 +281,7 @@ class Quarry(BasicModule):
             # also, perhaps if total events less than 50, is that even allowed?
 
             for i in range(cnt):  # i is node number, centered on an event
-                r = ((lls-lls[i])**2).sum(1)
+                r = ((lls - lls[i])**2).sum(1)
 
                 rs = np.argpartition(r, N)[:N]
                 hrs = hour[rs]  # daylight hours for this node
@@ -289,17 +289,17 @@ class Quarry(BasicModule):
                 nd.append(hrs)
 
             nd = np.sum(nd, 1)
-            nn = N-nd
+            nn = N - nd
             nd[nn == 0] = 0
             nn[nn == 0] = N
 
-            rq = (nd*ln)/(nn*ld)
+            rq = (nd * ln) / (nn * ld)
 
             rstot = np.array(rstot)
 
-            maxel = np.argmax(rq-rperc[0])
+            maxel = np.argmax(rq - rperc[0])
 
-            if rq[maxel]-rperc[0] > 0:
+            if rq[maxel] - rperc[0] > 0:
                 lat = np.delete(lat, rstot[maxel])
                 lon = np.delete(lon, rstot[maxel])
                 hour = np.delete(hour, rstot[maxel])
@@ -346,8 +346,8 @@ class Quarry(BasicModule):
 
         lon = np.array(lon)
         lat = np.array(lat)
-        ld = day[1]-day[0]  # number of daylight hours
-        ln = 24-ld  # number of nightime hours
+        ld = day[1] - day[0]  # number of daylight hours
+        ln = 24 - ld  # number of nightime hours
         rdist = 0.2  # max distance for event to qualify. In degrees
         N = 50
 
@@ -360,11 +360,11 @@ class Quarry(BasicModule):
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        self.showlog('daylight events:'+str(hour.sum())+' of ' +
+        self.showlog('daylight events:' + str(hour.sum()) + ' of ' +
                      str(hour.size))
 
         for i in range(cnt):  # i is node number, centered on an event
-            r = np.sqrt(((lls-lls[i])**2).sum(1))
+            r = np.sqrt(((lls - lls[i])**2).sum(1))
 
             rs = np.argpartition(r, N)[:N]
 
@@ -379,13 +379,13 @@ class Quarry(BasicModule):
             self.showlog('Not enough events within 0.2 degrees. Aborting.')
             return None
         nd = np.sum(nd, 1)
-        nn = (N-nd).astype(float)
+        nn = (N - nd).astype(float)
         nn[nn == 0] = 0.00001
-        rq = (nd*ln)/(nn*ld)
+        rq = (nd * ln) / (nn * ld)
 
         rstot = np.array(rstot, dtype=object)
 
-        filt = (rq-rperc) > 0
+        filt = (rq - rperc) > 0
 
         rstot2 = []
         for i in rstot[filt]:
@@ -430,20 +430,20 @@ class Quarry(BasicModule):
         self.showlog('Calculating random Rq values for calibration')
         rperc = []
         nd = 0
-        ld = day[1]-day[0]
-        ln = 24-ld
+        ld = day[1] - day[0]
+        ln = 24 - ld
 
         nrange = [10]
         for N in nrange:
-            self.showlog(str(N)+' of '+str(nmax), True)
+            self.showlog(str(N) + ' of ' + str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
             tmp *= 24
 
             tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
 
             nd += tmp.sum(1)
-            nn = N-nd
-            rq = (nd*ln)/(nn*ld)
+            nn = N - nd
+            rq = (nd * ln) / (nn * ld)
             rperc.append(np.percentile(rq, 99))
 
         return rperc
@@ -474,9 +474,9 @@ class Quarry(BasicModule):
             rqmean = []
             for ld in range(1, 24):
                 day = (0, ld)
-                ln = 24-ld
+                ln = 24 - ld
 
-                ln_over_ld = ln/ld
+                ln_over_ld = ln / ld
 
                 tmp = np.random.rand(1000000, N)
                 tmp *= 24
@@ -484,11 +484,11 @@ class Quarry(BasicModule):
                 tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
 
                 nd = tmp.sum(1)
-                nn = (N-nd).astype(float)
+                nn = (N - nd).astype(float)
 
-                rq = nd/nn
+                rq = nd / nn
                 rperc = np.percentile(rq, 99)
-                rperc = rperc*ln_over_ld
+                rperc = rperc * ln_over_ld
 
                 rqmean.append(rperc)
 
@@ -538,18 +538,18 @@ def import_for_plots(ifile, dind='R'):
             if rectype in ('1', 'E'):
                 tmp = vars(event[rectype])
                 for j in tmp:
-                    newkey = rectype+'_'+j
+                    newkey = rectype + '_' + j
                     if newkey not in datd:
                         datd[newkey] = []
                     datd[newkey].append(tmp[j])
                     # Custom
                     if 'type_of_magnitude' in j:
-                        newkey = '1_M'+tmp[j]
+                        newkey = '1_M' + tmp[j]
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j.split('_of_')[1]])
 
-                        newkey = '1_M'+tmp[j]+'_year'
+                        newkey = '1_M' + tmp[j] + '_year'
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp['year'])
@@ -558,7 +558,7 @@ def import_for_plots(ifile, dind='R'):
                 for i in event[rectype]:
                     tmp = vars(i)
                     for j in tmp:
-                        newkey = rectype+'_'+j
+                        newkey = rectype + '_' + j
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])

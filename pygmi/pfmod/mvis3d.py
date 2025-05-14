@@ -73,7 +73,7 @@ class Mod3dDisplay(ContextModule):
         self.origin = [0., 0., 0.]
         self.spacing = [10., 10., 10.]
         self.zmult = 1.
-        self.lut = np.ones((255, 4))*255
+        self.lut = np.ones((255, 4)) * 255
         self.lut[0] = [255, 0, 0, 255]
         self.lut[1] = [0, 255, 0, 255]
         self.gfaces = []
@@ -221,11 +221,11 @@ class Mod3dDisplay(ContextModule):
             for i in self.faces:
                 self.gfaces[i] = np.append(self.faces[i][:, :-1],
                                            self.faces[i][:, [0, 2, 3]])
-                self.gfaces[i].shape = (int(self.gfaces[i].shape[0]/3), 3)
+                self.gfaces[i].shape = (int(self.gfaces[i].shape[0] / 3), 3)
         else:
             self.gfaces = self.faces.copy()
 
-        self.glutlith = range(1, len(self.gfaces)+1)
+        self.glutlith = range(1, len(self.gfaces) + 1)
 
     def change_defs(self):
         """
@@ -345,13 +345,13 @@ class Mod3dDisplay(ContextModule):
             if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
-                clrtmp = lut[lno].tolist()+[255]
+                clrtmp = lut[lno].tolist() + [255]
             else:
-                clrtmp = lut[lno].tolist()+[0]
+                clrtmp = lut[lno].tolist() + [0]
 
-            clr = np.append(clr, self.faces[lno].shape[0]*[clrtmp])
+            clr = np.append(clr, self.faces[lno].shape[0] * [clrtmp])
 
-        clr.shape = (clr.shape[0]//4, 4)
+        clr.shape = (clr.shape[0] // 4, 4)
         clr = clr.astype(np.uint8)
 
         self.pvmesh['clr'] = clr
@@ -384,7 +384,7 @@ class Mod3dDisplay(ContextModule):
             return False
 
         misc.update_lith_lw(self.lmod1, self.lw_3dmod_defs)
-        for i in range(self.lw_3dmod_defs.count()-1, -1, -1):
+        for i in range(self.lw_3dmod_defs.count() - 1, -1, -1):
             if self.lw_3dmod_defs.item(i).text() == 'Background':
                 self.lw_3dmod_defs.takeItem(i)
 
@@ -425,7 +425,7 @@ class Mod3dDisplay(ContextModule):
             itmp.append(self.lmod1.lith_list[i].lith_index)
 
         itmp = np.sort(itmp)
-        tmp = np.ones((255, 4))*255
+        tmp = np.ones((255, 4)) * 255
 
         for i in itmp:
             tmp[i, :3] = self.lmod1.mlut[i]
@@ -447,7 +447,7 @@ class Mod3dDisplay(ContextModule):
             else:
                 psides = 4
                 ctype = pv.CellType.QUAD
-            numcells = cells.size//psides
+            numcells = cells.size // psides
             cells.shape = (numcells, psides)
 
             tmp = np.full(numcells, psides).reshape(-1, 1)
@@ -511,18 +511,18 @@ class Mod3dDisplay(ContextModule):
 
         if not issmooth:
             igd, jgd, kgd = self.gdata.shape
-            cloc = np.indices(((kgd+1), (jgd+1), (igd+1))).T.reshape(
-                (igd+1)*(jgd+1)*(kgd+1), 3).T[::-1].T
+            cloc = np.indices(((kgd + 1), (jgd + 1), (igd + 1))).T.reshape(
+                (igd + 1) * (jgd + 1) * (kgd + 1), 3).T[::-1].T
             cloc = cloc * self.spacing + self.origin
-            cindx = np.arange(cloc.size/3, dtype=int)
-            cindx.shape = (igd+1, jgd+1, kgd+1)
+            cindx = np.arange(cloc.size / 3, dtype=int)
+            cindx.shape = (igd + 1, jgd + 1, kgd + 1)
 
-            tmpdat = np.zeros([igd+2, jgd+2, kgd+2])-1
+            tmpdat = np.zeros([igd + 2, jgd + 2, kgd + 2]) - 1
             tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
 
         else:
             # Setup stuff for triangle calcs
-            nshape = np.array(self.lmod1.lith_index.shape)+[2, 2, 2]
+            nshape = np.array(self.lmod1.lith_index.shape) + [2, 2, 2]
             x = np.arange(nshape[1]) * self.spacing[1]
             y = np.arange(nshape[0]) * self.spacing[0]
             z = np.arange(nshape[2]) * self.spacing[2]
@@ -531,7 +531,7 @@ class Mod3dDisplay(ContextModule):
             # Set up Gaussian smoothing filter
             ix, iy, iz = np.mgrid[-1:2, -1:2, -1:2]
             sigma = 2
-            cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
+            cci = np.exp(-(ix**2 + iy**2 + iz**2) / (3 * sigma**2))
 
         tmppval = 0
         for lno in liths:
@@ -557,7 +557,7 @@ class Mod3dDisplay(ContextModule):
                 cc[cc != lno] = 0
                 cc[cc == lno] = 1
 
-                cc = convolve(cc, cci)/cci.size
+                cc = convolve(cc, cci) / cci.size
 
 # shrink cc to match only visible lithology? Origin offset would need to be
 # checked.
@@ -623,26 +623,27 @@ class Mod3dDisplay(ContextModule):
             if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
-                clrtmp = lut[lno].tolist()+[255]
+                clrtmp = lut[lno].tolist() + [255]
             else:
-                clrtmp = lut[lno].tolist()+[0]
+                clrtmp = lut[lno].tolist() + [0]
 
             vtx = np.append(vtx, self.corners[lno])
-            clr = np.append(clr, self.faces[lno].shape[0]*[clrtmp])
+            clr = np.append(clr, self.faces[lno].shape[0] * [clrtmp])
 
-            idx = np.append(idx, self.faces[lno].flatten()+idxmax)
-            idxmax = idx.max()+1
+            idx = np.append(idx, self.faces[lno].flatten() + idxmax)
+            idxmax = idx.max() + 1
 
-        vtx.shape = (vtx.shape[0]//3, 3)
-        clr.shape = (clr.shape[0]//4, 4)
+        vtx.shape = (vtx.shape[0] // 3, 3)
+        clr.shape = (clr.shape[0] // 4, 4)
         clr = clr.astype(np.uint8)
 
-        vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
+        vtx[:, -1] = (vtx[:, -1] - self.origin[-1]) * \
+            self.zmult + self.origin[-1]
 
-        cptp = np.ptp(vtx, 0).max()/100.
+        cptp = np.ptp(vtx, 0).max() / 100.
         cmin = vtx.min(0)
-        cptpd2 = np.ptp(vtx, 0)/2.
-        vtx = (vtx-cmin-cptpd2)/cptp
+        cptpd2 = np.ptp(vtx, 0) / 2.
+        vtx = (vtx - cmin - cptpd2) / cptp
 
         idx = idx.astype(np.uint32)
 
@@ -693,12 +694,12 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.tick_params(labelleft=False, labelright=False)
 
         self.axes.set_autoscaley_on(False)
-        self.axes.set_rmax(np.pi/2.)
-        self.axes.set_rmin(-np.pi/2.)
-        self.axes.set_yticks([-np.pi/4, 0, np.pi/4])
+        self.axes.set_rmax(np.pi / 2.)
+        self.axes.set_rmin(-np.pi / 2.)
+        self.axes.set_yticks([-np.pi / 4, 0, np.pi / 4])
         self.axes.tick_params(axis='x', pad=0)
 
-        self.sun, = self.axes.plot(np.pi/4., -np.pi/4., 'yo')
+        self.sun, = self.axes.plot(np.pi / 4., -np.pi / 4., 'yo')
         self.figure.canvas.draw()
 
 
@@ -725,7 +726,7 @@ def updatemod(gdat2, cindx, cloc):
     """
     newfaces = []
 
-    ndiff = gdat2[:, :, 1:]-gdat2[:, :, :-1]
+    ndiff = gdat2[:, :, 1:] - gdat2[:, :, :-1]
 
     nd1 = ndiff[1:, 1:]
     nd2 = ndiff[:-1, 1:]
@@ -746,7 +747,7 @@ def updatemod(gdat2, cindx, cloc):
     ccc = np.transpose([c_1, c_2, c_3, c_4])
     newfaces = np.append(newfaces, ccc)
 
-    ndiff = gdat2[:, 1:, :]-gdat2[:, :-1, :]
+    ndiff = gdat2[:, 1:, :] - gdat2[:, :-1, :]
     nd1 = ndiff[1:, :, 1:]
     nd2 = ndiff[:-1, :, 1:]
     nd3 = ndiff[:-1, :, :-1]
@@ -766,7 +767,7 @@ def updatemod(gdat2, cindx, cloc):
     ccc = np.transpose([c_1, c_4, c_3, c_2])
     newfaces = np.append(newfaces, ccc)
 
-    ndiff = gdat2[1:, :, :]-gdat2[:-1, :, :]
+    ndiff = gdat2[1:, :, :] - gdat2[:-1, :, :]
     nd1 = ndiff[:, 1:, 1:]
     nd2 = ndiff[:, 1:, :-1]
     nd3 = ndiff[:, :-1, :-1]
@@ -791,7 +792,7 @@ def updatemod(gdat2, cindx, cloc):
     n_f = np.arange(uuu.size)
     newfaces = n_f[i]
     newcorners = cloc[uuu]
-    newfaces.shape = (newfaces.size//4, 4)
+    newfaces.shape = (newfaces.size // 4, 4)
 
     return newcorners, newfaces
 
@@ -858,13 +859,13 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
     n3 = np.arange(n[2])
 
     vertex_idx = np.array([[n1, n2, n3],
-                           [n1+1, n2, n3],
-                           [n1+1, n2+1, n3],
-                           [n1, n2+1, n3],
-                           [n1, n2, n3+1],
-                           [n1+1, n2, n3+1],
-                           [n1+1, n2+1, n3+1],
-                           [n1, n2+1, n3+1]], dtype=object)
+                           [n1 + 1, n2, n3],
+                           [n1 + 1, n2 + 1, n3],
+                           [n1, n2 + 1, n3],
+                           [n1, n2, n3 + 1],
+                           [n1 + 1, n2, n3 + 1],
+                           [n1 + 1, n2 + 1, n3 + 1],
+                           [n1, n2 + 1, n3 + 1]], dtype=object)
 
     # loop through vertices of all cubes
 
@@ -896,10 +897,10 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
                         [1, 1, 2],
                         [2, 1, 2],
                         [2, 2, 2],
-                        [1, 2, 2]])-1
+                        [1, 2, 2]]) - 1
     edges = np.array([[1, 2], [2, 3], [3, 4], [4, 1],
                       [5, 6], [6, 7], [7, 8], [8, 5],
-                      [1, 5], [2, 6], [3, 7], [4, 8]])-1
+                      [1, 5], [2, 6], [3, 7], [4, 8]]) - 1
 
     offset = sub2ind(c.shape, xyz_off[:, 0], xyz_off[:, 1], xyz_off[:, 2])
     pp = np.zeros([iden.size, lindex, 12])
@@ -924,7 +925,7 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
                                                x[id1], y[id1], z[id1],
                                                x[id2], y[id2], z[id2],
                                                cp[id1], cp[id2])
-        pp[id__, 3, jj] = np.arange(1, id_.shape[0]+1) + ix_offset
+        pp[id__, 3, jj] = np.arange(1, id_.shape[0] + 1) + ix_offset
 
         ix_offset = ix_offset + id_.shape[0]
 
@@ -942,10 +943,10 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
         if id_.size > 0:
             V = np.zeros([id_.size, 5], dtype=int)
             V[:, 0] = id_
-            V[:, 1] = (lindex-1)*np.ones(id_.shape[0])
+            V[:, 1] = (lindex - 1) * np.ones(id_.shape[0])
             V[:, 2] = tri[id_, jj] - 1
-            V[:, 3] = tri[id_, jj+1] - 1
-            V[:, 4] = tri[id_, jj+2] - 1
+            V[:, 3] = tri[id_, jj + 1] - 1
+            V[:, 4] = tri[id_, jj + 2] - 1
 
             p1 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 2])
             p2 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 3])
@@ -955,23 +956,23 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
             F2 = np.hstack((F2, pp2f[p2]))
             F3 = np.hstack((F3, pp2f[p3]))
 
-    F = np.transpose([F1, F2, F3])-1
+    F = np.transpose([F1, F2, F3]) - 1
     V = np.zeros([pp2.max(), 3])
 
     for jj in range(12):
-        idp = pp[:, lindex-1, jj] > 0
+        idp = pp[:, lindex - 1, jj] > 0
         if any(idp):
-            V[pp2[idp, lindex-1, jj]-1, :3] = pp[idp, :3, jj]
+            V[pp2[idp, lindex - 1, jj] - 1, :3] = pp[idp, :3, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
     I = np.lexsort(V.T)
     V = V[I]
 
-    M = np.hstack(([True], np.sum(np.abs(V[1:]-V[:-1]), 1).astype(bool)))
+    M = np.hstack(([True], np.sum(np.abs(V[1:] - V[:-1]), 1).astype(bool)))
 
     V = V[M]
     newI = np.zeros_like(I)
-    newI[I] = np.cumsum(M)-1
+    newI[I] = np.cumsum(M) - 1
     F = newI[F]
 
     return F, V
@@ -1012,7 +1013,7 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
 
     eps = np.spacing(1)
     mu = np.zeros(len(p1x))
-    iden = abs(valp1-valp2) < (10*eps) * (abs(valp1) + abs(valp2))
+    iden = abs(valp1 - valp2) < (10 * eps) * (abs(valp1) + abs(valp2))
     if any(iden):
         p[iden, 0] = p1x[iden]
         p[iden, 1] = p1y[iden]
@@ -1127,7 +1128,7 @@ def sub2ind(msize, row, col, layer):
 
     """
     nrows, ncols, _ = msize
-    tmp = layer*ncols*nrows+nrows*col+row
+    tmp = layer * ncols * nrows + nrows * col + row
     return tmp.astype(int)
 
 
@@ -1153,12 +1154,12 @@ def ind2sub(msize, idx):
 
     """
     nrows, ncols, _ = msize
-    layer = idx/(nrows*ncols)
+    layer = idx / (nrows * ncols)
     layer = layer.astype(int)
-    idx = idx - layer*nrows*ncols
-    col = idx/nrows
+    idx = idx - layer * nrows * ncols
+    col = idx / nrows
     col = col.astype(int)
-    row = idx - col*nrows
+    row = idx - col * nrows
 
     return row, col, layer
 
@@ -1509,8 +1510,8 @@ def _testfn2():
     values = lmod1.lith_index[::1, ::1, ::-1]
 
     opac = values.copy()
-    opac[opac>0] = 1.
-    opac[opac<1] = 0.
+    opac[opac > 0] = 1.
+    opac[opac < 1] = 0.
 
     # opac= opac.flatten()
 
@@ -1521,10 +1522,8 @@ def _testfn2():
     grid.origin = (lmod1.xrange[0], lmod1.yrange[0], lmod1.zrange[0])
     grid.spacing = (lmod1.dxy, lmod1.dxy, lmod1.d_z)
 
-
     grid.point_data['values'] = values.flatten(order='F')  # Flatten the array
     grid.point_data['opac'] = opac.flatten(order='F')  # Flatten the array
-
 
     # breakpoint()
     # Now plot the grid
@@ -1533,7 +1532,6 @@ def _testfn2():
     p = pv.Plotter()
     # p.add_mesh_slice(vol)
     p.add_mesh_clip_plane(grid, scalars='values', opacity='opac')
-
 
     p.show()
 

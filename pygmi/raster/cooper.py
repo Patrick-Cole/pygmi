@@ -239,7 +239,7 @@ def gradients(data, azi, xint, yint):
     """
     azi = np.deg2rad(azi)
     dy, dx = np.gradient(data, yint, xint)
-    dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
+    dt1 = -dy * np.sin(azi) - dx * np.cos(azi)
 
     return dt1
 
@@ -265,7 +265,7 @@ def thgrad(data, xint, yint):
         returns gradient.
     """
     dy, dx = np.gradient(data, yint, xint)
-    dt1 = np.sqrt(dx**2+dy**2)
+    dt1 = np.sqrt(dx**2 + dy**2)
 
     return dt1
 
@@ -292,11 +292,11 @@ def derivative_ratio(data, azi, order):
 
     azi = np.deg2rad(azi)
     dx, dy = np.gradient(data)
-    dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
+    dt1 = -dy * np.sin(azi) - dx * np.cos(azi)
 
     # Derivative ratio
 
-    dt2 = -dy*np.sin(azi+np.pi/2)-dx*np.cos(azi+np.pi/2)
+    dt2 = -dy * np.sin(azi + np.pi / 2) - dx * np.cos(azi + np.pi / 2)
     dt2 = dt2.astype(np.float64)
     dr = np.arctan2(dt1, abs(dt2)**order)
 
@@ -393,15 +393,15 @@ class Visibility2d(BasicModule):
         data2 = []
 
         for i, datai in enumerate(data):
-            self.showlog(datai.dataid+':')
+            self.showlog(datai.dataid + ':')
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
-                                            self.dh*datai.data.std()/100.,
+                                            self.dh * datai.data.std() / 100.,
                                             self.piter)
 
-            buff = self.wsize//2
+            buff = self.wsize // 2
 
-            xmin, ymax = datai.transform*(buff, buff)
+            xmin, ymax = datai.transform * (buff, buff)
             xdim = datai.transform[0]
             ydim = abs(datai.transform[4])
 
@@ -471,7 +471,7 @@ def visibility2d(data, wsize, dh, piter=iter):
     """
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
-    w2 = int(np.floor(wsize/2))
+    w2 = int(np.floor(wsize / 2))
     vn = np.zeros_like(data)
     vs = np.zeros_like(data)
     ve = np.zeros_like(data)
@@ -497,32 +497,32 @@ def visibility2d(data, wsize, dh, piter=iter):
     data[mask] = mean
 
     for j in piter(range(nc)):    # Columns
-        for i in range(w2, nr-w2):
-            dtmp = data[i-w2:i+w2+1, j]
-            vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vs[i, j] = __visible2(dtmp, w2+1, dh)
+        for i in range(w2, nr - w2):
+            dtmp = data[i - w2:i + w2 + 1, j]
+            vn[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
+            vs[i, j] = __visible2(dtmp, w2 + 1, dh)
 
-    for j in piter(range(w2, nc-w2)):    # Rows
+    for j in piter(range(w2, nc - w2)):    # Rows
         for i in range(nr):
-            dtmp = data[i, j-w2:j+w2+1]
-            ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vw[i, j] = __visible2(dtmp, w2+1, dh)
+            dtmp = data[i, j - w2:j + w2 + 1]
+            ve[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
+            vw[i, j] = __visible2(dtmp, w2 + 1, dh)
 
-    for j in piter(range(w2, nc-w2)):
-        for i in range(w2, nr-w2):
+    for j in piter(range(w2, nc - w2)):
+        for i in range(w2, nr - w2):
             dtmp = np.zeros(wsize)
             for k in range(wsize):
-                dtmp[k] = data[i-w2+k, j-w2+k]
-            vd1[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vd2[i, j] = __visible2(dtmp, w2+1, dh)
+                dtmp[k] = data[i - w2 + k, j - w2 + k]
+            vd1[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
+            vd2[i, j] = __visible2(dtmp, w2 + 1, dh)
             dtmp = np.zeros(wsize)
             for k in range(wsize):
-                dtmp[k] = data[i+w2-k, j-w2+k]
-            vd3[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vd4[i, j] = __visible2(dtmp, w2+1, dh)
+                dtmp[k] = data[i + w2 - k, j - w2 + k]
+            vd3[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
+            vd4[i, j] = __visible2(dtmp, w2 + 1, dh)
 
-    vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
-    vtot = vtot[w2:nr-w2, w2:nc-w2]
+    vtot = vn + vs + ve + vw + vd1 + vd2 + vd3 + vd4
+    vtot = vtot[w2:nr - w2, w2:nc - w2]
 
     for j in piter(range(nc)):
         for i in range(nr):
@@ -530,15 +530,15 @@ def visibility2d(data, wsize, dh, piter=iter):
                                  vd1[i, j], vd2[i, j], vd3[i, j],
                                  vd4[i, j]], ddof=1)
 
-    vstd = vstd[w2:nr-w2, w2:nc-w2]
+    vstd = vstd[w2:nr - w2, w2:nc - w2]
 
-    dtr = np.pi/180
-    c45 = np.cos(45*dtr)
-    s45 = np.sin(45*dtr)
-    vsumx = ve-vw+vd1*c45-vd2*c45+vd3*c45-vd4*c45
-    vsumy = vn-vs+vd1*s45-vd2*s45-vd3*s45+vd4*s45
-    vsum = np.sqrt(vsumx*vsumx+vsumy*vsumy)
-    vsum = vsum[w2:nr-w2, w2:nc-w2]
+    dtr = np.pi / 180
+    c45 = np.cos(45 * dtr)
+    s45 = np.sin(45 * dtr)
+    vsumx = ve - vw + vd1 * c45 - vd2 * c45 + vd3 * c45 - vd4 * c45
+    vsumy = vn - vs + vd1 * s45 - vd2 * s45 - vd3 * s45 + vd4 * s45
+    vsum = np.sqrt(vsumx * vsumx + vsumy * vsumy)
+    vsum = vsum[w2:nr - w2, w2:nc - w2]
 
     vtot = np.ma.array(vtot)
     vstd = np.ma.array(vstd)
@@ -579,7 +579,7 @@ def visibilitytot(data, wsize, dh):
     """
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
-    w2 = int(np.floor(wsize/2))
+    w2 = int(np.floor(wsize / 2))
     vtot = np.zeros_like(data)
 
     # mask = np.ma.getmaskarray(data)
@@ -588,32 +588,32 @@ def visibilitytot(data, wsize, dh):
     # data[mask] = mean
 
     for j in range(nc):    # Columns
-        for i in range(w2, nr-w2):
-            dtmp = data[i-w2:i+w2+1, j]
-            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
-            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+        for i in range(w2, nr - w2):
+            dtmp = data[i - w2:i + w2 + 1, j]
+            vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
+            vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
-    for j in range(w2, nc-w2):    # Rows
+    for j in range(w2, nc - w2):    # Rows
         for i in range(nr):
-            dtmp = data[i, j-w2:j+w2+1]
-            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
-            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+            dtmp = data[i, j - w2:j + w2 + 1]
+            vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
+            vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
-    for j in range(w2, nc-w2):
-        for i in range(w2, nr-w2):
+    for j in range(w2, nc - w2):
+        for i in range(w2, nr - w2):
             dtmp = np.zeros(wsize)
             for k in range(wsize):
-                dtmp[k] = data[i-w2+k, j-w2+k]
-            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
-            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+                dtmp[k] = data[i - w2 + k, j - w2 + k]
+            vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
+            vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
             dtmp = np.zeros(wsize)
             for k in range(wsize):
-                dtmp[k] = data[i+w2-k, j-w2+k]
-            vtot[i, j] += __visible1(dtmp, wsize, w2+1, dh)
-            vtot[i, j] += __visible2(dtmp, w2+1, dh)
+                dtmp[k] = data[i + w2 - k, j - w2 + k]
+            vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
+            vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
     # vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
-    vtot = vtot[w2:nr-w2, w2:nc-w2]
+    vtot = vtot[w2:nr - w2, w2:nc - w2]
 
     # vtot = np.ma.array(vtot)
     # vtot.mask = mask[w2:-w2, w2:-w2]
@@ -645,12 +645,12 @@ def __visible1(dat, nr, cp, dh):
     """
     num = 1
 
-    if cp < nr-1 and dat.size > 0:
+    if cp < nr - 1 and dat.size > 0:
         num = 2
-        cpn = cp-1
-        thetamax = float(dat[cpn+1]-dat[cpn]-dh)
-        for i in range(cpn+2, nr):
-            theta = ((dat[i]-dat[cpn]-dh)/float(i-cpn))
+        cpn = cp - 1
+        thetamax = float(dat[cpn + 1] - dat[cpn] - dh)
+        for i in range(cpn + 2, nr):
+            theta = ((dat[i] - dat[cpn] - dh) / float(i - cpn))
             if theta >= thetamax:
                 num = num + 1
                 thetamax = theta
@@ -682,10 +682,10 @@ def __visible2(dat, cp, dh):
 
     if cp > 2 and dat.size > 0:
         num = 1
-        cpn = cp-1
-        thetamax = (dat[cpn-1]-dat[cpn]-dh)
-        for i in range(cpn-2, -1, -1):
-            theta = ((dat[i]-dat[cpn]-dh)/(cpn-i))
+        cpn = cp - 1
+        thetamax = (dat[cpn - 1] - dat[cpn] - dh)
+        for i in range(cpn - 2, -1, -1):
+            theta = ((dat[i] - dat[cpn] - dh) / (cpn - i))
             if theta >= thetamax:
                 num = num + 1
                 thetamax = theta
@@ -734,7 +734,7 @@ def vertical(data, npts=None, xint=1, order=1):
     """
     nr, nc = data.shape
 
-    z = data-np.ma.median(data)
+    z = data - np.ma.median(data)
     if np.ma.is_masked(z):
         z = z.filled(0.)
 
@@ -742,27 +742,27 @@ def vertical(data, npts=None, xint=1, order=1):
         nmax = np.max([nr, nc])
         npts = int(2**nextpow2(nmax))
 
-    cdiff = int(np.floor((npts-nc)/2))
-    rdiff = int(np.floor((npts-nr)/2))
-    cdiff2 = npts-cdiff-nc
-    rdiff2 = npts-rdiff-nr
+    cdiff = int(np.floor((npts - nc) / 2))
+    rdiff = int(np.floor((npts - nr) / 2))
+    cdiff2 = npts - cdiff - nc
+    rdiff2 = npts - rdiff - nr
     data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
 
     f = np.fft.fft2(data1)
     fz = f
-    wn = 2.0*np.pi/(xint*(npts-1))
+    wn = 2.0 * np.pi / (xint * (npts - 1))
     f = np.fft.fftshift(f)
-    cx = npts/2+1
+    cx = npts / 2 + 1
     cy = cx
     for i in range(npts):
-        freqx = (i+1-cx)*wn
+        freqx = (i + 1 - cx) * wn
         for j in range(npts):
-            freqy = (j+1-cy)*wn
-            freq = np.sqrt(freqx*freqx+freqy*freqy)
-            fz[i, j] = f[i, j]*freq**order
+            freqy = (j + 1 - cy) * wn
+            freq = np.sqrt(freqx * freqx + freqy * freqy)
+            fz[i, j] = f[i, j] * freq**order
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
-    dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
+    dz = np.real(fzinv[rdiff:nr + rdiff, cdiff:nc + cdiff])
 
     return dz
 
@@ -860,7 +860,7 @@ class AGC(BasicModule):
         data2 = []
 
         for datai in data:
-            self.showlog(datai.dataid+':')
+            self.showlog(datai.dataid + ':')
 
             agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
                           piter=self.piter)
@@ -911,17 +911,17 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
     agcdata : numpy array
         Output AGC data
     """
-    data = data.copy()-data.min()
+    data = data.copy() - data.min()
     data = np.abs(data)
     data = data.astype(float)
     nr, nc = data.shape
 
     weight = np.ma.ones((nr, nc))
-    w2 = int(np.floor(wsize/2))
+    w2 = int(np.floor(wsize / 2))
 
-    for i in piter(range(w2, nr-w2)):
-        for j in range(w2, nc-w2):
-            w = data[i-w2:i+w2+1, j-w2:j+w2+1]
+    for i in piter(range(w2, nr - w2)):
+        for j in range(w2, nc - w2):
+            w = data[i - w2:i + w2 + 1, j - w2:j + w2 + 1]
             if atype == 'mean':
                 weight[i, j] = np.ma.mean(w)
             elif atype == 'median':
@@ -933,7 +933,7 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
     mask[w2:-w2, w2:-w2] = 0
     mask = data.mask | mask
 
-    agcdata = data/weight
+    agcdata = data / weight
     agcdata.mask = mask
     agcdata = agcdata.filled(nodata)
     agcdata = np.ma.array(agcdata, mask=mask)

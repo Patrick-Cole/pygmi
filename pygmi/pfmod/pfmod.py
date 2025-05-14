@@ -279,8 +279,8 @@ def _testfn():
     IO2.ifile = ifile2
     IO2.settings(True)
 
-    data = {'Model3D': IO1.outdata['Model3D']+IO2.outdata['Model3D'],
-            'Raster': IO1.outdata['Raster']+IO2.outdata['Raster']}
+    data = {'Model3D': IO1.outdata['Model3D'] + IO2.outdata['Model3D'],
+            'Raster': IO1.outdata['Raster'] + IO2.outdata['Raster']}
 
     MM = MergeMod3D()
     MM.indata = data

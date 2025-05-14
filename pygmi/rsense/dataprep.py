@@ -171,7 +171,7 @@ class TopoCorrect(BasicModule):
                 data.append(i)
 
         data = lstack(data, piter=self.piter, showlog=self.showlog)
-        dem = lstack(data+[dem], piter=self.piter, showlog=self.showlog,
+        dem = lstack(data + [dem], piter=self.piter, showlog=self.showlog,
                      masterid=data[0].dataid)
 
         dem = dem.pop(-1)
@@ -351,12 +351,12 @@ class Sen2Cor(BasicModule):
         l2agip = os.path.join(os.path.dirname(__file__), 'L2A_GIPP.xml')
 
         for sdir in self.piter(sdirs):
-            with Popen([sen2cor, sdir, '--GIP_L2A='+l2agip], stdout=PIPE,
+            with Popen([sen2cor, sdir, '--GIP_L2A=' + l2agip], stdout=PIPE,
                        text=True) as proc:
                 for line in proc.stdout:
                     self.showlog(line.rstrip())
 
-            odir = glob.glob(os.path.dirname(sdir)+'//*L2A*.SAFE')
+            odir = glob.glob(os.path.dirname(sdir) + '//*L2A*.SAFE')
             sdate = os.path.basename(sdir).split('_')[2]
             odir = [i for i in odir if sdate in i][-1]
 
@@ -407,7 +407,7 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
     # del px, py, slope, slope_deg, adeg
     del px, py, slope, adeg
 
-    cosi = np.cos(Z)*np.cos(s)+np.sin(Z)*np.sin(s)*np.cos(a-ap)
+    cosi = np.cos(Z) * np.cos(s) + np.sin(Z) * np.sin(s) * np.cos(a - ap)
 
     cossz = np.cos(Z)
 
@@ -425,7 +425,7 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
         y = y.compressed()
 
         m, b = np.polyfit(x, y, 1)
-        c = b/m
+        c = b / m
 
         print(f'zenith:{zenith} azimuth:{azimuth} c:{c}')
         # plt.figure(dpi=200)
@@ -435,7 +435,7 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
         # plt.title(c)
         # plt.show()
 
-        Lh.data = Lt.data*(cossz+c)/(cosi+c)
+        Lh.data = Lt.data * (cossz + c) / (cosi + c)
         Lh.set_mask(mask)
 
         data2.append(Lh)
@@ -475,7 +475,7 @@ def _testfn():
 
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
-    dat = dat1+dat2
+    dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -553,7 +553,7 @@ def _testfn3():
     ddir = r'D:\Landslides\DEM'
     sdir = r"D:\Landslides\L2A"
 
-    ifiles = glob.glob(sdir+'/S2B_MSIL2A*')
+    ifiles = glob.glob(sdir + '/S2B_MSIL2A*')
 
     icnt = 0
     for bfile in ifiles:
@@ -590,7 +590,7 @@ def _testfn3():
         dem = data_reproject(dem, data[0].crs)
 
         data = lstack(data, commonmask=True)
-        data = lstack(data+[dem], masterid=data[0].dataid, commonmask=True)
+        data = lstack(data + [dem], masterid=data[0].dataid, commonmask=True)
 
         for i in data:
             i.data = i.data.astype(np.float32)

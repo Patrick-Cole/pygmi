@@ -325,8 +325,8 @@ def SPECPR(ifile):
             continue
         if rec['rectype'] == 1 and 'error' not in rec['ititle'].lower():
             rec['refl'] = np.array(rec['data'])
-            rec['refl'][rec['refl']<=-1.23e34] = np.nan
-            rec['wvl'] = np.array(recs[rec['irwav']]['data'])*1000.
+            rec['refl'][rec['refl'] <= -1.23e34] = np.nan
+            rec['wvl'] = np.array(recs[rec['irwav']]['data']) * 1000.
             rec['fwhm'] = recs[rec['irespt']]['data']
             rec['text'] = recs[rec['itpntr']]['itext']
             spec[rec['ititle']] = rec
@@ -345,13 +345,13 @@ def case1(dat):
     rec['icflag'] = unpack_icflag(dat[:4])
     rec['ititle'] = dat[4:44].decode('latin-1')
     rec['usernm'] = dat[44:52].decode('latin-1')
-    rec['iscta'] = struct.unpack('>i', dat[52:56])[0]/24000.
-    rec['isctb'] = struct.unpack('>i', dat[56:60])[0]/24000.
-    rec['jdatea'] = struct.unpack('>i', dat[60:64])[0]/10.
-    rec['jdateb'] = struct.unpack('>i', dat[64:68])[0]/10.
-    rec['istb'] = struct.unpack('>i', dat[68:72])[0]/24000.
-    rec['isra'] = struct.unpack('>i', dat[72:76])[0]/1000.
-    rec['isdec'] = struct.unpack('>i', dat[76:80])[0]/1000.
+    rec['iscta'] = struct.unpack('>i', dat[52:56])[0] / 24000.
+    rec['isctb'] = struct.unpack('>i', dat[56:60])[0] / 24000.
+    rec['jdatea'] = struct.unpack('>i', dat[60:64])[0] / 10.
+    rec['jdateb'] = struct.unpack('>i', dat[64:68])[0] / 10.
+    rec['istb'] = struct.unpack('>i', dat[68:72])[0] / 24000.
+    rec['isra'] = struct.unpack('>i', dat[72:76])[0] / 1000.
+    rec['isdec'] = struct.unpack('>i', dat[76:80])[0] / 1000.
     rec['itchan'] = struct.unpack('>i', dat[80:84])[0]
     rec['irmas'] = struct.unpack('>i', dat[84:88])[0]
     rec['revs'] = struct.unpack('>i', dat[88:92])[0]
@@ -363,9 +363,9 @@ def case1(dat):
     rec['ihist'] = dat[116:176].decode('latin-1')
     rec['mhist'] = dat[176:472].decode('latin-1')
     rec['nruns'] = struct.unpack('>i', dat[472:476])[0]
-    rec['siangl'] = struct.unpack('>i', dat[476:480])[0]/6000.
-    rec['seangl'] = struct.unpack('>i', dat[480:484])[0]/6000.
-    rec['sphase'] = struct.unpack('>i', dat[484:488])[0]/1500.
+    rec['siangl'] = struct.unpack('>i', dat[476:480])[0] / 6000.
+    rec['seangl'] = struct.unpack('>i', dat[480:484])[0] / 6000.
+    rec['sphase'] = struct.unpack('>i', dat[484:488])[0] / 1500.
     rec['iwtrns'] = struct.unpack('>i', dat[488:492])[0]
     rec['itimch'] = struct.unpack('>i', dat[492:496])[0]
     rec['xnrm'] = struct.unpack('>f', dat[496:500])[0]

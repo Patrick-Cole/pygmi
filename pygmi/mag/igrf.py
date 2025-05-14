@@ -194,7 +194,7 @@ class IGRF(BasicModule):
                 wkt = i.crs.to_wkt()
 
         sdate = self.dateedit.date()
-        sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
+        sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
         alt = self.dsb_alt.value()
 
         odata, fmean, imean, dmean = calc_igrf(data, sdate, sen_alt=alt,
@@ -316,7 +316,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     #     array of MAXMOD  Min year of model.
 
     MAXDEG = 13
-    MAXCOEFF = MAXDEG*(MAXDEG+2)+1
+    MAXCOEFF = MAXDEG * (MAXDEG + 2) + 1
 
     gh = np.zeros([4, MAXCOEFF])
 
@@ -357,8 +357,8 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     drows, dcols = data.data.shape
     dtlx = data.extent[0]
     dtly = data.extent[-1]
-    xrange = dtlx+data.xdim/2.+np.arange(dcols)*data.xdim
-    yrange = dtly-data.ydim/2.-np.arange(drows)*data.ydim
+    xrange = dtlx + data.xdim / 2. + np.arange(dcols) * data.xdim
+    yrange = dtly - data.ydim / 2. - np.arange(drows) * data.ydim
 
     xdat, ydat = np.meshgrid(xrange, yrange)
     xdat = xdat.flatten()
@@ -372,24 +372,24 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     modelI = sum(yrmax < sdate)
     igdgc = 1
 
-    if maxyr < sdate < maxyr+1:
+    if maxyr < sdate < maxyr + 1:
         showlog('Warning: The date ' + str(sdate) + ' is out of range,')
         showlog('but still within one year of model expiration date.')
         showlog('An updated model file is available before 1.1.' + str(maxyr))
 
     if max2[modelI] == 0:
         gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
-        gh = getshc(modbuff, 1, irec_pos[modelI+1], max1[modelI+1], 1, gh)
+        gh = getshc(modbuff, 1, irec_pos[modelI + 1], max1[modelI + 1], 1, gh)
         nmax, gh = interpsh(sdate, yrmin[modelI], max1[modelI],
-                            yrmin[modelI+1], max1[modelI+1], 2, gh)
-        nmax, gh = interpsh(sdate+1, yrmin[modelI], max1[modelI],
-                            yrmin[modelI+1], max1[modelI+1], 3, gh)
+                            yrmin[modelI + 1], max1[modelI + 1], 2, gh)
+        nmax, gh = interpsh(sdate + 1, yrmin[modelI], max1[modelI],
+                            yrmin[modelI + 1], max1[modelI + 1], 3, gh)
     else:
         gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
         gh = getshc(modbuff, 0, irec_pos[modelI], max2[modelI], 1, gh)
         nmax, gh = extrapsh(sdate, epoch[modelI], max1[modelI],
                             max2[modelI], 2, gh)
-        nmax, gh = extrapsh(sdate+1, epoch[modelI], max1[modelI],
+        nmax, gh = extrapsh(sdate + 1, epoch[modelI], max1[modelI],
                             max2[modelI], 3, gh)
 
     if wkt is not None:
@@ -487,10 +487,10 @@ def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
     ii = -1
     cnt = 0
 
-    for nn in range(1, nmax_of_gh+1):
-        for _ in range(nn+1):
+    for nn in range(1, nmax_of_gh + 1):
+        for _ in range(nn + 1):
             cnt += 1
-            tmp = file[strec+cnt]
+            tmp = file[strec + cnt]
             tmp = tmp.split()
             m = int(tmp[1])
 
@@ -623,7 +623,7 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
             k = nmax2 * (nmax2 + 2)
             l = nmax1 * (nmax1 + 2)
             for ii in range(k, l):
-                gh[igh][ii] = gh[0][ii] + factor*(-gh[0][ii])
+                gh[igh][ii] = gh[0][ii] + factor * (-gh[0][ii])
             nmax = nmax1
         else:
             k = nmax1 * (nmax1 + 2)
@@ -634,7 +634,7 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
             nmax = nmax2
 
     for ii in range(k):
-        gh[igh][ii] = gh[0][ii] + factor*(gh[1][ii] - gh[0][ii])
+        gh[igh][ii] = gh[0][ii] + factor * (gh[1][ii] - gh[0][ii])
 
     return nmax, gh
 
@@ -687,7 +687,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
     p = np.zeros(119)
     q = np.zeros(119)
     earths_radius = 6371.2
-    dtr = np.pi/180.0
+    dtr = np.pi / 180.0
 
     # a2,b2 are squares of semi-major and semi-minor axes of the reference
     # spheroid used for transforming between geodetic and geocentric
@@ -750,7 +750,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
     q[2] = slat
     q[3] = -3.0 * clat * slat
     q[4] = aa * (slat * slat - clat * clat)
-    for k in range(1, npq+1):
+    for k in range(1, npq + 1):
         if n < m:
             m = 0
             n = n + 1
@@ -762,25 +762,26 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
         fm = m
         if k >= 5:
             if m == n:
-                argument = 1.0 - 0.5/fm
+                argument = 1.0 - 0.5 / fm
                 aa = sqrt(argument)
                 j = k - n - 1
-                p[k] = (1.0 + 1.0/fm) * aa * clat * p[j]
-                q[k] = aa * (clat * q[j] + slat/fm * p[j])
-                sl[m] = sl[m-1] * cl[1] + cl[m-1] * sl[1]
-                cl[m] = cl[m-1] * cl[1] - sl[m-1] * sl[1]
+                p[k] = (1.0 + 1.0 / fm) * aa * clat * p[j]
+                q[k] = aa * (clat * q[j] + slat / fm * p[j])
+                sl[m] = sl[m - 1] * cl[1] + cl[m - 1] * sl[1]
+                cl[m] = cl[m - 1] * cl[1] - sl[m - 1] * sl[1]
             else:
-                argument = fn*fn - fm*fm
+                argument = fn * fn - fm * fm
                 aa = sqrt(argument)
-                argument = ((fn - 1.0)*(fn-1.0)) - (fm * fm)
-                bb = sqrt(argument)/aa
-                cc = (2.0 * fn - 1.0)/aa
+                argument = ((fn - 1.0) * (fn - 1.0)) - (fm * fm)
+                bb = sqrt(argument) / aa
+                cc = (2.0 * fn - 1.0) / aa
                 ii = k - n
                 j = k - 2 * n + 1
-                p[k] = (fn + 1.0) * (cc * slat/fn * p[ii]-bb/(fn-1.0)*p[j])
-                q[k] = cc * (slat * q[ii] - clat/fn * p[ii]) - bb * q[j]
+                p[k] = (fn + 1.0) * (cc * slat / fn *
+                                     p[ii] - bb / (fn - 1.0) * p[j])
+                q[k] = cc * (slat * q[ii] - clat / fn * p[ii]) - bb * q[j]
 
-        aa = rr * gh[igh -1][l]
+        aa = rr * gh[igh - 1][l]
 
         if m == 0:
             x = x + aa * q[k]
@@ -788,14 +789,15 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
 
             l = l + 1
         else:
-            bb = rr * gh[igh-1][l+1]
+            bb = rr * gh[igh - 1][l + 1]
             cc = aa * cl[m] + bb * sl[m]
             x = x + cc * q[k]
             z = z - cc * p[k]
             if clat > 0:
-                y = y + (aa*sl[m] - bb*cl[m])*fm*p[k]/((fn + 1.0)*clat)
+                y = y + (aa * sl[m] - bb * cl[m]) * \
+                    fm * p[k] / ((fn + 1.0) * clat)
             else:
-                y = y + (aa*sl[m] - bb*cl[m])*q[k]*slat
+                y = y + (aa * sl[m] - bb * cl[m]) * q[k] * slat
             l = l + 2
 
         m = m + 1
@@ -843,10 +845,10 @@ def dihf(x, y, z):
     sn = 0.0001
 
     for _ in range(2):
-        h2 = x*x + y*y
+        h2 = x * x + y * y
         argument = h2
         h = sqrt(argument)       # calculate horizontal intensity
-        argument = h2 + z*z
+        argument = h2 + z * z
         f = sqrt(argument)       # calculate total intensity
         if f < sn:
             d = np.nan           # If d and i cannot be determined,

@@ -129,7 +129,8 @@ class BIRRP(BasicModule):
             self.pb_cpar[i] = QtWidgets.QPushButton('CPAR: ' + i +
                                                     ' filter parameters '
                                                     'filename')
-            self.pb_filnam[i] = QtWidgets.QPushButton('FILNAM: '+i+' filename')
+            self.pb_filnam[i] = QtWidgets.QPushButton(
+                'FILNAM: ' + i + ' filename')
 
         self.le_thetae = QtWidgets.QLineEdit('0,90,0')
         self.le_thetab = QtWidgets.QLineEdit('0,90,0')
@@ -176,7 +177,8 @@ class BIRRP(BasicModule):
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
 #        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle(r'BIRRP Processing')
 
@@ -215,16 +217,16 @@ class BIRRP(BasicModule):
 
         for i in ['ex', 'ey']:
             self.lay2.addRow("NFIL: number filter parameters "
-                             "(<0 for filename) of "+i, self.le_nfil[i])
+                             "(<0 for filename) of " + i, self.le_nfil[i])
             self.lay2.addRow(self.pb_filnam[i], self.le_filnam[i])
-            self.lay2.addRow("NSKIP: leading values to skip in "+i,
+            self.lay2.addRow("NSKIP: leading values to skip in " + i,
                              self.le_nskip[i])
 
         for i in ['hx', 'hy', 'rx', 'ry']:
             self.lay3.addRow("NFIL: number filter parameters "
-                             "(<0 for filename) of "+i, self.le_nfil[i])
+                             "(<0 for filename) of " + i, self.le_nfil[i])
             self.lay3.addRow(self.pb_filnam[i], self.le_filnam[i])
-            self.lay3.addRow("NSKIP: leading values to skip in "+i,
+            self.lay3.addRow("NSKIP: leading values to skip in " + i,
                              self.le_nskip[i])
 
         hbl_1.addLayout(self.lay)
@@ -356,13 +358,13 @@ class BIRRP(BasicModule):
                 dstim[i] = data.pop(0)
                 wstim[i] = data.pop(0)
                 wetim[i] = data.pop(0)
-        thetae = data.pop(0)+','+data.pop(0)+','+data.pop(0)
-        thetab = data.pop(0)+','+data.pop(0)+','+data.pop(0)
-        thetar = data.pop(0)+','+data.pop(0)+','+data.pop(0)
+        thetae = data.pop(0) + ',' + data.pop(0) + ',' + data.pop(0)
+        thetab = data.pop(0) + ',' + data.pop(0) + ',' + data.pop(0)
+        thetar = data.pop(0) + ',' + data.pop(0) + ',' + data.pop(0)
 
 # Now we set controls
-        self.cmb_nout.setCurrentIndex(nout-2)
-        self.cmb_ninp.setCurrentIndex(ninp-2)
+        self.cmb_nout.setCurrentIndex(nout - 2)
+        self.cmb_ninp.setCurrentIndex(ninp - 2)
         self.le_tbw.setText(tbw)
         self.le_deltat.setText(deltat)
         self.le_nfft.setText(nfft)
@@ -373,7 +375,7 @@ class BIRRP(BasicModule):
         self.cmb_nz.setCurrentIndex(nz)
         self.le_c2threshe1.setText(c2threshe1)
         self.le_ofil.setText(ofil)
-        self.cmb_nlev.setCurrentIndex(nlev+3)
+        self.cmb_nlev.setCurrentIndex(nlev + 3)
         self.le_npcs.setText(npcs)
         self.le_nar.setText(nar)
         self.cmb_imode.setCurrentIndex(imode)
@@ -412,58 +414,60 @@ class BIRRP(BasicModule):
         if filename == '':
             return
 
-        birrp_path = os.path.dirname(__file__)[:-2]+r'\bin\birrp.exe'
+        birrp_path = os.path.dirname(__file__)[:-2] + r'\bin\birrp.exe'
 
-        nout = self.cmb_nout.currentIndex()+2
+        nout = self.cmb_nout.currentIndex() + 2
         nz = self.cmb_nz.currentIndex()
         jmode = self.cmb_jmode.currentIndex()
         nar = int(self.le_nar.text())
 
         with open(filename, 'w+', encoding='utf-8') as ofile:
             ofile.write('0\n')  # ilev == 0
-            ofile.write(str(self.cmb_nout.currentIndex()+2)+'\n')
-            ofile.write(str(self.cmb_ninp.currentIndex()+2)+'\n')
+            ofile.write(str(self.cmb_nout.currentIndex() + 2) + '\n')
+            ofile.write(str(self.cmb_ninp.currentIndex() + 2) + '\n')
 
-            ofile.write(self.le_tbw.text()+'\n')
-            ofile.write(self.le_deltat.text()+'\n')
-            ofile.write(self.le_nfft.text()+','+self.le_nsctmax.text()+'\n')
+            ofile.write(self.le_tbw.text() + '\n')
+            ofile.write(self.le_deltat.text() + '\n')
+            ofile.write(self.le_nfft.text() + ',' +
+                        self.le_nsctmax.text() + '\n')
             ofile.write('y\n')
-            ofile.write(self.le_uin.text()+','+self.le_ainuin.text()+'\n')
-            ofile.write(self.le_c2threshe.text()+'\n')
+            ofile.write(self.le_uin.text() + ',' +
+                        self.le_ainuin.text() + '\n')
+            ofile.write(self.le_c2threshe.text() + '\n')
             if nout == 3:
-                ofile.write(str(self.cmb_nz.currentIndex())+'\n')
+                ofile.write(str(self.cmb_nz.currentIndex()) + '\n')
             if nout == 3 and nz == 0:
-                ofile.write(self.le_c2threshe1.text()+'\n')
-            ofile.write(self.le_ofil.text()+'\n')
-            ofile.write(str(self.cmb_nlev.currentIndex()-3)+'\n')
-            ofile.write(self.le_npcs.text()+'\n')
-            ofile.write(self.le_nar.text()+'\n')
-            ofile.write(str(self.cmb_imode.currentIndex())+'\n')
-            ofile.write(str(self.cmb_jmode.currentIndex())+'\n')
+                ofile.write(self.le_c2threshe1.text() + '\n')
+            ofile.write(self.le_ofil.text() + '\n')
+            ofile.write(str(self.cmb_nlev.currentIndex() - 3) + '\n')
+            ofile.write(self.le_npcs.text() + '\n')
+            ofile.write(self.le_nar.text() + '\n')
+            ofile.write(str(self.cmb_imode.currentIndex()) + '\n')
+            ofile.write(str(self.cmb_jmode.currentIndex()) + '\n')
             if jmode == 0:
-                ofile.write(self.nread.text()+'\n')
+                ofile.write(self.nread.text() + '\n')
 
             for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:
-                nfil = int(self.le_nfil[i].text()+'\n')
+                nfil = int(self.le_nfil[i].text() + '\n')
                 if nout == 2 and i == 'hz':
                     continue
-                ofile.write(self.le_nfil[i].text()+'\n')
+                ofile.write(self.le_nfil[i].text() + '\n')
                 if nfil > 0:
-                    ofile.write(self.le_fpar[i].text()+'\n')
+                    ofile.write(self.le_fpar[i].text() + '\n')
                 if nfil < 0:
-                    ofile.write(self.le_cpar[i].text()+'\n')
+                    ofile.write(self.le_cpar[i].text() + '\n')
                 if nar < 0:
-                    ofile.write(self.le_arfilnam[i].text()+'\n')
-                ofile.write(self.le_filnam[i].text()+'\n')
+                    ofile.write(self.le_arfilnam[i].text() + '\n')
+                ofile.write(self.le_filnam[i].text() + '\n')
                 if jmode == 0:
-                    ofile.write(self.le_nskip[i].text()+'\n')
+                    ofile.write(self.le_nskip[i].text() + '\n')
                 else:
-                    ofile.write(self.le_dstim[i].text()+'\n')
-                    ofile.write(self.le_wstim[i].text()+'\n')
-                    ofile.write(self.le_wetim[i].text()+'\n')
-            ofile.write(self.le_thetae.text()+'\n')
-            ofile.write(self.le_thetab.text()+'\n')
-            ofile.write(self.le_thetar.text()+'\n')
+                    ofile.write(self.le_dstim[i].text() + '\n')
+                    ofile.write(self.le_wstim[i].text() + '\n')
+                    ofile.write(self.le_wetim[i].text() + '\n')
+            ofile.write(self.le_thetae.text() + '\n')
+            ofile.write(self.le_thetab.text() + '\n')
+            ofile.write(self.le_thetar.text() + '\n')
 
 #        MTbp.run(birrp_path, filename)
 
@@ -533,17 +537,17 @@ class BIRRP(BasicModule):
 
             text = self.le_nfil[i].text()
             val = int(text)
-            filt = str([1.]*val)[1:-1]
+            filt = str([1.] * val)[1:-1]
 
             row, _ = lay.getWidgetPosition(self.le_nfil[i])
 
             if val > 0:
                 self.le_fpar[i].setText(filt)
-                self.showrow(row+1, "FPAR: vector of filter parameters",
+                self.showrow(row + 1, "FPAR: vector of filter parameters",
                              self.le_fpar[i], lay)
                 self.removerow(self.le_cpar[i], lay)
             elif val < 0:
-                self.showrow(row+1, self.pb_cpar[i],
+                self.showrow(row + 1, self.pb_cpar[i],
                              self.le_cpar[i], lay)
                 self.removerow(self.le_fpar[i], lay)
             else:
@@ -571,7 +575,7 @@ class BIRRP(BasicModule):
         row = max([row1, row2, row3])
 
         if indx > 0:
-            self.showrow(row+1, "NBLOCK: size of data blocks", self.nblock,
+            self.showrow(row + 1, "NBLOCK: size of data blocks", self.nblock,
                          self.lay)
         elif indx == 0:
             self.removerow(self.nblock, self.lay)
@@ -589,7 +593,7 @@ class BIRRP(BasicModule):
         txt = self.cmb_jmode.currentText()
 
         if txt == '0 = by points':
-            self.showrow(row+1, "NREAD: number of data values to be read",
+            self.showrow(row + 1, "NREAD: number of data values to be read",
                          self.nread, self.lay)
         else:
             self.removerow(self.nread, self.lay)
@@ -607,11 +611,11 @@ class BIRRP(BasicModule):
                 self.removerow(self.le_wstim[i], lay)
                 self.removerow(self.le_wetim[i], lay)
             else:
-                self.showrow(row+1, "DSTIM: data series start time",
+                self.showrow(row + 1, "DSTIM: data series start time",
                              self.le_dstim[i], lay)
-                self.showrow(row+2, "WSTIM: processing window start time",
+                self.showrow(row + 2, "WSTIM: processing window start time",
                              self.le_wstim[i], lay)
-                self.showrow(row+3, "WETIM: processing window end time",
+                self.showrow(row + 3, "WETIM: processing window end time",
                              self.le_wetim[i], lay)
 
     def nout_changed(self):
@@ -630,7 +634,7 @@ class BIRRP(BasicModule):
 
 # First do NZ
         if txt == '3 = EX, EY, BZ':
-            self.showrow(row+1,
+            self.showrow(row + 1,
                          "NZ: threshold mode for vertical magnetic field",
                          self.cmb_nz, self.lay)
         else:
@@ -638,7 +642,7 @@ class BIRRP(BasicModule):
 
 # Now do C2threshe1
         if txt == '3 = EX, EY, BZ' and txt2 == '0 = separate from E':
-            self.showrow(row+2, "C2THRESHE1: coherence threshold for "
+            self.showrow(row + 2, "C2THRESHE1: coherence threshold for "
                          "vertical magnetic field",
                          self.le_c2threshe1, self.lay)
         else:
@@ -648,12 +652,12 @@ class BIRRP(BasicModule):
         if txt == '3 = EX, EY, BZ':
             row, _ = self.lay2.getWidgetPosition(self.le_nskip['ey'])
 
-            self.showrow(row+1, "NFIL: number filter parameters "
+            self.showrow(row + 1, "NFIL: number filter parameters "
                          "(<0 for filename) of hz",
                          self.le_nfil['hz'], self.lay2)
-            self.showrow(row+2, self.pb_filnam['hz'], self.le_filnam['hz'],
+            self.showrow(row + 2, self.pb_filnam['hz'], self.le_filnam['hz'],
                          self.lay2)
-            self.showrow(row+3, "NSKIP: leading values to skip in hz",
+            self.showrow(row + 3, "NSKIP: leading values to skip in hz",
                          self.le_nskip['hz'], self.lay2)
         else:
             self.removerow(self.le_nfil['hz'], self.lay2)

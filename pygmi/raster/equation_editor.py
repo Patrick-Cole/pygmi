@@ -163,7 +163,7 @@ class EquationEditor(BasicModule):
         """
         txt = self.cmb_1.currentText()
         if txt != '':
-            self.lbl_bands.setText(': '+self.bands[txt])
+            self.lbl_bands.setText(': ' + self.bands[txt])
 
     def eq_fix(self, indata):
         """
@@ -214,7 +214,7 @@ class EquationEditor(BasicModule):
             Output array.
 
         """
-        idx = eq.index('mean(')+5
+        idx = eq.index('mean(') + 5
         eq2 = eq[idx:]
         idx = eq2.index(')')
         eq2 = eq2[:idx]
@@ -259,7 +259,7 @@ class EquationEditor(BasicModule):
             Output array.
 
         """
-        idx = eq.index('std(')+4
+        idx = eq.index('std(') + 4
         eq2 = eq[idx:]
         idx = eq2.index(')')
         eq2 = eq2[:idx]
@@ -304,7 +304,7 @@ class EquationEditor(BasicModule):
             Output array.
 
         """
-        idx = eq.index('mosaic(')+7
+        idx = eq.index('mosaic(') + 7
         eq2 = eq[idx:]
         idx = eq2.index(')')
         eq2 = eq2[:idx]
@@ -382,9 +382,9 @@ class EquationEditor(BasicModule):
 
         for j, i in enumerate(indata):
             self.cmb_1.addItem(i.dataid)
-            self.bands[i.dataid] = 'i'+str(j)
+            self.bands[i.dataid] = 'i' + str(j)
             bandsall.append(i.data)
-            localdict['i'+str(j)] = i.data
+            localdict['i' + str(j)] = i.data
 
         localdict_list = list(localdict.keys())
         localdict['iall'] = np.ma.array(bandsall)
@@ -510,9 +510,9 @@ def hmode(data):
         mtmp = mhist[0].tolist()
         mind = mtmp.index(max(mtmp))
         mmin = mhist[1][mind]
-        mmax = mhist[1][mind+1]
+        mmax = mhist[1][mind + 1]
 
-    mode2 = (mmax-mmin)/2 + mmin
+    mode2 = (mmax - mmin) / 2 + mmin
 
     return mode2
 

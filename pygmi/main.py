@@ -99,7 +99,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
         self.my_start_item = start_item
         self.my_end_item = end_item
-        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.setFlag(
+            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
         if isdark:
             self.my_color = QtCore.Qt.GlobalColor.white
         else:
@@ -122,7 +123,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         extra = (self.pen().width() + 20) / 2.0
         p1 = self.line().p1()
         p2 = self.line().p2()
-        tmp = QtCore.QRectF(p1, QtCore.QSizeF(p2.x()-p1.x(), p2.y()-p1.y()))
+        tmp = QtCore.QRectF(p1, QtCore.QSizeF(
+            p2.x() - p1.x(), p2.y() - p1.y()))
 
         return tmp.normalized().adjusted(-extra, -extra, extra, extra)
 
@@ -173,13 +175,13 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         if line.dy() >= 0:
             angle = (math.pi * 2.0) - angle
 
-        arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle+pi/3) *
+        arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle + pi / 3) *
                                                arrow_size,
-                                               math.cos(angle+pi/3) *
+                                               math.cos(angle + pi / 3) *
                                                arrow_size))
-        arrow_p2 = (line.p1() + QtCore.QPointF(math.sin(angle+pi-pi/3) *
+        arrow_p2 = (line.p1() + QtCore.QPointF(math.sin(angle + pi - pi / 3) *
                                                arrow_size,
-                                               math.cos(angle+pi-pi/3) *
+                                               math.cos(angle + pi - pi / 3) *
                                                arrow_size))
 
         self.arrow_head.clear()
@@ -293,8 +295,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.my_polygon = QtGui.QPolygonF(my_points)
 
         self.setPolygon(self.my_polygon)
-        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
-        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.setFlag(
+            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+        self.setFlag(
+            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
         """Add Arrow.
@@ -444,13 +448,13 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         my_class_name = ' '.join(self.my_class_name.split())
 
         self.my_class.parent.process_is_active()
-        self.showlog(my_class_name+' busy...')
+        self.showlog(my_class_name + ' busy...')
         iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
-            self.showlog(my_class_name+' finished!')
+            self.showlog(my_class_name + ' finished!')
         else:
-            self.showlog(my_class_name+' cancelled.')
+            self.showlog(my_class_name + ' cancelled.')
 
         if self.my_class.is_import is True and self.text_item is not None:
             ifile = os.path.basename(self.my_class.ifile)
@@ -541,10 +545,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                     else:
                         file = i
                     if '.SAFE' in file:
-                        file = file.split('.SAFE')[0]+'.SAFE'
+                        file = file.split('.SAFE')[0] + '.SAFE'
                     text += os.path.basename(file) + '\n'
                     for j in idata[i]:
-                        text += '  '+j.dataid + '\n'
+                        text += '  ' + j.dataid + '\n'
 
         if hasattr(tmp[0].my_class, 'outdata'):
             odata = tmp[0].my_class.outdata
@@ -561,18 +565,18 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                     else:
                         file = i
                     if '.SAFE' in file:
-                        file = file.split('.SAFE')[0]+'.SAFE'
+                        file = file.split('.SAFE')[0] + '.SAFE'
                     text += os.path.basename(file) + '\n'
                     for j in odata[i]:
-                        text += '  '+j.dataid + '\n'
+                        text += '  ' + j.dataid + '\n'
                 if i == 'Model3D':
                     text += i + '\n'
                     for j in odata[i][0].lith_list:
-                        text += '  '+j + '\n'
+                        text += '  ' + j + '\n'
                 if i == 'MT - EDI':
                     text += i + '\n'
                     for j in odata[i]:
-                        text += '  '+j + '\n'
+                        text += '  ' + j + '\n'
 
         self.parent.showdatainfo(text)
 
@@ -649,7 +653,7 @@ class MainWidget(QtWidgets.QMainWindow):
     def __init__(self, parent=None, nocgs=True):
         super().__init__(parent)
 
-        ipth = os.path.dirname(menu_default.__file__)+r'/images/'
+        ipth = os.path.dirname(menu_default.__file__) + r'/images/'
 
         self.__version__ = pygmi.__version__
         self.pdlg = []
@@ -686,25 +690,27 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_pointer.setChecked(True)
 
         if isdark:
-            self.action_run.setIcon(QtGui.QIcon(ipth+'playdark.png'))
-            self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointerdark.png'))
+            self.action_run.setIcon(QtGui.QIcon(ipth + 'playdark.png'))
+            self.action_linepointer.setIcon(
+                QtGui.QIcon(ipth + 'linepointerdark.png'))
         else:
-            self.action_run.setIcon(QtGui.QIcon(ipth+'play.png'))
-            self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
+            self.action_run.setIcon(QtGui.QIcon(ipth + 'play.png'))
+            self.action_linepointer.setIcon(
+                QtGui.QIcon(ipth + 'linepointer.png'))
 
-        self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
+        self.action_delete.setIcon(QtGui.QIcon(ipth + 'delete.png'))
         self.action_bring_to_front.setIcon(
-            QtGui.QIcon(ipth+'bringtofront.png'))
-        self.action_send_to_back.setIcon(QtGui.QIcon(ipth+'sendtoback.png'))
-        self.action_pointer.setIcon(QtGui.QIcon(ipth+'pointer.png'))
-        self.action_help.setIcon(QtGui.QIcon(ipth+'Qhelp.png'))
+            QtGui.QIcon(ipth + 'bringtofront.png'))
+        self.action_send_to_back.setIcon(QtGui.QIcon(ipth + 'sendtoback.png'))
+        self.action_pointer.setIcon(QtGui.QIcon(ipth + 'pointer.png'))
+        self.action_help.setIcon(QtGui.QIcon(ipth + 'Qhelp.png'))
 
-        self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
+        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
         self.setupui()
 
         menus = []
         for _, modname, _ in pkgutil.walk_packages(
-                path=pygmi.__path__, prefix=pygmi.__name__+'.',
+                path=pygmi.__path__, prefix=pygmi.__name__ + '.',
                 onerror=lambda x: None):
             menus.append(modname)
 
@@ -712,10 +718,10 @@ class MainWidget(QtWidgets.QMainWindow):
             menus.pop(menus.index('pygmi.cgs.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
-        menus = [raster_menu, vector_menu]+menus
+        menus = [raster_menu, vector_menu] + menus
         menus = [i for i in menus if 'menu' in i[-5:]]
 
-        start = Startup(len(menus)+1)
+        start = Startup(len(menus) + 1)
         start.update()
 
         menuimports = []
@@ -922,7 +928,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def help_docs(self):
         """Help Routine."""
-        ipth = os.path.dirname(__file__)+r'//helpdocs//html'
+        ipth = os.path.dirname(__file__) + r'//helpdocs//html'
         hfile = os.path.join(ipth, 'interface.html')
         webbrowser.open(hfile)
 
@@ -995,10 +1001,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
         # Actual polygon item
         text_width = text_item.boundingRect().width()
-        item.np_poly *= 1.5*text_width/np.ptp(item.np_poly[:, 0])
+        item.np_poly *= 1.5 * text_width / np.ptp(item.np_poly[:, 0])
         item.np_poly[:, 0] += (text_item.boundingRect().left() -
-                               item.np_poly[:, 0].min() - text_width/4)
-        item.np_poly[:, 1] += text_item.boundingRect().height()/2
+                               item.np_poly[:, 0].min() - text_width / 4)
+        item.np_poly[:, 1] += text_item.boundingRect().height() / 2
 
         my_points = []
         for i in item.np_poly:
@@ -1014,8 +1020,8 @@ class MainWidget(QtWidgets.QMainWindow):
         # Add item to scene and merge
         self.scene.addItem(item)
 
-        xxyy = self.view.mapToScene(self.view.width()//2,
-                                    self.view.height()//2)
+        xxyy = self.view.mapToScene(self.view.width() // 2,
+                                    self.view.height() // 2)
         item.setPos(xxyy)
 
         text_item.setParentItem(item)
@@ -1313,7 +1319,7 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         txtobj = self.textbrowser_processlog
 
-        txtmsg = str(txtobj.toPlainText()+'\n')
+        txtmsg = str(txtobj.toPlainText() + '\n')
         if replacelast is True:
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
@@ -1338,7 +1344,7 @@ class MainWidget(QtWidgets.QMainWindow):
         dlg : object
             Object to be appended to self.pdlg
         """
-        for i in range(len(self.pdlg)-1, -1, -1):
+        for i in range(len(self.pdlg) - 1, -1, -1):
             try:
                 if not self.pdlg[i].isVisible():
                     self.pdlg.pop(i)
@@ -1429,8 +1435,8 @@ def main(nocgs=False):
 
     screen_resolution = app.primaryScreen().geometry()
     width, height = screen_resolution.width(), screen_resolution.height()
-    width = int(width*0.75)
-    height = int(height*0.75)
+    width = int(width * 0.75)
+    height = int(height * 0.75)
 
     wid = MainWidget(nocgs=nocgs)
     wid.resize(width, height)

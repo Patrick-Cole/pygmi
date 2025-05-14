@@ -104,7 +104,7 @@ class HelpMenu():
 
         msg = ('<p>Name: PyGMI - Python Geoscience Modelling and '
                'Interpretation</p>'
-               'Version: '+self.parent.__version__+'<br>'
+               'Version: ' + self.parent.__version__ + '<br>'
                'Author: Patrick Cole<br>'
                'E-Mail: pcole@geoscience.org.za<br>'
                'Copyright: \xa9 2013-' + year +
@@ -125,16 +125,16 @@ class HelpMenu():
                '<a href="http://www.gnu.org/licenses">'
                'http://www.gnu.org/licenses </a></p>')
 
-        ipth = os.path.dirname(__file__)+r'/images/'
+        ipth = os.path.dirname(__file__) + r'/images/'
 
         msg += ('<p style="text-align:right"></p><img alt="CGS Logo" '
-                'src="'+ipth+'cgslogo.png"')
+                'src="' + ipth + 'cgslogo.png"')
 
         QtWidgets.QMessageBox.about(self.parent, 'PyGMI', msg)
 
     def webhelp(self):
         """Help File."""
-        ipth = os.path.dirname(__file__)+r'//helpdocs//html//wiki.html'
+        ipth = os.path.dirname(__file__) + r'//helpdocs//html//wiki.html'
         webbrowser.open(ipth)
 
 
@@ -160,8 +160,8 @@ class HelpButton(QtWidgets.QPushButton):
         self.setMinimumHeight(32)
         self.setMinimumWidth(52)
 
-        ipth = os.path.dirname(__file__)+r'/images/'
-        self.setIcon(QtGui.QIcon(ipth+'help.png'))
+        ipth = os.path.dirname(__file__) + r'/images/'
+        self.setIcon(QtGui.QIcon(ipth + 'help.png'))
         self.setIconSize(self.minimumSize())
         self.clicked.connect(self.help_docs)
         self.setFlat(True)
@@ -169,7 +169,6 @@ class HelpButton(QtWidgets.QPushButton):
     def help_docs(self):
         """Help Routine."""
         if self.htmlfile is not None:
-            ipth = os.path.dirname(__file__)+r'//helpdocs//html'
-            hfile = os.path.join(ipth, self.htmlfile+'.html')
+            ipth = os.path.dirname(__file__) + r'//helpdocs//html'
+            hfile = os.path.join(ipth, self.htmlfile + '.html')
             webbrowser.open(hfile)
-

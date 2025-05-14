@@ -95,7 +95,7 @@ class GraphMap(FigureCanvasQTAgg):
         dat = self.datarr[self.mindx].data
 
         if self.refl != 1.:
-            dat = dat/self.refl
+            dat = dat / self.refl
 
         self.figure.clf()
         ax1 = self.figure.add_subplot(211)
@@ -107,7 +107,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         prof = [i.data[self.row, self.col] for i in self.datarr]
 
-        prof = np.ma.stack(prof).filled(0)/self.refl
+        prof = np.ma.stack(prof).filled(0) / self.refl
 
         ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
         ax2.grid(True)
@@ -115,7 +115,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         if self.remhull is True:
             hull = phull(prof)
-            ax2.plot(self.wvl, prof/hull)
+            ax2.plot(self.wvl, prof / hull)
         else:
             ax2.plot(self.wvl, prof)
 
@@ -130,7 +130,7 @@ class GraphMap(FigureCanvasQTAgg):
 
             if self.remhull is True:
                 hull = phull(prof2)
-                ax2.plot(spec['wvl'], prof2/hull)
+                ax2.plot(spec['wvl'], prof2 / hull)
                 ax2.set_ylim(top=1.01)
             else:
                 ax2.plot(spec['wvl'], prof2)
@@ -140,7 +140,7 @@ class GraphMap(FigureCanvasQTAgg):
         bmin = self.feature[1]
         bmax = self.feature[2]
 
-        rect = mpatches.Rectangle((bmin, zmin), bmax-bmin, zmax-zmin)
+        rect = mpatches.Rectangle((bmin, zmin), bmax - bmin, zmax - zmin)
         rect.set_facecolor([0, 1, 0])
         rect.set_alpha(0.5)
         ax2.add_patch(rect)
@@ -158,9 +158,9 @@ class GraphMap(FigureCanvasQTAgg):
         blueidx = (np.abs(self.wvl - 465)).argmin()
 
         if self.rgb is True:
-            red = dat[redidx].data/self.refl
-            green = dat[greenidx].data/self.refl
-            blue = dat[blueidx].data/self.refl
+            red = dat[redidx].data / self.refl
+            green = dat[greenidx].data / self.refl
+            blue = dat[blueidx].data / self.refl
 
             data = [red, green, blue]
             data = np.ma.array(data)
@@ -169,15 +169,15 @@ class GraphMap(FigureCanvasQTAgg):
             uclip = [0, 0, 0]
 
             lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
         else:
-            data = dat[self.mindx].data/self.refl
+            data = dat[self.mindx].data / self.refl
             lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100-clippercu])
+                                         [clippercl, 100 - clippercu])
 
         extent = dat[self.mindx].extent
 
@@ -329,8 +329,8 @@ class AnalSpec(BasicModule):
 
         dat = self.map.datarr[self.map.mindx]
 
-        self.map.row = int((dat.extent[-1]-self.map.row)//dat.ydim)
-        self.map.col = int((self.map.col-dat.extent[0])//dat.xdim)
+        self.map.row = int((dat.extent[-1] - self.map.row) // dat.ydim)
+        self.map.col = int((self.map.col - dat.extent[0]) // dat.xdim)
 
         # if self.cb_rgb.isChecked():
         #     self.map.row, self.map.col = self.map.col, self.map.row
@@ -504,7 +504,7 @@ class AnalSpec(BasicModule):
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
-            self.map.wvl = self.map.wvl*1000.
+            self.map.wvl = self.map.wvl * 1000.
             self.showlog('Wavelengths appear to be in nanometers. '
                          'Converting to micrometers.')
 
@@ -819,7 +819,7 @@ class ProcFeatures(BasicModule):
             os.makedirs(odir, exist_ok=True)
             for idat in flist:
                 ifile = idat.filename
-                self.showlog('Processing '+os.path.basename(ifile))
+                self.showlog('Processing ' + os.path.basename(ifile))
 
                 dat = get_from_rastermeta(idat, showlog=self.showlog,
                                           piter=self.piter)
@@ -835,7 +835,7 @@ class ProcFeatures(BasicModule):
                     self.showlog(' Could not find any ' + mineral +
                                  '. No data to export.')
                 else:
-                    self.showlog('Exporting '+os.path.basename(ofile))
+                    self.showlog('Exporting ' + os.path.basename(ofile))
                     export_raster(ofile, datfin, drv='GTiff', piter=self.piter,
                                   showlog=self.showlog)
 
@@ -894,13 +894,13 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
 
     allfeatures = []
     for f in feature:
-        for p in product+cryst:
+        for p in product + cryst:
             if f in p and f not in allfeatures:
                 allfeatures.append(f)
 
     allratios = []
     for r in ratio:
-        for p in product+cryst:
+        for p in product + cryst:
             if r in p and r not in allratios:
                 allratios.append(r)
 
@@ -922,8 +922,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     # It does not interpolate.
     RBands = {}
     for j in range(1, 2501):
-        i = abs(xval-j).argmin()
-        RBands['R'+str(j)] = dat2[i]
+        i = abs(xval - j).argmin()
+        RBands['R' + str(j)] = dat2[i]
 
     datfin = []
     # Calclate ratios
@@ -946,11 +946,11 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             lmin, lmax = fmin, fmax
 
         # get index of closest wavelength
-        i1 = abs(xval-fmin).argmin()
-        i2 = abs(xval-fmax).argmin()
+        i1 = abs(xval - fmin).argmin()
+        i2 = abs(xval - fmax).argmin()
 
-        fdat = dat2[i1:i2+1]
-        xdat = xval[i1:i2+1]
+        fdat = dat2[i1:i2 + 1]
+        xdat = xval[i1:i2 + 1]
 
         # Raster calculation
         _, rows, cols = dat2.shape
@@ -980,7 +980,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             dattmp = {}
             for j in datcalc:
                 if j in i:
-                    dattmp[j] = datcalc[j]*dmax[j]
+                    dattmp[j] = datcalc[j] * dmax[j]
             tmp = ne.evaluate(i, dattmp)
         else:
             tmp = ne.evaluate(i, datcalc)
@@ -1016,7 +1016,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             dattmp = {}
             for j in datcalc:
                 if j in i:
-                    dattmp[j] = datcalc[j]*dmax[j]
+                    dattmp[j] = datcalc[j] * dmax[j]
             tmp = ne.evaluate(i, dattmp)
         else:
             tmp = ne.evaluate(i, datcalc)
@@ -1104,12 +1104,12 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
             continue
 
         yhull = phulljit(yval)
-        crem = yval/yhull
+        crem = yval / yhull
         mtmp[j] = -(yval - yhull).min()
 
         imin = crem[i1a:i2a].argmin()
 
-        if imin in (0, i2a-i1a-1):
+        if imin in (0, i2a - i1a - 1):
             dtmp[j] = 1. - crem[i1a:i2a][imin]
             ptmp[j] = xdat[i1a:i2a][imin]
             continue
@@ -1144,61 +1144,75 @@ def cubic_calc(xdat, crem, imin):
         y value at minimum.
 
     """
-    x1 = xdat[imin-1]
+    x1 = xdat[imin - 1]
     x2 = xdat[imin]
-    x3 = xdat[imin+1]
+    x3 = xdat[imin + 1]
 
-    y1 = crem[imin-1]
+    y1 = crem[imin - 1]
     y2 = crem[imin]
-    y3 = crem[imin+1]
+    y3 = crem[imin + 1]
 
     x = x2
     y = y2
 
-    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 +
-          2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 +
-          x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 -
-          2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 +
-          2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 +
-          3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 -
-          2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 -
-          2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
-                x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
-          x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    a1 = (2 * x1**3 * x2 * y3 - 2 * x1**3 * x3 * y2 - x1**2 * x2**2 * y2 -
+          3 * x1**2 * x2**2 * y3 +
+          2 * x1**2 * x2 * x3 * y2 + 2 * x1**2 * x3**2 * y2 + x1 * x2**3 * y1 +
+          x1 * x2**3 * y3 +
+          x1 * x2**2 * x3 * y1 + x1 * x2**2 * x3 * y2 -
+          2 * x1 * x2 * x3**2 * y1 -
+          2 * x1 * x2 * x3**2 * y2 - 2 * x2**3 * x3 * y1 +
+          2 * x2**2 * x3**2 * y1) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
+    b1 = (2 * x1**3 * y2 - 2 * x1**3 * y3 - 4 * x1 * x2**2 * y1 +
+          x1 * x2**2 * y2 +
+          3 * x1 * x2**2 * y3 + 2 * x1 * x2 * x3 * y1 - 2 * x1 * x2 * x3 * y2 +
+          2 * x1 * x3**2 * y1 -
+          2 * x1 * x3**2 * y2 + x2**3 * y1 - x2**3 * y3 + x2**2 * x3 * y1 -
+          x2**2 * x3 * y2 -
+          2 * x2 * x3**2 * y1 + 2 * x2 * x3**2 * y2) / (2 * (x1 - x2)**2 *
+                                                        (x1 - x3) * (x2 - x3))
+    c1 = -3 * x1 * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
+                    x3 * y2) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
+    d1 = (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
+          x3 * y2) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
 
-    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 +
-          2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 +
-          2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 -
-          3*x2**2*x3**2*y1 - x2**2*x3**2*y2 +
-          2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 -
-          x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 -
-          x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 -
-          2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
-               x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
-           x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    a2 = (2 * x1**2 * x2**2 * y3 - 2 * x1**2 * x2 * x3 * y2 -
+          2 * x1**2 * x2 * x3 * y3 +
+          2 * x1**2 * x3**2 * y2 - 2 * x1 * x2**3 * y3 + x1 * x2**2 * x3 * y2 +
+          x1 * x2**2 * x3 * y3 +
+          2 * x1 * x2 * x3**2 * y2 - 2 * x1 * x3**3 * y2 + x2**3 * x3 * y1 +
+          x2**3 * x3 * y3 -
+          3 * x2**2 * x3**2 * y1 - x2**2 * x3**2 * y2 +
+          2 * x2 * x3**3 * y1) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
+    b2 = (2 * x1**2 * x2 * y2 - 2 * x1**2 * x2 * y3 - 2 * x1**2 * x3 * y2 +
+          2 * x1**2 * x3 * y3 -
+          x1 * x2**2 * y2 + x1 * x2**2 * y3 - 2 * x1 * x2 * x3 * y2 +
+          2 * x1 * x2 * x3 * y3 -
+          x2**3 * y1 + x2**3 * y3 + 3 * x2**2 * x3 * y1 + x2**2 * x3 * y2 -
+          4 * x2**2 * x3 * y3 -
+          2 * x3**3 * y1 + 2 * x3**3 * y2) / (2 * (x1 - x2) * (x1 - x3) *
+                                              (x2 - x3)**2)
+    c2 = 3 * x3 * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
+                   x3 * y2) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
+    d2 = -(x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
+           x3 * y2) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
 
     if abs(d1) > 2.22e+16:
-        min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
-                -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+        min1 = [(-c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1),
+                -(c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1)]
         for i in min1:
             if x1 < i < x2:
                 x = i
-                y = a1+b1*x+c1*x**2+d1*x**3
+                y = a1 + b1 * x + c1 * x**2 + d1 * x**3
 
     if abs(d2) > 2.22e+16:
-        min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
-                -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+        min2 = [(-c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2),
+                -(c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2)]
 
         for i in min2:
             if x2 < i < x3:
                 x = i
-                y = a2+b2*x+c2*x**2+d2*x**3
+                y = a2 + b2 * x + c2 * x**2 + d2 * x**3
 
     return x, y
 
@@ -1232,15 +1246,15 @@ def phulljit(sample1):
     hull = [0]
     while len(rest) > 0:
         grad = rest - edge
-        grad = grad[:, 1]/grad[:, 0]
+        grad = grad[:, 1] / grad[:, 0]
         pivot = np.argmax(grad)
         edge[0, 0] = rest[pivot, 0]
         edge[0, 1] = rest[pivot, 1]
-        rest = rest[pivot+1:]
+        rest = rest[pivot + 1:]
         hull.append(pivot)
 
     hull = np.array(hull) + 1
-    hull = hull.cumsum()-1
+    hull = hull.cumsum() - 1
 
     take = np.take(sample[:, 1], hull)
 
@@ -1269,8 +1283,8 @@ def phull(y):
     x = np.arange(y.size, dtype=np.int64)
     points = np.transpose([x, y])
 
-    augmented = np.concatenate([points, [(x[0], np.min(y)-1),
-                                         (x[-1], np.min(y)-1)]], axis=0)
+    augmented = np.concatenate([points, [(x[0], np.min(y) - 1),
+                                         (x[-1], np.min(y) - 1)]], axis=0)
     hull = ConvexHull(augmented)
     continuum_points = points[np.sort([v for v in hull.vertices
                                        if v < len(points)])]
@@ -1295,7 +1309,7 @@ def readsli(ifile):
     spectra : dictionary
         Dictionary of spectra with wavelengths and reflectances.
     """
-    with open(ifile[:-4]+'.hdr', encoding='utf-8') as file:
+    with open(ifile[:-4] + '.hdr', encoding='utf-8') as file:
         hdr = file.read()
 
     hdr = hdr.split('\n')
@@ -1365,7 +1379,7 @@ def readsli(ifile):
     if hdr3['wavelength units'].lower() == 'micrometers':
         wmult = 1000.
 
-    hdr3['wavelength'] = np.array(hdr3['wavelength'])*wmult
+    hdr3['wavelength'] = np.array(hdr3['wavelength']) * wmult
 
     for i, val in enumerate(hdr3['spectra names']):
         spectra[val] = {'wvl': hdr3['wavelength'],
@@ -1383,7 +1397,6 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
     ifile = r"D:\Hyper\042_0816-1139_ref_rect.hdr"
-
 
     getinfo()
     bands, tnames, data = files_to_rastermeta([ifile])

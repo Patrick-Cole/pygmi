@@ -27,6 +27,7 @@ pygmi_pypi.py
 findlibs.py
 log.txt
 err.log
+flake8.txt
 Thumbs.db
 pygmi/test/2D_INV_Lines.csv
 pygmi/test/2D_INV_Lines_1000m.csv

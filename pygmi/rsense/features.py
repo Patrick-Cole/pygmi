@@ -56,7 +56,8 @@ ratio['r2160D2190'] = '(R2136+R2188)/(R2153+R2171)'  # Kaolin from non kaolin
 ratio['r2200D'] = '(R2120+R2245)/(R2175+R2220)'
 ratio['r2250D'] = '(R2227+R2275)/(R2241+R2259)'  # Chlorite epidote biotite
 ratio['r2320D'] = '(R2295+R2345)/(R2305+R2322)'
-ratio['r2330D'] = '(R2300+R2349)/(R2316+R2333)'  # (R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
+# (R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
+ratio['r2330D'] = '(R2300+R2349)/(R2316+R2333)'
 ratio['r2350De'] = '(R2326+R2376)/(R2343+R2359)'
 ratio['r2380D'] = '(R2365+R2415)/(R2381+R2390)'  # Amphibole, talc
 

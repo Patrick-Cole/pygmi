@@ -278,16 +278,16 @@ def extendlines(gdf, length=500, piter=iter):
         line = np.array(row.coords)
 
         p2, p1 = line[:2]
-        theta = np.arctan2(p2[1]-p1[1], p2[0]-p1[0])
-        dy = length*np.sin(theta)
-        dx = length*np.cos(theta)
-        line[0] = (p2[0]+dx, p2[1]+dy)
+        theta = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
+        dy = length * np.sin(theta)
+        dx = length * np.cos(theta)
+        line[0] = (p2[0] + dx, p2[1] + dy)
 
         p1, p2 = line[-2:]
-        theta = np.arctan2(p2[1]-p1[1], p2[0]-p1[0])
-        dy = length*np.sin(theta)
-        dx = length*np.cos(theta)
-        line[-1] = (p2[0]+dx, p2[1]+dy)
+        theta = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
+        dy = length * np.sin(theta)
+        dx = length * np.cos(theta)
+        line[-1] = (p2[0] + dx, p2[1] + dy)
 
         gdf2.loc[i, 'geometry'] = shapely.LineString(line)
 
@@ -327,7 +327,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     geom1 = gdf.geometry
 
     for i, line1 in enumerate(piter(geom1)):
-        geom2 = gdf.loc[i+1:, 'geometry']
+        geom2 = gdf.loc[i + 1:, 'geometry']
         pnts1 = geom2.intersection(line1)
         pnts1 = pnts1[~pnts1.is_empty]
         for pnt in pnts1:
@@ -345,25 +345,25 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     H = np.zeros((ycoords.size, xcoords.size))
 
     for pnt in piter(geom2):
-        xdiff = np.exp(-(xcoords-pnt.x)**2/(2*var))
-        ydiff = np.exp(-(ycoords-pnt.y)**2/(2*var))
+        xdiff = np.exp(-(xcoords - pnt.x)**2 / (2 * var))
+        ydiff = np.exp(-(ycoords - pnt.y)**2 / (2 * var))
         x1, y1 = np.meshgrid(xdiff, ydiff, copy=False)
         H = ne.evaluate('H+x1*y1')
 
-    G = 1/np.sqrt(2*np.pi*var)
-    H = G*H
+    G = 1 / np.sqrt(2 * np.pi * var)
+    H = G * H
 
     dat = Data()
     dat.dataid = 'Feature Intersection Density'
     dat.data = np.ma.array(H[::-1])
-    xmin = xcoords[0] - dxy/2
-    ymax = ycoords[-1] + dxy/2
+    xmin = xcoords[0] - dxy / 2
+    ymax = ycoords[-1] + dxy / 2
     dat.set_transform(dxy, xmin, dxy, ymax)
     dat.crs = gdf.crs
     dat.nodata = 1e+20
 
     geom2 = gpd.GeoDataFrame(geometry=geom2)
-    geom2['Intersection'] = geom2.index+1
+    geom2['Intersection'] = geom2.index + 1
 
     return geom2, dat
 
@@ -411,8 +411,8 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     E = np.zeros(oshape)
     for i in datall:
         pi = correlate(datall[i], fmat, 'same', 'direct')
-        pi = 100*pi/linepix
-        E += pi*np.log(pi, where=pi != 0)
+        pi = 100 * pi / linepix
+        E += pi * np.log(pi, where=pi != 0)
     E = -E
 
     dat = Data()
@@ -470,24 +470,24 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     numall = np.zeros(oshape)
     for ai in datall:
         num = correlate(datall[ai], fmat, 'same', 'direct')
-        c1 += num*np.cos(np.deg2rad(ai))
-        s1 += num*np.sin(np.deg2rad(ai))
+        c1 += num * np.cos(np.deg2rad(ai))
+        s1 += num * np.sin(np.deg2rad(ai))
 
-        c2 += num*np.cos(2*np.deg2rad(ai))
-        s2 += num*np.sin(2*np.deg2rad(ai))
+        c2 += num * np.cos(2 * np.deg2rad(ai))
+        s2 += num * np.sin(2 * np.deg2rad(ai))
 
         numall += num
 
     numall[numall == 0] = 1
-    r1 = np.sqrt(c1**2+s1**2)/numall
-    v1 = 1-r1
+    r1 = np.sqrt(c1**2 + s1**2) / numall
+    v1 = 1 - r1
     v1[v1 == 1] = 0.
-    c2 = c2/numall
-    s2 = s2/numall
+    c2 = c2 / numall
+    s2 = s2 / numall
 
     t2 = np.arctan2(s2, c2)
 
-    d1 = (1-t2)/(2*r1**2)
+    d1 = (1 - t2) / (2 * r1**2)
 
     vdat = Data()
     vdat.dataid = 'Circular Variance'
@@ -534,13 +534,13 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
                     transform=transform,
                     all_touched=True)
 
-    d1 = np.zeros(oshape)+np.nan
+    d1 = np.zeros(oshape) + np.nan
     w = wsize // 2
     rows, cols = oshape
 
-    for i in piter(range(w, rows-w)):
-        for j in range(w, cols-w):
-            wdat = dat[i-w:i+w+1, j-w:j+w+1]
+    for i in piter(range(w, rows - w)):
+        for j in range(w, cols - w):
+            wdat = dat[i - w:i + w + 1, j - w:j + w + 1]
             d1[i, j] = fractal_dimension(wdat)
 
     fdat = Data()
@@ -614,7 +614,8 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         # search over all offsets
         for offset in offsets:
             bin_edges = [np.arange(0, i, scale) for i in warray.shape]
-            bin_edges = [np.hstack([0-offset, x+offset]) for x in bin_edges]
+            bin_edges = [np.hstack([0 - offset, x + offset])
+                         for x in bin_edges]
             H1, _ = np.histogramdd(voxels, bins=bin_edges)
 
             touched.append(np.sum(H1 > 0))
@@ -635,7 +636,7 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         return np.nan
 
     # perform fit
-    coeffs = np.polyfit(np.log(1/scales), np.log(Ns), 1)
+    coeffs = np.polyfit(np.log(1 / scales), np.log(Ns), 1)
 
     return coeffs[0]
 
@@ -675,7 +676,7 @@ def segments_to_angles(gdf, piter=iter):
         if np.all(p1 == p2):
             continue
 
-        theta = np.arctan((p2[1]-p1[1])/(p2[0]-p1[0]))
+        theta = np.arctan((p2[1] - p1[1]) / (p2[0] - p1[0]))
         theta = np.rad2deg(theta)
         if theta < 0:
             theta += 180

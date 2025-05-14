@@ -38,7 +38,6 @@ import numpy as np
 
 from PyQt6 import QtWidgets
 from matplotlib import colormaps
-from matplotlib import cm
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -228,17 +227,17 @@ class TiltDepth(BasicModule):
 
         cmap = colormaps[txt]
 
-        vmin = zout.data.mean() - 2.5*zout.data.std()
-        vmax = zout.data.mean() + 2.5*zout.data.std()
+        vmin = zout.data.mean() - 2.5 * zout.data.std()
+        vmax = zout.data.mean() + 2.5 * zout.data.std()
 
         self.axes.imshow(zout.data, extent=zout.extent, cmap='gray',
                          interpolation='nearest', vmin=vmin, vmax=vmax)
 
         cmap = colormaps.get_cmap(txt)
         cmap2 = np.array([cmap(i) for i in range(cmap.N)])
-        low = int(cmap.N*(45/180))
-        high = int(cmap.N*(135/180))
-        cmap2[low:high] = cmap2[int(cmap.N/2)]
+        low = int(cmap.N * (45 / 180))
+        high = int(cmap.N * (135 / 180))
+        cmap2[low:high] = cmap2[int(cmap.N / 2)]
 
         ims = self.axes.scatter(gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
 
@@ -371,20 +370,20 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
 
     nr, nc = zout.data.shape
     dy, dx = np.gradient(zout.data)
-    dxtot = np.ma.sqrt(dx**2+dy**2)
+    dxtot = np.ma.sqrt(dx**2 + dy**2)
 
     nmax = np.max([nr, nc])
     npts = int(2**nextpow2(nmax))
     dz = vertical(zout.data, npts, 1)
 
-    t1 = np.arctan(dz/dxtot)
+    t1 = np.arctan(dz / dxtot)
 
     pbar.setValue(2)
     # A negative number implies we are straddling 0
 
     # Contour tilt
-    x = zout.extent[0] + np.arange(nc)*zout.xdim+zout.xdim/2
-    y = zout.extent[-1] - np.arange(nr)*zout.ydim-zout.ydim/2
+    x = zout.extent[0] + np.arange(nc) * zout.xdim + zout.xdim / 2
+    y = zout.extent[-1] - np.arange(nr) * zout.ydim - zout.ydim / 2
 
     X, Y = np.meshgrid(x, y)
     Z = np.rad2deg(t1)
@@ -416,15 +415,15 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
     dx2 = gxm45[dmin2] - gx0
     dy2 = gym45[dmin2] - gy0
 
-    grad = np.arctan2(dy1, dx1)*180/pi
+    grad = np.arctan2(dy1, dx1) * 180 / pi
     grad[grad > 90] -= 180
     grad[grad < -90] += 180
-    gtmp1 = np.abs(90-np.abs(grad-cgrad0))
+    gtmp1 = np.abs(90 - np.abs(grad - cgrad0))
 
-    grad = np.arctan2(dy2, dx2)*180/pi
+    grad = np.arctan2(dy2, dx2) * 180 / pi
     grad[grad > 90] -= 180
     grad[grad < -90] += 180
-    gtmp2 = np.abs(90-np.abs(grad-cgrad0))
+    gtmp2 = np.abs(90 - np.abs(grad - cgrad0))
 
     gtmp = np.logical_and(gtmp1 <= 10, gtmp2 <= 10)
 
@@ -436,8 +435,8 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
     dx2 = dx2[gtmp]
     dy2 = dy2[gtmp]
 
-    dist1 = np.sqrt(dx1**2+dy1**2)
-    dist2 = np.sqrt(dx2**2+dy2**2)
+    dist1 = np.sqrt(dx1**2 + dy1**2)
+    dist2 = np.sqrt(dx2**2 + dy2**2)
 
     dist = np.min([dist1, dist2], 0)
 
@@ -473,10 +472,10 @@ def distpc(dx, dy, dx0, dy0, dcnt):
 
     """
     num = dx.size
-    dmin = (dx0-dx[dcnt])**2+(dy0-dy[dcnt])**2
+    dmin = (dx0 - dx[dcnt])**2 + (dy0 - dy[dcnt])**2
 
     for i in range(num):
-        dist = (dx0-dx[i])**2+(dy0-dy[i])**2
+        dist = (dx0 - dx[i])**2 + (dy0 - dy[i])**2
         if dmin > dist:
             dcnt = i
             dmin = dist
@@ -523,10 +522,10 @@ def vgrad(cnt):
             dx = np.diff(cntvert[:, 0])
             dy = np.diff(cntvert[:, 1])
 
-            cntid.extend([n]*dx.size)
+            cntid.extend([n] * dx.size)
 
-            gx.extend((cntvert[:, 0][:-1] + dx/2).tolist())
-            gy.extend((cntvert[:, 1][:-1] + dy/2).tolist())
+            gx.extend((cntvert[:, 0][:-1] + dx / 2).tolist())
+            gy.extend((cntvert[:, 1][:-1] + dy / 2).tolist())
             dx2.extend(dx)
             dy2.extend(dy)
 

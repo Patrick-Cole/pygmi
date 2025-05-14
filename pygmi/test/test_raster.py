@@ -55,7 +55,7 @@ def test_gradients():
 def test_dratio():
     """test derivative ratio."""
     datin = [[1, 2], [1, 2]]
-    dat2 = [[-np.pi/2, -np.pi/2], [-np.pi/2, -np.pi/2]]
+    dat2 = [[-np.pi / 2, -np.pi / 2], [-np.pi / 2, -np.pi / 2]]
     dat = cooper.derivative_ratio(datin, 90, 1)
     np.testing.assert_array_equal(dat, dat2)
 
@@ -71,8 +71,8 @@ def test_thgrad():
 def test_vertical():
     """test vertical derivative."""
     datin = np.array([[1, 2], [1, 2]])
-    dat2 = np.array([[-0.90757121,  0.90757121],
-                     [-0.90757121,  0.90757121]])
+    dat2 = np.array([[-0.90757121, 0.90757121],
+                     [-0.90757121, 0.90757121]])
     dat = cooper.vertical(datin, 10)
     np.testing.assert_array_almost_equal(dat, dat2)
 
@@ -183,8 +183,8 @@ def test_shader():
              0.7680632445003582]]
 
     cell = 100.
-    phi = -np.pi/4.
-    theta = np.pi/4.
+    phi = -np.pi / 4.
+    theta = np.pi / 4.
     alpha = .0
 
     dat = ginterp.currentshader(data, cell, theta, phi, alpha)

@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-This module provides a variety of methods to plot borehole data via the context
-menu.
-"""
+"""Methods to plot borehole data via the context menu."""
 
 import xml
 import re
@@ -75,12 +72,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax = fig.gca()
 
         idir = __file__.rpartition('\\')[0]
-        logfile = idir+'\\logplot.xlsx'
+        logfile = idir + '\\logplot.xlsx'
 
         pagewidth = 8
         pageheight = 4
         dpp = 14  # depth per page
-        wpp = dpp*pagewidth/pageheight
+        wpp = dpp * pagewidth / pageheight
 
     # #########################################################################
     # Load in logplot init
@@ -93,7 +90,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         usgs = usgs.set_index('code').to_dict()['description']
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply('{0:0>3}'.format)
+        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply(
+            '{0:0>3}'.format)
         stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
         col = colours.set_index('code').to_dict()['colour']
         clith = cgs.set_index('lithology').to_dict()['lithology description']
@@ -108,7 +106,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\svg\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\svg\\' + str(int(cgs[i])) + '.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
@@ -155,7 +153,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pverts, pcodes = hatch[lith[j]]
 
             for k in pverts:
-                pathfin = Path(pverts[k]+[0.5, j*2+1], pcodes[k])
+                pathfin = Path(pverts[k] + [0.5, j * 2 + 1], pcodes[k])
                 pp1 = mpatches.PathPatch(pathfin, fc='w')
                 if k == '#ffffff':
                     pp1.set_facecolor('w')
@@ -164,24 +162,25 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 ax.add_patch(pp1)
 
-            rect = mpatches.Rectangle([0.5, j*2+2], 4.1, 3.1, fc='w',
+            rect = mpatches.Rectangle([0.5, j * 2 + 2], 4.1, 3.1, fc='w',
                                       ec='none')
             ax.add_patch(rect)
-            rect = mpatches.Rectangle([0.5, j*2+1], 4, 1, fc='none', ec='k')
+            rect = mpatches.Rectangle([0.5, j * 2 + 1], 4, 1, fc='none',
+                                      ec='k')
             ax.add_patch(rect)
-            ax.text(4.7, j*2+1.9, clith[lith[j]], size=6)
+            ax.text(4.7, j * 2 + 1.9, clith[lith[j]], size=6)
 
     # do color legend
         ax.text(15., 0.7, 'Stratigraphy', size=8)
         for j in np.arange(0, len(strat)):
-            scol = '#'+col[stratcol[strat[j]]]
-            rect = mpatches.Rectangle([15, j*2+1], 4, 1, fc=scol, ec='k')
+            scol = '#' + col[stratcol[strat[j]]]
+            rect = mpatches.Rectangle([15, j * 2 + 1], 4, 1, fc=scol, ec='k')
             ax.add_patch(rect)
             if strat[j] == 'none':
-                ax.text(19.2, j*2+1.9, strat[j].capitalize(), size=6)
+                ax.text(19.2, j * 2 + 1.9, strat[j].capitalize(), size=6)
             else:
-                ax.text(19.2, j*2+1.9,
-                        strat[j].capitalize()+' '+rlookup[rank[j]], size=6)
+                ax.text(19.2, j * 2 + 1.9,
+                        strat[j].capitalize() + ' ' + rlookup[rank[j]], size=6)
 
         self.figure.canvas.draw()
 
@@ -208,12 +207,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig.subplots_adjust(right=0.3)
 
         idir = __file__.rpartition('\\')[0]
-        logfile = idir+'\\logplot.xlsx'
+        logfile = idir + '\\logplot.xlsx'
 
         pageheight = 8
         dpp = 25  # depth per page
         fontsize = 6
-        dpi = (fontsize/72)*(dpp/pageheight)
+        dpi = (fontsize / 72) * (dpp / pageheight)
 
     ###########################################################################
     # Load in logplot init
@@ -226,7 +225,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         usgs = usgs.set_index('code').to_dict()['description']
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply('{0:0>3}'.format)
+        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply(
+            '{0:0>3}'.format)
         stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
         col = colours.set_index('code').to_dict()['colour']
         cgs = cgs.set_index('lithology').to_dict()['code']
@@ -240,7 +240,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\svg\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\svg\\' + str(int(cgs[i])) + '.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
@@ -248,15 +248,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         hdf = data1['header']
 
         companyno = np.array(df['Companyno'])
-        depthfrom = -1*np.array(df['Depth from'])
-        depthto = -1*np.array(df['Depth to'])
+        depthfrom = -1 * np.array(df['Depth from'])
+        depthto = -1 * np.array(df['Depth to'])
         lithd = np.array(df['Lithology description'].replace(np.nan, ''))
         lith = np.array(df['Lithology'])
         strat = np.array(df['Stratigraphy'].replace(np.nan, 'none'))
 
         hcompanyno = hdf['Companyno'].iloc[0]
         indx = np.nonzero(companyno == hcompanyno)[0]
-        numpages = abs(depthto[indx][-1]//dpp)
+        numpages = abs(depthto[indx][-1] // dpp)
 
     ###########################################################################
     # Start of each borehole plot
@@ -271,11 +271,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             lithd[indx[i]] = commentprep(lithd[indx[i]])
             if lithdpos[i] > yfin:
                 lithdpos[i] = yfin
-            if i < len(lithd[indx])-1:
-                if depthfrom[indx][i] != depthfrom[indx][i+1]:
-                    yfin = lithdpos[i] - dpi*(1+lithd[i].count('\n'))*1.4
+            if i < len(lithd[indx]) - 1:
+                if depthfrom[indx][i] != depthfrom[indx][i + 1]:
+                    yfin = lithdpos[i] - dpi * (1 + lithd[i].count('\n')) * 1.4
     # Start creating plots
-        ax.set_ylim((-dpp*numpages, 0.))
+        ax.set_ylim((-dpp * numpages, 0.))
         ax.set_aspect('equal')
         ax.get_xaxis().set_visible(False)
         ax.set_frame_on(False)
@@ -284,25 +284,25 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for i in indx:
             # This next line is to skip summary lines for a group.
             if i < indx[-1]:
-                if depthfrom[i] == depthfrom[i+1]:
+                if depthfrom[i] == depthfrom[i + 1]:
                     continue
 
             pverts, pcodes = hatch[lith[i]]
-            scol = '#'+col[stratcol[strat[i]]]
+            scol = '#' + col[stratcol[strat[i]]]
 
             dfrom = depthfrom[i]
             dto = depthto[i]
             texty = lithdpos[np.nonzero(indx == i)[0][0]]
             ax.plot([4, 5], [dfrom, texty], 'k', linewidth=1.0)
-            ax.text(5.2, texty, '{0:.2f}'.format(dfrom)+' '+lithd[i],
+            ax.text(5.2, texty, '{0:.2f}'.format(dfrom) + ' ' + lithd[i],
                     va='center', size=fontsize)
 
-            rect = mpatches.Rectangle([0, dto], 4, (dfrom-dto), fc=scol,
+            rect = mpatches.Rectangle([0, dto], 4, (dfrom - dto), fc=scol,
                                       ec='k')
             ax.add_patch(rect)
             for j in np.arange(-dfrom, -dto, 4):
                 for k in pverts:
-                    pathfin = Path(pverts[k]-[0, j+4], pcodes[k])
+                    pathfin = Path(pverts[k] - [0, j + 4], pcodes[k])
                     pp1 = mpatches.PathPatch(pathfin, fc=scol)
 
                     if k == '#ffffff':
@@ -310,11 +310,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     elif k != 'none':
                         pp1.set_facecolor('k')
                     ax.add_patch(pp1)
-            rect = mpatches.Rectangle([0, dto-4], 4.1, 4, fc='w')
+            rect = mpatches.Rectangle([0, dto - 4], 4.1, 4, fc='w')
             ax.add_patch(rect)
 
             if lith[indx[-1]] == 'NOR':
-                ax.text(5.2, -dpp*numpages+dpi,
+                ax.text(5.2, -dpp * numpages + dpi,
                         '(Last entry; log truncated due to length)',
                         va='center', size=fontsize)
 
@@ -400,21 +400,21 @@ class PlotLog(ContextModule):
             hdf = data['header']
             dfrom = hdf['Depth from'].iloc[0]
             dto = hdf['Depth to'].iloc[0]
-            depth = int((dto-dfrom)*10.)
+            depth = int((dto - dfrom) * 10.)
             self.mmc.setFixedHeight(depth)
 
             hcompanyno = hdf['Companyno'].iloc[0]
             hfilt = (hdf['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
             hrow = hdf.iloc[hfilt].astype(str)
-            topleft = (hrow['Company']+'\n'+hrow['Farmname'] +
-                       ' ('+hrow['Farmno']+')')
-            topright = 'Hole no: '+hrow['Companyno']+'\n Sheet 1 of 1'
-            bottomleft = 'Drill date: '+hrow['Drill date'].split()[0]
-            bottomleft += '\nDepth from: '+hrow['Depth from']
-            bottomleft += '\nDepth to: '+hrow['Depth to']
-            bottomright = 'Elevation: '+hrow['Elevation']
-            bottomright += '\nLatitude: '+hrow['Declat']
-            bottomright += '\nLongitude: '+hrow['Declon']
+            topleft = (hrow['Company'] + '\n' + hrow['Farmname'] +
+                       ' (' + hrow['Farmno'] + ')')
+            topright = 'Hole no: ' + hrow['Companyno'] + '\n Sheet 1 of 1'
+            bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
+            bottomleft += '\nDepth from: ' + hrow['Depth from']
+            bottomleft += '\nDepth to: ' + hrow['Depth to']
+            bottomright = 'Elevation: ' + hrow['Elevation']
+            bottomright += '\nLatitude: ' + hrow['Declat']
+            bottomright += '\nLongitude: ' + hrow['Declon']
             self.lbl_topleft.setText(topleft)
             self.lbl_topright.setText(topright)
             self.lbl_bottomleft.setText(bottomleft)
@@ -501,41 +501,41 @@ def gethatch(svgfile):
         rtmp = [0, 0]
         verts = []
         codes = []
-        for i in range(0, len(tmp)-1, 2):
+        for i in range(0, len(tmp) - 1, 2):
             # Load in keys and values
             pkey = tmp[i]
-            vtmp = re.split(r',| ', tmp[i+1])
+            vtmp = re.split(r',| ', tmp[i + 1])
             while '' in vtmp:
                 vtmp.remove('')
             vtmp = list(map(float, vtmp))
-            pvals = np.reshape(vtmp, (len(vtmp)//2, 2))
+            pvals = np.reshape(vtmp, (len(vtmp) // 2, 2))
 
             # Correct relative coordinates
 
             if 'm' in pkey or 'l' in pkey:
-                pvals = np.cumsum(pvals, axis=0)+rtmp
+                pvals = np.cumsum(pvals, axis=0) + rtmp
 
             if 'c' in pkey:
                 for k in range(0, pvals.shape[0], 3):
-                    pvals[k:k+3] += rtmp
-                    rtmp = pvals[k+2]
+                    pvals[k:k + 3] += rtmp
+                    rtmp = pvals[k + 2]
 
             # construct vertices and codes for paths
             if pkey.upper() == 'M':
-                verts += (pvals+trans).tolist()
+                verts += (pvals + trans).tolist()
                 codes += [Path.MOVETO]
-                codes += [Path.LINETO]*(len(pvals)-1)
+                codes += [Path.LINETO] * (len(pvals) - 1)
 
                 if pvals.std() == 0.0 and pvals.size > 2:
                     verts[-2][0] += 0.5
 
             if pkey.upper() == 'L':
-                verts += (pvals+trans).tolist()
-                codes += [Path.LINETO]*(len(pvals))
+                verts += (pvals + trans).tolist()
+                codes += [Path.LINETO] * (len(pvals))
 
             if pkey.upper() == 'C':
-                verts += (pvals+trans).tolist()
-                codes += [Path.CURVE4]*len(pvals)
+                verts += (pvals + trans).tolist()
+                codes += [Path.CURVE4] * len(pvals)
 
             rtmp = pvals[-1]
 
@@ -582,7 +582,7 @@ def commentprep(mystring, slen=50):
     finstring = finstring.strip()
     finstring = textwrap.fill(finstring, slen)
     if '\n' in finstring:
-        finstring = finstring[:finstring.index('\n')]+'...'
+        finstring = finstring[:finstring.index('\n')] + '...'
 
     return finstring
 

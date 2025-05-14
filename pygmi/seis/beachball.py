@@ -100,11 +100,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.clear()
         self.axes.set_aspect('equal')
 
-        maxdiam = self.pwidth*self.data[:, -1].max()
-        xmin = self.data[:, 0].min()-maxdiam
-        xmax = self.data[:, 0].max()+maxdiam
-        ymin = self.data[:, 1].min()-maxdiam
-        ymax = self.data[:, 1].max()+maxdiam
+        maxdiam = self.pwidth * self.data[:, -1].max()
+        xmin = self.data[:, 0].min() - maxdiam
+        xmax = self.data[:, 0].max() + maxdiam
+        ymin = self.data[:, 1].min() - maxdiam
+        ymax = self.data[:, 1].max() + maxdiam
 
         self.axes.set_xlim((xmin, xmax))
         self.axes.set_ylim((ymin, ymax))
@@ -115,7 +115,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for idat in self.data:
             pxy = idat[:2]
             np1 = idat[3:-1]
-            pwidth = self.pwidth*idat[-1]
+            pwidth = self.pwidth * idat[-1]
 
             # patch = beach(np1, xy=pxy)
 
@@ -217,7 +217,7 @@ class BeachBall(BasicModule):
                     tmpmag.append(tmp[-1])
 
             if len(tmpmag) > 1:
-                pwidth = min(np.median(sdist.pdist(tmpxy))/(2*max(tmpmag)),
+                pwidth = min(np.median(sdist.pdist(tmpxy)) / (2 * max(tmpmag)),
                              pwidth)
 
         self.dsb_dist.setValue(pwidth)
@@ -300,10 +300,10 @@ class BeachBall(BasicModule):
 
         if os.path.isfile(self.ifile):
             tmp = self.ifile[:-4]
-            os.remove(tmp+'.shp')
-            os.remove(tmp+'.shx')
-            os.remove(tmp+'.prj')
-            os.remove(tmp+'.dbf')
+            os.remove(tmp + '.shp')
+            os.remove(tmp + '.shx')
+            os.remove(tmp + '.prj')
+            os.remove(tmp + '.dbf')
 
         layer = {'Strike': [],
                  'Dip': [],
@@ -318,7 +318,7 @@ class BeachBall(BasicModule):
             pxy = idat[:2]
             np1 = idat[3:-1]
             depth = idat[2]
-            pwidth = self.mmc.pwidth*idat[-1]
+            pwidth = self.mmc.pwidth * idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
                                              self.mmc.isgeog,
                                              showlog=self.showlog)
@@ -500,8 +500,8 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
         d1 = fm[:, 1]
         r1 = fm[:, 2]
 
-    d2r = np.pi/180
-    ampy = np.cos(np.mean(centery)*d2r)
+    d2r = np.pi / 180
+    ampy = np.cos(np.mean(centery) * d2r)
 
     if ne1 > 1:
         [_, i] = np.sort(diam, 1, 'descend')
@@ -547,40 +547,40 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
     phi = np.arange(0, np.pi, .01)
     d = 90 - D1
     m = 90
-    l1 = np.sqrt(d**2/(np.sin(phi)**2 + np.cos(phi)**2 * d**2/m**2))
+    l1 = np.sqrt(d**2 / (np.sin(phi)**2 + np.cos(phi)**2 * d**2 / m**2))
 
     d = 90 - D2
     m = 90
-    l2 = np.sqrt(d**2/(np.sin(phi)**2 + np.cos(phi)**2 * d**2/m**2))
+    l2 = np.sqrt(d**2 / (np.sin(phi)**2 + np.cos(phi)**2 * d**2 / m**2))
 
     if D == 0:
         showlog('Enter a diameter for the beachballs!')
         return None
 
     inc = 1
-    X1, Y1 = pol2cart(phi+S1*d2r, l1)
+    X1, Y1 = pol2cart(phi + S1 * d2r, l1)
     if P == 1:
         lo = S1 - 180
         hi = S2
         if lo > hi:
             inc = -inc
-        th1 = np.arange(S1-180, S2, inc)
-        Xs1, Ys1 = pol2cart(th1*d2r, 90*np.ones_like(th1))
-        X2, Y2 = pol2cart(phi+S2*d2r, l2)
-        th2 = np.arange(S2+180, S1, -inc)
+        th1 = np.arange(S1 - 180, S2, inc)
+        Xs1, Ys1 = pol2cart(th1 * d2r, 90 * np.ones_like(th1))
+        X2, Y2 = pol2cart(phi + S2 * d2r, l2)
+        th2 = np.arange(S2 + 180, S1, -inc)
     else:
         hi = S1 - 180
         lo = S2 - 180
         if lo > hi:
             inc = -inc
         th1 = np.arange(hi, lo, -inc)
-        Xs1, Ys1 = pol2cart(th1*d2r, 90*np.ones_like(th1))
-        X2, Y2 = pol2cart(phi+S2*d2r, l2)
+        Xs1, Ys1 = pol2cart(th1 * d2r, 90 * np.ones_like(th1))
+        X2, Y2 = pol2cart(phi + S2 * d2r, l2)
         X2 = X2[::-1]
         Y2 = Y2[::-1]
         th2 = np.arange(S2, S1, inc)
 
-    Xs2, Ys2 = pol2cart(th2*d2r, 90*np.ones_like(th2))
+    Xs2, Ys2 = pol2cart(th2 * d2r, 90 * np.ones_like(th2))
 
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
@@ -591,12 +591,12 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
         ampy = 1.0
 
     if D > 0:
-        X = ampy*X*D/90 + CY
-        Y = Y*D/90 + CX
-        phid = np.arange(0, 2*np.pi, 0.01)
+        X = ampy * X * D / 90 + CY
+        Y = Y * D / 90 + CX
+        phid = np.arange(0, 2 * np.pi, 0.01)
         x, y = pol2cart(phid, 90)
-        xx = x*D/90 + CX
-        yy = ampy*y*D/90 + CY
+        xx = x * D / 90 + CX
+        yy = ampy * y * D / 90 + CY
 
     return X, Y, xx, yy
 
@@ -620,8 +620,8 @@ def pol2cart(phi, rho):
         Y values.
 
     """
-    xxx = rho*np.cos(phi)
-    yyy = rho*np.sin(phi)
+    xxx = rho * np.cos(phi)
+    yyy = rho * np.sin(phi)
     return xxx, yyy
 
 
@@ -649,33 +649,33 @@ def auxplane(s1, d1, r1):
     rake : numpy array
         Rake of second plane.
     """
-    r2d = 180/np.pi
+    r2d = 180 / np.pi
 
-    z = (s1+90)/r2d
-    z2 = d1/r2d
-    z3 = r1/r2d
+    z = (s1 + 90) / r2d
+    z2 = d1 / r2d
+    z3 = r1 / r2d
     # slick vector in plane 1
-    sl1 = -np.cos(z3)*np.cos(z)-np.sin(z3)*np.sin(z)*np.cos(z2)
-    sl2 = np.cos(z3)*np.sin(z)-np.sin(z3)*np.cos(z)*np.cos(z2)
-    sl3 = np.sin(z3)*np.sin(z2)
+    sl1 = -np.cos(z3) * np.cos(z) - np.sin(z3) * np.sin(z) * np.cos(z2)
+    sl2 = np.cos(z3) * np.sin(z) - np.sin(z3) * np.cos(z) * np.cos(z2)
+    sl3 = np.sin(z3) * np.sin(z2)
     strike, dip = strikedip(sl2, sl1, sl3)
 
-    n1 = np.sin(z)*np.sin(z2)  # normal vector to plane 1
-    n2 = np.cos(z)*np.sin(z2)
+    n1 = np.sin(z) * np.sin(z2)  # normal vector to plane 1
+    n2 = np.cos(z) * np.sin(z2)
     # n3 = np.cos(z2)
     h1 = -sl2  # strike vector of plane 2
     h2 = sl1
     # note h3=0 always so we leave it out
 
-    z = h1*n1 + h2*n2
-    z = z/np.sqrt(h1*h1 + h2*h2)
+    z = h1 * n1 + h2 * n2
+    z = z / np.sqrt(h1 * h1 + h2 * h2)
     z = np.arccos(z)
 
     rake = np.zeros_like(strike)
     j = np.nonzero(sl3 > 0)
-    rake[j] = z[j]*r2d
+    rake[j] = z[j] * r2d
     j = np.nonzero(sl3 <= 0)
-    rake[j] = -z[j]*r2d
+    rake[j] = -z[j] * r2d
 
     return strike, dip, rake
 
@@ -703,14 +703,14 @@ def strikedip(n, e, u):
         Dip of plane.
 
     """
-    r2d = 180/np.pi
+    r2d = 180 / np.pi
 
     j = np.nonzero(u < 0)
     n[j] = -n[j]
     e[j] = -e[j]
     u[j] = -u[j]
 
-    strike = np.arctan2(e, n)*r2d
+    strike = np.arctan2(e, n) * r2d
     strike = strike - 90
     while strike >= 360:
         strike = strike - 360
@@ -718,7 +718,7 @@ def strikedip(n, e, u):
         strike = strike + 360
 
     x = np.sqrt(n**2 + e**2)
-    dip = np.arctan2(x, u)*r2d
+    dip = np.arctan2(x, u) * r2d
     return strike, dip
 
 
@@ -763,12 +763,12 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
 
     imax = np.nonzero(D == np.max(D))
     imin = np.nonzero(D == np.min(D))
-    AE = (V[:, imax]+V[:, imin])/np.sqrt(2.0)
-    AN = (V[:, imax]-V[:, imin])/np.sqrt(2.0)
-    aer = np.sqrt(AE[0]**2+AE[1]**2+AE[2]**2)
-    anr = np.sqrt(AN[0]**2+AN[1]**2+AN[2]**2)
-    AE = AE/aer
-    AN = AN/anr
+    AE = (V[:, imax] + V[:, imin]) / np.sqrt(2.0)
+    AN = (V[:, imax] - V[:, imin]) / np.sqrt(2.0)
+    aer = np.sqrt(AE[0]**2 + AE[1]**2 + AE[2]**2)
+    anr = np.sqrt(AN[0]**2 + AN[1]**2 + AN[2]**2)
+    AE = AE / aer
+    AN = AN / anr
     if AN[2] <= 0.:
         an1 = AN
         ae1 = AE
@@ -809,59 +809,59 @@ def TDL(AN, BN):
     if abs(ZN) < aaa:
         FD = 90.
         axn = min(abs(XN), 1.0)
-        FT = np.arcsin(axn)*fdh
+        FT = np.arcsin(axn) * fdh
         ST = -XN
         CT = YN
         if CT < 0. <= ST:
-            FT = 180.-FT
+            FT = 180. - FT
         if ST < 0. and CT <= 0:
-            FT = 180.+FT
+            FT = 180. + FT
         if ST < 0. < CT:
-            FT = 360.-FT
-        FL = np.arcsin(abs(ZE))*fdh
+            FT = 360. - FT
+        FL = np.arcsin(abs(ZE)) * fdh
         SL = -ZE
         if abs(XN) < aaa:
-            CL = XE/YN
+            CL = XE / YN
         else:
-            CL = -YE/XN
+            CL = -YE / XN
         if CL < 0. <= SL:
-            FL = 180.-FL
+            FL = 180. - FL
         if SL < 0. and CL <= 0:
-            FL = FL-180.
+            FL = FL - 180.
         if SL < 0. < CL:
             FL = -FL
     else:
         if -ZN > 1.0:
             ZN = -1.0
         fdh = np.arccos(-ZN)
-        FD = fdh*fdh
+        FD = fdh * fdh
         SD = np.sin(fdh)
         if SD == 0:
             return None
-        ST = -XN/SD
-        CT = YN/SD
+        ST = -XN / SD
+        CT = YN / SD
         SX = min(abs(ST), 1.0)
-        FT = np.arcsin(SX)*fdh
+        FT = np.arcsin(SX) * fdh
         if CT < 0. <= ST:
-            FT = 180.-FT
+            FT = 180. - FT
         if ST < 0. and CT <= 0:
-            FT = 180.+FT
+            FT = 180. + FT
         if ST < 0. < CT:
-            FT = 360.-FT
-        SL = -ZE/SD
+            FT = 360. - FT
+        SL = -ZE / SD
         SX = min(np.abs(SL), 1.0)
-        FL = np.arcsin(SX)*fdh
+        FL = np.arcsin(SX) * fdh
         if ST == 0:
-            CL = XE/CT
+            CL = XE / CT
         else:
-            xxx = YN*ZN*ZE/SD/SD+YE
-            CL = -SD*xxx/XN
+            xxx = YN * ZN * ZE / SD / SD + YE
+            CL = -SD * xxx / XN
             if CT == 0:
-                CL = YE/ST
+                CL = YE / ST
         if CL < 0. <= SL:
-            FL = 180.-FL
+            FL = 180. - FL
         if SL < 0. and CL <= 0:
-            FL = FL-180.
+            FL = FL - 180.
         if SL < 0. < CL:
             FL = -FL
 

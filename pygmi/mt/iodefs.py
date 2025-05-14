@@ -206,7 +206,7 @@ class ExportEDI(ContextModule):
         basename = os.path.basename(self.ofile)[:-4]
         for i in dat:
             dat[i].write_mt_file(save_dir=savepath,
-                                 fn_basename=basename+'_'+i,
+                                 fn_basename=basename + '_' + i,
                                  file_type='edi',
                                  longitude_format='LONG',
                                  latlon_format='dd')

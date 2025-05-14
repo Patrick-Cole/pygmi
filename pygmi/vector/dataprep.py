@@ -212,11 +212,11 @@ class DataGrid(BasicModule):
         x = data.geometry.x.values
         y = data.geometry.y.values
 
-        cols = round(np.ptp(x)/self.dxy)
-        rows = round(np.ptp(y)/self.dxy)
+        cols = round(np.ptp(x) / self.dxy)
+        rows = round(np.ptp(y) / self.dxy)
 
-        self.lbl_rows.setText('Rows: '+str(rows))
-        self.lbl_cols.setText('Columns: '+str(cols))
+        self.lbl_rows.setText('Rows: ' + str(rows))
+        self.lbl_cols.setText('Columns: ' + str(cols))
 
     def grid_method_change(self):
         """
@@ -278,8 +278,8 @@ class DataGrid(BasicModule):
             x = data.geometry.x.values
             y = data.geometry.y.values
 
-            dx = np.ptp(x)/np.sqrt(x.size)
-            dy = np.ptp(y)/np.sqrt(y.size)
+            dx = np.ptp(x) / np.sqrt(x.size)
+            dy = np.ptp(y) / np.sqrt(y.size)
             self.dxy = max(dx, dy)
             self.dxy = min([np.ptp(x), np.ptp(y), self.dxy])
 
@@ -402,7 +402,6 @@ class DataReproj(BasicModule):
         gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
-
 
     def acceptall(self):
         """
@@ -881,8 +880,8 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
     points = np.transpose([x, y])
 
     for xy in points:
-        col = int((xy[0]-extent[0])/dxy)
-        row = int((xy[1]-extent[2])/dxy)
+        col = int((xy[0] - extent[0]) / dxy)
+        row = int((xy[1] - extent[2]) / dxy)
 
         mask[row, col] = 1
 
@@ -960,7 +959,7 @@ def txtlinecnt(filename):
 
     """
     with open(filename, 'rb') as f:
-        bufgen = iter(partial(f.raw.read, 1024*1024), b'')
+        bufgen = iter(partial(f.raw.read, 1024 * 1024), b'')
         linecnt = sum(buf.count(b'\n') for buf in bufgen)
     return linecnt
 
@@ -1012,7 +1011,7 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
             if txt == '':
                 continue
 
-            with open(f'{fname}_{i+1}{fext}', 'w', encoding='utf-8') as writer:
+            with open(f'{fname}_{i + 1}{fext}', 'w', encoding='utf-8') as writer:
                 fread = 0
                 while fread < numcnt:
                     txt = reader.readline()
@@ -1067,8 +1066,8 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
     else:
         extent = np.array([x.min(), x.max(), y.min(), y.max()])
 
-        xxx = np.arange(extent[0], extent[1]+dxy/2, dxy)
-        yyy = np.arange(extent[2], extent[3]+dxy/2, dxy)
+        xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
+        yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
 
         xxx, yyy = np.meshgrid(xxx, yyy)
 
@@ -1094,8 +1093,8 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
 
     rows, _ = dat.data.shape
 
-    left = x.min() - dxy/2
-    top = y.min() + dxy*rows - dxy/2
+    left = x.min() - dxy / 2
+    top = y.min() + dxy * rows - dxy / 2
 
     dat.set_transform(dxy, left, dxy, top)
 
@@ -1210,8 +1209,8 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
     lon = lon + qlon1[q1] + qlon2[q2]
 
     xmin = lon
-    ymin = lat-latincr
-    xmax = lon+lonincr
+    ymin = lat - latincr
+    xmax = lon + lonincr
     ymax = lat
 
     if crs_to is not None:
@@ -1294,32 +1293,32 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     ymax = y.max()
     newmask = np.array([1])
     j = -1
-    rows = int((ymax-ymin)/dxy)+1
-    cols = int((xmax-xmin)/dxy)+1
+    rows = int((ymax - ymin) / dxy) + 1
+    cols = int((xmax - xmin) / dxy) + 1
 
     if numits < 1:
         numits = int(max(np.log2(cols), np.log2(rows)))
 
-    while np.max(newmask) > 0 and j < (numits-1):
+    while np.max(newmask) > 0 and j < (numits - 1):
         j += 1
         jj = 2**j
 
-        dxy2 = dxy*jj
-        rows = int((ymax-ymin)/dxy2)+1
-        cols = int((xmax-xmin)/dxy2)+1
+        dxy2 = dxy * jj
+        rows = int((ymax - ymin) / dxy2) + 1
+        cols = int((xmax - xmin) / dxy2) + 1
 
         newz = np.zeros([rows, cols])
         zdiv = np.zeros([rows, cols])
 
-        xindex = ((x-xmin)/dxy2).astype(int)
-        yindex = ((y-ymin)/dxy2).astype(int)
+        xindex = ((x - xmin) / dxy2).astype(int)
+        yindex = ((y - ymin) / dxy2).astype(int)
 
         for i in range(z.size):
             newz[yindex[i], xindex[i]] += z[i]
             zdiv[yindex[i], xindex[i]] += 1
 
         filt = zdiv > 0
-        newz[filt] = newz[filt]/zdiv[filt]
+        newz[filt] = newz[filt] / zdiv[filt]
 
         if j == 0:
             newmask = np.ones([rows, cols])
@@ -1328,12 +1327,12 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
             zfin = newz
         else:
             xx, yy = newmask.nonzero()
-            xx2 = xx//jj
-            yy2 = yy//jj
+            xx2 = xx // jj
+            yy2 = yy // jj
             zfin[xx, yy] = newz[xx2, yy2]
             newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
 
-        showlog('Iteration done: '+str(j+1)+' of '+str(numits))
+        showlog('Iteration done: ' + str(j + 1) + ' of ' + str(numits))
 
     showlog('Finished!')
 

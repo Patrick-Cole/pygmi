@@ -306,7 +306,7 @@ class FuzzyClust(BasicModule):
         masktmp = ~masktmp
         for datai in data:
             if datai.nodata != 0.0:
-                self.showlog('Setting '+datai.dataid+' nodata to 0.')
+                self.showlog('Setting ' + datai.dataid + ' nodata to 0.')
                 datai.data = np.ma.array(datai.data.filled(0))
             datai.data.mask = masktmp
 
@@ -415,7 +415,7 @@ class FuzzyClust(BasicModule):
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.showlog(f'Run {j+1} of {no_runs}')
+                    self.showlog(f'Run {j + 1} of {no_runs}')
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -443,8 +443,8 @@ class FuzzyClust(BasicModule):
             clalp = clalp / clalp.max()
             clalp[clalp > 1] = 1
             clalp[clalp < 0] = 0
-            zonal = np.ma.zeros(data[0].data.shape)-9999.0
-            alpha = np.ma.zeros(data[0].data.shape)-9999.0
+            zonal = np.ma.zeros(data[0].data.shape) - 9999.0
+            alpha = np.ma.zeros(data[0].data.shape) - 9999.0
             alpha1 = (data[0].data.mask == 0)
             zonal[alpha1 == 1] = clidx
             alpha[alpha1 == 1] = clalp
@@ -636,9 +636,9 @@ class FuzzyClust(BasicModule):
             if i > 0:
                 self.showlog('Iteration: ' + str(i) + ' Threshold: ' +
                              str(term_thresh) + ' Current: ' +
-                             '{:.2e}'.format(100*((obj_fcn[i - 1] -
-                                                   obj_fcn[i]) /
-                                                  obj_fcn[i - 1])), True)
+                             '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
+                                                     obj_fcn[i]) /
+                                                    obj_fcn[i - 1])), True)
 
                 # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:
@@ -649,7 +649,7 @@ class FuzzyClust(BasicModule):
                     edist = dist_prev
                     break  # terminate
                 # if improvement less than given termination threshold
-                if (obj_fcn[i-1]-obj_fcn[i])/obj_fcn[i-1] < term_thresh/100:
+                if (obj_fcn[i - 1] - obj_fcn[i]) / obj_fcn[i - 1] < term_thresh / 100:
                     break  # terminate
 
         idx = np.argmax(uuu, 0)
@@ -720,7 +720,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 aaa0 = aaa
             else:
                 aaa0 = aaa0 + aaa
-        mmm = np.linalg.det(aaa0)**(1.0/no_datasets)*np.linalg.pinv(aaa0)
+        mmm = np.linalg.det(aaa0)**(1.0 / no_datasets) * np.linalg.pinv(aaa0)
         dtmp = []
         # calc new distances using the same covariance matrix for all
         # clusters --> ellisoidal clusters, all clusters use equal
@@ -745,7 +745,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             aaa0 = np.eye(no_datasets)
             # if cov_constr>0, this enforces not to elongated ellipsoids -->
             # avoid the needle-like cluster
-            aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
+            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 / no_samples)
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(aaa) > 1e10:
                 e_d, e_v = np.linalg.eig(aaa)
@@ -754,7 +754,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
                              np.linalg.inv(e_v))
             # GK Code
-            mmm = np.linalg.det(aaa)**(1.0/no_datasets)*np.linalg.pinv(aaa)
+            mmm = np.linalg.det(aaa)**(1.0 / no_datasets) * np.linalg.pinv(aaa)
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
         ddd = np.sqrt(np.array(dtmp))
     # GG
@@ -770,7 +770,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             aaa0 = np.eye(no_datasets)
             # if cov_constr>0, this enforces not to elongated ellipsoids -->
             # avoid the needle-like cluster
-            aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
+            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 / no_samples)
 
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(aaa) > 1e10:
@@ -782,7 +782,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             # GG code
             ppp = 1.0 / no_samples * np.sum(m_f[j])
 
-            t_1 = np.linalg.det(aaa)**0.5/ppp
+            t_1 = np.linalg.det(aaa)**0.5 / ppp
             t_4 = np.linalg.pinv(aaa)
             t_5 = np.dot(dcent, t_4) * dcent * 0.5
             t_7 = np.exp(t_5)

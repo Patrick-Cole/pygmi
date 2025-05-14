@@ -218,48 +218,49 @@ def tilt1(data, azi, s, k=2):
     """
     dmin = data.min()
     dmax = data.max()
-    dm = 0.5*(dmin+dmax)
+    dm = 0.5 * (dmin + dmax)
     data.data[data.mask] = dm
     data[np.isnan(data)] = dm
     data[np.isinf(data)] = dm
 
     if s > 0:
-        se = np.ones((s, s))/(s*s)
+        se = np.ones((s, s)) / (s * s)
         data2 = signal.convolve2d(data, se, 'valid')  # smooth
         mask = np.ma.getmaskarray(data.data)
         mask = signal.convolve2d(mask, se, 'valid')
         data = np.ma.array(data2, mask=mask)
 
     nr, nc = data.shape
-    dtr = np.pi/180.0
-    azi = azi*dtr
+    dtr = np.pi / 180.0
+    azi = azi * dtr
 
     dy, dx = np.gradient(data)
-    dxtot = np.ma.sqrt(dx*dx+dy*dy)
+    dxtot = np.ma.sqrt(dx * dx + dy * dy)
     nmax = np.max([nr, nc])
     npts = int(2**nextpow2(nmax))
     dz = vertical(data, npts, 1)
-    t1 = np.ma.arctan(dz/dxtot)
-    th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
+    t1 = np.ma.arctan(dz / dxtot)
+    th = np.real(np.arctanh(np.nan_to_num(dz / dxtot) + (0 + 0j)))
 
-    tdx = np.real(np.ma.arctan(dxtot/abs(dz)))
+    tdx = np.real(np.ma.arctan(dxtot / abs(dz)))
 
-    dx1 = dx*np.cos(azi)+dy*np.sin(azi)  # Standard directional derivative
-    dx2 = dx*np.cos(azi+np.pi/2)+dy*np.sin(azi+np.pi/2)
-    dxz = np.ma.sqrt(dx2*dx2+dz*dz)
-    ta = np.ma.arctan(dx1/dxz)         # Tilt directional derivative
+    # Standard directional derivative
+    dx1 = dx * np.cos(azi) + dy * np.sin(azi)
+    dx2 = dx * np.cos(azi + np.pi / 2) + dy * np.sin(azi + np.pi / 2)
+    dxz = np.ma.sqrt(dx2 * dx2 + dz * dz)
+    ta = np.ma.arctan(dx1 / dxz)         # Tilt directional derivative
 
     # 2nd order Tilt angle
 
     s = max(s, 3)
-    se = np.ones([s, s])/(s*s)
+    se = np.ones([s, s]) / (s * s)
     ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
     ts = np.ma.array(ts, mask=t1.mask)
 
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
-    dxtots = np.ma.sqrt(dxs*dxs+dys*dys)
-    t2 = np.ma.arctan(dzs/dxtots)
+    dxtots = np.ma.sqrt(dxs * dxs + dys * dys)
+    t2 = np.ma.arctan(dzs / dxtots)
 
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative
@@ -267,17 +268,17 @@ def tilt1(data, azi, s, k=2):
     data = dxtot
     nr, nc = data.shape
     dy, dx = np.gradient(data)
-    dxtot = np.ma.sqrt(dx*dx+dy*dy)
+    dxtot = np.ma.sqrt(dx * dx + dy * dy)
     nmax = np.max([nr, nc])
     npts = int(2**nextpow2(nmax))
     dz = vertical(data, npts, 1)
-    tahg = np.ma.arctan(dz/dxtot)
+    tahg = np.ma.arctan(dz / dxtot)
 
-    dxyztot = np.ma.sqrt(dx*dx + dy*dy + dz*dz)
+    dxyztot = np.ma.sqrt(dx * dx + dy * dy + dz * dz)
 
-    ehga = np.ma.arcsin(k*(dz/dxyztot-1)+1)
+    ehga = np.ma.arcsin(k * (dz / dxyztot - 1) + 1)
 
-    ehga = k*(dz/dxyztot-1)+1
+    ehga = k * (dz / dxyztot - 1) + 1
     ehga[ehga < -1.0] = -1.0
     ehga = np.ma.arcsin(ehga)
 
@@ -332,7 +333,7 @@ def vertical(data, npts=None, xint=1, order=1):
     """
     nr, nc = data.shape
 
-    z = data-np.ma.median(data)
+    z = data - np.ma.median(data)
     if np.ma.is_masked(z):
         z = z.filled(0.)
 
@@ -340,27 +341,27 @@ def vertical(data, npts=None, xint=1, order=1):
         nmax = np.max([nr, nc])
         npts = int(2**nextpow2(nmax))
 
-    cdiff = int(np.floor((npts-nc)/2))
-    rdiff = int(np.floor((npts-nr)/2))
-    cdiff2 = npts-cdiff-nc
-    rdiff2 = npts-rdiff-nr
+    cdiff = int(np.floor((npts - nc) / 2))
+    rdiff = int(np.floor((npts - nr) / 2))
+    cdiff2 = npts - cdiff - nc
+    rdiff2 = npts - rdiff - nr
     data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
 
     f = np.fft.fft2(data1)
     fz = f
-    wn = 2.0*np.pi/(xint*(npts-1))
+    wn = 2.0 * np.pi / (xint * (npts - 1))
     f = np.fft.fftshift(f)
-    cx = npts/2+1
+    cx = npts / 2 + 1
     cy = cx
     for i in range(npts):
-        freqx = (i+1-cx)*wn
+        freqx = (i + 1 - cx) * wn
         for j in range(npts):
-            freqy = (j+1-cy)*wn
-            freq = np.sqrt(freqx*freqx+freqy*freqy)
-            fz[i, j] = f[i, j]*freq**order
+            freqy = (j + 1 - cy) * wn
+            freq = np.sqrt(freqx * freqx + freqy * freqy)
+            fz[i, j] = f[i, j] * freq**order
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
-    dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
+    dz = np.real(fzinv[rdiff:nr + rdiff, cdiff:nc + cdiff])
 
     return dz
 
@@ -517,15 +518,15 @@ def fftprep(data):
     ndat = data.data - datamedian
 
     nr, nc = data.data.shape
-    cdiff = nc//2
-    rdiff = nr//2
+    cdiff = nc // 2
+    rdiff = nr // 2
 
     # Section to pad data
 
     nr, nc = data.data.shape
 
-    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))-999
-    x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
+    z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) - 999
+    x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
 
     z1[0] = 0
@@ -574,8 +575,8 @@ def fft_getkxy(fftmod, xdim, ydim):
 
     """
     ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, xdim)*2*np.pi
-    ky = np.fft.fftfreq(ny, ydim)*2*np.pi
+    kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
+    ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
 
     KX, KY = np.meshgrid(kx, ky)
     KY = -KY
@@ -613,9 +614,9 @@ def rtp(data, I_deg, D_deg):
     D = np.deg2rad(D_deg)
     alpha = np.arctan2(KY, KX)
 
-    filt = 1/(np.sin(I)+1j*np.cos(I)*np.sin(D+alpha))**2
+    filt = 1 / (np.sin(I) + 1j * np.cos(I) * np.sin(D + alpha))**2
 
-    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = np.real(np.fft.ifft2(fftmod * filt))
     zout = zout[rdiff:-rdiff, cdiff:-cdiff]
     zout = zout + datamedian
 
@@ -625,7 +626,7 @@ def rtp(data, I_deg, D_deg):
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
-    dat.dataid = 'RTP_'+data.dataid
+    dat.dataid = 'RTP_' + data.dataid
     dat.set_transform(transform=data.transform)
     dat.crs = data.crs
 

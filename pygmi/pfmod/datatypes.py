@@ -224,7 +224,7 @@ class LithModel():
                 ycrd = self.yrange[1] - (j + .5) * self.dxy
                 ycrd2 = grows - int((gymax - ycrd) / d_y)
                 if ycrd2 == grows:
-                    ycrd2 = grows-1
+                    ycrd2 = grows - 1
 
                 if (0 <= ycrd2 < grows and 0 <= xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]

@@ -1176,8 +1176,8 @@ def calculate_toa(dat, showlog=print):
 
     out = []
     for i in range(len(dat)):
-        idtmp = 'ImageData'+str(i+1)
-        if i+1 == 3:
+        idtmp = 'ImageData' + str(i + 1)
+        if i + 1 == 3:
             idtmp += 'N'
         datai = datanew[idtmp]
 
@@ -1185,13 +1185,14 @@ def calculate_toa(dat, showlog=print):
         sunelev = datai.metadata['SolarElev']
         jday = datai.metadata['JulianDay']
 
-        lrad = (datai.data-1)*gain
+        lrad = (datai.data - 1) * gain
 
         if i < 9:
-            theta = np.deg2rad(90-sunelev)
-            datai.data = np.pi*lrad*EDIST[jday]**2/(ESUN[i]*np.cos(theta))
+            theta = np.deg2rad(90 - sunelev)
+            datai.data = np.pi * lrad * \
+                EDIST[jday]**2 / (ESUN[i] * np.cos(theta))
         else:
-            datai.data = K2[i-9]/np.log(K1[i-9]/lrad+1)
+            datai.data = K2[i - 9] / np.log(K1[i - 9] / lrad + 1)
         datai.data.set_fill_value(datai.nodata)
         dmask = datai.data.mask
         datai.data = np.ma.array(datai.data.filled(), mask=dmask)
@@ -1244,7 +1245,7 @@ def consolidate_aster_list(flist):
 
     # asterfiles += list(tmp.values())
 
-    flist = asterfiles+otherfiles
+    flist = asterfiles + otherfiles
 
     return flist
 
@@ -1270,7 +1271,7 @@ def convert_ll_to_utm(lon, lat):
     """
     utm_band = str((math.floor((lon + 180) / 6) % 60) + 1)
     if len(utm_band) == 1:
-        utm_band = '0'+utm_band
+        utm_band = '0' + utm_band
     if lat >= 0:
         epsg_code = '326' + utm_band
         return epsg_code
@@ -1398,7 +1399,7 @@ def export_batch(indata, odir, filt, *, tnames=None, piter=None,
             odat = dat
 
         ofile = set_export_filename(odat, odir, otype)
-        showlog('Exporting '+os.path.basename(ofile))
+        showlog('Exporting ' + os.path.basename(ofile))
 
         if otype == 'RGB':
             odat = get_ternary(odat, sunfile=sunfile, cell=cell, alpha=alpha,
@@ -1490,9 +1491,9 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
 
     if (ext == '.xml' and '.SAFE' in ifile):
         tmp = os.path.basename(os.path.dirname(ifile))
-        showlog('Importing '+tmp)
+        showlog('Importing ' + tmp)
     else:
-        showlog('Importing '+bfile)
+        showlog('Importing ' + bfile)
     dtree = {}
     if '.xml' in bfile.lower():
         dtree = etree_to_dict(ET.parse(ifile).getroot())
@@ -1511,7 +1512,7 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
     if 'AST_' in bfile and ext == '.zip':
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
-        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.zip'))
+        ifiles = glob.glob(os.path.join(idir, '*' + adate + '*.zip'))
         dat = []
         for afile in ifiles:
             tmp = get_aster_zip(afile, piter, showlog, tnames, metaonly)
@@ -1708,7 +1709,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
         date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
 
         if bandid is None and ':' in ifile2:
-            bandid = ifile2[ifile2.rindex(':')+1:]
+            bandid = ifile2[ifile2.rindex(':') + 1:]
 
         if tnames is not None and bandid not in tnames:
             continue
@@ -1719,7 +1720,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
             scale = 1
 
         if 'MOD13' in ifile and scale > 1:
-            scale = 1./scale
+            scale = 1. / scale
 
         if 'MOD44B' in ifile and '_SD' in bandid and scale == 1:
             scale = 0.01
@@ -1737,12 +1738,12 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None,
             if nval == 32767:
                 mask = (rtmp2 > 32760)
                 lulc = np.zeros_like(rtmp2)
-                lulc[mask] = rtmp2[mask]-32760
+                lulc[mask] = rtmp2[mask] - 32760
                 lulc = np.ma.masked_equal(lulc, 0)
             else:
                 mask = (rtmp2 == nval)
 
-            rtmp2 = rtmp2*scale+offset
+            rtmp2 = rtmp2 * scale + offset
             rtmp2[mask] = 1e+20
 
             dat[-1].data = np.ma.array(rtmp2, mask=mask)
@@ -1873,32 +1874,32 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             date = datetime.datetime.strptime(datetxt, '%Y-%m-%d')
         if 'REFLECTANCE_MULT_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             refmult[tmp1] = tmp2
         if 'REFLECTANCE_ADD_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             refadd[tmp1] = tmp2
         if 'RADIANCE_MULT_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('BAND_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             radmult[tmp1] = tmp2
         if 'RADIANCE_ADD_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('BAND_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             radadd[tmp1] = tmp2
         if 'K1_CONSTANT_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('BAND_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             K1[tmp1] = tmp2
         if 'K2_CONSTANT_BAND' in i:
             tmp = i.split('=')
-            tmp1 = 'B'+tmp[0].split('BAND_')[-1].strip()
+            tmp1 = 'B' + tmp[0].split('BAND_')[-1].strip()
             tmp2 = float(tmp[1].strip())
             K2[tmp1] = tmp2
 
@@ -1913,14 +1914,14 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
             radmult[key2] = radmult.pop(key)
             satbands[key2] = satbands['B6']
 
-    files = glob.glob(ifile[:-7]+'*.tif')
+    files = glob.glob(ifile[:-7] + '*.tif')
 
     if 'LC08' in ifile or 'LC09' in ifile:
         lstband = 'B10'
     else:
         lstband = 'B6'
 
-    if glob.glob(ifile[:-7]+'*ST_QA.tif'):
+    if glob.glob(ifile[:-7] + '*ST_QA.tif'):
         satbands['LST'] = satbands[lstband]
 
     showlog('Importing Landsat data...')
@@ -1940,11 +1941,11 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         if tnames is not None and fext.replace(',', ' ') not in tnames:
             continue
 
-        showlog('Importing Band '+fext)
+        showlog('Importing Band ' + fext)
         dataset = rasterio.open(ifile2)
 
         if dataset is None:
-            showlog('Problem with band '+fext)
+            showlog('Problem with band ' + fext)
             continue
 
         dat.append(Data())
@@ -1974,32 +1975,32 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         if 'L1TP' in ifile2:
             if fext in K1:
                 showlog(f'Converting band {fext} to Kelvin.')
-                L = dat[-1].data*radmult[fext]+radadd[fext]
-                dat[-1].data = K2[fext]/np.log(K1[fext]/L+1)
+                L = dat[-1].data * radmult[fext] + radadd[fext]
+                dat[-1].data = K2[fext] / np.log(K1[fext] / L + 1)
                 dat[-1].units = 'Kelvin'
                 if not metaonly:
-                    dat[-1].dataid = fext+' ToA Brightness Temperature'
+                    dat[-1].dataid = fext + ' ToA Brightness Temperature'
             elif fext in satbands:
-                showlog('Converting band '+fext+' to reflectance.')
-                dat[-1].data = dat[-1].data*refmult[fext]+refadd[fext]
+                showlog('Converting band ' + fext + ' to reflectance.')
+                dat[-1].data = dat[-1].data * refmult[fext] + refadd[fext]
                 dat[-1].units = 'Reflectance'
                 if not metaonly:
-                    dat[-1].dataid = fext+' ToA Reflectance'
+                    dat[-1].dataid = fext + ' ToA Reflectance'
 
         if 'L2SP' in ifile2:
             if fext == 'LST':
                 showlog(f'Converting band {lstband} to Kelvin. '
                         f'Band renamed as {fext}')
-                dat[-1].data = dat[-1].data*0.00341802 + 149.0
+                dat[-1].data = dat[-1].data * 0.00341802 + 149.0
             elif fext in satbands:
-                showlog('Converting band '+fext+' to reflectance.')
-                dat[-1].data = dat[-1].data*0.0000275 - 0.2
+                showlog('Converting band ' + fext + ' to reflectance.')
+                dat[-1].data = dat[-1].data * 0.0000275 - 0.2
             elif fext in ['ST_CDIST', 'ST_QA']:
-                dat[-1].data = dat[-1].data*0.01
+                dat[-1].data = dat[-1].data * 0.01
             elif fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
-                dat[-1].data = dat[-1].data*0.001
+                dat[-1].data = dat[-1].data * 0.001
             elif fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
-                dat[-1].data = dat[-1].data*0.0001
+                dat[-1].data = dat[-1].data * 0.0001
 
             if fext in ['ST_QA', 'LST']:
                 dat[-1].units = 'Kelvin'
@@ -2030,7 +2031,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1]) / 2
 
         dataset.close()
 
@@ -2165,11 +2166,11 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
     dat = []
     nval = 0
     for i in range(len(satbands)):
-        bname = f'Band {i+1}'
+        bname = f'Band {i + 1}'
         if tnames is not None and bname not in tnames:
             continue
 
-        fext = str(i+1)
+        fext = str(i + 1)
         dat.append(Data())
         if metaonly is False:
             dat[-1].data = np.zeros((rmax, cmax))
@@ -2189,7 +2190,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
+        bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1]) / 2
 
     for tile in dtree['isd']['TIL']['TILE']:
         ifile = os.path.join(idir, tile['FILENAME'])
@@ -2199,16 +2200,16 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         cmin = int(tile['ULCOLOFFSET'])
         cmax = int(tile['LRCOLOFFSET'])
 
-        showlog('Importing '+tile['FILENAME'])
+        showlog('Importing ' + tile['FILENAME'])
         dataset = rasterio.open(ifile)
 
         for i in piter(dataset.indexes):
             if metaonly is False:
-                dat[i-1].data[rmin:rmax+1, cmin:cmax+1] = dataset.read(i)
+                dat[i - 1].data[rmin:rmax + 1, cmin:cmax + 1] = dataset.read(i)
 
             bmeta = dataset.tags(i)
-            dat[i-1].crs = dataset.crs
-            dat[i-1].filename = ifile
+            dat[i - 1].crs = dataset.crs
+            dat[i - 1].filename = ifile
         dataset.close()
 
     showlog('Calculating radiance and reflectance...')
@@ -2220,7 +2221,8 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         mask = (i.data == nval)
 
         scale = float(dtree['isd']['IMD'][bnum2name[indx]]['ABSCALFACTOR'])
-        bwidth = float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
+        bwidth = float(dtree['isd']['IMD'][bnum2name[indx]]
+                       ['EFFECTIVEBANDWIDTH'])
 
         i.data = i.data.astype(np.float32)
 
@@ -2233,7 +2235,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
         minute = int(date[14:16])
         sec = float(date[17:-1])
 
-        UT = hour + minute/60. + sec/3600.
+        UT = hour + minute / 60. + sec / 3600.
 
         # Julian day
 
@@ -2241,15 +2243,16 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
             year -= 1
             month += 12
 
-        A = int(year/100.)
-        B = 2 - A + int(A/4.)
+        A = int(year / 100.)
+        B = 2 - A + int(A / 4.)
 
-        JD = int(365.25*(year+4716))+int(30.6001*(month+1))+day+UT/24.+B-1524.5
+        JD = (int(365.25 * (year + 4716)) +
+              int(30.6001 * (month + 1)) + day + UT / 24. + B - 1524.5)
 
         D = JD - 2451545.0
         g = np.deg2rad(357.529 + 0.98560028 * D)
 
-        dES = 1.00014 - 0.01671*np.cos(g) - 0.00014*np.cos(2*g)
+        dES = 1.00014 - 0.01671 * np.cos(g) - 0.00014 * np.cos(2 * g)
 
         szenith = 90. - float(dtree['isd']['IMD']['IMAGE']['MEANSUNEL'])
         szenith = np.deg2rad(szenith)
@@ -2310,17 +2313,17 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
         piter = ProgressBarText().iter
 
     wavelength = [
-        355.59,  365.76,  375.94,  386.11,  396.29,  406.46,  416.64,  426.82,
-        436.99,  447.17,  457.34,  467.52,  477.69,  487.87,  498.04,  508.22,
-        518.39,  528.57,  538.74,  548.92,  559.09,  569.27,  579.45,  589.62,
-        599.80,  609.97,  620.15,  630.32,  640.50,  650.67,  660.85,  671.02,
-        681.20,  691.37,  701.55,  711.72,  721.90,  732.07,  742.25,  752.43,
-        762.60,  772.78,  782.95,  793.13,  803.30,  813.48,  823.65,  833.83,
-        844.00,  854.18,  864.35,  874.53,  884.70,  894.88,  905.05,  915.23,
-        925.41,  935.58,  945.76,  955.93,  966.11,  976.28,  986.46,  996.63,
-        1006.81, 1016.98, 1027.16, 1037.33, 1047.51, 1057.68,  851.92,  862.01,
-        872.10,  882.19,  892.28,  902.36,  912.45,  922.54,  932.64,  942.73,
-        952.82,  962.91,  972.99,  983.08,  993.17, 1003.30, 1013.30, 1023.40,
+        355.59, 365.76, 375.94, 386.11, 396.29, 406.46, 416.64, 426.82,
+        436.99, 447.17, 457.34, 467.52, 477.69, 487.87, 498.04, 508.22,
+        518.39, 528.57, 538.74, 548.92, 559.09, 569.27, 579.45, 589.62,
+        599.80, 609.97, 620.15, 630.32, 640.50, 650.67, 660.85, 671.02,
+        681.20, 691.37, 701.55, 711.72, 721.90, 732.07, 742.25, 752.43,
+        762.60, 772.78, 782.95, 793.13, 803.30, 813.48, 823.65, 833.83,
+        844.00, 854.18, 864.35, 874.53, 884.70, 894.88, 905.05, 915.23,
+        925.41, 935.58, 945.76, 955.93, 966.11, 976.28, 986.46, 996.63,
+        1006.81, 1016.98, 1027.16, 1037.33, 1047.51, 1057.68, 851.92, 862.01,
+        872.10, 882.19, 892.28, 902.36, 912.45, 922.54, 932.64, 942.73,
+        952.82, 962.91, 972.99, 983.08, 993.17, 1003.30, 1013.30, 1023.40,
         1033.49, 1043.59, 1053.69, 1063.79, 1073.89, 1083.99, 1094.09, 1104.19,
         1114.19, 1124.28, 1134.38, 1144.48, 1154.58, 1164.68, 1174.77, 1184.87,
         1194.97, 1205.07, 1215.17, 1225.17, 1235.27, 1245.36, 1255.46, 1265.56,
@@ -2425,11 +2428,11 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
         if 58 <= bandno <= 78:
             continue
 
-        bname = f'Band {bandno}: {wavelength[bandno-1]} nm'
+        bname = f'Band {bandno}: {wavelength[bandno - 1]} nm'
         if tnames is not None and bname not in tnames:
             continue
 
-        showlog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
+        showlog(f'Importing band {bandno}: {wavelength[bandno - 1]} nm')
         dataset = rasterio.open(os.path.join(idir, ifile2))
 
         if dataset is None:
@@ -2468,9 +2471,9 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
         bmeta['Sensor'] = 'Hyperion EO1H'
         # if satbands is not None and fext in satbands:
 
-        dat[-1].metadata['Raster']['wavelength'] = wavelength[bandno-1]
-        bmeta['WavelengthMin'] = wavelength[bandno-1]-fwhm[bandno-1]/2
-        bmeta['WavelengthMax'] = wavelength[bandno-1]+fwhm[bandno-1]/2
+        dat[-1].metadata['Raster']['wavelength'] = wavelength[bandno - 1]
+        bmeta['WavelengthMin'] = wavelength[bandno - 1] - fwhm[bandno - 1] / 2
+        bmeta['WavelengthMax'] = wavelength[bandno - 1] + fwhm[bandno - 1] / 2
 
         dat[-1].metadata['Raster'].update(bmeta)
         dat[-1].datetime = date
@@ -2532,9 +2535,9 @@ def get_sentinel1(ifile, piter=None, showlog=print, tnames=None,
         bname = f'{tmp[0]}_{tmp[1]}_{tmp[-2]}_{tmp[-1]}'
 
         dataset1 = rasterio.open(bfile)
-        showlog('Importing '+bname)
+        showlog('Importing ' + bname)
         if dataset1 is None:
-            showlog('Problem with '+ifile)
+            showlog('Problem with ' + ifile)
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
@@ -2604,7 +2607,7 @@ def get_sentinel2(ifile, *, piter=None, showlog=print, tnames=None,
 
     if ext == '.safe':
         lvl = os.path.basename(ifile)[7:10]
-        ifile = ifile+f'/MTD_MSI{lvl}.xml'
+        ifile = ifile + f'/MTD_MSI{lvl}.xml'
 
     if piter is None:
         piter = ProgressBarText().iter
@@ -2628,9 +2631,9 @@ def get_sentinel2(ifile, *, piter=None, showlog=print, tnames=None,
     dat = []
     for bfile in subdata:
         dataset = rasterio.open(bfile)
-        showlog('Importing '+os.path.basename(bfile))
+        showlog('Importing ' + os.path.basename(bfile))
         if dataset is None:
-            showlog('Problem with '+ifile)
+            showlog('Problem with ' + ifile)
             continue
         plvl = dataset.tags()['PROCESSING_LEVEL']
 
@@ -2638,7 +2641,7 @@ def get_sentinel2(ifile, *, piter=None, showlog=print, tnames=None,
             bmeta = dataset.tags(i)
             # allns = dataset.tag_namespaces()
 
-            bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
+            bname = dataset.descriptions[i - 1] + f' ({dataset.transform[0]}m)'
             bname = bname.replace(',', ' ')
             if tnames is not None and bname not in tnames:
                 continue
@@ -2677,8 +2680,8 @@ def get_sentinel2(ifile, *, piter=None, showlog=print, tnames=None,
             if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
                 wlen = float(bmeta['WAVELENGTH'])
                 bwidth = float(bmeta['BANDWIDTH'])
-                bmeta['Raster']['WavelengthMin'] = wlen - bwidth/2
-                bmeta['Raster']['WavelengthMax'] = wlen + bwidth/2
+                bmeta['Raster']['WavelengthMin'] = wlen - bwidth / 2
+                bmeta['Raster']['WavelengthMax'] = wlen + bwidth / 2
                 dat[-1].metadata['Raster']['wavelength'] = wlen
 
             bmeta['Raster'].update(gmeta)
@@ -2717,7 +2720,7 @@ def get_sentinel2_metadata(ifile):
                     gmeta = myfile.read()
             root = ET.fromstring(gmeta)
         else:
-            gmeta = glob.glob(os.path.dirname(ifile)+f'\\**\\{mfile}.xml',
+            gmeta = glob.glob(os.path.dirname(ifile) + f'\\**\\{mfile}.xml',
                               recursive=True)[0]
 
             tree = ET.parse(gmeta)
@@ -2788,7 +2791,7 @@ def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
                 gain = float(bmeta['RADIANCE_GAIN'])
                 bias = float(bmeta['RADIANCE_BIAS'])
 
-                dat[-1].data = rtmp/gain+bias
+                dat[-1].data = rtmp / gain + bias
                 dat[-1].data = np.ma.masked_invalid(dat[-1].data)
                 dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
                 if dat[-1].data.mask.size == 1:
@@ -2804,7 +2807,7 @@ def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
             bmeta['Raster']['Sensor'] = 'Spot'
             wmin = float(bmeta['SPECTRAL_RANGE_MIN'])
             wmax = float(bmeta['SPECTRAL_RANGE_MAX'])
-            wlen = (wmin+wmax)/2
+            wlen = (wmin + wmax) / 2
             bmeta['Raster']['WavelengthMin'] = wmin
             bmeta['Raster']['WavelengthMax'] = wmax
             bmeta['Raster']['wavelength'] = wlen
@@ -2915,7 +2918,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
 
         dataset1 = rasterio.open(os.path.join(idir, zfile))
         if dataset1 is None:
-            showlog('Problem with '+zfile)
+            showlog('Problem with ' + zfile)
             continue
 
         wkt = dataset1.crs.to_wkt()
@@ -2925,7 +2928,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
 
         if metaonly is False:
             dat[-1].data = dataset.read(1)
-            dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data) * scalefactor
             dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
@@ -2950,7 +2953,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
         if fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['wavelength'] = (satbands[fext][0]+satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1]) / 2
 
         dataset.close()
         dataset1.close()
@@ -2979,7 +2982,7 @@ def get_aster_metadata(ifile):
     """
     meta = {}
 
-    with open(ifile+'.met', encoding='utf-8') as myfile:
+    with open(ifile + '.met', encoding='utf-8') as myfile:
         mdat = myfile.read()
 
     mdat = mdat.split('\n')
@@ -3160,7 +3163,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
                 utmzone = float(meta[kmeta])
                 break
         crssrc = CRS.from_epsg(4326)
-        crs = CRS.from_epsg(32600+utmzone)
+        crs = CRS.from_epsg(32600 + utmzone)
 
         dataset1 = rasterio.open(bfile)
 
@@ -3173,7 +3176,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
             dat[-1].data = dataset.read(1)
             if ptype == '08':
                 dat[-1].data[dat[-1].data == 2000] = nval
-            dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data) * scalefactor
             dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
@@ -3205,10 +3208,11 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1])/2
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1]) / 2
 
             if ptype == 'L1T' and 'ImageData' in ifile:
-                dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
+                dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex(
+                    'ImageData'):]]
                 calctoa = True
 
     if not dat:
@@ -3280,12 +3284,12 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
 
             if 'Latitude' in ifile2:
                 ymax = rtmp2.max()
-                ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
+                ydim = abs((rtmp2.max() - rtmp2.min()) / rtmp2.shape[1])
                 continue
 
             if 'Longitude' in ifile2:
                 xmin = rtmp2.min()
-                xdim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[2])
+                xdim = abs((rtmp2.max() - rtmp2.min()) / rtmp2.shape[2])
                 continue
 
             if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
@@ -3308,17 +3312,17 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
                     dat[-1].data = rtmp2
 
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-            dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data)
-                                 | (dat[-1].data == nval))
+            dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
+                                 (dat[-1].data == nval))
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
             dat[-1].data = dat[-1].data * 1.0
             if 'Emissivity/Mean' in ifile2:
-                bandid = 'Emissivity_mean_band_'+str(10+i2)
+                bandid = 'Emissivity_mean_band_' + str(10 + i2)
                 dat[-1].data = dat[-1].data * 0.001
             if 'Emissivity/SDev' in ifile2:
-                bandid = 'Emissivity_std_dev_band_'+str(10+i2)
+                bandid = 'Emissivity_std_dev_band_' + str(10 + i2)
                 dat[-1].data = dat[-1].data * 0.0001
             if 'NDVI/Mean' in ifile2:
                 bandid = 'NDVI_mean'
@@ -3417,25 +3421,25 @@ def get_aster_ged_bin(ifile):
              '', '', '', 'Number per pixel', 'degrees', 'degrees', 'meters']
 
     data = np.fromfile(ifile, dtype=np.int32)
-    rows_cols = int((data.size/19)**0.5)
+    rows_cols = int((data.size / 19)**0.5)
     data.shape = (19, rows_cols, rows_cols)
 
-    lats = data[16]*scale[16]
-    lons = data[17]*scale[17]
+    lats = data[16] * scale[16]
+    lons = data[17] * scale[17]
 
-    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
-    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
+    latsdim = (lats.max() - lats.min()) / (lats.shape[0] - 1)
+    lonsdim = (lons.max() - lons.min()) / (lons.shape[0] - 1)
 
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
+    tlx = lons.min() - abs(lonsdim / 2)
+    tly = lats.max() + abs(latsdim / 2)
 
     for i in range(19):
         dat.append(Data())
 
-        dat[i].data = data[i]*scale[i]
+        dat[i].data = data[i] * scale[i]
 
         dat[i].dataid = bandid[i]
-        dat[i].nodata = nval*scale[i]
+        dat[i].nodata = nval * scale[i]
         dat[i].xdim = lonsdim
         dat[i].ydim = latsdim
         dat[i].units = units[i]
@@ -3443,8 +3447,8 @@ def get_aster_ged_bin(ifile):
         rows, cols = dat[i].data.shape
         xmin = tlx
         ymax = tly
-        ymin = ymax - rows*dat[i].ydim
-        xmax = xmin + cols*dat[i].xdim
+        ymin = ymax - rows * dat[i].ydim
+        xmax = xmin + cols * dat[i].xdim
 
         dat[i].extent = [xmin, xmax, ymin, ymax]
 
@@ -3528,23 +3532,23 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     blue, _, _ = histcomp(blue, perc=clippercl, uperc=clippercu)
 
     img = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
-    img[:, :, 3] = mask*254+1
+    img[:, :, 3] = mask * 254 + 1
 
     img[:, :, 0] = norm255(red)
     img[:, :, 1] = norm255(green)
     img[:, :, 2] = norm255(blue)
 
-    phi = -np.pi/4.
-    theta = np.pi/4.
+    phi = -np.pi / 4.
+    theta = np.pi / 4.
 
     if sundata is not None:
         sunshader = currentshader(sdata.data, cell, theta, phi, alpha)
 
         snorm = norm2(sunshader)
 
-        img[:, :, 0] = img[:, :, 0]*snorm  # red
-        img[:, :, 1] = img[:, :, 1]*snorm  # green
-        img[:, :, 2] = img[:, :, 2]*snorm  # blue
+        img[:, :, 0] = img[:, :, 0] * snorm  # red
+        img[:, :, 1] = img[:, :, 1] * snorm  # green
+        img[:, :, 2] = img[:, :, 2] * snorm  # blue
         img = img.astype(np.uint8)
 
     newimg = [data[0].copy(),
@@ -3742,17 +3746,7 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
-    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\MODIS\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    # ifile = r"D:\dem\L1C\S2B_MSIL2A_20220329T073609_N9999_R092_T36JTM_20241009T082013.SAFE\MTD_MSIL2A.xml"
-    # ifile = r"D:\dem\L1C\S2B_MSIL2A_20220329T073609_N9999_R092_T36JTM_20241009T082013.SAFE.zip"
-    # ifile = r"D:\dem\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTN_20220329T104004.SAFE\MTD_MSIL2A.xml"
-
-    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
-    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
-    # meta = get_sentinel2_metadata(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -3764,14 +3758,6 @@ def _testfn3():
     dat = tmp1.outdata['Raster']
 
     print(dat[-1].metadata)
-
-    # ofile = set_export_filename(dat, odir='')
-
-    # ofile = r'c:\\temp\\'+ofile
-
-    # export_raster(ofile+'.tif', dat)
-
-    # print(dat[-1].datetime)
 
     for i in dat:
         plt.figure(dpi=150)
@@ -3793,7 +3779,7 @@ def _testfn4():
 
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
-        ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+        ifiles = glob.glob(os.path.join(idir, '*' + adate + '*.hdf'))
 
         dat2 = get_data(ifiles[0])
 
@@ -3803,13 +3789,13 @@ def _testfn4():
             xdim = i.transform[0]
             ydim = i.transform[4]
             xmin = i.transform[2]
-            ymax = i.transform[5]+10000000
+            ymax = i.transform[5] + 10000000
             i.set_transform(xdim, xmin, ydim, ymax)
 
         dat = dat + dat2
         ofile = set_export_filename(dat, odir)
 
-        export_raster(ofile+'.tif', dat)
+        export_raster(ofile + '.tif', dat)
 
 
 if __name__ == "__main__":

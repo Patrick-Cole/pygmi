@@ -94,7 +94,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 atext = f'{dmat[i, j]:.2f}'
 
-                self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
+                self.axes.text(i + .5, j + .5, atext, c=ctmp, rotation=45,
                                ha='center', va='center')
         dat_mat = [i.dataid for i in data1]
         self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
@@ -215,8 +215,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         dtlx = data.extent[0]
         dtly = data.extent[-1]
-        x = dtlx+np.arange(cols)*data.xdim+data.xdim/2
-        y = dtly-np.arange(rows)*data.ydim-data.ydim/2
+        x = dtlx + np.arange(cols) * data.xdim + data.xdim / 2
+        y = dtly - np.arange(rows) * data.ydim - data.ydim / 2
         x, y = np.meshgrid(x, y)
         z = data.data.copy()
         vmin, vmax = np.percentile(z.compressed(), [1, 99])
@@ -525,17 +525,17 @@ class PlotSurface(ContextModule):
         grid = pv.StructuredGrid(x, y, z)
         grid['values'] = z.T.flatten()
 
-        xptp = xmax-xmin
-        yptp = ymax-ymin
-        zptp = zmax-zmin
+        xptp = xmax - xmin
+        yptp = ymax - ymin
+        zptp = zmax - zmin
 
         ptp = max(xptp, yptp, zptp)
         n_labels = 5
-        label_dist = ptp/5
+        label_dist = ptp / 5
 
-        n_xlabels = max(2, round(xptp/label_dist))
-        n_ylabels = max(2, round(yptp/label_dist))
-        n_zlabels = max(2, round(zptp/label_dist))
+        n_xlabels = max(2, round(xptp / label_dist))
+        n_ylabels = max(2, round(yptp / label_dist))
+        n_zlabels = max(2, round(zptp / label_dist))
 
         bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
 
@@ -568,7 +568,7 @@ class PlotSurface(ContextModule):
         #                        use_3d_text=False,
         #                        grid='back',
         #                        location='outer'
-                               # )
+        # )
         self.plotter.set_scale(zscale=20)
 
     def run(self):

@@ -67,7 +67,7 @@ class MenuWidget():
         self.menu.addSeparator()
 
         self.action_check_desc = QtGui.QAction('Correct SEISAN Type 3'
-                                                   ' Descriptions')
+                                               ' Descriptions')
         self.menu.addAction(self.action_check_desc)
         self.action_check_desc.triggered.connect(self.correct_desc)
 
@@ -100,7 +100,7 @@ class MenuWidget():
         self.action_show_QC_plots.triggered.connect(self.show_QC_plots)
 
         self.action_show_TP_plots = QtGui.QAction('Show Temporal b-value '
-                                                      'Plots')
+                                                  'Plots')
         context_menu['Seis'].addAction(self.action_show_TP_plots)
         self.action_show_TP_plots.triggered.connect(self.show_TP_plots)
 
@@ -113,7 +113,7 @@ class MenuWidget():
         self.action_export_csv.triggered.connect(self.export_csv)
 
         self.action_sexport = QtGui.QAction('Export Summary to CSV, XLSX '
-                                                'or SHP')
+                                            'or SHP')
         context_menu['Seis'].addAction(self.action_sexport)
         self.action_sexport.triggered.connect(self.sexport)
 

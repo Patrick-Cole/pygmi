@@ -130,12 +130,12 @@ def bounds_to_transform(bounds, dxy):
 
     """
     xmin, ymin, xmax, ymax = bounds
-    rows = int((ymax-ymin)//dxy)+1
-    cols = int((xmax-xmin)//dxy)+1
-    xmin -= dxy/2
-    ymin -= dxy/2
-    xmax = cols*dxy+xmin
-    ymax = rows*dxy+ymin
+    rows = int((ymax - ymin) // dxy) + 1
+    cols = int((xmax - xmin) // dxy) + 1
+    xmin -= dxy / 2
+    ymin -= dxy / 2
+    xmax = cols * dxy + xmin
+    ymax = rows * dxy + ymin
     transform = Affine(dxy, 0, xmin, 0, -dxy, ymax)
     shape = (rows, cols)
 
@@ -177,17 +177,17 @@ def bounds_intersection(dataset, bounds, showlog=print):
         xmax2 = min(xmax, xmax1)
         ymax2 = min(ymax, ymax1)
 
-        xoff = int((xmin2-xmin)//xdim)
-        yoff = int((ymax-ymax2)//ydim)
+        xoff = int((xmin2 - xmin) // xdim)
+        yoff = int((ymax - ymax2) // ydim)
 
-        xsize = int((xmax2-xmin2)//xdim)
-        ysize = int((ymax2-ymin2)//xdim)
+        xsize = int((xmax2 - xmin2) // xdim)
+        ysize = int((ymax2 - ymin2) // xdim)
 
         # iraster = (xoff, yoff, xsize, ysize)
-        newbounds = (xmin+xoff*xdim,
-                     ymax-yoff*ydim-ysize*ydim,
-                     xmin+xoff*xdim+xsize*xdim,
-                     ymax-yoff*ydim)
+        newbounds = (xmin + xoff * xdim,
+                     ymax - yoff * ydim - ysize * ydim,
+                     xmin + xoff * xdim + xsize * xdim,
+                     ymax - yoff * ydim)
         window = Window(xoff, yoff, xsize, ysize)
     else:
         newbounds = None
@@ -434,10 +434,10 @@ class Data():
         if cols is None:
             cols = self.data.shape[1]
 
-        left = xmin + xoff*xdim
-        top = ymax - yoff*ydim
-        right = left + xdim*cols
-        bottom = top - ydim*rows
+        left = xmin + xoff * xdim
+        top = ymax - yoff * ydim
+        right = left + xdim * cols
+        bottom = top - ydim * rows
 
         self.transform = Affine(xdim, 0, left, 0, -ydim, top)
         self.xdim = xdim
@@ -487,8 +487,8 @@ class Data():
         """
         mean = self.data.mean()
         std = self.data.std()
-        vmin = mean-2*std
-        vmax = mean+2*std
+        vmin = mean - 2 * std
+        vmax = mean + 2 * std
 
         return vmin, vmax
 

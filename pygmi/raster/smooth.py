@@ -174,7 +174,7 @@ class Smooth(BasicModule):
 
         for dat in data:
             dat.data = self.mov_win_filt(dat.data, self.fmat, filt)
-            dat.dataid = dat.dataid+' '+filt
+            dat.dataid = dat.dataid + ' ' + filt
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
@@ -282,9 +282,9 @@ class Smooth(BasicModule):
         if self.fmat is None:
             return
 
-        red = [0]*85 + list(range(0, 256, 3))+[255]*85
-        green = list(range(0, 256, 3)) + 85*[255] + list(range(255, 0, -3))
-        blue = [255]*85 + list(range(255, 0, -3)) + [0]*86
+        red = [0] * 85 + list(range(0, 256, 3)) + [255] * 85
+        green = list(range(0, 256, 3)) + 85 * [255] + list(range(255, 0, -3))
+        blue = [255] * 85 + list(range(255, 0, -3)) + [0] * 86
         fmin = self.fmat.min()
         frange = np.ptp(self.fmat)
 
@@ -297,12 +297,12 @@ class Smooth(BasicModule):
                 if frange == 0:
                     i = 127
                 else:
-                    i = int(255*(self.fmat[row, col]-fmin)/frange)
+                    i = int(255 * (self.fmat[row, col] - fmin) / frange)
                 ltmp = QtWidgets.QLabel(f'{self.fmat[row, col]:g}')
                 ltmp.setStyleSheet(
                     'Background: rgb' +
                     str((red[i], green[i], blue[i])) + '; Color: rgb' +
-                    str((255-red[i], 255-green[i], 255-blue[i])))
+                    str((255 - red[i], 255 - green[i], 255 - blue[i])))
                 self.tablewidget.setCellWidget(row, col, ltmp)
 
         self.tablewidget.resizeColumnsToContents()
@@ -351,11 +351,11 @@ class Smooth(BasicModule):
         colf = fmat.shape[1]
         rowd = dat.shape[0]
         cold = dat.shape[1]
-        drr = round(rowf/2.0)
-        dcc = round(colf/2.0)
+        drr = round(rowf / 2.0)
+        dcc = round(colf / 2.0)
 
-        dummy = np.ma.masked_all((rowd+rowf-1, cold+colf-1))
-        dummy[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat
+        dummy = np.ma.masked_all((rowd + rowf - 1, cold + colf - 1))
+        dummy[drr - 1:drr - 1 + rowd, dcc - 1:dcc - 1 + cold] = dat
 
         dummy.data[dummy.mask] = np.nan
         dat = dat.astype(float)
@@ -366,14 +366,14 @@ class Smooth(BasicModule):
 
         elif itype == '2D Median':
             self.showlog('Calculating Median...')
-            out = np.ma.zeros([rowd, cold])*np.nan
+            out = np.ma.zeros([rowd, cold]) * np.nan
             out.mask = np.ma.getmaskarray(dat)
             fmat = fmat.astype(bool)
             dummy = dummy.data
 
             for i in self.piter(range(rowd)):
                 for j in range(cold):
-                    tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
+                    tmp1 = dummy[i:i + rowf, j:j + colf][fmat]
                     if np.any(~np.isnan(tmp1)):  # if any are False
                         out[i, j] = np.nanmedian(tmp1)
 
@@ -381,10 +381,10 @@ class Smooth(BasicModule):
         out = np.ma.array(out)
 
         out.shape = out.shape[0:2]
-        out.mask[:rowf//2] = True
-        out.mask[-rowf//2:] = True
-        out.mask[:, :colf//2] = True
-        out.mask[:, -colf//2:] = True
+        out.mask[:rowf // 2] = True
+        out.mask[-rowf // 2:] = True
+        out.mask[:, :colf // 2] = True
+        out.mask[:, -colf // 2:] = True
         return out
 
 
@@ -455,29 +455,29 @@ def filters2d(filtertype, sze, *sigma):
     """
     if filtertype == 'disc':
         radius = sze
-        sze = [2*radius+1, 2*radius+1]
+        sze = [2 * radius + 1, 2 * radius + 1]
 
     rows = sze[0]
     cols = sze[1]
-    r2 = (rows-1)/2
-    c2 = (cols-1)/2
+    r2 = (rows - 1) / 2
+    c2 = (cols - 1) / 2
 
     if filtertype == 'average':
         rows = sze[0]
         cols = sze[1]
-        f = np.ones(sze)/(rows*cols)
+        f = np.ones(sze) / (rows * cols)
 
     elif filtertype == 'disc':
         [x, y] = np.mgrid[-c2: c2, -r2: r2]
         rad = np.sqrt(x**2 + y**2)
         f = rad <= radius
-        f = f/np.sum(f[:])
+        f = f / np.sum(f[:])
 
     elif filtertype == 'gaussian':
         [x, y] = np.mgrid[-c2: c2, -r2:r2]
         radsqrd = x**2 + y**2
-        f = np.exp(-radsqrd/(2*sigma[0]**2))
-        f = f/np.sum(f[:])
+        f = np.exp(-radsqrd / (2 * sigma[0]**2))
+        f = f / np.sum(f[:])
     else:
         warnings.warn('Unrecognized filter type')
 

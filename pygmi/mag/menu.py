@@ -56,7 +56,7 @@ class MenuWidget():
         parent.menubar.addAction(self.menu.menuAction())
 
         self.action_tilt = QtGui.QAction('Tilt Angle and Related Edge '
-                                             'Filters')
+                                         'Filters')
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 

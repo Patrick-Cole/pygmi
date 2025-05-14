@@ -146,7 +146,7 @@ class ImportCG5(BasicModule):
         if not nodialog:
             tmp = self.exec()
 
-            if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
+            if tmp != 1 or self.df_gps is None:
                 return False
 
         if self.cmb_line.currentText() == self.cmb_station.currentText():
@@ -177,62 +177,13 @@ class ImportCG5(BasicModule):
 
         self.df_gps.rename(columns=cren, inplace=True)
 
-        if self.df_gps.latitude.dtype == 'O':
-            filt = self.df_gps.latitude.str.contains('S')
-            self.df_gps.latitude.loc[filt] = '-'+self.df_gps.latitude[filt]
-            self.df_gps.latitude.replace('S', '', inplace=True, regex=True)
-            self.df_gps.latitude.replace('N', '', inplace=True, regex=True)
-            try:
-                self.df_gps.latitude = pd.to_numeric(self.df_gps.latitude)
-            except ValueError:
-                self.showlog('You have characters in your latitude'
-                             ' string which could not be converted.')
-                return False
+        dfmerge = merge_gpsmag(self.le_cg5file.text(),
+                               self.le_gpsfile.text(),
+                               float(self.le_basethres.text()), self.showlog)
 
-        if self.df_gps.longitude.dtype == 'O':
-            filt = self.df_gps.longitude.str.contains('W')
-            self.df_gps.longitude.loc[filt] = '-'+self.df_gps.longitude[filt]
-            self.df_gps.longitude.replace('W', '', inplace=True, regex=True)
-            self.df_gps.longitude.replace('E', '', inplace=True, regex=True)
-            try:
-                self.df_gps.longitude = pd.to_numeric(self.df_gps.longitude)
-            except ValueError:
-                self.showlog('You have characters in your longitude'
-                             ' string which could not be converted.')
-                return False
+        if dfmerge is False:
+            return False
 
-        # Get rid of text in line columns
-        if self.df_gps['line'].dtype == object:
-            self.df_gps['line'] = self.df_gps['line'].str.replace(r'\D', '')
-
-        # Convert line and station to numbers
-        self.df_gps['station'] = pd.to_numeric(self.df_gps['station'],
-                                               errors='coerce',
-                                               downcast='float')
-
-        self.df_gps['line'] = pd.to_numeric(self.df_gps['line'],
-                                            errors='coerce',
-                                            downcast='float')
-
-        # Merge data
-        dfmerge = pd.merge(self.df_cg5, self.df_gps,
-                           left_on=['LINE', 'STATION'],
-                           right_on=['line', 'station'], how='left')
-
-        # eliminate ordinary stations (not base stations) without coordinates
-        filt = dfmerge['STATION'] < float(self.le_basethres.text())
-
-        filt = filt & dfmerge['longitude'].isna()
-
-        dfmerge = dfmerge[~filt]
-
-        x = dfmerge['longitude']
-        y = dfmerge['latitude']
-        dfmerge = gpd.GeoDataFrame(dfmerge, geometry=gpd.points_from_xy(x, y))
-
-        dfmerge['line'] = dfmerge['line'].astype(str)
-        dfmerge.attrs['Gravity'] = True
-        dfmerge.attrs['source'] = str(self.le_cg5file.text())
         self.outdata['Vector'] = [dfmerge]
 
         # Check for duplicates
@@ -284,35 +235,10 @@ class ImportCG5(BasicModule):
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                    self.parent, 'Open File', '.', ext)
+                self.parent, 'Open File', '.', ext)
             if filename == '':
                 return
 
-        os.chdir(os.path.dirname(filename))
-
-        with open(filename, encoding='utf-8') as fno:
-            tmp = fno.readlines()
-
-        data = []
-        for i in tmp:
-            if i[0] != r'/' and 'Line' not in i and ',' not in i:
-                data.append(i)
-
-        names = ['LINE', 'STATION', 'ALT', 'GRAV', 'SD', 'TILTX', 'TILTY',
-                 'TEMP', 'TIDE', 'DUR', 'REJ', 'TIME', 'DECTIMEDATE',
-                 'TERRAIN']
-
-        dtype = {}
-        dtype['names'] = names
-        dtype['formats'] = ['f4']*len(names)
-
-        dtype['formats'][9] = 'i'
-        dtype['formats'][10] = 'i'
-        dtype['formats'][11] = 'S8'
-
-        tmp2 = np.genfromtxt(data, dtype=dtype)
-
-        self.df_cg5 = pd.DataFrame(tmp2)
         self.le_cg5file.setText(filename)
 
     def get_gps(self, filename=''):
@@ -333,14 +259,13 @@ class ImportCG5(BasicModule):
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                    self.parent, 'Open File', '.', ext)
+                self.parent, 'Open File', '.', ext)
             if filename == '':
                 return
 
         os.chdir(os.path.dirname(filename))
 
-        df2 = pd.read_csv(filename)
-        df2.columns = df2.columns.str.lower()
+        df2 = get_gps(filename)
 
         self.df_gps = df2
 
@@ -389,3 +314,175 @@ class ImportCG5(BasicModule):
         self.cmb_xchan.setEnabled(True)
         self.cmb_ychan.setEnabled(True)
         self.cmb_zchan.setEnabled(True)
+
+
+def get_cg5(filename):
+    """
+    Get CG-5 filename and load data.
+
+    Parameters
+    ----------
+    filename : str
+        CG-5 filename.
+
+    Returns
+    -------
+    None.
+
+    """
+    os.chdir(os.path.dirname(filename))
+
+    with open(filename, encoding='utf-8') as fno:
+        tmp = fno.readlines()
+
+    data = []
+    for i in tmp:
+        if i[0] != r'/' and 'Line' not in i and ',' not in i:
+            data.append(i)
+
+    names = ['LINE', 'STATION', 'ALT', 'GRAV', 'SD', 'TILTX', 'TILTY',
+             'TEMP', 'TIDE', 'DUR', 'REJ', 'TIME', 'DECTIMEDATE',
+             'TERRAIN']
+
+    dtype = {}
+    dtype['names'] = names
+    dtype['formats'] = ['f4'] * len(names)
+
+    dtype['formats'][9] = 'i'
+    dtype['formats'][10] = 'i'
+    dtype['formats'][11] = 'S8'
+
+    tmp2 = np.genfromtxt(data, dtype=dtype)
+
+    df_cg5 = pd.DataFrame(tmp2)
+
+    return df_cg5
+
+
+def get_gps(filename):
+    """
+    Get GPS filename and load data.
+
+    Parameters
+    ----------
+    filename : str
+        GPS filename (csv).
+
+    Returns
+    -------
+    None.
+
+    """
+    os.chdir(os.path.dirname(filename))
+
+    df2 = pd.read_csv(filename)
+    df2.columns = df2.columns.str.lower()
+
+    return df2
+
+
+def merge_gpsmag(cg5file, gpsfile, basethres=10000., showlog=print):
+    """
+    Import and merge GPS and gravity data.
+
+    Parameters
+    ----------
+    cg5file : str
+        Gravity filename for data in CG-5 format.
+    gpsfile : str
+        GPS filename in CSV format.
+    basethres : float, optional
+        Threshold for base station numbers. The default is 10000.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    Pandas DataFrame
+        Dataframe with merged data.
+
+    """
+    df_cg5 = get_cg5(cg5file)
+    df_gps = get_gps(gpsfile)
+
+    if df_gps.latitude.dtype == 'O':
+        filt = df_gps.latitude.str.contains('S')
+        df_gps.latitude.loc[filt] = '-' + df_gps.latitude[filt]
+        df_gps.latitude.replace('S', '', inplace=True, regex=True)
+        df_gps.latitude.replace('N', '', inplace=True, regex=True)
+
+        try:
+            df_gps.latitude = pd.to_numeric(df_gps.latitude)
+        except ValueError:
+            showlog('You have characters in your latitude'
+                    ' string which could not be converted.')
+            return False
+
+    if df_gps.longitude.dtype == 'O':
+        filt = df_gps.longitude.str.contains('W')
+        df_gps.longitude.loc[filt] = '-' + df_gps.longitude[filt]
+        df_gps.longitude.replace('W', '', inplace=True, regex=True)
+        df_gps.longitude.replace('E', '', inplace=True, regex=True)
+
+        try:
+            df_gps.longitude = pd.to_numeric(df_gps.longitude)
+        except ValueError:
+            showlog('You have characters in your longitude'
+                    ' string which could not be converted.')
+            return False
+
+    # Get rid of text in line columns
+    if df_gps['line'].dtype == object:
+        df_gps['line'] = df_gps['line'].str.replace(r'\D', '')
+
+    # Convert line and station to numbers
+    df_gps['station'] = pd.to_numeric(df_gps['station'],
+                                      errors='coerce',
+                                      downcast='float')
+
+    df_gps['line'] = pd.to_numeric(df_gps['line'],
+                                   errors='coerce',
+                                   downcast='float')
+
+    # Merge data
+    dfmerge = pd.merge(df_cg5, df_gps,
+                       left_on=['LINE', 'STATION'],
+                       right_on=['line', 'station'], how='left')
+
+    # eliminate ordinary stations (not base stations) without coordinates
+    filt = dfmerge['STATION'] < float(basethres)
+
+    filt = filt & dfmerge['longitude'].isna()
+
+    dfmerge = dfmerge[~filt]
+
+    x = dfmerge['longitude']
+    y = dfmerge['latitude']
+    dfmerge = gpd.GeoDataFrame(dfmerge, geometry=gpd.points_from_xy(x, y))
+
+    dfmerge['line'] = dfmerge['line'].astype(str)
+    dfmerge.attrs['Gravity'] = True
+    dfmerge.attrs['source'] = str(cg5file)
+
+    return dfmerge
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+
+    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
+    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
+    bthres = '10000'
+
+    # Import Data
+    IO = ImportCG5(None)
+    IO.le_basethres.setText(bthres)
+    IO.get_cg5(grvfile)
+    IO.get_gps(gpsfile)
+    IO.settings()
+
+
+if __name__ == "__main__":
+    _testfn()

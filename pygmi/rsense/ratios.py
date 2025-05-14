@@ -71,7 +71,8 @@ class SatRatios(BasicModule):
         lbl_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Ratios:')
 
-        self.lw_ratios.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_ratios.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.cmb_sensor.addItems(['ASTER',
                                   'Landsat 8 and 9 (OLI)',
@@ -219,7 +220,7 @@ class SatRatios(BasicModule):
 
                 ofile = set_export_filename(dat, odir, 'ratio')
 
-                self.showlog('Exporting to '+ofile)
+                self.showlog('Exporting to ' + ofile)
                 export_raster(ofile, datfin, drv='GTiff', piter=self.piter,
                               compression='DEFLATE', showlog=self.showlog)
                 self.outdata['Raster'] = datfin
@@ -597,7 +598,7 @@ class ConditionIndices(BasicModule):
                 tmp = i.dataid.split()
                 txt = tmp[0]
                 if txt == 'Band':
-                    txt = tmp[0]+tmp[1]
+                    txt = tmp[0] + tmp[1]
 
                 if 'Band' not in txt and 'B' in txt and ',' in txt:
                     txt = txt.replace('B', 'Band')
@@ -616,7 +617,7 @@ class ConditionIndices(BasicModule):
 
             # Calculate ratios
             for i in self.piter(rlist):
-                self.showlog('Calculating '+i)
+                self.showlog('Calculating ' + i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
                 blist = formula
@@ -633,7 +634,7 @@ class ConditionIndices(BasicModule):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showlog('Error: '+' '.join(abort)+' missing.')
+                    self.showlog('Error: ' + ' '.join(abort) + ' missing.')
                     continue
 
                 newmask = datd[blist[0]].mask
@@ -646,7 +647,7 @@ class ConditionIndices(BasicModule):
                     a2 = ne.evaluate(f2, datd)
 
                     a2[np.isclose(a2, 0.)] = 0.
-                    ratio = a1/a2
+                    ratio = a1 / a2
                 else:
                     ratio = ne.evaluate(formula, datd)
 
@@ -676,12 +677,12 @@ class ConditionIndices(BasicModule):
             ofile += '_TCI'
         if ('VCI' in rlist1 or 'VHI' in rlist1) and evi:
             vci = get_VCI(evi, index)
-            ofile += '_VCI_'+index
+            ofile += '_VCI_' + index
         if 'VHI' in rlist1 and tci and vci:
             vhi = get_VHI(tci, vci)
             ofile += '_VHI'
 
-        datfin = tci+vci+vhi
+        datfin = tci + vci + vhi
 
         for i in datfin:
             i.data = i.data.astype(np.float32)
@@ -818,7 +819,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
         tmp = i.dataid.split()
         txt = tmp[0]
         if txt == 'Band':
-            txt = tmp[0]+tmp[1]
+            txt = tmp[0] + tmp[1]
 
         if 'Band' not in txt and 'B' in txt and ',' in txt:
             txt = txt.replace('B', 'Band')
@@ -834,7 +835,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
     datfin = []
     for i in piter(rlist):
-        showlog('Calculating '+i)
+        showlog('Calculating ' + i)
         if 'Landslide Index' in i:
             rband = landslide_index(dat, sensor, showlog, piter)
             datfin += rband
@@ -856,7 +857,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
             if j not in datd:
                 abort.append(j)
         if abort:
-            showlog('Error: '+' '.join(abort)+' missing.')
+            showlog('Error: ' + ' '.join(abort) + ' missing.')
             continue
 
         newmask = datd[blist[0]].mask
@@ -871,7 +872,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
             a2 = a2.astype(np.float32)
 
             a2[np.isclose(a2, 0.)] = 0.
-            ratio = a1/a2
+            ratio = a1 / a2
 
             del a1
             del a2
@@ -953,9 +954,9 @@ def correct_bands(rlist, sensor, bfile=None):
         if bands.issubset(svalues):
             tmp = re.sub(r'B(\d+\w?)', r'tmpB\1', formula)
             for j in svalues:
-                tmp = tmp.replace('tmp'+j, bandmap[j])
+                tmp = tmp.replace('tmp' + j, bandmap[j])
 
-            rlist2.append(tmp+lbl)
+            rlist2.append(tmp + lbl)
 
     return rlist2
 
@@ -1080,9 +1081,9 @@ def get_TCI(lst):
     for dat in lst:
         tmp = dat.copy(True)
 
-        tmp.data = (lstmax-dat.data)/(lstmax-lstmin)
+        tmp.data = (lstmax - dat.data) / (lstmax - lstmin)
 
-        tmp.dataid = os.path.basename(dat.filename)[:-4]+'_TCI'
+        tmp.dataid = os.path.basename(dat.filename)[:-4] + '_TCI'
         tci.append(tmp)
 
     return tci
@@ -1118,9 +1119,9 @@ def get_VCI(evi, index):
     for dat in evi:
         tmp = dat.copy(True)
 
-        tmp.data = (dat.data-evimin)/(evimax-evimin)
+        tmp.data = (dat.data - evimin) / (evimax - evimin)
 
-        tmp.dataid = os.path.basename(dat.filename)[:-4]+'_VCI_'+index
+        tmp.dataid = os.path.basename(dat.filename)[:-4] + '_VCI_' + index
         vci.append(tmp)
 
     return vci
@@ -1150,8 +1151,8 @@ def get_VHI(tci, vci, alpha=0.5):
         for vci1 in vci:
             if tci1.filename == vci1.filename:
                 tmp = tci1.copy(True)
-                tmp.data = vci1.data*alpha+tci1.data*(1-alpha)
-                tmp.dataid = os.path.basename(tci1.filename)[:-4]+'_VHI'
+                tmp.data = vci1.data * alpha + tci1.data * (1 - alpha)
+                tmp.dataid = os.path.basename(tci1.filename)[:-4] + '_VHI'
 
                 vhi.append(tmp)
 
@@ -1214,7 +1215,7 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     green.data = green.data.astype(np.float32)
     blue.data = blue.data.astype(np.float32)
 
-    red.data[:] = 3.5*BSI
+    red.data[:] = 3.5 * BSI
     green.data[~green.data.mask] = 0.3
     blue.data[~blue.data.mask] = 0.
 
@@ -1225,7 +1226,7 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     filt = (NDVI > 0.25)
     red.data[filt] = 0.
-    green.data[filt] = 0.2*NDVI[filt]
+    green.data[filt] = 0.2 * NDVI[filt]
     blue.data[filt] = 0.
 
     filt = (NDWI > 0.15)
@@ -1271,8 +1272,8 @@ def _testfn():
     for i in dat2:
         plt.figure(dpi=150)
         plt.title(i.dataid)
-        vmin = i.data.mean()-2*i.data.std()
-        vmax = i.data.mean()+2*i.data.std()
+        vmin = i.data.mean() - 2 * i.data.std()
+        vmax = i.data.mean() + 2 * i.data.std()
         plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()

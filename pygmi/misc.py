@@ -166,8 +166,8 @@ class BasicModule(QtWidgets.QDialog):
         self.is_import = False
         self.ifile = ''
 
-        ipth = os.path.dirname(__file__)+r'/images/'
-        self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
+        ipth = os.path.dirname(__file__) + r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
 
         self.buttonbox = PButtonBox(self)
         self.buttonbox.buttonbox.accepted.connect(self.accept)
@@ -390,8 +390,8 @@ class ContextModule(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        ipth = os.path.dirname(__file__)+r'/images/'
-        self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
+        ipth = os.path.dirname(__file__) + r'/images/'
+        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
 
         self.buttonbox = PButtonBox(self)
         self.buttonbox.buttonbox.accepted.connect(self.accept)
@@ -430,9 +430,9 @@ class PButtonBox(QtWidgets.QWidget):
         helpdocs.setMinimumHeight(32)
         helpdocs.setMinimumWidth(52)
 
-        ipth = os.path.dirname(__file__)+r'/images/'
+        ipth = os.path.dirname(__file__) + r'/images/'
 
-        helpdocs.setIcon(QtGui.QIcon(ipth+'help.png'))
+        helpdocs.setIcon(QtGui.QIcon(ipth + 'help.png'))
         helpdocs.setIconSize(helpdocs.minimumSize())
         helpdocs.clicked.connect(self.help_docs)
         helpdocs.setFlat(True)
@@ -454,9 +454,9 @@ class PButtonBox(QtWidgets.QWidget):
     def help_docs(self):
         """Help Routine."""
         if self.htmlfile is not None:
-            ipth = os.path.dirname(__file__)+r'/helpdocs/html'
+            ipth = os.path.dirname(__file__) + r'/helpdocs/html'
             if '.html' not in self.htmlfile:
-                self.htmlfile = self.htmlfile+'.html'
+                self.htmlfile = self.htmlfile + '.html'
             hfile = os.path.join(ipth, self.htmlfile)
             webbrowser.open('file://' + hfile)
 
@@ -545,8 +545,8 @@ class PTime():
             if tdiff < 60:
                 print(msg, 'time (s):', tdiff)
             else:
-                mins = int(tdiff/60)
-                secs = tdiff-mins*60
+                mins = int(tdiff / 60)
+                secs = tdiff - mins * 60
                 print(msg, 'time (s): ', mins, ' minutes ', secs, ' seconds')
         return tdiff
 
@@ -618,15 +618,15 @@ class ProgressBar(QtWidgets.QProgressBar):
             i += 1
 
             time2 = time.perf_counter()
-            if time2-time1 > 1:
+            if time2 - time1 > 1:
                 self.setValue(i)
-                tleft = (self.total-i)*(time2-self.otime)/i
+                tleft = (self.total - i) * (time2 - self.otime) / i
                 if tleft > 60:
                     tleft = int(tleft // 60)
-                    self.setFormat('%p% '+str(tleft)+'min left ')
+                    self.setFormat('%p% ' + str(tleft) + 'min left ')
                 else:
                     tleft = int(tleft)
-                    self.setFormat('%p% '+str(tleft)+'s left   ')
+                    self.setFormat('%p% ' + str(tleft) + 's left   ')
                 QtWidgets.QApplication.processEvents()
                 time1 = time2
 
@@ -680,16 +680,16 @@ class ProgressBarText():
             i += 1
 
             time2 = time.perf_counter()
-            curperc = int(i*100/self.total)
+            curperc = int(i * 100 / self.total)
             if curperc > oldperc or oldperc == 0:
                 oldperc = curperc
 
-                tleft = (self.total-i)*(time2-self.otime)/i
+                tleft = (self.total - i) * (time2 - self.otime) / i
                 if tleft > 60:
                     timestr = f' {tleft // 60:.0f} min left '
                 else:
                     timestr = f' {tleft:.1f} sec left '
-                timestr += f' {time2-self.otime:.1f} sec total      '
+                timestr += f' {time2 - self.otime:.1f} sec total      '
 
                 self.printprogressbar(i, suffix=timestr)
                 if i == self.total:
@@ -716,10 +716,10 @@ class ProgressBarText():
         None.
 
         """
-        perc = 100*(iteration/float(self.total))
+        perc = 100 * (iteration / float(self.total))
         percent = f'{perc:.{self.decimals}f}'
-        filledlength = int(self.length*iteration//self.total)
-        pbar = self.fill*filledlength + '-'*(self.length - filledlength)
+        filledlength = int(self.length * iteration // self.total)
+        pbar = self.fill * filledlength + '-' * (self.length - filledlength)
         pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
         print(pbar, end='\r')
         # Print New Line on Complete
@@ -770,11 +770,11 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
 
     if hasattr(csp.norm, 'boundaries'):
         bnds = csp.norm.boundaries
-        ticks = np.diff(bnds)/2+vals
+        ticks = np.diff(bnds) / 2 + vals
         cbar = axes.figure.colorbar(csp, ticks=ticks)
     else:
-        bnds = vals.tolist() + [vals.max()+1]
-        ticks = np.diff(bnds)/2+vals
+        bnds = vals.tolist() + [vals.max() + 1]
+        ticks = np.diff(bnds) / 2 + vals
         cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals,
                                     ticks=ticks)
 
@@ -812,14 +812,14 @@ def getinfo(txt=None, reset=False):
         tdiff = PTIME - timebefore
 
     if txt is not None:
-        heading = '===== '+str(txt)+': '
+        heading = '===== ' + str(txt) + ': '
     else:
         heading = '===== Info: '
 
     mem = psutil.virtual_memory()
     memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
 
-    print(heading+memtxt+f' Time(s): {tdiff:.3f}')
+    print(heading + memtxt + f' Time(s): {tdiff:.3f}')
 
 
 def limit_memory(memory_limit):
@@ -938,7 +938,7 @@ def _testfn():
         vals = vals.compressed()
     vals = vals[~np.isnan(vals)]
 
-    bnds = vals.tolist() + [vals.max()+1]
+    bnds = vals.tolist() + [vals.max() + 1]
 
     cmap = cm.viridis
     norm = colors.BoundaryNorm(bnds, cmap.N)

@@ -102,225 +102,225 @@ copper = np.array([[255., 236., 184.],
                    [229., 181., 102.],
                    [228., 180., 101.],
                    [227., 179., 100.],
-                   [227., 178.,  99.],
-                   [226., 177.,  98.],
-                   [225., 177.,  97.],
-                   [224., 176.,  96.],
-                   [224., 175.,  95.],
-                   [223., 174.,  94.],
-                   [222., 174.,  93.],
-                   [222., 173.,  93.],
-                   [221., 172.,  92.],
-                   [220., 171.,  91.],
-                   [220., 171.,  90.],
-                   [219., 170.,  89.],
-                   [218., 169.,  88.],
-                   [217., 168.,  88.],
-                   [217., 168.,  87.],
-                   [216., 167.,  86.],
-                   [215., 166.,  85.],
-                   [215., 166.,  85.],
-                   [214., 165.,  84.],
-                   [213., 164.,  83.],
-                   [213., 164.,  82.],
-                   [212., 163.,  82.],
-                   [211., 162.,  81.],
-                   [211., 162.,  80.],
-                   [210., 161.,  80.],
-                   [210., 160.,  79.],
-                   [209., 160.,  78.],
-                   [208., 159.,  77.],
-                   [208., 158.,  77.],
-                   [207., 158.,  76.],
-                   [206., 157.,  75.],
-                   [206., 156.,  75.],
-                   [205., 156.,  74.],
-                   [204., 155.,  74.],
-                   [204., 154.,  73.],
-                   [203., 154.,  72.],
-                   [203., 153.,  72.],
-                   [202., 153.,  71.],
-                   [201., 152.,  70.],
-                   [201., 151.,  70.],
-                   [200., 151.,  69.],
-                   [199., 150.,  68.],
-                   [199., 149.,  68.],
-                   [198., 149.,  67.],
-                   [197., 148.,  67.],
-                   [197., 148.,  66.],
-                   [196., 147.,  66.],
-                   [196., 147.,  65.],
-                   [195., 146.,  64.],
-                   [194., 145.,  64.],
-                   [194., 145.,  63.],
-                   [193., 144.,  63.],
-                   [192., 144.,  62.],
-                   [192., 143.,  62.],
-                   [191., 142.,  61.],
-                   [190., 142.,  60.],
-                   [190., 141.,  60.],
-                   [189., 141.,  59.],
-                   [189., 140.,  59.],
-                   [188., 139.,  58.],
-                   [187., 139.,  58.],
-                   [187., 138.,  57.],
-                   [186., 138.,  57.],
-                   [186., 137.,  56.],
-                   [185., 137.,  56.],
-                   [184., 136.,  55.],
-                   [184., 136.,  55.],
-                   [183., 135.,  54.],
-                   [182., 134.,  53.],
-                   [182., 134.,  53.],
-                   [181., 133.,  52.],
-                   [181., 133.,  52.],
-                   [180., 132.,  51.],
-                   [179., 132.,  51.],
-                   [179., 131.,  50.],
-                   [178., 130.,  50.],
-                   [177., 130.,  49.],
-                   [177., 129.,  49.],
-                   [176., 129.,  49.],
-                   [176., 128.,  48.],
-                   [175., 128.,  48.],
-                   [174., 127.,  47.],
-                   [174., 127.,  47.],
-                   [173., 126.,  46.],
-                   [172., 125.,  46.],
-                   [172., 125.,  45.],
-                   [171., 124.,  45.],
-                   [170., 124.,  44.],
-                   [170., 123.,  44.],
-                   [169., 123.,  43.],
-                   [169., 122.,  43.],
-                   [168., 121.,  42.],
-                   [167., 121.,  42.],
-                   [167., 120.,  41.],
-                   [166., 120.,  41.],
-                   [165., 119.,  41.],
-                   [165., 119.,  40.],
-                   [164., 118.,  40.],
-                   [163., 117.,  39.],
-                   [163., 117.,  39.],
-                   [162., 116.,  38.],
-                   [161., 116.,  38.],
-                   [161., 115.,  37.],
-                   [160., 115.,  37.],
-                   [159., 114.,  37.],
-                   [159., 113.,  36.],
-                   [158., 113.,  36.],
-                   [157., 112.,  35.],
-                   [157., 112.,  35.],
-                   [156., 111.,  34.],
-                   [155., 110.,  34.],
-                   [155., 110.,  34.],
-                   [154., 109.,  33.],
-                   [153., 109.,  33.],
-                   [152., 108.,  32.],
-                   [152., 107.,  32.],
-                   [151., 107.,  31.],
-                   [150., 106.,  31.],
-                   [150., 106.,  31.],
-                   [149., 105.,  30.],
-                   [148., 104.,  30.],
-                   [147., 104.,  29.],
-                   [147., 103.,  29.],
-                   [146., 102.,  28.],
-                   [145., 102.,  28.],
-                   [144., 101.,  28.],
-                   [144., 101.,  27.],
-                   [143., 100.,  27.],
-                   [142.,  99.,  26.],
-                   [141.,  99.,  26.],
-                   [140.,  98.,  26.],
-                   [140.,  97.,  25.],
-                   [139.,  97.,  25.],
-                   [138.,  96.,  25.],
-                   [137.,  95.,  24.],
-                   [136.,  95.,  24.],
-                   [136.,  94.,  23.],
-                   [135.,  93.,  23.],
-                   [134.,  93.,  23.],
-                   [133.,  92.,  22.],
-                   [132.,  91.,  22.],
-                   [131.,  90.,  21.],
-                   [131.,  90.,  21.],
-                   [130.,  89.,  21.],
-                   [129.,  88.,  20.],
-                   [128.,  88.,  20.],
-                   [127.,  87.,  20.],
-                   [126.,  86.,  19.],
-                   [125.,  85.,  19.],
-                   [124.,  85.,  19.],
-                   [123.,  84.,  18.],
-                   [123.,  83.,  18.],
-                   [122.,  82.,  17.],
-                   [121.,  82.,  17.],
-                   [120.,  81.,  17.],
-                   [119.,  80.,  16.],
-                   [118.,  79.,  16.],
-                   [117.,  79.,  16.],
-                   [116.,  78.,  15.],
-                   [115.,  77.,  15.],
-                   [114.,  76.,  15.],
-                   [113.,  75.,  14.],
-                   [112.,  75.,  14.],
-                   [111.,  74.,  14.],
-                   [110.,  73.,  13.],
-                   [109.,  72.,  13.],
-                   [108.,  71.,  12.],
-                   [107.,  70.,  12.],
-                   [106.,  69.,  12.],
-                   [104.,  68.,  11.],
-                   [103.,  68.,  11.],
-                   [102.,  67.,  11.],
-                   [101.,  66.,  10.],
-                   [100.,  65.,  10.],
-                   [99.,  64.,  10.],
-                   [97.,  63.,   9.],
-                   [96.,  62.,   9.],
-                   [95.,  61.,   9.],
-                   [94.,  60.,   8.],
-                   [92.,  59.,   8.],
-                   [91.,  58.,   8.],
-                   [90.,  58.,   7.],
-                   [89.,  57.,   7.],
-                   [87.,  56.,   7.],
-                   [86.,  55.,   6.],
-                   [85.,  54.,   6.],
-                   [83.,  53.,   6.],
-                   [82.,  52.,   5.],
-                   [80.,  51.,   5.],
-                   [79.,  49.,   5.],
-                   [77.,  48.,   4.],
-                   [76.,  47.,   4.],
-                   [74.,  46.,   4.],
-                   [72.,  45.,   3.],
-                   [71.,  43.,   3.],
-                   [69.,  42.,   3.],
-                   [67.,  41.,   2.],
-                   [66.,  40.,   2.],
-                   [64.,  38.,   2.],
-                   [62.,  37.,   1.],
-                   [60.,  35.,   1.],
-                   [58.,  34.,   1.],
-                   [56.,  32.,   0.],
-                   [54.,  31.,   0.],
-                   [52.,  29.,   0.],
-                   [50.,  28.,   0.],
-                   [47.,  26.,   0.],
-                   [45.,  24.,   0.],
-                   [43.,  22.,   0.],
-                   [40.,  20.,   0.],
-                   [37.,  19.,   0.],
-                   [34.,  17.,   0.],
-                   [31.,  15.,   0.],
-                   [28.,  13.,   0.],
-                   [24.,  10.,   0.],
-                   [21.,   8.,   0.],
-                   [16.,   6.,   0.],
-                   [11.,   3.,   0.],
-                   [0.,   0.,   0.]])
+                   [227., 178., 99.],
+                   [226., 177., 98.],
+                   [225., 177., 97.],
+                   [224., 176., 96.],
+                   [224., 175., 95.],
+                   [223., 174., 94.],
+                   [222., 174., 93.],
+                   [222., 173., 93.],
+                   [221., 172., 92.],
+                   [220., 171., 91.],
+                   [220., 171., 90.],
+                   [219., 170., 89.],
+                   [218., 169., 88.],
+                   [217., 168., 88.],
+                   [217., 168., 87.],
+                   [216., 167., 86.],
+                   [215., 166., 85.],
+                   [215., 166., 85.],
+                   [214., 165., 84.],
+                   [213., 164., 83.],
+                   [213., 164., 82.],
+                   [212., 163., 82.],
+                   [211., 162., 81.],
+                   [211., 162., 80.],
+                   [210., 161., 80.],
+                   [210., 160., 79.],
+                   [209., 160., 78.],
+                   [208., 159., 77.],
+                   [208., 158., 77.],
+                   [207., 158., 76.],
+                   [206., 157., 75.],
+                   [206., 156., 75.],
+                   [205., 156., 74.],
+                   [204., 155., 74.],
+                   [204., 154., 73.],
+                   [203., 154., 72.],
+                   [203., 153., 72.],
+                   [202., 153., 71.],
+                   [201., 152., 70.],
+                   [201., 151., 70.],
+                   [200., 151., 69.],
+                   [199., 150., 68.],
+                   [199., 149., 68.],
+                   [198., 149., 67.],
+                   [197., 148., 67.],
+                   [197., 148., 66.],
+                   [196., 147., 66.],
+                   [196., 147., 65.],
+                   [195., 146., 64.],
+                   [194., 145., 64.],
+                   [194., 145., 63.],
+                   [193., 144., 63.],
+                   [192., 144., 62.],
+                   [192., 143., 62.],
+                   [191., 142., 61.],
+                   [190., 142., 60.],
+                   [190., 141., 60.],
+                   [189., 141., 59.],
+                   [189., 140., 59.],
+                   [188., 139., 58.],
+                   [187., 139., 58.],
+                   [187., 138., 57.],
+                   [186., 138., 57.],
+                   [186., 137., 56.],
+                   [185., 137., 56.],
+                   [184., 136., 55.],
+                   [184., 136., 55.],
+                   [183., 135., 54.],
+                   [182., 134., 53.],
+                   [182., 134., 53.],
+                   [181., 133., 52.],
+                   [181., 133., 52.],
+                   [180., 132., 51.],
+                   [179., 132., 51.],
+                   [179., 131., 50.],
+                   [178., 130., 50.],
+                   [177., 130., 49.],
+                   [177., 129., 49.],
+                   [176., 129., 49.],
+                   [176., 128., 48.],
+                   [175., 128., 48.],
+                   [174., 127., 47.],
+                   [174., 127., 47.],
+                   [173., 126., 46.],
+                   [172., 125., 46.],
+                   [172., 125., 45.],
+                   [171., 124., 45.],
+                   [170., 124., 44.],
+                   [170., 123., 44.],
+                   [169., 123., 43.],
+                   [169., 122., 43.],
+                   [168., 121., 42.],
+                   [167., 121., 42.],
+                   [167., 120., 41.],
+                   [166., 120., 41.],
+                   [165., 119., 41.],
+                   [165., 119., 40.],
+                   [164., 118., 40.],
+                   [163., 117., 39.],
+                   [163., 117., 39.],
+                   [162., 116., 38.],
+                   [161., 116., 38.],
+                   [161., 115., 37.],
+                   [160., 115., 37.],
+                   [159., 114., 37.],
+                   [159., 113., 36.],
+                   [158., 113., 36.],
+                   [157., 112., 35.],
+                   [157., 112., 35.],
+                   [156., 111., 34.],
+                   [155., 110., 34.],
+                   [155., 110., 34.],
+                   [154., 109., 33.],
+                   [153., 109., 33.],
+                   [152., 108., 32.],
+                   [152., 107., 32.],
+                   [151., 107., 31.],
+                   [150., 106., 31.],
+                   [150., 106., 31.],
+                   [149., 105., 30.],
+                   [148., 104., 30.],
+                   [147., 104., 29.],
+                   [147., 103., 29.],
+                   [146., 102., 28.],
+                   [145., 102., 28.],
+                   [144., 101., 28.],
+                   [144., 101., 27.],
+                   [143., 100., 27.],
+                   [142., 99., 26.],
+                   [141., 99., 26.],
+                   [140., 98., 26.],
+                   [140., 97., 25.],
+                   [139., 97., 25.],
+                   [138., 96., 25.],
+                   [137., 95., 24.],
+                   [136., 95., 24.],
+                   [136., 94., 23.],
+                   [135., 93., 23.],
+                   [134., 93., 23.],
+                   [133., 92., 22.],
+                   [132., 91., 22.],
+                   [131., 90., 21.],
+                   [131., 90., 21.],
+                   [130., 89., 21.],
+                   [129., 88., 20.],
+                   [128., 88., 20.],
+                   [127., 87., 20.],
+                   [126., 86., 19.],
+                   [125., 85., 19.],
+                   [124., 85., 19.],
+                   [123., 84., 18.],
+                   [123., 83., 18.],
+                   [122., 82., 17.],
+                   [121., 82., 17.],
+                   [120., 81., 17.],
+                   [119., 80., 16.],
+                   [118., 79., 16.],
+                   [117., 79., 16.],
+                   [116., 78., 15.],
+                   [115., 77., 15.],
+                   [114., 76., 15.],
+                   [113., 75., 14.],
+                   [112., 75., 14.],
+                   [111., 74., 14.],
+                   [110., 73., 13.],
+                   [109., 72., 13.],
+                   [108., 71., 12.],
+                   [107., 70., 12.],
+                   [106., 69., 12.],
+                   [104., 68., 11.],
+                   [103., 68., 11.],
+                   [102., 67., 11.],
+                   [101., 66., 10.],
+                   [100., 65., 10.],
+                   [99., 64., 10.],
+                   [97., 63., 9.],
+                   [96., 62., 9.],
+                   [95., 61., 9.],
+                   [94., 60., 8.],
+                   [92., 59., 8.],
+                   [91., 58., 8.],
+                   [90., 58., 7.],
+                   [89., 57., 7.],
+                   [87., 56., 7.],
+                   [86., 55., 6.],
+                   [85., 54., 6.],
+                   [83., 53., 6.],
+                   [82., 52., 5.],
+                   [80., 51., 5.],
+                   [79., 49., 5.],
+                   [77., 48., 4.],
+                   [76., 47., 4.],
+                   [74., 46., 4.],
+                   [72., 45., 3.],
+                   [71., 43., 3.],
+                   [69., 42., 3.],
+                   [67., 41., 2.],
+                   [66., 40., 2.],
+                   [64., 38., 2.],
+                   [62., 37., 1.],
+                   [60., 35., 1.],
+                   [58., 34., 1.],
+                   [56., 32., 0.],
+                   [54., 31., 0.],
+                   [52., 29., 0.],
+                   [50., 28., 0.],
+                   [47., 26., 0.],
+                   [45., 24., 0.],
+                   [43., 22., 0.],
+                   [40., 20., 0.],
+                   [37., 19., 0.],
+                   [34., 17., 0.],
+                   [31., 15., 0.],
+                   [28., 13., 0.],
+                   [24., 10., 0.],
+                   [21., 8., 0.],
+                   [16., 6., 0.],
+                   [11., 3., 0.],
+                   [0., 0., 0.]])
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -450,8 +450,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # sun shading stuff
         self.pinit = None
         self.qinit = None
-        self.phi = -np.pi/4.
-        self.theta = np.pi/4.
+        self.phi = -np.pi / 4.
+        self.theta = np.pi / 4.
         self.cell = 100.
         self.alpha = .0
 
@@ -547,8 +547,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 itly = i.extent[-1]
                 for j in range(3):
                     if i.dataid == self.hband[j]:
-                        col = int((event.xdata - itlx)/i.xdim)
-                        row = int((itly - event.ydata)/i.ydim)
+                        col = int((event.xdata - itlx) / i.xdim)
+                        row = int((itly - event.ydata) / i.ydim)
                         zval[j] = i.data[row, col]
 
             if self.gmode == 'Single Colour Map':
@@ -600,10 +600,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dat, _, _ = histcomp(dat, perc=clippercl,
                                  uperc=clippercu)
 
-        xdim = (x2-x1)/dat.data.shape[1]/2
-        ydim = (y2-y1)/dat.data.shape[0]/2
-        xi = np.linspace(x1+xdim, x2-xdim, dat.data.shape[1])
-        yi = np.linspace(y2-ydim, y1+ydim, dat.data.shape[0])
+        xdim = (x2 - x1) / dat.data.shape[1] / 2
+        ydim = (y2 - y1) / dat.data.shape[0] / 2
+        xi = np.linspace(x1 + xdim, x2 - xdim, dat.data.shape[1])
+        yi = np.linspace(y2 - ydim, y1 + ydim, dat.data.shape[0])
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
                                      linewidths=1, colors='k',
@@ -684,7 +684,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.update_hist_text(self.htxt[i], None)
                 continue
 
-            binnum = (bins < zval[i]).sum()-1
+            binnum = (bins < zval[i]).sum() - 1
 
             if (-1 < binnum < len(patches) and
                     self.htype != 'Histogram Equalization'):
@@ -714,7 +714,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         hst = self.hhist[hno]
         bins, patches = hst[1:]
-        binave = np.arange(0, 1, 1/(bins.size-2))
+        binave = np.arange(0, 1, 1 / (bins.size - 2))
 
         if hno == 0:
             bincol = self.newcmp(binave)
@@ -729,7 +729,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.update_hist_text(self.htxt[hno], None)
             return 0
 
-        binnum = (bins < zval).sum()-1
+        binnum = (bins < zval).sum() - 1
         if binnum < 0 or binnum >= len(patches):
             self.update_hist_text(self.htxt[hno], zval)
             return 0
@@ -758,8 +758,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         xmin, xmax, ymin, ymax = hst.axes.axis()
-        xnew = 0.95*(xmax-xmin)+xmin
-        ynew = 0.95*(ymax-ymin)+ymin
+        xnew = 0.95 * (xmax - xmin) + xmin
+        ynew = 0.95 * (ymax - ymin) + ymin
         hst.set_position((xnew, ynew))
 
         if zval is None:
@@ -819,15 +819,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
             clippercu = self.clippercu[self.hband[0]]
             clippercl = self.clippercl[self.hband[0]]
             lclip[0], uclip[0] = np.percentile(dat[:, :, 0].compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             clippercu = self.clippercu[self.hband[1]]
             clippercl = self.clippercl[self.hband[1]]
             lclip[1], uclip[1] = np.percentile(dat[:, :, 1].compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
             clippercu = self.clippercu[self.hband[2]]
             clippercl = self.clippercl[self.hband[2]]
             lclip[2], uclip[2] = np.percentile(dat[:, :, 2].compressed(),
-                                               [clippercl, 100-clippercu])
+                                               [clippercl, 100 - clippercu])
 
             self.image.rgbclip = [[lclip[0], uclip[0]],
                                   [lclip[1], uclip[1]],
@@ -858,7 +858,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             self.argb[i].set_xlim(self.hhist[i][1].min(),
                                   self.hhist[i][1].max())
-            self.argb[i].set_ylim(0, self.hhist[i][0].max()*1.2)
+            self.argb[i].set_ylim(0, self.hhist[i][0].max() * 1.2)
 
         self.figure.canvas.restore_region(self.bgrgb[0])
         self.figure.canvas.restore_region(self.bgrgb[1])
@@ -939,7 +939,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             self.image.dohisteq = False
             pseudoc = pseudo.compressed()
-            lclip, uclip = np.percentile(pseudoc, [clippercl, 100-clippercu])
+            lclip, uclip = np.percentile(pseudoc, [clippercl, 100 - clippercu])
 
         self.image.cmap = self.cbar
         self.image.set_clim(lclip, uclip)
@@ -959,9 +959,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             tmp1 = cols.copy()
             if tmp[0][0] > 0:
-                tmp1 = np.vstack(([cols[0]]*tmp[0][0], tmp1))
+                tmp1 = np.vstack(([cols[0]] * tmp[0][0], tmp1))
             if tmp[0][-1] < 49:
-                tmp1 = np.vstack((tmp1, [cols[-1]]*(49-tmp[0][-1])))
+                tmp1 = np.vstack((tmp1, [cols[-1]] * (49 - tmp[0][-1])))
             self.newcmp = ListedColormap(tmp1)
         else:
             self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none',
@@ -969,7 +969,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.htxt[0] = self.argb[0].text(0.0, 0.0, '', ha='right', va='top')
         self.argb[0].set_xlim(self.hhist[0][1].min(), self.hhist[0][1].max())
-        self.argb[0].set_ylim(0, self.hhist[0][0].max()*1.2)
+        self.argb[0].set_ylim(0, self.hhist[0][0].max() * 1.2)
 
         self.clipvall[0] = self.argb[0].axvline(lclip, ls='--')
         self.clipvalu[0] = self.argb[0].axvline(uclip, ls='--')
@@ -1092,7 +1092,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.set_rmin(0.0)
         self.axes.set_xticklabels([])
 
-        self.sun, = self.axes.plot(np.pi/4., cos(np.pi/4.), 'o')
+        self.sun, = self.axes.plot(np.pi / 4., cos(np.pi / 4.), 'o')
         self.figure.canvas.draw()
 
 
@@ -1140,8 +1140,10 @@ class PlotInterp(BasicModule):
         self.le_lineclipu = QtWidgets.QLineEdit()
         self.le_lineclipl = QtWidgets.QLineEdit()
         self.cmb_cbar = QtWidgets.QComboBox(self)
-        self.kslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # CMYK
-        self.sslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # sunshade
+        self.kslider = QtWidgets.QSlider(
+            QtCore.Qt.Orientation.Horizontal)  # CMYK
+        self.sslider = QtWidgets.QSlider(
+            QtCore.Qt.Orientation.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.lbl_4 = QtWidgets.QLabel('Sunshade Data:')
         self.lbl_s = QtWidgets.QLabel('Sunshade Detail')
@@ -1154,7 +1156,7 @@ class PlotInterp(BasicModule):
                                                      ' to all bands')
 
         if 'MarineCopper' not in colormaps():
-            newcmp = ListedColormap(copper/255, 'MarineCopper')
+            newcmp = ListedColormap(copper / 255, 'MarineCopper')
             colormaps.register(newcmp)
 
         self.setupui()
@@ -1445,7 +1447,7 @@ class PlotInterp(BasicModule):
             if 'CMY' in txt:
                 self.kslider.show()
                 self.lbl_k.show()
-                self.mmc.kval = float(self.kslider.value())/100.
+                self.mmc.kval = float(self.kslider.value()) / 100.
 
         if self.gbox_sun.isChecked():
             self.msc.show()
@@ -1456,7 +1458,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.show()
             self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
-            self.mmc.alpha = float(self.aslider.value())/100.
+            self.mmc.alpha = float(self.aslider.value()) / 100.
             self.mmc.shade = True
             self.msc.init_graph()
         else:
@@ -1519,7 +1521,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        self.mmc.kval = float(self.kslider.value())/100.
+        self.mmc.kval = float(self.kslider.value()) / 100.
         self.mmc.update_graph()
 
     def change_lclip(self):
@@ -1561,7 +1563,7 @@ class PlotInterp(BasicModule):
             lclip = self.mmc.clippercl[dattxt]
             self.le_lineclipl.setText(str(lclip))
 
-        if (lclip+uclip) >= 100.:
+        if (lclip + uclip) >= 100.:
             clip = self.mmc.clippercu[dattxt]
             self.le_lineclipu.setText(str(clip))
             clip = self.mmc.clippercl[dattxt]
@@ -1622,7 +1624,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.show()
             self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
-            self.mmc.alpha = float(self.aslider.value())/100.
+            self.mmc.alpha = float(self.aslider.value()) / 100.
             self.mmc.shade = True
             self.msc.init_graph()
             QtWidgets.QApplication.processEvents()
@@ -1651,7 +1653,7 @@ class PlotInterp(BasicModule):
 
         """
         self.mmc.cell = self.sslider.value()
-        self.mmc.alpha = float(self.aslider.value())/100.
+        self.mmc.alpha = float(self.aslider.value()) / 100.
         self.mmc.update_shade()
 
     def data_init(self):
@@ -1696,8 +1698,8 @@ class PlotInterp(BasicModule):
                     tmp = copy.deepcopy(i)
                     tmp.memdat = None
                     tmp.data = val
-                    tmp.dataid = ('Membership of class ' + str(j+1)
-                                  + ': '+tmp.dataid)
+                    tmp.dataid = ('Membership of class ' + str(j + 1) +
+                                  ': ' + tmp.dataid)
                     newdat.append(tmp)
             data = newdat
             sdata = newdat
@@ -1773,7 +1775,7 @@ class PlotInterp(BasicModule):
             self.msc.figure.canvas.draw()
 
             phi = -event.xdata
-            theta = np.pi/2. - np.arccos(event.ydata)
+            theta = np.pi / 2. - np.arccos(event.ydata)
             self.mmc.phi = phi
             self.mmc.theta = theta
             self.mmc.update_shade()
@@ -1816,7 +1818,7 @@ class PlotInterp(BasicModule):
                 QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
-        bwid = blen/16.
+        bwid = blen / 16.
 
         dtype = str(self.cmb_dtype.currentText())
 
@@ -1881,9 +1883,9 @@ class PlotInterp(BasicModule):
             img = img2rgb(pseudo, self.mmc.cbar)
             pseudo = None
 
-            img[:, :, 0] = img[:, :, 0]*snorm  # red
-            img[:, :, 1] = img[:, :, 1]*snorm  # green
-            img[:, :, 2] = img[:, :, 2]*snorm  # blue
+            img[:, :, 0] = img[:, :, 0] * snorm  # red
+            img[:, :, 1] = img[:, :, 1] * snorm  # green
+            img[:, :, 2] = img[:, :, 2] * snorm  # blue
             img = img.astype(np.uint8)
 
         elif 'Ternary' in dtype:
@@ -1924,20 +1926,20 @@ class PlotInterp(BasicModule):
             blue = np.ma.array(blue, mask=dat[2].mask)
 
             img = np.zeros((red.shape[0], red.shape[1], 4), dtype=np.uint8)
-            img[:, :, 3] = mask*254+1
+            img[:, :, 3] = mask * 254 + 1
 
             if 'CMY' in dtype:
-                img[:, :, 0] = (1-norm2(red))*254+1
-                img[:, :, 1] = (1-norm2(green))*254+1
-                img[:, :, 2] = (1-norm2(blue))*254+1
+                img[:, :, 0] = (1 - norm2(red)) * 254 + 1
+                img[:, :, 1] = (1 - norm2(green)) * 254 + 1
+                img[:, :, 2] = (1 - norm2(blue)) * 254 + 1
             else:
                 img[:, :, 0] = norm255(red)
                 img[:, :, 1] = norm255(green)
                 img[:, :, 2] = norm255(blue)
 
-            img[:, :, 0] = img[:, :, 0]*snorm  # red
-            img[:, :, 1] = img[:, :, 1]*snorm  # green
-            img[:, :, 2] = img[:, :, 2]*snorm  # blue
+            img[:, :, 0] = img[:, :, 0] * snorm  # red
+            img[:, :, 1] = img[:, :, 1] * snorm  # green
+            img[:, :, 2] = img[:, :, 2] * snorm  # blue
             img = img.astype(np.uint8)
 
         elif dtype == 'Contour':
@@ -1961,7 +1963,7 @@ class PlotInterp(BasicModule):
             self.mmc.figure.set_frameon(False)
             self.mmc.axes.set_axis_off()
             tmpsize = self.mmc.figure.get_size_inches()
-            self.mmc.figure.set_size_inches(tmpsize*3)
+            self.mmc.figure.set_size_inches(tmpsize * 3)
             self.mmc.figure.canvas.draw()
             img = np.frombuffer(self.mmc.figure.canvas.tostring_argb(),
                                 dtype=np.uint8)
@@ -2034,20 +2036,20 @@ class PlotInterp(BasicModule):
             fig = Figure(layout='tight')
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
-            fig.set_figheight(bwid+0.75)
+            fig.set_figheight(bwid + 0.75)
             ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
                                         orientation='horizontal')
             cb.set_label(text)
 
-            fname = filename[:-4]+'_hcbar.png'
+            fname = filename[:-4] + '_hcbar.png'
             canvas.print_figure(fname, dpi=300)
 
             # Vertical Bar
             fig = Figure(layout='tight')
             canvas = FigureCanvasQTAgg(fig)
-            fig.set_figwidth(bwid+1)
+            fig.set_figwidth(bwid + 1)
             fig.set_figheight(blen)
             ax = fig.gca()
 
@@ -2055,13 +2057,13 @@ class PlotInterp(BasicModule):
                                         orientation='vertical')
             cb.set_label(text)
 
-            fname = filename[:-4]+'_vcbar.png'
+            fname = filename[:-4] + '_vcbar.png'
             canvas.print_figure(fname, dpi=300)
         else:
             fig = Figure(figsize=[blen, blen], layout='tight')
             canvas = FigureCanvasQTAgg(fig)
 
-            tmp = np.array([[list(range(255))]*255])
+            tmp = np.array([[list(range(255))] * 255])
             tmp.shape = (255, 255)
             tmp = np.transpose(tmp)
 
@@ -2075,13 +2077,13 @@ class PlotInterp(BasicModule):
 
             rtmp = np.zeros_like(blue)
             j = 92
-            rtmp[:255, j:j+255] = red
+            rtmp[:255, j:j + 255] = red
             red = rtmp
 
             if 'RGB' in dtype:
-                red = red.max()-red
-                green = green.max()-green
-                blue = blue.max()-blue
+                red = red.max() - red
+                green = green.max() - green
+                blue = blue.max() - blue
 
             data = np.transpose([red.flatten(),
                                  green.flatten(),
@@ -2113,7 +2115,7 @@ class PlotInterp(BasicModule):
                            labelbottom='off', labelleft='off')
 
             ax.axis('off')
-            fname = filename[:-4]+'_tern.png'
+            fname = filename[:-4] + '_tern.png'
             canvas.print_figure(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(self, 'Information',

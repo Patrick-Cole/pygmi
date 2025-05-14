@@ -66,10 +66,13 @@ class MergeLith(QtWidgets.QDialog):
         lbl_1 = QtWidgets.QLabel('Master Lithology')
         lbl_2 = QtWidgets.QLabel('Lithologies To Merge')
 
-        self.lw_lithmaster.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
-        self.lw_lithmerge.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_lithmaster.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+        self.lw_lithmerge.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Merge Lithologies')
 
@@ -138,7 +141,8 @@ class LithNotes(QtWidgets.QDialog):
         self.lithcode.setMaximum(9999999)
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.setWindowTitle('Lithology Notes')
 
@@ -289,7 +293,8 @@ class ParamDisplay(QtWidgets.QDialog):
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         # General Properties
         gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
@@ -453,11 +458,11 @@ class ParamDisplay(QtWidgets.QDialog):
         new_lith_index = 0
         if lmod.lith_list:
             lmod.update_lith_list_reverse()
-            new_lith_index = max(lmod.lith_list_reverse.keys())+1
+            new_lith_index = max(lmod.lith_list_reverse.keys()) + 1
 
         defnum = self.lw_param_defs.count()
         if deftxt == '':
-            deftxt = 'Generic '+str(defnum)
+            deftxt = 'Generic ' + str(defnum)
 
         lmod.lith_list[deftxt] = grvmag3d.GeoData(
             self.parent, lmod.numx, lmod.numy, lmod.numz, lmod.dxy, lmod.d_z,
@@ -554,11 +559,11 @@ class ParamDisplay(QtWidgets.QDialog):
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
 
-        mstrength = rmi/(400*np.pi)
-        if (susc*hintn) == 0:
+        mstrength = rmi / (400 * np.pi)
+        if (susc * hintn) == 0:
             qratio = 0.0
         else:
-            qratio = rmi/(susc*hintn)
+            qratio = rmi / (susc * hintn)
 
         self.disconnect_spin()
         self.dsb_magnetization.setValue(mstrength)
@@ -578,12 +583,12 @@ class ParamDisplay(QtWidgets.QDialog):
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
 
-        rmi = 400*np.pi*mstrength
+        rmi = 400 * np.pi * mstrength
 
-        if (susc*hintn) == 0:
+        if (susc * hintn) == 0:
             qratio = 0.0
         else:
-            qratio = rmi/(susc*hintn)
+            qratio = rmi / (susc * hintn)
 
         self.disconnect_spin()
         self.dsb_rmi.setValue(rmi)
@@ -603,8 +608,8 @@ class ParamDisplay(QtWidgets.QDialog):
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
 
-        rmi = qratio*susc*hintn
-        mstrength = rmi/(400*np.pi)
+        rmi = qratio * susc * hintn
+        mstrength = rmi / (400 * np.pi)
 
         self.disconnect_spin()
         self.dsb_rmi.setValue(rmi)

@@ -369,14 +369,16 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
         # Add band parameter information to metadata (ie wavelengths/obs etc.)
         for m in meta_vars:
             if m in ("wavelengths", "radiance_wl"):
-                metadata["wavelength"] = np.array(xrds[m].data).astype(str).tolist()
-            elif m in ("fwhm",  "radiance_fwhm"):
+                metadata["wavelength"] = np.array(
+                    xrds[m].data).astype(str).tolist()
+            elif m in ("fwhm", "radiance_fwhm"):
                 metadata["fwhm"] = np.array(xrds[m].data).astype(str).tolist()
             elif m == "good_wavelengths":
                 metadata["good_wavelengths"] = (
                     np.array(xrds[m].data).astype(int).tolist())
             elif m == "observation_bands":
-                metadata["band names"] = np.array(xrds[m].data).astype(str).tolist()
+                metadata["band names"] = np.array(
+                    xrds[m].data).astype(str).tolist()
             elif m == "mask_bands":
                 if var == "band_mask":
                     metadata["band names"] = [
@@ -392,7 +394,7 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
             elif nbands == 1:
                 metadata["band names"] = [var]
             else:
-                metadata["band names"] = [f'{var} Band {i+1}' for i in
+                metadata["band names"] = [f'{var} Band {i + 1}' for i in
                                           range(nbands)]
 
         # Replace NaN values in each layer with fill_value
@@ -440,8 +442,8 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
                 if 'fwhm' in metadata:
                     bwidth = float(metadata['fwhm'][bandnr])
-                    bmeta['WavelengthMin'] = wlen - bwidth/2
-                    bmeta['WavelengthMax'] = wlen + bwidth/2
+                    bmeta['WavelengthMin'] = wlen - bwidth / 2
+                    bmeta['WavelengthMax'] = wlen + bwidth / 2
             dat.append(tmp)
 
     return dat
@@ -484,7 +486,7 @@ def main():
             vals = vals[~np.isnan(vals)]
             vals = vals.astype(int)
 
-            bnds = vals.tolist() + [vals.max()+1]
+            bnds = vals.tolist() + [vals.max() + 1]
 
             cmap = cm.viridis
             norm = colors.BoundaryNorm(bnds, cmap.N)

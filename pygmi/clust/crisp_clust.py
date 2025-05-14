@@ -297,7 +297,7 @@ class CrispClust(BasicModule):
         masktmp = ~masktmp
         for datai in data:
             if datai.nodata != 0.0:
-                self.showlog('Setting '+datai.dataid+' nodata to 0.')
+                self.showlog('Setting ' + datai.dataid + ' nodata to 0.')
                 datai.data = np.ma.array(datai.data.filled(0))
             datai.data.mask = masktmp
 
@@ -362,27 +362,27 @@ class CrispClust(BasicModule):
                     startmfix = {i: smtmp}
 
         cnt = -1
-        dat_out = [Data() for i in range(no_clust[0], no_clust[1]+1)]
+        dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         clidx = None
         clcent = None
         clvrc = None
 
-        for i in range(no_clust[0], no_clust[1]+1):
-            self.showlog('Number of Clusters:'+str(i))
+        for i in range(no_clust[0], no_clust[1] + 1):
+            self.showlog('Number of Clusters:' + str(i))
             cnt = cnt + 1
             if self.rb_datadriven.isChecked() is True:
                 self.showlog('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
-                dno_samp = no_samp/i
-                idx = np.arange(0, no_samp+dno_samp, dno_samp)
+                dno_samp = no_samp / i
+                idx = np.arange(0, no_samp + dno_samp, dno_samp)
                 idx[0] = 1
                 startmdat = {i: np.zeros([i, dat_in.shape[1]])}
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
                 for k in range(dat_in.shape[1]):
                     for j in range(i):
-                        smtmp[j, k] = np.median(dat_in1[idx[j]:idx[j+1], k])
+                        smtmp[j, k] = np.median(dat_in1[idx[j]:idx[j + 1], k])
                 startmdat = {i: smtmp}
                 startmfix = {i: []}
                 del dat_in1
@@ -404,7 +404,7 @@ class CrispClust(BasicModule):
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.showlog(f'Run {j+1} of {no_runs}')
+                    self.showlog(f'Run {j + 1} of {no_runs}')
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -444,7 +444,7 @@ class CrispClust(BasicModule):
             dat_out[cnt].metadata['Cluster']['vrc'] = clvrc
 
             self.log = ('Crisp Cluster complete (' + self.cltype + ' ' +
-                        self.init_type+')')
+                        self.init_type + ')')
 
         for i in dat_out:
             i.dataid = ('Crisp Cluster: ' +
@@ -453,8 +453,8 @@ class CrispClust(BasicModule):
             i.set_transform(transform=data[0].transform)
             i.crs = data[0].crs
 
-        self.showlog('Crisp Cluster complete ('+self.cltype + ' ' +
-                     self.init_type+')')
+        self.showlog('Crisp Cluster complete (' + self.cltype + ' ' +
+                     self.init_type + ')')
 
         for i in dat_out:
             i.data += 1
@@ -538,7 +538,7 @@ class CrispClust(BasicModule):
         onetmp = np.ones([no_samples, 1], int)  # trying this for speed?
 
         # initial distance --> Euclidian
-        edist = np.array([np.sqrt(np.sum(((data-onetmp*cent[j])**2), 1))
+        edist = np.array([np.sqrt(np.sum(((data - onetmp * cent[j])**2), 1))
                           for j in range(no_clust)])
 
         mindist = edist.min(0)  # 0 means row wise minimum
@@ -559,10 +559,10 @@ class CrispClust(BasicModule):
             # interval
             if centfix.size > 0:
                 # constrain the center positions within the given limits
-                cent_idx = cent > (cent_orig+centfix)
+                cent_idx = cent > (cent_orig + centfix)
                 cent[cent_idx == 1] = (cent_orig(cent_idx == 1) +
                                        centfix(cent_idx == 1))
-                cent_idx = cent < (cent_orig-centfix)
+                cent_idx = cent < (cent_orig - centfix)
                 cent[cent_idx == 1] = (cent_orig(cent_idx == 1) -
                                        centfix(cent_idx == 1))
 
@@ -579,7 +579,7 @@ class CrispClust(BasicModule):
             if obj_fcn[i] == 0:
                 obj_fcn_dif = 0
             else:
-                obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
+                obj_fcn_dif = 100 * ((obj_fcn_prev - obj_fcn[i]) / obj_fcn[i])
 
             self.showlog(f'Iteration: {i} Threshold: {term_thresh})'
                          f' Current: {obj_fcn_dif:.2e}', True)
@@ -678,26 +678,26 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
         onetmp = np.ones([no_samples, 1])  # trying this for speed?
         for j in range(no_clust):
             # Euclidian
-            bigd[j] = np.sqrt(np.sum(((data-onetmp*center[j])**2), 1))
+            bigd[j] = np.sqrt(np.sum(((data - onetmp * center[j])**2), 1))
             # determinant criterion see Spath, Helmuth,
             # "Cluster-Formation and Analyse", chapter 3
     elif cltype == 'advanced k-means':
         for j in range(no_clust):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
-            dcent = data-np.ones([no_samples, 1])*center[j]
+            dcent = data - np.ones([no_samples, 1]) * center[j]
             # grab the data belonging to cluster j
-            mod_idx = (index == j)*1
+            mod_idx = (index == j) * 1
             # should I use different transpose?
             # Streuungsmatrix/ covariance of the j-th cluster
-            mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
-                           dcent/np.sum(mod_idx))
+            mat_a = np.dot(np.ones([no_datasets, 1]) * mod_idx * dcent.T,
+                           dcent / np.sum(mod_idx))
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(mat_a) > 1e10:
                 ed1, ev1 = np.linalg.eig(mat_a)
                 edmax = np.max(ed1)
-                ed1[1e10*ed1 < edmax] = edmax/1e10
-                mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
+                ed1[1e10 * ed1 < edmax] = edmax / 1e10
+                mat_a = np.dot(np.dot(ev1, (ed1 * np.eye(no_datasets))),
                                np.linalg.inv(ev1))
             if j == 0:  # sum all covariance matrices for all clusters
                 mat_a0 = mat_a
@@ -708,11 +708,11 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
         for j in range(no_clust):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
-            dcent = data-np.ones([no_samples, 1])*center[j]
+            dcent = data - np.ones([no_samples, 1]) * center[j]
             # does this need to be in this loop?
-            mbig = (np.linalg.det(mat_a0)**(1.0/no_datasets) *
+            mbig = (np.linalg.det(mat_a0)**(1.0 / no_datasets) *
                     np.linalg.pinv(mat_a0))
-            ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
+            ddd.append(np.sum((np.dot(dcent, mbig) * dcent), 1).T)
         bigd = np.sqrt(ddd)
 # cluster adapted determinant criterion see Spath, Helmuth,
 # "Cluster-Formation and Analyse", chapter 4 --> equivalent to crisp GK
@@ -721,32 +721,33 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
         for j in range(no_clust):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
-            dcent = data-np.ones([no_samples, 1])*center[j]
-            mod_idx = (index == j)*1  # grab data belonging to cluster j
+            dcent = data - np.ones([no_samples, 1]) * center[j]
+            mod_idx = (index == j) * 1  # grab data belonging to cluster j
 #    '*dcent/sum(mod_idx); % Streuungsmatrix/ covariance of the j-th cluster
-            mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
-                           dcent/np.sum(mod_idx))
+            mat_a = np.dot(np.ones([no_datasets, 1]) * mod_idx * dcent.T,
+                           dcent / np.sum(mod_idx))
             mat_a0 = np.eye(mat_a.shape[0])
 # if cov_constr>0, this enforces not to elongated ellipsoids -->
 # avoid the needle-like cluster
-            mat_a = (1-cov_constr)*mat_a+cov_constr*(mat_a0/no_samples)
+            mat_a = (1 - cov_constr) * mat_a + \
+                cov_constr * (mat_a0 / no_samples)
 # constrain covariance matrix if badly conditioned and cluster contains
 # more than 1 sample
             if np.linalg.cond(mat_a) > 1e10 and np.sum(mod_idx) > 1:
                 ed1, ev1 = np.linalg.eig(mat_a)
                 edmax = np.max(ed1)
-                ed1[1e10*ed1 < edmax] = edmax/1e10
-                mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
+                ed1[1e10 * ed1 < edmax] = edmax / 1e10
+                mat_a = np.dot(np.dot(ev1, (ed1 * np.eye(no_datasets))),
                                np.linalg.inv(ev1))
 # assume spherical shape of clusters with only one sample
             elif np.sum(mod_idx) == 1:
                 mat_a = mat_a0
-            mbig = (np.linalg.det(mat_a)**(1.0/no_datasets) *
+            mbig = (np.linalg.det(mat_a)**(1.0 / no_datasets) *
                     np.linalg.pinv(mat_a))
 # calc cluster to sample distances using mahalanobis distance for each
 # cluster, ellipsoidal clusters, each cluster has its own individually
 # oriented and shaped ellipsoid
-            ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
+            ddd.append(np.sum((np.dot(dcent, mbig) * dcent), 1).T)
         bigd = np.sqrt(ddd)
     return bigd.real
 

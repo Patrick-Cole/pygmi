@@ -176,7 +176,7 @@ class ImportMod3D(BasicModule):
             x.append(float(i2[0]))
             y.append(float(i2[1]))
             z.append(float(i2[2]))
-            label.append(i2[7+datindx])
+            label.append(i2[7 + datindx])
 
         x = np.array(x)
         y = np.array(y)
@@ -195,9 +195,9 @@ class ImportMod3D(BasicModule):
         lmod.numz = z_u.shape[0]
         lmod.dxy = max(xcell, ycell)
         lmod.d_z = zcell
-        lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
-        lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
-        lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
+        lmod.xrange = [x_u.min() - lmod.dxy / 2., x_u.max() + lmod.dxy / 2.]
+        lmod.yrange = [y_u.min() - lmod.dxy / 2., y_u.max() + lmod.dxy / 2.]
+        lmod.zrange = [z_u.min() - lmod.d_z / 2., z_u.max() + lmod.d_z / 2.]
 
         lindx = 0
         for itxt in labelu:
@@ -230,9 +230,9 @@ class ImportMod3D(BasicModule):
 
         for i in self.piter(range(len(x))):
             xi = x[i]
-            col = int((xi-lmod.xrange[0])/lmod.dxy)
-            row = int((lmod.yrange[1]-y[i])/lmod.dxy)
-            layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
+            col = int((xi - lmod.xrange[0]) / lmod.dxy)
+            row = int((lmod.yrange[1] - y[i]) / lmod.dxy)
+            layer = int((lmod.zrange[1] - z[i]) / lmod.d_z)
             if label[i] == 'blank':
                 lmod.lith_index[col, row, layer] = \
                     lmod.lith_list['Background'].lith_index
@@ -291,12 +291,12 @@ class ImportMod3D(BasicModule):
 
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
-        lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
-        lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
-        lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
-        lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
-        lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
-        lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
+        lmod.xrange = [x_u.min() - lmod.dxy / 2., x_u.max() + lmod.dxy / 2.]
+        lmod.yrange = [y_u.min() - lmod.dxy / 2., y_u.max() + lmod.dxy / 2.]
+        lmod.zrange = [z_u.min() - lmod.d_z / 2., z_u.max() + lmod.d_z / 2.]
+        lmod.numx = int(np.ptp(lmod.xrange) / lmod.dxy + 1)
+        lmod.numy = int(np.ptp(lmod.yrange) / lmod.dxy + 1)
+        lmod.numz = int(np.ptp(lmod.zrange) / lmod.d_z + 1)
 
         # Section to load lithologies.
         lindx = 0
@@ -319,9 +319,9 @@ class ImportMod3D(BasicModule):
         lmod.update_lith_list_reverse()
 
         for i, xi in enumerate(x):
-            col = int((xi-lmod.xrange[0])/lmod.dxy)
-            row = int((y[i]-lmod.yrange[0])/lmod.dxy)
-            layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
+            col = int((xi - lmod.xrange[0]) / lmod.dxy)
+            row = int((y[i] - lmod.yrange[0]) / lmod.dxy)
+            layer = int((lmod.zrange[1] - z[i]) / lmod.d_z)
             lmod.lith_index[col, row, layer] = \
                 lmod.lith_list[label[i]].lith_index
 
@@ -341,35 +341,35 @@ class ImportMod3D(BasicModule):
         None.
 
         """
-        lithkeys = indict[pre+'lithkeys']
+        lithkeys = indict[pre + 'lithkeys']
 
         lmod = self.lmod
 
-        lmod.gregional = indict[pre+'gregional']
-        lmod.ght = indict[pre+'ght']
-        lmod.mht = indict[pre+'mht']
-        lmod.numx = indict[pre+'numx']
-        lmod.numy = indict[pre+'numy']
-        lmod.numz = indict[pre+'numz']
-        lmod.dxy = indict[pre+'dxy']
-        lmod.d_z = indict[pre+'d_z']
-        lmod.lith_index = indict[pre+'lith_index']
+        lmod.gregional = indict[pre + 'gregional']
+        lmod.ght = indict[pre + 'ght']
+        lmod.mht = indict[pre + 'mht']
+        lmod.numx = indict[pre + 'numx']
+        lmod.numy = indict[pre + 'numy']
+        lmod.numz = indict[pre + 'numz']
+        lmod.dxy = indict[pre + 'dxy']
+        lmod.d_z = indict[pre + 'd_z']
+        lmod.lith_index = indict[pre + 'lith_index']
 
-        if pre+'lith_index_grv_old' in indict:
-            lmod.lith_index_grv_old = indict[pre+'lith_index_grv_old']
+        if pre + 'lith_index_grv_old' in indict:
+            lmod.lith_index_grv_old = indict[pre + 'lith_index_grv_old']
 
-        if pre+'lith_index_mag_old' in indict:
-            lmod.lith_index_mag_old = indict[pre+'lith_index_mag_old']
+        if pre + 'lith_index_mag_old' in indict:
+            lmod.lith_index_mag_old = indict[pre + 'lith_index_mag_old']
 
-        lmod.xrange = np.array(indict[pre+'xrange']).tolist()
-        lmod.yrange = np.array(indict[pre+'yrange']).tolist()
-        lmod.zrange = np.array(indict[pre+'zrange']).tolist()
-        if pre+'custprofx' in indict:
-            lmod.custprofx = indict[pre+'custprofx'].item()
+        lmod.xrange = np.array(indict[pre + 'xrange']).tolist()
+        lmod.yrange = np.array(indict[pre + 'yrange']).tolist()
+        lmod.zrange = np.array(indict[pre + 'zrange']).tolist()
+        if pre + 'custprofx' in indict:
+            lmod.custprofx = indict[pre + 'custprofx'].item()
         else:
             lmod.custprofx = {0: (lmod.xrange[0], lmod.xrange[1])}
-        if pre+'custprofy' in indict:
-            lmod.custprofy = indict[pre+'custprofy'].item()
+        if pre + 'custprofy' in indict:
+            lmod.custprofy = indict[pre + 'custprofy'].item()
         else:
             lmod.custprofy = {0: (lmod.yrange[0], lmod.yrange[0])}
 
@@ -380,15 +380,15 @@ class ImportMod3D(BasicModule):
             if len(lmod.custprofy[i]) == 2:
                 lmod.custprofy[i] += lmod.custprofy[i]
 
-        lmod.mlut = indict[pre+'mlut'].item()
+        lmod.mlut = indict[pre + 'mlut'].item()
 
-        lmod.griddata = indict[pre+'griddata'].item()
+        lmod.griddata = indict[pre + 'griddata'].item()
 
         for i in lmod.griddata:
             lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
 
-        if pre+'profpics' in indict:
-            lmod.profpics = indict[pre+'profpics'].item()
+        if pre + 'profpics' in indict:
+            lmod.profpics = indict[pre + 'profpics'].item()
 
             for i in lmod.profpics:
                 if lmod.profpics[i] is not None:
@@ -444,7 +444,8 @@ class ImportMod3D(BasicModule):
 
         for i in lmod.griddata:
             if lmod.griddata[i].crs is not None:
-                lmod.griddata[i].crs = CRS.from_user_input(lmod.griddata[i].crs)
+                lmod.griddata[i].crs = CRS.from_user_input(
+                    lmod.griddata[i].crs)
                 crsfin = lmod.griddata[i].crs
 
         for i in lmod.griddata:
@@ -458,30 +459,36 @@ class ImportMod3D(BasicModule):
             if itxt != 'Background':
                 lmod.lith_list[itxt] = grvmag3d.GeoData(self.parent)
 
-            lmod.lith_list[itxt].hintn = indict[pre+itxt+'_hintn'].item()
-            lmod.lith_list[itxt].finc = indict[pre+itxt+'_finc'].item()
-            lmod.lith_list[itxt].fdec = indict[pre+itxt+'_fdec'].item()
-            lmod.lith_list[itxt].zobsm = indict[pre+itxt+'_zobsm'].item()
-            lmod.lith_list[itxt].susc = indict[pre+itxt+'_susc'].item()
-            lmod.lith_list[itxt].mstrength = indict[pre+itxt+'_mstrength'].item()
-            lmod.lith_list[itxt].qratio = indict[pre+itxt+'_qratio'].item()
-            lmod.lith_list[itxt].minc = indict[pre+itxt+'_minc'].item()
-            lmod.lith_list[itxt].mdec = indict[pre+itxt+'_mdec'].item()
-            lmod.lith_list[itxt].density = indict[pre+itxt+'_density'].item()
-            lmod.lith_list[itxt].bdensity = indict[pre+itxt+'_bdensity'].item()
-            lmod.lith_list[itxt].lith_index = indict[pre+itxt+'_lith_index'].item()
-            lmod.lith_list[itxt].g_cols = indict[pre+itxt+'_numx'].item()
-            lmod.lith_list[itxt].g_rows = indict[pre+itxt+'_numy'].item()
-            lmod.lith_list[itxt].numz = indict[pre+itxt+'_numz'].item()
-            lmod.lith_list[itxt].g_dxy = indict[pre+itxt+'_dxy'].item()
-            lmod.lith_list[itxt].dxy = indict[pre+itxt+'_dxy'].item()
-            lmod.lith_list[itxt].d_z = indict[pre+itxt+'_d_z'].item()
-            lmod.lith_list[itxt].zobsm = indict[pre+itxt+'_zobsm'].item()
-            lmod.lith_list[itxt].zobsg = indict[pre+itxt+'_zobsg'].item()
-            if pre+itxt+'_lithcode' in indict:
-                lmod.lith_list[itxt].lithcode = indict[pre+itxt+'_lithcode'].item()
-            if pre+itxt+'_lithnotes' in indict:
-                lmod.lith_list[itxt].lithnotes = indict[pre+itxt+'_lithnotes'].item()
+            lmod.lith_list[itxt].hintn = indict[pre + itxt + '_hintn'].item()
+            lmod.lith_list[itxt].finc = indict[pre + itxt + '_finc'].item()
+            lmod.lith_list[itxt].fdec = indict[pre + itxt + '_fdec'].item()
+            lmod.lith_list[itxt].zobsm = indict[pre + itxt + '_zobsm'].item()
+            lmod.lith_list[itxt].susc = indict[pre + itxt + '_susc'].item()
+            lmod.lith_list[itxt].mstrength = indict[pre +
+                                                    itxt + '_mstrength'].item()
+            lmod.lith_list[itxt].qratio = indict[pre + itxt + '_qratio'].item()
+            lmod.lith_list[itxt].minc = indict[pre + itxt + '_minc'].item()
+            lmod.lith_list[itxt].mdec = indict[pre + itxt + '_mdec'].item()
+            lmod.lith_list[itxt].density = indict[pre +
+                                                  itxt + '_density'].item()
+            lmod.lith_list[itxt].bdensity = indict[pre +
+                                                   itxt + '_bdensity'].item()
+            lmod.lith_list[itxt].lith_index = indict[pre +
+                                                     itxt + '_lith_index'].item()
+            lmod.lith_list[itxt].g_cols = indict[pre + itxt + '_numx'].item()
+            lmod.lith_list[itxt].g_rows = indict[pre + itxt + '_numy'].item()
+            lmod.lith_list[itxt].numz = indict[pre + itxt + '_numz'].item()
+            lmod.lith_list[itxt].g_dxy = indict[pre + itxt + '_dxy'].item()
+            lmod.lith_list[itxt].dxy = indict[pre + itxt + '_dxy'].item()
+            lmod.lith_list[itxt].d_z = indict[pre + itxt + '_d_z'].item()
+            lmod.lith_list[itxt].zobsm = indict[pre + itxt + '_zobsm'].item()
+            lmod.lith_list[itxt].zobsg = indict[pre + itxt + '_zobsg'].item()
+            if pre + itxt + '_lithcode' in indict:
+                lmod.lith_list[itxt].lithcode = indict[pre +
+                                                       itxt + '_lithcode'].item()
+            if pre + itxt + '_lithnotes' in indict:
+                lmod.lith_list[itxt].lithnotes = indict[pre +
+                                                        itxt + '_lithnotes'].item()
 
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
@@ -529,7 +536,7 @@ class ExportMod3D(ContextModule):
 
             self.parent.process_is_active()
 
-            self.showlog('Saving '+self.ofile+'...')
+            self.showlog('Saving ' + self.ofile + '...')
 
             if ext == 'npz':
                 self.savemodel()
@@ -578,56 +585,56 @@ class ExportMod3D(ContextModule):
             Output dictionary.
 
         """
-        outdict[pre+'gregional'] = self.lmod.gregional
-        outdict[pre+'ght'] = self.lmod.ght
-        outdict[pre+'mht'] = self.lmod.mht
-        outdict[pre+'numx'] = self.lmod.numx
-        outdict[pre+'numy'] = self.lmod.numy
-        outdict[pre+'numz'] = self.lmod.numz
-        outdict[pre+'dxy'] = self.lmod.dxy
-        outdict[pre+'d_z'] = self.lmod.d_z
-        outdict[pre+'lith_index'] = self.lmod.lith_index
-        outdict[pre+'xrange'] = self.lmod.xrange
-        outdict[pre+'yrange'] = self.lmod.yrange
-        outdict[pre+'zrange'] = self.lmod.zrange
-        outdict[pre+'mlut'] = self.lmod.mlut
-        outdict[pre+'griddata'] = self.lmod.griddata
-        outdict[pre+'profpics'] = self.lmod.profpics
-        outdict[pre+'custprofx'] = self.lmod.custprofx
-        outdict[pre+'custprofy'] = self.lmod.custprofy
+        outdict[pre + 'gregional'] = self.lmod.gregional
+        outdict[pre + 'ght'] = self.lmod.ght
+        outdict[pre + 'mht'] = self.lmod.mht
+        outdict[pre + 'numx'] = self.lmod.numx
+        outdict[pre + 'numy'] = self.lmod.numy
+        outdict[pre + 'numz'] = self.lmod.numz
+        outdict[pre + 'dxy'] = self.lmod.dxy
+        outdict[pre + 'd_z'] = self.lmod.d_z
+        outdict[pre + 'lith_index'] = self.lmod.lith_index
+        outdict[pre + 'xrange'] = self.lmod.xrange
+        outdict[pre + 'yrange'] = self.lmod.yrange
+        outdict[pre + 'zrange'] = self.lmod.zrange
+        outdict[pre + 'mlut'] = self.lmod.mlut
+        outdict[pre + 'griddata'] = self.lmod.griddata
+        outdict[pre + 'profpics'] = self.lmod.profpics
+        outdict[pre + 'custprofx'] = self.lmod.custprofx
+        outdict[pre + 'custprofy'] = self.lmod.custprofy
 
-        outdict[pre+'lith_index_grv_old'] = self.lmod.lith_index_grv_old
-        outdict[pre+'lith_index_mag_old'] = self.lmod.lith_index_mag_old
+        outdict[pre + 'lith_index_grv_old'] = self.lmod.lith_index_grv_old
+        outdict[pre + 'lith_index_mag_old'] = self.lmod.lith_index_mag_old
 
         # Section to save lithologies.
-        outdict[pre+'lithkeys'] = list(self.lmod.lith_list.keys())
+        outdict[pre + 'lithkeys'] = list(self.lmod.lith_list.keys())
 
         for i in self.lmod.lith_list.items():
             curkey = i[0]
-            outdict[pre+curkey+'_hintn'] = i[1].hintn
-            outdict[pre+curkey+'_finc'] = i[1].finc
-            outdict[pre+curkey+'_fdec'] = i[1].fdec
-            outdict[pre+curkey+'_zobsm'] = i[1].zobsm
-            outdict[pre+curkey+'_susc'] = i[1].susc
-            outdict[pre+curkey+'_mstrength'] = i[1].mstrength
-            outdict[pre+curkey+'_qratio'] = i[1].qratio
-            outdict[pre+curkey+'_minc'] = i[1].minc
-            outdict[pre+curkey+'_mdec'] = i[1].mdec
-            outdict[pre+curkey+'_density'] = i[1].density
-            outdict[pre+curkey+'_bdensity'] = i[1].bdensity
-            outdict[pre+curkey+'_lith_index'] = i[1].lith_index
-            outdict[pre+curkey+'_numx'] = i[1].g_cols
-            outdict[pre+curkey+'_numy'] = i[1].g_rows
-            outdict[pre+curkey+'_numz'] = i[1].numz
-            outdict[pre+curkey+'_dxy'] = i[1].g_dxy
-            outdict[pre+curkey+'_d_z'] = i[1].d_z
-            outdict[pre+curkey+'_zobsm'] = i[1].zobsm
-            outdict[pre+curkey+'_zobsg'] = i[1].zobsg
-            outdict[pre+curkey+'_x12'] = i[1].x12
-            outdict[pre+curkey+'_y12'] = i[1].y12
-            outdict[pre+curkey+'_z12'] = i[1].z12
-            outdict[pre+curkey+'_lithcode'] = i[1].lithcode
-            outdict[pre+curkey+'_lithnotes'] = i[1].lithnotes
+            outdict[pre + curkey + '_hintn'] = i[1].hintn
+            outdict[pre + curkey + '_finc'] = i[1].finc
+            outdict[pre + curkey + '_fdec'] = i[1].fdec
+            outdict[pre + curkey + '_zobsm'] = i[1].zobsm
+            outdict[pre + curkey + '_susc'] = i[1].susc
+            outdict[pre + curkey + '_mstrength'] = i[1].mstrength
+            outdict[pre + curkey + '_qratio'] = i[1].qratio
+            outdict[pre + curkey + '_minc'] = i[1].minc
+            outdict[pre + curkey + '_mdec'] = i[1].mdec
+            outdict[pre + curkey + '_density'] = i[1].density
+            outdict[pre + curkey + '_bdensity'] = i[1].bdensity
+            outdict[pre + curkey + '_lith_index'] = i[1].lith_index
+            outdict[pre + curkey + '_numx'] = i[1].g_cols
+            outdict[pre + curkey + '_numy'] = i[1].g_rows
+            outdict[pre + curkey + '_numz'] = i[1].numz
+            outdict[pre + curkey + '_dxy'] = i[1].g_dxy
+            outdict[pre + curkey + '_d_z'] = i[1].d_z
+            outdict[pre + curkey + '_zobsm'] = i[1].zobsm
+            outdict[pre + curkey + '_zobsg'] = i[1].zobsg
+            outdict[pre + curkey + '_x12'] = i[1].x12
+            outdict[pre + curkey + '_y12'] = i[1].y12
+            outdict[pre + curkey + '_z12'] = i[1].z12
+            outdict[pre + curkey + '_lithcode'] = i[1].lithcode
+            outdict[pre + curkey + '_lithnotes'] = i[1].lithnotes
 
         return outdict
 
@@ -649,11 +656,11 @@ class ExportMod3D(ContextModule):
         tmp = []
         ltmp = []
         for i in range(self.lmod.numx):
-            x = self.lmod.xrange[0]+i*self.lmod.dxy
+            x = self.lmod.xrange[0] + i * self.lmod.dxy
             for j in range(self.lmod.numy):
-                y = self.lmod.yrange[0]+j*self.lmod.dxy
+                y = self.lmod.yrange[0] + j * self.lmod.dxy
                 for k in range(self.lmod.numz):
-                    z = self.lmod.zrange[1]-k*self.lmod.d_z
+                    z = self.lmod.zrange[1] - k * self.lmod.d_z
                     lith = self.lmod.lith_index[i, j, k]
                     if lith > -1:
                         name = lithname[lith]
@@ -741,7 +748,7 @@ class ExportMod3D(ContextModule):
         mvis_3d.gdata = self.lmod.lith_index[::1, ::1, ::-1]
         itmp = np.sort(np.unique(self.lmod.lith_index))
         itmp = itmp[itmp > 0]
-        tmp = np.ones((255, 4))*255
+        tmp = np.ones((255, 4)) * 255
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
@@ -752,7 +759,8 @@ class ExportMod3D(ContextModule):
         tilt = str(45.)  # angle from vertical
         lat = str(np.mean([latsouth, latnorth]))  # coord of object
         lon = str(np.mean([lonwest, loneast]))  # coord of object
-        rng = str(max(np.ptp(xrng), np.ptp(yrng), np.ptp(zrng)))  # range to object
+        # range to object
+        rng = str(max(np.ptp(xrng), np.ptp(yrng), np.ptp(zrng)))
         alt = str(0)  # alt of object eye is looking at (meters)
         lato = str(latsouth)
         lono = str(lonwest)
@@ -800,19 +808,19 @@ class ExportMod3D(ContextModule):
             x = points[:, 0]
             y = points[:, 1]
             earthrad = 6378137.
-            z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
+            z = earthrad - np.sqrt(earthrad**2 - (x**2 + y**2))
             points[:, 2] -= z
 
             if rev == -1:
                 points += [np.ptp(xrng), np.ptp(yrng), 0]
 
             norm = np.abs(mvis_3d.gnorms[lith])
-            clrtmp = np.array(self.lmod.mlut[lith])/255.
+            clrtmp = np.array(self.lmod.mlut[lith]) / 255.
             curmod = self.lmod.lith_list_reverse[lith]
 
             if len(points) > 60000:
                 self.showlog(curmod + ' has too many points (' +
-                             str(len(points))+'). Not exported')
+                             str(len(points)) + '). Not exported')
                 points = points[:60000]
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]
@@ -979,7 +987,7 @@ class ExportMod3D(ContextModule):
 
         with zipfile.ZipFile(filename, 'w') as zfile:
             for i, modeldaei in enumerate(modeldae):
-                zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldaei)
+                zfile.writestr('models\\mod3d' + str(i) + '.dae', modeldaei)
 
             for i in self.lmod.griddata:
                 x_1, x_2, y_1, y_2 = self.lmod.griddata[i].extent
@@ -1014,7 +1022,7 @@ class ExportMod3D(ContextModule):
                            interpolation='nearest')
                 plt.savefig('tmp930.png')
 
-                zfile.write('tmp930.png', 'models\\'+i+'.png')
+                zfile.write('tmp930.png', 'models\\' + i + '.png')
                 os.remove('tmp930.png')
 
             dockml += (
@@ -1067,7 +1075,7 @@ class ExportMod3D(ContextModule):
         mvis_3d.gdata = self.lmod.lith_index[::1, ::1, ::-1]
         itmp = np.sort(np.unique(self.lmod.lith_index))
         itmp = itmp[itmp > 0]
-        tmp = np.ones((255, 4))*255
+        tmp = np.ones((255, 4)) * 255
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
@@ -1089,7 +1097,7 @@ class ExportMod3D(ContextModule):
             lithsusc = self.lmod.lith_list[lithtext].susc
             lithdens = self.lmod.lith_list[lithtext].density
 
-            self.showlog(' '+lithtext)
+            self.showlog(' ' + lithtext)
             QtWidgets.QApplication.processEvents()
 
             faces = np.array(mvis_3d.gfaces[lith])
@@ -1126,7 +1134,7 @@ class ExportMod3D(ContextModule):
                     layer['Density'].append(lithdens)
                     layer['const'].append(tmp1[0, ifaces])
 
-                    tmp = np.roll(tmp1, -(ifaces+1), axis=1)
+                    tmp = np.roll(tmp1, -(ifaces + 1), axis=1)
 
                     pverts = []
                     pverts.append([tmp[0, 0], tmp[0, 1], tmp[0, 2]])
@@ -1155,7 +1163,7 @@ class ExportMod3D(ContextModule):
 
                 geom = []
                 for i in coords:
-                    tmp = np.roll(i, ifaces+1, axis=1)
+                    tmp = np.roll(i, ifaces + 1, axis=1)
                     pverts = Polygon(tmp)
                     geom.append(pverts)
                 ofaces['geometry'] = geom

@@ -98,7 +98,7 @@ class MenuWidget():
         context_menu['Vector'].addSeparator()
 
         self.action_metadata = QtGui.QAction('Display/Edit Vector '
-                                                 'Metadata')
+                                             'Metadata')
         context_menu['Vector'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
@@ -107,7 +107,7 @@ class MenuWidget():
         self.action_basic_stats.triggered.connect(self.basic_stats)
 
         self.action_plot_ccoef = QtGui.QAction('Plot Correlation '
-                                                   'Coefficients')
+                                               'Coefficients')
         context_menu['pntVector'].addAction(self.action_plot_ccoef)
         self.action_plot_ccoef.triggered.connect(self.plot_ccoef)
 
@@ -116,7 +116,7 @@ class MenuWidget():
         self.action_show_line_data.triggered.connect(self.show_line_data)
 
         self.action_show_line_data2 = QtGui.QAction('Show Profiles on a '
-                                                        'Map')
+                                                    'Map')
         context_menu['pntVector'].addAction(self.action_show_line_data2)
         self.action_show_line_data2.triggered.connect(self.show_line_map)
 

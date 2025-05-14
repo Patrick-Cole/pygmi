@@ -74,7 +74,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.plot_custmin = 0.
         self.plot_custmax = 50.
         self.pscale_type = 'allmax'
-        self.pcntmax = len(self.lmod1.custprofx)-1
+        self.pcntmax = len(self.lmod1.custprofx) - 1
         self.lmod1.custprofx['adhoc'] = [0., 1.]
         self.lmod1.custprofy['adhoc'] = [0., 1.]
         self.extent_side = None
@@ -142,7 +142,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_prof_dir.setSizePolicy(sizepolicy2)
         self.hs_sideview.setEnabled(False)
 
-        self.sb_layer.setMaximum(self.lmod1.numz-1)
+        self.sb_layer.setMaximum(self.lmod1.numz - 1)
         self.sb_layer.setPrefix('Layer: ')
         self.sb_layer.setWrapping(True)
 
@@ -328,8 +328,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                 del self.lmod1.profpics[i]
             self.lmod1.custprofx[j] = self.lmod1.custprofx[i]
             self.lmod1.custprofy[j] = self.lmod1.custprofy[i]
-        del self.lmod1.custprofx[cnt-1]
-        del self.lmod1.custprofy[cnt-1]
+        del self.lmod1.custprofx[cnt - 1]
+        del self.lmod1.custprofy[cnt - 1]
 
         cnums = [i for i in self.lmod1.custprofx if isinstance(i, int)]
 
@@ -401,16 +401,16 @@ class ProfileDisplay(QtWidgets.QWidget):
         x1, x2, x1a, x2a = self.lmod1.custprofx[curprof]
         y1, y2, y1a, y2a = self.lmod1.custprofy[curprof]
         px1 = 0
-        px2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
+        px2 = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-        px1a = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
-        tmp2 = np.sqrt((x1a-x2)**2+(y1a-y2)**2)
+        px1a = np.sqrt((x1a - x1)**2 + (y1a - y1)**2)
+        tmp2 = np.sqrt((x1a - x2)**2 + (y1a - y2)**2)
 
         if tmp2 > px2:
             px1a = -px1a
 
-        px2a = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
-        tmp2 = np.sqrt((x1a-x2)**2+(y1a-y2)**2)
+        px2a = np.sqrt((x2a - x1)**2 + (y2a - y1)**2)
+        tmp2 = np.sqrt((x1a - x2)**2 + (y1a - y2)**2)
 
         if tmp2 > px2:
             px2a = -px2a
@@ -509,13 +509,13 @@ class ProfileDisplay(QtWidgets.QWidget):
             dto = elev - np.abs(log['Depth to'].values)
             lith = log.Lithology.values
 
-            xind = int((x-self.lmod1.xrange[0])//self.lmod1.dxy)
-            yind = int((y-self.lmod1.yrange[0])//self.lmod1.dxy)
+            xind = int((x - self.lmod1.xrange[0]) // self.lmod1.dxy)
+            yind = int((y - self.lmod1.yrange[0]) // self.lmod1.dxy)
             ifrom = []
             ito = []
             for i, dfromi in enumerate(dfrom):
-                z1 = int((self.lmod1.zrange[1]-dfromi)//self.lmod1.d_z)
-                z2 = int((self.lmod1.zrange[1]-dto[i])//self.lmod1.d_z)
+                z1 = int((self.lmod1.zrange[1] - dfromi) // self.lmod1.d_z)
+                z2 = int((self.lmod1.zrange[1] - dto[i]) // self.lmod1.d_z)
                 ifrom.append(z1)
                 ito.append(z2)
             # Now do the bit which creates combos of liths per pixel.
@@ -527,8 +527,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                 if i2 < i1:
                     i1, i2 = i2, i1
                 fto = [i1, i2]
-                if i2-i1 > 1:
-                    fto = list(range(i1, i2+1))
+                if i2 - i1 > 1:
+                    fto = list(range(i1, i2 + 1))
 
                 for j in fto:
                     if j < 0 or j >= lmod.numz:
@@ -542,7 +542,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             for i in lithfin:
                 lithfin[i] = list(set(lithfin[i]))
                 lithfin[i].sort()
-                lithfin[i] = "".join(i+'/' for i in lithfin[i])[:-1]
+                lithfin[i] = "".join(i + '/' for i in lithfin[i])[:-1]
                 lithlist.append(lithfin[i])
 
             lithlist = list(set(lithlist))
@@ -552,7 +552,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                     continue
 
                 lmod.update_lith_list_reverse()
-                new_lith_index = max(lmod.lith_list_reverse.keys())+1
+                new_lith_index = max(lmod.lith_list_reverse.keys()) + 1
 
                 lmod.lith_list[deftxt] = grvmag3d.GeoData(
                     self.parent, lmod.numx, lmod.numy, lmod.numz, lmod.dxy,
@@ -603,15 +603,15 @@ class ProfileDisplay(QtWidgets.QWidget):
         dxy = self.lmod1.dxy
 
         dfall = None
-        for line in range(self.sb_profnum.maximum()+1):
+        for line in range(self.sb_profnum.maximum() + 1):
             self.calc_prof_limits(line)
             self.get_model()
 
             data2 = {}
-            data2['LINE'] = np.zeros(self.rxxx.size, dtype=int)+line
+            data2['LINE'] = np.zeros(self.rxxx.size, dtype=int) + line
 
-            data2['X'] = self.rxxx*dxy+tlx
-            data2['Y'] = self.ryyy*dxy+bly
+            data2['X'] = self.rxxx * dxy + tlx
+            data2['Y'] = self.ryyy * dxy + bly
 
             data = self.lmod1.griddata['Calculated Gravity']
 
@@ -636,13 +636,15 @@ class ProfileDisplay(QtWidgets.QWidget):
                     rxxx2 = self.rxxx
                     ryyy2 = self.ryyy
                 else:
-                    rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data1.xdim + 1
-                    ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data1.ydim + 1
+                    rxxx2 = (dtlx - d2tlx + self.rxxx *
+                             data.xdim) / data1.xdim + 1
+                    ryyy2 = (dbly - d2bly + self.ryyy *
+                             data.ydim) / data1.ydim + 1
 
                 tmp = data1.data.astype(float).filled(np.nan)
                 data2[i] = ndimage.map_coordinates(tmp[::-1],
-                                                   [ryyy2-0.5,
-                                                    rxxx2-0.5],
+                                                   [ryyy2 - 0.5,
+                                                    rxxx2 - 0.5],
                                                    order=1, cval=np.nan)
 
             if dfall is None:
@@ -715,17 +717,17 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         for i in range(self.lmod1.numx):
             for j in range(self.lmod1.numy):
-                imod = i*self.lmod1.dxy+self.lmod1.xrange[0]
-                jmod = j*self.lmod1.dxy+self.lmod1.yrange[0]
+                imod = i * self.lmod1.dxy + self.lmod1.xrange[0]
+                jmod = j * self.lmod1.dxy + self.lmod1.yrange[0]
 
-                igrd = int((imod-tlx)/d_x)
-                jgrd = int((tly-jmod)/d_y)
+                igrd = int((imod - tlx) / d_x)
+                jgrd = int((tly - jmod) / d_y)
 
                 if 0 <= igrd < cols and 0 <= jgrd < rows:
                     if not msk[jgrd, igrd]:
                         continue
 
-                    k_2 = int((regz - zt[jgrd, igrd])/d_z)
+                    k_2 = int((regz - zt[jgrd, igrd]) / d_z)
 
                     k_2 = max(k_2, 0)
                     lfilt = self.lmod1.lith_index[i, j, k_2:] != -1
@@ -786,10 +788,10 @@ class ProfileDisplay(QtWidgets.QWidget):
             lstart, lend = lend, lstart
 
         viewlim = self.mmc.laxes.viewLim
-        x0 = int(round((viewlim.x0 - self.lmod1.xrange[0])/self.lmod1.dxy))
-        x1 = int(round((viewlim.x1 - self.lmod1.xrange[0])/self.lmod1.dxy))
-        y0 = int(round((viewlim.y0 - self.lmod1.yrange[0])/self.lmod1.dxy))
-        y1 = int(round((viewlim.y1 - self.lmod1.yrange[0])/self.lmod1.dxy))
+        x0 = int(round((viewlim.x0 - self.lmod1.xrange[0]) / self.lmod1.dxy))
+        x1 = int(round((viewlim.x1 - self.lmod1.xrange[0]) / self.lmod1.dxy))
+        y0 = int(round((viewlim.y0 - self.lmod1.yrange[0]) / self.lmod1.dxy))
+        y1 = int(round((viewlim.y1 - self.lmod1.yrange[0]) / self.lmod1.dxy))
         if x0 == 0:
             x0 = None
         if y0 == 0:
@@ -801,7 +803,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         for i in lithcopy:
             mslice[mtmp == self.lmod1.lith_list[i.text()].lith_index] = 1
 
-        for i in range(lstart, lend+1):
+        for i in range(lstart, lend + 1):
             ltmp = self.lmod1.lith_index[x0:x1, y0:y1, i]
 
             lslice = np.zeros_like(ltmp)
@@ -841,7 +843,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         for i in lithcopy:
             mslice[mtmp == self.lmod1.lith_list[i.text()].lith_index] = 1
 
-        for i in range(lstart, lend+1):
+        for i in range(lstart, lend + 1):
             self.calc_prof_limits(i)
             ltmp = self.get_model()
 
@@ -860,12 +862,12 @@ class ProfileDisplay(QtWidgets.QWidget):
                     ref = (xy[0], xy[1], zz)
                     if ref not in udatad:
                         udatad[ref] = []
-                    udatad[ref].append(ltmp[zz, self.ipdx1+ixy])
+                    udatad[ref].append(ltmp[zz, self.ipdx1 + ixy])
 
             for i2 in udatad:
                 if 0 in udatad[i2]:
                     zcnt = udatad[i2].count(0)
-                    if (zcnt/len(udatad[i2])) <= 0.8:
+                    if (zcnt / len(udatad[i2])) <= 0.8:
                         udatad[i2] = [j for j in udatad[i2] if j != 0]
 
                 udatadmode = max(set(udatad[i2]), key=udatad[i2].count)  # mode
@@ -923,15 +925,15 @@ class ProfileDisplay(QtWidgets.QWidget):
         tlx = self.lmod1.xrange[0]
         dxy = self.lmod1.dxy
 
-        x1 = (x1-tlx)/dxy
-        x2 = (x2-tlx)/dxy
-        y1 = (y1-bly)/dxy
-        y2 = (y2-bly)/dxy
+        x1 = (x1 - tlx) / dxy
+        x2 = (x2 - tlx) / dxy
+        y1 = (y1 - bly) / dxy
+        y2 = (y2 - bly) / dxy
 
         # this is number of samples times 10
-        self.pdxy = dxy/10  # ten times the cells
-        rcell = int((px2-px1)/self.pdxy)
-        rrcell = int((px2-px1)/dxy)*2+1
+        self.pdxy = dxy / 10  # ten times the cells
+        rcell = int((px2 - px1) / self.pdxy)
+        rrcell = int((px2 - px1) / dxy) * 2 + 1
 
         if rcell == 0:
             rcell = 1
@@ -955,12 +957,12 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.ryyy = self.ryyy[self.ryyy >= 0]
 
         # get model now
-        self.ipdx1 = int(px1/self.pdxy)
-        self.ipdx2 = self.ipdx1+self.xxx.shape[0]
+        self.ipdx1 = int(px1 / self.pdxy)
+        self.ipdx2 = self.ipdx1 + self.xxx.shape[0]
 
         gtmp = []
         for i in range(self.lmod1.numz):
-            tmp = np.zeros(int(self.extent_side[1]/self.pdxy))-1
+            tmp = np.zeros(int(self.extent_side[1] / self.pdxy)) - 1
             tmp[self.ipdx1:self.ipdx2] = self.lmod1.lith_index[self.xxx,
                                                                self.yyy, i]
 
@@ -1150,7 +1152,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if m == 0:
             m = np.tan(np.deg2rad(90))
         else:
-            m = 1/m
+            m = 1 / m
 
         xrng = self.lmod1.xrange
         yrng = self.lmod1.yrange
@@ -1162,101 +1164,101 @@ class ProfileDisplay(QtWidgets.QWidget):
         if pdirval == 90:
             x1 = np.array([xrng[0]])
             x2 = np.array([xrng[1]])
-            y1 = np.array([yrng[0]+dxy/2+curprof*dxy])
+            y1 = np.array([yrng[0] + dxy / 2 + curprof * dxy])
             y2 = y1
 
         elif pdirval == 270:
             x1 = np.array([xrng[1]])
             x2 = np.array([xrng[0]])
-            y1 = np.array([yrng[1]-dxy/2-curprof*dxy])
+            y1 = np.array([yrng[1] - dxy / 2 - curprof * dxy])
             y2 = y1
 
         elif pdirval == 0:
             y1 = np.array([yrng[0]])
             y2 = np.array([yrng[1]])
-            x1 = np.array([xrng[1]-dxy/2-curprof*dxy])
+            x1 = np.array([xrng[1] - dxy / 2 - curprof * dxy])
             x2 = x1
 
         elif pdirval == 180:
             y1 = np.array([yrng[1]])
             y2 = np.array([yrng[0]])
-            x1 = np.array([xrng[0]+dxy/2+curprof*dxy])
+            x1 = np.array([xrng[0] + dxy / 2 + curprof * dxy])
             x2 = x1
 
         elif 0 < pdirval < 90:
-            x1 = np.arange(xrng[1]-dxy/2, xrng[0], -dxy)
-            y1 = np.ones_like(x1)*yrng[0]
-            y1a = np.arange(yrng[0]+dxy/2, yrng[1], dxy)
-            x1a = np.ones_like(y1a)*xrng[0]
+            x1 = np.arange(xrng[1] - dxy / 2, xrng[0], -dxy)
+            y1 = np.ones_like(x1) * yrng[0]
+            y1a = np.arange(yrng[0] + dxy / 2, yrng[1], dxy)
+            x1a = np.ones_like(y1a) * xrng[0]
             y1 = np.append(y1, y1a)
             x1 = np.append(x1, x1a)
 
-            c = y1-m*x1
+            c = y1 - m * x1
 
-            x2 = np.ones_like(x1)*xrng[1]
-            y2 = x2*m+c
+            x2 = np.ones_like(x1) * xrng[1]
+            y2 = x2 * m + c
 
             filt = (y2 > yrng[1])
 
             y2[filt] = yrng[1]
-            x2[filt] = (yrng[1]-c[filt])/m
+            x2[filt] = (yrng[1] - c[filt]) / m
 
         elif 270 < pdirval < 360:
-            x1 = np.arange(xrng[1]-dxy/2, xrng[0], -dxy)
-            y1 = np.ones_like(x1)*yrng[1]
-            y1a = np.arange(yrng[1]-dxy/2, yrng[0], -dxy)
-            x1a = np.ones_like(y1a)*xrng[0]
+            x1 = np.arange(xrng[1] - dxy / 2, xrng[0], -dxy)
+            y1 = np.ones_like(x1) * yrng[1]
+            y1a = np.arange(yrng[1] - dxy / 2, yrng[0], -dxy)
+            x1a = np.ones_like(y1a) * xrng[0]
             y1 = np.append(y1, y1a)
             x1 = np.append(x1, x1a)
 
-            c = y1-m*x1
+            c = y1 - m * x1
 
-            x2 = np.ones_like(x1)*xrng[1]
-            y2 = x2*m+c
+            x2 = np.ones_like(x1) * xrng[1]
+            y2 = x2 * m + c
 
             filt = (y2 < yrng[0])
 
             y2[filt] = yrng[0]
-            x2[filt] = (yrng[0]-c[filt])/m
+            x2[filt] = (yrng[0] - c[filt]) / m
 
             x1, x2 = x2, x1
             y1, y2 = y2, y1
 
         elif 180 < pdirval < 270:
-            x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
-            y1 = np.ones_like(x1)*yrng[1]
-            y1a = np.arange(yrng[1]-dxy/2, yrng[0], -dxy)
-            x1a = np.ones_like(y1a)*xrng[1]
+            x1 = np.arange(xrng[0] + dxy / 2, xrng[1], dxy)
+            y1 = np.ones_like(x1) * yrng[1]
+            y1a = np.arange(yrng[1] - dxy / 2, yrng[0], -dxy)
+            x1a = np.ones_like(y1a) * xrng[1]
             y1 = np.append(y1, y1a)
             x1 = np.append(x1, x1a)
 
-            c = y1-m*x1
+            c = y1 - m * x1
 
-            x2 = np.ones_like(x1)*xrng[0]
-            y2 = x2*m+c
+            x2 = np.ones_like(x1) * xrng[0]
+            y2 = x2 * m + c
 
             filt = (y2 < yrng[0])
 
             y2[filt] = yrng[0]
-            x2[filt] = (yrng[0]-c[filt])/m
+            x2[filt] = (yrng[0] - c[filt]) / m
 
         elif 90 < pdirval < 180:
-            x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
-            y1 = np.ones_like(x1)*yrng[0]
-            y1a = np.arange(yrng[0]+dxy/2, yrng[1], dxy)
-            x1a = np.ones_like(y1a)*xrng[1]
+            x1 = np.arange(xrng[0] + dxy / 2, xrng[1], dxy)
+            y1 = np.ones_like(x1) * yrng[0]
+            y1a = np.arange(yrng[0] + dxy / 2, yrng[1], dxy)
+            x1a = np.ones_like(y1a) * xrng[1]
             y1 = np.append(y1, y1a)
             x1 = np.append(x1, x1a)
 
-            c = y1-m*x1
+            c = y1 - m * x1
 
-            x2 = np.ones_like(x1)*xrng[0]
-            y2 = x2*m+c
+            x2 = np.ones_like(x1) * xrng[0]
+            y2 = x2 * m + c
 
             filt = (y2 > yrng[1])
 
             y2[filt] = yrng[1]
-            x2[filt] = (yrng[1]-c[filt])/m
+            x2[filt] = (yrng[1] - c[filt]) / m
 
             x1, x2 = x2, x1
             y1, y2 = y2, y1
@@ -1315,17 +1317,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.setValue(0)
         self.hs_sideview.setEnabled(False)
 
-        self.sb_layer.setMaximum(self.lmod1.numz-1)
+        self.sb_layer.setMaximum(self.lmod1.numz - 1)
 
         if pdirval in (0., 180):
-            self.sb_profnum.setMaximum(self.lmod1.numx-1)
-            self.hs_profnum.setMaximum(self.lmod1.numx-1)
+            self.sb_profnum.setMaximum(self.lmod1.numx - 1)
+            self.hs_profnum.setMaximum(self.lmod1.numx - 1)
         elif pdirval in (90., 270):
-            self.sb_profnum.setMaximum(self.lmod1.numy-1)
-            self.hs_profnum.setMaximum(self.lmod1.numy-1)
+            self.sb_profnum.setMaximum(self.lmod1.numy - 1)
+            self.hs_profnum.setMaximum(self.lmod1.numy - 1)
         else:
-            self.sb_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
-            self.hs_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
+            self.sb_profnum.setMaximum(self.lmod1.numx + self.lmod1.numy - 1)
+            self.hs_profnum.setMaximum(self.lmod1.numx + self.lmod1.numy - 1)
 
         self.calc_prof_limits()
         gtmp = self.get_model()
@@ -1411,20 +1413,20 @@ class ProfileDisplay(QtWidgets.QWidget):
         # 0.5 offset below is because map_coordinates uses centre of a cell
         # as 0, whereas normal coordinates has that as the edge of the cell.
         tmpprof = ndimage.map_coordinates(data.data[::-1],
-                                          [self.ryyy-0.5,
-                                           self.rxxx-0.5],
+                                          [self.ryyy - 0.5,
+                                           self.rxxx - 0.5],
                                           order=1, cval=np.nan)
         tmprng = tmprng[np.logical_not(np.isnan(tmpprof))]
-        tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]+regtmp
+        tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))] + regtmp
 
         if self.pscale_type == 'custmax':
             extent = [self.plot_custmin, self.plot_custmax]
         elif self.pscale_type in ('calcmax', 'allmax'):
-            extent = [data.data.min()+regtmp, data.data.max()+regtmp]
+            extent = [data.data.min() + regtmp, data.data.max() + regtmp]
         elif tmpprof.size > 0:
             extent = [tmpprof.min(), tmpprof.max()]
         else:
-            extent = [data.data.min()+regtmp, data.data.max()+regtmp]
+            extent = [data.data.min() + regtmp, data.data.max() + regtmp]
 
         # Load in observed data - if there is any
         data2 = None
@@ -1445,13 +1447,13 @@ class ProfileDisplay(QtWidgets.QWidget):
             dbly = data.extent[-2]
             d2bly = data2.extent[-2]
 
-            rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data2.xdim+1
-            ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data2.ydim+1
+            rxxx2 = (dtlx - d2tlx + self.rxxx * data.xdim) / data2.xdim + 1
+            ryyy2 = (dbly - d2bly + self.ryyy * data.ydim) / data2.ydim + 1
 
             pdtmp = data2.data.astype(float).filled(np.nan)
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(pdtmp[::-1],
-                                               [ryyy2-0.5, rxxx2-0.5],
+                                               [ryyy2 - 0.5, rxxx2 - 0.5],
                                                order=1, cval=np.nan)
 
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
@@ -1518,7 +1520,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
-        self.hs_layer.setMaximum(self.lmod1.numz-1)
+        self.hs_layer.setMaximum(self.lmod1.numz - 1)
         self.hs_profnum.setMinimum(0)
         self.hs_cprofnum.setMinimum(0)
 
@@ -1681,17 +1683,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if curaxes == self.axes:
             mdata = self.mdata
-            xptp = self.lmod1.xrange[1]-self.lmod1.xrange[0]
+            xptp = self.lmod1.xrange[1] - self.lmod1.xrange[0]
             xmin = 0
 
             dx = self.myparent.pdxy
             dy = self.lmod1.d_z
-            yptp = self.lmod1.zrange[1]-self.lmod1.zrange[0]
+            yptp = self.lmod1.zrange[1] - self.lmod1.zrange[0]
             ymin = self.lmod1.zrange[0]
         else:
             mdata = self.lmdata
-            xptp = self.lmod1.xrange[1]-self.lmod1.xrange[0]
-            yptp = self.lmod1.yrange[1]-self.lmod1.yrange[0]
+            xptp = self.lmod1.xrange[1] - self.lmod1.xrange[0]
+            yptp = self.lmod1.yrange[1] - self.lmod1.yrange[0]
             dx = self.lmod1.dxy
             dy = self.lmod1.dxy
             xmin = self.lmod1.xrange[0]
@@ -1701,11 +1703,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             vlim = curaxes.viewLim
             tmp0 = curaxes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = curaxes.transData.transform((vlim.x1, vlim.y1))
-            width, height = tmp1-tmp0
+            width, height = tmp1 - tmp0
             width /= mdata.shape[1]
             height /= mdata.shape[0]
-            width *= xptp/vlim.width
-            height *= yptp/vlim.height
+            width *= xptp / vlim.width
+            height *= yptp / vlim.height
             width *= self.mywidth
             height *= self.mywidth
 
@@ -1717,16 +1719,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.setCursor(QtGui.QCursor(cbit))
 
         if self.press is True:
-            xdata = (event.xdata - xmin)/dx
-            ydata = (event.ydata - ymin)/dy
+            xdata = (event.xdata - xmin) / dx
+            ydata = (event.ydata - ymin) / dy
 
             if self.newline is True:
                 self.newline = False
                 self.set_mdata(xdata, ydata, mdata)
             else:
 
-                rrr = np.sqrt((self.xold-xdata)**2+(self.yold-ydata)**2)
-                steps = int(rrr)+1
+                rrr = np.sqrt((self.xold - xdata)**2 + (self.yold - ydata)**2)
+                steps = int(rrr) + 1
                 xxx = np.linspace(self.xold, xdata, steps)
                 yyy = np.linspace(self.yold, ydata, steps)
 
@@ -1785,11 +1787,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         xdata = max(xdata, 0)
         ydata = max(ydata, 0)
 
-        hwidth = self.mywidth/2
-        xstart = max(0, xdata-hwidth)
-        xend = min(mdata.shape[1], xdata+hwidth)
-        ystart = max(0, ydata-hwidth)
-        yend = min(mdata.shape[0], ydata+hwidth)
+        hwidth = self.mywidth / 2
+        xstart = max(0, xdata - hwidth)
+        xend = min(mdata.shape[1], xdata + hwidth)
+        ystart = max(0, ydata - hwidth)
+        yend = min(mdata.shape[0], ydata + hwidth)
 
         xstart = int(round(xstart))
         xend = int(round(xend))
@@ -1822,7 +1824,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i == -1:
                 ctmp = [0, 0, 0, 0]
             else:
-                ctmp = np.array(list(mlut[i])+[255])/255.
+                ctmp = np.array(list(mlut[i]) + [255]) / 255.
 
             tmp[dat[::-1] == i] = ctmp
 
@@ -1915,7 +1917,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         dat2 = self.myparent.cmb_overview.currentText()
 
-        extent = self.lmod1.xrange+self.lmod1.yrange
+        extent = self.lmod1.xrange + self.lmod1.yrange
         curlayer = self.myparent.sb_layer.value()
 
         self.lopac = 1.0 - float(opac) / 100.
@@ -2045,7 +2047,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         extent = self.myparent.extent_side
         xrng = [extent[0], extent[1]]
 
-        alt = self.lmod1.zrange[1]-curlayer*self.lmod1.d_z
+        alt = self.lmod1.zrange[1] - curlayer * self.lmod1.d_z
         yrng = [alt, alt]
 
         self.prf[0].set_data([xrng, yrng])
@@ -2111,7 +2113,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.paxes.autoscale(False)
         dmin, dmax = extent[2], extent[3]
         if dmin == dmax:
-            dmax = dmin+1
+            dmax = dmin + 1
 
         self.paxes.cla()
         self.paxes.ticklabel_format(useOffset=False)
@@ -2456,10 +2458,13 @@ class RangedCopy(QtWidgets.QDialog):
 
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
-        self.lw_lithcopy.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
-        self.lw_lithdel.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_lithcopy.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+        self.lw_lithdel.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         self.sb_end.setMaximum(999999999)
 
         self.rb_sideview.setChecked(True)
@@ -2609,9 +2614,9 @@ class GaugeWidget(QtWidgets.QDial):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        ipth = os.path.dirname(misc.__file__)+'//'
+        ipth = os.path.dirname(misc.__file__) + '//'
 
-        self._bg = QtGui.QPixmap(ipth+'DirectionDial.png')
+        self._bg = QtGui.QPixmap(ipth + 'DirectionDial.png')
         self.setValue(0)
         self.setMaximum(359)
         self.setFixedWidth(60)
@@ -2638,9 +2643,9 @@ class GaugeWidget(QtWidgets.QDial):
         gauge_rect = QtCore.QRect(rect)
         size = gauge_rect.size()
 
-        painter.translate(size.width()/2, size.height()/2)
+        painter.translate(size.width() / 2, size.height() / 2)
         painter.rotate(self.value())
-        painter.translate(-size.width()/2, -size.height()/2)
+        painter.translate(-size.width() / 2, -size.height() / 2)
         painter.drawPixmap(rect, self._bg)
         painter.end()
 
@@ -2703,7 +2708,8 @@ class ImportPicture(BasicModule):
         pb_import = QtWidgets.QPushButton('Load picture (optional)')
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
 
         self.dsb_x1.setDecimals(6)
         self.dsb_x1.setMinimum(-999999999.0)
@@ -2906,7 +2912,7 @@ class ImportPicture(BasicModule):
             dat.data = dat2
             dat.isrgb = True
 
-            ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
+            ra = np.sqrt((x1a - x1)**2 + (y1a - y1)**2)
 
             dat.set_transform(dat.xdim, ra, dat.ydim, zmax)
             self.lmod.profpics[curline] = dat
@@ -2953,7 +2959,7 @@ def gridmatch2(cgrv, rgrv):
     return dat.data
 
 
-def rotate2d(pts, cntr, ang=np.pi/4):
+def rotate2d(pts, cntr, ang=np.pi / 4):
     """
     Rotate 2D.
 
@@ -2975,7 +2981,7 @@ def rotate2d(pts, cntr, ang=np.pi/4):
 
     """
     trans = np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]])
-    pts2 = np.dot(pts-cntr, trans) + cntr
+    pts2 = np.dot(pts - cntr, trans) + cntr
     return pts2
 
 

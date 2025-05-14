@@ -88,12 +88,12 @@ class GroupProj(QtWidgets.QWidget):
 
         tmp = list(set(self.plist.keys()))
         tmp.sort()
-        tmp = ['Current', 'WGS 84']+tmp
+        tmp = ['Current', 'WGS 84'] + tmp
 
         for i in tmp:
             j = self.plist[i]
             if r'Geodetic Geographic' in j and j[0] != r'Geodetic Geographic':
-                self.plist[i] = [r'Geodetic Geographic']+self.plist[i]
+                self.plist[i] = [r'Geodetic Geographic'] + self.plist[i]
 
         self.cmb_datum.addItems(tmp)
         self.cmb_proj.addItem('Current')
@@ -154,7 +154,7 @@ class GroupProj(QtWidgets.QWidget):
         dtxt = self.cmb_datum.currentText()
         ptxt = self.cmb_proj.currentText()
 
-        txt = dtxt + r' / '+ptxt
+        txt = dtxt + r' / ' + ptxt
 
         self.wkt = self.epsg_proj[txt]
 
@@ -243,7 +243,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.data = data2.data.astype(data.data.dtype)
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
-    data2.filename = data.filename[:-4]+'_prj'+data.filename[-4:]
+    data2.filename = data.filename[:-4] + '_prj' + data.filename[-4:]
 
     data2.data = np.ma.masked_equal(data2.data, nodata)
     data2.nodata = nodata
@@ -269,7 +269,7 @@ def getepsgcodes():
         if '/' in i.name:
             pcodes[i.name] = int(i.code)
         else:
-            pcodes[i.name+r' / Geodetic Geographic'] = int(i.code)
+            pcodes[i.name + r' / Geodetic Geographic'] = int(i.code)
 
     pcodes['WGS 84 / Geodetic Geographic'] = 4326
 
@@ -285,7 +285,8 @@ def getepsgcodes():
                                         scale_factor_natural_origin=1.0,),
                                     geodetic_crs=geog_crs)
 
-            pcodes[f'{geog_crs.name} / TM{clong}'] = proj_crs.to_wkt(pretty=True)
+            pcodes[f'{geog_crs.name} / TM{clong}'] = proj_crs.to_wkt(
+                pretty=True)
 
     return pcodes
 

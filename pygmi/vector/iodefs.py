@@ -678,7 +678,7 @@ class ImportVector(BasicModule):
         os.chdir(os.path.dirname(self.ifile))
 
         if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
-            gdf = gpd.read_file(self.ifile,  bbox=bounds, engine='fiona',
+            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='fiona',
                                 allow_unsupported_drivers=True)
         else:
             gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
@@ -830,21 +830,21 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
         return None
 
     while r'//' in tmp[:tmp.index('\n')]:
-        tmp = tmp[tmp.index('\n')+1:]
+        tmp = tmp[tmp.index('\n') + 1:]
 
     head = None
 
     while r'/' in tmp[:tmp.index('\n')]:
         head = tmp[:tmp.index('\n')]
-        tmp = tmp[tmp.index('\n')+1:]
+        tmp = tmp[tmp.index('\n') + 1:]
         head = head.split()
         head.pop(0)
 
     while r'/' in tmp:
         t1 = tmp[:tmp.index(r'/')]
-        t2 = tmp[tmp.index(r'/')+1:]
-        t3 = t2[t2.index('\n')+1:]
-        tmp = t1+t3
+        t2 = tmp[tmp.index(r'/') + 1:]
+        t3 = t2[t2.index('\n') + 1:]
+        tmp = t1 + t3
 
     tmp = tmp.lower()
     tmp = tmp.lstrip()
@@ -855,12 +855,12 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
     df2 = None
     dflist = []
     for i in piter(range(0, len(tmp), 2)):
-        tmp2 = tmp[i+1]
+        tmp2 = tmp[i + 1]
 
-        line = tmp[i]+' '+tmp2[:tmp2.index('\n')].strip()
-        tmp2 = tmp2[tmp2.index('\n')+1:]
+        line = tmp[i] + ' ' + tmp2[:tmp2.index('\n')].strip()
+        tmp2 = tmp2[tmp2.index('\n') + 1:]
         if head is None:
-            head = [f'Column {i+1}' for i in
+            head = [f'Column {i + 1}' for i in
                     range(len(tmp2[:tmp2.index('\n')].split()))]
 
         tmp2 = tmp2.replace('*', 'NaN')
@@ -938,7 +938,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
             nodata[cname] = -np.inf
 
         if numbands[cname] > 1:
-            tmp.shape = (tmp.size//numbands[cname], numbands[cname])
+            tmp.shape = (tmp.size // numbands[cname], numbands[cname])
 
         data[cname] = tmp
 
@@ -958,7 +958,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 
     for i, indxi in enumerate(indx):
         t1 = indxi[0]
-        t2 = t1+indxi[1]+1
+        t2 = t1 + indxi[1] + 1
         linenumber[t1:t2] = line[i]
 
     data['line'] = linenumber
@@ -968,7 +968,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
     for cname in dkeys:
         if numbands[cname] > 1:
             for j in range(numbands[cname]):
-                txt = f'{cname}_{j+1}'
+                txt = f'{cname}_{j + 1}'
                 data[txt] = data[cname][:, j]
                 nodata[txt] = nodata[cname]
             del data[cname]

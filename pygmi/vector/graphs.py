@@ -81,225 +81,225 @@ copper = np.array([[255., 236., 184.],
                    [229., 181., 102.],
                    [228., 180., 101.],
                    [227., 179., 100.],
-                   [227., 178.,  99.],
-                   [226., 177.,  98.],
-                   [225., 177.,  97.],
-                   [224., 176.,  96.],
-                   [224., 175.,  95.],
-                   [223., 174.,  94.],
-                   [222., 174.,  93.],
-                   [222., 173.,  93.],
-                   [221., 172.,  92.],
-                   [220., 171.,  91.],
-                   [220., 171.,  90.],
-                   [219., 170.,  89.],
-                   [218., 169.,  88.],
-                   [217., 168.,  88.],
-                   [217., 168.,  87.],
-                   [216., 167.,  86.],
-                   [215., 166.,  85.],
-                   [215., 166.,  85.],
-                   [214., 165.,  84.],
-                   [213., 164.,  83.],
-                   [213., 164.,  82.],
-                   [212., 163.,  82.],
-                   [211., 162.,  81.],
-                   [211., 162.,  80.],
-                   [210., 161.,  80.],
-                   [210., 160.,  79.],
-                   [209., 160.,  78.],
-                   [208., 159.,  77.],
-                   [208., 158.,  77.],
-                   [207., 158.,  76.],
-                   [206., 157.,  75.],
-                   [206., 156.,  75.],
-                   [205., 156.,  74.],
-                   [204., 155.,  74.],
-                   [204., 154.,  73.],
-                   [203., 154.,  72.],
-                   [203., 153.,  72.],
-                   [202., 153.,  71.],
-                   [201., 152.,  70.],
-                   [201., 151.,  70.],
-                   [200., 151.,  69.],
-                   [199., 150.,  68.],
-                   [199., 149.,  68.],
-                   [198., 149.,  67.],
-                   [197., 148.,  67.],
-                   [197., 148.,  66.],
-                   [196., 147.,  66.],
-                   [196., 147.,  65.],
-                   [195., 146.,  64.],
-                   [194., 145.,  64.],
-                   [194., 145.,  63.],
-                   [193., 144.,  63.],
-                   [192., 144.,  62.],
-                   [192., 143.,  62.],
-                   [191., 142.,  61.],
-                   [190., 142.,  60.],
-                   [190., 141.,  60.],
-                   [189., 141.,  59.],
-                   [189., 140.,  59.],
-                   [188., 139.,  58.],
-                   [187., 139.,  58.],
-                   [187., 138.,  57.],
-                   [186., 138.,  57.],
-                   [186., 137.,  56.],
-                   [185., 137.,  56.],
-                   [184., 136.,  55.],
-                   [184., 136.,  55.],
-                   [183., 135.,  54.],
-                   [182., 134.,  53.],
-                   [182., 134.,  53.],
-                   [181., 133.,  52.],
-                   [181., 133.,  52.],
-                   [180., 132.,  51.],
-                   [179., 132.,  51.],
-                   [179., 131.,  50.],
-                   [178., 130.,  50.],
-                   [177., 130.,  49.],
-                   [177., 129.,  49.],
-                   [176., 129.,  49.],
-                   [176., 128.,  48.],
-                   [175., 128.,  48.],
-                   [174., 127.,  47.],
-                   [174., 127.,  47.],
-                   [173., 126.,  46.],
-                   [172., 125.,  46.],
-                   [172., 125.,  45.],
-                   [171., 124.,  45.],
-                   [170., 124.,  44.],
-                   [170., 123.,  44.],
-                   [169., 123.,  43.],
-                   [169., 122.,  43.],
-                   [168., 121.,  42.],
-                   [167., 121.,  42.],
-                   [167., 120.,  41.],
-                   [166., 120.,  41.],
-                   [165., 119.,  41.],
-                   [165., 119.,  40.],
-                   [164., 118.,  40.],
-                   [163., 117.,  39.],
-                   [163., 117.,  39.],
-                   [162., 116.,  38.],
-                   [161., 116.,  38.],
-                   [161., 115.,  37.],
-                   [160., 115.,  37.],
-                   [159., 114.,  37.],
-                   [159., 113.,  36.],
-                   [158., 113.,  36.],
-                   [157., 112.,  35.],
-                   [157., 112.,  35.],
-                   [156., 111.,  34.],
-                   [155., 110.,  34.],
-                   [155., 110.,  34.],
-                   [154., 109.,  33.],
-                   [153., 109.,  33.],
-                   [152., 108.,  32.],
-                   [152., 107.,  32.],
-                   [151., 107.,  31.],
-                   [150., 106.,  31.],
-                   [150., 106.,  31.],
-                   [149., 105.,  30.],
-                   [148., 104.,  30.],
-                   [147., 104.,  29.],
-                   [147., 103.,  29.],
-                   [146., 102.,  28.],
-                   [145., 102.,  28.],
-                   [144., 101.,  28.],
-                   [144., 101.,  27.],
-                   [143., 100.,  27.],
-                   [142.,  99.,  26.],
-                   [141.,  99.,  26.],
-                   [140.,  98.,  26.],
-                   [140.,  97.,  25.],
-                   [139.,  97.,  25.],
-                   [138.,  96.,  25.],
-                   [137.,  95.,  24.],
-                   [136.,  95.,  24.],
-                   [136.,  94.,  23.],
-                   [135.,  93.,  23.],
-                   [134.,  93.,  23.],
-                   [133.,  92.,  22.],
-                   [132.,  91.,  22.],
-                   [131.,  90.,  21.],
-                   [131.,  90.,  21.],
-                   [130.,  89.,  21.],
-                   [129.,  88.,  20.],
-                   [128.,  88.,  20.],
-                   [127.,  87.,  20.],
-                   [126.,  86.,  19.],
-                   [125.,  85.,  19.],
-                   [124.,  85.,  19.],
-                   [123.,  84.,  18.],
-                   [123.,  83.,  18.],
-                   [122.,  82.,  17.],
-                   [121.,  82.,  17.],
-                   [120.,  81.,  17.],
-                   [119.,  80.,  16.],
-                   [118.,  79.,  16.],
-                   [117.,  79.,  16.],
-                   [116.,  78.,  15.],
-                   [115.,  77.,  15.],
-                   [114.,  76.,  15.],
-                   [113.,  75.,  14.],
-                   [112.,  75.,  14.],
-                   [111.,  74.,  14.],
-                   [110.,  73.,  13.],
-                   [109.,  72.,  13.],
-                   [108.,  71.,  12.],
-                   [107.,  70.,  12.],
-                   [106.,  69.,  12.],
-                   [104.,  68.,  11.],
-                   [103.,  68.,  11.],
-                   [102.,  67.,  11.],
-                   [101.,  66.,  10.],
-                   [100.,  65.,  10.],
-                   [99.,  64.,  10.],
-                   [97.,  63.,   9.],
-                   [96.,  62.,   9.],
-                   [95.,  61.,   9.],
-                   [94.,  60.,   8.],
-                   [92.,  59.,   8.],
-                   [91.,  58.,   8.],
-                   [90.,  58.,   7.],
-                   [89.,  57.,   7.],
-                   [87.,  56.,   7.],
-                   [86.,  55.,   6.],
-                   [85.,  54.,   6.],
-                   [83.,  53.,   6.],
-                   [82.,  52.,   5.],
-                   [80.,  51.,   5.],
-                   [79.,  49.,   5.],
-                   [77.,  48.,   4.],
-                   [76.,  47.,   4.],
-                   [74.,  46.,   4.],
-                   [72.,  45.,   3.],
-                   [71.,  43.,   3.],
-                   [69.,  42.,   3.],
-                   [67.,  41.,   2.],
-                   [66.,  40.,   2.],
-                   [64.,  38.,   2.],
-                   [62.,  37.,   1.],
-                   [60.,  35.,   1.],
-                   [58.,  34.,   1.],
-                   [56.,  32.,   0.],
-                   [54.,  31.,   0.],
-                   [52.,  29.,   0.],
-                   [50.,  28.,   0.],
-                   [47.,  26.,   0.],
-                   [45.,  24.,   0.],
-                   [43.,  22.,   0.],
-                   [40.,  20.,   0.],
-                   [37.,  19.,   0.],
-                   [34.,  17.,   0.],
-                   [31.,  15.,   0.],
-                   [28.,  13.,   0.],
-                   [24.,  10.,   0.],
-                   [21.,   8.,   0.],
-                   [16.,   6.,   0.],
-                   [11.,   3.,   0.],
-                   [0.,   0.,   0.]])
+                   [227., 178., 99.],
+                   [226., 177., 98.],
+                   [225., 177., 97.],
+                   [224., 176., 96.],
+                   [224., 175., 95.],
+                   [223., 174., 94.],
+                   [222., 174., 93.],
+                   [222., 173., 93.],
+                   [221., 172., 92.],
+                   [220., 171., 91.],
+                   [220., 171., 90.],
+                   [219., 170., 89.],
+                   [218., 169., 88.],
+                   [217., 168., 88.],
+                   [217., 168., 87.],
+                   [216., 167., 86.],
+                   [215., 166., 85.],
+                   [215., 166., 85.],
+                   [214., 165., 84.],
+                   [213., 164., 83.],
+                   [213., 164., 82.],
+                   [212., 163., 82.],
+                   [211., 162., 81.],
+                   [211., 162., 80.],
+                   [210., 161., 80.],
+                   [210., 160., 79.],
+                   [209., 160., 78.],
+                   [208., 159., 77.],
+                   [208., 158., 77.],
+                   [207., 158., 76.],
+                   [206., 157., 75.],
+                   [206., 156., 75.],
+                   [205., 156., 74.],
+                   [204., 155., 74.],
+                   [204., 154., 73.],
+                   [203., 154., 72.],
+                   [203., 153., 72.],
+                   [202., 153., 71.],
+                   [201., 152., 70.],
+                   [201., 151., 70.],
+                   [200., 151., 69.],
+                   [199., 150., 68.],
+                   [199., 149., 68.],
+                   [198., 149., 67.],
+                   [197., 148., 67.],
+                   [197., 148., 66.],
+                   [196., 147., 66.],
+                   [196., 147., 65.],
+                   [195., 146., 64.],
+                   [194., 145., 64.],
+                   [194., 145., 63.],
+                   [193., 144., 63.],
+                   [192., 144., 62.],
+                   [192., 143., 62.],
+                   [191., 142., 61.],
+                   [190., 142., 60.],
+                   [190., 141., 60.],
+                   [189., 141., 59.],
+                   [189., 140., 59.],
+                   [188., 139., 58.],
+                   [187., 139., 58.],
+                   [187., 138., 57.],
+                   [186., 138., 57.],
+                   [186., 137., 56.],
+                   [185., 137., 56.],
+                   [184., 136., 55.],
+                   [184., 136., 55.],
+                   [183., 135., 54.],
+                   [182., 134., 53.],
+                   [182., 134., 53.],
+                   [181., 133., 52.],
+                   [181., 133., 52.],
+                   [180., 132., 51.],
+                   [179., 132., 51.],
+                   [179., 131., 50.],
+                   [178., 130., 50.],
+                   [177., 130., 49.],
+                   [177., 129., 49.],
+                   [176., 129., 49.],
+                   [176., 128., 48.],
+                   [175., 128., 48.],
+                   [174., 127., 47.],
+                   [174., 127., 47.],
+                   [173., 126., 46.],
+                   [172., 125., 46.],
+                   [172., 125., 45.],
+                   [171., 124., 45.],
+                   [170., 124., 44.],
+                   [170., 123., 44.],
+                   [169., 123., 43.],
+                   [169., 122., 43.],
+                   [168., 121., 42.],
+                   [167., 121., 42.],
+                   [167., 120., 41.],
+                   [166., 120., 41.],
+                   [165., 119., 41.],
+                   [165., 119., 40.],
+                   [164., 118., 40.],
+                   [163., 117., 39.],
+                   [163., 117., 39.],
+                   [162., 116., 38.],
+                   [161., 116., 38.],
+                   [161., 115., 37.],
+                   [160., 115., 37.],
+                   [159., 114., 37.],
+                   [159., 113., 36.],
+                   [158., 113., 36.],
+                   [157., 112., 35.],
+                   [157., 112., 35.],
+                   [156., 111., 34.],
+                   [155., 110., 34.],
+                   [155., 110., 34.],
+                   [154., 109., 33.],
+                   [153., 109., 33.],
+                   [152., 108., 32.],
+                   [152., 107., 32.],
+                   [151., 107., 31.],
+                   [150., 106., 31.],
+                   [150., 106., 31.],
+                   [149., 105., 30.],
+                   [148., 104., 30.],
+                   [147., 104., 29.],
+                   [147., 103., 29.],
+                   [146., 102., 28.],
+                   [145., 102., 28.],
+                   [144., 101., 28.],
+                   [144., 101., 27.],
+                   [143., 100., 27.],
+                   [142., 99., 26.],
+                   [141., 99., 26.],
+                   [140., 98., 26.],
+                   [140., 97., 25.],
+                   [139., 97., 25.],
+                   [138., 96., 25.],
+                   [137., 95., 24.],
+                   [136., 95., 24.],
+                   [136., 94., 23.],
+                   [135., 93., 23.],
+                   [134., 93., 23.],
+                   [133., 92., 22.],
+                   [132., 91., 22.],
+                   [131., 90., 21.],
+                   [131., 90., 21.],
+                   [130., 89., 21.],
+                   [129., 88., 20.],
+                   [128., 88., 20.],
+                   [127., 87., 20.],
+                   [126., 86., 19.],
+                   [125., 85., 19.],
+                   [124., 85., 19.],
+                   [123., 84., 18.],
+                   [123., 83., 18.],
+                   [122., 82., 17.],
+                   [121., 82., 17.],
+                   [120., 81., 17.],
+                   [119., 80., 16.],
+                   [118., 79., 16.],
+                   [117., 79., 16.],
+                   [116., 78., 15.],
+                   [115., 77., 15.],
+                   [114., 76., 15.],
+                   [113., 75., 14.],
+                   [112., 75., 14.],
+                   [111., 74., 14.],
+                   [110., 73., 13.],
+                   [109., 72., 13.],
+                   [108., 71., 12.],
+                   [107., 70., 12.],
+                   [106., 69., 12.],
+                   [104., 68., 11.],
+                   [103., 68., 11.],
+                   [102., 67., 11.],
+                   [101., 66., 10.],
+                   [100., 65., 10.],
+                   [99., 64., 10.],
+                   [97., 63., 9.],
+                   [96., 62., 9.],
+                   [95., 61., 9.],
+                   [94., 60., 8.],
+                   [92., 59., 8.],
+                   [91., 58., 8.],
+                   [90., 58., 7.],
+                   [89., 57., 7.],
+                   [87., 56., 7.],
+                   [86., 55., 6.],
+                   [85., 54., 6.],
+                   [83., 53., 6.],
+                   [82., 52., 5.],
+                   [80., 51., 5.],
+                   [79., 49., 5.],
+                   [77., 48., 4.],
+                   [76., 47., 4.],
+                   [74., 46., 4.],
+                   [72., 45., 3.],
+                   [71., 43., 3.],
+                   [69., 42., 3.],
+                   [67., 41., 2.],
+                   [66., 40., 2.],
+                   [64., 38., 2.],
+                   [62., 37., 1.],
+                   [60., 35., 1.],
+                   [58., 34., 1.],
+                   [56., 32., 0.],
+                   [54., 31., 0.],
+                   [52., 29., 0.],
+                   [50., 28., 0.],
+                   [47., 26., 0.],
+                   [45., 24., 0.],
+                   [43., 22., 0.],
+                   [40., 20., 0.],
+                   [37., 19., 0.],
+                   [34., 17., 0.],
+                   [31., 15., 0.],
+                   [28., 13., 0.],
+                   [24., 10., 0.],
+                   [21., 8., 0.],
+                   [16., 6., 0.],
+                   [11., 3., 0.],
+                   [0., 0., 0.]])
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -519,7 +519,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         # calculate correlations
         corr = data.corr(numeric_only=True)
-        corr = (corr*100).round(0)
+        corr = (corr * 100).round(0)
 
         corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
         corr = corr.replace(np.nan, 0)
@@ -634,7 +634,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         zdata = data[ival]
         med = np.median(zdata)
-        std = 2.5 * median_abs_deviation(zdata, axis=None, scale=1/1.4826)
+        std = 2.5 * median_abs_deviation(zdata, axis=None, scale=1 / 1.4826)
 
         if std == 0:
             std = 1
@@ -655,7 +655,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if x.size < 2:
                 continue
 
-            spcing = np.append(spcing, np.sqrt(np.diff(x)**2+np.diff(y)**2))
+            spcing = np.append(spcing, np.sqrt(np.diff(x)**2 + np.diff(y)**2))
 
         spcing = spcing.mean()
 
@@ -669,16 +669,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if x.size < 2:
                 continue
 
-            ang = np.arctan2((y[1:]-y[:-1]), (x[1:]-x[:-1]))
+            ang = np.arctan2((y[1:] - y[:-1]), (x[1:] - x[:-1]))
             ang = np.append(ang, ang[-1])
 
-            if np.ptp(x) > np.ptp(y) and (x[-1]-x[0]) < 0:
+            if np.ptp(x) > np.ptp(y) and (x[-1] - x[0]) < 0:
                 ang += np.pi
 
-            elif np.ptp(y) > np.ptp(x) and (y[-1]-y[0]) < 0:
+            elif np.ptp(y) > np.ptp(x) and (y[-1] - y[0]) < 0:
                 ang += np.pi
 
-            py = spcing*scale*(z - med)/std/100.
+            py = spcing * scale * (z - med) / std / 100.
 
             qx = x - np.sin(ang) * py
             qy = y + np.cos(ang) * py
@@ -743,8 +743,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if col != '' and style is None or 'Normal' in style:
                 dstd = data[col].std()
                 dmean = data[col].mean()
-                vmin = max(dmean-2*dstd, data[col].min())
-                vmax = min(dmean+2*dstd, data[col].max())
+                vmin = max(dmean - 2 * dstd, data[col].min())
+                vmax = min(dmean + 2 * dstd, data[col].max())
 
                 # data.plot(ax=self.axes, column=col, aspect='equal',
                 #           legend=True, cmap=self.cmap, vmin=vmin,
@@ -760,16 +760,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 s3 = data[col].std()
                 x1 = data[col].min()
                 x2 = data[col].max()
-                eps = (x2-x1)*0.000001
+                eps = (x2 - x1) * 0.000001
 
-                r2 = int((x2-m3)//s3)
+                r2 = int((x2 - m3) // s3)
                 r2 = min(3, r2)
 
-                bnds = [m3+i*s3 for i in range(0, r2+1)]
-                lbls = [f'{i} to {i+1}' for i in range(0, r2)]
-                bnds = [x1-eps] + bnds + [x2]
-                lbls[0] = 'mean'+lbls[0][1:]
-                lbls = ['min to mean']+lbls+[f'{r2} to max']
+                bnds = [m3 + i * s3 for i in range(0, r2 + 1)]
+                lbls = [f'{i} to {i + 1}' for i in range(0, r2)]
+                bnds = [x1 - eps] + bnds + [x2]
+                lbls[0] = 'mean' + lbls[0][1:]
+                lbls = ['min to mean'] + lbls + [f'{r2} to max']
 
                 z3 = pd.cut(data[col], bnds, labels=False)
                 scat = self.axes.scatter(data.geometry.x,
@@ -782,16 +782,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=z3+1, cmap=self.cmap, marker='.')
-                discrete_colorbar(self.axes, scat, z3+1)
+                                         c=z3 + 1, cmap=self.cmap, marker='.')
+                discrete_colorbar(self.axes, scat, z3 + 1)
 
             elif col != '' and 'K-Means' in style:
                 z1 = np.array(data[col]).reshape(-1, 1)
                 z3 = KMeans(n_clusters=5, n_init='auto').fit_predict(z1)
                 scat = self.axes.scatter(data.geometry.x,
                                          data.geometry.y,
-                                         c=z3+1, cmap=self.cmap, marker='.')
-                discrete_colorbar(self.axes, scat, z3+1)
+                                         c=z3 + 1, cmap=self.cmap, marker='.')
+                discrete_colorbar(self.axes, scat, z3 + 1)
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
 
@@ -851,40 +851,40 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for pnts in allcrds:
             pnts = np.transpose(pnts)
-            xtmp = pnts[0, 1:]-pnts[0, :-1]
-            ytmp = pnts[1, 1:]-pnts[1, :-1]
+            xtmp = pnts[0, 1:] - pnts[0, :-1]
+            ytmp = pnts[1, 1:] - pnts[1, :-1]
             ftmp = np.arctan2(xtmp, ytmp)
-            ftmp[ftmp < 0] += 2*np.pi
+            ftmp[ftmp < 0] += 2 * np.pi
             ftmp[ftmp > np.pi] -= np.pi
-            ltmp = np.sqrt(xtmp**2+ytmp**2)
+            ltmp = np.sqrt(xtmp**2 + ytmp**2)
 
-            fangle += [np.sum(ftmp*ltmp)/ltmp.sum()]
+            fangle += [np.sum(ftmp * ltmp) / ltmp.sum()]
             fcnt += ftmp.tolist()
             flen += ltmp.tolist()
 
         fangle = np.array(fangle)
         fcnt = np.array(fcnt)
         flen = np.array(flen)
-        bwidth = np.pi/nbins
+        bwidth = np.pi / nbins
         Set1 = colormaps['Set1']
-        bcols = Set1(np.arange(nbins+1)/nbins)
+        bcols = Set1(np.arange(nbins + 1) / nbins)
         np.random.shuffle(bcols)
 
         if rtype == 0:
             # Draw rose diagram base on one angle per linear feature
 
-            radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi+bwidth,
+            radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi + bwidth,
                                                                bwidth))
 
             if equal is True:
-                radii = .01*radii.max()*np.sqrt(100*radii/radii.max())
+                radii = .01 * radii.max() * np.sqrt(100 * radii / radii.max())
 
             xtheta = theta[:-1]
-            bcols2 = bcols[(xtheta/bwidth).astype(int)]
+            bcols2 = bcols[(xtheta / bwidth).astype(int)]
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
-            ax1.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
+            ax1.bar(xtheta + np.pi, radii, width=bwidth, color=bcols2)
 
-            bcols2 = bcols[(fangle/bwidth).astype(int)]
+            bcols2 = bcols[(fangle / bwidth).astype(int)]
             lcol = mc.LineCollection(allcrds, color=bcols2)
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True)  # , tight=True)
@@ -894,14 +894,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
             radii, theta = histogram(fcnt, y=flen, xmin=0., xmax=np.pi,
                                      bins=nbins)
             if equal is True:
-                radii = .01*radii.max()*np.sqrt(100*radii/radii.max())
+                radii = .01 * radii.max() * np.sqrt(100 * radii / radii.max())
 
             xtheta = theta[:-1]
-            bcols2 = bcols[(xtheta/bwidth).astype(int)]
+            bcols2 = bcols[(xtheta / bwidth).astype(int)]
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
-            ax1.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
+            ax1.bar(xtheta + np.pi, radii, width=bwidth, color=bcols2)
 
-            bcols2 = bcols[(fcnt/bwidth).astype(int)]
+            bcols2 = bcols[(fcnt / bwidth).astype(int)]
             lcol = mc.LineCollection(allcrds, color=bcols2)
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True)
@@ -1177,7 +1177,7 @@ class PlotLines(ContextModule):
 
         data2 = data2[col].values
 
-        r = np.sqrt((x[1:]-x[:-1])**2+(y[1:]-y[:-1])**2)
+        r = np.sqrt((x[1:] - x[:-1])**2 + (y[1:] - y[:-1])**2)
         r = np.cumsum(r)
         r = np.concatenate(([0.], r))
 
@@ -1483,7 +1483,7 @@ class PlotVector(ContextModule):
         self.cmb_c.addItems(tmp)
 
         if 'MarineCopper' not in colormaps():
-            newcmp = ListedColormap(copper/255, 'MarineCopper')
+            newcmp = ListedColormap(copper / 255, 'MarineCopper')
             colormaps.register(newcmp)
 
         self.buttonbox.htmlfile = 'vector.cm.showvector'
@@ -1616,8 +1616,8 @@ def heatmap(data, row_labels, col_labels, ax, *,
     # Turn spines off and create white grid.
     ax.spines[:].set_visible(False)
 
-    ax.set_xticks(np.arange(data.shape[1]+1)-.5, minor=True)
-    ax.set_yticks(np.arange(data.shape[0]+1)-.5, minor=True)
+    ax.set_xticks(np.arange(data.shape[1] + 1) - .5, minor=True)
+    ax.set_yticks(np.arange(data.shape[0] + 1) - .5, minor=True)
     # ax.grid(which="minor", color="w", linestyle='-', linewidth=3)
     ax.tick_params(which="minor", bottom=False, left=False)
 
@@ -1660,7 +1660,7 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
     if threshold is not None:
         threshold = im.norm(threshold)
     else:
-        threshold = im.norm(data.max())/2.
+        threshold = im.norm(data.max()) / 2.
 
     # Set default alignment to center, but allow it to be
     # overwritten by textkw.
@@ -1719,7 +1719,7 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
 
     """
     radii = np.zeros(bins)
-    theta = np.zeros(bins+1)
+    theta = np.zeros(bins + 1)
 
     if y is None:
         y = np.ones_like(x)
@@ -1732,14 +1732,14 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     y = np.array(y)
     theta[-1] = xmax
 
-    xrange = xmax-xmin
-    xbin = xrange/bins
-    x_2 = x/xbin
+    xrange = xmax - xmin
+    xbin = xrange / bins
+    x_2 = x / xbin
     x_2 = x_2.astype(int)
 
     for i in range(bins):
         radii[i] = y[x_2 == i].sum()
-        theta[i] = i*xbin
+        theta[i] = i * xbin
 
     hist = radii
     bin_edges = theta

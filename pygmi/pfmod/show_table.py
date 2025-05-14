@@ -202,7 +202,7 @@ def basicstats3d_calc(lmod):
     for i in lmod:
         dxy = i.dxy
         dz = i.d_z
-        vol = dxy*dxy*dz
+        vol = dxy * dxy * dz
 
         for j in i.lith_list:
             lindex = i.lith_list[j].lith_index
@@ -270,13 +270,13 @@ def savetable(ofile, bands, cols, data):
             htmp += ',' + i
 
         for k, band in enumerate(bands):
-            fobj.write(band+'\n')
-            fobj.write(htmp+'\n')
+            fobj.write(band + '\n')
+            fobj.write(htmp + '\n')
             for i, _ in enumerate(data[k]):
                 rtmp = str(data[k][i][0])
                 for j in range(1, len(data[k][0])):
-                    rtmp += ','+str(data[k][i][j])
-                fobj.write(rtmp+'\n')
+                    rtmp += ',' + str(data[k][i][j])
+                fobj.write(rtmp + '\n')
             fobj.write('\n')
 
 

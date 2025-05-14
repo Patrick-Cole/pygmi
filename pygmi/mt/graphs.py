@@ -166,7 +166,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax1 = self.figure.add_subplot(411, label='Profile')
 
         self.axes = ax1
-        x = 1/data1.Z.freq
+        x = 1 / data1.Z.freq
 
         if itype == 'xy, yx':
             res1 = data1.Z.resistivity[:, 0, 1]
@@ -329,7 +329,7 @@ def _testfn():
     from mtpy.core.mt import MT
 
     datadir = r'd:\workdata\MT\\'
-    edi_file = datadir+r"synth02.edi"
+    edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
     mt_obj = MT(edi_file)

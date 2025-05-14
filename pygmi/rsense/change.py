@@ -294,7 +294,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
             diff = [i.copy() for i in dat1]
 
             for i, dband in enumerate(diff):
-                dband.data = dat2[i].data-dat1[i].data
+                dband.data = dat2[i].data - dat1[i].data
                 dband.dataid += '_DIFF'
             datfin += diff
 
@@ -445,7 +445,7 @@ def coefv(mean, std):
 
     """
     # Sqrt to convert variance to standard deviation
-    cv = std/mean
+    cv = std / mean
 
     tmp = cv.compressed()
     perc1 = np.percentile(tmp, 1)
@@ -544,7 +544,7 @@ def match_data(flist, showlog=print, piter=iter):
     dat2 = get_from_rastermeta(flist[1], piter=piter, showlog=showlog,
                                tnames=tnames)
 
-    tmp = lstack(dat1+dat2, showlog=showlog, piter=piter, checkdataid=False)
+    tmp = lstack(dat1 + dat2, showlog=showlog, piter=piter, checkdataid=False)
 
     dat1 = tmp[:len(tnames)]
     dat2 = tmp[len(tnames):]
@@ -577,12 +577,12 @@ def sam(s1, s2):
     s2a = s2.astype('d')
 
     num = np.dot(s1a, s2a)
-    denom = np.sqrt(np.sum(s1a**2))*np.sqrt(np.sum(s2a**2))
+    denom = np.sqrt(np.sum(s1a**2)) * np.sqrt(np.sum(s2a**2))
 
     if denom == 0.:
         result = 0.0
     else:
-        result = math.acos(num/denom)
+        result = math.acos(num / denom)
 
     return result
 
@@ -607,16 +607,16 @@ def scm(s1, s2):
     s1 = s1.astype('d')
     s2 = s2.astype('d')
 
-    s1a = s1-s1.mean()
-    s2a = s2-s2.mean()
+    s1a = s1 - s1.mean()
+    s2a = s2 - s2.mean()
 
     num = np.dot(s1a, s2a)
-    denom = np.sqrt(np.sum(s1a**2))*np.sqrt(np.sum(s2a**2))
+    denom = np.sqrt(np.sum(s1a**2)) * np.sqrt(np.sum(s2a**2))
 
     if denom == 0.:
         result = -1.0
     else:
-        result = num/denom
+        result = num / denom
 
     return result
 
@@ -638,7 +638,7 @@ def stddev(M, cnt):
         Calculated standard deviation.
 
     """
-    var = M/cnt
+    var = M / cnt
     std = np.sqrt(var)
 
     return std
@@ -668,8 +668,8 @@ def _testfn():
     for i in dat2:
         plt.figure(dpi=150)
         plt.title(i.dataid)
-        vmin = i.data.mean()-2*i.data.std()
-        vmax = i.data.mean()+2*i.data.std()
+        vmin = i.data.mean() - 2 * i.data.std()
+        vmax = i.data.mean() + 2 * i.data.std()
         plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()

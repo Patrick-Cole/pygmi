@@ -1,3 +1,1 @@
-"""
-Machine learning and classification routines can be found in this module.
-"""
+"""Machine learning and classification routines can be found in this module."""

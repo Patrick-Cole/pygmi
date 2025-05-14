@@ -141,7 +141,7 @@ class MNF(BasicModule):
 
         if not nodialog and self.ev is not None:
             ncmps = self.sb_comps.value()
-            xvals = range(1, ncmps+1)
+            xvals = range(1, ncmps + 1)
 
             plt.figure('Explained Variance')
             plt.subplot(1, 1, 1)
@@ -220,7 +220,7 @@ class MNF(BasicModule):
             for ifile in flist:
                 filename = ifile.filename
 
-                self.showlog('Processing '+os.path.basename(filename))
+                self.showlog('Processing ' + os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
                                           showlog=self.showlog)
@@ -231,7 +231,7 @@ class MNF(BasicModule):
 
                 ofile = set_export_filename(dat, odir, 'mnf')
 
-                self.showlog('Exporting '+os.path.basename(ofile))
+                self.showlog('Exporting ' + os.path.basename(ofile))
                 export_raster(ofile, odata, drv='GTiff', piter=self.piter,
                               showlog=self.showlog)
 
@@ -342,7 +342,7 @@ class PCA(BasicModule):
 
         if not nodialog and self.ev is not None:
             ncmps = self.sb_comps.value()
-            xvals = range(1, ncmps+1)
+            xvals = range(1, ncmps + 1)
 
             plt.figure('Explained Variance')
             plt.subplot(1, 1, 1)
@@ -422,7 +422,7 @@ class PCA(BasicModule):
             for ifile in flist:
                 filename = ifile.filename
 
-                self.showlog('Processing '+os.path.basename(filename))
+                self.showlog('Processing ' + os.path.basename(filename))
 
                 dat = get_from_rastermeta(ifile, piter=self.piter,
                                           showlog=self.showlog)
@@ -432,7 +432,7 @@ class PCA(BasicModule):
 
                 ofile = set_export_filename(dat, odir, 'pca')
 
-                self.showlog('Exporting '+os.path.basename(ofile))
+                self.showlog('Exporting ' + os.path.basename(ofile))
                 export_raster(ofile, odata, drv='GTiff', piter=self.piter,
                               showlog=self.showlog)
 
@@ -483,7 +483,7 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
         t2 = x2d[1:, 1:]
         noise = ne.evaluate('t1-t2')
 
-        mask2 = mask[:-1, :-1]*mask[1:, 1:]
+        mask2 = mask[:-1, :-1] * mask[1:, 1:]
         noise = noise[mask2]
 
         ncov = blockwise_cov(noise.T)
@@ -496,7 +496,7 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
 
         noise = ne.evaluate('(t1-t2+t3-t4)')
 
-        mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
+        mask2 = mask[:-1, :-1] * mask[1:, :-1] * mask[:-1, 1:]
 
         noise = noise[mask2]
 
@@ -642,15 +642,15 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'MNF{j+1} Explained Variance Ratio '
-                           f'{evr[j]*100:.2f}%')
+            band.dataid = (f'MNF{j + 1} Explained Variance Ratio '
+                           f'{evr[j] * 100:.2f}%')
 
     del datall
 
     return odata, ev
 
 
-def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
+def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     """
     PCA Calculation.
 
@@ -742,14 +742,14 @@ def pca_calc(dat, ncmps=None,  showlog=print, piter=iter, fwdonly=True):
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'PCA{j+1} Explained Variance Ratio '
-                           f'{evr[j]*100:.2f}%')
+            band.dataid = (f'PCA{j + 1} Explained Variance Ratio '
+                           f'{evr[j] * 100:.2f}%')
     del datall
 
     return odata, ev
 
 
-def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
+def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
                      fwdonly=True):
     """
     PCA Calculation with using list of files in common fit.
@@ -790,7 +790,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         else:
             filename = ifile.filename
 
-        showlog('Fitting '+os.path.basename(filename))
+        showlog('Fitting ' + os.path.basename(filename))
 
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
@@ -825,7 +825,7 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         else:
             filename = ifile.filename
 
-        showlog('Transforming '+os.path.basename(filename))
+        showlog('Transforming ' + os.path.basename(filename))
 
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
@@ -880,13 +880,13 @@ def pca_calc_fitlist(flist, ncmps=None,  showlog=print, piter=iter,
         for j, band in enumerate(odata):
             band.data = datall[:, :, j]
             if fwdonly is True:
-                band.dataid = (f'PCA{j+1} Explained Variance Ratio '
-                               f'{evr[j]*100:.2f}%')
+                band.dataid = (f'PCA{j + 1} Explained Variance Ratio '
+                               f'{evr[j] * 100:.2f}%')
         del datall
 
         ofile = set_export_filename(dat, odir, 'pca')
 
-        showlog('Exporting '+os.path.basename(ofile))
+        showlog('Exporting ' + os.path.basename(ofile))
         export_raster(ofile, odata, drv='GTiff', piter=piter,
                       compression='ZSTD', showlog=showlog)
 
@@ -967,7 +967,7 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
         Output dot product.
 
     """
-    m,  n = A.shape
+    m, n = A.shape
     n1, o = B.shape
 
     if n1 != n:
@@ -1011,13 +1011,13 @@ def _testfn():
         vmin = dati.data.min()
 
         plt.figure(dpi=150)
-        plt.title('█████████████████Old dat2 band'+str(i))
+        plt.title('█████████████████Old dat2 band' + str(i))
         plt.imshow(dati.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
         plt.figure(dpi=150)
-        plt.title('New MNF denoised band'+str(i))
+        plt.title('New MNF denoised band' + str(i))
         plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
@@ -1056,8 +1056,8 @@ def _testfn2():
 
         plt.subplot(121)
         plt.title(dat.dataid)
-        vmin = dat.data.mean()-dat.data.std()*2
-        vmax = dat.data.mean()+dat.data.std()*2
+        vmin = dat.data.mean() - dat.data.std() * 2
+        vmax = dat.data.mean() + dat.data.std() * 2
         plt.imshow(dat.data, vmin=vmin, vmax=vmax)
         plt.show()
 

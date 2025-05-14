@@ -120,7 +120,7 @@ class MenuWidget():
         self.action_cut_data.triggered.connect(self.cut_data)
 
         self.action_clip_zoom = QtGui.QAction('Clip Raster to '
-                                                  'Zoom Extents')
+                                              'Zoom Extents')
         self.menu.addAction(self.action_clip_zoom)
         self.action_clip_zoom.triggered.connect(self.clip_zoom)
 
@@ -133,7 +133,7 @@ class MenuWidget():
         self.menu.addSeparator()
 
         self.action_raster_data_interp = QtGui.QAction('Raster Data '
-                                                           'Display')
+                                                       'Display')
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
@@ -155,12 +155,12 @@ class MenuWidget():
         self.action_basic_statistics.triggered.connect(self.basic_stats)
 
         self.action_show_raster_data = QtGui.QAction('Show Raster Data '
-                                                         '(Simple)')
+                                                     '(Simple)')
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
         self.action_show_raster_data2 = QtGui.QAction('Show Raster Data '
-                                                          '(Advanced)')
+                                                      '(Advanced)')
         context_menu['Raster'].addAction(self.action_show_raster_data2)
         self.action_show_raster_data2.triggered.connect(self.show_raster_data2)
 
@@ -181,7 +181,7 @@ class MenuWidget():
         self.action_show_histogram.triggered.connect(self.show_histogram)
 
         self.action_show_2d_corr_coef = QtGui.QAction('Show 2D Correlation'
-                                                          ' Coefficients')
+                                                      ' Coefficients')
         context_menu['Raster'].addAction(self.action_show_2d_corr_coef)
         self.action_show_2d_corr_coef.triggered.connect(self.show_ccoef)
 

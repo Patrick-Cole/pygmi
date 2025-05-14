@@ -25,12 +25,99 @@
 """A set of data processing routines for gravity."""
 
 import sys
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtCore
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.grav import iodefs
-from pygmi.misc import BasicModule
+from pygmi.misc import BasicModule, ContextModule
+
+
+class MyMplCanvas(FigureCanvasQTAgg):
+    """
+    Matplotlib canvas widget for the actual plot.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+    """
+
+    def __init__(self, parent=None):
+        fig = Figure(layout='tight', dpi=150)
+        self.axes = fig.add_subplot(111)
+        super().__init__(fig)
+
+    def update_raster(self, drift):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        drift : dict
+            Dictionary containing information for drift plots.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+        self.figure.suptitle('QC: Gravimeter Drift')
+
+        axes = self.figure.add_subplot(211)
+        axes.set_xlabel('Decimal Days')
+        axes.set_ylabel('mGal')
+        axes.grid(True)
+        axes.plot(drift['xp2'], drift['fp'], '.-')
+        axes.set_xticks(range(1, drift['ix'][-1] + 2, 1))
+        ax = axes
+
+        axes = self.figure.add_subplot(212, sharex=ax)
+        axes.set_xlabel('Decimal Days')
+        axes.set_ylabel('mGal/min')
+        axes.grid(True)
+        axes.plot(drift['dday'], drift['drate'], '.-')
+
+        self.figure.canvas.draw()
+
+
+class PlotDrift(ContextModule):
+    """
+    Plot Raster Class.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None, data=None):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Drift Plot')
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        # hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+
+        # self.buttonbox.buttonbox.hide()
+        # self.buttonbox.htmlfile = 'raster.cm.showsimple'
+        self.buttonbox.hide()
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        # vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.show()
+        if data is not None:
+            self.mmc.update_raster(data)
 
 
 class ProcessData(BasicModule):
@@ -184,124 +271,18 @@ class ProcessData(BasicModule):
 
         """
         pdat = self.gdata
-        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
-
         basethres = float(self.le_basethres.text())
         kstat = self.le_knownstat.text()
-        if kstat == 'None':
-            kstat = -1.0
-        else:
-            kstat = float(kstat)
-
-        # Make sure there are no local base stations before the known base
-        if kstat in pdat['STATION']:
-            tmp = (pdat['STATION'] == kstat)
-            itmp = np.nonzero(tmp)[0][0]
-            pdat = pdat[itmp:]
-
-        # Drift Correction, to abs base value
-        tmp = pdat[pdat['STATION'] >= basethres]
-
-        driftdat = tmp[tmp['STATION'] != kstat]
-        pdat = pdat[pdat['STATION'] < basethres]
-
-        if tmp.STATION.unique()[0] == kstat and tmp.STATION.unique().size == 1:
-            driftdat = tmp[tmp['STATION'] == kstat]
-
-        xp1 = driftdat['TIME'].apply(time_convert)
-
-        fp = driftdat['GRAV'].values
-
-        x = pdat['DECTIMEDATE'].values
-        xp = driftdat['DECTIMEDATE'].values
-
-        dcor = np.interp(x, xp, fp)
-
-        self.showlog('Quality Control')
-        self.showlog('---------------')
-        tmp = driftdat['DECTIMEDATE'].values.astype(int)
-        tmp2 = []
-        ix = []
-        tcnt = 0
-        for i, val in enumerate(tmp[:-1]):
-            tmp2.append(tcnt)
-            if tmp[i+1] != val:
-                ix += tmp2
-                tmp2 = []
-                tcnt += 1
-        tmp2.append(tcnt)
-        ix += tmp2
-
-        drate = []
-        dtime = []
-        dday = []
-        for iday in np.unique(ix):
-            filt = (ix == iday)
-            x2 = xp1[filt].values/60.
-            dcor2 = fp[filt]
-            drifttime = (x2[-1]-x2[0])
-            if drifttime == 0.:
-                self.showlog(f'Day {iday+1} drift: Only one reading, '
-                             'no drift result possible.')
-                driftrate = np.nan
-
-            else:
-                driftrate = (dcor2[-1]-dcor2[0])/drifttime
-                self.showlog(f'Day {iday+1} drift: {driftrate:.3e} '
-                             f'mGal/min over {drifttime:.3f} minutes.')
-            dday.append(iday+1+x2[-1]/1440)
-            drate.append(driftrate)
-            dtime.append(drifttime)
-
-        xp2 = xp1/86400 + ix+1
-
-        if not nodialog:
-            plt.figure('QC: Gravimeter Drift')
-            plt.subplot(2, 1, 1)
-            plt.xlabel('Decimal Days')
-            plt.ylabel('mGal')
-            plt.grid(True)
-            plt.plot(xp2, fp, '.-')
-            plt.xticks(range(1, ix[-1]+2, 1))
-            ax = plt.gca()
-
-            plt.subplot(2, 1, 2, sharex=ax)
-            plt.xlabel('Decimal Days')
-            plt.ylabel('mGal/min')
-            plt.grid(True)
-            plt.plot(dday, drate, '.-')
-            plt.tight_layout()
-
-            plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
-            plt.show()
-
-        gobs = pdat['GRAV'] - dcor + float(self.le_absbase.text())
-
-        # Variables used
-        lat = np.deg2rad(pdat.latitude)
-        h = pdat['elevation']  # This is the ellipsoidal (gps) height
+        absbase = float(self.le_absbase.text())
         dens = float(self.le_density.text())
 
-        # Corrections
-        gT = theoretical_gravity(lat)
-        gATM = atmospheric_correction(h)
-        gHC = height_correction(lat, h)
-        gSB = spherical_bouguer(h, dens)
-
-        # Bouguer Anomaly
-        gba = gobs - gT + gATM - gHC - gSB
-
-        pdat = pdat.assign(dcor=dcor)
-        pdat = pdat.assign(gobs_drift=gobs)
-        pdat = pdat.assign(gT=gT)
-        pdat = pdat.assign(gATM=gATM)
-        pdat = pdat.assign(gHC=gHC)
-        pdat = pdat.assign(gSB=gSB)
-        pdat = pdat.assign(BOUGUER=gba)
-
-        pdat.sort_values(by=['LINE', 'STATION'], inplace=True)
-
+        pdat, drift = gravcor(pdat, basethres, kstat, absbase, dens,
+                              self.showlog)
         self.outdata['Vector'] = [pdat]
+
+        if not nodialog:
+            ptest = PlotDrift(data=drift)
+            ptest.exec()
 
     def calcbase(self):
         """
@@ -321,15 +302,15 @@ class ProcessData(BasicModule):
 
         if self.le_knownstat.text() == 'None':
             txt = ('Invalid base station number.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          txt, QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         kstat = float(self.le_knownstat.text())
         if kstat not in pdat['STATION'].values:
             txt = ('Invalid base station number.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          txt, QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         # Drift Correction, to abs base value
@@ -352,12 +333,142 @@ class ProcessData(BasicModule):
         if x.size == 0:
             txt = ('Your known base values need to be before and after at '
                    'least one local base station value.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          txt, QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
+                                          QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
-        absbase = grv-np.interp(x, xp, fp) + float(self.le_knownbase.text())
+        absbase = grv - np.interp(x, xp, fp) + float(self.le_knownbase.text())
         self.le_absbase.setText(str(absbase.iloc[0]))
+
+
+def gravcor(pdat, basethres, kstat, absbase, dens, showlog=print):
+    """
+    Gravity corrections.
+
+    Parameters
+    ----------
+    pdat : Pandas DataFrame
+        Gravity data.
+    basethres : float
+       Threshold for base station numbers.
+    kstat : float
+        Known base station number.
+    absbase : float
+        Known base station absolute gravity.
+    dens : float
+        Background Density (kg/m3).
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    pdat : Pandas DataFrame
+        Gravity data.
+    drift : dict
+        Dictionary containing information for drift plots.
+
+    """
+    pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
+
+    if kstat == 'None':
+        kstat = -1.0
+    else:
+        kstat = float(kstat)
+
+    # Make sure there are no local base stations before the known base
+    if kstat in pdat['STATION']:
+        tmp = (pdat['STATION'] == kstat)
+        itmp = np.nonzero(tmp)[0][0]
+        pdat = pdat[itmp:]
+
+    # Drift Correction, to abs base value
+    tmp = pdat[pdat['STATION'] >= basethres]
+
+    driftdat = tmp[tmp['STATION'] != kstat]
+    pdat = pdat[pdat['STATION'] < basethres]
+
+    if tmp.STATION.unique()[0] == kstat and tmp.STATION.unique().size == 1:
+        driftdat = tmp[tmp['STATION'] == kstat]
+
+    xp1 = driftdat['TIME'].apply(time_convert)
+
+    fp = driftdat['GRAV'].values
+
+    x = pdat['DECTIMEDATE'].values
+    xp = driftdat['DECTIMEDATE'].values
+
+    dcor = np.interp(x, xp, fp)
+
+    showlog('Quality Control')
+    showlog('---------------')
+    tmp = driftdat['DECTIMEDATE'].values.astype(int)
+    tmp2 = []
+    ix = []
+    tcnt = 0
+    for i, val in enumerate(tmp[:-1]):
+        tmp2.append(tcnt)
+        if tmp[i + 1] != val:
+            ix += tmp2
+            tmp2 = []
+            tcnt += 1
+    tmp2.append(tcnt)
+    ix += tmp2
+
+    drate = []
+    dtime = []
+    dday = []
+    for iday in np.unique(ix):
+        filt = (ix == iday)
+        x2 = xp1[filt].values / 60.
+        dcor2 = fp[filt]
+        drifttime = (x2[-1] - x2[0])
+        if drifttime == 0.:
+            showlog(f'Day {iday + 1} drift: Only one reading, '
+                    'no drift result possible.')
+            driftrate = np.nan
+
+        else:
+            driftrate = (dcor2[-1] - dcor2[0]) / drifttime
+            showlog(f'Day {iday + 1} drift: {driftrate:.3e} '
+                    f'mGal/min over {drifttime:.3f} minutes.')
+        dday.append(iday + 1 + x2[-1] / 1440)
+        drate.append(driftrate)
+        dtime.append(drifttime)
+
+    xp2 = xp1 / 86400 + ix + 1
+
+    gobs = pdat['GRAV'] - dcor + float(absbase)
+
+    # Variables used
+    lat = np.deg2rad(pdat.latitude)
+    h = pdat['elevation']  # This is the ellipsoidal (gps) height
+
+    # Corrections
+    gT = theoretical_gravity(lat)
+    gATM = atmospheric_correction(h)
+    gHC = height_correction(lat, h)
+    gSB = spherical_bouguer(h, dens)
+
+    # Bouguer Anomaly
+    gba = gobs - gT + gATM - gHC - gSB
+
+    pdat = pdat.assign(dcor=dcor)
+    pdat = pdat.assign(gobs_drift=gobs)
+    pdat = pdat.assign(gT=gT)
+    pdat = pdat.assign(gATM=gATM)
+    pdat = pdat.assign(gHC=gHC)
+    pdat = pdat.assign(gSB=gSB)
+    pdat = pdat.assign(BOUGUER=gba)
+
+    pdat.sort_values(by=['LINE', 'STATION'], inplace=True)
+
+    drift = {'xp2': xp2,
+             'fp': fp,
+             'ix': ix,
+             'dday': dday,
+             'drate': drate}
+
+    return pdat, drift
 
 
 def geocentric_radius(lat):
@@ -402,8 +513,8 @@ def theoretical_gravity(lat):
         Array of theoretical gravity values.
 
     """
-    gT = 978032.67715*((1 + 0.001931851353 * np.sin(lat)**2) /
-                       np.sqrt(1 - 0.0066943800229*np.sin(lat)**2))
+    gT = 978032.67715 * ((1 + 0.001931851353 * np.sin(lat)**2) /
+                         np.sqrt(1 - 0.0066943800229 * np.sin(lat)**2))
 
     return gT
 
@@ -423,7 +534,7 @@ def atmospheric_correction(h):
         Atmospheric correction
 
     """
-    gATM = 0.874-9.9*1e-5*h+3.56*1e-9*h**2
+    gATM = 0.874 - 9.9 * 1e-5 * h + 3.56 * 1e-9 * h**2
 
     return gATM
 
@@ -445,7 +556,8 @@ def height_correction(lat, h):
         Height corrections
 
     """
-    gHC = -(0.308769109-0.000439773*np.sin(lat)**2)*h+7.2125*1e-8*h**2
+    gHC = -(0.308769109 - 0.000439773 * np.sin(lat)**2) * \
+        h + 7.2125 * 1e-8 * h**2
 
     return gHC
 
@@ -469,28 +581,28 @@ def spherical_bouguer(h, dens):
     """
     S = 166700  # Bullard B radius
     R0 = 6371000  # Mean radius of the earth
-    G = 6.67384*1e-11
+    G = 6.67384 * 1e-11
 
-    alpha = S/R0
+    alpha = S / R0
     R = R0 + h
 
-    delta = R0/R
-    eta = h/R
-    d = 3*np.cos(alpha)**2-2
+    delta = R0 / R
+    eta = h / R
+    d = 3 * np.cos(alpha)**2 - 2
     f = np.cos(alpha)
     k = np.sin(alpha)**2
-    p = -6*np.cos(alpha)**2*np.sin(alpha/2) + 4*np.sin(alpha/2)**3
-    m = -3*np.sin(alpha)**2*np.cos(alpha)
-    n = 2*(np.sin(alpha/2)-np.sin(alpha/2)**2)  # is this abs?
-    mu = 1 + eta**2/3-eta
+    p = -6 * np.cos(alpha)**2 * np.sin(alpha / 2) + 4 * np.sin(alpha / 2)**3
+    m = -3 * np.sin(alpha)**2 * np.cos(alpha)
+    n = 2 * (np.sin(alpha / 2) - np.sin(alpha / 2)**2)  # is this abs?
+    mu = 1 + eta**2 / 3 - eta
 
-    fdk = np.sqrt((f-delta)**2+k)
-    t1 = (d+f*delta+delta**2)*fdk
-    t2 = m*np.log(n/(f-delta+fdk))
+    fdk = np.sqrt((f - delta)**2 + k)
+    t1 = (d + f * delta + delta**2) * fdk
+    t2 = m * np.log(n / (f - delta + fdk))
 
-    lamda = (t1+p+t2)/3
+    lamda = (t1 + p + t2) / 3
 
-    gSB = 2*np.pi*G*dens*(mu*h - lamda*R)*1e5
+    gSB = 2 * np.pi * G * dens * (mu * h - lamda * R) * 1e5
 
     return gSB
 
@@ -511,7 +623,7 @@ def time_convert(x):
 
     """
     h, m, s = map(int, x.decode().split(':'))
-    return (h*60+m)*60+s
+    return (h * 60 + m) * 60 + s
 
 
 def _testfn():
@@ -542,13 +654,6 @@ def _testfn():
     datout = PD.outdata['Vector']
 
     gdf = datout[0]
-
-    for i in ['GRAV', 'gobs_drift', 'BOUGUER', 'dcor', 'elevation',
-              'gT', 'gATM', 'gHC', 'gSB']:
-        plt.title(i)
-
-        plt.plot(gdf.x, gdf[i])
-        plt.show()
 
 
 if __name__ == "__main__":

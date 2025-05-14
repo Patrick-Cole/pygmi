@@ -102,13 +102,13 @@ def check_dataid(out):
         j = 1
         for i in out:
             if elt == i.dataid and count > 1:
-                i.dataid += '('+str(j)+')'
+                i.dataid += '(' + str(j) + ')'
                 j += 1
 
     return out
 
 
-def currentshader(data, cell=1., theta=np.pi/4., phi=-np.pi/4., alpha=1.0):
+def currentshader(data, cell=1., theta=np.pi / 4., phi=-np.pi / 4., alpha=1.0):
     """
     Blinn shader - used for sun shading.
 
@@ -145,9 +145,9 @@ def currentshader(data, cell=1., theta=np.pi/4., phi=-np.pi/4., alpha=1.0):
     q = ne.evaluate('qinit/cell')
     sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
 
-    cosg2 = cos(theta/2)
-    p0 = -cos(phi)*tan(theta)
-    q0 = -sin(phi)*tan(theta)
+    cosg2 = cos(theta / 2)
+    p0 = -cos(phi) * tan(theta)
+    q0 = -sin(phi) * tan(theta)
     sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
     p1 = ne.evaluate('p0 / sqrttmp')
     q1 = ne.evaluate('q0 / sqrttmp')
@@ -216,8 +216,8 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
         dext = idata.bounds
         lext = gdf['geometry'].total_bounds
 
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
-                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
+                (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
             showlog('The shapefile is not in the same area as the raster '
                     'dataset. Please check its coordinates and make sure its '
@@ -272,7 +272,7 @@ def histcomp(img, perc=5., uperc=None):
     # get image histogram
     imask = np.ma.getmaskarray(img)
 
-    svalue, evalue = np.percentile(img.compressed(), (perc, 100-uperc))
+    svalue, evalue = np.percentile(img.compressed(), (perc, 100 - uperc))
 
     # img2 = np.empty_like(img, dtype=np.float32)
     # np.copyto(img2, img)
@@ -312,7 +312,7 @@ def histeq(img, nbrbins=32768):
     """
     # get image histogram
     imhist, bins = np.histogram(img.compressed(), nbrbins)
-    bins = (bins[1:]-bins[:-1])/2+bins[:-1]  # get bin center point
+    bins = (bins[1:] - bins[:-1]) / 2 + bins[:-1]  # get bin center point
 
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
@@ -347,11 +347,11 @@ def img2rgb(img, cbar=colormaps['jet']):
     im2 = img.copy()
     im2 = norm255(im2)
     cbartmp = cbar(range(255))
-    cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
+    cbartmp = np.array([[0., 0., 0., 1.]] + cbartmp.tolist()) * 255
     cbartmp = cbartmp.round()
     cbartmp = cbartmp.astype(np.uint8)
     im2 = cbartmp[im2]
-    im2[:, :, 3] = np.logical_not(img.mask)*254+1
+    im2[:, :, 3] = np.logical_not(img.mask) * 254 + 1
 
     return im2
 
@@ -456,9 +456,9 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             ymin = min(ymin, ymin0)
             ymax = max(ymax, ymax0)
 
-    cols = int((xmax - xmin)/dxy)
-    rows = int((ymax - ymin)/dxy)
-    trans = rasterio.Affine(dxy, 0, xmin, 0, -1*dxy, ymax)
+    cols = int((xmax - xmin) / dxy)
+    rows = int((ymax - ymin) / dxy)
+    trans = rasterio.Affine(dxy, 0, xmin, 0, -1 * dxy, ymax)
 
     if cols == 0 or rows == 0:
         showlog('Your rows or cols are zero. '
@@ -492,7 +492,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             dat2.append(data.copy())
         else:
             if data.data.min() <= 0:
-                doffset = data.data.min()-1.
+                doffset = data.data.min() - 1.
                 data.data = data.data - doffset
             height, width = data.data.shape
 
@@ -611,7 +611,7 @@ def _testfn():
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
 
-    dat3 = lstack(dat1+dat2, dxy=10, commonmask=True)
+    dat3 = lstack(dat1 + dat2, dxy=10, commonmask=True)
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@
 
 import difflib
 import os
-from PyQt6 import QtWidgets, QtCore
+from PyQt6 import QtWidgets
 
 from pygmi.misc import BasicModule
 
@@ -95,7 +95,7 @@ class CorrectDescriptions(BasicModule):
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                    self.parent, 'Open File', '.', ext)
+                self.parent, 'Open File', '.', ext)
             if filename == '':
                 return
 
@@ -174,7 +174,7 @@ class CorrectDescriptions(BasicModule):
                 continue
 
             if cmatch != text:
-                correction.append(text+' to '+cmatch)
+                correction.append(text + ' to ' + cmatch)
                 i['3'].region = cmatch
 
         self.outdata['Seis'] = data

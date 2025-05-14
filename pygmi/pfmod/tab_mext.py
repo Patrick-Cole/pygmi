@@ -92,10 +92,11 @@ class MextDisplay(QtWidgets.QDialog):
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
         buttonbox.button(buttonbox.StandardButton.Cancel).setText('No changes')
         buttonbox.button(buttonbox.StandardButton.Ok).setText('Apply changes '
-                                               '(reset calculations)')
+                                                              '(reset calculations)')
 
         # Current Models Groupbox
         hbl_model = QtWidgets.QHBoxLayout()
@@ -316,7 +317,7 @@ class MextDisplay(QtWidgets.QDialog):
             curgrid = self.parent.inraster[ctxt]
 
             self.dsb_utlz.setValue(curgrid.data.max())
-            zextent = np.ma.ptp(curgrid.data)+self.dsb_zcell.value()
+            zextent = np.ma.ptp(curgrid.data) + self.dsb_zcell.value()
             if zextent > self.dsb_zextent.value():
                 self.dsb_zextent.setValue(zextent)
 
@@ -394,10 +395,10 @@ class MextDisplay(QtWidgets.QDialog):
 
             utlx = curgrid.extent[0]
             utly = curgrid.extent[-1]
-            xextent = ccols*curgrid.xdim
-            yextent = crows*curgrid.ydim
-            cols = int(xextent/self.dsb_xycell.value())
-            rows = int(yextent/self.dsb_xycell.value())
+            xextent = ccols * curgrid.xdim
+            yextent = crows * curgrid.ydim
+            cols = int(xextent / self.dsb_xycell.value())
+            rows = int(yextent / self.dsb_xycell.value())
 
             self.dsb_utlx.setValue(utlx)
             self.dsb_utly.setValue(utly)
@@ -419,9 +420,9 @@ class MextDisplay(QtWidgets.QDialog):
         self.dsb_utlx.setValue(0.0)
         self.dsb_utly.setValue(0.0)
         self.dsb_utlz.setValue(0.0)
-        self.dsb_xextent.setValue(self.lmod1.numx*self.lmod1.dxy)
-        self.dsb_yextent.setValue(self.lmod1.numy*self.lmod1.dxy)
-        self.dsb_zextent.setValue(self.lmod1.numz*self.lmod1.d_z)
+        self.dsb_xextent.setValue(self.lmod1.numx * self.lmod1.dxy)
+        self.dsb_yextent.setValue(self.lmod1.numy * self.lmod1.dxy)
+        self.dsb_zextent.setValue(self.lmod1.numz * self.lmod1.d_z)
         self.dsb_xycell.setValue(self.lmod1.dxy)
         self.dsb_zcell.setValue(self.lmod1.d_z)
         self.sb_cols.setValue(self.lmod1.numx)
@@ -443,9 +444,9 @@ class MextDisplay(QtWidgets.QDialog):
         dxy = self.dsb_xycell.value()
         d_z = self.dsb_zcell.value()
 
-        numx = int(xextent/dxy)
-        numy = int(yextent/dxy)
-        numz = int(zextent/d_z)
+        numx = int(xextent / dxy)
+        numy = int(yextent / dxy)
+        numz = int(zextent / d_z)
         self.sb_cols.setValue(numx)
         self.sb_rows.setValue(numy)
         self.sb_layers.setValue(numz)
@@ -570,9 +571,9 @@ class MextDisplay(QtWidgets.QDialog):
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
         utlz = self.lmod1.zrange[1]
-        xextent = self.lmod1.xrange[1]-self.lmod1.xrange[0]
-        yextent = self.lmod1.yrange[1]-self.lmod1.yrange[0]
-        zextent = self.lmod1.zrange[1]-self.lmod1.zrange[0]
+        xextent = self.lmod1.xrange[1] - self.lmod1.xrange[0]
+        yextent = self.lmod1.yrange[1] - self.lmod1.yrange[0]
+        zextent = self.lmod1.zrange[1] - self.lmod1.zrange[0]
 
         self.dsb_utlx.setValue(utlx)
         self.dsb_utly.setValue(utly)

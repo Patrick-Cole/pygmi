@@ -98,10 +98,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = np.ma.masked_invalid(datd['1_longitude'])
         y = np.ma.masked_invalid(datd['1_latitude'])
 
-        xmin = x.min()-0.5
-        xmax = x.max()+0.5
-        ymin = y.min()-0.5
-        ymax = y.max()+0.5
+        xmin = x.min() - 0.5
+        xmax = x.max() + 0.5
+        ymin = y.min() - 0.5
+        ymax = y.max() + 0.5
 
         self.axes.set_xlim(xmin, xmax)
         self.axes.set_ylim(ymin, ymax)
@@ -125,17 +125,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 cvyz = 0
                 erz = 0
 
-            cov = np.array([[erx*erx, cvxy, cvxz],
-                            [cvxy, ery*ery, cvyz],
-                            [cvxz, cvyz, erz*erz]])
+            cov = np.array([[erx * erx, cvxy, cvxz],
+                            [cvxy, ery * ery, cvyz],
+                            [cvxz, cvyz, erz * erz]])
 
             if True in np.isnan(cov):
                 continue
 
             vals, vecs = eigsorted(cov)
-            abc = (2*np.sqrt(abs(vals)) *
+            abc = (2 * np.sqrt(abs(vals)) *
                    np.cos(np.arctan2(vecs[2, :],
-                                     np.sqrt(vecs[0, :]**2+vecs[1, :]**2))))
+                                     np.sqrt(vecs[0, :]**2 + vecs[1, :]**2))))
 
             idx = np.argmax(abc)
             ang = np.rad2deg(np.arctan2(vecs[1, idx], vecs[0, idx]))
@@ -145,8 +145,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             emin = abc[1]
 
             # approx conversion to degrees
-            demin = emin/110.93  # lat
-            demaj = emaj/(111.3*np.cos(np.deg2rad(lat+demin)))  # long from lat
+            demin = emin / 110.93  # lat
+            # long from lat
+            demaj = emaj / (111.3 * np.cos(np.deg2rad(lat + demin)))
 
             ell = Ellipse(xy=(lon, lat),
                           width=demaj, height=demin,
@@ -202,15 +203,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ymin = y.min()
         ymax = y.max()
         if xmin == xmax:
-            xmin = xmin-1
-            xmax = xmax+1
+            xmin = xmin - 1
+            xmax = xmax + 1
         if ymin == ymax:
-            ymin = ymin-1
-            ymax = ymax+1
+            ymin = ymin - 1
+            ymax = ymax + 1
 
         bins = int(np.sqrt(x.size))
         bins = (bins, bins)
-        rng = [[x.min()-0.5, x.max()+0.5], [y.min(), y.max()]]
+        rng = [[x.min() - 0.5, x.max() + 0.5], [y.min(), y.max()]]
 
         if xbin is not None:
             bins = (xbin, bins[1])
@@ -223,7 +224,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         hbin = self.axes.hist2d(x, y, bins=bins, cmin=1, range=rng)
         self.axes.set_xlabel(xlbl, fontsize=8)
         self.axes.set_ylabel(ylbl, fontsize=8)
-        self.axes.set_xticks(np.arange(x.min(), x.max()+1))
+        self.axes.set_xticks(np.arange(x.min(), x.max() + 1))
 
         for tick in self.axes.get_xticklabels():
             tick.set_rotation(90)
@@ -272,7 +273,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if np.unique(dattmp).size == 1:
             bins = 5
-            rng = (np.unique(dattmp)[0]-2.5, np.unique(dattmp)[0]+2.5)
+            rng = (np.unique(dattmp)[0] - 2.5, np.unique(dattmp)[0] + 2.5)
 
         self.axes.hist(dattmp, bins, edgecolor='black', range=rng)
         self.axes.set_xlabel(xlbl, fontsize=8)
@@ -280,7 +281,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if rng is not None:
             self.axes.set_xlim(rng[0], rng[1])
-            self.axes.set_xticks(np.arange(int(rng[0]+1), int(rng[1])+1))
+            self.axes.set_xticks(np.arange(int(rng[0] + 1), int(rng[1]) + 1))
 
         for tick in self.axes.get_xticklabels():
             tick.set_rotation(90)
@@ -379,10 +380,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             ptres = tres[pid == 'S']
 
-        txt = 'mean: '+str(np.around(ptres.mean(), 3))
-        txt += '\nstd: '+str(np.around(ptres.std(), 3))
+        txt = 'mean: ' + str(np.around(ptres.mean(), 3))
+        txt += '\nstd: ' + str(np.around(ptres.std(), 3))
 
-        weights = 100*np.ones_like(ptres)/ptres.size
+        weights = 100 * np.ones_like(ptres) / ptres.size
         self.axes.text(0.75, 0.9, txt, transform=self.axes.transAxes)
         self.axes.hist(ptres, 40, weights=weights, edgecolor='black')
         self.axes.set_xlabel('Time Residual (seconds)')
@@ -425,14 +426,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     if i not in A:
                         A[i] = []
                     A[i].append(rec.magnitude_residual)
-                elif (rec.quality+rec.phase_id).strip() in ['IAML', 'AML',
-                                                            'ES', 'E']:
+                elif (rec.quality + rec.phase_id).strip() in ['IAML', 'AML',
+                                                              'ES', 'E']:
                     if (rec.amplitude is None or
                             rec.epicentral_distance is None):
                         continue
                     ML = (np.log10(rec.amplitude) +
-                          1.149*np.log10(rec.epicentral_distance) +
-                          0.00063*rec.epicentral_distance-2.04)
+                          1.149 * np.log10(rec.epicentral_distance) +
+                          0.00063 * rec.epicentral_distance - 2.04)
                     A1[i] = ML
                 if rec.travel_time_residual is not None:
                     T1[i] = rec.travel_time_residual
@@ -444,7 +445,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for i in A1:
                 if i not in A:
                     A[i] = []
-                A[i].append(A1[i]-A1mean)
+                A[i].append(A1[i] - A1mean)
 
             for i in T1:
                 if i not in T:
@@ -512,7 +513,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for rec in event['4']:
                 if rec.weighting_indicator == 9:
                     continue
-                time = rec.hour*3600+rec.minutes*60+rec.seconds
+                time = rec.hour * 3600 + rec.minutes * 60 + rec.seconds
                 if rec.phase_id.strip() == 'P':
                     P[rec.station_name] = time
                 if rec.phase_id.strip() == 'S':
@@ -555,7 +556,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = self.axes.get_xlim()
         self.axes.plot(x, np.poly1d([slope, intercept])(x), 'k')
 
-        txt = 'Vp/Vs (Ave)='+str(np.around(np.mean(slope), 4))
+        txt = 'Vp/Vs (Ave)=' + str(np.around(np.mean(slope), 4))
         self.axes.text(0.1, 0.9, txt, transform=self.axes.transAxes)
         self.axes.set_xlabel('P Time (seconds)')
         self.axes.set_ylabel('S-P Time (seconds)')
@@ -638,8 +639,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         xmin, xmax, ymin, ymax = dat.extent
         rows, cols = dat.data.shape
 
-        xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy/2
-        yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy/2
+        xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy / 2
+        yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy / 2
 
         xi, yi = np.meshgrid(xi, yi)
         zi = dat.data
@@ -649,7 +650,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.plot(x, y, 'k.')
 
-        zi = zi[::-1]+0.0001
+        zi = zi[::-1] + 0.0001
         cntr1 = self.axes.contour(xi, yi, zi, levels=uvals, colors='k')
         cntr = self.axes.contourf(xi, yi, zi, levels=uvals, extend='max')
 
@@ -762,8 +763,8 @@ class PlotQC(ContextModule):
                                  rng=(0.5, 12.5))
         elif i == 'Year Histogram':
             bins = max(self.datd['1_year']) - min(self.datd['1_year']) + 1
-            bmin = np.nanmin(self.datd['1_year'])-0.5
-            bmax = np.nanmax(self.datd['1_year'])+0.5
+            bmin = np.nanmin(self.datd['1_year']) - 0.5
+            bmax = np.nanmax(self.datd['1_year']) + 0.5
             self.mmc.update_hist(self.datd['1_year'], xlbl='Year', bins=bins,
                                  rng=(bmin, bmax))
         elif i == 'Number of Stations':
@@ -780,7 +781,7 @@ class PlotQC(ContextModule):
                                  xlbl=i, bins=bins, rng=(bmin, bmax))
         elif i == 'RMS of time residuals':
             rts = np.array(self.datd['1_rms_of_time_residuals'])
-            self.mmc.update_hist(rts, xlbl=i+' (sec)')
+            self.mmc.update_hist(rts, xlbl=i + ' (sec)')
         elif i == 'ML vs Time':
             self.mmc.update_hexbin(self.datd['1_ML_time'], self.datd['1_ML'],
                                    xlbl='Time (Hours)', ylbl='ML',
@@ -795,12 +796,13 @@ class PlotQC(ContextModule):
             self.btn_saveshp.show()
             self.mmc.update_ellipse(self.datd, self.indata['Seis'], True)
         elif i == 'GAP':
-            self.mmc.update_hist(self.datd['E_gap'], xlbl=i+' (°)')
+            self.mmc.update_hist(self.datd['E_gap'], xlbl=i + ' (°)')
         elif i == 'Longitude Error':
             self.mmc.update_hist(self.datd['E_longitude_error'],
-                                 xlbl=i+' (km)')
+                                 xlbl=i + ' (km)')
         elif i == 'Latitude Error':
-            self.mmc.update_hist(self.datd['E_latitude_error'], xlbl=i+' (km)')
+            self.mmc.update_hist(
+                self.datd['E_latitude_error'], xlbl=i + ' (km)')
         elif i == 'b-Value':
             self.mmc.update_bvalue(self.datd['1_ML'])
         elif i == 'P-Phase Residuals':
@@ -880,10 +882,10 @@ class PlotQC(ContextModule):
 
         if os.path.isfile(ifile):
             tmp = ifile[:-4]
-            os.remove(tmp+'.shp')
-            os.remove(tmp+'.shx')
-            os.remove(tmp+'.prj')
-            os.remove(tmp+'.dbf')
+            os.remove(tmp + '.shp')
+            os.remove(tmp + '.shx')
+            os.remove(tmp + '.prj')
+            os.remove(tmp + '.dbf')
 
         indata = self.mmc.ellipses
         geom = [Polygon(i) for i in indata]
@@ -1004,10 +1006,10 @@ class PlotIso(ContextModule):
 
         if os.path.isfile(ifile):
             tmp = ifile[:-4]
-            os.remove(tmp+'.shp')
-            os.remove(tmp+'.shx')
-            os.remove(tmp+'.prj')
-            os.remove(tmp+'.dbf')
+            os.remove(tmp + '.shp')
+            os.remove(tmp + '.shx')
+            os.remove(tmp + '.prj')
+            os.remove(tmp + '.dbf')
 
         gdf = self.mmc.isolines
         gdf = gdf.set_crs(4326)
@@ -1107,7 +1109,7 @@ class PlotTempB(ContextModule):
             mlwin = ml[i: i + window_size]
             mlwin = np.ma.masked_invalid(mlwin)
             mlwin = mlwin.compressed()
-            meandate = np.datetime64(dates[i + window_size-1])
+            meandate = np.datetime64(dates[i + window_size - 1])
 
             out = bvalue(mlwin)
 
@@ -1154,10 +1156,10 @@ class PlotTempB(ContextModule):
 
         if os.path.isfile(ifile):
             tmp = ifile[:-4]
-            os.remove(tmp+'.shp')
-            os.remove(tmp+'.shx')
-            os.remove(tmp+'.prj')
-            os.remove(tmp+'.dbf')
+            os.remove(tmp + '.shp')
+            os.remove(tmp + '.shx')
+            os.remove(tmp + '.prj')
+            os.remove(tmp + '.dbf')
 
         gdf = self.mmc.isolines
         gdf = gdf.set_crs(4326)
@@ -1234,25 +1236,25 @@ def import_for_plots(dat):
             if rectype in ('1', 'E'):
                 tmp = vars(event[rectype])
                 for j in tmp:
-                    newkey = rectype+'_'+j
+                    newkey = rectype + '_' + j
                     if newkey not in datd:
                         datd[newkey] = []
                     datd[newkey].append(tmp[j])
 
                     if 'type_of_magnitude' in j:
-                        newkey = '1_M'+tmp[j]
+                        newkey = '1_M' + tmp[j]
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j.split('_of_')[1]])
 
-                        time = (tmp['hour'] + tmp['minutes']/60. +
-                                tmp['seconds']/3600.)
-                        newkey = '1_M'+tmp[j]+'_time'
+                        time = (tmp['hour'] + tmp['minutes'] / 60. +
+                                tmp['seconds'] / 3600.)
+                        newkey = '1_M' + tmp[j] + '_time'
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(time)
 
-                        newkey = '1_M'+tmp[j]+'_year'
+                        newkey = '1_M' + tmp[j] + '_year'
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp['year'])
@@ -1261,7 +1263,7 @@ def import_for_plots(dat):
                 for i in event[rectype]:
                     tmp = vars(i)
                     for j in tmp:
-                        newkey = rectype+'_'+j
+                        newkey = rectype + '_' + j
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
@@ -1315,11 +1317,11 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     data1 = data1[abs(zscore(data1)) < 2.5]
 
     # Frequency Magnitude Distribution.
-    bins = np.arange(np.round(data1.min(), 1)-mbin/2,
-                     np.round(data1.max(), 1)+mbin*1.5, mbin)
+    bins = np.arange(np.round(data1.min(), 1) - mbin / 2,
+                     np.round(data1.max(), 1) + mbin * 1.5, mbin)
 
     num, binsedges = np.histogram(data1, bins)
-    binctr = binsedges[:-1] + mbin/2
+    binctr = binsedges[:-1] + mbin / 2
     binctr = np.round(binctr, 1)  # gets rid of round off error.
 
     cumnum = np.cumsum(num[::-1])[::-1]
@@ -1354,13 +1356,13 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     # Maximum likelihood (Utsu)
     data2 = data1[data1 >= cmax]
 
-    if (data2.mean()-data2.min()) == 0:
+    if (data2.mean() - data2.min()) == 0:
         b_mle = np.nan
         # b_gh = np.nan
     else:
         dmean = data2.mean()
         # b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
-        b_mle = np.log10(np.exp(1)) / (dmean - (cmax-mbin/2))
+        b_mle = np.log10(np.exp(1)) / (dmean - (cmax - mbin / 2))
         b_mle = np.around(b_mle, 2)
 
         # b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
@@ -1479,8 +1481,8 @@ def _testiso():
     xmin, xmax, ymin, ymax = dat.extent
     rows, cols = dat.data.shape
 
-    xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy/2
-    yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy/2
+    xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy / 2
+    yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy / 2
 
     xi, yi = np.meshgrid(xi, yi)
     zi = dat.data
@@ -1490,7 +1492,7 @@ def _testiso():
 
     plt.plot(x, y, '.')
 
-    zi = zi[::-1]+0.0001
+    zi = zi[::-1] + 0.0001
     cntr1 = ax.contour(xi, yi, zi, levels=uvals, colors='k',
                        algorithm='serial')
     cntr = ax.contourf(xi, yi, zi, levels=uvals, algorithm='serial')

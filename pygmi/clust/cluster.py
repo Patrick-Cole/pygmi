@@ -333,7 +333,7 @@ class Cluster(BasicModule):
         data = self.indata['Raster']
         self.update_vars()
 
-        no_clust = range(self.min_cluster, self.max_cluster+1)
+        no_clust = range(self.min_cluster, self.max_cluster + 1)
 
         self.showlog('Cluster analysis started')
 
@@ -361,13 +361,13 @@ class Cluster(BasicModule):
         dat_out = []
         for i in self.piter(no_clust):
             if self.cltype not in ['DBSCAN', 'OPTICS']:
-                self.showlog('Number of Clusters:'+str(i))
+                self.showlog('Number of Clusters:' + str(i))
             elif i > no_clust[0]:
                 continue
 
             cfit = None
             if self.cltype == 'Mini Batch K-Means (fast)':
-                bsize = max(os.cpu_count()*256, 1024)
+                bsize = max(os.cpu_count() * 256, 1024)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter,
                                            n_init='auto',
@@ -397,8 +397,8 @@ class Cluster(BasicModule):
                 self.showlog('Could not find any clusters. '
                              'Please change settings.')
 
-            if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
-                self.showlog('Could not find '+str(i)+' clusters. '
+            if cfit.labels_.max() < i - 1 and self.cltype != 'DBSCAN':
+                self.showlog('Could not find ' + str(i) + ' clusters. '
                              'Please change settings.')
 
                 return False
@@ -422,9 +422,11 @@ class Cluster(BasicModule):
             dat_out[-1].metadata['Cluster']['no_clusters'] = i
             dat_out[-1].metadata['Cluster']['center'] = np.zeros([i,
                                                                   len(data)])
-            dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
+            dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([
+                                                                     i, len(data)])
             if cfit.labels_.max() > 0:
-                dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(X, cfit.labels_)
+                dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(
+                    X, cfit.labels_)
 
             # Reloading this hear to save memory. Need unscaled values.
             X = []
@@ -437,10 +439,10 @@ class Cluster(BasicModule):
             m = []
             s = []
             lbls = []
-            for i2 in range(cfit.labels_.max()+1):
+            for i2 in range(cfit.labels_.max() + 1):
                 m.append(X[cfit.labels_ == i2].mean(0))
                 s.append(X[cfit.labels_ == i2].std(0))
-                lbls.append(f'Class {i2+1}')
+                lbls.append(f'Class {i2 + 1}')
 
             dat_out[-1].metadata['Cluster']['center'] = np.array(m)
             dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
@@ -449,14 +451,14 @@ class Cluster(BasicModule):
             self.log = f'Cluster complete ({self.cltype})'
 
         for i in dat_out:
-            i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
+            i.dataid = 'Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
             if self.cltype in ['DBSCAN', 'OPTICS']:
-                i.dataid = 'Clusters: '+str(int(i.data.max()+1))
+                i.dataid = 'Clusters: ' + str(int(i.data.max() + 1))
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
             i.crs = data[0].crs
 
-        self.showlog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
+        self.showlog('Cluster complete' + ' (' + self.cltype + ' ' + ')')
 
         for i in dat_out:
             i.data += 1
@@ -543,7 +545,7 @@ def _test_marinda():
         cdata2.append(np.zeros_like(dat.data))
         cnum = dat.metadata['Cluster']['no_clusters']
         for i in range(cnum):
-            cdata2[-1][dat.data == i+1] = dist[cnum][i]
+            cdata2[-1][dat.data == i + 1] = dist[cnum][i]
         cdata2[-1] = np.ma.masked_equal(cdata2[-1], 0)
 
     for dat in cdata2:
