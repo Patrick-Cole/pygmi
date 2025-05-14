@@ -37,90 +37,78 @@ from pygmi.clust import cluster, crisp_clust, fuzzy_clust
 os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
 
 
-# def test_cluster():
-#     """test cluster."""
+def test_cluster():
+    """test cluster."""
 
-#     dat1 = Data()
-#     dat1.data = np.ma.identity(3)
-#     dat1.data.mask = np.zeros([3, 3])
-#     dat1.set_transform(1, 0, 1, 0)
+    dat1 = Data()
+    dat1.data = np.ma.identity(3)
+    dat1.data.mask = np.zeros([3, 3])
+    dat1.set_transform(1, 0, 1, 0)
 
-#     dat2 = Data()
-#     dat2.data = np.ma.ones([3, 3])
-#     dat2.data.mask = np.zeros([3, 3])
-#     dat2.set_transform(1, 0, 1, 0)
+    dat2 = Data()
+    dat2.data = np.ma.ones([3, 3])
+    dat2.data.mask = np.zeros([3, 3])
+    dat2.set_transform(1, 0, 1, 0)
 
-#     tmp = cluster.Cluster(None)
-#     tmp.indata = {'Raster': [dat1, dat2, dat1]}
-#     tmp.sb_minclusters.setValue(2)
-#     tmp.sb_maxclusters.setValue(2)
-#     tmp.settings(True)
+    data = [dat1, dat2, dat1]
 
-#     datout2 = tmp.outdata['Cluster'][0].data.data
-#     datout = np.array([[1, 2, 2],
-#                        [2, 1, 2],
-#                        [2, 2, 1]])
-#     if datout2[0, 0] == 2:
-#         datout = np.abs(datout-3)
+    datout2 = cluster.cluster(data, cltype='K-Means', min_cluster=2,
+                              max_cluster=2)
 
-#     np.testing.assert_array_equal(datout2, datout)
+    datout2 = datout2[0].data.data
+    datout = np.array([[1, 2, 2],
+                       [2, 1, 2],
+                       [2, 2, 1]])
+    if datout2[0, 0] == 2:
+        datout = np.abs(datout - 3)
 
-
-# def test_crisp():
-#     """test crisp cluster."""
-
-#     dat1 = Data()
-#     dat1.data = np.ma.identity(3)
-#     dat1.data.mask = np.zeros([3, 3])
-
-#     dat2 = Data()
-#     dat2.data = np.ma.ones([3, 3])
-#     dat2.data.mask = np.zeros([3, 3])
-
-#     tmp = crisp_clust.CrispClust(None)
-#     tmp.indata = {'Raster': [dat1, dat2]}
-#     tmp.sb_minclusters.setValue(2)
-#     tmp.sb_maxclusters.setValue(2)
-#     tmp.settings(True)
-
-#     datout2 = tmp.outdata['Cluster'][0].data.data
-#     datout = np.array([[1, 2, 2],
-#                        [2, 1, 2],
-#                        [2, 2, 1]])
-#     if datout2[0, 0] == 2:
-#         datout = np.abs(datout-3)
-
-#     np.testing.assert_array_equal(datout2, datout)
+    np.testing.assert_array_equal(datout2, datout)
 
 
-# def test_fuzzy():
-#     """test fuzzy cluster."""
+def test_crisp():
+    """test crisp cluster."""
 
-#     dat1 = Data()
-#     dat1.data = np.ma.identity(3)
-#     dat1.data.mask = np.zeros([3, 3])
-#     dat1.data.data[0, 0] = 1.1
+    dat1 = Data()
+    dat1.data = np.ma.identity(3)
+    dat1.data.mask = np.zeros([3, 3])
 
-#     dat2 = Data()
-#     dat2.data = np.ma.ones([3, 3])
-#     dat2.data.mask = np.zeros([3, 3])
+    dat2 = Data()
+    dat2.data = np.ma.ones([3, 3])
+    dat2.data.mask = np.zeros([3, 3])
 
-#     tmp = fuzzy_clust.FuzzyClust(None)
-#     tmp.indata = {'Raster': [dat1, dat2]}
-#     tmp.sb_minclusters.setValue(2)
-#     tmp.sb_maxclusters.setValue(2)
-#     tmp.cmb_alg.setCurrentIndex(0)
-#     tmp.settings(True)
+    data = [dat1, dat2]
+    datout2 = crisp_clust.crispclust(data, min_cluster=2, max_cluster=2)
 
-#     datout2 = tmp.outdata['Cluster'][0].data.data
-#     datout = np.array([[1, 2, 2],
-#                        [2, 1, 2],
-#                        [2, 2, 1]])
-#     if datout2[0, 0] == 2:
-#         datout = np.abs(datout-3)
+    datout2 = datout2[0].data.data
+    datout = np.array([[1, 2, 2],
+                       [2, 1, 2],
+                       [2, 2, 1]])
+    if datout2[0, 0] == 2:
+        datout = np.abs(datout - 3)
 
-#     np.testing.assert_array_equal(datout2, datout)
+    np.testing.assert_array_equal(datout2, datout)
 
 
-# if __name__ == "__main__":
-#     test_crisp()
+def test_fuzzy():
+    """test fuzzy cluster."""
+
+    dat1 = Data()
+    dat1.data = np.ma.identity(3)
+    dat1.data.mask = np.zeros([3, 3])
+    dat1.data.data[0, 0] = 1.1
+
+    dat2 = Data()
+    dat2.data = np.ma.ones([3, 3])
+    dat2.data.mask = np.zeros([3, 3])
+
+    data = [dat1, dat2]
+    datout2 = fuzzy_clust.fuzzyclust(data, min_cluster=2, max_cluster=2)
+
+    datout2 = datout2[0].data.data
+    datout = np.array([[1, 2, 2],
+                       [2, 1, 2],
+                       [2, 2, 1]])
+    if datout2[0, 0] == 2:
+        datout = np.abs(datout - 3)
+
+    np.testing.assert_array_equal(datout2, datout)

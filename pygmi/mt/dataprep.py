@@ -1782,7 +1782,7 @@ def _testfn_occam():
 
     print('loading complete')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     test = Occam1D(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
@@ -1798,7 +1798,7 @@ def _testfn():
 
     print('loading complete')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     test = EditEDI(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()

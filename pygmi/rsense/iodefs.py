@@ -3701,7 +3701,7 @@ def _test5P():
 
     os.chdir(r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P")
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSentinel5P()
     tmp.ifile = ifile
     tmp.settings()
@@ -3723,7 +3723,7 @@ def _test5P():
 
 def _testfn2():
     """Test routine."""
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = r"D:\batch"
@@ -3748,7 +3748,7 @@ def _testfn3():
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     os.chdir(os.path.dirname(ifile))
     # tmp1 = ImportBatch()

@@ -1258,7 +1258,7 @@ def _testfn():
     idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
     os.chdir(idir)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     # tmp1 = ImportBatch()
     tmp1 = ImportData()

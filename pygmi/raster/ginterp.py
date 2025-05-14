@@ -2191,7 +2191,7 @@ def _testfn():
 
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r'd:\WorkData\testdata.hdr'
     data = iodefs.get_raster(ifile)

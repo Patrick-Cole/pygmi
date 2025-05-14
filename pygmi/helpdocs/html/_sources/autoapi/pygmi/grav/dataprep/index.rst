@@ -14,6 +14,8 @@ Classes
 
 .. autoapisummary::
 
+   pygmi.grav.dataprep.MyMplCanvas
+   pygmi.grav.dataprep.PlotDrift
    pygmi.grav.dataprep.ProcessData
 
 
@@ -22,6 +24,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.grav.dataprep.gravcor
    pygmi.grav.dataprep.geocentric_radius
    pygmi.grav.dataprep.theoretical_gravity
    pygmi.grav.dataprep.atmospheric_correction
@@ -32,6 +35,39 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:class:: MyMplCanvas(parent=None)
+
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
+
+
+   Matplotlib canvas widget for the actual plot.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: update_raster(drift)
+
+      Update the raster plot.
+
+      :param drift: Dictionary containing information for drift plots.
+      :type drift: dict
+
+      :rtype: None.
+
+
+
+.. py:class:: PlotDrift(parent=None, data=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   Plot Raster Class.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
 
 .. py:class:: ProcessData(parent=None)
 
@@ -92,6 +128,27 @@ Module Contents
 
       :rtype: None.
 
+
+
+.. py:function:: gravcor(pdat, basethres, kstat, absbase, dens, showlog=print)
+
+   Gravity corrections.
+
+   :param pdat: Gravity data.
+   :type pdat: Pandas DataFrame
+   :param basethres: Threshold for base station numbers.
+   :type basethres: float
+   :param kstat: Known base station number.
+   :type kstat: float
+   :param absbase: Known base station absolute gravity.
+   :type absbase: float
+   :param dens: Background Density (kg/m3).
+   :type dens: float
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+
+   :returns: * **pdat** (*Pandas DataFrame*) -- Gravity data.
+             * **drift** (*dict*) -- Dictionary containing information for drift plots.
 
 
 .. py:function:: geocentric_radius(lat)

@@ -1302,7 +1302,7 @@ def _testfn():
     ifile = r"D:\Workdata\modelling\Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz"
     ofile = r"d:\Workdata\modelling\hope2.shp"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = ImportMod3D()
     DM.ifile = ifile

@@ -985,7 +985,7 @@ def _testfn():
     dat2 = get_raster(ifile2)
     dat = dat1 + dat2
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ScatterPlot()
     tmp1.indata['Raster'] = dat

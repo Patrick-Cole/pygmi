@@ -192,7 +192,7 @@ def _testfn():
     import sys
     from pygmi.seis import iodefs
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 

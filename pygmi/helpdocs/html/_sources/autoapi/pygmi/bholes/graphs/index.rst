@@ -5,8 +5,7 @@ pygmi.bholes.graphs
 
 .. autoapi-nested-parse::
 
-   This module provides a variety of methods to plot borehole data via the context
-   menu.
+   Methods to plot borehole data via the context menu.
 
 
 

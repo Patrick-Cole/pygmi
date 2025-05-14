@@ -957,7 +957,7 @@ def _testfn():
     mdat[0].dataid = 'mag'
     ddat[0].dataid = 'dem'
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = MagInvert()
     DM.indata['Raster'] = mdat + ddat
@@ -1062,7 +1062,7 @@ def _testfn2():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcmagdem.tif"
     dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcdem.tif"

@@ -1559,7 +1559,7 @@ def _testfn1():
     import sys
     from pygmi.seis.iodefs import ImportSeisan
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
     tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\1908-02-02-2225-00.macro"
@@ -1588,7 +1588,7 @@ def _testfn():
     ifile = r"D:\seis\Lesotho_catalog.xlsx"
     window_size = 300
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = ifile
 

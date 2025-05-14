@@ -1847,7 +1847,7 @@ def _filespeedtest():
     import sys
     from pygmi.misc import getinfo
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     print('Starting')
 

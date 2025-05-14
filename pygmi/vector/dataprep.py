@@ -1393,7 +1393,7 @@ def _testfn():
     """Test routine."""
     import sys
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ofile = r"D:\mining_guidelines\2430\2430.shp"
 
@@ -1408,7 +1408,7 @@ def _testfn_pointcut():
     import sys
     from pygmi.vector.iodefs import ImportXYZ, ImportVector
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
@@ -1439,7 +1439,7 @@ def _testfn_filesplit():
 
     ifile = r"D:\fsplit\bushveld_magarchive.xyz"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     # num = os.path.getsize(ifile)//10
     # num = 10

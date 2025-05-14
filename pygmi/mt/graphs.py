@@ -336,7 +336,7 @@ def _testfn():
 
     print('loading complete')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = PlotPoints()
     tmp.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     tmp.run()

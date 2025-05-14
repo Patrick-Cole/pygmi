@@ -23,6 +23,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
+ClusterAnalysis.
+
 The cluster module performs unsupervised classification using the
 scikit-learn library.
 """
@@ -80,7 +82,7 @@ class Cluster(BasicModule):
         self.max_iter = 300
         self.tol = 0.0001
         self.runs = 1
-        self.log = ''
+        # self.log = ''
         self.eps = 0.5
         self.min_samples = 5
         self.bthres = 0.5
@@ -254,12 +256,26 @@ class Cluster(BasicModule):
             if self.parent is not None:
                 self.parent.process_is_active()
 
-        flag = self.acceptall()
+        data = self.indata['Raster']
+        self.update_vars()
+
+        sscale = self.rb_sscale.isChecked()
+        rscale = self.rb_rscale.isChecked()
+
+        dat_out = cluster(data, self.cltype, sscale, rscale,
+                          self.min_cluster, self.max_cluster, self.tol,
+                          self.max_iter, self.eps, self.bthres, self.branchfac,
+                          self.xi, self.min_samples, self.showlog, self.piter)
+        if dat_out is None:
+            return False
+
+        self.outdata['Cluster'] = dat_out
+        self.outdata['Raster'] = self.indata['Raster']
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
             self.parent.pbar.to_max()
-        return flag
+        return True
 
     def saveproj(self):
         """
@@ -299,7 +315,7 @@ class Cluster(BasicModule):
         self.saveobj(self.rb_noscale)
 
         self.saveobj(self.runs)
-        self.saveobj(self.log)
+        # self.saveobj(self.log)
 
     def update_vars(self):
         """
@@ -321,154 +337,186 @@ class Cluster(BasicModule):
         self.branchfac = self.sb_branchfac.value()
         self.xi = self.dsb_xi.value()
 
-    def acceptall(self):
-        """
-        Run the cluster analysis.
 
-        Returns
-        -------
-        None.
+def cluster(data, cltype='K-Means', sscale=True, rscale=False,
+            min_cluster=5, max_cluster=5, tol=0.0001, max_iter=300,
+            eps=0.5, bthres=0.5, branchfac=50, xi=0.05, min_samples=5,
+            showlog=print, piter=iter):
+    """
+    Run the cluster analysis.
 
-        """
-        data = self.indata['Raster']
-        self.update_vars()
+    This function uses the scikit learn library.
 
-        no_clust = range(self.min_cluster, self.max_cluster + 1)
+    Parameters
+    ----------
+    data : list
+        List of PyGMI data.
+    cltype : str, optional
+        Cluster analysis type. Can be one of 'K-Means',
+        'Mini Batch K-Means (fast)', 'Bisecting K-Means', 'DBSCAN', 'OPTICS',
+        'Birch'. The default is 'K-Means'.
+    sscale : bool, optional
+        Use standard scaling. The default is True.
+    rscale : bool, optional
+        Use robust scaling. The default is False.
+    min_cluster : int, optional
+        Minimum number of clusters to find. The default is 5.
+    max_cluster : int, optional
+        Maximum number of clusters to find. The default is 5.
+    tol : float, optional
+        Tolerance (K-Means only). The default is 0.0001.
+    max_iter : int, optional
+        Maximum number of iterations (K-Means only). The default is 300.
+    eps : float, optional
+        Epsilon factor (DBSCAN only). The default is 0.5.
+    bthres : float, optional
+        Threshold for Birch. The default is 0.5.
+    branchfac : float, optional
+        Branching factor for Birch. The default is 50.
+    xi : float, optional
+        Minimum steepness on the reachability plot for OPTICS.
+        The default is 0.05.
+    min_samples : int, optional
+        Minimu samples for DBSCAN. The default is 5.
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
-        self.showlog('Cluster analysis started')
+    Returns
+    -------
+    list
+        List of raster datasets of classes.
 
-        # Section to deal with different bands having different null values.
-        masktmp = ~data[0].data.mask
-        for i in data:
-            masktmp += ~i.data.mask
-        masktmp = ~masktmp
+    """
+    no_clust = range(min_cluster, max_cluster + 1)
 
+    showlog('Cluster analysis started')
+
+    # Section to deal with different bands having different null values.
+    masktmp = ~data[0].data.mask
+    for i in data:
+        masktmp += ~i.data.mask
+    masktmp = ~masktmp
+
+    X = []
+    for band in data:
+        tmp = band.copy()
+        tmp.data.mask = masktmp
+        X.append(tmp.data.compressed())
+        del tmp
+    X = np.transpose(X)
+
+    if sscale is True:
+        showlog('Applying standard scaling')
+        X = skp.StandardScaler().fit_transform(X)
+    elif rscale is True:
+        showlog('Applying robust scaling')
+        X = skp.RobustScaler().fit_transform(X)
+
+    dat_out = []
+    for i in piter(no_clust):
+        if cltype not in ['DBSCAN', 'OPTICS']:
+            showlog('Number of Clusters:' + str(i))
+        elif i > no_clust[0]:
+            continue
+
+        cfit = None
+        if cltype == 'Mini Batch K-Means (fast)':
+            bsize = max(os.cpu_count() * 256, 1024)
+            cfit = skc.MiniBatchKMeans(n_clusters=i, tol=tol,
+                                       max_iter=max_iter,
+                                       n_init='auto',
+                                       batch_size=bsize).fit(X)
+        elif cltype == 'K-Means':
+            cfit = skc.BisectingKMeans(n_clusters=i, tol=tol,
+                                       max_iter=max_iter).fit(X)
+
+        elif cltype == 'Bisecting K-Means':
+            cfit = skc.KMeans(n_clusters=i, tol=tol, n_init='auto',
+                              max_iter=max_iter).fit(X)
+
+        elif cltype == 'DBSCAN':
+            cfit = skc.DBSCAN(eps=eps, min_samples=min_samples).fit(X)
+
+        elif cltype == 'OPTICS':
+            cfit = skc.OPTICS(min_samples=min_samples, xi=xi).fit(X)
+
+        elif cltype == 'Birch':
+            X = np.ascontiguousarray(X)  # Birch gave an error without this
+            cfit = skc.Birch(n_clusters=i, threshold=bthres,
+                             branching_factor=branchfac).fit(X)
+
+        if cfit is None:
+            showlog('Could not find any clusters. Please change settings.')
+
+        if cfit.labels_.max() < i - 1 and cltype != 'DBSCAN':
+            showlog(f'Could not find {i} clusters. Please change settings.')
+
+            return False
+        if cfit.labels_.max() < 0 and cltype in ['DBSCAN', 'OPTICS']:
+            showlog('Could not find any clusters.Please change settings.')
+
+            return False
+
+        dat_out.append(Data())
+
+        dat_out[-1].metadata['Cluster']['input_type'] = []
+        for k in data:
+            dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
+
+        zonal = np.ma.masked_all(data[0].data.shape)
+        zonal[~masktmp] = cfit.labels_
+
+        dat_out[-1].data = zonal
+        dat_out[-1].nodata = zonal.fill_value
+        dat_out[-1].metadata['Cluster']['no_clusters'] = i
+        dat_out[-1].metadata['Cluster']['center'] = np.zeros([i,
+                                                              len(data)])
+        dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([
+                                                                 i, len(data)])
+        if cfit.labels_.max() > 0:
+            dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(
+                X, cfit.labels_)
+
+        # Reloading this hear to save memory. Need unscaled values.
         X = []
         for band in data:
             tmp = band.copy()
             tmp.data.mask = masktmp
             X.append(tmp.data.compressed())
-            del tmp
         X = np.transpose(X)
 
-        if self.rb_sscale.isChecked():
-            self.showlog('Applying standard scaling')
-            X = skp.StandardScaler().fit_transform(X)
-        elif self.rb_rscale.isChecked():
-            self.showlog('Applying robust scaling')
-            X = skp.RobustScaler().fit_transform(X)
+        m = []
+        s = []
+        lbls = []
+        for i2 in range(cfit.labels_.max() + 1):
+            m.append(X[cfit.labels_ == i2].mean(0))
+            s.append(X[cfit.labels_ == i2].std(0))
+            lbls.append(f'Class {i2 + 1}')
 
-        dat_out = []
-        for i in self.piter(no_clust):
-            if self.cltype not in ['DBSCAN', 'OPTICS']:
-                self.showlog('Number of Clusters:' + str(i))
-            elif i > no_clust[0]:
-                continue
+        dat_out[-1].metadata['Cluster']['center'] = np.array(m)
+        dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
+        dat_out[-1].metadata['Cluster']['labels'] = lbls
 
-            cfit = None
-            if self.cltype == 'Mini Batch K-Means (fast)':
-                bsize = max(os.cpu_count() * 256, 1024)
-                cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
-                                           max_iter=self.max_iter,
-                                           n_init='auto',
-                                           batch_size=bsize).fit(X)
-            elif self.cltype == 'K-Means':
-                cfit = skc.BisectingKMeans(n_clusters=i, tol=self.tol,
-                                           max_iter=self.max_iter).fit(X)
+        # self.log = f'Cluster complete ({cltype})'
 
-            elif self.cltype == 'Bisecting K-Means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol, n_init='auto',
-                                  max_iter=self.max_iter).fit(X)
+    for i in dat_out:
+        i.dataid = 'Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
+        if cltype in ['DBSCAN', 'OPTICS']:
+            i.dataid = 'Clusters: ' + str(int(i.data.max() + 1))
+        i.nodata = data[0].nodata
+        i.set_transform(transform=data[0].transform)
+        i.crs = data[0].crs
 
-            elif self.cltype == 'DBSCAN':
-                cfit = skc.DBSCAN(eps=self.eps,
-                                  min_samples=self.min_samples).fit(X)
+    showlog(f'Cluster complete ({cltype})')
 
-            elif self.cltype == 'OPTICS':
-                cfit = skc.OPTICS(min_samples=self.min_samples,
-                                  xi=self.xi).fit(X)
+    for i in dat_out:
+        i.data += 1
+        i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
+        i.nodata = 0
 
-            elif self.cltype == 'Birch':
-                X = np.ascontiguousarray(X)  # Birch gave an error without this
-                cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
-                                 branching_factor=self.branchfac).fit(X)
-
-            if cfit is None:
-                self.showlog('Could not find any clusters. '
-                             'Please change settings.')
-
-            if cfit.labels_.max() < i - 1 and self.cltype != 'DBSCAN':
-                self.showlog('Could not find ' + str(i) + ' clusters. '
-                             'Please change settings.')
-
-                return False
-            if cfit.labels_.max() < 0 and self.cltype in ['DBSCAN', 'OPTICS']:
-                self.showlog('Could not find any clusters. '
-                             'Please change settings.')
-
-                return False
-
-            dat_out.append(Data())
-
-            dat_out[-1].metadata['Cluster']['input_type'] = []
-            for k in data:
-                dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
-
-            zonal = np.ma.masked_all(data[0].data.shape)
-            zonal[~masktmp] = cfit.labels_
-
-            dat_out[-1].data = zonal
-            dat_out[-1].nodata = zonal.fill_value
-            dat_out[-1].metadata['Cluster']['no_clusters'] = i
-            dat_out[-1].metadata['Cluster']['center'] = np.zeros([i,
-                                                                  len(data)])
-            dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([
-                                                                     i, len(data)])
-            if cfit.labels_.max() > 0:
-                dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(
-                    X, cfit.labels_)
-
-            # Reloading this hear to save memory. Need unscaled values.
-            X = []
-            for band in data:
-                tmp = band.copy()
-                tmp.data.mask = masktmp
-                X.append(tmp.data.compressed())
-            X = np.transpose(X)
-
-            m = []
-            s = []
-            lbls = []
-            for i2 in range(cfit.labels_.max() + 1):
-                m.append(X[cfit.labels_ == i2].mean(0))
-                s.append(X[cfit.labels_ == i2].std(0))
-                lbls.append(f'Class {i2 + 1}')
-
-            dat_out[-1].metadata['Cluster']['center'] = np.array(m)
-            dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
-            dat_out[-1].metadata['Cluster']['labels'] = lbls
-
-            self.log = f'Cluster complete ({self.cltype})'
-
-        for i in dat_out:
-            i.dataid = 'Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
-            if self.cltype in ['DBSCAN', 'OPTICS']:
-                i.dataid = 'Clusters: ' + str(int(i.data.max() + 1))
-            i.nodata = data[0].nodata
-            i.set_transform(transform=data[0].transform)
-            i.crs = data[0].crs
-
-        self.showlog('Cluster complete' + ' (' + self.cltype + ' ' + ')')
-
-        for i in dat_out:
-            i.data += 1
-            i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
-            i.nodata = 0
-
-        self.outdata['Cluster'] = dat_out
-        self.outdata['Raster'] = self.indata['Raster']
-
-        return True
+    return dat_out
 
 
 def _testfn():
@@ -481,7 +529,7 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
     DM.indata['Raster'] = dat
@@ -512,7 +560,7 @@ def _test_marinda():
             dat2.append(i)
 
     # Generate layers via cluster analysis
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
     DM.indata['Raster'] = dat2
@@ -587,7 +635,7 @@ def _test_marinda2():
             dat2.append(i)
 
     # Generate layers via cluster analysis
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
     DM.indata['Raster'] = dat2

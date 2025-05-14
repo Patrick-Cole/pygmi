@@ -1032,7 +1032,7 @@ def _testfn2():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    _ = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     os.chdir(os.path.dirname(ifile))
 
@@ -1069,7 +1069,7 @@ def _testfn3():
     idir = r'd:\aster'
     os.chdir(r'D:\\')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

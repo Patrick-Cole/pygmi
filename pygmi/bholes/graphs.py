@@ -636,7 +636,7 @@ def _testfn():
     lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     data = get_CGS(lfile, hfile)
 

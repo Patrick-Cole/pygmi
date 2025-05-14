@@ -634,7 +634,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportXYZ
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
 

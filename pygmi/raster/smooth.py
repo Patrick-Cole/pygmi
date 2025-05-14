@@ -494,7 +494,7 @@ def _test():
 
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp = Smooth()
     tmp.indata['Raster'] = dat

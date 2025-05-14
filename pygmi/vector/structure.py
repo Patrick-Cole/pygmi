@@ -700,7 +700,7 @@ def _testfn():
     import sys
     from pygmi.vector.iodefs import ImportVector
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     IO = ImportVector()
     IO.ifile = sfile

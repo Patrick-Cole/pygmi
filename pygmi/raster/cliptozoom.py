@@ -225,7 +225,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
 

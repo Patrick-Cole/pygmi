@@ -1441,7 +1441,8 @@ def main(nocgs=False):
     wid = MainWidget(nocgs=nocgs)
     wid.resize(width, height)
 
-    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowState.WindowMinimized |
+    wid.setWindowState(wid.windowState() &
+                       ~QtCore.Qt.WindowState.WindowMinimized |
                        QtCore.Qt.WindowState.WindowActive)
 
     # this will activate the window

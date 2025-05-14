@@ -754,7 +754,7 @@ def _testfn():
     """Test routine."""
     from pygmi.vector.iodefs import ImportXYZ
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     # Load in line data
     filename = r'D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'

@@ -873,7 +873,7 @@ def _testfn():
     import sys
     from pygmi.seis.iodefs import ImportSeisan
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect2.out"
     tmp.settings(True)

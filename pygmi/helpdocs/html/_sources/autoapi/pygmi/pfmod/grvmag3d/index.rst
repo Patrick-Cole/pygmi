@@ -24,6 +24,8 @@ Classes
 
 .. autoapisummary::
 
+   pygmi.pfmod.grvmag3d.MyMplCanvas
+   pygmi.pfmod.grvmag3d.PlotTest
    pygmi.pfmod.grvmag3d.GravMag
    pygmi.pfmod.grvmag3d.GeoData
 
@@ -45,6 +47,39 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:class:: MyMplCanvas(parent=None)
+
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
+
+
+   Matplotlib canvas widget for the actual plot.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: update_raster(lmod2)
+
+      Update the raster plot.
+
+      :param lmod2: Lithology dataset to be used.
+      :type lmod2: PyGMI lithology data
+
+      :rtype: None.
+
+
+
+.. py:class:: PlotTest(parent=None, data=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   Plot Raster Class.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
 
 .. py:class:: GravMag(parent=None)
 

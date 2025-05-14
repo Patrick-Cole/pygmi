@@ -521,7 +521,7 @@ def _testfn():
 
     idir = r"D:\workdata\PyGMI Test Data\change\mosaic"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

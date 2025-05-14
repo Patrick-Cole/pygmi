@@ -1393,7 +1393,7 @@ def _testfn():
     from pygmi.rsense.iodefs import get_data, files_to_rastermeta
     from pygmi.misc import getinfo
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
     ifile = r"D:\Hyper\042_0816-1139_ref_rect.hdr"
@@ -1432,7 +1432,7 @@ def _testfn2():
 
     data = get_data(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     tmp = AnalSpec()
     tmp.indata['Raster'] = data
     tmp.settings()

@@ -917,7 +917,7 @@ frm = ticker.FuncFormatter(tick_formatter)
 
 def _testfn():
     """Test function."""
-    # app = QtWidgets.QApplication(sys.argv)
+    # _ = QtWidgets.QApplication(sys.argv)
 
     # tmp = BasicModule()
     # tmp.ifile = QtWidgets.QLineEdit('test')

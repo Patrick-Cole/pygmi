@@ -850,7 +850,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r'd:\WorkData\testdata.hdr'
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     data = get_raster(ifile)
 
     data = data[1:]

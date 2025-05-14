@@ -628,7 +628,7 @@ def time_convert(x):
 
 def _testfn():
     """Test routine."""
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"

@@ -447,7 +447,7 @@ def _testfn2():
     """Test routine sen2cor."""
     from pygmi.rsense.iodefs import ImportBatch
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = r'D:\Landslides\L1C'
@@ -477,7 +477,7 @@ def _testfn():
     dat2 = get_raster(ifile2)
     dat = dat1 + dat2
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = TopoCorrect()
     tmp1.indata['Raster'] = dat

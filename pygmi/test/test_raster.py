@@ -29,9 +29,8 @@ the tests.
 
 import os
 import glob
-# import sys
 import tempfile
-# from PyQt6 import QtWidgets
+
 import numpy as np
 from pyproj.crs import CRS
 import pytest
@@ -40,8 +39,6 @@ from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
 from pygmi.raster import iodefs, normalisation, smooth
 from pygmi.raster.misc import aspect2, check_dataid
-
-# APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_gradients():
@@ -315,58 +312,6 @@ def smalldata():
     return dat
 
 
-# @pytest.mark.parametrize("ext, drv", [('.bil', 'EHdr'), ('.tif', 'GTiff'),
-#                                       ('.ers', 'ERS'), ('.hdr', 'ENVI'),
-#                                       ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
-#                                       ('.img', 'HFA')])
-# def test_io_rasterio(smalldata, ext, drv):
-#     """Tests IO for rasterio files."""
-#     ofile = tempfile.gettempdir() + '\\iotest'+ext
-
-#     iodefs.export_raster(ofile, [smalldata], drv=drv)
-#     dat2 = iodefs.get_raster(ofile)
-
-#     # Cleanup files
-#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-#         os.unlink(i)
-
-#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
-
-
-# def test_io_ascii(smalldata):
-#     """Tests IO for ascii files."""
-#     ofile = tempfile.gettempdir() + '\\iotest.asc'
-
-#     tmp = iodefs.ExportData(None)
-#     tmp.ofile = ofile
-#     tmp.export_ascii([smalldata])
-
-#     dat2 = iodefs.get_ascii(ofile)
-
-#     # Cleanup files
-#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-#         os.unlink(i)
-
-#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
-
-
-# def test_io_xyz(smalldata):
-#     """Tests IO for xyz files."""
-#     ofile = tempfile.gettempdir() + '\\iotest.xyz'
-
-#     tmp = iodefs.ExportData(None)
-#     tmp.ofile = ofile
-#     tmp.export_ascii_xyz([smalldata])
-
-#     dat2 = iodefs.get_raster(ofile)
-
-#     # Cleanup files
-#     for i in glob.glob(tempfile.gettempdir() + '\\iotest*'):
-#         os.unlink(i)
-
-#     np.testing.assert_array_equal(smalldata.data, dat2[0].data)
-
-
 # def test_normalisation():
 #     """Tests for normalisation."""
 
@@ -544,14 +489,3 @@ def smalldata():
 #                        [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
 
 #     np.testing.assert_array_almost_equal(datout2, datout)
-
-
-if __name__ == "__main__":
-    # dat = Data()
-    # dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
-    #                        mask=[[0, 0], [0, 0]])
-    # dat.dataid = 'test'
-    # dat.set_transform(1, 25, 1, -27)
-    # dat.crs = CRS.from_epsg(4326)
-    # test_io_ascii(dat)
-    test_viz()

@@ -1000,7 +1000,7 @@ def _test():
     ifile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\DRC\Katanga\Katanga_boundary.kmz"
     ifile = r"D:\temp\Limpopo_magintero_lineaments.shp"
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     os.chdir(os.path.dirname(ifile))
 

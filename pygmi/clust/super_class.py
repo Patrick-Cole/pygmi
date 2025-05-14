@@ -1202,7 +1202,7 @@ def _testfn():
                                                  '..//..')))
     from pygmi.raster import iodefs
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 

@@ -28,6 +28,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.mag.tiltdepth.tiltdepth
    pygmi.mag.tiltdepth.distpc
    pygmi.mag.tiltdepth.vgrad
 
@@ -77,14 +78,6 @@ Module Contents
 
 
 
-   .. py:method:: change_cbar1()
-
-      Change the colour map for the colour bar.
-
-      :rtype: None.
-
-
-
    .. py:method:: change_cbar()
 
       Change the colour map for the colour bar.
@@ -121,17 +114,16 @@ Module Contents
 
 
 
-   .. py:method:: tiltdepth(data)
+.. py:function:: tiltdepth(data, inc=None, dec=None, pbar=None)
 
-      Calculate tilt depth.
+   Calculate tilt depth.
 
-      Output is stored in self.outdata.
+   Output is stored in self.outdata.
 
-      :param data: PyGMI raster dataset.
-      :type data: pygmi.raster.datatypes.Data
+   :param data: PyGMI raster dataset.
+   :type data: pygmi.raster.datatypes.Data
 
-      :rtype: None.
-
+   :rtype: None.
 
 
 .. py:function:: distpc(dx, dy, dx0, dy0, dcnt)

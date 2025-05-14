@@ -123,7 +123,3 @@ def test_tilt():
                        [2.48888969, -1.48759916, 2., 0.36542720]])
 
     np.testing.assert_array_almost_equal(datout2, datout)
-
-
-# if __name__ == "__main__":
-#     test_tilt()

@@ -17,6 +17,16 @@ Classes
    pygmi.grav.iodefs.ImportCG5
 
 
+Functions
+---------
+
+.. autoapisummary::
+
+   pygmi.grav.iodefs.get_cg5
+   pygmi.grav.iodefs.get_gps
+   pygmi.grav.iodefs.merge_gpsmag
+
+
 Module Contents
 ---------------
 
@@ -81,5 +91,42 @@ Module Contents
 
       :rtype: None.
 
+
+
+.. py:function:: get_cg5(filename)
+
+   Get CG-5 filename and load data.
+
+   :param filename: CG-5 filename.
+   :type filename: str
+
+   :rtype: None.
+
+
+.. py:function:: get_gps(filename)
+
+   Get GPS filename and load data.
+
+   :param filename: GPS filename (csv).
+   :type filename: str
+
+   :rtype: None.
+
+
+.. py:function:: merge_gpsmag(cg5file, gpsfile, basethres=10000.0, showlog=print)
+
+   Import and merge GPS and gravity data.
+
+   :param cg5file: Gravity filename for data in CG-5 format.
+   :type cg5file: str
+   :param gpsfile: GPS filename in CSV format.
+   :type gpsfile: str
+   :param basethres: Threshold for base station numbers. The default is 10000.
+   :type basethres: float, optional
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+
+   :returns: Dataframe with merged data.
+   :rtype: Pandas DataFrame
 
 

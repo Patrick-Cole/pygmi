@@ -647,7 +647,7 @@ def _testfn_bars():
 
     data = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
     DM.indata['Raster'] = data
@@ -716,7 +716,7 @@ def _testfn_viol():
 
     data = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
     DM.indata['Raster'] = data
@@ -783,7 +783,8 @@ def _testfn():
     DM.settings()
 
     dat = DM.outdata
-    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd',
+    #                                                    'e']
 
     tmp2 = PlotBars()
     tmp2.indata = dat

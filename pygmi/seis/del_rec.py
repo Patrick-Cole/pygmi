@@ -569,7 +569,7 @@ def _testfn():
     """Routine for testing."""
     import sys
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
     ifile = r'd:\Work\Workdata\review\seismology\pygmi.out'
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 

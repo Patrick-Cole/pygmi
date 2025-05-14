@@ -530,7 +530,7 @@ def _testfn():
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"

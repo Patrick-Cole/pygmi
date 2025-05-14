@@ -10,31 +10,3 @@ pygmi.test.test_cluster
 
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   pygmi.test.test_cluster.test_cluster
-   pygmi.test.test_cluster.test_crisp
-   pygmi.test.test_cluster.test_fuzzy
-
-
-Module Contents
----------------
-
-.. py:function:: test_cluster()
-
-   test cluster.
-
-
-.. py:function:: test_crisp()
-
-   test crisp cluster.
-
-
-.. py:function:: test_fuzzy()
-
-   test fuzzy cluster.
-
-

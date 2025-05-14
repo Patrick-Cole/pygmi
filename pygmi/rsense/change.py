@@ -653,7 +653,7 @@ def _testfn():
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\2024\Q2\change\mosaic\ratios'
     os.chdir(r'E:\\')
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

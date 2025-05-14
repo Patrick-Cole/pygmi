@@ -201,7 +201,7 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     DM = Normalisation()
     DM.indata['Raster'] = dat

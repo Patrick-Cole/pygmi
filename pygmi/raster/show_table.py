@@ -430,7 +430,7 @@ def _testfn():
 
     data = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)
+    _ = QtWidgets.QApplication(sys.argv)
 
     # DM = Cluster()
     # DM.indata['Raster'] = data

@@ -116,6 +116,8 @@ The process to install is as follows:
 
    conda install pytest
 
+   conda install beautifulsoup4
+
    pip install mtpy
 
    conda update --all
