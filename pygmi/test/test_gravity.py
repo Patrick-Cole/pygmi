@@ -38,8 +38,8 @@ def test_process_data():
 
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    grvfile = os.path.join(idir, r'testdata\GravityCG5.txt')
-    gpsfile = os.path.join(idir, r'testdata\GravityDGPS.csv')
+    grvfile = os.path.join(idir, r'testdata/GravityCG5.txt')
+    gpsfile = os.path.join(idir, r'testdata/GravityDGPS.csv')
 
     # Import Data
 
