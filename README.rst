@@ -3,16 +3,19 @@ PyGMI
 
 .. |pythonversion| image:: https://img.shields.io/pypi/pyversions/pygmi
    :alt: PyPI - Python Version
+   :target: https://pypi.org/project/pygmi
 .. |pygmiversion| image:: https://img.shields.io/pypi/v/pygmi
    :alt: PyPI - Version
+   :target: https://pypi.org/project/pygmi
 .. |pygmilicence| image:: https://img.shields.io/github/license/patrick-cole/pygmi
    :alt: GitHub License
-.. |GitHub release| image:: https://img.shields.io/github/release/patrick-cole/pygmi
+   :target: https://github.com/Patrick-Cole/pygmi/blob/pygmi3/LICENSE.txt
+.. |pygmirelease| image:: https://img.shields.io/github/release/patrick-cole/pygmi
    :alt: GitHub Release
    :target: https://github.com/Patrick-Cole/pygmi/releases
 
 
-|pythonversion| |pygmiversion| |pygmilicence|
+|pythonversion| |pygmiversion| |pygmilicence| |pygmirelease|
 
 Overview
 --------
