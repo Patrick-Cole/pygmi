@@ -344,9 +344,6 @@ def test_smooth():
     datin = np.ma.ones([7, 7])
     datin[5, 5] = 2
 
-    tmp = smooth.Smooth(None)
-    tmp.indata = {'Raster': [datin]}
-
     datout2 = smooth.mov_win_filt(datin, 'box', '2D Mean')
     datout = np.array([[0.36, 0.48, 0.6, 0.6, 0.6, 0.48, 0.36],
                        [0.48, 0.64, 0.8, 0.8, 0.8, 0.64, 0.48],

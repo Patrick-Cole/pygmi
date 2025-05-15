@@ -21,4 +21,4 @@ import os
 
 from pygmi.version import __version__
 
-# os.environ['QT_API'] = 'pyqt6'
+os.environ['QT_API'] = 'pyqt6'
