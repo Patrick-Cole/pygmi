@@ -7,6 +7,9 @@ PyGMI
    :alt: PyPI - Version
 .. |pygmilicence| image:: https://img.shields.io/github/license/patrick-cole/pygmi
    :alt: GitHub License
+.. |GitHub release| image:: https://img.shields.io/github/release/patrick-cole/pygmi
+   :alt: GitHub Release
+   :target: https://github.com/Patrick-Cole/pygmi/releases
 
 
 |pythonversion| |pygmiversion| |pygmilicence|
