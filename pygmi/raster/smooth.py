@@ -65,6 +65,7 @@ class Smooth(BasicModule):
         self.setupui()
 
         self.fmat = None
+        self.fmtype = 'box'
 
         self.choosefilter()
 
@@ -172,12 +173,20 @@ class Smooth(BasicModule):
         else:
             filt = '2D Median'
 
+        box_x = self.sb_x.value()
+        box_y = self.sb_y.value()
+        rad = self.sb_radius.value()
+        sigma = self.sb_stddev.value()
+
         for dat in data:
-            dat.data = self.mov_win_filt(dat.data, self.fmat, filt)
+            dat.data = mov_win_filt(dat.data, self.fmtype, filt,
+                                    box_x, box_y, rad, sigma,
+                                    self.showlog, self.piter)
             dat.dataid = dat.dataid + ' ' + filt
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
+
         self.outdata['Raster'] = data
         self.showlog('Finished!', True)
 
@@ -224,20 +233,25 @@ class Smooth(BasicModule):
         if self.rb_2dmean.isChecked():
             self.rb_gaussian.setVisible(True)
             if self.rb_box.isChecked():
+                self.fmtype = 'box'
                 fmat = filters2d('average', [box_y, box_x])
             elif self.rb_disk.isChecked():
+                self.fmtype = 'disc'
                 fmat = filters2d('disc', rad)
             elif self.rb_gaussian.isChecked():
+                self.fmtype = 'gaussian'
                 fmat = filters2d('gaussian', [box_x, box_y], sigma)
         else:
             self.rb_gaussian.setVisible(False)
             if self.rb_gaussian.isChecked():
                 self.rb_box.setChecked(True)
             if self.rb_box.isChecked():
+                self.fmtype = 'box'
                 fmat = np.ones((box_y, box_x))
             elif self.rb_disk.isChecked():
                 fmat = filters2d('disc', rad)
                 fmat[fmat > 0] = 1
+                self.fmtype = 'disc'
 
         if self.rb_box.isChecked():
             self.sb_x.setVisible(True)
@@ -326,66 +340,85 @@ class Smooth(BasicModule):
         QtWidgets.QMessageBox.warning(self.parent, title, message,
                                       QtWidgets.QMessageBox.StandardButton.Ok)
 
-    def mov_win_filt(self, dat, fmat, itype):
-        """
-        Apply moving window filter function to data.
 
-        Parameters
-        ----------
-        dat : numpy masked array.
-            Data for a PyGMI raster dataset.
-        fmat : numpy array
-            Filter matrix.
-        itype : str
-            Filter type. Can be '2D Mean' or '2D Median'.
+def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
+                 showlog=print, piter=iter):
+    """
+    Apply moving window filter function to data.
 
-        Returns
-        -------
-        out : numpy masked array
-            Data for a PyGMI raster dataset.
+    Parameters
+    ----------
+    dat : numpy masked array.
+        Data for a PyGMI raster dataset.
+    fmat : str
+        Filter matrix type.
+    itype : str
+        Filter type. Can be '2D Mean' or '2D Median'.
 
-        """
-        out = dat.tolist()
+    Returns
+    -------
+    out : numpy masked array
+        Data for a PyGMI raster dataset.
 
-        rowf = fmat.shape[0]
-        colf = fmat.shape[1]
-        rowd = dat.shape[0]
-        cold = dat.shape[1]
-        drr = round(rowf / 2.0)
-        dcc = round(colf / 2.0)
+    """
+    if itype == '2D Mean':
+        if fmat == 'box':
+            fmat = filters2d('average', [box_y, box_x])
+        elif fmat == 'disc':
+            fmat = filters2d('disc', rad)
+        elif fmat == 'gaussian':
+            fmat = filters2d('gaussian', [box_x, box_y], sigma)
+    else:
+        if fmat == 'gaussian':
+            showlog('2D Median cannnot have a gaussian matrix')
+            return None
+        if fmat == 'box':
+            fmat = np.ones((box_y, box_x))
+        elif fmat == 'disc':
+            fmat = filters2d('disc', rad)
+            fmat[fmat > 0] = 1
 
-        dummy = np.ma.masked_all((rowd + rowf - 1, cold + colf - 1))
-        dummy[drr - 1:drr - 1 + rowd, dcc - 1:dcc - 1 + cold] = dat
+    out = dat.tolist()
 
-        dummy.data[dummy.mask] = np.nan
-        dat = dat.astype(float)
-        dat.data[dat.mask] = np.nan
+    rowf = fmat.shape[0]
+    colf = fmat.shape[1]
+    rowd = dat.shape[0]
+    cold = dat.shape[1]
+    drr = round(rowf / 2.0)
+    dcc = round(colf / 2.0)
 
-        if itype == '2D Mean':
-            out = ssig.correlate(dat, fmat, 'same', method='direct')
+    dummy = np.ma.masked_all((rowd + rowf - 1, cold + colf - 1))
+    dummy[drr - 1:drr - 1 + rowd, dcc - 1:dcc - 1 + cold] = dat
 
-        elif itype == '2D Median':
-            self.showlog('Calculating Median...')
-            out = np.ma.zeros([rowd, cold]) * np.nan
-            out.mask = np.ma.getmaskarray(dat)
-            fmat = fmat.astype(bool)
-            dummy = dummy.data
+    dummy.data[dummy.mask] = np.nan
+    dat = dat.astype(float)
+    dat.data[dat.mask] = np.nan
 
-            for i in self.piter(range(rowd)):
-                for j in range(cold):
-                    tmp1 = dummy[i:i + rowf, j:j + colf][fmat]
-                    if np.any(~np.isnan(tmp1)):  # if any are False
-                        out[i, j] = np.nanmedian(tmp1)
+    if itype == '2D Mean':
+        out = ssig.correlate(dat, fmat, 'same', method='direct')
 
-        out = np.ma.masked_invalid(out)
-        out = np.ma.array(out)
+    elif itype == '2D Median':
+        showlog('Calculating Median...')
+        out = np.ma.zeros([rowd, cold]) * np.nan
+        out.mask = np.ma.getmaskarray(dat)
+        fmat = fmat.astype(bool)
+        dummy = dummy.data
 
-        out.shape = out.shape[0:2]
-        out.mask[:rowf // 2] = True
-        out.mask[-rowf // 2:] = True
-        out.mask[:, :colf // 2] = True
-        out.mask[:, -colf // 2:] = True
-        return out
+        for i in piter(range(rowd)):
+            for j in range(cold):
+                tmp1 = dummy[i:i + rowf, j:j + colf][fmat]
+                if np.any(~np.isnan(tmp1)):  # if any are False
+                    out[i, j] = np.nanmedian(tmp1)
+
+    out = np.ma.masked_invalid(out)
+    out = np.ma.array(out)
+
+    out.shape = out.shape[0:2]
+    out.mask[:rowf // 2] = True
+    out.mask[-rowf // 2:] = True
+    out.mask[:, :colf // 2] = True
+    out.mask[:, -colf // 2:] = True
+    return out
 
 
 def filters2d(filtertype, sze, *sigma):
@@ -478,6 +511,7 @@ def filters2d(filtertype, sze, *sigma):
         radsqrd = x**2 + y**2
         f = np.exp(-radsqrd / (2 * sigma[0]**2))
         f = f / np.sum(f[:])
+
     else:
         warnings.warn('Unrecognized filter type')
 

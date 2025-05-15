@@ -61,7 +61,7 @@ interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
-os.environ['QT_API'] = 'pyqt6'
+# os.environ['QT_API'] = 'pyqt6'
 
 
 class Arrow(QtWidgets.QGraphicsLineItem):

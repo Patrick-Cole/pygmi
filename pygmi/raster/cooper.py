@@ -900,7 +900,7 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
     wsize : int
         Window size, must be odd.
     atype : str, optional
-        AGC type - can be median or mean, default is 'mean'.
+        AGC type - can be median, rms or mean, default is 'mean'.
     nodata : float, optional
         no data value, default is 0.
     piter : function, optional

@@ -17,5 +17,8 @@ datasets. It includes:
 
 It is released under the Gnu General Public License version 3.0
 """
+import os
 
 from pygmi.version import __version__
+
+os.environ['QT_API'] = 'pyqt6'
