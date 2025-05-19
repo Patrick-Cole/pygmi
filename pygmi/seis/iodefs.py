@@ -2827,7 +2827,7 @@ class FilterSeisan(BasicModule):
             self.cmb_rectype.setCurrentText('1')
             self.rectype_init('1')
         else:
-            self.cmb_recdesc.disconnect()
+            self.cmb_recdesc.currentTextChanged.disconnect()
             self.cmb_recdesc.clear()
             self.recdesc_init('')
             self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
@@ -2846,8 +2846,8 @@ class FilterSeisan(BasicModule):
         None.
 
         """
-        self.cmb_rectype.disconnect()
-        self.cmb_recdesc.disconnect()
+        self.cmb_rectype.currentTextChanged.disconnect()
+        self.cmb_recdesc.currentTextChanged.disconnect()
 
         tmp = list(self.datlimits.keys())
         tmp = [i[2:] for i in tmp if i[0] == txt]

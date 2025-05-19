@@ -550,6 +550,7 @@ class Metadata(ContextModule):
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
         self.resize(-1, 320)
+        self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
     def acceptall(self):
         """

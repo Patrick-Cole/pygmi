@@ -405,7 +405,7 @@ class AnalSpec(BasicModule):
         else:
             return
 
-        self.lw_speclib.disconnect()
+        self.lw_speclib.currentRowChanged.disconnect()
         self.lw_speclib.clear()
         tmp = ['None'] + list(self.spectra.keys())
         self.lw_speclib.addItems(tmp)
@@ -515,7 +515,7 @@ class AnalSpec(BasicModule):
         self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
         ftxt = [str(i) for i in self.feature]
-        self.cmb_feature.disconnect()
+        self.cmb_feature.currentIndexChanged.disconnect()
         self.cmb_feature.clear()
         self.cmb_feature.addItems(ftxt)
         self.feature_change()
@@ -731,7 +731,7 @@ class ProcFeatures(BasicModule):
         self.feature = features.feature
         self.ratio = features.ratio
 
-        self.cmb_ratios.disconnect()
+        self.cmb_ratios.currentIndexChanged.disconnect()
         self.product = features.product.copy()
 
         self.product = {key: value for (key, value) in self.product.items()

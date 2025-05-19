@@ -383,7 +383,7 @@ class ImportBatch(BasicModule):
             if tmp:
                 self.tnames[sensor] = tmp
 
-        self.cmb_sensor.disconnect()
+        self.cmb_sensor.currentIndexChanged.disconnect()
         self.cmb_sensor.clear()
         self.cmb_sensor.addItems(self.bands.keys())
         self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
@@ -913,6 +913,7 @@ class ExportBatch(ContextModule):
 
         pb_odir.pressed.connect(self.get_odir)
         self.cb_ternary.clicked.connect(self.click_ternary)
+        self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
     def click_ternary(self):
         """
@@ -1381,9 +1382,18 @@ def export_batch(indata, odir, filt, *, tnames=None, piter=None,
 
     os.makedirs(odir, exist_ok=True)
 
+    tnamesold = tnames
     for ifile in ifiles:
+        tnames = tnamesold
         if tnames is None:
             tnames = ifile.tnames
+        elif 'Explained Variance Ratio' in ifile.bands[0]:
+            tnames = []
+            for i in tnamesold:
+                for j in ifile.bands:
+                    if i in j:
+                        tnames.append(j)
+
         dat = get_from_rastermeta(ifile, piter=piter,
                                   showlog=showlog,
                                   tnames=tnames)
@@ -3616,6 +3626,8 @@ def set_export_filename(dat, odir, otype=None):
 
     filename = filename.replace('_stack', '')
     filename = filename.replace('_ratio', '')
+    filename = filename.replace('_mnf', '')
+    filename = filename.replace('_pca', '')
 
     if otype is None:
         otype = 'stack'
@@ -3726,7 +3738,7 @@ def _testfn2():
     _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\batch"
+    tmp1.idir = r"D:\Onshore\AST_08072006_081248_georef\Minimum_noise_transform"
     # tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
     # tmp1.get_sfile(True)
     tmp1.settings()
@@ -3799,4 +3811,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _test5P()
+    _testfn2()

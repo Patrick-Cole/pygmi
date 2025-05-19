@@ -2118,9 +2118,9 @@ class PlotInterp(BasicModule):
             fname = filename[:-4] + '_tern.png'
             canvas.print_figure(fname, dpi=300)
 
-        QtWidgets.QMessageBox.information(self, 'Information',
-                                          'Save to GeoTIFF is complete!',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+        QtWidgets.QMessageBox.information(
+            self, 'Information', 'Save to GeoTIFF is complete!',
+            QtWidgets.QMessageBox.StandardButton.Ok)
 
         return True
 
