@@ -29,7 +29,7 @@ This module allows a raster dataset to be clipped to the current zoomed
 extents.
 """
 
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from matplotlib import colormaps
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure

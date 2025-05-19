@@ -25,7 +25,7 @@
 """Import borehole data, currently supports Council for Geoscience data."""
 
 import os
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import pandas as pd
 
 from pygmi.misc import BasicModule

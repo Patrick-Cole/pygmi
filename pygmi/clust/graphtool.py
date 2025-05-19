@@ -25,7 +25,7 @@
 """Multi-function graphing tool for use with cluster analysis."""
 
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 from matplotlib import colormaps
 from matplotlib.patches import Polygon
@@ -385,13 +385,13 @@ class PolygonInteractor(QtCore.QObject):
     ----------
     epsilon : int
         Epsilon tolerance for index detection.
-    polyi_changed : QtCore.pyqtSignal
+    polyi_changed : QtCore.Signal
         Qt signal when polygon has changed.
 
     """
 
     epsilon = 5
-    polyi_changed = QtCore.pyqtSignal()  #: polygon changed signal.
+    polyi_changed = QtCore.Signal()  #: polygon changed signal.
 
     def __init__(self, axtmp, pntxy):
         super().__init__()

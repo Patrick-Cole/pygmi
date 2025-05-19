@@ -28,7 +28,7 @@ import datetime
 import sys
 import os
 import zipfile
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd

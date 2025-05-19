@@ -28,7 +28,7 @@ Crisp clustering is a set of clustering routines.
 This uses standard statistical methods, as opposed to fuzzy methods.
 """
 
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data

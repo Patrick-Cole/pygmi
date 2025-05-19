@@ -25,7 +25,7 @@
 """Plot Data using Matplotlib."""
 
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT

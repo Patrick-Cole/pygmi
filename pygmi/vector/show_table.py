@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various statistics."""
 
-from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
 import pandas as pd
 
 from pygmi.misc import ContextModule

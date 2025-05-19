@@ -29,7 +29,7 @@ import os
 import copy
 import datetime
 import xml.etree.ElementTree as ET
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import numpy as np
 from natsort import natsorted
 import rasterio

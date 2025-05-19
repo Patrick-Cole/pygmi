@@ -34,11 +34,11 @@ import psutil
 import webbrowser
 import numpy as np
 from matplotlib import ticker, cm, colors
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
-if os.name == 'nt':
-    import win32api
-    import win32job
+# if os.name == 'nt':
+#     import win32api
+#     import win32job
 
 PBAR_STYLE = """
 QProgressBar{
@@ -822,34 +822,34 @@ def getinfo(txt=None, reset=False):
     print(heading + memtxt + f' Time(s): {tdiff:.3f}')
 
 
-def limit_memory(memory_limit):
-    """
-    Limit memory in Windows.
+# def limit_memory(memory_limit):
+#     """
+#     Limit memory in Windows.
 
-    Based on https://stackoverflow.com/questions/54949110/limit-python-script-ram-usage-in-windows
+#     Based on https://stackoverflow.com/questions/54949110/limit-python-script-ram-usage-in-windows
 
-    Parameters
-    ----------
-    memory_limit : int
-        Memory limit in GB.
+#     Parameters
+#     ----------
+#     memory_limit : int
+#         Memory limit in GB.
 
-    Returns
-    -------
-    None.
+#     Returns
+#     -------
+#     None.
 
-    """
-    memory_limit = int(memory_limit * 1024**3)
+#     """
+#     memory_limit = int(memory_limit * 1024**3)
 
-    hjob = win32job.CreateJobObject(None, '')
-    hprocess = win32api.GetCurrentProcess()
-    win32job.AssignProcessToJobObject(hjob, hprocess)
-    info = win32job.QueryInformationJobObject(
-        hjob, win32job.JobObjectExtendedLimitInformation)
-    info['ProcessMemoryLimit'] = memory_limit
-    info['BasicLimitInformation']['LimitFlags'] |= (
-        win32job.JOB_OBJECT_LIMIT_PROCESS_MEMORY)
-    win32job.SetInformationJobObject(
-        hjob, win32job.JobObjectExtendedLimitInformation, info)
+#     hjob = win32job.CreateJobObject(None, '')
+#     hprocess = win32api.GetCurrentProcess()
+#     win32job.AssignProcessToJobObject(hjob, hprocess)
+#     info = win32job.QueryInformationJobObject(
+#         hjob, win32job.JobObjectExtendedLimitInformation)
+#     info['ProcessMemoryLimit'] = memory_limit
+#     info['BasicLimitInformation']['LimitFlags'] |= (
+#         win32job.JOB_OBJECT_LIMIT_PROCESS_MEMORY)
+#     win32job.SetInformationJobObject(
+#         hjob, win32job.JobObjectExtendedLimitInformation, info)
 
 
 def textwrap2(text, width, placeholder='...', max_lines=None):

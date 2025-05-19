@@ -22,6 +22,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.raster.smooth.mov_win_filt
    pygmi.raster.smooth.filters2d
 
 
@@ -96,20 +97,19 @@ Module Contents
 
 
 
-   .. py:method:: mov_win_filt(dat, fmat, itype)
+.. py:function:: mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5, showlog=print, piter=iter)
 
-      Apply moving window filter function to data.
+   Apply moving window filter function to data.
 
-      :param dat: Data for a PyGMI raster dataset.
-      :type dat: numpy masked array.
-      :param fmat: Filter matrix.
-      :type fmat: numpy array
-      :param itype: Filter type. Can be '2D Mean' or '2D Median'.
-      :type itype: str
+   :param dat: Data for a PyGMI raster dataset.
+   :type dat: numpy masked array.
+   :param fmat: Filter matrix type.
+   :type fmat: str
+   :param itype: Filter type. Can be '2D Mean' or '2D Median'.
+   :type itype: str
 
-      :returns: **out** -- Data for a PyGMI raster dataset.
-      :rtype: numpy masked array
-
+   :returns: **out** -- Data for a PyGMI raster dataset.
+   :rtype: numpy masked array
 
 
 .. py:function:: filters2d(filtertype, sze, *sigma)

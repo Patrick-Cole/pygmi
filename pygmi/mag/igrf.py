@@ -57,7 +57,7 @@ from math import sqrt
 from math import atan2
 
 from numba import jit
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 
 import pygmi.raster.dataprep as dp

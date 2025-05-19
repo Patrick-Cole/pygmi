@@ -30,7 +30,7 @@ import glob
 import platform
 from subprocess import Popen, PIPE
 import numpy as np
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 
 from pygmi.raster.misc import lstack, aspect2
 from pygmi.raster.iodefs import get_raster

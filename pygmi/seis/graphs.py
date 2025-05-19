@@ -31,7 +31,7 @@ menu.
 
 import os
 import numpy as np
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import geopandas as gpd
 from shapely.geometry import Polygon
 from scipy.spatial.distance import cdist

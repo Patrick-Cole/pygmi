@@ -37,7 +37,7 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 """
 
 import tempfile
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 import numpy as np
 from numba import jit, prange

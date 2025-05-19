@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Structure complexity routines."""
 
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import geopandas as gpd
 from scipy.signal import correlate

@@ -26,7 +26,7 @@
 
 import math
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from scipy.stats import median_abs_deviation
 import matplotlib.collections as mc
 from matplotlib import colormaps

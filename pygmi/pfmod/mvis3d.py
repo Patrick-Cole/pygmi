@@ -28,7 +28,7 @@ import os
 import sys
 import numpy as np
 
-from PyQt6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from scipy.ndimage import convolve
 from numba import jit

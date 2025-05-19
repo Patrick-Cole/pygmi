@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Model Extents Display Routines."""
 
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
 

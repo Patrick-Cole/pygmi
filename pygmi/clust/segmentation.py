@@ -29,7 +29,7 @@ from sklearn.cluster import KMeans
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 from pygmi.misc import BasicModule
 

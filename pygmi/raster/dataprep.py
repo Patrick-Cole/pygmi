@@ -28,7 +28,7 @@ import tempfile
 import math
 import os
 import glob
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 import pandas as pd
 from scipy.signal.windows import tukey

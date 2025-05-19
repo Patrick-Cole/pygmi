@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Seis Menu Routines."""
 
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 from pygmi.seis import del_rec
 from pygmi.seis import iodefs

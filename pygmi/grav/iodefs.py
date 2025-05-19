@@ -25,7 +25,7 @@
 """Import Gravity Data."""
 
 import os
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 import pandas as pd
 import geopandas as gpd

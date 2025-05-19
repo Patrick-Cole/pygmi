@@ -60,7 +60,7 @@ Module Contents
 
 .. py:class:: HelpButton(htmlfile=None, parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QPushButton`
+   Bases: :py:obj:`PySide6.QtWidgets.QPushButton`
 
 
    Help Button.

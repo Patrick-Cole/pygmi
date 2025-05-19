@@ -25,7 +25,7 @@
 """Change Detection Viewer."""
 
 import datetime
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import pandas as pd
 from matplotlib.figure import Figure
 import matplotlib.animation as manimation

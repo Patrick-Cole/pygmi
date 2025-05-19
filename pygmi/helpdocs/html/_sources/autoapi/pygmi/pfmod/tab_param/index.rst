@@ -24,7 +24,7 @@ Module Contents
 
 .. py:class:: MergeLith(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for ranged copying.
@@ -43,7 +43,7 @@ Module Contents
 
 .. py:class:: LithNotes(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for lithology descriptions.
@@ -86,7 +86,7 @@ Module Contents
 
 .. py:class:: ParamDisplay(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Widget class to call the main interface.

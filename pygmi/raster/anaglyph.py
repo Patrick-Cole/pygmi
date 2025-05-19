@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Anaglyph routine."""
 
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 # from scipy import ndimage
 import numpy as np
 from matplotlib import colormaps

@@ -32,7 +32,7 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
 import os
 import numpy as np
 import numexpr as ne
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import geopandas as gpd
 from shapely import Polygon, make_valid
 from matplotlib import colormaps

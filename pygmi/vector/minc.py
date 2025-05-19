@@ -630,7 +630,7 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
 def _testfn():
     """Test routine."""
     import sys
-    from PyQt6 import QtWidgets
+    from PySide6 import QtWidgets
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportXYZ
 

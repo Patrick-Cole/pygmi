@@ -150,7 +150,7 @@ Module Contents
 
 .. py:class:: PolygonInteractor(axtmp, pntxy)
 
-   Bases: :py:obj:`PyQt6.QtCore.QObject`
+   Bases: :py:obj:`PySide6.QtCore.QObject`
 
 
    Polygon Interactor for the graph tool.
@@ -168,7 +168,7 @@ Module Contents
 
       Qt signal when polygon has changed.
 
-      :type: QtCore.pyqtSignal
+      :type: QtCore.Signal
 
 
    .. py:method:: draw_callback()

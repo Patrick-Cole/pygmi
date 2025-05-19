@@ -25,7 +25,7 @@
 """A set of data processing routines for gravity."""
 
 import sys
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure

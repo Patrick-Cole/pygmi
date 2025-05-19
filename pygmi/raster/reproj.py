@@ -25,7 +25,7 @@
 """Reprojection functions."""
 
 import numpy as np
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 import pyproj
 from pyproj.crs import CRS, ProjectedCRS
 from pyproj.crs.coordinate_operation import TransverseMercatorConversion

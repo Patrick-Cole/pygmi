@@ -331,7 +331,7 @@ Module Contents
    :type data: numpy array
    :param wsize: Window size, must be odd.
    :type wsize: int
-   :param atype: AGC type - can be median or mean, default is 'mean'.
+   :param atype: AGC type - can be median, rms or mean, default is 'mean'.
    :type atype: str, optional
    :param nodata: no data value, default is 0.
    :type nodata: float, optional

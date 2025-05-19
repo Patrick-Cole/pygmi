@@ -44,7 +44,7 @@ import pkgutil
 import math
 import importlib
 import webbrowser
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import psutil
 from matplotlib import rcParams
@@ -60,8 +60,6 @@ rcParams['font.size'] = 8
 interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
-
-# os.environ['QT_API'] = 'pyqt6'
 
 
 class Arrow(QtWidgets.QGraphicsLineItem):
@@ -767,8 +765,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         self.resize(800, 600)
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                           QtWidgets.QSizePolicy.Policy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Expanding)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -1398,7 +1397,7 @@ class Startup(QtWidgets.QDialog):
         self.pbar.setMaximum(pbarmax - 1)
         self.vbl_main.addWidget(self.pbar)
 
-        self.open()
+        self.show()
 
     def update(self):
         """Update the text on the dialog."""

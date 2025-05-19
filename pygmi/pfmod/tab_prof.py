@@ -27,7 +27,7 @@
 import copy
 import os
 import random
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from scipy import ndimage
 from scipy import interpolate

@@ -84,7 +84,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * numexpr>=2.10.2
 * openpyxl>=3.1.5
 * psutil>=7.0.0
-* pyqt6>=6.9.0
+* pyside6>=6.9.0
 * pytest>=8.3.5
 * pyvista>=0.45.0
 * pyvistaqt>0.11.2

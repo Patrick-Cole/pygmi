@@ -23,6 +23,7 @@ Functions
 .. autoapisummary::
 
    pygmi.raster.normalisation.datacommon
+   pygmi.raster.normalisation.norm
 
 
 Module Contents
@@ -80,5 +81,18 @@ Module Contents
 
    :returns: * **data** (*pygmi.raster.datatypes.Data*) -- PyGMI raster dataset.
              * **transform** (*numpy array.*) -- Transformation applied to data.
+
+
+.. py:function:: norm(data, ntype)
+
+   Normalise data.
+
+   :param data: PyGMI Data in a list.
+   :type data: list
+   :param ntype: Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
+   :type ntype: str
+
+   :returns: **data** -- PyGMI Data in a list.
+   :rtype: list
 
 

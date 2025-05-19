@@ -31,7 +31,6 @@ Functions
 
    pygmi.misc.discrete_colorbar
    pygmi.misc.getinfo
-   pygmi.misc.limit_memory
    pygmi.misc.textwrap2
    pygmi.misc.tick_formatter
 
@@ -41,7 +40,7 @@ Module Contents
 
 .. py:class:: EmittingStream(textWritten)
 
-   Bases: :py:obj:`PyQt6.QtCore.QObject`
+   Bases: :py:obj:`PySide6.QtCore.QObject`
 
 
    Class to intercept stdout for later use in a textbox.
@@ -80,7 +79,7 @@ Module Contents
 
 .. py:class:: BasicModule(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Basic Module.
@@ -202,7 +201,7 @@ Module Contents
 
 .. py:class:: ContextModule(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Context Module.
@@ -257,7 +256,7 @@ Module Contents
 
 .. py:class:: PButtonBox(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Custom buttonbox with help.
@@ -274,7 +273,7 @@ Module Contents
 
 .. py:class:: QVStack2Layout(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QGridLayout`
+   Bases: :py:obj:`PySide6.QtWidgets.QGridLayout`
 
 
    QVStack2Layout custom Qt QGridLayot.
@@ -345,7 +344,7 @@ Module Contents
 
 .. py:class:: ProgressBar(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QProgressBar`
+   Bases: :py:obj:`PySide6.QtWidgets.QProgressBar`
 
 
    Qt custom progress bar.
@@ -462,18 +461,6 @@ Module Contents
    :type txt: str/int/float, optional
    :param reset: Flag used to reset the time difference to zero.
    :type reset: bool
-
-   :rtype: None.
-
-
-.. py:function:: limit_memory(memory_limit)
-
-   Limit memory in Windows.
-
-   Based on https://stackoverflow.com/questions/54949110/limit-python-script-ram-usage-in-windows
-
-   :param memory_limit: Memory limit in GB.
-   :type memory_limit: int
 
    :rtype: None.
 

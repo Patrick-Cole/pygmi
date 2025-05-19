@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """MT Menu Routines."""
 
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 from pygmi.mt import iodefs
 from pygmi.mt import dataprep

@@ -25,7 +25,7 @@
 """Routines to plot cluster data."""
 
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from matplotlib import colormaps
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure

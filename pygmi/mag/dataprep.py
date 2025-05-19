@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """A set of Magnetic Data routines."""
 
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 from scipy.signal.windows import tukey
 import scipy.interpolate as si

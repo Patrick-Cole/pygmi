@@ -251,7 +251,6 @@
 # =========================================================================
 
 import struct
-import winsound
 
 import numpy as np
 
@@ -397,4 +396,3 @@ if __name__ == "__main__":
     SPECPR(r"D:\usgs_splib07\SPECPRsplib07\splib07a")
 
     print('Finished!')
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)

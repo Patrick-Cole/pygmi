@@ -24,6 +24,8 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.clust.crisp_clust.crispclust
+   pygmi.clust.crisp_clust.crisp_means
    pygmi.clust.crisp_clust.gcentroids
    pygmi.clust.crisp_clust.gdist
 
@@ -86,61 +88,59 @@ Module Contents
 
 
 
-   .. py:method:: acceptall()
+.. py:function:: crispclust(data, cltype='k-means', min_cluster=5, max_cluster=5, cov_constr=0.0, no_runs=1, max_iter=100, term_thresh=1e-05, init_type='random', ifiles=None, showlog=print, piter=iter)
 
-      Process the data.
+   Process the data.
 
-      :rtype: None.
+   :rtype: None.
 
 
+.. py:function:: crisp_means(data, no_clust, cent, centfix, maxit, term_thresh, cltype, cov_constr, showlog=print, piter=iter)
 
-   .. py:method:: crisp_means(data, no_clust, cent, centfix, maxit, term_thresh, cltype, cov_constr)
+   Script enables the crisp clustering of COMPLETE multi-variate datasets.
 
-      Script enables the crisp clustering of COMPLETE multi-variate datasets.
+   :param data: N x P matrix containing the data to be clustered, N is number of
+                samples, P is number of different attributes available for each
+                sample.
+   :type data: numpy array
+   :param no_clust: Number of clusters to be used.
+   :type no_clust: int
+   :param cent: cluster centre positions, either empty [] --> randomly guessed
+                center positions will be used for initialisation or NO_CLUSTxP
+                matrix
+   :type cent: numpy array
+   :param centfix: Constrains the position of cluster centers, if CENTFIX is empty,
+                   cluster centers can freely vary during cluster analysis, otherwise
+                   CENTFIX is of equal size to CENT and gives an absolute deviation
+                   from initial center positions that should not be exceeded during
+                   clustering. Note, CETNFIX applies only if center values are
+                   provided by the user.
+   :type centfix: numpy array
+   :param maxit: number of maximal allowed iterations.
+   :type maxit: int
+   :param term_thresh: Termination threshold, either empty [] --> go for the maximum
+                       number of iterations MAXIT or a scalar giving the minimum
+                       reduction of the size of the objective function for two consecutive
+                       iterations in Percent.
+   :type term_thresh: float
+   :param cltype: either 'kmeans' --> kmeans cluster analysis (spherically shaped
+                  cluster), 'det' --> uses the determinant criterion of Spath, H.,
+                  "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters,
+                  all cluster use the same ellipsoid), or 'vardet' --> Spath, H.,
+                  chapter 4 (each cluster uses its individual ellipsoid). Note: the
+                  latter is the crisp version of the Gustafson-Kessel algorithm
+   :type cltype: str
+   :param cov_constr: scalar between [0 1], values > 0 trim the covariance matrix
+                      to avoid needle-like ellipsoids for the clusters, applies only for
+                      cltype='vardet', but must always be provided.
+   :type cov_constr: float
 
-      :param data: N x P matrix containing the data to be clustered, N is number of
-                   samples, P is number of different attributes available for each
-                   sample.
-      :type data: numpy array
-      :param no_clust: Number of clusters to be used.
-      :type no_clust: int
-      :param cent: cluster centre positions, either empty [] --> randomly guessed
-                   center positions will be used for initialisation or NO_CLUSTxP
-                   matrix
-      :type cent: numpy array
-      :param centfix: Constrains the position of cluster centers, if CENTFIX is empty,
-                      cluster centers can freely vary during cluster analysis, otherwise
-                      CENTFIX is of equal size to CENT and gives an absolute deviation
-                      from initial center positions that should not be exceeded during
-                      clustering. Note, CETNFIX applies only if center values are
-                      provided by the user.
-      :type centfix: numpy array
-      :param maxit: number of maximal allowed iterations.
-      :type maxit: int
-      :param term_thresh: Termination threshold, either empty [] --> go for the maximum
-                          number of iterations MAXIT or a scalar giving the minimum
-                          reduction of the size of the objective function for two consecutive
-                          iterations in Percent.
-      :type term_thresh: float
-      :param cltype: either 'kmeans' --> kmeans cluster analysis (spherically shaped
-                     cluster), 'det' --> uses the determinant criterion of Spath, H.,
-                     "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters,
-                     all cluster use the same ellipsoid), or 'vardet' --> Spath, H.,
-                     chapter 4 (each cluster uses its individual ellipsoid). Note: the
-                     latter is the crisp version of the Gustafson-Kessel algorithm
-      :type cltype: str
-      :param cov_constr: scalar between [0 1], values > 0 trim the covariance matrix
-                         to avoid needle-like ellipsoids for the clusters, applies only for
-                         cltype='vardet', but must always be provided.
-      :type cov_constr: float
-
-      :returns: * **idx** (*numpy array*) -- cluster index number for each sample after the last iteration,
-                  column vector.
-                * **cent** (*numpy array*) -- matrix with cluster centre positions after last iteration, one
-                  cluster centre per row
-                * **obj_fcn** (*numpy array*) -- Vector, size of the objective function after each iteration
-                * **vrc** (*numpy array*) -- Variance Ratio Criterion
-
+   :returns: * **idx** (*numpy array*) -- cluster index number for each sample after the last iteration,
+               column vector.
+             * **cent** (*numpy array*) -- matrix with cluster centre positions after last iteration, one
+               cluster centre per row
+             * **obj_fcn** (*numpy array*) -- Vector, size of the objective function after each iteration
+             * **vrc** (*numpy array*) -- Variance Ratio Criterion
 
 
 .. py:function:: gcentroids(data, index, no_clust, mindist)

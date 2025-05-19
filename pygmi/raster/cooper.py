@@ -30,7 +30,7 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 from numba import jit
 

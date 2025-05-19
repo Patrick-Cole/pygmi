@@ -45,7 +45,7 @@ import sys
 import copy
 from math import cos
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 from matplotlib import gridspec

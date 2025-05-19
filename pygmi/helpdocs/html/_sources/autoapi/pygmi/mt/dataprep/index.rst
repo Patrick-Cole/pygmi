@@ -397,7 +397,7 @@ Module Contents
 
 .. py:class:: MySlider(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QSlider`
+   Bases: :py:obj:`PySide6.QtWidgets.QSlider`
 
 
    My Slider.

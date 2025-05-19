@@ -183,7 +183,7 @@ Module Contents
 
 .. py:class:: MessageCombo(combotext, parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Message combo box.

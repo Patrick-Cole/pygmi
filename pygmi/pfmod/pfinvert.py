@@ -27,7 +27,7 @@
 import sys
 from contextlib import redirect_stdout
 import numpy as np
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import scipy.interpolate as si
 from discretize import TensorMesh
 from discretize.utils import active_from_xyz

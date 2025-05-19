@@ -29,7 +29,7 @@ import os
 import sys
 import numpy as np
 from numba import jit
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 
 from pygmi.rsense.iodefs import get_from_rastermeta
 from pygmi.raster.misc import lstack

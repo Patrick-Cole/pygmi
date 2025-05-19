@@ -25,7 +25,7 @@
 """Routines to smooth raster data."""
 
 import warnings
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
 

@@ -22,6 +22,7 @@ Functions
    pygmi.test.test_raster.test_viz
    pygmi.test.test_raster.test_check_dataid
    pygmi.test.test_raster.test_trimraster
+   pygmi.test.test_raster.test_equation
    pygmi.test.test_raster.test_hmode
    pygmi.test.test_raster.test_aspect
    pygmi.test.test_raster.test_shader
@@ -32,6 +33,9 @@ Functions
    pygmi.test.test_raster.test_norm255
    pygmi.test.test_raster.test_corr2d
    pygmi.test.test_raster.smalldata
+   pygmi.test.test_raster.test_normalisation
+   pygmi.test.test_raster.test_smooth
+   pygmi.test.test_raster.test_agc
 
 
 Module Contents
@@ -70,6 +74,11 @@ Module Contents
 .. py:function:: test_trimraster()
 
    test trim raster.
+
+
+.. py:function:: test_equation()
+
+   tests equation editor.
 
 
 .. py:function:: test_hmode()
@@ -120,5 +129,20 @@ Module Contents
 .. py:function:: smalldata()
 
    Small test dataset.
+
+
+.. py:function:: test_normalisation()
+
+   Tests for normalisation.
+
+
+.. py:function:: test_smooth()
+
+   Tests for smoothing.
+
+
+.. py:function:: test_agc()
+
+   Tests for AGC.
 
 

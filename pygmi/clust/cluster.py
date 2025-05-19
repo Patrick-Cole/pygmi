@@ -30,7 +30,7 @@ scikit-learn library.
 """
 
 import os
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 import sklearn.cluster as skc
 from sklearn.metrics import calinski_harabasz_score

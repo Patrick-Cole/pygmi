@@ -31,7 +31,7 @@ Module Contents
 
 .. py:class:: GroupProj(title='Projection', parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Group Projection GUI widget.

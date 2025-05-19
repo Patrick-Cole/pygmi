@@ -29,7 +29,7 @@ import sys
 import re
 import numexpr as ne
 import numpy as np
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 
 from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
 from pygmi.raster.iodefs import export_raster

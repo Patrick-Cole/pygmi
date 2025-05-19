@@ -28,7 +28,7 @@ import os
 import copy
 import glob
 from functools import partial
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt

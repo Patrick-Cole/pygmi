@@ -39,7 +39,7 @@ Module Contents
 
 .. py:class:: ProfileDisplay(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Widget class to call the main interface.
@@ -509,7 +509,7 @@ Module Contents
 
 .. py:class:: MySlider(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QSlider`
+   Bases: :py:obj:`PySide6.QtWidgets.QSlider`
 
 
    My Slider.
@@ -547,7 +547,7 @@ Module Contents
 
 .. py:class:: LithBound(lmod)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for lithological boundary.
@@ -575,7 +575,7 @@ Module Contents
 
 .. py:class:: PlotScale(parent, lmod)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for plot axis scale.
@@ -604,7 +604,7 @@ Module Contents
 
 .. py:class:: RangedCopy(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for ranged copying.
@@ -674,7 +674,7 @@ Module Contents
 
 .. py:class:: GaugeWidget(*args, **kwargs)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDial`
+   Bases: :py:obj:`PySide6.QtWidgets.QDial`
 
 
    Gauge widget.

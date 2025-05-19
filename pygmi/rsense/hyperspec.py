@@ -30,7 +30,7 @@ import os
 import numpy as np
 import numexpr as ne
 from numba import njit
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt import NavigationToolbar2QT

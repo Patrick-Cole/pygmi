@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various stats."""
 
-from PyQt6 import QtWidgets
-from PyQt6.QtCore import Qt
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
 import numpy as np
 import scipy.stats.mstats as st
 

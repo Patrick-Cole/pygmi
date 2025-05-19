@@ -28,7 +28,7 @@ import os
 import sys
 
 import numpy as np
-from PyQt6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.patches import Polygon as mPolygon
@@ -231,13 +231,13 @@ class PolygonInteractor(QtCore.QObject):
     ----------
     epsilon : int
         Epsilon tolerance for index detection.
-    polyi_changed : QtCore.pyqtSignal
+    polyi_changed : QtCore.Signal
         Qt signal when polygon has changed.
 
     """
 
     epsilon = 5
-    polyi_changed = QtCore.pyqtSignal(list)  #: polygon changed signal.
+    polyi_changed = QtCore.Signal(list)  #: polygon changed signal.
 
     def __init__(self, axtmp, pntxy):
         super().__init__()

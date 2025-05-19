@@ -25,7 +25,7 @@
 """Raster normalisation routine."""
 
 import warnings
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.misc import histeq

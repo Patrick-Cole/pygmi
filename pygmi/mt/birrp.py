@@ -63,7 +63,7 @@ Note, it will still be necessary for the end-user to compile the code.
 
 import os
 import functools
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 from pygmi.misc import BasicModule
 

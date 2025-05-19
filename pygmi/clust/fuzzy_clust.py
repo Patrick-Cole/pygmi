@@ -28,7 +28,7 @@ Fuzzy clustering is a set of clustering routines.
 This makes use of fuzzy logic.
 """
 
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 
 from pygmi.raster.datatypes import Data

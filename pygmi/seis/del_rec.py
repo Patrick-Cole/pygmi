@@ -26,7 +26,7 @@
 
 import os
 import numpy as np
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import matplotlib.pyplot as plt
 
 from pygmi.seis import iodefs

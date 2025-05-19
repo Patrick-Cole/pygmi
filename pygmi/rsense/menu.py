@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Remote Sensing Menu Routines."""
 
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 from pygmi.rsense import change, change_viewer
 from pygmi.rsense import iodefs, dataprep

@@ -31,7 +31,7 @@ It also includes the about box.
 from datetime import date
 import os
 import webbrowser
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 
 
 class FileMenu():

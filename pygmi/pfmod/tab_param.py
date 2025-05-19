@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Parameter Display Tab Routines."""
 
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 
 from pygmi.pfmod import grvmag3d

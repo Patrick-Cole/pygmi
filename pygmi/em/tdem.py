@@ -28,7 +28,7 @@ import sys
 import os
 import copy
 from contextlib import redirect_stdout
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Equation editor."""
 
-from PyQt6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 import numexpr as ne
 

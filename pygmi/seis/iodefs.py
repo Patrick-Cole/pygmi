@@ -26,7 +26,7 @@
 
 import os
 import re
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_string_dtype

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """The main program for the potential field 3D modelling package."""
 
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 from pygmi.pfmod import misc
 from pygmi.pfmod import tab_prof
