@@ -1212,14 +1212,14 @@ class PlotInterp(BasicModule):
         vbl_3 = QtWidgets.QVBoxLayout()
         gbox_3.setLayout(vbl_3)
 
-        gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                             QtWidgets.QSizePolicy.Policy.Preferred)
-        gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                             QtWidgets.QSizePolicy.Policy.Preferred)
-        gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                             QtWidgets.QSizePolicy.Policy.Preferred)
-        self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                                    QtWidgets.QSizePolicy.Policy.Preferred)
+        # gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+        #                      QtWidgets.QSizePolicy.Policy.Preferred)
+        # gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+        #                      QtWidgets.QSizePolicy.Policy.Preferred)
+        # gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+        #                      QtWidgets.QSizePolicy.Policy.Preferred)
+        # self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+        #                             QtWidgets.QSizePolicy.Policy.Preferred)
 
         vbl_4 = QtWidgets.QVBoxLayout()
         self.gbox_sun.setLayout(vbl_4)
@@ -1229,6 +1229,12 @@ class PlotInterp(BasicModule):
         vbl_raster = QtWidgets.QVBoxLayout()
         hbl_all = QtWidgets.QHBoxLayout(self)
         vbl_right = QtWidgets.QVBoxLayout()
+
+        widget = QtWidgets.QWidget()
+        widget.setLayout(vbl_raster)
+        scroll = QtWidgets.QScrollArea()
+        scroll.setWidget(widget)
+        scroll.setWidgetResizable(True)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(20, 40,
@@ -1299,7 +1305,8 @@ class PlotInterp(BasicModule):
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
 
-        hbl_all.addLayout(vbl_raster)
+        hbl_all.addWidget(scroll)
+        # hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
         self.cmb_cbar.currentIndexChanged.connect(self.change_cbar)

@@ -726,7 +726,6 @@ class MainWidget(QtWidgets.QMainWindow):
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
                 continue
-            # print(i)
             start.update()
             try:
                 menuimports.append(importlib.import_module(i))
