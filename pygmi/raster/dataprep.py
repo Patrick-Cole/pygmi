@@ -2150,19 +2150,21 @@ def _testfn():
     import sys
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
+    ifile = r"D:\temp\RSA_TMI_wgs84Geographic.ers"
 
     dat = get_raster(ifile)
-
     _ = QtWidgets.QApplication(sys.argv)
 
-    tmp = Metadata()
-    tmp.indata['Raster'] = dat
-    tmp.run()
-    app.exec()
-
-    # tmp = DataReproj()
+    # tmp = Metadata()
     # tmp.indata['Raster'] = dat
-    # tmp.settings()
+    # tmp.run()
+    # app.exec()
+
+    tmp = DataCut()
+    tmp.indata['Raster'] = dat
+    iii = tmp.settings()
+
+    breakpoint()
 
 
 if __name__ == "__main__":

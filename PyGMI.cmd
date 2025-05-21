@@ -11,8 +11,8 @@ echo If you do have any errors, you can send the message to:
 echo pcole@geoscience.org.za
 echo.
 echo Loading PyGMI...
-set GDAL_DATA=%cd%\python\Lib\site-packages\osgeo\data\gdal
-set PROJ_DATA=%cd%\python\Lib\site-packages\pyproj\proj_dir\share\proj
+rem set GDAL_DATA=%cd%\python\Lib\site-packages\osgeo\data\gdal
+rem set PROJ_DATA=%cd%\python\Lib\site-packages\pyproj\proj_dir\share\proj
 
 type .\pygmi\version.py > err.log
 echo. >> err.log

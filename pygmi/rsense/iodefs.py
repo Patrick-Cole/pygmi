@@ -3657,7 +3657,8 @@ def set_export_filename(dat, odir, otype=None):
         ofile = filename
 
     if otype == 'RGB':
-        tmp = [i.dataid.split()[0] for i in dat]
+        tmp = [i.dataid.lower().replace('band ', 'band') for i in dat]
+        tmp = [i.split()[0] for i in tmp]
         for i in tmp:
             ofile += f'_{i.lower().replace("band", "b")}'
     else:
@@ -3738,14 +3739,12 @@ def _testfn2():
     _ = QtWidgets.QApplication(sys.argv)
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\Onshore\AST_08072006_081248_georef\Minimum_noise_transform"
+    tmp1.idir = r"D:\Onshore\AST_08312003_081238_georef\Original_data"
     # tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
     # tmp1.get_sfile(True)
     tmp1.settings()
 
     dat = tmp1.outdata
-
-    # breakpoint()
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
