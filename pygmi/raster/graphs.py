@@ -106,7 +106,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
 
-        cbar = self.figure.colorbar(rdata, format=frm)
+        self.figure.colorbar(rdata, format=frm)
 
         self.figure.canvas.draw()
 
@@ -380,6 +380,9 @@ class PlotRaster(ContextModule):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
+        # self.mmc.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
+        #                        QtWidgets.QSizePolicy.Policy.Preferred)
+
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = 'raster.cm.showsimple'
 
@@ -428,7 +431,6 @@ class PlotRaster(ContextModule):
         None.
 
         """
-        self.show()
         data = []
         if 'Raster' in self.indata:
             data = self.indata['Raster']
@@ -437,6 +439,14 @@ class PlotRaster(ContextModule):
 
         for i in data:
             self.cmb_1.addItem(i.dataid)
+
+        # rows, cols = data[0].data.shape
+        # aspect = cols/rows
+        # height = 4.8
+        # width = aspect*height
+
+        # self.mmc.figure.set_size_inches(width, height)
+        self.show()
 
 
 class PlotSurface(ContextModule):
@@ -507,37 +517,37 @@ class PlotSurface(ContextModule):
         dat.data = dat.data.astype(float)
 
         rows, cols = dat.data.shape
-        dxy = dat.xdim
+        # dxy = dat.xdim
 
         xmin, xmax, ymin, ymax = dat.extent
 
-        x = np.arange(xmin, xmax, dxy)
-        y = np.arange(ymax, ymin, -dxy)
+        x = np.linspace(xmin, xmax, dat.data.shape[1])
+        y = np.linspace(ymax, ymin, dat.data.shape[0])
 
         x, y = np.meshgrid(x, y)
         z = dat.data.astype(float)
 
-        zmin = z.min()
-        zmax = z.max()
+        # zmin = z.min()
+        # zmax = z.max()
 
         z = z.filled(np.nan)
 
         grid = pv.StructuredGrid(x, y, z)
         grid['values'] = z.T.flatten()
 
-        xptp = xmax - xmin
-        yptp = ymax - ymin
-        zptp = zmax - zmin
+        # xptp = xmax - xmin
+        # yptp = ymax - ymin
+        # zptp = zmax - zmin
 
-        ptp = max(xptp, yptp, zptp)
-        n_labels = 5
-        label_dist = ptp / 5
+        # ptp = max(xptp, yptp, zptp)
+        # n_labels = 5
+        # label_dist = ptp / 5
 
-        n_xlabels = max(2, round(xptp / label_dist))
-        n_ylabels = max(2, round(yptp / label_dist))
-        n_zlabels = max(2, round(zptp / label_dist))
+        # n_xlabels = max(2, round(xptp / label_dist))
+        # n_ylabels = max(2, round(yptp / label_dist))
+        # n_zlabels = max(2, round(zptp / label_dist))
 
-        bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
+        # bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
 
         sargs = dict(title_font_size=20,
                      label_font_size=16,
@@ -660,11 +670,10 @@ class PlotScatter(ContextModule):
         x = data[i]
         y = data[j]
         if x.data.shape != y.data.shape:
-            QtWidgets.QMessageBox.warning(self, 'Warning',
-                                          'Different size input datasets. '
-                                          'Merge and resample your input data '
-                                          'to fix this.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self, 'Warning', 'Different size input datasets. '
+                'Merge and resample your input data to fix this.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.mmc.update_hexbin(x, y)
@@ -850,12 +859,12 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r'd:\WorkData\testdata.hdr'
+    ifile = r"D:\temp\Larger_Bethal_mag_IGRFcorr_utm35s.ers"
+
     _ = QtWidgets.QApplication(sys.argv)
     data = get_raster(ifile)
 
-    data = data[1:]
-
-    tmp = PlotSurface()
+    tmp = PlotRaster()
     tmp.indata['Raster'] = data
     tmp.run()
     tmp.exec()

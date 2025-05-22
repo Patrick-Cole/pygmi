@@ -1212,15 +1212,6 @@ class PlotInterp(BasicModule):
         vbl_3 = QtWidgets.QVBoxLayout()
         gbox_3.setLayout(vbl_3)
 
-        # gbox_1.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-        #                      QtWidgets.QSizePolicy.Policy.Preferred)
-        # gbox_2.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-        #                      QtWidgets.QSizePolicy.Policy.Preferred)
-        # gbox_3.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-        #                      QtWidgets.QSizePolicy.Policy.Preferred)
-        # self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-        #                             QtWidgets.QSizePolicy.Policy.Preferred)
-
         vbl_4 = QtWidgets.QVBoxLayout()
         self.gbox_sun.setLayout(vbl_4)
         self.gbox_sun.setCheckable(True)
@@ -1232,9 +1223,12 @@ class PlotInterp(BasicModule):
 
         widget = QtWidgets.QWidget()
         widget.setLayout(vbl_raster)
+
         scroll = QtWidgets.QScrollArea()
         scroll.setWidget(widget)
         scroll.setWidgetResizable(True)
+        scroll.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                             QtWidgets.QSizePolicy.Policy.Preferred)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(20, 40,
@@ -2198,9 +2192,12 @@ def _testfn():
 
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'd:\WorkData\testdata.hdr'
+    ifile = r"D:\temp\Larger_Bethal_mag_IGRFcorr_utm35s.ers"
+
     data = iodefs.get_raster(ifile)
 
     tmp = PlotInterp()
