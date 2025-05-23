@@ -2,6 +2,16 @@
 Changelog
 =========
 
+v3.2.9.5, 23 May 2025
+---------------------
+* Added scrollbar to magnetic inversion
+* Fixed a bug when loading in projects
+* Smoothing can now be called via a function.
+* Normalization and equation editor can now be called via functions.
+* Cluster crisp and fuzzy can now be called as functions
+* Tiltdepth is now calculated in a function.
+* Tests updated
+
 v3.2.9.2, 12 May 2025
 ---------------------
 * Added some different icons for dark themes.
