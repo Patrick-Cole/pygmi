@@ -1039,6 +1039,7 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
+        self.process_is_active(True)
         outdata = self.get_outdata()
 
         for odata in outdata:
@@ -1047,6 +1048,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 dlg.indata = odata
                 dlg.run()
                 self.update_pdlg(dlg)
+        self.process_is_active(False)
 
     def launch_context_item_indata(self, newitem):
         """
@@ -1057,6 +1059,7 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
+        self.process_is_active(True)
         indata = self.get_indata()
 
         for idata in indata:
@@ -1065,6 +1068,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 dlg.indata = idata
                 dlg.run()
                 self.update_pdlg(dlg)
+        self.process_is_active(False)
 
     def linepointer(self):
         """Select line pointer."""
