@@ -1095,6 +1095,8 @@ class MainWidget(QtWidgets.QMainWindow):
             self.textbrowser_processlog.setStyleSheet(
                 'QTextBrowser { background-color: rgb(255, 255, 255); }')
 
+        QtWidgets.QApplication.processEvents()
+
     def load(self):
         """
         Load project state from JSON file.
