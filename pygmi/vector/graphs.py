@@ -1786,8 +1786,9 @@ def _testfn():
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
+    sfile = r"D:\work\Programming\geochem\geochem_tzaneen.shp"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))
 
     IO = ImportVector()

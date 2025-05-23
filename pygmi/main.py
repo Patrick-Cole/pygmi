@@ -1119,6 +1119,8 @@ class MainWidget(QtWidgets.QMainWindow):
             item = ilist[key]
             my_class = key
             my_class = my_class.split()[0][1:]
+            if '(' in my_class:
+                my_class = my_class.split('(')[0]
             my_class = my_class.rsplit('.', 1)
 
             class_name = getattr(sys.modules[my_class[0]], my_class[1])
@@ -1195,6 +1197,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         with open(ofile, 'w', encoding='utf-8') as todisk:
             json.dump(ilist, todisk, indent=4)
+
+        self.showlog('Project saved.')
         return True
 
     def run(self):

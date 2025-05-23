@@ -271,6 +271,8 @@ class MagInvert(BasicModule):
         self.cmb_dtm.currentIndexChanged.connect(self.choose_dtm)
         self.cmb_model.currentIndexChanged.connect(self.choose_model)
 
+        self.buttonbox.buttonbox.accepted.connect(self.apply_changes)
+
     def apply_changes(self):
         """
         Apply changes.
@@ -945,8 +947,8 @@ def _testfn():
 
     from pygmi.pfmod.pfmod import MainWidget
 
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
+    # from IPython import get_ipython
+    # get_ipython().run_line_magic('matplotlib', 'inline')
 
     mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\mag.tif"
     dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\magnetics\dem.tif"
@@ -1046,7 +1048,7 @@ def _testfn():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    get_ipython().run_line_magic('matplotlib', 'Qt')
+    # get_ipython().run_line_magic('matplotlib', 'Qt')
 
     tmp = MainWidget()
     tmp.indata = DM.outdata

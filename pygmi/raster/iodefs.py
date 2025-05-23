@@ -29,7 +29,7 @@ import os
 import copy
 import datetime
 import xml.etree.ElementTree as ET
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets
 import numpy as np
 from natsort import natsorted
 import rasterio
@@ -67,18 +67,19 @@ class BandSelect(ContextModule):
             QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.vbl.addWidget(self.lw_1)
+        self.buttonbox.htmlfile = 'raster.cm.selectbands'
 
-        self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            self.buttonbox.StandardButton.Cancel |
-            self.buttonbox.StandardButton.Ok)
+        # self.buttonbox = QtWidgets.QDialogButtonBox()
+        # self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        # self.buttonbox.setCenterButtons(True)
+        # self.buttonbox.setStandardButtons(
+        #     self.buttonbox.StandardButton.Cancel |
+        #     self.buttonbox.StandardButton.Ok)
 
         self.vbl.addWidget(self.buttonbox)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        # self.buttonbox.accepted.connect(self.accept)
+        # self.buttonbox.rejected.connect(self.reject)
 
     def run(self):
         """

@@ -119,10 +119,12 @@ class ProfileDisplay(QtWidgets.QWidget):
         None.
 
         """
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred,
-                                           QtWidgets.QSizePolicy.Policy.Fixed)
-        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
-                                            QtWidgets.QSizePolicy.Policy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Preferred,
+            QtWidgets.QSizePolicy.Policy.Fixed)
+        sizepolicy2 = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Ignored,
+            QtWidgets.QSizePolicy.Policy.Fixed)
 
         self.lw_prof_defs.setFixedWidth(220)
 
@@ -1373,8 +1375,8 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         if curtext is None:
             curtext = self.cmb_overview.currentText()
-        cindex = self.cmb_overview.findText(curtext,
-                                            QtCore.Qt.MatchFlag.MatchFixedString)
+        cindex = self.cmb_overview.findText(
+            curtext, QtCore.Qt.MatchFlag.MatchFixedString)
         if cindex == -1:
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
@@ -1504,8 +1506,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.cmb_overview.addItems(citems)
 
         curtext = self.cmb_overview.currentText()
-        cindex = self.cmb_overview.findText(curtext,
-                                            QtCore.Qt.MatchFlag.MatchFixedString)
+        cindex = self.cmb_overview.findText(
+            curtext, QtCore.Qt.MatchFlag.MatchFixedString)
         if cindex == -1:
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
@@ -2085,12 +2087,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.laxes.draw_artist(self.lprfc[0])
 
-
-# This section is just for the profile line plot
-
     def init_plot(self, xdat, dat, extent, xdat2=None, dat2=None):
         """
-        Initialise plot.
+        Initialise profile line plot.
 
         Parameters
         ----------
@@ -2901,9 +2900,9 @@ class ImportPicture(BasicModule):
             dat = get_raster(imptext, showlog=self.showlog)
 
             if dat is None:
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the image.',
-                                              QtWidgets.QMessageBox.StandardButton.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', 'Could not import the image.',
+                    QtWidgets.QMessageBox.StandardButton.Ok)
                 return curline
 
             dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,

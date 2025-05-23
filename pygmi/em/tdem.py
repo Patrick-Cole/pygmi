@@ -257,7 +257,16 @@ class TDEM1D(BasicModule):
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
 
-        hbl.addLayout(vsl)
+        widget = QtWidgets.QWidget()
+        widget.setLayout(vsl)
+
+        scroll = QtWidgets.QScrollArea()
+        scroll.setWidget(widget)
+        scroll.setWidgetResizable(True)
+        scroll.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
+                             QtWidgets.QSizePolicy.Policy.Preferred)
+
+        hbl.addWidget(scroll)
         hbl.addLayout(vbl)
 
         pb_apply.clicked.connect(self.apply)
@@ -281,8 +290,9 @@ class TDEM1D(BasicModule):
         """
         if self.times is None:
             text = 'You need to load window times first.'
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', text,
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         self.disp_wave()
@@ -327,8 +337,9 @@ class TDEM1D(BasicModule):
 
         if not datachans:
             text = 'Could not find data channels, your prefix may be wrong'
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', text,
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         # ------------------ Mesh ------------------ #
@@ -459,8 +470,9 @@ class TDEM1D(BasicModule):
             with redirect_stdout(self.stdout_redirect):
                 mopt_sky = inv.run(m0)
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', str(e),
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         dpred_sky = np.array(invprob.dpred)
