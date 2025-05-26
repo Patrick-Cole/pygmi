@@ -78,7 +78,6 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * geopandas>=1.0.1
 * h5netcdf>=1.6.1
 * matplotlib>=3.10.1
-* mtpy>=1.1.5
 * natsort>=8.4.0
 * numba>=0.61.2
 * numexpr>=2.10.2

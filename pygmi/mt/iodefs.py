@@ -26,7 +26,7 @@
 
 import os
 from PySide6 import QtWidgets
-import mtpy.core.mt
+import pygmi.mt.mtpy.core.mt as mt
 import numpy as np
 
 from pygmi.misc import ContextModule, BasicModule
@@ -121,7 +121,7 @@ def get_EDI(ifiles):
     dat = {}
 
     for edi_file in ifiles:
-        mt_obj = mtpy.core.mt.MT(edi_file)
+        mt_obj = mt.MT(edi_file)
 
         bname = os.path.basename(edi_file)
         bname = bname[:-4]

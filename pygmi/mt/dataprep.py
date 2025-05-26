@@ -36,9 +36,9 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
-from mtpy.modeling import occam1d
-from mtpy.core.mt import MT
-from mtpy.core.z import Z, Tipper
+from pygmi.mt.mtpy.modeling import occam1d
+from pygmi.mt.mtpy.core.mt import MT
+from pygmi.mt.mtpy.core.z import Z, Tipper
 
 from pygmi.misc import BasicModule, ContextModule
 
@@ -1288,7 +1288,8 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         ax1.plot(x, res2, 'r.', label=label2)
 
         ax1.set_xscale('log')
-        ax1.set_yscale('log')
+        if res1.any() > 0 and res2.any() > 0:
+            ax1.set_yscale('log')
         ax1.legend(loc='upper left')
         ax1.set_xlabel('Period (s)')
         ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
@@ -1799,11 +1800,11 @@ def _testfn():
     print('loading complete')
 
     _ = QtWidgets.QApplication(sys.argv)
-    test = EditEDI(None)
+    test = StaticShiftEDI(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
     # test.run()
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_occam()
