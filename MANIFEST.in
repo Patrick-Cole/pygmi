@@ -3,6 +3,8 @@ exclude findlibs.py
 exclude builddocs.py
 include pygmi/mag/IGRF13.COF
 include pygmi/seis/descriptions.txt
+include pygmi/mt/mtpy/LICENSE.txt
+include pygmi/mt/mtpy/README.rst
 recursive-include pygmi *.py *.png *.ico *.html
 prune pygmi/cgs
 

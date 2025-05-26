@@ -2,6 +2,11 @@
 Changelog
 =========
 
+v3.2.9.6, 26 May 2025
+---------------------
+* Added selected mtpy functions to solve conda problem.
+* Fixed occam display bug when apparent resistivities are all zero.
+
 v3.2.9.5, 23 May 2025
 ---------------------
 * Added scrollbar to magnetic inversion
