@@ -341,7 +341,8 @@ class ProcessData(BasicModule):
         self.le_absbase.setText(str(absbase.iloc[0]))
 
 
-def gravcor(pdat, basethres, kstat, absbase, dens, showlog=print):
+def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
+            showlog=print):
     """
     Gravity corrections.
 
@@ -656,5 +657,45 @@ def _testfn():
     gdf = datout[0]
 
 
+def _test_lacoste():
+    """Test for lacoste data"""
+    import pandas as pd
+    import numpy as np
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    gfile = r"D:\Steph\Preprocessed_Gravity.csv"
+    cfile = r"D:\Steph\Calibration Table.csv"
+    ofile = r"D:\Steph\out.csv"
+
+    dfg = pd.read_csv(gfile)
+    dfc = pd.read_csv(cfile)
+
+    xp = dfc['Counter Reading']
+    fp = dfc['Value in Milligals']
+    x = dfg['counter']
+
+    dfg['GRAV'] = np.interp(x, xp, fp)
+
+    dfg['STATION'] = dfg['station'].replace('Base', '88888')
+    del dfg['station']
+    dfg['STATION'] = dfg['STATION'].astype(int)
+    dfg['LINE'] = dfg['traverse'].astype(int)
+    dfg['STATION'] = dfg['STATION'] + 1000*dfg['LINE']
+
+    dfg['TIME'] = dfg['time'].apply(lambda x: x.encode('utf-8'))
+
+    dfg['datetime'] = pd.to_datetime(dfg['datetime'])
+    dfg['DECTIMEDATE'] = dfg['datetime'].astype(int)//10**9
+
+    # kbase = '88888'
+    bthres = 10000
+
+    out, drft = gravcor(dfg, bthres)
+
+    out.to_csv(ofile, index=False)
+
+
 if __name__ == "__main__":
-    _testfn()
+    # _testfn()
+    _test_lacoste()

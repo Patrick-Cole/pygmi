@@ -1438,6 +1438,11 @@ def main(nocgs=False):
     #         print('PROJ_DATA not set.')
 
     # Start program.
+    if len(sys.argv) > 0:
+        if sys.argv[-1] == '--help' or sys.argv[-1] == '--version':
+            print(f'PyGMI version: {pygmi.__version__}')
+            return
+
     app = QtWidgets.QApplication(sys.argv)
 
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
