@@ -919,7 +919,7 @@ class Model(object):
         ----------
 
             **save_path** :path to save file to, if just path saved as
-                          savepath\model.mod, if None defaults to dirpath
+                          savepath\\model.mod, if None defaults to dirpath
 
             **n_layers** : number of layers
 
@@ -1891,7 +1891,7 @@ class Plot1DResponse(object):
             self.axr.set_ylim(self.res_limits)
 
         self.axp.set_ylim(self.phase_limits)
-        self.axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+        self.axr.set_ylabel('App. Res. ($\\Omega \\cdot m$)',
                             fontdict={'size': self.font_size, 'weight': 'bold'})
         self.axp.set_ylabel('Phase (deg)',
                             fontdict={'size': self.font_size, 'weight': 'bold'})
@@ -1982,7 +1982,7 @@ class Plot1DResponse(object):
                 self.axm.set_yscale('log', nonposy='clip')
             self.axm.set_ylabel('Depth ({0})'.format(self.depth_units),
                                 fontdict={'size': self.font_size, 'weight': 'bold'})
-            self.axm.set_xlabel('Resistivity ($\Omega \cdot m$)',
+            self.axm.set_xlabel('Resistivity ($\\Omega \\cdot m$)',
                                 fontdict={'size': self.font_size, 'weight': 'bold'})
             self.axm.grid(True, which='both', alpha=.25)
 

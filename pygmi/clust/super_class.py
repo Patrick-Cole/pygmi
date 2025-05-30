@@ -29,7 +29,7 @@ import sys
 
 import numpy as np
 from PySide6 import QtWidgets, QtCore
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
@@ -209,6 +209,40 @@ class GraphMap(FigureCanvasQTAgg):
         self.im1.rgbmode = self.manip
         self.im1.set_data(data)
         self.im1.set_extent(extent)
+
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
+
+        self.figure.canvas.draw()
+
+    def update_class(self, dat):
+        """
+        Update plot.
+
+        Parameters
+        ----------
+        dat : dict
+            PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
+
+        Returns
+        -------
+        None.
+
+        """
+        clippercu = 0
+        clippercl = 0
+
+        data = dat
+        lclip, uclip = np.percentile(data.compressed(),
+                                     [clippercl, 100 - clippercu])
+
+        self.im1.set_clim(lclip, uclip)
+
+        # extent = dat.extent
+
+        self.im1.rgbmode = 'Single Colour Map'
+        self.im1.set_data(data)
+        # self.im1.set_extent(extent)
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
@@ -493,6 +527,7 @@ class SuperClass(BasicModule):
         self.c = [0, 1, 0]
         self.df = None
         self.data = {}
+        self.zonal = None
 
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
@@ -508,6 +543,8 @@ class SuperClass(BasicModule):
         self.cmb_band2 = QtWidgets.QComboBox()
         self.cmb_band3 = QtWidgets.QComboBox()
         self.cmb_manip = QtWidgets.QComboBox()
+        self.rb_data = QtWidgets.QRadioButton('Data')
+        self.rb_results = QtWidgets.QRadioButton('Results')
 
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
 
@@ -547,10 +584,16 @@ class SuperClass(BasicModule):
         self.cmb_manip.addItems(actions)
 
         vbl_1b.addWidget(self.cmb_manip)
+        vbl_1b.addWidget(self.rb_data)
+        vbl_1b.addWidget(self.rb_results)
+
+        self.rb_data.setChecked(True)
+        self.rb_results.setEnabled(False)
 
         loadshape = QtWidgets.QPushButton('Load Class Shapefile')
         saveshape = QtWidgets.QPushButton('Save Class Shapefile')
-        calcmetrics = QtWidgets.QPushButton('Calculate and Display Metrics')
+        calcmetrics = QtWidgets.QPushButton('Display Metrics')
+        pb_calc = QtWidgets.QPushButton('Calculate')
 
         self.setWindowTitle('Supervised Classification')
         self.tablewidget.setRowCount(0)
@@ -584,7 +627,7 @@ class SuperClass(BasicModule):
         gl_right.addWidget(self.tablewidget, 1, 0, 3, 2)
         gl_right.addWidget(self.apoly, 1, 2, 1, 1)
         gl_right.addWidget(self.dpoly, 2, 2, 1, 1)
-        gl_right.addWidget(calcmetrics, 3, 2, 1, 1)
+        # gl_right.addWidget(calcmetrics, 3, 2, 1, 1)
         gl_right.addWidget(loadshape, 4, 0, 1, 1)
         gl_right.addWidget(saveshape, 4, 1, 1, 1)
 
@@ -595,6 +638,8 @@ class SuperClass(BasicModule):
         gl_class.addWidget(self.cmb_DTcriterion, 1, 1, 1, 1)
         gl_class.addWidget(self.cmb_RFcriterion, 1, 1, 1, 1)
         gl_class.addWidget(self.cmb_SVCkernel, 1, 1, 1, 1)
+        gl_class.addWidget(pb_calc, 2, 0, 1, 1)
+        gl_class.addWidget(calcmetrics, 2, 1, 1, 1)
 
         gl_main.addWidget(self.map, 0, 0, 4, 1)
         gl_main.addWidget(self.mpl_toolbar, 4, 0, 1, 1)
@@ -610,11 +655,60 @@ class SuperClass(BasicModule):
         loadshape.clicked.connect(self.load_shape)
         saveshape.clicked.connect(self.save_shape)
         calcmetrics.clicked.connect(self.calc_metrics)
+        pb_calc.clicked.connect(self.calculate)
 
         self.tablewidget.currentItemChanged.connect(self.onrowchange)
         self.tablewidget.cellChanged.connect(self.oncellchange)
         self.cmb_class.currentIndexChanged.connect(self.class_change)
         self.cmb_manip.currentIndexChanged.connect(self.on_combo)
+        self.rb_data.clicked.connect(self.on_radio)
+        self.rb_results.clicked.connect(self.on_radio)
+
+    def calculate(self):
+        """
+        Calculate new clusters.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.df is None:
+            return
+
+        self.map.figure.set_facecolor('r')
+
+        self.rb_data.setChecked(True)
+        self.on_radio()
+
+        QtWidgets.QApplication.processEvents()
+
+        classifier, _, datall, _, _, _ = self.init_classifier()
+
+        dat = self.map.im1.scale_external_to_res(datall)
+        dat, x0, x1, sx, y0, y1, sy = dat
+        mask = self.map.data[0].data.mask
+        mask = self.map.im1.scale_external_to_res(mask)[0]
+
+        yout = np.zeros_like(dat[:, :, 0], dtype=int)
+        dat = dat[~mask]
+
+        yout1 = classifier.predict(dat)
+        yout[~mask] = yout1
+
+        yout2 = np.zeros_like(datall[:, :, 0], dtype=int)
+        if self.map.im1.origin == 'upper':
+            yout2[y0:y1:sy, x0:x1:sx] = yout[::-1]
+            yout2 = yout2[::-1]
+        else:
+            yout2[y0:y1:sy, x0:x1:sx] = yout
+
+        self.zonal = np.ma.array(yout2, mask=self.map.data[0].data.mask)
+
+        self.map.figure.set_facecolor('w')
+        self.rb_results.setEnabled(True)
+        self.rb_results.setChecked(True)
+        self.on_radio()
 
     def class_change(self):
         """
@@ -707,7 +801,6 @@ class SuperClass(BasicModule):
         if row == -1:
             return
 
-        # self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
         xycoords = self.map.polyi.poly.xy
@@ -735,8 +828,6 @@ class SuperClass(BasicModule):
         if self.tablewidget.currentItem() is None or col != 0:
             return
 
-        # if row not in self.df.index:
-        #     self.df.loc[row] = pd.Series(dtype='object')
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
 
     def onrowchange(self, current, previous):
@@ -843,7 +934,22 @@ class SuperClass(BasicModule):
                           self.cmb_band3.currentText()]
 
         self.map.manip = maniptxt
-        self.map.update_plot(self.data)
+        if self.rb_data.isChecked():
+            self.map.update_plot(self.data)
+
+    def on_radio(self):
+        """
+        On radiobutton to choose type of plot for data.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.rb_data.isChecked():
+            self.map.update_plot(self.data)
+        elif self.zonal is not None:
+            self.map.update_class(self.zonal)
 
     def load_shape(self):
         """
@@ -994,10 +1100,6 @@ class SuperClass(BasicModule):
             dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
 
         zonal = np.ma.array(yout, mask=self.map.data[0].data.mask)
-
-        if self.parent is None:
-            plt.imshow(zonal)
-            plt.show()
 
         i = len(lbls)
 
@@ -1205,6 +1307,7 @@ def _testfn():
     _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"C:\Work\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = iodefs.get_raster(ifile)
 
