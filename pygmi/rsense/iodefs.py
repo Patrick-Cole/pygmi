@@ -3632,10 +3632,10 @@ def set_export_filename(dat, odir, otype=None):
     if otype is None:
         otype = 'stack'
 
-    if 'ASTER' in sensor:
-        tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
-        tmp = list(set(tmp))
-        tmp.sort()
+    if 'ASTER' in sensor and 'AST_' in filename:
+        # tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
+        # tmp = list(set(tmp))
+        # tmp.sort()
 
         tmp = filename.split('_')
         date = tmp[2][3:11]

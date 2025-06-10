@@ -37,7 +37,7 @@ import rasterio.merge
 from pyproj.crs import CRS
 from rasterio.warp import calculate_default_transform
 import geopandas as gpd
-from shapely import LineString
+from shapely import LineString, unary_union
 
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ContextModule, BasicModule
@@ -1587,10 +1587,45 @@ def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
     merged_data[:] = tmp1
 
 
+def merge_order(ifiles, igeoms):
+    """Sort data in an order which ensures overlaps."""
+
+    # from shapely.plotting import plot_polygon
+    # import matplotlib.pyplot as plt
+
+    # fig = plt.figure()
+    # ax = plt.gca()
+    # plot_polygon(glist[0])
+    # plot_polygon(glist[1])
+    # plot_polygon(glist[2])
+    # plt.show()
+
+    ofiles = []
+    ogeoms = []
+
+    ofiles.append(ifiles.pop(0))
+    ogeoms.append(igeoms.pop(0))
+
+    while igeoms:
+        areas = []
+        master = unary_union(ogeoms)
+        for i in igeoms:
+            areas.append(master.intersection(i).area)
+
+        for i, area in enumerate(areas):
+            if area == max(areas):
+                ofiles.append(ifiles.pop(i))
+                ogeoms.append(igeoms.pop(i))
+                break
+    pass
+
+    return ofiles
+
+
 def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
            showlog=print, singleband=False, forcetype=None,
            shifttomedian=False, tmpdir=None, nodata=None, method='first',
-           res=None):
+           res=None, ifiles=None):
     """
     Merge files with different numbers of bands and/or band order.
 
@@ -1599,7 +1634,8 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
     Parameters
     ----------
     dat : list
-        List of PyGMI data bands to be merged. Can be empty if idir is provided.
+        List of PyGMI data bands to be merged. Can be empty if idir is
+        provided.
     idir : str, optional
         Directory where file to be mosaiced are found. The default is None.
     bfile : str, optional
@@ -1622,7 +1658,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         Nodata value. The default is None.
     method : str, optional
         Mosaic method. Can be 'first', 'last', 'merge_min', 'merge_max' or
-        'merge_median. The default is 'first'.
+        'merge_median'. The default is 'first'.
     res : float, optional
         Output resolution. Can be a tuple. The default is None.
 
@@ -1648,10 +1684,11 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         for i in dat['RasterFileList']:
             indata += get_from_rastermeta(i, piter=iter, metaonly=True)
 
-    if idir is not None:
-        ifiles = []
-        for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
-            ifiles += glob.glob(os.path.join(idir, ftype))
+    if idir is not None or ifiles is not None:
+        if ifiles is None:
+            ifiles = []
+            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+                ifiles += glob.glob(os.path.join(idir, ftype))
 
         if not ifiles:
             showlog('No input files in that directory')
@@ -1731,6 +1768,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
         ifiles = []
         allmval = []
+        geomlist = []
         for i in piter(indata):
             if i.dataid != dataid and singleband is False:
                 continue
@@ -1762,6 +1800,9 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
                     showlog('Problem with projection,aborting....')
                     return False
                 i2 = data_reproject(i2, crs, transform, height, width)
+
+            i2.get_boundary()
+            geomlist.append(i2.geometry)
 
             if forcetype is not None:
                 i2.data = i2.data.astype(forcetype)
@@ -1814,7 +1855,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             tmpdat = tmpdat.filled(nodata)
             tmpdat = np.ma.masked_equal(tmpdat, nodata)
             tmpdat = tmpdat - mval
-            # breakpoint()
+
             raster.write(tmpdat, 1)
             raster.write_mask(~np.ma.getmaskarray(i2.data))
 
@@ -1826,6 +1867,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             showlog('Too few bands of name ' + dataid)
             continue
 
+        ifiles = merge_order(ifiles, geomlist)
         showlog('Mosaicing ' + dataid + '...')
 
         with rasterio.Env(CPL_DEBUG=True):
@@ -1867,7 +1909,8 @@ def redistribute_vertices(geom, distance):
     """
     Redistribute vertices in a geometry.
 
-    From https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely,
+    From https://stackoverflow.com/questions/34906124/
+    interpolating-every-x-distance-along-multiline-in-shapely,
     and by Mike-T.
 
     Parameters
@@ -2162,7 +2205,7 @@ def _testfn():
 
     tmp = DataCut()
     tmp.indata['Raster'] = dat
-    iii = tmp.settings()
+    tmp.settings()
 
     breakpoint()
 

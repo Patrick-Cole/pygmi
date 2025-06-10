@@ -27,10 +27,13 @@
 from copy import deepcopy
 import warnings
 import datetime
+
 import numpy as np
 from rasterio.io import MemoryFile
 from rasterio import Affine
 from rasterio.windows import Window
+from rasterio.features import shapes, sieve
+from shapely.geometry import shape, Polygon
 
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):
@@ -250,6 +253,7 @@ class Data():
         self.transform = None
         self.crs = None
         self.datetime = datetime.datetime(1900, 1, 1)
+        self.geometry = None
 
         self.set_transform(1, 0, 1, 0)
 
@@ -491,6 +495,30 @@ class Data():
         vmax = mean + 2 * std
 
         return vmin, vmax
+
+    def get_boundary(self):
+        """Get raster boundary."""
+        mask = ~np.ma.getmaskarray(self.data)
+        mask = mask.astype(np.uint8)
+
+        mask = sieve(mask, 100000)
+
+        polys = []
+        for shape1, _ in shapes(mask, mask=mask, transform=self.transform):
+            polys.append(shape1)
+
+        if len(polys) > 1:
+            print('Warning, more than one polygon, choosing largest')
+            lens = np.argmax([i.area for i in polys])
+            shape1 = polys[lens]
+
+        geom = shape(shape1)
+        geom = geom.simplify(tolerance=.001)
+
+        if geom.interiors:
+            geom = Polygon(list(geom.exterior.coords))
+
+        self.geometry = geom
 
 
 class RasterMeta():
