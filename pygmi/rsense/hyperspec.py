@@ -857,7 +857,7 @@ class ProcFeatures(BasicModule):
 
 
 def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
-                 rfilt=True, piter=iter):
+                 rfilt=True, piter=iter, showlog=print):
     """
     Calculate feature dataset.
 
@@ -909,7 +909,18 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     xval = []
     for j in piter(dat):
         dat2.append(j.data)
-        refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
+        if 'wavelength' in j.metadata['Raster']:
+            refl = float(j.metadata['Raster']['wavelength'])
+        elif 'WavelengthMin' in j.metadata['Raster']:
+            wmin = float(j.metadata['Raster']['WavelengthMin'])
+            wmax = float(j.metadata['Raster']['WavelengthMax'])
+            refl = (wmax + wmin) / 2.
+        else:
+            showlog(f'No wavelength metadata for {j.dataid}. Trying to extract'
+                    ' from bandname. If the wavelength is not on the bandname,'
+                    ' this will not work.')
+            refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
+
         if refl < 100.:
             refl = refl * 1000
         refl = round(refl, 2)
@@ -989,7 +1000,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             datout = np.nan_to_num(tmp)
         else:
             if tmp.max() > 1:
-                print('Problem with filter. Max value greater that 1')
+                showlog('Problem with filter. Max value greater that 1')
                 return datfin
             datout = datout * np.nan_to_num(tmp)
 
@@ -1025,7 +1036,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             datout3 = np.nan_to_num(tmp)
         else:
             if tmp.max() > 1:
-                print('Problem with filter. Max value greater that 1')
+                showlog('Problem with filter. Max value greater that 1')
                 return datfin
             datout3 = datout3 * np.nan_to_num(tmp)
 
@@ -1397,6 +1408,7 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
     ifile = r"D:\Hyper\042_0816-1139_ref_rect.hdr"
+    ifile = r"D:\Gabby\LCT_1_FEN_proj.hdr"
 
     getinfo()
     bands, tnames, data = files_to_rastermeta([ifile])
@@ -1439,4 +1451,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

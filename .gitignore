@@ -8,6 +8,7 @@ _modules/
 .pytest_cache/
 .empty/
 .spyproject/
+.vscode/
 build/
 data/
 dist/
