@@ -26,7 +26,6 @@
 
 import os
 import sys
-import subprocess
 import types
 import time
 import textwrap

@@ -33,15 +33,17 @@ import winsound
 
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.stats as stats
+from scipy.optimize import curve_fit
+
 
 from pygmi.raster.iodefs import get_raster
-from pygmi.raster.dataprep import fftprep, fft_getkxy
+from pygmi.raster.dataprep import fftprep
+from pygmi.vector.minc import minc
 
 
 def main():
     """Start of program."""
-    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
+    ifile = r"c:\work\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
 
     dat = get_raster(ifile)
 
@@ -50,15 +52,24 @@ def main():
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, rdiff, cdiff, datamedian = fftprep(data)
+    ndat, rdiff, cdiff, datamedian = fftprepminc(data)
+    ndat2, rdiff, cdiff, datamedian = fftprep(data)
+    plt.subplot(121)
+    plt.imshow(ndat)
+    plt.subplot(122)
+    plt.imshow(ndat2)
+    plt.show()
 
     # Calculate the radially averaged power spectrum
     radial_bins, radial_mean = radial_average_power_spectrum(ndat, xdim, ydim)
-
+    radial_bins2, radial_mean2 = radial_average_power_spectrum(
+        ndat2, xdim, ydim)
     # Plot the result
     plt.figure()
     plt.plot(radial_bins, radial_mean,
              label="Radially Averaged Power Spectrum")
+    plt.plot(radial_bins2, radial_mean2,
+             label="Radially Averaged Power Spectrum old")
     plt.xlabel("Wavenumbers")
     plt.ylabel("Power")
     plt.title("Radially Averaged Power Spectrum")
@@ -68,27 +79,67 @@ def main():
     plt.show()
 
 
-def compute_1d_power_spectrum(data):
-    # Step 1: Perform 2D Fourier Transform
-    fft2_result = np.fft.fft2(data)
-    # Shift zero frequency to the center
-    fft2_shifted = np.fft.fftshift(fft2_result)
+def fftprepminc(data):
+    """
+    FFT preparation.
 
-    # Step 2: Compute the power spectrum
-    power_spectrum_2d = np.abs(fft2_shifted) ** 2
+    Parameters
+    ----------
+    data : pygmi.raster.datatypes.Data
+        Input dataset.
 
-    # Step 3: Create radial bins for averaging
-    ny, nx = data.shape
-    y, x = np.indices((ny, nx))
-    center_y, center_x = ny // 2, nx // 2
-    r = np.sqrt((x - center_x) ** 2 + (y - center_y) ** 2)
-    r = r.astype(int)
+    Returns
+    -------
+    zfin : numpy array.
+        Output prepared data.
+    rdiff : int
+        rows divided by 2.
+    cdiff : int
+        columns divided by 2.
+    datamedian : float
+        Median of data.
 
-    # Step 4: Radially average the power spectrum
-    radial_profile = np.bincount(
-        r.ravel(), weights=power_spectrum_2d.ravel()) / np.bincount(r.ravel())
+    """
+    datamedian = np.ma.median(data.data)
+    ndat = data.data - datamedian
 
-    return radial_profile
+    nr, nc = data.data.shape
+    cdiff = nc // 2
+    rdiff = nr // 2
+
+    xmin, xmax, ymin, ymax = data.extent
+
+    x = np.arange(xmin, xmax, data.xdim)+data.xdim/2
+    y = np.arange(ymin, ymax, data.ydim)+data.ydim/2
+    x, y = np.meshgrid(x, y)
+    z = ndat
+    x = np.ma.array(x, mask=z.mask)
+    y = np.ma.array(y, mask=z.mask)
+
+    x = x.compressed()
+    y = y.compressed()
+    z = z.compressed()
+    dxy = min(data.xdim, data.ydim)
+    xmin2, xmax2 = [xmin-cdiff*dxy, xmax+cdiff*dxy]
+    ymin2, ymax2 = [ymin-rdiff*dxy,  ymax+rdiff*dxy]
+
+    x2 = list(np.arange(xmin2, xmax2, dxy))
+    y2 = list(np.arange(ymin2, ymax2, dxy))
+
+    xcnr = x2 * 2 + [xmin2]*len(y2) + [xmax2]*len(y2)
+    ycnr = [ymin2]*len(x2) + [ymax2]*len(x2) + y2*2
+    zcnr = np.zeros_like(xcnr)
+
+    x = np.append(x, xcnr)
+    y = np.append(y, ycnr)
+    z = np.append(z, zcnr)
+
+    zfin = minc(x, y, z, dxy)
+
+    zfin[np.isnan(zfin)] = 0.
+    zfin = zfin[::-1]
+
+    return zfin, rdiff, cdiff, datamedian
 
 
 def radial_average_power_spectrum(data, dx=1.0, dy=1.0):
@@ -124,8 +175,76 @@ def radial_average_power_spectrum(data, dx=1.0, dy=1.0):
     return radial_bins, radial_mean
 
 
+# Define a piecewise linear function
+def piecewise_linear(x, x0, y0, k1, k2):
+    """
+    x0, y0: The "knot" point where the two linear segments meet.
+    k1: Slope of the first segment.
+    k2: Slope of the second segment.
+    """
+    return np.piecewise(
+        x,
+        [x < x0, x >= x0],
+        [lambda x: k1 * (x - x0) + y0, lambda x: k2 * (x - x0) + y0],
+    )
+
+
+def test():
+
+    ifile = r"c:\work\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
+
+    dat = get_raster(ifile)
+
+    data = dat[0]
+
+    xdim = data.xdim
+    ydim = data.ydim
+
+    ndat, rdiff, cdiff, datamedian = fftprepminc(data)
+    # Calculate the radially averaged power spectrum
+    x_data, y_data = radial_average_power_spectrum(ndat, xdim, ydim)
+    y_data = np.log(y_data)
+
+    # Fit the piecewise linear function to the data
+    popt, _ = curve_fit(piecewise_linear, x_data, y_data,
+                        bounds=[[0, 0, -10000, -10000],
+                                [x_data.max(), y_data.max(), 0, 0]])
+
+    # Extract the fitted parameters
+    x0, y0, k1, k2 = popt
+
+    # Plot the results
+    plt.scatter(x_data, y_data, label="Data", color="blue", s=10)
+    plt.plot(x_data, piecewise_linear(x_data, *popt),
+             label="Fitted Curve", color="red")
+    plt.axvline(x=x0, color="green", linestyle="--",
+                label=f"Knot at x={x0:.2f}")
+    plt.legend()
+    plt.xlabel("Wavenumbers")
+    plt.ylabel("Power")
+    plt.title("Piecewise Linear Fit")
+    plt.show()
+
+    D = -k1/2
+    C = np.sqrt(np.exp(y0-k1*x0))
+
+    d = -k2/2
+    c = np.sqrt(np.exp(y0-k2*x0))
+
+    k = x_data
+    f1 = 1/(1+c/C*np.exp(k*(D-d)))
+    f2 = 1 - f1
+
+    plt.plot(k, f1)
+    plt.plot(k, f2)
+    plt.show()
+
+    pass
+
+
 if __name__ == "__main__":
-    main()
+    # main()
+    test()
 
     print('Finished!')
     winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)

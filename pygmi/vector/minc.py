@@ -105,8 +105,8 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
 
     showlog('Creating nearest neighbour starting value...')
 
-    # u = griddata(points, z, (xxx, yyy), method='linear')
-    u = griddata(points, z, (xxx, yyy), method='nearest')
+    u = griddata(points, z, (xxx, yyy), method='linear')
+    # u = griddata(points, z, (xxx, yyy), method='nearest')
     u = u[::-1]
 
     # define new grid
