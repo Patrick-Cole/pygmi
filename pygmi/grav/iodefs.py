@@ -48,9 +48,9 @@ class ImportCG5(BasicModule):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.df_cg5 = None
         self.df_gps = None
         self.is_import = True
+        self.filt = None
 
         self.cmb_line = QtWidgets.QComboBox()
         self.cmb_station = QtWidgets.QComboBox()
@@ -81,7 +81,7 @@ class ImportCG5(BasicModule):
         lbl_ychan = QtWidgets.QLabel('Latitude:')
         lbl_zchan = QtWidgets.QLabel('Ellipsoid (GPS) Elevation:')
         lbl_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
-        pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
+        pb_cg5 = QtWidgets.QPushButton('Load CG-5/CG-6 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
@@ -97,7 +97,7 @@ class ImportCG5(BasicModule):
         self.cmb_ychan.setEnabled(False)
         self.cmb_zchan.setEnabled(False)
 
-        self.setWindowTitle(r'Import CG-5 Data')
+        self.setWindowTitle(r'Import CG-5/CG-6 Data')
 
         gl_main.addWidget(self.le_cg5file, 0, 1, 1, 1)
         gl_main.addWidget(pb_cg5, 0, 0, 1, 1)
@@ -175,11 +175,10 @@ class ImportCG5(BasicModule):
         cren[self.cmb_ychan.currentText()] = 'latitude'
         cren[self.cmb_zchan.currentText()] = 'elevation'
 
-        self.df_gps.rename(columns=cren, inplace=True)
-
         dfmerge = merge_gpsmag(self.le_cg5file.text(),
                                self.le_gpsfile.text(),
-                               float(self.le_basethres.text()), self.showlog)
+                               float(self.le_basethres.text()), cren,
+                               self.showlog)
 
         if dfmerge is False:
             return False
@@ -231,10 +230,10 @@ class ImportCG5(BasicModule):
         None.
 
         """
-        ext = 'CG-5 ASCII (*.txt *.xyz)'
+        ext = 'CG-5/CG-6 ASCII (*.txt *.xyz *.dat)'
 
         if filename == '':
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            filename, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
             if filename == '':
                 return
@@ -327,7 +326,8 @@ def get_cg5(filename):
 
     Returns
     -------
-    None.
+    df_cg5 : Pandas DataFrame
+        Gravity data
 
     """
     os.chdir(os.path.dirname(filename))
@@ -359,6 +359,42 @@ def get_cg5(filename):
     return df_cg5
 
 
+def get_cg6(filename):
+    """
+    Get CG-6 filename and load data.
+
+    Parameters
+    ----------
+    filename : str
+        CG-6 filename.
+
+    Returns
+    -------
+    df : Pandas DataFrame
+        Gravity data
+
+    """
+    os.chdir(os.path.dirname(filename))
+
+    with open(filename, encoding='utf-8') as fno:
+        tmp = fno.readlines()
+
+    i = 0
+    while r'/Station' not in tmp[i]:
+        i += 1
+
+    df = pd.read_csv(filename, sep='\t', skiprows=i)
+    df = df.rename(columns={'/Station': 'STATION', 'Line': 'LINE',
+                            'RawGrav': 'GRAV', 'Time': 'TIME'})
+
+    df['datetime'] = df.Date + ' ' + df.TIME
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    df['DECTIMEDATE'] = df['datetime'].astype(int) // 10**9
+    df['DECTIMEDATE'] = df['DECTIMEDATE'] / (24 * 3600)
+
+    return df
+
+
 def get_gps(filename):
     """
     Get GPS filename and load data.
@@ -370,7 +406,8 @@ def get_gps(filename):
 
     Returns
     -------
-    None.
+    df2 : Pandas DataFrame
+        GPS data.
 
     """
     os.chdir(os.path.dirname(filename))
@@ -381,14 +418,14 @@ def get_gps(filename):
     return df2
 
 
-def merge_gpsmag(cg5file, gpsfile, basethres=10000., showlog=print):
+def merge_gpsmag(cg5file, gpsfile, basethres=10000., cren=None, showlog=print):
     """
     Import and merge GPS and gravity data.
 
     Parameters
     ----------
     cg5file : str
-        Gravity filename for data in CG-5 format.
+        Gravity filename for data in CG format.
     gpsfile : str
         GPS filename in CSV format.
     basethres : float, optional
@@ -402,8 +439,19 @@ def merge_gpsmag(cg5file, gpsfile, basethres=10000., showlog=print):
         Dataframe with merged data.
 
     """
-    df_cg5 = get_cg5(cg5file)
+    with open(cg5file, encoding='utf-8') as fno:
+        tmp = fno.readline()
+
+    if 'CG-5' in tmp:
+        df_cg5 = get_cg5(cg5file)
+    elif 'CG-6' in tmp:
+        df_cg5 = get_cg6(cg5file)
+    else:
+        showlog('Unknown gravity file format')
+        return False
     df_gps = get_gps(gpsfile)
+    if cren is not None:
+        df_gps.rename(columns=cren, inplace=True)
 
     if df_gps.latitude.dtype == 'O':
         filt = df_gps.latitude.str.contains('S')
@@ -471,9 +519,10 @@ def _testfn():
     """Test routine."""
     import sys
     _ = QtWidgets.QApplication(sys.argv)
-
-    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
-    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
+    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
+    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
+    # grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
+    # gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
     bthres = '10000'
 
     # Import Data
@@ -482,6 +531,10 @@ def _testfn():
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
     IO.settings()
+
+    # grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_0679_SIMON.dat"
+
+    # dat = get_cg6(grvfile)
 
 
 if __name__ == "__main__":

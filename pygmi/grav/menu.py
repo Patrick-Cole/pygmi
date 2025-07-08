@@ -52,7 +52,7 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Gravity')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtGui.QAction('Import CG-5 Data')
+        self.action_import_data = QtGui.QAction('Import CG-5 or CG-6 Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
@@ -64,7 +64,8 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        self.parent.item_insert('Io', 'Import CG-5 Data', iodefs.ImportCG5)
+        self.parent.item_insert('Io', 'Import CG-5 or CG-6 Data',
+                                iodefs.ImportCG5)
 
     def process_data(self):
         """Process data."""

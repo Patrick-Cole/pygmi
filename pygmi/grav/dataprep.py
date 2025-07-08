@@ -623,7 +623,10 @@ def time_convert(x):
         Time in seconds.
 
     """
-    h, m, s = map(int, x.decode().split(':'))
+    try:
+        h, m, s = map(int, x.decode().split(':'))
+    except AttributeError:
+        h, m, s = map(int, x.split(':'))
     return (h * 60 + m) * 60 + s
 
 
@@ -633,7 +636,9 @@ def _testfn():
 
     grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
-    kbase = '88888'
+    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
+    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
+    kbase = '77777'
     bthres = '10000'
 
     # Import Data
@@ -681,12 +686,13 @@ def _test_lacoste():
     del dfg['station']
     dfg['STATION'] = dfg['STATION'].astype(int)
     dfg['LINE'] = dfg['traverse'].astype(int)
-    dfg['STATION'] = dfg['STATION'] + 1000*dfg['LINE']
+    dfg['STATION'] = dfg['STATION'] + 1000 * dfg['LINE']
 
     dfg['TIME'] = dfg['time'].apply(lambda x: x.encode('utf-8'))
 
     dfg['datetime'] = pd.to_datetime(dfg['datetime'])
-    dfg['DECTIMEDATE'] = dfg['datetime'].astype(int)//10**9
+    dfg['DECTIMEDATE'] = dfg['datetime'].astype(int) // 10**9
+    dfg['DECTIMEDATE'] = dfg['DECTIMEDATE'] / (24 * 3600)
 
     # kbase = '88888'
     bthres = 10000
@@ -697,5 +703,5 @@ def _test_lacoste():
 
 
 if __name__ == "__main__":
-    # _testfn()
-    _test_lacoste()
+    _testfn()
+    # _test_lacoste()
