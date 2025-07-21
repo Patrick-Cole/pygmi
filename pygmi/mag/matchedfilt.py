@@ -29,80 +29,307 @@ This routine is used as a convenience function, typically if you do NOT
 formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
-import winsound
-
-import matplotlib.pyplot as plt
 import numpy as np
+from scipy import signal
 import pwlf
+from PySide6 import QtWidgets
+from matplotlib import style, gridspec
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
-from pygmi.raster.iodefs import get_raster
 from pygmi.raster.misc import lstack
-from pygmi.vector.dataprep import gridxyz
+from pygmi.misc import BasicModule
+from pygmi.mag.dataprep import fftprepminc
 
 
-def fftprepminc(data):
+class MatchedFilt(BasicModule):
     """
-    FFT preparation.
+    Primary class for matched filtering.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
-        Input dataset.
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    self.mmc : FigureCanvas
+        main canvas containing the image
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.data = None
+        self.datapad = None
+        self.fftdata = None
+        self.depth = None
+        self.filt = None
+        self.datamedian = 0
+        self.sos = None
+
+        self.figure = Figure()
+        self.mmc = FigureCanvasQTAgg(self.figure)
+
+        self.cmb_band1 = QtWidgets.QComboBox()
+        self.cmb_dtype = QtWidgets.QComboBox()
+        self.sb_nsegs = QtWidgets.QSpinBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.buttonbox.htmlfile = 'mag.dm.tiltdepth'
+
+        lbl_1 = QtWidgets.QLabel('Band to perform Filtering:')
+        # lbl_2 = QtWidgets.QLabel('Data Type:')
+        lbl_3 = QtWidgets.QLabel('Number of depth slices:')
+
+        pb_calculate = QtWidgets.QPushButton('Recalculate')
+
+        self.cmb_dtype.addItems(['Magnetic', 'Gravity'])
+        self.sb_nsegs.setMinimum(2)
+        self.sb_nsegs.setProperty('value', 2)
+
+        vbl_raster = QtWidgets.QVBoxLayout()
+        hbl_all = QtWidgets.QHBoxLayout(self)
+        vbl_right = QtWidgets.QVBoxLayout()
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Minimum,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
+
+        self.setWindowTitle('Matched Filtering')
+
+        vbl_raster.addWidget(lbl_1)
+        vbl_raster.addWidget(self.cmb_band1)
+        # vbl_raster.addWidget(lbl_2)
+        # vbl_raster.addWidget(self.cmb_dtype)
+        vbl_raster.addWidget(lbl_3)
+        vbl_raster.addWidget(self.sb_nsegs)
+        vbl_raster.addItem(spacer)
+        vbl_raster.addWidget(pb_calculate)
+        vbl_raster.addWidget(self.buttonbox)
+
+        vbl_right.addWidget(self.mmc)
+        vbl_right.addWidget(mpl_toolbar)
+
+        hbl_all.addLayout(vbl_raster)
+        hbl_all.addLayout(vbl_right)
+
+        self.sb_nsegs.valueChanged.connect(self.calculate)
+        self.cmb_band1.currentIndexChanged.connect(self.fftprep)
+        self.cmb_dtype.currentIndexChanged.connect(self.calculate)
+        pb_calculate.pressed.connect(self.calculate)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Raster' not in self.indata:
+            self.showlog('No Raster Data.')
+            return False
+
+        self.indata['Raster'] = lstack(self.indata['Raster'])
+
+        data = self.indata['Raster']
+        blist = []
+        for i in data:
+            blist.append(i.dataid)
+
+        self.cmb_band1.currentIndexChanged.disconnect()
+        self.cmb_band1.clear()
+        self.cmb_band1.addItems(blist)
+        self.cmb_band1.currentIndexChanged.connect(self.fftprep)
+
+        self.fftprep()
+
+        if not nodialog:
+            tmp = self.exec()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        odat = []
+        nsegs = self.sb_nsegs.value()
+        for i in range(nsegs):
+            zout = np.real(np.fft.ifft2(self.fftdata * self.filt[i]))
+            zout = zout + self.datamedian
+            tmp = self.datapad.copy()
+            tmp.data = np.ma.array(zout)
+            tmp.dataid = f'depth {self.depth[i]:.2f}'
+            tmp = lstack([tmp, self.data], piter=self.piter,
+                         showlog=self.showlog,
+                         masterid=self.data.dataid, commonmask=True)[0]
+
+            odat.append(tmp)
+
+        self.outdata['Raster'] = odat
+
+        return True
+
+    def calculate(self):
+        """Calculate matched filter."""
+        nsegs = self.sb_nsegs.value()
+
+        # Calculate the radially averaged power spectrum
+        x_data, power_data, k, self.fftdata = radial_average_power_spectrum(
+            self.datapad)
+
+        # n = -2.9
+        n = 0
+        y_data = np.log(power_data / x_data**(n))
+
+        my_pwlf = pwlf.PiecewiseLinFit(x_data, y_data)
+
+        m = []
+        i = nsegs
+        while len(m) < nsegs:
+            breaks = my_pwlf.fit(i)
+            m1 = my_pwlf.calc_slopes()
+            m = np.array(m1)
+            breaks1 = breaks[:-1][m < 0]
+            breaks2 = breaks[1:][m < 0]
+            m = m[m < 0]
+            i += 1
+
+        # x0 = breaks1
+        # logy0 = my_pwlf.predict(x0)
+
+        d = -m / 2
+        # c = np.sqrt(np.exp(logy0 - m * x0))
+
+        # Filter just for plot
+        f = getbutter(breaks1, breaks2, x_data)
+
+        # fsum = 0
+        # for i in range(nsegs):
+        #     fsum += c[i] * x_data**(n / 2) * np.exp(-x_data * d[i])
+
+        # f = []
+        # for i in range(nsegs):
+        #     f.append(c[i] * x_data**(n / 2) * np.exp(-x_data * d[i]) / fsum)
+
+        # f1 = 1 / (1 + c[1] / c[0] * np.exp(x_data * (d[0] - d[1])))
+        # f2 = 1 - f1
+        # f = [f1, f2]
+
+        # Filter to apply to data
+        # fsum = 0
+        # for i in range(nsegs):
+        #     fsum += c[i] * k**(n / 2) * np.exp(-k * d[i])
+
+        self.filt = []
+        for i in range(nsegs):
+            # self.filt.append(c[i] * k**(n / 2) * np.exp(-k * d[i]) / fsum)
+            self.filt.append(np.interp(k, x_data, f[i]))
+
+        self.depth = d
+
+        # Plotting
+        style.use('bmh')
+        self.figure.clear()
+        gs = gridspec.GridSpec(3, 1)
+        axes = self.figure.add_subplot(gs[:2, 0])
+        axes.scatter(x_data, y_data, label="Data", color="blue", s=2)
+
+        for i in range(nsegs):
+            xtmp = [breaks1[i], breaks2[i]]
+            axes.plot(xtmp, my_pwlf.predict(xtmp), f'C{i + 1}',
+                      label=f'Depth: {d[i]:.2f}')
+
+        for i in breaks1:
+            axes.axvline(x=i, color="green", linestyle="--")
+        for i in breaks2:
+            axes.axvline(x=i, color="green", linestyle="--")
+
+        axes.legend(fontsize=8)
+        axes.set_xlabel("$Wavenumbers (k)$", fontsize=10)
+        # axes.set_ylabel(r"$\ln(Power/k^{-2.9})$", fontsize=10)
+        axes.set_ylabel(r"$\ln(Power)$", fontsize=10)
+        axes.set_title("Piecewise Linear Fit", fontsize=10)
+        axes.tick_params(axis='x', labelsize=8)
+        axes.tick_params(axis='y', labelsize=8)
+
+        axes = self.figure.add_subplot(gs[2, 0])
+        axes.tick_params(axis='x', labelsize=8)
+        axes.tick_params(axis='y', labelsize=8)
+        axes.set_title("FFT Filters", fontsize=10)
+        for i, fi in enumerate(f):
+            axes.plot(x_data, abs(fi), f'C{i + 1}')
+        axes.set_xlabel("$Wavenumbers (k)$", fontsize=10)
+
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
+    def fftprep(self):
+        """FFT preparation when choosing band."""
+        txt = str(self.cmb_band1.currentText())
+        for i in self.indata['Raster']:
+            if i.dataid == txt:
+                self.data = i
+                break
+
+        self.datapad, self.datamedian = fftprepminc(self.data, self.showlog)
+        self.calculate()
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.cmb_band1)
+
+
+def radial_average_power_spectrum(dat):
+    """
+    Calculate the radially averaged power spectrum.
+
+    Parameters
+    ----------
+    data : PyGMI data
+        Input data.
 
     Returns
     -------
-    zfin : numpy array.
-        Output prepared data.
-    rdiff : int
-        rows divided by 2.
-    cdiff : int
-        columns divided by 2.
-    datamedian : float
-        Median of data.
+    radial_bins : numpy array
+        1D radial wavenumbers.
+    radial_mean : numpy array
+        1D radial power spectrum.
+    freq_radius : numpy array
+        2D wavenumber array.
+    fft_data : numpy array
+        2D FFT data array.
 
     """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-
-    nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
-
-    xmin, xmax, ymin, ymax = data.extent
-
-    x = np.arange(xmin, xmax, data.xdim) + data.xdim / 2
-    y = np.arange(ymin, ymax, data.ydim) + data.ydim / 2
-    x, y = np.meshgrid(x, y)
-    z = ndat
-    x = np.ma.array(x, mask=z.mask)
-    y = np.ma.array(y, mask=z.mask)[::-1]
-
-    x = x.compressed()
-    y = y.compressed()
-    z = z.compressed()
-    dxy = min(data.xdim, data.ydim)
-    xmin2, xmax2 = [xmin - cdiff * dxy, xmax + cdiff * dxy]
-    ymin2, ymax2 = [ymin - rdiff * dxy, ymax + rdiff * dxy]
-
-    x2 = list(np.arange(xmin2, xmax2, dxy))
-    y2 = list(np.arange(ymin2, ymax2, dxy))
-
-    xcnr = x2 * 2 + [xmin2] * len(y2) + [xmax2] * len(y2)
-    ycnr = [ymin2] * len(x2) + [ymax2] * len(x2) + y2 * 2
-    zcnr = np.zeros_like(xcnr)
-
-    x = np.append(x, xcnr)
-    y = np.append(y, ycnr)
-    z = np.append(z, zcnr)
-
-    zfin = gridxyz(x, y, z, dxy, method='Minimum Curvature', bdist=None)
-
-    zfin.data[np.isnan(zfin.data)] = 0.
-
-    return zfin, datamedian
-
-
-def radial_average_power_spectrum(data, dx=1.0, dy=1.0):
+    data = dat.data
+    dx = dat.xdim
+    dy = dat.ydim
     # Compute the 2D Fourier Transform
     fft_data = np.fft.fft2(data)
     # fft_shifted = np.fft.fftshift(fft_data)
@@ -120,7 +347,7 @@ def radial_average_power_spectrum(data, dx=1.0, dy=1.0):
 
     # Radial binning
     max_radius = (np.max(freq_radius))
-    radial_bins = np.linspace(0, max_radius, 256)
+    radial_bins = np.linspace(0, max_radius, min(nx, ny))
     radial_mean = np.zeros_like(radial_bins, dtype=float)
     radial_indices = np.digitize(freq_radius.ravel(), radial_bins)
 
@@ -128,122 +355,99 @@ def radial_average_power_spectrum(data, dx=1.0, dy=1.0):
     for i in range(1, len(radial_bins)):
         mask = radial_indices == i
         radial_mean.append(np.mean(power_spectrum.ravel()[mask]))
+        pass
 
     # Compute bin centers
     radial_bins = 0.5 * (radial_bins[:-1] + radial_bins[1:])
 
+    mask = ~np.isnan(radial_mean)
+    radial_bins = radial_bins[mask]
+    radial_mean = np.array(radial_mean)[mask]
+
     return radial_bins, radial_mean, freq_radius, fft_data
 
 
-def test():
+def getbutter(lowcut, highcut, f, order=5):
+    """
+    Create Butterworth bandpass filter.
+
+    Parameters
+    ----------
+    lowcut : list of floats
+        Low cutoff frequencys.
+    highcut : list of floats
+        High cutoff frequencys.
+    f : numpy array
+        List of frequencies, ending in nyquist frequency.
+    order : int
+        Order of the filter.
+
+    Returns
+    -------
+    filt : list
+        List of 1D butterworth filters.
+
+    """
+    filt = []
+    nq = f[-1]
+    fs = nq * 2
+    for i, low in enumerate(lowcut):
+        high = highcut[i]
+        if high / nq == 1.0:
+            sos = signal.butter(
+                order, low / nq, btype='highpass', output='sos')
+        elif low == 0.0:
+            sos = signal.butter(
+                order, high / nq, btype='lowpass', output='sos')
+        else:
+            sos = signal.butter(
+                order, [low / nq, high / nq], btype='bandpass', output='sos')
+
+        _, h = signal.freqz_sos(sos, fs=fs, worN=f)
+
+        filt.append(h)
+
+    return filt
+
+
+def _testfn():
+    """Testing routine."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
-    nsegs = 3
-    n = [0, 1, 1]
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Tilt\tilt.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400200.tif"
 
     dat = get_raster(ifile)
 
-    data = dat[0]
+    _ = QtWidgets.QApplication(sys.argv)
 
-    xdim = data.xdim
-    ydim = data.ydim
+    tmp1 = MatchedFilt()
+    tmp1.indata['Raster'] = dat
 
-    data2, datamedian = fftprepminc(data)
-    ndat = data2.data
-    # Calculate the radially averaged power spectrum
-    x_data, y_data, freq_radius, fft_data = radial_average_power_spectrum(
-        ndat, xdim, ydim)
-    y_data = np.log(y_data)
+    tmp1.settings()
 
-    my_pwlf = pwlf.PiecewiseLinFit(x_data, y_data)
-    breaks = my_pwlf.fit(nsegs)
+    dat = tmp1.outdata
 
-    x_hat = np.linspace(x_data.min(), x_data.max(), 100)
-    y_hat = my_pwlf.predict(x_hat)
 
-    # Plot the results
-    plt.scatter(x_data, y_data, label="Data", color="blue", s=10)
-    plt.plot(x_hat, y_hat, label="Fitted Curve", color="red")
+def _testfft():
+    """Test FFT."""
+    from scipy import signal
+    import matplotlib.pyplot as plt
 
-    # plt.axvline(x=x0, color="green", linestyle="--",
-    #             label=f"Knot at x={x0:.2f}")
-    plt.legend()
-    plt.xlabel("Wavenumbers")
-    plt.ylabel("Power")
-    plt.title("Piecewise Linear Fit")
+    b, a = signal.butter(4, [.2, .4], 'band')
+    w, h = signal.freqz(b, a, fs=100)
+    plt.plot(w, abs(h))
+    plt.title('Butterworth filter frequency response')
+    plt.xlabel('Frequency [rad/s]')
+    plt.ylabel('Amplitude [dB]')
+    plt.margins(0, 0.1)
+    plt.grid(which='both', axis='both')
+    plt.axvline(100, color='green')  # cutoff frequency
     plt.show()
-
-    m = my_pwlf.calc_slopes()
-    d = -m / 2
-    x0 = breaks[:-1]
-    logy0 = my_pwlf.predict(x0)
-
-    c = []
-    for i in range(nsegs):
-        c.append(
-            np.sqrt(np.exp(logy0[i] - n[i] * np.log(x0[i]) - m[i] * x0[i])))
-
-    c = np.array(c)
-    k = x_data
-
-    fsum = 0
-    for i in range(nsegs):
-        fsum += c[i] * k**n[i] * np.exp(-k * d[i])
-
-    f = []
-    for i in range(nsegs):
-        f.append(c[i] * k**n[i] * np.exp(-k * d[i]) / fsum)
-
-    for i in f:
-        plt.plot(k, i)
-
-    plt.plot(k, np.sum(f, 0))
-    plt.xlabel("Wavenumbers")
-    plt.show()
-
-    k = freq_radius
-    fsum = 0
-    for i in range(nsegs):
-        fsum += c[i] * k**n[i] * np.exp(-k * d[i])
-
-    f = []
-    odat = []
-    for i in range(nsegs):
-        f.append(c[i] * k**n[i] * np.exp(-k * d[i]) / fsum)
-
-        zout = np.real(np.fft.ifft2(fft_data * f[i]))
-        zout = zout + datamedian
-        tmp = data2.copy()
-        tmp.data = np.ma.array(zout)
-        tmp.dataid = f'depth {d[i]:.2f}'
-        tmp = lstack([tmp, data], masterid=data.dataid, commonmask=True)[0]
-
-        odat.append(tmp)
-
-    plt.subplot(221)
-    plt.title(data.dataid)
-    vmin, vmax = data.get_vmin_vmax()
-    plt.imshow(data.data, vmin=vmin, vmax=vmax, extent=data.extent)
-    plt.subplot(222)
-    plt.title(odat[0].dataid)
-    vmin, vmax = odat[0].get_vmin_vmax()
-    plt.imshow(odat[0].data, vmin=vmin, vmax=vmax, extent=odat[0].extent)
-    plt.subplot(223)
-    plt.title(odat[1].dataid)
-    vmin, vmax = odat[1].get_vmin_vmax()
-    plt.imshow(odat[1].data, vmin=vmin, vmax=vmax, extent=odat[1].extent)
-    plt.subplot(224)
-    plt.title(odat[2].dataid)
-    vmin, vmax = odat[2].get_vmin_vmax()
-    plt.imshow(odat[2].data, vmin=vmin, vmax=vmax, extent=odat[2].extent)
-
-    plt.tight_layout()
-    plt.show()
-    pass
 
 
 if __name__ == "__main__":
-    test()
-
-    print('Finished!')
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
+    _testfn()
+    # _testfft()

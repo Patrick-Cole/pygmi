@@ -365,6 +365,13 @@ class Data():
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)
 
+    def plot(self, ax):
+        """Simple data plot."""
+        vmin, vmax = self.get_vmin_vmax()
+        im = ax.imshow(self.data, vmin=vmin, vmax=vmax, extent=self.extent,
+                       interpolation='none')
+        return im
+
     def set_mask(self, mask):
         """
         Replace the existing mask with a new one.

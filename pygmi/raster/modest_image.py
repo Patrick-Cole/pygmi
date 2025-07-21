@@ -569,12 +569,9 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
     from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
-    # from IPython import get_ipython
-    # get_ipython().magic('matplotlib qt')
 
     ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
     ifile = r'd:\workdata\testdata.hdr'
-    # ifile =  r"D:\DEM\20221117_raw_dsm\lo23\3122C\raw_dsm_3122CA_1.tif"
 
     pbar = ProgressBarText()
 

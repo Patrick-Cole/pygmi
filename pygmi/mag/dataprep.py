@@ -30,8 +30,10 @@ from scipy.signal.windows import tukey
 import scipy.interpolate as si
 from scipy import signal
 
-from pygmi.raster.datatypes import Data
+# from pygmi.raster.datatypes import Data
+from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import BasicModule
+from pygmi.raster.misc import lstack
 
 
 class Tilt1(BasicModule):
@@ -487,13 +489,78 @@ class RTP(BasicModule):
         for data in self.piter(self.indata['Raster']):
             if data.dataid != self.cmb_dataid.currentText():
                 continue
-            dat = rtp(data, I_deg, D_deg)
+            dat = rtp(data, I_deg, D_deg, self.showlog, self.piter)
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
 
 
-def fftprep(data):
+def fftprepminc(data, showlog=print):
+    """
+    FFT preparation.
+
+    This routine pads using minimum curvature gridding.
+
+    Parameters
+    ----------
+    data : pygmi.raster.datatypes.Data
+        Input dataset.
+    showlog : function, optional
+        Show information using a function. The default is print.
+
+    Returns
+    -------
+    zfin : numpy array.
+        Output prepared data.
+    datamedian : float
+        Median of data.
+
+    """
+    datamedian = np.ma.median(data.data)
+    ndat = data.data - datamedian
+
+    nr, nc = data.data.shape
+    cdiff = nc // 2
+    rdiff = nr // 2
+
+    xmin, xmax, ymin, ymax = data.extent
+
+    x = np.arange(xmin, xmax, data.xdim) + data.xdim / 2
+    y = np.arange(ymin, ymax, data.ydim) + data.ydim / 2
+    x, y = np.meshgrid(x, y)
+    z = ndat
+    y = y[::-1]
+    x = np.ma.array(x, mask=z.mask)
+    y = np.ma.array(y, mask=z.mask)
+
+    x = x.compressed()
+    y = y.compressed()
+    z = z.compressed()
+    dxy = min(data.xdim, data.ydim)
+    xmin2, xmax2 = [xmin - cdiff * dxy, xmax + cdiff * dxy]
+    ymin2, ymax2 = [ymin - rdiff * dxy, ymax + rdiff * dxy]
+
+    x2 = list(np.arange(xmin2, xmax2, dxy))
+    y2 = list(np.arange(ymin2, ymax2, dxy))
+
+    xcnr = x2 * 2 + [xmin2] * len(y2) + [xmax2] * len(y2)
+    ycnr = [ymin2] * len(x2) + [ymax2] * len(x2) + y2 * 2
+    zcnr = np.zeros_like(xcnr)
+
+    x = np.append(x, xcnr)
+    y = np.append(y, ycnr)
+    z = np.append(z, zcnr)
+
+    zfin = gridxyz(x, y, z, dxy, method='Minimum Curvature', bdist=None,
+                   showlog=showlog)
+
+    zfin.data[np.isnan(zfin.data)] = 0.
+    zfin.crs = data.crs
+
+    return zfin, datamedian
+
+
+def fftprep(data, showlog=print):
     """
     FFT Preparation.
 
@@ -501,6 +568,8 @@ def fftprep(data):
     ----------
     data : numpy array
         Input dataset.
+    showlog : function, optional
+        Show information using a function. The default is print.
 
     Returns
     -------
@@ -583,7 +652,7 @@ def fft_getkxy(fftmod, xdim, ydim):
     return KX, KY
 
 
-def rtp(data, I_deg, D_deg):
+def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
     """
     Reduction to the pole.
 
@@ -595,6 +664,10 @@ def rtp(data, I_deg, D_deg):
         Magnetic inclination.
     D_deg : float
         Magnetic declination.
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
@@ -605,8 +678,8 @@ def rtp(data, I_deg, D_deg):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, rdiff, cdiff, datamedian = fftprep(data)
-    fftmod = np.fft.fft2(ndat)
+    ndat, datamedian = fftprepminc(data, showlog=showlog)
+    fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
@@ -617,18 +690,15 @@ def rtp(data, I_deg, D_deg):
     filt = 1 / (np.sin(I) + 1j * np.cos(I) * np.sin(D + alpha))**2
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
-    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+
+    zout = ndat.data
     zout = zout + datamedian
-
-    zout[data.data.mask] = data.data.fill_value
-
-    dat = Data()
-    dat.data = np.ma.masked_invalid(zout)
-    dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nodata = data.data.fill_value
+    dat = ndat.copy()
+    dat.data = np.ma.array(zout)
     dat.dataid = 'RTP_' + data.dataid
-    dat.set_transform(transform=data.transform)
-    dat.crs = data.crs
+    dat = lstack([dat, data], piter=piter,
+                 showlog=showlog,
+                 masterid=data.dataid, commonmask=True)[0]
 
     return dat
 
@@ -638,8 +708,6 @@ def _testfn_rtp():
     import matplotlib.pyplot as plt
     from matplotlib import colormaps
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
 
     # quick model
     finc = -57
@@ -669,23 +737,20 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\RTP\rtptest.tif"
+    dat1 = get_raster(ifile)[0]
+    dat = rtp(dat1, -62.5, -16.75)
 
-    dat = get_raster(ifile)[0]
-
-    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat.data, 75, 3)
+    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat.data, 75, 0)
 
     plt.figure(dpi=150)
-    plt.imshow(tahg)
-    plt.colorbar()
-    plt.show()
-
-    plt.figure(dpi=150)
-    plt.imshow(ehga)
-    plt.colorbar()
+    ax = plt.subplot(221)
+    dat1.plot(ax)
+    ax = plt.subplot(222)
+    dat.plot(ax)
+    plt.subplot(224)
+    plt.imshow(t1, interpolation='none')
     plt.show()
 
 

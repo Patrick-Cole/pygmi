@@ -94,7 +94,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * shapelysmooth>=0.2.1
 * simpeg>=0.24.0
 * beautifulsoup4>=4.13.4
-* pywin32>=310 (for windows users)
+* pwlf>=2.5.1
 
 PyPi - Windows
 ^^^^^^^^^^^^^^
@@ -204,3 +204,4 @@ References
 * Cole, P. 2013, PyGMI – The use of Python in geophysical modelling and interpretation. South African Geophysical Association, 13th Biennial Conference, Skukuza Rest Camp, Kruger National Park (7-9 October)
 * Cole, P. 2014, The history and design behind the Python Geophysical Modelling and Interpretation (PyGMI) package, SciPy 2014, Austin, Texas (6-12 July)
 * Cole, P. 2016, The continued evolution of the open source PyGMI project. 35th IGC, Cape Town.
+* Cole, P. 2025, PyGMI - a python package for geoscience modelling and interpretation. Journal of Open Source Software, 10(111), 7019, https://doi.org/10.21105/joss.07019

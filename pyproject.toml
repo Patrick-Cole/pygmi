@@ -54,6 +54,7 @@ dependencies = [
                 'simpeg>=0.24.0',
                 'beautifulsoup4>=4.13.4',
                 'pyyaml>=6.0.2',
+                'pwlf>=2.5.1',
                 ]
 
 [project.urls]

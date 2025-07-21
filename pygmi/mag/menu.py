@@ -29,6 +29,7 @@ from PySide6 import QtWidgets, QtGui
 from pygmi.mag import dataprep
 from pygmi.mag import igrf
 from pygmi.mag import tiltdepth
+from pygmi.mag import matchedfilt
 
 
 class MenuWidget():
@@ -68,6 +69,10 @@ class MenuWidget():
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
 
+        self.action_mfilt = QtGui.QAction('Matched Filtering')
+        self.menu.addAction(self.action_mfilt)
+        self.action_mfilt.triggered.connect(self.mfilt)
+
         self.action_depth_susc = QtGui.QAction('Tilt Depth Interpretation')
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
@@ -88,3 +93,8 @@ class MenuWidget():
     def igrf(self):
         """Compute IGRF."""
         self.parent.item_insert('Step', 'Remove IGRF', igrf.IGRF)
+
+    def mfilt(self):
+        """Compute Matched Filtering."""
+        self.parent.item_insert(
+            'Step', 'Matched Filtering', matchedfilt.MatchedFilt)
