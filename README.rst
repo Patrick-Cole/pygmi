@@ -13,6 +13,8 @@ PyGMI
 .. |pygmirelease| image:: https://img.shields.io/github/release/patrick-cole/pygmi
    :alt: GitHub Release
    :target: https://github.com/Patrick-Cole/pygmi/releases
+.. image:: https://joss.theoj.org/papers/10.21105/joss.07019/status.svg
+   :target: https://doi.org/10.21105/joss.07019
 
 
 |pythonversion| |pygmiversion| |pygmilicence| |pygmirelease|
