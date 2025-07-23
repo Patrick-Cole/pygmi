@@ -2073,8 +2073,8 @@ def _testdown():
     """Continuation testing routine."""
     import matplotlib.pyplot as plt
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
+    # from IPython import get_ipython
+    # get_ipython().run_line_magic('matplotlib', 'inline')
 
     h = 4
     dxy = 1
@@ -2132,9 +2132,9 @@ def _testfft():
     import matplotlib.pyplot as plt
     from matplotlib import colormaps
     import scipy
-    from IPython import get_ipython
+    # from IPython import get_ipython
 
-    get_ipython().run_line_magic('matplotlib', 'inline')
+    # get_ipython().run_line_magic('matplotlib', 'inline')
 
     ifile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
     data = get_raster(ifile)[0]

@@ -26,14 +26,15 @@
 
 from PySide6 import QtWidgets
 import numpy as np
-from scipy.signal.windows import tukey
-import scipy.interpolate as si
+# from scipy.signal.windows import tukey
+# import scipy.interpolate as si
 from scipy import signal
 
 # from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
+from pygmi.raster.dataprep import fft_getkxy
 
 
 class Tilt1(BasicModule):
@@ -560,96 +561,96 @@ def fftprepminc(data, showlog=print):
     return zfin, datamedian
 
 
-def fftprep(data, showlog=print):
-    """
-    FFT Preparation.
+# def fftprep(data, showlog=print):
+#     """
+#     FFT Preparation.
 
-    Parameters
-    ----------
-    data : numpy array
-        Input dataset.
-    showlog : function, optional
-        Show information using a function. The default is print.
+#     Parameters
+#     ----------
+#     data : numpy array
+#         Input dataset.
+#     showlog : function, optional
+#         Show information using a function. The default is print.
 
-    Returns
-    -------
-    zfin : numpy array.
-        Output prepared data.
-    rdiff : int
-        rows divided by 2.
-    cdiff : int
-        columns divided by 2.
-    datamedian : float
-        Median of data.
+#     Returns
+#     -------
+#     zfin : numpy array.
+#         Output prepared data.
+#     rdiff : int
+#         rows divided by 2.
+#     cdiff : int
+#         columns divided by 2.
+#     datamedian : float
+#         Median of data.
 
-    """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
+#     """
+#     datamedian = np.ma.median(data.data)
+#     ndat = data.data - datamedian
 
-    nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
+#     nr, nc = data.data.shape
+#     cdiff = nc // 2
+#     rdiff = nr // 2
 
-    # Section to pad data
+#     # Section to pad data
 
-    nr, nc = data.data.shape
+#     nr, nc = data.data.shape
 
-    z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) - 999
-    x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
-    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
+#     z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) - 999
+#     x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
+#     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
 
-    z1[0] = 0
-    z1[-1] = 0
-    z1[:, 0] = 0
-    z1[:, -1] = 0
+#     z1[0] = 0
+#     z1[-1] = 0
+#     z1[:, 0] = 0
+#     z1[:, -1] = 0
 
-    x = x1.flatten()
-    y = y1.flatten()
-    z = z1.flatten()
+#     x = x1.flatten()
+#     y = y1.flatten()
+#     z = z1.flatten()
 
-    x = x[z != -999]
-    y = y[z != -999]
-    z = z[z != -999]
+#     x = x[z != -999]
+#     y = y[z != -999]
+#     z = z[z != -999]
 
-    points = np.transpose([x, y])
+#     points = np.transpose([x, y])
 
-    zfin = si.griddata(points, z, (x1, y1), method='linear', fill_value=0.)
+#     zfin = si.griddata(points, z, (x1, y1), method='linear', fill_value=0.)
 
-    nr, nc = zfin.shape
-    zfin *= tukey(nc)
-    zfin *= tukey(nr)[:, np.newaxis]
+#     nr, nc = zfin.shape
+#     zfin *= tukey(nc)
+#     zfin *= tukey(nr)[:, np.newaxis]
 
-    return zfin, rdiff, cdiff, datamedian
+#     return zfin, rdiff, cdiff, datamedian
 
 
-def fft_getkxy(fftmod, xdim, ydim):
-    """
-    Get KX and KY.
+# def fft_getkxy(fftmod, xdim, ydim):
+#     """
+#     Get KX and KY.
 
-    Parameters
-    ----------
-    fftmod : numpy array
-        FFT data.
-    xdim : float
-        cell x dimension.
-    ydim : float
-        cell y dimension.
+#     Parameters
+#     ----------
+#     fftmod : numpy array
+#         FFT data.
+#     xdim : float
+#         cell x dimension.
+#     ydim : float
+#         cell y dimension.
 
-    Returns
-    -------
-    KX : numpy array
-        x sample frequencies.
-    KY : numpy array
-        y sample frequencies.
+#     Returns
+#     -------
+#     KX : numpy array
+#         x sample frequencies.
+#     KY : numpy array
+#         y sample frequencies.
 
-    """
-    ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
-    ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
+#     """
+#     ny, nx = fftmod.shape
+#     kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
+#     ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
 
-    KX, KY = np.meshgrid(kx, ky)
-    KY = -KY
-    return KX, KY
+#     KX, KY = np.meshgrid(kx, ky)
+#     KY = -KY
+#     return KX, KY
 
 
 def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
