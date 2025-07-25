@@ -45,9 +45,10 @@ import matplotlib.pyplot as plt
 from numba import jit
 import geopandas as gpd
 
-from pygmi.raster.cooper import vertical
+# from pygmi.raster.cooper import vertical
+from pygmi.raster.dataprep import verticalp
 from pygmi.raster.misc import lstack
-from pygmi.mag.dataprep import rtp, nextpow2
+from pygmi.mag.dataprep import rtp
 from pygmi.misc import frm, BasicModule, ProgressBarText, ProgressBar
 
 
@@ -369,14 +370,14 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
     pbar.setValue(1)
 
     nr, nc = zout.data.shape
-    dy, dx = np.gradient(zout.data)
+    dy, dx = np.gradient(zout.data, zout.ydim, zout.xdim)
     dxtot = np.ma.sqrt(dx**2 + dy**2)
 
-    nmax = np.max([nr, nc])
-    npts = int(2**nextpow2(nmax))
-    dz = vertical(zout.data, npts, 1)
+    # nmax = np.max([nr, nc])
+    # npts = int(2**nextpow2(nmax))
+    dz = verticalp(zout)
 
-    t1 = np.arctan(dz / dxtot)
+    t1 = np.arctan2(dz, dxtot)
 
     pbar.setValue(2)
     # A negative number implies we are straddling 0

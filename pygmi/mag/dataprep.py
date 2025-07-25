@@ -26,15 +26,12 @@
 
 from PySide6 import QtWidgets
 import numpy as np
-# from scipy.signal.windows import tukey
-# import scipy.interpolate as si
 from scipy import signal
 
-# from pygmi.raster.datatypes import Data
-from pygmi.vector.dataprep import gridxyz
+from pygmi.raster.dataprep import verticalp
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
-from pygmi.raster.dataprep import fft_getkxy
+from pygmi.raster.fft import fftprepminc, fft_getkxy
 
 
 class Tilt1(BasicModule):
@@ -138,7 +135,7 @@ class Tilt1(BasicModule):
         data2 = []
 
         for i in self.piter(range(len(data))):
-            t1, th, t2, ta, tdx, tahg, ehga = tilt1(data[i].data, self.azi,
+            t1, th, t2, ta, tdx, tahg, ehga = tilt1(data[i], self.azi,
                                                     self.smooth, kval)
             data2.append(data[i].copy())
             data2.append(data[i].copy())
@@ -184,7 +181,7 @@ class Tilt1(BasicModule):
         self.saveobj(self.sb_k)
 
 
-def tilt1(data, azi, s, k=2):
+def tilt1(data1, azi, s, k=2):
     """
     Tilt angle calculations.
 
@@ -193,8 +190,8 @@ def tilt1(data, azi, s, k=2):
 
     Parameters
     ----------
-    data : numpy masked array
-        matrix of double to be filtered
+    data1 : pygmi.raster.datatypes.Data
+        data with matrix of double to be filtered
     azi : float
         directional filter azimuth in degrees from East
     s : int
@@ -219,6 +216,7 @@ def tilt1(data, azi, s, k=2):
     ehga : numpy masked array
         Enhanced Horizontal Gradient Amplitude
     """
+    data = data1.data
     dmin = data.min()
     dmax = data.max()
     dm = 0.5 * (dmin + dmax)
@@ -233,25 +231,22 @@ def tilt1(data, azi, s, k=2):
         mask = signal.convolve2d(mask, se, 'valid')
         data = np.ma.array(data2, mask=mask)
 
-    nr, nc = data.shape
     dtr = np.pi / 180.0
     azi = azi * dtr
 
-    dy, dx = np.gradient(data)
+    dy, dx = np.gradient(data, data1.ydim, data1.xdim)
     dxtot = np.ma.sqrt(dx * dx + dy * dy)
-    nmax = np.max([nr, nc])
-    npts = int(2**nextpow2(nmax))
-    dz = vertical(data, npts, 1)
-    t1 = np.ma.arctan(dz / dxtot)
+    dz = verticalp(data1)
+    t1 = np.ma.arctan2(dz, dxtot)
     th = np.real(np.arctanh(np.nan_to_num(dz / dxtot) + (0 + 0j)))
 
-    tdx = np.real(np.ma.arctan(dxtot / abs(dz)))
+    tdx = np.real(np.ma.arctan2(dxtot, abs(dz)))
 
     # Standard directional derivative
     dx1 = dx * np.cos(azi) + dy * np.sin(azi)
     dx2 = dx * np.cos(azi + np.pi / 2) + dy * np.sin(azi + np.pi / 2)
     dxz = np.ma.sqrt(dx2 * dx2 + dz * dz)
-    ta = np.ma.arctan(dx1 / dxz)         # Tilt directional derivative
+    ta = np.ma.arctan2(dx1, dxz)         # Tilt directional derivative
 
     # 2nd order Tilt angle
 
@@ -259,23 +254,21 @@ def tilt1(data, azi, s, k=2):
     se = np.ones([s, s]) / (s * s)
     ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
     ts = np.ma.array(ts, mask=t1.mask)
+    ts = data1.copy(ts)
 
-    [dxs, dys] = np.gradient(ts)
-    dzs = vertical(ts, npts, 1)
+    dxs, dys = np.gradient(ts.data, data1.ydim, data1.xdim)
+    dzs = verticalp(ts)
     dxtots = np.ma.sqrt(dxs * dxs + dys * dys)
-    t2 = np.ma.arctan(dzs / dxtots)
+    t2 = np.ma.arctan(dzs, dxtots)
 
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative
 
-    data = dxtot
-    nr, nc = data.shape
-    dy, dx = np.gradient(data)
+    data = data1.copy(dxtot)
+    dy, dx = np.gradient(data.data, data1.ydim, data1.xdim)
     dxtot = np.ma.sqrt(dx * dx + dy * dy)
-    nmax = np.max([nr, nc])
-    npts = int(2**nextpow2(nmax))
-    dz = vertical(data, npts, 1)
-    tahg = np.ma.arctan(dz / dxtot)
+    dz = verticalp(data)
+    tahg = np.ma.arctan2(dz, dxtot)
 
     dxyztot = np.ma.sqrt(dx * dx + dy * dy + dz * dz)
 
@@ -308,65 +301,6 @@ def nextpow2(n):
     """
     m_i = np.ceil(np.log2(np.abs(n)))
     return m_i
-
-
-def vertical(data, npts=None, xint=1, order=1):
-    """
-    Vertical derivative.
-
-    Based on work by Gordon Cooper (School of Geosciences, University of the
-                                    Witwatersrand, Johannesburg, South Africa).
-
-    Parameters
-    ----------
-    data : numpy array
-        Input data.
-    npts : int, optional
-        Number of points. The default is None.
-    xint : float, optional
-        X interval. The default is 1.
-    order : int
-        Order of derivative. The default is 1.
-
-    Returns
-    -------
-    dz : numpy array
-        Output data
-
-    """
-    nr, nc = data.shape
-
-    z = data - np.ma.median(data)
-    if np.ma.is_masked(z):
-        z = z.filled(0.)
-
-    if npts is None:
-        nmax = np.max([nr, nc])
-        npts = int(2**nextpow2(nmax))
-
-    cdiff = int(np.floor((npts - nc) / 2))
-    rdiff = int(np.floor((npts - nr) / 2))
-    cdiff2 = npts - cdiff - nc
-    rdiff2 = npts - rdiff - nr
-    data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
-
-    f = np.fft.fft2(data1)
-    fz = f
-    wn = 2.0 * np.pi / (xint * (npts - 1))
-    f = np.fft.fftshift(f)
-    cx = npts / 2 + 1
-    cy = cx
-    for i in range(npts):
-        freqx = (i + 1 - cx) * wn
-        for j in range(npts):
-            freqy = (j + 1 - cy) * wn
-            freq = np.sqrt(freqx * freqx + freqy * freqy)
-            fz[i, j] = f[i, j] * freq**order
-    fz = np.fft.fftshift(fz)
-    fzinv = np.fft.ifft2(fz)
-    dz = np.real(fzinv[rdiff:nr + rdiff, cdiff:nc + cdiff])
-
-    return dz
 
 
 class RTP(BasicModule):
@@ -496,163 +430,6 @@ class RTP(BasicModule):
         self.outdata['Raster'] = newdat
 
 
-def fftprepminc(data, showlog=print):
-    """
-    FFT preparation.
-
-    This routine pads using minimum curvature gridding.
-
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        Input dataset.
-    showlog : function, optional
-        Show information using a function. The default is print.
-
-    Returns
-    -------
-    zfin : numpy array.
-        Output prepared data.
-    datamedian : float
-        Median of data.
-
-    """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-
-    nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
-
-    xmin, xmax, ymin, ymax = data.extent
-
-    x = np.arange(xmin, xmax, data.xdim) + data.xdim / 2
-    y = np.arange(ymin, ymax, data.ydim) + data.ydim / 2
-    x, y = np.meshgrid(x, y)
-    z = ndat
-    y = y[::-1]
-    x = np.ma.array(x, mask=z.mask)
-    y = np.ma.array(y, mask=z.mask)
-
-    x = x.compressed()
-    y = y.compressed()
-    z = z.compressed()
-    dxy = min(data.xdim, data.ydim)
-    xmin2, xmax2 = [xmin - cdiff * dxy, xmax + cdiff * dxy]
-    ymin2, ymax2 = [ymin - rdiff * dxy, ymax + rdiff * dxy]
-
-    x2 = list(np.arange(xmin2, xmax2, dxy))
-    y2 = list(np.arange(ymin2, ymax2, dxy))
-
-    xcnr = x2 * 2 + [xmin2] * len(y2) + [xmax2] * len(y2)
-    ycnr = [ymin2] * len(x2) + [ymax2] * len(x2) + y2 * 2
-    zcnr = np.zeros_like(xcnr)
-
-    x = np.append(x, xcnr)
-    y = np.append(y, ycnr)
-    z = np.append(z, zcnr)
-
-    zfin = gridxyz(x, y, z, dxy, method='Minimum Curvature', bdist=None,
-                   showlog=showlog)
-
-    zfin.data[np.isnan(zfin.data)] = 0.
-    zfin.crs = data.crs
-
-    return zfin, datamedian
-
-
-# def fftprep(data, showlog=print):
-#     """
-#     FFT Preparation.
-
-#     Parameters
-#     ----------
-#     data : numpy array
-#         Input dataset.
-#     showlog : function, optional
-#         Show information using a function. The default is print.
-
-#     Returns
-#     -------
-#     zfin : numpy array.
-#         Output prepared data.
-#     rdiff : int
-#         rows divided by 2.
-#     cdiff : int
-#         columns divided by 2.
-#     datamedian : float
-#         Median of data.
-
-#     """
-#     datamedian = np.ma.median(data.data)
-#     ndat = data.data - datamedian
-
-#     nr, nc = data.data.shape
-#     cdiff = nc // 2
-#     rdiff = nr // 2
-
-#     # Section to pad data
-
-#     nr, nc = data.data.shape
-
-#     z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) - 999
-#     x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
-#     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
-
-#     z1[0] = 0
-#     z1[-1] = 0
-#     z1[:, 0] = 0
-#     z1[:, -1] = 0
-
-#     x = x1.flatten()
-#     y = y1.flatten()
-#     z = z1.flatten()
-
-#     x = x[z != -999]
-#     y = y[z != -999]
-#     z = z[z != -999]
-
-#     points = np.transpose([x, y])
-
-#     zfin = si.griddata(points, z, (x1, y1), method='linear', fill_value=0.)
-
-#     nr, nc = zfin.shape
-#     zfin *= tukey(nc)
-#     zfin *= tukey(nr)[:, np.newaxis]
-
-#     return zfin, rdiff, cdiff, datamedian
-
-
-# def fft_getkxy(fftmod, xdim, ydim):
-#     """
-#     Get KX and KY.
-
-#     Parameters
-#     ----------
-#     fftmod : numpy array
-#         FFT data.
-#     xdim : float
-#         cell x dimension.
-#     ydim : float
-#         cell y dimension.
-
-#     Returns
-#     -------
-#     KX : numpy array
-#         x sample frequencies.
-#     KY : numpy array
-#         y sample frequencies.
-
-#     """
-#     ny, nx = fftmod.shape
-#     kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
-#     ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
-
-#     KX, KY = np.meshgrid(kx, ky)
-#     KY = -KY
-#     return KX, KY
-
-
 def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
     """
     Reduction to the pole.
@@ -692,7 +469,6 @@ def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
 
-    zout = ndat.data
     zout = zout + datamedian
     dat = ndat.copy()
     dat.data = np.ma.array(zout)
@@ -725,10 +501,11 @@ def _testfn_rtp():
     # Calculate the field
 
     magval = lmod.griddata['Calculated Magnetics'].data
-    plt.imshow(magval, cmap=colormaps['jet'])
-    plt.show()
-
     dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
+
+    plt.subplot(121)
+    plt.imshow(magval, cmap=colormaps['jet'])
+    plt.subplot(122)
     plt.imshow(dat2.data, cmap=colormaps['jet'])
     plt.show()
 
@@ -743,7 +520,7 @@ def _testfn():
     dat1 = get_raster(ifile)[0]
     dat = rtp(dat1, -62.5, -16.75)
 
-    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat.data, 75, 0)
+    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat, 75, 0)
 
     plt.figure(dpi=150)
     ax = plt.subplot(221)
@@ -755,5 +532,22 @@ def _testfn():
     plt.show()
 
 
+def _testfn_vert():
+    """RTP testing routine."""
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.dataprep import verticalp
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
+
+    zout = get_raster(ifile)[0]
+
+    dzp = verticalp(zout)
+
+    plt.figure(dpi=150)
+    plt.imshow(dzp, interpolation='none', vmin=-1, vmax=1.5)
+    plt.colorbar()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn_rtp()

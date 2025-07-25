@@ -421,6 +421,13 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             elif dtype is None:
                 dtype = np.int32
                 nodata = 999999
+    else:
+        if np.issubdtype(dtypes[0], np.floating):
+            dtype = np.float64
+            nodata = 1e+20
+        elif dtype is None:
+            dtype = np.int32
+            nodata = 999999
 
     if needsmerge is False:
         if not nodeepcopy:
@@ -448,9 +455,9 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             for data in dat:
                 dxy = min(dxy, data.xdim, data.ydim)
 
-        xmin0, xmax0, ymin0, ymax0 = data.extent
+        xmin, xmax, ymin, ymax = data.extent
         for data in dat:
-            xmin, xmax, ymin, ymax = data.extent
+            xmin0, xmax0, ymin0, ymax0 = data.extent
             xmin = min(xmin, xmin0)
             xmax = max(xmax, xmax0)
             ymin = min(ymin, ymin0)
@@ -458,7 +465,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
 
     cols = int((xmax - xmin) / dxy)
     rows = int((ymax - ymin) / dxy)
-    trans = rasterio.Affine(dxy, 0, xmin, 0, -1 * dxy, ymax)
+    trans = rasterio.Affine(dxy, 0, float(xmin), 0, -1 * dxy, float(ymax))
 
     if cols == 0 or rows == 0:
         showlog('Your rows or cols are zero. '
@@ -494,7 +501,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             if data.data.min() <= 0:
                 doffset = data.data.min() - 1.
                 data.data = data.data - doffset
-            height, width = data.data.shape
+            # height, width = data.data.shape
 
             odata = np.zeros((rows, cols), dtype=data.data.dtype)
             odata, _ = reproject(source=data.data,

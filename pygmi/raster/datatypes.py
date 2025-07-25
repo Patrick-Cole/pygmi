@@ -257,12 +257,14 @@ class Data():
 
         self.set_transform(1, 0, 1, 0)
 
-    def copy(self, resetmeta=False):
+    def copy(self, data0=None, resetmeta=False):
         """
         Make a deepcopy of the function.
 
         Parameters
         ----------
+        data0 : numpy arraay
+            Input data to replace old ddata. Must have same shape.
         resetmeta : bool, optional
             This will clear metadata during copy. The default is False.
 
@@ -278,6 +280,12 @@ class Data():
 
         if resetmeta is True:
             data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
+
+        if data0 is not None:
+            if data0.shape == data.data.shape:
+                data.data = np.ma.array(data0)
+            else:
+                print('Datasets have different shapes')
 
         return data
 

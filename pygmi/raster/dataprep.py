@@ -31,7 +31,6 @@ import glob
 from PySide6 import QtWidgets
 import numpy as np
 import pandas as pd
-from scipy.signal.windows import tukey
 import rasterio
 import rasterio.merge
 from pyproj.crs import CRS
@@ -47,6 +46,7 @@ from pygmi.vector.dataprep import reprojxy
 from pygmi.raster.misc import lstack, cut_raster
 from pygmi.raster.reproj import GroupProj, data_reproject
 from pygmi.rsense.iodefs import get_data, get_from_rastermeta
+from pygmi.raster.fft import fftprepminc, fft_getkxy
 
 
 class Continuation(BasicModule):
@@ -1270,110 +1270,7 @@ def cluster_to_raster(indata):
     return indata
 
 
-def fftprep(data):
-    """
-    FFT preparation.
-
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        Input dataset.
-
-    Returns
-    -------
-    zfin : numpy array.
-        Output prepared data.
-    rdiff : int
-        rows divided by 2.
-    cdiff : int
-        columns divided by 2.
-    datamedian : float
-        Median of data.
-
-    """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-
-    nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
-
-    z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) + np.nan
-    x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
-    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
-
-    for _ in range(2):
-        z1[0] = 0
-        z1[-1] = 0
-        z1[:, 0] = 0
-        z1[:, -1] = 0
-
-        vert = np.zeros_like(z1)
-        hori = np.zeros_like(z1)
-
-        for i in range(z1.shape[0]):
-            mask = ~np.isnan(z1[i])
-            y = y1[i][mask]
-            z = z1[i][mask]
-            hori[i] = np.interp(y1[i], y, z)
-
-        for i in range(z1.shape[1]):
-            mask = ~np.isnan(z1[:, i])
-            x = x1[:, i][mask]
-            z = z1[:, i][mask]
-
-            vert[:, i] = np.interp(x1[:, i], x, z)
-
-        hori[hori == 0] = np.nan
-        vert[vert == 0] = np.nan
-
-        hv = hori.copy()
-        hv[np.isnan(hori)] = vert[np.isnan(hori)]
-        hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
-                                        vert[~np.isnan(hv)]], 0)
-
-        z1[np.isnan(z1)] = hv[np.isnan(z1)]
-
-    zfin = z1
-
-    nr, nc = zfin.shape
-    zfin *= tukey(nc)
-    zfin *= tukey(nr)[:, np.newaxis]
-
-    return zfin, rdiff, cdiff, datamedian
-
-
-def fft_getkxy(fftmod, xdim, ydim):
-    """
-    Get KX and KY.
-
-    Parameters
-    ----------
-    fftmod : numpy array
-        FFT data.
-    xdim : float
-        cell x dimension.
-    ydim : float
-        cell y dimension.
-
-    Returns
-    -------
-    KX : numpy array
-        x sample frequencies.
-    KY : numpy array
-        y sample frequencies.
-
-    """
-    ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
-    ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
-
-    KX, KY = np.meshgrid(kx, ky)
-    KY = -KY
-    return KX, KY
-
-
-def fftcont(data, h):
+def fftcont(data, h, showlog=print, piter=iter):
     """
     Continuation.
 
@@ -1393,31 +1290,25 @@ def fftcont(data, h):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, rdiff, cdiff, datamedian = fftprep(data)
+    ndat, datamedian = fftprepminc(data, showlog)
 
-    fftmod = np.fft.fft2(ndat)
-
-    # ny, nx = fftmod.shape
+    fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
     k = np.sqrt(KX**2 + KY**2)
+    k[0, 0] = 1e-10  # to avoid division by zero
 
     filt = np.exp(-np.abs(k) * h)
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
-    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
 
     zout = zout + datamedian
-
-    zout[data.data.mask] = data.data.fill_value
-
-    dat = Data()
-    dat.data = np.ma.masked_invalid(zout)
-    dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nodata = data.data.fill_value
+    dat = ndat.copy()
+    dat.data = np.ma.array(zout)
     dat.dataid = 'Upward_' + str(h) + '_' + data.dataid
-    dat.set_transform(transform=data.transform)
-    dat.crs = data.crs
+    dat = lstack([dat, data], piter=piter,
+                 showlog=showlog,
+                 masterid=data.dataid, commonmask=True)[0]
 
     return dat
 
@@ -2035,13 +1926,13 @@ def trim_raster(olddata):
     return olddata
 
 
-def verticalp(data, order=1):
+def verticalp(data, order=1, showlog=print, piter=iter):
     """
     Vertical derivative.
 
     Parameters
     ----------
-    data : numpy array
+    data : pygmi.raster.datatypes.Data
         Input data.
     order : float, optional
         Order. The default is 1.
@@ -2055,16 +1946,25 @@ def verticalp(data, order=1):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, rdiff, cdiff, _ = fftprep(data)
-    fftmod = np.fft.fft2(ndat)
+    ndat, _ = fftprepminc(data, showlog)
+    fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
     k = np.sqrt(KX**2 + KY**2)
+    k[0, 0] = 1e-10  # to avoid division by zero
     filt = k**order
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
-    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+
+    dat = ndat.copy()
+    dat.data = np.ma.array(zout)
+    dat.dataid = 'VD_' + data.dataid
+    dat = lstack([dat, data], piter=piter,
+                 showlog=showlog,
+                 masterid=data.dataid, commonmask=True)[0]
+
+    zout = dat.data
 
     return zout
 
@@ -2076,12 +1976,13 @@ def _testdown():
     # from IPython import get_ipython
     # get_ipython().run_line_magic('matplotlib', 'inline')
 
-    h = 4
-    dxy = 1
+    h = 4.
+    dxy = 1.
     magcalc = True
 
     # quick model
-    lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
+    lmod = quick_model(numx=100, numy=100, numz=10,
+                       dxy=dxy, d_z=1, tlx=1000., tly=1000.)
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
     lmod.ght = 10
@@ -2094,7 +1995,8 @@ def _testdown():
         z = lmod.griddata['Calculated Gravity']
 
     # Calculate the field
-    lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
+    lmod = quick_model(numx=100, numy=100, numz=10,
+                       dxy=dxy, d_z=1, tlx=1000., tly=1000)
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
     lmod.ght = 10 - h
@@ -2106,7 +2008,7 @@ def _testdown():
     else:
         downz0 = lmod.griddata['Calculated Gravity']
 
-    downz0, z = z, downz0
+    # downz0, z = z, downz0
 
     dz = verticalp(z, order=1)
     dz2 = verticalp(z, order=2)
@@ -2116,75 +2018,14 @@ def _testdown():
     zdownn = fftcont(z, h)
 
     # downward, taylor
-    h = -h
+    # h = -h
     zdown = (z.data + h * dz + h**2 * dz2 / math.factorial(2) +
              h**3 * dz3 / math.factorial(3))
 
     # Plotting
-    plt.plot(downz0.data[50], 'r.')
+    plt.plot(downz0.data[50], 'r')
     plt.plot(zdown.data[50], 'b')
-    plt.plot(zdownn.data[50], 'k')
-    plt.show()
-
-
-def _testfft():
-    """Test FFT."""
-    import matplotlib.pyplot as plt
-    from matplotlib import colormaps
-    import scipy
-    # from IPython import get_ipython
-
-    # get_ipython().run_line_magic('matplotlib', 'inline')
-
-    ifile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
-    data = get_raster(ifile)[0]
-
-    # quick model
-    plt.imshow(data.data, cmap=colormaps['jet'], vmin=-500, vmax=500)
-    plt.colorbar()
-    plt.show()
-
-    # Start new stuff
-    xdim = data.xdim
-    ydim = data.ydim
-
-    ndat, _, _, datamedian = fftprep(data)
-
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-
-    fftmod = np.fft.fft2(ndat)
-
-    KX, KY = fft_getkxy(fftmod, xdim, ydim)
-
-    vmin = fftmod.real.mean() - 2 * fftmod.real.std()
-    vmax = fftmod.real.mean() + 2 * fftmod.real.std()
-    plt.imshow(np.fft.fftshift(fftmod.real), vmin=vmin, vmax=vmax)
-    plt.show()
-
-    knrm = np.sqrt(KX**2 + KY**2)
-
-    plt.imshow(knrm)
-
-    plt.show()
-
-    knrm = knrm.flatten()
-    fftamp = np.abs(fftmod)**2
-    fftamp = fftamp.flatten()
-
-    plt.plot(knrm, fftamp, '.')
-    plt.yscale('log')
-    plt.show()
-
-    bins = max(fftmod.shape) // 2
-
-    abins, bedge, _ = scipy.stats.binned_statistic(knrm, fftamp,
-                                                   statistic='mean',
-                                                   bins=bins)
-
-    bins = (bedge[:-1] + bedge[1:]) / 2
-    plt.plot(bins, abins)
-    plt.yscale('log')
+    plt.plot(zdownn.data[50], 'k+')
     plt.show()
 
 
@@ -2211,4 +2052,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testdown()

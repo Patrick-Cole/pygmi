@@ -27,10 +27,6 @@ These are tests. Run pytest on this file from within this directory to do
 the tests.
 """
 
-import os
-import glob
-import tempfile
-
 import numpy as np
 from pyproj.crs import CRS
 import pytest
@@ -67,10 +63,14 @@ def test_thgrad():
 
 def test_vertical():
     """test vertical derivative."""
-    datin = np.array([[1, 2], [1, 2]])
-    dat2 = np.array([[-0.90757121, 0.90757121],
-                     [-0.90757121, 0.90757121]])
-    dat = cooper.vertical(datin, 10)
+    datin = Data()
+    datin.data = np.ma.array([[1, 2], [1, 2]])
+    datin.set_transform(10, 100, 10, 100)
+    # dat2 = np.array([[-0.90757121, 0.90757121],
+    #                  [-0.90757121, 0.90757121]])
+    dat2 = np.array([[-0.13057797268730298, 0.13057797268730287],
+                     [-0.13057797268730298, 0.13057797268730287]])
+    dat = cooper.verticalp(datin)
     np.testing.assert_array_almost_equal(dat, dat2)
 
 
@@ -440,3 +440,7 @@ def test_agc():
                        [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
 
     np.testing.assert_array_almost_equal(datout2, datout)
+
+
+if __name__ == "__main__":
+    test_vertical()

@@ -40,7 +40,7 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
-from pygmi.mag.dataprep import fftprepminc
+from pygmi.raster.fft import fftprepminc, radial_average_power_spectrum
 
 
 class MatchedFilt(BasicModule):
@@ -304,67 +304,6 @@ class MatchedFilt(BasicModule):
 
         """
         self.saveobj(self.cmb_band1)
-
-
-def radial_average_power_spectrum(dat):
-    """
-    Calculate the radially averaged power spectrum.
-
-    Parameters
-    ----------
-    data : PyGMI data
-        Input data.
-
-    Returns
-    -------
-    radial_bins : numpy array
-        1D radial wavenumbers.
-    radial_mean : numpy array
-        1D radial power spectrum.
-    freq_radius : numpy array
-        2D wavenumber array.
-    fft_data : numpy array
-        2D FFT data array.
-
-    """
-    data = dat.data
-    dx = dat.xdim
-    dy = dat.ydim
-    # Compute the 2D Fourier Transform
-    fft_data = np.fft.fft2(data)
-    # fft_shifted = np.fft.fftshift(fft_data)
-    power_spectrum = np.abs(fft_data) ** 2
-
-    # Get the frequency coordinates
-    ny, nx = data.shape
-    fx = np.fft.fftfreq(nx, dx) * 2 * np.pi
-    fy = np.fft.fftfreq(ny, dy) * 2 * np.pi
-    fx, fy = np.meshgrid(fx, fy)
-    freq_radius = np.sqrt(fx**2 + fy**2)
-
-    # Shift the frequency coordinates to match the shifted FFT
-    # freq_radius = np.fft.fftshift(freq_radius)
-
-    # Radial binning
-    max_radius = (np.max(freq_radius))
-    radial_bins = np.linspace(0, max_radius, min(nx, ny))
-    radial_mean = np.zeros_like(radial_bins, dtype=float)
-    radial_indices = np.digitize(freq_radius.ravel(), radial_bins)
-
-    radial_mean = []
-    for i in range(1, len(radial_bins)):
-        mask = radial_indices == i
-        radial_mean.append(np.mean(power_spectrum.ravel()[mask]))
-        pass
-
-    # Compute bin centers
-    radial_bins = 0.5 * (radial_bins[:-1] + radial_bins[1:])
-
-    mask = ~np.isnan(radial_mean)
-    radial_bins = radial_bins[mask]
-    radial_mean = np.array(radial_mean)[mask]
-
-    return radial_bins, radial_mean, freq_radius, fft_data
 
 
 def getbutter(lowcut, highcut, f, order=5):

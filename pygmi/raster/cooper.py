@@ -35,6 +35,7 @@ import numpy as np
 from numba import jit
 
 from pygmi.misc import ProgressBarText, BasicModule
+from pygmi.raster.dataprep import verticalp
 
 
 class Gradients(BasicModule):
@@ -157,10 +158,8 @@ class Gradients(BasicModule):
                                  'Please resample')
                     return False
 
-                mask = np.ma.getmaskarray(data[i].data)
-                dxy = data[i].xdim
-                data[i].data = np.ma.array(vertical(data[i].data, xint=dxy))
-                data[i].data.mask = mask
+                data[i].data = verticalp(
+                    data[i], showlog=self.showlog, piter=self.piter)
 
             data[i].units = ''
 
@@ -711,62 +710,6 @@ def nextpow2(n):
     return m_i
 
 
-def vertical(data, npts=None, xint=1, order=1):
-    """
-    Vertical derivative.
-
-    Parameters
-    ----------
-    data : numpy array
-        Input data.
-    npts : int, optional
-        Number of points. The default is None.
-    xint : float, optional
-        X interval. The default is 1.
-    order : int, optional
-        Order. The default is 1.
-
-    Returns
-    -------
-    dz : numpy array
-        Output data
-
-    """
-    nr, nc = data.shape
-
-    z = data - np.ma.median(data)
-    if np.ma.is_masked(z):
-        z = z.filled(0.)
-
-    if npts is None:
-        nmax = np.max([nr, nc])
-        npts = int(2**nextpow2(nmax))
-
-    cdiff = int(np.floor((npts - nc) / 2))
-    rdiff = int(np.floor((npts - nr) / 2))
-    cdiff2 = npts - cdiff - nc
-    rdiff2 = npts - rdiff - nr
-    data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
-
-    f = np.fft.fft2(data1)
-    fz = f
-    wn = 2.0 * np.pi / (xint * (npts - 1))
-    f = np.fft.fftshift(f)
-    cx = npts / 2 + 1
-    cy = cx
-    for i in range(npts):
-        freqx = (i + 1 - cx) * wn
-        for j in range(npts):
-            freqy = (j + 1 - cy) * wn
-            freq = np.sqrt(freqx * freqx + freqy * freqy)
-            fz[i, j] = f[i, j] * freq**order
-    fz = np.fft.fftshift(fz)
-    fzinv = np.fft.ifft2(fz)
-    dz = np.real(fzinv[rdiff:nr + rdiff, cdiff:nc + cdiff])
-
-    return dz
-
-
 class AGC(BasicModule):
     """
     Class used to gather information via a GUI, for function AGC.
@@ -948,7 +891,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.misc import getinfo
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
 
     piter = ProgressBarText().iter
 
