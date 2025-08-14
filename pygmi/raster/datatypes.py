@@ -380,7 +380,7 @@ class Data():
                        interpolation='none')
         return im
 
-    def set_mask(self, mask):
+    def set_mask(self, mask=None):
         """
         Replace the existing mask with a new one.
 
@@ -396,7 +396,8 @@ class Data():
         None.
 
         """
-        self.data.mask = mask
+        if mask is not None:
+            self.data.mask = mask
 
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)

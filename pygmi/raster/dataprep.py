@@ -170,9 +170,9 @@ class Continuation(BasicModule):
                 break
 
         if ctype == 'Downward':
-            dat = taylorcont(data, h)
+            dat = taylorcont(data, h, self.showlog, self.piter)
         else:
-            dat = fftcont(data, h)
+            dat = fftcont(data, h, self.showlog, self.piter)
 
         self.outdata['Raster'] = [dat]
 
@@ -1290,7 +1290,7 @@ def fftcont(data, h, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprepminc(data, showlog)
+    ndat, datamedian = fftprepminc(data, showlog, piter)
 
     fftmod = np.fft.fft2(ndat.data)
 
@@ -1836,7 +1836,7 @@ def redistribute_vertices(geom, distance):
     raise ValueError(f'unhandled geometry {geom.geom_type}')
 
 
-def taylorcont(data, h):
+def taylorcont(data, h, showlog=print, piter=iter):
     """
     Taylor Continuation.
 
@@ -1853,9 +1853,9 @@ def taylorcont(data, h):
         PyGMI raster data.
 
     """
-    dz = verticalp(data, order=1)
-    dz2 = verticalp(data, order=2)
-    dz3 = verticalp(data, order=3)
+    dz = verticalp(data, order=1, showlog=showlog, piter=piter)
+    dz2 = verticalp(data, order=2, showlog=showlog, piter=piter)
+    dz3 = verticalp(data, order=3, showlog=showlog, piter=piter)
     zout = (data.data + h * dz + h**2 * dz2 / math.factorial(2) +
             h**3 * dz3 / math.factorial(3))
 
@@ -1946,7 +1946,7 @@ def verticalp(data, order=1, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, _ = fftprepminc(data, showlog)
+    ndat, _ = fftprepminc(data, showlog, piter)
     fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)

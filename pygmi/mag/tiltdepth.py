@@ -277,7 +277,7 @@ class TiltDepth(BasicModule):
             inc = None
             dec = None
 
-        self.depths = tiltdepth(dat, inc, dec, self.pbar)
+        self.depths = tiltdepth(dat, inc, dec, self.pbar, self.showlog)
         self.outdata['Vector'] = [self.depths]
         self.change_cbar()
 
@@ -338,7 +338,7 @@ class TiltDepth(BasicModule):
         self.saveobj(self.dsb_dec)
 
 
-def tiltdepth(data, inc=None, dec=None, pbar=None):
+def tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print):
     """
     Calculate tilt depth.
 
@@ -362,7 +362,7 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
 
     # RTP
     if inc is not None and dec is not None:
-        zout = rtp(data, inc, dec)
+        zout = rtp(data, inc, dec, showlog=showlog)
     else:
         zout = data
 
@@ -375,7 +375,7 @@ def tiltdepth(data, inc=None, dec=None, pbar=None):
 
     # nmax = np.max([nr, nc])
     # npts = int(2**nextpow2(nmax))
-    dz = verticalp(zout)
+    dz = verticalp(zout, showlog=showlog)
 
     t1 = np.arctan2(dz, dxtot)
 

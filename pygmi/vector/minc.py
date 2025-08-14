@@ -103,7 +103,7 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
 
     points = np.transpose([x.flatten(), y.flatten()])
 
-    showlog('Creating nearest neighbour starting value...')
+    showlog('Creating starting value...')
 
     u = griddata(points, z, (xxx, yyy), method='linear')
     # u = griddata(points, z, (xxx, yyy), method='nearest')

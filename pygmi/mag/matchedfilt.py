@@ -291,7 +291,8 @@ class MatchedFilt(BasicModule):
                 self.data = i
                 break
 
-        self.datapad, self.datamedian = fftprepminc(self.data, self.showlog)
+        self.datapad, self.datamedian = fftprepminc(
+            self.data, self.showlog, self.piter)
         self.calculate()
 
     def saveproj(self):

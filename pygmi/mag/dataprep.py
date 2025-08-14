@@ -181,7 +181,7 @@ class Tilt1(BasicModule):
         self.saveobj(self.sb_k)
 
 
-def tilt1(data1, azi, s, k=2):
+def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
     """
     Tilt angle calculations.
 
@@ -236,7 +236,7 @@ def tilt1(data1, azi, s, k=2):
 
     dy, dx = np.gradient(data, data1.ydim, data1.xdim)
     dxtot = np.ma.sqrt(dx * dx + dy * dy)
-    dz = verticalp(data1)
+    dz = verticalp(data1, showlog=showlog, piter=piter)
     t1 = np.ma.arctan2(dz, dxtot)
     th = np.real(np.arctanh(np.nan_to_num(dz / dxtot) + (0 + 0j)))
 
@@ -257,7 +257,7 @@ def tilt1(data1, azi, s, k=2):
     ts = data1.copy(ts)
 
     dxs, dys = np.gradient(ts.data, data1.ydim, data1.xdim)
-    dzs = verticalp(ts)
+    dzs = verticalp(ts, showlog=showlog, piter=piter)
     dxtots = np.ma.sqrt(dxs * dxs + dys * dys)
     t2 = np.ma.arctan(dzs, dxtots)
 
@@ -267,7 +267,7 @@ def tilt1(data1, azi, s, k=2):
     data = data1.copy(dxtot)
     dy, dx = np.gradient(data.data, data1.ydim, data1.xdim)
     dxtot = np.ma.sqrt(dx * dx + dy * dy)
-    dz = verticalp(data)
+    dz = verticalp(data, showlog=showlog, piter=piter)
     tahg = np.ma.arctan2(dz, dxtot)
 
     dxyztot = np.ma.sqrt(dx * dx + dy * dy + dz * dz)
@@ -320,6 +320,7 @@ class RTP(BasicModule):
         self.cmb_dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
+        self.dsb_inca = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
@@ -337,13 +338,18 @@ class RTP(BasicModule):
 
         lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
         lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        lbl_inca = QtWidgets.QLabel(
+            'Amplitude Correction Inclination for low latitudes:')
         lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
+        self.dsb_inca.setMaximum(90.0)
+        self.dsb_inca.setMinimum(-90.0)
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
         self.dsb_inc.setValue(-62.5)
+        self.dsb_inca.setValue(20)
         self.dsb_dec.setValue(-16.75)
 
         self.setWindowTitle('Reduction to the Pole')
@@ -355,7 +361,9 @@ class RTP(BasicModule):
         gl_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
         gl_main.addWidget(lbl_dec, 2, 0, 1, 1)
         gl_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
-        gl_main.addWidget(self.buttonbox, 3, 0, 1, 4)
+        gl_main.addWidget(lbl_inca, 3, 0, 1, 1)
+        gl_main.addWidget(self.dsb_inca, 3, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
     def settings(self, nodialog=False):
         """
@@ -419,18 +427,19 @@ class RTP(BasicModule):
         """
         I_deg = self.dsb_inc.value()
         D_deg = self.dsb_dec.value()
+        Ia = self.dsb_inca.value()
 
         newdat = []
         for data in self.piter(self.indata['Raster']):
             if data.dataid != self.cmb_dataid.currentText():
                 continue
-            dat = rtp(data, I_deg, D_deg, self.showlog, self.piter)
+            dat = rtp(data, I_deg, D_deg, Ia, self.showlog, self.piter)
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
 
 
-def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
+def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
     """
     Reduction to the pole.
 
@@ -442,6 +451,8 @@ def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
         Magnetic inclination.
     D_deg : float
         Magnetic declination.
+    Ia : float
+        Amplitude correction inclination Ia in degree. The default is 20.
     showlog : function, optional
         Show information using a function. The default is print.
     piter : function, optional
@@ -456,16 +467,26 @@ def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprepminc(data, showlog=showlog)
+    ndat, datamedian = fftprepminc(data, showlog=showlog, piter=piter)
+
     fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
+    # Ia = min(90, max(0, ((int((0.008 * I_deg**2 - 1.71 * abs(I_deg) + 80) / 2.5)) * 2.5)))
+
+    Ia = np.deg2rad(Ia)
     I = np.deg2rad(I_deg)
     D = np.deg2rad(D_deg)
-    alpha = np.arctan2(KY, KX)
+    alpha = np.arctan2(KX, KY)
 
-    filt = 1 / (np.sin(I) + 1j * np.cos(I) * np.sin(D + alpha))**2
+    if abs(I) >= abs(Ia):
+        Ia = I
+
+    filt = (np.sin(I) - 1j * np.cos(I) * np.cos(D - alpha))**2
+    filt2 = (np.sin(Ia)**2 + np.cos(Ia)**2 * np.cos(D - alpha)**2)
+    filt2 = filt2 * (np.sin(I)**2 + np.cos(I)**2 * np.cos(D - alpha)**2)
+    filt = filt / filt2
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
 
@@ -480,6 +501,35 @@ def rtp(data, I_deg, D_deg, showlog=print, piter=iter):
     return dat
 
 
+def gradient2D(daty, datx):
+    """Perform 2D gradient where spacing is inconsistent in 2D."""
+    rows, cols = daty.data.shape
+    dx = []
+    # dy = []
+    dx = daty.copy()
+    for i in range(rows):
+        mask = daty[i].mask
+        tmpy = daty[i].compressed()
+        if tmpy.size == 0:
+            continue
+        elif tmpy.size == 1:
+            dx[i][~mask] = 0
+            continue
+        tmpx = datx[i][~mask]
+        dx[i][~mask] = np.gradient(tmpy, tmpx)
+
+    pass
+    # dx = np.ma.array(dx)
+
+    # for i in range(cols):
+    #     dy.append(np.gradient(daty.data[:, i], datx[:, i]))
+
+    # dy = np.ma.masked_invalid(dy)
+
+    # return dx, dy
+    return dx
+
+
 def _testfn_rtp():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
@@ -490,8 +540,8 @@ def _testfn_rtp():
     finc = -57
     fdec = 50
 
-    finc = 17.3
-    fdec = -4.
+    finc = 0
+    fdec = 50
 
     lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
     lmod.lith_index[100:200, 100:200, 0:10] = 1
@@ -500,11 +550,14 @@ def _testfn_rtp():
 
     # Calculate the field
 
-    magval = lmod.griddata['Calculated Magnetics'].data
-    dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
+    # magval = lmod.griddata['Calculated Magnetics'].data
+
+    ndata = lmod.griddata['Calculated Magnetics'].copy()
+    ndata.data += np.random.normal(0, .5, ndata.data.shape)
+    dat2 = rtp(ndata, finc, fdec)
 
     plt.subplot(121)
-    plt.imshow(magval, cmap=colormaps['jet'])
+    plt.imshow(ndata.data, cmap=colormaps['jet'])
     plt.subplot(122)
     plt.imshow(dat2.data, cmap=colormaps['jet'])
     plt.show()
@@ -514,21 +567,40 @@ def _testfn():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.modest_image import imshow
 
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
 
     dat1 = get_raster(ifile)[0]
-    dat = rtp(dat1, -62.5, -16.75)
+    dat = rtp(dat1, -62.08, -14.23)
+    # dat = dat1
 
     t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat, 75, 0)
 
-    plt.figure(dpi=150)
-    ax = plt.subplot(221)
-    dat1.plot(ax)
-    ax = plt.subplot(222)
-    dat.plot(ax)
-    plt.subplot(224)
-    plt.imshow(t1, interpolation='none')
+    # dy, dx = np.gradient(dat.data, dat.ydim, dat.xdim)
+    # dxtot = np.ma.sqrt(dx * dx + dy * dy)
+    # dz = verticalp(dat)
+    # t1 = np.ma.arctan2(dz, dxtot)
+
+    plt.figure()
+    # ax = plt.subplot(221)
+    # dat1.plot(ax)
+    # ax = plt.subplot(222)
+    # dat.plot(ax)
+    # plt.subplot(223)
+    # vmin = dz.mean() - dz.std()
+    # vmax = dz.mean() + dz.std()
+    # plt.imshow(dz, interpolation='none', vmin=vmin, vmax=vmax)
+    # plt.subplot(224)
+    # vmin = dxtot.mean() - dxtot.std()
+    # vmax = dxtot.mean() + dxtot.std()
+    # plt.imshow(dxtot, interpolation='none', vmin=vmin, vmax=vmax)
+    # plt.subplot(224)
+    ax = plt.gca()
+    vmin = t1.mean() - 2.5 * t1.std()
+    vmax = t1.mean() + 2.5 * t1.std()
+    imshow(ax, t1, extent=dat.extent, interpolation='none', vmin=vmin,
+           vmax=vmax)
     plt.show()
 
 
@@ -549,5 +621,58 @@ def _testfn_vert():
     plt.colorbar()
 
 
+def _testfn2():
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.mag.igrf import calc_igrf
+    import matplotlib.pyplot as plt
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
+    dfile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Areas_A_and_B_DTM_utm35s.hdr"
+
+    datm = get_raster(ifile)[0]
+    datd = get_raster(ifile)[0]
+    # dat = rtp(dat1, -62.5, -16.75)
+    # sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
+
+    dat = calc_igrf(datd, 2007 + 335 / 365, igrfonly=False, sen_alt=80)
+
+    igrf, inc, dec = dat[0]
+    fmean, imean, dmean = dat[1:]
+
+    dinc = inc.data - imean
+    ddec = dec.data - dmean
+
+    datr = rtp(datm, imean, dmean)
+    datr.nodata = 0
+    datr.set_mask()
+    dinc = dinc.filled(0)
+    dinc = np.ma.array(dinc, mask=datr.data.mask)
+    ddec = ddec.filled(0)
+    ddec = np.ma.array(ddec, mask=datr.data.mask)
+
+    drdix = gradient2D(datr.data, inc.data)
+    drdiy = gradient2D(datr.data.T, inc.data.T)
+    d2rdi2x = gradient2D(drdix, inc.data)
+    d2rdi2y = gradient2D(drdiy, inc.data.T)
+
+    drddx = gradient2D(datr.data, dec.data)
+    drddy = gradient2D(datr.data.T, dec.data.T)
+    d2rdd2x = gradient2D(drddx, dec.data)
+    d2rdd2y = gradient2D(drddy, dec.data.T)
+
+    rtpx = datr.data + (dinc * drdix + .5 * dinc**2 * d2rdi2x +
+                        ddec * drddx + .5 * ddec**2 * d2rdd2x)
+
+    plt.figure()
+    plt.subplot(121)
+    plt.imshow(datr.data)
+    plt.colorbar()
+    plt.subplot(122)
+    plt.imshow(rtpx)
+    plt.colorbar()
+    plt.show()
+
+    pass
+
+
 if __name__ == "__main__":
-    _testfn_rtp()
+    _testfn2()

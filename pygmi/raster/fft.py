@@ -30,7 +30,7 @@ from pygmi.vector.dataprep import gridxyz
 from pygmi.raster.misc import lstack
 
 
-def fftprepminc(data, showlog=print):
+def fftprepminc(data, showlog=print, piter=iter):
     """
     FFT preparation.
 
@@ -97,8 +97,7 @@ def fftprepminc(data, showlog=print):
     zfin.data[np.isnan(zfin.data)] = 0.
     zfin.crs = data.crs
 
-    tmp = lstack([zfin, data])
-
+    tmp = lstack([zfin, data], showlog=showlog, piter=piter)
     tmp2 = tmp[1]
     tmp2.data = tmp2.data - datamedian
     tmp2.data[tmp2.data.mask] = tmp[0].data[tmp2.data.mask]

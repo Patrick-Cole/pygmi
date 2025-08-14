@@ -240,7 +240,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     data : pygmi.raster.datatypes.Data
         Input DTM data.
     sdate : Date
-        Survey date.
+        Survey date as decimal year.
     sen_alt : float, optional
         Sensor clearance. The default is 100.
     wkt : str, optional
@@ -274,7 +274,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     # d : float
     #     Declination of the field from the geographic north (deg).
     # sdate : float
-    #     start date inputted
+    #     start date inputted as decimal year
     # ddot : float
     #     annual rate of change of decl. (arc-min/yr)
     # alt : float
@@ -314,6 +314,9 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     #     array of MAXMOD  Max year of model.
     # yrmin : list, float
     #     array of MAXMOD  Min year of model.
+
+    if wkt is None:
+        wkt = data.crs.to_wkt()
 
     MAXDEG = 13
     MAXCOEFF = MAXDEG * (MAXDEG + 2) + 1
