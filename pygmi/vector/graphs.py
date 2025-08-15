@@ -724,7 +724,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if 'LineString' in data.geom_type.iloc[0]:
             tmp = []
             for i in data.geometry:
-                tmp.append(np.array(i.coords[:]))
+                tmp.append(np.transpose(i.coords.xy))
 
             lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
@@ -845,9 +845,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for i in data.geometry:
             if i.geom_type == 'MultiLineString':
                 for j in i:
-                    allcrds.append(np.array(j.coords[:]))
+                    allcrds.append(np.transpose(j.coords.xy))
             else:
-                allcrds.append(np.array(i.coords[:]))
+                allcrds.append(np.transpose(i.coords.xy))
 
         for pnts in allcrds:
             pnts = np.transpose(pnts)
@@ -1787,6 +1787,7 @@ def _testfn():
     # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
     sfile = r"D:\work\Programming\geochem\geochem_tzaneen.shp"
+    sfile = r"D:\AreaB_maginterp_lin_utm35s.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))
@@ -1796,7 +1797,7 @@ def _testfn():
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotVector()
+    SC = PlotRose()
     SC.indata = IO.outdata
     SC.run()
 

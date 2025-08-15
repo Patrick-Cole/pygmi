@@ -1798,9 +1798,19 @@ def _testfn():
     edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
-    mt_obj = MT(edi_file)
+    # mt_obj = MT(edi_file)
+    # mt_obj.read()
+    # print('loading complete')
 
-    print('loading complete')
+    # mt_obj.plot_phase_tensor()
+
+    from mt_metadata import TF_XML
+    mt_object = MT(TF_XML)
+    mt_object.read()
+
+    plot_response = mt_object.plot_mt_response()
+
+    return
 
     _ = QtWidgets.QApplication(sys.argv)
     test = StaticShiftEDI(None)
