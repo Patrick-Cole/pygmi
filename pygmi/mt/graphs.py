@@ -326,7 +326,7 @@ class PlotPoints(ContextModule):
 def _testfn():
     """Test routine."""
     import sys
-    from pygmi.mt.mtpy.core.mt import MT
+    from pygmi.mt.mtpyold.core.mt import MT
 
     datadir = r'd:\workdata\MT\\'
     edi_file = datadir + r"synth02.edi"

@@ -32,7 +32,7 @@ Occam1D
 
     :Intended Use: ::
 
-        >>> import pygmi.mt.mtpy.modeling.occam1d as occam1d
+        >>> import pygmi.mt.mtpyold.modeling.occam1d as occam1d
         >>> #--> make a data file
         >>> d1 = occam1d.Data()
         >>> d1.write_data_file(edi_file=r'/home/MT/mt01.edi', res_err=10, phase_err=2.5,
@@ -68,9 +68,9 @@ import os.path as op
 import time
 from matplotlib.ticker import MultipleLocator
 import matplotlib.gridspec as gridspec
-import pygmi.mt.mtpy.core.mt as mt
-import pygmi.mt.mtpy.utils.calculator as mtcc
-import pygmi.mt.mtpy.analysis.geometry as mtg
+import pygmi.mt.mtpyold.core.mt as mt
+import pygmi.mt.mtpyold.utils.calculator as mtcc
+import pygmi.mt.mtpyold.analysis.geometry as mtg
 import matplotlib.pyplot as plt
 import subprocess
 import string
@@ -112,7 +112,7 @@ class Data(object):
 
     :Example: ::
 
-        >>> import pygmi.mt.mtpy.modeling.occam1d as occam1d
+        >>> import pygmi.mt.mtpyold.modeling.occam1d as occam1d
         >>> #--> make a data file for TE mode
         >>> d1 = occam1d.Data()
         >>> d1.write_data_file(edi_file=r'/home/MT/mt01.edi', res_err=10, phase_err=2.5,
@@ -208,7 +208,7 @@ class Data(object):
 
         :Example: ::
 
-            >>> import pygmi.mt.mtpy.modeling.occam1d as occam1d
+            >>> import pygmi.mt.mtpyold.modeling.occam1d as occam1d
             >>> #--> make a data file
             >>> d1 = occam1d.Data()
             >>> d1.write_data_file(edi_file=r'/home/MT/mt01.edi', res_err=10,
@@ -311,7 +311,7 @@ class Data(object):
                                                       list(range(len(z_obj.det)))):
                         # now we can convert errors to polar coordinates
                         de1, de2 = mtcc.z_error2r_phi_error(
-                            zdr, zdi, (zei+zer)/2.)
+                            zdr, zdi, (zei + zer) / 2.)
                         # convert relative resistivity error to absolute
                         de1 *= data_1[ii]
                         data_1_err[ii] = de1
@@ -654,7 +654,7 @@ class Data(object):
                                              self.data['z' + pol][1, jjj])
 
                 self.data['res' + pol][1, jjj], self.data['phase' + pol][1, jjj] = \
-                    res_rel_err*self.data['res' + pol][0, jjj], phase_err
+                    res_rel_err * self.data['res' + pol][0, jjj], phase_err
 
             self.data['resyx'][0] = 0.2 * \
                 np.abs(self.data['zxy'][0]) ** 2. / freq
@@ -1408,7 +1408,7 @@ class Plot1DResponse(object):
 
     :Example: ::
 
-        >>> import pygmi.mt.mtpy.modeling.occam1d as occam1d
+        >>> import pygmi.mt.mtpyold.modeling.occam1d as occam1d
         >>> p1 = occam1d.Plot1DResponse(plot_yn='n')
         >>> p1.data_te_fn = r"/home/occam1d/mt01/TE/Occam_DataFile_TE.dat"
         >>> p1.data_tm_fn = r"/home/occam1d/mt01/TM/Occam_DataFile_TM.dat"
@@ -1645,7 +1645,7 @@ class Plot1DResponse(object):
                 legend_marker_list_te.append(rte[0])
                 if self.override_legend_subscript is not None:
                     legend_label_list_tm.append(
-                        '$Obs_{'+str.upper(self.override_legend_subscript)+'}$')
+                        '$Obs_{' + str.upper(self.override_legend_subscript) + '}$')
                 else:
                     legend_label_list_te.append('$Obs_{TM}$')
             else:
@@ -1700,7 +1700,7 @@ class Plot1DResponse(object):
                 legend_marker_list_tm.append(rtm[0])
                 if self.override_legend_subscript is not None:
                     legend_label_list_tm.append(
-                        '$Obs_{'+str.upper(self.override_legend_subscript)+'}$')
+                        '$Obs_{' + str.upper(self.override_legend_subscript) + '}$')
                 else:
                     legend_label_list_te.append('$Obs_{TM}$')
             else:
@@ -1774,7 +1774,7 @@ class Plot1DResponse(object):
                 legend_marker_list_te.append(rte[0])
                 if self.override_legend_subscript is not None:
                     legend_label_list_tm.append(
-                        '$Mod_{'+str.upper(self.override_legend_subscript)+'}$' + itnum)
+                        '$Mod_{' + str.upper(self.override_legend_subscript) + '}$' + itnum)
                 else:
                     legend_label_list_te.append('$Mod_{TE}$' + itnum)
             else:
@@ -1845,7 +1845,7 @@ class Plot1DResponse(object):
                 legend_marker_list_tm.append(rtm[0])
                 if self.override_legend_subscript is not None:
                     legend_label_list_tm.append(
-                        '$Mod_{'+str.upper(self.override_legend_subscript)+'}$' + itnum)
+                        '$Mod_{' + str.upper(self.override_legend_subscript) + '}$' + itnum)
                 else:
                     legend_label_list_te.append('$Mod_{TM}$' + itnum)
             else:
@@ -1997,7 +1997,7 @@ class Plot1DResponse(object):
         :Example: ::
 
             >>> # change the color and marker of the xy components
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> ocd = occam2d.Occam2DData(r"/home/occam2d/Data.dat")
             >>> p1 = ocd.plotAllResponses()
             >>> #change line width
@@ -2017,7 +2017,7 @@ class Plot1DResponse(object):
         :Example: ::
 
             >>> # to change the grid lines to only be on the major ticks
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> dfn = r"/home/occam2d/Inv1/data.dat"
             >>> ocd = occam2d.Occam2DData(dfn)
             >>> ps1 = ocd.plotAllResponses()
@@ -2066,7 +2066,7 @@ class Plot1DResponse(object):
         :Example: ::
 
             >>> # to save plot as jpg
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> dfn = r"/home/occam2d/Inv1/data.dat"
             >>> ocd = occam2d.Occam2DData(dfn)
             >>> ps1 = ocd.plotPseudoSection()
@@ -2371,7 +2371,7 @@ class PlotL2(object):
         :Example: ::
 
             >>> # change the color and marker of the xy components
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> ocd = occam2d.Occam2DData(r"/home/occam2d/Data.dat")
             >>> p1 = ocd.plotAllResponses()
             >>> #change line width
@@ -2420,7 +2420,7 @@ class PlotL2(object):
         :Example: ::
 
             >>> # to save plot as jpg
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> dfn = r"/home/occam2d/Inv1/data.dat"
             >>> ocd = occam2d.Occam2DData(dfn)
             >>> ps1 = ocd.plotPseudoSection()
@@ -2462,7 +2462,7 @@ class PlotL2(object):
         :Example: ::
 
             >>> # to change the grid lines to only be on the major ticks
-            >>> import pygmi.mt.mtpy.modeling.occam2d as occam2d
+            >>> import pygmi.mt.mtpyold.modeling.occam2d as occam2d
             >>> dfn = r"/home/occam2d/Inv1/data.dat"
             >>> ocd = occam2d.Occam2DData(dfn)
             >>> ps1 = ocd.plotAllResponses()
@@ -2689,7 +2689,7 @@ def generate_inputfiles(**input_parameters):
             ocs.write_startup_file(save_path=wd,
                                    startup_fn=op.join(wd, startup_fn),
                                    max_iter=input_parameters['iteration_max'],
-                                   target_rms=input_parameters['rms_min']/input_parameters['rms_factor'])
+                                   target_rms=input_parameters['rms_min'] / input_parameters['rms_factor'])
             rundirs[svpath].append(startup_fn)
 
     return wkdir_master, rundirs

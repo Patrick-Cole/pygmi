@@ -41,10 +41,10 @@ import copy
 
 import numpy as np
 
-import pygmi.mt.mtpy.analysis.geometry as MTge
-import pygmi.mt.mtpy.core.z as MTz
-import pygmi.mt.mtpy.utils.calculator as MTcc
-import pygmi.mt.mtpy.utils.exceptions as MTex
+import pygmi.mt.mtpyold.analysis.geometry as MTge
+import pygmi.mt.mtpyold.core.z as MTz
+import pygmi.mt.mtpyold.utils.calculator as MTcc
+import pygmi.mt.mtpyold.utils.exceptions as MTex
 
 
 def find_distortion(z_object, g='det', num_freq=None, lo_dims=None):
@@ -87,7 +87,7 @@ def find_distortion(z_object, g='det', num_freq=None, lo_dims=None):
 
         :Estimate Distortion: ::
 
-            >>> import pygmi.mt.mtpy.analysis.distortion as distortion
+            >>> import pygmi.mt.mtpyold.analysis.distortion as distortion
             >>> dis, dis_err = distortion.find_distortion(z_obj, num_freq=12)
 
     """
@@ -361,7 +361,7 @@ def remove_distortion(z_array=None, z_object=None, num_freq=None, g='det'):
 
         :Remove Distortion: ::
 
-            >>> import pygmi.mt.mtpy.analysis.distortion as distortion
+            >>> import pygmi.mt.mtpyold.analysis.distortion as distortion
             >>> d, new_z = distortion.remove_distortion(z_object=z_obj)                         
     """
 

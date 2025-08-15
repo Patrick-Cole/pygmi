@@ -6,7 +6,7 @@ __version__ = "1.1.5"
 import logging
 
 # load mtpy default logging config
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 MtPyLog.load_configure()
 

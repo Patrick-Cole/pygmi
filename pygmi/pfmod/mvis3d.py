@@ -67,6 +67,7 @@ class Mod3dDisplay(ContextModule):
 
         self.corners = []
         self.faces = {}
+        self.norms = []
         self.gdata = np.zeros([4, 3, 2])
         self.gdata[0, 0, 0] = -1
         self.sliths = np.array([])  # selected lithologies
@@ -213,6 +214,8 @@ class Mod3dDisplay(ContextModule):
         None.
 
         """
+        # self.update_plot()
+        # self.norms = self.pvmesh.compute_normals()['Normals']
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
@@ -496,6 +499,7 @@ class Mod3dDisplay(ContextModule):
 
         self.faces = {}
         self.corners = {}
+        self.norms = {}
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
@@ -572,6 +576,7 @@ class Mod3dDisplay(ContextModule):
 
                     self.faces[lno] = []
                     self.corners[lno] = []
+                    self.norms[lno] = []
 
                     continue
 
@@ -581,6 +586,8 @@ class Mod3dDisplay(ContextModule):
                 vtx[:, 2] += zz.max()
 
                 self.corners[lno] = vtx[:, [1, 0, 2]] + self.origin
+
+            self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
         """
@@ -795,6 +802,62 @@ def updatemod(gdat2, cindx, cloc):
     newfaces.shape = (newfaces.size // 4, 4)
 
     return newcorners, newfaces
+
+
+def calc_norms(faces, vtx):
+    """
+    Calculate normals.
+
+    Parameters
+    ----------
+    faces : numpy array
+        Array of faces.
+    vtx : numpy array.
+        Array of vertices.
+
+    Returns
+    -------
+    None.
+
+    """
+    nrm = np.zeros(vtx.shape, dtype=np.float64)
+    tris = vtx[faces]
+    n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
+                 tris[::, 0])
+    n = normalize_v3(n)
+
+    nrm[faces[:, 0]] += n
+    nrm[faces[:, 1]] += n
+    nrm[faces[:, 2]] += n
+
+    nrm = normalize_v3(nrm)
+
+    return nrm
+
+
+def normalize_v3(arr):
+    """
+    Normalize a numpy array of 3 component vectors shape=(n,3).
+
+    Parameters
+    ----------
+    arr : numpy array
+        Array of 3 component vectors.
+
+    Returns
+    -------
+    arr : numpy array
+        Output array of 3 component vectors.
+
+    """
+    arr = arr.astype(np.float64)
+
+    lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
+    lens[lens == 0] = 1  # Get rid of divide by zero.
+
+    arr /= lens[:, np.newaxis]
+
+    return arr
 
 
 def MarchingCubes(x, y, z, c, iso, *, showlog=print):

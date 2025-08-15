@@ -20,7 +20,7 @@ import numpy as np
 import xml.etree.cElementTree as ET
 from xml.dom import minidom
 
-import pygmi.mt.mtpy.core.z as mtz
+import pygmi.mt.mtpyold.core.z as mtz
 
 dt_fmt = '%Y-%m-%d %H:%M:%S'
 
@@ -470,7 +470,7 @@ class XML_Config(object):
         ---------
         :Read in xml.cfg file: ::
 
-            >>> import pygmi.mt.mtpy.core.mtxml as mtxml
+            >>> import pygmi.mt.mtpyold.core.mtxml as mtxml
             >>> cfg_obj = mtxml.XML_Config()
             >>> cfg_obj.read_cfg_file(r"/home/MT/xml.cfg")
 
@@ -547,8 +547,8 @@ class XML_Config(object):
         """
 
         equal_find = -(line[::-1].find('='))
-        line_list = [line[0:equal_find-1],
-                     line[equal_find+1:]]
+        line_list = [line[0:equal_find - 1],
+                     line[equal_find + 1:]]
 
         return line_list
 
@@ -648,9 +648,9 @@ class XML_Config(object):
             fid.write('\n'.join(line_list))
 
         # show the user something happened
-        print('-'*50)
+        print('-' * 50)
         print('    Wrote xml configuration file to {0}'.format(self.cfg_fn))
-        print('-'*50)
+        print('-' * 50)
 
     def _write_cfg_line(self, XML_element_obj, parent=None):
         """
@@ -662,7 +662,7 @@ class XML_Config(object):
             parent_str = ''
 
         elif type(parent) is list:
-            parent_str = '.'.join([p._name for p in parent]+[''])
+            parent_str = '.'.join([p._name for p in parent] + [''])
 
         elif isinstance(parent, XML_element):
             parent_str = '{0}.'.format(parent._name)
@@ -718,7 +718,7 @@ class MT_XML(XML_Config):
     =============== ===========================================================
 
     :Example: ::
-        >>> import pygmi.mt.mtpy.core.mt_xml as mtxml
+        >>> import pygmi.mt.mtpyold.core.mt_xml as mtxml
         >>> x = mtxml.read_xml_file(r"/home/mt_data/mt01.xml")
         >>> x.read_cfg_file(r"/home/mt_data/survey_xml.cfg")
         >>> x.write_xml_file(r"/home/mt_data/xml/mt01.xml")
@@ -838,7 +838,7 @@ class MT_XML(XML_Config):
             # we are setting _name to have the necessary information so
             # we can name the attribute whatever we want.
             setattr(self.Data, f_name,
-                    XML_element('Period', {'value': '{0:.6g}'.format(1./freq),
+                    XML_element('Period', {'value': '{0:.6g}'.format(1. / freq),
                                            'units': 'seconds'}, None))
             d_attr = getattr(self.Data, f_name)
             # Get information from data
@@ -917,8 +917,8 @@ class MT_XML(XML_Config):
                                     XML_element('value', c_dict, c_value))
                             count += 1
 
-        self.PeriodRange._attr = {'min': '{0:.6e}'.format(1./self.Z.freq.min()),
-                                  'max': '{0:.6e}'.format(1./self.Z.freq.max())}
+        self.PeriodRange._attr = {'min': '{0:.6e}'.format(1. / self.Z.freq.min()),
+                                  'max': '{0:.6e}'.format(1. / self.Z.freq.max())}
 
     def _write_element(self, parent_et, XML_element_obj):
         """
@@ -1007,9 +1007,9 @@ class MT_XML(XML_Config):
         with open(self.xml_fn, 'w') as fid:
             fid.write(xmlstr)
 
-        print('-'*72)
+        print('-' * 72)
         print('    Wrote xml file to: {0}'.format(self.xml_fn))
-        print('-'*72)
+        print('-' * 72)
 
         return self.xml_fn
 
@@ -1064,8 +1064,8 @@ class MT_XML(XML_Config):
         for per_attr in dir(self.Data):
             if 'period' in per_attr.lower():
                 p_obj = getattr(self.Data, per_attr)
-                p1 = 1./float(p_obj.attr['value'])
-                self._Z.freq[p_count] = 1./p1
+                p1 = 1. / float(p_obj.attr['value'])
+                self._Z.freq[p_count] = 1. / p1
                 if hasattr(p_obj, 'Z'):
                     z_block = getattr(p_obj, 'Z')
                     for z_attr in dir(z_block):
@@ -1130,7 +1130,7 @@ class MT_XML(XML_Config):
             if 'period' in per_attr.lower():
                 p_obj = getattr(self.Data, per_attr)
                 p1 = float(p_obj.attr['value'])
-                self._Tipper.freq[p_count] = 1./p1
+                self._Tipper.freq[p_count] = 1. / p1
                 if hasattr(p_obj, 'T'):
                     t_block = getattr(p_obj, 'T')
                     for t_attr in dir(t_block):

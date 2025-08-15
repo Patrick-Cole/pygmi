@@ -36,9 +36,10 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
-from pygmi.mt.mtpy.modeling import occam1d
-from pygmi.mt.mtpy.core.mt import MT
-from pygmi.mt.mtpy.core.z import Z, Tipper
+from pygmi.mt.mtpyold.modeling import occam1d
+# from pygmi.mt.mtpyold.core.mt import MT
+from pygmi.mt.mtpyold.core.z import Z, Tipper
+from mtpy import MT
 
 from pygmi.misc import BasicModule, ContextModule
 
@@ -306,62 +307,63 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         ax1.set_title(ival)
         ax1.grid(True, 'both')
-        x = 1 / data1.Z.freq
+        data1.plot_phase_tensor()
+        # x = 1 / data1.Z.freq
 
-        if itype == 'xy, yx':
-            res1 = data1.Z.resistivity[:, 0, 1]
-            res1_err = data1.Z.resistivity_err[:, 0, 1]
-            res2 = data1.Z.resistivity[:, 1, 0]
-            res2_err = data1.Z.resistivity_err[:, 1, 0]
-            pha1 = data1.Z.phase[:, 0, 1]
-            pha1_err = data1.Z.phase_err[:, 0, 1]
-            pha2 = data1.Z.phase[:, 1, 0]
-            pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xy}$'
-            label2 = r'$\rho_{yx}$'
-            label3 = r'$\varphi_{xy}$'
-            label4 = r'$\varphi_{yx}$'
+        # if itype == 'xy, yx':
+        #     res1 = data1.Z.resistivity[:, 0, 1]
+        #     res1_err = data1.Z.resistivity_err[:, 0, 1]
+        #     res2 = data1.Z.resistivity[:, 1, 0]
+        #     res2_err = data1.Z.resistivity_err[:, 1, 0]
+        #     pha1 = data1.Z.phase[:, 0, 1]
+        #     pha1_err = data1.Z.phase_err[:, 0, 1]
+        #     pha2 = data1.Z.phase[:, 1, 0]
+        #     pha2_err = data1.Z.phase_err[:, 1, 0]
+        #     label1 = r'$\rho_{xy}$'
+        #     label2 = r'$\rho_{yx}$'
+        #     label3 = r'$\varphi_{xy}$'
+        #     label4 = r'$\varphi_{yx}$'
 
-        else:
-            res1 = data1.Z.resistivity[:, 0, 0]
-            res1_err = data1.Z.resistivity_err[:, 0, 1]
-            res2 = data1.Z.resistivity[:, 1, 1]
-            res2_err = data1.Z.resistivity_err[:, 1, 0]
-            pha1 = data1.Z.phase[:, 0, 0]
-            pha1_err = data1.Z.phase_err[:, 0, 1]
-            pha2 = data1.Z.phase[:, 1, 1]
-            pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xx}$'
-            label2 = r'$\rho_{yy}$'
-            label3 = r'$\varphi_{xx}$'
-            label4 = r'$\varphi_{yy}$'
+        # else:
+        #     res1 = data1.Z.resistivity[:, 0, 0]
+        #     res1_err = data1.Z.resistivity_err[:, 0, 1]
+        #     res2 = data1.Z.resistivity[:, 1, 1]
+        #     res2_err = data1.Z.resistivity_err[:, 1, 0]
+        #     pha1 = data1.Z.phase[:, 0, 0]
+        #     pha1_err = data1.Z.phase_err[:, 0, 1]
+        #     pha2 = data1.Z.phase[:, 1, 1]
+        #     pha2_err = data1.Z.phase_err[:, 1, 0]
+        #     label1 = r'$\rho_{xx}$'
+        #     label2 = r'$\rho_{yy}$'
+        #     label3 = r'$\varphi_{xx}$'
+        #     label4 = r'$\varphi_{yy}$'
 
-        ax1.errorbar(x, res1, yerr=res1_err, label=label1,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax1.errorbar(x, res2, yerr=res2_err, label=label2,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        # ax1.errorbar(x, res1, yerr=res1_err, label=label1,
+        #              ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
+        # ax1.errorbar(x, res2, yerr=res2_err, label=label2,
+        #              ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
 
-        ax1.set_xscale('log')
-        ax1.set_yscale('log')
-        ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+        # ax1.set_xscale('log')
+        # ax1.set_yscale('log')
+        # ax1.legend(loc='upper left')
+        # ax1.set_xlabel('Period (s)')
+        # ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
 
-        ax2 = self.figure.add_subplot(212, sharex=ax1)
-        ax2.grid(True, 'both')
+        # ax2 = self.figure.add_subplot(212, sharex=ax1)
+        # ax2.grid(True, 'both')
 
-        ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax2.errorbar(x, pha2, yerr=pha2_err, label=label4,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        # ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
+        #              ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
+        # ax2.errorbar(x, pha2, yerr=pha2_err, label=label4,
+        #              ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
 
-        ax2.set_ylim(-180., 180.)
+        # ax2.set_ylim(-180., 180.)
 
-        ax2.set_xscale('log')
-        ax2.set_yscale('linear')
-        ax2.legend(loc='upper left')
-        ax2.set_xlabel('Period (s)')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        # ax2.set_xscale('log')
+        # ax2.set_yscale('linear')
+        # ax2.legend(loc='upper left')
+        # ax2.set_xlabel('Period (s)')
+        # ax2.set_ylabel(r'Phase (Degrees)')
 
         self.figure.canvas.draw()
 
@@ -1488,7 +1490,7 @@ class Occam1D(BasicModule):
 
         mode = self.cmb_mode.currentText()
         i = self.cmb_1.currentText()
-        edi_file = self.data[i].fn
+        edi_file = str(self.data[i].fn)
 
         save_path = edi_file[:-4] + '-' + mode
 
@@ -1613,7 +1615,7 @@ class Occam1D(BasicModule):
         mode = self.cmb_mode.currentText()
         n = self.hs_profnum.value()
 
-        edi_file = self.data[i].fn
+        edi_file = str(self.data[i].fn)
         save_path = edi_file[:-4] + '-' + mode
 
         if not os.path.exists(save_path):
@@ -1700,7 +1702,7 @@ class Occam1D(BasicModule):
 
         i = self.cmb_1.currentText()
         mode = self.cmb_mode.currentText()
-        edi_file = self.data[i].fn
+        edi_file = str(self.data[i].fn)
         save_path = edi_file[:-4] + '-' + mode
 
         if os.path.exists(save_path):
@@ -1779,6 +1781,7 @@ def _testfn_occam():
     edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
+    from mtpy import MT
     mt_obj = MT(edi_file)
 
     print('loading complete')
@@ -1807,4 +1810,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn_occam()
+    _testfn()

@@ -15,9 +15,9 @@ import math
 # =================================================================
 import numpy as np
 
-import pygmi.mt.mtpy.utils.calculator as MTcc
-import pygmi.mt.mtpy.utils.exceptions as MTex
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
+import pygmi.mt.mtpyold.utils.calculator as MTcc
+import pygmi.mt.mtpyold.utils.exceptions as MTex
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 
 # get a logger object for this module, using the utility class MtPyLog to
@@ -356,7 +356,7 @@ class Z(ResPhase):
 
     :Example: ::
 
-        >>> import pygmi.mt.mtpy.core.z as mtz
+        >>> import pygmi.mt.mtpyold.core.z as mtz
         >>> import numpy as np
         >>> z_test = np.array([[0+0j, 1+1j], [-1-1j, 0+0j]])
         >>> z_object = mtz.Z(z_array=z_test, freq=[1])
@@ -784,7 +784,7 @@ class Z(ResPhase):
 
                 :Example: ::
 
-                        >>> import pygmi.mt.mtpy.core.z as mtz
+                        >>> import pygmi.mt.mtpyold.core.z as mtz
                         >>> distortion = np.array([[1.2, .5],[.35, 2.1]])
                         >>> d, new_z, new_z_err = z_obj.remove_distortion(distortion)
         """

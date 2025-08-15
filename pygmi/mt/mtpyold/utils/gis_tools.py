@@ -31,8 +31,8 @@ Revised: 5/2020 JP
 # Imports
 # ==============================================================================
 import numpy as np
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
-from pygmi.mt.mtpy.utils import HAS_GDAL, EPSG_DICT, NEW_GDAL
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
+from pygmi.mt.mtpyold.utils import HAS_GDAL, EPSG_DICT, NEW_GDAL
 
 if HAS_GDAL:
     from osgeo import osr
@@ -83,7 +83,7 @@ def convert_position_str2float(position_str):
 
     :Example: ::
 
-        >>> from pygmi.mt.mtpy.utils import gis_tools
+        >>> from pygmi.mt.mtpyold.utils import gis_tools
         >>> gis_tools.convert_position_str2float('-118:34:56.3')
         -118.58230555555555
 
@@ -168,7 +168,8 @@ def assert_elevation_value(elevation):
         elev_value = float(elevation)
     except (ValueError, TypeError):
         elev_value = 0.0
-        _logger.warn('{0} is not a number, setting elevation to 0'.format(elevation))
+        _logger.warn(
+            '{0} is not a number, setting elevation to 0'.format(elevation))
 
     return elev_value
 
@@ -184,7 +185,7 @@ def convert_position_float2str(position):
     :return: latitude or longitude in DD:MM.SS.ms 
 
     :Example: ::
-        >>> import pygmi.mt.mtpy.utils.gis_tools as gis_tools
+        >>> import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
         >>> gis_tools.convert_position_float2str(-118.34563)
         '-118:34:56.30'
 

@@ -8,8 +8,8 @@ Created on Thu Sep 28 12:34:23 2017
 # Imports
 # ==============================================================================
 import numpy as np
-import pygmi.mt.mtpy.core.z as mtz
-import pygmi.mt.mtpy.utils.gis_tools as gis_tools
+import pygmi.mt.mtpyold.core.z as mtz
+import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
 # ==============================================================================
 
 
@@ -179,7 +179,7 @@ class ZMM(ZMMHeader):
     def frequency(self):
         if self.period is None:
             return None
-        return 1./self.period
+        return 1. / self.period
 
     def initialize_arrays(self):
         """
@@ -281,7 +281,7 @@ class ZMM(ZMMHeader):
                 continue
 
             line_list = [float(xx) for xx in line.strip().split()]
-            values = [complex(line_list[ii], line_list[ii+1])
+            values = [complex(line_list[ii], line_list[ii + 1])
                       for ii in range(0, len(line_list), 2)]
             data_dict[key].append(values)
             # for ii in range(0, len(line_list), 2):
@@ -310,7 +310,7 @@ class ZMM(ZMMHeader):
         tf_block = self._flatten_list(tf_block)
         for kk, jj in enumerate(range(0, len(tf_block), 2)):
             self.transfer_functions[index, kk, 0] = tf_block[jj]
-            self.transfer_functions[index, kk, 1] = tf_block[jj+1]
+            self.transfer_functions[index, kk, 1] = tf_block[jj + 1]
 
     def _fill_sig_array_from_block(self, sig_block, index):
         """
@@ -363,10 +363,14 @@ class ZMM(ZMMHeader):
         ey_index = self.ey.index
         v = np.eye(self.transfer_functions.shape[1],
                    self.transfer_functions.shape[1])
-        v[ex_index-2, ex_index-2] = np.cos(np.deg2rad(self.ex.azimuth - angle))
-        v[ey_index-2, ex_index-2] = np.sin(np.deg2rad(self.ex.azimuth - angle))
-        v[ex_index-2, ey_index-2] = np.cos(np.deg2rad(self.ey.azimuth - angle))
-        v[ey_index-2, ey_index-2] = np.sin(np.deg2rad(self.ey.azimuth - angle))
+        v[ex_index - 2, ex_index -
+            2] = np.cos(np.deg2rad(self.ex.azimuth - angle))
+        v[ey_index - 2, ex_index -
+            2] = np.sin(np.deg2rad(self.ex.azimuth - angle))
+        v[ex_index - 2, ey_index -
+            2] = np.cos(np.deg2rad(self.ey.azimuth - angle))
+        v[ey_index - 2, ey_index -
+            2] = np.sin(np.deg2rad(self.ey.azimuth - angle))
 
         # matrix multiplication...
         rotated_transfer_functions = np.matmul(v,
@@ -377,20 +381,20 @@ class ZMM(ZMMHeader):
 
         # now pull out the impedance tensor
         z = np.zeros((self.num_freq, 2, 2), dtype=np.complex64)
-        z[:, 0, 0] = rotated_transfer_functions[:, ex_index-2, hx_index]   # Zxx
-        z[:, 0, 1] = rotated_transfer_functions[:, ex_index-2, hy_index]   # Zxy
-        z[:, 1, 0] = rotated_transfer_functions[:, ey_index-2, hx_index]   # Zyx
-        z[:, 1, 1] = rotated_transfer_functions[:, ey_index-2, hy_index]   # Zyy
+        z[:, 0, 0] = rotated_transfer_functions[:, ex_index - 2, hx_index]   # Zxx
+        z[:, 0, 1] = rotated_transfer_functions[:, ex_index - 2, hy_index]   # Zxy
+        z[:, 1, 0] = rotated_transfer_functions[:, ey_index - 2, hx_index]   # Zyx
+        z[:, 1, 1] = rotated_transfer_functions[:, ey_index - 2, hy_index]   # Zyy
 
         # and the variance information
         var = np.zeros((self.num_freq, 2, 2))
-        var[:, 0, 0] = np.real(rotated_sigma_e[:, ex_index-2, ex_index-2] *
+        var[:, 0, 0] = np.real(rotated_sigma_e[:, ex_index - 2, ex_index - 2] *
                                rotated_sigma_s[:, hx_index, hx_index])
-        var[:, 0, 1] = np.real(rotated_sigma_e[:, ex_index-2, ex_index-2] *
+        var[:, 0, 1] = np.real(rotated_sigma_e[:, ex_index - 2, ex_index - 2] *
                                rotated_sigma_s[:, hy_index, hy_index])
-        var[:, 1, 0] = np.real(rotated_sigma_e[:, ey_index-2, ey_index-2] *
+        var[:, 1, 0] = np.real(rotated_sigma_e[:, ey_index - 2, ey_index - 2] *
                                rotated_sigma_s[:, hx_index, hx_index])
-        var[:, 1, 1] = np.real(rotated_sigma_e[:, ey_index-2, ey_index-2] *
+        var[:, 1, 1] = np.real(rotated_sigma_e[:, ey_index - 2, ey_index - 2] *
                                rotated_sigma_s[:, hy_index, hy_index])
 
         error = np.sqrt(var)
@@ -435,15 +439,15 @@ class ZMM(ZMMHeader):
         # now pull out tipper information
         tipper = np.zeros((self.num_freq, 2), dtype=np.complex64)
         tipper[:, 0] = rotated_transfer_functions[:,
-                                                  hz_index-2, hx_index]   # Tx
+                                                  hz_index - 2, hx_index]   # Tx
         tipper[:, 1] = rotated_transfer_functions[:,
-                                                  hz_index-2, hy_index]   # Ty
+                                                  hz_index - 2, hy_index]   # Ty
 
         # and the variance/error information
         var = np.zeros((self.num_freq, 2))
-        var[:, 0] = np.real(rotated_sigma_e[:, hz_index-2, hz_index-2] *
+        var[:, 0] = np.real(rotated_sigma_e[:, hz_index - 2, hz_index - 2] *
                             rotated_sigma_s[:, hx_index, hx_index])   # Tx
-        var[:, 1] = np.real(rotated_sigma_e[:, hz_index-2, hz_index-2] *
+        var[:, 1] = np.real(rotated_sigma_e[:, hz_index - 2, hz_index - 2] *
                             rotated_sigma_s[:, hy_index, hy_index])   # Ty
         error = np.sqrt(var)
 

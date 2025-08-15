@@ -20,9 +20,9 @@ Edited by JP, 2016
 # =================================================================
 import numpy as np
 
-import pygmi.mt.mtpy.analysis.pt as MTpt
-import pygmi.mt.mtpy.core.z as MTz
-import pygmi.mt.mtpy.utils.exceptions as MTex
+import pygmi.mt.mtpyold.analysis.pt as MTpt
+import pygmi.mt.mtpyold.core.z as MTz
+import pygmi.mt.mtpyold.utils.exceptions as MTex
 
 
 # =================================================================
@@ -78,7 +78,7 @@ def dimensionality(z_array=None, z_object=None, pt_array=None,
     ----------
         :Estimate Dimesions: ::
 
-            >>> import pygmi.mt.mtpy.analysis.geometry as geometry
+            >>> import pygmi.mt.mtpyold.analysis.geometry as geometry
             >>> dim = geometry.dimensionality(z_object=z_obj,
             >>>                               skew_threshold=3)
 
@@ -170,7 +170,7 @@ def strike_angle(z_array=None, z_object=None, pt_array=None,
     ----------
         :Estimate Dimesions: ::
 
-            >>> import pygmi.mt.mtpy.analysis.geometry as geometry
+            >>> import pygmi.mt.mtpyold.analysis.geometry as geometry
             >>> strike = geometry.strike_angle(z_object=z_obj,
             >>>                                skew_threshold=3)
 
@@ -264,7 +264,7 @@ def eccentricity(z_array=None, z_object=None, pt_array=None, pt_object=None):
     ----------
         :Estimate Dimesions: ::
 
-            >>> import pygmi.mt.mtpy.analysis.geometry as geometry
+            >>> import pygmi.mt.mtpyold.analysis.geometry as geometry
             >>> ec, ec_err= geometry.eccentricity(z_object=z_obj)
     """
 
@@ -300,4 +300,4 @@ def eccentricity(z_array=None, z_object=None, pt_array=None, pt_object=None):
 
         lo_eccerr.append(ecc_err)
 
-    return np.array(lo_ecc), np.array(lo_eccerr)*np.array(lo_ecc)
+    return np.array(lo_ecc), np.array(lo_eccerr) * np.array(lo_ecc)

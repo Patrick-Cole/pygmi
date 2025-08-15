@@ -26,7 +26,7 @@
 
 import os
 from PySide6 import QtWidgets
-import pygmi.mt.mtpy.core.mt as mt
+import pygmi.mt.mtpyold.core.mt as mt
 import numpy as np
 
 from pygmi.misc import ContextModule, BasicModule

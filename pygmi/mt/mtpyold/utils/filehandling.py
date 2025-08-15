@@ -25,9 +25,9 @@ import time
 import fnmatch
 import shutil
 
-import pygmi.mt.mtpy.utils.calculator as MTcc
-import pygmi.mt.mtpy.utils.exceptions as MTex
-import pygmi.mt.mtpy.utils.configfile as MTcf
+import pygmi.mt.mtpyold.utils.calculator as MTcc
+import pygmi.mt.mtpyold.utils.exceptions as MTex
+import pygmi.mt.mtpyold.utils.configfile as MTcf
 
 # =================================================================
 
@@ -113,7 +113,7 @@ def read_stationdatafile(textfile, read_duplicates=True):
                                    first occurrence, default True
 
     example:
-    import pygmi.mt.mtpy.utils.filehandling as fh
+    import pygmi.mt.mtpyold.utils.filehandling as fh
     stationdict = fh.read_stationxyfile(textfile)
 
 
@@ -161,10 +161,10 @@ def make_unique_folder(wd, basename='run'):
     # define savepath. need to choose a name that doesn't already exist
     i = 1
     svpath_str = basename
-    svpath = svpath_str+'_%02i' % i
+    svpath = svpath_str + '_%02i' % i
     while os.path.exists(op.join(wd, svpath)):
         i += 1
-        svpath = svpath_str+'_%02i' % i
+        svpath = svpath_str + '_%02i' % i
 
     savepath = op.join(wd, svpath)
     os.mkdir(savepath)
@@ -280,7 +280,7 @@ def get_pathlist(masterdir, search_stringlist=None, search_stringfile=None,
         if (search_stringlist is None) or (len(search_stringlist)) == 0:
             search_stringlist = read1columntext(search_stringfile)
 
-    flist = [i for i in os.listdir(masterdir) if i[len(i)-len(extension):] ==
+    flist = [i for i in os.listdir(masterdir) if i[len(i) - len(extension):] ==
              extension]
 
     if folder:
@@ -320,7 +320,7 @@ def get_sampling_interval_fromdatafile(filename, length=3600):
 
     fn = op.abspath(op.realpath(filename))
     dd = np.loadtxt(fn)
-    sampling_interval = length/float(len(dd))
+    sampling_interval = length / float(len(dd))
 
     return sampling_interval
 
@@ -351,7 +351,7 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
 
     n_hours = int(n_hours)
     # list of starting hours for the data blocks:
-    lo_hours = [int(i) for i in np.arange(int(24/n_hours))*n_hours]
+    lo_hours = [int(i) for i in np.arange(int(24 / n_hours)) * n_hours]
     no_blocks = len(lo_hours)
 
     # build a list that contains the respective groups of starting hours belonging
@@ -483,9 +483,9 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
         # this is more memory efficient than extending lists!!
         # cater for potential rounding errors:
         if sampling < 1:
-            max_n_data = 3600*int(n_hours) * (int(1./sampling)+1)
+            max_n_data = 3600 * int(n_hours) * (int(1. / sampling) + 1)
         else:
-            max_n_data = int(3600.*int(n_hours)/sampling) + 1
+            max_n_data = int(3600. * int(n_hours) / sampling) + 1
 
         block_data = np.zeros(max_n_data, 'int')
 
@@ -518,7 +518,8 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
             no_samples = len(data_in)
 
             # time axis of the file read in :
-            tmp_file_time_axis = np.arange(no_samples)*sampling+file_start_time
+            tmp_file_time_axis = np.arange(
+                no_samples) * sampling + file_start_time
 
             # end: time of the last sample + 1x sampling-interval
             file_end_time = tmp_file_time_axis[-1] + sampling
@@ -555,11 +556,11 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
 
                 # determine, which of the daily data blocks we are currently
                 # processing/writing
-                blockindex = no_blocks-1
+                blockindex = no_blocks - 1
 
                 file_hour = lo_hours[-1]
-                for t in range(len(lo_hours)-1):
-                    if lo_hours[t+1] > data_hour:
+                for t in range(len(lo_hours) - 1):
+                    if lo_hours[t + 1] > data_hour:
                         blockindex = t
                         file_hour = lo_hours[blockindex]
                         break
@@ -588,7 +589,7 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
 
                     # find point on the outfile time axis for the beginning of current file:
                     overlap_idx = arrayindex - \
-                        int((outfile_endtime - file_start_time)/sampling)
+                        int((outfile_endtime - file_start_time) / sampling)
 
                     # set the array index back to the appropriate value corresponding to the
                     # start of the new file
@@ -597,7 +598,7 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
                 # append current data
                 # if it's a single column of data
                 if np.size(data_in.shape) == 1:
-                    block_data[arrayindex:arrayindex+len(data_in)] = data_in
+                    block_data[arrayindex:arrayindex + len(data_in)] = data_in
                     # outfile_data.extend(data_in.tolist())
                 # otherwise assuming that the first column is time, so just take the second one
                 else:
@@ -609,7 +610,8 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
                 arrayindex += len(data_in)
 
                 # update (virtual) end of outfile data
-                outfile_endtime = (arrayindex+1)*sampling + outfile_starttime
+                outfile_endtime = (arrayindex + 1) * \
+                    sampling + outfile_starttime
 
             # -----------
             # current file has been read in, data in buffer have been updated
@@ -632,9 +634,9 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
 
                 nextfile_hour = next_file_start[3]
 
-                nextfile_blockindex = no_blocks-1
-                for t in range(len(lo_hours)-1):
-                    if lo_hours[t+1] > nextfile_hour:
+                nextfile_blockindex = no_blocks - 1
+                for t in range(len(lo_hours) - 1):
+                    if lo_hours[t + 1] > nextfile_hour:
                         nextfile_blockindex = t
                         break
 
@@ -663,11 +665,11 @@ def EDL_make_Nhour_files(n_hours, inputdir, sampling, stationname=None, outputdi
                     outfile_starttime = int(outfile_starttime)
 
                     headerline = '# {0} {1} {2:.1f} {3} {4} \n'.format(
-                        stationname, comp.lower(), 1./sampling,
+                        stationname, comp.lower(), 1. / sampling,
                         outfile_starttime, arrayindex)
                 else:
                     headerline = '# {0} {1} {2:.1f} {3:f} {4} \n'.format(
-                        stationname, comp.lower(), 1./sampling,
+                        stationname, comp.lower(), 1. / sampling,
                         outfile_starttime, arrayindex)
 
                 F.write(headerline)
@@ -830,9 +832,9 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
         # this is more memory efficient than extending lists!!
         # cater for potential rounding errors:
         if sampling < 1:
-            max_n_data = 86400 * (int(1./sampling)+1)
+            max_n_data = 86400 * (int(1. / sampling) + 1)
         else:
-            max_n_data = int(86400./sampling) + 1
+            max_n_data = int(86400. / sampling) + 1
 
         day_data = np.zeros(max_n_data, 'int')
 
@@ -864,7 +866,8 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
                 continue
             no_samples = len(data_in)
 
-            tmp_file_time_axis = np.arange(no_samples)*sampling+file_start_time
+            tmp_file_time_axis = np.arange(
+                no_samples) * sampling + file_start_time
             # file_time_axis = (np.arange(no_samples)*sampling +
             #                 file_start_time).tolist()
 
@@ -883,7 +886,7 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
 
                 # if it's a single column of data
                 if np.size(data_in.shape) == 1:
-                    day_data[arrayindex:arrayindex+len(data_in)] = data_in
+                    day_data[arrayindex:arrayindex + len(data_in)] = data_in
                     # outfile_data = data_in.tolist()
                 # otherwise assuming that the first column is time, so just take the second one
                 else:
@@ -921,7 +924,7 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
 
                     # find point on the outfile time axis for the beginning of current file:
                     overlap_idx = arrayindex - \
-                        int((outfile_endtime - file_start_time)/sampling)
+                        int((outfile_endtime - file_start_time) / sampling)
 
                     # set the array index back
                     arrayindex = overlap_idx
@@ -944,7 +947,7 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
                 # append current data
                 # if it's a single column of data
                 if np.size(data_in.shape) == 1:
-                    day_data[arrayindex:arrayindex+len(data_in)] = data_in
+                    day_data[arrayindex:arrayindex + len(data_in)] = data_in
                     # outfile_data.extend(data_in.tolist())
                 # otherwise assuming that the first column is time, so just take the second one
                 else:
@@ -956,7 +959,8 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
                 print(len(data_in), arrayindex)
 
                 arrayindex += len(data_in)
-                outfile_endtime = (arrayindex+1)*sampling + outfile_starttime
+                outfile_endtime = (arrayindex + 1) * \
+                    sampling + outfile_starttime
 
             # -----------
 
@@ -996,11 +1000,11 @@ def EDL_make_dayfiles(inputdir, sampling, stationname=None, outputdir=None):
                     outfile_starttime = int(outfile_starttime)
 
                     headerline = '# {0} {1} {2:.1f} {3} {4} \n'.format(
-                        stationname, comp.lower(), 1./sampling,
+                        stationname, comp.lower(), 1. / sampling,
                         outfile_starttime, arrayindex)
                 else:
                     headerline = '# {0} {1} {2:.1f} {3:f} {4} \n'.format(
-                        stationname, comp.lower(), 1./sampling,
+                        stationname, comp.lower(), 1. / sampling,
                         outfile_starttime, arrayindex)
 
                 F.write(headerline)
@@ -1122,14 +1126,14 @@ def read_data_header(fn_raw):
         header_list.append(firstline[1].upper())
         idx_header += 1
 
-    header_list.append(firstline[idx_header+1].lower())
-    header_list.append(float(firstline[idx_header+2]))
-    header_list.append(float(firstline[idx_header+3]))
-    header_list.append(int(float(firstline[idx_header+4])))
-    header_list.append(firstline[idx_header+5].lower())
-    header_list.append(float(firstline[idx_header+6]))
-    header_list.append(float(firstline[idx_header+7]))
-    header_list.append(float(firstline[idx_header+8]))
+    header_list.append(firstline[idx_header + 1].lower())
+    header_list.append(float(firstline[idx_header + 2]))
+    header_list.append(float(firstline[idx_header + 3]))
+    header_list.append(int(float(firstline[idx_header + 4])))
+    header_list.append(firstline[idx_header + 5].lower())
+    header_list.append(float(firstline[idx_header + 6]))
+    header_list.append(float(firstline[idx_header + 7]))
+    header_list.append(float(firstline[idx_header + 8]))
 
     return header_list
 
@@ -1254,11 +1258,11 @@ def read_ts_header(tsfile):
     for i in range(len(headerlist)):
         header_dict[lo_headerelements[i]] = headerlist[i]
         # old header had tmax instead of n_samples:
-        if ((i == 4) and float(headerlist[4]) % 1 != 0
-                and float(headerlist[i]) > float(headerlist[i-1])):
+        if ((i == 4) and float(headerlist[4]) % 1 != 0 and
+                float(headerlist[i]) > float(headerlist[i - 1])):
             header_dict[lo_headerelements[i]] = int(
-                (float(headerlist[i]) - float(headerlist[i-1])
-                 )*float(headerlist[i-2]))+1
+                (float(headerlist[i]) - float(headerlist[i - 1])
+                 ) * float(headerlist[i - 2])) + 1
 
     headerlements = ['samplingrate', 't_min', 'nsamples', 'lat', 'lon', 'elev']
 

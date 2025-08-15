@@ -19,8 +19,8 @@ import os.path as op
 import configparser
 import copy
 import io
-import pygmi.mt.mtpy.utils.exceptions as MTex
-import pygmi.mt.mtpy.utils.gis_tools as gis_tools
+import pygmi.mt.mtpyold.utils.exceptions as MTex
+import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
 # =================================================================
 
 list_of_required_keywords = ['latitude',
@@ -651,7 +651,7 @@ def read_survey_txt_file(survey_file, delimiter=None):
 
         if len(sstr) != len(skeys):
             print('cannot read line {0} - wrong number of entries - need {2}\
-                                                    '.format(ss+2, len(skeys)))
+                                                    '.format(ss + 2, len(skeys)))
             continue
 
         sdict = {}
@@ -705,7 +705,7 @@ def read_survey_txt_file(survey_file, delimiter=None):
             if key.lower() in ['df', 'sampling_rate', 'sampling']:
                 val = copy.copy(sdict[key])
                 sdict.pop(key)
-                sdict['sampling_interval'] = 1./float(val)
+                sdict['sampling_interval'] = 1. / float(val)
 
             if key.lower() in ['dt', 'sampling_interval']:
                 val = copy.copy(sdict[key])
@@ -815,12 +815,12 @@ def write_config_from_survey_txt_file(survey_file, save_name=None,
     # get the filename to save to
     if save_name is None:
         save_dir = os.path.dirname(survey_file)
-        save_fn = os.path.splitext(os.path.basename(survey_file))[0]+'.cfg'
+        save_fn = os.path.splitext(os.path.basename(survey_file))[0] + '.cfg'
         save_name = os.path.join(save_dir, save_fn)
     elif os.path.isfile(save_name):
         pass
     elif os.path.isdir(save_name):
-        save_fn = os.path.splitext(os.path.basename(survey_file))[0]+'.cfg'
+        save_fn = os.path.splitext(os.path.basename(survey_file))[0] + '.cfg'
         save_name = os.path.join(save_name, save_fn)
 
     if not save_name.lower().endswith('.cfg'):

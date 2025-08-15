@@ -14,16 +14,16 @@ import warnings
 from dateutil import parser as dt_parser
 from pathlib import Path
 
-import pygmi.mt.mtpy.core.edi as MTedi
-import pygmi.mt.mtpy.core.z as MTz
-import pygmi.mt.mtpy.utils.gis_tools as gis_tools
-import pygmi.mt.mtpy.analysis.pt as MTpt
-import pygmi.mt.mtpy.analysis.distortion as MTdistortion
-import pygmi.mt.mtpy.core.jfile as MTj
-import pygmi.mt.mtpy.core.mt_xml as MTxml
-import pygmi.mt.mtpy.core.zmm as MTzmm
+import pygmi.mt.mtpyold.core.edi as MTedi
+import pygmi.mt.mtpyold.core.z as MTz
+import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
+import pygmi.mt.mtpyold.analysis.pt as MTpt
+import pygmi.mt.mtpyold.analysis.distortion as MTdistortion
+import pygmi.mt.mtpyold.core.jfile as MTj
+import pygmi.mt.mtpyold.core.mt_xml as MTxml
+import pygmi.mt.mtpyold.core.zmm as MTzmm
 
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 _logger = MtPyLog.get_mtpy_logger(__name__)
 # _logger.setLevel(logging.DEBUG)
@@ -89,7 +89,7 @@ class MT(object):
         * The best way to see what all the information is and where it is
           contained would be to write out a configuration file ::
 
-              >>> import pygmi.mt.mtpy.core.mt as mt
+              >>> import pygmi.mt.mtpyold.core.mt as mt
               >>> mt_obj = mt.MT()
               >>> mt_obj.write_cfg_file(r"/home/mt/generic.cfg")
 
@@ -114,12 +114,12 @@ class MT(object):
     -------------------
     :Read from an .edi File: ::
 
-        >>> import pygmi.mt.mtpy.core.mt as mt
+        >>> import pygmi.mt.mtpyold.core.mt as mt
         >>> mt_obj = mt.MT(r"/home/edi_files/s01.edi")
 
     :Remove Distortion: ::
 
-        >>> import pygmi.mt.mtpy.core.mt as mt
+        >>> import pygmi.mt.mtpyold.core.mt as mt
         >>> mt1 = mt.MT(fn=r"/home/mt/edi_files/mt01.edi")
         >>> D, new_z = mt1.remove_distortion()
         >>> mt1.write_mt_file(new_fn=r"/home/mt/edi_files/mt01_dr.edi",\
@@ -357,7 +357,7 @@ class MT(object):
 
         :Example: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt_obj = mt.MT()
             >>> mt_obj.read_mt_file(r"/home/mt/mt01.xml")
 
@@ -1310,7 +1310,7 @@ class MT(object):
         xml_obj = MTxml.MT_XML()
         xml_obj.Attachment.Filename.value = os.path.basename(self.fn)
         xml_obj.PrimaryData.Filename.value = os.path.basename(self.fn)[
-            :-4]+'.png'
+            :-4] + '.png'
 
         xml_obj.ProductId.value = '{0}.{1}'.format(self.station.upper(),
                                                    self.Site.year_collected)
@@ -1400,7 +1400,7 @@ class MT(object):
         except ZeroDivisionError:
             azm = 90.0
         xml_obj.FieldNotes.Dipole_00.Azimuth.value = np.degrees(
-            min([np.pi/2, azm]))
+            min([np.pi / 2, azm]))
         xml_obj.FieldNotes.Dipole_00.Channel.value = self.FieldNotes.Electrode_ey.acqchan
 
         # HX
@@ -1585,13 +1585,13 @@ class MT(object):
 
         :Make configuration file: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt_obj = mt.MT()
             >>> mt_obj.write_cfg_file(r"/mt/generic_config.cfg")
 
         :Read in configuration file: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt_obj = mt.MT()
             >>> mt_obj.read_cfg_file(r"/home/mt/survey_config.cfg")
         """
@@ -1664,7 +1664,7 @@ class MT(object):
 
         :Write configuration file: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt_obj = mt.MT()
             >>> mt_obj.read_mt_file(r"/home/mt/edi_files/mt01.edi")
             >>> mt_obj.write_cfg_file(r"/home/mt/survey_config.cfg")
@@ -1730,7 +1730,7 @@ class MT(object):
 
         :Remove distortion and write new .edi file: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt1 = mt.MT(fn=r"/home/mt/edi_files/mt01.edi")
             >>> D, new_z = mt1.remove_distortion()
             >>> mt1.write_mt_file(new_fn=r"/home/mt/edi_files/mt01_dr.edi",\
@@ -1771,7 +1771,7 @@ class MT(object):
 
         :Remove Static Shift: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> mt_obj = mt.MT(r"/home/mt/mt01.edi")
             >>> new_z_obj = mt.remove_static_shift(ss_x=.5, ss_y=1.2)
             >>> mt_obj.write_mt_file(new_fn=r"/home/mt/mt01_ss.edi",
@@ -1811,7 +1811,7 @@ class MT(object):
 
         :Interpolate: ::
 
-            >>> import pygmi.mt.mtpy.core.mt as mt
+            >>> import pygmi.mt.mtpyold.core.mt as mt
             >>> edi_fn = r"/home/edi_files/mt_01.edi"
             >>> mt_obj = mt.MT(edi_fn)
             >>> # create a new frequency range to interpolate onto
@@ -1974,7 +1974,7 @@ class MT(object):
 
         """
 
-        from pygmi.mt.mtpy.imaging import plot_mt_response
+        from pygmi.mt.mtpyold.imaging import plot_mt_response
         # todo change this to the format of the new imaging API
         plot_obj = plot_mt_response.PlotMTResponse(z_object=self.Z,
                                                    t_object=self.Tipper,

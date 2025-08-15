@@ -16,11 +16,11 @@ import os
 import datetime
 import numpy as np
 
-import pygmi.mt.mtpy.utils.gis_tools as gis_tools
-import pygmi.mt.mtpy.utils.exceptions as MTex
-import pygmi.mt.mtpy.utils.filehandling as MTfh
-import pygmi.mt.mtpy.core.z as MTz
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
+import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
+import pygmi.mt.mtpyold.utils.exceptions as MTex
+import pygmi.mt.mtpyold.utils.filehandling as MTfh
+import pygmi.mt.mtpyold.core.z as MTz
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 try:
     import scipy.stats.distributions as ssd
@@ -101,7 +101,7 @@ class Edi(object):
 
     :Change Latitude: ::
 
-        >>> import pygmi.mt.mtpy.core.edi as mtedi
+        >>> import pygmi.mt.mtpyold.core.edi as mtedi
         >>> edi_obj = mtedi.Edi(edi_fn=r"/home/mt/mt01.edi")
         >>> # change the latitude
         >>> edi_obj.header.lat = 45.7869
@@ -156,7 +156,7 @@ class Edi(object):
 
         :Example: ::
 
-            >>> import pygmi.mt.mtpy.core.Edi as mtedi
+            >>> import pygmi.mt.mtpyold.core.Edi as mtedi
             >>> edi_obj = mtedi.Edi()
             >>> edi_obj.read_edi_file(edi_fn=r"/home/mt/mt01.edi")
 
@@ -569,7 +569,7 @@ class Edi(object):
 
         :Example: ::
 
-            >>> import pygmi.mt.mtpy.core.edi as mtedi
+            >>> import pygmi.mt.mtpyold.core.edi as mtedi
             >>> edi_obj = mtedi.Edi(edi_fn=r"/home/mt/mt01/edi")
             >>> edi_obj.Header.dataid = 'mt01_rr'
             >>> n_edi_fn = edi_obj.write_edi_file()
@@ -891,7 +891,7 @@ class Header(object):
 
     :Read Header: ::
 
-        >>> import pygmi.mt.mtpy.core.edi as mtedi
+        >>> import pygmi.mt.mtpyold.core.edi as mtedi
         >>> header_obj = mtedi.Header(edi_fn=r"/home/mt/mt01.edi")
 
     """
@@ -1007,7 +1007,7 @@ class Header(object):
 
             >>> h_list = ['lat=36.7898', 'lon=120.73532', 'elev=120.0', ...
             >>>           'dataid=mt01']
-            >>> import pygmi.mt.mtpy.core.edi as mtedi
+            >>> import pygmi.mt.mtpyold.core.edi as mtedi
             >>> header = mtedi.Header()
             >>> header.read_header(h_list)
 
@@ -1637,7 +1637,7 @@ class HMeasurement(object):
 
     :Fill Metadata: ::
 
-        >>> import pygmi.mt.mtpy.core.edi as mtedi
+        >>> import pygmi.mt.mtpyold.core.edi as mtedi
         >>> h_dict = {'id': '1', 'chtype':'hx', 'x':0, 'y':0, 'azm':0}
         >>> h_dict['acqchn'] = 'hx'
         >>> hmeas = mtedi.HMeasurement(**h_dict)
@@ -1686,7 +1686,7 @@ class EMeasurement(object):
 
     :Fill Metadata: ::
 
-        >>> import pygmi.mt.mtpy.core.edi as mtedi
+        >>> import pygmi.mt.mtpyold.core.edi as mtedi
         >>> e_dict = {'id': '1', 'chtype':'ex', 'x':0, 'y':0, 'x2':50, 'y2':50}
         >>> e_dict['acqchn'] = 'ex'
         >>> emeas = mtedi.EMeasurement(**e_dict)

@@ -1,7 +1,7 @@
 import functools
 import inspect
 import os
-from pygmi.mt.mtpy.utils.mtpylog import MtPyLog
+from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 
 class deprecated(object):
@@ -16,6 +16,7 @@ class deprecated(object):
         Author: YingzhiGou
         Date: 20/06/2017
     """
+
     def __init__(self, reason):  # pragma: no cover
         if inspect.isclass(reason) or inspect.isfunction(reason):
             raise TypeError("Reason for deprecation must be supplied")
@@ -44,9 +45,12 @@ class deprecated(object):
         @functools.wraps(cls_or_func)
         def new_func(*args, **kwargs):  # pragma: no cover
             import warnings
-            warnings.simplefilter('always', DeprecationWarning)  # turn off filter
-            warnings.warn_explicit(msg, category=DeprecationWarning, filename=filename, lineno=lineno)
-            warnings.simplefilter('default', DeprecationWarning)  # reset filter
+            warnings.simplefilter(
+                'always', DeprecationWarning)  # turn off filter
+            warnings.warn_explicit(
+                msg, category=DeprecationWarning, filename=filename, lineno=lineno)
+            warnings.simplefilter(
+                'default', DeprecationWarning)  # reset filter
             return cls_or_func(*args, **kwargs)
 
         return new_func
@@ -75,10 +79,10 @@ class gdal_data_check(object):
             self._gdal_data_found = self._check_gdal_data()
             self._has_checked = True
         if not self._gdal_data_found:
-            if(raise_error):
+            if (raise_error):
                 raise ImportError("GDAL  is NOT installed correctly")
             else:
-                print ("Ignore GDAL as it is not working. Will use pyproj")
+                print("Ignore GDAL as it is not working. Will use pyproj")
 
     def __call__(self, *args, **kwargs):  # pragma: no cover
         return self._func(*args, **kwargs)
@@ -87,7 +91,8 @@ class gdal_data_check(object):
         if 'GDAL_DATA' not in os.environ:
             # gdal data not defined, try to define
             from subprocess import Popen, PIPE
-            self._logger.warning("GDAL_DATA environment variable is not set  Please see https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable ")
+            self._logger.warning(
+                "GDAL_DATA environment variable is not set  Please see https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable ")
             try:
                 # try to find out gdal_data path using gdal-config
                 self._logger.info("Trying to find gdal-data path ...")
@@ -97,7 +102,8 @@ class gdal_data_check(object):
                 output = output.strip()
                 if exit_code == 0 and os.path.exists(output):
                     os.environ['GDAL_DATA'] = output
-                    self._logger.info("Found gdal-data path: {}".format(output))
+                    self._logger.info(
+                        "Found gdal-data path: {}".format(output))
                     return True
                 else:
                     self._logger.error(
@@ -110,13 +116,15 @@ class gdal_data_check(object):
                 return False
         else:
             if os.path.exists(os.environ['GDAL_DATA']):
-                self._logger.info("GDAL_DATA is set to: {}".format(os.environ['GDAL_DATA']))
+                self._logger.info("GDAL_DATA is set to: {}".format(
+                    os.environ['GDAL_DATA']))
 
                 try:
                     from osgeo import osr
                     from osgeo.ogr import OGRERR_NONE
                 except:
-                    self._logger.error("Failed to load module osgeo; looks like GDAL is NOT working")
+                    self._logger.error(
+                        "Failed to load module osgeo; looks like GDAL is NOT working")
                     # print ("Failed to load module osgeo !!! ")
 
                     return False
@@ -124,5 +132,6 @@ class gdal_data_check(object):
 
                 return True
             else:
-                self._logger.error("GDAL_DATA is set to: {}, but the path does not exist.".format(os.environ['GDAL_DATA']))
+                self._logger.error("GDAL_DATA is set to: {}, but the path does not exist.".format(
+                    os.environ['GDAL_DATA']))
                 return False

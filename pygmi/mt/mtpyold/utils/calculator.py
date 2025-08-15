@@ -18,7 +18,7 @@ import numpy as np
 import math
 import cmath
 
-import pygmi.mt.mtpy.utils.exceptions as MTex
+import pygmi.mt.mtpyold.utils.exceptions as MTex
 
 
 # =================================================================
@@ -26,7 +26,7 @@ import pygmi.mt.mtpy.utils.exceptions as MTex
 # define uncertainty for differences between time steps
 epsilon = 1e-9
 # magnetic permeability in free space in H/m (=Vs/Am)
-mu0 = 4e-7*math.pi
+mu0 = 4e-7 * math.pi
 
 
 # =================================================================
@@ -35,7 +35,7 @@ def centre_point(xarray, yarray):
     """
     get the centre point of arrays of x and y values
     """
-    return (xarray.max() + xarray.min())/2., (yarray.max() + yarray.min())/2.
+    return (xarray.max() + xarray.min()) / 2., (yarray.max() + yarray.min()) / 2.
 
 
 def roundsf(number, sf):
@@ -102,7 +102,7 @@ def get_period_list(period_min, period_max, periods_per_decade, include_outside_
     else:
         stop_period = log_period_max
 
-    return np.logspace(start_period, stop_period, int((stop_period-start_period)*periods_per_decade + 1))
+    return np.logspace(start_period, stop_period, int((stop_period - start_period) * periods_per_decade + 1))
 
 
 def nearest_index(val, array):
@@ -115,7 +115,7 @@ def nearest_index(val, array):
 
     """
     # absolute difference between value and array
-    diff = np.abs(array-val)
+    diff = np.abs(array - val)
 
     return np.where(diff == min(diff))[0][0]
 
@@ -252,7 +252,7 @@ def compute_determinant_error(z_array, z_err_array, method='theoretical', repeat
         for r in range(repeats):
             errmag = np.random.normal(
                 loc=0, scale=z_err_array, size=z_array.shape)
-            arraylist = np.append(arraylist, z_array + errmag*(1. + 1j))
+            arraylist = np.append(arraylist, z_array + errmag * (1. + 1j))
 
         arraylist = arraylist.reshape(repeats, z_array.shape[0], 2, 2)
         detlist = np.linalg.det(arraylist)
@@ -260,8 +260,8 @@ def compute_determinant_error(z_array, z_err_array, method='theoretical', repeat
         error = np.std(detlist, axis=0)
 
     else:
-        error = np.abs(z_err_array[:, 0, 0]*np.abs(z_array[:, 1, 1]) + z_err_array[:, 1, 1]*np.abs(z_array[:, 0, 0])
-                       - z_err_array[:, 0, 1]*np.abs(z_array[:, 1, 0]) - z_err_array[:, 1, 0]*np.abs(z_array[:, 0, 1]))
+        error = np.abs(z_err_array[:, 0, 0] * np.abs(z_array[:, 1, 1]) + z_err_array[:, 1, 1] * np.abs(z_array[:, 0, 0]) -
+                       z_err_array[:, 0, 1] * np.abs(z_array[:, 1, 0]) - z_err_array[:, 1, 0] * np.abs(z_array[:, 0, 1]))
 
     return error
 
@@ -275,14 +275,14 @@ def propagate_error_polar2rect(r, r_error, phi, phi_error):
 
     """
 
-    corners = [(np.real(cmath.rect(r-r_error, phi-phi_error)), np.imag(cmath.rect(r-r_error, phi-phi_error))),
-               (np.real(cmath.rect(r+r_error, phi-phi_error)),
-                np.imag(cmath.rect(r+r_error, phi-phi_error))),
-               (np.real(cmath.rect(r+r_error, phi+phi_error)),
-                np.imag(cmath.rect(r+r_error, phi+phi_error))),
-               (np.real(cmath.rect(r-r_error, phi+phi_error)),
-                np.imag(cmath.rect(r-r_error, phi+phi_error))),
-               (np.real(cmath.rect(r+r_error, phi)), np.imag(cmath.rect(r+r_error, phi)))]
+    corners = [(np.real(cmath.rect(r - r_error, phi - phi_error)), np.imag(cmath.rect(r - r_error, phi - phi_error))),
+               (np.real(cmath.rect(r + r_error, phi - phi_error)),
+                np.imag(cmath.rect(r + r_error, phi - phi_error))),
+               (np.real(cmath.rect(r + r_error, phi + phi_error)),
+                np.imag(cmath.rect(r + r_error, phi + phi_error))),
+               (np.real(cmath.rect(r - r_error, phi + phi_error)),
+                np.imag(cmath.rect(r - r_error, phi + phi_error))),
+               (np.real(cmath.rect(r + r_error, phi)), np.imag(cmath.rect(r + r_error, phi)))]
 
     lo_x = [i[0] for i in corners]
     lo_y = [i[1] for i in corners]
@@ -316,13 +316,13 @@ def propagate_error_rect2polar(x, x_error, y, y_error):
     lo_rho = [i[0] for i in lo_polar_points]
     lo_phi = [math.degrees(i[1]) % 360 for i in lo_polar_points]
 
-    rho_err = 0.5*(max(lo_rho) - min(lo_rho))
-    phi_err = 0.5*(max(lo_phi) - min(lo_phi))
+    rho_err = 0.5 * (max(lo_rho) - min(lo_rho))
+    phi_err = 0.5 * (max(lo_phi) - min(lo_phi))
 
     if (270 < max(lo_phi) < 360) and (0 < min(lo_phi) < 90):
         tmp1 = [i for i in lo_phi if (0 < i < 90)]
         tmp4 = [i for i in lo_phi if (270 < i < 360)]
-        phi_err = 0.5*((max(tmp1) - min(tmp4)) % 360)
+        phi_err = 0.5 * ((max(tmp1) - min(tmp4)) % 360)
 
     if phi_err > 180:
         # print phi_err,' -> ',(-phi_err)%360
@@ -330,7 +330,7 @@ def propagate_error_rect2polar(x, x_error, y, y_error):
 
     if origin_in_box is True:
         # largest rho:
-        rho_err = 2*rho_err + min(lo_rho)
+        rho_err = 2 * rho_err + min(lo_rho)
         # maximum angle uncertainty:
         phi_err = 180.
 
@@ -359,11 +359,11 @@ def z_error2r_phi_error(z_real, z_imag, error):
 
     """
 
-    z_amp = np.abs(z_real + 1j*z_imag)
+    z_amp = np.abs(z_real + 1j * z_imag)
 
-    z_rel_err = error/z_amp
+    z_rel_err = error / z_amp
 
-    res_rel_err = 2.*z_rel_err
+    res_rel_err = 2. * z_rel_err
 
     # if the relative error of the amplitude is >=100% that means that the relative
     # error of the resistivity is 200% - that is then equivalent to an uncertainty
@@ -425,11 +425,11 @@ def old_z_error2r_phi_error(x, x_error, y, y_error):
     lo_phi = [math.degrees(i[1]) % 360 for i in lo_polar_points]
 
     # uncertainty in amplitude is defined by half the diameter of the box around x,y
-    rho_err = 0.5*(max(lo_rho) - min(lo_rho))
+    rho_err = 0.5 * (max(lo_rho) - min(lo_rho))
 
     rho = cmath.polar(np.complex(x, y))[0]
     try:
-        rel_error_rho = rho_err/rho
+        rel_error_rho = rho_err / rho
     except:
         rel_error_rho = 0.
 

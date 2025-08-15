@@ -10,7 +10,7 @@
 import numpy as np
 import os
 
-import pygmi.mt.mtpy.core.z as mtz
+import pygmi.mt.mtpyold.core.z as mtz
 # ==============================================================================
 # Class to read j_file
 # ==============================================================================
@@ -73,7 +73,7 @@ class JFile(object):
                 e_find = ii
                 new_line += line[ii]
             elif line[ii] == ' ':
-                if abs(e_find-ii) == 1:
+                if abs(e_find - ii) == 1:
                     pass
                 else:
                     new_line += ','
@@ -138,7 +138,7 @@ class JFile(object):
                     h_key = '{0}_{1:02}'.format(key, fn_count)
                     fn_count += 1
                 elif key == 'nskip' or key == 'nread':
-                    h_key = '{0}_{1:02}'.format(key, fn_count-1)
+                    h_key = '{0}_{1:02}'.format(key, fn_count - 1)
 
                 # if its the line of angles, put them all in a list with a unique key
                 elif key == 'theta1':
@@ -146,7 +146,7 @@ class JFile(object):
                     theta_count += 1
 
                 elif key == 'theta2' or key == 'phi':
-                    h_key = '{0}_{1:02}'.format(key, theta_count-1)
+                    h_key = '{0}_{1:02}'.format(key, theta_count - 1)
                 else:
                     h_key = key
 
@@ -298,7 +298,8 @@ class JFile(object):
                 kk = z_index_dict[z_key][0]
                 ll = z_index_dict[z_key][1]
                 try:
-                    z_value = z_dict[z_key][per][0]+1j*z_dict[z_key][per][1]
+                    z_value = z_dict[z_key][per][0] + \
+                        1j * z_dict[z_key][per][1]
                     z_arr[p_index, kk, ll] = z_value
                     z_err_arr[p_index, kk, ll] = z_dict[z_key][per][2]
                 except KeyError:
@@ -310,7 +311,7 @@ class JFile(object):
                     ll = t_index_dict[t_key][1]
                     try:
                         t_value = t_dict[t_key][per][0] + \
-                            1j*t_dict[t_key][per][1]
+                            1j * t_dict[t_key][per][1]
                         t_arr[p_index, kk, ll] = t_value
                         t_err_arr[p_index, kk, ll] = t_dict[t_key][per][2]
                     except KeyError:
@@ -318,7 +319,7 @@ class JFile(object):
                         print('For component {0}'.format(t_key))
 
         # put the results into mtpy objects
-        freq = 1./all_periods
+        freq = 1. / all_periods
         z_arr[np.where(z_arr == np.inf)] = 0 + 0j
         t_arr[np.where(t_arr == np.inf)] = 0 + 0j
         z_err_arr[np.where(z_err_arr == np.inf)] = 10**6
