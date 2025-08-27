@@ -87,9 +87,9 @@ class Edi(object):
     Info                  Information class, contains information
                           on how the data was processed and how the
                           transfer functions where estimated.
-    Tipper                mtpy.core.z.Tipper class, contains the
+    Tipper                pygmi.mt.mtpyold.core.z.Tipper class, contains the
                           tipper data
-    Z                     mtpy.core.z.Z class, contains the
+    Z                     pygmi.mt.mtpyold.core.z.Z class, contains the
                           impedance data
     _block_len            number of data in one line.                6
     _data_header_str      header string for each of the data         '>!****{0}****!'

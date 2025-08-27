@@ -31,7 +31,7 @@ import numpy as np
 
 from pygmi.misc import ContextModule, BasicModule
 
-# The lines below are a temporary fix for mtpy. Removed in future.
+# The lines below are a temporary fix for pygmi.mt.mtpyold. Removed in future.
 np.float = float
 np.complex = complex
 

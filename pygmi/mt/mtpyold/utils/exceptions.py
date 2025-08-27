@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Specific exceptions for MTpy.
+Specific exceptions for pygmi.mt.mtpyold.
 
 
 
@@ -10,7 +10,7 @@ Specific exceptions for MTpy.
 
 """
 
-#=================================================================
+# =================================================================
 
 
 class MTpyError_float(Exception):

@@ -256,7 +256,7 @@ class XML_Config(object):
                                                                          dt_fmt)),
                                          'CreatingApplication': XML_element('CreatingApplication',
                                                                             None,
-                                                                            'MTpy.core.mtxml'),
+                                                                            'pygmi.mt.mtpyold.core.mtxml'),
                                          'Submitter': XML_element('Submitter', None, None,
                                                                   **{'Name': XML_element('Name', None, None),
                                                                      'Email': XML_element('Email', None, None),
@@ -694,19 +694,19 @@ class MT_XML(XML_Config):
     A configuration file can be read in that might make it easier to write
     multiple files for the same survey.  
 
-    .. seealso:: mtpy.core.mt_xml.XML_Config
+    .. seealso:: pygmi.mt.mtpyold.core.mt_xml.XML_Config
 
     =============== ===========================================================
     Attributes      Description
     =============== ===========================================================
-    Z               object of type mtpy.core.z.Z 
-    Tipper          object of type mtpy.core.z.Tipper
+    Z               object of type pygmi.mt.mtpyold.core.z.Z 
+    Tipper          object of type pygmi.mt.mtpyold.core.z.Tipper
     =============== ===========================================================
 
     .. note:: All other attributes are of the same name and of type XML_element,
               where attributes are name, value and attr.  Attr contains any 
-              tag information.  This is left this way so that mtpy.core.mt.MT
-              can read in the information.  **Use mtpy.core.mt.MT for 
+              tag information.  This is left this way so that pygmi.mt.mtpyold.core.mt.MT
+              can read in the information.  **Use pygmi.mt.mtpyold.core.mt.MT for 
               conversion between data formats.**
 
     =============== ===========================================================
@@ -1296,7 +1296,7 @@ class MT_XML(XML_Config):
 
         if type(z_object) is not mtz.Z:
             raise MT_XML_Error(
-                'To set Z, input needs to be an mtpy.core.z.Z object')
+                'To set Z, input needs to be an pygmi.mt.mtpyold.core.z.Z object')
 
         self._Z = z_object
 
@@ -1315,7 +1315,7 @@ class MT_XML(XML_Config):
 
         if type(t_object) is not mtz.Tipper:
             raise MT_XML_Error(
-                'To set Z, input needs to be an mtpy.core.z.Z object')
+                'To set Z, input needs to be an pygmi.mt.mtpyold.core.z.Z object')
 
         self._Tipper = t_object
 

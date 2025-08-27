@@ -29,7 +29,7 @@ try:
     for line in lines:
         if ('#' in line): continue
 
-        epsg_code_val = re.compile(r'<(\d+)>').findall(line)
+        epsg_code_val = re.compile('<(\d+)>').findall(line)
 
         # print( "epsg_code_val", epsg_code_val)
 

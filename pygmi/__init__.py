@@ -9,7 +9,7 @@ datasets. It includes:
 * Routines for cutting, reprojecting and doing simple modifications to data.
 * Convenient display of data using pseudo-colour, ternary and sunshaded
   representation.
-* MT processing and 1D inversion using MTpy.
+* MT processing and 1D inversion using pygmi.mt.mtpyold.
 * Gravity processing.
 * Seismological functions for SEISAN data.
 * Remote sensing ratios, hyperspectral processing, change detection and

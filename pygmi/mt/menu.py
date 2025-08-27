@@ -97,6 +97,10 @@ class MenuWidget():
         context_menu['MT - EDI'].addAction(self.action_show_graphs)
         self.action_show_graphs.triggered.connect(self.show_graphs)
 
+        self.action_plot_phase = QtGui.QAction('Plot Phase Tensor')
+        context_menu['MT - EDI'].addAction(self.action_plot_phase)
+        self.action_plot_phase.triggered.connect(self.plot_phase)
+
         self.action_export_data = QtGui.QAction('Export EDI')
         context_menu['MT - EDI'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
@@ -138,3 +142,7 @@ class MenuWidget():
     def show_graphs(self):
         """Show graphs."""
         self.parent.launch_context_item(graphs.PlotPoints)
+
+    def plot_phase(self):
+        """Show phase tensor."""
+        self.parent.launch_context_item(graphs.PlotPhaseTensor)

@@ -71,9 +71,9 @@ class MT(object):
     lat                   station latitude in decimal degrees
     lon                   station longitude in decimal degrees
     elev                  station elevation in meters
-    Z                     mtpy.core.z.Z object for impedance tensor
-    Tipper                mtpy.core.z.Tipper object for tipper
-    pt                    mtpy.analysis.pt.PhaseTensor for phase tensor
+    Z                     pygmi.mt.mtpyold.core.z.Z object for impedance tensor
+    Tipper                pygmi.mt.mtpyold.core.z.Tipper object for tipper
+    pt                    pygmi.mt.mtpyold.analysis.pt.PhaseTensor for phase tensor
     east                  station location in UTM coordinates assuming WGS-84
     north                 station location in UTM coordinates assuming WGS-84
     utm_zone              zone of UTM coordinates assuming WGS-84
@@ -211,12 +211,12 @@ class MT(object):
 
     @property
     def Z(self):
-        """mtpy.core.z.Z object to hole impedance tensor"""
+        """pygmi.mt.mtpyold.core.z.Z object to hole impedance tensor"""
         return self._Z
 
     @property
     def Tipper(self):
-        """mtpy.core.z.Tipper object to hold tipper information"""
+        """pygmi.mt.mtpyold.core.z.Tipper object to hold tipper information"""
         return self._Tipper
 
     @property
@@ -226,7 +226,7 @@ class MT(object):
 
     @property
     def pt(self):
-        """mtpy.analysis.pt.PhaseTensor object to hold phase tensor"""
+        """pygmi.mt.mtpyold.analysis.pt.PhaseTensor object to hold phase tensor"""
         return MTpt.PhaseTensor(z_object=self.Z)
 
     # ==========================================================================
@@ -396,10 +396,10 @@ class MT(object):
         :type file_type: string
 
         :param new_Z_obj: new Z object
-        :type new_Z_obj: mtpy.core.z.Z
+        :type new_Z_obj: pygmi.mt.mtpyold.core.z.Z
 
         :param new_Tipper_obj: new Tipper object
-        :type new_Tipper_obj: mtpy.core.z.Tipper
+        :type new_Tipper_obj: pygmi.mt.mtpyold.core.z.Tipper
 
         :param longitude_format:  whether to write longitude as LON or LONG. 
                                   options are 'LON' or 'LONG', default 'LON'
@@ -631,10 +631,10 @@ class MT(object):
         :type new_edi_fn: string
 
         :param new_Z: new Z object
-        :type new_Z: mtpy.core.z.Z
+        :type new_Z: pygmi.mt.mtpyold.core.z.Z
 
         :param new_Tipper: new Tipper object
-        :type new_Tipper: mtpy.core.z.Tipper
+        :type new_Tipper: pygmi.mt.mtpyold.core.z.Tipper
 
         :returns edi_fn: full path to edi file written
         :rtype edi_fn: string
@@ -1726,7 +1726,7 @@ class MT(object):
         :rtype: np.ndarray(2, 2, dtype=real)
 
         :returns: Z with distortion removed
-        :rtype: mtpy.core.z.Z
+        :rtype: pygmi.mt.mtpyold.core.z.Z
 
         :Remove distortion and write new .edi file: ::
 
@@ -1763,7 +1763,7 @@ class MT(object):
         :type ss_y: float
 
         :returns: new Z object with static shift removed
-        :rtype: mtpy.core.z.Z
+        :rtype: pygmi.mt.mtpyold.core.z.Z
 
         .. note:: The factors are in resistivity scale, so the
                   entries of  the matrix "S" need to be given by their
@@ -1803,11 +1803,11 @@ class MT(object):
 
         :returns: a new impedance object with the corresponding
                                frequencies and components.
-        :rtype: mtpy.core.z.Z
+        :rtype: pygmi.mt.mtpyold.core.z.Z
 
         :returns: a new tipper object with the corresponding
                                     frequencies and components.
-        :rtype: mtpy.core.z.Tipper
+        :rtype: pygmi.mt.mtpyold.core.z.Tipper
 
         :Interpolate: ::
 
@@ -1963,7 +1963,7 @@ class MT(object):
 
     def plot_mt_response(self, **kwargs):
         """
-        Returns a mtpy.imaging.plotresponse.PlotResponse object
+        Returns a pygmi.mt.mtpyold.imaging.plotresponse.PlotResponse object
 
         :Plot Response: ::
 
@@ -2488,7 +2488,7 @@ class Processing(object):
         self.Software = Software()
         self.notes = None
         self.processed_by = None
-        self.sign_convention = 'exp(+i \\omega t)'
+        self.sign_convention = 'exp(+i \omega t)'
         self.remote_reference = None
         self.RemoteSite = Site()
 

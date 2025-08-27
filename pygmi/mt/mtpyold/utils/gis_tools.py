@@ -617,7 +617,7 @@ def _get_pyproj_projection(datum, utm_zone, epsg):
         raise GISError('Need to input either UTM zone or EPSG number')
 
     if isinstance(epsg, int):
-        pp = pyproj.Proj('+init=EPSG:%d' % (epsg))
+        pp = pyproj.Proj('EPSG:%d' % (epsg))
 
     elif epsg is None:
         zone_number, is_northern = split_utm_zone(utm_zone)

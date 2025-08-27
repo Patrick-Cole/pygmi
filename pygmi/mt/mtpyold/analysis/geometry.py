@@ -44,7 +44,7 @@ def dimensionality(z_array=None, z_object=None, pt_array=None,
                       numpy array of impedance elements
                       *default* is None
 
-        **z_object** : mtpy.core.z.Z
+        **z_object** : pygmi.mt.mtpyold.core.z.Z
                        z_object
                        *default* is None
 
@@ -52,7 +52,7 @@ def dimensionality(z_array=None, z_object=None, pt_array=None,
                        numpy array of phase tensor elements
                        *default* is None
 
-        **pt_object** : mtpy.analysis.pt.PT
+        **pt_object** : pygmi.mt.mtpyold.analysis.pt.PT
                         phase tensor object
                         *default* is None
 
@@ -135,7 +135,7 @@ def strike_angle(z_array=None, z_object=None, pt_array=None,
                       numpy array of impedance elements
                       *default* is None
 
-        **z_object** : mtpy.core.z.Z
+        **z_object** : pygmi.mt.mtpyold.core.z.Z
                        z_object
                        *default* is None
 
@@ -143,7 +143,7 @@ def strike_angle(z_array=None, z_object=None, pt_array=None,
                        numpy array of phase tensor elements
                        *default* is None
 
-        **pt_object** : mtpy.analysis.pt.PT
+        **pt_object** : pygmi.mt.mtpyold.analysis.pt.PT
                         phase tensor object
                         *default* is None
 
@@ -237,7 +237,7 @@ def eccentricity(z_array=None, z_object=None, pt_array=None, pt_object=None):
                       numpy array of impedance elements
                       *default* is None
 
-        **z_object** : mtpy.core.z.Z
+        **z_object** : pygmi.mt.mtpyold.core.z.Z
                        z_object
                        *default* is None
 
@@ -245,7 +245,7 @@ def eccentricity(z_array=None, z_object=None, pt_array=None, pt_object=None):
                        numpy array of phase tensor elements
                        *default* is None
 
-        **pt_object** : mtpy.analysis.pt.PT
+        **pt_object** : pygmi.mt.mtpyold.analysis.pt.PT
                         phase tensor object
                         *default* is None
 

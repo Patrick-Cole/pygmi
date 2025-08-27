@@ -219,9 +219,9 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
         if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
                 (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
-            showlog('The shapefile is not in the same area as the raster '
-                    'dataset. Please check its coordinates and make sure its '
-                    'projection is the same as the raster dataset')
+            showlog('The shapefile or bounds is not in the same area as the '
+                    'raster dataset. Please check its coordinates and make '
+                    'sure its projection is the same as the raster dataset')
             return None
 
         # This section converts PolygonZ to Polygon, and takes first polygon.

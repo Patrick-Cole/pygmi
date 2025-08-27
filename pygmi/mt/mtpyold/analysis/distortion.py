@@ -57,7 +57,7 @@ def find_distortion(z_object, g='det', num_freq=None, lo_dims=None):
     Parameters
     ----------
 
-        **z_object** : mtpy.core.z object
+        **z_object** : pygmi.mt.mtpyold.core.z object
 
         **g** : [ 'det' | '01' | '10 ]
                 type of distortion correction
@@ -336,7 +336,7 @@ def remove_distortion(z_array=None, z_object=None, num_freq=None, g='det'):
                       numpy array of impedance tensor
                       *default* is None
 
-        **z_object** : mtpy.core.z object
+        **z_object** : pygmi.mt.mtpyold.core.z object
                        *default* is None
 
         **num_freq** : int
@@ -353,7 +353,7 @@ def remove_distortion(z_array=None, z_object=None, num_freq=None, g='det'):
         **distortion** : np.ndarray (2, 2)
                          distortion array
 
-        **new_z_obj** : mtpy.core.z
+        **new_z_obj** : pygmi.mt.mtpyold.core.z
                         z object with distortion removed and error calculated
 
     Examples

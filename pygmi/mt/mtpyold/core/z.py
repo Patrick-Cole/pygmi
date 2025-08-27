@@ -665,7 +665,7 @@ class Z(ResPhase):
         :rtype: np.ndarray ((2, 2))
 
         :returns: corrected Z
-        :rtype: mtpy.core.z.Z
+        :rtype: pygmi.mt.mtpyold.core.z.Z
 
         .. note:: The factors are in resistivity scale, so the
                   entries of  the matrix "S" need to be given by their
