@@ -1301,6 +1301,8 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     ----------
     data1a : numpy array
         Data array.
+    mbin : float
+        Magnitude range bin size.
     bins : int or str, optional
         Number of bins or binning strategy. See matplotlib.pyplot.hist.
         The default is 'doane'.
@@ -1404,7 +1406,6 @@ def fmd(mag, mbin=0.1):
     mi = np.arange(np.min(np.round(mag / mbin) * mbin),
                    np.max(np.round(mag / mbin) * mbin) + mbin, mbin)
 
-    # breakpoint()
     nbm = len(mi)
     cumnbmag = np.zeros(nbm)
     nbmag = np.zeros(nbm)
@@ -1562,19 +1563,19 @@ def _testfn1():
     _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\1908-02-02-2225-00.macro"
+    # tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\1908-02-02-2225-00.macro"
     tmp.settings(True)
 
     data = tmp.outdata
 
     # dat = import_for_plots(data)
 
-    tmp = PlotIso()
-    # tmp = PlotQC()
+    # tmp = PlotIso()
+    tmp = PlotQC()
     tmp.indata = data
     tmp.run()
 
-    app.exec()
+    tmp.exec()
 
 
 def _testfn():
@@ -1598,7 +1599,7 @@ def _testfn():
     tmp1.indata = tmp.outdata
     tmp1.run()
 
-    app.exec()
+    tmp1.exec()
 
     return
     dat1 = tmp.outdata['Seis']
@@ -1709,5 +1710,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn1()
     # _testiso()

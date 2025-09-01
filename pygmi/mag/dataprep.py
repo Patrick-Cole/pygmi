@@ -31,7 +31,7 @@ from scipy import signal
 from pygmi.raster.dataprep import verticalp
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
-from pygmi.raster.fft import fftprepminc, fft_getkxy
+from pygmi.raster.fft import fftprep, fft_getkxy
 
 
 class Tilt1(BasicModule):
@@ -467,7 +467,7 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprepminc(data, showlog=showlog, piter=piter)
+    ndat, datamedian = fftprep(data, showlog=showlog, piter=piter)
 
     fftmod = np.fft.fft2(ndat.data)
 

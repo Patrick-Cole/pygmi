@@ -46,7 +46,7 @@ from pygmi.vector.dataprep import reprojxy
 from pygmi.raster.misc import lstack, cut_raster
 from pygmi.raster.reproj import GroupProj, data_reproject
 from pygmi.rsense.iodefs import get_data, get_from_rastermeta
-from pygmi.raster.fft import fftprepminc, fft_getkxy
+from pygmi.raster.fft import fftprep, fft_getkxy
 
 
 class Continuation(BasicModule):
@@ -1290,7 +1290,7 @@ def fftcont(data, h, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprepminc(data, showlog, piter)
+    ndat, datamedian = fftprep(data, showlog, piter)
 
     fftmod = np.fft.fft2(ndat.data)
 
@@ -1946,7 +1946,7 @@ def verticalp(data, order=1, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, _ = fftprepminc(data, showlog, piter)
+    ndat, _ = fftprep(data, showlog, piter)
     fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)

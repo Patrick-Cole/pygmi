@@ -40,7 +40,7 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
 from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
-from pygmi.raster.fft import fftprepminc, radial_average_power_spectrum
+from pygmi.raster.fft import fftprep, calculate_raps
 
 
 class MatchedFilt(BasicModule):
@@ -194,8 +194,7 @@ class MatchedFilt(BasicModule):
         nsegs = self.sb_nsegs.value()
 
         # Calculate the radially averaged power spectrum
-        x_data, power_data, k, self.fftdata = radial_average_power_spectrum(
-            self.datapad)
+        x_data, power_data, k, self.fftdata = calculate_raps(self.datapad)
 
         # n = -2.9
         n = 0
@@ -291,7 +290,7 @@ class MatchedFilt(BasicModule):
                 self.data = i
                 break
 
-        self.datapad, self.datamedian = fftprepminc(
+        self.datapad, self.datamedian = fftprep(
             self.data, self.showlog, self.piter)
         self.calculate()
 
@@ -358,6 +357,7 @@ def _testfn():
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Tilt\tilt.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400200.tif"
+    ifile = r"D:\Heliium_Highresmag_utm35s.hdr"
 
     dat = get_raster(ifile)
 

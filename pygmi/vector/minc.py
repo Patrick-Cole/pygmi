@@ -34,7 +34,7 @@ vol. 39, No. 1, pp. 39-48
 from operator import itemgetter
 import numpy as np
 from numba import jit
-from scipy.interpolate import griddata
+from scipy.interpolate import griddata, interpn
 from scipy.ndimage import distance_transform_edt
 
 
@@ -106,7 +106,6 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
     showlog('Creating starting value...')
 
     u = griddata(points, z, (xxx, yyy), method='linear')
-    # u = griddata(points, z, (xxx, yyy), method='nearest')
     u = u[::-1]
 
     # define new grid
