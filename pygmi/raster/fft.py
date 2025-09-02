@@ -137,8 +137,8 @@ def fftprepminc(data, showlog=print, piter=iter):
     ndat = data.data - datamedian
 
     nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
+    # cdiff = nc // 2
+    # rdiff = nr // 2
 
     xmin, xmax, ymin, ymax = data.extent
 
@@ -410,6 +410,8 @@ def calculate_raps(dat, scale=None):
 
     raps = raps[k_centers < nyq]
     k_centers = k_centers[k_centers < nyq]
+
+    k_radial = np.fft.fftshift(k_radial)
 
     return k_centers, raps, k_radial, F
 

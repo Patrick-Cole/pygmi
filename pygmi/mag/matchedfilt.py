@@ -352,6 +352,7 @@ def getbutter(lowcut, highcut, f, order=5):
 def _testfn():
     """Testing routine."""
     import sys
+    import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
@@ -368,7 +369,14 @@ def _testfn():
 
     tmp1.settings()
 
-    dat = tmp1.outdata
+    dat = tmp1.outdata['Raster']
+
+    for i in dat:
+        plt.figure()
+        plt.title(i.dataid)
+        vmin, vmax = i.get_vmin_vmax()
+        plt.imshow(i.data, vmin=vmin, vmax=vmax, extent=i.extent)
+        plt.show()
 
 
 def _testfft():
