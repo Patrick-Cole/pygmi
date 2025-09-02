@@ -412,6 +412,7 @@ def calculate_raps(dat, scale=None):
     k_centers = k_centers[k_centers < nyq]
 
     k_radial = np.fft.fftshift(k_radial)
+    # k_radial[k_radial >= nyq] = nyq
 
     return k_centers, raps, k_radial, F
 

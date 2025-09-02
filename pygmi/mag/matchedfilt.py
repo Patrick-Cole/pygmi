@@ -213,31 +213,22 @@ class MatchedFilt(BasicModule):
             m = m[m < 0]
             i += 1
 
-        # x0 = breaks1
-        # logy0 = my_pwlf.predict(x0)
-
         d = -m / 2
-        # c = np.sqrt(np.exp(logy0 - m * x0))
 
         # Filter just for plot
-        f = getbutter(breaks1, breaks2, x_data)
+        # f = getbutter(breaks1, breaks2, x_data)
 
-        # fsum = 0
-        # for i in range(nsegs):
-        #     fsum += c[i] * x_data**(n / 2) * np.exp(-x_data * d[i])
+        x0 = breaks1
+        logy0 = my_pwlf.predict(x0)
+        c = np.sqrt(np.exp(logy0 - m * x0))
 
-        # f = []
-        # for i in range(nsegs):
-        #     f.append(c[i] * x_data**(n / 2) * np.exp(-x_data * d[i]) / fsum)
+        fsum = 0
+        for i in range(nsegs):
+            fsum += c[i] * x_data**(n / 2) * np.exp(-x_data * d[i])
 
-        # f1 = 1 / (1 + c[1] / c[0] * np.exp(x_data * (d[0] - d[1])))
-        # f2 = 1 - f1
-        # f = [f1, f2]
-
-        # Filter to apply to data
-        # fsum = 0
-        # for i in range(nsegs):
-        #     fsum += c[i] * k**(n / 2) * np.exp(-k * d[i])
+        f = []
+        for i in range(nsegs):
+            f.append(c[i] * x_data**(n / 2) * np.exp(-x_data * d[i]) / fsum)
 
         self.filt = []
         for i in range(nsegs):
