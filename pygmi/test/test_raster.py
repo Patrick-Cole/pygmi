@@ -68,9 +68,9 @@ def test_vertical():
     datin.set_transform(10, 100, 10, 100)
     # dat2 = np.array([[-0.90757121, 0.90757121],
     #                  [-0.90757121, 0.90757121]])
-    dat2 = np.array([[-0.13057797268730298, 0.13057797268730287],
-                     [-0.13057797268730298, 0.13057797268730287]])
-    dat = cooper.verticalp(datin)
+    dat2 = np.array([[-0.15707963267948966, 0.15707963267948966],
+                     [-0.15707963267948966, 0.15707963267948966]])
+    dat = dataprep.verticalp(datin)
     np.testing.assert_array_almost_equal(dat, dat2)
 
 

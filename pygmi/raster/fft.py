@@ -34,82 +34,82 @@ from pygmi.vector.dataprep import gridxyz
 from pygmi.raster.misc import lstack
 
 
-def fftprep(data, showlog=print, piter=iter):
-    """
-    FFT preparation.
+# def fftprep(data, showlog=print, piter=iter):
+#     """
+#     FFT preparation.
 
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        Input dataset.
+#     Parameters
+#     ----------
+#     data : pygmi.raster.datatypes.Data
+#         Input dataset.
 
-    Returns
-    -------
-    zfin : numpy array.
-        Output prepared data.
-    rdiff : int
-        rows divided by 2.
-    cdiff : int
-        columns divided by 2.
-    datamedian : float
-        Median of data.
+#     Returns
+#     -------
+#     zfin : numpy array.
+#         Output prepared data.
+#     rdiff : int
+#         rows divided by 2.
+#     cdiff : int
+#         columns divided by 2.
+#     datamedian : float
+#         Median of data.
 
-    """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
+#     """
+#     datamedian = np.ma.median(data.data)
+#     ndat = data.data - datamedian
 
-    nr, nc = data.data.shape
-    cdiff = nc // 2
-    rdiff = nr // 2
+#     nr, nc = data.data.shape
+#     cdiff = nc // 2
+#     rdiff = nr // 2
 
-    z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) + np.nan
-    x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
-    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
+#     z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) + np.nan
+#     x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
+#     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
 
-    for _ in range(2):
-        z1[0] = 0
-        z1[-1] = 0
-        z1[:, 0] = 0
-        z1[:, -1] = 0
+#     for _ in range(2):
+#         z1[0] = 0
+#         z1[-1] = 0
+#         z1[:, 0] = 0
+#         z1[:, -1] = 0
 
-        vert = np.zeros_like(z1)
-        hori = np.zeros_like(z1)
+#         vert = np.zeros_like(z1)
+#         hori = np.zeros_like(z1)
 
-        for i in range(z1.shape[0]):
-            mask = ~np.isnan(z1[i])
-            y = y1[i][mask]
-            z = z1[i][mask]
-            hori[i] = np.interp(y1[i], y, z)
+#         for i in range(z1.shape[0]):
+#             mask = ~np.isnan(z1[i])
+#             y = y1[i][mask]
+#             z = z1[i][mask]
+#             hori[i] = np.interp(y1[i], y, z)
 
-        for i in range(z1.shape[1]):
-            mask = ~np.isnan(z1[:, i])
-            x = x1[:, i][mask]
-            z = z1[:, i][mask]
+#         for i in range(z1.shape[1]):
+#             mask = ~np.isnan(z1[:, i])
+#             x = x1[:, i][mask]
+#             z = z1[:, i][mask]
 
-            vert[:, i] = np.interp(x1[:, i], x, z)
+#             vert[:, i] = np.interp(x1[:, i], x, z)
 
-        hori[hori == 0] = np.nan
-        vert[vert == 0] = np.nan
+#         hori[hori == 0] = np.nan
+#         vert[vert == 0] = np.nan
 
-        hv = hori.copy()
-        hv[np.isnan(hori)] = vert[np.isnan(hori)]
-        hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
-                                        vert[~np.isnan(hv)]], 0)
+#         hv = hori.copy()
+#         hv[np.isnan(hori)] = vert[np.isnan(hori)]
+#         hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
+#                                         vert[~np.isnan(hv)]], 0)
 
-        z1[np.isnan(z1)] = hv[np.isnan(z1)]
+#         z1[np.isnan(z1)] = hv[np.isnan(z1)]
 
-    zfin = z1
+#     zfin = z1
 
-    nr, nc = zfin.shape
-    zfin *= tukey(nc)
-    zfin *= tukey(nr)[:, np.newaxis]
+#     nr, nc = zfin.shape
+#     zfin *= tukey(nc)
+#     zfin *= tukey(nr)[:, np.newaxis]
 
-    # temporary, coordinates will be wrong
-    tmp = data.copy()
-    tmp.data = zfin
-    zfin = tmp
+#     # temporary, coordinates will be wrong
+#     tmp = data.copy()
+#     tmp.data = zfin
+#     zfin = tmp
 
-    return zfin, datamedian
+#     return zfin, datamedian
 
 
 def fftprepminc(data, showlog=print, piter=iter):
@@ -210,6 +210,7 @@ def fftprep(data, showlog=print, piter=iter):
     datamedian = np.ma.median(data.data)
 
     nr, nc = data.data.shape
+    xmin, xmax, ymin, ymax = data.extent
 
     nmax = np.max([nr, nc])
     npts = int(2**nextpow2(nmax))
@@ -224,13 +225,21 @@ def fftprep(data, showlog=print, piter=iter):
     zfin.data = zfin.data.filled(0)
     nr, nc = zfin.data.shape
 
-    window = hann
+    # window = hann
 
-    zfin.data *= window(nc)
-    zfin.data *= window(nr)[:, np.newaxis]
+    # zfin.data *= window(nc)
+    # zfin.data *= window(nr)[:, np.newaxis]
 
     zfin.data = np.pad(zfin.data, [[rdiff, rdiff2], [cdiff, cdiff2]],
                        mode='constant', constant_values=0)
+
+    dx = zfin.xdim
+    dy = zfin.ydim
+
+    xmin2, xmax2 = [xmin - cdiff * dx, xmax + cdiff2 * dx]
+    ymin2, ymax2 = [ymin - rdiff * dy, ymax + rdiff2 * dy]
+
+    zfin.set_transform(xdim=dx, xmin=xmin2, ydim=dy, ymax=ymax2)
 
     return zfin, datamedian
 
@@ -428,7 +437,7 @@ def _testfft():
 
     # xm1, ym1, _, _ = radial_average_power_spectrum(datm)
     # nr, nc = data.data.shape
-    xm, ym = calculate_raps(datm)
+    xm, ym, _, _ = calculate_raps(datm)
     # ym, xm = rapsd(datm.data, return_freq=True, d=datm.xdim)
 
     # nyq = np.pi / datm.xdim
