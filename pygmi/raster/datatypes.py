@@ -517,7 +517,8 @@ class Data():
         mask = ~np.ma.getmaskarray(self.data)
         mask = mask.astype(np.uint8)
 
-        mask = sieve(mask, 100000)
+        minpixels = min(mask.size // 2, 100000)
+        mask = sieve(mask, minpixels)
 
         polys = []
         for shape1, _ in shapes(mask, mask=mask, transform=self.transform):

@@ -232,7 +232,6 @@ class MatchedFilt(BasicModule):
 
         self.filt = []
         for i in range(nsegs):
-            # self.filt.append(c[i] * k**(n / 2) * np.exp(-k * d[i]) / fsum)
             self.filt.append(np.interp(k, x_data, f[i]))
 
         self.depth = d

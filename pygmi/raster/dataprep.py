@@ -2036,7 +2036,7 @@ def _testfn():
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
     ifile = r"D:\temp\RSA_TMI_wgs84Geographic.ers"
 
-    dat = get_raster(ifile)
+    # dat = get_raster(ifile)
     _ = QtWidgets.QApplication(sys.argv)
 
     # tmp = Metadata()
@@ -2044,12 +2044,12 @@ def _testfn():
     # tmp.run()
     # app.exec()
 
-    tmp = DataCut()
-    tmp.indata['Raster'] = dat
+    tmp = DataMerge()
+    # tmp.indata['Raster'] = dat
     tmp.settings()
 
     breakpoint()
 
 
 if __name__ == "__main__":
-    _testdown()
+    _testfn()

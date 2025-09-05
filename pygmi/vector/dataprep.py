@@ -1026,6 +1026,84 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
                     writer.write(txt)
 
 
+def gridvolume(x, y, z, val, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
+               bdist=4.0, showlog=print):
+    """
+    Grid xyz data.
+
+    Parameters
+    ----------
+    x : numpy array
+        X coordinate values.
+    y : numpy array
+        Y coordinate values.
+    z : numpy array
+        Z coordinate values.
+    val : numpy array
+        Data values.
+    dxy : float
+        Grid cell size, in distance units.
+    nullvalue : float, optional
+        null or nodata value. The default is 1e+20.
+    method : str, optional
+        Gridding method. The default is 'Nearest Neighbour'.
+    bdist : float, optional
+        Blanking distance. The default is 4.0.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    dat : pygmi.raster.datatypes.Data.
+        Output raster dataset.
+
+    """
+    if bdist is not None and bdist < 1:
+        bdist = None
+        showlog('Blanking distance too small.')
+
+    if method == 'Minimum Curvature':
+        gdat = minc(x, y, z, dxy, showlog=showlog,
+                    bdist=bdist)
+        gdat = np.ma.filled(gdat, fill_value=nullvalue)
+    else:
+        extent = np.array([x.min(), x.max(), y.min(), y.max()])
+
+        xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
+        yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
+
+        xxx, yyy = np.meshgrid(xxx, yyy)
+
+        points = np.transpose([x.flatten(), y.flatten()])
+
+        if method == 'Nearest Neighbour':
+            gdat = griddata(points, z, (xxx, yyy), method='nearest')
+        elif method == 'Linear':
+            gdat = griddata(points, z, (xxx, yyy), method='linear',
+                            fill_value=nullvalue)
+        elif method == 'Cubic':
+            gdat = griddata(points, z, (xxx, yyy), method='cubic',
+                            fill_value=nullvalue)
+
+        gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
+        gdat = gdat[::-1]
+    gdat = np.ma.masked_equal(gdat, nullvalue)
+
+    # Create dataset
+    dat = Data()
+    dat.data = gdat
+    dat.nodata = nullvalue
+
+    rows, _ = dat.data.shape
+
+    left = x.min() - dxy / 2
+    top = y.min() + dxy * rows - dxy / 2
+
+    dat.set_transform(dxy, left, dxy, top)
+
+    return dat
+
+
 def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
             bdist=4.0, showlog=print):
     """
@@ -1452,5 +1530,25 @@ def _testfn_filesplit():
     app.settings()
 
 
+def _testfn_vol():
+    """Test routine."""
+    import sys
+    import pandas as pd
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\PyGMI_test_data.csv"
+
+    gdf = pd.read_csv(ifile, delimiter=',', index_col=False)
+
+    x = gdf['Long'].to_numpy()
+    y = gdf['Lat'].to_numpy()
+    z = gdf['Z'].to_numpy()
+    val = gdf['Velocity'].to_numpy()
+
+    out = gridvolume(x, y, z, val)
+    pass
+
+
 if __name__ == "__main__":
-    _testfn_pointcut()
+    _testfn_vol()
