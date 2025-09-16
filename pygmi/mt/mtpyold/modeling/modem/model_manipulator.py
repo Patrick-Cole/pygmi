@@ -361,7 +361,7 @@ class ModelManipulator(Model):
                                                          vmax=self.cmax),
                                    orientation='horizontal')
 
-        self.cb.set_label('Resistivity ($\Omega \cdot$m)',
+        self.cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                           fontdict={'size': self.font_size})
         self.cb.set_ticks(np.arange(self.cmin, self.cmax + 1))
         self.cb.set_ticklabels([mtplottools.labeldict[cc]

@@ -35,7 +35,6 @@ Functions
    pygmi.raster.cooper.visibility2d
    pygmi.raster.cooper.visibilitytot
    pygmi.raster.cooper.nextpow2
-   pygmi.raster.cooper.vertical
    pygmi.raster.cooper.agc
 
 
@@ -259,23 +258,6 @@ Module Contents
 
    :returns: **m_i** -- Output.
    :rtype: float or numpy array
-
-
-.. py:function:: vertical(data, npts=None, xint=1, order=1)
-
-   Vertical derivative.
-
-   :param data: Input data.
-   :type data: numpy array
-   :param npts: Number of points. The default is None.
-   :type npts: int, optional
-   :param xint: X interval. The default is 1.
-   :type xint: float, optional
-   :param order: Order. The default is 1.
-   :type order: int, optional
-
-   :returns: **dz** -- Output data
-   :rtype: numpy array
 
 
 .. py:class:: AGC(parent=None)

@@ -21,6 +21,7 @@ Classes
    pygmi.seis.graphs.PlotQC
    pygmi.seis.graphs.PlotIso
    pygmi.seis.graphs.PlotTempB
+   pygmi.seis.graphs.PlotSpatialB
 
 
 Functions
@@ -32,8 +33,10 @@ Functions
    pygmi.seis.graphs.import_for_plots
    pygmi.seis.graphs.eigsorted
    pygmi.seis.graphs.bvalue
+   pygmi.seis.graphs.b_mle
    pygmi.seis.graphs.fmd
    pygmi.seis.graphs.maxc
+   pygmi.seis.graphs.get_cmax
 
 
 Module Contents
@@ -198,6 +201,21 @@ Module Contents
 
 
 
+   .. py:method:: update_spatialb(x, y, bval)
+
+      Update spatial b value plot.
+
+      :param x: Array of x values.
+      :type x: numpy array
+      :param y: Array of y values.
+      :type y: numpy array
+      :param bval: Array of b values.
+      :type bval: numpy array
+
+      :rtype: None.
+
+
+
 .. py:class:: PlotQC(parent=None)
 
    Bases: :py:obj:`pygmi.misc.ContextModule`
@@ -297,12 +315,30 @@ Module Contents
 
 
 
-   .. py:method:: save_shp()
+.. py:class:: PlotSpatialB(parent=None)
 
-      Save shapefile.
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
-      :returns: True if successful, False otherwise.
-      :rtype: bool
+
+   GUI to plot spatial variation of b-values.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: calculate()
+
+      Edit box to change window length.
+
+      :rtype: None.
+
+
+
+   .. py:method:: run()
+
+      Entry point into the routine, used to run context menu item.
+
+      :rtype: None.
 
 
 
@@ -339,15 +375,37 @@ Module Contents
              * **vecs** (*numpy array*) -- Sorted eigenvectors.
 
 
-.. py:function:: bvalue(data1a, mbin=0.1, bins='doane')
+.. py:function:: bvalue(data1a, mbin=0.1, bins='doane', cmax=None)
 
    Update the b value plot.
 
    :param data1a: Data array.
    :type data1a: numpy array
+   :param mbin: Magnitude range bin size. The default is 0.1
+   :type mbin: float
    :param bins: Number of bins or binning strategy. See matplotlib.pyplot.hist.
                 The default is 'doane'.
    :type bins: int or str, optional
+   :param cmax: Magnitude of completeness. The default is None
+   :type cmax: float, optional
+
+   :returns: **out** -- Dictionary containing 'a-value', 'b-value' etc.
+   :rtype: dict
+
+
+.. py:function:: b_mle(data1a, mbin=0.1, bins='doane', cmax=None)
+
+   Update the maximum likelihood b value.
+
+   :param data1a: Data array.
+   :type data1a: numpy array
+   :param mbin: Magnitude range bin size. The default is 0.1
+   :type mbin: float
+   :param bins: Number of bins or binning strategy. See matplotlib.pyplot.hist.
+                The default is 'doane'.
+   :type bins: int or str, optional
+   :param cmax: Magnitude of completeness. The default is None
+   :type cmax: float, optional
 
    :returns: **out** -- Dictionary containing 'a-value', 'b-value' etc.
    :rtype: dict
@@ -384,6 +442,17 @@ Module Contents
    :type mbin: float, optional
 
    :returns: **Mc** -- Magnitude of completeness.
+   :rtype: float
+
+
+.. py:function:: get_cmax(mag)
+
+   Get magnitude of completeness using method by Wesseloo (2014).
+
+   :param dat2: Array of magnitudes.
+   :type dat2: numpy array
+
+   :returns: **cmax** -- Magnitude of completeness.
    :rtype: float
 
 

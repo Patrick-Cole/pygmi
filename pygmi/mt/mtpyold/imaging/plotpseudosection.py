@@ -691,7 +691,7 @@ class PlotResPhasePseudoSection(object):
                     self.cbr.ax.yaxis.set_label_coords(1.35, .5)
                     self.cbr.ax.yaxis.tick_left()
                     self.cbr.ax.tick_params(axis='y', direction='in', pad=1)
-                    self.cbr.set_label('App. Res ($\Omega \cdot$m)',
+                    self.cbr.set_label(r'App. Res ($\Omega \cdot$m)',
                                        fontdict={'size': self.font_size})
 
                     # --> add colorbar for phase
@@ -888,7 +888,7 @@ class PlotResPhasePseudoSection(object):
                     self.cbr.ax.yaxis.set_label_coords(1.35, .5)
                     self.cbr.ax.yaxis.tick_left()
                     self.cbr.ax.tick_params(axis='y', direction='in', pad=1)
-                    self.cbr.set_label('App. Res ($\Omega \cdot$m)',
+                    self.cbr.set_label(r'App. Res ($\Omega \cdot$m)',
                                        fontdict={'size': self.font_size})
 
                     # --> add colorbar for phase

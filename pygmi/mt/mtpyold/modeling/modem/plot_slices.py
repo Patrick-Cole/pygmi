@@ -774,7 +774,7 @@ class PlotSlices(object):
         cb.ax.yaxis.tick_left()
         cb.ax.tick_params(axis='y', direction='in')
 
-        cb.set_label('Resistivity ($\Omega \cdot$m)',
+        cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                      fontdict={'size': self.font_size}, x=2)
 
         cb.set_ticks(np.arange(np.ceil(self.climits[0]),
@@ -1098,7 +1098,7 @@ class PlotSlices(object):
                 cb.ax.yaxis.tick_left()
                 cb.ax.tick_params(axis='y', direction='in')
 
-                cb.set_label('Resistivity ($\Omega \cdot$m)',
+                cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                              fontdict={'size': self.font_size}, x=2)
 
                 cb.set_ticks(np.arange(np.ceil(self.climits[0]),

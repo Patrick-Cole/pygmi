@@ -407,7 +407,7 @@ class PlotPhaseTensor(ContextModule):
         self.edi_list = []
 
         self.setWindowTitle('Plot Phase Tensor')
-        self.buttonbox.htmlfile = 'mt.dm.occam'
+        self.buttonbox.htmlfile = 'mt.cm.phase'
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
@@ -433,7 +433,7 @@ class PlotPhaseTensor(ContextModule):
         self.cb_realtipper.setChecked(True)
 
         lbl_1 = QtWidgets.QLabel('Frequency:')
-        lbl_3 = QtWidgets.QLabel('Ellipse color by:')
+        lbl_3 = QtWidgets.QLabel('Ellipse colour by:')
         lbl_4 = QtWidgets.QLabel('Ellipse scale factor:')
 
         spacer = QtWidgets.QSpacerItem(20, 40,
@@ -605,4 +605,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_phase()

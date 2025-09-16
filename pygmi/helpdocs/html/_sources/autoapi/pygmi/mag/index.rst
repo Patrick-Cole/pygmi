@@ -17,6 +17,7 @@ Submodules
 
    /autoapi/pygmi/mag/dataprep/index
    /autoapi/pygmi/mag/igrf/index
+   /autoapi/pygmi/mag/matchedfilt/index
    /autoapi/pygmi/mag/menu/index
    /autoapi/pygmi/mag/tiltdepth/index
 

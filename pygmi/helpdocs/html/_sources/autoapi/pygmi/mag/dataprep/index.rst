@@ -25,10 +25,8 @@ Functions
 
    pygmi.mag.dataprep.tilt1
    pygmi.mag.dataprep.nextpow2
-   pygmi.mag.dataprep.vertical
-   pygmi.mag.dataprep.fftprep
-   pygmi.mag.dataprep.fft_getkxy
    pygmi.mag.dataprep.rtp
+   pygmi.mag.dataprep.gradient2D
 
 
 Module Contents
@@ -85,15 +83,15 @@ Module Contents
 
 
 
-.. py:function:: tilt1(data, azi, s, k=2)
+.. py:function:: tilt1(data1, azi, s, k=2, showlog=print, piter=iter)
 
    Tilt angle calculations.
 
    Based on work by Gordon Cooper (School of Geosciences, University of the
                                    Witwatersrand, Johannesburg, South Africa)
 
-   :param data: matrix of double to be filtered
-   :type data: numpy masked array
+   :param data1: data with matrix of double to be filtered
+   :type data1: pygmi.raster.datatypes.Data
    :param azi: directional filter azimuth in degrees from East
    :type azi: float
    :param s: size of smoothing matrix to use - must be odd input 0 for no smoothing
@@ -122,26 +120,6 @@ Module Contents
 
    :returns: **m_i** -- Output.
    :rtype: float or numpy array
-
-
-.. py:function:: vertical(data, npts=None, xint=1, order=1)
-
-   Vertical derivative.
-
-   Based on work by Gordon Cooper (School of Geosciences, University of the
-                                   Witwatersrand, Johannesburg, South Africa).
-
-   :param data: Input data.
-   :type data: numpy array
-   :param npts: Number of points. The default is None.
-   :type npts: int, optional
-   :param xint: X interval. The default is 1.
-   :type xint: float, optional
-   :param order: Order of derivative. The default is 1.
-   :type order: int
-
-   :returns: **dz** -- Output data
-   :rtype: numpy array
 
 
 .. py:class:: RTP(parent=None)
@@ -193,35 +171,7 @@ Module Contents
 
 
 
-.. py:function:: fftprep(data)
-
-   FFT Preparation.
-
-   :param data: Input dataset.
-   :type data: numpy array
-
-   :returns: * **zfin** (*numpy array.*) -- Output prepared data.
-             * **rdiff** (*int*) -- rows divided by 2.
-             * **cdiff** (*int*) -- columns divided by 2.
-             * **datamedian** (*float*) -- Median of data.
-
-
-.. py:function:: fft_getkxy(fftmod, xdim, ydim)
-
-   Get KX and KY.
-
-   :param fftmod: FFT data.
-   :type fftmod: numpy array
-   :param xdim: cell x dimension.
-   :type xdim: float
-   :param ydim: cell y dimension.
-   :type ydim: float
-
-   :returns: * **KX** (*numpy array*) -- x sample frequencies.
-             * **KY** (*numpy array*) -- y sample frequencies.
-
-
-.. py:function:: rtp(data, I_deg, D_deg)
+.. py:function:: rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter)
 
    Reduction to the pole.
 
@@ -231,8 +181,19 @@ Module Contents
    :type I_deg: float
    :param D_deg: Magnetic declination.
    :type D_deg: float
+   :param Ia: Amplitude correction inclination Ia in degree. The default is 20.
+   :type Ia: float
+   :param showlog: Show information using a function. The default is print.
+   :type showlog: function, optional
+   :param piter: Progress bar iterator. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- PyGMI raster data.
    :rtype: pygmi.raster.datatypes.Data
+
+
+.. py:function:: gradient2D(daty, datx)
+
+   Perform 2D gradient where spacing is inconsistent in 2D.
 
 

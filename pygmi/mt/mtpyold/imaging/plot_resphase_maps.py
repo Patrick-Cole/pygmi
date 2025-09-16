@@ -401,9 +401,9 @@ class PlotResPhaseMaps(mtpl.PlotSettings):
                 label = ''
                 if (i == 0 and j == 0):
                     if (type == 'res'):
-                        label = '$\\rho_{xx}  \\mathrm{[\Omega m]}$'
+                        label = r'$\\rho_{xx}  \\mathrm{[\Omega m]}$'
                     else:
-                        label = '$\\phi_{xx} \\mathrm{[^\circ]}$'
+                        label = r'$\\phi_{xx} \\mathrm{[^\circ]}$'
                 elif (i == 0 and j == 1):
                     if (type == 'res'):
                         label = '$\\rho_{xy}$'

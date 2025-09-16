@@ -616,7 +616,7 @@ class PlotResponses(QtGui.QWidget):
             # set axes labels
             if aa == 0:
                 if self.plot_z == False:
-                    ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                    ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                   fontdict=fontdict)
                 elif self.plot_z == True:
                     ax.set_ylabel('Re[Z (mV/km nT)]',

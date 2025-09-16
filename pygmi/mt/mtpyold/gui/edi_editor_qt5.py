@@ -1127,7 +1127,7 @@ class PlotWidget(QtWidgets.QWidget):
         for aa, ax in enumerate([self.ax_res_od, self.ax_res_d]):
             plt.setp(ax.get_xticklabels(), visible=False)
             if aa == 0:
-                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                               fontdict=font_dict)
             ax.set_yscale('log', nonposy='clip')
             ax.set_xscale('log', nonposx='clip')

@@ -1387,7 +1387,7 @@ class Occam1D:
         axp.yaxis.set_major_locator(MultipleLocator(10))
         axp.yaxis.set_minor_locator(MultipleLocator(1))
 
-        axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+        axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                        fontdict={'size': fs, 'weight': 'bold'})
         axp.set_ylabel('Phase (deg)',
                        fontdict={'size': fs, 'weight': 'bold'})
@@ -1418,7 +1418,7 @@ class Occam1D:
         else:
             axm.set_ylim(dlimits)
         axm.set_ylabel('Depth (m)', fontdict={'size': fs, 'weight': 'bold'})
-        axm.set_xlabel('Resistivity ($\Omega \cdot m$)',
+        axm.set_xlabel(r'Resistivity ($\Omega \cdot m$)',
                        fontdict={'size': fs, 'weight': 'bold'})
         axm.grid(True, which='both', alpha=.4)
 
@@ -4120,7 +4120,7 @@ class Occam2DData:
                     xx.set_title(self.stationlst[ii] + ' Obs$_{xy}$ (TE-Mode)',
                                  fontdict={'size': 9, 'weight': 'bold'})
                     xx.yaxis.set_label_coords(-.075, .5)
-                    xx.set_ylabel('App. Res. ($\Omega \cdot m$)',
+                    xx.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                                   fontdict={'size': 9, 'weight': 'bold'})
                 # set the title of the TM plot
                 if nn == 1:
@@ -4810,7 +4810,7 @@ class Occam2DData:
                     # set the tick labels to invisible
                     plt.setp(axr.xaxis.get_ticklabels(), visible=False)
                     if aa == 0:
-                        axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+                        axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                                        fontdict={'size': fs, 'weight': 'bold'})
 
                     # set legend based on the plot type
@@ -5150,7 +5150,7 @@ class Occam2DData:
                     # set the tick labels to invisible
                     plt.setp(axr.xaxis.get_ticklabels(), visible=False)
                     if aa == 0:
-                        axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+                        axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                                        fontdict={'size': fs, 'weight': 'bold'})
                     if plotnum == 1:
                         if aa == 0:
@@ -5317,8 +5317,8 @@ class Occam2DData:
                   for ss in range(0, ns, ml)]
         labellst = ['$r_{TE-Data}$', '$r_{TE-Model}$',
                     '$r_{TM-Data}$', '$r_{TM-Model}$',
-                    '$\phi_{TE-Data}$', '$\phi_{TE-Model}$',
-                    '$\phi_{TM-Data}$', '$\phi_{TM-Model}$']
+                    r'$\phi_{TE-Data}$', r'$\phi_{TE-Model}$',
+                    r'$\phi_{TM-Data}$', r'$\phi_{TM-Model}$']
         xloc = offsetlst[0] + abs(offsetlst[0] - offsetlst[1]) / 5
         yloc = 1. / self.freq[1]
 
@@ -5399,7 +5399,7 @@ class Occam2DData:
                             cb = mcb.ColorbarBase(cbx[0], cmap=rcmap,
                                                   norm=Normalize(vmin=rlim[1][0],
                                                                  vmax=rlim[1][1]))
-                            cb.set_label('App. Res. ($\Omega \cdot$m)',
+                            cb.set_label(r'App. Res. ($\Omega \cdot$m)',
                                          fontdict={'size': 9})
                     else:
                         if xx == 5:
@@ -5632,7 +5632,7 @@ class Occam2DData:
         axpte.yaxis.set_major_locator(MultipleLocator(10))
         axpte.yaxis.set_minor_locator(MultipleLocator(1))
 
-        axrte.set_ylabel('App. Res. ($\Omega \cdot m$)',
+        axrte.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                          fontdict={'size': 10, 'weight': 'bold'})
         axpte.set_ylabel('Phase (deg)',
                          fontdict={'size': 10, 'weight': 'bold'})
@@ -5646,7 +5646,7 @@ class Occam2DData:
         axptm.yaxis.set_major_locator(MultipleLocator(10))
         axptm.yaxis.set_minor_locator(MultipleLocator(1))
 
-        axrtm.set_ylabel('App. Res. ($\Omega \cdot m$)',
+        axrtm.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                          fontdict={'size': 12, 'weight': 'bold'})
         axptm.set_ylabel('Phase (deg)',
                          fontdict={'size': 12, 'weight': 'bold'})
@@ -6202,7 +6202,7 @@ class Occam2DModel(Occam2DData):
         cbx = mcb.make_axes(ax, shrink=.8, pad=.01)
         cb = mcb.ColorbarBase(cbx[0], cmap=cmap, norm=Normalize(vmin=climits[0],
                                                                 vmax=climits[1]))
-        cb.set_label('Resistivity ($\Omega \cdot$m)',
+        cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                      fontdict={'size': fs, 'weight': 'bold'})
         cb.set_ticks(np.arange(int(climits[0]), int(climits[1]) + 1))
         cb.set_ticklabels(['10$^{0}$'.format(nn) for nn in
@@ -6603,7 +6603,7 @@ class Occam2DModel(Occam2DData):
                 else:
                     plt.setp(ax.yaxis.get_ticklabels(), visible=False)
                 if ii == np.round(ns / 2.):
-                    ax.set_xlabel('Resistivity ($\Omega \cdot$m)',
+                    ax.set_xlabel(r'Resistivity ($\Omega \cdot$m)',
                                   fontdict={'size': 8, 'weight': 'bold'})
                 ax.grid(True, alpha=.3, which='both')
                 ax.set_xlim(10**self.resmodel.min(), 10**self.resmodel.max())
@@ -6629,6 +6629,6 @@ class Occam2DModel(Occam2DData):
                              fontdict={'size': 10, 'weight': 'bold'})
                 ax.set_ylabel('Depth (m)', fontdict={
                               'size': 8, 'weight': 'bold'})
-                ax.set_xlabel('Resistivity ($\Omega \cdot$m)',
+                ax.set_xlabel(r'Resistivity ($\Omega \cdot$m)',
                               fontdict={'size': 8, 'weight': 'bold'})
                 ax.grid(True, alpha=.3, which='both')

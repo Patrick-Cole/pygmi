@@ -130,7 +130,7 @@ Module Contents
 
 
 
-.. py:function:: gravcor(pdat, basethres, kstat, absbase, dens, showlog=print)
+.. py:function:: gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670, showlog=print)
 
    Gravity corrections.
 

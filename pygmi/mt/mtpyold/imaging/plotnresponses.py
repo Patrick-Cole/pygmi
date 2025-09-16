@@ -756,7 +756,7 @@ class PlotMultipleResponses(mtpl.PlotSettings):
                          color=(.25, .25, .25),
                          lw=.25)
                 if ii == 0:
-                    axr.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                    axr.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                    fontdict=fontdict)
                     axr.legend((ebxyr[0], ebyxr[0]),
                                ('$Z_{xy}$', '$Z_{yx}$'),
@@ -1458,7 +1458,7 @@ class PlotMultipleResponses(mtpl.PlotSettings):
                     # --> set axes properties
                     plt.setp(axr.get_xticklabels(), visible=False)
                     if ii == 0:
-                        axr.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                        axr.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                        fontdict=fontdict)
                     else:
                         plt.setp(axr.get_yticklabels(), visible=False)
@@ -2094,7 +2094,7 @@ class PlotMultipleResponses(mtpl.PlotSettings):
 
             plt.setp(self.axrxy.get_xticklabels(), visible=False)
 
-            self.axrxy.set_ylabel('App. Resistivity($\Omega \cdot$m)',
+            self.axrxy.set_ylabel(r'App. Resistivity($\Omega \cdot$m)',
                                   fontdict=fontdict)
 
             self.axryx.set_yscale('log', nonposy='clip')

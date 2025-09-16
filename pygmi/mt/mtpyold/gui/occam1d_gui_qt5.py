@@ -1133,7 +1133,7 @@ class OccamPlot(QtWidgets.QWidget):
         if self.phase_limits is not None:
             self.axp.set_ylim(self.phase_limits)
 
-        self.axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+        self.axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                             fontdict={'size': self.font_size, 'weight': 'bold'})
         self.axp.set_ylabel('Phase (deg)',
                             fontdict={'size': self.font_size, 'weight': 'bold'})
@@ -1189,7 +1189,7 @@ class OccamPlot(QtWidgets.QWidget):
             self.axm.set_yscale('log', nonposy='clip')
         self.axm.set_ylabel('Depth ({0})'.format(self.depth_units),
                             fontdict={'size': self.font_size, 'weight': 'bold'})
-        self.axm.set_xlabel('Resistivity ($\Omega \cdot m$)',
+        self.axm.set_xlabel(r'Resistivity ($\Omega \cdot m$)',
                             fontdict={'size': self.font_size, 'weight': 'bold'})
         self.axm.grid(True, which='both', alpha=.75, color=(.75, .75, .75))
         self.axm.yaxis.set_label_position('right')

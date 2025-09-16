@@ -23,6 +23,7 @@ Functions
 .. autoapisummary::
 
    pygmi.grav.iodefs.get_cg5
+   pygmi.grav.iodefs.get_cg6
    pygmi.grav.iodefs.get_gps
    pygmi.grav.iodefs.merge_gpsmag
 
@@ -100,7 +101,19 @@ Module Contents
    :param filename: CG-5 filename.
    :type filename: str
 
-   :rtype: None.
+   :returns: **df_cg5** -- Gravity data
+   :rtype: Pandas DataFrame
+
+
+.. py:function:: get_cg6(filename)
+
+   Get CG-6 filename and load data.
+
+   :param filename: CG-6 filename.
+   :type filename: str
+
+   :returns: **df** -- Gravity data
+   :rtype: Pandas DataFrame
 
 
 .. py:function:: get_gps(filename)
@@ -110,14 +123,15 @@ Module Contents
    :param filename: GPS filename (csv).
    :type filename: str
 
-   :rtype: None.
+   :returns: **df2** -- GPS data.
+   :rtype: Pandas DataFrame
 
 
-.. py:function:: merge_gpsmag(cg5file, gpsfile, basethres=10000.0, showlog=print)
+.. py:function:: merge_gpsmag(cg5file, gpsfile, basethres=10000.0, cren=None, showlog=print)
 
    Import and merge GPS and gravity data.
 
-   :param cg5file: Gravity filename for data in CG-5 format.
+   :param cg5file: Gravity filename for data in CG format.
    :type cg5file: str
    :param gpsfile: GPS filename in CSV format.
    :type gpsfile: str

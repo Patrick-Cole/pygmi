@@ -214,7 +214,7 @@ def plotResponses(outputfile, maxcol=8, plottype='all', **kwargs):
                                labelspacing=.08,
                                handletextpad=.15, borderpad=.05)
                 if cc == 0:
-                    axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+                    axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                                    fontdict={'size': 12, 'weight': 'bold'})
                     axp.set_ylabel('Phase (deg)',
                                    fontdict={'size': 12, 'weight': 'bold'})
@@ -269,7 +269,7 @@ def plotResponses(outputfile, maxcol=8, plottype='all', **kwargs):
             axp.yaxis.set_major_locator(MultipleLocator(10))
             axp.yaxis.set_minor_locator(MultipleLocator(1))
 
-            axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+            axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                            fontdict={'size': 12, 'weight': 'bold'})
             axp.set_ylabel('Phase (deg)',
                            fontdict={'size': 12, 'weight': 'bold'})
@@ -332,7 +332,7 @@ def plotResponses(outputfile, maxcol=8, plottype='all', **kwargs):
             axp.yaxis.set_major_locator(MultipleLocator(10))
             axp.yaxis.set_minor_locator(MultipleLocator(1))
 
-            axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+            axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                            fontdict={'size': 12, 'weight': 'bold'})
             axp.set_ylabel('Phase (deg)',
                            fontdict={'size': 12, 'weight': 'bold'})

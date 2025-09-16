@@ -340,7 +340,7 @@ class DataModelAnalysis(object):
 
         mycb = plt.colorbar(mesh_plot, cax=cax, use_gridspec=True)
         mycb.outline.set_linewidth(self.border_linewidth)
-        mycb.set_label('Resistivity ($\Omega \cdot$m)', fontdict=fdict)
+        mycb.set_label(r'Resistivity ($\Omega \cdot$m)', fontdict=fdict)
 
         if self.plot_orientation == 'z':
             ax.set_ylabel('Northing (' + self.map_scale + ')', fontdict=fdict)

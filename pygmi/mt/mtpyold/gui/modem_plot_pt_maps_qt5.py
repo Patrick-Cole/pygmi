@@ -1008,7 +1008,7 @@ class ModEMPlotPTMap(QtWidgets.QMainWindow, mtplottools.MTArrows,
                                           orientation='horizontal')
                 cb_res.ax.xaxis.set_label_position('top')
                 cb_res.ax.xaxis.set_label_coords(.5, 1.5)
-                cb_res.set_label('Resistivity ($\Omega \cdot$m)')
+                cb_res.set_label(r'Resistivity ($\Omega \cdot$m)')
                 cb_ticks = np.arange(np.floor(self.res_limits[0]),
                                      np.ceil(self.res_limits[1] + 1), 1)
                 cb_res.set_ticks(cb_ticks)

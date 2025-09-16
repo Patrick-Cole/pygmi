@@ -473,7 +473,7 @@ Module Contents
 
    .. py:method:: init_plot(xdat, dat, extent, xdat2=None, dat2=None)
 
-      Initialise plot.
+      Initialise profile line plot.
 
       :param xdat: X coordinates.
       :type xdat: numpy array

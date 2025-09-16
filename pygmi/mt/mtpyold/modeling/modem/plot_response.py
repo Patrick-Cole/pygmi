@@ -582,7 +582,7 @@ class PlotResponse(object):
                 # set axes labels
                 if aa == 0:
                     if self.plot_z == False:
-                        ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                        ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                       fontdict=fontdict)
                     elif self.plot_z == True:
                         ax.set_ylabel('Re[Z (mV/km nT)]',
@@ -1241,7 +1241,7 @@ class PlotResponse(object):
                             plt.setp(ax.get_xticklabels(), visible=False)
                             if self.plot_z == False:
                                 ax.set_yscale('log', nonposy='clip')
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('|Re[Z (mV/km nT)]|',
@@ -1272,7 +1272,7 @@ class PlotResponse(object):
                             ax.set_xlabel('Period (s)', fontdict=fontdict)
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Z (mV/km nT)]',
@@ -1301,7 +1301,7 @@ class PlotResponse(object):
                                 ax.set_ylim(self.tipper_limits)
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Z (mV/km nT)]',
@@ -1337,7 +1337,7 @@ class PlotResponse(object):
                                 ax.set_ylim(self.tipper_limits)
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res . ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res . ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Z (mV/km nT)]',
@@ -2105,7 +2105,7 @@ class PlotResponse(object):
                     data2 = zObj.phase
                     if self.shift_yx_phase:
                         data2[:, 1, 0] += 180.
-                    data1label = 'Resistivity, $\Omega$m'
+                    data1label = r'Resistivity, $\Omega$m'
                     data2label = 'Phase, degree'
                     data1err = zObj.resistivity_err
                     data2err = zObj.phase_err

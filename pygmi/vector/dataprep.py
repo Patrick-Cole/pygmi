@@ -140,6 +140,11 @@ class DataGrid(BasicModule):
         self.lbl_cols = QtWidgets.QLabel('Columns: 0')
         self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
 
+        self.cb_section = QtWidgets.QCheckBox('Grid a section, with distance '
+                                              'vs altitude.')
+        self.cmb_line = QtWidgets.QComboBox()
+        self.cmb_z = QtWidgets.QComboBox()
+
         self.setupui()
 
     def setupui(self):
@@ -158,6 +163,8 @@ class DataGrid(BasicModule):
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_null = QtWidgets.QLabel('Null Value:')
         lbl_method = QtWidgets.QLabel('Gridding Method:')
+        self.lbl_line = QtWidgets.QLabel('Line Number:')
+        self.lbl_z = QtWidgets.QLabel('Z Value:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
@@ -171,6 +178,10 @@ class DataGrid(BasicModule):
 
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
+        self.cmb_line.hide()
+        self.cmb_z.hide()
+        self.lbl_line.hide()
+        self.lbl_z.hide()
 
         self.setWindowTitle('Dataset Gridding')
 
@@ -186,11 +197,19 @@ class DataGrid(BasicModule):
         gl_main.addWidget(self.le_null, 5, 1, 1, 1)
         gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
         gl_main.addWidget(self.le_bdist, 6, 1, 1, 1)
-        gl_main.addWidget(self.buttonbox, 7, 0, 1, 4)
+        gl_main.addWidget(self.cb_section, 7, 0, 1, 2)
+        gl_main.addWidget(self.lbl_line, 8, 0, 1, 1)
+        gl_main.addWidget(self.cmb_line, 8, 1, 1, 1)
+        gl_main.addWidget(self.lbl_z, 9, 0, 1, 1)
+        gl_main.addWidget(self.cmb_z, 9, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 17, 0, 1, 4)
 
         self.le_dxy.textChanged.connect(self.dxy_change)
+        self.cmb_z.currentIndexChanged.connect(self.dxy_change)
+        self.cmb_line.currentIndexChanged.connect(self.dxy_change)
         self.cmb_grid_method.currentIndexChanged.connect(
             self.grid_method_change)
+        self.cb_section.checkStateChanged.connect(self.section)
 
     def dxy_change(self):
         """
@@ -211,6 +230,16 @@ class DataGrid(BasicModule):
 
         x = data.geometry.x.values
         y = data.geometry.y.values
+
+        if self.cb_section.isChecked():
+            line = self.cmb_line.currentText()
+            if line.lower != 'none':
+                data1 = data[data.line == line]
+            else:
+                data1 = data
+            zcol = self.cmb_z.currentText()
+            x = xy_to_r(x, y)
+            y = data1[zcol].values
 
         cols = round(np.ptp(x) / self.dxy)
         rows = round(np.ptp(y) / self.dxy)
@@ -233,6 +262,21 @@ class DataGrid(BasicModule):
         else:
             self.lbl_bdist.hide()
             self.le_bdist.hide()
+
+    def section(self):
+        """Check whether section is checked."""
+        if self.cb_section.isChecked():
+            self.cmb_line.show()
+            self.cmb_z.show()
+            self.lbl_line.show()
+            self.lbl_z.show()
+        else:
+            self.cmb_line.hide()
+            self.cmb_z.hide()
+            self.lbl_line.hide()
+            self.lbl_z.hide()
+
+        self.dxy_change()
 
     def settings(self, nodialog=False):
         """
@@ -260,20 +304,6 @@ class DataGrid(BasicModule):
             self.showlog('No Point Data')
             return False
 
-        self.cmb_dataid.clear()
-
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
-
-        cols = list(data.columns[filt])
-        self.cmb_dataid.clear()
-        self.cmb_dataid.addItems(cols)
-
-        if self.dataid_text is None:
-            self.dataid_text = self.cmb_dataid.currentText()
-        if self.dataid_text in cols:
-            self.cmb_dataid.setCurrentText(self.dataid_text)
-
         if self.dxy is None:
             x = data.geometry.x.values
             y = data.geometry.y.values
@@ -285,6 +315,27 @@ class DataGrid(BasicModule):
 
         self.le_dxy.setText(f'{self.dxy:.8f}')
         self.dxy_change()
+
+        self.cmb_dataid.clear()
+
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line'))
+
+        cols = list(data.columns[filt])
+        self.cmb_dataid.clear()
+        self.cmb_dataid.addItems(cols)
+
+        self.cmb_z.clear()
+        self.cmb_z.addItems(cols)
+
+        self.cmb_line.clear()
+        lines = data.line[data.line != 'nan'].unique()
+        self.cmb_line.addItems(lines)
+
+        if self.dataid_text is None:
+            self.dataid_text = self.cmb_dataid.currentText()
+        if self.dataid_text in cols:
+            self.cmb_dataid.setCurrentText(self.dataid_text)
 
         self.grid_method_change()
         if not nodialog:
@@ -333,23 +384,32 @@ class DataGrid(BasicModule):
         """
         dxy = float(self.le_dxy.text())
         method = self.cmb_grid_method.currentText()
+        line = self.cmb_line.currentText()
         nullvalue = float(self.le_null.text())
         bdist = float(self.le_bdist.text())
         data = self.indata['Vector'][0]
         dataid = self.cmb_dataid.currentText()
+        zcol = self.cmb_z.currentText()
         newdat = []
 
         if bdist < 1:
             bdist = None
             self.showlog('Blanking distance too small.')
-
-        data2 = data[['geometry', dataid]]
+        if line.lower != 'none':
+            data1 = data[data.line == line]
+        else:
+            data1 = data
+        data2 = data1[['geometry', dataid, zcol]]
         data2 = data2.dropna()
 
         filt = (data2[dataid] != nullvalue)
         x = data2.geometry.x.values[filt]
         y = data2.geometry.y.values[filt]
         z = data2[dataid].values[filt]
+
+        if self.cb_section.isChecked():
+            x = xy_to_r(x, y)
+            y = data2[zcol].values
 
         dat = gridxyz(x, y, z, dxy, nullvalue=nullvalue, method=method,
                       bdist=bdist, showlog=self.showlog)
@@ -1468,6 +1528,57 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
     return xout, yout
 
 
+def xy_to_r(x, y):
+    """
+    Convert x an y values on a section to r.
+
+    This will take into account r being reset for each depth.
+
+    Parameters
+    ----------
+    x : numpy array or float
+        x coordinates
+    y : numpy array or float
+        y coordinates
+
+    Returns
+    -------
+    r : numpy array
+        r coordinates.
+    """
+    r1 = np.sqrt(x**2 + y**2)
+    r2 = np.diff(r1, prepend=0)
+    r2 = np.sign(r2[0]) * r2
+    rind = np.where(r2 < 0)
+    rind = np.append(rind[0], r2.size)
+
+    x1a = x[:rind[0]]
+    y1a = y[:rind[0]]
+
+    i0 = 0
+    r1 = []
+    r0 = None
+    for i1 in rind:
+        x1 = x[i0:i1]
+        y1 = y[i0:i1]
+        i0 = i1
+        r = np.sqrt((x1[1:] - x1[:-1])**2 + (y1[1:] - y1[:-1])**2)
+
+        r = np.cumsum(r)
+        r = np.concatenate(([0.], r))
+
+        if r0 is None:
+            r0 = r.copy()
+
+        filt = np.logical_and(x1a == x1[0], y1a == y1[0])
+        r = r + r0[filt]
+
+        r1 += r.tolist()
+    r = np.array(r1)
+
+    return r
+
+
 def _testfn():
     """Test routine."""
     import sys
@@ -1550,5 +1661,30 @@ def _testfn_vol():
     pass
 
 
+def _testfn_grid():
+    """Test routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.vector.iodefs import ImportXYZ
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\PyGMI_test_data.csv"
+
+    IO = ImportXYZ()
+    IO.ifile = ifile
+    IO.filt = 'Comma Delimited (*.csv)'
+    IO.settings(True)
+
+    DR = DataGrid()
+    DR.indata = IO.outdata
+    DR.settings()
+
+    data = DR.outdata['Raster'][0]
+
+    plt.imshow(data.data, extent=data.extent)
+    plt.show()
+
+
 if __name__ == "__main__":
-    _testfn_vol()
+    _testfn_grid()

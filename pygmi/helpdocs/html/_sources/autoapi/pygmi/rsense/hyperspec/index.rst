@@ -227,7 +227,7 @@ Module Contents
 
 
 
-.. py:function:: calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None, rfilt=True, piter=iter)
+.. py:function:: calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None, rfilt=True, piter=iter, showlog=print)
 
    Calculate feature dataset.
 

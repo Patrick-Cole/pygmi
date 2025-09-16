@@ -34,6 +34,7 @@ import numpy as np
 from PySide6 import QtWidgets, QtCore, QtGui
 import geopandas as gpd
 from shapely.geometry import Polygon
+from scipy.stats import kstest
 from scipy.spatial.distance import cdist
 from scipy.spatial.distance import pdist
 from scipy.spatial import ConvexHull
@@ -698,6 +699,35 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
+    def update_spatialb(self, x, y, bval):
+        """
+        Update spatial b value plot.
+
+        Parameters
+        ----------
+        x : numpy array
+            Array of x values.
+        y : numpy array
+            Array of y values.
+        bval : numpy array
+            Array of b values.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        scatter = self.axes.scatter(x, y, c=bval)
+        self.axes.legend(*scatter.legend_elements(), title='b-value')
+        self.axes.set_xlabel('Longitude', fontsize=8)
+        self.axes.set_ylabel('Latitude', fontsize=8)
+        # self.axes.tick_params(axis='x', rotation=90)
+
+        self.figure.canvas.draw()
+
 
 class PlotQC(ContextModule):
     """
@@ -1134,39 +1164,141 @@ class PlotTempB(ContextModule):
         self.show()
         self.change_window()
 
-    def save_shp(self):
+
+class PlotSpatialB(ContextModule):
+    """
+    GUI to plot spatial variation of b-values.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle('Spatial variation of b values')
+
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = 'seis.cm.showspatb'
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        # hbl1 = QtWidgets.QHBoxLayout()
+        # hbl2 = QtWidgets.QHBoxLayout()
+        hbl3 = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.le_1 = QtWidgets.QLineEdit('0.2')
+        self.le_1.setValidator(QtGui.QDoubleValidator(self))
+        self.le_2 = QtWidgets.QLineEdit('0.5')
+        self.le_2.setValidator(QtGui.QDoubleValidator(self))
+        self.le_3 = QtWidgets.QLineEdit('20')
+        self.le_3.setValidator(QtGui.QIntValidator(self))
+        lbl_1 = QtWidgets.QLabel('Grid Spacing:')
+        lbl_2 = QtWidgets.QLabel('Search radius:')
+        lbl_3 = QtWidgets.QLabel('Minimum number of events:')
+        btn_apply = QtWidgets.QPushButton('Apply')
+
+        hbl3.addWidget(self.buttonbox)
+        hbl3.addWidget(lbl_1)
+        hbl3.addWidget(self.le_1)
+        hbl3.addWidget(lbl_2)
+        hbl3.addWidget(self.le_2)
+        hbl3.addWidget(lbl_3)
+        hbl3.addWidget(self.le_3)
+        hbl3.addWidget(btn_apply)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        # vbl.addLayout(hbl1)
+        # vbl.addLayout(hbl2)
+        vbl.addLayout(hbl3)
+
+        self.setFocus()
+
+        btn_apply.clicked.connect(self.calculate)
+
+    def calculate(self):
         """
-        Save shapefile.
+        Edit box to change window length.
 
         Returns
         -------
-        bool
-            True if successful, False otherwise.
+        None.
 
         """
-        ext = 'Shape file (*.shp)'
+        dxy = float(self.le_1.text())
+        rmax = float(self.le_2.text())
+        N = int(self.le_3.text())
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save Shape File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
+        dat2 = self.data
+        x = dat2['1_longitude']
+        y = dat2['1_latitude']
+        mag = dat2['1_magnitude_1']
+        magtype = np.array(dat2['1_type_of_magnitude_1'])
 
-        ifile = str(filename)
+        x = np.array(x)
+        y = np.array(y)
+        mag = np.array(mag)
 
-        if os.path.isfile(ifile):
-            tmp = ifile[:-4]
-            os.remove(tmp + '.shp')
-            os.remove(tmp + '.shx')
-            os.remove(tmp + '.prj')
-            os.remove(tmp + '.dbf')
+        filt = (magtype == 'L')
 
-        gdf = self.mmc.isolines
-        gdf = gdf.set_crs(4326)
+        x = x[filt]
+        y = y[filt]
+        mag = mag[filt]
 
-        gdf.to_file(filename)
+        extent = np.array([x.min(), x.max(), y.min(), y.max()])
 
-        return True
+        xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
+        yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
+
+        xxx, yyy = np.meshgrid(xxx, yyy)
+
+        points = np.transpose([x, y])
+
+        xxx = xxx.flatten()
+        yyy = yyy.flatten()
+        points2 = np.transpose([xxx, yyy])
+
+        rrr = cdist(points2, points)
+
+        bval = np.zeros_like(xxx) + np.nan
+        for i in self.piter(range(rrr.shape[0])):
+            rng = rrr[i]
+            mag1 = mag[rng < rmax]
+            if mag1.size < N:
+                continue
+            out = b_mle(mag1)
+            if out is None:
+                continue
+            bval[i] = out['b_mle']
+
+        filt = ~np.isnan(bval)
+
+        bval = bval[filt]
+        xxx = xxx[filt]
+        yyy = yyy[filt]
+
+        self.mmc.update_spatialb(xxx, yyy, bval)
+
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        None.
+
+        """
+        dat1 = self.indata['Seis']
+        self.data = import_for_plots(dat1)
+
+        self.show()
+        self.calculate()
 
 
 def contourtopoly(cntr):
@@ -1293,7 +1425,7 @@ def eigsorted(cov):
     return vals[order], vecs[:, order]
 
 
-def bvalue(data1a, mbin=0.1, bins='doane'):
+def bvalue(data1a, mbin=0.1, bins='doane', cmax=None):
     """
     Update the b value plot.
 
@@ -1302,10 +1434,13 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     data1a : numpy array
         Data array.
     mbin : float
-        Magnitude range bin size.
+        Magnitude range bin size. The default is 0.1
     bins : int or str, optional
         Number of bins or binning strategy. See matplotlib.pyplot.hist.
         The default is 'doane'.
+    cmax : float, optional
+        Magnitude of completeness. The default is None
+
 
     Returns
     -------
@@ -1329,7 +1464,8 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
     cumnum = np.cumsum(num[::-1])[::-1]
 
     # Magnitude of completeness
-    cmax = binctr[np.argmax(num)]
+    if cmax is None:
+        cmax = binctr[np.argmax(num)]
 
     # Least squares a and b value
     idx = np.nonzero(cumnum)[0]
@@ -1346,7 +1482,8 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
 
     if xtmp.size < 2:
         print('No enough magnitudes above magnitude of completeness')
-        return np.nan, np.nan, np.nan
+        return None
+        # return np.nan, np.nan, np.nan
 
     abvals = np.polyfit(xtmp, ytmp, 1)
     aval = abvals[1]
@@ -1367,17 +1504,81 @@ def bvalue(data1a, mbin=0.1, bins='doane'):
         b_mle = np.log10(np.exp(1)) / (dmean - (cmax - mbin / 2))
         b_mle = np.around(b_mle, 2)
 
-        # b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
+    a_mle = np.log10(cumnum[0]) + b_mle * (cmax - mbin / 2)
+    # b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
 
     out = {}
     out['aval'] = aval
     out['bval'] = bval
     out['b_mle'] = b_mle
+    out['a_mle'] = a_mle
     # out['b_gh'] = b_gh
     out['binctr'] = binctr
     out['cumnum'] = cumnum
     out['cmax'] = cmax
     out['abvals'] = abvals
+
+    return out
+
+
+def b_mle(data1a, mbin=0.1, bins='doane', cmax=None):
+    """
+    Update the maximum likelihood b value.
+
+    Parameters
+    ----------
+    data1a : numpy array
+        Data array.
+    mbin : float
+        Magnitude range bin size. The default is 0.1
+    bins : int or str, optional
+        Number of bins or binning strategy. See matplotlib.pyplot.hist.
+        The default is 'doane'.
+    cmax : float, optional
+        Magnitude of completeness. The default is None
+
+
+    Returns
+    -------
+    out : dict
+        Dictionary containing 'a-value', 'b-value' etc.
+
+    """
+    data1 = np.ma.masked_invalid(data1a)
+    data1 = data1.compressed()
+
+    data1 = data1[abs(zscore(data1)) < 2.5]
+
+    # Frequency Magnitude Distribution.
+    bins = np.arange(np.round(data1.min(), 1) - mbin / 2,
+                     np.round(data1.max(), 1) + mbin * 1.5, mbin)
+
+    num, binsedges = np.histogram(data1, bins)
+    binctr = binsedges[:-1] + mbin / 2
+
+    cumnum = np.cumsum(num[::-1])[::-1]
+
+    # Magnitude of completeness
+    if cmax is None:
+        cmax = binctr[np.argmax(num)]
+
+    # Maximum likelihood (Utsu)
+    data2 = data1[data1 >= cmax]
+
+    if (data2.mean() - data2.min()) == 0:
+        b_mle = np.nan
+    else:
+        dmean = data2.mean()
+        b_mle = np.log10(np.exp(1)) / (dmean - (cmax - mbin / 2))
+
+    a_mle = np.log10(cumnum[0]) + b_mle * (cmax - mbin / 2)
+
+    out = {}
+    out['b_mle'] = b_mle
+    out['a_mle'] = a_mle
+    out['binctr'] = binctr
+    out['cumnum'] = cumnum
+    out['cmax'] = cmax
 
     return out
 
@@ -1444,6 +1645,52 @@ def maxc(mag, mbin=0.1):
     FMD = fmd(mag, mbin)
     Mc = FMD['m'][np.argmax(FMD['noncum'])]
     return Mc
+
+
+def get_cmax(mag):
+    """
+    Get magnitude of completeness using method by Wesseloo (2014).
+
+    Parameters
+    ----------
+    dat2 : numpy array
+        Array of magnitudes.
+
+    Returns
+    -------
+    cmax : float
+        Magnitude of completeness.
+    """
+    magsort = np.sort(mag)[::-1]
+
+    ks = []
+    m = []
+    for i in range(10, len(mag)):
+        mag2 = magsort[:i]
+        out = b_mle(mag2, cmax=mag2[-1])
+        if out is None:
+            continue
+        # aval = out['aval']
+        # bval = out['bval']
+        aval = out['a_mle']
+        bval = out['b_mle']
+        M = out['binctr']
+        cumnum = out['cumnum']
+        N = 10**(aval - bval * M)
+
+        # bval = 1 / (mag2.mean() - mag2[-1]) / np.log(10)
+        # aval = np.log10(cumnum[0]) + bval * M[0]
+        # N = 10**(aval - bval * M)
+
+        ks1 = kstest(N, cumnum, method='asymp').statistic
+        # ks1 = kstest(N, norm.cdf).statistic
+        Ck = bval * np.log10(i) * (1 - ks1)
+        ks.append(Ck)
+        m.append(mag2[-1])
+
+    cmax = m[np.argmax(ks)]
+
+    return cmax
 
 
 def _testiso():
@@ -1581,13 +1828,10 @@ def _testfn1():
 def _testfn():
     """Test routine."""
     import sys
-    import matplotlib.pyplot as plt
+
     from pygmi.seis.iodefs import ImportSeisan
 
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    # ifile = r"D:\seis\events.txt"
-    ifile = r"D:\seis\Lesotho_catalog.xlsx"
-    window_size = 300
 
     _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
@@ -1595,120 +1839,13 @@ def _testfn():
 
     tmp.settings(True)
 
-    tmp1 = PlotTempB()
+    tmp1 = PlotSpatialB()
     tmp1.indata = tmp.outdata
     tmp1.run()
 
     tmp1.exec()
 
-    return
-    dat1 = tmp.outdata['Seis']
-
-    dat2 = import_for_plots(dat1)
-
-    year = dat2['1_year']
-    mon = dat2['1_month']
-    day = dat2['1_day']
-    hour = dat2['1_hour']
-    mins = dat2['1_minutes']
-    secs = dat2['1_seconds']
-
-    edate = []
-    for i in range(len(year)):
-        txt = (f'{year[i]}-{mon[i]:02}-{day[i]:02}'
-               f'T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}')
-        edate.append(txt)
-
-    seq = sorted(list(zip(edate, dat2['1_ML'])))
-    tseq = list(zip(*seq))
-    dates, ml = tseq
-
-    b3tot = []
-    b1tot = []
-    b2tot = []
-    datetot = []
-
-    for i in range(len(dates) - window_size + 1):
-        if i < 18:
-            continue
-
-        mlwin = ml[i: i + window_size]
-        windates = dates[i: i + window_size]
-
-        mlwin = np.ma.masked_invalid(mlwin)
-        windates = np.ma.array(windates, mask=mlwin.mask)
-        mlwin = mlwin.compressed()
-        windates = windates.compressed()
-        windates = windates.astype(np.datetime64)
-
-        meandate = windates[-1]
-
-        out = bvalue(mlwin)
-
-        b1tot.append(out['bval'])
-        b2tot.append(out['b_mle'])
-        b3tot.append(out['b_gh'])
-        datetot.append(meandate)
-##################################
-        continue
-        data1 = mlwin
-        xtmp = out['binctr'][out['binctr'] >= out['cmax']]
-        bins = 'doane'
-        # Plotting
-        plt.figure(dpi=300)
-        axes = plt.gca()
-
-        axes.hist(data1, bins, edgecolor='black',
-                  label='Actual distribution')
-
-        axes.set_yscale('log')
-
-        axes.plot(out['binctr'], out['cumnum'], '.',
-                  label='Cumulative distribution')
-
-        axes.plot([out['cmax'], out['cmax']],
-                  [0, out['cumnum'].max()], 'k--',
-                  label=f'Magnitude of completeness: {out["cmax"]}\n')
-
-        txt = (f'a-value (Least Squares): {out["aval"]}\n'
-               f'b-value (Least Squares): {out["bval"]}\n'
-               f'b-value (Maximum Likelihood): {out["b_mle"]}')
-        axes.plot(xtmp, 10**np.poly1d(out['abvals'])(xtmp),
-                  'k', label=txt)
-
-        axes.set_xlabel('ML', fontsize=8)
-        axes.set_ylabel('Number of observations', fontsize=8)
-
-        axes.legend()
-
-        plt.show()
-
-###################################
-    b3tot = np.array(b3tot)
-    b1tot = np.array(b1tot)
-    b2tot = np.array(b2tot)
-
-    plt.figure(dpi=300)
-    ax1 = plt.gca()
-
-    # lns1 = ax1.plot(datetot, b3tot, 'r', label='b-value')
-    lns2 = ax1.plot(datetot, b2tot, 'g', label='b-value (maximum likelihood)')
-    plt.xticks(rotation=90)
-    ax1.legend()
-    ax1.set_xlabel('Date', fontsize=8)
-    ax1.set_ylabel('b-value', fontsize=8)
-    # dates = np.array(dates, dtype=np.datetime64)
-    # ax2 = ax1.twinx()
-
-    # lns3 = ax2.plot(dates, ml, '+-', label='ML', alpha=0.5)
-
-    # lns = lns1+lns2+lns3
-    # labs = [i.get_label() for i in lns]
-    # ax1.legend(lns, labs, loc=0)
-
-    plt.show()
-
 
 if __name__ == "__main__":
-    _testfn1()
+    _testfn()
     # _testiso()

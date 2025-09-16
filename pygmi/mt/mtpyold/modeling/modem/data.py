@@ -1041,7 +1041,7 @@ class Data(object):
                                                       self.rotation_angle))
                 d_lines.append(self.header_string)
                 d_lines.append('> {0}\n'.format(inv_mode))
-                d_lines.append('> exp({0}i\omega t)\n'.format(
+                d_lines.append(r'> exp({0}i\omega t)\n'.format(
                     self.wave_sign_impedance))
                 d_lines.append('> {0}\n'.format(self.units))
 
@@ -1055,7 +1055,7 @@ class Data(object):
                                                       self.rotation_angle))
                 d_lines.append(self.header_string)
                 d_lines.append('> {0}\n'.format(inv_mode))
-                d_lines.append('> exp({0}i\omega t)\n'.format(
+                d_lines.append(r'> exp({0}i\omega t)\n'.format(
                     self.wave_sign_tipper))
                 d_lines.append('> []\n')
                 n_sta = len(np.nonzero(

@@ -109,3 +109,9 @@ Module Contents
 
 
 
+   .. py:method:: show_SV_plots()
+
+      Show spatial variation of b-value plots.
+
+
+

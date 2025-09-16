@@ -1088,7 +1088,7 @@ class Model(object):
         # tidy up plot and make colorbar
         plt.gca().set_aspect(1)
         cbar = plt.colorbar(shrink=0.5)
-        cbar.set_label('Resistivity, $\Omega$m')
+        cbar.set_label(r'Resistivity, $\Omega$m')
         plt.xlabel('Grid East, relative (m)')
         plt.ylabel('Grid North, relative (m)')
         plt.title("Resistivity at sea level")

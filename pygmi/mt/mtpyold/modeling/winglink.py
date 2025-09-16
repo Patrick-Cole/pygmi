@@ -725,7 +725,7 @@ class PlotResponse():
                 # set the tick labels to invisible
                 plt.setp(axr.xaxis.get_ticklabels(), visible=False)
                 if aa == 0:
-                    axr.set_ylabel('App. Res. ($\Omega \cdot m$)',
+                    axr.set_ylabel(r'App. Res. ($\Omega \cdot m$)',
                                    fontdict={'size': self.font_size + 2,
                                              'weight': 'bold'})
 
@@ -983,10 +983,10 @@ class PlotPseudoSection(object):
 
         self.label_list = [r'$\rho_{TE-Data}$', r'$\rho_{TE-Model}$',
                            r'$\rho_{TM-Data}$', r'$\rho_{TM-Model}$',
-                           '$\phi_{TE-Data}$', '$\phi_{TE-Model}$',
-                           '$\phi_{TM-Data}$', '$\phi_{TM-Model}$',
-                           '$\Re e\{T_{Data}\}$', '$\Re e\{T_{Model}\}$',
-                           '$\Im m\{T_{Data}\}$', '$\Im m\{T_{Model}\}$']
+                           r'$\phi_{TE-Data}$', r'$\phi_{TE-Model}$',
+                           r'$\phi_{TM-Data}$', r'$\phi_{TM-Model}$',
+                           r'$\Re e\{T_{Data}\}$', r'$\Re e\{T_{Model}\}$',
+                           r'$\Im m\{T_{Data}\}$', r'$\Im m\{T_{Model}\}$']
 
         self.phase_limits_te = kwargs.pop('phase_limits_te', (-5, 95))
         self.phase_limits_tm = kwargs.pop('phase_limits_tm', (-5, 95))
@@ -1333,10 +1333,10 @@ class PlotPseudoSection(object):
                         cb = mcb.ColorbarBase(cbx[0], cmap=self.res_cmap,
                                               norm=Normalize(vmin=self.res_limits_tm[0],
                                                              vmax=self.res_limits_tm[1]))
-                        cb.set_label('App. Res. ($\Omega \cdot$m)',
+                        cb.set_label(r'App. Res. ($\Omega \cdot$m)',
                                      fontdict={'size': self.font_size + 1,
                                                'weight': 'bold'})
-                        cb.set_label('Resistivity ($\Omega \cdot$m)',
+                        cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                                      fontdict={'size': self.font_size + 1,
                                                'weight': 'bold'})
                         cb.set_ticks(np.arange(int(self.res_limits_tm[0]),
@@ -1487,7 +1487,7 @@ class PlotPseudoSection(object):
                     cb = mcb.ColorbarBase(cbx[0], cmap=self.res_cmap,
                                           norm=Normalize(vmin=self.res_limits_tm[0],
                                                          vmax=self.res_limits_tm[1]))
-                    cb.set_label('App. Res. ($\Omega \cdot$m)',
+                    cb.set_label(r'App. Res. ($\Omega \cdot$m)',
                                  fontdict={'size': self.font_size + 1,
                                            'weight': 'bold'})
                     cb.set_ticks(np.arange(self.res_limits_tm[0],
@@ -1748,8 +1748,8 @@ class PlotMisfitPseudoSection(object):
         self.resp_fn = resp_fn
 
         self.label_list = [r'$\rho_{TE}$', r'$\rho_{TM}$',
-                           '$\phi_{TE}$', '$\phi_{TM}$',
-                           '$\Re e\{T\}$', '$\Im m\{T\}$']
+                           r'$\phi_{TE}$', r'$\phi_{TM}$',
+                           r'$\Re e\{T\}$', r'$\Im m\{T\}$']
 
         self.phase_limits_te = kwargs.pop('phase_limits_te', (-10, 10))
         self.phase_limits_tm = kwargs.pop('phase_limits_tm', (-10, 10))
@@ -1965,7 +1965,7 @@ class PlotMisfitPseudoSection(object):
                 cb = mcb.ColorbarBase(cbx[0], cmap=self.res_cmap,
                                       norm=Normalize(vmin=self.res_limits_tm[0],
                                                      vmax=self.res_limits_tm[1]))
-                cb.set_label('Log$_{10}$ App. Res. ($\Omega \cdot$m)',
+                cb.set_label(r'Log$_{10}$ App. Res. ($\Omega \cdot$m)',
                              fontdict={'size': self.font_size + 1,
                                        'weight': 'bold'})
             # te phase

@@ -2308,7 +2308,7 @@ class WSModelManipulator(object):
                                    norm=colors.Normalize(vmin=self.cmin,
                                                          vmax=self.cmax))
 
-        self.cb.set_label('Resistivity ($\Omega \cdot$m)',
+        self.cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                           fontdict={'size': self.font_size})
         self.cb.set_ticks(np.arange(self.cmin, self.cmax + 1))
         self.cb.set_ticklabels([mtplottools.labeldict[cc]
@@ -3334,7 +3334,7 @@ class PlotResponse(object):
                         # set axes labels
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Z (m/s)]',
@@ -3362,7 +3362,7 @@ class PlotResponse(object):
                         # set axes labels
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Z (m/s)]',
@@ -3556,7 +3556,7 @@ class PlotResponse(object):
                             plt.setp(ax.get_xticklabels(), visible=False)
                             if self.plot_z == False:
                                 ax.set_yscale('log', nonposy='clip')
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Impedance (m/s)]',
@@ -3583,7 +3583,7 @@ class PlotResponse(object):
                             ax.set_xlabel('Period (s)', fontdict=fontdict)
                         if aa == 0:
                             if self.plot_z == False:
-                                ax.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+                                ax.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                                               fontdict=fontdict)
                             elif self.plot_z == True:
                                 ax.set_ylabel('Re[Impedance (m/s)]',
@@ -4501,7 +4501,7 @@ class PlotDepthSlice(object):
                 cb.ax.yaxis.tick_left()
                 cb.ax.tick_params(axis='y', direction='in')
 
-            cb.set_label('Resistivity ($\Omega \cdot$m)',
+            cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                          fontdict={'size': self.font_size + 1})
             cb.set_ticks(np.arange(self.climits[0], self.climits[1] + 1))
             cb.set_ticklabels([cblabeldict[cc]
@@ -5164,7 +5164,7 @@ class PlotPTMaps(mtplottools.MTEllipse):
                                           orientation='horizontal')
                     cb.ax.xaxis.set_label_position('top')
                     cb.ax.xaxis.set_label_coords(.5, 1.5)
-                    cb.set_label('Resistivity ($\Omega \cdot$m)')
+                    cb.set_label(r'Resistivity ($\Omega \cdot$m)')
                     cb_ticks = np.arange(np.floor(self.res_limits[0]),
                                          np.ceil(self.res_limits[1] + 1), 1)
                     cb.set_ticks(cb_ticks)
@@ -5677,7 +5677,7 @@ class PlotSlices(object):
         cb.ax.yaxis.tick_left()
         cb.ax.tick_params(axis='y', direction='in')
 
-        cb.set_label('Resistivity ($\Omega \cdot$m)',
+        cb.set_label(r'Resistivity ($\Omega \cdot$m)',
                      fontdict={'size': self.font_size + 1})
 
         cb.set_ticks(np.arange(np.ceil(self.climits[0]),

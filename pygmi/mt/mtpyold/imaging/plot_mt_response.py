@@ -671,7 +671,7 @@ class PlotMTResponse(PlotSettings):
 
         # --> set axes properties
         plt.setp(self.axr.get_xticklabels(), visible=False)
-        self.axr.set_ylabel('App. Res. ($\mathbf{\Omega \cdot m}$)',
+        self.axr.set_ylabel(r'App. Res. ($\mathbf{\Omega \cdot m}$)',
                             fontdict=fontdict)
         self.axr.set_yscale('log', nonposy='clip')
         self.axr.set_xscale('log', nonposx='clip')

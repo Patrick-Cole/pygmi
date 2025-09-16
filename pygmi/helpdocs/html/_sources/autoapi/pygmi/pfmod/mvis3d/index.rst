@@ -24,6 +24,8 @@ Functions
 .. autoapisummary::
 
    pygmi.pfmod.mvis3d.updatemod
+   pygmi.pfmod.mvis3d.calc_norms
+   pygmi.pfmod.mvis3d.normalize_v3
    pygmi.pfmod.mvis3d.MarchingCubes
    pygmi.pfmod.mvis3d.InterpolateVertices
    pygmi.pfmod.mvis3d.fancyindex
@@ -220,6 +222,29 @@ Module Contents
 
    :returns: * **newcorners** (*numpy array*) -- New corner coordinates.
              * **newfaces** (*numpy array*) -- New face indices.
+
+
+.. py:function:: calc_norms(faces, vtx)
+
+   Calculate normals.
+
+   :param faces: Array of faces.
+   :type faces: numpy array
+   :param vtx: Array of vertices.
+   :type vtx: numpy array.
+
+   :rtype: None.
+
+
+.. py:function:: normalize_v3(arr)
+
+   Normalize a numpy array of 3 component vectors shape=(n,3).
+
+   :param arr: Array of 3 component vectors.
+   :type arr: numpy array
+
+   :returns: **arr** -- Output array of 3 component vectors.
+   :rtype: numpy array
 
 
 .. py:function:: MarchingCubes(x, y, z, c, iso, *, showlog=print)

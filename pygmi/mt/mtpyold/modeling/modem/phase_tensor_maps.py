@@ -813,7 +813,7 @@ class PlotPTMaps(mtplottools.MTEllipse):
                                           orientation='horizontal')
                     cb.ax.xaxis.set_label_position('top')
                     cb.ax.xaxis.set_label_coords(.5, 1.5)
-                    cb.set_label('Resistivity ($\Omega \cdot$m)')
+                    cb.set_label(r'Resistivity ($\Omega \cdot$m)')
                     cb_ticks = np.arange(np.floor(self.res_limits[0]),
                                          np.ceil(self.res_limits[1] + 1), 1)
                     cb.set_ticks(cb_ticks)

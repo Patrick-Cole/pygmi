@@ -110,7 +110,7 @@ Module Contents
 
    :param data: Input DTM data.
    :type data: pygmi.raster.datatypes.Data
-   :param sdate: Survey date.
+   :param sdate: Survey date as decimal year.
    :type sdate: Date
    :param sen_alt: Sensor clearance. The default is 100.
    :type sen_alt: float, optional

@@ -24,6 +24,7 @@ These context menus are available for modules which have MT data. Output data is
     mt.cm.meta
     mt.cm.showgraphs
     mt.cm.exportedi
+    mt.cm.phase
 
 References
 ----------

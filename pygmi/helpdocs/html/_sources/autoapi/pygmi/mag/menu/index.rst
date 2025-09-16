@@ -55,3 +55,9 @@ Module Contents
 
 
 
+   .. py:method:: mfilt()
+
+      Compute Matched Filtering.
+
+
+

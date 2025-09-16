@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Basic Statistics &#8212; PyGMI 3.2.9.10 documentation</title>
+    <title>Plot Phase Tensor &#8212; PyGMI 3.2.9.10 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raster.cm.stats';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'mt.cm.phase';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Show Raster Data (Simple)" href="raster.cm.showsimple.html" />
-    <link rel="prev" title="Display/Edit Metadata" href="raster.cm.meta.html" />
+    <link rel="next" title="Potential Field Modelling" href="pfmod.html" />
+    <link rel="prev" title="Export EDI" href="mt.cm.exportedi.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -240,7 +240,7 @@
 <li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
@@ -259,7 +259,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.stats.html">Basic Statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showanaglyph.html">Show Anaglyph</a></li>
@@ -327,7 +327,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="mt.dm.importedi.html">Import EDI Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.dm.rotateedi.html">Rotate EDI Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.dm.removesshift.html">Remove Static Shift</a></li>
@@ -336,7 +336,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mt.cm.phase.html">Plot Phase Tensor</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -585,7 +585,7 @@
       
       
       
-      <li><a href="_sources/raster.cm.stats.rst" target="_blank"
+      <li><a href="_sources/mt.cm.phase.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -667,7 +667,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Basic Statistics</h1>
+    <h1>Plot Phase Tensor</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -681,27 +681,19 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="basic-statistics">
-<h1>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading">#</a></h1>
-<p>This shows statistics with respect to the output data. The statistics can be saved in a <strong>CSV</strong> file. They include:</p>
-<ul class="simple">
-<li><p>Minimum</p></li>
-<li><p>Maximum</p></li>
-<li><p>Mean</p></li>
-<li><p>Standard Deviation</p></li>
-<li><p>Median</p></li>
-<li><p>Median Absolute Deviation</p></li>
-<li><p>Number of samples</p></li>
-<li><p>Number of columns</p></li>
-<li><p>Number of rows</p></li>
-<li><p>Skewness</p></li>
-<li><p>Kurtosis</p></li>
-</ul>
-<figure class="align-default" id="id1">
-<img alt="_images/rasterstats.png" src="_images/rasterstats.png" />
-<figcaption>
-<p><span class="caption-text">Basic statistics calculated for each band of a dataset.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
-</figcaption>
+  <section id="plot-phase-tensor">
+<h1>Plot Phase Tensor<a class="headerlink" href="#plot-phase-tensor" title="Link to this heading">#</a></h1>
+<p>This displays the phase tensor map. It has the following options:</p>
+<ol class="arabic simple">
+<li><p>Frequency - phase tensor map frequency.</p></li>
+<li><p>Ellipse colour by - parameter to use for colouring ellipses. It can be skew, phimin or phimax.</p></li>
+<li><p>Ellipse scale factor - Scale of ellipses.</p></li>
+<li><p>Plot real tipper</p></li>
+<li><p>Plot imaginary tipper</p></li>
+<li><p>Export current frequency to shapefiles</p></li>
+</ol>
+<figure class="align-default">
+<img alt="_images/mtphase.png" src="_images/mtphase.png" />
 </figure>
 </section>
 
@@ -717,20 +709,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="raster.cm.meta.html"
+       href="mt.cm.exportedi.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Display/Edit Metadata</p>
+        <p class="prev-next-title">Export EDI</p>
       </div>
     </a>
     <a class="right-next"
-       href="raster.cm.showsimple.html"
+       href="pfmod.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Show Raster Data (Simple)</p>
+        <p class="prev-next-title">Potential Field Modelling</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

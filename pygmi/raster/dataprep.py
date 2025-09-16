@@ -2048,8 +2048,6 @@ def _testfn():
     # tmp.indata['Raster'] = dat
     tmp.settings()
 
-    breakpoint()
-
 
 if __name__ == "__main__":
     _testfn()

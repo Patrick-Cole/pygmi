@@ -571,7 +571,7 @@ class PlotPhaseTensor(mtpl.MTEllipse):
         self.ax3.set_yscale('linear')
 
         self.ax3.legend((ermin[0], ermax[0]),
-                        ('$\phi_{min}$', '$\phi_{max}$'),
+                        (r'$\phi_{min}$', r'$\phi_{max}$'),
                         loc='lower left',
                         markerscale=.5 * self.marker_size,
                         borderaxespad=.01,
@@ -590,7 +590,7 @@ class PlotPhaseTensor(mtpl.MTEllipse):
                       lw=.25)
 
         self.ax3.set_ylabel('Phase (deg)', fontdict=font_dict)
-        self.ax3.set_title('$\mathbf{\phi_{min}}$ and $\mathbf{\phi_{max}}$',
+        self.ax3.set_title(r'$\mathbf{\phi_{min}}$ and $\mathbf{\phi_{max}}$',
                            fontdict=font_dictt)
 
         # -----------------------plotSkew---------------------------------------
@@ -672,7 +672,7 @@ class PlotPhaseTensor(mtpl.MTEllipse):
         self.ax5.grid(True, alpha=.25, which='both', color=(.25, .25, .25),
                       lw=.25)
         self.ax5.set_xlabel('Period (s)', fontdict=font_dict)
-        self.ax5.set_ylabel('$\mathbf{\phi_{max}-\phi_{min}/\phi_{max}+\phi_{min}}$',
+        self.ax5.set_ylabel(r'$\mathbf{\phi_{max}-\phi_{min}/\phi_{max}+\phi_{min}}$',
                             fontdict=font_dict)
         self.ax5.set_title('Ellipticity', fontdict=font_dictt)
 

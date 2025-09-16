@@ -365,7 +365,7 @@ class PlotDepthSlice(object):
             mycb = plt.colorbar(
                 mesh_plot,
                 cax=cax,
-                label='Resistivity ($\Omega \cdot$m)',
+                label=r'Resistivity ($\Omega \cdot$m)',
                 use_gridspec=True
             )
 

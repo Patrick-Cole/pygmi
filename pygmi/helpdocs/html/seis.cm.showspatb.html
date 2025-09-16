@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Basic Statistics &#8212; PyGMI 3.2.9.10 documentation</title>
+    <title>Show Spatial Variation of the b-value &#8212; PyGMI 3.2.9.10 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raster.cm.stats';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'seis.cm.showspatb';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Show Raster Data (Simple)" href="raster.cm.showsimple.html" />
-    <link rel="prev" title="Display/Edit Metadata" href="raster.cm.meta.html" />
+    <link rel="next" title="Export SEISAN Data" href="seis.cm.exportseisan.html" />
+    <link rel="prev" title="Show Temporal b-value Plots" href="seis.cm.showtempb.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -240,7 +240,7 @@
 <li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
@@ -259,7 +259,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Basic Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.cm.stats.html">Basic Statistics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showsimple.html">Show Raster Data (Simple)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showadv.html">Show Raster Data (Advanced)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.showanaglyph.html">Show Anaglyph</a></li>
@@ -370,7 +370,7 @@
 <li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
@@ -379,7 +379,7 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
-<li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Show Spatial Variation of the b-value</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -585,7 +585,7 @@
       
       
       
-      <li><a href="_sources/raster.cm.stats.rst" target="_blank"
+      <li><a href="_sources/seis.cm.showspatb.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -656,7 +656,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -667,11 +669,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Basic Statistics</h1>
+    <h1>Show Spatial Variation of the b-value</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -681,28 +691,29 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="basic-statistics">
-<h1>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Link to this heading">#</a></h1>
-<p>This shows statistics with respect to the output data. The statistics can be saved in a <strong>CSV</strong> file. They include:</p>
-<ul class="simple">
-<li><p>Minimum</p></li>
-<li><p>Maximum</p></li>
-<li><p>Mean</p></li>
-<li><p>Standard Deviation</p></li>
-<li><p>Median</p></li>
-<li><p>Median Absolute Deviation</p></li>
-<li><p>Number of samples</p></li>
-<li><p>Number of columns</p></li>
-<li><p>Number of rows</p></li>
-<li><p>Skewness</p></li>
-<li><p>Kurtosis</p></li>
-</ul>
+  <section id="show-spatial-variation-of-the-b-value">
+<h1>Show Spatial Variation of the b-value<a class="headerlink" href="#show-spatial-variation-of-the-b-value" title="Link to this heading">#</a></h1>
+<p>This allows for the calculation of the b-value over an area rather than over the complete list of events. The function sorts the events proximity to a grid value, defined in terms of latitudes and longitudes, only using grid values with more than a predefined number of events. Each grid value has its b-value calculated. This shows how the b-value changes over an area. Only local magitudes are used for the calculation.</p>
+<p>The calculation of the variation is based on the description by Wesseloo (2014), although thee b-value calculation uses the CMAX method (Mignan and Woessner, 2012)</p>
+<p>The options are:</p>
+<ol class="arabic simple">
+<li><p>Grid spacing - the grid spacing in decimal degrees.</p></li>
+<li><p>Search radius - The maximum radium from each grid point to search for events</p></li>
+<li><p>Minimum number of events - The smallest number of events to use for the b-value calculation at a grid point.</p></li>
+</ol>
 <figure class="align-default" id="id1">
-<img alt="_images/rasterstats.png" src="_images/rasterstats.png" />
+<img alt="_images/seisspatb.png" src="_images/seisspatb.png" />
 <figcaption>
-<p><span class="caption-text">Basic statistics calculated for each band of a dataset.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">The Spatial variation b-value plot interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><p>Wesseloo, Johan. (2014). Evaluation of the spatial variation of b-value. Journal- South African Institute of Mining and Metallurgy. 114. 823-828.</p>
+<p>Mignan, A. &amp; Woessner, Jochen. (2012). Estimating the magnitude of completeness for earthquake catalogs. Community Online Resource for Statistical Seismicity Analysis. doi: 10.5078/corssa-00180805.</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -717,20 +728,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="raster.cm.meta.html"
+       href="seis.cm.showtempb.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Display/Edit Metadata</p>
+        <p class="prev-next-title">Show Temporal b-value Plots</p>
       </div>
     </a>
     <a class="right-next"
-       href="raster.cm.showsimple.html"
+       href="seis.cm.exportseisan.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Show Raster Data (Simple)</p>
+        <p class="prev-next-title">Export SEISAN Data</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -740,6 +751,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

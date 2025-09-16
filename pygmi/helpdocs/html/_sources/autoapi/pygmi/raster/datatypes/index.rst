@@ -188,10 +188,12 @@ Module Contents
       :type: date
 
 
-   .. py:method:: copy(resetmeta=False)
+   .. py:method:: copy(data0=None, resetmeta=False)
 
       Make a deepcopy of the function.
 
+      :param data0: Input data to replace old ddata. Must have same shape.
+      :type data0: numpy arraay
       :param resetmeta: This will clear metadata during copy. The default is False.
       :type resetmeta: bool, optional
 
@@ -241,7 +243,13 @@ Module Contents
 
 
 
-   .. py:method:: set_mask(mask)
+   .. py:method:: plot(ax)
+
+      Simple data plot.
+
+
+
+   .. py:method:: set_mask(mask=None)
 
       Replace the existing mask with a new one.
 
@@ -301,6 +309,12 @@ Module Contents
 
       :returns: * **vmin** (*float*) -- Value minimum.
                 * **vmax** (*float*) -- Value maximum.
+
+
+
+   .. py:method:: get_boundary()
+
+      Get raster boundary.
 
 
 

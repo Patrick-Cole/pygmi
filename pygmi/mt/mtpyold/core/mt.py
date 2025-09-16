@@ -2488,7 +2488,7 @@ class Processing(object):
         self.Software = Software()
         self.notes = None
         self.processed_by = None
-        self.sign_convention = 'exp(+i \omega t)'
+        self.sign_convention = r'exp(+i \omega t)'
         self.remote_reference = None
         self.RemoteSite = Site()
 

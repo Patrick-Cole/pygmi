@@ -114,7 +114,7 @@ Module Contents
 
 
 
-.. py:function:: tiltdepth(data, inc=None, dec=None, pbar=None)
+.. py:function:: tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print)
 
    Calculate tilt depth.
 

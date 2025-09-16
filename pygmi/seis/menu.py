@@ -104,6 +104,11 @@ class MenuWidget():
         context_menu['Seis'].addAction(self.action_show_TP_plots)
         self.action_show_TP_plots.triggered.connect(self.show_TP_plots)
 
+        self.action_show_SV_plots = QtGui.QAction('Plot spatial variation of '
+                                                  'b values')
+        context_menu['Seis'].addAction(self.action_show_SV_plots)
+        self.action_show_SV_plots.triggered.connect(self.show_SV_plots)
+
         self.action_export_seisan = QtGui.QAction('Export SEISAN Data')
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
@@ -173,3 +178,7 @@ class MenuWidget():
     def show_TP_plots(self):
         """Show Temporal b-value plots."""
         self.parent.launch_context_item(graphs.PlotTempB)
+
+    def show_SV_plots(self):
+        """Show spatial variation of b-value plots."""
+        self.parent.launch_context_item(graphs.PlotSpatialB)
