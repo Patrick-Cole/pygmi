@@ -152,7 +152,7 @@ class ImageSeg(BasicModule):
                         wcompact=wcompact, doshape=doshape,
                         showlog=self.showlog, piter=self.piter)
 
-        odat = self.indata['Raster'][0].copy(True)
+        odat = self.indata['Raster'][0].copy(resetmeta=True)
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
         odat.dataid = 'Segments'
         odat.data = odat.data + 1

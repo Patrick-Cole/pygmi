@@ -280,7 +280,8 @@ class Data():
                          self.__dict__.items()}
 
         if resetmeta is True:
-            data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
+            data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic',
+                                                       'Section': False}}
 
         if data0 is not None:
             if data0.shape == data.data.shape:

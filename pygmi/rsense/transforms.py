@@ -635,7 +635,7 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
     del x2
 
     if fwdonly:
-        odata = [i.copy(True) for i in dat[:ncmps]]
+        odata = [i.copy(resetmeta=True) for i in dat[:ncmps]]
     else:
         odata = [i.copy() for i in dat]
 
@@ -734,7 +734,7 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     del x2
 
     if fwdonly:
-        odata = [i.copy(True) for i in dat]
+        odata = [i.copy(resetmeta=True) for i in dat]
         odata = odata[:ncmps]
     else:
         odata = [i.copy() for i in dat]
@@ -784,6 +784,8 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
     odir = os.path.join(os.path.dirname(filename), 'PCA')
     os.makedirs(odir, exist_ok=True)
 
+    pca = IncrementalPCA(n_components=ncmps)
+
     for ifile in flist:
         if isinstance(ifile, list):
             filename = ifile[0].filename
@@ -810,7 +812,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
 
         x2d = x2d[~mask]
 
-        pca = IncrementalPCA(n_components=ncmps)
+        # pca = IncrementalPCA(n_components=ncmps)
 
         iold = 0
         for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
@@ -831,7 +833,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
 
         x2d = []
         maskall = []
-        dat = lstack(dat, piter=piter, showlog=showlog)
+        dat = lstack(dat, piter=piter, showlog=showlog, commonmask=True)
 
         for j in dat:
             x2d.append(j.data)
@@ -872,7 +874,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         del x2
 
         if fwdonly:
-            odata = [i.copy(True) for i in dat]
+            odata = [i.copy(resetmeta=True) for i in dat]
             odata = odata[:ncmps]
         else:
             odata = [i.copy() for i in dat]
@@ -1067,6 +1069,7 @@ def _testfn3():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'd:\aster'
+    idir = r"D:\VMS\S2"
     os.chdir(r'D:\\')
 
     _ = QtWidgets.QApplication(sys.argv)
@@ -1077,11 +1080,11 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    # tmp2 = PCA()
-    tmp2 = MNF()
+    tmp2 = PCA()
+    # tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

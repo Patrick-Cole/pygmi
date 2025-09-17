@@ -404,9 +404,9 @@ class Visibility2d(BasicModule):
             xdim = datai.transform[0]
             ydim = abs(datai.transform[4])
 
-            data2.append(datai.copy(True))
-            data2.append(datai.copy(True))
-            data2.append(datai.copy(True))
+            data2.append(datai.copy(resetmeta=True))
+            data2.append(datai.copy(resetmeta=True))
+            data2.append(datai.copy(resetmeta=True))
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum

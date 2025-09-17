@@ -1606,8 +1606,8 @@ def get_from_rastermeta(ldata, *, piter=None, showlog=print, tnames=None,
         if bounds is not None:
             dat = cut_raster(dat, bounds)
     else:
-        # if tnames is None:
-        #     tnames = ldata.tnames
+        if tnames is None:
+            tnames = ldata.tnames
         ifile = ldata.banddata[0].filename
         dat = get_data(ifile, piter=piter, showlog=showlog, tnames=tnames,
                        metaonly=metaonly, bounds=bounds)
