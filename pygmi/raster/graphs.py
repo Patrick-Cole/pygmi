@@ -137,7 +137,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
 
-        if data1.crs is not None and data1.crs.is_geographic:
+        if data1.metadata['Raster']['Section'] is True:
+            self.axes.set_xlabel('Distance')
+            self.axes.set_ylabel('Elevation')
+        elif data1.crs is not None and data1.crs.is_geographic:
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')
         else:
@@ -338,6 +341,10 @@ class PlotCCoef(ContextModule):
         if 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
+            return
+
+        if data[0].metadata['Raster']['Section'] is True:
+            self.showlog('Sections are not supported.')
             return
 
         if self.indata['Raster'][0].isrgb:
@@ -595,6 +602,10 @@ class PlotSurface(ContextModule):
         else:
             return
 
+        if data[0].metadata['Raster']['Section'] is True:
+            self.showlog('Sections are not supported.')
+            return
+
         if self.indata['Raster'][0].isrgb:
             self.showlog('RGB images cannot be used in this module.')
             return
@@ -690,6 +701,10 @@ class PlotScatter(ContextModule):
         if 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
+            return
+
+        if data[0].metadata['Raster']['Section'] is True:
+            self.showlog('Sections are not supported.')
             return
 
         if self.indata['Raster'][0].isrgb:

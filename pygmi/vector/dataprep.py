@@ -416,6 +416,9 @@ class DataGrid(BasicModule):
         dat.dataid = dataid
         dat.crs = data2.crs
 
+        if self.cb_section.isChecked():
+            dat.metadata['Raster']['Section'] = True
+
         newdat.append(dat)
 
         self.outdata['Raster'] = newdat

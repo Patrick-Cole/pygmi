@@ -247,7 +247,8 @@ class Data():
         self.nodata = None
         self.units = ''
         self.isrgb = False
-        self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic'}}
+        self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic',
+                                                   'Section': False}}
         self.meta = {}  # rasterio meta
         self.filename = ''
         self.transform = None

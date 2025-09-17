@@ -692,7 +692,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        # self.figure.tight_layout()
+        if data1.crs is not None and data1.crs.is_geographic:
+            self.axes.set_xlabel('Longitude')
+            self.axes.set_ylabel('Latitude')
+        else:
+            self.axes.set_xlabel('Eastings')
+            self.axes.set_ylabel('Northings')
+
         self.figure.canvas.draw()
 
     def update_vector(self, data, col, style=None):
@@ -797,6 +803,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
+
+        if data.crs is not None and data.crs.is_geographic:
+            self.axes.set_xlabel('Longitude')
+            self.axes.set_ylabel('Latitude')
+        else:
+            self.axes.set_xlabel('Eastings')
+            self.axes.set_ylabel('Northings')
 
         self.figure.canvas.draw()
 
