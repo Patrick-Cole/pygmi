@@ -1536,6 +1536,7 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
     elif ((ext == '.xml' and '.SAFE' in ifile) or
           ('S2A_' in bfile and ext == '.zip') or
           ('S2B_' in bfile and ext == '.zip') or
+          ('S2C_' in bfile and ext == '.zip') or
           (ext == '.safe')):
         dat = get_sentinel2(ifile, piter=piter, showlog=showlog, tnames=tnames,
                             metaonly=metaonly, bounds=bounds)
