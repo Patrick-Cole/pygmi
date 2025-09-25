@@ -26,6 +26,7 @@
 
 import warnings
 import os
+from io import StringIO
 import copy
 import datetime
 import xml.etree.ElementTree as ET
@@ -833,6 +834,14 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
                 dest['reflectance_scale_factor'] = envimeta['reflectance_scale_factor']
 
             dat[-1].metadata['Raster'].update(dest)
+
+            if dat[-1].metadata['Raster']['Section'] == 'True':
+                dat[-1].metadata['Raster']['Section'] = True
+            if 'SectionCoords' in dat[-1].metadata['Raster']:
+                tmp = dat[-1].metadata['Raster']['SectionCoords']
+                tmp = tmp.replace('[', '').replace(']', '')
+                tmp = StringIO(tmp)
+                dat[-1].metadata['Raster']['SectionCoords'] = np.loadtxt(tmp)
 
     return dat
 
@@ -1854,6 +1863,7 @@ def _filespeedtest():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
     ifile = r"D:\2621CC_ESRI_TRUE_COLOUR_geo.tif"
+    ifile = r"D:\aaa.tif"
     # ifile = ifile[:-4]+'_zstd.tif'
 
     # dat = get_ascii(ifile)
@@ -1861,9 +1871,8 @@ def _filespeedtest():
     dataset = get_raster(ifile)
 
     print(dataset[0].data.max())
-    # return
 
-    getinfo('Start')
+    # getinfo('Start')
 
     # export_raster(ifile[:-4]+'_NONE.tif', dataset, 'GTiff')  # 65s
     # export_raster(ifile[:-4]+'_PACKBITS.tif', dataset, 'GTiff', compression='PACKBITS')  # 82s
@@ -1875,9 +1884,9 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
     # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
 
-    tmp = ExportData()
-    tmp.indata['Raster'] = dataset
-    tmp.run()
+    # tmp = ExportData()
+    # tmp.indata['Raster'] = dataset
+    # tmp.run()
 
     getinfo('End')
 

@@ -435,6 +435,11 @@ class ModestImage(mi.AxesImage):
         vmin = vmean - mult * vstd
         vmax = vmean + mult * vstd
 
+        if vmin < self._A.min():
+            vmin = self._A.min()
+        if vmax > self._A.max():
+            vmax = self._A.max()
+
         self.set_clim(vmin, vmax)
         self.set_clim(vmin, vmax)
 

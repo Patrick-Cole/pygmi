@@ -63,6 +63,35 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
+        self.data = None
+
+    def format_coord(self, x, y):
+        """
+        Set format coordinate for correlation coefficient plot.
+
+        Parameters
+        ----------
+        x : float
+            x coordinate.
+        y : float
+            y coordinate.
+
+        Returns
+        -------
+        str
+            Output string to display.
+
+        """
+        scoords = self.data.metadata['Raster']['SectionCoords']
+        r1 = scoords[:, 2]
+        difference_array = np.absolute(r1 - x)
+        idx = difference_array.argmin()
+        x1 = scoords[idx, 0]
+        y1 = scoords[idx, 1]
+
+        text = f'X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}'
+        return text
+
     def update_ccoef(self, data1, dmat):
         """
         Update the correlation coefficient plot.
@@ -126,6 +155,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        self.data = data1
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -140,6 +170,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if data1.metadata['Raster']['Section'] is True:
             self.axes.set_xlabel('Distance')
             self.axes.set_ylabel('Elevation')
+            self.axes.format_coord = self.format_coord
+            rdata.format_cursor_data = lambda x: f'Data: {x}'
         elif data1.crs is not None and data1.crs.is_geographic:
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')

@@ -140,8 +140,8 @@ class DataGrid(BasicModule):
         self.lbl_cols = QtWidgets.QLabel('Columns: 0')
         self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
 
-        self.cb_section = QtWidgets.QCheckBox('Grid a section, with distance '
-                                              'vs altitude.')
+        self.cb_section = QtWidgets.QCheckBox('Grid vertical section with '
+                                              'X, Y and Z coordinates.')
         self.cmb_line = QtWidgets.QComboBox()
         self.cmb_z = QtWidgets.QComboBox()
 
@@ -230,14 +230,15 @@ class DataGrid(BasicModule):
 
         x = data.geometry.x.values
         y = data.geometry.y.values
+        zcol = self.cmb_z.currentText()
 
-        if self.cb_section.isChecked():
+        if self.cb_section.isChecked() and zcol != '':
             line = self.cmb_line.currentText()
-            if line.lower != 'none':
+            if line.lower() not in ['none', '']:
                 data1 = data[data.line == line]
             else:
                 data1 = data
-            zcol = self.cmb_z.currentText()
+
             x = xy_to_r(x, y)
             y = data1[zcol].values
 
@@ -395,7 +396,7 @@ class DataGrid(BasicModule):
         if bdist < 1:
             bdist = None
             self.showlog('Blanking distance too small.')
-        if line.lower != 'none':
+        if line.lower() not in ['none', '']:
             data1 = data[data.line == line]
         else:
             data1 = data
@@ -408,8 +409,14 @@ class DataGrid(BasicModule):
         z = data2[dataid].values[filt]
 
         if self.cb_section.isChecked():
+            x1 = x
+            y1 = y
             x = xy_to_r(x, y)
             y = data2[zcol].values
+            scoords = np.transpose([x1, y1, x])
+            scoords = np.unique(scoords, axis=0)
+            sortidx = scoords[:, 2].argsort()
+            scoords = scoords[sortidx]
 
         dat = gridxyz(x, y, z, dxy, nullvalue=nullvalue, method=method,
                       bdist=bdist, showlog=self.showlog)
@@ -418,6 +425,7 @@ class DataGrid(BasicModule):
 
         if self.cb_section.isChecked():
             dat.metadata['Raster']['Section'] = True
+            dat.metadata['Raster']['SectionCoords'] = scoords
 
         newdat.append(dat)
 
