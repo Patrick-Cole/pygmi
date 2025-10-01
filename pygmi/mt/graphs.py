@@ -259,7 +259,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def update_phase(self, edi_list, plot_freq, plot_tipper, ellipse_colorby,
-                     ellipse_size):
+                     ellipse_size, asize, ahwidth, ahlength):
         """
         Update the plot from point data.
 
@@ -310,11 +310,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                     ellipse_range=ellipse_range,
                                     # scaling factor for the ellipses
                                     ellipse_size=ellipse_size,
-                                    arrow_size=0.1,
+                                    arrow_size=asize,
                                     # scaling for arrows (head width)
-                                    arrow_head_width=0.002,
+                                    arrow_head_width=ahwidth,
                                     # scaling for arrows (head length)
-                                    arrow_head_length=0.002,
+                                    arrow_head_length=ahlength,
                                     ellipse_cmap='bwr',  # matplotlib colormap
                                     # station_dict={'id': (5, 7)},
                                     font_size=10,
@@ -322,7 +322,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                     )
 
         ptmap.plot(fig=self.figure, show=False)
-
+        # ax = self.figure.gca()
+        # ax.autoscale()
+        # ax.set_ylim(-40, -20)
         ptmap.update_plot()
 
 
@@ -420,6 +422,9 @@ class PlotPhaseTensor(ContextModule):
         self.cb_realtipper = QtWidgets.QCheckBox(r'Plot real tipper')
         self.cb_imagtipper = QtWidgets.QCheckBox(r'Plot imaginary tipper')
         self.dsb_esize = QtWidgets.QDoubleSpinBox()
+        self.dsb_arrowsize = QtWidgets.QDoubleSpinBox()
+        self.dsb_arrowhwidth = QtWidgets.QDoubleSpinBox()
+        self.dsb_arrowhlength = QtWidgets.QDoubleSpinBox()
         pb_export = QtWidgets.QPushButton('Export current frequency to '
                                           'shapefiles')
 
@@ -430,11 +435,26 @@ class PlotPhaseTensor(ContextModule):
         self.dsb_esize.setMinimum(0.001)
         self.dsb_esize.setSingleStep(0.001)
         self.dsb_esize.setDecimals(3)
+        self.dsb_arrowsize.setValue(0.1)
+        self.dsb_arrowsize.setMinimum(0.001)
+        self.dsb_arrowsize.setSingleStep(0.001)
+        self.dsb_arrowsize.setDecimals(3)
+        self.dsb_arrowhwidth.setMinimum(0.001)
+        self.dsb_arrowhwidth.setSingleStep(0.001)
+        self.dsb_arrowhwidth.setDecimals(3)
+        self.dsb_arrowhwidth.setValue(0.002)
+        self.dsb_arrowhlength.setMinimum(0.001)
+        self.dsb_arrowhlength.setSingleStep(0.001)
+        self.dsb_arrowhlength.setDecimals(3)
+        self.dsb_arrowhlength.setValue(0.002)
         self.cb_realtipper.setChecked(True)
 
         lbl_1 = QtWidgets.QLabel('Frequency:')
         lbl_3 = QtWidgets.QLabel('Ellipse colour by:')
         lbl_4 = QtWidgets.QLabel('Ellipse scale factor:')
+        lbl_5 = QtWidgets.QLabel('Arrow Size:')
+        lbl_6 = QtWidgets.QLabel('Arrow Head Width:')
+        lbl_7 = QtWidgets.QLabel('Arrow Head Length:')
 
         spacer = QtWidgets.QSpacerItem(20, 40,
                                        QtWidgets.QSizePolicy.Policy.Minimum,
@@ -448,9 +468,16 @@ class PlotPhaseTensor(ContextModule):
         gl_1.addWidget(self.cmb_ecol, 2, 1)
         gl_1.addWidget(lbl_4, 3, 0)
         gl_1.addWidget(self.dsb_esize, 3, 1)
-        gl_1.addWidget(self.cb_realtipper, 4, 0, 1, 2)
-        gl_1.addWidget(self.cb_imagtipper, 5, 0, 1, 2)
-        gl_1.addWidget(pb_export, 6, 0, 1, 2)
+        gl_1.addWidget(lbl_5, 4, 0)
+        gl_1.addWidget(self.dsb_arrowsize, 4, 1)
+        gl_1.addWidget(lbl_6, 5, 0)
+        gl_1.addWidget(self.dsb_arrowhwidth, 5, 1)
+        gl_1.addWidget(lbl_7, 6, 0)
+        gl_1.addWidget(self.dsb_arrowhlength, 6, 1)
+
+        gl_1.addWidget(self.cb_realtipper, 7, 0, 1, 2)
+        gl_1.addWidget(self.cb_imagtipper, 8, 0, 1, 2)
+        gl_1.addWidget(pb_export, 9, 0, 1, 2)
         gl_1.addItem(spacer, 16, 0, 1, 1)
         gl_1.addWidget(self.buttonbox, 17, 0, 1, 2)
 
@@ -465,6 +492,9 @@ class PlotPhaseTensor(ContextModule):
         self.cb_realtipper.checkStateChanged.connect(self.change_band)
         self.cb_imagtipper.checkStateChanged.connect(self.change_band)
         self.dsb_esize.valueChanged.connect(self.change_band)
+        self.dsb_arrowhlength.valueChanged.connect(self.change_band)
+        self.dsb_arrowhwidth.valueChanged.connect(self.change_band)
+        self.dsb_arrowsize.valueChanged.connect(self.change_band)
         pb_export.clicked.connect(self.export)
 
     def reset_data(self):
@@ -502,8 +532,12 @@ class PlotPhaseTensor(ContextModule):
         ecol = self.cmb_ecol.currentText()
 
         esize = self.dsb_esize.value()
+        asize = self.dsb_arrowsize.value()
+        ahwidth = self.dsb_arrowhwidth.value()
+        ahlength = self.dsb_arrowhlength.value()
 
-        self.mmc.update_phase(self.edi_list, freq, tipper, ecol, esize)
+        self.mmc.update_phase(self.edi_list, freq, tipper,
+                              ecol, esize, asize, ahwidth, ahlength)
 
     def export(self):
         """Export to shapefile."""
@@ -564,6 +598,9 @@ class PlotPhaseTensor(ContextModule):
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_ecol)
         self.saveobj(self.dsb_esize)
+        self.saveobj(self.dsb_arrowsize)
+        self.saveobj(self.dsb_arrowhwidth)
+        self.saveobj(self.dsb_arrowhlength)
         self.saveobj(self.cb_imagtipper)
         self.saveobj(self.cb_realtipper)
 

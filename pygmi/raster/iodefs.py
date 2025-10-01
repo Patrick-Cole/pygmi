@@ -36,6 +36,7 @@ from natsort import natsorted
 import rasterio
 from rasterio.windows import Window
 from pyproj.crs import CRS
+from scipy.ndimage import vectorized_filter
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import lstack
@@ -43,6 +44,8 @@ from pygmi.misc import ProgressBarText, ContextModule, BasicModule
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
+warnings.filterwarnings('ignore', category=RuntimeWarning,
+                        message='All-NaN slice encountered')
 
 
 class BandSelect(ContextModule):
@@ -1270,6 +1273,8 @@ class ExportData(ContextModule):
 
         filt = self.ofilt
         # Pop up save dialog box
+        if filt == 'Section to UBC 3D Mesh (*.msh)':
+            self.export_ubc(data)
         if filt == 'ArcInfo ASCII (*.asc)':
             self.export_ascii(data)
         if filt == 'ASCII XYZ (*.xyz)':
@@ -1315,6 +1320,68 @@ class ExportData(ContextModule):
         self.process_is_active(False)
 
         self.accept()
+
+    def export_ubc(self, data):
+        """
+        Export a section to a 3D UBC mesh and model.
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+
+        Returns
+        -------
+        None.
+
+        """
+        data = data[0]
+        if data.metadata['Raster']['Section'] is False:
+            self.showlog('Not a section.')
+            return
+
+        ofile = self.ofile.rpartition('.')[0] + '.msh'
+
+        scoords = data.metadata['Raster']['SectionCoords']
+        r1 = scoords[:, 2]
+        x1 = scoords[:, 0]
+        y1 = scoords[:, 1]
+
+        dxy = data.xdim
+        d_z = data.ydim
+        r2 = np.arange(data.extent[0], data.extent[1], dxy) + dxy / 2
+
+        x2 = np.interp(r2, r1, x1)
+        y2 = np.interp(r2, r1, y1)
+
+        nx = round(np.ptp(x2) / dxy + 1)
+        ny = round(np.ptp(y2) / dxy + 1)
+        nz = data.data.shape[0]
+
+        xidx = ((x2 - x2[0]) // dxy).astype(int)
+        yidx = ((y2 - y2[0]) // dxy).astype(int)
+
+        smod = np.zeros([nx, ny, nz])
+        smod[xidx, yidx] = data.data.T
+
+        self.showlog('Padding section...')
+        smod2 = smod.copy()
+        smod2[smod == 0] = np.nan
+        smod2 = vectorized_filter(smod2, size=3, function=np.nanmedian,
+                                  mode='constant', axes=(0, 1), cval=np.nan)
+
+        smod[smod == 0] = smod2[smod == 0]
+        smod[np.isnan(smod)] = 0
+
+        with open(ofile, 'w') as out:
+            print(nx, ny, nz, file=out)
+            print(x2[0], y2[0], data.extent[-1], file=out)
+            print(f'{nx}*{dxy}', file=out)
+            print(f'{ny}*{dxy}', file=out)
+            print(f'{nz}*{d_z}', file=out)
+
+        smod2 = np.moveaxis(smod, [0, 1, 2], [1, 0, 2]).flatten()
+        np.savetxt(ofile[:-3] + 'mod', smod2)
 
     def export_gxf(self, data):
         """
@@ -1527,7 +1594,8 @@ class ExportData(ContextModule):
                'Surfer grid (*.grd);;'
                'ArcInfo ASCII (*.asc);;'
                'ASCII XYZ (*.xyz);;'
-               'ArcGIS BIL (*.bil)')
+               'ArcGIS BIL (*.bil);;'
+               'Section to UBC 3D Mesh (*.msh)')
 
         self.ofile, self.ofilt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -1891,5 +1959,58 @@ def _filespeedtest():
     getinfo('End')
 
 
+def _testfn():
+    """Test."""
+    from scipy.signal import convolve2d
+
+    ifile = r"D:\UBC_Files\section.tif"
+    ofile = r"D:\UBC_Files\section.msh"
+    data = get_raster(ifile)[0]
+
+    scoords = data.metadata['Raster']['SectionCoords']
+    r1 = scoords[:, 2]
+    x1 = scoords[:, 0]
+    y1 = scoords[:, 1]
+
+    dxy = data.xdim
+    d_z = data.ydim
+    r2 = np.arange(data.extent[0], data.extent[1], dxy) + dxy / 2
+
+    x2 = np.interp(r2, r1, x1)
+    y2 = np.interp(r2, r1, y1)
+
+    nx = round(np.ptp(x2) / dxy + 1)
+    ny = round(np.ptp(y2) / dxy + 1)
+    nz = data.data.shape[0]
+
+    xidx = ((x2 - x2[0]) // dxy).astype(int)
+    yidx = ((y2 - y2[0]) // dxy).astype(int)
+
+    smod = np.zeros([nx, ny, nz])
+    smod[xidx, yidx] = data.data.T
+
+    smod2 = smod.copy()
+    smod2[smod == 0] = np.nan
+
+    smod2 = vectorized_filter(smod2, size=3, function=np.nanmedian,
+                              mode='constant', axes=(0, 1), cval=np.nan)
+
+    smod[smod == 0] = smod2[smod == 0]
+    smod[np.isnan(smod)] = 0
+
+    with open(ofile, 'w') as out:
+        print(nx, ny, nz, file=out)
+        print(x2[0], y2[0], data.extent[-1], file=out)
+        print(f'{nx}*{dxy}', file=out)
+        print(f'{ny}*{dxy}', file=out)
+        print(f'{nz}*{d_z}', file=out)
+
+    smod2 = np.moveaxis(smod, [0, 1, 2], [1, 0, 2]).flatten()
+    np.savetxt(ofile[:-3] + 'mod', smod2)
+
+    pass
+
+
 if __name__ == "__main__":
-    _filespeedtest()
+    # _filespeedtest()
+    _testfn()

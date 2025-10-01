@@ -971,10 +971,14 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
         # --> set plot limits
         #    need to exclude zero values from the calculation of min/max!!!!
-        lpax.set_xlim(self.plot_xarr[self.plot_xarr != 0.].min() - self.xpad,
-                      self.plot_xarr[self.plot_xarr != 0.].max() + self.xpad)
-        lpax.set_ylim(self.plot_yarr[self.plot_yarr != 0.].min() - self.xpad,
-                      self.plot_yarr[self.plot_xarr != 0.].max() + self.xpad)
+        # lpax.set_xlim(self.plot_xarr[self.plot_xarr != 0.].min() - self.xpad,
+        #               self.plot_xarr[self.plot_xarr != 0.].max() + self.xpad)
+        # lpax.set_ylim(self.plot_yarr[self.plot_yarr != 0.].min() - self.xpad,
+        #               self.plot_yarr[self.plot_xarr != 0.].max() + self.xpad)
+
+        # lpax.autoscale()
+        lpax.set_xmargin(0.1)
+        lpax.set_ymargin(0.1)
 
         # BM: Now that we have the bounds of the axis, we can plot a
         # background image on the map.
@@ -1062,16 +1066,16 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
             pty = 0
             # txy = pay + txtpad
 
-            lpax.arrow(pax,
-                       pay,
-                       ptx,
-                       pty,
-                       width=self.arrow_lw,
-                       facecolor=self.arrow_color_real,
-                       edgecolor=self.arrow_color_real,
-                       length_includes_head=False,
-                       head_width=self.arrow_head_width,
-                       head_length=self.arrow_head_length)
+            # lpax.arrow(pax,
+            #            pay,
+            #            ptx,
+            #            pty,
+            #            width=self.arrow_lw,
+            #            facecolor=self.arrow_color_real,
+            #            edgecolor=self.arrow_color_real,
+            #            length_includes_head=False,
+            #            head_width=self.arrow_head_width,
+            #            head_length=self.arrow_head_length)
 
             # FZ: what is this '|T|=1'? and the horizontal line?
             # lpax.text(txa,
