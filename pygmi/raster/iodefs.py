@@ -1358,8 +1358,8 @@ class ExportData(ContextModule):
         ny = round(np.ptp(y2) / dxy + 1)
         nz = data.data.shape[0]
 
-        xidx = ((x2 - x2[0]) // dxy).astype(int)
-        yidx = ((y2 - y2[0]) // dxy).astype(int)
+        xidx = ((x2 - x2.min()) // dxy).astype(int)
+        yidx = ((y2 - y2.min()) // dxy).astype(int)
 
         smod = np.zeros([nx, ny, nz])
         smod[xidx, yidx] = data.data.T
@@ -1375,7 +1375,7 @@ class ExportData(ContextModule):
 
         with open(ofile, 'w') as out:
             print(nx, ny, nz, file=out)
-            print(x2[0], y2[0], data.extent[-1], file=out)
+            print(x2.min(), y2.min(), data.extent[-1], file=out)
             print(f'{nx}*{dxy}', file=out)
             print(f'{ny}*{dxy}', file=out)
             print(f'{nz}*{d_z}', file=out)
@@ -1961,10 +1961,8 @@ def _filespeedtest():
 
 def _testfn():
     """Test."""
-    from scipy.signal import convolve2d
-
-    ifile = r"D:\UBC_Files\section.tif"
-    ofile = r"D:\UBC_Files\section.msh"
+    ifile = r"D:\UBC_Files\section2.tif"
+    ofile = r"D:\UBC_Files\section2.msh"
     data = get_raster(ifile)[0]
 
     scoords = data.metadata['Raster']['SectionCoords']
@@ -1983,8 +1981,8 @@ def _testfn():
     ny = round(np.ptp(y2) / dxy + 1)
     nz = data.data.shape[0]
 
-    xidx = ((x2 - x2[0]) // dxy).astype(int)
-    yidx = ((y2 - y2[0]) // dxy).astype(int)
+    xidx = ((x2 - x2.min()) // dxy).astype(int)
+    yidx = ((y2 - y2.min()) // dxy).astype(int)
 
     smod = np.zeros([nx, ny, nz])
     smod[xidx, yidx] = data.data.T
@@ -2000,7 +1998,7 @@ def _testfn():
 
     with open(ofile, 'w') as out:
         print(nx, ny, nz, file=out)
-        print(x2[0], y2[0], data.extent[-1], file=out)
+        print(x2.min(), y2.min(), data.extent[-1], file=out)
         print(f'{nx}*{dxy}', file=out)
         print(f'{ny}*{dxy}', file=out)
         print(f'{nz}*{d_z}', file=out)
