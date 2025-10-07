@@ -463,8 +463,8 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             ymin = min(ymin, ymin0)
             ymax = max(ymax, ymax0)
 
-    cols = int((xmax - xmin) / dxy)
-    rows = int((ymax - ymin) / dxy)
+    cols = int(round((xmax - xmin) / dxy, 9))
+    rows = int(round((ymax - ymin) / dxy, 9))
     trans = rasterio.Affine(dxy, 0, float(xmin), 0, -1 * dxy, float(ymax))
 
     if cols == 0 or rows == 0:

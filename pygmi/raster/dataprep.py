@@ -349,8 +349,8 @@ class DataLayerStack(BasicModule):
             ymin = min(ymin, ymin0)
             ymax = max(ymax, ymax0)
 
-        cols = int((xmax - xmin) / dxy)
-        rows = int((ymax - ymin) / dxy)
+        cols = int(round((xmax - xmin) / dxy, 9))
+        rows = int(round((ymax - ymin) / dxy, 9))
 
         self.lbl_rows.setText('Rows: ' + str(rows))
         self.lbl_cols.setText('Columns: ' + str(cols))

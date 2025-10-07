@@ -611,6 +611,7 @@ def _testfn_vert():
     from pygmi.raster.dataprep import verticalp
 
     ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
+    ifile = r"D:\mergemag5_IGRFremoved_RTP.hdr"
 
     zout = get_raster(ifile)[0]
 
@@ -675,4 +676,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn_rtp()
+    _testfn_vert()
