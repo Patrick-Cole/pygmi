@@ -84,7 +84,7 @@ Module Contents
 
 
 
-   .. py:method:: update_phase(edi_list, plot_freq, plot_tipper, ellipse_colorby, ellipse_size)
+   .. py:method:: update_phase(edi_list, plot_freq, plot_tipper, ellipse_colorby, ellipse_size, asize, ahwidth, ahlength)
 
       Update the plot from point data.
 

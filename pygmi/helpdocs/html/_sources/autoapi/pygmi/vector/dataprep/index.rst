@@ -37,6 +37,7 @@ Functions
    pygmi.vector.dataprep.maptovector
    pygmi.vector.dataprep.quickgrid
    pygmi.vector.dataprep.reprojxy
+   pygmi.vector.dataprep.xy_to_r
 
 
 Module Contents
@@ -110,6 +111,12 @@ Module Contents
       When grid method is changed, this updated hidden controls.
 
       :rtype: None.
+
+
+
+   .. py:method:: section()
+
+      Check whether section is checked.
 
 
 
@@ -505,5 +512,20 @@ Module Contents
 
    :returns: * **xout** (*numpy array*) -- x coordinates.
              * **yout** (*numpy array*) -- y coordinates.
+
+
+.. py:function:: xy_to_r(x, y)
+
+   Convert x an y values on a section to r.
+
+   This will take into account r being reset for each depth.
+
+   :param x: x coordinates
+   :type x: numpy array or float
+   :param y: y coordinates
+   :type y: numpy array or float
+
+   :returns: **r** -- r coordinates.
+   :rtype: numpy array
 
 

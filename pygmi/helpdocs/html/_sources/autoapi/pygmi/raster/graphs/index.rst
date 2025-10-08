@@ -53,6 +53,20 @@ Module Contents
    :type parent: parent, optional
 
 
+   .. py:method:: format_coord(x, y)
+
+      Set format coordinate for correlation coefficient plot.
+
+      :param x: x coordinate.
+      :type x: float
+      :param y: y coordinate.
+      :type y: float
+
+      :returns: Output string to display.
+      :rtype: str
+
+
+
    .. py:method:: update_ccoef(data1, dmat)
 
       Update the correlation coefficient plot.

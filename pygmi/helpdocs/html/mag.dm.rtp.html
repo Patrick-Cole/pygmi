@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Reduction to the Pole &#8212; PyGMI 3.2.9.10 documentation</title>
+    <title>Reduction to the Pole &#8212; PyGMI 3.2.9.17 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=6784c203"></script>
+    <script src="_static/documentation_options.js?v=f29140d2"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.10 documentation</p>
+    <p class="title logo__title">PyGMI 3.2.9.17 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -656,7 +656,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -672,6 +674,14 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -689,6 +699,7 @@ document.write(`
 <li><p><strong>Band to Reduce to the Pole</strong> – The band name is directly extracted from the raster file. In the case of a multiband raster dataset the user can specify which band contains the magnetic data that must be processed.</p></li>
 <li><p><strong>Inclination of the Magnetic Field</strong> – Magnetic inclination at the date of the survey.</p></li>
 <li><p><strong>Declination of the Magnetic Field</strong> – Magnetic declination at the date of the survey.</p></li>
+<li><p><strong>Amplitude Correction Inclination for low latitudes</strong> - Pseudo inclination used to correct the amplitude of the RTP filter near the equatior (Macleod et al, 1993). Only used if the magnitude of the actual inclination is less than the magnitude of this pseudo inclination.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/rtp.png" src="_images/rtp.png" />
@@ -697,6 +708,12 @@ document.write(`
 </figcaption>
 </figure>
 <p>The resulting dataset can be exported by right-clicking on the function and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster</span></a>.</p>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><p>Macleod, I.N., Jones, K., Dai, T.F., 1993. 3-D analytic signal in the interpretation of total magnetic ﬁeld data at low magnetic latitudes. Exploration Geophysics 24, 679–688.</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -734,6 +751,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

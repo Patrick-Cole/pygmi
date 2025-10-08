@@ -269,6 +269,17 @@ Module Contents
 
 
 
+   .. py:method:: export_ubc(data)
+
+      Export a section to a 3D UBC mesh and model.
+
+      :param data: dataset to export
+      :type data: PyGMI raster Data
+
+      :rtype: None.
+
+
+
    .. py:method:: export_gxf(data)
 
       Export GXF data.
