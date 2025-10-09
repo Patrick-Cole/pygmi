@@ -1558,10 +1558,10 @@ def xy_to_r(x, y):
         r coordinates.
     """
     r1 = np.sqrt(x**2 + y**2)
-    r2 = np.diff(r1, prepend=0)
+    r2 = np.diff(r1)
     r2 = np.sign(r2[0]) * r2
-    rind = np.where(r2 < 0)
-    rind = np.append(rind[0], r2.size)
+    rind = np.where(r2 < 0)[0] + 1
+    rind = np.append(rind, r2.size + 1)
 
     x1a = x[:rind[0]]
     y1a = y[:rind[0]]
@@ -1680,7 +1680,8 @@ def _testfn_grid():
 
     _ = QtWidgets.QApplication(sys.argv)
 
-    ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\PyGMI_test_data.csv"
+    ifile = r"D:\UBC_Files\rivala_line3_res_model_xyz.csv"
+    # ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\PyGMI_test_data.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
