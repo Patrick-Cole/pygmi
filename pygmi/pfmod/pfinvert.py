@@ -836,9 +836,10 @@ class MagInvert(BasicModule):
         # Define Inversion Directives
         starting_beta = directives.BetaEstimate_ByEig(beta0_ratio=5)
         save_iteration = directives.SaveOutputEveryIteration(save_txt=False)
-        update_IRLS = directives.Update_IRLS(f_min_change=1e-4,
-                                             max_irls_iterations=30,
-                                             coolEpsFact=1.5, beta_tol=1e-2)
+        update_IRLS = directives.UpdateIRLS(f_min_change=1e-4,
+                                            max_irls_iterations=30,
+                                            cooling_factor=1.5,
+                                            misfit_tolerance=1e-2)
         update_jacobi = directives.UpdatePreconditioner()
 
         target_misfit = directives.TargetMisfit(chifact=1)
@@ -1061,8 +1062,6 @@ def _testfn2():
     import matplotlib as mpl
     from pygmi.raster.iodefs import get_raster
     from pygmi.pfmod.pfmod import MainWidget
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
 
     _ = QtWidgets.QApplication(sys.argv)
 

@@ -27,6 +27,7 @@
 import sys
 import os
 import copy
+# import warnings
 from contextlib import redirect_stdout
 from PySide6 import QtWidgets
 import numpy as np
@@ -38,9 +39,13 @@ import discretize
 from simpeg import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
 from simpeg.electromagnetics import time_domain
+# from simpeg.utils import solver_utils
 import simpeg.data as Sdata
 
 from pygmi.misc import QVStack2Layout, BasicModule
+
+# warnings.filterwarnings(
+#     'ignore', 'DefaultSolverWarning: Using the default solver: SolverLU.')
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
@@ -441,7 +446,7 @@ class TDEM1D(BasicModule):
 
         # Regularization
         regmesh = discretize.TensorMesh(
-            [mesh.h[2][mapping.maps[-1].indActive]])
+            [mesh.h[2][mapping.maps[-1].active_cells]])
         # reg = regularization.Simple(regmesh, mapping=maps.IdentityMap(regmesh))
         # reg.alpha_s = 1e-2
         # reg.alpha_x = 1.
