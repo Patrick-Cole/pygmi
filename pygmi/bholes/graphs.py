@@ -110,8 +110,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
-        df = data1['log']
-        hdf = data1['header']
+        df = data1  # ['log']
+        hdf = data1  # ['header']
 
         companyno = np.array(df['Companyno'])
         lith = np.array(df['Lithology'])
@@ -244,8 +244,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
-        df = data1['log']
-        hdf = data1['header']
+        df = data1  # ['log']
+        hdf = data1  # ['header']
 
         companyno = np.array(df['Companyno'])
         depthfrom = -1 * np.array(df['Depth from'])
@@ -395,33 +395,35 @@ class PlotLog(ContextModule):
 
         """
         i = self.cmb_1.currentText()
-        if 'Borehole' in self.indata:
-            data = self.indata['Borehole'][i]
-            hdf = data['header']
-            dfrom = hdf['Depth from'].iloc[0]
-            dto = hdf['Depth to'].iloc[0]
-            depth = int((dto - dfrom) * 10.)
-            self.mmc.setFixedHeight(depth)
 
-            hcompanyno = hdf['Companyno'].iloc[0]
-            hfilt = (hdf['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
-            hrow = hdf.iloc[hfilt].astype(str)
-            topleft = (hrow['Company'] + '\n' + hrow['Farmname'] +
-                       ' (' + hrow['Farmno'] + ')')
-            topright = 'Hole no: ' + hrow['Companyno'] + '\n Sheet 1 of 1'
-            bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
-            bottomleft += '\nDepth from: ' + hrow['Depth from']
-            bottomleft += '\nDepth to: ' + hrow['Depth to']
-            bottomright = 'Elevation: ' + hrow['Elevation']
-            bottomright += '\nLatitude: ' + hrow['Declat']
-            bottomright += '\nLongitude: ' + hrow['Declon']
-            self.lbl_topleft.setText(topleft)
-            self.lbl_topright.setText(topright)
-            self.lbl_bottomleft.setText(bottomleft)
-            self.lbl_bottomright.setText(bottomright)
+        data = self.indata['Borehole']
+        data = data.loc[data['Boreholeid'] == i]
 
-            self.mmc2.update_legend(data)
-            self.mmc.update_log(data)
+        hdf = data
+        dfrom = hdf['Depth from'].iloc[0]
+        dto = hdf['Depth to'].iloc[-1]
+        depth = int((dto - dfrom) * 10.)
+        self.mmc.setFixedHeight(depth)
+
+        hcompanyno = hdf['Companyno'].iloc[0]
+        hfilt = (hdf['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
+        hrow = hdf.iloc[hfilt].astype(str)
+        topleft = (hrow['Company'] + '\n' + hrow['Farmname'] +
+                   ' (' + hrow['Farmno'] + ')')
+        topright = 'Hole no: ' + hrow['Companyno'] + '\n Sheet 1 of 1'
+        bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
+        bottomleft += '\nDepth from: ' + hrow['Depth from']
+        bottomleft += '\nDepth to: ' + hrow['Depth to']
+        bottomright = 'Elevation: ' + hrow['Elevation']
+        bottomright += '\nLatitude: ' + hrow['Declat']
+        bottomright += '\nLongitude: ' + hrow['Declon']
+        self.lbl_topleft.setText(topleft)
+        self.lbl_topright.setText(topright)
+        self.lbl_bottomleft.setText(bottomleft)
+        self.lbl_bottomright.setText(bottomright)
+
+        self.mmc2.update_legend(data)
+        self.mmc.update_log(data)
 
     def run(self):
         """
@@ -435,8 +437,11 @@ class PlotLog(ContextModule):
         data = []
         if 'Borehole' in self.indata:
             data = self.indata['Borehole']
+        else:
+            self.showlog('Error: You must have borehole data.')
+            return
 
-        self.cmb_1.addItems(list(data.keys()))
+        self.cmb_1.addItems(data.Boreholeid.unique())
 
         self.show()
         self.change_band()
@@ -636,7 +641,7 @@ def _testfn():
     lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     data = get_CGS(lfile, hfile)
 

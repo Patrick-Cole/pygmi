@@ -490,9 +490,10 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         data = self.parent.indata['Borehole']
 
-        for bnum in data:
-            hdr = data[bnum]['header']
-            log = data[bnum]['log']
+        for bnum in data.Boreholeid.unique():
+            data1 = data.loc[data['Boreholeid'] == bnum]
+            hdr = data1.iloc[0]
+            log = data1
             try:
                 lat = float(hdr['Declat'])
                 lon = float(hdr['Declon'])

@@ -138,10 +138,13 @@ def get_CGS(lithfile, headerfile):
     hdf = xl.parse(xl.sheet_names[0])
     xl.close()
 
-    dat = {}
-    for i in hdf['Boreholeid']:
-        blog = df[df['Boreholeid'] == i]
-        bhead = hdf[hdf['Boreholeid'] == i]
-        dat[str(i)] = {'log': blog, 'header': bhead}
+    hdf.drop(columns=['Farmname', 'Farmno', 'Regdist', 'Company no',
+                      'Companyno', 'Map', 'Seqno',
+                      'Depth from', 'Depth to', 'Mapref'], inplace=True,
+             errors='ignore')
 
-    return dat
+    df = df.merge(hdf, on='Boreholeid')
+
+    df['Boreholeid'] = df['Boreholeid'].astype(str)
+
+    return df
