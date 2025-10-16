@@ -3618,12 +3618,17 @@ def set_export_filename(dat, odir, otype=None):
     """
     sensor = dat[0].metadata['Raster']['Sensor']
     filename = os.path.basename(dat[0].filename)
+    israw = True
 
     # Deal with Sentinel-2 directory case.
     if filename == 'MTD_MSIL2A.xml':
         filename = os.path.basename(os.path.dirname(dat[0].filename))
 
     filename = os.path.splitext(filename)[0]
+
+    if ('_stack' in filename or '_ratio' in filename or '_mnf' in filename or
+            '_pca' in filename):
+        israw = False
 
     filename = filename.replace('_stack', '')
     filename = filename.replace('_ratio', '')
@@ -3633,7 +3638,9 @@ def set_export_filename(dat, odir, otype=None):
     if otype is None:
         otype = 'stack'
 
-    if 'ASTER' in sensor and 'AST_' in filename:
+    if israw is False:
+        ofile = filename
+    elif 'ASTER' in sensor and 'AST_' in filename:
         # tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
         # tmp = list(set(tmp))
         # tmp.sort()
