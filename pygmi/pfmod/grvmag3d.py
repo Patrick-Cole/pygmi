@@ -552,8 +552,8 @@ class GeoData():
 
 # The 2 lines below ensure that the profile goes over the center of the grid
 # cell
-            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy,
-                              dtype=float)
+            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2,
+                              self.g_dxy, dtype=float)
             ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
                               -1 * self.g_dxy, dtype=float)
 
@@ -587,8 +587,8 @@ class GeoData():
 
 # The 2 lines below ensure that the profile goes over the center of the grid
 # cell
-            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy,
-                              dtype=float)
+            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2,
+                              self.g_dxy, dtype=float)
             ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
                               -1 * self.g_dxy, dtype=float)
 

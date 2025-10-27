@@ -1535,7 +1535,7 @@ def _testfn():
     """Test function."""
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
@@ -1557,7 +1557,7 @@ def _testfn2():
     """Test function."""
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
@@ -1591,7 +1591,7 @@ def _testfn2():
     # breakpoint()
     # Now plot the grid
     # grid.plot(show_edges=False)
-    vol = grid
+    # vol = grid
     p = pv.Plotter()
     # p.add_mesh_slice(vol)
     p.add_mesh_clip_plane(grid, scalars='values', opacity='opac')

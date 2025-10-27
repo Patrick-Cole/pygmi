@@ -985,29 +985,13 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 def _test():
     """Test."""
     import sys
-    # from pygmi.misc import ProgressBarText
-
-    # piter = ProgressBarText().iter
-    # ifile = r"D:\Additional Survey Data\MAG_MERGE..DIR"
-    # ifile = r"D:\Additional Survey Data\RADALL..DIR"
-
-    # data = get_intrepid(ifile, print, piter)
-
-    # ifile = r"E:\WorkProjects\ST-2020-1339 Landslides\vector\landslide polygons_10_sites.kmz"
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
-    # ifile = r"E:\CGS-SpecLib\doc.kml"
-    ifile = r"E:\WorkProjects\ST-2021-1351 CCUS\2021\CGS_CDNGI_BLOCKS.kml"
-    ifile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\DRC\Katanga\Katanga_boundary.kmz"
-    ifile = r"D:\temp\Limpopo_magintero_lineaments.shp"
 
     _ = QtWidgets.QApplication(sys.argv)
 
     os.chdir(os.path.dirname(ifile))
 
     tmp1 = ImportVector()
-    # tmp1.idir = r"D:\Landsat"
-    # tmp1.idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change'
-    # tmp1.get_sfile(True)
     tmp1.settings()
 
     dat = tmp1.outdata['Vector'][0]
@@ -1015,8 +999,6 @@ def _test():
     # tmp2 = ColumnSelect()
     # tmp2.indata = tmp1.outdata
     # tmp2.settings()
-
-    breakpoint()
 
 
 if __name__ == "__main__":

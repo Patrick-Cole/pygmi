@@ -1810,7 +1810,6 @@ def _testfn1():
     _ = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
-    # tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\1908-02-02-2225-00.macro"
     tmp.settings(True)
 
     data = tmp.outdata

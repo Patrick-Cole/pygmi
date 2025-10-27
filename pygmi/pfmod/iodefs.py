@@ -1295,11 +1295,7 @@ class MessageCombo(QtWidgets.QDialog):
 
 def _testfn():
     """Test."""
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
-
     ifile = r"d:\Workdata\modelling\small_upper.npz"
-    ifile = r"D:\Workdata\modelling\Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz"
     ofile = r"d:\Workdata\modelling\hope2.shp"
 
     _ = QtWidgets.QApplication(sys.argv)

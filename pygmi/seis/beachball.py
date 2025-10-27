@@ -895,7 +895,7 @@ def _testfn2():
     xxx, yyy, xxx2, yyy2 = beachball(np1, 30, -30, 1, True)
 
     pvert1 = np.transpose([yyy, xxx])
-    pvert0 = np.transpose([xxx2, yyy2])
+    # pvert0 = np.transpose([xxx2, yyy2])
 
     plt.figure(dpi=200)
     ax = plt.gca()

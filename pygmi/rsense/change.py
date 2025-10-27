@@ -650,7 +650,6 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
-    idir = r'E:\WorkProjects\ST-2020-1339 Landslides\2024\Q2\change\mosaic\ratios'
     os.chdir(r'E:\\')
 
     _ = QtWidgets.QApplication(sys.argv)

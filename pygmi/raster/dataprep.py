@@ -41,7 +41,7 @@ from shapely import LineString, unary_union
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ContextModule, BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
-from pygmi.raster.iodefs import get_raster, export_raster
+from pygmi.raster.iodefs import export_raster
 from pygmi.vector.dataprep import reprojxy
 from pygmi.raster.misc import lstack, cut_raster
 from pygmi.raster.reproj import GroupProj, data_reproject
@@ -2033,19 +2033,9 @@ def _testfn():
     """Test."""
     import sys
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
-    ifile = r"D:\temp\RSA_TMI_wgs84Geographic.ers"
-
-    # dat = get_raster(ifile)
     _ = QtWidgets.QApplication(sys.argv)
 
-    # tmp = Metadata()
-    # tmp.indata['Raster'] = dat
-    # tmp.run()
-    # app.exec()
-
     tmp = DataMerge()
-    # tmp.indata['Raster'] = dat
     tmp.settings()
 
 

@@ -1407,8 +1407,6 @@ def _testfn():
     _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
-    ifile = r"D:\Hyper\042_0816-1139_ref_rect.hdr"
-    ifile = r"D:\Gabby\LCT_1_FEN_proj.hdr"
 
     getinfo()
     bands, tnames, data = files_to_rastermeta([ifile])

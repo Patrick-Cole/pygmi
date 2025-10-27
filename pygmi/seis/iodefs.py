@@ -3113,7 +3113,8 @@ def xlstomacro():
         Note the postal code is an ascii string and left justified (a10).
 
     """
-    from geopy.geocoders import Nominatim, ArcGIS, GoogleV3
+    # from geopy.geocoders import Nominatim, ArcGIS, GoogleV3
+    from geopy.geocoders import ArcGIS
     from pygmi.misc import ProgressBarText
 
     piter = ProgressBarText().iter

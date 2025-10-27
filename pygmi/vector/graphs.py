@@ -629,7 +629,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if rtype == 0:
             # Draw rose diagram base on one angle per linear feature
 
-            radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi + bwidth,
+            radii, theta = np.histogram(fangle, bins=np.arange(0,
+                                                               np.pi + bwidth,
                                                                bwidth))
 
             if equal is True:
@@ -1533,16 +1534,12 @@ def rotate(origin, point, angle):
 
 
 def _testfn():
-    """Calculate structural complexity."""
+    """Test."""
     import sys
     import os
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
-    sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
-    sfile = r"D:\work\Programming\geochem\geochem_tzaneen.shp"
-    sfile = r"D:\AreaB_maginterp_lin_utm35s.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))

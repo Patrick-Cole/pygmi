@@ -286,7 +286,7 @@ def _testfn():
     from pygmi.pfmod.iodefs import ImportMod3D
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\small_upper.npz"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = ImportMod3D()
     DM.ifile = ifile

@@ -25,7 +25,6 @@
 """A set of Magnetic Data routines."""
 
 import numpy as np
-from scipy.signal.windows import tukey, hann
 from scipy.fft import fft2, fftshift
 from scipy.fft import rfft, rfftfreq
 from scipy.stats import binned_statistic
@@ -362,12 +361,17 @@ def calculate_raps(dat, scale=None):
     """
     Calculates the Radially Averaged Power Spectrum (RAPS) of a 2D dataset.
 
-    Parameters:
-    - dat (np.ndarray): A 2D NumPy array of the geophysical data.
+    Parameters
+    ----------
+    dat : np.ndarray
+        A 2D NumPy array of the geophysical data.
 
-    Returns:
-    - k (np.ndarray): The 1D array of radial wavenumbers.
-    - raps (np.ndarray): The 1D array of radially averaged power spectrum values.
+    Returns
+    -------
+    k : np.ndarray
+        The 1D array of radial wavenumbers.
+    raps : np.ndarray
+        The 1D array of radially averaged power spectrum values.
     """
     data = dat.data
     dx = dat.xdim

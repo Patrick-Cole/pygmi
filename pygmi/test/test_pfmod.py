@@ -52,9 +52,6 @@ def main():
 
     """
 
-    from IPython import get_ipython
-    get_ipython().run_line_magic('matplotlib', 'inline')
-
     print('Testing modelling of gravity and potential field data')
 
     ifile = 'testdata/block'

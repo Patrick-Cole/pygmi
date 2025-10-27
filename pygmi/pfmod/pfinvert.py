@@ -1166,7 +1166,7 @@ def _testfn2():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    get_ipython().run_line_magic('matplotlib', 'Qt')
+    # get_ipython().run_line_magic('matplotlib', 'Qt')
 
     tmp = MainWidget()
     tmp.indata = DM.outdata

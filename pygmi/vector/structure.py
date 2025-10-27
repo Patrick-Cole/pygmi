@@ -691,15 +691,11 @@ def segments_to_angles(gdf, piter=iter):
 
 def _testfn():
     """Calculate structural complexity."""
-    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    # sfile = r"D:\buglet_bugs\RS_lineaments_fracturesOnly.shp"
-    sfile = r"D:\Work\Programming\geochem\Cu_Project\RSA_250K_struclin_Merge.shp"
-
-    sfile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\3D study lines.shp"
 
     import sys
     from pygmi.vector.iodefs import ImportVector
 
+    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     _ = QtWidgets.QApplication(sys.argv)
 
     IO = ImportVector()

@@ -657,9 +657,7 @@ def _testfn():
 
     PD.settings()
 
-    datout = PD.outdata['Vector']
-
-    gdf = datout[0]
+    # datout = PD.outdata['Vector']
 
 
 def _test_lacoste():

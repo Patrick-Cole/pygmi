@@ -1000,7 +1000,6 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
 def _testfn():
     """Test routine."""
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    ifile = r"D:\Sentinel2\S2B_MSIL2A_20220428T073609_N0400_R092_T36JTN_20220428T105528.zip"
 
     ncmps = 5
 

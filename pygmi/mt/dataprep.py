@@ -1781,7 +1781,7 @@ def _testfn_occam():
     edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
-    from mtpy import MT
+    from pygmi.mt.mtpyold import MT
     mt_obj = MT(edi_file)
 
     print('loading complete')
