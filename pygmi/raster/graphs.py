@@ -46,6 +46,7 @@ from pyvistaqt import QtInteractor
 
 from pygmi.misc import frm, ContextModule
 from pygmi.raster.modest_image import imshow
+from pygmi.raster.colormaps import *
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -436,7 +437,8 @@ class PlotRaster(ContextModule):
         lbl_2 = QtWidgets.QLabel('Colormap:')
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain', 'Floyd',
+                             'MarineCopper', 'Splash', 'Wheel'])
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -524,7 +526,8 @@ class PlotSurface(ContextModule):
         lbl_2 = QtWidgets.QLabel('Colormap:')
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain', 'Floyd',
+                             'MarineCopper', 'Splash', 'Wheel'])
 
         hbl2.addWidget(self.vslider)
         hbl2.addWidget(self.plotter)
