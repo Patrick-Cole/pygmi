@@ -31,6 +31,7 @@ from pygmi.vector import graphs
 from pygmi.vector import dataprep
 from pygmi.vector import structure
 from pygmi.vector import show_table
+from pygmi.vector import equation_editor
 
 
 class MenuWidget():
@@ -75,6 +76,10 @@ class MenuWidget():
         self.action_file_split.triggered.connect(self.file_split)
 
         self.menu.addSeparator()
+
+        self.action_equation_editor = QtGui.QAction('Vector Equation Editor')
+        self.menu.addAction(self.action_equation_editor)
+        self.action_equation_editor.triggered.connect(self.equation_editor)
 
         self.action_cut_data = QtGui.QAction('Cut Points using Polygon')
         self.menu.addAction(self.action_cut_data)
@@ -216,3 +221,8 @@ class MenuWidget():
     def basic_stats(self):
         """Display basic statistics."""
         self.parent.launch_context_item(show_table.BasicStats)
+
+    def equation_editor(self):
+        """VectorEquation Editor."""
+        self.parent.item_insert('Step', 'Vector Equation Editor',
+                                equation_editor.EquationEditor)
