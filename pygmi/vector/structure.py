@@ -724,8 +724,6 @@ def _testfn():
     plt.colorbar()
     plt.show()
 
-    breakpoint()
-
 
 if __name__ == "__main__":
     _testfn()

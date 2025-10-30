@@ -3202,8 +3202,6 @@ def _testfn2():
 
     data = importxlsx(ifile)
 
-    breakpoint()
-
 
 if __name__ == "__main__":
     _testfn()

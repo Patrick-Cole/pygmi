@@ -702,8 +702,6 @@ def _testfn_bars():
 
     plt.show()
 
-    # breakpoint()
-
 
 def _testfn_viol():
     """Test."""
@@ -750,7 +748,6 @@ def _testfn_viol():
         offset = 1 * multiplier
         for i in range(cnr):
             data = rdat.data[cdat.data == (i + 1)].compressed()
-            # breakpoint()
             ax.violinplot(data, [i * width + offset], widths=width,
                           showmeans=False, showmedians=False,
                           showextrema=False)

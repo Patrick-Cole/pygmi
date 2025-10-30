@@ -331,7 +331,6 @@ def SPECPR(ifile):
             spec[rec['ititle']] = rec
 
             # if 'BECK' in rec['ititle']:
-            #     breakpoint()
 
     return spec
 

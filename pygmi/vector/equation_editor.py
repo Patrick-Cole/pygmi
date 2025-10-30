@@ -124,7 +124,7 @@ class EquationEditor(BasicModule):
         gl_1.addWidget(self.textbrowser, 1, 0, 1, 2)
         gl_1.addWidget(lbl_1, 5, 0, 1, 1)
         gl_1.addWidget(self.cmb_1, 6, 0, 1, 1)
-        gl_1.addWidget(self.lbl_bands, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_bands, 6, 1, 1, 1)
         gl_1.addWidget(lbl_3, 3, 0, 1, 1)
         gl_1.addWidget(self.le_name, 4, 0, 1, 1)
         gl_1.addWidget(self.textbrowser2, 7, 0, 1, 2)

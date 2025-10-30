@@ -358,7 +358,6 @@ class Mod3dDisplay(ContextModule):
         clr = clr.astype(np.uint8)
 
         self.pvmesh['clr'] = clr
-        # breakpoint()
 
     def run(self):
         """
@@ -1588,7 +1587,6 @@ def _testfn2():
     grid.point_data['values'] = values.flatten(order='F')  # Flatten the array
     grid.point_data['opac'] = opac.flatten(order='F')  # Flatten the array
 
-    # breakpoint()
     # Now plot the grid
     # grid.plot(show_edges=False)
     # vol = grid

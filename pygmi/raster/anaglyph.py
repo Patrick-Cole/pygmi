@@ -713,8 +713,6 @@ def _testfn():
 
     dataset = get_raster(ifile)
 
-    # breakpoint()
-
     tmp = PlotAnaglyph()
     tmp.indata['Raster'] = dataset
     tmp.run()

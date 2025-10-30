@@ -178,7 +178,7 @@ class ImportData(BasicModule):
         self.le_sfile.setText('')
         self.lbl_ftype.setText('File Type:')
 
-        ext = 'Common formats (*.zip *.tar *.tar.gz *.xml *.h5 *.nc);;'
+        ext = 'Common formats (*.zip *.tar *.tar.gz *.xml *.h5 *.nc *.tif);;'
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -1227,7 +1227,7 @@ def consolidate_aster_list(flist):
 
         # if 'AST_' in bfile and ext == '.hdf':
         #     asterhfiles.append(ifile)
-        if 'AST_' in bfile and ext == '.zip':
+        if 'AST_' in bfile and ext in ('.zip', '.tif'):
             asterzfiles.append(ifile)
         else:
             otherfiles.append(ifile)
@@ -1244,7 +1244,7 @@ def consolidate_aster_list(flist):
     #     adate = os.path.basename(ifile).split('_')[2]
     #     tmp[adate] = ifile
 
-    # asterfiles += list(tmp.values())
+    asterfiles += list(tmp.values())
 
     flist = asterfiles + otherfiles
 
@@ -1511,15 +1511,21 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
     # if 'AST_' in bfile and ext == '.hdf':
     #     idir = os.path.dirname(ifile)
     #     adate = os.path.basename(ifile).split('_')[2]
-    #     ifiles = glob.glob(os.path.join(idir, '*'+adate+'*.hdf'))
+    #     ifiles = glob.glob(os.path.join(idir, '*' + adate + '*.hdf'))
     #     dat = []
     #     for afile in ifiles:
     #         tmp = get_aster_hdf(afile, piter, showlog, tnames, metaonly)
     #         if tmp is not None:
     #             dat += tmp
-    #         if dat == []:
-    #             dat = None
-    if 'AST_' in bfile and ext == '.zip':
+    #     if dat == []:
+    #         dat = None
+    if 'AST_' in bfile and ext == '.tif' and 'stack' not in bfile:
+        idir = os.path.dirname(ifile)
+        adate = os.path.basename(ifile).split('_')[2]
+        ifiles = glob.glob(os.path.join(idir, '*' + adate + '*.tif'))
+        dat = get_aster_tif(ifiles, piter, showlog, tnames, metaonly)
+
+    elif 'AST_' in bfile and ext == '.zip':
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split('_')[2]
         ifiles = glob.glob(os.path.join(idir, '*' + adate + '*.zip'))
@@ -2976,6 +2982,147 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
     return dat
 
 
+def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None,
+                  metaonly=False):
+    """
+    Get ASTER zip Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : function, optional
+        Progress bar iterable. Default is None.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    satbands = {'1': [520, 600],
+                '2': [630, 690],
+                '3N': [780, 860],
+                '3B': [780, 860],
+                '4': [1600, 1700],
+                '5': [2145, 2185],
+                '6': [2185, 2225],
+                '7': [2235, 2285],
+                '8': [2295, 2365],
+                '9': [2360, 2430],
+                '10': [8125, 8475],
+                '11': [8475, 8825],
+                '12': [8925, 9275],
+                '13': [10250, 10950],
+                '14': [10950, 11650]}
+    ifile = ifiles[0]
+    idir = os.path.dirname(ifile)
+
+    if 'AST_07' in ifile:
+        scalefactor = 0.001
+        units = 'Surface Reflectance'
+    elif 'AST_05' in ifile:
+        scalefactor = 0.001
+        units = 'Surface Emissivity'
+    elif 'AST_08' in ifile:
+        scalefactor = 0.1
+        units = 'Surface Kinetic Temperature'
+    else:
+        return None
+
+    # Get Date
+    datetxt = os.path.basename(ifile).split('_')[2][3:]
+    date = datetime.datetime.strptime(datetxt, '%m%d%Y%H%M%S')
+
+    zipnames = ifiles
+
+    platform = os.path.basename(ifile).split('_')[1]
+
+    if 'VNIR' in zipnames[0]:
+        platform += ' VNIR'
+    elif 'SWIR' in zipnames[0]:
+        platform += ' SWIR'
+
+    wkt_lat = None
+    wkt_lon = None
+    for zfile in zipnames:
+        if 'Latitude' in zfile:
+            wkt_lat = np.loadtxt(os.path.join(idir, zfile)).mean()
+        if 'Longitude' in zfile:
+            wkt_lon = np.loadtxt(os.path.join(idir, zfile)).mean()
+
+    dat = []
+    nval = 0
+    for zfile in piter(zipnames):
+        if zfile.lower()[-4:] != '.tif':
+            continue
+        # gmeta = get_aster_metadata(os.path.join(idir, zfile))
+
+        # bname = zfile[zfile.index('Band'):zfile.index('.tif')]
+        if len(zfile.split('.')) > 2:
+            bname = zfile.split('.')[-2]
+        else:
+            bname = zfile.split('_')[-1][:-4]
+        if 'Band' not in bname:
+            bname = bname.replace('B', 'Band')
+            bname = bname.replace('Band0', 'Band')
+
+        if tnames is not None and bname not in tnames:
+            continue
+
+        dataset1 = rasterio.open(os.path.join(idir, zfile))
+        if dataset1 is None:
+            showlog('Problem with ' + zfile)
+            continue
+
+        wkt = dataset1.crs.to_wkt()
+
+        dataset = rasterio.vrt.WarpedVRT(dataset1)
+        dat.append(Data())
+
+        if metaonly is False:
+            dat[-1].data = dataset.read(1)
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data) * scalefactor
+            dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+            if dat[-1].data.mask.size == 1:
+                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+        dat[-1].dataid = bname
+        dat[-1].nodata = nval
+        dat[-1].meta_from_rasterio(dataset)
+        if 'LOCAL_CS' in wkt and wkt_lat is not None and wkt_lon is not None:
+            epsg = convert_ll_to_utm(wkt_lon, wkt_lat)
+            dat[-1].crs = CRS.from_epsg(epsg)
+
+        dat[-1].filename = ifile
+        dat[-1].units = units
+        dat[-1].datetime = date
+
+        bmeta = dat[-1].metadata['Raster']
+        fext = dat[-1].dataid[4:]
+
+        bmeta['Sensor'] = f'ASTER {platform}'
+        # bmeta.update(gmeta)
+
+        if fext in satbands:
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
+            bmeta['wavelength'] = (satbands[fext][0] + satbands[fext][1]) / 2
+
+        dataset.close()
+        dataset1.close()
+
+    return dat
+
+
 def get_aster_metadata(ifile):
     """
     Get extra metadata from met files which rasterio does not access.
@@ -3766,6 +3913,8 @@ def _testfn3():
     import matplotlib.pyplot as plt
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
+    ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
+    ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
 
     _ = QtWidgets.QApplication(sys.argv)
 
@@ -3818,4 +3967,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

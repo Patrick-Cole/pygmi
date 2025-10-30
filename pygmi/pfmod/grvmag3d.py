@@ -980,7 +980,6 @@ def gridmatch(lmod, ctxt, rtxt):
 
     rows, cols = cdata.data.shape
 
-    # breakpoint()
     dat = data_reproject(rdata, cdata.crs, cdata.transform, rows, cols,
                          forcereproj=True)
 
