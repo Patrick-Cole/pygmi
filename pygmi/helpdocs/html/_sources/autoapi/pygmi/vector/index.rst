@@ -16,6 +16,7 @@ Submodules
    :maxdepth: 1
 
    /autoapi/pygmi/vector/dataprep/index
+   /autoapi/pygmi/vector/equation_editor/index
    /autoapi/pygmi/vector/graphs/index
    /autoapi/pygmi/vector/iodefs/index
    /autoapi/pygmi/vector/menu/index

@@ -8,6 +8,7 @@ The Magnetics Menu is a collection of routines performed specifically on magneti
 .. toctree::
     :titlesonly:
     
+    mag.dm.asig
     mag.dm.tilt
     mag.dm.rtp
     mag.dm.igrf

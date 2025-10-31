@@ -327,6 +327,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(111, label='Profile')
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+        # self.axes.axis('equal')
 
         self.axes.set_title('Profile')
         self.axes.set_xlabel('Distance')
@@ -371,6 +374,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.ticklabel_format(useOffset=False, style='plain')
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
+        self.axes.axis('equal')
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -687,6 +691,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         dattmp = data.loc[:, col]
 
@@ -1537,19 +1543,20 @@ def _testfn():
     """Test."""
     import sys
     import os
-    from pygmi.vector.iodefs import ImportVector
+    from pygmi.vector.iodefs import ImportXYZ
 
-    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
 
     app = QtWidgets.QApplication(sys.argv)
     os.chdir(os.path.dirname(sfile))
 
-    IO = ImportVector()
+    IO = ImportXYZ()
     IO.ifile = sfile
+    IO.le_nodata.setText('-99999')
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotRose()
+    SC = PlotLineMap()
     SC.indata = IO.outdata
     SC.run()
 

@@ -139,3 +139,9 @@ Module Contents
 
 
 
+   .. py:method:: equation_editor()
+
+      VectorEquation Editor.
+
+
+

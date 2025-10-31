@@ -14,6 +14,7 @@ Classes
 
 .. autoapisummary::
 
+   pygmi.mag.dataprep.ASig
    pygmi.mag.dataprep.Tilt1
    pygmi.mag.dataprep.RTP
 
@@ -23,6 +24,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.mag.dataprep.asig
    pygmi.mag.dataprep.tilt1
    pygmi.mag.dataprep.nextpow2
    pygmi.mag.dataprep.rtp
@@ -31,6 +33,71 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:class:: ASig(parent=None)
+
+   Bases: :py:obj:`pygmi.misc.BasicModule`
+
+
+   Class used to gather information via a GUI.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+   .. attribute:: azi
+
+      directional filter azimuth in degrees from East
+
+      :type: float
+
+   .. attribute:: smooth
+
+      size of smoothing matrix to use - must be odd input 0 for no smoothing
+
+      :type: int
+
+
+   .. py:method:: setupui()
+
+      Set up UI.
+
+      :rtype: None.
+
+
+
+   .. py:method:: settings(nodialog=False)
+
+      Entry point into item.
+
+      :param nodialog: Run settings without a dialog. The default is False.
+      :type nodialog: bool, optional
+
+      :returns: True if successful, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: saveproj()
+
+      Save project data from class.
+
+      :rtype: None.
+
+
+
+.. py:function:: asig(data1, showlog=print, piter=iter)
+
+   Tilt angle calculations.
+
+   Based on work by Gordon Cooper (School of Geosciences, University of the
+                                   Witwatersrand, Johannesburg, South Africa)
+
+   :param data1: data with matrix of double to be filtered
+   :type data1: pygmi.raster.datatypes.Data
+
+   :returns: **asig1** -- Analytic signal
+   :rtype: numpy masked array
+
 
 .. py:class:: Tilt1(parent=None)
 

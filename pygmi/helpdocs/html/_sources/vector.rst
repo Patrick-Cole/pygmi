@@ -12,6 +12,7 @@ The Vector Menu is a where operations on vector data reside. Here, point data or
     vector.dm.importxyzdata
     vector.dm.colsel
     vector.dm.txtfilesplit
+    vector.dm.equationeditor
     vector.dm.polycut
     vector.dm.reproj
     vector.dm.gridding

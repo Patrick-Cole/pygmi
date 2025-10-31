@@ -753,7 +753,7 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
                 nval = 1e+20
 
             if 'int' not in dataset.meta['dtype'] and nval is not None:
-                nval = float(nval)
+                # nval = float(nval)
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
                                                            nval):
                     nval = dat[-1].data.min()
@@ -766,6 +766,9 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
 
             if ext == 'ers' and nval == -1.0e+32 and metaonly is False:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
+            if ext == 'ers' and nval > 1.0e+20 and metaonly is False:
+                nval = np.float32(1e+20)
+                dat[-1].data[dat[-1].data > nval] = nval
 
             if metaonly is False:
                 dat[-1].data = np.ma.masked_invalid(dat[-1].data)

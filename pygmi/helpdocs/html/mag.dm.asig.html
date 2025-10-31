@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Export Summary to CSV &#8212; PyGMI 3.2.9.20 documentation</title>
+    <title>Analytic Signal &#8212; PyGMI 3.2.9.20 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'seis.cm.exportsummary';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'mag.dm.asig';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FAQs and Troubleshooting" href="faq.html" />
-    <link rel="prev" title="Export to CSV" href="seis.cm.exportcsv.html" />
+    <link rel="next" title="Tilt Angle and Related Edge Filters" href="mag.dm.tilt.html" />
+    <link rel="prev" title="Magnetics" href="mag.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -321,8 +321,8 @@
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mag.html">Magnetics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
@@ -372,7 +372,7 @@
 <li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
@@ -384,7 +384,7 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Export Summary to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="faq.html">FAQs and Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -589,7 +589,7 @@
       
       
       
-      <li><a href="_sources/seis.cm.exportsummary.rst" target="_blank"
+      <li><a href="_sources/mag.dm.asig.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -671,7 +671,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Export Summary to CSV</h1>
+    <h1>Analytic Signal</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -685,36 +685,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="export-summary-to-csv">
-<h1>Export Summary to CSV<a class="headerlink" href="#export-summary-to-csv" title="Link to this heading">#</a></h1>
-<p>A summary of the events in the database can be exported to a <strong>CSV</strong>, Microsoft Excel (<strong>XLSX</strong>) or shapefile. The summary consists rows of events with the following information in the columns:</p>
-<ul class="simple">
-<li><p>Year</p></li>
-<li><p>Month</p></li>
-<li><p>Day</p></li>
-<li><p>Hour</p></li>
-<li><p>Minute</p></li>
-<li><p>Second</p></li>
-<li><p>Latitude</p></li>
-<li><p>Longitude</p></li>
-<li><p>Depth</p></li>
-<li><p>Ml</p></li>
-<li><p>Mw</p></li>
-<li><p>Md</p></li>
-<li><p>Mb</p></li>
-<li><p>Ms</p></li>
-<li><p>RMS</p></li>
-<li><p>LatitudeError</p></li>
-<li><p>LongitudeError</p></li>
-<li><p>DepthError</p></li>
-<li><p>Mo</p></li>
-<li><p>SourceRadius</p></li>
-<li><p>StressDrop</p></li>
-<li><p>StdDeviation</p></li>
-<li><p>Mercalli</p></li>
-<li><p>Agency</p></li>
-<li><p>Description</p></li>
-</ul>
+  <section id="analytic-signal">
+<h1>Analytic Signal<a class="headerlink" href="#analytic-signal" title="Link to this heading">#</a></h1>
+<p>This module calculates the <strong>Analytic Signal</strong> for magnetic data.</p>
+<p>There are no options available on the interface.</p>
 </section>
 
 
@@ -729,20 +703,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="seis.cm.exportcsv.html"
+       href="mag.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Export to CSV</p>
+        <p class="prev-next-title">Magnetics</p>
       </div>
     </a>
     <a class="right-next"
-       href="faq.html"
+       href="mag.dm.tilt.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FAQs and Troubleshooting</p>
+        <p class="prev-next-title">Tilt Angle and Related Edge Filters</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

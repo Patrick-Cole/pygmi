@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Export Summary to CSV &#8212; PyGMI 3.2.9.20 documentation</title>
+    <title>Vector Equation Editor &#8212; PyGMI 3.2.9.20 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'seis.cm.exportsummary';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'vector.dm.equationeditor';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FAQs and Troubleshooting" href="faq.html" />
-    <link rel="prev" title="Export to CSV" href="seis.cm.exportcsv.html" />
+    <link rel="next" title="Cut Points using Polygon" href="vector.dm.polycut.html" />
+    <link rel="prev" title="Text File Split" href="vector.dm.txtfilesplit.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -270,12 +270,12 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.export.html">Export Data</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
-<li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -372,7 +372,7 @@
 <li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
@@ -384,7 +384,7 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Export Summary to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="faq.html">FAQs and Troubleshooting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -589,7 +589,7 @@
       
       
       
-      <li><a href="_sources/seis.cm.exportsummary.rst" target="_blank"
+      <li><a href="_sources/vector.dm.equationeditor.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -660,7 +660,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -671,11 +673,20 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Export Summary to CSV</h1>
+    <h1>Vector Equation Editor</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands:</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -685,36 +696,33 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="export-summary-to-csv">
-<h1>Export Summary to CSV<a class="headerlink" href="#export-summary-to-csv" title="Link to this heading">#</a></h1>
-<p>A summary of the events in the database can be exported to a <strong>CSV</strong>, Microsoft Excel (<strong>XLSX</strong>) or shapefile. The summary consists rows of events with the following information in the columns:</p>
+  <section id="vector-equation-editor">
+<h1>Vector Equation Editor<a class="headerlink" href="#vector-equation-editor" title="Link to this heading">#</a></h1>
+<p>The <strong>Vector Equation Editor</strong> allows for script operations to be performed on channels in a vector dataset. It makes use of the powerful <em>numexpr</em> library with <em>pandas</em> for the scripting.</p>
+<p>The interface consists of the following:</p>
+<ol class="arabic simple">
+<li><p><strong>Output Equation</strong> box where the equation is typed out. The variables i0, i1, i2 etc. represents the channels of the input vector dataset in formulas.</p></li>
+<li><p><strong>New Column Name</strong> box where the new column name can be set.</p></li>
+<li><p><strong>Data Band Key</strong> combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the channels in the data set are listed. When selecting a channel the variable associated with the channel is shown to the right of the combo box. The variable name is for information purposes only, the user must type the equation manually in the equation box.</p></li>
+<li><p><strong>Examples</strong> of some commonly used equations and <strong>Commands</strong> that are available.</p></li>
+</ol>
+<section id="examples">
+<h2>Examples:<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
+<p>Sum:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i1</span> <span class="o">+</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+</section>
+<section id="commands">
+<h2>Commands:<a class="headerlink" href="#commands" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Year</p></li>
-<li><p>Month</p></li>
-<li><p>Day</p></li>
-<li><p>Hour</p></li>
-<li><p>Minute</p></li>
-<li><p>Second</p></li>
-<li><p>Latitude</p></li>
-<li><p>Longitude</p></li>
-<li><p>Depth</p></li>
-<li><p>Ml</p></li>
-<li><p>Mw</p></li>
-<li><p>Md</p></li>
-<li><p>Mb</p></li>
-<li><p>Ms</p></li>
-<li><p>RMS</p></li>
-<li><p>LatitudeError</p></li>
-<li><p>LongitudeError</p></li>
-<li><p>DepthError</p></li>
-<li><p>Mo</p></li>
-<li><p>SourceRadius</p></li>
-<li><p>StressDrop</p></li>
-<li><p>StdDeviation</p></li>
-<li><p>Mercalli</p></li>
-<li><p>Agency</p></li>
-<li><p>Description</p></li>
+<li><p>Comparison operators: &lt;;, &lt;=, ==, !=, &gt;=, &gt;</p></li>
+<li><p>Arithmetic operators: +, -, <em>, /, *</em>, %, &lt;&lt;, &gt;&gt;</p></li>
+<li><p>sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</p></li>
+<li><p>log, log10, log1p, exp, expm1</p></li>
+<li><p>sqrt, abs</p></li>
 </ul>
+</section>
 </section>
 
 
@@ -729,20 +737,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="seis.cm.exportcsv.html"
+       href="vector.dm.txtfilesplit.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Export to CSV</p>
+        <p class="prev-next-title">Text File Split</p>
       </div>
     </a>
     <a class="right-next"
-       href="faq.html"
+       href="vector.dm.polycut.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FAQs and Troubleshooting</p>
+        <p class="prev-next-title">Cut Points using Polygon</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -752,6 +760,22 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

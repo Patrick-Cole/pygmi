@@ -2032,11 +2032,24 @@ def _testdown():
 def _testfn():
     """Test."""
     import sys
+    import os
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\temp\RegionalBouguerAnomaly.ers"
+    dat = get_raster(ifile)
+
+    os.chdir(os.path.dirname(ifile))
 
     _ = QtWidgets.QApplication(sys.argv)
 
-    tmp = DataMerge()
+    tmp = DataCut()
+    tmp.indata['Raster'] = dat
     tmp.settings()
+
+    plt.imshow(tmp.outdata['Raster'][0].data)
+    # plt.imshow(dat[0].data)
+    plt.show()
 
 
 if __name__ == "__main__":

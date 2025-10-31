@@ -17,6 +17,7 @@ Submodules
 
    /autoapi/pygmi/raster/anaglyph/index
    /autoapi/pygmi/raster/cliptozoom/index
+   /autoapi/pygmi/raster/colormaps/index
    /autoapi/pygmi/raster/cooper/index
    /autoapi/pygmi/raster/dataprep/index
    /autoapi/pygmi/raster/datatypes/index

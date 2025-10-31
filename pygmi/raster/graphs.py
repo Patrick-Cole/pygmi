@@ -60,7 +60,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self, parent=None):
-        fig = Figure(layout='tight', dpi=150)
+        fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -160,6 +160,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
                        cmap=colormaps[cmap], interpolation='none')
 
@@ -203,6 +206,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.set_xlabel(data1.dataid)
+        self.axes.set_ylabel(data2.dataid)
+
         x = data1.data.copy()
         y = data2.data.copy()
 
@@ -226,8 +235,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.axes.set_xlabel(data1.units)
-        self.axes.set_ylabel(data2.units)
+        if data1.units != '':
+            self.axes.set_xlabel(f'{data1.dataid} ({data1.units})')
+        if data2.units != '':
+            self.axes.set_ylabel(f'{data2.dataid} ({data2.units})')
 
         self.figure.canvas.draw()
 
@@ -313,11 +324,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+
         dattmp = data1.data[data1.data.mask == 0].flatten()
         self.axes.hist(dattmp, bins='sqrt', cumulative=iscum,
                        histtype='stepfilled', edgecolor='k')
         self.axes.set_title(data1.dataid)
-        self.axes.set_xlabel('Data Value')
+        self.axes.set_xlabel(data1.dataid)
         self.axes.set_ylabel('Counts')
 
         self.axes.xaxis.set_major_formatter(frm)
@@ -909,7 +923,6 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r'd:\WorkData\testdata.hdr'
-    ifile = r"D:\temp\Larger_Bethal_mag_IGRFcorr_utm35s.ers"
 
     _ = QtWidgets.QApplication(sys.argv)
     data = get_raster(ifile)

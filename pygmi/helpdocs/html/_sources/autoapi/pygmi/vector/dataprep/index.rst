@@ -30,7 +30,6 @@ Functions
    pygmi.vector.dataprep.cut_point
    pygmi.vector.dataprep.txtlinecnt
    pygmi.vector.dataprep.filesplit
-   pygmi.vector.dataprep.gridvolume
    pygmi.vector.dataprep.gridxyz
    pygmi.vector.dataprep.lltomap
    pygmi.vector.dataprep.maptobounds
@@ -380,33 +379,6 @@ Module Contents
    :type piter: iter, optional
 
    :rtype: None.
-
-
-.. py:function:: gridvolume(x, y, z, val, dxy, *, nullvalue=1e+20, method='Nearest Neighbour', bdist=4.0, showlog=print)
-
-   Grid xyz data.
-
-   :param x: X coordinate values.
-   :type x: numpy array
-   :param y: Y coordinate values.
-   :type y: numpy array
-   :param z: Z coordinate values.
-   :type z: numpy array
-   :param val: Data values.
-   :type val: numpy array
-   :param dxy: Grid cell size, in distance units.
-   :type dxy: float
-   :param nullvalue: null or nodata value. The default is 1e+20.
-   :type nullvalue: float, optional
-   :param method: Gridding method. The default is 'Nearest Neighbour'.
-   :type method: str, optional
-   :param bdist: Blanking distance. The default is 4.0.
-   :type bdist: float, optional
-   :param showlog: Display information. The default is print.
-   :type showlog: function, optional
-
-   :returns: **dat** -- Output raster dataset.
-   :rtype: pygmi.raster.datatypes.Data.
 
 
 .. py:function:: gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour', bdist=4.0, showlog=print)

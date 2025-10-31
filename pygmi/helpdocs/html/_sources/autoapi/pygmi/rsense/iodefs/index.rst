@@ -43,6 +43,7 @@ Functions
    pygmi.rsense.iodefs.get_sentinel2_metadata
    pygmi.rsense.iodefs.get_spot
    pygmi.rsense.iodefs.get_aster_zip
+   pygmi.rsense.iodefs.get_aster_tif
    pygmi.rsense.iodefs.get_aster_metadata
    pygmi.rsense.iodefs.get_aster_hdf
    pygmi.rsense.iodefs.get_aster_ged
@@ -602,6 +603,25 @@ Module Contents
 
 
 .. py:function:: get_aster_zip(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
+
+   Get ASTER zip Data.
+
+   :param ifile: filename to import
+   :type ifile: str
+   :param piter: Progress bar iterable. Default is None.
+   :type piter: function, optional
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
+   :param tnames: list of band names to import, in order. The default is None.
+   :type tnames: list, optional
+   :param metaonly: Retrieve only the metadata for the file. The default is False.
+   :type metaonly: bool, optional
+
+   :returns: **dat** -- dataset imported
+   :rtype: PyGMI raster Data
+
+
+.. py:function:: get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False)
 
    Get ASTER zip Data.
 

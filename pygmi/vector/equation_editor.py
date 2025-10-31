@@ -77,8 +77,8 @@ class EquationEditor(BasicModule):
 
         lbl_1 = QtWidgets.QLabel('Data Band Key:')
         lbl_2 = QtWidgets.QLabel('Output Equation:')
-        lbl_3 = QtWidgets.QLabel('New column name:')
-        self.buttonbox.htmlfile = 'raster.dm.equationeditor'
+        lbl_3 = QtWidgets.QLabel('New Column Name:')
+        self.buttonbox.htmlfile = 'vector.dm.equationeditor'
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)

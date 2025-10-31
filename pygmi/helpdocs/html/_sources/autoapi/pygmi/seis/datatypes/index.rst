@@ -291,7 +291,7 @@ Module Contents
    1     Free
    2-5   A4 The text GAP=
    6-8   I3 Gap
-   10:10 A1 Location program indicator, blank for Hypocenter (new from version 12)
+   10:10 A1 Location program indicator, blank for Hypocenter (new from v12)
    11:11 Free
    12:14 A3 Agency (new from version 12)
    15-20 F6.2 Origin time error
@@ -342,7 +342,7 @@ Module Contents
    Type H line, High accuracy hypocenter line.
 
    Columns Format Description
-   1:15    As type 1 line including program used in column 6 (new from version 12)
+   1:15    As type 1 line including program used in column 6 (new from v12)
    16      Free
    17      f6.3    Seconds
    23      Free

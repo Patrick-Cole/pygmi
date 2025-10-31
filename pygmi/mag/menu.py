@@ -56,6 +56,10 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Magnetics')
         parent.menubar.addAction(self.menu.menuAction())
 
+        self.action_asig = QtGui.QAction('Analytic Signal')
+        self.menu.addAction(self.action_asig)
+        self.action_asig.triggered.connect(self.asig)
+
         self.action_tilt = QtGui.QAction('Tilt Angle and Related Edge '
                                          'Filters')
         self.menu.addAction(self.action_tilt)
@@ -89,6 +93,10 @@ class MenuWidget():
     def tilt(self):
         """Compute tilt angle."""
         self.parent.item_insert('Step', 'Tilt Angle', dataprep.Tilt1)
+
+    def asig(self):
+        """Compute analytic signal."""
+        self.parent.item_insert('Step', 'Analytic Signal', dataprep.ASig)
 
     def igrf(self):
         """Compute IGRF."""

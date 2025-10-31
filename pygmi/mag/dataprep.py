@@ -34,6 +34,132 @@ from pygmi.raster.misc import lstack
 from pygmi.raster.fft import fftprep, fft_getkxy
 
 
+class ASig(BasicModule):
+    """
+    Class used to gather information via a GUI.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    Attributes
+    ----------
+    azi : float
+        directional filter azimuth in degrees from East
+    smooth : int
+        size of smoothing matrix to use - must be odd input 0 for no smoothing
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gl_1 = QtWidgets.QGridLayout(self)
+        self.buttonbox.htmlfile = 'mag.dm.asig'
+
+        self.setWindowTitle('Analytic Signal')
+
+        gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Raster' not in self.indata:
+            self.showlog('No Raster Data.')
+            return False
+
+        if not nodialog:
+            temp = self.exec()
+            if temp == 0:
+                return False
+
+        data = [i.copy() for i in self.indata['Raster']]
+        data2 = []
+
+        for i in self.piter(range(len(data))):
+            asignal = asig(data[i])
+            data2.append(data[i].copy())
+            data2[-1].data = asignal
+            data2[-1].dataid += ' Analytic Signal'
+
+        for i in data2:
+            if i.nodata is None:
+                continue
+            i.data.data[i.data.mask] = i.nodata
+
+        self.outdata['Raster'] = data2
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.sb_s)
+        self.saveobj(self.sb_azi)
+        self.saveobj(self.sb_k)
+
+
+def asig(data1, showlog=print, piter=iter):
+    """
+    Tilt angle calculations.
+
+    Based on work by Gordon Cooper (School of Geosciences, University of the
+                                    Witwatersrand, Johannesburg, South Africa)
+
+    Parameters
+    ----------
+    data1 : pygmi.raster.datatypes.Data
+        data with matrix of double to be filtered
+
+    Returns
+    -------
+    asig1 : numpy masked array
+        Analytic signal
+    """
+    data = data1.data
+    dmin = data.min()
+    dmax = data.max()
+    dm = 0.5 * (dmin + dmax)
+    data.data[data.mask] = dm
+    data[np.isnan(data)] = dm
+    data[np.isinf(data)] = dm
+
+    dy, dx = np.gradient(data, data1.ydim, data1.xdim)
+
+    dz = verticalp(data1, showlog=showlog, piter=piter)
+    asig1 = np.ma.sqrt(dx * dx + dy * dy + dz * dz)
+
+    return asig1
+
+
 class Tilt1(BasicModule):
     """
     Class used to gather information via a GUI, for function tilt1.
