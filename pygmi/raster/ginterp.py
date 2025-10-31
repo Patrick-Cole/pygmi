@@ -45,7 +45,7 @@ import sys
 import copy
 from math import cos
 import numpy as np
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 from scipy import ndimage
 from matplotlib.figure import Figure
 from matplotlib import gridspec
@@ -163,6 +163,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.flagresize = False
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
+        self.levels = 10
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = fig.add_subplot(gspc[0:, 1:])
@@ -350,9 +351,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
                                      linewidths=1, colors='k',
+                                     levels=self.levels,
                                      linestyles='solid')
         self.cntf = self.axes.contourf(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                       cmap=self.cbar)
+                                       levels=self.levels, cmap=self.cbar)
 
         self.ccbar = self.figure.colorbar(self.cntf, ax=self.axes)
         self.figure.canvas.draw()
@@ -880,6 +882,7 @@ class PlotInterp(BasicModule):
         self.cmb_bands = QtWidgets.QComboBox()
         self.cmb_bandh = QtWidgets.QComboBox()
         self.cmb_htype = QtWidgets.QComboBox()
+        self.le_contours = QtWidgets.QLineEdit()
         self.le_lineclipu = QtWidgets.QLineEdit()
         self.le_lineclipl = QtWidgets.QLineEdit()
         self.cmb_cbar = QtWidgets.QComboBox(self)
@@ -984,8 +987,16 @@ class PlotInterp(BasicModule):
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
 
+        self.le_contours.setPlaceholderText(
+            'Number of contour levels (10 default)')
+        self.le_contours.hide()
+        self.le_contours.setValidator(QtGui.QIntValidator(1, 999999999))
         self.le_lineclipu.setPlaceholderText('% of high values to exclude')
+        self.le_lineclipu.setValidator(
+            QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9))
         self.le_lineclipl.setPlaceholderText('% of low values to exclude')
+        self.le_lineclipl.setValidator(
+            QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9))
         self.btn_saveimg.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 
@@ -1007,6 +1018,7 @@ class PlotInterp(BasicModule):
         self.setWindowTitle('Raster Data Display')
 
         vbl_1.addWidget(self.cmb_dtype)
+        vbl_1.addWidget(self.le_contours)
         vbl_1.addWidget(self.lbl_k)
         vbl_1.addWidget(self.kslider)
         vbl_raster.addWidget(gbox_1)
@@ -1058,6 +1070,7 @@ class PlotInterp(BasicModule):
         btn_apply.clicked.connect(self.change_lclip)
         self.cb_histtype.clicked.connect(self.change_dtype)
         self.btn_allclipperc.clicked.connect(self.change_allclip)
+        self.le_contours.textChanged.connect(self.change_dtype)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -1160,6 +1173,7 @@ class PlotInterp(BasicModule):
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
+            self.le_contours.hide()
 
         if txt == 'Contour':
             self.lbl_k.hide()
@@ -1174,6 +1188,11 @@ class PlotInterp(BasicModule):
             self.aslider.hide()
             self.kslider.hide()
             self.gbox_sun.setChecked(False)
+            self.le_contours.show()
+            try:
+                self.mmc.levels = int(self.le_contours.text())
+            except:
+                self.mmc.levels = 10
 
         if 'Ternary' in txt:
             self.lbl_k.hide()
@@ -1187,6 +1206,7 @@ class PlotInterp(BasicModule):
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
+            self.le_contours.hide()
             if 'CMY' in txt:
                 self.kslider.show()
                 self.lbl_k.show()
@@ -1938,7 +1958,6 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'd:\WorkData\testdata.hdr'
-    # ifile = r"D:\temp\Larger_Bethal_mag_IGRFcorr_utm35s.ers"
 
     data = iodefs.get_raster(ifile)
 
