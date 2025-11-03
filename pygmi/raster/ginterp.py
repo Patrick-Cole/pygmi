@@ -1724,7 +1724,11 @@ class PlotInterp(BasicModule):
                 self.mmc.ccbar = None
 
             self.mmc.figure.set_frameon(False)
-            self.mmc.axes.set_axis_off()
+            # self.mmc.axes.set_axis_off()
+            self.mmc.axes.spines['bottom'].set_color('white')
+            self.mmc.axes.spines['top'].set_color('white')
+            self.mmc.axes.spines['left'].set_color('white')
+            self.mmc.axes.spines['right'].set_color('white')
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize * 3)
             self.mmc.figure.canvas.draw()
@@ -1734,7 +1738,11 @@ class PlotInterp(BasicModule):
 
             self.mmc.figure.set_size_inches(tmpsize)
             self.mmc.figure.set_frameon(True)
-            self.mmc.axes.set_axis_on()
+            # self.mmc.axes.set_axis_on()
+            self.mmc.axes.spines['bottom'].set_color('black')
+            self.mmc.axes.spines['top'].set_color('black')
+            self.mmc.axes.spines['left'].set_color('black')
+            self.mmc.axes.spines['right'].set_color('black')
             self.mmc.figure.canvas.draw()
 
             img.shape = (h, w, 4)
@@ -1752,6 +1760,11 @@ class PlotInterp(BasicModule):
             img = img[rmask]
 
             mask = img[:, :, 3]
+            mask[mask < 255] = 0
+            tmp = (img[:, :, 0] == 255) & (
+                img[:, :, 1] == 255) & (img[:, :, 2] == 255)
+            mask[tmp] = 0
+            img[:, :, 3] = mask
 
         os.chdir(os.path.dirname(filename))
 
@@ -1760,10 +1773,23 @@ class PlotInterp(BasicModule):
                   copy.deepcopy(self.mmc.data[0]),
                   copy.deepcopy(self.mmc.data[0])]
 
+        xmin, xmax, ymin, ymax = newimg[0].extent
+        ydim = (ymax - ymin) / img.shape[0]
+        xdim = (xmax - xmin) / img.shape[1]
+
+        print(newimg[0].extent)
+
         newimg[0].data = img[:, :, 0]
         newimg[1].data = img[:, :, 1]
         newimg[2].data = img[:, :, 2]
         newimg[3].data = img[:, :, 3]
+
+        newimg[0].set_transform(xdim, xmin, ydim, ymax)
+        newimg[1].set_transform(xdim, xmin, ydim, ymax)
+        newimg[2].set_transform(xdim, xmin, ydim, ymax)
+        newimg[3].set_transform(xdim, xmin, ydim, ymax)
+
+        print(newimg[0].extent)
 
         mask = img[:, :, 3]
         newimg[0].data[newimg[0].data == 0] = 1
