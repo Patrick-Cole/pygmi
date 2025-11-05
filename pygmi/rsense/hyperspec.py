@@ -826,6 +826,7 @@ class ProcFeatures(BasicModule):
                 self.showlog('Calculating features...')
                 datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
                                       product, cryst=cryst,
+                                      showlog=self.showlog,
                                       rfilt=rfilt, piter=self.piter)
 
                 ofile = (os.path.basename(ifile).split('.')[0] + '_' +
@@ -904,11 +905,21 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             if r in p and r not in allratios:
                 allratios.append(r)
 
+    maxdat = 0
+    for j in piter(dat):
+        maxdat = max(maxdat, j.data.max())
+
+    if maxdat <= 1.0:
+        dmult = 10000
+        showlog('Converting reflectances to units of % * 100')
+    else:
+        dmult = 1
+
     # Get list of wavelengths and data
     dat2 = []
     xval = []
     for j in piter(dat):
-        dat2.append(j.data)
+        dat2.append(j.data * dmult)
         if 'wavelength' in j.metadata['Raster']:
             refl = float(j.metadata['Raster']['wavelength'])
         elif 'WavelengthMin' in j.metadata['Raster']:
@@ -1407,6 +1418,7 @@ def _testfn():
     _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
+    ifile = r"D:\VMS\EnMAP\ENMAP01-____L2A-DT0000002353_20220808T091834Z_003_V010502_20251104T115035Z.tif"
 
     getinfo()
     bands, tnames, data = files_to_rastermeta([ifile])

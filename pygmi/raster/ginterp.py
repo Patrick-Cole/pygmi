@@ -1567,21 +1567,23 @@ class PlotInterp(BasicModule):
             return False
 
         text, okay = QtWidgets.QInputDialog.getText(
-            self, 'Colorbar', 'Enter length in inches:',
-            QtWidgets.QLineEdit.EchoMode.Normal, '4')
+            self, 'Colorbar', 'Enter length and width in inches:',
+            QtWidgets.QLineEdit.EchoMode.Normal, '4, 0.25')
 
         if not okay:
             return False
 
         try:
-            blen = float(text)
+            text = text.split(',')
+            blen = float(text[0])
+            bwid = float(text[1])
         except ValueError:
             QtWidgets.QMessageBox.warning(
                 self.parent, 'Error', 'Invalid value.',
                 QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
-        bwid = blen / 16.
+        # bwid = blen / 16.
 
         dtype = str(self.cmb_dtype.currentText())
 

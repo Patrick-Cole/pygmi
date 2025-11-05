@@ -356,6 +356,8 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     dat = Data()
     dat.dataid = 'Feature Intersection Density'
     dat.data = np.ma.array(H[::-1])
+    dat.data[np.isclose(dat.data, 0.)] = 1e+20
+    dat.data = np.ma.masked_equal(dat.data, 1e+20)
     xmin = xcoords[0] - dxy / 2
     ymax = ycoords[-1] + dxy / 2
     dat.set_transform(dxy, xmin, dxy, ymax)
@@ -418,6 +420,8 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     dat = Data()
     dat.dataid = 'Feature Orientation Diversity'
     dat.data = np.ma.array(E)
+    dat.data[np.isclose(dat.data, 0.)] = 1e+20
+    dat.data = np.ma.masked_equal(dat.data, 1e+20)
     dat.crs = gdf.crs
     dat.set_transform(transform=transform)
     dat.nodata = 1e+20
@@ -492,6 +496,8 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     vdat = Data()
     vdat.dataid = 'Circular Variance'
     vdat.data = np.ma.array(v1)
+    vdat.data[np.isclose(vdat.data, 0.)] = 1e+20
+    vdat.data = np.ma.masked_equal(vdat.data, 1e+20)
     vdat.crs = gdf.crs
     vdat.set_transform(transform=transform)
     vdat.nodata = 1e+20
@@ -499,6 +505,8 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     ddat = Data()
     ddat.dataid = 'Circular Dispersion'
     ddat.data = np.ma.masked_invalid(d1)
+    ddat.data[np.isclose(ddat.data, 0.)] = 1e+20
+    ddat.data = np.ma.masked_equal(ddat.data, 1e+20)
     ddat.crs = gdf.crs
     ddat.set_transform(transform=transform)
     ddat.nodata = 1e+20
@@ -546,6 +554,8 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
     fdat = Data()
     fdat.dataid = 'Feature Fractal Dimension'
     fdat.data = np.ma.masked_invalid(d1)
+    fdat.data[np.isclose(fdat.data, 0.)] = 1e+20
+    fdat.data = np.ma.masked_equal(fdat.data, 1e+20)
     fdat.crs = gdf.crs
     fdat.set_transform(transform=transform)
     fdat.nodata = 1e+20
@@ -696,6 +706,7 @@ def _testfn():
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
     _ = QtWidgets.QApplication(sys.argv)
 
     IO = ImportVector()
