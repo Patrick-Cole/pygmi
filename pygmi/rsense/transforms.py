@@ -565,7 +565,13 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter, showlog=showlog, commonmask=True)
+
+    dat2 = []
+    for band in dat:
+        if band.data.mask.min() == np.False_:
+            dat2.append(band)
+
+    dat = lstack(dat2, piter=piter, showlog=showlog, commonmask=True)
 
     for j in dat:
         x2d.append(j.data)
@@ -678,7 +684,13 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     """
     x2d = []
     maskall = []
-    dat = lstack(dat, piter=piter, commonmask=True, showlog=showlog)
+
+    dat2 = []
+    for band in dat:
+        if band.data.mask.min() == np.False_:
+            dat2.append(band)
+
+    dat = lstack(dat2, piter=piter, commonmask=True, showlog=showlog)
 
     for j in dat:
         x2d.append(j.data)
@@ -798,7 +810,12 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
 
         x2d = []
         maskall = []
-        dat = lstack(dat, piter=piter, commonmask=True, showlog=showlog)
+
+        dat2 = []
+        for band in dat:
+            if band.data.mask.min() == np.False_:
+                dat2.append(band)
+        dat = lstack(dat2, piter=piter, commonmask=True, showlog=showlog)
 
         for j in dat:
             x2d.append(j.data)
@@ -1032,6 +1049,7 @@ def _testfn2():
     rcParams['figure.dpi'] = 150
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    ifile = r"D:\VMS\EnMAP\ENMAP01-____L2A-DT0000002353_20220808T091834Z_003_V010502_20251104T115035Z.tif"
 
     _ = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1042,8 +1060,8 @@ def _testfn2():
 
     dat = tmp.outdata['Raster']
 
-    # tmp = PCA()
-    tmp = MNF()
+    tmp = PCA()
+    # tmp = MNF()
     tmp.indata['Raster'] = dat
     try:
         tmp.settings()
@@ -1068,7 +1086,7 @@ def _testfn3():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'd:\aster'
-    idir = r"D:\VMS\S2"
+    idir = r"D:\VMS\Enmap"
     os.chdir(r'D:\\')
 
     _ = QtWidgets.QApplication(sys.argv)

@@ -25,12 +25,18 @@
 """List of features for hyperspectral interpretation."""
 
 feature = {}
+feature['f580'] = [565, 605]
+feature['f740'] = [720, 778]
+feature['f800'] = [770, 825]
+feature['f865'] = [825, 895]
 feature['f900'] = [776, 1050, 850, 910]
 feature['f1300'] = [1260, 1420]
 feature['f1480'] = [1440, 1520]
 feature['f1550'] = [1510, 1610]
 feature['f1760'] = [1730, 1790]
 feature['f1800'] = [1740, 1820]
+feature['f1960'] = [1940, 1985]
+feature['f2000'] = [1985, 2035]
 feature['f2080'] = [2060, 2100]
 feature['f2160'] = [2138, 2179]
 feature['f2200p'] = [2180, 2245]
@@ -67,6 +73,15 @@ product['pyrophyllite'] = ['f2160', 'f2160 > f2200p',
                            'f2080 > 0.01', 'f2200 > 0.01']
 product['white mica'] = ['f2200', 'r2350De > 1.02', 'r2160D2190 < 1.005',
                          'r2200D > 1.01']
+product['Nd 580'] = ['f580']
+product['Nd 740'] = ['f740']
+product['Nd 800'] = ['f800']
+product['Nd 865'] = ['f865']
+# product['white mica feature only'] = ['f2200']
+# product['chlorite-2250 feature only'] = ['f2250']
+# product['chlorite-2330 feature only'] = ['f2330']
+# product['1960 feature only'] = ['f1960']
+# product['2000 feature only'] = ['f2000']
 # product['white micanew'] = ['f2200', 'f2350 > 0.1', 'f2160 < f2200',
 #                             'f2200 > .01']
 product['smectite'] = ['f2200', 'r2350De < 1.0', 'r2160D2190 < 1.005',
