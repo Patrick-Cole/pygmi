@@ -31,7 +31,9 @@ from functools import partial
 from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from scipy.interpolate import griddata
+from scipy.interpolate import RBFInterpolator
 from scipy.ndimage import distance_transform_edt
+from sklearn.cluster import KMeans
 import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely import Polygon
@@ -40,6 +42,9 @@ from pygmi.raster.reproj import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
 from pygmi.misc import BasicModule, ContextModule, ProgressBarText
+from pygmi.pfmod.datatypes import LithModel
+from pygmi.pfmod import grvmag3d
+from pygmi.pfmod.mvis3d import Mod3dDisplay
 
 
 class PointCut(BasicModule):
@@ -1173,6 +1178,96 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
     return dat
 
 
+def gridvolume(x, y, z, val, dxy, *, dat=None, numclust=10, showlog=print):
+    """
+    Grid volume data.
+
+    Parameters
+    ----------
+    x : numpy array
+        X coordinate values.
+    y : numpy array
+        Y coordinate values.
+    z : numpy array
+        Z coordinate values.
+    val : numpy array
+        Data values.
+    dxy : float
+        Grid cell size, in distance units.
+    showlog : function, optional
+        Display information. The default is print.
+
+    Returns
+    -------
+    dat : pygmi.raster.datatypes.Data.
+        Output raster dataset.
+
+    """
+    points = np.transpose([x, y, z])
+    interpolator = RBFInterpolator(points, val, kernel='linear')
+    min_limit = np.min(val)
+    max_limit = np.max(val)
+
+    xxx = np.arange(x.min(), x.max() + dxy / 2, dxy)
+    yyy = np.arange(y.min(), y.max() + dxy / 2, dxy)
+    zzz = np.arange(z.min(), z.max() + dxy / 2, dxy)
+    xxx, yyy, zzz = np.meshgrid(xxx, yyy, zzz)
+
+    newpoints = np.transpose([xxx.flatten(), yyy.flatten(), zzz.flatten()])
+    d_interpolated = interpolator(newpoints)
+    d_limited = np.clip(d_interpolated, min_limit, max_limit)
+
+    if dat is not None:
+        extent = dat.extent
+        dx = dat.xdim
+        dy = dat.ydim
+        xxx1 = np.arange(extent[0], extent[1], dx) + dx / 2
+        yyy1 = np.arange(extent[2], extent[3], dy) + dy / 2
+
+        xxx1, yyy1 = np.meshgrid(xxx1, yyy1)
+        points = np.transpose([xxx1.flatten(), yyy1.flatten()])
+        zz = dat.data.flatten()
+
+    # Convert to PyGMI model
+
+    nx, ny, nz = xxx.shape
+
+    d_z = dxy
+    utlx = x.min()
+    utly = y.max()
+    utlz = z.max()
+    cols, rows, layers = nx, ny, nz
+
+    kmeans = KMeans(n_clusters=numclust).fit(d_limited.reshape(-1, 1))
+    dbout = kmeans.predict(d_limited.reshape(-1, 1))
+    dbout.shape = xxx.shape
+
+    lmod = LithModel()
+    lmod.lith_index = None
+    lmod.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
+
+    lmod.lith_index = dbout + 1
+
+    labelu = kmeans.cluster_centers_
+    lindx = 0
+    for itxt in labelu:
+        lindx += 1
+
+        colour = int((255 * (itxt - labelu.min()) / np.ptp(labelu))[0])
+        itxt = str(itxt)
+        lmod.mlut[lindx] = [0 * colour, colour, 0 * colour]
+        lmod.lith_list[itxt] = grvmag3d.GeoData(
+            None, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
+            dxy=lmod.dxy, d_z=lmod.d_z)
+
+        lmod.lith_list[itxt].lith_index = lindx
+        lmod.lith_list[itxt].modified = True
+        lmod.lith_list[itxt].set_xyz12()
+
+    d_limited.shape = xxx.shape
+    return lmod, d_limited, xxx, yyy, zzz
+
+
 def lltomap(lat, lon):
     """
     Convert a latitude and longitude to a 1:50,000 sheet name.
@@ -1582,5 +1677,80 @@ def _testfn_grid():
     plt.show()
 
 
+def _testfn_vol():
+    """Test routine."""
+    import sys
+    # import pandas as pd
+    import pyvista as pv
+
+    from pygmi.vector.iodefs import get_GXYZ
+    from pygmi.raster.iodefs import get_raster
+
+    _ = QtWidgets.QApplication(sys.argv)
+
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
+    dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"
+
+    gdf = get_GXYZ(ifile)
+    dat = get_raster(dfile)[0]
+
+    # extent = dat.extent
+    # dx = dat.xdim
+    # dy = dat.ydim
+    # xxx = np.arange(extent[0], extent[1], dx) + dx / 2
+    # yyy = np.arange(extent[2], extent[3], dy) + dy / 2
+
+    # xxx, yyy = np.meshgrid(xxx, yyy)
+    # points = np.transpose([xxx.flatten(), yyy.flatten()])
+    # zz = dat.data.flatten()
+
+    # gdf = pd.read_csv(ifile, delimiter=',', index_col=False)
+
+    x = gdf['X'].to_numpy()
+    y = gdf['Y'].to_numpy()
+    z = gdf['Elevation'].to_numpy()
+    val = gdf['Resistivity'].to_numpy()
+    dxy = 10
+
+    lmod, values, xxx, yyy, zzz = gridvolume(x, y, z, val, dxy, dat=dat)
+    gdat = griddata(points, zz, (xxx, yyy), method='nearest')
+
+    values[zzz > gdat] = np.nan
+
+    # M3D = Mod3dDisplay()
+    # M3D.indata['Model3D'] = [lmod]
+    # M3D.data_init()
+    # M3D.run()
+    # M3D.exec()
+
+    # Create the spatial reference
+    grid = pv.ImageData()
+
+    # Set the grid dimensions: shape + 1 because we want to inject our values
+    # on the CELL data
+    grid.dimensions = np.array(values.shape) + 1
+
+    # Edit the spatial reference
+    # The bottom left corner of the data set
+    grid.origin = (x.min(), y.min(), z.min())
+    grid.spacing = (dxy, dxy, dxy)  # These are the cell sizes along each axis
+
+    # Add the data values to the cell data
+    grid.cell_data['values'] = values.flatten(order='F')  # Flatten the array
+
+    # Get rid of nan values
+    grid = grid.threshold()
+
+    # Now plot the grid
+    grid.plot(show_edges=True)
+
+    # p = pv.Plotter()
+    # # p.add_mesh_clip_plane(grid)
+    # p.add_volume(grid)
+    # # p.add_mesh(grid, opacity=0.5)
+    # p.add_mesh_slice(grid)
+    # p.show()
+
+
 if __name__ == "__main__":
-    _testfn_grid()
+    _testfn_vol()

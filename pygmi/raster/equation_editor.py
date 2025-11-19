@@ -214,7 +214,8 @@ class EquationEditor(BasicModule):
 
         dtype = self.cmb_dtype.currentText()
 
-        outdata = eqedit(indata, self.equation, dtype, self.showlog)
+        outdata = eqedit(indata, self.equation, dtype,
+                         self.showlog, self.piter)
 
         self.outdata[intype] = outdata
 
@@ -233,7 +234,7 @@ class EquationEditor(BasicModule):
         self.saveobj(self.textbrowser)
 
 
-def eqedit(data, equation, dtype='auto', showlog=print):
+def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
     """
     Use equations on raster data.
 
@@ -256,7 +257,7 @@ def eqedit(data, equation, dtype='auto', showlog=print):
     """
     localdict = {}
     bandsall = []
-    indata = lstack(data)
+    indata = lstack(data, piter=piter, showlog=showlog)
 
     for j, i in enumerate(indata):
         # self.bands[i.dataid] = 'i' + str(j)

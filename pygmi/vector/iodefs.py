@@ -810,7 +810,7 @@ class ImportVector(BasicModule):
         self.saveobj(self.ifile)
 
 
-def get_GXYZ(ifile, showlog=print, piter=iter):
+def get_GXYZ_old(ifile, showlog=print, piter=iter):
     """
     Get Geosoft XYZ.
 
@@ -831,6 +831,92 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
 
     while r'//' in tmp[:tmp.index('\n')]:
         tmp = tmp[tmp.index('\n') + 1:]
+
+    head = None
+
+    while r'/' in tmp[:tmp.index('\n')]:
+        head = tmp[:tmp.index('\n')]
+        tmp = tmp[tmp.index('\n') + 1:]
+        head = head.split()
+        head.pop(0)
+
+    while r'/' in tmp:
+        t1 = tmp[:tmp.index(r'/')]
+        t2 = tmp[tmp.index(r'/') + 1:]
+        t3 = t2[t2.index('\n') + 1:]
+        tmp = t1 + t3
+
+    tmp = tmp.lower()
+    tmp = tmp.lstrip()
+    tmp = re.split('(line|tie)', tmp)
+    if tmp[0] == '':
+        tmp.pop(0)
+
+    df2 = None
+    dflist = []
+    for i in piter(range(0, len(tmp), 2)):
+        tmp2 = tmp[i + 1]
+
+        line = tmp[i] + ' ' + tmp2[:tmp2.index('\n')].strip()
+        tmp2 = tmp2[tmp2.index('\n') + 1:]
+        if head is None:
+            head = [f'Column {i + 1}' for i in
+                    range(len(tmp2[:tmp2.index('\n')].split()))]
+
+        tmp2 = tmp2.replace('*', 'NaN')
+        df1 = pd.read_csv(StringIO(tmp2), sep=r'\s+', names=head)
+
+        df1['line'] = line
+        dflist.append(df1)
+
+    # Concat in all df in one go is much faster
+    df2 = pd.concat(dflist, ignore_index=True)
+
+    return df2
+
+
+def get_GXYZ(ifile, showlog=print, piter=iter):
+    """
+    Get Geosoft XYZ.
+
+    Returns
+    -------
+    df2 : DataFrame
+        Pandas dataframe.
+
+    """
+    with open(ifile, encoding='utf-8') as fno:
+        tmp = fno.readlines()
+
+    if r'/' not in tmp[0]:
+        showlog('Not Geosoft XYZ format')
+        return None
+
+    if '/ --' in tmp[0]:
+        tmp.pop(0)
+
+    if '/ XYZ EXPORT' in tmp[0]:
+        tmp.pop(0)
+
+    if '/ DATABASE' in tmp[0]:
+        tmp.pop(0)
+
+    if '/ --' in tmp[0]:
+        tmp.pop(0)
+
+    if '/\n' in tmp[0]:
+        tmp.pop(0)
+
+    if '/==' in tmp[1]:
+        tmp.pop(1)
+
+    if '/\n' in tmp[1]:
+        tmp.pop(1)
+
+    while '//' in tmp[1]:
+        tmp.pop(1)
+
+    tmp = ''.join(tmp)
 
     head = None
 
@@ -991,14 +1077,20 @@ def _test():
 
     os.chdir(os.path.dirname(ifile))
 
-    tmp1 = ImportVector()
-    tmp1.settings()
+    # tmp1 = ImportVector()
+    # tmp1.settings()
 
-    dat = tmp1.outdata['Vector'][0]
+    # dat = tmp1.outdata['Vector'][0]
 
     # tmp2 = ColumnSelect()
     # tmp2.indata = tmp1.outdata
     # tmp2.settings()
+
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
+
+    df = get_GXYZ(ifile)
+
+    pass
 
 
 if __name__ == "__main__":
