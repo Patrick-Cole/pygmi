@@ -33,7 +33,7 @@ import numpy as np
 from scipy.interpolate import griddata
 from scipy.interpolate import RBFInterpolator
 from scipy.ndimage import distance_transform_edt
-from sklearn.cluster import KMeans
+from scipy.ndimage import vectorized_filter
 import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely import Polygon
@@ -41,10 +41,8 @@ from shapely import Polygon
 from pygmi.raster.reproj import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
+from pygmi.vector.datatypes import VoxModel
 from pygmi.misc import BasicModule, ContextModule, ProgressBarText
-from pygmi.pfmod.datatypes import LithModel
-from pygmi.pfmod import grvmag3d
-from pygmi.pfmod.mvis3d import Mod3dDisplay
 
 
 class PointCut(BasicModule):
@@ -141,12 +139,15 @@ class DataGrid(BasicModule):
 
         self.cmb_dataid = QtWidgets.QComboBox()
         self.cmb_grid_method = QtWidgets.QComboBox()
+        self.cmb_grid_type = QtWidgets.QComboBox()
+        self.cmb_grid_dem = QtWidgets.QComboBox()
         self.lbl_rows = QtWidgets.QLabel('Rows: 0')
         self.lbl_cols = QtWidgets.QLabel('Columns: 0')
+        self.lbl_layers = QtWidgets.QLabel('Layers: 0')
         self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
+        self.lbl_method = QtWidgets.QLabel('Gridding Method:')
+        self.lbl_dem = QtWidgets.QLabel('DEM Grid:')
 
-        self.cb_section = QtWidgets.QCheckBox('Grid vertical section with '
-                                              'X, Y and Z coordinates.')
         self.cmb_line = QtWidgets.QComboBox()
         self.cmb_z = QtWidgets.QComboBox()
 
@@ -167,9 +168,9 @@ class DataGrid(BasicModule):
         lbl_band = QtWidgets.QLabel('Column to Grid:')
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_null = QtWidgets.QLabel('Null Value:')
-        lbl_method = QtWidgets.QLabel('Gridding Method:')
+        lbl_type = QtWidgets.QLabel('Gridding Type:')
         self.lbl_line = QtWidgets.QLabel('Line Number:')
-        self.lbl_z = QtWidgets.QLabel('Z Value:')
+        self.lbl_z = QtWidgets.QLabel('Z Coordinate Value:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
@@ -183,30 +184,37 @@ class DataGrid(BasicModule):
 
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
+        self.cmb_grid_type.addItems(['Raster', 'Section', 'Voxel'])
         self.cmb_line.hide()
         self.cmb_z.hide()
         self.lbl_line.hide()
         self.lbl_z.hide()
+        self.lbl_layers.hide()
 
         self.setWindowTitle('Dataset Gridding')
 
-        gl_main.addWidget(lbl_method, 0, 0, 1, 1)
-        gl_main.addWidget(self.cmb_grid_method, 0, 1, 1, 1)
-        gl_main.addWidget(lbl_dxy, 1, 0, 1, 1)
-        gl_main.addWidget(self.le_dxy, 1, 1, 1, 1)
-        gl_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
-        gl_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
-        gl_main.addWidget(lbl_band, 4, 0, 1, 1)
-        gl_main.addWidget(self.cmb_dataid, 4, 1, 1, 1)
-        gl_main.addWidget(lbl_null, 5, 0, 1, 1)
-        gl_main.addWidget(self.le_null, 5, 1, 1, 1)
-        gl_main.addWidget(self.lbl_bdist, 6, 0, 1, 1)
-        gl_main.addWidget(self.le_bdist, 6, 1, 1, 1)
-        gl_main.addWidget(self.cb_section, 7, 0, 1, 2)
+        gl_main.addWidget(lbl_type, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_grid_type, 0, 1, 1, 1)
+        gl_main.addWidget(self.lbl_method, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_grid_method, 1, 1, 1, 1)
+        gl_main.addWidget(self.lbl_dem, 12, 0, 1, 1)
+        gl_main.addWidget(self.cmb_grid_dem, 12, 1, 1, 1)
+        gl_main.addWidget(lbl_dxy, 2, 0, 1, 1)
+        gl_main.addWidget(self.le_dxy, 2, 1, 1, 1)
+        gl_main.addWidget(self.lbl_rows, 9, 0, 1, 2)
+        gl_main.addWidget(self.lbl_cols, 10, 0, 1, 2)
+        gl_main.addWidget(self.lbl_layers, 11, 0, 1, 2)
+        gl_main.addWidget(lbl_band, 5, 0, 1, 1)
+        gl_main.addWidget(self.cmb_dataid, 5, 1, 1, 1)
+        gl_main.addWidget(lbl_null, 6, 0, 1, 1)
+        gl_main.addWidget(self.le_null, 6, 1, 1, 1)
+        gl_main.addWidget(self.lbl_bdist, 7, 0, 1, 1)
+        gl_main.addWidget(self.le_bdist, 7, 1, 1, 1)
+        # gl_main.addWidget(self.cb_section, 8, 0, 1, 2)
         gl_main.addWidget(self.lbl_line, 8, 0, 1, 1)
         gl_main.addWidget(self.cmb_line, 8, 1, 1, 1)
-        gl_main.addWidget(self.lbl_z, 9, 0, 1, 1)
-        gl_main.addWidget(self.cmb_z, 9, 1, 1, 1)
+        gl_main.addWidget(self.lbl_z, 3, 0, 1, 1)
+        gl_main.addWidget(self.cmb_z, 3, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 17, 0, 1, 4)
 
         self.le_dxy.textChanged.connect(self.dxy_change)
@@ -214,7 +222,8 @@ class DataGrid(BasicModule):
         self.cmb_line.currentIndexChanged.connect(self.dxy_change)
         self.cmb_grid_method.currentIndexChanged.connect(
             self.grid_method_change)
-        self.cb_section.checkStateChanged.connect(self.section)
+        self.cmb_grid_type.currentIndexChanged.connect(
+            self.grid_type_change)
 
     def dxy_change(self):
         """
@@ -236,8 +245,11 @@ class DataGrid(BasicModule):
         x = data.geometry.x.values
         y = data.geometry.y.values
         zcol = self.cmb_z.currentText()
+        z = np.array([0, self.dxy])
+        if zcol != '':
+            z = data[zcol].values
 
-        if self.cb_section.isChecked() and zcol != '':
+        if self.cmb_grid_type.currentText() == 'Section' and zcol != '':
             line = self.cmb_line.currentText()
             if line.lower() not in ['none', '']:
                 data1 = data[data.line == line]
@@ -249,9 +261,11 @@ class DataGrid(BasicModule):
 
         cols = round(np.ptp(x) / self.dxy)
         rows = round(np.ptp(y) / self.dxy)
+        layers = round(np.ptp(z) / self.dxy)
 
         self.lbl_rows.setText('Rows: ' + str(rows))
         self.lbl_cols.setText('Columns: ' + str(cols))
+        self.lbl_layers.setText('Layers: ' + str(layers))
 
     def grid_method_change(self):
         """
@@ -269,18 +283,40 @@ class DataGrid(BasicModule):
             self.lbl_bdist.hide()
             self.le_bdist.hide()
 
-    def section(self):
+    def grid_type_change(self):
         """Check whether section is checked."""
-        if self.cb_section.isChecked():
+        txt = self.cmb_grid_type.currentText()
+
+        if txt == 'Section':
             self.cmb_line.show()
             self.cmb_z.show()
             self.lbl_line.show()
             self.lbl_z.show()
+            self.lbl_layers.hide()
+            self.cmb_grid_method.show()
+            self.lbl_method.show()
+            self.cmb_grid_dem.hide()
+            self.lbl_dem.hide()
+        elif txt == 'Voxel':
+            self.cmb_line.hide()
+            self.cmb_z.show()
+            self.lbl_line.hide()
+            self.lbl_z.show()
+            self.lbl_layers.show()
+            self.cmb_grid_method.hide()
+            self.lbl_method.hide()
+            self.cmb_grid_dem.show()
+            self.lbl_dem.show()
         else:
             self.cmb_line.hide()
             self.cmb_z.hide()
             self.lbl_line.hide()
             self.lbl_z.hide()
+            self.lbl_layers.hide()
+            self.cmb_grid_method.show()
+            self.lbl_method.show()
+            self.cmb_grid_dem.hide()
+            self.lbl_dem.hide()
 
         self.dxy_change()
 
@@ -309,6 +345,12 @@ class DataGrid(BasicModule):
         if data.geom_type.iloc[0] != 'Point':
             self.showlog('No Point Data')
             return False
+
+        demlist = ['None']
+        if 'Raster' in self.indata:
+            tmp = [i.dataid for i in self.indata['Raster']]
+            demlist += tmp
+        self.cmb_grid_dem.addItems(demlist)
 
         if self.dxy is None:
             x = data.geometry.x.values
@@ -357,9 +399,9 @@ class DataGrid(BasicModule):
             self.showlog('Value Error')
             return False
 
-        self.acceptall()
+        flag = self.acceptall()
 
-        return True
+        return flag
 
     def saveproj(self):
         """
@@ -396,12 +438,13 @@ class DataGrid(BasicModule):
         data = self.indata['Vector'][0]
         dataid = self.cmb_dataid.currentText()
         zcol = self.cmb_z.currentText()
+        demid = self.cmb_grid_dem.currentText()
         newdat = []
 
         if bdist < 1:
             bdist = None
             self.showlog('Blanking distance too small.')
-        if line.lower() not in ['none', '']:
+        if line.lower() not in ['none', ''] and self.cmb_grid_type.currentText() != 'Voxel':
             data1 = data[data.line == line]
         else:
             data1 = data
@@ -409,11 +452,17 @@ class DataGrid(BasicModule):
         data2 = data2.dropna()
 
         filt = (data2[dataid] != nullvalue)
+        if filt.ndim > 1:
+            filt = filt.iloc[:, 0]
+
         x = data2.geometry.x.values[filt]
         y = data2.geometry.y.values[filt]
-        z = data2[dataid].values[filt]
+        val = data2[dataid].values[filt]
 
-        if self.cb_section.isChecked():
+        if val.ndim > 1:
+            val = val[:, 0]
+
+        if self.cmb_grid_type.currentText() == 'Section':
             x1 = x
             y1 = y
             x = xy_to_r(x, y)
@@ -423,19 +472,38 @@ class DataGrid(BasicModule):
             sortidx = scoords[:, 2].argsort()
             scoords = scoords[sortidx]
 
-        dat = gridxyz(x, y, z, dxy, nullvalue=nullvalue, method=method,
-                      bdist=bdist, showlog=self.showlog)
+        if self.cmb_grid_type.currentText() == 'Voxel':
+            z = data2[zcol].values[filt]
+
+            if z.ndim > 1:
+                z = z[:, 0]
+            ddat = None
+            for i in self.indata['Raster']:
+                if i.dataid == demid:
+                    ddat = i
+
+            dat = gridvolume(x, y, z, val, dxy, dat=ddat)
+            if dat is None:
+                return False
+        else:
+            dat = gridxyz(x, y, val, dxy, nullvalue=nullvalue, method=method,
+                          bdist=bdist, showlog=self.showlog)
         dat.dataid = dataid
         dat.crs = data2.crs
 
-        if self.cb_section.isChecked():
+        if self.cmb_grid_type.currentText() == 'Section':
             dat.metadata['Raster']['Section'] = True
             dat.metadata['Raster']['SectionCoords'] = scoords
 
         newdat.append(dat)
 
-        self.outdata['Raster'] = newdat
+        if self.cmb_grid_type.currentText() == 'Voxel':
+            self.outdata['Voxel'] = newdat
+        else:
+            self.outdata['Raster'] = newdat
         self.outdata['Vector'] = self.indata['Vector']
+
+        return True
 
 
 class DataReproj(BasicModule):
@@ -1178,7 +1246,7 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
     return dat
 
 
-def gridvolume(x, y, z, val, dxy, *, dat=None, numclust=10, showlog=print):
+def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
     """
     Grid volume data.
 
@@ -1204,7 +1272,11 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, numclust=10, showlog=print):
 
     """
     points = np.transpose([x, y, z])
-    interpolator = RBFInterpolator(points, val, kernel='linear')
+    try:
+        interpolator = RBFInterpolator(points, val, kernel='linear')
+    except np.linalg.LinAlgError:
+        showlog('Problem with coordinates, csnnot calculate.')
+        return None
     min_limit = np.min(val)
     max_limit = np.max(val)
 
@@ -1213,9 +1285,14 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, numclust=10, showlog=print):
     zzz = np.arange(z.min(), z.max() + dxy / 2, dxy)
     xxx, yyy, zzz = np.meshgrid(xxx, yyy, zzz)
 
+    # print(x.min(), x.max())
+    # print(y.min(), y.max())
+    # print(z.min(), z.max())
+
     newpoints = np.transpose([xxx.flatten(), yyy.flatten(), zzz.flatten()])
     d_interpolated = interpolator(newpoints)
     d_limited = np.clip(d_interpolated, min_limit, max_limit)
+    d_limited.shape = xxx.shape
 
     if dat is not None:
         extent = dat.extent
@@ -1227,45 +1304,15 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, numclust=10, showlog=print):
         xxx1, yyy1 = np.meshgrid(xxx1, yyy1)
         points = np.transpose([xxx1.flatten(), yyy1.flatten()])
         zz = dat.data.flatten()
+        gdat = griddata(points, zz, (xxx, yyy), method='nearest')
+        d_limited[zzz > gdat] = np.nan
 
-    # Convert to PyGMI model
+    out = VoxModel()
+    out.data = d_limited
+    out.origin = (x.min(), y.min(), z.min())
+    out.spacing = (dxy, dxy, dxy)
 
-    nx, ny, nz = xxx.shape
-
-    d_z = dxy
-    utlx = x.min()
-    utly = y.max()
-    utlz = z.max()
-    cols, rows, layers = nx, ny, nz
-
-    kmeans = KMeans(n_clusters=numclust).fit(d_limited.reshape(-1, 1))
-    dbout = kmeans.predict(d_limited.reshape(-1, 1))
-    dbout.shape = xxx.shape
-
-    lmod = LithModel()
-    lmod.lith_index = None
-    lmod.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
-
-    lmod.lith_index = dbout + 1
-
-    labelu = kmeans.cluster_centers_
-    lindx = 0
-    for itxt in labelu:
-        lindx += 1
-
-        colour = int((255 * (itxt - labelu.min()) / np.ptp(labelu))[0])
-        itxt = str(itxt)
-        lmod.mlut[lindx] = [0 * colour, colour, 0 * colour]
-        lmod.lith_list[itxt] = grvmag3d.GeoData(
-            None, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
-            dxy=lmod.dxy, d_z=lmod.d_z)
-
-        lmod.lith_list[itxt].lith_index = lindx
-        lmod.lith_list[itxt].modified = True
-        lmod.lith_list[itxt].set_xyz12()
-
-    d_limited.shape = xxx.shape
-    return lmod, d_limited, xxx, yyy, zzz
+    return out
 
 
 def lltomap(lat, lon):
@@ -1660,7 +1707,6 @@ def _testfn_grid():
     _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\UBC_Files\rivala_line3_res_model_xyz.csv"
-    # ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\PyGMI_test_data.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
@@ -1679,43 +1725,90 @@ def _testfn_grid():
 
 def _testfn_vol():
     """Test routine."""
+    # from pygmi.pfmod.datatypes import LithModel
+    # from pygmi.pfmod import grvmag3d
+    # from pygmi.pfmod.mvis3d import Mod3dDisplay
+    # from sklearn.cluster import KMeans
+
     import sys
     # import pandas as pd
     import pyvista as pv
 
     from pygmi.vector.iodefs import get_GXYZ
     from pygmi.raster.iodefs import get_raster
+    from pygmi.vector.iodefs import ImportXYZ
 
     _ = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
     dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"
+    ofile = r"D:\UBC_Files\voxel.msh"
 
     gdf = get_GXYZ(ifile)
     dat = get_raster(dfile)[0]
 
-    # extent = dat.extent
-    # dx = dat.xdim
-    # dy = dat.ydim
-    # xxx = np.arange(extent[0], extent[1], dx) + dx / 2
-    # yyy = np.arange(extent[2], extent[3], dy) + dy / 2
+    IO = ImportXYZ()
+    IO.ifile = ifile
+    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.settings(True)
 
-    # xxx, yyy = np.meshgrid(xxx, yyy)
-    # points = np.transpose([xxx.flatten(), yyy.flatten()])
-    # zz = dat.data.flatten()
+    IO.outdata['Raster'] = [dat]
 
-    # gdf = pd.read_csv(ifile, delimiter=',', index_col=False)
+    DR = DataGrid()
+    DR.indata = IO.outdata
+    DR.settings()
 
-    x = gdf['X'].to_numpy()
-    y = gdf['Y'].to_numpy()
-    z = gdf['Elevation'].to_numpy()
-    val = gdf['Resistivity'].to_numpy()
-    dxy = 10
+    vdat = DR.outdata['Voxel'][0]
 
-    lmod, values, xxx, yyy, zzz = gridvolume(x, y, z, val, dxy, dat=dat)
-    gdat = griddata(points, zz, (xxx, yyy), method='nearest')
+    # x = gdf['X'].to_numpy()
+    # y = gdf['Y'].to_numpy()
+    # z = gdf['Elevation'].to_numpy()
+    # val = gdf['Resistivity'].to_numpy()
+    # dxy = 10
 
-    values[zzz > gdat] = np.nan
+    # vdat = gridvolume(x, y, z, val, dxy, dat=dat)
+
+    # numclust = 10
+    # d_z = dxy
+    # utlx = x.min()
+    # utly = y.max()
+    # utlz = z.max()
+    # cols, rows, layers = values.shape
+    # X = values.flatten()
+    # dbout = np.zeros_like(X) - 2
+
+    # X = np.ma.masked_invalid(X)
+    # xmask = X.mask
+    # X = X.compressed().reshape(-1, 1)
+
+    # kmeans = KMeans(n_clusters=numclust).fit(X)
+    # dbout2 = kmeans.predict(X)
+    # dbout[~xmask] = dbout2
+    # dbout.shape = values.shape
+    # dbout = dbout.astype(int) + 1
+
+    # lmod = LithModel()
+    # lmod.lith_index = None
+    # lmod.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
+
+    # lmod.lith_index = dbout
+    # lmod.lith_index = lmod.lith_index[:, :, ::-1]
+
+    # labelu = kmeans.cluster_centers_
+    # lindx = 0
+    # for itxt in labelu:
+    #     lindx += 1
+
+    #     colour = int((255 * (itxt - labelu.min()) / np.ptp(labelu))[0])
+    #     itxt = str(itxt)
+    #     lmod.mlut[lindx] = [0 * colour, colour, 0 * colour]
+    #     lmod.lith_list[itxt] = grvmag3d.GeoData(
+    #         None, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
+    #         dxy=lmod.dxy, d_z=lmod.d_z)
+
+    #     lmod.lith_list[itxt].lith_index = lindx
+    #     lmod.lith_list[itxt].modified = True
+    #     lmod.lith_list[itxt].set_xyz12()
 
     # M3D = Mod3dDisplay()
     # M3D.indata['Model3D'] = [lmod]
@@ -1726,14 +1819,15 @@ def _testfn_vol():
     # Create the spatial reference
     grid = pv.ImageData()
 
+    values = vdat.data
     # Set the grid dimensions: shape + 1 because we want to inject our values
     # on the CELL data
     grid.dimensions = np.array(values.shape) + 1
 
     # Edit the spatial reference
     # The bottom left corner of the data set
-    grid.origin = (x.min(), y.min(), z.min())
-    grid.spacing = (dxy, dxy, dxy)  # These are the cell sizes along each axis
+    grid.origin = vdat.origin
+    grid.spacing = vdat.spacing  # These are the cell sizes along each axis
 
     # Add the data values to the cell data
     grid.cell_data['values'] = values.flatten(order='F')  # Flatten the array
@@ -1742,14 +1836,16 @@ def _testfn_vol():
     grid = grid.threshold()
 
     # Now plot the grid
-    grid.plot(show_edges=True)
+    # grid.plot(show_edges=True)
 
-    # p = pv.Plotter()
-    # # p.add_mesh_clip_plane(grid)
+    p = pv.Plotter()
+    p.add_mesh_clip_plane(grid, normal=[-1, 0, 0])
     # p.add_volume(grid)
-    # # p.add_mesh(grid, opacity=0.5)
+    # p.add_mesh(grid, opacity=0.5)
     # p.add_mesh_slice(grid)
-    # p.show()
+    p.add_axes()
+    p.show_grid()
+    p.show()
 
 
 if __name__ == "__main__":

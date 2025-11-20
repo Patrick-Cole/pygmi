@@ -120,6 +120,262 @@ class ColumnSelect(BasicModule):
         # self.saveobj(self.ifile)
 
 
+class ImportVector(BasicModule):
+    """
+    GUI to import vector data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.is_import = True
+        self.crs = None
+
+        self.cmb_bounds = QtWidgets.QComboBox()
+        self.le_sfile = QtWidgets.QLineEdit('')
+        self.le_xmin = QtWidgets.QLineEdit('0.0')
+        self.le_xmax = QtWidgets.QLineEdit('1.0')
+        self.le_ymin = QtWidgets.QLineEdit('0.0')
+        self.le_ymax = QtWidgets.QLineEdit('1.0')
+        self.le_mapsheet = QtWidgets.QLineEdit('2918AA')
+        self.lbl_xmin = QtWidgets.QLabel('West:')
+        self.lbl_xmax = QtWidgets.QLabel('East:')
+        self.lbl_ymin = QtWidgets.QLabel('South:')
+        self.lbl_ymax = QtWidgets.QLabel('North:')
+        self.lbl_mapsheet = QtWidgets.QLabel('Mapsheet:')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        pb_sfile = QtWidgets.QPushButton(' Filename')
+
+        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
+        icon = self.style().standardIcon(pixmapi)
+        pb_sfile.setIcon(icon)
+        pb_sfile.setStyleSheet('text-align:left;')
+
+        self.setWindowTitle('Import Vector Data')
+
+        self.cmb_bounds.addItems(['None', 'Manual', 'SA Mapsheet'])
+
+        gl_1 = QtWidgets.QGridLayout(self)
+
+        gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
+        gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
+        gl_1.addWidget(QtWidgets.QLabel('Bounds:'), 2, 0, 1, 1)
+        gl_1.addWidget(self.cmb_bounds, 2, 1, 1, 1)
+        gl_1.addWidget(self.lbl_xmin, 3, 0, 1, 1)
+        gl_1.addWidget(self.le_xmin, 3, 1, 1, 1)
+        gl_1.addWidget(self.lbl_xmax, 4, 0, 1, 1)
+        gl_1.addWidget(self.le_xmax, 4, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ymin, 5, 0, 1, 1)
+        gl_1.addWidget(self.le_ymin, 5, 1, 1, 1)
+        gl_1.addWidget(self.lbl_ymax, 6, 0, 1, 1)
+        gl_1.addWidget(self.le_ymax, 6, 1, 1, 1)
+        gl_1.addWidget(self.lbl_mapsheet, 7, 0, 1, 1)
+        gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
+
+        self.buttonbox.htmlfile = 'vector.dm.importvectordata'
+        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
+
+        pb_sfile.pressed.connect(self.get_sfile)
+        self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        bounds = None
+        ext = ''
+        self.change_bounds()
+
+        if not nodialog:
+            tmp = self.exec()
+
+            if tmp != 1:
+                return tmp
+
+        if not self.ifile:
+            self.showlog('No vector file specified.')
+            return False
+
+        txt = self.cmb_bounds.currentText()
+
+        if txt == 'Manual':
+            try:
+                xmin = float(self.le_xmin.text())
+                xmax = float(self.le_xmax.text())
+                ymin = float(self.le_ymin.text())
+                ymax = float(self.le_ymax.text())
+            except ValueError:
+                self.showlog('Invalid value in bounds.')
+                return False
+            bounds = (xmin, ymin, xmax, ymax)
+        elif txt == 'SA Mapsheet':
+            bounds = maptobounds(self.le_mapsheet.text(), self.crs,
+                                 self.showlog)
+            if bounds is None:
+                return False
+
+        os.chdir(os.path.dirname(self.ifile))
+
+        if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
+            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='fiona',
+                                allow_unsupported_drivers=True)
+        else:
+            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
+
+        if bounds is not None:
+            gdf = gdf.clip(mask=bounds)
+
+        gdf = gdf[gdf.geometry != None]
+        gdf = gdf.explode(ignore_index=True)
+
+        if gdf.size == 0:
+            self.showlog('Unable to load data. Check file or bounds.')
+            return False
+
+        if gdf.geom_type.loc[0] == 'Point':
+            if 'line' not in gdf.columns:
+                gdf['line'] = 'None'
+            else:
+                gdf['line'] = gdf['line'].astype(str)
+
+        gdf.attrs['source'] = os.path.basename(self.ifile)
+        self.outdata['Vector'] = [gdf]
+
+        return True
+
+    def change_bounds(self):
+        """Change the bounds combo."""
+        txt = self.cmb_bounds.currentText()
+
+        if txt == 'None':
+            self.le_xmin.hide()
+            self.le_xmax.hide()
+            self.le_ymin.hide()
+            self.le_ymax.hide()
+            self.le_mapsheet.hide()
+            self.lbl_xmin.hide()
+            self.lbl_xmax.hide()
+            self.lbl_ymin.hide()
+            self.lbl_ymax.hide()
+            self.lbl_mapsheet.hide()
+        elif txt == 'Manual':
+            self.le_xmin.show()
+            self.le_xmax.show()
+            self.le_ymin.show()
+            self.le_ymax.show()
+            self.le_mapsheet.hide()
+            self.lbl_xmin.show()
+            self.lbl_xmax.show()
+            self.lbl_ymin.show()
+            self.lbl_ymax.show()
+            self.lbl_mapsheet.hide()
+        elif txt == 'SA Mapsheet':
+            self.le_xmin.hide()
+            self.le_xmax.hide()
+            self.le_ymin.hide()
+            self.le_ymax.hide()
+            self.le_mapsheet.show()
+            self.lbl_xmin.hide()
+            self.lbl_xmax.hide()
+            self.lbl_ymin.hide()
+            self.lbl_ymax.hide()
+            self.lbl_mapsheet.show()
+
+    def get_sfile(self):
+        """Get the filename and crs and bounds."""
+        self.le_sfile.setText('')
+
+        ext = ('Shapefile (*.shp);;'
+               'Zipped Shapefile (*.shp.zip);;'
+               'GeoPackage (*.gpkg);;'
+               'KML (*.kml);;'
+               'KMZ (*.kmz)')
+
+        self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        if not self.ifile:
+            return False
+
+        self.le_sfile.setText(self.ifile)
+
+        with fiona.open(self.ifile, allow_unsupported_drivers=True) as fio:
+            self.crs = fio.crs
+            xmin, ymin, xmax, ymax = fio.bounds
+
+        # tmp = read_info(self.ifile, force_total_bounds=True)
+        # self.crs = tmp['crs']
+        # xmin, ymin, xmax, ymax = tmp['total_bounds']
+
+        self.le_xmin.setText(str(xmin))
+        self.le_xmax.setText(str(xmax))
+        self.le_ymin.setText(str(ymin))
+        self.le_ymax.setText(str(ymax))
+
+        return True
+
+    def set_bounds(self, bounds):
+        """
+        Set the bounds.
+
+        Parameters
+        ----------
+        bounds : list or numpy array
+            Bounds defined as (xmin, ymin, xmax, ymax).
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cmb_bounds.setCurrentText('Manual')
+
+        xmin, ymin, xmax, ymax = bounds
+
+        self.le_xmin.setText(str(xmin))
+        self.le_xmax.setText(str(xmax))
+        self.le_ymin.setText(str(ymin))
+        self.le_ymax.setText(str(ymax))
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.ifile)
+
+
 class ImportXYZ(BasicModule):
     """
     GUI to import XYZ data.
@@ -554,9 +810,9 @@ class ExportVector(ContextModule):
         return True
 
 
-class ImportVector(BasicModule):
+class ExportVoxel(ContextModule):
     """
-    GUI to import vector data.
+    GUI to export voxel data.
 
     Parameters
     ----------
@@ -567,75 +823,10 @@ class ImportVector(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.is_import = True
-        self.crs = None
 
-        self.cmb_bounds = QtWidgets.QComboBox()
-        self.le_sfile = QtWidgets.QLineEdit('')
-        self.le_xmin = QtWidgets.QLineEdit('0.0')
-        self.le_xmax = QtWidgets.QLineEdit('1.0')
-        self.le_ymin = QtWidgets.QLineEdit('0.0')
-        self.le_ymax = QtWidgets.QLineEdit('1.0')
-        self.le_mapsheet = QtWidgets.QLineEdit('2918AA')
-        self.lbl_xmin = QtWidgets.QLabel('West:')
-        self.lbl_xmax = QtWidgets.QLabel('East:')
-        self.lbl_ymin = QtWidgets.QLabel('South:')
-        self.lbl_ymax = QtWidgets.QLabel('North:')
-        self.lbl_mapsheet = QtWidgets.QLabel('Mapsheet:')
-
-        self.setupui()
-
-    def setupui(self):
+    def run(self):
         """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        pb_sfile = QtWidgets.QPushButton(' Filename')
-
-        pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
-        icon = self.style().standardIcon(pixmapi)
-        pb_sfile.setIcon(icon)
-        pb_sfile.setStyleSheet('text-align:left;')
-
-        self.setWindowTitle('Import Vector Data')
-
-        self.cmb_bounds.addItems(['None', 'Manual', 'SA Mapsheet'])
-
-        gl_1 = QtWidgets.QGridLayout(self)
-
-        gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
-        gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
-        gl_1.addWidget(QtWidgets.QLabel('Bounds:'), 2, 0, 1, 1)
-        gl_1.addWidget(self.cmb_bounds, 2, 1, 1, 1)
-        gl_1.addWidget(self.lbl_xmin, 3, 0, 1, 1)
-        gl_1.addWidget(self.le_xmin, 3, 1, 1, 1)
-        gl_1.addWidget(self.lbl_xmax, 4, 0, 1, 1)
-        gl_1.addWidget(self.le_xmax, 4, 1, 1, 1)
-        gl_1.addWidget(self.lbl_ymin, 5, 0, 1, 1)
-        gl_1.addWidget(self.le_ymin, 5, 1, 1, 1)
-        gl_1.addWidget(self.lbl_ymax, 6, 0, 1, 1)
-        gl_1.addWidget(self.le_ymax, 6, 1, 1, 1)
-        gl_1.addWidget(self.lbl_mapsheet, 7, 0, 1, 1)
-        gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
-
-        self.buttonbox.htmlfile = 'vector.dm.importvectordata'
-        gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
-
-        pb_sfile.pressed.connect(self.get_sfile)
-        self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
+        Entry point into the routine, used to run context menu item.
 
         Returns
         -------
@@ -643,171 +834,71 @@ class ImportVector(BasicModule):
             True if successful, False otherwise.
 
         """
-        bounds = None
-        ext = ''
-        self.change_bounds()
+        self.parent.process_is_active(True)
 
-        if not nodialog:
-            tmp = self.exec()
-
-            if tmp != 1:
-                return tmp
-
-        if not self.ifile:
-            self.showlog('No vector file specified.')
+        if 'Voxel' not in self.indata:
+            self.showlog('Error: You need to have voxel data first!')
+            self.parent.process_is_active(False)
             return False
 
-        txt = self.cmb_bounds.currentText()
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', 'UBC 3D Mesh (*.msh)')
 
-        if txt == 'Manual':
-            try:
-                xmin = float(self.le_xmin.text())
-                xmax = float(self.le_xmax.text())
-                ymin = float(self.le_ymin.text())
-                ymax = float(self.le_ymax.text())
-            except ValueError:
-                self.showlog('Invalid value in bounds.')
-                return False
-            bounds = (xmin, ymin, xmax, ymax)
-        elif txt == 'SA Mapsheet':
-            bounds = maptobounds(self.le_mapsheet.text(), self.crs,
-                                 self.showlog)
-            if bounds is None:
-                return False
-
-        os.chdir(os.path.dirname(self.ifile))
-
-        if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
-            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='fiona',
-                                allow_unsupported_drivers=True)
-        else:
-            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
-
-        if bounds is not None:
-            gdf = gdf.clip(mask=bounds)
-
-        gdf = gdf[gdf.geometry != None]
-        gdf = gdf.explode(ignore_index=True)
-
-        if gdf.size == 0:
-            self.showlog('Unable to load data. Check file or bounds.')
+        if filename == '':
+            self.parent.process_is_active(False)
             return False
 
-        if gdf.geom_type.loc[0] == 'Point':
-            if 'line' not in gdf.columns:
-                gdf['line'] = 'None'
-            else:
-                gdf['line'] = gdf['line'].astype(str)
+        self.showlog('Export busy...')
 
-        gdf.attrs['source'] = os.path.basename(self.ifile)
-        self.outdata['Vector'] = [gdf]
+        os.chdir(os.path.dirname(filename))
+
+        if filename[-3:] == 'msh':
+            vdat = self.indata['Voxel'][0]
+            export_ubc(filename, vdat)
+
+        self.parent.process_is_active(False)
+
+        self.showlog('Export completed')
 
         return True
 
-    def change_bounds(self):
-        """Change the bounds combo."""
-        txt = self.cmb_bounds.currentText()
 
-        if txt == 'None':
-            self.le_xmin.hide()
-            self.le_xmax.hide()
-            self.le_ymin.hide()
-            self.le_ymax.hide()
-            self.le_mapsheet.hide()
-            self.lbl_xmin.hide()
-            self.lbl_xmax.hide()
-            self.lbl_ymin.hide()
-            self.lbl_ymax.hide()
-            self.lbl_mapsheet.hide()
-        elif txt == 'Manual':
-            self.le_xmin.show()
-            self.le_xmax.show()
-            self.le_ymin.show()
-            self.le_ymax.show()
-            self.le_mapsheet.hide()
-            self.lbl_xmin.show()
-            self.lbl_xmax.show()
-            self.lbl_ymin.show()
-            self.lbl_ymax.show()
-            self.lbl_mapsheet.hide()
-        elif txt == 'SA Mapsheet':
-            self.le_xmin.hide()
-            self.le_xmax.hide()
-            self.le_ymin.hide()
-            self.le_ymax.hide()
-            self.le_mapsheet.show()
-            self.lbl_xmin.hide()
-            self.lbl_xmax.hide()
-            self.lbl_ymin.hide()
-            self.lbl_ymax.hide()
-            self.lbl_mapsheet.show()
+def export_ubc(ofile, data):
+    """
+    Export a section to a 3D UBC mesh and model.
 
-    def get_sfile(self):
-        """Get the filename and crs and bounds."""
-        self.le_sfile.setText('')
+    Parameters
+    ----------
+    data : PyGMI voxel Data
+        dataset to export
 
-        ext = ('Shapefile (*.shp);;'
-               'Zipped Shapefile (*.shp.zip);;'
-               'GeoPackage (*.gpkg);;'
-               'KML (*.kml);;'
-               'KMZ (*.kmz)')
+    Returns
+    -------
+    None.
 
-        self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+    """
+    # data = data[0]
 
-        if not self.ifile:
-            return False
+    ofile = ofile.rpartition('.')[0] + '.msh'
 
-        self.le_sfile.setText(self.ifile)
+    ny, nx, nz = data.data.shape
+    xmin, ymin, zmin = data.origin
+    dx, dy, dz = data.spacing
 
-        with fiona.open(self.ifile, allow_unsupported_drivers=True) as fio:
-            self.crs = fio.crs
-            xmin, ymin, xmax, ymax = fio.bounds
+    zmax = dz * nz + zmin
 
-        # tmp = read_info(self.ifile, force_total_bounds=True)
-        # self.crs = tmp['crs']
-        # xmin, ymin, xmax, ymax = tmp['total_bounds']
+    with open(ofile, 'w') as out:
+        print(nx, ny, nz, file=out)
+        print(xmin, ymin, zmax, file=out)
+        print(f'{nx}*{dx}', file=out)
+        print(f'{ny}*{dy}', file=out)
+        print(f'{nz}*{dz}', file=out)
 
-        self.le_xmin.setText(str(xmin))
-        self.le_xmax.setText(str(xmax))
-        self.le_ymin.setText(str(ymin))
-        self.le_ymax.setText(str(ymax))
+    # smod2 = np.moveaxis(data.data, [0, 1, 2], [1, 0, 2]).flatten()
+    smod2 = data.data[:, :, ::-1].flatten()
+    smod2[np.isnan(smod2)] = 0
 
-        return True
-
-    def set_bounds(self, bounds):
-        """
-        Set the bounds.
-
-        Parameters
-        ----------
-        bounds : list or numpy array
-            Bounds defined as (xmin, ymin, xmax, ymax).
-
-        Returns
-        -------
-        None.
-
-        """
-        self.cmb_bounds.setCurrentText('Manual')
-
-        xmin, ymin, xmax, ymax = bounds
-
-        self.le_xmin.setText(str(xmin))
-        self.le_xmax.setText(str(xmax))
-        self.le_ymin.setText(str(ymin))
-        self.le_ymax.setText(str(ymax))
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.saveobj(self.ifile)
+    np.savetxt(ofile[:-3] + 'mod', smod2)
 
 
 def get_GXYZ_old(ifile, showlog=print, piter=iter):

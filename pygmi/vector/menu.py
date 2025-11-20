@@ -53,6 +53,7 @@ class MenuWidget():
         self.parent.add_to_context('Vector')
         self.parent.add_to_context('pntVector')
         self.parent.add_to_context('lineVector')
+        self.parent.add_to_context('Voxel')
         context_menu = self.parent.context_menu
 
         self.menu = QtWidgets.QMenu('Vector')
@@ -145,6 +146,10 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_export_vector)
         self.action_export_vector.triggered.connect(self.export_vector)
 
+        self.action_export_voxel = QtGui.QAction('Export Voxel Data')
+        context_menu['Voxel'].addAction(self.action_export_voxel)
+        self.action_export_voxel.triggered.connect(self.export_voxel)
+
     def colselect(self):
         """Select bands."""
         self.parent.item_insert('Step', 'Column Select', iodefs.ColumnSelect)
@@ -174,6 +179,10 @@ class MenuWidget():
     def export_vector(self):
         """Export line data."""
         self.parent.launch_context_item(iodefs.ExportVector)
+
+    def export_voxel(self):
+        """Export voxel data."""
+        self.parent.launch_context_item(iodefs.ExportVoxel)
 
     def file_split(self):
         """Text file split."""
