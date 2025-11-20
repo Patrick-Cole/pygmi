@@ -38,6 +38,7 @@ import fiona
 from pygmi.raster.reproj import GroupProj
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.vector.dataprep import maptobounds
+from pygmi.vector.datatypes import VoxModel
 
 
 class ColumnSelect(BasicModule):
@@ -648,6 +649,69 @@ class ImportXYZ(BasicModule):
         return gdf
 
 
+class ImportVoxel(ContextModule):
+    """
+    GUI to import voxel data.
+
+    Parameters
+    ----------
+    parent : parent, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.filt = ''
+        self.is_import = True
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if not nodialog:
+            ext = ('UBC 3D Mesh (*.msh)')
+
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+
+        self.showlog('Import busy...')
+
+        vdat = import_ubc(self.ifile)
+        self.outdata['Voxel'] = [vdat]
+
+        self.parent.process_is_active(False)
+
+        self.showlog('Import completed')
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveobj(self.ifile)
+        self.saveobj(self.filt)
+
+
 class ExportXYZ(ContextModule):
     """
     GUI to export XYZ data.
@@ -863,6 +927,56 @@ class ExportVoxel(ContextModule):
         return True
 
 
+def import_ubc(ifile):
+    """
+    Import a 3D UBC mesh and model.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file name.
+
+    Returns
+    -------
+    None.
+
+    """
+    ifile = ifile.rpartition('.')[0] + '.msh'
+    with open(ifile) as inp:
+        hdf = inp.readlines()
+
+    nx, ny, nz = hdf[0].strip().split()
+    xmin, ymin, zmax = hdf[1].strip().split()
+    dx = hdf[2].strip().split('*')[1]
+    dy = hdf[3].strip().split('*')[1]
+    dz = hdf[4].strip().split('*')[1]
+
+    nx = int(nx)
+    ny = int(ny)
+    nz = int(nz)
+
+    xmin = float(xmin)
+    ymin = float(ymin)
+    zmax = float(zmax)
+
+    dx = float(dx)
+    dy = float(dy)
+    dz = float(dz)
+
+    zmin = zmax - dz * nz
+
+    vals = np.loadtxt(ifile[:-3] + 'mod')
+    vals.shape = [ny, nx, nz]
+    vals = vals[:, :, ::-1]
+
+    vdat = VoxModel()
+    vdat.data = vals
+    vdat.origin = [xmin, ymin, zmin]
+    vdat.spacing = [dx, dy, dz]
+
+    return vdat
+
+
 def export_ubc(ofile, data):
     """
     Export a section to a 3D UBC mesh and model.
@@ -877,8 +991,6 @@ def export_ubc(ofile, data):
     None.
 
     """
-    # data = data[0]
-
     ofile = ofile.rpartition('.')[0] + '.msh'
 
     ny, nx, nz = data.data.shape
@@ -894,7 +1006,6 @@ def export_ubc(ofile, data):
         print(f'{ny}*{dy}', file=out)
         print(f'{nz}*{dz}', file=out)
 
-    # smod2 = np.moveaxis(data.data, [0, 1, 2], [1, 0, 2]).flatten()
     smod2 = data.data[:, :, ::-1].flatten()
     smod2[np.isnan(smod2)] = 0
 

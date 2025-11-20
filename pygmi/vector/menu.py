@@ -32,6 +32,7 @@ from pygmi.vector import dataprep
 from pygmi.vector import structure
 from pygmi.vector import show_table
 from pygmi.vector import equation_editor
+from pygmi.vector import vvis3d
 
 
 class MenuWidget():
@@ -66,6 +67,10 @@ class MenuWidget():
         self.action_import_xyz = QtGui.QAction('Import XYZ Data')
         self.menu.addAction(self.action_import_xyz)
         self.action_import_xyz.triggered.connect(self.import_xyz)
+
+        self.action_import_voxel = QtGui.QAction('Import Voxel Data')
+        self.menu.addAction(self.action_import_voxel)
+        self.action_import_voxel.triggered.connect(self.import_voxel)
 
         self.action_colselect = QtGui.QAction('Select Columns')
         self.menu.addAction(self.action_colselect)
@@ -146,9 +151,15 @@ class MenuWidget():
         context_menu['Vector'].addAction(self.action_export_vector)
         self.action_export_vector.triggered.connect(self.export_vector)
 
+        context_menu['Voxel'].addSeparator()
+
         self.action_export_voxel = QtGui.QAction('Export Voxel Data')
         context_menu['Voxel'].addAction(self.action_export_voxel)
         self.action_export_voxel.triggered.connect(self.export_voxel)
+
+        self.action_display_voxel = QtGui.QAction('Display Voxel Data')
+        context_menu['Voxel'].addAction(self.action_display_voxel)
+        self.action_display_voxel.triggered.connect(self.display_voxel)
 
     def colselect(self):
         """Select bands."""
@@ -184,6 +195,10 @@ class MenuWidget():
         """Export voxel data."""
         self.parent.launch_context_item(iodefs.ExportVoxel)
 
+    def display_voxel(self):
+        """Display voxel data."""
+        self.parent.launch_context_item(vvis3d.Mod3dDisplay)
+
     def file_split(self):
         """Text file split."""
         self.parent.item_insert('Io', 'Text File Split',
@@ -193,6 +208,11 @@ class MenuWidget():
         """Import XYZ data."""
         self.parent.item_insert('Io', 'Import XYZ Data',
                                 iodefs.ImportXYZ)
+
+    def import_voxel(self):
+        """Import Voxel data."""
+        self.parent.item_insert('Io', 'Import Voxel Data',
+                                iodefs.ImportVoxel)
 
     def import_vector(self):
         """Import shape data."""

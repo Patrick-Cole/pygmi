@@ -33,7 +33,6 @@ import numpy as np
 from scipy.interpolate import griddata
 from scipy.interpolate import RBFInterpolator
 from scipy.ndimage import distance_transform_edt
-from scipy.ndimage import vectorized_filter
 import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely import Polygon
@@ -1734,7 +1733,6 @@ def _testfn_vol():
     # import pandas as pd
     import pyvista as pv
 
-    from pygmi.vector.iodefs import get_GXYZ
     from pygmi.raster.iodefs import get_raster
     from pygmi.vector.iodefs import ImportXYZ
 
@@ -1742,9 +1740,8 @@ def _testfn_vol():
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
     dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"
-    ofile = r"D:\UBC_Files\voxel.msh"
+    # ofile = r"D:\UBC_Files\voxel.msh"
 
-    gdf = get_GXYZ(ifile)
     dat = get_raster(dfile)[0]
 
     IO = ImportXYZ()
