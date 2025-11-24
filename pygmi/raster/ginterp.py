@@ -350,7 +350,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         yi = np.linspace(y2 - ydim, y1 + ydim, dat.data.shape[0])
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                     linewidths=1, colors='k',
+                                     linewidths=2, colors='k',
                                      levels=self.levels,
                                      linestyles='solid')
         self.cntf = self.axes.contourf(xi, yi, dat, extent=(x1, x2, y1, y2),
@@ -1708,18 +1708,21 @@ class PlotInterp(BasicModule):
             img = img.astype(np.uint8)
 
         elif dtype == 'Contour':
-            clippercu = self.mmc.clippercu[self.mmc.hband[0]]
-            clippercl = self.mmc.clippercl[self.mmc.hband[0]]
+            # clippercu = self.mmc.clippercu[self.mmc.hband[0]]
+            # clippercl = self.mmc.clippercl[self.mmc.hband[0]]
 
-            pseudo = self.mmc.image._full_res.copy()
-            if htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-            elif clippercl > 0. or clippercu > 0.:
-                pseudo, _, _ = histcomp(pseudo, perc=clippercl,
-                                        uperc=clippercu)
+            # pseudo = self.mmc.image._full_res.copy()
+            # if htype == 'Histogram Equalization':
+            #     pseudo = histeq(pseudo)
+            # elif clippercl > 0. or clippercu > 0.:
+            #     pseudo, _, _ = histcomp(pseudo, perc=clippercl,
+            #                             uperc=clippercu)
 
-            cmin = pseudo.min()
-            cmax = pseudo.max()
+            # cmin = pseudo.min()
+            # cmax = pseudo.max()
+
+            cmin = self.mmc.cnt.zmin
+            cmax = self.mmc.cnt.zmax
 
             if self.mmc.ccbar is not None:
                 self.mmc.ccbar.remove()
@@ -1779,8 +1782,6 @@ class PlotInterp(BasicModule):
         ydim = (ymax - ymin) / img.shape[0]
         xdim = (xmax - xmin) / img.shape[1]
 
-        print(newimg[0].extent)
-
         newimg[0].data = img[:, :, 0]
         newimg[1].data = img[:, :, 1]
         newimg[2].data = img[:, :, 2]
@@ -1790,8 +1791,6 @@ class PlotInterp(BasicModule):
         newimg[1].set_transform(xdim, xmin, ydim, ymax)
         newimg[2].set_transform(xdim, xmin, ydim, ymax)
         newimg[3].set_transform(xdim, xmin, ydim, ymax)
-
-        print(newimg[0].extent)
 
         mask = img[:, :, 3]
         newimg[0].data[newimg[0].data == 0] = 1
@@ -1830,8 +1829,12 @@ class PlotInterp(BasicModule):
             fig.set_figheight(bwid + 0.75)
             ax = fig.gca()
 
-            cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                        orientation='horizontal')
+            if 'Contour' in dtype:
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf,
+                                            orientation='horizontal')
+            else:
+                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                            orientation='horizontal')
             cb.set_label(text)
 
             fname = filename[:-4] + '_hcbar.png'
@@ -1843,9 +1846,12 @@ class PlotInterp(BasicModule):
             fig.set_figwidth(bwid + 1)
             fig.set_figheight(blen)
             ax = fig.gca()
-
-            cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                        orientation='vertical')
+            if 'Contour' in dtype:
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf,
+                                            orientation='vertical')
+            else:
+                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                            orientation='vertical')
             cb.set_label(text)
 
             fname = filename[:-4] + '_vcbar.png'
@@ -1977,8 +1983,6 @@ class PlotInterp(BasicModule):
 
 def _testfn():
     """Test routine."""
-    import matplotlib
-    matplotlib.interactive(False)
 
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
@@ -1986,6 +1990,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r'd:\WorkData\testdata.hdr'
+    ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
 
     data = iodefs.get_raster(ifile)
 
