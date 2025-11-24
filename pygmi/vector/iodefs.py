@@ -969,6 +969,8 @@ def import_ubc(ifile):
     vals.shape = [ny, nx, nz]
     vals = vals[:, :, ::-1]
 
+    vals[vals == 0] = np.nan
+
     vdat = VoxModel()
     vdat.data = vals
     vdat.origin = [xmin, ymin, zmin]
