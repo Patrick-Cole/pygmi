@@ -585,6 +585,16 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.showtext('Borehole Import Complete.')
 
+    def calculate_dip(self):
+        """
+        Calculate dip.
+
+        Returns
+        -------
+        None.
+
+        """
+
     def export_csv(self):
         """
         Export profile to csv.
@@ -2556,6 +2566,8 @@ class MyToolbar(NavigationToolbar2QT):
                    'Gravity Profile', 'Gravity Profile', 'grv_profile'),
                   ('Import\nBorehole\nLogs',
                    'Borehole Logs', 'Borehole Logs', 'b_logs'),
+                  ('Calculate\nDip',
+                   'Dip', 'Dip', 'dip'),
                   )
 
     def __init__(self, parent=None):
@@ -2583,6 +2595,17 @@ class MyToolbar(NavigationToolbar2QT):
 
         """
         self.pparent.borehole_import()
+
+    def dip(self):
+        """
+        Calculate dip.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.pparent.calculate_dip()
 
     def mag_profile(self):
         """

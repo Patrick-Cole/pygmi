@@ -2034,10 +2034,11 @@ def _testfn():
     import sys
     import os
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import get_raster, get_geosoft
 
     ifile = r"D:\temp\RegionalBouguerAnomaly.ers"
-    dat = get_raster(ifile)
+    ifile = r"D:\temp\Geosoft Grids\FCR2613 CGS TMI.grd"
+    dat = get_geosoft(ifile)
 
     os.chdir(os.path.dirname(ifile))
 

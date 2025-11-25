@@ -296,5 +296,25 @@ def _testfn():
     app.exec()
 
 
+def _testfn2():
+    """Test routine."""
+    import sys
+    from pygmi.pfmod.iodefs import ImportMod3D
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
+    ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
+
+    IO1 = ImportMod3D()
+    IO1.ifile = ifile
+    IO1.settings(True)
+
+    PF = MainWidget()
+    PF.indata = IO1.outdata
+    PF.settings()
+
+    app.exec()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

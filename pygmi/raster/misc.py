@@ -31,6 +31,7 @@ import numexpr as ne
 from scipy import ndimage
 from matplotlib.pyplot import colormaps
 from pyproj.crs import CRS
+from pyproj.exceptions import ProjError
 import rasterio
 from rasterio.warp import reproject
 from rasterio.mask import mask as riomask
@@ -204,7 +205,13 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
     if gdf.crs is None:
         gdf = gdf.set_crs(data[0].crs)
     else:
-        gdf = gdf.to_crs(data[0].crs)
+        try:
+            gdf = gdf.to_crs(data[0].crs)
+        except ProjError:
+            showlog('There was a problem converting the shapefile projection '
+                    'to the raster projection. Check to see that both files '
+                    'have valid projections.')
+            return None
     gdf = gdf[gdf.geometry != None]
 
     if 'Polygon' not in gdf.geom_type.iloc[0]:
