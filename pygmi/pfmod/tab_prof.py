@@ -595,6 +595,11 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         """
 
+        self.showtext('Click the start and end point of a structure on the '
+                      'profile to calculate the dip.')
+
+        self.mmc.calcdip = True
+
     def export_csv(self):
         """
         Export profile to csv.
@@ -1587,6 +1592,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ylims = None
         self.crd = None
         self.myparent = parent
+        self.calcdip = False
+        self.dip1 = None
 
         # Events
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
@@ -1657,7 +1664,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
-            self.move(event)
+            if self.calcdip == False:
+                self.move(event)
+            else:
+                self.dip(event)
 
     def button_release(self, event):
         """
@@ -1776,6 +1786,40 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.slide_grid(self.mdata)
             self.slide_grid_top()
             self.figure.canvas.draw()
+
+    def dip(self, event):
+        """
+        Calculate dip event.
+
+        Parameters
+        ----------
+        event : event
+            Event variable.
+
+        Returns
+        -------
+        None.
+
+        """
+        curaxes = event.inaxes
+        if curaxes != self.axes:
+            self.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.ArrowCursor))
+            return
+
+        if curaxes == self.axes:
+            if self.dip1 is None:
+                self.dip1 = [event.xdata, event.ydata]
+                return
+
+            dip2 = [event.xdata, event.ydata]
+
+            dip = (dip2[1] - self.dip1[1]) / (dip2[0] - self.dip1[0])
+            dip = np.rad2deg(np.arctan(dip))
+
+            self.myparent.showtext(f'Dip: {abs(dip)}')
+            self.calcdip = False
+            self.dip1 = None
+            self.myparent.mpl_toolbar._my_toggle_action.setChecked(False)
 
     def set_mdata(self, xdata, ydata, mdata):
         """
@@ -2566,13 +2610,25 @@ class MyToolbar(NavigationToolbar2QT):
                    'Gravity Profile', 'Gravity Profile', 'grv_profile'),
                   ('Import\nBorehole\nLogs',
                    'Borehole Logs', 'Borehole Logs', 'b_logs'),
-                  ('Calculate\nDip',
-                   'Dip', 'Dip', 'dip'),
+                  #   ('Calculate\nDip',
+                  #    'Dip', 'Dip', 'dip'),
                   )
 
     def __init__(self, parent=None):
         super().__init__(parent.mmc, parent)
         self.pparent = parent
+
+        self._my_toggle_action = QtGui.QAction('Calculate\nDip', parent)
+        self._my_toggle_action.setCheckable(True)  # Make it a toggle button
+        self._my_toggle_action.triggered.connect(self.dip)
+        self.insertAction(self.actions()[-1], self._my_toggle_action)
+
+    def dip(self):
+        if self._my_toggle_action.isChecked():
+            self.pparent.calculate_dip()
+        else:
+            self.pparent.mmc.calcdip = False
+            self.pparent.mmc.dip1 = None
 
     def axis_scale(self):
         """
@@ -2595,17 +2651,6 @@ class MyToolbar(NavigationToolbar2QT):
 
         """
         self.pparent.borehole_import()
-
-    def dip(self):
-        """
-        Calculate dip.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.pparent.calculate_dip()
 
     def mag_profile(self):
         """
