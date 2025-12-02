@@ -477,9 +477,10 @@ class DataGrid(BasicModule):
             if z.ndim > 1:
                 z = z[:, 0]
             ddat = None
-            for i in self.indata['Raster']:
-                if i.dataid == demid:
-                    ddat = i
+            if 'Raster' in self.indata:
+                for i in self.indata['Raster']:
+                    if i.dataid == demid:
+                        ddat = i
 
             dat = gridvolume(x, y, z, val, dxy, dat=ddat)
             if dat is None:
