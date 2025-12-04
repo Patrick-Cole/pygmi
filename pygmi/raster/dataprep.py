@@ -2042,7 +2042,8 @@ def _testfn():
 
     os.chdir(os.path.dirname(ifile))
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp = DataCut()
     tmp.indata['Raster'] = dat

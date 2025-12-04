@@ -1259,7 +1259,8 @@ def _testfn():
     idir = r"D:\VMS\S2"
     os.chdir(idir)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
     # tmp1 = ImportData()

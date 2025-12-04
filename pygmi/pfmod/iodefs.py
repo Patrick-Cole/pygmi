@@ -1298,7 +1298,8 @@ def _testfn():
     ifile = r"d:\Workdata\modelling\small_upper.npz"
     ofile = r"d:\Workdata\modelling\hope2.shp"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = ImportMod3D()
     DM.ifile = ifile

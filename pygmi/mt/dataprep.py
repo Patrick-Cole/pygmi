@@ -1786,7 +1786,9 @@ def _testfn_occam():
 
     print('loading complete')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     test = Occam1D(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
@@ -1801,7 +1803,9 @@ def _testfn():
     mt_obj = MT(edi_file)
     print('loading complete')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     test = RotateEDI(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()

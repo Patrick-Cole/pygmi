@@ -652,7 +652,8 @@ def _testfn():
     idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
     os.chdir(r'E:\\')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

@@ -924,7 +924,9 @@ def _testfn():
 
     ifile = r'd:\WorkData\testdata.hdr'
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     data = get_raster(ifile)
 
     tmp = PlotRaster()

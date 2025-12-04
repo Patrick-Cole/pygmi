@@ -307,7 +307,8 @@ def _test():
 
     print('Starting')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
 

@@ -615,7 +615,9 @@ def _testfn_phase():
 
     dat = get_EDI(edi_list)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     tmp = PlotPhaseTensor()
     tmp.indata['MT - EDI'] = dat
     tmp.run()
@@ -634,7 +636,9 @@ def _testfn():
 
     print('loading complete')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     tmp = PlotPoints()
     tmp.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     tmp.run()

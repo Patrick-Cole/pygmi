@@ -521,7 +521,8 @@ def _testfn():
 
     idir = r"D:\workdata\PyGMI Test Data\change\mosaic"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

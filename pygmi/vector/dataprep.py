@@ -1658,7 +1658,8 @@ def _testfn():
     """Test routine."""
     import sys
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ofile = r"D:\mining_guidelines\2430\2430.shp"
 
@@ -1673,7 +1674,8 @@ def _testfn_pointcut():
     import sys
     from pygmi.vector.iodefs import ImportXYZ, ImportVector
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
@@ -1704,7 +1706,8 @@ def _testfn_grid():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportXYZ
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\UBC_Files\rivala_line3_res_model_xyz.csv"
 
@@ -1737,7 +1740,8 @@ def _testfn_vol():
     from pygmi.raster.iodefs import get_raster
     from pygmi.vector.iodefs import ImportXYZ
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
     dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"

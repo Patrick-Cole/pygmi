@@ -1807,7 +1807,9 @@ def _testfn1():
     import sys
     from pygmi.seis.iodefs import ImportSeisan
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
     tmp.settings(True)
@@ -1832,7 +1834,9 @@ def _testfn():
 
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     tmp = ImportSeisan()
     tmp.ifile = ifile
 

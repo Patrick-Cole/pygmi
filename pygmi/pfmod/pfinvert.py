@@ -960,7 +960,8 @@ def _testfn():
     mdat[0].dataid = 'mag'
     ddat[0].dataid = 'dem'
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = MagInvert()
     DM.indata['Raster'] = mdat + ddat
@@ -1063,7 +1064,8 @@ def _testfn2():
     from pygmi.raster.iodefs import get_raster
     from pygmi.pfmod.pfmod import MainWidget
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcmagdem.tif"
     dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcdem.tif"

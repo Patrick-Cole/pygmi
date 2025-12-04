@@ -567,7 +567,8 @@ def _test():
 
     dat = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     EE = EquationEditor()
     EE.indata['Raster'] = dat

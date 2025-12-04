@@ -518,7 +518,9 @@ def merge_gpsmag(cg5file, gpsfile, basethres=10000., cren=None, showlog=print):
 def _testfn():
     """Test routine."""
     import sys
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
     # grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"

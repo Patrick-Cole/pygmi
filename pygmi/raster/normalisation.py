@@ -236,7 +236,8 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Normalisation()
     DM.indata['Raster'] = dat

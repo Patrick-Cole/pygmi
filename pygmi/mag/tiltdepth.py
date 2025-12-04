@@ -547,7 +547,8 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = TiltDepth()
     tmp1.indata['Raster'] = dat

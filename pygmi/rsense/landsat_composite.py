@@ -350,7 +350,8 @@ def _testfn():
 
     idir = r'C:\WorkProjects\Landsat_Summer'
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     gui = LandsatComposite()
     gui.idir = idir

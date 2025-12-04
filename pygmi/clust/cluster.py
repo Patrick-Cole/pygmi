@@ -529,7 +529,8 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Cluster()
     DM.indata['Raster'] = dat
@@ -560,7 +561,8 @@ def _test_marinda():
             dat2.append(i)
 
     # Generate layers via cluster analysis
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Cluster()
     DM.indata['Raster'] = dat2
@@ -635,7 +637,8 @@ def _test_marinda2():
             dat2.append(i)
 
     # Generate layers via cluster analysis
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Cluster()
     DM.indata['Raster'] = dat2

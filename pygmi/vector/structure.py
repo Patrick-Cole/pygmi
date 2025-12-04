@@ -707,7 +707,9 @@ def _testfn():
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
-    _ = QtWidgets.QApplication(sys.argv)
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     IO = ImportVector()
     IO.ifile = sfile

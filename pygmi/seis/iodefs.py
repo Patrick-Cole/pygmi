@@ -3173,7 +3173,8 @@ def xlstomacro():
 def _testfn():
     """Test."""
     import sys
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\Workdata\seismology\nordic2\collect.out"
     ofile = ifile[:-4] + '2.out'

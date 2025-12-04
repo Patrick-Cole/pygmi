@@ -1051,7 +1051,8 @@ def _testfn2():
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\VMS\EnMAP\ENMAP01-____L2A-DT0000002353_20220808T091834Z_003_V010502_20251104T115035Z.tif"
 
-    _ = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     os.chdir(os.path.dirname(ifile))
 
@@ -1089,7 +1090,8 @@ def _testfn3():
     idir = r"D:\VMS\Enmap"
     os.chdir(r'D:\\')
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

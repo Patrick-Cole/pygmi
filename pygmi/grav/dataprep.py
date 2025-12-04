@@ -632,7 +632,8 @@ def time_convert(x):
 
 def _testfn():
     """Test routine."""
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
@@ -665,7 +666,8 @@ def _test_lacoste():
     import pandas as pd
     import numpy as np
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     gfile = r"D:\Steph\Preprocessed_Gravity.csv"
     cfile = r"D:\Steph\Calibration Table.csv"

@@ -900,7 +900,8 @@ def _testfn():
     dat[0].data = dat[0].data.filled(1e+20)
     dat[0].data = np.ma.masked_equal(dat[0].data, 1e+20)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     V2D = Gradients()
     V2D.indata['Raster'] = dat

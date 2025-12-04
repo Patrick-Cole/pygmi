@@ -1928,7 +1928,8 @@ def _filespeedtest():
     import sys
     from pygmi.misc import getinfo
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     print('Starting')
 

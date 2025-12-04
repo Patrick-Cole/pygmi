@@ -266,7 +266,8 @@ def _testfn():
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
     from pygmi.pfmod.misc import MergeMod3D
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"

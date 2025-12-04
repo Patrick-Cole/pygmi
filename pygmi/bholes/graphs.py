@@ -642,6 +642,7 @@ def _testfn():
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     data = get_CGS(lfile, hfile)
 

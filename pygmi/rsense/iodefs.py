@@ -3869,7 +3869,9 @@ def _test5P():
 
     os.chdir(r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-5P")
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     tmp = ImportSentinel5P()
     tmp.ifile = ifile
     tmp.settings()
@@ -3891,7 +3893,8 @@ def _test5P():
 
 def _testfn2():
     """Test routine."""
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
     tmp1.idir = r"D:\Onshore\AST_08312003_081238_georef\Original_data"
@@ -3916,7 +3919,8 @@ def _testfn3():
     ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
     ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     os.chdir(os.path.dirname(ifile))
     # tmp1 = ImportBatch()

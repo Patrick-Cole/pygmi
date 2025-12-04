@@ -1277,7 +1277,8 @@ def _test():
     import sys
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     os.chdir(os.path.dirname(ifile))
 

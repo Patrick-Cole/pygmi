@@ -1548,6 +1548,8 @@ def _testfn():
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
     os.chdir(os.path.dirname(sfile))
 
     IO = ImportXYZ()

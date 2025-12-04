@@ -519,7 +519,8 @@ def _testfn():
     getinfo('Start')
     rcParams['figure.dpi'] = 300
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     data1 = skimage.data.coffee()
 
@@ -557,7 +558,8 @@ def _testfn2():
 
     ifile = r"D:\Segmentation\Test_20010213_bands.tif"
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     data = get_raster(ifile)
 

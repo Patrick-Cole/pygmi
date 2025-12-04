@@ -159,6 +159,7 @@ def _testfn():
     sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportVector()
     tmp1.ifile = sfile

@@ -287,6 +287,7 @@ def _testfn():
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\small_upper.npz"
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = ImportMod3D()
     DM.ifile = ifile

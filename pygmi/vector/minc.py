@@ -633,7 +633,8 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportXYZ
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
 

@@ -647,7 +647,8 @@ def _testfn_bars():
 
     data = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Cluster()
     DM.indata['Raster'] = data
@@ -714,7 +715,8 @@ def _testfn_viol():
 
     data = get_raster(ifile)
 
-    _ = QtWidgets.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     DM = Cluster()
     DM.indata['Raster'] = data
