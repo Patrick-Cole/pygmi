@@ -189,6 +189,8 @@ class DataGrid(BasicModule):
         self.lbl_line.hide()
         self.lbl_z.hide()
         self.lbl_layers.hide()
+        self.cmb_grid_dem.hide()
+        self.lbl_dem.hide()
 
         self.setWindowTitle('Dataset Gridding')
 
@@ -275,7 +277,9 @@ class DataGrid(BasicModule):
         None.
 
         """
-        if self.cmb_grid_method.currentText() == 'Minimum Curvature':
+        txt = self.cmb_grid_type.currentText()
+
+        if txt != 'Voxel':
             self.lbl_bdist.show()
             self.le_bdist.show()
         else:
@@ -1709,12 +1713,12 @@ def _testfn_grid():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\UBC_Files\rivala_line3_res_model_xyz.csv"
+    ifile = r"D:\Gravity\Final_RSA_Old_WGS84v2.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
-    IO.settings(True)
+    IO.settings()
 
     DR = DataGrid()
     DR.indata = IO.outdata
@@ -1851,4 +1855,4 @@ def _testfn_vol():
 
 
 if __name__ == "__main__":
-    _testfn_vol()
+    _testfn_grid()
