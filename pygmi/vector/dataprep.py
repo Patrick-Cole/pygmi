@@ -258,6 +258,10 @@ class DataGrid(BasicModule):
                 data1 = data
 
             x = xy_to_r(x, y)
+            if x is None:
+                self.showlog('Problem with coordinates, '
+                             'might not be a section')
+                x = [0, 0]
             y = data1[zcol].values
 
         cols = round(np.ptp(x) / self.dxy)
@@ -469,6 +473,10 @@ class DataGrid(BasicModule):
             x1 = x
             y1 = y
             x = xy_to_r(x, y)
+            if x is None:
+                self.showlog('Problem with coordinates, '
+                             'might not be a section')
+                return False
             y = data2[zcol].values
             scoords = np.transpose([x1, y1, x])
             scoords = np.unique(scoords, axis=0)
@@ -1650,6 +1658,10 @@ def xy_to_r(x, y):
             r0 = r.copy()
 
         filt = np.logical_and(x1a == x1[0], y1a == y1[0])
+
+        if True not in filt:
+            return None
+
         r = r + r0[filt]
 
         r1 += r.tolist()
@@ -1713,12 +1725,12 @@ def _testfn_grid():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\Gravity\Final_RSA_Old_WGS84v2.csv"
+    ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
-    IO.settings()
+    IO.settings(True)
 
     DR = DataGrid()
     DR.indata = IO.outdata
