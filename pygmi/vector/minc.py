@@ -105,7 +105,7 @@ def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None,
 
     showlog('Creating starting value...')
 
-    u = griddata(points, z, (xxx, yyy), method='linear')
+    u = griddata(points, z, (xxx, yyy), method='nearest')
     u = u[::-1]
 
     # define new grid
@@ -629,6 +629,7 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
 def _testfn():
     """Test routine."""
     import sys
+    import os
     from PySide6 import QtWidgets
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportXYZ
@@ -637,19 +638,23 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
+    ifile = r"D:\Gravity\gravfilt.csv"
+
+    os.chdir(os.path.dirname(ifile))
 
     tmp = ImportXYZ()
     tmp.ifile = ifile
-    tmp.filt = 'Geosoft XYZ (*.xyz)'
-    tmp.settings(True)
+    # tmp.filt = 'Geosoft XYZ (*.xyz)'
+    tmp.settings()
 
     dat = tmp.outdata['Vector'][0]
 
     x = dat.geometry.x.to_numpy()
     y = dat.geometry.y.to_numpy()
-    z = dat['MAGMICROLEVEL'].to_numpy()
+    # z = dat['MAGMICROLEVEL'].to_numpy()
+    z = dat['bouguer_new'].values
 
-    dxy = 0.001
+    dxy = 0.01
 
     extent = np.array([x.min(), x.max(), y.min(), y.max()])
 
