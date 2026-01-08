@@ -189,6 +189,7 @@ class ImportData(BasicModule):
                    'PCI Geomatics Database File (*.pix);;'
                    'SAGA binary grid (*.sdat);;'
                    'Surfer grid (*.grd);;'
+                   'Datum Transformation Grid (*.gtx);;'
                    )
 
             ifilelist, self.filt = QtWidgets.QFileDialog.getOpenFileNames(

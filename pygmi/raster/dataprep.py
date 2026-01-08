@@ -1728,6 +1728,9 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
             tmpfile = tmpfile[:-4] + '_' + tmpid + '.tif'
 
+            if i2.data.dtype == np.int16:
+                i2.data = i2.data.astype(np.int32)
+
             raster = rasterio.open(tmpfile, 'w', driver='GTiff',
                                    height=i2.data.shape[0],
                                    width=i2.data.shape[1], count=1,
