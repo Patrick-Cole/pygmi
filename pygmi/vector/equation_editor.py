@@ -141,6 +141,8 @@ class EquationEditor(BasicModule):
         None.
 
         """
+        if self.bands == {}:
+            return
         txt = self.cmb_1.currentText()
         if txt != '':
             self.lbl_bands.setText(': ' + self.bands[txt])
@@ -303,18 +305,18 @@ def eq_fix(indata, equation, showlog=print):
 def _test():
     """Test."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportVector
 
     print('Starting')
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\Geochem\geochem_tzaneen.shp"
 
-    IO = ImportXYZ()
+    IO = ImportVector()
     IO.ifile = ifile
-    IO.filt = 'Comma Delimited (*.csv)'
+    # IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)
 
     EE = EquationEditor()
