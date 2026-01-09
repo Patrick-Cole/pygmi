@@ -192,10 +192,8 @@ class BeachBall(BasicModule):
             return False
         self.nofps = False
 
-        try:
+        if self.cmb_alg.receivers('currentIndexChanged') > 0:
             self.cmb_alg.currentIndexChanged.disconnect()
-        except TypeError:
-            pass
 
         self.cmb_alg.clear()
         self.cmb_alg.addItems(alist)

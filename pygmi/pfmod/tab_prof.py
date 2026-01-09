@@ -2513,9 +2513,9 @@ class RangedCopy(QtWidgets.QDialog):
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
         self.lw_lithcopy.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         self.lw_lithdel.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
             buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)

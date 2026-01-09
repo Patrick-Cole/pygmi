@@ -69,7 +69,7 @@ class CalculateChange(BasicModule):
         lbl_ratios = QtWidgets.QLabel('Indices:')
 
         self.lw_indices.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.setWindowTitle('Calculate Change Indices')
 

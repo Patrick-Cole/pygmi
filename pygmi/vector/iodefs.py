@@ -61,7 +61,7 @@ class ColumnSelect(BasicModule):
 
         self.lw_1 = QtWidgets.QListWidget()
         self.lw_1.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         vbl.addWidget(self.lw_1)
 

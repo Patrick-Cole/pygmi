@@ -1039,12 +1039,12 @@ class SuperClass(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        try:
+        if self.cmb_band1.receivers('currentIndexChanged') > 0:
             self.cmb_band1.currentIndexChanged.disconnect()
+        if self.cmb_band2.receivers('currentIndexChanged') > 0:
             self.cmb_band2.currentIndexChanged.disconnect()
+        if self.cmb_band3.receivers('currentIndexChanged') > 0:
             self.cmb_band3.currentIndexChanged.disconnect()
-        except TypeError:
-            pass
 
         self.cmb_band1.clear()
         self.cmb_band2.clear()

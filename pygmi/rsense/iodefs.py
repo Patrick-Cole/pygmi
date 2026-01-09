@@ -107,7 +107,7 @@ class ImportData(BasicModule):
         gl_1 = QtWidgets.QGridLayout(self)
 
         self.lw_tnames.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
@@ -299,7 +299,7 @@ class ImportBatch(BasicModule):
         gl_1 = QtWidgets.QGridLayout(self)
 
         self.lw_tnames.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)

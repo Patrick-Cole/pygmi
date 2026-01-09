@@ -69,7 +69,7 @@ class MergeLith(QtWidgets.QDialog):
         self.lw_lithmaster.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.lw_lithmerge.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
             buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)

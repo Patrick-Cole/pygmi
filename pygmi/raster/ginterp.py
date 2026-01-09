@@ -1492,14 +1492,16 @@ class PlotInterp(BasicModule):
         self.mmc.clippercu = self.clippercu
         self.mmc.clippercl = self.clippercl
 
-        try:
+        if self.cmb_band1.receivers('currentIndexChanged') > 0:
             self.cmb_band1.currentIndexChanged.disconnect()
+        if self.cmb_band2.receivers('currentIndexChanged') > 0:
             self.cmb_band2.currentIndexChanged.disconnect()
+        if self.cmb_band3.receivers('currentIndexChanged') > 0:
             self.cmb_band3.currentIndexChanged.disconnect()
+        if self.cmb_bands.receivers('currentIndexChanged') > 0:
             self.cmb_bands.currentIndexChanged.disconnect()
+        if self.cmb_bandh.receivers('currentIndexChanged') > 0:
             self.cmb_bandh.currentIndexChanged.disconnect()
-        except TypeError:
-            pass
 
         self.cmb_band1.clear()
         self.cmb_band2.clear()

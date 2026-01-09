@@ -72,7 +72,7 @@ class SatRatios(BasicModule):
         lbl_ratios = QtWidgets.QLabel('Ratios:')
 
         self.lw_ratios.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.cmb_sensor.addItems(['ASTER',
                                   'Landsat 8 and 9 (OLI)',
@@ -387,7 +387,7 @@ class ConditionIndices(BasicModule):
         lbl_sensor = QtWidgets.QLabel('Sensor:')
 
         self.lw_ratios.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.cmb_index.addItems(['EVI',
                                  'NDVI',

@@ -68,7 +68,7 @@ class BandSelect(ContextModule):
 
         self.lw_1 = QtWidgets.QListWidget()
         self.lw_1.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.vbl.addWidget(self.lw_1)
         self.buttonbox.htmlfile = 'raster.cm.selectbands'
@@ -1191,7 +1191,7 @@ class ExportData(ContextModule):
 
         self.cb_bandsort.setChecked(False)
         self.lw_1.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.setWindowTitle(r'Export Raster Data')
 
