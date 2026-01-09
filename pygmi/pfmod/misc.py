@@ -351,10 +351,12 @@ class MergeMod3D(BasicModule):
 
         tmp = self.exec()
 
-        if tmp == 1:
-            tmp = self.acceptall()
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
     def saveproj(self):
         """

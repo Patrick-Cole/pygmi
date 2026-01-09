@@ -351,7 +351,7 @@ class SceneViewer(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
         return True
 
     def updatescenelist(self):

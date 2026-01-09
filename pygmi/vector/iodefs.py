@@ -218,7 +218,7 @@ class ImportVector(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
 
         if not self.ifile:
             self.showlog('No vector file specified.')
@@ -538,7 +538,7 @@ class ImportXYZ(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
 
         try:
             nodata = float(self.le_nodata.text())

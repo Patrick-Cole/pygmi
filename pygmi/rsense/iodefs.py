@@ -142,7 +142,7 @@ class ImportData(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
 
         tnames = []
         for i in range(self.lw_tnames.count()):
@@ -334,7 +334,7 @@ class ImportBatch(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
 
         if not self.filelist:
             QtWidgets.QMessageBox.warning(
@@ -583,7 +583,7 @@ class ImportSentinel5P(BasicModule):
             tmp = self.exec()
 
             if tmp != 1:
-                return tmp
+                return False
 
         try:
             _ = float(self.le_lonmin.text())

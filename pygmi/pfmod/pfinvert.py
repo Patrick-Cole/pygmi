@@ -681,7 +681,7 @@ class MagInvert(BasicModule):
         tmp = self.exec()
 
         if tmp != 1:
-            return tmp
+            return False
 
         tmp = self.acceptall()
 

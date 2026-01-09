@@ -167,8 +167,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
                        cmap=colormaps[cmap], interpolation='none')
 
         if not data1.isrgb:
+            rows, cols = data1.data.shape
+            if cols > 2 * rows:
+                location = 'top'
+            else:
+                location = 'right'
+
             rdata.set_clim_std(2.5)
-            cbar = self.figure.colorbar(rdata, format=frm)
+            cbar = self.figure.colorbar(
+                rdata, format=frm, location=location, aspect=30)
             cbar.set_label(data1.units)
 
         if data1.metadata['Raster']['Section'] is True:
@@ -923,6 +930,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r'd:\WorkData\testdata.hdr'
+    # ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
