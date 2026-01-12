@@ -31,6 +31,7 @@ Functions
    pygmi.vector.dataprep.txtlinecnt
    pygmi.vector.dataprep.filesplit
    pygmi.vector.dataprep.gridxyz
+   pygmi.vector.dataprep.gridvolume
    pygmi.vector.dataprep.lltomap
    pygmi.vector.dataprep.maptobounds
    pygmi.vector.dataprep.maptovector
@@ -113,7 +114,7 @@ Module Contents
 
 
 
-   .. py:method:: section()
+   .. py:method:: grid_type_change()
 
       Check whether section is checked.
 
@@ -399,6 +400,27 @@ Module Contents
    :type method: str, optional
    :param bdist: Blanking distance. The default is 4.0.
    :type bdist: float, optional
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+
+   :returns: **dat** -- Output raster dataset.
+   :rtype: pygmi.raster.datatypes.Data.
+
+
+.. py:function:: gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print)
+
+   Grid volume data.
+
+   :param x: X coordinate values.
+   :type x: numpy array
+   :param y: Y coordinate values.
+   :type y: numpy array
+   :param z: Z coordinate values.
+   :type z: numpy array
+   :param val: Data values.
+   :type val: numpy array
+   :param dxy: Grid cell size, in distance units.
+   :type dxy: float
    :param showlog: Display information. The default is print.
    :type showlog: function, optional
 

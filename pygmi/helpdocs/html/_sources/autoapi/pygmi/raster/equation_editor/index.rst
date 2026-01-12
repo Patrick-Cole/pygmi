@@ -96,7 +96,7 @@ Module Contents
 
 
 
-.. py:function:: eqedit(data, equation, dtype='auto', showlog=print)
+.. py:function:: eqedit(data, equation, dtype='auto', showlog=print, piter=iter)
 
    Use equations on raster data.
 

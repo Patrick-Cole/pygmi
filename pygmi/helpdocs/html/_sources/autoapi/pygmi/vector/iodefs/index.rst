@@ -15,10 +15,12 @@ Classes
 .. autoapisummary::
 
    pygmi.vector.iodefs.ColumnSelect
+   pygmi.vector.iodefs.ImportVector
    pygmi.vector.iodefs.ImportXYZ
+   pygmi.vector.iodefs.ImportVoxel
    pygmi.vector.iodefs.ExportXYZ
    pygmi.vector.iodefs.ExportVector
-   pygmi.vector.iodefs.ImportVector
+   pygmi.vector.iodefs.ExportVoxel
 
 
 Functions
@@ -26,6 +28,9 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.vector.iodefs.import_ubc
+   pygmi.vector.iodefs.export_ubc
+   pygmi.vector.iodefs.get_GXYZ_old
    pygmi.vector.iodefs.get_GXYZ
    pygmi.vector.iodefs.get_intrepid
 
@@ -53,6 +58,68 @@ Module Contents
 
       :returns: True if successful, False otherwise.
       :rtype: bool
+
+
+
+   .. py:method:: saveproj()
+
+      Save project data from class.
+
+      :rtype: None.
+
+
+
+.. py:class:: ImportVector(parent=None)
+
+   Bases: :py:obj:`pygmi.misc.BasicModule`
+
+
+   GUI to import vector data.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: setupui()
+
+      Set up UI.
+
+      :rtype: None.
+
+
+
+   .. py:method:: settings(nodialog=False)
+
+      Entry point into item.
+
+      :param nodialog: Run settings without a dialog. The default is False.
+      :type nodialog: bool, optional
+
+      :returns: True if successful, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: change_bounds()
+
+      Change the bounds combo.
+
+
+
+   .. py:method:: get_sfile()
+
+      Get the filename and crs and bounds.
+
+
+
+   .. py:method:: set_bounds(bounds)
+
+      Set the bounds.
+
+      :param bounds: Bounds defined as (xmin, ymin, xmax, ymax).
+      :type bounds: list or numpy array
+
+      :rtype: None.
 
 
 
@@ -135,6 +202,37 @@ Module Contents
 
 
 
+.. py:class:: ImportVoxel(parent=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   GUI to import voxel data.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: parent, optional
+
+
+   .. py:method:: settings(nodialog=False)
+
+      Entry point into item.
+
+      :param nodialog: Run settings without a dialog. The default is False.
+      :type nodialog: bool, optional
+
+      :returns: True if successful, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: saveproj()
+
+      Save project data from class.
+
+      :rtype: None.
+
+
+
 .. py:class:: ExportXYZ(parent=None)
 
    Bases: :py:obj:`pygmi.misc.ContextModule`
@@ -175,66 +273,52 @@ Module Contents
 
 
 
-.. py:class:: ImportVector(parent=None)
+.. py:class:: ExportVoxel(parent=None)
 
-   Bases: :py:obj:`pygmi.misc.BasicModule`
+   Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
-   GUI to import vector data.
+   GUI to export voxel data.
 
    :param parent: Reference to the parent routine. The default is None.
    :type parent: parent, optional
 
 
-   .. py:method:: setupui()
+   .. py:method:: run()
 
-      Set up UI.
-
-      :rtype: None.
-
-
-
-   .. py:method:: settings(nodialog=False)
-
-      Entry point into item.
-
-      :param nodialog: Run settings without a dialog. The default is False.
-      :type nodialog: bool, optional
+      Entry point into the routine, used to run context menu item.
 
       :returns: True if successful, False otherwise.
       :rtype: bool
 
 
 
-   .. py:method:: change_bounds()
+.. py:function:: import_ubc(ifile)
 
-      Change the bounds combo.
+   Import a 3D UBC mesh and model.
 
+   :param ifile: Input file name.
+   :type ifile: str
 
-
-   .. py:method:: get_sfile()
-
-      Get the filename and crs and bounds.
-
+   :rtype: None.
 
 
-   .. py:method:: set_bounds(bounds)
+.. py:function:: export_ubc(ofile, data)
 
-      Set the bounds.
+   Export a section to a 3D UBC mesh and model.
 
-      :param bounds: Bounds defined as (xmin, ymin, xmax, ymax).
-      :type bounds: list or numpy array
+   :param data: dataset to export
+   :type data: PyGMI voxel Data
 
-      :rtype: None.
+   :rtype: None.
 
 
+.. py:function:: get_GXYZ_old(ifile, showlog=print, piter=iter)
 
-   .. py:method:: saveproj()
+   Get Geosoft XYZ.
 
-      Save project data from class.
-
-      :rtype: None.
-
+   :returns: **df2** -- Pandas dataframe.
+   :rtype: DataFrame
 
 
 .. py:function:: get_GXYZ(ifile, showlog=print, piter=iter)

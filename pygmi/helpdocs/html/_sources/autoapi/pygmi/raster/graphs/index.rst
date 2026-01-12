@@ -80,7 +80,7 @@ Module Contents
 
 
 
-   .. py:method:: update_raster(data1, cmap)
+   .. py:method:: update_raster(data1, cmap, plotlog)
 
       Update the raster plot.
 
@@ -88,6 +88,8 @@ Module Contents
       :type data1: PyGMI raster Data
       :param cmap: Matplotlib colormap description
       :type cmap: str
+      :param plotlog: Use a logarithmic colour scale.
+      :type plotlog: bool
 
       :rtype: None.
 

@@ -115,6 +115,14 @@ Module Contents
 
 
 
+   .. py:method:: calculate_dip()
+
+      Calculate dip.
+
+      :rtype: None.
+
+
+
    .. py:method:: export_csv()
 
       Export profile to csv.
@@ -351,6 +359,17 @@ Module Contents
    .. py:method:: move(event)
 
       Mouse move event.
+
+      :param event: Event variable.
+      :type event: event
+
+      :rtype: None.
+
+
+
+   .. py:method:: dip(event)
+
+      Calculate dip event.
 
       :param event: Event variable.
       :type event: event

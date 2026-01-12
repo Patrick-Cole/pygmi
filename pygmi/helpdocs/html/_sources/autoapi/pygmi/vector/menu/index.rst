@@ -73,6 +73,18 @@ Module Contents
 
 
 
+   .. py:method:: export_voxel()
+
+      Export voxel data.
+
+
+
+   .. py:method:: display_voxel()
+
+      Display voxel data.
+
+
+
    .. py:method:: file_split()
 
       Text file split.
@@ -82,6 +94,12 @@ Module Contents
    .. py:method:: import_xyz()
 
       Import XYZ data.
+
+
+
+   .. py:method:: import_voxel()
+
+      Import Voxel data.
 
 
 
