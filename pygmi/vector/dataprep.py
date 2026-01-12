@@ -774,9 +774,9 @@ class TextFileSplit(BasicModule):
         self.le_files = QtWidgets.QLineEdit('1')
         self.le_lines = QtWidgets.QLineEdit('1')
         self.le_bytes = QtWidgets.QLineEdit('1')
-        self.chk_allfiles = QtWidgets.QCheckBox('Split all text files with '
-                                                'same extension in current '
-                                                'directory')
+        self.cb_allfiles = QtWidgets.QCheckBox('Split all text files with '
+                                               'same extension in current '
+                                               'directory')
 
         self.cmb_method = QtWidgets.QComboBox()
         self.lbl_totsize = QtWidgets.QLabel('0')
@@ -831,7 +831,7 @@ class TextFileSplit(BasicModule):
         gl_main.addWidget(self.le_lines, 5, 1, 1, 1)
         gl_main.addWidget(lbl_bytes, 6, 0, 1, 1)
         gl_main.addWidget(self.le_bytes, 6, 1, 1, 1)
-        gl_main.addWidget(self.chk_allfiles, 7, 0, 1, 2)
+        gl_main.addWidget(self.cb_allfiles, 7, 0, 1, 2)
         gl_main.addWidget(self.buttonbox, 8, 0, 1, 4)
 
         pb_ifile.pressed.connect(self.get_ifile)
@@ -954,7 +954,7 @@ class TextFileSplit(BasicModule):
         self.saveobj(self.le_files)
         self.saveobj(self.le_lines)
         self.saveobj(self.le_bytes)
-        self.saveobj(self.chk_allfiles)
+        self.saveobj(self.cb_allfiles)
         self.saveobj(self.cmb_method)
         self.saveobj(self.lbl_totsize)
         self.saveobj(self.lbl_totlines)
@@ -989,7 +989,7 @@ class TextFileSplit(BasicModule):
         else:
             num = numfiles
 
-        if self.chk_allfiles.isChecked():
+        if self.cb_allfiles.isChecked():
             _, fext = os.path.splitext(self.ifile)
             fdir = os.path.dirname(self.ifile)
             ifiles = glob.glob(os.path.join(fdir, f'*{fext}'))

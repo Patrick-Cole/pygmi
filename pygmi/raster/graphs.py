@@ -36,7 +36,7 @@ menu. The following are supported:
 
 import numpy as np
 from PySide6 import QtWidgets, QtCore
-from matplotlib import colormaps
+from matplotlib import colormaps, colors
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -140,7 +140,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_raster(self, data1, cmap):
+    def update_raster(self, data1, cmap, plotlog):
         """
         Update the raster plot.
 
@@ -150,6 +150,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             raster dataset to be used in contouring
         cmap : str
             Matplotlib colormap description
+        plotlog : bool
+            Use a logarithmic colour scale.
 
         Returns
         -------
@@ -163,19 +165,25 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
 
-        rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=colormaps[cmap], interpolation='none')
+        if plotlog is True:
+            rdata = imshow(self.axes, data1.data, extent=data1.extent,
+                           cmap=colormaps[cmap], interpolation='none',
+                           norm=colors.LogNorm(vmin=data1.data.min(),
+                                               vmax=data1.data.max()))
+        else:
+            rdata = imshow(self.axes, data1.data, extent=data1.extent,
+                           cmap=colormaps[cmap], interpolation='none')
+            rdata.set_clim_std(2.5)
 
         if not data1.isrgb:
             rows, cols = data1.data.shape
             if cols > 2 * rows:
-                location = 'top'
+                location = 'bottom'
             else:
                 location = 'right'
 
-            rdata.set_clim_std(2.5)
             cbar = self.figure.colorbar(
-                rdata, format=frm, location=location, aspect=30)
+                rdata, format=frm, location=location, aspect=30, pad=0.2)
             cbar.set_label(data1.units)
 
         if data1.metadata['Raster']['Section'] is True:
@@ -449,6 +457,9 @@ class PlotRaster(ContextModule):
 
         hbl.addWidget(self.buttonbox)
 
+        self.cb_log = QtWidgets.QCheckBox('Log Colour Scale')
+        hbl.addWidget(self.cb_log)
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel('Bands:')
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -468,6 +479,7 @@ class PlotRaster(ContextModule):
         self.setFocus()
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cb_log.checkStateChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -480,9 +492,11 @@ class PlotRaster(ContextModule):
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
+        plotlog = self.cb_log.isChecked()
+
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            self.mmc.update_raster(data[i], cmap)
+            self.mmc.update_raster(data[i], cmap, plotlog)
 
     def run(self):
         """
@@ -930,12 +944,13 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r'd:\WorkData\testdata.hdr'
-    # ifile = r"D:\UBC_Files\section.tif"
+    ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     data = get_raster(ifile)
+    data[0].units = 'hope'
 
     tmp = PlotRaster()
     tmp.indata['Raster'] = data
