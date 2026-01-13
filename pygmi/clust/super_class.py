@@ -1307,8 +1307,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
-    ifile = r"C:\Work\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"D:\workdata\PyGMI Test Data\Classification\clipsmall.tif"
 
     data = iodefs.get_raster(ifile)
 

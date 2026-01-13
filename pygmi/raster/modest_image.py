@@ -318,6 +318,29 @@ class ModestImage(mi.AxesImage):
 
         self.changed()
 
+    def scale_external_to_res(self, full_res):
+        """
+        Scale to resolution.
+
+        Change self._A and _extent to render an image whose resolution is
+        matched to the eventual rendering.
+        """
+        # Find out how we need to slice the array to make sure we match the
+        # resolution of the display. We pass self._world2pixel which matters
+        # for cases where the extent has been set.
+        x0, x1, sx, y0, y1, sy = extract_matched_slices(
+            axes=self.axes, shape=full_res.shape, transform=self._world2pixel)
+
+        if self.origin == 'upper':
+            A = full_res[::-1][y0:y1:sy, x0:x1:sx]
+            A = cbook.safe_masked_invalid(A)
+            A = A[::-1]
+        else:
+            A = full_res[y0:y1:sy, x0:x1:sx]
+            A = cbook.safe_masked_invalid(A)
+
+        return A, x0, x1, sx, y0, y1, sy
+
     def draw(self, renderer, *args, **kwargs):
         """Draw."""
         if self._full_res.shape is None:
