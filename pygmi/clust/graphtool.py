@@ -748,6 +748,7 @@ class ScatterPlot(BasicModule):
             self.c[0] = gstmp
             self.hist.update_graph(clearaxis=True)
             self.on_cp_dpoly()
+            self.update_hist()
 
     def on_cp_combo2(self):
         """
@@ -763,6 +764,7 @@ class ScatterPlot(BasicModule):
             self.c[1] = gstmp
             self.hist.update_graph(clearaxis=True)
             self.on_cp_dpoly()
+            self.update_hist()
 
     def on_cp_combo3(self):
         """
@@ -788,6 +790,7 @@ class ScatterPlot(BasicModule):
         """
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
+        self.update_map()
 
     def on_map_combo2(self):
         """
@@ -983,13 +986,13 @@ def _testfn():
 
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
-    dat = dat1 + dat2
+    # dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ScatterPlot()
-    tmp1.indata['Raster'] = dat
+    tmp1.indata['Raster'] = dat1
     tmp1.indata['Cluster'] = dat2
     tmp1.settings()
 
