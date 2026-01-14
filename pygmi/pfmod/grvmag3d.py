@@ -112,18 +112,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotTest(ContextModule):
-    """
-    Plot Raster Class.
+    """Plot Raster Class."""
 
-    Parameters
-    ----------
-    parent : GravMag, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None, data=None):
-        super().__init__(parent)
+    def __init__(self, data=None):
+        super().__init__()
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Test Plot')
@@ -407,7 +399,7 @@ class GravMag():
 
         self.calc_regional()
 
-        ptest = PlotTest(self, data=self.lmod2)
+        ptest = PlotTest(data=self.lmod2)
         ptest.exec()
 
     def update_graph(self, grvval, magval, modind):
