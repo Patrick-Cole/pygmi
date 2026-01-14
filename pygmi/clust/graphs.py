@@ -37,17 +37,9 @@ from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         # figure stuff
         fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
@@ -72,6 +64,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, label='map')
+
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         cdat = data1.data
         # csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
@@ -247,11 +242,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+
         rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
                        extent=data1.extent, cmap=colormaps['jet'],
                        vmin=0., vmax=1.)
 
         self.figure.colorbar(rdata)
+
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         if data1.crs.is_geographic:
             self.axes.set_xlabel('Longitude')
@@ -269,7 +270,7 @@ class PlotRaster(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -282,7 +283,7 @@ class PlotRaster(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -343,7 +344,7 @@ class PlotBars(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -356,7 +357,7 @@ class PlotBars(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -417,7 +418,7 @@ class PlotMembership(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -430,7 +431,7 @@ class PlotMembership(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -513,7 +514,7 @@ class PlotVRCetc(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -526,7 +527,7 @@ class PlotVRCetc(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()

@@ -68,7 +68,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget optional
         Reference to the parent routine. The default is None.
     start_item : DiagramItem
         Starting DiagramItem object.
@@ -204,7 +204,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     diagram_type : str
         string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
@@ -470,7 +470,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     item_menu : QtWidgets.QMenu
         Item menu.
@@ -637,19 +637,14 @@ class MainWidget(QtWidgets.QMainWindow):
     """
     Widget class to call the main interface.
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
     Attributes
     ----------
     pdlg : list
     context_menu : dictionary
     """
 
-    def __init__(self, parent=None, nocgs=True):
-        super().__init__(parent)
+    def __init__(self, nocgs=True):
+        super().__init__()
 
         ipth = os.path.dirname(menu_default.__file__) + r'/images/'
 
@@ -1371,15 +1366,13 @@ class Startup(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
     pbarmax : int
         Progress bar maximum value.
 
     """
 
-    def __init__(self, pbarmax, parent=None):
-        super().__init__(parent)
+    def __init__(self, pbarmax):
+        super().__init__()
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
 
         self.vbl_main = QtWidgets.QVBoxLayout(self)

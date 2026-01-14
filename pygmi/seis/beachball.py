@@ -51,7 +51,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : BeachBall, optional
         Reference to the parent routine. The default is None.
     """
 
@@ -141,7 +141,7 @@ class BeachBall(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

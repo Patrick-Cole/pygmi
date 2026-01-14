@@ -51,7 +51,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : PlotPoints, PlotPhaseTensor, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -329,7 +329,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotPoints(ContextModule):
-    """Plot points class."""
+    """
+    Plot points class.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -399,7 +407,15 @@ class PlotPoints(ContextModule):
 
 
 class PlotPhaseTensor(ContextModule):
-    """Plot phase tensor."""
+    """
+    Plot phase tensor.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)

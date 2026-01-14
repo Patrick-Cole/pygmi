@@ -114,7 +114,7 @@ class BasicModule(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -348,7 +348,7 @@ class ContextModule(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -413,7 +413,7 @@ class PButtonBox(QtWidgets.QWidget):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -468,7 +468,7 @@ class QVStack2Layout(QtWidgets.QGridLayout):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -578,7 +578,7 @@ class ProgressBar(QtWidgets.QProgressBar):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes

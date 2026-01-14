@@ -53,17 +53,10 @@ from pygmi.misc import PTime, frm, ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-    """
-
-    def __init__(self, parent=None):
-        fig = Figure(layout='tight', dpi=150)
+    def __init__(self):
+        fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -124,7 +117,7 @@ class PlotTest(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : GravMag, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -137,7 +130,7 @@ class PlotTest(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         # hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
         # self.buttonbox.buttonbox.hide()
@@ -163,7 +156,7 @@ class GravMag():
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.pfmod.pfmod.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -414,7 +407,7 @@ class GravMag():
 
         self.calc_regional()
 
-        ptest = PlotTest(data=self.lmod2)
+        ptest = PlotTest(self, data=self.lmod2)
         ptest.exec()
 
     def update_graph(self, grvval, magval, modind):
@@ -461,7 +454,7 @@ class GeoData():
 
     Parameters
     ----------
-    parent : parent
+    parent : pygmi.pfmod.pfmod.MainWidget
         Reference to the parent routine.
     ncols : int
         Number of columns in the model.

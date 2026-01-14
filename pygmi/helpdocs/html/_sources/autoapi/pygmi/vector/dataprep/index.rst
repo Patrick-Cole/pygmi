@@ -54,7 +54,7 @@ Module Contents
    shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -87,7 +87,7 @@ Module Contents
    This class grids point data using a nearest neighbourhood technique.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -160,7 +160,7 @@ Module Contents
    This class reprojects datasets using the GeoPandas routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -212,7 +212,7 @@ Module Contents
    GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: banddata
 
@@ -260,7 +260,7 @@ Module Contents
    GUI to split a text file into smaller text files.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

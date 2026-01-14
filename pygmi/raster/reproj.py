@@ -41,7 +41,7 @@ class GroupProj(QtWidgets.QWidget):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     title : str
         Title for QGroupBox - self.gbox.

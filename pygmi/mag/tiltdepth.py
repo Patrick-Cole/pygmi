@@ -58,7 +58,7 @@ class TiltDepth(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -158,6 +158,7 @@ class TiltDepth(BasicModule):
         hbl_all.addLayout(vbl_right)
 
         self.cmb_cbar.currentIndexChanged.connect(self.change_cbar)
+        self.cmb_band1.currentIndexChanged.connect(self.change_cbar)
         self.btn_apply.clicked.connect(self.calculate)
         self.btn_save.clicked.connect(self.save_depths)
         self.cb_rtp.clicked.connect(self.rtp_choice)
@@ -216,15 +217,24 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        if 'Vector' not in self.outdata:
-            return
+        txt = str(self.cmb_band1.currentText())
 
-        gdf = self.outdata['Vector'][0]
-        zout = self.indata['Raster'][0]
+        for i in self.indata['Raster']:
+            if i.dataid == txt:
+                zout = i
+                break
+        # if 'Vector' not in self.outdata:
+        #     return
+
+        # gdf = self.outdata['Vector'][0]
+        # zout = self.indata['Raster'][0]
         txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         cmap = colormaps[txt]
 
@@ -240,12 +250,23 @@ class TiltDepth(BasicModule):
         high = int(cmap.N * (135 / 180))
         cmap2[low:high] = cmap2[int(cmap.N / 2)]
 
-        ims = self.axes.scatter(gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
+        if 'Vector' in self.outdata:
+            gdf = self.outdata['Vector'][0]
+            ims = self.axes.scatter(
+                gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
+            self.figure.colorbar(ims, format=frm, label='Depth (m)')
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.colorbar(ims, format=frm, label='Depth (m)')
+        if zout.crs is not None and zout.crs.is_geographic:
+            self.axes.set_xlabel('Longitude')
+            self.axes.set_ylabel('Latitude')
+        else:
+            self.axes.set_xlabel('Eastings')
+            self.axes.set_ylabel('Northings')
+
+        # self.figure.colorbar(ims, format=frm, label='Depth (m)')
 
         self.figure.tight_layout()
 
@@ -260,10 +281,11 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        txt = str(self.cmb_band1.currentText())
 
         self.btn_apply.setText('Calculating...')
         self.btn_apply.setEnabled(False)
+
+        txt = str(self.cmb_band1.currentText())
 
         for i in self.indata['Raster']:
             if i.dataid == txt:
@@ -312,6 +334,8 @@ class TiltDepth(BasicModule):
 
         self.cmb_band1.clear()
         self.cmb_band1.addItems(blist)
+
+        self.change_cbar()
 
         if not nodialog:
             tmp = self.exec()

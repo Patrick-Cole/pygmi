@@ -48,7 +48,7 @@ Module Contents
    Class responsible for drawing arrows on the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget optional
    :param start_item: Starting DiagramItem object.
    :type start_item: DiagramItem
    :param end_item: End DiagramItem object.
@@ -112,7 +112,7 @@ Module Contents
    Diagram Item.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param diagram_type: string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
                         'Step'
    :type diagram_type: str
@@ -229,7 +229,7 @@ Module Contents
    Diagram Scene.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param item_menu: Item menu.
    :type item_menu: QtWidgets.QMenu
 
@@ -267,15 +267,12 @@ Module Contents
 
 
 
-.. py:class:: MainWidget(parent=None, nocgs=True)
+.. py:class:: MainWidget(nocgs=True)
 
    Bases: :py:obj:`PySide6.QtWidgets.QMainWindow`
 
 
    Widget class to call the main interface.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
    .. attribute:: pdlg
 
@@ -486,15 +483,13 @@ Module Contents
 
 
 
-.. py:class:: Startup(pbarmax, parent=None)
+.. py:class:: Startup(pbarmax)
 
    Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to provide a startup display while PyGMI loads into memory.
 
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
    :param pbarmax: Progress bar maximum value.
    :type pbarmax: int
 

@@ -46,7 +46,7 @@ Module Contents
    A combobox to select vector columns.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -77,7 +77,7 @@ Module Contents
    GUI to import vector data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ppygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -141,7 +141,7 @@ Module Contents
    This class imports tabular data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -210,7 +210,7 @@ Module Contents
    GUI to import voxel data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -241,7 +241,7 @@ Module Contents
    GUI to export XYZ data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -261,7 +261,7 @@ Module Contents
    GUI to export vector data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -281,7 +281,7 @@ Module Contents
    GUI to export voxel data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()

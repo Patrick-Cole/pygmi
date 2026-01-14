@@ -47,7 +47,7 @@ class ColumnSelect(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -127,7 +127,7 @@ class ImportVector(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ppygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -385,7 +385,7 @@ class ImportXYZ(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -655,7 +655,7 @@ class ImportVoxel(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -718,7 +718,7 @@ class ExportXYZ(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -800,7 +800,7 @@ class ExportVector(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -880,7 +880,7 @@ class ExportVoxel(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

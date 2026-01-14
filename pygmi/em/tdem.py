@@ -49,17 +49,9 @@ from pygmi.misc import QVStack2Layout, BasicModule
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         super().__init__(fig)
 
@@ -155,7 +147,7 @@ class TDEM1D(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -174,8 +166,8 @@ class TDEM1D(BasicModule):
         hbl = QtWidgets.QHBoxLayout(self)
         vsl = QVStack2Layout()
 
-        self.mmc1 = MyMplCanvas2(self)
-        self.mmc = MyMplCanvas2(self)
+        self.mmc1 = MyMplCanvas2()
+        self.mmc = MyMplCanvas2()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_stype = QtWidgets.QComboBox()

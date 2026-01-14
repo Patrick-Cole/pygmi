@@ -31,15 +31,12 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: update_legend(data1)
@@ -72,7 +69,7 @@ Module Contents
    Class to plot the borehole log.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()

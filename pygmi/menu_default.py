@@ -76,7 +76,7 @@ class HelpMenu():
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -146,14 +146,12 @@ class HelpButton(QtWidgets.QPushButton):
 
     Parameters
     ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
     htmlfile : str
         HTML help file name.
     """
 
-    def __init__(self, htmlfile=None, parent=None):
-        super().__init__(parent)
+    def __init__(self, htmlfile=None):
+        super().__init__()
 
         self.htmlfile = htmlfile
 

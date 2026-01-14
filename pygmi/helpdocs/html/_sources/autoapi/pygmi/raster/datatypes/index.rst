@@ -192,7 +192,7 @@ Module Contents
 
       Make a deepcopy of the function.
 
-      :param data0: Input data to replace old ddata. Must have same shape.
+      :param data0: Input data to replace old data. Must have same shape.
       :type data0: numpy arraay
       :param resetmeta: This will clear metadata during copy. The default is False.
       :type resetmeta: bool, optional

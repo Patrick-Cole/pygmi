@@ -28,7 +28,7 @@ Module Contents
    GUI to show a summary of basic statistics.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

@@ -50,17 +50,9 @@ from pygmi.raster.modest_image import imshow
 
 
 class GraphMap(FigureCanvasQTAgg):
-    """
-    Graph Map widget.
+    """Graph Map widget."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         self.figure = Figure(layout='tight')
 
         super().__init__(self.figure)
@@ -209,7 +201,7 @@ class AnalSpec(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -230,7 +222,7 @@ class AnalSpec(BasicModule):
         self.feature[2330] = [2120, 2370]
         self.feature[2390] = [2375, 2435]
 
-        self.map = GraphMap(self)
+        self.map = GraphMap()
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
@@ -574,7 +566,7 @@ class ProcFeatures(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

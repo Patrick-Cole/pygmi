@@ -41,7 +41,7 @@ Module Contents
    This class imports CG-5 gravimeter data with associated GPS data.
 
    :param parent: Reference to the parent routine.
-   :type parent: parent
+   :type parent: pygmi.main.MainWidget
 
 
    .. py:method:: setupui()

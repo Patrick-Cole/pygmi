@@ -31,7 +31,7 @@ Module Contents
    Import Data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -97,7 +97,7 @@ Module Contents
    Export 3D model data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -168,7 +168,7 @@ Module Contents
    Export kmz dialog.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param wkt: Well Known Text (wkt) representation of the projection.
    :type wkt: str
 
@@ -189,7 +189,7 @@ Module Contents
    Message combo box.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param combotext: List of text for combo.
    :type combotext: list
 

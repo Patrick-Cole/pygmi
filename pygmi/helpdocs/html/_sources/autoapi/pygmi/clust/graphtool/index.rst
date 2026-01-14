@@ -38,9 +38,6 @@ Module Contents
 
    Histogram graph widget.
 
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
-
 
    .. py:method:: get_hist(bins)
 
@@ -113,15 +110,12 @@ Module Contents
 
 
 
-.. py:class:: GraphMap(parent=None)
+.. py:class:: GraphMap
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Map widget.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: init_graph()
@@ -154,9 +148,6 @@ Module Contents
 
 
    Polygon Interactor for the graph tool.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
    .. attribute:: epsilon
 
@@ -251,7 +242,7 @@ Module Contents
    Main graph tool GUI routine.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

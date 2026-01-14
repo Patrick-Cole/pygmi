@@ -267,17 +267,9 @@ class Metadata(ContextModule):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None, width=8, height=6, dpi=100):
+    def __init__(self, width=8, height=6, dpi=100):
         fig = Figure(layout='constrained', figsize=(width, height), dpi=dpi)
         super().__init__(fig)
 
@@ -369,7 +361,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class StaticShiftEDI(BasicModule):
-    """Static shift EDI data."""
+    """
+    Static shift EDI data.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -382,7 +382,7 @@ class StaticShiftEDI(BasicModule):
         hbl = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
         hbl_3 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -553,7 +553,15 @@ class StaticShiftEDI(BasicModule):
 
 
 class RotateEDI(BasicModule):
-    """Rotate EDI data."""
+    """
+    Rotate EDI data.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -564,7 +572,7 @@ class RotateEDI(BasicModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -736,15 +744,9 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
     Matplotlib canvas widget for the actual plot.
 
     This routine will also allow the picking and movement of nodes of data.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
     """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure()
 
         self.axes = fig.add_subplot(111)
@@ -1006,7 +1008,15 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
 
 class EditEDI(BasicModule):
-    """Edit EDI Class."""
+    """
+    Edit EDI Class.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1018,7 +1028,7 @@ class EditEDI(BasicModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvasPick(self)
+        self.mmc = MyMplCanvasPick()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -1233,17 +1243,9 @@ class MySlider(QtWidgets.QSlider):
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         super().__init__(fig)
 
@@ -1323,7 +1325,15 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
 
 class Occam1D(BasicModule):
-    """Occam 1D inversion."""
+    """
+    Occam 1D inversion.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1339,7 +1349,7 @@ class Occam1D(BasicModule):
         hbl_2 = QtWidgets.QHBoxLayout()
         gl_1 = QtWidgets.QGridLayout()
         gl_1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
-        self.mmc = MyMplCanvas2(self)
+        self.mmc = MyMplCanvas2()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_occfile = QtWidgets.QLineEdit('')

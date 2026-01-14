@@ -44,7 +44,7 @@ Module Contents
    Primary class for the Tilt Depth.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: self.mmc
 

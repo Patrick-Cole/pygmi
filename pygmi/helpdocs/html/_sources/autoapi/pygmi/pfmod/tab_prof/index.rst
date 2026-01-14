@@ -45,7 +45,7 @@ Module Contents
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -331,7 +331,7 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: button_press(event)
@@ -537,7 +537,7 @@ Module Contents
    moving to click in a single step.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: mousePressEvent(event)
@@ -600,7 +600,7 @@ Module Contents
    Class to call up a dialog for plot axis scale.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
    :param lmod: Reference to the lithology model.
    :type lmod: pygmi.pfmod.datatypes.LithModel
 
@@ -629,7 +629,7 @@ Module Contents
    Class to call up a dialog for ranged copying.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: setupui()
@@ -656,7 +656,7 @@ Module Contents
    Custom Matplotlib toolbar.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: axis_scale()
@@ -718,7 +718,7 @@ Module Contents
    Import Picture dialog.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: setupui()

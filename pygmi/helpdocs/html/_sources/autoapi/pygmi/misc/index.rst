@@ -85,7 +85,7 @@ Module Contents
    Basic Module.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: parent
 
@@ -207,7 +207,7 @@ Module Contents
    Context Module.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: parent
 
@@ -262,7 +262,7 @@ Module Contents
    Custom buttonbox with help.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: help_docs()
@@ -281,7 +281,7 @@ Module Contents
    This works like VBoxLayout, except each row takes two widgets.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: addWidget(widget1, widget2)
@@ -354,7 +354,7 @@ Module Contents
    iterable.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: otime
 

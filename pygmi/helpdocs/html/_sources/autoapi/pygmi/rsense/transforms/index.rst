@@ -42,7 +42,7 @@ Module Contents
    GUI to perform MNF transform.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -99,7 +99,7 @@ Module Contents
    GUI to perform PCA transform.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

@@ -47,7 +47,7 @@ class Mod3dDisplay(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -662,7 +662,7 @@ class MySunCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -711,7 +711,7 @@ class MySunCanvas(FigureCanvasQTAgg):
 
 def updatemod(gdat2, cindx, cloc):
     """
-    Update model without smooothing.
+    Update model without smoothing.
 
     Parameters
     ----------

@@ -38,7 +38,7 @@ class MextDisplay(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.pfmod.pfmod.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

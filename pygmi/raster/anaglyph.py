@@ -38,16 +38,9 @@ from pygmi.raster.misc import norm2, currentshader, histcomp
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         super().__init__(fig)
 
@@ -289,7 +282,7 @@ class PlotAnaglyph(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -310,7 +303,7 @@ class PlotAnaglyph(ContextModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         # Define Widgets
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()

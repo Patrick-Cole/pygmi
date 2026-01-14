@@ -46,7 +46,7 @@ Module Contents
    A combobox to select data bands.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -66,7 +66,7 @@ Module Contents
    Import Data GUI - Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param ifile: Input file. The default is ''.
    :type ifile: str, optional
    :param filt: File filter. The default is ''.
@@ -101,7 +101,7 @@ Module Contents
    Import RGB Image GUI- Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -237,7 +237,7 @@ Module Contents
    Export Data GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: ofile
 

@@ -64,7 +64,7 @@ Module Contents
    Import Data GUI - Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -112,7 +112,7 @@ Module Contents
    to be used by other routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: idir
 
@@ -171,7 +171,7 @@ Module Contents
    GUI import Sentinel 5P data and export to shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -247,7 +247,7 @@ Module Contents
    GUI to export Raster File List.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

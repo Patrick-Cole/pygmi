@@ -45,7 +45,7 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: BeachBall, optional
 
 
    .. py:method:: init_graph()
@@ -64,7 +64,7 @@ Module Contents
    Create shapefiles with beachballs.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: data_init()

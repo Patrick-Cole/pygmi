@@ -38,15 +38,7 @@ from pygmi.misc import BasicModule
 
 
 class GraphHist(FigureCanvasQTAgg):
-    """
-    Histogram graph widget.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
+    """Histogram graph widget."""
 
     def __init__(self, parent=None):
         self.figure = Figure()
@@ -265,17 +257,9 @@ class GraphHist(FigureCanvasQTAgg):
 
 
 class GraphMap(FigureCanvasQTAgg):
-    """
-    Map widget.
+    """Map widget."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         self.figure = Figure()
 
         super().__init__(self.figure)
@@ -375,11 +359,6 @@ class GraphMap(FigureCanvasQTAgg):
 class PolygonInteractor(QtCore.QObject):
     """
     Polygon Interactor for the graph tool.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
 
     Attributes
     ----------
@@ -625,7 +604,7 @@ class ScatterPlot(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -637,8 +616,8 @@ class ScatterPlot(BasicModule):
         self.m = [0, 0]
         self.dat_tmp = None
 
-        self.map = GraphMap(self)
-        self.hist = GraphHist(self)
+        self.map = GraphMap()
+        self.hist = GraphHist()
 
         self.cp_dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.cp_combo = QtWidgets.QComboBox()

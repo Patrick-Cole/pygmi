@@ -43,17 +43,9 @@ from pygmi.raster.misc import cut_raster
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
@@ -117,7 +109,7 @@ class ClipToZoom(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -128,7 +120,7 @@ class ClipToZoom(BasicModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.htmlfile = 'raster.dm.cliptozoom'

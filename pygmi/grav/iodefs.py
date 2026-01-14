@@ -41,7 +41,7 @@ class ImportCG5(BasicModule):
 
     Parameters
     ----------
-    parent : parent
+    parent : pygmi.main.MainWidget
         Reference to the parent routine.
     """
 

@@ -36,15 +36,12 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: GraphMap(parent=None)
+.. py:class:: GraphMap
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Graph Map widget.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: init_graph()
@@ -69,7 +66,7 @@ Module Contents
    Analyse spectra GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -178,7 +175,7 @@ Module Contents
    GUI to process hyperspectral features.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

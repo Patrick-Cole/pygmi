@@ -36,17 +36,10 @@ from pygmi.misc import BasicModule, ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-    """
-
-    def __init__(self, parent=None):
-        fig = Figure(layout='tight', dpi=150)
+    def __init__(self):
+        fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -90,7 +83,7 @@ class PlotDrift(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProcessData, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -103,7 +96,7 @@ class PlotDrift(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         # hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
         # self.buttonbox.buttonbox.hide()
@@ -128,7 +121,7 @@ class ProcessData(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

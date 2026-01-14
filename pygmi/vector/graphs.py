@@ -50,15 +50,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
     Matplotlib canvas widget for the actual plot.
 
     This routine will also allow the picking and movement of nodes of data.
-
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
     """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         self.line = None
@@ -717,7 +711,7 @@ class PlotCCoef(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -731,7 +725,7 @@ class PlotCCoef(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -790,7 +784,7 @@ class PlotHist(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -802,7 +796,7 @@ class PlotHist(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -874,7 +868,7 @@ class PlotLines(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -888,7 +882,7 @@ class PlotLines(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -995,7 +989,7 @@ class PlotLineMap(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1009,7 +1003,7 @@ class PlotLineMap(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1108,7 +1102,7 @@ class PlotRose(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1121,7 +1115,7 @@ class PlotRose(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1207,7 +1201,7 @@ class PlotVector(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1220,7 +1214,7 @@ class PlotVector(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 

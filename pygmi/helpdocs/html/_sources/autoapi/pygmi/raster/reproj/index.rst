@@ -37,7 +37,7 @@ Module Contents
    Group Projection GUI widget.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param title: Title for QGroupBox - self.gbox.
    :type title: str
 

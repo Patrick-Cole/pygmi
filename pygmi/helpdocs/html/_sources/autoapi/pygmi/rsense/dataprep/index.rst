@@ -37,7 +37,7 @@ Module Contents
    GUI to calculate topographic correction.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -86,7 +86,7 @@ Module Contents
    GUI to calculate atmospheric correction using Sen2Cor.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

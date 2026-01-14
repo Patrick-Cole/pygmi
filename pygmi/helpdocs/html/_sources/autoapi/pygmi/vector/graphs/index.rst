@@ -37,7 +37,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
@@ -45,9 +45,6 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    This routine will also allow the picking and movement of nodes of data.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: button_release_callback(event)
@@ -220,7 +217,7 @@ Module Contents
    GUI to plot correlation coefficients.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -247,7 +244,7 @@ Module Contents
    GUI to plot histogram from vectors.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -274,7 +271,7 @@ Module Contents
    GUI to plot lines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -301,7 +298,7 @@ Module Contents
    GUI to plot a line map.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -328,7 +325,7 @@ Module Contents
    GUI to plot rose diagrams.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -355,7 +352,7 @@ Module Contents
    GUI to plot vectors.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()

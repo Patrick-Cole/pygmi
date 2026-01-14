@@ -51,17 +51,9 @@ from pygmi.seis.iodefs import importmacro
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
 
         fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
@@ -735,7 +727,7 @@ class PlotQC(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -750,7 +742,7 @@ class PlotQC(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
@@ -936,7 +928,7 @@ class PlotIso(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -951,7 +943,7 @@ class PlotIso(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
@@ -1055,7 +1047,7 @@ class PlotTempB(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1071,7 +1063,7 @@ class PlotTempB(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit('300')
@@ -1171,7 +1163,7 @@ class PlotSpatialB(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1189,7 +1181,7 @@ class PlotSpatialB(ContextModule):
         # hbl1 = QtWidgets.QHBoxLayout()
         # hbl2 = QtWidgets.QHBoxLayout()
         hbl3 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit('0.2')

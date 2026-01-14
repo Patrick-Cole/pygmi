@@ -41,7 +41,7 @@ Module Contents
    Fuzzy clustering GUI class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

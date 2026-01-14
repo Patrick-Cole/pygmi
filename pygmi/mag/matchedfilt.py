@@ -49,7 +49,7 @@ class MatchedFilt(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -303,18 +303,18 @@ def getbutter(lowcut, highcut, f, order=5):
     Parameters
     ----------
     lowcut : list of floats
-        Low cutoff frequencys.
+        Low cutoff frequencies.
     highcut : list of floats
-        High cutoff frequencys.
+        High cutoff frequencies.
     f : numpy array
-        List of frequencies, ending in nyquist frequency.
+        List of frequencies, ending in Nyquist frequency.
     order : int
         Order of the filter.
 
     Returns
     -------
     filt : list
-        List of 1D butterworth filters.
+        List of 1D Butterworth filters.
 
     """
     filt = []

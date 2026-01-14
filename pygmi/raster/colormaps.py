@@ -23,9 +23,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Custom colormaps.
+Custom colour maps.
 
-The wheel, splash and Floyd colormaps  are from:
+The wheel, splash and Floyd colour maps  are from:
 https://github.com/uekstrom/colorwheel/blob/main/colorwheel.py
 """
 import numpy as np
@@ -33,7 +33,7 @@ from matplotlib.colors import LinearSegmentedColormap, ListedColormap
 from matplotlib.pyplot import colormaps
 
 
-# This is the Colorwheel color map in sRGB float format
+# This is the Colorwheel colour map in sRGB float format
 wheel_colors = [[9.65246549e-01, 8.13827873e-01, 3.54995481e-02],
                 [1.00000000e+00, 7.54400671e-01, 5.96369855e-08],
                 [1.00000000e+00, 6.89975121e-01, 3.70155717e-07],

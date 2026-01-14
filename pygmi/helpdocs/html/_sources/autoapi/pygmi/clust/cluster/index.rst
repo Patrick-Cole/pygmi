@@ -39,7 +39,7 @@ Module Contents
    Cluster analysis GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -119,7 +119,7 @@ Module Contents
    :param xi: Minimum steepness on the reachability plot for OPTICS.
               The default is 0.05.
    :type xi: float, optional
-   :param min_samples: Minimu samples for DBSCAN. The default is 5.
+   :param min_samples: Minimum samples for DBSCAN. The default is 5.
    :type min_samples: int, optional
    :param showlog: Show information using a function. The default is print.
    :type showlog: function, optional

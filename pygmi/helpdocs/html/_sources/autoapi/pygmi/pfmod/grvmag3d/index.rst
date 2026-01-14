@@ -48,15 +48,12 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: update_raster(lmod2)
@@ -78,7 +75,7 @@ Module Contents
    Plot Raster Class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: GravMag, optional
 
 
 .. py:class:: GravMag(parent=None)
@@ -89,7 +86,7 @@ Module Contents
    related code is here as well, such as the inversion routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -202,7 +199,7 @@ Module Contents
    only.
 
    :param parent: Reference to the parent routine.
-   :type parent: parent
+   :type parent: pygmi.pfmod.pfmod.MainWidget
    :param ncols: Number of columns in the model.
    :type ncols: int
    :param nrows: Number of rows in the model.

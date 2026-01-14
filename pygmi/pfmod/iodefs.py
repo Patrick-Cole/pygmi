@@ -55,7 +55,7 @@ class ImportMod3D(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -500,7 +500,7 @@ class ExportMod3D(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     """
 
@@ -1188,7 +1188,7 @@ class Exportkmz(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     wkt : str
         Well Known Text (wkt) representation of the projection.
@@ -1230,7 +1230,7 @@ class MessageCombo(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     combotext : list
         List of text for combo.

@@ -99,15 +99,12 @@ Module Contents
 
 
 
-.. py:class:: MyMplCanvas(parent=None, width=8, height=6, dpi=100)
+.. py:class:: MyMplCanvas(width=8, height=6, dpi=100)
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: update_line(data, ival, itype)
@@ -131,6 +128,9 @@ Module Contents
 
 
    Static shift EDI data.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: acceptall()
@@ -194,6 +194,9 @@ Module Contents
 
    Rotate EDI data.
 
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
+
 
    .. py:method:: acceptall()
 
@@ -249,7 +252,7 @@ Module Contents
 
 
 
-.. py:class:: MyMplCanvasPick(parent=None)
+.. py:class:: MyMplCanvasPick
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
@@ -257,9 +260,6 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    This routine will also allow the picking and movement of nodes of data.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: button_press_callback(event)
@@ -339,6 +339,9 @@ Module Contents
 
 
    Edit EDI Class.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: acceptall()
@@ -428,15 +431,12 @@ Module Contents
 
 
 
-.. py:class:: MyMplCanvas2(parent=None)
+.. py:class:: MyMplCanvas2
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: update_line(x, pdata, rdata, *, depths=None, res=None, title=None)
@@ -466,6 +466,9 @@ Module Contents
 
 
    Occam 1D inversion.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: snum()

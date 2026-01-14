@@ -47,7 +47,7 @@ Module Contents
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -186,7 +186,7 @@ Module Contents
    Canvas for the sunshading tool.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: sun
 
@@ -211,7 +211,7 @@ Module Contents
 
 .. py:function:: updatemod(gdat2, cindx, cloc)
 
-   Update model without smooothing.
+   Update model without smoothing.
 
    :param gdat2: Model values.
    :type gdat2: numpy array

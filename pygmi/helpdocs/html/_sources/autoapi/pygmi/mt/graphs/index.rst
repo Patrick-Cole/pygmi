@@ -32,7 +32,7 @@ Module Contents
    This routine will also allow the picking and movement of nodes of data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: PlotPoints, PlotPhaseTensor, optional
 
 
    .. py:method:: button_release_callback(event)
@@ -106,6 +106,9 @@ Module Contents
 
    Plot points class.
 
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
+
 
    .. py:method:: change_band()
 
@@ -129,6 +132,9 @@ Module Contents
 
 
    Plot phase tensor.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: reset_data()

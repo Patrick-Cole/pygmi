@@ -70,11 +70,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
     Matplotlib canvas widget for the actual plot.
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
     Attributes
     ----------
     htype : str
@@ -131,7 +126,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         k value for CMYK mode
     """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure()
         super().__init__(fig)
 
@@ -798,11 +793,6 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
     Canvas widget for the sunshading tool.
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
     Attributes
     ----------
     sun: matplotlib plot instance
@@ -811,7 +801,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         axes on which the sun is drawn
     """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         super().__init__(fig)
 
@@ -853,7 +843,7 @@ class PlotInterp(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -870,8 +860,8 @@ class PlotInterp(BasicModule):
         self.clippercu = {}
         self.clippercl = {}
 
-        self.mmc = MyMplCanvas(self)
-        self.msc = MySunCanvas(self)
+        self.mmc = MyMplCanvas()
+        self.msc = MySunCanvas()
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTIFF')
         self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
                                                'lines')

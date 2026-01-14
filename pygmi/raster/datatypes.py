@@ -265,7 +265,7 @@ class Data():
         Parameters
         ----------
         data0 : numpy arraay
-            Input data to replace old ddata. Must have same shape.
+            Input data to replace old data. Must have same shape.
         resetmeta : bool, optional
             This will clear metadata during copy. The default is False.
 

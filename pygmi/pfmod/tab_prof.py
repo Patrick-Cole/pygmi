@@ -53,7 +53,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.pfmod.pfmod.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -1563,7 +1563,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -2230,7 +2230,7 @@ class MySlider(QtWidgets.QSlider):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -2385,7 +2385,7 @@ class PlotScale(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
     lmod : pygmi.pfmod.datatypes.LithModel
         Reference to the lithology model.
@@ -2468,7 +2468,7 @@ class RangedCopy(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -2595,7 +2595,7 @@ class MyToolbar(NavigationToolbar2QT):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -2724,7 +2724,7 @@ class ImportPicture(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ProfileDisplay, optional
         Reference to the parent routine. The default is None.
 
     """

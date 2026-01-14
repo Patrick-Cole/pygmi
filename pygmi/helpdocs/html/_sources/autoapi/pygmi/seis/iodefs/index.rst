@@ -111,7 +111,7 @@ Module Contents
    GUI to import SEISAN and SeisComP data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -358,7 +358,7 @@ Module Contents
    This is stored in a csv file.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -389,7 +389,7 @@ Module Contents
    GUI to export SEISAN data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run(filename=None)
@@ -561,7 +561,7 @@ Module Contents
    GUI export seismic data to CSV.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -739,7 +739,7 @@ Module Contents
    GUI to export a seismic data summary.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -771,7 +771,7 @@ Module Contents
    This filters data using thresholds.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

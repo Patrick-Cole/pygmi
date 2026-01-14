@@ -45,7 +45,7 @@ Module Contents
    there is a requirement for band ratioing etc. It uses the numexpr library.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: equation
 

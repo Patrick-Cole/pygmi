@@ -46,7 +46,7 @@ class Cluster(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -377,7 +377,7 @@ def cluster(data, cltype='K-Means', sscale=True, rscale=False,
         Minimum steepness on the reachability plot for OPTICS.
         The default is 0.05.
     min_samples : int, optional
-        Minimu samples for DBSCAN. The default is 5.
+        Minimum samples for DBSCAN. The default is 5.
     showlog : function, optional
         Show information using a function. The default is print.
     piter : function, optional

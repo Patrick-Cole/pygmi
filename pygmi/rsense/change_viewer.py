@@ -43,7 +43,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : SceneViewer
         Reference to the parent routine. The default is None.
     width : float
         Width of the plot.
@@ -54,7 +54,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None, width=10, height=8, dpi=100):
+    def __init__(self, parent, width=10, height=8, dpi=100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
 
         self.ax1 = self.fig.add_subplot(111)
@@ -182,7 +182,7 @@ class SceneViewer(BasicModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """

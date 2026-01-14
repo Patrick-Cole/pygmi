@@ -42,7 +42,7 @@ Module Contents
    Class used to gather information via a GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: azi
 
@@ -107,7 +107,7 @@ Module Contents
    Class used to gather information via a GUI, for function tilt1.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: azi
 
@@ -197,7 +197,7 @@ Module Contents
    Perform Reduction to the Pole on Magnetic data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

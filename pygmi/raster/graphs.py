@@ -50,16 +50,9 @@ from pygmi.raster.colormaps import *
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure(layout='tight')
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
@@ -364,7 +357,7 @@ class PlotCCoef(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -377,7 +370,7 @@ class PlotCCoef(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = 'raster.cm.showcorr'
@@ -434,7 +427,7 @@ class PlotRaster(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -446,7 +439,7 @@ class PlotRaster(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
         # self.mmc.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
@@ -531,7 +524,7 @@ class PlotSurface(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -698,7 +691,7 @@ class PlotScatter(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -710,7 +703,7 @@ class PlotScatter(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
@@ -796,7 +789,7 @@ class PlotHist(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
     """
 
@@ -807,7 +800,7 @@ class PlotHist(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()

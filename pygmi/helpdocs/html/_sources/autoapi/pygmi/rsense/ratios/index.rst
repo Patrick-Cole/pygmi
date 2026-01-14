@@ -45,7 +45,7 @@ Module Contents
    GUI to calculate satellite ratios.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -121,7 +121,7 @@ Module Contents
    GUI to calculate satellite condition indices.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

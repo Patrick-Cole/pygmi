@@ -39,17 +39,9 @@ from pygmi.misc import ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
+    """Matplotlib canvas widget for the actual plot."""
 
-    Parameters
-    ----------
-    parent : parent, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
+    def __init__(self):
         fig = Figure()
         super().__init__(fig)
 
@@ -329,7 +321,7 @@ class PlotLog(ContextModule):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -344,8 +336,8 @@ class PlotLog(ContextModule):
         hbl_1 = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
         self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        self.mmc2 = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
+        self.mmc2 = MyMplCanvas()
 
         self.lbl_topleft = QtWidgets.QLabel()
         self.lbl_topright = QtWidgets.QLabel()

@@ -38,7 +38,7 @@ class MergeLith(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : ParamDisplay, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -92,7 +92,7 @@ class LithNotes(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.pfmod.pfmod.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
@@ -229,7 +229,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : parent, optional
+    parent : pygmi.pfmod.pfmod.MainWidget, optional
         Reference to the parent routine. The default is None.
 
     """
