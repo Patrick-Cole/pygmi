@@ -272,7 +272,7 @@ def importmacro(ifile):
         evd['location'].append(event[event.index(location):-1])
         evd['lat'].append(float(lat))
         evd['lon'].append(float(lon))
-        evd['intensity'].append(float(intensity))
+        evd['intensity'].append(float(intensity.replace('+', '')))
         evd['code'].append(code)
         evd['postalcode'].append(pcode)
 

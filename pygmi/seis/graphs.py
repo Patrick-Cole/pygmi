@@ -47,7 +47,6 @@ from shapelysmooth import catmull_rom_smooth
 
 from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
-from pygmi.seis.iodefs import importmacro
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -574,7 +573,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         x = df1.lon.to_numpy()
         y = df1.lat.to_numpy()
-        # z = df1.intensity.to_numpy()
 
         plist = []
         uvals = np.sort(df1.intensity.unique())
@@ -621,6 +619,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         y = df1.lat.to_numpy()
         z = df1.intensity.to_numpy()
         uvals = np.sort(df1.intensity.unique())
+
+        if uvals.size < 2:
+            return
 
         X = np.transpose([x, y])
         X = np.unique(X, axis=0)
@@ -994,7 +995,6 @@ class PlotIso(ContextModule):
             self.showlog('No macroseismic data')
             return False
 
-        self.show()
         self.datd = self.indata['MacroSeis']
 
         products = ['Convex Hull Method',
@@ -1005,6 +1005,7 @@ class PlotIso(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
+        self.show()
 
     def save_shp(self):
         """
@@ -1687,111 +1688,20 @@ def get_cmax(mag):
 
 def _testiso():
     """Test creation of isoseismal maps."""
-    import matplotlib.pyplot as plt
+    from pygmi.seis.iodefs import importmacro
+    import sys
 
-    ifile = r"D:\Workdata\seismology\macro\2015-12-02-0714-54.macro"
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    ifile = r"D:\workdata\PyGMI Test Data\Seismology\2015-12-02-0714-54.macro"
 
     df1 = importmacro(ifile)
 
-    x = df1.lon.to_numpy()
-    y = df1.lat.to_numpy()
-    z = df1.intensity.to_numpy()
+    tmp = PlotIso()
+    tmp.indata['MacroSeis'] = df1
+    tmp.run()
 
-    uvals = np.sort(df1.intensity.unique())
-
-    # Tricontour plot
-    # plt.figure(dpi=150)
-    # ax = plt.gca()
-    # plt.plot(x, y, '.')
-
-    # cntr1t = ax.tricontour(x, y, z, levels=uvals, colors='k')
-    # cntr = ax.tricontourf(x, y, z, levels=uvals)
-    # # ax.clabel(cntr1t, inline=True)
-    # plt.colorbar(cntr)
-
-    # plt.show()
-
-    # Using linear interpolation
-    X = np.transpose([x, y])
-    r = pdist(X)
-    dxy = r.min() / 10
-
-    dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
-
-    xmin, xmax, ymin, ymax = dat.extent
-    rows, cols = dat.data.shape
-
-    xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy / 2
-    yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy / 2
-
-    xi, yi = np.meshgrid(xi, yi)
-    zi = dat.data
-
-    plt.figure(dpi=150)
-    ax = plt.gca()
-
-    plt.plot(x, y, '.')
-
-    zi = zi[::-1] + 0.0001
-    cntr1 = ax.contour(xi, yi, zi, levels=uvals, colors='k',
-                       algorithm='serial')
-    cntr = ax.contourf(xi, yi, zi, levels=uvals, algorithm='serial')
-    # ax.clabel(cntr1, inline=True)
-
-    plt.colorbar(cntr)
-    plt.show()
-
-    # New method using rasterio
-    # plist = []
-
-    # for i in uvals:
-    #     df2 = df1[df1.intensity >= i]
-    #     hull = df2.unary_union.convex_hull
-    #     hull = catmull_rom_smooth(hull)
-
-    #     plist.append(hull)
-    #     if len(plist) > 1:
-    #         plist[-2] = plist[-2].difference(hull)
-
-    # gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
-
-    # plt.figure(dpi=250)
-    # ax = plt.gca()
-    # plt.plot(x, y, '.')
-    # gdf.plot(ax=ax, column='Intensity', legend=True,
-    #          legend_kwds={'label': 'Intensity'})
-    # plt.show()
-
-    # contour tests
-
-    # plist = contourtopoly(cntr)
-    # gdf = gpd.GeoDataFrame({"Intensity": cntr.levels[:-1]}, geometry=plist)
-
-    # ax = plt.gca()
-    # plt.plot(x, y, '.')
-
-    # gdf.plot(ax=ax, column='Intensity', legend=True, edgecolor='k',
-    #          legend_kwds={'label': 'Intensity'})
-
-    # plt.show()
-
-    pnts = np.transpose([x, y])
-    hull0 = ConvexHull(pnts)
-    gdict = {'Intensity': [0], 'geometry': [Polygon(pnts[hull0.vertices])]}
-
-    plist, pvals = contourtopoly(cntr1)
-
-    gdict['Intensity'] += pvals
-    gdict['geometry'] += plist
-
-    gdf = gpd.GeoDataFrame(gdict)
-
-    plt.figure(dpi=250)
-    ax = plt.gca()
-    plt.plot(x, y, '.')
-    gdf.plot(ax=ax, column='Intensity', legend=True, edgecolor='k',
-             facecolor='none', legend_kwds={'label': 'Intensity'})
-    plt.show()
+    tmp.exec()
 
 
 def _testfn1():
@@ -1842,5 +1752,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
-    # _testiso()
+    # _testfn()
+    _testiso()

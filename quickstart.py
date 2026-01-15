@@ -33,8 +33,6 @@ import sys
 
 from pygmi.main import main
 
-# useful regex for find: \.(?!py) in spyder.ini
-
 if __name__ == "__main__":
     nocgs = bool(len(sys.argv) == 2 and 'true' in sys.argv[1].lower())
     main(nocgs=nocgs)
