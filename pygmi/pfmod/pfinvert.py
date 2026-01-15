@@ -817,7 +817,7 @@ class MagInvert(BasicModule):
         # Define the Physics
         simulation = magnetics.simulation.Simulation3DIntegral(
             survey=survey, mesh=mesh, model_type="scalar", chiMap=model_map,
-            ind_active=ind_active)
+            active_cells=ind_active)
 
         # Define Inverse Problem
         dmis = data_misfit.L2DataMisfit(data=data_object,

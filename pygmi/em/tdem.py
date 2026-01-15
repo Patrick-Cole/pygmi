@@ -39,13 +39,10 @@ import discretize
 from simpeg import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
 from simpeg.electromagnetics import time_domain
-# from simpeg.utils import solver_utils
 import simpeg.data as Sdata
+from simpeg.utils import get_default_solver
 
 from pygmi.misc import QVStack2Layout, BasicModule
-
-# warnings.filterwarnings(
-#     'ignore', 'DefaultSolverWarning: Using the default solver: SolverLU.')
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
@@ -415,7 +412,9 @@ class TDEM1D(BasicModule):
                      dtimes + [dtimes[-1]])         # Current zero from here
 
         survey = time_domain.Survey(srclist)
+        solver = get_default_solver()
         sim = time_domain.Simulation3DElectricField(mesh,
+                                                    solver=solver,
                                                     time_steps=timesteps,
                                                     sigmaMap=mapping,
                                                     survey=survey)
