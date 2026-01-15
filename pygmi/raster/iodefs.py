@@ -1934,16 +1934,9 @@ def _filespeedtest():
 
     print('Starting')
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
-    ifile = r"D:\2621CC_ESRI_TRUE_COLOUR_geo.tif"
-    ifile = r"D:\aaa.tif"
-    # ifile = ifile[:-4]+'_zstd.tif'
-
-    # dat = get_ascii(ifile)
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dataset = get_raster(ifile)
-
-    print(dataset[0].data.max())
 
     # getinfo('Start')
 
@@ -2015,5 +2008,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    # _filespeedtest()
-    _testfn()
+    _filespeedtest()
+    # _testfn()

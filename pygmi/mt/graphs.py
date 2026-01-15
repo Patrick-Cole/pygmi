@@ -210,7 +210,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax1.set_xscale('log')
         ax1.set_yscale('log')
         ax1.legend(loc='upper left')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+        ax1.set_ylabel('App. Res.\n'r'($\Omega.m$)')
         ax1.tick_params(labelbottom=False)
         ax1.grid(True)
 
@@ -226,7 +226,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax2.set_xscale('log')
         ax2.set_yscale('linear')
         ax2.legend(loc='upper left')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.set_ylabel('Phase\n(Degrees)')
         ax2.tick_params(labelbottom=False)
         ax2.grid(True)
 
@@ -238,7 +238,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax3.set_xscale('log')
         ax3.set_yscale('linear')
         ax3.legend(loc='upper left')
-        ax3.set_ylabel(r'Tipper Magnitude')
+        ax3.set_ylabel('Tipper\nMagnitude')
         ax3.tick_params(labelbottom=False)
         ax3.grid(True)
 
@@ -250,7 +250,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax4.set_yscale('linear')
         ax4.legend(loc='upper left')
         ax4.set_xlabel('Period (s)')
-        ax4.set_ylabel(r'Tipper Angle (Degrees)')
+        ax4.set_ylabel('Tipper Angle\n(Degrees)')
         ax4.grid(True)
 
         self.figure.canvas.draw()
