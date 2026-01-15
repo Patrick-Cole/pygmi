@@ -269,8 +269,8 @@ class Metadata(ContextModule):
 class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self, width=8, height=6, dpi=100):
-        fig = Figure(layout='constrained', figsize=(width, height), dpi=dpi)
+    def __init__(self):
+        fig = Figure(layout='tight')
         super().__init__(fig)
 
     def update_line(self, data, ival, itype):
@@ -747,7 +747,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure()
+        fig = Figure(layout='tight')
 
         self.axes = fig.add_subplot(111)
         self.line = None
@@ -1791,7 +1791,7 @@ def _testfn_occam():
     edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
-    from pygmi.mt.mtpyold import MT
+    # from pygmi.mt.mtpyold import MT
     mt_obj = MT(edi_file)
 
     print('loading complete')
@@ -1823,4 +1823,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_occam()

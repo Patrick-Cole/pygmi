@@ -29,7 +29,6 @@ import sys
 
 import numpy as np
 from PySide6 import QtWidgets, QtCore
-# import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D

@@ -513,11 +513,9 @@ def _testfn():
     import sys
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
-    from matplotlib import rcParams
     from pygmi.misc import getinfo
 
     getinfo('Start')
-    rcParams['figure.dpi'] = 300
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))

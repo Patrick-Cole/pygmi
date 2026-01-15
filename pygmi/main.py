@@ -709,6 +709,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         if nocgs is True and 'pygmi.cgs.menu' in menus:
             menus.pop(menus.index('pygmi.cgs.menu'))
+
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu] + menus

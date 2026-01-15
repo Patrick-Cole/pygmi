@@ -11,7 +11,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "guiEventLoop": "none"
+            "guiEventLoop": "none",
+            "cwd": "D:/workdata/PyGMI Test Data"
         }
     ]
 }

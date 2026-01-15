@@ -625,10 +625,7 @@ def chkname(iname):
 def _testfn():
     """Test routine."""
     import sys
-    # from matplotlib import rcParams
     from pygmi.bholes.iodefs import get_CGS
-
-    # rcParams['font.size'] = 4
 
     lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"

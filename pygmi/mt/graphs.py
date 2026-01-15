@@ -56,7 +56,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None, width=8, height=6, dpi=100):
+    def __init__(self, width=8, height=6, dpi=100):
         fig = Figure(layout='constrained', figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.line = None
@@ -346,7 +346,7 @@ class PlotPoints(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -431,7 +431,7 @@ class PlotPhaseTensor(ContextModule):
         hbl = QtWidgets.QHBoxLayout(self)
         gl_1 = QtWidgets.QGridLayout()
         gl_1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
-        self.mmc = MyMplCanvas(self)
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -662,4 +662,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn_phase()
+    _testfn()
