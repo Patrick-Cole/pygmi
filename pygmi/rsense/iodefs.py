@@ -207,7 +207,7 @@ class ImportData(BasicModule):
         for i in range(self.lw_tnames.count()):
             item = self.lw_tnames.item(i)
 
-            if item.text()[0] == 'B':
+            if item.text()[0] == 'B' or item.text() == 'LST':
                 item.setSelected(True)
 
         # If nothing is selected, then select everything.
@@ -377,7 +377,7 @@ class ImportBatch(BasicModule):
         for sensor in self.tnames:
             tmp = []
             for i in self.tnames[sensor]:
-                if i[0] == 'B':
+                if i[0] == 'B' or i == 'LST':
                     tmp.append(i)
 
             if tmp:

@@ -584,7 +584,7 @@ class ConditionIndices(BasicModule):
                 formula = ','.join(rlist)
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
 
-                if txt in formula:
+                if txt in formula or txt == 'LST':
                     datsml.append(i)
 
             dat = lstack(datsml, piter=self.piter, showlog=self.showlog)
