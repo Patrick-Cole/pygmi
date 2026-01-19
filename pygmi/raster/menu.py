@@ -130,6 +130,11 @@ class MenuWidget():
         self.menu.addAction(self.action_get_prof)
         self.action_get_prof.triggered.connect(self.get_prof)
 
+        self.action_get_vector = QtGui.QAction('Convert Raster to Vector '
+                                               'Dataset')
+        self.menu.addAction(self.action_get_vector)
+        self.action_get_vector.triggered.connect(self.get_vector)
+
         self.menu.addSeparator()
 
         self.action_raster_data_interp = QtGui.QAction('Raster Data '
@@ -217,6 +222,11 @@ class MenuWidget():
     def get_prof(self):
         """Get profile."""
         self.parent.item_insert('Step', 'Get Profile', dataprep.GetProf)
+
+    def get_vector(self):
+        """Raster to vector."""
+        self.parent.item_insert('Step', 'Raster to Vector',
+                                dataprep.RasterToVector)
 
     def gradients(self):
         """Compute different gradients."""

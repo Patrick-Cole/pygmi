@@ -1556,8 +1556,8 @@ class ExportData(ContextModule):
 
                 for j in range(krows):
                     for i in range(kcols):
-                        fno.write(str(xmin + i * k.xdim) + ' ' +
-                                  str(ymax - j * k.ydim) + ' ' +
+                        fno.write(str(xmin + (i + 0.5) * k.xdim) + ' ' +
+                                  str(ymax - (j + 0.5) * k.ydim) + ' ' +
                                   str(tmp[j, i]) + '\n')
 
     def get_filename(self, data, ext):

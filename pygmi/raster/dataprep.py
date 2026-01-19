@@ -1239,6 +1239,106 @@ class Metadata(ContextModule):
         self.show()
 
 
+class RasterToVector(BasicModule):
+    """
+    Raster to vector GUI.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gl_main = QtWidgets.QGridLayout(self)
+
+        self.buttonbox.htmlfile = 'raster.dm.rtov'
+        lbl_dxy = QtWidgets.QLabel('Cell Size:')
+
+        self.setWindowTitle('Raster to Vector')
+
+        # gl_main.addWidget(lbl_dxy, 0, 0, 1, 1)
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Raster' not in self.indata:
+            self.showlog('No Raster Data.')
+            return False
+
+        if not nodialog:
+            data = self.indata['Raster']
+            tmp = self.exec()
+            if tmp != 1:
+                return False
+
+            data = lstack(data, piter=self.piter, showlog=self.showlog)
+
+            xmin = data[0].extent[0]
+            ymax = data[0].extent[-1]
+            krows, kcols = data[0].data.shape
+
+            x = []
+            y = []
+            for j in self.piter(range(krows)):
+                for i in range(kcols):
+                    x.append(xmin + (i + 0.5) * data[0].xdim)
+                    y.append(ymax - (j + 0.5) * data[0].ydim)
+
+            geom = gpd.points_from_xy(x, y)
+            gdf = gpd.GeoDataFrame(geometry=geom)
+            gdf['x'] = x
+            gdf['y'] = y
+
+            for band in self.piter(data):
+                gdf[band.dataid] = band.data.flatten()
+
+        gdf = gdf.dropna(subset=gdf.columns[3:].values.tolist(), how='all')
+        gdf = gdf.set_crs(data[0].crs)
+
+        self.outdata['Vector'] = [gdf]
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+        # self.saveobj(self.dxy)
+
+
 def cluster_to_raster(indata):
     """
     Convert cluster datasets to raster datasets.
@@ -2036,25 +2136,19 @@ def _testfn():
     """Test."""
     import sys
     import os
-    import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster, get_geosoft
+    from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\temp\RegionalBouguerAnomaly.ers"
-    ifile = r"D:\temp\Geosoft Grids\FCR2613 CGS TMI.grd"
-    dat = get_geosoft(ifile)
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    dat = get_raster(ifile)
 
     os.chdir(os.path.dirname(ifile))
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    tmp = DataCut()
+    tmp = RasterToVector()
     tmp.indata['Raster'] = dat
     tmp.settings()
-
-    plt.imshow(tmp.outdata['Raster'][0].data)
-    # plt.imshow(dat[0].data)
-    plt.show()
 
 
 if __name__ == "__main__":
