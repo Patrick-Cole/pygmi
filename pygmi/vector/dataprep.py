@@ -1662,7 +1662,7 @@ def xy_to_r(x, y):
         if True not in filt:
             return None
 
-        if r.shape != r0[filt].shape:
+        if r0[filt].size != 1:
             return None
 
         r = r + r0[filt]
@@ -1728,13 +1728,14 @@ def _testfn_grid():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    # ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
+    ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
+    ifile = r"D:\UBC_Files\new_PyGMI_test_xyz_data.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
-    # IO.filt = 'Comma Delimited (*.csv)'
-    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.filt = 'Comma Delimited (*.csv)'
+    # IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
     DR = DataGrid()

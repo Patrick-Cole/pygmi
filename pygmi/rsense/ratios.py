@@ -1281,5 +1281,35 @@ def _testfn():
         plt.show()
 
 
+def _testfn2():
+    """Test routine."""
+    import matplotlib.pyplot as plt
+    from pygmi.rsense.iodefs import ImportBatch
+
+    idir = r'D:\workdata\PyGMI Test Data\Remote Sensing\ConditionIndex'
+    os.chdir(idir)
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
+    tmp1 = ImportBatch()
+    tmp1.idir = idir
+    tmp1.settings()
+
+    SR = ConditionIndices()
+    SR.indata = tmp1.outdata
+    SR.settings()
+
+    dat2 = SR.outdata['Raster']
+    for i in dat2:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        vmin = i.data.mean() - 2 * i.data.std()
+        vmax = i.data.mean() + 2 * i.data.std()
+        plt.imshow(i.data, vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.show()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

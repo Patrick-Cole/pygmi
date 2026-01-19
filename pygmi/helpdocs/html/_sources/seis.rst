@@ -29,6 +29,7 @@ The seismology context menus are available for modules which have seismology out
     seis.cm.showqc
     seis.cm.showtempb
     seis.cm.showspatb
+    seis.cm.showiso
     seis.cm.exportseisan
     seis.cm.exportcsv
     seis.cm.exportsummary

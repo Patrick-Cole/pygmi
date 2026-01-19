@@ -152,6 +152,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        if self.im1 is None:
+            return
         extent = dat.banddata[0].extent
         self.im1.rgbmode = self.manip
 

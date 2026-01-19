@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Create Batch List &#8212; PyGMI 3.2.9.29 documentation</title>
+    <title>Show Isoseismic Plots &#8212; PyGMI 3.2.9.29 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'rsense.dm.createbatchlist';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'seis.cm.showiso';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Calculate Band Ratios" href="rsense.dm.ratios.html" />
-    <link rel="prev" title="Import Sentinel 5-P" href="rsense.dm.imports5p.html" />
+    <link rel="next" title="Export SEISAN Data" href="seis.cm.exportseisan.html" />
+    <link rel="prev" title="Show Spatial Variation of the b-value" href="seis.cm.showspatb.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -356,10 +356,10 @@
 <li class="toctree-l3"><a class="reference internal" href="pfmod.cm.export3dmodel.html">Export 3D Model</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="rsense.html">Remote Sensing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="rsense.html">Remote Sensing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.importdata.html">Import Satellite Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.imports5p.html">Import Sentinel 5-P</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Create Batch List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rsense.dm.createbatchlist.html">Create Batch List</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.ratios.html">Calculate Band Ratios</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.calccondind.html">Calculate Condition Indices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rsense.dm.sen2cor.html">Sen2Cor: Sentinel-2 Atmospheric Correction</a></li>
@@ -372,7 +372,7 @@
 <li class="toctree-l3"><a class="reference internal" href="rsense.cm.exportdata.html">Export Raster File List</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="seis.html">Seismology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="seis.html">Seismology</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importseisan.html">Import Seismic Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.importfps.html">Import Generic FPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.corrtyp3.html">Correct SEISAN Type 3 Descriptions</a></li>
@@ -382,7 +382,7 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
-<li class="toctree-l3"><a class="reference internal" href="seis.cm.showiso.html">Show Isoseismic Plots</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -592,7 +592,7 @@
       
       
       
-      <li><a href="_sources/rsense.dm.createbatchlist.rst" target="_blank"
+      <li><a href="_sources/seis.cm.showiso.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -674,7 +674,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Create Batch List</h1>
+    <h1>Show Isoseismic Plots</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -688,21 +688,18 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="create-batch-list">
-<h1>Create Batch List<a class="headerlink" href="#create-batch-list" title="Link to this heading">#</a></h1>
-<p>This option allows the user to import multiple datasets from the same sensor for use in other remote sensing modules that support batch processing. All the datasets must be in one folder.   Note that it only imports metadata, and not band data. The data can be original satellite data files in their respective formats or datasets that have been exported to standard raster format, e.g. <strong>GeoTIFF</strong>.</p>
-<p>The user must select a directory as input. The options are similar to the regular <a class="reference internal" href="rsense.dm.importdata.html"><span class="doc">Satellite Data Import</span></a> except that the user enters the folder (directory) where the data are stored instead of an individual file.</p>
+  <section id="show-isoseismic-plots">
+<h1>Show Isoseismic Plots<a class="headerlink" href="#show-isoseismic-plots" title="Link to this heading">#</a></h1>
+<p>This allows for the display of Isoseismic plots after a SEISAN macro file has been imported. The are two different products:</p>
+<ol class="arabic simple">
+<li><p><strong>Convex Hull Method</strong> - This uses convex hulls to calculate the plot. A convex hull is calculated around each group of intensities.</p></li>
+<li><p><strong>Standard Contours</strong> - standard contouring approach.</p></li>
+</ol>
+<p>Results can also be saved to a shape file.</p>
 <figure class="align-default" id="id1">
-<img alt="_images/rsensebatch1.png" src="_images/rsensebatch1.png" />
+<img alt="_images/seisiso.png" src="_images/seisiso.png" />
 <figcaption>
-<p><span class="caption-text">Import Batch List interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>The raster file list can be seen in the <strong>Dataset Information</strong> window when clicking on the <strong>Create Batch List</strong> module.</p>
-<figure class="align-default" id="id2">
-<img alt="_images/rsensebatch2.png" src="_images/rsensebatch2.png" />
-<figcaption>
-<p><span class="caption-text">List of datasets that will be used in the batch processing.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-text">The Isoseismic plot interface, using the convex hull method.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -719,20 +716,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="rsense.dm.imports5p.html"
+       href="seis.cm.showspatb.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Import Sentinel 5-P</p>
+        <p class="prev-next-title">Show Spatial Variation of the b-value</p>
       </div>
     </a>
     <a class="right-next"
-       href="rsense.dm.ratios.html"
+       href="seis.cm.exportseisan.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Calculate Band Ratios</p>
+        <p class="prev-next-title">Export SEISAN Data</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

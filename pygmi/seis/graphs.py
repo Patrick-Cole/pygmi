@@ -949,7 +949,7 @@ class PlotIso(ContextModule):
 
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = ''
+        self.buttonbox.htmlfile = 'seis.cm.showiso'
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.lbl_1 = QtWidgets.QLabel('Product:')

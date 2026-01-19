@@ -67,15 +67,12 @@ Module Contents
 
 
 
-.. py:class:: PlotTest(parent=None, data=None)
+.. py:class:: PlotTest(data=None)
 
    Bases: :py:obj:`pygmi.misc.ContextModule`
 
 
    Plot Raster Class.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: GravMag, optional
 
 
 .. py:class:: GravMag(parent=None)
