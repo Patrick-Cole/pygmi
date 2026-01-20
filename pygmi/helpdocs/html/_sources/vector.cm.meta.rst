@@ -1,7 +1,0 @@
-Display/Edit Vector Metadata
-----------------------------
-Here, the map projection associated with the vector file can be either defined or changed. The projection is chosen through drop boxes, with the first drop box containing the datum, and the projection in the second drop box. The datum determines which projections are available.
-
-.. figure:: _images/vectormeta.png
-
-   Display/Edit Vector Metadata interface.
