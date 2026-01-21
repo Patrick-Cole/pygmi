@@ -158,7 +158,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
 
-        if plotlog is True:
+        if data1.isrgb is True:
+            rdata = imshow(self.axes, data1.data, extent=data1.extent,
+                           cmap=colormaps[cmap], interpolation='none')
+        elif plotlog is True:
             rdata = imshow(self.axes, data1.data, extent=data1.extent,
                            cmap=colormaps[cmap], interpolation='none',
                            norm=colors.LogNorm(vmin=data1.data.min(),
@@ -191,6 +194,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.set_xlabel('Eastings')
             self.axes.set_ylabel('Northings')
 
+        self.axes.ticklabel_format(style='plain', axis='both')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 

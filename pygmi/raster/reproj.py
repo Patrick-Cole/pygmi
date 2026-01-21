@@ -220,9 +220,13 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
             return None
 
     if data.nodata is None:
-        nodata = data.data.fill_value
+        nodata = None  # data.data.fill_value
     else:
         nodata = data.nodata
+
+    dst_nodata = None
+    if data.isrgb:
+        dst_nodata = np.iinfo(data.data.dtype).max
 
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     data.data.mask = np.ma.getmaskarray(data.data)
@@ -233,6 +237,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
                          src_crs=icrs,
                          dst_transform=otransform,
                          dst_crs=ocrs,
+                         dst_nodata=dst_nodata,
                          src_nodata=nodata,
                          resampling=rasterio.enums.Resampling['bilinear'])
 
@@ -244,6 +249,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
     data2.filename = data.filename[:-4] + '_prj' + data.filename[-4:]
+    data2.units = data.units
 
     data2.data = np.ma.masked_equal(data2.data, nodata)
     data2.nodata = nodata
@@ -295,11 +301,14 @@ def _testfn():
     """Test."""
     from pygmi.raster.iodefs import get_raster
 
-    ifile1 = r"D:\AST_10092000_082754_stack.tif"
+    ifile1 = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
 
-    dat1 = get_raster(ifile1)
+    dat = get_raster(ifile1)
+    dat[0].isrgb = True
+    dat[1].isrgb = True
+    dat[2].isrgb = True
 
-    dat2 = data_reproject(dat1[0], 4326)
+    dat2 = data_reproject(dat[0], 4326)
 
 
 if __name__ == "__main__":

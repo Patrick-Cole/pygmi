@@ -772,11 +772,25 @@ class DataReproj(BasicModule):
         # Now create virtual dataset
         dat = []
         for data in self.piter(self.indata['Raster']):
-            data2 = data_reproject(data, dst_crs, icrs=src_crs)
-            if data2 is None:
-                return
+            if data.isrgb:
+                _, _, bands = data.data.shape
+                data3 = []
+                data1 = [data.copy() for i in range(bands)]
+                for i, band in enumerate(data1):
+                    band.data = band.data[:, :, i]
+                    data2 = data_reproject(band, dst_crs, icrs=src_crs)
+                    if data2 is None:
+                        return
+                    data3.append(data2)
+                data2.data = np.transpose([i.data.T for i in data3])
+                data2.isrgb = True
+                dat.append(data2)
+            else:
+                data2 = data_reproject(data, dst_crs, icrs=src_crs)
+                if data2 is None:
+                    return
 
-            dat.append(data2)
+                dat.append(data2)
 
         self.orig_wkt = self.in_proj.wkt
         self.targ_wkt = self.out_proj.wkt
