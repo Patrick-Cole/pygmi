@@ -87,7 +87,7 @@ class Mod3dDisplay(ContextModule):
         self.opac = 0.0
         self.cust_z = None
         self.pvmesh = None
-        self.light = pv.Light()
+        self.light = pv.Light(light_type='headlight')
 
         # Back to normal stuff
         self.lw_3dmod_defs = QtWidgets.QListWidget()
@@ -99,6 +99,8 @@ class Mod3dDisplay(ContextModule):
         self.cb_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
         self.plotter = QtInteractor(self)  # , lighting='none')
+        self.cmb_light = QtWidgets.QComboBox()
+        self.lbl_light = QtWidgets.QLabel('Light Position:')
 
         self.vslider_3dmodel = QtWidgets.QSlider()
         self.msc = MySunCanvas(self)
@@ -142,18 +144,27 @@ class Mod3dDisplay(ContextModule):
         self.pb_refresh.setSizePolicy(sizepolicy_pb)
         self.pbar.setOrientation(QtCore.Qt.Orientation.Vertical)
 
+        spacer = QtWidgets.QSpacerItem(20, 40,
+                                       QtWidgets.QSizePolicy.Policy.Fixed,
+                                       QtWidgets.QSizePolicy.Policy.Expanding)
+
         self.cb_ortho.setChecked(True)
         self.cb_axis.setChecked(True)
+        self.cmb_light.addItems(['Headlight', 'Camera light'])
+        self.msc.hide()
+        self.pb_resetlight.hide()
+        self.lbl_light.hide()
 
         vbl.addWidget(self.lw_3dmod_defs)
-        vbl.addWidget(QtWidgets.QLabel('Light Position:'))
+        vbl.addWidget(QtWidgets.QLabel('Light Type:'))
+        vbl.addWidget(self.cmb_light)
+        vbl.addWidget(self.lbl_light)
         vbl.addWidget(self.msc)
         vbl.addWidget(self.pb_resetlight)
         vbl.addWidget(self.cb_smooth)
-        # vbl.addWidget(self.cb_ortho)
-        # vbl.addWidget(self.cb_axis)
         vbl.addWidget(self.pb_save)
         vbl.addWidget(self.pb_refresh)
+        vbl.addItem(spacer)
         vbl.addWidget(self.buttonbox)
         vbl_cmodel.addWidget(self.plotter)
         hbl.addWidget(self.vslider_3dmodel)
@@ -170,6 +181,7 @@ class Mod3dDisplay(ContextModule):
         self.cb_ortho.stateChanged.connect(self.update_model2)
         self.cb_axis.stateChanged.connect(self.update_model2)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.sunclick)
+        self.cmb_light.currentIndexChanged.connect(self.change_light)
 
     def closeEvent(self, QCloseEvent):
         """
@@ -187,6 +199,23 @@ class Mod3dDisplay(ContextModule):
         """
         super().closeEvent(QCloseEvent)
         self.plotter.close()
+
+    def change_light(self):
+        """Change light type"""
+        text = self.cmb_light.currentText()
+
+        if text == 'Camera light':
+            self.light.set_camera_light()
+            self.resetlight()
+            self.pb_resetlight.show()
+            self.msc.show()
+            self.lbl_light.show()
+        else:
+            self.light.set_headlight()
+            self.pb_resetlight.hide()
+            self.msc.hide()
+            self.lbl_light.hide()
+        pass
 
     def save(self):
         """
@@ -392,7 +421,6 @@ class Mod3dDisplay(ContextModule):
 
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
-            # item.setSelected(True)
             item.setText('\u2713 ' + item.text())
 
         self.show()
@@ -467,6 +495,9 @@ class Mod3dDisplay(ContextModule):
 
             self.plotter.set_scale(zscale=self.vslider_3dmodel.value())
             self.plotter.add_axes()
+            self.plotter.camera_position = [(-200, -200, 200),
+                                            (0, 0, 0),
+                                            (0, 0, 1)]
 
             elev = 45
             azim = 45
@@ -934,8 +965,9 @@ def MarchingCubes(x, y, z, c, iso, *, showlog=print):
     out = np.zeros(n)
     for ii in range(8):
         # which cubes have vtx ii > iso
-        tmp2 = fancyindex(out, c, vertex_idx[ii, 0], vertex_idx[ii, 1],
-                          vertex_idx[ii, 2])
+        tmp2 = fancyindex(out, c, vertex_idx[ii, 0].astype(int),
+                          vertex_idx[ii, 1].astype(int),
+                          vertex_idx[ii, 2].astype(int))
         idx = tmp2 > iso
         cc[idx] = bitset(cc[idx], ii)     # for those cubes, turn bit ii on
 
@@ -1598,4 +1630,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
