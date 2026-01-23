@@ -305,6 +305,7 @@ def _testfn2():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
+    ifile = r"D:\workdata\modelling\regional\Model_1.npz"
 
     IO1 = ImportMod3D()
     IO1.ifile = ifile

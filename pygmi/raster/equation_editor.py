@@ -27,6 +27,7 @@
 from PySide6 import QtWidgets, QtGui
 import numpy as np
 import numexpr as ne
+from scipy import signal
 
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
@@ -296,6 +297,9 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
     elif 'std' in neweq:
         findat = std(neweq, localdict)
         mask = findat.mask
+    elif 'detrend' in neweq:
+        findat = detrend(neweq, localdict)
+        mask = findat.mask
     else:
         try:
             findat = ne.evaluate(neweq, localdict)
@@ -510,6 +514,69 @@ def mean(eq, localdict):
     return findat
 
 
+def detrend(eq, localdict):
+    """
+    Get mean pixel value of all input bands.
+
+    Parameters
+    ----------
+    eq : str
+        Equation with std command.
+    localdict : dictionary
+        Dictionary of data.
+
+    Returns
+    -------
+    findat : numpy array
+        Output array.
+
+    """
+    idx = eq.index('detrend(') + 8
+    eq2 = eq[idx:]
+    idx = eq2.index(')')
+    eq2 = eq2[:idx]
+    eq2 = eq2.replace(' ', '')
+    eq3 = eq2.split(',')
+
+    top = float(eq3[1])
+    bottom = float(eq3[2])
+
+    stack = []
+    mask = None
+    for i in localdict:
+        if i not in eq3:
+            continue
+        if mask is None:
+            mask = localdict[i].mask
+        else:
+            mask = np.logical_and(mask, localdict[i].mask)
+
+        if i == 'iall':
+            stack.append(localdict[i])
+        else:
+            stack.append([localdict[i]])
+
+    stack = np.ma.vstack(stack)
+    stack = stack[0]
+    stack.mask = mask
+
+    data = stack
+    detrended = data.copy()
+    row, col = data.shape
+    x = [0, row - 1]
+    y = [top, bottom]
+    coeffs = np.polyfit(x, y, 1)
+    x = np.arange(row)
+    trend = np.polyval(coeffs, x)
+
+    for i in range(col):
+        detrended[:, i] = data[:, i] - trend
+
+    findat = np.ma.array(detrended, mask=mask)
+
+    return findat
+
+
 def std(eq, localdict):
     """
     Get standard deviation pixel value of all input bands.
@@ -563,7 +630,7 @@ def _test():
     from pygmi.raster.iodefs import get_raster
     print('Starting')
 
-    ifile = r"C:\Workdata\testdata.hdr"
+    ifile = r"D:\workdata\modelling\regional\Model_mag.hdr"
 
     dat = get_raster(ifile)
 
@@ -572,6 +639,7 @@ def _test():
 
     EE = EquationEditor()
     EE.indata['Raster'] = dat
+    EE.textbrowser.setText('detrend(i0,40,-10)')
 
     EE.settings()
 
