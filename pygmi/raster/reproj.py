@@ -219,14 +219,11 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
             showlog('Problem with projection,aborting....')
             return None
 
-    if data.nodata is None:
-        nodata = None  # data.data.fill_value
-    else:
-        nodata = data.nodata
-
-    dst_nodata = None
-    if data.isrgb:
-        dst_nodata = np.iinfo(data.data.dtype).max
+    nodata = data.nodata
+    dst_nodata = nodata
+    if data.isrgb and nodata is None:
+        nodata = np.iinfo(data.data.dtype).max
+        dst_nodata = nodata
 
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     data.data.mask = np.ma.getmaskarray(data.data)
@@ -252,7 +249,8 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.units = data.units
 
     data2.data = np.ma.masked_equal(data2.data, nodata)
-    data2.nodata = nodata
+    if not data.isrgb:
+        data2.nodata = nodata
     data2.metadata = data.metadata
 
     return data2
@@ -299,16 +297,49 @@ def getepsgcodes():
 
 def _testfn():
     """Test."""
-    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import get_raster, export_raster
 
     ifile1 = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
+    ofile = r"D:\temp\RegGrav_BA_Up50000_REs2.tif"
 
     dat = get_raster(ifile1)
-    dat[0].isrgb = True
-    dat[1].isrgb = True
-    dat[2].isrgb = True
 
-    dat2 = data_reproject(dat[0], 4326)
+    if len(dat) == 4:
+        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                dat[2].data.T, dat[3].data.T])
+    else:
+        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                dat[2].data.T])
+    dat = [dat[0]]
+    dat[0].data = dat2
+    dat[0].isrgb = True
+
+    if dat[0].data.dtype == np.uint16:
+        iidat = np.iinfo(dat[0].data.dtype)
+        dat[0].data = dat[0].data.astype(float)
+        dat[0].data = (dat[0].data - iidat.min) / (iidat.max - iidat.min)
+
+    dat2 = []
+    # for band in dat:
+    #     dat2.append(data_reproject(band, 4326))
+
+    _, _, bands = dat[0].data.shape
+    data3 = []
+    data1 = [dat[0].copy() for i in range(bands)]
+    for i, band in enumerate(data1):
+        band.data = band.data[:, :, i]
+        data2 = data_reproject(band, 4326)
+        if data2 is None:
+            return
+        data3.append(data2)
+    data2.data = np.transpose([i.data.T for i in data3])
+    data2.isrgb = True
+    data2.nodata = None
+    dat2.append(data2)
+
+    export_raster(ofile, dat2)
+
+    pass
 
 
 if __name__ == "__main__":

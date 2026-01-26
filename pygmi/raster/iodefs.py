@@ -1650,6 +1650,22 @@ def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
     else:
         dat2 = dat
 
+    if dat2[0].isrgb:
+        bandids = ['red', 'green', 'blue', 'alpha']
+        _, _, bands = dat[0].data.shape
+        dat2 = [dat2[0].copy() for i in range(bands)]
+        for i, band in enumerate(dat2):
+            band.data = band.data[:, :, i]
+            band.dataid = bandids[i]
+        bandsort = False
+        if len(dat2) == 3:
+            dat2.append(dat2[0])
+            dat2[-1].data = dat2[-1].data * 0 + 255
+            filt = (dat2[0].data == 255) & (
+                dat2[1].data == 255) & (dat2[2].data == 255)
+            dat2[-1].data[filt] = 0
+            dat2[-1].dataid = 'alpha'
+
     data = lstack(dat2, piter=piter, nodeepcopy=True)
 
     # Sort in band order.
