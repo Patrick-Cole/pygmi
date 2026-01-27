@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation Instructions &#8212; PyGMI 3.2.9.30 documentation</title>
+    <title>Installation Instructions &#8212; PyGMI 3.2.9.32 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=a0ffe2b5"></script>
+    <script src="_static/documentation_options.js?v=0c77e0ce"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.30 documentation</p>
+    <p class="title logo__title">PyGMI 3.2.9.32 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -776,10 +776,10 @@ document.write(`
 <p>Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.</p>
 <p>The process to install is as follows:</p>
 <blockquote>
-<div><p>conda create -n pygmi python=3.12</p>
+<div><p>conda create -n pygmi python=3.13</p>
 <p>conda activate pygmi</p>
 <p>conda config –env –add channels conda-forge</p>
-<p>conda install pyqt</p>
+<p>conda install pyside6</p>
 <p>conda install fiona</p>
 <p>conda install matplotlib</p>
 <p>conda install psutil</p>
@@ -787,8 +787,11 @@ document.write(`
 <p>conda install rasterio</p>
 <p>conda install geopandas</p>
 <p>conda install natsort</p>
+<p>conda install numba</p>
+<p>conda install scikit-learn</p>
 <p>conda install scikit-image</p>
-<p>conda install pyopengl</p>
+<p>conda install pyvista</p>
+<p>conda install pyvistaqt</p>
 <p>conda install simpeg</p>
 <p>conda install shapelysmooth</p>
 <p>conda install openpyxl</p>
@@ -796,7 +799,8 @@ document.write(`
 <p>conda install rioxarray</p>
 <p>conda install pytest</p>
 <p>conda install beautifulsoup4</p>
-<p>pip install mtpy</p>
+<p>conda install pyyaml</p>
+<p>conda install pwlf</p>
 <p>conda update –all</p>
 </div></blockquote>
 <p>Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:</p>

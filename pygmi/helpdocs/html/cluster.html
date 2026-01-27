@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Classification &#8212; PyGMI 3.2.9.30 documentation</title>
+    <title>Classification &#8212; PyGMI 3.2.9.32 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=a0ffe2b5"></script>
+    <script src="_static/documentation_options.js?v=0c77e0ce"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.30 documentation</p>
+    <p class="title logo__title">PyGMI 3.2.9.32 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -707,6 +707,12 @@ document.write(`
 <p>Cluster analysis and segmentation are useful machine learning or multivariate statistical analysis techniques which can perform an automatic interpretation of multi-band raster data.</p>
 <p>A multiple band raster dataset, <a class="reference internal" href="raster.dm.importrasterdata.html"><span class="doc">imported</span></a> through the raster menu is input. If more than one dataset is imported, they must first be <a class="reference internal" href="raster.dm.layerstack.html"><span class="doc">merged/stacked</span></a> into a multiband dataset. It is also important to normalise the data prior to classification to ensure that the data values of the different datasets fall in the same <a class="reference internal" href="raster.dm.norm.html"><span class="doc">range</span></a>. If this is not done, the results will be biased towards datasets with large values, e.g. magnetic data.</p>
 <p>The Classification menu provides several classification/clustering tools.</p>
+<figure class="align-default" id="id1">
+<img alt="_images/clustmenu.png" src="_images/clustmenu.png" />
+<figcaption>
+<p><span class="caption-text">Classification menu.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cluster.dm.clust.html">Cluster Analysis</a></li>
@@ -722,10 +728,10 @@ document.write(`
 <h2>Context Menu<a class="headerlink" href="#context-menu" title="Link to this heading">#</a></h2>
 <p>Context menus are available for classification modules after they have been executed. These are accessed by <strong>right-clicking</strong> on the green classification module. If the module has not been run it will be blue and the context menu will give you the option to select the input raster bands. <strong>Cluster Analysis</strong>, <strong>Crisp Clustering</strong> and <strong>Supervised Classification</strong> have the same context menu while <strong>Fuzzy Clustering</strong> has a slightly different context menu. The context menu for <strong>Image Segmentation</strong> is identical to the raster data context menu.</p>
 <p>Classification context menus contain the raster data context menu that acts on the input raster datasets. Only the items applicable to the classification results will be discussed here.</p>
-<figure class="align-default" id="id1">
+<figure class="align-default" id="id2">
 <img alt="_images/clustcontext.png" src="_images/clustcontext.png" />
 <figcaption>
-<p><span class="caption-text">Context menus for the Classification module.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">Context menus for the Classification module.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <div class="toctree-wrapper compound">
