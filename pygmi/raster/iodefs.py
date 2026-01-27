@@ -1241,9 +1241,14 @@ class ExportData(ContextModule):
             self.parent.process_is_active(False)
             return
 
-        tmp = []
-        for i in self.exportdata:
-            tmp.append(i.dataid)
+        if self.exportdata[0].isrgb:
+            tmp = ['red', 'green', 'blue', 'alpha']
+            self.cb_bandsort.hide()
+            self.lw_1.setEnabled(False)
+        else:
+            tmp = []
+            for i in self.exportdata:
+                tmp.append(i.dataid)
         self.lw_1.clear()
         self.lw_1.addItems(tmp)
 
@@ -1266,7 +1271,9 @@ class ExportData(ContextModule):
 
         atmp = [i.row() for i in self.lw_1.selectedIndexes()]
 
-        if atmp:
+        if self.exportdata[0].isrgb:
+            data = self.exportdata
+        elif atmp:
             dtmp = []
             for i in atmp:
                 dtmp.append(self.exportdata[i])
@@ -1659,7 +1666,7 @@ def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
             band.dataid = bandids[i]
         bandsort = False
         if len(dat2) == 3:
-            dat2.append(dat2[0])
+            dat2.append(dat2[0].copy())
             dat2[-1].data = dat2[-1].data * 0 + 255
             filt = (dat2[0].data == 255) & (
                 dat2[1].data == 255) & (dat2[2].data == 255)
@@ -1951,6 +1958,7 @@ def _filespeedtest():
     print('Starting')
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
 
     dataset = get_raster(ifile)
 
@@ -1966,9 +1974,9 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
     # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
 
-    # tmp = ExportData()
-    # tmp.indata['Raster'] = dataset
-    # tmp.run()
+    tmp = ExportData()
+    tmp.indata['Raster'] = dataset
+    tmp.run()
 
     getinfo('End')
 

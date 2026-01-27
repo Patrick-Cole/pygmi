@@ -77,26 +77,27 @@ PyGMI should still work with Python 3.10.
 PyGMI is developed and has been tested with the following libraries in order to function:
 
 * fiona>=1.10.1
-* geopandas>=1.0.1
-* h5netcdf>=1.6.1
-* matplotlib>=3.10.1
+* geopandas>=1.1.2
+* h5netcdf>=1.8.1
+* matplotlib>=3.10.8
 * natsort>=8.4.0
-* numba>=0.61.2
-* numexpr>=2.10.2
+* numba>=0.63.1
+* numexpr>=2.14.1
 * openpyxl>=3.1.5
-* psutil>=7.0.0
-* pyside6>=6.9.0
-* pytest>=8.3.5
-* pyvista>=0.45.0
-* pyvistaqt>0.11.2
-* rasterio>=1.4.3
-* rioxarray>=0.19.0
-* scikit-learn>=1.6.1
-* scikit-image>=0.25.2
+* psutil>=7.2.1
+* pyside6>=6.10.1
+* pytest>=9.0.2
+* pyvista>=0.46.5
+* pyvistaqt>=0.11.3
+* rasterio>=1.5.0
+* rioxarray>=0.21.0
+* scikit-learn>=1.8.0
+* scikit-image>=0.26.0
 * shapelysmooth>=0.2.1
-* simpeg>=0.24.0
-* beautifulsoup4>=4.13.4
-* pwlf>=2.5.1
+* simpeg>=0.25.0
+* beautifulsoup4>=4.14.3
+* pyyaml>=6.0.3
+* pwlf>=2.5.2
 
 PyPi - Windows
 ^^^^^^^^^^^^^^
@@ -151,7 +152,7 @@ The process to install is as follows:
 
    conda config --env --add channels conda-forge
 
-   conda install -c anaconda pyqt=6.7.1
+   conda install pyside6
 
    conda install fiona
 
@@ -191,9 +192,9 @@ The process to install is as follows:
 
    conda install beautifulsoup4
 
-   conda install pyside6
-
    conda install pyyaml
+
+   conda install pwlf
 
    conda update --all
 
