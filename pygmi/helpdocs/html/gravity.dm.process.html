@@ -46,7 +46,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Magnetics" href="mag.html" />
-    <link rel="prev" title="Import CG-5 Data" href="gravity.dm.import.html" />
+    <link rel="prev" title="Import CG-5 or CG-6 Data" href="gravity.dm.import.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -318,7 +318,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="gravity.html">Gravity</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Process Gravity Data</a></li>
 </ul>
 </details></li>
@@ -327,6 +327,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -702,7 +703,7 @@ document.write(`
   <section id="process-gravity-data">
 <h1>Process Gravity Data<a class="headerlink" href="#process-gravity-data" title="Link to this heading">#</a></h1>
 <p>This is a module used to process gravity data, assuming a single base station. It does so according to the North American gravity database standards, as described by Hinze et al (2005)</p>
-<p>The input is a line dataset, imported via the <strong>Import CG-5 Data</strong> function. Coordinates must be in latitude and longitude, with elevation in meters.</p>
+<p>The input is a line dataset, imported via the <strong>Import CG-5 or CG-6 Data</strong> function. Coordinates must be in latitude and longitude, with elevation in meters.</p>
 <p>The processing interface has the following parameters :</p>
 <ol class="arabic simple">
 <li><p><strong>Known Base Station Number</strong> – This is the station number for a base station with a known absolute gravity value.</p></li>
@@ -765,7 +766,7 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Import CG-5 Data</p>
+        <p class="prev-next-title">Import CG-5 or CG-6 Data</p>
       </div>
     </a>
     <a class="right-next"

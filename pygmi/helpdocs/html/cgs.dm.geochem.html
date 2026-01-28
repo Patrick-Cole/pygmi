@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Import XYZ Data &#8212; PyGMI 3.2.9.32 documentation</title>
+    <title>Geochemistry and Lithology Processing &#8212; PyGMI 3.2.9.32 documentation</title>
   
   
   
@@ -41,12 +41,10 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'vector.dm.importxyzdata';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cgs.dm.geochem';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Column Select" href="vector.dm.colsel.html" />
-    <link rel="prev" title="Import Vector Data" href="vector.dm.importvectordata.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -234,8 +232,8 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html">Installation Instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
@@ -271,9 +269,9 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.export.html">Export Data</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -594,7 +592,7 @@
       
       
       
-      <li><a href="_sources/vector.dm.importxyzdata.rst" target="_blank"
+      <li><a href="_sources/cgs.dm.geochem.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -676,7 +674,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Import XYZ Data</h1>
+    <h1>Geochemistry and Lithology Processing</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -690,37 +688,48 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="import-xyz-data">
-<h1>Import XYZ Data<a class="headerlink" href="#import-xyz-data" title="Link to this heading">#</a></h1>
-<p>This module imports XYZ/point data from a file, for example a <strong>CSV</strong> or Excel file. The user must choose the x and y columns.</p>
-<p>List of formats:</p>
-<ul class="simple">
-<li><p>Excel (.XLSX)</p></li>
-<li><p>Comma Delimited (.CSV)</p></li>
-<li><p>Geosoft XYZ (.XYZ)</p></li>
-<li><p>ASCII XYZ (.XYZ)</p></li>
-<li><p>Space Delimited (.TXT)</p></li>
-<li><p>Tab Delimited (.TXT)</p></li>
-<li><p>Intrepid Database (..DIR)</p></li>
-</ul>
-<p>Once the file has been selected the user must specify the following parameters:</p>
+  <section id="geochemistry-and-lithology-processing">
+<h1>Geochemistry and Lithology Processing<a class="headerlink" href="#geochemistry-and-lithology-processing" title="Link to this heading">#</a></h1>
+<p>This tool allows for the creation of a series of geochemical products. It requires as input some point geochemistry data. Once the module is activated, a polygon lithology shapefile can be loaded. The user has the following options:</p>
 <ol class="arabic simple">
-<li><p>Select the X and Y columns. These columns must be in the coordinates specified in the <strong>Input Projection</strong> section.</p></li>
+<li><p><strong>Load Lithology File</strong> - this is a shapefile containing lithologies.</p></li>
+<li><p><strong>Plot Type</strong> - This can be one of the following:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>X Channel</strong> - This is the column which contains the x-coordinates.</p></li>
-<li><p><strong>Y Channel</strong> - This is the column which contains the y-coordinates.</p></li>
+<li><p><strong>Geochemistry</strong></p></li>
+<li><p><strong>Original Lithology</strong></p></li>
+<li><p><strong>Lithology Assigned to Geochemistry</strong></p></li>
+<li><p><strong>Statistics Graphs</strong></p></li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple" start="2">
-<li><p><strong>Nodata Value</strong> - This is the null or nodata value in the data file. If the nodata value in the data file is different from the value specified here, nodata values will be considered real data.</p></li>
-<li><p><strong>Input Projection</strong> - The datum and projection are specified here. This is especially important if the user intends to export the data to a vector (GIS) format.</p></li>
+<ol class="arabic simple" start="3">
+<li><p><strong>Channel</strong> - Geochemistry channel. Only available for <strong>Geochemistry</strong> and <strong>Statistics Graphs</strong></p></li>
+<li><p><strong>Style</strong> - Only available for <strong>Geochemistry</strong>. Can be one of the following:</p></li>
 </ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Normal</strong></p></li>
+<li><p><strong>Group using Standard Deviations above Mean (0)</strong></p></li>
+<li><p><strong>Group by Quartile</strong></p></li>
+<li><p><strong>Group into K-Means Classes</strong></p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p><strong>Statistics</strong> - Only available for <strong>Statistics Graphs</strong>. Can be one of the following:</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Line Plot with Table</strong></p></li>
+<li><p><strong>Bar Plot</strong></p></li>
+<li><p><strong>Box and Whisker Plot</strong></p></li>
+<li><p><strong>Violin Plot</strong></p></li>
+</ul>
+</div></blockquote>
 <figure class="align-default" id="id1">
-<img alt="_images/vectorimport.png" src="_images/vectorimport.png" />
+<img alt="_images/cgsgeochem1.png" src="_images/cgsgeochem1.png" />
 <figcaption>
-<p><span class="caption-text">Import XYZ Data options.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">Line Plot with Table.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -736,24 +745,6 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="vector.dm.importvectordata.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Import Vector Data</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="vector.dm.colsel.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Column Select</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               

@@ -1207,7 +1207,7 @@ class ExportData(ContextModule):
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
         pb_ofile.pressed.connect(self.get_ofile)
 
-    def run(self):
+    def run(self, option=None):
         """
         Entry point into the routine, used to run context menu item.
 
@@ -1215,11 +1215,14 @@ class ExportData(ContextModule):
         -------
         bool
             True if successful, False otherwise.
+        option : str
+            A string option. The default is None.
 
         """
         self.process_is_active(True)
 
-        if 'Cluster' in self.indata:
+        if 'Cluster' in self.indata and option == 'class':
+            self.setWindowTitle(r'Export Class Data')
             data = self.indata['Cluster']
             newdat = [i.copy() for i in data]
             for i in data:

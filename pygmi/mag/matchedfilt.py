@@ -86,7 +86,7 @@ class MatchedFilt(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'mag.dm.tiltdepth'
+        self.buttonbox.htmlfile = 'mag.dm.match'
 
         lbl_1 = QtWidgets.QLabel('Band to perform Filtering:')
         # lbl_2 = QtWidgets.QLabel('Data Type:')

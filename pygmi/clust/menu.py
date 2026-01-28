@@ -149,7 +149,7 @@ class MenuWidget():
 
     def export_data(self):
         """Export raster data."""
-        self.parent.launch_context_item(iodefs.ExportData)
+        self.parent.launch_context_item(iodefs.ExportData, 'class')
 
     def scatter_plot(self):
         """Scatter Plot Tool."""

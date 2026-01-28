@@ -318,7 +318,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
@@ -327,6 +327,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -691,17 +692,20 @@ document.write(`
                   
   <section id="plot-phase-tensor">
 <h1>Plot Phase Tensor<a class="headerlink" href="#plot-phase-tensor" title="Link to this heading">#</a></h1>
-<p>This displays the phase tensor map. It has the following options:</p>
+<p>This displays the MT phase tensor map. It has the following options:</p>
 <ol class="arabic simple">
-<li><p>Frequency - phase tensor map frequency.</p></li>
-<li><p>Ellipse colour by - parameter to use for colouring ellipses. It can be skew, phimin or phimax.</p></li>
-<li><p>Ellipse scale factor - Scale of ellipses.</p></li>
-<li><p>Plot real tipper</p></li>
-<li><p>Plot imaginary tipper</p></li>
-<li><p>Export current frequency to shapefiles</p></li>
+<li><p><strong>Frequency</strong> - phase tensor map frequency.</p></li>
+<li><p><strong>Ellipse colour by</strong> - parameter to use for colouring ellipses. It can be skew, phimin or phimax.</p></li>
+<li><p><strong>Ellipse scale factor</strong> - Scale of ellipses.</p></li>
+<li><p><strong>Plot real tipper</strong> - check this to plot real tipper values.</p></li>
+<li><p><strong>Plot imaginary tipper</strong> - check this to plot imaginary tipper values.</p></li>
+<li><p><strong>Export current frequency to shapefiles</strong></p></li>
 </ol>
-<figure class="align-default">
+<figure class="align-default" id="id1">
 <img alt="_images/mtphase.png" src="_images/mtphase.png" />
+<figcaption>
+<p><span class="caption-text">Plot Phase Tensor interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
 </figure>
 </section>
 

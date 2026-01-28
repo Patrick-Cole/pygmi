@@ -1027,7 +1027,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.scene.my_mode = 'MoveItem'
         return item
 
-    def launch_context_item(self, newitem):
+    def launch_context_item(self, newitem, option=None):
         """
         Launch a context menu item, using output data.
 
@@ -1035,6 +1035,9 @@ class MainWidget(QtWidgets.QMainWindow):
         ----------
         newitem : custom class
             newitem is the class to be called by the context menu item
+        option : str
+            A string option. The default is None.
+
         """
         self.process_is_active(True)
         outdata = self.get_outdata()
@@ -1043,7 +1046,10 @@ class MainWidget(QtWidgets.QMainWindow):
             if odata is not None and odata != {}:
                 dlg = newitem(self)
                 dlg.indata = odata
-                dlg.run()
+                if option is None:
+                    dlg.run()
+                else:
+                    dlg.run(option)
                 self.update_pdlg(dlg)
         self.process_is_active(False)
 

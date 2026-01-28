@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Import XYZ Data &#8212; PyGMI 3.2.9.32 documentation</title>
+    <title>Matched Filtering &#8212; PyGMI 3.2.9.32 documentation</title>
   
   
   
@@ -41,12 +41,12 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'vector.dm.importxyzdata';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'mag.dm.match';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Column Select" href="vector.dm.colsel.html" />
-    <link rel="prev" title="Import Vector Data" href="vector.dm.importvectordata.html" />
+    <link rel="next" title="Tilt Depth Interpretation" href="mag.dm.tiltdepth.html" />
+    <link rel="prev" title="Calculate IGRF Corrected Data" href="mag.dm.igrf.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -271,9 +271,9 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.export.html">Export Data</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -322,12 +322,12 @@
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="mag.html">Magnetics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -594,7 +594,7 @@
       
       
       
-      <li><a href="_sources/vector.dm.importxyzdata.rst" target="_blank"
+      <li><a href="_sources/mag.dm.match.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -665,7 +665,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -676,11 +678,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Import XYZ Data</h1>
+    <h1>Matched Filtering</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -690,39 +700,32 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="import-xyz-data">
-<h1>Import XYZ Data<a class="headerlink" href="#import-xyz-data" title="Link to this heading">#</a></h1>
-<p>This module imports XYZ/point data from a file, for example a <strong>CSV</strong> or Excel file. The user must choose the x and y columns.</p>
-<p>List of formats:</p>
-<ul class="simple">
-<li><p>Excel (.XLSX)</p></li>
-<li><p>Comma Delimited (.CSV)</p></li>
-<li><p>Geosoft XYZ (.XYZ)</p></li>
-<li><p>ASCII XYZ (.XYZ)</p></li>
-<li><p>Space Delimited (.TXT)</p></li>
-<li><p>Tab Delimited (.TXT)</p></li>
-<li><p>Intrepid Database (..DIR)</p></li>
-</ul>
-<p>Once the file has been selected the user must specify the following parameters:</p>
+  <section id="matched-filtering">
+<h1>Matched Filtering<a class="headerlink" href="#matched-filtering" title="Link to this heading">#</a></h1>
+<p>Matched filtering is a technique which seeks to separate out magnetic ensembles based on features present in the frequency domain (Spector and Grant, 1970). The filter fits linear sections to the log of the magnetic power spectrum, and calculates the depth of that section based on the fit. An FFT filter is also calculated for that linear section. The output is a series of magnetic images, each representing a depth slice.</p>
+<p>The interface has the following options:</p>
 <ol class="arabic simple">
-<li><p>Select the X and Y columns. These columns must be in the coordinates specified in the <strong>Input Projection</strong> section.</p></li>
+<li><p><strong>Band to perform filtering</strong> - This is the raster magnetic band.</p></li>
+<li><p><strong>Number of depth slices</strong> - this is the number of depth slices to split the data into.</p></li>
+<li><p><strong>Recalculate</strong> - option to recalculate.</p></li>
 </ol>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>X Channel</strong> - This is the column which contains the x-coordinates.</p></li>
-<li><p><strong>Y Channel</strong> - This is the column which contains the y-coordinates.</p></li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="2">
-<li><p><strong>Nodata Value</strong> - This is the null or nodata value in the data file. If the nodata value in the data file is different from the value specified here, nodata values will be considered real data.</p></li>
-<li><p><strong>Input Projection</strong> - The datum and projection are specified here. This is especially important if the user intends to export the data to a vector (GIS) format.</p></li>
+<p>The interface displays the following:</p>
+<ol class="arabic simple" start="4">
+<li><p><strong>Piecewise Linear Fit</strong> - linear fit to sections of the FFT.</p></li>
+<li><p><strong>FFT Filters</strong> - the actual FFT filters used are displayed here.</p></li>
 </ol>
 <figure class="align-default" id="id1">
-<img alt="_images/vectorimport.png" src="_images/vectorimport.png" />
+<img alt="_images/magmatch.png" src="_images/magmatch.png" />
 <figcaption>
-<p><span class="caption-text">Import XYZ Data options.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">Matched Filtering interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><p>Spector, A., &amp; Grant, F. S. (1970). Statistical models for interpreting aeromagnetic data. Geophysics, 35, 293–3020.</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -737,20 +740,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="vector.dm.importvectordata.html"
+       href="mag.dm.igrf.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Import Vector Data</p>
+        <p class="prev-next-title">Calculate IGRF Corrected Data</p>
       </div>
     </a>
     <a class="right-next"
-       href="vector.dm.colsel.html"
+       href="mag.dm.tiltdepth.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Column Select</p>
+        <p class="prev-next-title">Tilt Depth Interpretation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -760,6 +763,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

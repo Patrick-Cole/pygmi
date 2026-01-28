@@ -318,7 +318,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
@@ -327,6 +327,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -707,9 +708,15 @@ document.write(`
 <ol class="arabic simple">
 <li><p><strong>Output Equation</strong> box where the equation is typed out. The variables i0, i1, i2 etc. represents the channels of the input vector dataset in formulas.</p></li>
 <li><p><strong>New Column Name</strong> box where the new column name can be set.</p></li>
-<li><p><strong>Data Band Key</strong> combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the channels in the data set are listed. When selecting a channel the variable associated with the channel is shown to the right of the combo box. The variable name is for information purposes only, the user must type the equation manually in the equation box.</p></li>
+<li><p><strong>Data Band Key</strong> combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the channels in the data set are listed. When selecting a channel, the variable associated with the channel is shown to the right of the combo box. The variable name is for information purposes only; the user must type the equation manually in the equation box.</p></li>
 <li><p><strong>Examples</strong> of some commonly used equations and <strong>Commands</strong> that are available.</p></li>
 </ol>
+<figure class="align-default" id="id1">
+<img alt="_images/vectoreq.png" src="_images/vectoreq.png" />
+<figcaption>
+<p><span class="caption-text">Equation Editor interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <section id="examples">
 <h2>Examples:<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
 <p>Sum:</p>
@@ -721,7 +728,7 @@ document.write(`
 <h2>Commands:<a class="headerlink" href="#commands" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Comparison operators: &lt;;, &lt;=, ==, !=, &gt;=, &gt;</p></li>
-<li><p>Arithmetic operators: +, -, <em>, /, *</em>, %, &lt;&lt;, &gt;&gt;</p></li>
+<li><p>Arithmetic operators: +, -, *, /, **, %</p></li>
 <li><p>sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</p></li>
 <li><p>log, log10, log1p, exp, expm1</p></li>
 <li><p>sqrt, abs</p></li>
