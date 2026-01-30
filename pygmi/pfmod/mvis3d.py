@@ -1569,7 +1569,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
+    ifile = r"D:\workdata\PyGMI Test Data\Potential Field Modelling\Model2.npz"
 
     IM = ImportMod3D()
     IM.ifile = ifile

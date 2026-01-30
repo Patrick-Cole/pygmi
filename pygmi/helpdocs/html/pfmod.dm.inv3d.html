@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -711,39 +714,39 @@ document.write(`
 </ul>
 <p>Select the <strong>3D Magnetic Inversion</strong> function from the <a class="reference internal" href="pfmod.html"><span class="doc">Potential Field Modelling</span></a> menu and connect the input rasters to this module. Double-click on the <strong>3D Magnetic Inversion</strong> module to bring up the <strong>Inverse Modelling Parameters</strong> interface:</p>
 <ol class="arabic simple">
-<li><p><strong>Dataset Information</strong> – The imported rasters are connected to the correct datasets.</p></li>
+<li><p><strong>Dataset Information</strong> - The imported rasters are connected to the correct datasets.</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>DTM Dataset</strong> – This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study.</p></li>
-<li><p><strong>Magnetic Dataset</strong> – This is the magnetic data to be modelled.</p></li>
+<li><p><strong>DTM Dataset</strong> - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study.</p></li>
+<li><p><strong>Magnetic Dataset</strong> - This is the magnetic data to be modelled.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p><strong>General Properties</strong> – These general properties are important for the inversion. If they are incorrect, or if there is extensive remanence in the area, the inversion results may be poor.</p></li>
+<li><p><strong>General Properties</strong> - These general properties are important for the inversion. If they are incorrect, or if there is extensive remanence in the area, the inversion results may be poor.</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Height of observation - Magnetic</strong> – The magnetic sensor height in metres.</p></li>
-<li><p><strong>Magnetic Field Intensity (nT)</strong> – The intensity of the magnetic field at the time of the survey. This can be calculated using magnetic calculators provided by National Oceanic and Atmospheric Administration (NOAA) at <a class="reference external" href="https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm">https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm</a></p></li>
-<li><p><strong>Magnetic Inclination</strong> – The inclination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.</p></li>
-<li><p><strong>Magnetic Declination</strong> – This is the declination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.</p></li>
+<li><p><strong>Height of observation - Magnetic</strong> - The magnetic sensor height in metres.</p></li>
+<li><p><strong>Magnetic Field Intensity (nT)</strong> - The intensity of the magnetic field at the time of the survey. This can be calculated using magnetic calculators provided by National Oceanic and Atmospheric Administration (NOAA) at <a class="reference external" href="https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm">https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm</a></p></li>
+<li><p><strong>Magnetic Inclination</strong> - The inclination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.</p></li>
+<li><p><strong>Magnetic Declination</strong> - This is the declination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p><strong>Model Extent Properties</strong> – The model extents control the area size, depth and resolution of the model. Typically, one of your datasets are used to fill in most of the fields automatically.</p></li>
+<li><p><strong>Model Extent Properties</strong> - The model extents control the area size, depth and resolution of the model. Typically, one of your datasets are used to fill in most of the fields automatically.</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>Get Study Area from following Dataset</strong> - Usually the DTM dataset is chosen, but it can be any of the datasets.</p></li>
-<li><p><strong>Upper Top Left X Coordinate</strong> – The north-west corner’s X coordinate of the model in metres.</p></li>
-<li><p><strong>Upper Top Left Y Coordinate</strong> – The north-west corner’s Y coordinate of your model in meters.</p></li>
-<li><p><strong>Upper Top Left Z Coordinate</strong> – The north-west corner Z coordinate of the model in metres above sea level.</p></li>
-<li><p><strong>Total X Extent</strong> – The distance from east to west of the model in metres.</p></li>
-<li><p><strong>Total Y Extent</strong> – The distance from north to south of the model in metres.</p></li>
-<li><p><strong>Total Z Extent (Depth)</strong> – The depth range of the model in metres.</p></li>
-<li><p><strong>X and Y Cell Size</strong> – The width of each model cube in the X and Y direction (in metres).</p></li>
-<li><p><strong>Z Cell Size</strong> – The height in metres of each model cube in Z direction.</p></li>
+<li><p><strong>Upper Top Left X Coordinate</strong> - The north-west corner’s X coordinate of the model in metres.</p></li>
+<li><p><strong>Upper Top Left Y Coordinate</strong> - The north-west corner’s Y coordinate of your model in meters.</p></li>
+<li><p><strong>Upper Top Left Z Coordinate</strong> - The north-west corner Z coordinate of the model in metres above sea level.</p></li>
+<li><p><strong>Total X Extent</strong> - The distance from east to west of the model in metres.</p></li>
+<li><p><strong>Total Y Extent</strong> - The distance from north to south of the model in metres.</p></li>
+<li><p><strong>Total Z Extent (Depth)</strong> - The depth range of the model in metres.</p></li>
+<li><p><strong>X and Y Cell Size</strong> - The width of each model cube in the X and Y direction (in metres).</p></li>
+<li><p><strong>Z Cell Size</strong> - The height in metres of each model cube in Z direction.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
@@ -751,13 +754,13 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Columns (X)</strong> – This is calculated automatically from extents and cell sizes.</p></li>
-<li><p><strong>Rows (Y)</strong> – This is calculated automatically from extents and cell sizes.</p></li>
-<li><p><strong>Layers (Z)</strong> – This is calculated automatically from extents and cell sizes.</p></li>
+<li><p><strong>Columns (X)</strong> - This is calculated automatically from extents and cell sizes.</p></li>
+<li><p><strong>Rows (Y)</strong> - This is calculated automatically from extents and cell sizes.</p></li>
+<li><p><strong>Layers (Z)</strong> - This is calculated automatically from extents and cell sizes.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="5">
-<li><p><strong>Number of output classes</strong> – The number of classes (lithologies) generated during the inversion process.</p></li>
+<li><p><strong>Number of output classes</strong> - The number of classes (lithologies) generated during the inversion process.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/pfmodinvmag.png" src="_images/pfmodinvmag.png" />

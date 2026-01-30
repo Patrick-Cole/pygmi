@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -706,9 +709,9 @@ document.write(`
 <p>The calculation of the variation is based on the description by Wesseloo (2014), although thee b-value calculation uses the CMAX method (Mignan and Woessner, 2012)</p>
 <p>The options are:</p>
 <ol class="arabic simple">
-<li><p>Grid spacing - the grid spacing in decimal degrees.</p></li>
-<li><p>Search radius - The maximum radium from each grid point to search for events</p></li>
-<li><p>Minimum number of events - The smallest number of events to use for the b-value calculation at a grid point.</p></li>
+<li><p><strong>Grid spacing</strong> - the grid spacing in decimal degrees.</p></li>
+<li><p><strong>Search radius</strong> - The maximum radium from each grid point to search for events</p></li>
+<li><p><strong>Minimum number of events</strong> - The smallest number of events to use for the b-value calculation at a grid point.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/seisspatb.png" src="_images/seisspatb.png" />

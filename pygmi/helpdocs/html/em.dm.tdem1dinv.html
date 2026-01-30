@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -710,22 +713,22 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Line Number</strong> – The line number along which the station/sampling point is located.</p></li>
-<li><p><strong>Fid/Station Name</strong> – The unique identifier of the sampling point or station name that will be modelled.</p></li>
-<li><p><strong>Bird Height</strong> – The height of the sensor above the terrain.</p></li>
-<li><p><strong>Data channel prefix</strong> – The prefix in the ASCII data file, indicating a data channel.</p></li>
-<li><p><strong>Waveform Type</strong> – An option to select the waveform from a list of standard types.  This can be <strong>VTEM Waveform</strong>, <strong>RampOffWaveform</strong>, <strong>TrapezoidWaveform</strong>, <strong>QuarterSineRampOnWaveform</strong>, <strong>TriangularWaveform</strong> and <strong>HalfSineWaveform</strong>.</p></li>
-<li><p><strong>Tx Peak time</strong> – The time when the input waveform is at its maximum.</p></li>
-<li><p><strong>Tx Ramp Off start time</strong> – The time at which the input waveform turns off.</p></li>
-<li><p><strong>Tx Off Time</strong> –  The time when the waveform is completely off.</p></li>
-<li><p><strong>Source Type</strong> – Can be <strong>CircularLoop</strong> or <strong>MagDipole</strong>.</p></li>
-<li><p><strong>Tx Orientation</strong> – The transmitter orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
-<li><p><strong>Tx Area</strong> – The transmitter area (only for a circular loop source).</p></li>
-<li><p><strong>Number of turns in loop</strong> – Only available for a circular loop source.</p></li>
-<li><p><strong>Current in loop</strong> – Only available for a circular loop source.</p></li>
+<li><p><strong>Line Number</strong> - The line number along which the station/sampling point is located.</p></li>
+<li><p><strong>Fid/Station Name</strong> - The unique identifier of the sampling point or station name that will be modelled.</p></li>
+<li><p><strong>Bird Height</strong> - The height of the sensor above the terrain.</p></li>
+<li><p><strong>Data channel prefix</strong> - The prefix in the ASCII data file, indicating a data channel.</p></li>
+<li><p><strong>Waveform Type</strong> - An option to select the waveform from a list of standard types.  This can be <strong>VTEM Waveform</strong>, <strong>RampOffWaveform</strong>, <strong>TrapezoidWaveform</strong>, <strong>QuarterSineRampOnWaveform</strong>, <strong>TriangularWaveform</strong> and <strong>HalfSineWaveform</strong>.</p></li>
+<li><p><strong>Tx Peak time</strong> - The time when the input waveform is at its maximum.</p></li>
+<li><p><strong>Tx Ramp Off start time</strong> - The time at which the input waveform turns off.</p></li>
+<li><p><strong>Tx Off Time</strong> -  The time when the waveform is completely off.</p></li>
+<li><p><strong>Source Type</strong> - Can be <strong>CircularLoop</strong> or <strong>MagDipole</strong>.</p></li>
+<li><p><strong>Tx Orientation</strong> - The transmitter orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
+<li><p><strong>Tx Area</strong> - The transmitter area (only for a circular loop source).</p></li>
+<li><p><strong>Number of turns in loop</strong> - Only available for a circular loop source.</p></li>
+<li><p><strong>Current in loop</strong> - Only available for a circular loop source.</p></li>
 <li><p><strong>Permeability of the background</strong></p></li>
-<li><p><strong>Rx Orientation</strong> – Receiver orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
-<li><p><strong>Mesh properties</strong> – The dimensional properties of the mesh that will be used to discretise the solutions:</p>
+<li><p><strong>Rx Orientation</strong> - Receiver orientation, can be <strong>x</strong>, <strong>y</strong> or <strong>z</strong>.</p></li>
+<li><p><strong>Mesh properties</strong> - The dimensional properties of the mesh that will be used to discretise the solutions:</p>
 <ul>
 <li><p><strong>Mesh cell size</strong></p></li>
 <li><p><strong>Mesh number cells in x direction</strong></p></li>
@@ -734,10 +737,10 @@ document.write(`
 <li><p><strong>Pad cell multiplier</strong></p></li>
 </ul>
 </li>
-<li><p><strong>Conductivity Air</strong> – In S/m.</p></li>
-<li><p><strong>Conductivity Halfspace</strong> – In S/m.</p></li>
+<li><p><strong>Conductivity Air</strong> - In S/m.</p></li>
+<li><p><strong>Conductivity Halfspace</strong> - In S/m.</p></li>
 <li><p><strong>Data Relative Error (%)</strong></p></li>
-<li><p><strong>Data Noise Floor</strong> – In V/Am<sup>4</sup> .</p></li>
+<li><p><strong>Data Noise Floor</strong> - In V/Am<sup>4</sup> .</p></li>
 <li><p><strong>Optimization</strong>: Maximum number of iterations.</p></li>
 </ul>
 </div></blockquote>

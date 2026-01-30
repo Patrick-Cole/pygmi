@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -711,14 +714,14 @@ document.write(`
 </figure>
 <p>The Fuzzy Clustering interface has the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Cluster Algorithm</strong> – This can be <strong>fuzzy c-means</strong>, <strong>advanced fuzzy c-means</strong> or <strong>Gustafson-Kessel</strong></p></li>
-<li><p><strong>Minimum Clusters</strong> – Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
-<li><p><strong>Maximum Clusters</strong> – The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
-<li><p><strong>Maximum iterations</strong> – Maximum number of iterations to use when generating a solution.</p></li>
-<li><p><strong>Terminate if relative change is less than</strong> – Threshold for termination.</p></li>
-<li><p><strong>Repeated runs</strong> – Run the algorithm a number of times to ensure robustness with regards to the initial guess.</p></li>
+<li><p><strong>Cluster Algorithm</strong> - This can be <strong>fuzzy c-means</strong>, <strong>advanced fuzzy c-means</strong> or <strong>Gustafson-Kessel</strong></p></li>
+<li><p><strong>Minimum Clusters</strong> - Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
+<li><p><strong>Maximum Clusters</strong> - The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p><strong>Maximum iterations</strong> - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p><strong>Terminate if relative change is less than</strong> - Threshold for termination.</p></li>
+<li><p><strong>Repeated runs</strong> - Run the algorithm a number of times to ensure robustness with regards to the initial guess.</p></li>
 <li><p><strong>Constrain cluster shape</strong> - 0 is unconstrained, 1 is spherical.</p></li>
-<li><p><strong>Fuzziness exponent</strong> – the degree of fuzziness in the membership of a sample. It can be any number between 1 and infinity but is typically between 1 and 2.</p></li>
+<li><p><strong>Fuzziness exponent</strong> - the degree of fuzziness in the membership of a sample. It can be any number between 1 and infinity but is typically between 1 and 2.</p></li>
 </ol>
 <figure class="align-default" id="id2">
 <img alt="_images/clustfuzzy.png" src="_images/clustfuzzy.png" />
@@ -730,7 +733,7 @@ document.write(`
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
 <div><p>Paasche, H., Eberle, D.G. 2009. Rapid integration of large airborne geophysical data suites using a fuzzy partitioning cluster algorithm: a tool for geological mapping and mineral exploration targeting. Exploration Geophysics, 40, 277-287.</p>
-<p>Paasche, H. and Eberle, D. 2011. Automated compilation of pseudo-lithology maps from geophysical data sets: A comparison of Gustafson-Kessel and fuzzy c-means cluster algorithms. Exploration Geophysics, 42, 275–285, <a class="reference external" href="https://doi.org/10.1071/EG11014">https://doi.org/10.1071/EG11014</a>.</p>
+<p>Paasche, H. and Eberle, D. 2011. Automated compilation of pseudo-lithology maps from geophysical data sets: A comparison of Gustafson-Kessel and fuzzy c-means cluster algorithms. Exploration Geophysics, 42, 275-285, <a class="reference external" href="https://doi.org/10.1071/EG11014">https://doi.org/10.1071/EG11014</a>.</p>
 </div></blockquote>
 </section>
 </section>

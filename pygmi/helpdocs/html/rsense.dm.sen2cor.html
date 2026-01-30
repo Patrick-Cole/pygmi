@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -706,8 +709,8 @@ document.write(`
 <p>PyGMI uses the Sen2Cor software package (Pignatale, 2024) provided by the European Space Agency (ESA) to do the atmospheric correction. Therefore, this software must first be downloaded and installed. It is available at the <a class="reference external" href="https://step.esa.int/main/snap-supported-plugins/sen2cor/sen2cor-v2-12/">Sen2Cor website</a>. A document describing the installation steps can also be downloaded from this website (Sen2cor_Dev_Team and OMPC-Team, 2025). Extract the downloaded ZIP file in the desired location (e.g. the root of the C-drive). Go into the folder and run L2A_Process.bat once to set up a folder with a configuration file. This only has to be done once, when you use Sen2Cor for the first time. PyGMI has a built-in version of the configuration file that excludes the topographic correction.</p>
 <p>When selecting <strong>Sen2Cor: Sentinel-2 Atmospheric Correction</strong> the <strong>Sen2Cor</strong> module appears in the main PyGMI interface. Double-click on the module to bring up the <strong>Sen2Cor: Sentinel-2 Atmospheric Correction</strong> dialog box. The user needs to provide links to two folders:</p>
 <ol class="arabic simple">
-<li><p><strong>Sen2Cor Directory</strong> – The folder where the Sen2Cor software was extracted to (within this folder you should see some subfolders and a <strong>BAT</strong> and <strong>TXT</strong> file).</p></li>
-<li><p><strong>Sentinel-2 L1C.SAFE</strong> Directory – The L1C Sentinel data which is downloaded in ZIP format must be extracted so that a <strong>SAFE</strong> folder is visible. Select this folder.</p></li>
+<li><p><strong>Sen2Cor Directory</strong> - The folder where the Sen2Cor software was extracted to (within this folder you should see some subfolders and a <strong>BAT</strong> and <strong>TXT</strong> file).</p></li>
+<li><p><strong>Sentinel-2 L1C.SAFE</strong> Directory - The L1C Sentinel data which is downloaded in ZIP format must be extracted so that a <strong>SAFE</strong> folder is visible. Select this folder.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/rsenses2c1.png" src="_images/rsenses2c1.png" />

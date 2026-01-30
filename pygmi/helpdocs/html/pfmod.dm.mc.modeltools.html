@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -701,17 +704,17 @@ document.write(`
 </figure>
 <p>The tools are:</p>
 <ol class="arabic simple">
-<li><p>Lithology list – Use this to select the lithology you want to draw in. To erase, simply select the Background lithology and draw with that.</p></li>
-<li><p><strong>Line Thickness</strong> – This allows you to change the pen thickness which you are drawing with. It is in terms of voxel/cell size.</p></li>
-<li><p><strong>Ranged Copy</strong> – The ranged copy function allows for the copying of a lithology on the current profile or layer over a range of profiles or layers. To copy profiles, select <strong>Side View</strong> and <strong>Top View</strong> lets you copy layers.</p></li>
+<li><p>Lithology list - Use this to select the lithology you want to draw in. To erase, simply select the Background lithology and draw with that.</p></li>
+<li><p><strong>Line Thickness</strong> - This allows you to change the pen thickness which you are drawing with. It is in terms of voxel/cell size.</p></li>
+<li><p><strong>Ranged Copy</strong> - The ranged copy function allows for the copying of a lithology on the current profile or layer over a range of profiles or layers. To copy profiles, select <strong>Side View</strong> and <strong>Top View</strong> lets you copy layers.</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Master Profile</strong> – The profile/layer with the lithology/lithologies that you want to copy.</p></li>
-<li><p><strong>Range Start</strong> – The first profile/layer of the range of profiles/layers to which the lithology/lithologies must be copied.</p></li>
-<li><p><strong>Range End</strong> – The last profile/layer of the range of profiles/layers to which the lithology/lithologies must be copied.</p></li>
-<li><p><strong>Lithologies To Copy</strong> – Select the lithologies to copy.</p></li>
-<li><p><strong>Lithologies to Overwrite</strong> – Select the lithologies that can be overwritten.</p></li>
+<li><p><strong>Master Profile</strong> - The profile/layer with the lithology/lithologies that you want to copy.</p></li>
+<li><p><strong>Range Start</strong> - The first profile/layer of the range of profiles/layers to which the lithology/lithologies must be copied.</p></li>
+<li><p><strong>Range End</strong> - The last profile/layer of the range of profiles/layers to which the lithology/lithologies must be copied.</p></li>
+<li><p><strong>Lithologies To Copy</strong> - Select the lithologies to copy.</p></li>
+<li><p><strong>Lithologies to Overwrite</strong> - Select the lithologies that can be overwritten.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id2">
@@ -721,12 +724,12 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple" start="4">
-<li><p><strong>Add Lithological Boundary</strong> – Adds a raster to be used as a lithological boundary. It can be used if you have, for example a raster of the surface of the bedrock to add to your model. You will be prompted to select a raster layer and then select how it will be used:</p></li>
+<li><p><strong>Add Lithological Boundary</strong> - Adds a raster to be used as a lithological boundary. It can be used if you have, for example a raster of the surface of the bedrock to add to your model. You will be prompted to select a raster layer and then select how it will be used:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Lithologies Above Layer</strong> – You can choose not to change the current model above the boundary layer or select a lithology that must constitute the entire model above the boundary layer.</p></li>
-<li><p><strong>Lithologies below Layer</strong> – Select whether to keep the model unchanged below the boundary layer, or the lithology that must be used for the entire model below the boundary layer.</p></li>
+<li><p><strong>Lithologies Above Layer</strong> - You can choose not to change the current model above the boundary layer or select a lithology that must constitute the entire model above the boundary layer.</p></li>
+<li><p><strong>Lithologies below Layer</strong> - Select whether to keep the model unchanged below the boundary layer, or the lithology that must be used for the entire model below the boundary layer.</p></li>
 <li><p>There are two options for the units of the Z coordinates of the raster layer that will form the lithological boundary. It can either be in depth below the surface or height above sea level.</p></li>
 </ul>
 </div></blockquote>

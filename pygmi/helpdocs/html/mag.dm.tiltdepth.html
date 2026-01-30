@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -707,18 +710,18 @@ document.write(`
 <p>What is important to note is that this technique works best with data which has been reduced to the pole. For this reason, RTP has been built into the module.</p>
 <p>The interface requires input parameters and displays the result:</p>
 <ol class="arabic simple">
-<li><p><strong>Band to perform tilt depth</strong> – The band name in the raster file that contains the magnetic data.</p></li>
-<li><p><strong>Colour Bar</strong> – The user can select a colour bar for the display of the results.</p></li>
-<li><p><strong>Perform RTP on data</strong> – A toggle box allows the user to choose whether the data must be reduced to the pole. If this option is selected the user must provide the following inputs:</p></li>
+<li><p><strong>Band to perform tilt depth</strong> - The band name in the raster file that contains the magnetic data.</p></li>
+<li><p><strong>Colour Bar</strong> - The user can select a colour bar for the display of the results.</p></li>
+<li><p><strong>Perform RTP on data</strong> - A toggle box allows the user to choose whether the data must be reduced to the pole. If this option is selected the user must provide the following inputs:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Inclination of Magnetic Field</strong> – Magnetic inclination at the date of the survey.</p></li>
-<li><p><strong>Declination of Magnetic Field</strong> – Magnetic declination at the date of the survey.</p></li>
+<li><p><strong>Inclination of Magnetic Field</strong> - Magnetic inclination at the date of the survey.</p></li>
+<li><p><strong>Declination of Magnetic Field</strong> - Magnetic declination at the date of the survey.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p><strong>Calculate Tilt Depth</strong> – Calculate the tilt depth or recalculate after changing inclination or declination.</p></li>
+<li><p><strong>Calculate Tilt Depth</strong> - Calculate the tilt depth or recalculate after changing inclination or declination.</p></li>
 <li><p>The calculated tilt depths are displayed in the map window.</p></li>
 <li><p><strong>Save Depths to Text File</strong> - The results can be output to a <strong>CSV</strong> text file, with columns <em>x</em>, <em>y</em>, <em>id</em> and <em>depth</em>. In this case, <em>id</em> refers to a contour identification where the tilt angle is equal to zero.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.</p></li>

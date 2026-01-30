@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -694,9 +697,9 @@ document.write(`
 <h1>Display/Edit Metadata<a class="headerlink" href="#display-edit-metadata" title="Link to this heading">#</a></h1>
 <p>This module allows for the display and custom editing of metadata associated with EDI data. The options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Station Name</strong> – Shows the current name of a station to be displayed or edited.</p></li>
-<li><p><strong>Rename Station Name</strong> – The station name can be changed, e.g. if the data were rotated this can be added to the station name.</p></li>
-<li><p>Locality information – The geographic coordinates, elevation and projected coordinates of the station. The latter are in the Universal Transverse Mercator (UTM) projection and the UTM zone is shown:</p></li>
+<li><p><strong>Station Name</strong> - Shows the current name of a station to be displayed or edited.</p></li>
+<li><p><strong>Rename Station Name</strong> - The station name can be changed, e.g. if the data were rotated this can be added to the station name.</p></li>
+<li><p>Locality information - The geographic coordinates, elevation and projected coordinates of the station. The latter are in the Universal Transverse Mercator (UTM) projection and the UTM zone is shown:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
@@ -709,7 +712,7 @@ document.write(`
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p><strong>Rotation</strong> – By default this is zero, but if the user rotated the data this rotation angle can be recorded here.</p></li>
+<li><p><strong>Rotation</strong> - By default this is zero, but if the user rotated the data this rotation angle can be recorded here.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/mtmeta.png" src="_images/mtmeta.png" />

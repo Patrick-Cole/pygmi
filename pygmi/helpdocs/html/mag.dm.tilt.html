@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -705,9 +708,9 @@ document.write(`
 <p>This module calculates the <strong>Standard Tilt Angle</strong>, <strong>Hyperbolic Tilt Angle</strong>, <strong>2nd Order Tilt Angle</strong>, <strong>Tilt Based Directional Derivative</strong>, <strong>Total Derivative</strong> (all from Cooper and Cowan, 2006), <strong>Tilt Angle of the Horizontal Gradient</strong> (Ferreria et al., 2013) and the <strong>Enhanced Horizontal Gradient Amplitude</strong> (EHGA) (Pham et al., 2022). All of these filters are applied to the data and results in a multiband dataset.</p>
 <p>The options available on the interface are:</p>
 <ol class="arabic simple">
-<li><p><strong>Smoothing Matrix Size (Off, 0 for None)</strong> – The data can be smoothed prior to applying the filters. Here the user can specify the window size of the smoothing matrix. The size must be an odd number. A value of 0 indicates the data must not be smoothed.</p></li>
-<li><p><strong>Azimuth (degrees from east)</strong> – The direction, in degrees from east, in which to apply the Tilt Based Directional Derivative. 0° is E-W, 45° is NW-SE, 90° is N-S and -45° is NE-SW. Features perpendicular to the azimuth are highlighted.</p></li>
-<li><p><strong>EHGA k factor (2 or greater)</strong> – This factor determines the sharpness of the edge detection filter.</p></li>
+<li><p><strong>Smoothing Matrix Size (Off, 0 for None)</strong> - The data can be smoothed prior to applying the filters. Here the user can specify the window size of the smoothing matrix. The size must be an odd number. A value of 0 indicates the data must not be smoothed.</p></li>
+<li><p><strong>Azimuth (degrees from east)</strong> - The direction, in degrees from east, in which to apply the Tilt Based Directional Derivative. 0° is E-W, 45° is NW-SE, 90° is N-S and -45° is NE-SW. Features perpendicular to the azimuth are highlighted.</p></li>
+<li><p><strong>EHGA k factor (2 or greater)</strong> - This factor determines the sharpness of the edge detection filter.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/tiltangle.png" src="_images/tiltangle.png" />
@@ -719,9 +722,9 @@ document.write(`
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>Cooper, G.R.J., &amp; Cowan, D.R. (2006). Enhancing potential field data using filters based on the local phase. Computers &amp; Geosciences, 32(10), 1585–1591. <a class="reference external" href="https://doi.org/10.1016/j.cageo.2006.02.016">https://doi.org/10.1016/j.cageo.2006.02.016</a></p>
+<div><p>Cooper, G.R.J., &amp; Cowan, D.R. (2006). Enhancing potential field data using filters based on the local phase. Computers &amp; Geosciences, 32(10), 1585-1591. <a class="reference external" href="https://doi.org/10.1016/j.cageo.2006.02.016">https://doi.org/10.1016/j.cageo.2006.02.016</a></p>
 <p>Ferreira, F., Souza, J., Bongiolo, A., Castro, L. (2013). Enhancement of the total horizontal gradient of magnetic anomalies using the tilt angle. GEOPHYSICS. 78. J33-J41. 10.1190/geo2011-0441.1.</p>
-<p>Pham, L.T., Eldosouky, A.M., Oksum, E. and Saada, S.A. 2022. A new high resolution filter for source edge detection of potential field data. Geocarto International, 37, 3051–3068, <a class="reference external" href="https://doi.org/10.1080/10106049.2020.1849414">https://doi.org/10.1080/10106049.2020.1849414</a>.</p>
+<p>Pham, L.T., Eldosouky, A.M., Oksum, E. and Saada, S.A. 2022. A new high resolution filter for source edge detection of potential field data. Geocarto International, 37, 3051-3068, <a class="reference external" href="https://doi.org/10.1080/10106049.2020.1849414">https://doi.org/10.1080/10106049.2020.1849414</a>.</p>
 </div></blockquote>
 </section>
 </section>

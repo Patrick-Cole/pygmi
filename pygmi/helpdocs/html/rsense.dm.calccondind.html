@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -705,10 +708,10 @@ document.write(`
 <p>This module allows the user to calculate condition indices such as temperature condition index (TCI), vegetation condition index (VCI) and vegetation health index (VHI) using indexes such as the enhanced vegetation index (EVI), normalised difference vegetation index (NDVI) and modified soil-adjusted vegetation index (MSAVI2) (Bento et al., 2018). It requires as input a time series of at least two but preferably more datasets over the same area, defined as a batch file list. A condition index compares the index value at a certain time with the minimum and maximum values over the whole time period.</p>
 <p>The following options are available on the interface:</p>
 <ol class="arabic simple">
-<li><p><strong>Sensor</strong> – This is the satellite sensor being used. Depending on the sensor, different indices will result.</p></li>
-<li><p><strong>Index</strong> – The vegetation index that will be used in the calculations of the VCI and can be EVI, NDVI or MSAVI2.</p></li>
-<li><p><strong>Condition Indices</strong> – A list of condition indices to calculate. VCI uses the specified vegetation index, TCI uses land surface temperature and VHI uses VCI and TCI.</p></li>
-<li><p><strong>Invert selection</strong> – Convenience button to invert the condition indices selection.</p></li>
+<li><p><strong>Sensor</strong> - This is the satellite sensor being used. Depending on the sensor, different indices will result.</p></li>
+<li><p><strong>Index</strong> - The vegetation index that will be used in the calculations of the VCI and can be EVI, NDVI or MSAVI2.</p></li>
+<li><p><strong>Condition Indices</strong> - A list of condition indices to calculate. VCI uses the specified vegetation index, TCI uses land surface temperature and VHI uses VCI and TCI.</p></li>
+<li><p><strong>Invert selection</strong> - Convenience button to invert the condition indices selection.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/rsensecind.png" src="_images/rsensecind.png" />

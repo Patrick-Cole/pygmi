@@ -77,7 +77,7 @@ class Mod3dDisplay(ContextModule):
 
         """
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'pfmod.cm.show3dmodel'
+        self.buttonbox.htmlfile = 'vector.cm.displayvoxel'
         hbl = QtWidgets.QHBoxLayout(self)
         vbl_cmodel = QtWidgets.QVBoxLayout()
         vbl = QtWidgets.QVBoxLayout()
@@ -206,15 +206,21 @@ class Mod3dDisplay(ContextModule):
 
         # Now plot the grid
         # grid.plot(show_edges=True)
-
+        sargs = dict(
+            title="",
+            fmt="%.2f",
+            interactive=True,
+            vertical=False,
+        )
         self.plotter.clear()
 
         if self.cb_volume.isChecked():
             # self.plotter.add_volume(grid)
-            self.plotter.add_mesh(grid, opacity=0.5)
-            self.plotter.add_mesh_slice(grid)
+            self.plotter.add_mesh(grid, opacity=0.5, scalar_bar_args=sargs)
+            self.plotter.add_mesh_slice(grid, scalar_bar_args=sargs)
         else:
-            self.plotter.add_mesh_clip_plane(grid, normal=[-1, 0, 0])
+            self.plotter.add_mesh_clip_plane(
+                grid, normal=[-1, 0, 0], scalar_bar_args=sargs)
 
         self.plotter.add_axes()
         # self.plotter.show_grid()

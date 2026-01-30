@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -718,11 +721,11 @@ document.write(`
 <p><strong>Change Detection Indices</strong> give a measure of change in an area. The input to this module is a list of datasets loaded using the <a class="reference internal" href="rsense.dm.createbatchlist.html"><span class="doc">batch importer</span></a>. It does not have to be satellite images, but can be derived products such as classifications. Each dataset must have an associated date. The import tool for satellite scenes should assign a date automatically, but should a manual date need to be assigned, this can be done within the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">metadata</span></a> context menu.</p>
 <p>The following indices can be calculated:</p>
 <ul class="simple">
-<li><p><strong>Difference</strong> – Calculates the difference between two dates (latter date minus earlier date).</p></li>
-<li><p><strong>Mean</strong> – Average pixel value image over all dates.</p></li>
-<li><p><strong>Standard Deviation</strong> – Shows pixel variation through standard deviation.</p></li>
-<li><p><strong>Coefficient of Variation</strong> – Measure of variation, taking mean into account.</p></li>
-<li><p><strong>Spectral Angle Mapper</strong> – Find spectral angle between two scenes.</p></li>
+<li><p><strong>Difference</strong> - Calculates the difference between two dates (latter date minus earlier date).</p></li>
+<li><p><strong>Mean</strong> - Average pixel value image over all dates.</p></li>
+<li><p><strong>Standard Deviation</strong> - Shows pixel variation through standard deviation.</p></li>
+<li><p><strong>Coefficient of Variation</strong> - Measure of variation, taking mean into account.</p></li>
+<li><p><strong>Spectral Angle Mapper</strong> - Find spectral angle between two scenes.</p></li>
 </ul>
 <p>Note that for <strong>Difference</strong> and <strong>Spectral Angle Mapper</strong> calculations only two datasets are allowed.</p>
 <figure class="align-default" id="id2">
@@ -738,11 +741,11 @@ document.write(`
 <p>Visualising change is an obvious need for change detection since an end user often wishes to see the scenes in sequence, rather than in the form of an index. The viewer requires only a <a class="reference internal" href="rsense.dm.createbatchlist.html"><span class="doc">batch list</span></a> coupled with associated dates for each scene (defined in the <a class="reference internal" href="raster.cm.meta.html"><span class="doc">raster file’s metadata</span></a>). The viewer loads in the scenes at a reduced resolution, suitable for a windows display. This increases speed, with the relevant section of the scene being reloaded upon zooming in. Because this viewer is dependent on reading constantly off a disk, slow image data formats are not supported. To optimise this, the viewer requires the data to be in <strong>GeoTIFF</strong> format. The main display also shows the date and time stamp for the scene.</p>
 <p>The viewer options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Display Type</strong> – sets the image to be displayed, whether <strong>Single Colour Map</strong>, <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong>.</p></li>
-<li><p><strong>Data Bands</strong> – Select the bands to be displayed.</p></li>
-<li><p><strong>Start Capture</strong> – The scenes can be exported to a <strong>GIF</strong> image, at the current resolution and zoom.</p></li>
-<li><p><strong>Scroll bar</strong> – Drag the slider to select the scene to display.</p></li>
-<li><p><strong>Previous Scene and Next Scene</strong> – Use these buttons to move forward and backward through the scenes.</p></li>
+<li><p><strong>Display Type</strong> - sets the image to be displayed, whether <strong>Single Colour Map</strong>, <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong>.</p></li>
+<li><p><strong>Data Bands</strong> - Select the bands to be displayed.</p></li>
+<li><p><strong>Start Capture</strong> - The scenes can be exported to a <strong>GIF</strong> image, at the current resolution and zoom.</p></li>
+<li><p><strong>Scroll bar</strong> - Drag the slider to select the scene to display.</p></li>
+<li><p><strong>Previous Scene and Next Scene</strong> - Use these buttons to move forward and backward through the scenes.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image , move the zoomed in area around, return to the full image, save the image with the colour bar, etc.</p></li>
 </ol>
 <figure class="align-default" id="id3">

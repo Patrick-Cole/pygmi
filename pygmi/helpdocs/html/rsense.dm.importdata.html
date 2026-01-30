@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -694,18 +697,18 @@ document.write(`
 <h1>Import Satellite Data<a class="headerlink" href="#import-satellite-data" title="Link to this heading">#</a></h1>
 <p>PyGMI can import data from the following remote sensing sensors:</p>
 <ul class="simple">
-<li><p>ASTER data – Note that this is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in <strong>HDF</strong> format (there will be an associated <strong>MET</strong> file) or imported as a <strong>ZIP</strong> file containing <strong>GeoTIFF</strong> images. ASTER visible and near infrared (VNIR), shortwave infrared (SWIR) and thermal infrared (TIR) data are provided separately and importing this dataset needs a few extra steps.</p></li>
-<li><p>Landsat data – Note that this is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in <strong>L*.TAR.GZ</strong> format or extracted, with a <strong>_MTL.TXT</strong> and <strong>GeoTIFF</strong> files.</p></li>
-<li><p>Sentinel 2 data – Note that this is the data as obtained from <a class="reference external" href="https://dataspace.copernicus.eu/">https://dataspace.copernicus.eu/</a>. It can import the <strong>ZIP</strong> file, or if extracted the appropriate <strong>XML</strong> file (e.g. MTD_MSIL2A.xml).</p></li>
-<li><p>Hyperion L1T data – Data downloaded from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It is imported as a <strong>ZIP</strong> file containing <strong>GeoTIFF</strong> images.</p></li>
-<li><p>WorldView Tile data (<strong>TIL</strong>) – The tiles will be merged into a single dataset.</p></li>
-<li><p>ASTER Global Emissivity data – Data downloaded from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a> in <strong>H5</strong> format.</p></li>
-<li><p>EMIT data – Data downloaded from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. The data are in <strong>NC</strong> format.</p></li>
+<li><p>ASTER data - Note that this is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in <strong>HDF</strong> format (there will be an associated <strong>MET</strong> file) or imported as a <strong>ZIP</strong> file containing <strong>GeoTIFF</strong> images. ASTER visible and near infrared (VNIR), shortwave infrared (SWIR) and thermal infrared (TIR) data are provided separately and importing this dataset needs a few extra steps.</p></li>
+<li><p>Landsat data - Note that this is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in <strong>L*.TAR.GZ</strong> format or extracted, with a <strong>_MTL.TXT</strong> and <strong>GeoTIFF</strong> files.</p></li>
+<li><p>Sentinel 2 data - Note that this is the data as obtained from <a class="reference external" href="https://dataspace.copernicus.eu/">https://dataspace.copernicus.eu/</a>. It can import the <strong>ZIP</strong> file, or if extracted the appropriate <strong>XML</strong> file (e.g. MTD_MSIL2A.xml).</p></li>
+<li><p>Hyperion L1T data - Data downloaded from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It is imported as a <strong>ZIP</strong> file containing <strong>GeoTIFF</strong> images.</p></li>
+<li><p>WorldView Tile data (<strong>TIL</strong>) - The tiles will be merged into a single dataset.</p></li>
+<li><p>ASTER Global Emissivity data - Data downloaded from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a> in <strong>H5</strong> format.</p></li>
+<li><p>EMIT data - Data downloaded from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. The data are in <strong>NC</strong> format.</p></li>
 </ul>
 <p>When selecting this function the user has the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Filename</strong> –Select the file to be imported.</p></li>
-<li><p><strong>File Type</strong> – The import function automatically detects the type of data and displays it.</p></li>
+<li><p><strong>Filename</strong> -Select the file to be imported.</p></li>
+<li><p><strong>File Type</strong> - The import function automatically detects the type of data and displays it.</p></li>
 <li><p>All the bands available in the file are listed. The user can select which band/bands to import. By default the bands deemed to contain the data to be used for further processing (e.g. reflectance data) are select. To select/deselect bands simply click on a band name in the list.</p></li>
 <li><p>Satellite remote sensing data are often provided in UTM coordinates for the northern hemisphere. The user can choose to convert the data from UTM to SUTM.</p></li>
 </ol>

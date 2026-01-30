@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -713,32 +716,32 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple">
-<li><p>Current Model – This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.</p></li>
+<li><p>Current Model - This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.</p></li>
 <li><p>Dataset Information:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>DTM Dataset – This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (<a class="reference external" href="https://www.earthdata.nasa.gov/">https://www.earthdata.nasa.gov/</a>). It is not necessary if you are merely doing a theoretical model of, say, a dyke.</p></li>
-<li><p>Magnetic Dataset – The magnetic data to be modelled.</p></li>
-<li><p>Gravity Dataset – The gravity data to be modelled.</p></li>
-<li><p>Gravity Regional Dataset – This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.</p></li>
-<li><p>Other – Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.</p></li>
+<li><p>DTM Dataset - This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (<a class="reference external" href="https://www.earthdata.nasa.gov/">https://www.earthdata.nasa.gov/</a>). It is not necessary if you are merely doing a theoretical model of, say, a dyke.</p></li>
+<li><p>Magnetic Dataset - The magnetic data to be modelled.</p></li>
+<li><p>Gravity Dataset - The gravity data to be modelled.</p></li>
+<li><p>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.</p></li>
+<li><p>Other - Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p>Model Extent Properties – This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:</p></li>
+<li><p>Model Extent Properties - This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Get Study Area from the following Dataset – If data were imported into the model, the dataset that defines the study area can be selected.</p></li>
-<li><p>Upper Top Left X Coordinate –The north-west corner X coordinate of the model in metres.</p></li>
-<li><p>Upper Top Left Y Coordinate – The north-west corner Y coordinate of the model in metres.</p></li>
-<li><p>Upper Top Left Z Coordinate – The north-west corner Z coordinate of the model in metres above sea level.</p></li>
-<li><p>Total X Extent – The distance in metres from east to west in the model.</p></li>
-<li><p>Total Y Extent – The distance in metres from north to south in the model.</p></li>
-<li><p>Total Z Extent (Depth) – The depth range in metres of the model.</p></li>
-<li><p>X and Y Cell Size – The width of each model cube in the X and Y direction (in metres).</p></li>
-<li><p>Z Cell Size – The height in metres of each model cube in Z direction.</p></li>
+<li><p>Get Study Area from the following Dataset - If data were imported into the model, the dataset that defines the study area can be selected.</p></li>
+<li><p>Upper Top Left X Coordinate -The north-west corner X coordinate of the model in metres.</p></li>
+<li><p>Upper Top Left Y Coordinate - The north-west corner Y coordinate of the model in metres.</p></li>
+<li><p>Upper Top Left Z Coordinate - The north-west corner Z coordinate of the model in metres above sea level.</p></li>
+<li><p>Total X Extent - The distance in metres from east to west in the model.</p></li>
+<li><p>Total Y Extent - The distance in metres from north to south in the model.</p></li>
+<li><p>Total Z Extent (Depth) - The depth range in metres of the model.</p></li>
+<li><p>X and Y Cell Size - The width of each model cube in the X and Y direction (in metres).</p></li>
+<li><p>Z Cell Size - The height in metres of each model cube in Z direction.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
@@ -746,13 +749,13 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Columns (X) – The number of columns automatically calculated from the extents and cell sizes.</p></li>
-<li><p>Rows (Y) – The number of rows automatically calculated from the extents and cell sizes.</p></li>
-<li><p>Layers (Z) – The number of layers automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Columns (X) - The number of columns automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Rows (Y) - The number of rows automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Layers (Z) - The number of layers automatically calculated from the extents and cell sizes.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="5">
-<li><p>Apply changes (reset calculation) – Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.</p></li>
+<li><p>Apply changes (reset calculation) - Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.</p></li>
 </ol>
 <p>The imported datasets can now be assigned to the datasets under Data Information. Make sure to connect the correct raster to the correct dataset. Under the Model Extent Properties, select the dataset that will be used to define the modelling area. The model coordinates and X and Y extents will be update automatically based on the selected dataset. The user selects the desired Z extent and cell sizes. Note that the top left X, Y and Z coordinates and the X and Y extents can be manually changed if you want to change the modelling area, but the area must be within the extent of the DTM that you loaded.</p>
 <figure class="align-default" id="id3">

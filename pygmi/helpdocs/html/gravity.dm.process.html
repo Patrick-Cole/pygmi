@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -706,12 +709,12 @@ document.write(`
 <p>The input is a line dataset, imported via the <strong>Import CG-5 or CG-6 Data</strong> function. Coordinates must be in latitude and longitude, with elevation in meters.</p>
 <p>The processing interface has the following parameters :</p>
 <ol class="arabic simple">
-<li><p><strong>Known Base Station Number</strong> – This is the station number for a base station with a known absolute gravity value.</p></li>
-<li><p><strong>Known Base Station Absolute Gravity</strong> – This is the known absolute gravity in mGal for the station above.</p></li>
-<li><p><strong>Calculate local base value</strong> – Use this option to tie in the local base station to a nearby base station with known absolute gravity. Note that the local station number must be different from the known station number. There must also be at least one local base station between successive known base station values.</p></li>
-<li><p><strong>Background Density</strong> – This is the background density in kg/m<sup>3</sup> .</p></li>
-<li><p><strong>Base Station Absolute Gravity</strong> – This is the absolute gravity value of the local base station used to correct for drift in the survey. It can be calculated by PyGMI or manually entered.</p></li>
-<li><p><strong>Minimum Base Station Number</strong> – All station numbers greater than this will be considered base stations.</p></li>
+<li><p><strong>Known Base Station Number</strong> - This is the station number for a base station with a known absolute gravity value.</p></li>
+<li><p><strong>Known Base Station Absolute Gravity</strong> - This is the known absolute gravity in mGal for the station above.</p></li>
+<li><p><strong>Calculate local base value</strong> - Use this option to tie in the local base station to a nearby base station with known absolute gravity. Note that the local station number must be different from the known station number. There must also be at least one local base station between successive known base station values.</p></li>
+<li><p><strong>Background Density</strong> - This is the background density in kg/m<sup>3</sup> .</p></li>
+<li><p><strong>Base Station Absolute Gravity</strong> - This is the absolute gravity value of the local base station used to correct for drift in the survey. It can be calculated by PyGMI or manually entered.</p></li>
+<li><p><strong>Minimum Base Station Number</strong> - All station numbers greater than this will be considered base stations.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/gravproc.png" src="_images/gravproc.png" />
@@ -734,12 +737,12 @@ document.write(`
 </figure>
 <p>The processed data can be viewed and exported using the context menus. It consists of the following fields (all in mGal):</p>
 <ul class="simple">
-<li><p><em>gobs_drift</em> – the observed drift,</p></li>
-<li><p><em>gT</em> – theoretical gravity value,</p></li>
-<li><p><em>gATM</em> – atmospheric effect,</p></li>
-<li><p><em>gHC</em> – height correction,</p></li>
-<li><p><em>gSB</em> – spherical Bouguer correction,</p></li>
-<li><p><em>BOUGUER</em> – Bouguer gravity anomaly.</p></li>
+<li><p><em>gobs_drift</em> - the observed drift,</p></li>
+<li><p><em>gT</em> - theoretical gravity value,</p></li>
+<li><p><em>gATM</em> - atmospheric effect,</p></li>
+<li><p><em>gHC</em> - height correction,</p></li>
+<li><p><em>gSB</em> - spherical Bouguer correction,</p></li>
+<li><p><em>BOUGUER</em> - Bouguer gravity anomaly.</p></li>
 </ul>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>

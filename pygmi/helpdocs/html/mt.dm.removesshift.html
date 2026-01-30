@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -696,12 +699,12 @@ document.write(`
 <p>The interface for this module has the following aspects and options:</p>
 <ol class="arabic simple">
 <li><p>Windows showing the apparent resistivity and phase versus period for the selected station.</p></li>
-<li><p><strong>Apply to all stations</strong> – Select this option to apply the rotation to all the stations that were loaded. If it is not selected it will only apply to the currently selected station.</p></li>
-<li><p><strong>Station Name</strong> – If data for multiple stations were imported the dropdown list can be used to select a specific station.</p></li>
-<li><p><strong>Graph Type</strong> – This can be either ‘<strong>xy, yx</strong>’ or ‘<strong>xx, yy</strong>’.</p></li>
-<li><p><strong>Shift X</strong> – Correction to X.</p></li>
-<li><p><strong>Shift Y</strong> – Correction to Y.</p></li>
-<li><p><strong>Remove Static Shift</strong> – Apply the correction to data for the current station or for all the imported stations.</p></li>
+<li><p><strong>Apply to all stations</strong> - Select this option to apply the rotation to all the stations that were loaded. If it is not selected it will only apply to the currently selected station.</p></li>
+<li><p><strong>Station Name</strong> - If data for multiple stations were imported the dropdown list can be used to select a specific station.</p></li>
+<li><p><strong>Graph Type</strong> - This can be either ‘<strong>xy, yx</strong>’ or ‘<strong>xx, yy</strong>’.</p></li>
+<li><p><strong>Shift X</strong> - Correction to X.</p></li>
+<li><p><strong>Shift Y</strong> - Correction to Y.</p></li>
+<li><p><strong>Remove Static Shift</strong> - Apply the correction to data for the current station or for all the imported stations.</p></li>
 <li><p><strong>Reset data</strong> - Restores data for pre-shifted status.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.</p></li>
 </ol>

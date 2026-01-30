@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -715,8 +718,8 @@ document.write(`
 </figure>
 <p>The <strong>Map Settings</strong> control what is displayed in the scatter plot:</p>
 <ol class="arabic simple">
-<li><p><strong>Data band</strong> – The dataset that must be displayed in the map.</p></li>
-<li><p><strong>Cluster Overlay</strong> – The classification results can be displayed. If <strong>None</strong> is selected the data selected under <strong>Data Band</strong> will be shown, or the user can select to display one of the classification results.</p></li>
+<li><p><strong>Data band</strong> - The dataset that must be displayed in the map.</p></li>
+<li><p><strong>Cluster Overlay</strong> - The classification results can be displayed. If <strong>None</strong> is selected the data selected under <strong>Data Band</strong> will be shown, or the user can select to display one of the classification results.</p></li>
 <li><p>The user can draw a polygon around an area of interest on the map by simply <strong>left-clicking</strong> on it. The pixels within the polygon will be highlighted in the scatter plot. Click <strong>Delete Polygon</strong> to remove the polygon.</p></li>
 </ol>
 <figure class="align-default" id="id3">

@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -705,15 +708,15 @@ document.write(`
 <p>This module performs Minimum Noise Fraction (MNF) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.</p>
 <p>The following options are available on the interface:</p>
 <ol class="arabic simple">
-<li><p><strong>Forward Transform Only</strong> – This option can be selected to do a forward transformation with the specified number of components. MNF components can be used in band combinations to enhance features in the data. If the aim is to filter noise out of the data this option must not be selected. However, the user is advised to run a forward transformation once to view the <strong>Explained Variance</strong> graph which can be used to select the number of components that must be used in the inverse transformation.</p></li>
-<li><p><strong>Number of components</strong> – Number of MNF components that must be kept.</p></li>
+<li><p><strong>Forward Transform Only</strong> - This option can be selected to do a forward transformation with the specified number of components. MNF components can be used in band combinations to enhance features in the data. If the aim is to filter noise out of the data this option must not be selected. However, the user is advised to run a forward transformation once to view the <strong>Explained Variance</strong> graph which can be used to select the number of components that must be used in the inverse transformation.</p></li>
+<li><p><strong>Number of components</strong> - Number of MNF components that must be kept.</p></li>
 <li><p>Methods to estimate the noise in the data:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Noise estimated by average horizontal and vertical shift</strong> – This is the noise estimation as performed in ENVI.</p></li>
+<li><p><strong>Noise estimated by average horizontal and vertical shift</strong> - This is the noise estimation as performed in ENVI.</p></li>
 <li><p><strong>Noise estimated by diagonal shift</strong>.</p></li>
-<li><p><strong>Noise estimated by local quadratic surface</strong> – Option recommended by Berman et al (2012), but slower.</p></li>
+<li><p><strong>Noise estimated by local quadratic surface</strong> - Option recommended by Berman et al (2012), but slower.</p></li>
 </ul>
 </div></blockquote>
 <p>If a single file was transformed, the user can export the result by right-clicking on the MNF Transform module and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster Data</span></a>. In the case of batch processing, the results will be stored automatically as <strong>GeoTIFF</strong> files in a new folder called “MNF” and _MNF will be added to the filenames.</p>

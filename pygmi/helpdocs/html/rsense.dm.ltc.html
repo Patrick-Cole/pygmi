@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -705,8 +708,8 @@ document.write(`
 <p>This module creates a temporal composite from a list of Landsat scenes. The aim is to produce a cloud free scene by substituting data from multiple scenes over areas with clouds (White et al., 2014).</p>
 <p>The options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Batch Directory</strong> – The folder where all the eligible scenes can be found.</p></li>
-<li><p><strong>Target Day</strong> –The optimal Julian day for the scenes. It can be the mean day, or the day of the best scene. Scenes closest to this day will be given preference.</p></li>
+<li><p><strong>Batch Directory</strong> - The folder where all the eligible scenes can be found.</p></li>
+<li><p><strong>Target Day</strong> -The optimal Julian day for the scenes. It can be the mean day, or the day of the best scene. Scenes closest to this day will be given preference.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/rsenseltc.png" src="_images/rsenseltc.png" />
@@ -717,7 +720,7 @@ document.write(`
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>White, J.C., Wulder, M.A., Hobart, G.W., Luther, J.E., Hermosilla, T., Griffiths, P., Coops, N.C., Hall, R.J., Hostert, P., Dyk, A. and Guindon, L. 2014. Pixel-based image compositing for large-area dense time series applications and science. Canadian Journal of Remote Sensing, 40, 192–212, <a class="reference external" href="https://doi.org/10.1080/07038992.2014.945827">https://doi.org/10.1080/07038992.2014.945827</a>.</p>
+<div><p>White, J.C., Wulder, M.A., Hobart, G.W., Luther, J.E., Hermosilla, T., Griffiths, P., Coops, N.C., Hall, R.J., Hostert, P., Dyk, A. and Guindon, L. 2014. Pixel-based image compositing for large-area dense time series applications and science. Canadian Journal of Remote Sensing, 40, 192-212, <a class="reference external" href="https://doi.org/10.1080/07038992.2014.945827">https://doi.org/10.1080/07038992.2014.945827</a>.</p>
 </div></blockquote>
 </section>
 </section>

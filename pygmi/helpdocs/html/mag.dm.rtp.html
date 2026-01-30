@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -705,9 +708,9 @@ document.write(`
 <p>This function reduces a magnetic dataset to the pole. This shifts the magnetic anomaly directly over the source resulting in a symmetric anomaly shape that is simple to interpret. However, it is only effective if the source body is not remanently magnetised.</p>
 <p>The parameters on the interfaced are:</p>
 <ol class="arabic simple">
-<li><p><strong>Band to Reduce to the Pole</strong> – The band name is directly extracted from the raster file. In the case of a multiband raster dataset the user can specify which band contains the magnetic data that must be processed.</p></li>
-<li><p><strong>Inclination of the Magnetic Field</strong> – Magnetic inclination at the date of the survey.</p></li>
-<li><p><strong>Declination of the Magnetic Field</strong> – Magnetic declination at the date of the survey.</p></li>
+<li><p><strong>Band to Reduce to the Pole</strong> - The band name is directly extracted from the raster file. In the case of a multiband raster dataset the user can specify which band contains the magnetic data that must be processed.</p></li>
+<li><p><strong>Inclination of the Magnetic Field</strong> - Magnetic inclination at the date of the survey.</p></li>
+<li><p><strong>Declination of the Magnetic Field</strong> - Magnetic declination at the date of the survey.</p></li>
 <li><p><strong>Amplitude Correction Inclination for low latitudes</strong> - Pseudo inclination used to correct the amplitude of the RTP filter near the equator (Macleod et al, 1993). Only used if the magnitude of the actual inclination is less than the magnitude of this pseudo inclination.</p></li>
 </ol>
 <figure class="align-default" id="id1">
@@ -720,7 +723,7 @@ document.write(`
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>Macleod, I.N., Jones, K., Dai, T.F., 1993. 3-D analytic signal in the interpretation of total magnetic field data at low magnetic latitudes. Exploration Geophysics 24, 679–688.</p>
+<div><p>Macleod, I.N., Jones, K., Dai, T.F., 1993. 3-D analytic signal in the interpretation of total magnetic field data at low magnetic latitudes. Exploration Geophysics 24, 679-688.</p>
 </div></blockquote>
 </section>
 </section>

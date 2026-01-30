@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -695,7 +698,7 @@ document.write(`
 <p>Sentinel-5P data is imported here, but unlike other imports, this converts data to a vector data format, from where it can be <a class="reference internal" href="vector.cm.exportvector.html"><span class="doc">exported to a shapefile</span></a> using the context menu. It accepts <strong>NC</strong> data. Sentinel-5P come in large swaths and therefore the import also allows the user to cut the data according to a bounding box that is defined by the user or imported in the form of a shapefile.</p>
 <p>The options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Product</strong> – Relevant product contained in the NC file.</p></li>
+<li><p><strong>Product</strong> - Relevant product contained in the NC file.</p></li>
 <li><p>When selecting <strong>Clip using coordinates</strong> the user can enter the following:</p></li>
 </ol>
 <blockquote>
@@ -708,7 +711,7 @@ document.write(`
 </div></blockquote>
 <ol class="arabic simple" start="3">
 <li><p>When selecting <strong>Clip using shapefile</strong> the user can upload a shapefile.</p></li>
-<li><p><strong>QA Threshold (0-100)</strong> – The user can select the threshold above which the data will be kept. The QA values are part of the <strong>NC</strong> file.</p></li>
+<li><p><strong>QA Threshold (0-100)</strong> - The user can select the threshold above which the data will be kept. The QA values are part of the <strong>NC</strong> file.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/rsenseimp5p.png" src="_images/rsenseimp5p.png" />

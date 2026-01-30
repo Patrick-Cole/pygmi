@@ -274,6 +274,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -702,7 +705,7 @@ document.write(`
 <p>More options are available for point data. Data point values are displayed in colour according to a number of colour stretches. This allows for the quick interrogation of data to identify anomalies.</p>
 <p>The options on this interface are:</p>
 <ol class="arabic simple">
-<li><p><strong>Channel</strong> – Select the attribute to be displayed.</p></li>
+<li><p><strong>Channel</strong> - Select the attribute to be displayed.</p></li>
 <li><p><strong>Style</strong> - Select the display style for the point data. the options are:</p></li>
 </ol>
 <blockquote>
@@ -714,7 +717,7 @@ document.write(`
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p><strong>Colour Bar</strong> – Select a colormap for the data display.</p></li>
+<li><p><strong>Colour Bar</strong> - Select a colormap for the data display.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image with the colour bar, etc.</p></li>
 </ol>
 <figure class="align-default" id="id2">

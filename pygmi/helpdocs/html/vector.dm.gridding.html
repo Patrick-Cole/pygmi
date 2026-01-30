@@ -274,6 +274,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -710,16 +713,16 @@ document.write(`
 <li><p><strong>Gridding Method</strong> - This can be <strong>Nearest Neighbour</strong>, <strong>Linear</strong>, <strong>Cubic</strong> or <strong>Minimum Curvature</strong>. The latter fits a polynomial surface through the points and is best suited to more continuous or smooth data such as gravity and magnetic data (potential field data sets). It should not be used for digital terrain models or radiometric data.</p></li>
 <li><p><strong>Cell Size</strong> - This represents the size of a square raster grid cell, in the units of the grid (normally metres).</p></li>
 <li><p><strong>Column to Grid</strong> - This allows you to select the Z column to grid.</p></li>
-<li><p><strong>Null Value</strong> – Data values that the user wants to mask.</p></li>
+<li><p><strong>Null Value</strong> - Data values that the user wants to mask.</p></li>
 <li><p><strong>Blanking Distance</strong> - This is a distance, in cells, from data points beyond which the grid will be masked.</p></li>
-<li><p><strong>Z Coordinate Value</strong> - Column to use for Z coordinates. This is applicable to sections and voxel datasets.</p></li>
-<li><p><strong>Line Number</strong> - Used for sections, if a section is defined by line number.</p></li>
-<li><p><strong>DEM Grid</strong> - A Digital Elevation Model raster dataset, used in voxel gridding to determine the top surface.</p></li>
+<li><p><strong>Z Coordinate Value</strong> - Column to use for Z coordinates. This is applicable to <strong>Section</strong> and <strong>Voxel</strong> datasets.</p></li>
+<li><p><strong>Line Number</strong> - Used for a <strong>Section</strong>, if a section is defined by line number.</p></li>
+<li><p><strong>DEM Grid</strong> - A Digital Elevation Model raster dataset, used in <strong>Voxel</strong> gridding to determine the top surface.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/vectorgrid.png" src="_images/vectorgrid.png" />
 <figcaption>
-<p><span class="caption-text">Dataset Gridding options for the Raster gridding type.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">Dataset Gridding options for the Section gridding type.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <section id="references">

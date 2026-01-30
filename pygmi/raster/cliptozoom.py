@@ -73,6 +73,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.set_figheight(self.fheight)
 
         self.axes = self.figure.add_subplot(111)
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
                        cmap=colormaps[cmap], interpolation='nearest')

@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -711,8 +714,8 @@ document.write(`
 </figure>
 <p>Double-clicking on the <strong>Topographic Correction</strong> module brings up a dialog box with the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Digital Elevation Model</strong> – Ensure that the imported DEM file is selected here.</p></li>
-<li><p><strong>Solar Azimuth and Solar Zenith</strong> – If the L2A Sentinel-2 in its original format is imported using Import Satellite Data, these values will be extracted automatically from the metadata. However, if the Sentinel-2 data have been exported to a standard raster format (e.g. <strong>GeoTIFF</strong>) and was imported using <a class="reference internal" href="raster.dm.importrasterdata.html"><span class="doc">Import Raster Data</span></a>, the user will need to enter these values. It is important that the values are as accurate as possible to get the best results.</p></li>
+<li><p><strong>Digital Elevation Model</strong> - Ensure that the imported DEM file is selected here.</p></li>
+<li><p><strong>Solar Azimuth and Solar Zenith</strong> - If the L2A Sentinel-2 in its original format is imported using Import Satellite Data, these values will be extracted automatically from the metadata. However, if the Sentinel-2 data have been exported to a standard raster format (e.g. <strong>GeoTIFF</strong>) and was imported using <a class="reference internal" href="raster.dm.importrasterdata.html"><span class="doc">Import Raster Data</span></a>, the user will need to enter these values. It is important that the values are as accurate as possible to get the best results.</p></li>
 </ol>
 <figure class="align-default" id="id2">
 <img alt="_images/rsensetopo2.png" src="_images/rsensetopo2.png" />

@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -710,12 +713,12 @@ document.write(`
 <p>The dropdown menu under <strong>Display Type</strong> gives the user three options of displaying the data in the map area, namely <strong>RGB Ternary</strong>, <strong>CMY Ternary</strong> and <strong>Single Colour Map</strong>. Based on the display type the user can select either three bands or one band to display under <strong>Data Bands</strong>.</p>
 <p>The Class Edits consists of the following features:</p>
 <ol class="arabic simple">
-<li><p><strong>Class Names</strong> – This is where the classes are listed. Once a class has been defined (by adding a polygon) its name can be changed by <strong>double-clicking</strong> on the class name. If a user wants to edit or delete a polygon, the polygon is selected by clicking on the class name.</p></li>
-<li><p><strong>Add Polygon</strong> – When the user clicks on this button, a generic class called “Class #” will appear under <strong>Class Name</strong>. Move the mouse pointer to the area of interest on the map and <strong>left-click</strong> to start adding the vertices of a polygon.</p></li>
-<li><p><strong>Delete Polygon</strong> – Click on this button to delete a polygon. First select the class you want to delete under <strong>Class Name</strong> by clicking on it. The polygon will now be highlighted in the map window. If you are sure this is the correct class, click on the <strong>Delete Polygon</strong> button.</p></li>
-<li><p><strong>Classification Metrics</strong> – This option calculates the confusion matrix, as well as accuracy and kappa scores. These can be saved to a Microsoft Excel spreadsheet.</p></li>
-<li><p><strong>Load Class Shapefile</strong> – Load a shapefile that was previously created.</p></li>
-<li><p><strong>Save Class Shapefile</strong> – Store a class shapefile. Because the shapefile format is used, the classes are compatible with standard GIS software</p></li>
+<li><p><strong>Class Names</strong> - This is where the classes are listed. Once a class has been defined (by adding a polygon) its name can be changed by <strong>double-clicking</strong> on the class name. If a user wants to edit or delete a polygon, the polygon is selected by clicking on the class name.</p></li>
+<li><p><strong>Add Polygon</strong> - When the user clicks on this button, a generic class called “Class #” will appear under <strong>Class Name</strong>. Move the mouse pointer to the area of interest on the map and <strong>left-click</strong> to start adding the vertices of a polygon.</p></li>
+<li><p><strong>Delete Polygon</strong> - Click on this button to delete a polygon. First select the class you want to delete under <strong>Class Name</strong> by clicking on it. The polygon will now be highlighted in the map window. If you are sure this is the correct class, click on the <strong>Delete Polygon</strong> button.</p></li>
+<li><p><strong>Classification Metrics</strong> - This option calculates the confusion matrix, as well as accuracy and kappa scores. These can be saved to a Microsoft Excel spreadsheet.</p></li>
+<li><p><strong>Load Class Shapefile</strong> - Load a shapefile that was previously created.</p></li>
+<li><p><strong>Save Class Shapefile</strong> - Store a class shapefile. Because the shapefile format is used, the classes are compatible with standard GIS software</p></li>
 </ol>
 <figure class="align-default" id="id2">
 <img alt="_images/clustsuper1.png" src="_images/clustsuper1.png" />
@@ -727,29 +730,29 @@ document.write(`
 <ul class="simple">
 <li><p><strong>K Neighbours Classifier</strong> with the following algorithm options:</p>
 <ul>
-<li><p><strong>auto</strong> – attempts to use most appropriate algorithm.</p></li>
-<li><p><strong>ball_tree</strong> – Ball tree algorithm</p></li>
-<li><p><strong>kd_tree</strong> – KD tree algorithm</p></li>
-<li><p><strong>brute</strong> – Use a brute force search.</p></li>
+<li><p><strong>auto</strong> - attempts to use most appropriate algorithm.</p></li>
+<li><p><strong>ball_tree</strong> - Ball tree algorithm</p></li>
+<li><p><strong>kd_tree</strong> - KD tree algorithm</p></li>
+<li><p><strong>brute</strong> - Use a brute force search.</p></li>
 </ul>
 </li>
 <li><p><strong>Decision Tree Classifier</strong> with the following criterion options:</p>
 <ul>
-<li><p><strong>gini</strong> – use Gini impurity to measure the quality of a split.</p></li>
-<li><p><strong>entropy</strong> – uses Shannon information gain to measure the quality of a split.</p></li>
+<li><p><strong>gini</strong> - use Gini impurity to measure the quality of a split.</p></li>
+<li><p><strong>entropy</strong> - uses Shannon information gain to measure the quality of a split.</p></li>
 </ul>
 </li>
 <li><p><strong>Random Forest Classifier</strong> with the following criterion options:</p>
 <ul>
-<li><p><strong>gini</strong> – use Gini impurity to measure the quality of a split.</p></li>
-<li><p><strong>entropy</strong> – uses Shannon information gain to measure the quality of a split.</p></li>
+<li><p><strong>gini</strong> - use Gini impurity to measure the quality of a split.</p></li>
+<li><p><strong>entropy</strong> - uses Shannon information gain to measure the quality of a split.</p></li>
 </ul>
 </li>
 <li><p><strong>Support Vector Classifier</strong> with the following kernel options:</p>
 <ul>
-<li><p><strong>rbf</strong> – use Radial Basis Function kernel</p></li>
-<li><p><strong>linear</strong> – use linear kernel</p></li>
-<li><p><strong>poly</strong> – use polynomial kernel</p></li>
+<li><p><strong>rbf</strong> - use Radial Basis Function kernel</p></li>
+<li><p><strong>linear</strong> - use linear kernel</p></li>
+<li><p><strong>poly</strong> - use polynomial kernel</p></li>
 </ul>
 </li>
 </ul>

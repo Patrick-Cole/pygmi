@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -695,14 +698,14 @@ document.write(`
 <p>This module imports CG-5 or CG-6 gravimeter data from either a <strong>TXT</strong>, <strong>XYZ</strong> or a <strong>DAT</strong> file (as exported by the gravimeter). The user is also expected to input a comma delimited Global Positioning System (GPS) file with Station, Latitude, Longitude and Elevation columns.</p>
 <p>The options on the interface are :</p>
 <ol class="arabic simple">
-<li><p><strong>Load CG-5/CG-6 File</strong> – Select the file that contains the recorded gravity data.</p></li>
-<li><p><strong>Load GPS file</strong> – Select the GPS <strong>CSV</strong> file.</p></li>
-<li><p><strong>Line</strong> – Select the column in the GPS file that contains the line number.</p></li>
-<li><p><strong>Station</strong> – Select the column in the GPS file that contains the station number.</p></li>
-<li><p><strong>Longitude</strong> – Select the column in the GPS file that contains the longitude.</p></li>
-<li><p><strong>Latitude</strong> – Select the column in the GPS file that contains the latitude.</p></li>
-<li><p><strong>Ellipsoid (GPS) Elevation</strong> – Select the column in the GPS file that contains the elevation. Elevation must be in metre.</p></li>
-<li><p><strong>Minimum Base Station Number</strong> – All station numbers larger than this are base stations.</p></li>
+<li><p><strong>Load CG-5/CG-6 File</strong> - Select the file that contains the recorded gravity data.</p></li>
+<li><p><strong>Load GPS file</strong> - Select the GPS <strong>CSV</strong> file.</p></li>
+<li><p><strong>Line</strong> - Select the column in the GPS file that contains the line number.</p></li>
+<li><p><strong>Station</strong> - Select the column in the GPS file that contains the station number.</p></li>
+<li><p><strong>Longitude</strong> - Select the column in the GPS file that contains the longitude.</p></li>
+<li><p><strong>Latitude</strong> - Select the column in the GPS file that contains the latitude.</p></li>
+<li><p><strong>Ellipsoid (GPS) Elevation</strong> - Select the column in the GPS file that contains the elevation. Elevation must be in metre.</p></li>
+<li><p><strong>Minimum Base Station Number</strong> - All station numbers larger than this are base stations.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/gravimp.png" src="_images/gravimp.png" />

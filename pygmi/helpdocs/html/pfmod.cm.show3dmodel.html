@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -702,34 +705,15 @@ document.write(`
 <p>The interface has the following aspects:</p>
 <ol class="arabic simple">
 <li><p>Model display window - The model can be rotated using the left and right click mouse buttons. Use the mouse wheel to zoom in and out of the model.</p></li>
-<li><p>Vertical slider – The slider adjusts the vertical exaggeration of the model.</p></li>
-<li><p>Select lithologies to display – By default all lithologies are selected. Click on a lithology to toggle it on and off.</p></li>
-<li><p><strong>Light Position</strong> – The position of a light source can be changed to control shadow effects on the model.</p></li>
-<li><p>Model display options:</p></li>
+<li><p>Vertical slider - The slider adjusts the vertical exaggeration of the model.</p></li>
+<li><p>Select lithologies to display - By default all lithologies are selected. Click on a lithology to toggle it on and off.</p></li>
+<li><p>Light Type - This can be <strong>Headlight</strong> (no shadows) or <strong>Camera light</strong> (shadows controlled by <strong>Light Position</strong>)</p></li>
+<li><p><strong>Light Position</strong> - The position of a light source can be changed to control shadow effects on the model. Only available in <strong>Camera light</strong> mode.</p></li>
+<li><p><strong>Reset Light</strong> - resets the light position for <strong>Camera light</strong> mode.</p></li>
+<li><p><strong>Smooth Model</strong> - Apply smoothing to the model, showing a more aesthetically pleasing version.</p></li>
+<li><p><strong>Save to Image File (JPG or PNG)</strong> - The viewer provides a means to save an image of the model to a <strong>JPG</strong> or <strong>PNG</strong> file format.</p></li>
+<li><p><strong>Refresh Model</strong> - Used to update the viewer while actively modelling.</p></li>
 </ol>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Smooth Model</strong> – Apply smoothing to the model, showing a more aesthetically pleasing version.</p></li>
-<li><p><strong>Orthographic Projection</strong> – the figure below shows the difference between the 3D view with and without <strong>Orthographic Projection</strong> selected.</p></li>
-<li><p><strong>Display Axis</strong> – Turn the axes on or off.</p></li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="6">
-<li><p><strong>Save to Image File (JPG or PNG)</strong> – The viewer provides a means to save an image of the model to a <strong>JPG</strong> or <strong>PNG</strong> file format.</p></li>
-<li><p><strong>Refresh Model</strong> – Used to update the viewer while actively modelling.</p></li>
-</ol>
-<figure class="align-default" id="id2">
-<img alt="_images/pfmod3d1.png" src="_images/pfmod3d1.png" />
-<figcaption>
-<p><span class="caption-text">The difference between a blocky model and smoothed model.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<figure class="align-default" id="id3">
-<img alt="_images/pfmod3d2.png" src="_images/pfmod3d2.png" />
-<figcaption>
-<p><span class="caption-text">Difference between viewing the model with orthographic projection selected (left) and not selected (right).</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
 </section>
 
 

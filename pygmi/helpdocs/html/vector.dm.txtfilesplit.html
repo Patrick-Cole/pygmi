@@ -274,6 +274,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -695,19 +698,19 @@ document.write(`
 <p>Text files can be split into a series of smaller files, either by number of files, bytes per file of lines per file.</p>
 <p>The options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Filename</strong> – select the text file to split.</p></li>
-<li><p><strong>Split method</strong> – this can be <strong>File</strong>, <strong>Bytes</strong> or <strong>Lines</strong>.</p></li>
+<li><p><strong>Filename</strong> - select the text file to split.</p></li>
+<li><p><strong>Split method</strong> - this can be <strong>File</strong>, <strong>Bytes</strong> or <strong>Lines</strong>.</p></li>
 <li><p>Select the splitting parameters:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Number of files</strong> – editable using <strong>Files</strong> method</p></li>
-<li><p><strong>Max lines per file</strong> – editable using <strong>Lines</strong> method</p></li>
-<li><p><strong>Max bytes per file</strong> – editable using <strong>Bytes</strong> method</p></li>
+<li><p><strong>Number of files</strong> - editable using <strong>Files</strong> method</p></li>
+<li><p><strong>Max lines per file</strong> - editable using <strong>Lines</strong> method</p></li>
+<li><p><strong>Max bytes per file</strong> - editable using <strong>Bytes</strong> method</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p><strong>Split all files with same extension in current directory</strong> – will use specifications of the original file on all subsequent files.</p></li>
+<li><p><strong>Split all files with same extension in current directory</strong> - will use specifications of the original file on all subsequent files.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/vectortxtsplit.png" src="_images/vectortxtsplit.png" />

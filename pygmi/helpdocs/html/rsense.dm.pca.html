@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -696,9 +699,9 @@ document.write(`
 <p>The PCA module is also capable of accepting raster lists, so that batch PCA can be performed. In such a case, the user has the option to fit the PCA model to all files first, before translating the data to PCA space. This allows adjacent datasets to be mosaiced seamlessly, because the same model is applied to all input data.</p>
 <p>The following options are available on the interface:</p>
 <ol class="arabic simple">
-<li><p><strong>Forward Transform Only</strong> – This option can be selected to do a forward transformation with the specified number of components. Principal components can be used in band combinations to enhance features in the data. If the aim is to filter noise out of the data this option must not be selected. However, the user is advised to run a forward transformation once to view the <strong>Explained Variance</strong> graph which can be used to select the number of components that must be used in the inverse transformation.</p></li>
-<li><p><strong>Number of components</strong> – Number of principal components that must be kept.</p></li>
-<li><p><strong>Fit PCA to all files</strong> – If this is selected the PCA model will be fitted to all the files before transforming the data.</p></li>
+<li><p><strong>Forward Transform Only</strong> - This option can be selected to do a forward transformation with the specified number of components. Principal components can be used in band combinations to enhance features in the data. If the aim is to filter noise out of the data this option must not be selected. However, the user is advised to run a forward transformation once to view the <strong>Explained Variance</strong> graph which can be used to select the number of components that must be used in the inverse transformation.</p></li>
+<li><p><strong>Number of components</strong> - Number of principal components that must be kept.</p></li>
+<li><p><strong>Fit PCA to all files</strong> - If this is selected the PCA model will be fitted to all the files before transforming the data.</p></li>
 </ol>
 <p>If a single file was transformed, the user can export the result by right-clicking on the PCA Transform module and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster Data</span></a>. In the case of batch processing, the results will be stored automatically as <strong>GeoTIFF</strong> files in a new folder called “PCA” and _PCA will be added to the filenames.</p>
 <figure class="align-default" id="id1">

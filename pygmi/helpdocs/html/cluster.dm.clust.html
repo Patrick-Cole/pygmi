@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -714,18 +717,18 @@ document.write(`
 </ul>
 <p>The three <strong>K-means</strong> algorithms have the same options:</p>
 <ol class="arabic simple">
-<li><p><strong>Cluster Algorithm</strong> – Choose between <strong>Mini Batch K-means (fast)</strong>, <strong>K-means</strong> and <strong>Bisecting K-means</strong>. The difference between the K-means and Bisecting K-means results are shown below.</p></li>
-<li><p><strong>Minimum Clusters</strong> – Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
-<li><p><strong>Maximum Clusters</strong> – The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
-<li><p><strong>Maximum iterations</strong> – Maximum number of iterations to use when generating a solution.</p></li>
-<li><p><strong>Tolerance</strong> – Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p></li>
-<li><p><strong>Scaling</strong> – The data can be scaled as a preprocessing step. The three options are:</p></li>
+<li><p><strong>Cluster Algorithm</strong> - Choose between <strong>Mini Batch K-means (fast)</strong>, <strong>K-means</strong> and <strong>Bisecting K-means</strong>. The difference between the K-means and Bisecting K-means results are shown below.</p></li>
+<li><p><strong>Minimum Clusters</strong> - Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
+<li><p><strong>Maximum Clusters</strong> - The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p><strong>Maximum iterations</strong> - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p><strong>Tolerance</strong> - Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p></li>
+<li><p><strong>Scaling</strong> - The data can be scaled as a preprocessing step. The three options are:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>No Scaling</strong> – The input data are used as is.</p></li>
+<li><p><strong>No Scaling</strong> - The input data are used as is.</p></li>
 <li><p><strong>Standard Scaling</strong> - Standardize features by removing the mean and scaling to unit variance.</p></li>
-<li><p><strong>Robust Scaling</strong> – Scale features using statistics that are robust to outliers.</p></li>
+<li><p><strong>Robust Scaling</strong> - Scale features using statistics that are robust to outliers.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id1">
@@ -742,15 +745,15 @@ document.write(`
 </figure>
 <p>The options for the <strong>DBSCAN</strong> (Density-Based Spatial Clustering of Applications with Noise) algorithm are:</p>
 <ol class="arabic simple">
-<li><p><strong>eps</strong> – The maximum distance between two samples for them to be considered as in the same neighbourhood.</p></li>
-<li><p><strong>Minimum samples</strong> –The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
-<li><p><strong>Scaling</strong> – The data can be scaled as a preprocessing step. The three options are:</p></li>
+<li><p><strong>eps</strong> - The maximum distance between two samples for them to be considered as in the same neighbourhood.</p></li>
+<li><p><strong>Minimum samples</strong> - The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
+<li><p><strong>Scaling</strong> - The data can be scaled as a preprocessing step. The three options are:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>No Scaling</strong> – The input data are used as is.</p></li>
+<li><p><strong>No Scaling</strong> - The input data are used as is.</p></li>
 <li><p><strong>Standard Scaling</strong> - Standardize features by removing the mean and scaling to unit variance.</p></li>
-<li><p><strong>Robust Scaling</strong> – Scale features using statistics that are robust to outliers.</p></li>
+<li><p><strong>Robust Scaling</strong> - Scale features using statistics that are robust to outliers.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id3">
@@ -761,8 +764,8 @@ document.write(`
 </figure>
 <p>Options for the <strong>OPTICS</strong> (Ordering Points To Identify the Clustering Structure) algorithm are:</p>
 <ol class="arabic simple">
-<li><p><strong>Minimum samples</strong> – The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
-<li><p><strong>Xi</strong> – The minimum reachability steepness that defines a cluster boundary.</p></li>
+<li><p><strong>Minimum samples</strong> - The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
+<li><p><strong>Xi</strong> - The minimum reachability steepness that defines a cluster boundary.</p></li>
 </ol>
 <figure class="align-default" id="id4">
 <img alt="_images/clustanalysis4.png" src="_images/clustanalysis4.png" />
@@ -772,17 +775,17 @@ document.write(`
 </figure>
 <p>Options for the <strong>Birch</strong> algorithm are:</p>
 <ol class="arabic simple">
-<li><p><strong>Minimum Clusters</strong> – Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
-<li><p><strong>Maximum Clusters</strong> – The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
-<li><p><strong>Tolerance</strong> – The radius of the subcluster obtained by merging a new sample and the closest subcluster should be less than the threshold otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p></li>
-<li><p><strong>Branching Factor</strong> – Maximum number of Clustering Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the two split nodes.</p></li>
-<li><p><strong>Scaling</strong> – The data can be scaled as a preprocessing step. The three options are:</p></li>
+<li><p><strong>Minimum Clusters</strong> - Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
+<li><p><strong>Maximum Clusters</strong> - The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p><strong>Tolerance</strong> - The radius of the subcluster obtained by merging a new sample and the closest subcluster should be less than the threshold otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p></li>
+<li><p><strong>Branching Factor</strong> - Maximum number of Clustering Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the two split nodes.</p></li>
+<li><p><strong>Scaling</strong> - The data can be scaled as a preprocessing step. The three options are:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>No Scaling</strong> – The input data are used as is.</p></li>
-<li><p><strong>Standard Scaling</strong> – Standardize features by removing the mean and scaling to unit variance.</p></li>
-<li><p><strong>Robust Scaling</strong> – Scale features using statistics that are robust to outliers.</p></li>
+<li><p><strong>No Scaling</strong> - The input data are used as is.</p></li>
+<li><p><strong>Standard Scaling</strong> - Standardize features by removing the mean and scaling to unit variance.</p></li>
+<li><p><strong>Robust Scaling</strong> - Scale features using statistics that are robust to outliers.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id5">

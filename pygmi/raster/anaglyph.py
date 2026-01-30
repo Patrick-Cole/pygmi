@@ -703,7 +703,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dataset = get_raster(ifile)
 

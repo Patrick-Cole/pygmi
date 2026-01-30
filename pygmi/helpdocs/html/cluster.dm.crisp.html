@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -706,12 +709,12 @@ document.write(`
 <p>Different ways of defining these classes are available. The simplest is <strong>k-means</strong> where the classes are circular or spherical in shape. In <strong>advanced k-means</strong> the classes can be ellipsoids, but they must be parallel to each other, while in <strong>w-means</strong>, they can be ellipsoids and they don’t have to be parallel to each other.</p>
 <p>The options available for <strong>Crisp Clustering</strong> are:</p>
 <ol class="arabic simple">
-<li><p><strong>Cluster Algorithm</strong> – This can be <strong>k-means</strong>, <strong>advanced k-means</strong> or <strong>w-means</strong>.</p></li>
-<li><p><strong>Minimum Clusters</strong> – Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
-<li><p><strong>Maximum Clusters</strong> – The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
-<li><p><strong>Maximum iterations</strong> – Maximum number of iterations to use when generating a solution.</p></li>
-<li><p><strong>Terminate if relative change is less than</strong> – Threshold for termination.</p></li>
-<li><p><strong>Repeated runs</strong> – Run the algorithm a number of times to ensure robustness with regards to the initial guess.</p></li>
+<li><p><strong>Cluster Algorithm</strong> - This can be <strong>k-means</strong>, <strong>advanced k-means</strong> or <strong>w-means</strong>.</p></li>
+<li><p><strong>Minimum Clusters</strong> - Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.</p></li>
+<li><p><strong>Maximum Clusters</strong> - The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p><strong>Maximum iterations</strong> - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p><strong>Terminate if relative change is less than</strong> - Threshold for termination.</p></li>
+<li><p><strong>Repeated runs</strong> - Run the algorithm a number of times to ensure robustness with regards to the initial guess.</p></li>
 <li><p><strong>Constrain cluster shape (w-means only)</strong> - 0 is unconstrained, 1 is spherical.</p></li>
 </ol>
 <figure class="align-default" id="id1">

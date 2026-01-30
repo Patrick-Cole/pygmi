@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -712,13 +715,13 @@ document.write(`
 </figure>
 <p>The IGRF correction interface requires the following inputs:</p>
 <ol class="arabic simple">
-<li><p><strong>Input Projection</strong> – Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. Under the first dropdown list the Datum can be selected, and the projection is selected under the second dropdown list. If the data sets have projections these will be imported automatically, but the user must confirm that it is correct.</p></li>
+<li><p><strong>Input Projection</strong> - Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. Under the first dropdown list the Datum can be selected, and the projection is selected under the second dropdown list. If the data sets have projections these will be imported automatically, but the user must confirm that it is correct.</p></li>
 <li><p>Survey information:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Sensor clearance above ground</strong> – the height of the magnetic sensor above the ground in metres.</p></li>
-<li><p><strong>Date</strong> – The magnetic survey date. For large surveys that lasted for multiple or weeks, any date during the survey can be entered since the changes in the geomagnetic field will be negligible on this time scale.</p></li>
+<li><p><strong>Sensor clearance above ground</strong> - the height of the magnetic sensor above the ground in metres.</p></li>
+<li><p><strong>Date</strong> - The magnetic survey date. For large surveys that lasted for multiple or weeks, any date during the survey can be entered since the changes in the geomagnetic field will be negligible on this time scale.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
@@ -726,8 +729,8 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Digital Elevation Model</strong> – Raster grid of the terrain in height above sea level.</p></li>
-<li><p><strong>Magnetic Data</strong> – Raster grid of the magnetic data to be corrected.</p></li>
+<li><p><strong>Digital Elevation Model</strong> - Raster grid of the terrain in height above sea level.</p></li>
+<li><p><strong>Magnetic Data</strong> - Raster grid of the magnetic data to be corrected.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id2">
@@ -738,10 +741,10 @@ document.write(`
 </figure>
 <p>The result of the calculation is a four-band raster dataset with the following bands:</p>
 <ul class="simple">
-<li><p><em>IGRF</em> – The total intensity of the IGRF in nT.</p></li>
-<li><p><em>Inclination</em> – The inclination of the IGRF.</p></li>
-<li><p><em>Declination</em> – The declination of the IGRF</p></li>
-<li><p><em>Magnetic data</em> – The IGRF-corrected magnetic data. The IGRF parameters are included in the band name.</p></li>
+<li><p><em>IGRF</em> - The total intensity of the IGRF in nT.</p></li>
+<li><p><em>Inclination</em> - The inclination of the IGRF.</p></li>
+<li><p><em>Declination</em> - The declination of the IGRF</p></li>
+<li><p><em>Magnetic data</em> - The IGRF-corrected magnetic data. The IGRF parameters are included in the band name.</p></li>
 </ul>
 <p>The IGRF parameters are also shown in the <strong>Process Log</strong> window of the main PyGMI interface</p>
 <figure class="align-default" id="id3">

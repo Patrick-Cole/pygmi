@@ -405,7 +405,7 @@ class PlotLog(ContextModule):
         topright = 'Hole no: ' + hrow['Companyno'] + '\n Sheet 1 of 1'
         bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
         bottomleft += '\nDepth from: ' + hrow['Depth from']
-        bottomleft += '\nDepth to: ' + hrow['Depth to']
+        bottomleft += '\nDepth to: ' + f'{dto}'
         bottomright = 'Elevation: ' + hrow['Elevation']
         bottomright += '\nLatitude: ' + hrow['Declat']
         bottomright += '\nLongitude: ' + hrow['Declon']

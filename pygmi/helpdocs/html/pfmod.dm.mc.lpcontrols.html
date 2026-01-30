@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -693,10 +696,10 @@ document.write(`
   <section id="profile-and-layer-control">
 <h1>Profile and layer control<a class="headerlink" href="#profile-and-layer-control" title="Link to this heading">#</a></h1>
 <p>In this section the user controls which profiles and layers are being displayed in the layer and profile views. The profile and layer options change depending on the <strong>Profile Type</strong> which can be either <strong>Standard Profile</strong> or <strong>Custom Profile</strong>.</p>
-<p><strong>Standard Profile</strong> – Standard profiles cross the entire study area along the specified orientation. The control option area:</p>
+<p><strong>Standard Profile</strong> - Standard profiles cross the entire study area along the specified orientation. The control option area:</p>
 <ol class="arabic simple">
-<li><p><strong>Profile Orientation</strong> – This can be changed by typing in an angle in the text box, using the spin boxes to increase or decrease the angle, or by clicking and dragging the  graphic.</p></li>
-<li><p><strong>Profile</strong> and <strong>Layer</strong> selection – The profile and layer that are currently displayed can be changed by typing in the profile and layer number in the text boxes, using the spin boxes or dragging the sliders left and right. The position of the profile will be show in the <strong>Layer View</strong> and the depth of the layer will be shown by a straight line on the profile.</p></li>
+<li><p><strong>Profile Orientation</strong> - This can be changed by typing in an angle in the text box, using the spin boxes to increase or decrease the angle, or by clicking and dragging the  graphic.</p></li>
+<li><p><strong>Profile</strong> and <strong>Layer</strong> selection - The profile and layer that are currently displayed can be changed by typing in the profile and layer number in the text boxes, using the spin boxes or dragging the sliders left and right. The position of the profile will be show in the <strong>Layer View</strong> and the depth of the layer will be shown by a straight line on the profile.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/pfmodlpcontrols1.png" src="_images/pfmodlpcontrols1.png" />
@@ -704,7 +707,7 @@ document.write(`
 <p><span class="caption-text">Profile and layer controls for a Standard Profile.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p><strong>Custom Profile</strong> – The user can specify the coordinates of a custom profiles that may only stretch across a part of the area. A picture, e.g. a seismic section, can be displayed along the profile. The options in the control are:</p>
+<p><strong>Custom Profile</strong> - The user can specify the coordinates of a custom profiles that may only stretch across a part of the area. A picture, e.g. a seismic section, can be displayed along the profile. The options in the control are:</p>
 <figure class="align-default" id="id2">
 <img alt="_images/pfmodlpcontrols2.png" src="_images/pfmodlpcontrols2.png" />
 <figcaption>
@@ -712,13 +715,13 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple">
-<li><p><strong>New Custom Profile</strong> – Select this option to create a new custom profile. The user is prompted for the following inputs:</p></li>
+<li><p><strong>New Custom Profile</strong> - Select this option to create a new custom profile. The user is prompted for the following inputs:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Profile Coordinates</strong> – Enter the start and end coordinates and the minimum (deepest) and maximum (shallowest) altitude of the custom profile. If a picture (e.g. a seismic section or geological profile) is loaded these values define its location and extent.</p></li>
-<li><p><strong>Get coordinates from last profile</strong> –</p></li>
-<li><p><strong>Load picture (optional)</strong> – Select a picture to display along the custom profile.</p></li>
+<li><p><strong>Profile Coordinates</strong> - Enter the start and end coordinates and the minimum (deepest) and maximum (shallowest) altitude of the custom profile. If a picture (e.g. a seismic section or geological profile) is loaded these values define its location and extent.</p></li>
+<li><p><strong>Get coordinates from last profile</strong> -</p></li>
+<li><p><strong>Load picture (optional)</strong> - Select a picture to display along the custom profile.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id3">
@@ -729,7 +732,7 @@ document.write(`
 </figure>
 <p>The start and end coordinates of the custom profile is shown in the profile view and on the layer view.</p>
 <ol class="arabic simple" start="2">
-<li><p><strong>Delete Current Profile</strong> – Delete the profile that is currently selected.</p></li>
+<li><p><strong>Delete Current Profile</strong> - Delete the profile that is currently selected.</p></li>
 <li><p>The custom profile and layer that are currently displayed can be changed typing in the profile and layer number in the text boxes, using the spin boxes or dragging the sliders left and right. The position of the profile will be show in the <strong>Layer View</strong> and the depth of the layer will be shown by a straight line on the profile.</p></li>
 </ol>
 </section>

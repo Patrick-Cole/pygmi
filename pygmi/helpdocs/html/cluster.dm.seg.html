@@ -275,6 +275,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -290,8 +291,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -706,25 +709,25 @@ document.write(`
 <p>This tool performs image segmentation, following the technique by Baatz and Schäpe (2000).</p>
 <p>It has the following parameters:</p>
 <ol class="arabic simple">
-<li><p><strong>Compactness weight</strong> – The weight assigned to compactness. Compactness indicates the degree of clustering in an area (Zhong et al., 2005).</p></li>
-<li><p><strong>Colour weight</strong> – The weight assigned to colour heterogeneity. The colour heterogeneity includes all channels of a multiband image (Zhong et al., 2005).</p></li>
-<li><p><strong>Maximum allowable cost function</strong> – Only regions where the merge criterion is lower than this number will be combined into a segment. The merge criterion is given by (Zhong et al., 2005):</p></li>
+<li><p><strong>Compactness weight</strong> - The weight assigned to compactness. Compactness indicates the degree of clustering in an area (Zhong et al., 2005).</p></li>
+<li><p><strong>Colour weight</strong> - The weight assigned to colour heterogeneity. The colour heterogeneity includes all channels of a multiband image (Zhong et al., 2005).</p></li>
+<li><p><strong>Maximum allowable cost function</strong> - Only regions where the merge criterion is lower than this number will be combined into a segment. The merge criterion is given by (Zhong et al., 2005):</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[f = w_{col} h_{col}+(1-w_{col})[w_{com} h_{com}+(1-w_{com}) h_{sth}]\]</div>
 <p>where:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(w_{col}\)</span> – weight assigned to colour heterogeneity.</p></li>
-<li><p><span class="math notranslate nohighlight">\(h_{col}\)</span> – colour heterogeneity.</p></li>
-<li><p><span class="math notranslate nohighlight">\(w_{com}\)</span> – weight assigned to circle-like compactness homogeneity.</p></li>
-<li><p><span class="math notranslate nohighlight">\(h_{com}\)</span> – circle-like degree of homogeneity.</p></li>
+<li><p><span class="math notranslate nohighlight">\(w_{col}\)</span> - weight assigned to colour heterogeneity.</p></li>
+<li><p><span class="math notranslate nohighlight">\(h_{col}\)</span> - colour heterogeneity.</p></li>
+<li><p><span class="math notranslate nohighlight">\(w_{com}\)</span> - weight assigned to circle-like compactness homogeneity.</p></li>
+<li><p><span class="math notranslate nohighlight">\(h_{com}\)</span> - circle-like degree of homogeneity.</p></li>
 <li><p><span class="math notranslate nohighlight">\(h_{sth}\)</span> - rectangle-like degree of homogeneity.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
-<li><p><strong>Use K-Means to group segments</strong> – Segments can be group by means of a K-means classifier.</p></li>
-<li><p><strong>Number of clusters</strong> – The number of clusters the K-means classifier must produce if that option was selected.</p></li>
+<li><p><strong>Use K-Means to group segments</strong> - Segments can be group by means of a K-means classifier.</p></li>
+<li><p><strong>Number of clusters</strong> - The number of clusters the K-means classifier must produce if that option was selected.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/clustseg.png" src="_images/clustseg.png" />

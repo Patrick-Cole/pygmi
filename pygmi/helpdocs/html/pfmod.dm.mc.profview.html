@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -703,11 +706,11 @@ document.write(`
 <ul class="simple">
 <li><p><strong>Field Display Limits</strong> - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</p>
 <ul>
-<li><p><strong>Scale to all maximum</strong> – The minimum and maximum extents of the data profile are set to the minimum and maximum of the whole observed and calculated datasets.</p></li>
-<li><p><strong>Scale to dataset maximum</strong> – The minimum and maximum extents of the data profile are set to the minimum and maximum of the whole observed data.</p></li>
-<li><p><strong>Scale to profile maximum</strong> – The minimum and maximum extents of the data profile are set to the minimum and maximum of the observed data along this profile only.</p></li>
+<li><p><strong>Scale to all maximum</strong> - The minimum and maximum extents of the data profile are set to the minimum and maximum of the whole observed and calculated datasets.</p></li>
+<li><p><strong>Scale to dataset maximum</strong> - The minimum and maximum extents of the data profile are set to the minimum and maximum of the whole observed data.</p></li>
+<li><p><strong>Scale to profile maximum</strong> - The minimum and maximum extents of the data profile are set to the minimum and maximum of the observed data along this profile only.</p></li>
 <li><p><strong>Scale to calculated maximum</strong> - The minimum and maximum extents of the data profile are set to the minimum and maximum of the calculated data along this profile only.</p></li>
-<li><p><strong>Scale to custom maximum</strong> – The user specifies the minimum (first value) and maximum (second value) extents for the data profile.</p></li>
+<li><p><strong>Scale to custom maximum</strong> - The user specifies the minimum (first value) and maximum (second value) extents for the data profile.</p></li>
 </ul>
 </li>
 </ul>
@@ -718,8 +721,8 @@ document.write(`
 </figcaption>
 </figure>
 <ul class="simple">
-<li><p><strong>View Magnetic Profile</strong> – Select the show the magnetic data for the profile.</p></li>
-<li><p><strong>View Gravity Profile</strong> – Select the show the gravity data for the profile.</p></li>
+<li><p><strong>View Magnetic Profile</strong> - Select the show the magnetic data for the profile.</p></li>
+<li><p><strong>View Gravity Profile</strong> - Select the show the gravity data for the profile.</p></li>
 <li><p><strong>Import Borehole Logs</strong> - Display borehole logs imported using <a class="reference internal" href="bholes.dm.import.html"><span class="doc">Import Borehole Data</span></a>. The imported borehole data module must be connected to the modelling module. When <strong>Import Borehole Logs</strong> is selected in the <strong>Profile viewing options</strong> the localities of the boreholes will be shown in the <a class="reference internal" href="pfmod.dm.mc.lpviews.html"><span class="doc">Layer View</span></a> and the borehole lithologies are added to the relevant profiles. The lithologies in the borehole will be added to the lithologies of the model defined in <a class="reference internal" href="pfmod.dm.mc.gparam.html"><span class="doc">Geophysical Parameters</span></a>. The user needs to enter the petrophysical parameters for these lithologies.</p></li>
 </ul>
 </section>

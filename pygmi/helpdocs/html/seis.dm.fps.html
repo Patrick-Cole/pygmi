@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -696,10 +699,10 @@ document.write(`
 <p>The core code is translated from bb.m written by Andy Michael and Oliver Boyd at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
 <p>Options are:</p>
 <ol class="arabic simple">
-<li><p><strong>FPS Algorithm</strong> – Can be FOCMEC (focal mechanism) or FPFIT (double-couple FPS, Reasenberg and Oppenheimer, 1985).</p></li>
-<li><p><strong>Width scale factor</strong> – Option to scale the “beachballs”</p></li>
-<li><p><strong>Geographic units</strong> or <strong>Projected units</strong>. – Select based on input data.</p></li>
-<li><p><strong>Save Shapefile</strong> – Export the beachballs to shapefiles.</p></li>
+<li><p><strong>FPS Algorithm</strong> - Can be FOCMEC (focal mechanism) or FPFIT (double-couple FPS, Reasenberg and Oppenheimer, 1985).</p></li>
+<li><p><strong>Width scale factor</strong> - Option to scale the “beachballs”</p></li>
+<li><p><strong>Geographic units</strong> or <strong>Projected units</strong>. - Select based on input data.</p></li>
+<li><p><strong>Save Shapefile</strong> - Export the beachballs to shapefiles.</p></li>
 </ol>
 <figure class="align-default" id="id1">
 <img alt="_images/seisfps.png" src="_images/seisfps.png" />

@@ -35,4 +35,5 @@ from pygmi.main import main
 
 if __name__ == "__main__":
     nocgs = bool(len(sys.argv) == 2 and 'true' in sys.argv[1].lower())
+    nocgs = True
     main(nocgs=nocgs)

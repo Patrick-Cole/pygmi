@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -700,28 +703,28 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple">
-<li><p><strong>General Properties</strong> – Here you can set parameters relating to the data:</p></li>
+<li><p><strong>General Properties</strong> - Here you can set parameters relating to the data:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Gravity Regional (mGal)</strong> – A regional value can be subtracted from the Bouguer anomaly data. This simply moves the calculated gravity response up or down.</p></li>
-<li><p><strong>Height of observation - Gravity</strong> – The height of the gravity instrument above the ground (in metres).</p></li>
-<li><p><strong>Height of observation – Magnetic</strong> – The height of the magnetic sensor above the ground (in metres).</p></li>
-<li><p><strong>Magnetic Field Intensity (nT)</strong> – The intensity of the prevailing geomagnetic field at the data locality.</p></li>
-<li><p><strong>Magnetic Inclination</strong> – Inclination (in degrees) of the prevailing geomagnetic field at the data locality.</p></li>
-<li><p><strong>Magnetic Declination</strong> – Declination (in degrees) of the prevailing geomagnetic field at the data locality.</p></li>
+<li><p><strong>Gravity Regional (mGal)</strong> - A regional value can be subtracted from the Bouguer anomaly data. This simply moves the calculated gravity response up or down.</p></li>
+<li><p><strong>Height of observation - Gravity</strong> - The height of the gravity instrument above the ground (in metres).</p></li>
+<li><p><strong>Height of observation - Magnetic</strong> - The height of the magnetic sensor above the ground (in metres).</p></li>
+<li><p><strong>Magnetic Field Intensity (nT)</strong> - The intensity of the prevailing geomagnetic field at the data locality.</p></li>
+<li><p><strong>Magnetic Inclination</strong> - Inclination (in degrees) of the prevailing geomagnetic field at the data locality.</p></li>
+<li><p><strong>Magnetic Declination</strong> - Declination (in degrees) of the prevailing geomagnetic field at the data locality.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p><strong>Lithological Properties</strong> – Lithologies to be used in the model can be added or removed here:</p></li>
+<li><p><strong>Lithological Properties</strong> - Lithologies to be used in the model can be added or removed here:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Add New Lithological Definition</strong> – Select this to add a new lithology. The colour picker dialog will appear and the user can select the desired colour. It will be given a generic name, e.g. “Generic 2”.</p></li>
-<li><p>List of lithologies – The current list of lithologies defined in the model. The lithology colour can be changed by double-clicking on a lithology. The petrophysical properties of the selected lithology are displayed on the right-hand side.</p></li>
-<li><p><strong>Rename Current Definition</strong> – To change the name of a lithology, select the lithology by clicking on it and then click on <strong>Rename Current Definition</strong>.</p></li>
-<li><p><strong>Remove Current Definition</strong> – Click on this to remove the currently selected lithology.</p></li>
-<li><p><strong>Merge Definitions</strong> – Lithologies can be merged. A dialog box with two windows appears. In the top window the <strong>Master Lithology</strong> is selected. All the properties of this lithology will be retained. In the bottom window the user can select all the lithologies to merge with the <strong>Master Lithology</strong>. The selected lithologies will disappear from the list of lithologies.</p></li>
+<li><p><strong>Add New Lithological Definition</strong> - Select this to add a new lithology. The colour picker dialog will appear and the user can select the desired colour. It will be given a generic name, e.g. “Generic 2”.</p></li>
+<li><p>List of lithologies - The current list of lithologies defined in the model. The lithology colour can be changed by double-clicking on a lithology. The petrophysical properties of the selected lithology are displayed on the right-hand side.</p></li>
+<li><p><strong>Rename Current Definition</strong> - To change the name of a lithology, select the lithology by clicking on it and then click on <strong>Rename Current Definition</strong>.</p></li>
+<li><p><strong>Remove Current Definition</strong> - Click on this to remove the currently selected lithology.</p></li>
+<li><p><strong>Merge Definitions</strong> - Lithologies can be merged. A dialog box with two windows appears. In the top window the <strong>Master Lithology</strong> is selected. All the properties of this lithology will be retained. In the bottom window the user can select all the lithologies to merge with the <strong>Master Lithology</strong>. The selected lithologies will disappear from the list of lithologies.</p></li>
 </ul>
 </div></blockquote>
 <figure class="align-default" id="id2">
@@ -731,7 +734,7 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple" start="3">
-<li><p><strong>Lithological Properties</strong> - Petrophysical parameters – The petrophysical properties of the lithologies are defined here. Click on a lithology on the left to show its properties on the right. These can be changed as desired. Note that for any changes to take effect, they must be applied before clicking on a different lithology by clicking on <strong>Apply Changes</strong>.</p></li>
+<li><p><strong>Lithological Properties</strong> - Petrophysical parameters - The petrophysical properties of the lithologies are defined here. Click on a lithology on the left to show its properties on the right. These can be changed as desired. Note that for any changes to take effect, they must be applied before clicking on a different lithology by clicking on <strong>Apply Changes</strong>.</p></li>
 </ol>
 <p>The <strong>Remanent Magnetization Intensity (nT)</strong>, <strong>Remanent Magnetization (A/m)</strong> and <strong>Q ratio</strong> are linked. A change to one of these will result in changes to the other two. This enables the user to input the strength of remanent magnetization using the units in which their data is available.</p>
 </section>

@@ -274,6 +274,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
@@ -289,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -710,9 +713,9 @@ document.write(`
 <p>This module allows for a user to select a spectrum from a dataset and compare it with library spectra. Different features can be highlighted, and a hull can be removed from the spectrum. This tool is essentially a viewer, allowing for the user to strategize interpretation strategies. The dataset that will be analysed must be projected.
 The interface has the following aspects:</p>
 <ol class="arabic simple">
-<li><p>Image display – A single band or a true colour image can be displayed. Click on the image to show die spectral graph at that point.</p></li>
-<li><p>Spectral graph – The spectrum at the point selected in the image is shown in blue. A library spectrum can be overlain and will be orange.</p></li>
-<li><p>Display options – Discussed separately below.</p></li>
+<li><p>Image display - A single band or a true colour image can be displayed. Click on the image to show die spectral graph at that point.</p></li>
+<li><p>Spectral graph - The spectrum at the point selected in the image is shown in blue. A library spectrum can be overlain and will be orange.</p></li>
+<li><p>Display options - Discussed separately below.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image with the colour bar, etc</p></li>
 </ol>
 <figure class="align-default" id="id1">
@@ -723,27 +726,27 @@ The interface has the following aspects:</p>
 </figure>
 <p>The display options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Display Band</strong> – Choice of which data wavelength to display.</p></li>
-<li><p><strong>Feature</strong> – Highlight a standard spectral feature on the spectral graph. The features are associated with typical absorption features for certain minerals and mineral groups (Laukamp et al., 2021; Haest et al., 2012):</p></li>
+<li><p><strong>Display Band</strong> - Choice of which data wavelength to display.</p></li>
+<li><p><strong>Feature</strong> - Highlight a standard spectral feature on the spectral graph. The features are associated with typical absorption features for certain minerals and mineral groups (Laukamp et al., 2021; Haest et al., 2012):</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>900</strong> – Ferric iron absorption feature (e.g. hematite)</p></li>
-<li><p><strong>1300</strong> – Ferrous iron (e.g. magnetite)</p></li>
-<li><p><strong>1550</strong> – Epidote</p></li>
-<li><p><strong>1760</strong> – Sulphates (e.g. gypsum, alunite)</p></li>
-<li><p><strong>2080</strong> – Pyrophyllite, topaz, talc</p></li>
-<li><p><strong>2200</strong> – White micas, smectite</p></li>
-<li><p><strong>2250</strong> – Chlorite, epidote, biotite</p></li>
-<li><p><strong>2290</strong> – Ca-amphiboles, talc</p></li>
-<li><p><strong>2330</strong> – Chlorite, carbonate</p></li>
+<li><p><strong>900</strong> - Ferric iron absorption feature (e.g. hematite)</p></li>
+<li><p><strong>1300</strong> - Ferrous iron (e.g. magnetite)</p></li>
+<li><p><strong>1550</strong> - Epidote</p></li>
+<li><p><strong>1760</strong> - Sulphates (e.g. gypsum, alunite)</p></li>
+<li><p><strong>2080</strong> - Pyrophyllite, topaz, talc</p></li>
+<li><p><strong>2200</strong> - White micas, smectite</p></li>
+<li><p><strong>2250</strong> - Chlorite, epidote, biotite</p></li>
+<li><p><strong>2290</strong> - Ca-amphiboles, talc</p></li>
+<li><p><strong>2330</strong> - Chlorite, carbonate</p></li>
 <li><p><strong>2390</strong> - Amphiboles</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p><strong>True Colour Ternary</strong> – Select this to display a ternary image instead of a single band image.</p></li>
-<li><p><strong>Remove Hull</strong> – Allows for the hull removed representation of a spectrum.</p></li>
-<li><p><strong>Load ENVI spectral library</strong> – This can be any spectral library in ENVI spectral library format (<strong>SLI</strong>). The user then chooses the appropriate reference spectrum to compare with.</p></li>
+<li><p><strong>True Colour Ternary</strong> - Select this to display a ternary image instead of a single band image.</p></li>
+<li><p><strong>Remove Hull</strong> - Allows for the hull removed representation of a spectrum.</p></li>
+<li><p><strong>Load ENVI spectral library</strong> - This can be any spectral library in ENVI spectral library format (<strong>SLI</strong>). The user then chooses the appropriate reference spectrum to compare with.</p></li>
 <li><p>Names of library spectra loaded in. Click on a name to display the spectrum in the spectral graph.</p></li>
 </ol>
 <figure class="align-default" id="id2">
@@ -758,26 +761,26 @@ The interface has the following aspects:</p>
 <p>This module takes as input hyperspectral data (single dataset or batch list) and allows for a standard set of feature definitions to be calculated (Haest et al. 2012). These features are absorption features that are typically associated with certain minerals or mineral groups. Once a product is selected, the details of the various datasets which make up the calculation are shown in a table, including feature name, filter, threshold and description. The user can alter details such as the respective dataset thresholds.</p>
 <p>The <strong>Process Features</strong> interface has the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Product</strong> – A dropdown list of the minerals or mineral groups that can be detected:</p></li>
+<li><p><strong>Product</strong> - A dropdown list of the minerals or mineral groups that can be detected:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Amphibole – The depth and wavelength (nm) of the 2390 nm feature are calculated.</p></li>
-<li><p>Carbonate – The depth and wavelength (nm) of the 2320 nm feature are calculated</p></li>
-<li><p>Chlorite – Features at 2250 nm and 2330 nm can be detected separately. The presence of both provides further information about the composition of the chlorite (Lypaczewski and Rivard, 2018). In both cases the feature depth and wavelength (nm) are calculated.</p></li>
+<li><p>Amphibole - The depth and wavelength (nm) of the 2390 nm feature are calculated.</p></li>
+<li><p>Carbonate - The depth and wavelength (nm) of the 2320 nm feature are calculated</p></li>
+<li><p>Chlorite - Features at 2250 nm and 2330 nm can be detected separately. The presence of both provides further information about the composition of the chlorite (Lypaczewski and Rivard, 2018). In both cases the feature depth and wavelength (nm) are calculated.</p></li>
 <li><p>Epidote - The depth and wavelength (nm) of the 1550 nm feature are calculated.</p></li>
-<li><p>Ferric iron – The depth and wavelength (nm) of the 900 nm feature are calculated. Note that the feature is usually broad making the wavelength difficult to calculate accurately.</p></li>
-<li><p>Ferrous iron – This is a ratio and therefore no wavelength information is available.</p></li>
-<li><p>Kaolin Group – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
-<li><p>Pyrophyllite – The depth and wavelength (nm) of the 2160 nm feature are calculated.</p></li>
-<li><p>Smectite – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
-<li><p>White micas – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>Ferric iron - The depth and wavelength (nm) of the 900 nm feature are calculated. Note that the feature is usually broad making the wavelength difficult to calculate accurately.</p></li>
+<li><p>Ferrous iron - This is a ratio and therefore no wavelength information is available.</p></li>
+<li><p>Kaolin Group - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>Pyrophyllite - The depth and wavelength (nm) of the 2160 nm feature are calculated.</p></li>
+<li><p>Smectite - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>White micas - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p><strong>Details</strong> – The first line in the table shows the wavelength of the defining feature. If the feature name starts with an f, the feature depth and minimum wavelength are calculated. If it starts with an r, a ratio is calculated. The remainder of the lines in the tables details filters that are used to link the specific feature to a mineral or mineral group. The <strong>Filter</strong> can be &lt; or &gt; and the user can set the threshold at which a feature is detected. The figure below shows an example to show how these details are used to detect a mineral.</p></li>
-<li><p><strong>Filter Albedo and Vegetation</strong> – When this option is selected, albedo and vegetation will appear in the table, and their filter and threshold settings can be adjusted.</p></li>
-<li><p><strong>If the final product is a ratio, filter out values less than 1</strong> – If this is selected only the pixels where the feature was detected will be kept.</p></li>
+<li><p><strong>Details</strong> - The first line in the table shows the wavelength of the defining feature. If the feature name starts with an f, the feature depth and minimum wavelength are calculated. If it starts with an r, a ratio is calculated. The remainder of the lines in the tables details filters that are used to link the specific feature to a mineral or mineral group. The <strong>Filter</strong> can be &lt; or &gt; and the user can set the threshold at which a feature is detected. The figure below shows an example to show how these details are used to detect a mineral.</p></li>
+<li><p><strong>Filter Albedo and Vegetation</strong> - When this option is selected, albedo and vegetation will appear in the table, and their filter and threshold settings can be adjusted.</p></li>
+<li><p><strong>If the final product is a ratio, filter out values less than 1</strong> - If this is selected only the pixels where the feature was detected will be kept.</p></li>
 </ol>
 <figure class="align-default" id="id3">
 <img alt="_images/rsensefproc.png" src="_images/rsensefproc.png" />
@@ -796,9 +799,9 @@ The interface has the following aspects:</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>Haest, M., Cudahy, T., Laukamp, C. and Gregory, S. 2012. Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the rocklea channel iron deposit in Western Australia. Economic Geology, 107, 209–228, <a class="reference external" href="https://doi.org/10.2113/econgeo.107.2.209">https://doi.org/10.2113/econgeo.107.2.209</a>.</p>
+<div><p>Haest, M., Cudahy, T., Laukamp, C. and Gregory, S. 2012. Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the rocklea channel iron deposit in Western Australia. Economic Geology, 107, 209-228, <a class="reference external" href="https://doi.org/10.2113/econgeo.107.2.209">https://doi.org/10.2113/econgeo.107.2.209</a>.</p>
 <p>Laukamp, C., Rodger, A., Legras, M., Lampinen, H., Lau, I.C., Pejcic, B., Stromberg, J., Francis, N. and Ramanaidou, E. 2021. Mineral physicochemistry underlying feature‐based extraction of mineral abundance and composition from shortwave, mid and thermal infrared reflectance spectra. Minerals, 11, <a class="reference external" href="https://doi.org/10.3390/min11040347">https://doi.org/10.3390/min11040347</a>.</p>
-<p>Lypaczewski, P. and Rivard, B. 2018. Estimating the Mg# and AlVI content of biotite and chlorite from shortwave infrared reflectance spectroscopy: Predictive equations and recommendations for their use. International Journal of Applied Earth Observation and Geoinformation, 68, 116–126, <a class="reference external" href="https://doi.org/10.1016/j.jag.2018.02.003">https://doi.org/10.1016/j.jag.2018.02.003</a>.</p>
+<p>Lypaczewski, P. and Rivard, B. 2018. Estimating the Mg# and AlVI content of biotite and chlorite from shortwave infrared reflectance spectroscopy: Predictive equations and recommendations for their use. International Journal of Applied Earth Observation and Geoinformation, 68, 116-126, <a class="reference external" href="https://doi.org/10.1016/j.jag.2018.02.003">https://doi.org/10.1016/j.jag.2018.02.003</a>.</p>
 </div></blockquote>
 </section>
 </section>
