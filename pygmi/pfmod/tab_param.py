@@ -811,7 +811,7 @@ class ParamDisplay(QtWidgets.QDialog):
         None.
 
         """
-        mlith = MergeLith()
+        mlith = MergeLith(self)
         for i in self.lmod1.lith_list:
             mlith.lw_lithmaster.addItem(i)
             mlith.lw_lithmerge.addItem(i)

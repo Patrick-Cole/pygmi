@@ -629,6 +629,8 @@ def _testfn():
 
     lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
+    lfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes - lith.xlsx"
+    hfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes.xlsx"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))

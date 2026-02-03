@@ -700,7 +700,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if curgrid is None:
             return
 
-        lbnd = LithBound(self.lmod1)
+        lbnd = LithBound(self, self.lmod1)
         tmp = lbnd.exec()
         if tmp == 0:
             return
@@ -2292,8 +2292,8 @@ class LithBound(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, lmod):
-        super().__init__(None)
+    def __init__(self, parent, lmod):
+        super().__init__(parent)
 
         self.lmod1 = lmod
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
@@ -2718,7 +2718,7 @@ class GaugeWidget(QtWidgets.QDial):
         painter.end()
 
 
-class ImportPicture(BasicModule):
+class ImportPicture(QtWidgets.QDialog):
     """
     Import Picture dialog.
 
@@ -2732,6 +2732,7 @@ class ImportPicture(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.parent = parent
         self.lmod = self.parent.lmod1
 
         self.grid = None

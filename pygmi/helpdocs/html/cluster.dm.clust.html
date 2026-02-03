@@ -766,7 +766,15 @@ document.write(`
 <ol class="arabic simple">
 <li><p><strong>Minimum samples</strong> - The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
 <li><p><strong>Xi</strong> - The minimum reachability steepness that defines a cluster boundary.</p></li>
+<li><p><strong>Scaling</strong> – The data can be scaled as a preprocessing step. The three options are:</p></li>
 </ol>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>No Scaling</strong> - The input data are used as is.</p></li>
+<li><p><strong>Standard Scaling</strong> - Standardize features by removing the mean and scaling to unit variance.</p></li>
+<li><p><strong>Robust Scaling</strong> - Scale features using statistics that are robust to outliers.</p></li>
+</ul>
+</div></blockquote>
 <figure class="align-default" id="id4">
 <img alt="_images/clustanalysis4.png" src="_images/clustanalysis4.png" />
 <figcaption>

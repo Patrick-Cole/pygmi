@@ -157,6 +157,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
+        self.ax1.tick_params(axis='x', rotation=90)
+        self.ax1.tick_params(axis='y', rotation=0)
 
     def update_plot(self, dat):
         """
@@ -211,7 +213,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
-
+        self.ax1.tick_params(axis='x', rotation=90)
+        self.ax1.tick_params(axis='y', rotation=0)
         self.figure.canvas.draw()
 
     def update_class(self, dat):
@@ -245,7 +248,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
-
+        self.ax1.tick_params(axis='x', rotation=90)
+        self.ax1.tick_params(axis='y', rotation=0)
         self.figure.canvas.draw()
 
 

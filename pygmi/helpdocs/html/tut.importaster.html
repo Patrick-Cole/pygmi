@@ -710,25 +710,19 @@ document.write(`
 <h2>Step 1: Downloading the data<a class="headerlink" href="#step-1-downloading-the-data" title="Link to this heading">#</a></h2>
 <p>For geological work the complete range of 14 bands are usually required. The recommended files to download are <strong>AST_07XT</strong> (crosstalk-corrected SWIR and VNIR) and <strong>AST_05</strong> (Surface Emissivity). Note that the SWIR sensor failed in April 2008 so only use data collected before this date.</p>
 <p>When downloading the data be sure to select <strong>AST_07XT</strong> and <strong>AST_05</strong> scenes with exactly the same date and time of collection. PyGMI will automatically link the VNIR, SWIR and TIR datasets collected at the same time.</p>
-<p>Data can be saved in two formats, namely <strong>HDF</strong> or a <strong>ZIP</strong> file containing the bands as <strong>GeoTIFFs</strong>. Both files will have an accompanying <strong>MET</strong> file. Both of the formats will be delivered as <strong>ZIP</strong> files, one for the VNIR and SWIR data, and one for the TIR data.</p>
+<p>Data can be saved in two formats, namely <strong>HDF</strong> or a <strong>ZIP</strong> file containing the bands as <strong>GeoTIFFs</strong>. PyGMI supports the latter due to API limitations. Both files will have an accompanying <strong>MET</strong> file. Both of the formats will be delivered as <strong>ZIP</strong> files, one for the VNIR and SWIR data, and one for the TIR data.</p>
 <figure class="align-default" id="id1">
 <img alt="_images/tutimportaster1.png" src="_images/tutimportaster1.png" />
 <figcaption>
 <p><span class="caption-text">ASTER file formats.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p>Move the VNIR, SWIR and TIR files (files on the right-hand side of above figure) to a single folder (Figure 214).</p>
-<figure class="align-default" id="id2">
-<img alt="_images/tutimportaster2.png" src="_images/tutimportaster2.png" />
-<figcaption>
-<p><span class="caption-text">VNIR, SWIR and TIR files in a single folder.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
+<p>Move the VNIR, SWIR and TIR files (files on the right-hand side of above figure) to a single folder.</p>
 <p>Go to <a class="reference internal" href="rsense.dm.importdata.html"><span class="doc">Import Satellite Data</span></a> on the <strong>Remote Sensing menu</strong> and select any of the files (VNIR,SWIR or TIR), it will automatically look for the other files. If you don’t see 14 bands it means one of the files was collected at a different date and time.</p>
-<figure class="align-default" id="id3">
+<figure class="align-default" id="id2">
 <img alt="_images/tutimportaster3.png" src="_images/tutimportaster3.png" />
 <figcaption>
-<p><span class="caption-text">ASTER data import.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+<p><span class="caption-text">ASTER data import.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The data can be saved to a standard raster format by right-clicking on the <strong>Import Satellite</strong> module and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster Data</span></a>.</p>

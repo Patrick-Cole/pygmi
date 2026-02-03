@@ -406,14 +406,14 @@ class StaticShiftEDI(BasicModule):
         pb_apply = QtWidgets.QPushButton('Remove Static Shift')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
 
-        hbl_3.addWidget(lbl_3)
+        hbl_3.addWidget(lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl_3.addWidget(self.dsb_shiftx)
-        hbl_3.addWidget(lbl_4)
+        hbl_3.addWidget(lbl_4, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl_3.addWidget(self.dsb_shifty)
 
         hbl_2.addWidget(pb_reset)
@@ -592,11 +592,11 @@ class RotateEDI(BasicModule):
 
         self.buttonbox.htmlfile = 'mt.dm.rotateedi'
 
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        hbl.addWidget(lbl_3)
+        hbl.addWidget(lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.dsb_rotangle)
 
         hbl_2.addWidget(pb_reset)
@@ -1041,9 +1041,9 @@ class EditEDI(BasicModule):
         pb_apply = QtWidgets.QPushButton('Mask and Interpolate')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
-        hbl.addWidget(lbl_1)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
 
         hbl_2.addWidget(pb_reset)

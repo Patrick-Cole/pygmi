@@ -133,6 +133,7 @@ def get_CGS(lithfile, headerfile):
     df = xl.parse(xl.sheet_names[0])
     xl.close()
     df = df.dropna(subset=['Depth from', 'Depth to'])
+    df.rename(columns={'Company no': 'Companyno'}, inplace=True)
 
     xl = pd.ExcelFile(headerfile)
     hdf = xl.parse(xl.sheet_names[0])
