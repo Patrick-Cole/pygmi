@@ -170,9 +170,10 @@ class TopoCorrect(BasicModule):
             else:
                 data.append(i)
 
-        data = lstack(data, piter=self.piter, showlog=self.showlog)
-        dem = lstack(data + [dem], piter=self.piter, showlog=self.showlog,
-                     masterid=data[0].dataid)
+        data = lstack(data, piter=self.piter,
+                      showlog=self.showlog, nodeepcopy=True)
+        dem = lstack([data[0]] + [dem], piter=self.piter, showlog=self.showlog,
+                     masterid=data[0].dataid, nodeepcopy=True)
 
         dem = dem.pop(-1)
         azimuth = float(self.le_azi.text())
@@ -466,16 +467,20 @@ def _testfn2():
 
 def _testfn():
     """Test routine topo."""
-    import matplotlib.pyplot as plt
-    from pygmi.raster.misc import norm2
-    from pygmi.misc import frm
+    from rasterio.vrt import WarpedVRT
+    from rasterio.warp import calculate_default_transform
+    import rasterio
+    # import matplotlib.pyplot as plt
+    # from pygmi.raster.misc import norm2
+    # from pygmi.misc import frm
 
     ifile1 = r"D:\Landslides\old\JTNdem.tif"
     ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
     # ifile2 = r"D:\Landslides\test.tif"
 
-    dat1 = get_raster(ifile1)
-    dat2 = get_raster(ifile2)
+    dat1 = get_raster(ifile1)  # 15 GB
+    dat2 = get_raster(ifile2)  # 7 GB
+
     dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
@@ -607,4 +612,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

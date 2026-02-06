@@ -39,7 +39,6 @@ from matplotlib.patches import Rectangle
 from pygmi.mt.mtpyold.modeling import occam1d
 from pygmi.mt.mtpyold.core.mt import MT
 from pygmi.mt.mtpyold.core.z import Z, Tipper
-# from mtpy import MT
 
 from pygmi.misc import BasicModule, ContextModule
 

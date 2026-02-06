@@ -403,7 +403,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
     needsmerge = False
     rows, cols = dat[0].data.shape
 
-    dtypes = []
+    # dtypes = []
     for i in dat:
         irows, icols = i.data.shape
         if irows != rows or icols != cols:
@@ -414,27 +414,27 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             needsmerge = True
         if i.extent != dat[0].extent:
             needsmerge = True
-        dtypes.append(i.data.dtype)
+        # dtypes.append(i.data.dtype)
 
-    dtypes = np.unique(dtypes)
-    dtype = None
-    nodata = None
-    if len(dtypes) > 1:
-        needsmerge = True
-        for i in dtypes:
-            if np.issubdtype(i, np.floating):
-                dtype = np.float64
-                nodata = 1e+20
-            elif dtype is None:
-                dtype = np.int32
-                nodata = 999999
-    else:
-        if np.issubdtype(dtypes[0], np.floating):
-            dtype = np.float64
-            nodata = 1e+20
-        elif dtype is None:
-            dtype = np.int32
-            nodata = 999999
+    # dtypes = np.unique(dtypes)
+    # dtype = None
+    # nodata = None
+    # if len(dtypes) > 1:
+    #     needsmerge = True
+    # for i in dtypes:
+    #     if np.issubdtype(i, np.floating):
+    #         dtype = np.float64
+    #         nodata = 1e+20
+    #     elif dtype is None:
+    #         dtype = np.int32
+    #         nodata = 999999
+    # else:
+    #     if np.issubdtype(dtypes[0], np.floating):
+    #         dtype = np.float64
+    #         nodata = 1e+20
+    #     elif dtype is None:
+    #         dtype = np.int32
+    #         nodata = 999999
 
     if needsmerge is False:
         if not nodeepcopy:
@@ -483,9 +483,9 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
     cmask = None
     for data in piter(dat):
 
-        if dtype is not None:
-            data.data = data.data.astype(dtype)
-            data.nodata = nodata
+        # if dtype is not None:
+        #     data.data = data.data.astype(dtype)
+        #     data.nodata = nodata
 
         if data.crs is None:
             showlog(f'{data.dataid} has no defined projection. '
@@ -497,19 +497,23 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
                                        'AXIS["Northing",NORTH]]')
 
         doffset = 0.0
-        data.data.set_fill_value(data.nodata)
-        data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
-        data.data.mask = np.ma.getmaskarray(data.data)
+        # data.data.set_fill_value(data.nodata)
+        # data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
+        # data.data.mask = np.ma.getmaskarray(data.data)
 
         trans0 = data.transform
         if trans0 == trans and data.data.shape == (rows, cols):
-            dat2.append(data.copy())
+            if not nodeepcopy:
+                dat2.append(data.copy())
+            else:
+                dat2.append(data)
         else:
             if data.data.min() <= 0:
                 doffset = data.data.min() - 1.
                 data.data = data.data - doffset
             # height, width = data.data.shape
 
+            data.data = data.data.filled(0)
             odata = np.zeros((rows, cols), dtype=data.data.dtype)
             odata, _ = reproject(source=data.data,
                                  destination=odata,
@@ -521,12 +525,15 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
                                  resampling=resampling)
 
             data2 = Data()
+            odata[odata == 0] = data.nodata
             data2.data = np.ma.masked_equal(odata, data.nodata)
+            # data2.data.set_fill_value(data.nodata)
+            # data2.data = np.ma.array(data2.data.filled(), mask=data2.data.mask)
             data2.data.mask = np.ma.getmaskarray(data2.data)
             data2.nodata = data.nodata
             data2.crs = data.crs
             data2.set_transform(transform=trans)
-            data2.data = data2.data.astype(data.data.dtype)
+            # data2.data = data2.data.astype(data.data.dtype)
             data2.dataid = data.dataid
             data2.filename = data.filename
             data2.datetime = data.datetime
@@ -536,10 +543,13 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             dat2[-1].metadata = data.metadata
             dat2[-1].data = dat2[-1].data + doffset
 
-            dat2[-1].nodata = data.nodata
-            dat2[-1].data.set_fill_value(data.nodata)
-            dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
-                                        mask=dat2[-1].data.mask)
+            # dat2[-1].nodata = data.nodata
+            # dat2[-1].data.set_fill_value(data.nodata)
+            # dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
+            #                             mask=dat2[-1].data.mask)
+
+            data.data[data.data == 0] = data.nodata
+            data.data = np.ma.masked_equal(data.data, data.nodata)
 
             if doffset != 0.:
                 data.data = data.data + doffset

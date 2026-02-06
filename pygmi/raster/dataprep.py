@@ -1731,7 +1731,9 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
     else:
         crs = indata[0].crs
 
-    if bfile[-3:] == 'shp':
+    if bfile is None:
+        bounds = None
+    elif bfile[-3:] == 'shp':
         bounds = get_shape_bounds(bfile, crs, showlog)
     else:
         dattmp = get_data(bfile, piter=iter, metaonly=True)
@@ -2165,5 +2167,13 @@ def _testfn():
     tmp.settings()
 
 
+def _testmosaic():
+    """Test."""
+    idir = r"D:\workdata\PyGMI Test Data\Raster\mosaic"
+    dat = {}
+
+    mosaic(dat, idir=idir)
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testmosaic()

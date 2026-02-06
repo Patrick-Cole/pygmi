@@ -662,4 +662,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_phase()
