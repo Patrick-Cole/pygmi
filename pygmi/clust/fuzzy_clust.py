@@ -328,7 +328,7 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
         maximum iterations, by default 100
     expo : float, optional
         Fuzzification exponent, by default 1.5
-      term_thresh : float, optional
+    term_thresh : float, optional
         terminating threshold, by default 0.00001
     init_type : str, optional
         initial guess, by default 'random'

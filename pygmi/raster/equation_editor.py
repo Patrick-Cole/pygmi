@@ -249,6 +249,8 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
         The data type of the output dataset. The default is 'auto'.
     showlog : function, optional
         Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterable. The default is iter.
 
     Returns
     -------

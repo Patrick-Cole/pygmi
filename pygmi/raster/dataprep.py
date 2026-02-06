@@ -1394,6 +1394,10 @@ def fftcont(data, h, showlog=print, piter=iter):
         PyGMI raster data.
     h : float
         Height.
+    showlog : function, optional
+        Function for printing text. The default is print.
+    piter : function, optional
+        Progress bar iterable. The default is iter.
 
     Returns
     -------
@@ -1593,18 +1597,21 @@ def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
 
 
 def merge_order(ifiles, igeoms):
-    """Sort data in an order which ensures overlaps."""
+    """
+    Sort data in an order which ensures overlaps.
 
-    # from shapely.plotting import plot_polygon
-    # import matplotlib.pyplot as plt
+    Parameters
+    ----------
+    ifiles : list
+        list of filenames
+    igeoms : list
+        list of geometries
 
-    # fig = plt.figure()
-    # ax = plt.gca()
-    # plot_polygon(glist[0])
-    # plot_polygon(glist[1])
-    # plot_polygon(glist[2])
-    # plt.show()
-
+    Returns
+    -------
+    ofiles : list
+        list of filenames
+    """
     ofiles = []
     ogeoms = []
 
@@ -1622,7 +1629,6 @@ def merge_order(ifiles, igeoms):
                 ofiles.append(ifiles.pop(i))
                 ogeoms.append(igeoms.pop(i))
                 break
-    pass
 
     return ofiles
 
@@ -1666,6 +1672,8 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         'merge_median'. The default is 'first'.
     res : float, optional
         Output resolution. Can be a tuple. The default is None.
+    ifiles : list, optional
+        List of input files.
 
     Returns
     -------
@@ -1965,6 +1973,10 @@ def taylorcont(data, h, showlog=print, piter=iter):
         PyGMI raster data.
     h : float
         Height.
+    showlog : function, optional
+        Function for printing text. The default is print.
+    piter : function, optional
+        Progress bar iterable. The default is iter.
 
     Returns
     -------
@@ -2055,6 +2067,10 @@ def verticalp(data, order=1, showlog=print, piter=iter):
         Input data.
     order : float, optional
         Order. The default is 1.
+    showlog : function, optional
+        Function for printing text. The default is print.
+    piter : function, optional
+        Progress bar iterable. The default is iter.
 
     Returns
     -------

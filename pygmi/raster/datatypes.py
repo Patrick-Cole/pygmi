@@ -376,7 +376,19 @@ class Data():
         self.data = np.ma.masked_equal(self.data, self.nodata)
 
     def plot(self, ax):
-        """Simple data plot."""
+        """
+        Simple data plot.
+
+        Parameters
+        ----------
+        ax : Matplotlib axes
+            Matplotlib axes for plot.
+
+        Returns
+        -------
+        None.
+
+        """
         vmin, vmax = self.get_vmin_vmax()
         im = ax.imshow(self.data, vmin=vmin, vmax=vmax, extent=self.extent,
                        interpolation='none')
@@ -515,7 +527,12 @@ class Data():
         return vmin, vmax
 
     def get_boundary(self):
-        """Get raster boundary."""
+        """
+        Get raster boundary.
+
+        Sets self.geometry to a Polygon of the raster boundary.
+
+        """
         mask = ~np.ma.getmaskarray(self.data)
         mask = mask.astype(np.uint8)
 
@@ -560,6 +577,10 @@ class RasterMeta():
         list of band data.
     to_sutm : bool
         flag to convert a file to SUTM.
+    datetime : datatime
+        date and time of dataset.
+    nodata : float
+        grid null or no data value.
 
     """
 

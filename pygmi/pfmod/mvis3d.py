@@ -847,7 +847,8 @@ def calc_norms(faces, vtx):
 
     Returns
     -------
-    None.
+    nrm : numpy array
+        output normals.
 
     """
     nrm = np.zeros(vtx.shape, dtype=np.float64)

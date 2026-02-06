@@ -372,10 +372,19 @@ def tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print):
     ----------
     data : pygmi.raster.datatypes.Data
         PyGMI raster dataset.
+    inc : float
+        Magnetic inclination, by default None.
+    dec : float
+        Magnetic declination, by default None.
+    piter : function, optional
+        Progress bar iterator. The default is None.
+    showlog : function, optional
+        Display information. The default is print.
 
     Returns
     -------
-    None.
+    gdf : GeoDataFrame
+        Resulting depths and coordinates.
 
     """
     if pbar is None:

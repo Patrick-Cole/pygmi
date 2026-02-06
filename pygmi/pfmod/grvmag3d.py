@@ -988,10 +988,14 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         progress bar routine if available. (internal use)
     showtext : module
         showtext routine if available. (internal use)
+    parent : module
+        parent routine, the default is None.
     showreports : bool
-        show extra reports
+        show extra reports, the default is False.
     magcalc : bool
         if True, calculates magnetic data, otherwise only gravity.
+    demag : bool
+        calculate demagnetization. The default is False.
 
     Returns
     -------
@@ -1575,7 +1579,7 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 
 def dircos(incl, decl, azim):
     """
-    DIRCOS computes direction cosines from inclination and declination.
+    Compute direction cosines from inclination and declination.
 
     Parameters
     ----------
