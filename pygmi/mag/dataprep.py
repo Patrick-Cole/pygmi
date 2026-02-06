@@ -138,6 +138,10 @@ def asig(data1, showlog=print, piter=iter):
     ----------
     data1 : pygmi.raster.datatypes.Data
         data with matrix of double to be filtered
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
@@ -324,6 +328,10 @@ def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
         size of smoothing matrix to use - must be odd input 0 for no smoothing
     k : int
         Factor for EHGA filter. Must be > 0. Optional.
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
@@ -628,10 +636,23 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
 
 
 def gradient2D(daty, datx):
-    """Perform 2D gradient where spacing is inconsistent in 2D."""
+    """
+    Perform 2D gradient where spacing is inconsistent in 2D.
+
+    Parameters
+    ----------
+    daty : numpy array
+        _description_
+    datx : numpy array
+        _description_
+
+    Returns
+    -------
+    dx : numpy array
+        output gradient array
+    """
     rows, cols = daty.data.shape
-    dx = []
-    # dy = []
+
     dx = daty.copy()
     for i in range(rows):
         mask = daty[i].mask
@@ -644,7 +665,6 @@ def gradient2D(daty, datx):
         tmpx = datx[i][~mask]
         dx[i][~mask] = np.gradient(tmpy, tmpx)
 
-    pass
     # dx = np.ma.array(dx)
 
     # for i in range(cols):

@@ -418,6 +418,11 @@ def calculate_raps(dat, scale=None):
     k_radial = np.fft.fftshift(k_radial)
     # k_radial[k_radial >= nyq] = nyq
 
+    # remove nan  bins
+    filt = ~np.isnan(raps)
+    k_centers = k_centers[filt]
+    raps = raps[filt]
+
     return k_centers, raps, k_radial, F
 
 

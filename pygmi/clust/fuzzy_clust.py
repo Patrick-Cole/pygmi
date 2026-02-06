@@ -308,11 +308,41 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
                term_thresh=0.00001, init_type='random', ifiles=None,
                showlog=print, piter=iter):
     """
-    Run.
+    Fuzzy Clustering.
+
+    Parameters
+    ----------
+    data : list
+        List of PyGMI data.
+    cltype : str, optional
+        Clustering method, by default 'k-means'
+    min_cluster : int, optional
+        minimum number of clusters, by default 5
+    max_cluster : int, optional
+        maximum number of clusters, by default 5
+    cov_constr : _type_, optional
+        scalar between [0 1], by default 0.
+    no_runs : int, optional
+        number of runs, by default 1
+    max_iter : int, optional
+        maximum iterations, by default 100
+    expo : float, optional
+        Fuzzification exponent, by default 1.5
+      term_thresh : float, optional
+        terminating threshold, by default 0.00001
+    init_type : str, optional
+        initial guess, by default 'random'
+    ifiles : list, optional
+        Files used in 'manual' initial guess, by default None
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    None.
+    dat_out : list
+        List of raster datasets of classes.
 
     """
     no_clust = np.array([min_cluster, max_cluster])

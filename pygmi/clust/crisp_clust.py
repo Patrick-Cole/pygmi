@@ -295,11 +295,39 @@ def crispclust(data, cltype='k-means', min_cluster=5, max_cluster=5,
                term_thresh=0.00001, init_type='random', ifiles=None,
                showlog=print, piter=iter):
     """
-    Process the data.
+    Crisp Clustering.
+
+    Parameters
+    ----------
+    data : list
+        List of PyGMI data.
+    cltype : str, optional
+        Clustering method, by default 'k-means'
+    min_cluster : int, optional
+        minimum number of clusters, by default 5
+    max_cluster : int, optional
+        maximum number of clusters, by default 5
+    cov_constr : _type_, optional
+        scalar between [0 1], by default 0.
+    no_runs : int, optional
+        number of runs, by default 1
+    max_iter : int, optional
+        maximum iterations, by default 100
+    term_thresh : float, optional
+        terminating threshold, by default 0.00001
+    init_type : str, optional
+        initial guess, by default 'random'
+    ifiles : list, optional
+        Files used in 'manual' initial guess, by default None
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    None.
+    dat_out : list
+        List of raster datasets of classes.
 
     """
     showlog('Crisp Clustering started')
@@ -504,6 +532,10 @@ def crisp_means(data, no_clust, cent, centfix, maxit, term_thresh,
         scalar between [0 1], values > 0 trim the covariance matrix
         to avoid needle-like ellipsoids for the clusters, applies only for
         cltype='vardet', but must always be provided.
+    showlog : function, optional
+        Show information using a function. The default is print.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
@@ -755,7 +787,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
 
     dat = get_raster(ifile)
 

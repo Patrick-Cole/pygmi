@@ -430,6 +430,8 @@ def merge_gpsmag(cg5file, gpsfile, basethres=10000., cren=None, showlog=print):
         GPS filename in CSV format.
     basethres : float, optional
         Threshold for base station numbers. The default is 10000.
+    cren : dict
+        Dictionary of columns to rename. The default is None.
     showlog : function, optional
         Display information. The default is print.
 

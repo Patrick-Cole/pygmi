@@ -95,16 +95,12 @@ class PlotDrift(ContextModule):
         self.setWindowTitle('Drift Plot')
 
         vbl = QtWidgets.QVBoxLayout(self)
-        # hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
-        # self.buttonbox.buttonbox.hide()
-        # self.buttonbox.htmlfile = 'raster.cm.showsimple'
         self.buttonbox.hide()
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        # vbl.addLayout(hbl)
 
         self.setFocus()
 
@@ -338,6 +334,28 @@ class ProcessData(BasicModule):
 def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
             showlog=print):
     """
+    _summary_
+
+    Parameters
+    ----------
+    pdat : _type_
+        _description_
+    basethres : _type_
+        _description_
+    kstat : str, optional
+        _description_, by default 'None'
+    absbase : float, optional
+        _description_, by default 978032.67715
+    dens : int, optional
+        _description_, by default 2670
+    showlog : _type_, optional
+        _description_, by default print
+
+    Returns
+    -------
+    _type_
+        _description_
+    """    """
     Gravity corrections.
 
     Parameters
@@ -347,11 +365,11 @@ def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
     basethres : float
        Threshold for base station numbers.
     kstat : float
-        Known base station number.
+        Known base station number, by default 'None'
     absbase : float
-        Known base station absolute gravity.
+        Known base station absolute gravity, by default 978032.67715
     dens : float
-        Background Density (kg/m3).
+        Background Density (kg/m3), by default 2670
     showlog : function, optional
         Display information. The default is print.
 
