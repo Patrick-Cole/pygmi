@@ -1253,7 +1253,7 @@ def consolidate_aster_list(flist):
 
 def convert_ll_to_utm(lon, lat):
     """
-    Convert latitude and longitude to UTM.
+    Convert latitude and longitude to UTM EPSG code.
 
     https://stackoverflow.com/a/40140326/4556479
 
@@ -1807,7 +1807,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : pygmi.raster.datatypes.Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -2083,7 +2083,7 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : pygmi.raster.datatypes.Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -2323,7 +2323,7 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None,
 
     Returns
     -------
-    out : pygmi.raster.datatypes.Data
+    dat : pygmi.raster.datatypes.Data
         PyGMI raster dataset
     """
     if piter is None:
@@ -2985,7 +2985,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None,
 def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None,
                   metaonly=False):
     """
-    Get ASTER zip Data.
+    Get ASTER tif Data.
 
     Parameters
     ----------
@@ -3635,6 +3635,10 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
         Between 1 and 100 - controls sunshade detail. The default is 25.
     alpha : float, optional
         How much incident light is reflected (0 to 1). The default is .75.
+    piter : function, optional
+        Progress bar iterable. Default is None.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
@@ -3788,10 +3792,6 @@ def set_export_filename(dat, odir, otype=None):
     if israw is False:
         ofile = filename
     elif 'ASTER' in sensor and 'AST_' in filename:
-        # tmp = [os.path.basename(i.filename).split('_')[1] for i in dat]
-        # tmp = list(set(tmp))
-        # tmp.sort()
-
         tmp = filename.split('_')
         date = tmp[2][3:11]
         time = tmp[2][11:]

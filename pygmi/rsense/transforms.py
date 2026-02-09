@@ -464,6 +464,8 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
     noisetype : str, optional
         Noise type to calculate. Can be 'diagonal', 'hv average' or ''.
         The default is ''.
+    piter : function, optional
+        Iteration function, used for progress bars. The default is iter.
 
     Returns
     -------
@@ -768,8 +770,8 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
-        List of PyGMI Data.
+    flist : list of pygmi.raster.datatypes.Data.
+        List of PyGMI Data. Can be 2D for multiple files.
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
         (meaning all).

@@ -256,7 +256,20 @@ import numpy as np
 
 
 def SPECPR(ifile):
-    """SPECPR import function."""
+    """
+    SPECPR import function.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file.
+
+    Returns
+    -------
+    spec : dict
+        Output spectra.
+
+    """
     # Import data into records indexed by record number
 
     data = []
@@ -336,7 +349,19 @@ def SPECPR(ifile):
 
 
 def case1(dat):
-    """Case 1."""
+    """
+    Case 1.
+
+    Parameters
+    ----------
+    dat : bytes
+        Binary record.
+
+    Returns
+    -------
+    rec : dict
+        Output record.
+    """
     rec = {}
 
     rec['rectype'] = 1
@@ -377,7 +402,20 @@ def case1(dat):
 
 
 def unpack_icflag(icflag):
-    """Unpack the bits from icflag."""
+    """
+    Unpack the bits from icflag.
+
+    Parameters
+    ----------
+    icflag : bytes
+        Binary icflag.
+
+    Returns
+    -------
+    b : list
+        Unpacked bits.
+
+    """
     icflag = int(icflag[3])
     b = [0, 0, 0, 0, 0, 0]
 

@@ -781,6 +781,8 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
         Display information. The default is print.
     piter : function, optional
         Progress bar iterator. The default is iter.
+    sensor : str
+        The sensor being processed. The default is None.
 
     Returns
     -------
@@ -907,6 +909,8 @@ def correct_bands(rlist, sensor, bfile=None):
         List of input ratios.
     sensor : str
         Target sensor.
+    bfile : str
+        Data filename. The default is None.
 
     Returns
     -------
@@ -972,7 +976,7 @@ def get_aster_list(flist):
 
     Returns
     -------
-    flist : list
+    flist2 : list
         List of filenames.
 
     """
@@ -996,7 +1000,7 @@ def get_landsat_list(flist, sensor=None, allsats=False):
 
     Returns
     -------
-    flist : list
+    flist2 : list
         List of filenames.
 
     """
@@ -1040,7 +1044,7 @@ def get_sentinel_list(flist):
 
     Returns
     -------
-    flist : list
+    flist2 : list
         List of filenames.
 
     """
@@ -1170,6 +1174,8 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     ----------
     dat : list of pygmi.raster.datatypes.Data.
         List of PyGMI Data.
+    sensor : str
+        The sensor being processed. The default is None.
     showlog : function, optional
         Display information. The default is print.
     piter : function, optional

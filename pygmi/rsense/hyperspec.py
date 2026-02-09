@@ -873,6 +873,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         Flag to decide whether to filter final ratio products less than 1.0
     piter : function, optional
         Progress bar iterable. The default is iter.
+    showlog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
@@ -880,8 +882,6 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         Output datasets.
 
     """
-    # allfeatures = [i.split()[0] for i in product if i[0] == 'f']
-    # allratios = [i.split()[0] for i in product if i[0] != 'f']
     if cryst is None:
         cryst = []
 
@@ -1101,6 +1101,8 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
         End Index of feature definition.
     xdat : numpy array
         Wavelengths of feature definition.
+    mtmp : numpy array
+        Used in crystalinity calculation.
 
     Returns
     -------
@@ -1108,6 +1110,8 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
         Feature wavelengths.
     dtmp : numpy array
         Feature depths.
+    mtmp : numpy array
+        Used in crystalinity calculation.
 
     """
     cols, _ = fdat.shape
