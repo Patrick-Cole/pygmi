@@ -25,7 +25,7 @@
 """A set of Magnetic Data routines."""
 
 import numpy as np
-from scipy.fft import fft2, fftshift
+from scipy.fft import fft2, fftshift, fftfreq
 from scipy.fft import rfft, rfftfreq
 from scipy.stats import binned_statistic
 
@@ -103,8 +103,8 @@ def fft_getkxy(fftmod, xdim, ydim):
 
     """
     ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, xdim) * 2 * np.pi
-    ky = np.fft.fftfreq(ny, ydim) * 2 * np.pi
+    kx = fftfreq(nx, xdim) * 2 * np.pi
+    ky = fftfreq(ny, ydim) * 2 * np.pi
 
     KX, KY = np.meshgrid(kx, ky)
     KY = -KY
@@ -130,72 +130,7 @@ def nextpow2(n):
     return m_i
 
 
-def radial_average_power_spectrum(dat, scale=None):
-    """
-    Calculate the radially averaged power spectrum.
-
-    Parameters
-    ----------
-    data : PyGMI data
-        Input data.
-
-    Returns
-    -------
-    radial_bins : numpy array
-        1D radial wavenumbers.
-    radial_mean : numpy array
-        1D radial power spectrum.
-    freq_radius : numpy array
-        2D wavenumber array.
-    fft_data : numpy array
-        2D FFT data array.
-
-    """
-    data = dat.data
-    dx = dat.xdim
-    dy = dat.ydim
-    # Compute the 2D Fourier Transform
-    fft_data = np.fft.fft2(data)
-
-    if scale is not None:
-        fft_data = fft_data / scale
-
-    # fft_shifted = np.fft.fftshift(fft_data)
-    power_spectrum = np.abs(fft_data) ** 2
-
-    # Get the frequency coordinates
-    ny, nx = data.shape
-    fx = np.fft.fftfreq(nx, dx) * 2 * np.pi
-    fy = np.fft.fftfreq(ny, dy) * 2 * np.pi
-    fx, fy = np.meshgrid(fx, fy)
-    freq_radius = np.sqrt(fx**2 + fy**2)
-
-    # Shift the frequency coordinates to match the shifted FFT
-    # freq_radius = np.fft.fftshift(freq_radius)
-
-    # Radial binning
-    max_radius = (np.max(freq_radius))
-    radial_bins = np.linspace(0, max_radius, max(nx, ny))
-    radial_mean = np.zeros_like(radial_bins, dtype=float)
-    radial_indices = np.digitize(freq_radius.ravel(), radial_bins)
-
-    radial_mean = []
-    for i in range(1, len(radial_bins)):
-        mask = radial_indices == i
-        radial_mean.append(np.mean(power_spectrum.ravel()[mask]))
-        pass
-
-    # Compute bin centers
-    radial_bins = 0.5 * (radial_bins[:-1] + radial_bins[1:])
-
-    mask = ~np.isnan(radial_mean)
-    radial_bins = radial_bins[mask]
-    radial_mean = np.array(radial_mean)[mask]
-
-    return radial_bins, radial_mean, freq_radius, fft_data
-
-
-def calculate_raps(dat, scale=None):
+def calculate_raps(dat):
     """
     Calculates the Radially Averaged Power Spectrum (RAPS) of a 2D dataset.
 
@@ -219,9 +154,6 @@ def calculate_raps(dat, scale=None):
     # The output is a complex array.
     F = fft2(data)
 
-    if scale is not None:
-        F = F / scale
-
     # 2. Shift the zero-frequency component to the center.
     F_shifted = fftshift(F)
 
@@ -230,8 +162,8 @@ def calculate_raps(dat, scale=None):
 
     # 4. Create 2D arrays of frequency coordinates.
     ny, nx = data.shape
-    kx = 2 * np.pi * np.fft.fftshift(np.fft.fftfreq(nx, d=dx))
-    ky = 2 * np.pi * np.fft.fftshift(np.fft.fftfreq(ny, d=dy))
+    kx = 2 * np.pi * fftshift(fftfreq(nx, d=dx))
+    ky = 2 * np.pi * fftshift(fftfreq(ny, d=dy))
     kx_grid, ky_grid = np.meshgrid(kx, ky)
 
     # 5. Calculate the radial wavenumber (k) for each point.
@@ -254,7 +186,6 @@ def calculate_raps(dat, scale=None):
     k_centers = k_centers[k_centers < nyq]
 
     k_radial = np.fft.fftshift(k_radial)
-    # k_radial[k_radial >= nyq] = nyq
 
     # remove nan  bins
     filt = ~np.isnan(raps)
@@ -270,8 +201,6 @@ def _testfft():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
-    ifile = r"D:\Heliium_Highresmag_utm35s.hdr"
-    ifile = r"D:\heliumtest.tif"
 
     data = get_raster(ifile)[0]
 
@@ -285,22 +214,11 @@ def _testfft():
     plt.tight_layout()
     plt.show()
 
-    # xm1, ym1, _, _ = radial_average_power_spectrum(datm)
-    # nr, nc = data.data.shape
     xm, ym, _, _ = calculate_raps(datm)
-    # ym, xm = rapsd(datm.data, return_freq=True, d=datm.xdim)
-
-    # nyq = np.pi / datm.xdim
-
-    # ym = ym[xm < nyq]
-    # xm = xm[xm < nyq]
 
     plt.figure()
     plt.title('datm')
-    # plt.semilogy(xm1, ym1, 'r')
     plt.semilogy(xm, ym, 'b')
-    # pysteps.visualization.spectral.plot_spectrum1d(
-    #     xm, ym, x_units="km", y_units="dBZ**2")
     plt.tight_layout()
     plt.show()
 
