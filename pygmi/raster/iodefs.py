@@ -1045,11 +1045,11 @@ def get_geopak(hfile):
 
 def get_geosoft(hfile):
     """
-    Get Geosoft file.
+    Get Geosoft file (uncompressed).
 
     Parameters
     ----------
-    ifile : str
+    hfile : str
         filename to import
 
     Returns

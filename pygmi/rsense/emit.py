@@ -330,6 +330,14 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
     ----------
     xrds: xarray.Dataset
         an EMIT dataset read into xarray using the emit_xarray function.
+    piter : function, optional
+        Progress bar iterator. The default is iter.
+    showlog : function, optional
+        Display information. The default is print.
+    tnames : list, optional
+        list of band names to import, in order. The default is None.
+    metaonly : bool, optional
+        Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------

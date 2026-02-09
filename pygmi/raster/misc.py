@@ -76,7 +76,7 @@ def aspect2(data):
     adeg[np.ma.less(adeg, 0.)] += 360.
     adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.
 
-    return [adeg, dzdx, dzdy]
+    return adeg, dzdx, dzdy
 
 
 def check_dataid(out):
@@ -138,10 +138,10 @@ def currentshader(data, cell=1., theta=np.pi / 4., phi=-np.pi / 4., alpha=1.0):
 
 
     """
-    asp = aspect2(data)
+    _, pinit, qinit = aspect2(data)
     n = 2
-    pinit = asp[1]
-    qinit = asp[2]
+    # pinit = asp[1]
+    # qinit = asp[2]
     p = ne.evaluate('pinit/cell')
     q = ne.evaluate('qinit/cell')
     sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
@@ -386,6 +386,12 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
         Create a common mask for all bands. The default is False.
     masterid : str, optional
         ID of master dataset. The default is None.
+    nodeepcopy : bool
+        Flag to avoid making a copy of the input data, by default False. 
+    resampling : str
+        The resampling to be used on output date. The default is 'nearest'.
+    checkdataid : bool
+        Check to make sure there are no duplicate data ids. The default is True
 
     Returns
     -------

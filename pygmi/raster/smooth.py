@@ -354,6 +354,18 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
         Filter matrix type.
     itype : str
         Filter type. Can be '2D Mean' or '2D Median'.
+    box_x : int, optional
+        number of columns for box, by default 5
+    box_y : int, optional
+        number of rows for box, by default 5
+    rad : int, optional
+        Radius of disc window, by default 5
+    sigma : int, optional
+        Standard deviation, by default 5
+    showlog : function, optional
+        Routine to show text messages. The default is print.
+    piter : function, optional
+        progress bar iterable, default is None.
 
     Returns
     -------

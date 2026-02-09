@@ -156,7 +156,8 @@ def test_aspect():
              [0., 0., 0., 0.],
              [0., 0., 0., 0.]]]
 
-    dat = aspect2(data)
+    adeg, dzdx, dzdy = aspect2(data)
+    dat = [adeg, dzdx, dzdy]
 
     np.testing.assert_array_equal(dat, dat2)
 

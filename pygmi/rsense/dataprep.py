@@ -428,14 +428,6 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
         m, b = np.polyfit(x, y, 1)
         c = b / m
 
-        # print(f'zenith:{zenith} azimuth:{azimuth} c:{c}')
-        # plt.figure(dpi=200)
-        # plt.plot(x, y, '.')
-        # trendpoly = np.poly1d((m, b))
-        # plt.plot(x, trendpoly(x))
-        # plt.title(c)
-        # plt.show()
-
         Lh.data = Lt.data * (cossz + c) / (cosi + c)
         Lh.set_mask(mask)
 

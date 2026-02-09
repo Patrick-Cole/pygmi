@@ -157,9 +157,10 @@ def datacommon(data, tmp1, tmp2):
     data : pygmi.raster.datatypes.Data.
         PyGMI raster dataset.
     tmp1 : float
-        Parameter 1. Can be min, mean or median.
+        Parameter 1. Can be min, mean or median of the data.
     tmp2 : float
-        Parameter 2. Can be range, std, or mad.
+        Parameter 2. Can be range, std, or Median Absolute Deviation (MAD) of
+        the data.
 
     Returns
     -------
