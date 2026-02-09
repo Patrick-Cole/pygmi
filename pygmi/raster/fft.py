@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""A set of Magnetic Data routines."""
+"""A set of FFT routines."""
 
 import numpy as np
 from scipy.fft import fft2, fftshift, fftfreq

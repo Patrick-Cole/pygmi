@@ -22,13 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Quick start routine to start the GUI form of PyGMI.
+"""Matched filtering routine."""
 
-This routine is used as a convenience function, typically if you do NOT
-formally install PyGMI as a library and prefer to run it from within the
-default extracted directory structure.
-"""
 import numpy as np
 from scipy import signal
 import pwlf

@@ -23,9 +23,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Raster Data.
+Raster Data Display.
 
-This is the raster data interpretation module.  This module allows for the
+This is the raster data display module.  This module allows for the
 display of raster data in a variety of modes, as well as the export of that
 display to GeoTIFF format.
 

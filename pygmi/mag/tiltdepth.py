@@ -45,7 +45,6 @@ import matplotlib.pyplot as plt
 from numba import jit
 import geopandas as gpd
 
-# from pygmi.raster.cooper import vertical
 from pygmi.raster.dataprep import verticalp
 from pygmi.raster.misc import lstack
 from pygmi.mag.dataprep import rtp

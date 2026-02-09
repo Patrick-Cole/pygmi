@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Equation editor."""
+"""Equation editor for raster data."""
 
 from PySide6 import QtWidgets, QtGui
 import numpy as np

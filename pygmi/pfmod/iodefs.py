@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Potential field model data."""
+"""Import and export potential field 3D model data."""
 
 import datetime
 import sys

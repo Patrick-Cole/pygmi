@@ -22,11 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Class for data types."""
-
-import numpy as np
-
-from pygmi.raster.datatypes import Data
+"""Class for vector data types."""
 
 
 class VoxModel():

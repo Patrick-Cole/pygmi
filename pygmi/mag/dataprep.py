@@ -36,19 +36,13 @@ from pygmi.raster.fft import fftprep, fft_getkxy
 
 class ASig(BasicModule):
     """
-    Class used to gather information via a GUI.
+    Calculate analytic signal via a GUI.
 
     Parameters
     ----------
     parent : pygmi.main.MainWidget, optional
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    azi : float
-        directional filter azimuth in degrees from East
-    smooth : int
-        size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
 
     def __init__(self, parent=None):

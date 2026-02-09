@@ -22,7 +22,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Data preparation for satellite data."""
+"""
+Data preparation for satellite data.
+
+This focuses on routines to either prepare Sentinel 2 data for topographic
+correction, or doing the topographic correction itself.
+
+"""
 
 import os
 import sys

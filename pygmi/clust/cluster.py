@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-ClusterAnalysis.
+Cluster Analysis.
 
 The cluster module performs unsupervised classification using the
 scikit-learn library.

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""These are miscellaneous functions for the program."""
+"""These are miscellaneous functions for the pfmod routines."""
 
 import time
 from PySide6 import QtWidgets, QtCore, QtGui

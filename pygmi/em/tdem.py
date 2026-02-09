@@ -22,12 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Time Domain EM, based on the SimPEG library."""
+"""Time Domain EM inversion, based on the SimPEG library."""
 
 import sys
 import os
 import copy
-# import warnings
 from contextlib import redirect_stdout
 from PySide6 import QtWidgets
 import numpy as np

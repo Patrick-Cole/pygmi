@@ -32,6 +32,7 @@ menu. The following are supported:
  * Images
  * Surfaces
  * Histograms
+ * Scatterplots
 """
 
 import numpy as np

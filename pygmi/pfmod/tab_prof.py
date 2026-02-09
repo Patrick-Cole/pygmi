@@ -43,7 +43,7 @@ from pygmi.pfmod import misc
 from pygmi import menu_default
 from pygmi.raster.reproj import data_reproject
 from pygmi.raster.iodefs import get_raster
-from pygmi.misc import frm, BasicModule
+from pygmi.misc import frm
 from pygmi.vector.dataprep import reprojxy
 
 

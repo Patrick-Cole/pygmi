@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Reprojection functions."""
+"""Raster reprojection functions."""
 
 import numpy as np
 from PySide6 import QtWidgets, QtGui
