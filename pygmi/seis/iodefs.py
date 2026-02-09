@@ -101,7 +101,7 @@ def str2float(inp):
 
     Returns
     -------
-    output : float
+    fval : float
         float or np.nan
     """
     if inp.strip() == '' or inp.strip() == '*' or inp.strip() == 'N/A':
@@ -125,7 +125,7 @@ def str2int(inp):
 
     Returns
     -------
-    output : int
+    inp : int
         integer or np.nan
     """
     if inp.strip() == '':
@@ -489,6 +489,8 @@ def importseiscomp(ifile, showlog=print, prefmag='MLv'):
         Input file to import.
     showlog : function, optional
         Display information. The default is print.
+    prefmag : str
+        The preferred magnitude. The default is 'MLv'.
 
     Returns
     -------
@@ -3100,7 +3102,7 @@ class FilterSeisan(BasicModule):
         self.outdata['Seis'] = newdat
 
 
-def xlstomacro():
+def _testxlstomacro():
     """
     Convert an excel file to macro file.
 
@@ -3206,4 +3208,4 @@ def _testfn2():
 
 if __name__ == "__main__":
     _testfn()
-    # xlstomacro()
+    # _testxlstomacro()

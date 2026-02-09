@@ -271,7 +271,7 @@ def eq_fix(indata, equation, showlog=print):
 
     Parameters
     ----------
-    indata : list of PyGMI Data.
+    indata : list of pygmi.raster.datatypes.Data.
         PyGMI raster dataset.
     equation : str
         Equation to fix.

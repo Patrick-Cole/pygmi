@@ -1493,7 +1493,7 @@ def get_data(ifile, *, piter=None, showlog=print, tnames=None, metaonly=False,
     Returns
     -------
     dat : list of pygmi.raster.datatypes.Data
-        dataset imported
+        Dataset imported
     """
     ifile = ifile[:]
     bfile = os.path.basename(ifile)

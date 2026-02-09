@@ -313,7 +313,7 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
     Parameters
     ----------
     data : list
-        List of PyGMI data.
+        List of PyGMI data (pygmi.raster.datatypes.Data).
     cltype : str, optional
         Clustering method, by default 'k-means'
     min_cluster : int, optional

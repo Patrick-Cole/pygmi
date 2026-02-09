@@ -350,7 +350,7 @@ def cluster(data, cltype='K-Means', sscale=True, rscale=False,
     Parameters
     ----------
     data : list
-        List of PyGMI data.
+        List of PyGMI data (pygmi.raster.datatypes.Data).
     cltype : str, optional
         Cluster analysis type. Can be one of 'K-Means',
         'Mini Batch K-Means (fast)', 'Bisecting K-Means', 'DBSCAN', 'OPTICS',

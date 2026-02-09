@@ -1102,7 +1102,7 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
     xdat : numpy array
         Wavelengths of feature definition.
     mtmp : numpy array
-        Used in crystalinity calculation.
+        Used in crystallinity calculation.
 
     Returns
     -------
@@ -1111,7 +1111,7 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
     dtmp : numpy array
         Feature depths.
     mtmp : numpy array
-        Used in crystalinity calculation.
+        Used in crystallinity calculation.
 
     """
     cols, _ = fdat.shape

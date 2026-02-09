@@ -191,14 +191,14 @@ def norm(data, ntype):
 
     Parameters
     ----------
-    data : list
+    data : list of pygmi.raster.datatypes.Data
         PyGMI Data in a list.
     ntype : str
         Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
 
     Returns
     -------
-    data : list
+    data : list of pygmi.raster.datatypes.Data
         PyGMI Data in a list.
 
     """

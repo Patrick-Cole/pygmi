@@ -1364,12 +1364,12 @@ def cluster_to_raster(indata):
     Parameters
     ----------
     indata : dict
-        Dictionary of PyGMI datasets.
+        Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
 
     Returns
     -------
     indata : dict
-        Dictionary of PyGMI datasets.
+        Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
 
     """
     if 'Cluster' not in indata:

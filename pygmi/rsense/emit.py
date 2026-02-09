@@ -341,7 +341,7 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
     Returns
     -------
-    dat: list
+    dat: list of pygmi.raster.datatypes.Data
         list of pygmi.raster.datatypes.Data
 
     """

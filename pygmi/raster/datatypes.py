@@ -577,7 +577,7 @@ class RasterMeta():
         list of band data.
     to_sutm : bool
         flag to convert a file to SUTM.
-    datetime : datatime
+    datetime : date
         date and time of dataset.
     nodata : float
         grid null or no data value.

@@ -1020,13 +1020,13 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
         extent of grid.
     dxy : float
         Cell size.
-    Nullvalue : float
+    nullvalue : float
         Null or nodata value.
 
     Returns
     -------
-    mask : numpy array
-        Mask to be used for blanking.
+    gdat : numpy array
+        Masked output array.
 
     """
     if bdist is None:
@@ -1062,6 +1062,8 @@ def cut_point(data, ifile, showlog=print):
         GeoPandas GeoDataFrame
     ifile : str
         shapefile used to cut data
+    showlog : function, optional
+        Display information. The default is print.
 
     Returns
     -------
@@ -1111,7 +1113,7 @@ def txtlinecnt(filename):
 
     Returns
     -------
-    int
+    linecnt : int
         Total number of lines in a file.
 
     """
@@ -1274,6 +1276,9 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
         Data values.
     dxy : float
         Grid cell size, in distance units.
+    dat : pygmi.raster.datatypes.Data
+        DEM data used to constrain surface. The default is None.
+
     showlog : function, optional
         Display information. The default is print.
 
@@ -1581,6 +1586,8 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
         Input wkt description or EPSG code (int) or CRS
     owkt : str, int, CRS
         Output wkt description or EPSG code (int) or CRS
+    showlog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------

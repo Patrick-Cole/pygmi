@@ -1307,6 +1307,8 @@ def contourtopoly(cntr):
     -------
     plist : list
         List of Polygon objects.
+    pvals : list
+        List of contour levels.
 
     """
     plist = []
@@ -1646,7 +1648,7 @@ def get_cmax(mag):
 
     Parameters
     ----------
-    dat2 : numpy array
+    mag : numpy array
         Array of magnitudes.
 
     Returns
