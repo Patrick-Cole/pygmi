@@ -601,7 +601,7 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprep(data, showlog=showlog, piter=piter)
+    ndat, datamedian = fftprep(data)
 
     fftmod = np.fft.fft2(ndat.data)
 

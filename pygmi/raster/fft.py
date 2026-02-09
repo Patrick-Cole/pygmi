@@ -29,89 +29,8 @@ from scipy.fft import fft2, fftshift
 from scipy.fft import rfft, rfftfreq
 from scipy.stats import binned_statistic
 
-from pygmi.vector.dataprep import gridxyz
-from pygmi.raster.misc import lstack
 
-
-# def fftprep(data, showlog=print, piter=iter):
-#     """
-#     FFT preparation.
-
-#     Parameters
-#     ----------
-#     data : pygmi.raster.datatypes.Data
-#         Input dataset.
-
-#     Returns
-#     -------
-#     zfin : numpy array.
-#         Output prepared data.
-#     rdiff : int
-#         rows divided by 2.
-#     cdiff : int
-#         columns divided by 2.
-#     datamedian : float
-#         Median of data.
-
-#     """
-#     datamedian = np.ma.median(data.data)
-#     ndat = data.data - datamedian
-
-#     nr, nc = data.data.shape
-#     cdiff = nc // 2
-#     rdiff = nr // 2
-
-#     z1 = np.zeros((nr + 2 * rdiff, nc + 2 * cdiff)) + np.nan
-#     x1, y1 = np.mgrid[0: nr + 2 * rdiff, 0: nc + 2 * cdiff]
-#     z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
-
-#     for _ in range(2):
-#         z1[0] = 0
-#         z1[-1] = 0
-#         z1[:, 0] = 0
-#         z1[:, -1] = 0
-
-#         vert = np.zeros_like(z1)
-#         hori = np.zeros_like(z1)
-
-#         for i in range(z1.shape[0]):
-#             mask = ~np.isnan(z1[i])
-#             y = y1[i][mask]
-#             z = z1[i][mask]
-#             hori[i] = np.interp(y1[i], y, z)
-
-#         for i in range(z1.shape[1]):
-#             mask = ~np.isnan(z1[:, i])
-#             x = x1[:, i][mask]
-#             z = z1[:, i][mask]
-
-#             vert[:, i] = np.interp(x1[:, i], x, z)
-
-#         hori[hori == 0] = np.nan
-#         vert[vert == 0] = np.nan
-
-#         hv = hori.copy()
-#         hv[np.isnan(hori)] = vert[np.isnan(hori)]
-#         hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
-#                                         vert[~np.isnan(hv)]], 0)
-
-#         z1[np.isnan(z1)] = hv[np.isnan(z1)]
-
-#     zfin = z1
-
-#     nr, nc = zfin.shape
-#     zfin *= tukey(nc)
-#     zfin *= tukey(nr)[:, np.newaxis]
-
-#     # temporary, coordinates will be wrong
-#     tmp = data.copy()
-#     tmp.data = zfin
-#     zfin = tmp
-
-#     return zfin, datamedian
-
-
-def fftprepminc(data, showlog=print, piter=iter):
+def fftprep(data):
     """
     FFT preparation.
 
@@ -121,82 +40,6 @@ def fftprepminc(data, showlog=print, piter=iter):
     ----------
     data : pygmi.raster.datatypes.Data
         Input dataset.
-    showlog : function, optional
-        Show information using a function. The default is print.
-
-    Returns
-    -------
-    zfin : numpy array.
-        Output prepared data.
-    datamedian : float
-        Median of data.
-
-    """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-
-    nr, nc = data.data.shape
-    # cdiff = nc // 2
-    # rdiff = nr // 2
-
-    xmin, xmax, ymin, ymax = data.extent
-
-    x = np.arange(xmin, xmax, data.xdim) + data.xdim / 2
-    y = np.arange(ymin, ymax, data.ydim) + data.ydim / 2
-
-    x = x[x < xmax]
-    y = y[y < ymax]
-
-    xmin = x.min()
-    xmax = x.max()
-    ymin = y.min()
-    ymax = y.max()
-
-    z = ndat
-    y = y[::-1]
-
-    dxy = min(data.xdim, data.ydim)
-    # xmin2, xmax2 = [xmin - cdiff * dxy, xmax + cdiff * dxy]
-    # ymin2, ymax2 = [ymin - rdiff * dxy, ymax + rdiff * dxy]
-
-    # x2 = np.arange(xmin2, xmax2, dxy).tolist()
-    # y2 = np.arange(ymin2, ymax2, dxy).tolist()
-
-    # xcnr = x2 * 2 + [xmin2] * len(y2) + [xmax2] * len(y2)
-    # ycnr = [ymin2] * len(x2) + [ymax2] * len(x2) + y2 * 2
-    # zcnr = np.zeros_like(xcnr)
-
-    # x = np.append(x, xcnr)
-    # y = np.append(y, ycnr)
-    # z = np.append(z, zcnr)
-
-    zfin = gridxyz(x, y, z, dxy, method='Minimum Curvature', bdist=None,
-                   showlog=showlog)
-
-    zfin.data[np.isnan(zfin.data)] = 0.
-    zfin.crs = data.crs
-
-    tmp = lstack([zfin, data], showlog=showlog, piter=piter)
-    tmp2 = tmp[1]
-    tmp2.data = tmp2.data - datamedian
-    tmp2.data[tmp2.data.mask] = tmp[0].data[tmp2.data.mask]
-    zfin = tmp2
-
-    return zfin, datamedian
-
-
-def fftprep(data, showlog=print, piter=iter):
-    """
-    FFT preparation.
-
-    This routine pads using minimum curvature gridding.
-
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        Input dataset.
-    showlog : function, optional
-        Show information using a function. The default is print.
 
     Returns
     -------
@@ -224,19 +67,14 @@ def fftprep(data, showlog=print, piter=iter):
     zfin.data = zfin.data.filled(0)
     nr, nc = zfin.data.shape
 
-    # window = hann
-
-    # zfin.data *= window(nc)
-    # zfin.data *= window(nr)[:, np.newaxis]
-
     zfin.data = np.pad(zfin.data, [[rdiff, rdiff2], [cdiff, cdiff2]],
                        mode='constant', constant_values=0)
 
     dx = zfin.xdim
     dy = zfin.ydim
 
-    xmin2, xmax2 = [xmin - cdiff * dx, xmax + cdiff2 * dx]
-    ymin2, ymax2 = [ymin - rdiff * dy, ymax + rdiff2 * dy]
+    xmin2 = xmin - cdiff * dx
+    ymax2 = ymax + rdiff2 * dy
 
     zfin.set_transform(xdim=dx, xmin=xmin2, ydim=dy, ymax=ymax2)
 

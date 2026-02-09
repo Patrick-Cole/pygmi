@@ -422,7 +422,7 @@ def mosaic(eq, localdict):
 
     Returns
     -------
-    findat : numpy array
+    master : numpy array
         Output array.
 
     """

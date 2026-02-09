@@ -1408,7 +1408,7 @@ def fftcont(data, h, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, datamedian = fftprep(data, showlog, piter)
+    ndat, datamedian = fftprep(data)
 
     fftmod = np.fft.fft2(ndat.data)
 
@@ -2081,7 +2081,7 @@ def verticalp(data, order=1, showlog=print, piter=iter):
     xdim = data.xdim
     ydim = data.ydim
 
-    ndat, _ = fftprep(data, showlog, piter)
+    ndat, _ = fftprep(data)
     fftmod = np.fft.fft2(ndat.data)
 
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
