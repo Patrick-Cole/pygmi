@@ -251,9 +251,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.axis('scaled')
         self.axes.set_title('Correlation Coefficients')
 
-        # self.figure.set_figwidth(7)
-        # self.figure.set_figheight(7)
-
         # calculate correlations
         corr = data.corr(numeric_only=True)
         corr = (corr * 100).round(0)
@@ -282,16 +279,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bounds = [50, 60, 70, 80, 90, 99]
             norm = BoundaryNorm(bounds, cmap.N, extend='min')
 
-        im, cbar = heatmap(self.dmat, self.ccoeflbls[::-1], self.ccoeflbls,
-                           self.axes, cmap=cmap, cbarlabel='Correlation',
-                           norm=norm)
+        im, _ = heatmap(self.dmat, self.ccoeflbls[::-1], self.ccoeflbls,
+                        self.axes, cmap=cmap, cbarlabel='Correlation',
+                        norm=norm)
 
         im.format_cursor_data = lambda x: ''
 
         self.texts = annotate_heatmap(im, valfmt="{x:.0f}", **annot_kws)
 
         self.figure.canvas.draw()
-        # self.draw_idle()
 
     def update_lines(self, r, data):
         """
@@ -1332,20 +1328,27 @@ def heatmap(data, row_labels, col_labels, ax, *,
 
     Parameters
     ----------
-    data
+    data : numpy array
         A 2D numpy array of shape (M, N).
-    row_labels
+    row_labels : list or numpy array
         A list or array of length M with the labels for the rows.
-    col_labels
+    col_labels : list or numpy array
         A list or array of length N with the labels for the columns.
-    ax
+    ax : matplotlib.axes.Axes
         A `matplotlib.axes.Axes` instance to which the heatmap is plotted.
-    cbar_kw
+    cbar_kw : dict
         A dictionary with arguments to `matplotlib.Figure.colorbar`.  Optional.
-    cbarlabel
+    cbarlabel : str
         The label for the colorbar.  Optional.
     **kwargs
         All other arguments are forwarded to `imshow`.
+
+    Returns
+    -------
+    im : matplotlib.image.AxesImage
+        Image for map.
+    cbar : matplotlib.Figure.colorbar
+        Colour bar for map
     """
     if cbar_kw is None:
         cbar_kw = {}
@@ -1390,24 +1393,30 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 
     Parameters
     ----------
-    im
+    im : matplotlib.image.AxesImage
         The AxesImage to be labelled.
-    data
+    data : list or numpy array
         Data used to annotate.  If None, the image's data is used.  Optional.
-    valfmt
+    valfmt : format string
         The format of the annotations inside the heatmap.  This should either
         use the string format method, e.g. "$ {x:.2f}", or be a
         `matplotlib.ticker.Formatter`.  Optional.
-    textcolors
+    textcolors : list
         A pair of colours.  The first is used for values below a threshold,
         the second for those above.  Optional.
-    threshold
+    threshold : float
         Value in data units according to which the colours from textcolors are
         applied.  If None (the default) uses the middle of the colormap as
         separation.  Optional.
-    **kwargs
+    **textkw
         All other arguments are forwarded to each call to `text` used to create
         the text labels.
+
+    Returns
+    -------
+    im : matplotlib.image.AxesImage
+        Image for map.
+
     """
     if not isinstance(data, (list, np.ndarray)):
         data = im.get_array()

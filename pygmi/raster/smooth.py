@@ -365,7 +365,7 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
     showlog : function, optional
         Routine to show text messages. The default is print.
     piter : function, optional
-        progress bar iterable, default is None.
+        progress bar iterable, default is iter.
 
     Returns
     -------

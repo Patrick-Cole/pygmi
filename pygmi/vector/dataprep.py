@@ -1137,7 +1137,7 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
         Can be 'bytes', 'files' or 'lines'. The default is 'bytes'.
     showlog : function, optional
         Display information. The default is print.
-    piter : iter, optional
+    piter : function, optional
         Progress iterator. The default is None.
 
     Returns
@@ -1278,7 +1278,6 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
         Grid cell size, in distance units.
     dat : pygmi.raster.datatypes.Data
         DEM data used to constrain surface. The default is None.
-
     showlog : function, optional
         Display information. The default is print.
 

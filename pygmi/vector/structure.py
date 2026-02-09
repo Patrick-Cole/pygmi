@@ -261,10 +261,11 @@ def extendlines(gdf, length=500, piter=iter):
     ----------
     gdf : GeoDataFrame
         A dataframe containing LINESTRINGs.
-    length : float
-        distance in metres to extend the line on either side.
-    piter : iter
-        Progressbar iterable.
+    length : float, optional
+        distance in metres to extend the line on either side. The default is
+        500.
+    piter : function, optional
+        Progressbar iterable. The default is iter.
 
     Returns
     -------
@@ -306,10 +307,10 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
         Raster cell size
     var : float
         Variance.
-    extend : float
-        Distance to extend linear features.
-    piter : iter
-        Progressbar iterable.
+    extend : float, optional
+        Distance to extend linear features. The default is 500.
+    piter : function, optional
+        Progressbar iterable. The default is iter.
 
     Returns
     -------
@@ -380,10 +381,10 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
         GeoDataframe of linear features.
     dxy : float
         Raster cell size
-    wsize : int
-        Window size (must be odd)
-    piter : iter
-        Progressbar iterable.
+    wsize : int, optional
+        Window size (must be odd). The default is 3.
+    piter : function, optional
+        Progressbar iterable. The default is iter.
 
     Returns
     -------
@@ -439,10 +440,10 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
         GeoDataframe of linear features.
     dxy : float
         Raster cell size
-    wsize : int
-        Window size (must be odd)
-    piter : iter
-        Progressbar iterable.
+    wsize : int, optional
+        Window size (must be odd). The default is 3.
+    piter : function, optional
+        Progressbar iterable. The default is iter.
 
     Returns
     -------
@@ -524,10 +525,10 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
         GeoDataframe of linear features.
     dxy : float
         Raster cell size
-    wsize : int
-        Window size (must be odd)
-    piter : iter
-        Progressbar iterable.
+    wsize : int, optional
+        Window size (must be odd). The default is 21.
+    piter : function, optional
+        Progressbar iterable. The default is iter.
 
     Returns
     -------
@@ -652,7 +653,19 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
 
 
 def linesplit(curve):
-    """Split LineString into segments."""
+    """
+    Split LineString into segments.
+
+    Parameters
+    ----------
+    curve : LineString
+        LineString to be split.
+
+    Returns
+    -------
+    list
+        Output segments.
+    """
     return list(map(LineString, zip(curve.coords[:-1], curve.coords[1:])))
 
 

@@ -219,17 +219,19 @@ def eqedit(data, equation, colname, showlog=print):
 
     Parameters
     ----------
-    data : list
-        List of PyGMI raster data.
+    data : GeoDataFrame
+        A GeoDataFrame containing columns of data
     equation : str
         Equation to compute.
+    colname : str
+        New column name.
     showlog : function, optional
         Show information using a function. The default is print.
 
     Returns
     -------
-    list
-        List of PyGMI raster data.
+    outdata : GeoDataFrame
+        Output GeoDataFrame containing columns of data
 
     """
     outdata = data.copy()
@@ -248,8 +250,6 @@ def eqedit(data, equation, colname, showlog=print):
     if equation == '':
         return None
 
-    # neweq = eq_fix(indata, equation, showlog)
-
     try:
         findat = indata.eval(equation)
     except Exception:
@@ -263,43 +263,6 @@ def eqedit(data, equation, colname, showlog=print):
     outdata[colname] = findat
 
     return outdata
-
-
-def eq_fix(indata, equation, showlog=print):
-    """
-    Corrects names in equation to variable names.
-
-    Parameters
-    ----------
-    indata : list of pygmi.raster.datatypes.Data.
-        PyGMI raster dataset.
-    equation : str
-        Equation to fix.
-    showlog : function, optional
-        Show information using a function. The default is print.
-
-    Returns
-    -------
-    neweq : str
-        Corrected equation.
-
-    """
-    neweq = str(equation)
-    neweq = neweq.replace('ln', 'log')
-    neweq = neweq.replace('^', '**')
-    neweq = neweq.replace('nodata', str(indata[0].nodata))
-
-    if 'log' in neweq:
-        showlog('Warning, if you have invalid log values, they will '
-                'be masked out.')
-
-    if 'sqrt' in neweq:
-        showlog('Warning, if you have invalid sqrt values, they will '
-                'be masked out.')
-
-    neweq = neweq.strip()
-
-    return neweq
 
 
 def _test():

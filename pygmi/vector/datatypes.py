@@ -35,6 +35,14 @@ class VoxModel():
 
     This is the main data structure for voxel data
 
+    Attributes
+    ----------
+    data : numpy masked array
+        Voxel data.
+    origin : list
+        Origin coordinates as x, y, z
+    spacing : list
+        Spacing in x, y and z directions.
     """
 
     def __init__(self):
