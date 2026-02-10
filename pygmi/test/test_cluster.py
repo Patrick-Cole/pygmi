@@ -32,7 +32,7 @@ import psutil
 import numpy as np
 
 from pygmi.raster.datatypes import Data
-from pygmi.clust import cluster, crisp_clust, fuzzy_clust
+from pygmi.clust import cluster, crisp_clust, fuzzy_clust, segmentation
 
 os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
 
@@ -112,3 +112,38 @@ def test_fuzzy():
         datout = np.abs(datout - 3)
 
     np.testing.assert_array_equal(datout2, datout)
+
+
+def test_segment():
+    """Test image segmentation."""
+    dat1 = Data()
+    dat1.data = np.ma.zeros([3, 3])
+    dat1.data.mask = np.zeros([3, 3])
+    dat1.data.data[:2, 0] = 1.1
+
+    dat2 = Data()
+    dat2.data = np.ma.zeros([3, 3])
+    dat2.data.mask = np.zeros([3, 3])
+    dat2.data.data[:2, 0] = 1.1
+
+    data = [dat1, dat2]
+
+    data1 = []
+    for i in data:
+        data1.append(None)
+        data1[-1] = 255 * (i.data - i.data.min()) / np.ma.ptp(i.data)
+
+    data1 = np.array(data1)
+    data1 = np.moveaxis(data1, 0, -1)
+
+    datout2 = segmentation.segment1(data1, scale=10)
+
+    datout = np.array([[0, 1, 1],
+                       [0, 1, 1],
+                       [1, 1, 1]])
+
+    np.testing.assert_array_equal(datout2, datout)
+
+
+if __name__ == "__main__":
+    test_segment()

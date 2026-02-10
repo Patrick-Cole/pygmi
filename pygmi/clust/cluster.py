@@ -82,7 +82,6 @@ class Cluster(BasicModule):
         self.max_iter = 300
         self.tol = 0.0001
         self.runs = 1
-        # self.log = ''
         self.eps = 0.5
         self.min_samples = 5
         self.bthres = 0.5
@@ -315,7 +314,6 @@ class Cluster(BasicModule):
         self.saveobj(self.rb_noscale)
 
         self.saveobj(self.runs)
-        # self.saveobj(self.log)
 
     def update_vars(self):
         """
@@ -498,8 +496,6 @@ def cluster(data, cltype='K-Means', sscale=True, rscale=False,
         dat_out[-1].metadata['Cluster']['center'] = np.array(m)
         dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
         dat_out[-1].metadata['Cluster']['labels'] = lbls
-
-        # self.log = f'Cluster complete ({cltype})'
 
     for i in dat_out:
         i.dataid = 'Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
