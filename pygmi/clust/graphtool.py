@@ -56,7 +56,7 @@ class GraphHist(FigureCanvasQTAgg):
         self.xcoord = None
         self.ycoord = None
         self.data = []
-        self.cindx = [0, 1, 0]
+        self.cindx = [0, 0, 0]
         self.cdata = []
         self.csp = None
         self.nbins = 100
@@ -612,7 +612,7 @@ class ScatterPlot(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.m1 = 0
-        self.c = [0, 1, 0]
+        self.c = [0, 0, 0]
         self.m = [0, 0]
         self.dat_tmp = None
 
@@ -628,9 +628,6 @@ class ScatterPlot(BasicModule):
         self.map_combo2 = QtWidgets.QComboBox()
 
         self.setupui()
-
-        self.hist.cindx = self.c
-        self.map.mindx = self.m
 
     def setupui(self):
         """
@@ -678,6 +675,11 @@ class ScatterPlot(BasicModule):
 
         self.cp_dpoly.clicked.connect(self.on_cp_dpoly)
         self.map_dpoly.clicked.connect(self.on_map_dpoly)
+        self.cp_combo.currentIndexChanged.connect(self.on_cp_combo)
+        self.cp_combo2.currentIndexChanged.connect(self.on_cp_combo2)
+        self.map_combo.currentIndexChanged.connect(self.on_map_combo)
+        self.cp_combo3.currentIndexChanged.connect(self.on_cp_combo3)
+        self.map_combo2.currentIndexChanged.connect(self.on_map_combo2)
 
     def on_cp_dpoly(self):
         """
@@ -806,20 +808,26 @@ class ScatterPlot(BasicModule):
         self.dat_tmp = self.indata['Raster']
         self.map.data = self.indata['Raster']
         self.hist.data = self.indata['Raster']
+        self.hist.cindx = self.c
+        self.map.mindx = self.m
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        self.cp_combo.clear()
-        self.cp_combo2.clear()
-        self.map_combo.clear()
+        self.cmb_update(self.cp_combo, bands)
+        self.cmb_update(self.cp_combo2, bands)
+        self.cmb_update(self.map_combo, bands)
 
-        self.cp_combo.addItems(bands)
-        self.cp_combo2.addItems(bands)
-        self.map_combo.addItems(bands)
-        self.cp_combo2.setCurrentIndex(1)
-        self.cp_combo.currentIndexChanged.connect(self.on_cp_combo)
-        self.cp_combo2.currentIndexChanged.connect(self.on_cp_combo2)
-        self.map_combo.currentIndexChanged.connect(self.on_map_combo)
+        # self.cp_combo.clear()
+        # self.cp_combo2.clear()
+        # self.map_combo.clear()
+
+        # self.cp_combo.addItems(bands)
+        # self.cp_combo2.addItems(bands)
+        # self.map_combo.addItems(bands)
+        # self.cp_combo2.setCurrentIndex(1)
+        # self.cp_combo.currentIndexChanged.connect(self.on_cp_combo)
+        # self.cp_combo2.currentIndexChanged.connect(self.on_cp_combo2)
+        # self.map_combo.currentIndexChanged.connect(self.on_map_combo)
 
         cbands = ['Scatter Amplitudes']
         mbands = ['None']
@@ -827,21 +835,24 @@ class ScatterPlot(BasicModule):
         if 'Cluster' in self.indata:
             self.hist.cdata = self.indata['Cluster']
             self.map.cdata = self.indata['Cluster']
-            cbands += [i.dataid for i in self.indata['Cluster']]
-            mbands += [i.dataid for i in self.indata['Cluster']]
+            cbands += [i.dataid for i in self.indata['Cluster']
+                       if 'Membership' not in i.dataid]
+            mbands += [i.dataid for i in self.indata['Cluster']
+                       if 'Membership' not in i.dataid]
 
-        self.cp_combo3.clear()
-        self.map_combo2.clear()
+        self.cmb_update(self.cp_combo3, cbands)
+        self.cmb_update(self.map_combo2, mbands)
 
-        self.cp_combo3.addItems(cbands)
-        self.map_combo2.addItems(mbands)
-        self.cp_combo3.currentIndexChanged.connect(self.on_cp_combo3)
-        self.map_combo2.currentIndexChanged.connect(self.on_map_combo2)
+        # self.cp_combo3.clear()
+        # self.map_combo2.clear()
+
+        # self.cp_combo3.addItems(cbands)
+        # self.map_combo2.addItems(mbands)
+        # self.cp_combo3.currentIndexChanged.connect(self.on_cp_combo3)
+        # self.map_combo2.currentIndexChanged.connect(self.on_map_combo2)
 
         self.hist.init_graph()
         self.map.init_graph()
-
-        self.show()
 
         self.hist.polyint()
         self.map.polyint()
@@ -886,7 +897,7 @@ class ScatterPlot(BasicModule):
         polymask = self.hist.polyi.polymask
         if polymask is None:
             return
-        if polymask.max() is False:
+        if polymask.max() is np.False_:
             return
 
         mtmp = self.map_combo.currentIndex()
@@ -912,7 +923,7 @@ class ScatterPlot(BasicModule):
         polymask = self.map.polyi.polymask
         if polymask is None:
             return
-        if polymask.max() is False:
+        if polymask.max() is np.False_:
             return
 
         dattmp = self.hist.csp.get_array()
@@ -972,7 +983,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile1 = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile1 = r"D:\Workdata\PyGMI Test Data\Classification\clipsmall.tif"
     ifile2 = r"D:\Workdata\PyGMI Test Data\Classification\export_classes.tif"
 
     dat1 = get_raster(ifile1)
