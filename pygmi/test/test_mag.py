@@ -132,5 +132,18 @@ def test_tilt():
     np.testing.assert_array_almost_equal(datout2, datout)
 
 
+def test_asig():
+    """Test analytic signal."""
+    datin = Data()
+    datin.data = np.ma.array([[1, 2], [1, 2]])
+    datin.set_transform(1, 1000, 1, 1000)
+    dat2 = np.array([[1.86209589, 1.86209589],
+                     [1.86209589, 1.86209589]])
+
+    dat = dataprep.asig(datin)
+
+    np.testing.assert_array_almost_equal(dat.data, dat2)
+
+
 if __name__ == "__main__":
-    test_tilt()
+    test_asig()

@@ -67,7 +67,6 @@ class MatchedFilt(BasicModule):
         self.mmc = FigureCanvasQTAgg(self.figure)
 
         self.cmb_band1 = QtWidgets.QComboBox()
-        self.cmb_dtype = QtWidgets.QComboBox()
         self.sb_nsegs = QtWidgets.QSpinBox()
 
         self.setupui()
@@ -84,12 +83,10 @@ class MatchedFilt(BasicModule):
         self.buttonbox.htmlfile = 'mag.dm.match'
 
         lbl_1 = QtWidgets.QLabel('Band to perform Filtering:')
-        # lbl_2 = QtWidgets.QLabel('Data Type:')
         lbl_3 = QtWidgets.QLabel('Number of depth slices:')
 
         pb_calculate = QtWidgets.QPushButton('Recalculate')
 
-        self.cmb_dtype.addItems(['Magnetic', 'Gravity'])
         self.sb_nsegs.setMinimum(2)
         self.sb_nsegs.setProperty('value', 2)
 
@@ -106,8 +103,6 @@ class MatchedFilt(BasicModule):
 
         vbl_raster.addWidget(lbl_1)
         vbl_raster.addWidget(self.cmb_band1)
-        # vbl_raster.addWidget(lbl_2)
-        # vbl_raster.addWidget(self.cmb_dtype)
         vbl_raster.addWidget(lbl_3)
         vbl_raster.addWidget(self.sb_nsegs)
         vbl_raster.addItem(spacer)
@@ -122,7 +117,6 @@ class MatchedFilt(BasicModule):
 
         self.sb_nsegs.valueChanged.connect(self.calculate)
         self.cmb_band1.currentIndexChanged.connect(self.fftprep)
-        self.cmb_dtype.currentIndexChanged.connect(self.calculate)
         pb_calculate.pressed.connect(self.calculate)
 
     def settings(self, nodialog=False):
@@ -151,10 +145,7 @@ class MatchedFilt(BasicModule):
         for i in data:
             blist.append(i.dataid)
 
-        self.cmb_band1.currentIndexChanged.disconnect()
-        self.cmb_band1.clear()
-        self.cmb_band1.addItems(blist)
-        self.cmb_band1.currentIndexChanged.connect(self.fftprep)
+        self.cmb_update(self.cmb_band1, blist)
 
         self.fftprep()
 
@@ -288,6 +279,7 @@ class MatchedFilt(BasicModule):
 
         """
         self.saveobj(self.cmb_band1)
+        self.saveobj(self.sb_nsegs)
 
 
 def getbutter(lowcut, highcut, f, order=5):

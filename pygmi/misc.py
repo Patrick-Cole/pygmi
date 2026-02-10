@@ -190,6 +190,27 @@ class BasicModule(QtWidgets.QDialog):
         """
         return True
 
+    def cmb_update(self, obj, txtlist):
+        """
+        Update combo box.
+
+        Parameters
+        ----------
+        obj : QtWidgets.QComboBox
+            Combo box to add data to.
+        txtlist : list
+            List of strings to add to combo box.
+        """
+        obj.blockSignals(True)
+        txt = str(obj.currentText())
+
+        obj.clear()
+        obj.addItems(txtlist)
+        if txt != '':
+            obj.setCurrentText(txt)
+
+        obj.blockSignals(False)
+
     def data_init(self):
         """
         Initialise Data.
@@ -243,6 +264,8 @@ class BasicModule(QtWidgets.QDialog):
 
             if isinstance(obj, QtWidgets.QComboBox):
                 obj.blockSignals(True)
+                if obj.count() == 0:
+                    obj.addItem(projdata[otxt])
                 obj.setCurrentText(projdata[otxt])
                 obj.blockSignals(False)
 
