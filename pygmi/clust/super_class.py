@@ -667,6 +667,9 @@ class SuperClass(BasicModule):
         self.cmb_manip.currentIndexChanged.connect(self.on_combo)
         self.rb_data.clicked.connect(self.on_radio)
         self.rb_results.clicked.connect(self.on_radio)
+        self.cmb_band1.currentIndexChanged.connect(self.on_combo)
+        self.cmb_band2.currentIndexChanged.connect(self.on_combo)
+        self.cmb_band3.currentIndexChanged.connect(self.on_combo)
 
     def calculate(self):
         """
@@ -1043,33 +1046,9 @@ class SuperClass(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        if self.cmb_band1.receivers('currentIndexChanged') > 0:
-            self.cmb_band1.currentIndexChanged.disconnect()
-        if self.cmb_band2.receivers('currentIndexChanged') > 0:
-            self.cmb_band2.currentIndexChanged.disconnect()
-        if self.cmb_band3.receivers('currentIndexChanged') > 0:
-            self.cmb_band3.currentIndexChanged.disconnect()
-
-        self.cmb_band1.clear()
-        self.cmb_band2.clear()
-        self.cmb_band3.clear()
-
-        self.cmb_band1.addItems(bands)
-        self.cmb_band2.addItems(bands)
-        self.cmb_band3.addItems(bands)
-
-        if len(bands) > 3:
-            self.cmb_band1.setCurrentIndex(3)
-            self.cmb_band2.setCurrentIndex(2)
-            self.cmb_band3.setCurrentIndex(1)
-        elif len(bands) == 3:
-            self.cmb_band1.setCurrentIndex(2)
-            self.cmb_band2.setCurrentIndex(1)
-            self.cmb_band3.setCurrentIndex(0)
-
-        self.cmb_band1.currentIndexChanged.connect(self.on_combo)
-        self.cmb_band2.currentIndexChanged.connect(self.on_combo)
-        self.cmb_band3.currentIndexChanged.connect(self.on_combo)
+        self.cmb_update(self.cmb_band1, bands)
+        self.cmb_update(self.cmb_band2, bands)
+        self.cmb_update(self.cmb_band3, bands)
 
         self.map.bands = [self.cmb_band1.currentText(),
                           self.cmb_band2.currentText(),
@@ -1173,6 +1152,9 @@ class SuperClass(BasicModule):
         self.saveobj(self.cmb_RFcriterion)
         self.saveobj(self.cmb_SVCkernel)
         self.saveobj(self.cmb_manip)
+        self.saveobj(self.cmb_band1)
+        self.saveobj(self.cmb_band2)
+        self.saveobj(self.cmb_band3)
         self.saveobj(self.df)
 
     def init_classifier(self):
