@@ -1156,6 +1156,9 @@ class SuperClass(BasicModule):
         self.saveobj(self.cmb_DTcriterion)
         self.saveobj(self.cmb_RFcriterion)
         self.saveobj(self.cmb_SVCkernel)
+        self.saveobj(self.cmb_manip)
+        self.saveobj(self.rb_data)
+        self.saveobj(self.rb_results)
 
     def init_classifier(self):
         """
@@ -1248,9 +1251,12 @@ class SuperClass(BasicModule):
         [p.remove() for p in reversed(axes.patches)]
 
         for _, row in self.df.iterrows():
-            if row['geometry'] is None:
+            if row['geometry'] is None or pd.isna(row.geometry):
                 return
-            crds = np.array(row['geometry'].exterior.coords)
+            try:
+                crds = np.array(row['geometry'].exterior.coords)
+            except:
+                pass
 
             poly = mPolygon(crds, ec='k', fill=False)
             axes.add_patch(poly)

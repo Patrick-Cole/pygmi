@@ -203,8 +203,8 @@ class ImageSeg(BasicModule):
         self.saveobj(self.le_scale)
         self.saveobj(self.le_wcolor)
         self.saveobj(self.le_wcompact)
-        self.saveobj(self.le_eps)
-        self.saveobj(self.cb_dbscan)
+        self.saveobj(self.le_numclust)
+        self.saveobj(self.cb_optics)
 
 
 def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,

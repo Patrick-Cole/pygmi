@@ -865,6 +865,14 @@ class ScatterPlot(BasicModule):
         None.
 
         """
+        self.saveobj(self.m1)
+        self.saveobj(self.c)
+        self.saveobj(self.m)
+        self.saveobj(self.cp_combo)
+        self.saveobj(self.cp_combo2)
+        self.saveobj(self.cp_combo3)
+        self.saveobj(self.map_combo)
+        self.saveobj(self.map_combo2)
 
     def update_map(self):
         """
@@ -876,6 +884,8 @@ class ScatterPlot(BasicModule):
 
         """
         polymask = self.hist.polyi.polymask
+        if polymask is None:
+            return
         if polymask.max() is False:
             return
 
@@ -900,6 +910,8 @@ class ScatterPlot(BasicModule):
 
         """
         polymask = self.map.polyi.polymask
+        if polymask is None:
+            return
         if polymask.max() is False:
             return
 
