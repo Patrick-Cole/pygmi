@@ -729,7 +729,7 @@ class SuperClass(BasicModule):
         self.cmb_RFcriterion.setHidden(True)
         self.cmb_KNalgorithm.setHidden(True)
 
-        if ctext == 'K Neighbors Classifier':
+        if ctext == 'K Neighbours Classifier':
             self.cmb_KNalgorithm.setHidden(False)
             self.lbl_1.setText('Algorithm:')
         elif ctext == 'Decision Tree Classifier':
@@ -1080,6 +1080,8 @@ class SuperClass(BasicModule):
         self.map.polyint(self.data)
         self.map.polyi.polyi_changed.connect(self.updatepoly)
         self.map.update_plot(self.data)
+
+        self.class_change()
 
         tmp = self.exec()
 
