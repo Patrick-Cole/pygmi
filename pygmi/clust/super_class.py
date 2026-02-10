@@ -528,9 +528,10 @@ class SuperClass(BasicModule):
         super().__init__(parent)
         self.m1 = 0
         self.c = [0, 1, 0]
-        self.df = None
         self.data = {}
         self.zonal = None
+        self.df = gpd.GeoDataFrame(columns=['class', 'geometry'])
+        self.df.set_geometry('geometry')
 
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
@@ -1082,6 +1083,19 @@ class SuperClass(BasicModule):
         self.map.update_plot(self.data)
 
         self.class_change()
+        if self.df.size > 0:
+            self.tablewidget.setRowCount(0)
+            for index, _ in self.df.iterrows():
+                self.tablewidget.insertRow(index)
+                item = QtWidgets.QTableWidgetItem(self.df['class'].iloc[index])
+                self.tablewidget.setItem(index, 0, item)
+
+            self.map.polyi.isactive = True
+            self.tablewidget.selectRow(0)
+            coords = list(self.df.loc[0, 'geometry'].exterior.coords)
+            self.map.polyi.new_poly(coords)
+
+            self.update_class_polys()
 
         tmp = self.exec()
 
@@ -1159,8 +1173,7 @@ class SuperClass(BasicModule):
         self.saveobj(self.cmb_RFcriterion)
         self.saveobj(self.cmb_SVCkernel)
         self.saveobj(self.cmb_manip)
-        self.saveobj(self.rb_data)
-        self.saveobj(self.rb_results)
+        self.saveobj(self.df)
 
     def init_classifier(self):
         """
@@ -1255,10 +1268,7 @@ class SuperClass(BasicModule):
         for _, row in self.df.iterrows():
             if row['geometry'] is None or pd.isna(row.geometry):
                 return
-            try:
-                crds = np.array(row['geometry'].exterior.coords)
-            except:
-                pass
+            crds = np.array(row['geometry'].exterior.coords)
 
             poly = mPolygon(crds, ec='k', fill=False)
             axes.add_patch(poly)

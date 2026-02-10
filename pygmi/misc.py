@@ -34,6 +34,7 @@ import webbrowser
 import numpy as np
 from matplotlib import ticker, cm, colors
 from PySide6 import QtWidgets, QtCore, QtGui
+import geopandas as gpd
 
 # if os.name == 'nt':
 #     import win32api
@@ -236,6 +237,10 @@ class BasicModule(QtWidgets.QDialog):
                                 str)):
                 vars(self)[otxt] = projdata[otxt]
 
+            if isinstance(obj, gpd.GeoDataFrame):
+                vars(self)[otxt] = gpd.read_file(
+                    projdata[otxt], driver='GeoJSON')
+
             if isinstance(obj, QtWidgets.QComboBox):
                 obj.blockSignals(True)
                 obj.setCurrentText(projdata[otxt])
@@ -313,6 +318,9 @@ class BasicModule(QtWidgets.QDialog):
 
         if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str)):
             self.projdata[otxt] = obj
+
+        if isinstance(obj, gpd.GeoDataFrame):
+            self.projdata[otxt] = obj.to_json()
 
         if isinstance(obj, QtWidgets.QComboBox):
             self.projdata[otxt] = obj.currentText()
