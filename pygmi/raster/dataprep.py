@@ -115,16 +115,12 @@ class Continuation(BasicModule):
             True if successful, False otherwise.
 
         """
-        tmp = []
         if 'Raster' not in self.indata:
             self.showlog('No Raster Data.')
             return False
 
-        for i in self.indata['Raster']:
-            tmp.append(i.dataid)
-
-        self.cmb_dataid.clear()
-        self.cmb_dataid.addItems(tmp)
+        items = [i.dataid for i in self.indata['Raster']]
+        self.cmb_update(self.cmb_dataid, items)
 
         if not nodialog:
             tmp = self.exec()
@@ -1281,11 +1277,9 @@ class RasterToVector(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = 'raster.dm.rtov'
-        lbl_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.setWindowTitle('Raster to Vector')
 
-        # gl_main.addWidget(lbl_dxy, 0, 0, 1, 1)
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
     def settings(self, nodialog=False):
@@ -1350,7 +1344,6 @@ class RasterToVector(BasicModule):
         None.
 
         """
-        # self.saveobj(self.dxy)
 
 
 def cluster_to_raster(indata):
