@@ -136,8 +136,8 @@ def calculate_raps(dat):
 
     Parameters
     ----------
-    dat : np.ndarray
-        A 2D NumPy array of the geophysical data.
+    dat : pygmi.raster.datatypes.Data
+        Input dataset.
 
     Returns
     -------

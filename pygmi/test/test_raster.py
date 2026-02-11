@@ -33,7 +33,7 @@ import pytest
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
-from pygmi.raster import normalisation, smooth
+from pygmi.raster import normalisation, smooth, fft
 from pygmi.raster.misc import aspect2, check_dataid
 
 
@@ -72,6 +72,17 @@ def test_vertical():
                      [-0.15707963267948966, 0.15707963267948966]])
     dat = dataprep.verticalp(datin)
     np.testing.assert_array_almost_equal(dat, dat2)
+
+
+def test_raps():
+    """test raps."""
+    datin = Data()
+    datin.data = np.ma.array([[1, 2], [1, 2]])
+    datin.set_transform(10, 100, 10, 100)
+
+    dat2 = np.array([36.])
+    k_centers, raps, k_radial, F = fft.calculate_raps(datin)
+    np.testing.assert_array_almost_equal(raps, dat2)
 
 
 def test_viz():
@@ -444,4 +455,4 @@ def test_agc():
 
 
 if __name__ == "__main__":
-    test_vertical()
+    test_raps()
