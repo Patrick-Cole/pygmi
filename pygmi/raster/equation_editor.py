@@ -184,8 +184,8 @@ class EquationEditor(BasicModule):
         self.bands = {}
         self.bands['all data'] = 'iall'
 
-        self.cmb_1.clear()
-        self.cmb_1.addItem('all data')
+        # self.cmb_1.clear()
+        # self.cmb_1.addItem('all data')
 
         if 'Cluster' in self.indata:
             intype = 'Cluster'
@@ -196,10 +196,13 @@ class EquationEditor(BasicModule):
             return False
 
         indata = self.indata[intype]
+        items = ['all data']
 
         for j, i in enumerate(indata):
-            self.cmb_1.addItem(i.dataid)
+            items.append(i.dataid)
             self.bands[i.dataid] = 'i' + str(j)
+
+        self.cmb_update(self.cmb_1, items)
 
         if not nodialog:
             temp = self.exec()
@@ -233,6 +236,8 @@ class EquationEditor(BasicModule):
         """
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
+        self.saveobj(self.cmb_dtype)
+        self.saveobj(self.cmb_1)
 
 
 def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
