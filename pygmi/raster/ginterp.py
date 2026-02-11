@@ -1981,7 +1981,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r'd:\WorkData\testdata.hdr'
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
 
     data = iodefs.get_raster(ifile)

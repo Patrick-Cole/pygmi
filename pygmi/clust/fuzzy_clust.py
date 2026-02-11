@@ -897,7 +897,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dat = get_raster(ifile)
 

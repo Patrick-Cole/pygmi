@@ -599,7 +599,7 @@ def _testfn():
     import matplotlib.pyplot as plt
 
     ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
-    ifile = r'd:\workdata\testdata.hdr'
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     pbar = ProgressBarText()
 

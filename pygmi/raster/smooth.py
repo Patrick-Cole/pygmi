@@ -536,7 +536,7 @@ def _test():
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"C:\Workdata\testdata.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dat = get_raster(ifile)
 

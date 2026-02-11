@@ -331,8 +331,7 @@ class TiltDepth(BasicModule):
         for i in data:
             blist.append(i.dataid)
 
-        self.cmb_band1.clear()
-        self.cmb_band1.addItems(blist)
+        self.cmb_update(self.cmb_band1, blist)
 
         self.change_cbar()
 
@@ -359,6 +358,7 @@ class TiltDepth(BasicModule):
         self.saveobj(self.cmb_cbar)
         self.saveobj(self.dsb_inc)
         self.saveobj(self.dsb_dec)
+        self.saveobj(self.cb_rtp)
 
 
 def tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print):

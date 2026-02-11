@@ -517,14 +517,9 @@ class StaticShiftEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.cmb_1.currentIndexChanged.disconnect()
+        items = [i for i in self.data]
 
-        self.cmb_1.clear()
-        for i in self.data:
-            self.cmb_1.addItem(i)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_update(self.cmb_1, items)
 
         self.change_band()
 
@@ -549,6 +544,8 @@ class StaticShiftEDI(BasicModule):
         self.saveobj(self.dsb_shiftx)
         self.saveobj(self.dsb_shifty)
         self.saveobj(self.cb_applyall)
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.cmb_2)
 
 
 class RotateEDI(BasicModule):
@@ -702,14 +699,9 @@ class RotateEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.cmb_1.clear()
+        items = [i for i in self.data]
 
-        for i in self.data:
-            self.cmb_1.addItem(i)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_update(self.cmb_1, items)
 
         i = self.cmb_1.currentText()
         self.dsb_rotangle.setValue(self.data[i].rotation_angle)
@@ -734,7 +726,9 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        self.saveobj(self.dsb_rotangle)
+        self.saveobj(self.cb_applyall)
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.cmb_2)
         self.saveobj(self.cb_applyall)
 
 
@@ -1158,14 +1152,9 @@ class EditEDI(BasicModule):
             self.showlog('No EDI data')
             return False
 
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.cmb_1.clear()
+        items = [i for i in self.data]
 
-        for i in self.data:
-            self.cmb_1.addItem(i)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_update(self.cmb_1, items)
 
         self.change_band()
 
@@ -1187,6 +1176,8 @@ class EditEDI(BasicModule):
         None.
 
         """
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.cmb_2)
 
 
 class MySlider(QtWidgets.QSlider):
@@ -1700,14 +1691,9 @@ class Occam1D(BasicModule):
         if os.path.exists(occam_path):
             self.le_occfile.setText(occam_path)
 
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.cmb_1.clear()
+        items = [i for i in self.data]
 
-        for i in self.data:
-            self.cmb_1.addItem(i)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_update(self.cmb_1, items)
 
         i = self.cmb_1.currentText()
         mode = self.cmb_mode.currentText()
@@ -1753,6 +1739,8 @@ class Occam1D(BasicModule):
         self.saveobj(self.le_errfloorres)
         self.saveobj(self.cmb_mode)
         self.saveobj(self.cb_remove_out_quad)
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.cmb_2)
 
 
 def tonumber(test, alttext=None):
@@ -1815,7 +1803,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    test = RotateEDI(None)
+    test = StaticShiftEDI(None)
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
     # test.run()

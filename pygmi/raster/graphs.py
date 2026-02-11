@@ -941,7 +941,7 @@ def _testfn():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r'd:\WorkData\testdata.hdr'
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
