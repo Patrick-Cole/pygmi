@@ -33,6 +33,7 @@ import numpy as np
 from scipy.interpolate import griddata
 from scipy.interpolate import RBFInterpolator
 from scipy.ndimage import distance_transform_edt
+from scipy.spatial import KDTree
 import geopandas as gpd
 from pyproj import CRS, Transformer
 from shapely import Polygon
@@ -1679,6 +1680,18 @@ def xy_to_r(x, y):
     return r
 
 
+# This is much faster for large lists but requires scipy
+def fast_sort(points):
+    points = list(points)
+    sorted_pts = [points.pop(0)]
+
+    while points:
+        tree = KDTree(points)
+        dist, index = tree.query(sorted_pts[-1])
+        sorted_pts.append(points.pop(index))
+    return sorted_pts
+
+
 def _testfn():
     """Test routine."""
     import sys
@@ -1737,6 +1750,7 @@ def _testfn_grid():
     ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
     ifile = r"D:\UBC_Files\new_PyGMI_test_xyz_data.csv"
+    ifile = r"D:\UBC_Files\line1_segment1_rho_model.csv"
 
     IO = ImportXYZ()
     IO.ifile = ifile
