@@ -168,8 +168,7 @@ class CalculateChange(BasicModule):
 
         """
         ilist = ['Difference', 'Mean', 'Standard Deviation',
-                 'Coefficient of Variation',
-                 'Spectral Angle Mapper']
+                 'Coefficient of Variation', 'Spectral Angle Mapper']
 
         self.lw_indices.clear()
         self.lw_indices.addItems(ilist)

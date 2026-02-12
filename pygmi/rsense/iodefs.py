@@ -342,10 +342,14 @@ class ImportBatch(BasicModule):
                 QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
-        self.setsensor()
+        sensor = self.cmb_sensor.currentText()
+        self.tnames[sensor] = [i.text() for i in
+                               self.lw_tnames.selectedItems()]
 
         for i in self.filelist:
             i.to_sutm = self.cb_ensuresutm.isChecked()
+            if i.sensor == sensor:
+                i.tnames = self.tnames[sensor]
 
         self.outdata['RasterFileList'] = self.filelist
 
@@ -371,22 +375,22 @@ class ImportBatch(BasicModule):
 
         allfiles = consolidate_aster_list(allfiles)
 
-        self.bands, self.tnames, self.filelist = files_to_rastermeta(
+        self.bands, tnames, self.filelist = files_to_rastermeta(
             allfiles, self.piter, self.showlog)
 
-        for sensor in self.tnames:
-            tmp = []
-            for i in self.tnames[sensor]:
-                if i[0] == 'B' or i == 'LST':
-                    tmp.append(i)
+        if not self.tnames:
+            self.tnames = tnames
+        else:
+            for sensor in self.tnames:
+                tmp = []
+                for i in self.tnames[sensor]:
+                    if i[0] == 'B' or i == 'LST':
+                        tmp.append(i)
 
-            if tmp:
-                self.tnames[sensor] = tmp
+                if tmp:
+                    self.tnames[sensor] = tmp
 
-        self.cmb_sensor.currentIndexChanged.disconnect()
-        self.cmb_sensor.clear()
-        self.cmb_sensor.addItems(self.bands.keys())
-        self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
+        self.cmb_update(self.cmb_sensor, self.bands.keys())
 
         if not self.filelist:
             self.showlog('No valid files in the directory.')
@@ -404,6 +408,10 @@ class ImportBatch(BasicModule):
         None.
 
         """
+        sensor = self.cmb_sensor.currentText()
+        if self.oldsensor == sensor:
+            return
+
         if self.lw_tnames.count() > 0:
             self.tnames[self.oldsensor] = []
             for i in range(self.lw_tnames.count()):
@@ -439,9 +447,10 @@ class ImportBatch(BasicModule):
         None.
 
         """
+        self.oldsensor = self.cmb_sensor.currentText()
+
         self.saveobj(self.idir)
         self.saveobj(self.tnames)
-        self.saveobj(self.filelist)
         self.saveobj(self.bands)
         self.saveobj(self.tnames)
         self.saveobj(self.oldsensor)
@@ -3897,18 +3906,20 @@ def _testfn2():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\Onshore\AST_08312003_081238_georef\Original_data"
-    # tmp1.idir = r'D:/Workdata/PyGMI Test Data/Remote Sensing/ConditionIndex'
+    tmp1.idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic"
     # tmp1.get_sfile(True)
     tmp1.settings()
+    tmp1.saveproj()
 
     dat = tmp1.outdata
 
-    tmp2 = ExportBatch()
-    tmp2.indata = dat
-    tmp2.run()
+    pass
 
-    tmp2.exec()
+    # tmp2 = ExportBatch()
+    # tmp2.indata = dat
+    # tmp2.run()
+
+    # tmp2.exec()
 
 
 def _testfn3():
@@ -3971,4 +3982,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()

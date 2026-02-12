@@ -294,10 +294,14 @@ class BasicModule(QtWidgets.QDialog):
 
             if isinstance(obj, QtWidgets.QListWidget):
                 obj.blockSignals(True)
+
+                obj.addItems(self.projdata[otxt]['all'])
                 obj.selectAll()
+
                 for i in obj.selectedItems():
-                    if i.text()[2:] not in self.projdata[otxt]:
+                    if i.text() not in self.projdata[otxt]['selected']:
                         i.setSelected(False)
+
                 obj.blockSignals(False)
 
         if self.is_import is True:
@@ -368,10 +372,12 @@ class BasicModule(QtWidgets.QDialog):
             self.projdata[otxt] = obj.date().toString()
 
         if isinstance(obj, QtWidgets.QListWidget):
-            tmp = []
-            for i in obj.selectedItems():
-                tmp.append(i.text()[2:])
-            self.projdata[otxt] = tmp
+            self.projdata[otxt] = {'all': [], 'selected': []}
+
+            tmp = [i.text() for i in obj.selectedItems()]
+            self.projdata[otxt]['selected'] = tmp
+            tmp = [obj.item(i).text() for i in range(obj.count())]
+            self.projdata[otxt]['all'] = tmp
 
         return
 

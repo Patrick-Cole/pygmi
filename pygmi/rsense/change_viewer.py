@@ -310,37 +310,14 @@ class SceneViewer(BasicModule):
         dat = self.df.Filename[self.curimage]
         dat.banddict = {}
         for i in dat.banddata:
-            dat.banddict[i.dataid] = i
+            if i.dataid in dat.tnames:
+                dat.banddict[i.dataid] = i
 
-        bands = dat.bands
+        bands = dat.tnames
 
-        if self.cmb_band1.receivers('currentIndexChanged') > 0:
-            self.cmb_band1.currentIndexChanged.disconnect()
-        if self.cmb_band2.receivers('currentIndexChanged') > 0:
-            self.cmb_band2.currentIndexChanged.disconnect()
-        if self.cmb_band3.receivers('currentIndexChanged') > 0:
-            self.cmb_band3.currentIndexChanged.disconnect()
-
-        self.cmb_band1.clear()
-        self.cmb_band2.clear()
-        self.cmb_band3.clear()
-
-        self.cmb_band1.addItems(bands)
-        self.cmb_band2.addItems(bands)
-        self.cmb_band3.addItems(bands)
-
-        if len(bands) > 3:
-            self.cmb_band1.setCurrentIndex(3)
-            self.cmb_band2.setCurrentIndex(2)
-            self.cmb_band3.setCurrentIndex(1)
-        elif len(bands) == 3:
-            self.cmb_band1.setCurrentIndex(2)
-            self.cmb_band2.setCurrentIndex(1)
-            self.cmb_band3.setCurrentIndex(0)
-
-        self.cmb_band1.currentIndexChanged.connect(self.manip_change)
-        self.cmb_band2.currentIndexChanged.connect(self.manip_change)
-        self.cmb_band3.currentIndexChanged.connect(self.manip_change)
+        self.cmb_update(self.cmb_band1, bands)
+        self.cmb_update(self.cmb_band2, bands)
+        self.cmb_update(self.cmb_band3, bands)
 
         self.canvas.bands = [self.cmb_band1.currentText(),
                              self.cmb_band2.currentText(),
@@ -411,6 +388,10 @@ class SceneViewer(BasicModule):
         None.
 
         """
+        self.saveobj(self.cmb_band1)
+        self.saveobj(self.cmb_band2)
+        self.saveobj(self.cmb_band3)
+        self.saveobj(self.cmb_manip)
 
     def manip_change(self):
         """
@@ -521,7 +502,7 @@ def _testfn():
     import sys
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r"D:\workdata\PyGMI Test Data\change\mosaic"
+    idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
