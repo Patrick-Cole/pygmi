@@ -255,7 +255,7 @@ class BasicModule(QtWidgets.QDialog):
                 vars(self)[otxt] = projdata[otxt]
 
             if isinstance(obj, (float, int, bool, list, np.ndarray, tuple,
-                                str)):
+                                str, dict)):
                 vars(self)[otxt] = projdata[otxt]
 
             if isinstance(obj, gpd.GeoDataFrame):
@@ -280,7 +280,8 @@ class BasicModule(QtWidgets.QDialog):
                 obj.setValue(projdata[otxt])
                 obj.blockSignals(False)
 
-            if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+            if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox,
+                                QtWidgets.QGroupBox)):
                 obj.blockSignals(True)
                 obj.setChecked(projdata[otxt])
                 obj.blockSignals(False)
@@ -339,7 +340,8 @@ class BasicModule(QtWidgets.QDialog):
         if otxt is None:
             return
 
-        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str)):
+        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str,
+                            dict)):
             self.projdata[otxt] = obj
 
         if isinstance(obj, gpd.GeoDataFrame):
@@ -358,7 +360,8 @@ class BasicModule(QtWidgets.QDialog):
                             QtWidgets.QSlider)):
             self.projdata[otxt] = obj.value()
 
-        if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox)):
+        if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox,
+                            QtWidgets.QGroupBox)):
             self.projdata[otxt] = obj.isChecked()
 
         if isinstance(obj, QtWidgets.QDateEdit):

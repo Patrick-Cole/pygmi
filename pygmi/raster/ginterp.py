@@ -1061,6 +1061,11 @@ class PlotInterp(BasicModule):
         self.cb_histtype.clicked.connect(self.change_dtype)
         self.btn_allclipperc.clicked.connect(self.change_allclip)
         self.le_contours.textChanged.connect(self.change_dtype)
+        self.cmb_band1.currentIndexChanged.connect(self.change_red)
+        self.cmb_band2.currentIndexChanged.connect(self.change_green)
+        self.cmb_band3.currentIndexChanged.connect(self.change_blue)
+        self.cmb_bands.currentIndexChanged.connect(self.change_sun)
+        self.cmb_bandh.currentIndexChanged.connect(self.change_clipband)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -1471,44 +1476,23 @@ class PlotInterp(BasicModule):
         self.mmc.hband[3] = data[0].dataid
 
         blist = []
-        self.clippercu = {}
-        self.clippercl = {}
+        # self.clippercu = {}
+        # self.clippercl = {}
 
         for i in data:
             blist.append(i.dataid)
-            self.clippercu[i.dataid] = 0.0
-            self.clippercl[i.dataid] = 0.0
+            if i.dataid not in self.clippercl:
+                self.clippercu[i.dataid] = 0.0
+                self.clippercl[i.dataid] = 0.0
 
         self.mmc.clippercu = self.clippercu
         self.mmc.clippercl = self.clippercl
 
-        if self.cmb_band1.receivers('currentIndexChanged') > 0:
-            self.cmb_band1.currentIndexChanged.disconnect()
-        if self.cmb_band2.receivers('currentIndexChanged') > 0:
-            self.cmb_band2.currentIndexChanged.disconnect()
-        if self.cmb_band3.receivers('currentIndexChanged') > 0:
-            self.cmb_band3.currentIndexChanged.disconnect()
-        if self.cmb_bands.receivers('currentIndexChanged') > 0:
-            self.cmb_bands.currentIndexChanged.disconnect()
-        if self.cmb_bandh.receivers('currentIndexChanged') > 0:
-            self.cmb_bandh.currentIndexChanged.disconnect()
-
-        self.cmb_band1.clear()
-        self.cmb_band2.clear()
-        self.cmb_band3.clear()
-        self.cmb_bands.clear()
-        self.cmb_bandh.clear()
-        self.cmb_band1.addItems(blist)
-        self.cmb_band2.addItems(blist)
-        self.cmb_band3.addItems(blist)
-        self.cmb_bands.addItems(blist)
-        self.cmb_bandh.addItems(blist)
-
-        self.cmb_band1.currentIndexChanged.connect(self.change_red)
-        self.cmb_band2.currentIndexChanged.connect(self.change_green)
-        self.cmb_band3.currentIndexChanged.connect(self.change_blue)
-        self.cmb_bands.currentIndexChanged.connect(self.change_sun)
-        self.cmb_bandh.currentIndexChanged.connect(self.change_clipband)
+        self.cmb_update(self.cmb_band1, blist)
+        self.cmb_update(self.cmb_band2, blist)
+        self.cmb_update(self.cmb_band3, blist)
+        self.cmb_update(self.cmb_bands, blist)
+        self.cmb_update(self.cmb_bandh, blist)
 
     def move(self, event):
         """
@@ -1939,7 +1923,12 @@ class PlotInterp(BasicModule):
             self.showlog('RGB images cannot be used in this module.')
             return False
 
-        self.show()
+        self.mmc.hband[0] = str(self.cmb_band1.currentText())
+        self.mmc.hband[1] = str(self.cmb_band2.currentText())
+        self.mmc.hband[2] = str(self.cmb_band3.currentText())
+
+        self.change_dtype()
+
         self.mmc.init_graph()
         self.msc.init_graph()
 
@@ -1964,6 +1953,7 @@ class PlotInterp(BasicModule):
         self.saveobj(self.cmb_band2)
         self.saveobj(self.cmb_band3)
         self.saveobj(self.cmb_bands)
+        self.saveobj(self.cmb_bandh)
         self.saveobj(self.cmb_htype)
         self.saveobj(self.le_lineclipu)
         self.saveobj(self.le_lineclipl)
@@ -1971,6 +1961,10 @@ class PlotInterp(BasicModule):
         self.saveobj(self.kslider)
         self.saveobj(self.sslider)
         self.saveobj(self.aslider)
+        self.saveobj(self.cb_histtype)
+        self.saveobj(self.gbox_sun)
+        self.saveobj(self.clippercl)
+        self.saveobj(self.clippercu)
 
 
 def _testfn():
@@ -1982,7 +1976,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
+    # ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
 
     data = iodefs.get_raster(ifile)
 
