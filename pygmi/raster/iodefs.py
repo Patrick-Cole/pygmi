@@ -73,17 +73,7 @@ class BandSelect(ContextModule):
         self.vbl.addWidget(self.lw_1)
         self.buttonbox.htmlfile = 'raster.cm.selectbands'
 
-        # self.buttonbox = QtWidgets.QDialogButtonBox()
-        # self.buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        # self.buttonbox.setCenterButtons(True)
-        # self.buttonbox.setStandardButtons(
-        #     self.buttonbox.StandardButton.Cancel |
-        #     self.buttonbox.StandardButton.Ok)
-
         self.vbl.addWidget(self.buttonbox)
-
-        # self.buttonbox.accepted.connect(self.accept)
-        # self.buttonbox.rejected.connect(self.reject)
 
     def run(self):
         """

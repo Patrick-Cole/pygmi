@@ -1696,6 +1696,8 @@ def fast_sort(points, piter=iter):
     ----------
     points : numpy array
         Coordinates.
+    piter : function, optional
+        progress bar iterable, default is iter.
 
     Returns
     -------
@@ -1707,7 +1709,6 @@ def fast_sort(points, piter=iter):
 
     num = len(points)
 
-    # while points:
     for _ in piter(range(num)):
         tree = KDTree(points)
         _, index = tree.query(sorted_pts[-1])

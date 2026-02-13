@@ -71,6 +71,11 @@ class CalculateChange(BasicModule):
         self.lw_indices.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
 
+        ilist = ['Difference', 'Mean', 'Standard Deviation',
+                 'Coefficient of Variation', 'Spectral Angle Mapper']
+
+        self.lw_indices.addItems(ilist)
+
         self.setWindowTitle('Calculate Change Indices')
 
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
@@ -79,7 +84,7 @@ class CalculateChange(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        self.lw_indices.clicked.connect(self.set_selected_indices)
+        # self.lw_indices.clicked.connect(self.set_selected_indices)
         btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
@@ -101,8 +106,6 @@ class CalculateChange(BasicModule):
         if 'RasterFileList' not in self.indata:
             self.showlog('No batch file list detected.')
             return False
-
-        self.setindices()
 
         if not nodialog:
             tmp = self.exec()
@@ -142,7 +145,7 @@ class CalculateChange(BasicModule):
 
         ilist = []
         for i in self.lw_indices.selectedItems():
-            ilist.append(i.text()[2:])
+            ilist.append(i.text())
 
         if not ilist:
             self.showlog('You need to select an index to calculate.')
@@ -158,26 +161,6 @@ class CalculateChange(BasicModule):
 
         return True
 
-    def setindices(self):
-        """
-        Set the available indices.
-
-        Returns
-        -------
-        None.
-
-        """
-        ilist = ['Difference', 'Mean', 'Standard Deviation',
-                 'Coefficient of Variation', 'Spectral Angle Mapper']
-
-        self.lw_indices.clear()
-        self.lw_indices.addItems(ilist)
-
-        for i in range(self.lw_indices.count()):
-            item = self.lw_indices.item(i)
-            item.setSelected(True)
-            item.setText('\u2713 ' + item.text())
-
     def invert_selection(self):
         """
         Invert the selected indices.
@@ -190,24 +173,6 @@ class CalculateChange(BasicModule):
         for i in range(self.lw_indices.count()):
             item = self.lw_indices.item(i)
             item.setSelected(not item.isSelected())
-
-        self.set_selected_indices()
-
-    def set_selected_indices(self):
-        """
-        Set the selected indices.
-
-        Returns
-        -------
-        None.
-
-        """
-        for i in range(self.lw_indices.count()):
-            item = self.lw_indices.item(i)
-            if item.isSelected():
-                item.setText('\u2713' + item.text()[1:])
-            else:
-                item.setText(' ' + item.text()[1:])
 
 
 def calc_change(flist, ilist=None, showlog=print, piter=iter):
@@ -648,8 +613,8 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r'E:\WorkProjects\ST-2020-1339 Landslides\change\ratios'
-    os.chdir(r'E:\\')
+    idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\ratios"
+    os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))

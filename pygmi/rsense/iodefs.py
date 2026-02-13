@@ -380,7 +380,7 @@ class ImportBatch(BasicModule):
 
         if not self.tnames:
             self.tnames = tnames
-        else:
+        # else:
             for sensor in self.tnames:
                 tmp = []
                 for i in self.tnames[sensor]:

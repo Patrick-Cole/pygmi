@@ -506,7 +506,7 @@ class ConditionIndices(BasicModule):
 
         rlist1 = []
         for i in self.lw_ratios.selectedItems():
-            rlist1.append(i.text()[2:])
+            rlist1.append(i.text())
 
         if not rlist1:
             self.showlog('You need to select a condition index to '
@@ -702,6 +702,8 @@ class ConditionIndices(BasicModule):
         None.
 
         """
+        if self.lw_ratios.count() > 0:
+            return
         sensor = self.cmb_sensor.currentText()
         rlist = []
 
@@ -717,7 +719,6 @@ class ConditionIndices(BasicModule):
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
             item.setSelected(True)
-            item.setText('\u2713 ' + item.text())
 
     def invert_selection(self):
         """
@@ -748,20 +749,20 @@ class ConditionIndices(BasicModule):
         idict = {}
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
-            idict[item.text()[2:]] = i
+            idict[item.text()] = i
 
-        if currentitem.text()[2:] == 'VHI' and currentitem.isSelected():
+        if currentitem.text() == 'VHI' and currentitem.isSelected():
             for i in range(self.lw_ratios.count()):
                 self.lw_ratios.item(i).setSelected(currentitem.isSelected())
         elif not currentitem.isSelected() and 'VHI' in idict:
             self.lw_ratios.item(idict['VHI']).setSelected(False)
 
-        for i in range(self.lw_ratios.count()):
-            item = self.lw_ratios.item(i)
-            if item.isSelected():
-                item.setText('\u2713' + item.text()[1:])
-            else:
-                item.setText(' ' + item.text()[1:])
+        # for i in range(self.lw_ratios.count()):
+        #     item = self.lw_ratios.item(i)
+        #     if item.isSelected():
+        #         item.setText('\u2713' + item.text()[1:])
+        #     else:
+        #         item.setText(' ' + item.text()[1:])
 
 
 def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):

@@ -294,8 +294,8 @@ class BasicModule(QtWidgets.QDialog):
 
             if isinstance(obj, QtWidgets.QListWidget):
                 obj.blockSignals(True)
-
-                obj.addItems(self.projdata[otxt]['all'])
+                if obj.count() == 0:
+                    obj.addItems(self.projdata[otxt]['all'])
                 obj.selectAll()
 
                 for i in obj.selectedItems():
