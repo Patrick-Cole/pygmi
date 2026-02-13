@@ -133,10 +133,10 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.lw_tnames.clear()
+        # self.lw_tnames.clear()
         self.indata['Raster'] = []
-        self.le_sfile.setText('')
-        self.lbl_ftype.setText('File Type:')
+        # self.le_sfile.setText('')
+        # self.lbl_ftype.setText('File Type:')
 
         if not nodialog:
             tmp = self.exec()
@@ -3913,13 +3913,11 @@ def _testfn2():
 
     dat = tmp1.outdata
 
-    pass
+    tmp2 = ExportBatch()
+    tmp2.indata = dat
+    tmp2.run()
 
-    # tmp2 = ExportBatch()
-    # tmp2.indata = dat
-    # tmp2.run()
-
-    # tmp2.exec()
+    tmp2.exec()
 
 
 def _testfn3():

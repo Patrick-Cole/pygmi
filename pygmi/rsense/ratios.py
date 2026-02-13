@@ -90,7 +90,7 @@ class SatRatios(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-        self.lw_ratios.clicked.connect(self.set_selected_ratios)
+        # self.lw_ratios.clicked.connect(self.set_selected_ratios)
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
@@ -136,7 +136,8 @@ class SatRatios(BasicModule):
         else:
             self.cmb_sensor.setCurrentText('Unknown')
 
-        self.setratios()
+        if self.lw_ratios.count() == 0:
+            self.setratios()
 
         if not nodialog:
             tmp = self.exec()
@@ -193,7 +194,7 @@ class SatRatios(BasicModule):
 
         rlist = []
         for i in self.lw_ratios.selectedItems():
-            rlist.append(i.text()[2:])
+            rlist.append(i.text())
 
         if not rlist:
             self.showlog('You need to select a ratio to calculate.')
@@ -310,11 +311,12 @@ class SatRatios(BasicModule):
 
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist2)
+        self.lw_ratios.selectAll()
 
-        for i in range(self.lw_ratios.count()):
-            item = self.lw_ratios.item(i)
-            item.setSelected(True)
-            item.setText('\u2713 ' + item.text())
+        # for i in range(self.lw_ratios.count()):
+        #     item = self.lw_ratios.item(i)
+        #     item.setSelected(True)
+        #     item.setText('\u2713 ' + item.text())
 
     def invert_selection(self):
         """
@@ -329,23 +331,23 @@ class SatRatios(BasicModule):
             item = self.lw_ratios.item(i)
             item.setSelected(not item.isSelected())
 
-        self.set_selected_ratios()
+        # self.set_selected_ratios()
 
-    def set_selected_ratios(self):
-        """
-        Set the selected ratios.
+    # def set_selected_ratios(self):
+    #     """
+    #     Set the selected ratios.
 
-        Returns
-        -------
-        None.
+    #     Returns
+    #     -------
+    #     None.
 
-        """
-        for i in range(self.lw_ratios.count()):
-            item = self.lw_ratios.item(i)
-            if item.isSelected():
-                item.setText('\u2713' + item.text()[1:])
-            else:
-                item.setText(' ' + item.text()[1:])
+    #     """
+    #     for i in range(self.lw_ratios.count()):
+    #         item = self.lw_ratios.item(i)
+    #         if item.isSelected():
+    #             item.setText('\u2713' + item.text()[1:])
+    #         else:
+    #             item.setText(' ' + item.text()[1:])
 
 
 class ConditionIndices(BasicModule):
