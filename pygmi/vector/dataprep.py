@@ -258,11 +258,13 @@ class DataGrid(BasicModule):
             else:
                 data1 = data
 
-            x = xy_to_r(x, y)
-            if x is None:
-                self.showlog('Problem with coordinates, '
-                             'might not be a section')
-                x = [0, 0]
+            x = data1.geometry.x.values
+            y = data1.geometry.y.values
+            x = xy_to_r(x, y, self.piter)
+            # if x is None:
+            #     self.showlog('Problem with coordinates, '
+            #                  'might not be a section')
+            #     x = [0, 0]
             y = data1[zcol].values
 
         cols = round(np.ptp(x) / self.dxy)
@@ -456,7 +458,11 @@ class DataGrid(BasicModule):
             data1 = data[data.line == line]
         else:
             data1 = data
-        data2 = data1[['geometry', dataid, zcol]]
+
+        if dataid == zcol:
+            data2 = data1[['geometry', dataid]]
+        else:
+            data2 = data1[['geometry', dataid, zcol]]
         data2 = data2.dropna()
 
         filt = (data2[dataid] != nullvalue)
@@ -473,11 +479,11 @@ class DataGrid(BasicModule):
         if self.cmb_grid_type.currentText() == 'Section':
             x1 = x
             y1 = y
-            x = xy_to_r(x, y)
-            if x is None:
-                self.showlog('Problem with coordinates, '
-                             'might not be a section')
-                return False
+            x = xy_to_r(x, y, self.piter)
+            # if x is None:
+            #     self.showlog('Problem with coordinates, '
+            #                  'might not be a section')
+            #     return False
             y = data2[zcol].values
             scoords = np.transpose([x1, y1, x])
             scoords = np.unique(scoords, axis=0)
@@ -1622,7 +1628,7 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
     return xout, yout
 
 
-def xy_to_r(x, y):
+def xy_to_r(x, y, piter=iter):
     """
     Convert x an y values on a section to r.
 
@@ -1646,48 +1652,65 @@ def xy_to_r(x, y):
     rind = np.where(r2 < 0)[0] + 1
     rind = np.append(rind, r2.size + 1)
 
-    x1a = x[:rind[0]]
-    y1a = y[:rind[0]]
+    points = np.transpose([x, y])
+    points = np.transpose(fast_sort(points, piter))
+
+    x1a = points[0]
+    y1a = points[1]
+
+    r = np.sqrt((x1a[1:] - x1a[:-1])**2 + (y1a[1:] - y1a[:-1])**2)
+    r = np.concatenate(([np.nan], r))
+
+    x1a = x1a[r != 0]
+    y1a = y1a[r != 0]
+    r = r[r != 0]
+    r[0] = 0
+
+    r0 = np.cumsum(r)
 
     i0 = 0
     r1 = []
-    r0 = None
     for i1 in rind:
         x1 = x[i0:i1]
         y1 = y[i0:i1]
+
+        r = []
+        for i in range(i1 - i0):
+            filt = np.logical_and(x1a == x1[i], y1a == y1[i])
+            r.append(r0[filt])
         i0 = i1
-        r = np.sqrt((x1[1:] - x1[:-1])**2 + (y1[1:] - y1[:-1])**2)
 
-        r = np.cumsum(r)
-        r = np.concatenate(([0.], r))
+        r1 += r
 
-        if r0 is None:
-            r0 = r.copy()
-
-        filt = np.logical_and(x1a == x1[0], y1a == y1[0])
-
-        if True not in filt:
-            return None
-
-        if r0[filt].size != 1:
-            return None
-
-        r = r + r0[filt]
-
-        r1 += r.tolist()
     r = np.array(r1)
+    r = r.flatten()
 
     return r
 
 
-# This is much faster for large lists but requires scipy
-def fast_sort(points):
+def fast_sort(points, piter=iter):
+    """
+    Fast sort of coordinate pairs.
+
+    Parameters
+    ----------
+    points : numpy array
+        Coordinates.
+
+    Returns
+    -------
+    sorted_pts : list
+        Sorted coordinates.
+    """
     points = list(points)
     sorted_pts = [points.pop(0)]
 
-    while points:
+    num = len(points)
+
+    # while points:
+    for _ in piter(range(num)):
         tree = KDTree(points)
-        dist, index = tree.query(sorted_pts[-1])
+        _, index = tree.query(sorted_pts[-1])
         sorted_pts.append(points.pop(index))
     return sorted_pts
 
@@ -1749,13 +1772,14 @@ def _testfn_grid():
 
     ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
-    ifile = r"D:\UBC_Files\new_PyGMI_test_xyz_data.csv"
-    ifile = r"D:\UBC_Files\line1_segment1_rho_model.csv"
+    # ifile = r"D:\UBC_Files\new_PyGMI_test_xyz_data.csv"
+    # ifile = r"D:\UBC_Files\line1_segment1_rho_model.csv"
+    # ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
 
     IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
-    # IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
     DR = DataGrid()
