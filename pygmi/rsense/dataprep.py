@@ -58,8 +58,6 @@ class TopoCorrect(BasicModule):
         super().__init__(parent)
 
         self.cmb_dem = QtWidgets.QComboBox()
-        self.dsb_azi = QtWidgets.QDoubleSpinBox()
-        self.dsb_zen = QtWidgets.QDoubleSpinBox()
         self.le_azi = QtWidgets.QLineEdit('0.0')
         self.le_zen = QtWidgets.QLineEdit('0.0')
 
@@ -114,19 +112,20 @@ class TopoCorrect(BasicModule):
 
         data = self.indata['Raster']
 
-        self.cmb_dem.clear()
-
         demused = 'None'
         azimuth = None
         zenith = None
 
+        tmp = []
         for i in data:
-            self.cmb_dem.addItem(i.dataid)
+            tmp.append(i.dataid)
             rmeta = i.metadata['Raster']
             if 'DEM' in rmeta:
                 demused = rmeta['DEM']
                 azimuth = rmeta['Solar Azimuth']
                 zenith = rmeta['Solar Zenith']
+
+        self.cmb_update(self.cmb_dem, tmp)
 
         if demused != 'None':
             self.showlog('This dataset already has a topographic correction '
@@ -155,7 +154,9 @@ class TopoCorrect(BasicModule):
         None.
 
         """
-        self.saveobj(self.lw_indices)
+        self.saveobj(self.cmb_dem)
+        self.saveobj(self.le_azi)
+        self.saveobj(self.le_zen)
 
     def acceptall(self):
         """
@@ -330,7 +331,8 @@ class Sen2Cor(BasicModule):
         None.
 
         """
-        self.saveobj(self.lw_indices)
+        self.saveobj(self.le_sdir)
+        self.saveobj(self.le_sen2cor)
 
     def acceptall(self):
         """

@@ -584,9 +584,11 @@ class ImportSentinel5P(BasicModule):
                 continue
             tmp.append(i)
 
-        self.cmb_subdata.clear()
-        self.cmb_subdata.addItems(tmp)
-        self.cmb_subdata.setCurrentIndex(self.indx)
+        self.cmb_update(self.cmb_subdata, tmp)
+
+        # self.cmb_subdata.clear()
+        # self.cmb_subdata.addItems(tmp)
+        # self.cmb_subdata.setCurrentIndex(self.indx)
 
         if not nodialog:
             tmp = self.exec()

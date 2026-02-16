@@ -160,14 +160,10 @@ class IGRF(BasicModule):
 
         data = self.indata['Raster']
 
-        self.cmb_dtm.clear()
-        self.cmb_mag.clear()
-        for i in data:
-            self.cmb_dtm.addItem(i.dataid)
-            self.cmb_mag.addItem(i.dataid)
+        tmp = [i.dataid for i in data]
 
-        if len(data) > 1:
-            self.cmb_dtm.setCurrentIndex(1)
+        self.cmb_update(self.cmb_dtm, tmp)
+        self.cmb_update(self.cmb_mag, tmp)
 
         if not nodialog:
             tmp = self.exec()

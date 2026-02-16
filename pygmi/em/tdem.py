@@ -34,7 +34,7 @@ import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-import discretize
+from discretize import CylindricalMesh, TensorMesh
 from simpeg import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
 from simpeg.electromagnetics import time_domain
@@ -349,7 +349,7 @@ class TDEM1D(BasicModule):
         # cs, ncx, ncz, npad = 1., 10., 10., 20
         hx = [(cs, ncx), (cs, npad, padrate)]
         hz = [(cs, npad, -padrate), (cs, ncz * 2), (cs, npad, padrate)]
-        mesh = discretize.CylindricalMesh([hx, 1, hz], '00C')
+        mesh = CylindricalMesh([hx, 1, hz], '00C')
 
         # Step2: Set a SurjectVertical1D mapping
         # Note: this sets our inversion model as 1D log conductivity
@@ -435,8 +435,7 @@ class TDEM1D(BasicModule):
         dmisfit = data_misfit.L2DataMisfit(data=data, simulation=sim)
 
         # Regularization
-        regmesh = discretize.TensorMesh(
-            [mesh.h[2][mapping.maps[-1].active_cells]])
+        regmesh = TensorMesh([mesh.h[2][mapping.maps[-1].active_cells]])
         # reg = regularization.Simple(regmesh, mapping=maps.IdentityMap(regmesh))
         # reg.alpha_s = 1e-2
         # reg.alpha_x = 1.

@@ -516,8 +516,7 @@ class RTP(BasicModule):
         for i in self.indata['Raster']:
             tmp.append(i.dataid)
 
-        self.cmb_dataid.clear()
-        self.cmb_dataid.addItems(tmp)
+        self.cmb_update(self.cmb_dataid, tmp)
 
         if not nodialog:
             tmp = self.exec()

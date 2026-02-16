@@ -47,17 +47,11 @@ import webbrowser
 from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 import psutil
-# from matplotlib import rcParams
-# from matplotlib import interactive
 
 import pygmi
 from pygmi import menu_default
 from pygmi.misc import ProgressBar, textwrap2
 
-# rcParams['axes.formatter.limits'] = [-12, 12]
-# rcParams['axes.formatter.useoffset'] = False
-# rcParams['font.size'] = 8
-# interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
@@ -724,6 +718,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 continue
             start.update()
             menuimports.append(importlib.import_module(i))
+
             # try:
             #     menuimports.append(importlib.import_module(i))
             # except ModuleNotFoundError as err:

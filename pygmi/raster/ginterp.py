@@ -1476,8 +1476,6 @@ class PlotInterp(BasicModule):
         self.mmc.hband[3] = data[0].dataid
 
         blist = []
-        # self.clippercu = {}
-        # self.clippercl = {}
 
         for i in data:
             blist.append(i.dataid)
