@@ -296,11 +296,10 @@ class BasicModule(QtWidgets.QDialog):
                 obj.blockSignals(True)
                 if obj.count() == 0:
                     obj.addItems(self.projdata[otxt]['all'])
-                obj.selectAll()
 
-                for i in obj.selectedItems():
-                    if i.text() not in self.projdata[otxt]['selected']:
-                        i.setSelected(False)
+                for i in range(obj.count()):
+                    if obj.item(i).text() in self.projdata[otxt]['selected']:
+                        obj.item(i).setSelected(True)
 
                 obj.blockSignals(False)
 

@@ -465,7 +465,8 @@ class ConditionIndices(BasicModule):
         else:
             self.cmb_sensor.setCurrentText('Unknown')
 
-        self.setratios()
+        if self.lw_ratios.count() == 0:
+            self.setratios()
 
         if not nodialog:
             tmp = self.exec()
@@ -704,8 +705,6 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        if self.lw_ratios.count() > 0:
-            return
         sensor = self.cmb_sensor.currentText()
         rlist = []
 

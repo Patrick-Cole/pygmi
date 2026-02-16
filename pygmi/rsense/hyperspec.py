@@ -209,6 +209,9 @@ class AnalSpec(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.filename = ''
+        self.filt = ''
+
         self.spectra = None
         self.feature = {}
         self.feature[900] = [776, 1050, 850, 910]
@@ -257,7 +260,7 @@ class AnalSpec(BasicModule):
         self.cb_rgb.setChecked(True)
 
         # self.lbl_info.setWordWrap(True)
-        self.lw_speclib.addItem('None')
+
         self.setWindowTitle('Analyse Features')
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_feature = QtWidgets.QLabel('Feature:')
@@ -286,6 +289,7 @@ class AnalSpec(BasicModule):
         pb_speclib.clicked.connect(self.load_splib)
         pb_specd.clicked.connect(self.showtext)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
+        self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
     def button_press_callback(self, event):
         """
@@ -329,7 +333,7 @@ class AnalSpec(BasicModule):
 
         self.map.init_graph()
 
-    def disp_splib(self, row):
+    def disp_splib(self):
         """
         Change library spectra for display.
 
@@ -374,34 +378,43 @@ class AnalSpec(BasicModule):
         self.map.remhull = self.cb_hull.isChecked()
         self.map.init_graph()
 
-    def load_splib(self):
+    def load_splib(self, checked=False, nofile=True):
         """
         Load ENVI spectral library data.
+
+        Parameters
+        ----------
+        checked : bool, optional
+            Set check state of button. Default is False.
+        nofile : bool, optional
+            No input filename. The default is True.
 
         Returns
         -------
         None.
 
         """
-        ext = 'USGS SPECPR (*);; ENVI Spectral Library (*.sli)'
+        if nofile is True:
+            ext = 'USGS SPECPR (*);; ENVI Spectral Library (*.sli)'
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return
+            self.filename, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.filename == '':
+                return
 
-        if filt == 'ENVI Spectral Library (*.sli)':
-            self.spectra = readsli(filename)
-        elif filt == 'USGS SPECPR (*)':
-            self.spectra = SPECPR(filename)
+        if self.filt == 'ENVI Spectral Library (*.sli)':
+            self.spectra = readsli(self.filename)
+        elif self.filt == 'USGS SPECPR (*)':
+            self.spectra = SPECPR(self.filename)
         else:
             return
 
-        self.lw_speclib.currentRowChanged.disconnect()
-        self.lw_speclib.clear()
-        tmp = ['None'] + list(self.spectra.keys())
-        self.lw_speclib.addItems(tmp)
-        self.lw_speclib.currentRowChanged.connect(self.disp_splib)
+        if nofile is True:
+            self.lw_speclib.currentRowChanged.disconnect()
+            self.lw_speclib.clear()
+            tmp = ['None'] + list(self.spectra.keys())
+            self.lw_speclib.addItems(tmp)
+            self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
         self.map.spectra = self.spectra
 
@@ -502,16 +515,27 @@ class AnalSpec(BasicModule):
 
         bands = [i.dataid for i in self.indata['Raster']]
 
-        self.cmb_1.clear()
-        self.cmb_1.addItems(bands)
-        self.cmb_1.currentIndexChanged.connect(self.on_combo)
+        self.cmb_update(self.cmb_1, bands)
+        # self.cmb_1.clear()
+        # self.cmb_1.addItems(bands)
+        # self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
         ftxt = [str(i) for i in self.feature]
-        self.cmb_feature.currentIndexChanged.disconnect()
-        self.cmb_feature.clear()
-        self.cmb_feature.addItems(ftxt)
+
+        self.cmb_update(self.cmb_feature, ftxt)
+
+        # self.cmb_feature.currentIndexChanged.disconnect()
+        # self.cmb_feature.clear()
+        # self.cmb_feature.addItems(ftxt)
         self.feature_change()
-        self.cmb_feature.currentIndexChanged.connect(self.feature_change)
+        # self.cmb_feature.currentIndexChanged.connect(self.feature_change)
+
+        if self.filename != '':
+            self.load_splib(nofile=False)
+            self.map.currentspectra = self.lw_speclib.selectedItems()[0].text()
+            self.map.init_graph()
+        else:
+            self.lw_speclib.addItem('None')
 
         tmp = self.exec()
 
@@ -531,6 +555,13 @@ class AnalSpec(BasicModule):
         None.
 
         """
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.cmb_feature)
+        self.saveobj(self.cb_hull)
+        self.saveobj(self.cb_rgb)
+        self.saveobj(self.lw_speclib)
+        self.saveobj(self.filename)
+        self.saveobj(self.filt)
 
     def showtext(self):
         """
@@ -723,7 +754,7 @@ class ProcFeatures(BasicModule):
         self.feature = features.feature
         self.ratio = features.ratio
 
-        self.cmb_ratios.currentIndexChanged.disconnect()
+        # self.cmb_ratios.currentIndexChanged.disconnect()
         self.product = features.product.copy()
 
         self.product = {key: value for (key, value) in self.product.items()
@@ -734,13 +765,14 @@ class ProcFeatures(BasicModule):
         self.product = dict(sorted(self.product.items()))
 
         del self.product['filter']
-        self.cmb_ratios.clear()
-        self.cmb_ratios.addItems(self.product)
+        # self.cmb_ratios.clear()
+        # self.cmb_ratios.addItems(self.product)
+        self.cmb_update(self.cmb_ratios, self.product)
 
         # The filter line is added after the other products so that it does
         # not make it into the list widget
         self.product['filter'] = features.product['filter']
-        self.cmb_ratios.currentIndexChanged.connect(self.product_change)
+        # self.cmb_ratios.currentIndexChanged.connect(self.product_change)
         self.product_change()
 
         if not nodialog:
@@ -1408,39 +1440,18 @@ def readsli(ifile):
 
 def _testfn():
     """Test routine."""
-    from pygmi.rsense.iodefs import get_data, files_to_rastermeta
-    from pygmi.misc import getinfo
+    from pygmi.rsense.iodefs import get_data
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
-    ifile = r"D:\VMS\EnMAP\ENMAP01-____L2A-DT0000002353_20220808T091834Z_003_V010502_20251104T115035Z.tif"
 
-    getinfo()
-    bands, tnames, data = files_to_rastermeta([ifile])
-
-    # data = get_data(ifile)
-
-    # y = np.array([i.data[200,300] for i in data])
-    # y1 = phull(y)
-    # y2 = phulljit(y)
+    data = get_data(ifile)
 
     tmp = ProcFeatures(None)
-    # tmp.indata['Raster'] = data
-    tmp.indata['RasterFileList'] = data
+    tmp.indata['Raster'] = data
     tmp.settings()
-
-    # datall = tmp.outdata['Raster']
-    getinfo()
-
-    # for dat in datall:
-    #     plt.figure(dpi=150)
-    #     plt.title(dat.dataid)
-    #     plt.imshow(dat.data, extent=dat.extent, interpolation='none')
-    #     plt.colorbar()
-    #     plt.tight_layout()
-    #     plt.show()
 
 
 def _testfn2():
@@ -1460,4 +1471,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
