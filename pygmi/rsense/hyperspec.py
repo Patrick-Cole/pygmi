@@ -229,8 +229,6 @@ class AnalSpec(BasicModule):
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
-        # self.lbl_info = QtWidgets.QLabel('')
-        # self.gbox_info = QtWidgets.QGroupBox('Information:')
         self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
         self.cb_rgb = QtWidgets.QCheckBox('True Colour Ternary')
         self.lw_speclib = QtWidgets.QListWidget()
@@ -254,18 +252,13 @@ class AnalSpec(BasicModule):
         self.buttonbox.htmlfile = r'rsense.dm.hyper.html#analyse-spectra'
         gl_main = QtWidgets.QGridLayout(self)
 
-        # vbl_info = QtWidgets.QVBoxLayout(self.gbox_info)
         pb_speclib = QtWidgets.QPushButton('Load Spectral Library')
         pb_specd = QtWidgets.QPushButton('Current Spectrum Description')
         self.cb_rgb.setChecked(True)
 
-        # self.lbl_info.setWordWrap(True)
-
         self.setWindowTitle('Analyse Features')
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_feature = QtWidgets.QLabel('Feature:')
-
-        # vbl_info.addWidget(self.lbl_info)
 
         gl_main.addWidget(lbl_combo, 0, 1)
         gl_main.addWidget(self.cmb_1, 0, 2)
@@ -276,7 +269,6 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
         gl_main.addWidget(pb_specd, 5, 1, 1, 2)
-        # gl_main.addWidget(self.gbox_info, 5, 1, 8, 2)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
@@ -327,9 +319,6 @@ class AnalSpec(BasicModule):
 
         self.map.row = int((dat.extent[-1] - self.map.row) // dat.ydim)
         self.map.col = int((self.map.col - dat.extent[0]) // dat.xdim)
-
-        # if self.cb_rgb.isChecked():
-        #     self.map.row, self.map.col = self.map.col, self.map.row
 
         self.map.init_graph()
 
@@ -496,15 +485,12 @@ class AnalSpec(BasicModule):
             self.map.refl = float(
                 dat[0].metadata['Raster']['reflectance_scale_factor'])
 
-        # dat2 = []
         wvl = []
         for j in dat:
-            # dat2.append(j.data)
             wvl.append(float(j.metadata['Raster']['wavelength']))
 
         dat2 = np.ma.array(dat2)
 
-        # self.map.datarr = dat2
         self.map.datarr = dat
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
@@ -516,19 +502,12 @@ class AnalSpec(BasicModule):
         bands = [i.dataid for i in self.indata['Raster']]
 
         self.cmb_update(self.cmb_1, bands)
-        # self.cmb_1.clear()
-        # self.cmb_1.addItems(bands)
-        # self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
         ftxt = [str(i) for i in self.feature]
 
         self.cmb_update(self.cmb_feature, ftxt)
 
-        # self.cmb_feature.currentIndexChanged.disconnect()
-        # self.cmb_feature.clear()
-        # self.cmb_feature.addItems(ftxt)
         self.feature_change()
-        # self.cmb_feature.currentIndexChanged.connect(self.feature_change)
 
         if self.filename != '':
             self.load_splib(nofile=False)
@@ -765,14 +744,12 @@ class ProcFeatures(BasicModule):
         self.product = dict(sorted(self.product.items()))
 
         del self.product['filter']
-        # self.cmb_ratios.clear()
-        # self.cmb_ratios.addItems(self.product)
+
         self.cmb_update(self.cmb_ratios, self.product)
 
         # The filter line is added after the other products so that it does
         # not make it into the list widget
         self.product['filter'] = features.product['filter']
-        # self.cmb_ratios.currentIndexChanged.connect(self.product_change)
         self.product_change()
 
         if not nodialog:
@@ -815,10 +792,6 @@ class ProcFeatures(BasicModule):
 
         mineral = self.cmb_ratios.currentText()
         rfilt = self.cb_rfiltcheck.isChecked()
-
-        # product = self.product
-        # cryst = {key: val for (key, val) in self.cryst.items()
-        #          if key.split()[0] in mineral}
 
         cryst = []
         for i in self.cryst:

@@ -192,14 +192,9 @@ class BeachBall(BasicModule):
             return False
         self.nofps = False
 
-        if self.cmb_alg.receivers('currentIndexChanged') > 0:
-            self.cmb_alg.currentIndexChanged.disconnect()
+        self.cmb_update(self.cmb_alg, alist)
 
-        self.cmb_alg.clear()
-        self.cmb_alg.addItems(alist)
         self.algorithm = alist[0]
-
-        self.cmb_alg.currentIndexChanged.connect(self.change_alg)
 
         pwidth = 1.
 
@@ -218,7 +213,8 @@ class BeachBall(BasicModule):
                 pwidth = min(np.median(sdist.pdist(tmpxy)) / (2 * max(tmpmag)),
                              pwidth)
 
-        self.dsb_dist.setValue(pwidth)
+        if self.dsb_dist.value() == 0.0001:
+            self.dsb_dist.setValue(pwidth)
 
         self.change_alg()
 
@@ -245,7 +241,7 @@ class BeachBall(BasicModule):
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
-        self.dsb_dist.setProperty('value', 0.001)
+        self.dsb_dist.setProperty('value', 0.0001)
 
         self.rb_geog.setChecked(True)
 
@@ -273,6 +269,7 @@ class BeachBall(BasicModule):
         self.btn_saveshp.clicked.connect(self.save_shp)
         self.dsb_dist.valueChanged.connect(self.change_alg)
         self.rb_geog.toggled.connect(self.change_alg)
+        self.cmb_alg.currentIndexChanged.connect(self.change_alg)
 
     def save_shp(self):
         """
