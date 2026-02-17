@@ -28,7 +28,7 @@ import tempfile
 import math
 import os
 import glob
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 import pandas as pd
 import rasterio
@@ -479,6 +479,9 @@ class DataMerge(BasicModule):
         self.le_nodata = QtWidgets.QLineEdit('')
         self.le_res = QtWidgets.QLineEdit('')
 
+        self.le_nodata.setValidator(QtGui.QDoubleValidator(self))
+        self.le_res.setValidator(QtGui.QDoubleValidator(self))
+
         self.cb_shift_to_median = QtWidgets.QCheckBox(
             'Shift bands to median value before mosaic. May '
             'allow for cleaner mosaic if datasets are offset.')
@@ -643,6 +646,8 @@ class DataMerge(BasicModule):
         """
         self.saveobj(self.idir)
         self.saveobj(self.le_idirlist)
+        self.saveobj(self.le_nodata)
+        self.saveobj(self.le_res)
         self.saveobj(self.cb_shift_to_median)
 
         self.saveobj(self.rb_first)
@@ -672,18 +677,14 @@ class DataMerge(BasicModule):
         bandstofiles = self.cb_bands_to_files.isChecked()
         shifttomedian = self.cb_shift_to_median.isChecked()
 
-        try:
-            if self.le_nodata.text().strip() == '':
-                nodata = None
-            else:
-                nodata = float(self.le_nodata.text())
-            if self.le_res.text().strip() == '':
-                res = None
-            else:
-                res = float(self.le_res.text())
-        except ValueError:
-            self.showlog('Value Error in nodata or resolution')
-            return False
+        if self.le_nodata.text().strip() == '':
+            nodata = None
+        else:
+            nodata = float(self.le_nodata.text())
+        if self.le_res.text().strip() == '':
+            res = None
+        else:
+            res = float(self.le_res.text())
 
         outdat = mosaic(self.indata, idir=self.idir, bfile=bfile,
                         bandstofiles=bandstofiles, piter=self.piter,
@@ -1003,6 +1004,12 @@ class Metadata(ContextModule):
         self.lbl_dtype = QtWidgets.QLabel()
         self.date = QtWidgets.QDateEdit()
 
+        self.le_txt_null.setValidator(QtGui.QDoubleValidator(self))
+        self.le_tlx.setValidator(QtGui.QDoubleValidator(self))
+        self.le_tly.setValidator(QtGui.QDoubleValidator(self))
+        self.le_xdim.setValidator(QtGui.QDoubleValidator(self))
+        self.le_ydim.setValidator(QtGui.QDoubleValidator(self))
+
         self.proj = GroupProj('Input Projection')
 
         self.setupui()
@@ -1154,18 +1161,17 @@ class Metadata(ContextModule):
             utxt = ''
         odata.units = utxt
 
-        try:
-            if self.le_txt_null.text().lower() != 'none':
-                odata.nodata = float(self.le_txt_null.text())
-            left = float(self.le_tlx.text())
-            top = float(self.le_tly.text())
-            xdim = float(self.le_xdim.text())
-            ydim = float(self.le_ydim.text())
+        if self.le_txt_null.text() == '':
+            odata.nodata = None
+        elif self.le_txt_null.text().lower() != 'none':
+            odata.nodata = float(self.le_txt_null.text())
+        left = float(self.le_tlx.text())
+        top = float(self.le_tly.text())
+        xdim = float(self.le_xdim.text())
+        ydim = float(self.le_ydim.text())
 
-            odata.set_transform(xdim, left, ydim, top)
-            odata.datetime = self.date.date().toPyDate()
-        except ValueError:
-            self.showlog('Value error - abandoning changes')
+        odata.set_transform(xdim, left, ydim, top)
+        odata.datetime = self.date.date().toPyDate()
 
         indx = self.cmb_bandid.currentIndex()
         txt = self.cmb_bandid.itemText(indx)
