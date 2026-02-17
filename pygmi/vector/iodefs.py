@@ -83,15 +83,20 @@ class ColumnSelect(BasicModule):
             True if successful, False otherwise.
 
         """
-        data = self.indata['Vector'][0]
-        tmp = list(data.columns)
-        tmp = [i for i in tmp if i != 'geometry']
-
-        self.lw_1.clear()
-        self.lw_1.addItems(tmp)
-
-        if not tmp:
+        if 'Vector' not in self.indata:
+            self.showlog('No vector data.')
             return False
+
+        data = self.indata['Vector'][0]
+        if not self.projdata:
+            tmp = list(data.columns)
+            tmp = [i for i in tmp if i != 'geometry']
+
+            self.lw_1.clear()
+            self.lw_1.addItems(tmp)
+
+            if not tmp:
+                return False
 
         if not nodialog:
             tmp = self.exec()
@@ -118,7 +123,7 @@ class ColumnSelect(BasicModule):
         None.
 
         """
-        # self.saveobj(self.ifile)
+        self.saveobj(self.lw_1)
 
 
 class ImportVector(BasicModule):
@@ -375,6 +380,13 @@ class ImportVector(BasicModule):
 
         """
         self.saveobj(self.ifile)
+        self.saveobj(self.cmb_bounds)
+        self.saveobj(self.le_sfile)
+        self.saveobj(self.le_xmin)
+        self.saveobj(self.le_xmax)
+        self.saveobj(self.le_ymin)
+        self.saveobj(self.le_ymax)
+        self.saveobj(self.le_mapsheet)
 
 
 class ImportXYZ(BasicModule):

@@ -167,15 +167,17 @@ class EquationEditor(BasicModule):
             return False
 
         self.bands = {}
-        self.cmb_1.clear()
 
         indata = self.indata['Vector'][0].copy()
-
+        items = []
         for j, i in enumerate(indata.columns):
             if indata[i].dtype == object:
                 continue
-            self.cmb_1.addItem(i)
+            items.append(i)
             self.bands[i] = 'i' + str(j)
+
+        self.cmb_update(self.cmb_1, items)
+        self.combo()
 
         if not nodialog:
             temp = self.exec()
@@ -211,6 +213,8 @@ class EquationEditor(BasicModule):
         """
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
+        self.saveobj(self.cmb_1)
+        self.saveobj(self.le_name)
 
 
 def eqedit(data, equation, colname, showlog=print):

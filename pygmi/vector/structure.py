@@ -201,7 +201,7 @@ class StructComp(BasicModule):
 
         """
         self.saveobj(self.le_dxy)
-        self.saveobj(self.le_var)
+        self.saveobj(self.le_std)
         self.saveobj(self.le_wsize)
         self.saveobj(self.le_extend)
         self.saveobj(self.cmb_method)
