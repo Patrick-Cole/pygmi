@@ -25,7 +25,7 @@
 """Routines to import gravity data and associated GPS data."""
 
 import os
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -60,6 +60,7 @@ class ImportCG5(BasicModule):
         self.le_cg5file = QtWidgets.QLineEdit('')
         self.le_gpsfile = QtWidgets.QLineEdit('')
         self.le_basethres = QtWidgets.QLineEdit('10000')
+        self.le_basethres.setValidator(QtGui.QDoubleValidator(self))
 
         self.setupui()
 

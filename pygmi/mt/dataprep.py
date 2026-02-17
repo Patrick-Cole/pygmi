@@ -30,7 +30,7 @@ import copy
 import glob
 import platform
 from contextlib import redirect_stdout
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -77,6 +77,13 @@ class Metadata(ContextModule):
         self.le_utmy = QtWidgets.QLineEdit()
         self.le_utmzone = QtWidgets.QLineEdit()
         self.le_rot = QtWidgets.QLineEdit()
+
+        self.le_lat.setValidator(QtGui.QDoubleValidator(self))
+        self.le_lon.setValidator(QtGui.QDoubleValidator(self))
+        self.le_elev.setValidator(QtGui.QDoubleValidator(self))
+        self.le_utmx.setValidator(QtGui.QDoubleValidator(self))
+        self.le_utmy.setValidator(QtGui.QDoubleValidator(self))
+        self.le_rot.setValidator(QtGui.QDoubleValidator(self))
 
         self.setupui()
 
@@ -182,17 +189,14 @@ class Metadata(ContextModule):
         """
         odata = self.banddata[self.oldtxt]
 
-        try:
-            odata.lat = float(self.le_lat.text())
-            odata.lon = float(self.le_lon.text())
-            if self.le_utmx.text() != 'None':
-                odata.east = float(self.le_utmx.text())
-            if self.le_utmy.text() != 'None':
-                odata.north = float(self.le_utmy.text())
-            odata.elev = float(self.le_elev.text())
-            odata.rotation_angle = float(self.le_rot.text())
-        except ValueError:
-            self.showlog('Value error - abandoning changes')
+        odata.lat = float(self.le_lat.text())
+        odata.lon = float(self.le_lon.text())
+        if self.le_utmx.text() != '':
+            odata.east = float(self.le_utmx.text())
+        if self.le_utmy.text() != '':
+            odata.north = float(self.le_utmy.text())
+        odata.elev = float(self.le_elev.text())
+        odata.rotation_angle = float(self.le_rot.text())
 
         indx = self.cmb_bandid.currentIndex()
         txt = self.cmb_bandid.itemText(indx)
@@ -203,11 +207,11 @@ class Metadata(ContextModule):
         self.le_lon.setText(str(idata.lon))
         self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.le_utmx.setText('None')
+            self.le_utmx.setText('')
         else:
             self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.le_utmy.setText('None')
+            self.le_utmy.setText('')
         else:
             self.le_utmy.setText(str(idata.north))
         self.le_utmzone.setText(str(idata.utm_zone))
@@ -243,11 +247,11 @@ class Metadata(ContextModule):
         self.le_lon.setText(str(idata.lon))
         self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.le_utmx.setText('None')
+            self.le_utmx.setText('')
         else:
             self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.le_utmy.setText('None')
+            self.le_utmy.setText('')
         else:
             self.le_utmy.setText(str(idata.north))
         self.le_utmzone.setText(str(idata.utm_zone))
@@ -1364,6 +1368,16 @@ class Occam1D(BasicModule):
         self.le_maxiter = QtWidgets.QLineEdit('200')
         self.le_targetrms = QtWidgets.QLineEdit('1.')
         self.cb_remove_out_quad.setChecked(True)
+
+        self.le_errfloorres.setValidator(QtGui.QDoubleValidator(self))
+        self.le_errfloorphase.setValidator(QtGui.QDoubleValidator(self))
+        self.le_targetdepth.setValidator(QtGui.QDoubleValidator(self))
+        self.le_nlayers.setValidator(QtGui.QIntValidator(self))
+        self.le_bottomlayer.setValidator(QtGui.QDoubleValidator(self))
+        self.le_airlayer.setValidator(QtGui.QDoubleValidator(self))
+        self.le_z1layer.setValidator(QtGui.QDoubleValidator(self))
+        self.le_maxiter.setValidator(QtGui.QIntValidator(self))
+        self.le_targetrms.setValidator(QtGui.QDoubleValidator(self))
 
         self.hs_profnum = MySlider()
         self.hs_profnum.setOrientation(QtCore.Qt.Orientation.Horizontal)

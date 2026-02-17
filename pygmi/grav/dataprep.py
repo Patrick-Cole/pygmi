@@ -25,7 +25,7 @@
 """A set of data processing routines for gravity."""
 
 import sys
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -126,10 +126,17 @@ class ProcessData(BasicModule):
         super().__init__(parent)
 
         self.le_density = QtWidgets.QLineEdit('2670')
-        self.le_knownstat = QtWidgets.QLineEdit('None')
+        self.le_knownstat = QtWidgets.QLineEdit()
+        self.le_knownstat.setPlaceholderText('None')
         self.le_knownbase = QtWidgets.QLineEdit('978000.0')
         self.le_absbase = QtWidgets.QLineEdit('978032.67715')
         self.le_basethres = QtWidgets.QLineEdit('10000')
+
+        self.le_density.setValidator(QtGui.QDoubleValidator(self))
+        self.le_knownstat.setValidator(QtGui.QDoubleValidator(self))
+        self.le_knownbase.setValidator(QtGui.QDoubleValidator(self))
+        self.le_absbase.setValidator(QtGui.QDoubleValidator(self))
+        self.le_basethres.setValidator(QtGui.QDoubleValidator(self))
 
         self.gdata = None
 
@@ -210,22 +217,6 @@ class ProcessData(BasicModule):
             tmp = self.exec()
         else:
             tmp = 1
-
-        try:
-            float(self.le_density.text())
-            float(self.le_absbase.text())
-            float(self.le_basethres.text())
-            float(self.le_knownbase.text())
-        except ValueError:
-            self.showlog('Value Error')
-            return False
-
-        if self.le_knownstat.text() != 'None':
-            try:
-                float(self.le_knownstat.text())
-            except ValueError:
-                self.showlog('Value Error')
-                return False
 
         if tmp != 1:
             return False
@@ -665,7 +656,7 @@ def _testfn():
     PD = ProcessData()
     PD.indata = IO.outdata
     PD.le_basethres.setText(bthres)
-    PD.le_knownstat.setText(kbase)
+    # PD.le_knownstat.setText(kbase)
     PD.le_knownbase.setText('978794.53')
 
     PD.settings()
