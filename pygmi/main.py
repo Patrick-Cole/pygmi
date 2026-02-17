@@ -1164,6 +1164,7 @@ class MainWidget(QtWidgets.QMainWindow):
             end_item.update_indata()
 
         self.process_is_active(False)
+        self.showlog('Project load completed.')
         return True
 
     def save(self):

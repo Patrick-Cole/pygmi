@@ -131,7 +131,6 @@ class DataGrid(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dxy = None
-        self.dataid_text = None
 
         self.le_dxy = QtWidgets.QLineEdit('1.0')
         self.le_null = QtWidgets.QLineEdit('0.0')
@@ -212,7 +211,6 @@ class DataGrid(BasicModule):
         gl_main.addWidget(self.le_null, 6, 1, 1, 1)
         gl_main.addWidget(self.lbl_bdist, 7, 0, 1, 1)
         gl_main.addWidget(self.le_bdist, 7, 1, 1, 1)
-        # gl_main.addWidget(self.cb_section, 8, 0, 1, 2)
         gl_main.addWidget(self.lbl_line, 8, 0, 1, 1)
         gl_main.addWidget(self.cmb_line, 8, 1, 1, 1)
         gl_main.addWidget(self.lbl_z, 3, 0, 1, 1)
@@ -261,10 +259,7 @@ class DataGrid(BasicModule):
             x = data1.geometry.x.values
             y = data1.geometry.y.values
             x = xy_to_r(x, y, self.piter)
-            # if x is None:
-            #     self.showlog('Problem with coordinates, '
-            #                  'might not be a section')
-            #     x = [0, 0]
+
             y = data1[zcol].values
 
         cols = round(np.ptp(x) / self.dxy)
@@ -360,7 +355,8 @@ class DataGrid(BasicModule):
         if 'Raster' in self.indata:
             tmp = [i.dataid for i in self.indata['Raster']]
             demlist += tmp
-        self.cmb_grid_dem.addItems(demlist)
+
+        self.cmb_update(self.cmb_grid_dem, demlist)
 
         if self.dxy is None:
             x = data.geometry.x.values
@@ -372,28 +368,18 @@ class DataGrid(BasicModule):
             self.dxy = min([np.ptp(x), np.ptp(y), self.dxy])
 
         self.le_dxy.setText(f'{self.dxy:.8f}')
-        self.dxy_change()
-
-        self.cmb_dataid.clear()
+        self.grid_type_change()
 
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line'))
 
         cols = list(data.columns[filt])
-        self.cmb_dataid.clear()
-        self.cmb_dataid.addItems(cols)
+        self.cmb_update(self.cmb_dataid, cols)
+        self.cmb_update(self.cmb_z, cols)
 
-        self.cmb_z.clear()
-        self.cmb_z.addItems(cols)
-
-        self.cmb_line.clear()
         lines = data.line[data.line != 'nan'].unique()
-        self.cmb_line.addItems(lines)
 
-        if self.dataid_text is None:
-            self.dataid_text = self.cmb_dataid.currentText()
-        if self.dataid_text in cols:
-            self.cmb_dataid.setCurrentText(self.dataid_text)
+        self.cmb_update(self.cmb_line, lines)
 
         self.grid_method_change()
         if not nodialog:
@@ -422,12 +408,16 @@ class DataGrid(BasicModule):
         None.
 
         """
+        self.saveobj(self.dxy)
         self.saveobj(self.le_dxy)
         self.saveobj(self.le_null)
         self.saveobj(self.le_bdist)
-        self.saveobj(self.dataid_text)
         self.saveobj(self.cmb_dataid)
         self.saveobj(self.cmb_grid_method)
+        self.saveobj(self.cmb_grid_type)
+        self.saveobj(self.cmb_line)
+        self.saveobj(self.cmb_grid_dem)
+        self.saveobj(self.cmb_z)
 
     def acceptall(self):
         """
@@ -480,10 +470,7 @@ class DataGrid(BasicModule):
             x1 = x
             y1 = y
             x = xy_to_r(x, y, self.piter)
-            # if x is None:
-            #     self.showlog('Problem with coordinates, '
-            #                  'might not be a section')
-            #     return False
+
             y = data2[zcol].values
             scoords = np.transpose([x1, y1, x])
             scoords = np.unique(scoords, axis=0)
@@ -566,39 +553,6 @@ class DataReproj(BasicModule):
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
 
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.showlog('Could not reproject')
-            return
-
-        data = self.indata['Vector'][0]
-
-        # Input stuff
-        orig_wkt = self.in_proj.wkt
-
-        # Output stuff
-        targ_wkt = self.out_proj.wkt
-
-        data.set_crs(CRS.from_wkt(orig_wkt), inplace=True)
-        data.to_crs(CRS.from_wkt(targ_wkt), inplace=True)
-
-        data = data.assign(Xnew=data.geometry.x.values)
-        data = data.assign(Ynew=data.geometry.y.values)
-
-        self.outdata['Vector'] = [data]
-        self.orig_wkt = self.in_proj.wkt
-        self.targ_wkt = self.out_proj.wkt
-
     def settings(self, nodialog=False):
         """
         Entry point into item.
@@ -641,13 +595,13 @@ class DataReproj(BasicModule):
             if tmp != 1:
                 return False
 
-        if 'Vector' in self.indata:
-            self.outdata['Vector'] = []
-            for ivec in self.indata['Vector']:
-                ivec = ivec.set_crs(self.in_proj.wkt)
-                self.outdata['Vector'].append(ivec.to_crs(self.out_proj.wkt))
-        else:
-            self.acceptall()
+        self.orig_wkt = self.in_proj.wkt
+        self.targ_wkt = self.out_proj.wkt
+
+        self.outdata['Vector'] = []
+        for ivec in self.indata['Vector']:
+            ivec = ivec.set_crs(self.in_proj.wkt)
+            self.outdata['Vector'].append(ivec.to_crs(self.out_proj.wkt))
 
         return True
 
@@ -979,9 +933,6 @@ class TextFileSplit(BasicModule):
         """
         method = self.cmb_method.currentText()
 
-        # totlines = int(self.lbl_totlines.text().replace(',', ''))
-        # totbytes = int(self.lbl_totsize.text().replace(',', ''))
-
         try:
             numfiles = int(self.le_files.text().replace(',', ''))
             numlines = int(self.le_lines.text().replace(',', ''))
@@ -1307,10 +1258,6 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
     yyy = np.arange(y.min(), y.max() + dxy / 2, dxy)
     zzz = np.arange(z.min(), z.max() + dxy / 2, dxy)
     xxx, yyy, zzz = np.meshgrid(xxx, yyy, zzz)
-
-    # print(x.min(), x.max())
-    # print(y.min(), y.max())
-    # print(z.min(), z.max())
 
     newpoints = np.transpose([xxx.flatten(), yyy.flatten(), zzz.flatten()])
     d_interpolated = interpolator(newpoints)
@@ -1795,13 +1742,7 @@ def _testfn_grid():
 
 def _testfn_vol():
     """Test routine."""
-    # from pygmi.pfmod.datatypes import LithModel
-    # from pygmi.pfmod import grvmag3d
-    # from pygmi.pfmod.mvis3d import Mod3dDisplay
-    # from sklearn.cluster import KMeans
-
     import sys
-    # import pandas as pd
     import pyvista as pv
 
     from pygmi.raster.iodefs import get_raster
@@ -1812,7 +1753,6 @@ def _testfn_vol():
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
     dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"
-    # ofile = r"D:\UBC_Files\voxel.msh"
 
     dat = get_raster(dfile)[0]
 
@@ -1828,62 +1768,6 @@ def _testfn_vol():
     DR.settings()
 
     vdat = DR.outdata['Voxel'][0]
-
-    # x = gdf['X'].to_numpy()
-    # y = gdf['Y'].to_numpy()
-    # z = gdf['Elevation'].to_numpy()
-    # val = gdf['Resistivity'].to_numpy()
-    # dxy = 10
-
-    # vdat = gridvolume(x, y, z, val, dxy, dat=dat)
-
-    # numclust = 10
-    # d_z = dxy
-    # utlx = x.min()
-    # utly = y.max()
-    # utlz = z.max()
-    # cols, rows, layers = values.shape
-    # X = values.flatten()
-    # dbout = np.zeros_like(X) - 2
-
-    # X = np.ma.masked_invalid(X)
-    # xmask = X.mask
-    # X = X.compressed().reshape(-1, 1)
-
-    # kmeans = KMeans(n_clusters=numclust).fit(X)
-    # dbout2 = kmeans.predict(X)
-    # dbout[~xmask] = dbout2
-    # dbout.shape = values.shape
-    # dbout = dbout.astype(int) + 1
-
-    # lmod = LithModel()
-    # lmod.lith_index = None
-    # lmod.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
-
-    # lmod.lith_index = dbout
-    # lmod.lith_index = lmod.lith_index[:, :, ::-1]
-
-    # labelu = kmeans.cluster_centers_
-    # lindx = 0
-    # for itxt in labelu:
-    #     lindx += 1
-
-    #     colour = int((255 * (itxt - labelu.min()) / np.ptp(labelu))[0])
-    #     itxt = str(itxt)
-    #     lmod.mlut[lindx] = [0 * colour, colour, 0 * colour]
-    #     lmod.lith_list[itxt] = grvmag3d.GeoData(
-    #         None, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
-    #         dxy=lmod.dxy, d_z=lmod.d_z)
-
-    #     lmod.lith_list[itxt].lith_index = lindx
-    #     lmod.lith_list[itxt].modified = True
-    #     lmod.lith_list[itxt].set_xyz12()
-
-    # M3D = Mod3dDisplay()
-    # M3D.indata['Model3D'] = [lmod]
-    # M3D.data_init()
-    # M3D.run()
-    # M3D.exec()
 
     # Create the spatial reference
     grid = pv.ImageData()

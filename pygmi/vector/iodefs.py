@@ -487,52 +487,56 @@ class ImportXYZ(BasicModule):
         if gdf is None:
             return False
 
-        self.proj.set_current('None')
+        # self.cmb_xchan.clear()
+        # self.cmb_ychan.clear()
+        self.cmb_update(self.cmb_xchan, gdf.columns.values)
+        self.cmb_update(self.cmb_ychan, gdf.columns.values)
 
-        self.cmb_xchan.clear()
-        self.cmb_ychan.clear()
+        if not self.projdata:
+            self.proj.set_current('None')
+            xind = -1
+            yind = -1
 
-        xind = -1
-        yind = -1
+            ltmp = gdf.columns.str.lower()
 
-        ltmp = gdf.columns.str.lower()
+            exactpairs = [['lon', 'lat'],
+                          ['long', 'lat'],
+                          ['longitude', 'latitude'],
+                          ['x', 'y'],
+                          ['e', 'n']]
 
-        exactpairs = [['lon', 'lat'],
-                      ['long', 'lat'],
-                      ['longitude', 'latitude'],
-                      ['x', 'y'],
-                      ['e', 'n']]
+            for i, j in exactpairs:
+                if i in ltmp and j in ltmp:
+                    xind = ltmp.get_loc(i)
+                    yind = ltmp.get_loc(j)
+                    if 'lon' in i:
+                        self.proj.cmb_datum.setCurrentIndex(1)
+                    break
 
-        for i, j in exactpairs:
-            if i in ltmp and j in ltmp:
-                xind = ltmp.get_loc(i)
-                yind = ltmp.get_loc(j)
-                if 'lon' in i:
-                    self.proj.cmb_datum.setCurrentIndex(1)
-                break
+            if xind == -1:
+                ltmp = ltmp.values
+                # Check for flexible matches
+                for i, tmp in enumerate(ltmp):
+                    tmpl = tmp.lower()
+                    if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
+                        xind = i
+                    if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
+                        yind = i
 
-        if xind == -1:
-            ltmp = ltmp.values
-            # Check for flexible matches
-            for i, tmp in enumerate(ltmp):
-                tmpl = tmp.lower()
-                if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
-                    xind = i
-                if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
-                    yind = i
+            if xind == -1:
+                xind = 0
+                yind = 1
 
-        if xind == -1:
-            xind = 0
-            yind = 1
+        # self.cmb_xchan.clear()
+        # self.cmb_ychan.clear()
 
-        self.cmb_xchan.clear()
-        self.cmb_ychan.clear()
+        # self.cmb_xchan.addItems(gdf.columns.values)
+        # self.cmb_ychan.addItems(gdf.columns.values)
 
-        self.cmb_xchan.addItems(gdf.columns.values)
-        self.cmb_ychan.addItems(gdf.columns.values)
+            self.cmb_xchan.setCurrentIndex(xind)
+            self.cmb_ychan.setCurrentIndex(yind)
 
-        self.cmb_xchan.setCurrentIndex(xind)
-        self.cmb_ychan.setCurrentIndex(yind)
+        self.projdata = {}
 
         if not nodialog:
             tmp = self.exec()
@@ -580,6 +584,7 @@ class ImportXYZ(BasicModule):
         None.
 
         """
+        self.saveobj(self.proj)
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
         self.saveobj(self.cmb_xchan)

@@ -133,6 +133,7 @@ class GroupProj(QtWidgets.QWidget):
         """
         indx = self.cmb_datum.currentIndex()
         txt = self.cmb_datum.itemText(indx)
+
         self.cmb_proj.currentIndexChanged.disconnect()
 
         self.cmb_proj.clear()

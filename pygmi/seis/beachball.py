@@ -164,7 +164,11 @@ class BeachBall(BasicModule):
 
     def data_init(self):
         """
-        Initialise Data - entry point into routine.
+        Initialise Data.
+
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
 
         Returns
         -------

@@ -36,6 +36,8 @@ from matplotlib import ticker, cm, colors
 from PySide6 import QtWidgets, QtCore, QtGui
 import geopandas as gpd
 
+from pygmi.raster.reproj import GroupProj
+
 # if os.name == 'nt':
 #     import win32api
 #     import win32job
@@ -303,6 +305,17 @@ class BasicModule(QtWidgets.QDialog):
 
                 obj.blockSignals(False)
 
+            if isinstance(obj, GroupProj):
+                obj.cmb_datum.blockSignals(True)
+                obj.cmb_datum.setCurrentText(projdata[otxt]['datum'])
+                obj.cmb_datum.blockSignals(False)
+                obj.combo_datum_change()
+
+                obj.cmb_proj.blockSignals(True)
+                obj.cmb_proj.setCurrentText(projdata[otxt]['proj'])
+                obj.cmb_proj.blockSignals(False)
+                obj.combo_change()
+
         if self.is_import is True:
             chk = self.settings(True)
         else:
@@ -340,6 +353,7 @@ class BasicModule(QtWidgets.QDialog):
         for name in vars(self):
             if id(vars(self)[name]) == id(obj):
                 otxt = name
+
         if otxt is None:
             return
 
@@ -377,6 +391,10 @@ class BasicModule(QtWidgets.QDialog):
             self.projdata[otxt]['selected'] = tmp
             tmp = [obj.item(i).text() for i in range(obj.count())]
             self.projdata[otxt]['all'] = tmp
+
+        if isinstance(obj, GroupProj):
+            self.projdata[otxt] = {'datum': obj.cmb_datum.currentText(),
+                                   'proj': obj.cmb_proj.currentText()}
 
         return
 

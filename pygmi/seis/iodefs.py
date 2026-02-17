@@ -2737,6 +2737,7 @@ class FilterSeisan(BasicModule):
         super().__init__(parent)
 
         self.datlimits = None
+        self.projvalues = True
 
         self.dsb_from = QtWidgets.QDoubleSpinBox()
         self.dsb_to = QtWidgets.QDoubleSpinBox()
@@ -2779,8 +2780,8 @@ class FilterSeisan(BasicModule):
         self.cb_dind_L.setChecked(True)
 
         self.cmb_rectype.addItems(['1', '4', 'E'])
-        self.cmb_recdesc.addItems(['None'])
         self.rb_rinc.setChecked(True)
+        self.cmb_rectype.setCurrentText('1')
 
         self.cmb_rectype.currentTextChanged.connect(self.rectype_init)
         self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
@@ -2801,6 +2802,65 @@ class FilterSeisan(BasicModule):
         self.cb_dind_L.stateChanged.connect(self.dind_click)
         self.cb_dind_R.stateChanged.connect(self.dind_click)
         self.cb_dind_D.stateChanged.connect(self.dind_click)
+
+    def data_init(self):
+        """
+        Initialise Data.
+
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        if 'Seis' not in self.indata:
+            return False
+
+        # Get distance indicators
+        dat = self.indata['Seis']
+        dind = ''
+        for event in dat:
+            if '1' not in event:
+                continue
+            if event['1'].distance_indicator not in dind:
+                dind += event['1'].distance_indicator
+
+        if not self.projdata:
+            self.dind = ''
+            if 'L' in dind:
+                self.cb_dind_L.setEnabled(True)
+                self.cb_dind_L.setChecked(True)
+                self.dind += 'L'
+            else:
+                self.cb_dind_L.setEnabled(False)
+                self.cb_dind_L.setChecked(False)
+
+            if 'R' in dind:
+                self.cb_dind_R.setEnabled(True)
+                self.cb_dind_R.setChecked(True)
+                self.dind += 'R'
+            else:
+                self.cb_dind_R.setEnabled(False)
+                self.cb_dind_R.setChecked(False)
+
+            if 'D' in dind:
+                self.cb_dind_D.setEnabled(True)
+                self.cb_dind_D.setChecked(True)
+                self.dind += 'D'
+            else:
+                self.cb_dind_D.setEnabled(False)
+                self.cb_dind_D.setChecked(False)
+
+        self.get_limits()
+
+        tmp = list(self.datlimits.keys())
+        tmp = [i[2:] for i in tmp if i[0] == self.cmb_rectype.currentText()]
+        self.cmb_update(self.cmb_recdesc, tmp)
 
     def dind_click(self, state):
         """
@@ -2848,17 +2908,10 @@ class FilterSeisan(BasicModule):
         None.
 
         """
-        self.cmb_rectype.currentTextChanged.disconnect()
-        self.cmb_recdesc.currentTextChanged.disconnect()
-
         tmp = list(self.datlimits.keys())
         tmp = [i[2:] for i in tmp if i[0] == txt]
+        self.cmb_update(self.cmb_recdesc, tmp)
 
-        self.cmb_recdesc.clear()
-        self.cmb_recdesc.addItems(tmp)
-
-        self.cmb_rectype.currentTextChanged.connect(self.rectype_init)
-        self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
         self.recdesc_init(self.cmb_recdesc.currentText())
 
     def recdesc_init(self, txt):
@@ -2963,47 +3016,6 @@ class FilterSeisan(BasicModule):
             True if successful, False otherwise.
 
         """
-        tmp = []
-        if 'Seis' not in self.indata:
-            return False
-
-        # Get distance indicators
-        dat = self.indata['Seis']
-        dind = ''
-        for event in dat:
-            if '1' not in event:
-                continue
-            if event['1'].distance_indicator not in dind:
-                dind += event['1'].distance_indicator
-
-        self.dind = ''
-        if 'L' in dind:
-            self.cb_dind_L.setEnabled(True)
-            self.cb_dind_L.setChecked(True)
-            self.dind += 'L'
-        else:
-            self.cb_dind_L.setEnabled(False)
-            self.cb_dind_L.setChecked(False)
-
-        if 'R' in dind:
-            self.cb_dind_R.setEnabled(True)
-            self.cb_dind_R.setChecked(True)
-            self.dind += 'R'
-        else:
-            self.cb_dind_R.setEnabled(False)
-            self.cb_dind_R.setChecked(False)
-
-        if 'D' in dind:
-            self.cb_dind_D.setEnabled(True)
-            self.cb_dind_D.setChecked(True)
-            self.dind += 'D'
-        else:
-            self.cb_dind_D.setEnabled(False)
-            self.cb_dind_D.setChecked(False)
-
-        self.get_limits()
-        self.cmb_rectype.setCurrentText('1')
-        self.rectype_init('1')
 
         if not nodialog:
             tmp = self.exec()

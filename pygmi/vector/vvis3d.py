@@ -137,7 +137,11 @@ class Mod3dDisplay(ContextModule):
 
     def data_init(self):
         """
-        Initialise data.
+        Initialise Data.
+
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
 
         Returns
         -------
