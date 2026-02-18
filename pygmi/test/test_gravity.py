@@ -45,7 +45,7 @@ def test_process_data():
 
     pdat = iodefs.merge_gpsmag(grvfile, gpsfile, basethres=10000.)
 
-    datout, _ = dataprep.gravcor(pdat, 10000, 'None', 978032.67715, 2670)
+    datout, _ = dataprep.gravcor(pdat, 10000, '', 978032.67715, 2670)
 
     boug = datout['BOUGUER']
     boug = np.array(boug)
