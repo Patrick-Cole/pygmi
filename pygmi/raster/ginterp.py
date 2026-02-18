@@ -1184,9 +1184,10 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             self.gbox_sun.setChecked(False)
             self.le_contours.show()
+
             try:
                 self.mmc.levels = int(self.le_contours.text())
-            except:
+            except ValueError:
                 self.mmc.levels = 10
 
         if 'Ternary' in txt:

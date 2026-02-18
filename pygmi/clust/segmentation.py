@@ -137,14 +137,13 @@ class ImageSeg(BasicModule):
             if tmp != 1:
                 return False
 
-        try:
-            scale = float(self.le_scale.text())
-            wcolor = float(self.le_wcolor.text())
-            wcompact = float(self.le_wcompact.text())
-            numclust = int(self.le_numclust.text())
-        except ValueError:
-            self.showlog('Error in parameter values.')
+        if not self.check_validation():
             return False
+
+        scale = float(self.le_scale.text())
+        wcolor = float(self.le_wcolor.text())
+        wcompact = float(self.le_wcompact.text())
+        numclust = int(self.le_numclust.text())
 
         doshape = True
 

@@ -1068,7 +1068,7 @@ class PlotTempB(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit('300')
-        self.le_1.setValidator(QtGui.QIntValidator(self))
+        self.le_1.setValidator(QtGui.QIntValidator(1, 2147483647))
         lbl_1 = QtWidgets.QLabel('Window size:')
         btn_apply = QtWidgets.QPushButton('Apply')
 
@@ -1097,11 +1097,11 @@ class PlotTempB(ContextModule):
         dat2 = self.data
         numrecs = len(dat2['1_year'])
 
-        try:
-            window_size = int(self.le_1.text())
-        except ValueError:
-            self.showlog('Error: invalid window size')
+        if not self.check_validation():
             return
+
+        window_size = int(self.le_1.text())
+
         if window_size > numrecs:
             window_size = numrecs
             self.le_1.setText(str(numrecs))
@@ -1179,18 +1179,16 @@ class PlotSpatialB(ContextModule):
         self.buttonbox.htmlfile = 'seis.cm.showspatb'
 
         vbl = QtWidgets.QVBoxLayout(self)
-        # hbl1 = QtWidgets.QHBoxLayout()
-        # hbl2 = QtWidgets.QHBoxLayout()
         hbl3 = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit('0.2')
-        self.le_1.setValidator(QtGui.QDoubleValidator(self))
+        self.le_1.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.le_2 = QtWidgets.QLineEdit('0.5')
-        self.le_2.setValidator(QtGui.QDoubleValidator(self))
+        self.le_2.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.le_3 = QtWidgets.QLineEdit('20')
-        self.le_3.setValidator(QtGui.QIntValidator(self))
+        self.le_3.setValidator(QtGui.QIntValidator(1, 2147483647))
         lbl_1 = QtWidgets.QLabel('Grid Spacing:')
         lbl_2 = QtWidgets.QLabel('Search radius:')
         lbl_3 = QtWidgets.QLabel('Minimum number of events:')
@@ -1207,8 +1205,6 @@ class PlotSpatialB(ContextModule):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        # vbl.addLayout(hbl1)
-        # vbl.addLayout(hbl2)
         vbl.addLayout(hbl3)
 
         self.setFocus()
@@ -1224,6 +1220,9 @@ class PlotSpatialB(ContextModule):
         None.
 
         """
+        if not self.check_validation():
+            return
+
         dxy = float(self.le_1.text())
         rmax = float(self.le_2.text())
         N = int(self.le_3.text())
@@ -1746,7 +1745,7 @@ def _testfn():
 
     tmp.settings(True)
 
-    tmp1 = PlotSpatialB()
+    tmp1 = PlotTempB()
     tmp1.indata = tmp.outdata
     tmp1.run()
 
@@ -1754,5 +1753,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    # _testfn()
-    _testiso()
+    _testfn()
+    # _testiso()

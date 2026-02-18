@@ -29,7 +29,7 @@ import glob
 import re
 from io import StringIO
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -155,6 +155,11 @@ class ImportVector(BasicModule):
         self.lbl_ymax = QtWidgets.QLabel('North:')
         self.lbl_mapsheet = QtWidgets.QLabel('Mapsheet:')
 
+        self.le_xmin.setValidator(QtGui.QDoubleValidator(self))
+        self.le_xmax.setValidator(QtGui.QDoubleValidator(self))
+        self.le_ymin.setValidator(QtGui.QDoubleValidator(self))
+        self.le_ymax.setValidator(QtGui.QDoubleValidator(self))
+
         self.setupui()
 
     def setupui(self):
@@ -232,14 +237,14 @@ class ImportVector(BasicModule):
         txt = self.cmb_bounds.currentText()
 
         if txt == 'Manual':
-            try:
-                xmin = float(self.le_xmin.text())
-                xmax = float(self.le_xmax.text())
-                ymin = float(self.le_ymin.text())
-                ymax = float(self.le_ymax.text())
-            except ValueError:
-                self.showlog('Invalid value in bounds.')
+            if not self.check_validation():
                 return False
+
+            xmin = float(self.le_xmin.text())
+            xmax = float(self.le_xmax.text())
+            ymin = float(self.le_ymin.text())
+            ymax = float(self.le_ymax.text())
+
             bounds = (xmin, ymin, xmax, ymax)
         elif txt == 'SA Mapsheet':
             bounds = maptobounds(self.le_mapsheet.text(), self.crs,
@@ -412,6 +417,8 @@ class ImportXYZ(BasicModule):
         self.le_nodata = QtWidgets.QLineEdit('99999')
         self.proj = GroupProj('Input Projection')
 
+        self.le_nodata.setValidator(QtGui.QDoubleValidator(self))
+
         self.setupui()
 
     def setupui(self):
@@ -499,8 +506,6 @@ class ImportXYZ(BasicModule):
         if gdf is None:
             return False
 
-        # self.cmb_xchan.clear()
-        # self.cmb_ychan.clear()
         self.cmb_update(self.cmb_xchan, gdf.columns.values)
         self.cmb_update(self.cmb_ychan, gdf.columns.values)
 
@@ -539,12 +544,6 @@ class ImportXYZ(BasicModule):
                 xind = 0
                 yind = 1
 
-        # self.cmb_xchan.clear()
-        # self.cmb_ychan.clear()
-
-        # self.cmb_xchan.addItems(gdf.columns.values)
-        # self.cmb_ychan.addItems(gdf.columns.values)
-
             self.cmb_xchan.setCurrentIndex(xind)
             self.cmb_ychan.setCurrentIndex(yind)
 
@@ -556,11 +555,10 @@ class ImportXYZ(BasicModule):
             if tmp != 1:
                 return False
 
-        try:
-            nodata = float(self.le_nodata.text())
-        except ValueError:
-            self.showlog('Nodata Value error - abandoning import')
+        if not self.check_validation():
             return False
+
+        nodata = float(self.le_nodata.text())
 
         xcol = self.cmb_xchan.currentText()
         ycol = self.cmb_ychan.currentText()

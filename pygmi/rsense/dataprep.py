@@ -144,6 +144,9 @@ class TopoCorrect(BasicModule):
             if tmp == 0:
                 return False
 
+        if not self.check_validation():
+            return
+
         self.acceptall()
 
         return True

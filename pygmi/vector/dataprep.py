@@ -171,15 +171,16 @@ class DataGrid(BasicModule):
         self.lbl_line = QtWidgets.QLabel('Line Number:')
         self.lbl_z = QtWidgets.QLabel('Z Coordinate Value:')
 
-        val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
+        val = QtGui.QDoubleValidator(1e-300, np.inf, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
-        val2 = QtGui.QDoubleValidator(-1.0e308, 1.0e308, 9)
+        val2 = QtGui.QDoubleValidator(-np.inf, np.inf, -1)
         val2.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
         val2.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
         self.le_dxy.setValidator(val)
         self.le_null.setValidator(val2)
+        self.le_bdist.setValidator(val)
 
         self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                        'Minimum Curvature'])
@@ -387,12 +388,7 @@ class DataGrid(BasicModule):
             if tmp != 1:
                 return False
 
-        try:
-            float(self.le_dxy.text())
-            float(self.le_null.text())
-            float(self.le_bdist.text())
-        except ValueError:
-            self.showlog('Value Error')
+        if not self.check_validation():
             return False
 
         flag = self.acceptall()

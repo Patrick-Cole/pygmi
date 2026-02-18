@@ -80,7 +80,7 @@ class StructComp(BasicModule):
         lbl_dxy = QtWidgets.QLabel('Cell Size:')
         lbl_method = QtWidgets.QLabel('Method:')
 
-        val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
+        val = QtGui.QDoubleValidator(1e-300, np.inf, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
@@ -174,14 +174,10 @@ class StructComp(BasicModule):
             if tmp != 1:
                 return False
 
-        try:
-            float(self.le_dxy.text())
-            wsize = int(self.le_wsize.text())
-            float(self.le_extend.text())
-            float(self.le_std.text())
-        except ValueError:
-            self.showlog('Value Error')
+        if not self.check_validation():
             return False
+
+        wsize = int(self.le_wsize.text())
 
         if (wsize % 2) == 0:
             self.showlog('Only odd windows sizes allowed')

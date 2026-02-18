@@ -496,11 +496,11 @@ class ImportSentinel5P(BasicModule):
         self.lbl_latmin = QtWidgets.QLabel('Minimum Latitude:')
         self.lbl_latmax = QtWidgets.QLabel('Maximum Latitude:')
 
-        self.le_lonmin.setValidator(QtGui.QDoubleValidator(self))
-        self.le_lonmax.setValidator(QtGui.QDoubleValidator(self))
-        self.le_latmin.setValidator(QtGui.QDoubleValidator(self))
-        self.le_latmax.setValidator(QtGui.QDoubleValidator(self))
-        self.le_qathres.setValidator(QtGui.QIntValidator(0, 100, self))
+        self.le_lonmin.setValidator(QtGui.QDoubleValidator(-180, 180, -1))
+        self.le_lonmax.setValidator(QtGui.QDoubleValidator(-180, 180, -1))
+        self.le_latmin.setValidator(QtGui.QDoubleValidator(-90, 90, -1))
+        self.le_latmax.setValidator(QtGui.QDoubleValidator(-90, 90, -1))
+        self.le_qathres.setValidator(QtGui.QIntValidator(0, 100))
 
         self.setupui()
 
@@ -598,9 +598,8 @@ class ImportSentinel5P(BasicModule):
             if tmp != 1:
                 return False
 
-        tmp = self.check_validation()
-        if not tmp:
-            return False
+        if not self.check_validation():
+            return
 
         gdf = self.get_5P_data(meta)
 
