@@ -150,6 +150,9 @@ class ImportCG5(BasicModule):
             if tmp != 1 or self.df_gps is None:
                 return False
 
+        if not self.check_validation():
+            return False
+
         if self.cmb_line.currentText() == self.cmb_station.currentText():
             self.showlog('Your line column cannot be the same as your '
                          'station column')

@@ -34,6 +34,8 @@ import webbrowser
 import numpy as np
 from matplotlib import ticker, cm, colors
 from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import QRegularExpression
+from PySide6.QtGui import QRegularExpressionValidator
 import geopandas as gpd
 
 from pygmi.raster.reproj import GroupProj
@@ -168,6 +170,10 @@ class BasicModule(QtWidgets.QDialog):
         self.is_import = False
         self.ifile = ''
 
+        regex_pattern = r"^$|^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$"
+        self.qval = QRegularExpressionValidator(
+            QRegularExpression(regex_pattern))
+
         ipth = os.path.dirname(__file__) + r'/images/'
         self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
 
@@ -190,6 +196,25 @@ class BasicModule(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        return True
+
+    def check_validation(self):
+        """
+        Check a widget's validation.
+
+        Parameters
+        ----------
+        obj : QtWidgets.QComboBox
+            Combo box to add data to.
+        """
+
+        for value in vars(self).values():
+            if isinstance(value, QtWidgets.QLineEdit):
+                if not value.hasAcceptableInput():
+                    self.showlog('One of your inputs is incorrect. '
+                                 'Please check.')
+                    return False
+
         return True
 
     def cmb_update(self, obj, txtlist):
@@ -446,12 +471,35 @@ class ContextModule(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
 
+        regex_pattern = r"^$|^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$"
+        self.qval = QRegularExpressionValidator(
+            QRegularExpression(regex_pattern))
+
         ipth = os.path.dirname(__file__) + r'/images/'
         self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
 
         self.buttonbox = PButtonBox(self)
         self.buttonbox.buttonbox.accepted.connect(self.accept)
         self.buttonbox.buttonbox.rejected.connect(self.reject)
+
+    def check_validation(self):
+        """
+        Check a widget's validation.
+
+        Parameters
+        ----------
+        obj : QtWidgets.QComboBox
+            Combo box to add data to.
+        """
+
+        for value in vars(self).values():
+            if isinstance(value, QtWidgets.QLineEdit):
+                if not value.hasAcceptableInput():
+                    self.showlog('One of your inputs is incorrect. '
+                                 'Please check.')
+                    return False
+
+        return True
 
     def run(self):
         """

@@ -81,8 +81,8 @@ class Metadata(ContextModule):
         self.le_lat.setValidator(QtGui.QDoubleValidator(self))
         self.le_lon.setValidator(QtGui.QDoubleValidator(self))
         self.le_elev.setValidator(QtGui.QDoubleValidator(self))
-        self.le_utmx.setValidator(QtGui.QDoubleValidator(self))
-        self.le_utmy.setValidator(QtGui.QDoubleValidator(self))
+        self.le_utmx.setValidator(self.qval)
+        self.le_utmy.setValidator(self.qval)
         self.le_rot.setValidator(QtGui.QDoubleValidator(self))
 
         self.setupui()
@@ -262,6 +262,9 @@ class Metadata(ContextModule):
         tmp = self.exec()
 
         if tmp != 1:
+            return False
+
+        if not self.check_validation():
             return False
 
         self.acceptall()
@@ -1484,6 +1487,8 @@ class Occam1D(BasicModule):
         None.
 
         """
+        if not self.check_validation():
+            return
         parm = {}
 
         parm['tdepth'] = tonumber(self.le_targetdepth.text())

@@ -36,7 +36,7 @@ import glob
 import platform
 from subprocess import Popen, PIPE
 import numpy as np
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 
 from pygmi.raster.misc import lstack, aspect2
 from pygmi.raster.iodefs import get_raster
@@ -60,6 +60,9 @@ class TopoCorrect(BasicModule):
         self.cmb_dem = QtWidgets.QComboBox()
         self.le_azi = QtWidgets.QLineEdit('0.0')
         self.le_zen = QtWidgets.QLineEdit('0.0')
+
+        self.le_azi.setValidator(QtGui.QDoubleValidator(self))
+        self.le_zen.setValidator(QtGui.QDoubleValidator(self))
 
         self.setupui()
 

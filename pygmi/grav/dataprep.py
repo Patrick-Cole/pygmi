@@ -133,7 +133,7 @@ class ProcessData(BasicModule):
         self.le_basethres = QtWidgets.QLineEdit('10000')
 
         self.le_density.setValidator(QtGui.QDoubleValidator(self))
-        self.le_knownstat.setValidator(QtGui.QDoubleValidator(self))
+        self.le_knownstat.setValidator(self.qval)
         self.le_knownbase.setValidator(QtGui.QDoubleValidator(self))
         self.le_absbase.setValidator(QtGui.QDoubleValidator(self))
         self.le_basethres.setValidator(QtGui.QDoubleValidator(self))
@@ -219,6 +219,9 @@ class ProcessData(BasicModule):
             tmp = 1
 
         if tmp != 1:
+            return False
+
+        if not self.check_validation():
             return False
 
         self.acceptall(nodialog)
@@ -322,7 +325,7 @@ class ProcessData(BasicModule):
         self.le_absbase.setText(str(absbase.iloc[0]))
 
 
-def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
+def gravcor(pdat, basethres, kstat='', absbase=978032.67715, dens=2670,
             showlog=print):
     """
     _summary_
@@ -334,7 +337,7 @@ def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
     basethres : _type_
         _description_
     kstat : str, optional
-        _description_, by default 'None'
+        _description_, by default ''
     absbase : float, optional
         _description_, by default 978032.67715
     dens : int, optional
@@ -374,7 +377,7 @@ def gravcor(pdat, basethres, kstat='None', absbase=978032.67715, dens=2670,
     """
     pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
-    if kstat == 'None':
+    if kstat == '':
         kstat = -1.0
     else:
         kstat = float(kstat)

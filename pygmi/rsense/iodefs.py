@@ -35,7 +35,7 @@ import datetime
 from collections import defaultdict
 import warnings
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 import numexpr as ne
 import pandas as pd
@@ -496,6 +496,12 @@ class ImportSentinel5P(BasicModule):
         self.lbl_latmin = QtWidgets.QLabel('Minimum Latitude:')
         self.lbl_latmax = QtWidgets.QLabel('Maximum Latitude:')
 
+        self.le_lonmin.setValidator(QtGui.QDoubleValidator(self))
+        self.le_lonmax.setValidator(QtGui.QDoubleValidator(self))
+        self.le_latmin.setValidator(QtGui.QDoubleValidator(self))
+        self.le_latmax.setValidator(QtGui.QDoubleValidator(self))
+        self.le_qathres.setValidator(QtGui.QIntValidator(0, 100, self))
+
         self.setupui()
 
     def setupui(self):
@@ -586,23 +592,14 @@ class ImportSentinel5P(BasicModule):
 
         self.cmb_update(self.cmb_subdata, tmp)
 
-        # self.cmb_subdata.clear()
-        # self.cmb_subdata.addItems(tmp)
-        # self.cmb_subdata.setCurrentIndex(self.indx)
-
         if not nodialog:
             tmp = self.exec()
 
             if tmp != 1:
                 return False
 
-        try:
-            _ = float(self.le_lonmin.text())
-            _ = float(self.le_latmin.text())
-            _ = float(self.le_lonmax.text())
-            _ = float(self.le_latmax.text())
-        except ValueError:
-            self.showlog('Value error - abandoning import')
+        tmp = self.check_validation()
+        if not tmp:
             return False
 
         gdf = self.get_5P_data(meta)
@@ -745,11 +742,7 @@ class ImportSentinel5P(BasicModule):
             geopandas dataframe.
 
         """
-        try:
-            thres = int(self.le_qathres.text())
-        except ValueError:
-            self.showlog('Threshold text not an integer')
-            return None
+        thres = int(self.le_qathres.text())
 
         with rasterio.open(meta['latitude']) as dataset:
             lats = dataset.read(1)
@@ -3898,7 +3891,7 @@ def _test5P():
     ax = plt.gca()
     shp.plot(ax=ax, fc='none', ec='black')
 
-    tmp.outdata['Vector']['Point'].plot(ax=ax, column='data')
+    tmp.outdata['Vector'][0].plot(ax=ax, column='data')
     plt.show()
 
 
@@ -3982,4 +3975,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _test5P()

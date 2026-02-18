@@ -29,6 +29,7 @@ import math
 import os
 import glob
 from PySide6 import QtWidgets, QtGui
+
 import numpy as np
 import pandas as pd
 import rasterio
@@ -479,8 +480,8 @@ class DataMerge(BasicModule):
         self.le_nodata = QtWidgets.QLineEdit('')
         self.le_res = QtWidgets.QLineEdit('')
 
-        self.le_nodata.setValidator(QtGui.QDoubleValidator(self))
-        self.le_res.setValidator(QtGui.QDoubleValidator(self))
+        self.le_nodata.setValidator(self.qval)
+        self.le_res.setValidator(self.qval)
 
         self.cb_shift_to_median = QtWidgets.QCheckBox(
             'Shift bands to median value before mosaic. May '
@@ -630,6 +631,9 @@ class DataMerge(BasicModule):
             tmp = self.exec()
             if tmp != 1:
                 return False
+
+        if not self.check_validation():
+            return False
 
         tmp = self.merge_different()
 
@@ -1004,7 +1008,7 @@ class Metadata(ContextModule):
         self.lbl_dtype = QtWidgets.QLabel()
         self.date = QtWidgets.QDateEdit()
 
-        self.le_txt_null.setValidator(QtGui.QDoubleValidator(self))
+        self.le_txt_null.setValidator(self.qval)
         self.le_tlx.setValidator(QtGui.QDoubleValidator(self))
         self.le_tly.setValidator(QtGui.QDoubleValidator(self))
         self.le_xdim.setValidator(QtGui.QDoubleValidator(self))
@@ -1154,6 +1158,13 @@ class Metadata(ContextModule):
         None.
 
         """
+        tmp = self.check_validation()
+        if not tmp:
+            self.cmb_bandid.blockSignals(True)
+            self.cmb_bandid.setCurrentText(self.oldtxt)
+            self.cmb_bandid.blockSignals(False)
+            return
+
         odata = self.banddata[self.oldtxt]
 
         utxt = self.le_led_units.text()
@@ -1163,7 +1174,7 @@ class Metadata(ContextModule):
 
         if self.le_txt_null.text() == '':
             odata.nodata = None
-        elif self.le_txt_null.text().lower() != 'none':
+        else:
             odata.nodata = float(self.le_txt_null.text())
         left = float(self.le_tlx.text())
         top = float(self.le_tly.text())
@@ -1183,7 +1194,11 @@ class Metadata(ContextModule):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.le_txt_null.setText(str(idata.nodata))
+        if idata.nodata is None:
+            self.le_txt_null.setText('')
+        else:
+            self.le_txt_null.setText(str(idata.nodata))
+
         self.le_tlx.setText(str(idata.extent[0]))
         self.le_tly.setText(str(idata.extent[-1]))
         self.le_xdim.setText(str(idata.xdim))
@@ -1238,7 +1253,10 @@ class Metadata(ContextModule):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.le_txt_null.setText(str(idata.nodata))
+        if idata.nodata is None:
+            self.le_txt_null.setText('')
+        else:
+            self.le_txt_null.setText(str(idata.nodata))
         self.le_tlx.setText(str(idata.extent[0]))
         self.le_tly.setText(str(idata.extent[-1]))
         self.le_xdim.setText(str(idata.xdim))
