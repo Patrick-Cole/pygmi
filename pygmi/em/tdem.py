@@ -28,7 +28,7 @@ import sys
 import os
 import copy
 from contextlib import redirect_stdout
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 import numpy as np
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
@@ -212,6 +212,25 @@ class TDEM1D(BasicModule):
         self.le_mesh_npad = QtWidgets.QLineEdit('20')
         self.le_mesh_padrate = QtWidgets.QLineEdit('1.3')
 
+        self.le_loopturns.setValidator(
+            QtGui.QDoubleValidator(1e-300, np.inf, -1))
+        self.le_loopcurrent.setValidator(QtGui.QDoubleValidator(self))
+        self.le_mu.setValidator(QtGui.QDoubleValidator(self))
+        self.le_txarea.setValidator(QtGui.QDoubleValidator(self))
+        self.le_txofftime.setValidator(QtGui.QDoubleValidator(self))
+        self.le_txrampoff1.setValidator(QtGui.QDoubleValidator(self))
+        self.le_txpeaktime.setValidator(QtGui.QDoubleValidator(self))
+        self.le_sig_half.setValidator(QtGui.QDoubleValidator(self))
+        self.le_sig_air.setValidator(QtGui.QDoubleValidator(self))
+        self.le_rel_err.setValidator(QtGui.QDoubleValidator(self))
+        self.le_noise_floor.setValidator(QtGui.QDoubleValidator(self))
+        self.le_maxiter.setValidator(QtGui.QIntValidator(1, 2147483647))
+        self.le_mesh_cs.setValidator(QtGui.QDoubleValidator(self))
+        self.le_mesh_ncx.setValidator(QtGui.QDoubleValidator(self))
+        self.le_mesh_ncz.setValidator(QtGui.QDoubleValidator(self))
+        self.le_mesh_npad.setValidator(QtGui.QIntValidator(1, 2147483647))
+        self.le_mesh_padrate.setValidator(QtGui.QDoubleValidator(self))
+
         self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
 
         pb_apply = QtWidgets.QPushButton('Invert Station')
@@ -286,6 +305,9 @@ class TDEM1D(BasicModule):
             QtWidgets.QMessageBox.warning(
                 self.parent, 'Error', text,
                 QtWidgets.QMessageBox.StandardButton.Ok)
+            return
+
+        if not self.check_validation():
             return
 
         self.disp_wave()
