@@ -66,8 +66,7 @@ def test_vertical():
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(10, 100, 10, 100)
-    # dat2 = np.array([[-0.90757121, 0.90757121],
-    #                  [-0.90757121, 0.90757121]])
+
     dat2 = np.array([[-0.15707963267948966, 0.15707963267948966],
                      [-0.15707963267948966, 0.15707963267948966]])
     dat = dataprep.verticalp(datin)
@@ -83,6 +82,23 @@ def test_raps():
     dat2 = np.array([36.])
     k_centers, raps, k_radial, F = fft.calculate_raps(datin)
     np.testing.assert_array_almost_equal(raps, dat2)
+
+
+def test_cont():
+    """test continuation."""
+    datin = Data()
+    datin.data = np.ma.array([[1, 2], [1, 2]])
+    datin.set_transform(10, 100, 10, 100)
+
+    dat2 = np.array([[1.5, 1.5],
+                     [1.5, 1.5]])
+    datout = dataprep.fftcont(datin, 100)
+    np.testing.assert_array_almost_equal(datout.data, dat2)
+
+    dat2 = np.array([[-2845.3044633201675, 2848.3044633201675],
+                     [-2845.3044633201675, 2848.3044633201675]])
+    datout = dataprep.taylorcont(datin, 100)
+    np.testing.assert_array_almost_equal(datout.data, dat2)
 
 
 def test_viz():
@@ -455,4 +471,4 @@ def test_agc():
 
 
 if __name__ == "__main__":
-    test_raps()
+    test_cont()

@@ -1,0 +1,446 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>B1  central wavelength 443 nm (60.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11190000176429749</HistMin>
+        <HistMax>0.20160000026226044</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|3|1|2|2|0|2|0|1|1|0|2|1|0|2|3|0|0|1|0|0|1|2|1|4|3|4|1|4|2|4|3|1|0|1|1|1|2|2|1|0|2|1|1|3|3|3|5|1|4|1|2|1|3|1|0|2|0|3|0|1|0|2|1|0|1|1|1|2|2|0|0|2|0|0|1|3|1|1|0|1|0|0|0|0|0|1|1|1|0|1|0|0|0|2|2|0|0|0|1|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|1|0|0|0|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|1|1|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.5199000239372253</MDI>
+      <MDI key="STATISTICS_MEAN">0.13270433523464642</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.12809999287128448</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10790000110864639</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.02068764748237456</MDI>
+      <MDI key="wavelength">443.0</MDI>
+      <MDI key="WavelengthMax">453.0</MDI>
+      <MDI key="WavelengthMin">433.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.20160000026226044</MDI>
+      <MDI key="STATISTICS_MEAN">0.1315429573222785</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.1285500004887581</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11190000176429749</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.015021465518492629</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="2">
+    <Description>B2  central wavelength 490 nm (10.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11490000039339066</HistMin>
+        <HistMax>0.2687999904155731</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|1|0|3|0|1|0|1|0|1|1|1|2|2|4|8|1|2|1|5|8|2|5|1|4|2|2|3|6|1|5|4|4|3|3|3|1|3|0|1|0|2|0|0|2|1|3|1|0|0|0|0|3|1|2|2|0|0|1|0|0|0|1|1|0|1|1|0|0|0|0|0|1|1|0|2|1|0|1|1|1|0|2|0|0|1|0|0|1|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.9879999756813049</MDI>
+      <MDI key="STATISTICS_MEAN">0.14148541491135352</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.13410000503063202</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10970000177621841</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.031424853853601935</MDI>
+      <MDI key="wavelength">490.0</MDI>
+      <MDI key="WavelengthMax">522.5</MDI>
+      <MDI key="WavelengthMin">457.5</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.2687999904155731</MDI>
+      <MDI key="STATISTICS_MEAN">0.1403119723037095</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.133200004696846</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11490000039339066</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.022943750644829463</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="3">
+    <Description>B3  central wavelength 560 nm (10.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.12409999966621399</HistMin>
+        <HistMax>0.2741999924182892</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>2|0|0|0|0|2|1|0|1|0|1|0|1|0|1|1|0|0|4|1|2|2|3|0|2|2|0|3|3|2|2|2|1|0|3|4|1|2|2|1|1|0|4|1|1|0|2|1|4|5|0|0|2|0|1|3|1|2|1|1|5|1|3|0|1|1|3|2|0|1|2|0|3|0|1|0|1|1|0|1|2|0|0|1|1|0|1|0|1|1|1|0|2|0|1|0|2|0|1|0|0|2|0|0|0|1|2|1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|1|0|1|0|1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.8076000213623047</MDI>
+      <MDI key="STATISTICS_MEAN">0.16163146731978753</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.1565999984741211</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11230000108480453</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.03197851211732287</MDI>
+      <MDI key="wavelength">560.0</MDI>
+      <MDI key="WavelengthMax">577.5</MDI>
+      <MDI key="WavelengthMin">542.5</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.2741999924182892</MDI>
+      <MDI key="STATISTICS_MEAN">0.15996549273250807</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.15394999831914902</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.12409999966621399</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.025725202977570413</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="4">
+    <Description>B4  central wavelength 665 nm (10.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11249999701976776</HistMin>
+        <HistMax>0.27480000257492065</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|2|1|0|1|1|1|0|2|3|3|1|1|5|5|2|6|3|1|1|0|2|1|0|3|2|2|2|1|0|4|4|1|4|2|0|2|1|1|2|2|3|2|0|1|2|0|0|3|3|0|1|0|0|0|1|3|3|1|1|1|0|0|2|1|0|0|0|0|0|1|0|0|1|0|0|1|0|0|0|0|1|0|0|0|0|1|1|0|0|0|2|0|0|0|0|1|0|1|0|0|1|0|1|0|3|0|1|0|0|1|0|0|1|1|0|0|1|0|0|0|0|0|0|1|2|1|0|0|0|0|0|0|1|0|0|0|0|0|0|1|0|1|0|0|0|0|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.7423999905586243</MDI>
+      <MDI key="STATISTICS_MEAN">0.1500323859954955</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.1387999951839447</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10440000146627426</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.039790849831865094</MDI>
+      <MDI key="wavelength">665.0</MDI>
+      <MDI key="WavelengthMax">680.0</MDI>
+      <MDI key="WavelengthMin">650.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.27480000257492065</MDI>
+      <MDI key="STATISTICS_MEAN">0.14918098603965532</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.1372000053524971</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11249999701976776</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.03405240110677772</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="5">
+    <Description>B5  central wavelength 705 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.12330000102519989</HistMin>
+        <HistMax>0.3197000026702881</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|1|0|0|1|0|0|1|0|1|0|1|0|0|0|0|1|0|2|5|2|0|1|0|1|3|1|1|1|0|0|0|0|1|3|1|0|1|2|3|3|2|1|0|1|3|1|1|0|1|1|2|2|2|2|1|2|1|1|1|0|6|1|1|1|1|2|1|2|2|3|0|0|1|2|1|2|2|1|1|2|1|1|1|0|1|3|0|3|2|1|0|1|0|1|0|0|1|4|0|1|0|1|0|1|2|0|0|1|1|1|0|0|2|1|0|1|0|1|1|0|1|0|0|0|1|0|0|0|0|0|0|0|1|1|0|0|1|1|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.7486000061035156</MDI>
+      <MDI key="STATISTICS_MEAN">0.19524286549614314</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.19169999659061432</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11550000309944153</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.034772468679972864</MDI>
+      <MDI key="wavelength">705.0</MDI>
+      <MDI key="WavelengthMax">712.5</MDI>
+      <MDI key="WavelengthMin">697.5</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.3197000026702881</MDI>
+      <MDI key="STATISTICS_MEAN">0.19278028135148573</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.18949999660253525</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.12330000102519989</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.03021659173870021</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="6">
+    <Description>B6  central wavelength 740 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.1168999969959259</HistMin>
+        <HistMax>0.4706000089645386</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|1|2|0|0|1|0|0|1|0|3|2|1|0|0|0|0|3|0|3|0|0|1|0|1|3|1|1|0|3|2|1|1|1|2|1|3|2|4|2|4|5|1|3|1|2|0|1|2|0|3|2|2|1|1|0|3|2|4|3|0|1|1|2|2|2|0|0|2|2|2|3|1|0|0|1|0|0|3|2|1|3|1|1|0|0|3|0|1|0|2|1|0|1|1|0|2|0|1|0|0|0|0|1|1|0|0|0|0|1|0|1|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.7335000038146973</MDI>
+      <MDI key="STATISTICS_MEAN">0.330901005075661</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.32989999651908875</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10920000076293945</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.053404936717651674</MDI>
+      <MDI key="wavelength">740.0</MDI>
+      <MDI key="WavelengthMax">747.5</MDI>
+      <MDI key="WavelengthMin">732.5</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.4706000089645386</MDI>
+      <MDI key="STATISTICS_MEAN">0.32628591489833847</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.32600000500679016</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.1168999969959259</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.05056384186656895</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="7">
+    <Description>B7  central wavelength 783 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11710000038146973</HistMin>
+        <HistMax>0.5845999717712402</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|1|0|0|2|0|0|0|0|0|1|0|0|0|0|1|1|0|2|1|1|1|3|2|0|2|2|1|3|2|0|0|2|2|0|2|2|1|4|0|1|3|0|2|2|2|3|0|4|4|0|0|4|3|1|3|3|3|4|0|3|0|0|2|2|0|2|1|1|2|0|1|2|1|3|2|0|1|0|2|3|1|1|3|4|0|3|0|3|1|0|0|0|1|0|0|0|2|0|0|1|0|0|0|0|0|0|0|0|0|1|1|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.8460999727249146</MDI>
+      <MDI key="STATISTICS_MEAN">0.37722159053637244</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.37630000710487366</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10890000313520432</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.06767284120653144</MDI>
+      <MDI key="wavelength">783.0</MDI>
+      <MDI key="WavelengthMax">793.0</MDI>
+      <MDI key="WavelengthMin">773.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.5845999717712402</MDI>
+      <MDI key="STATISTICS_MEAN">0.3707492941282165</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.3727000057697296</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11710000038146973</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.06402290557132424</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="8">
+    <Description>B8  central wavelength 842 nm (10.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11460000276565552</HistMin>
+        <HistMax>0.5852000117301941</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|2|0|0|1|2|0|0|0|1|1|0|0|1|1|0|0|0|4|0|1|1|1|2|0|0|1|1|0|0|2|0|0|1|0|0|1|1|0|1|2|3|2|1|1|1|0|0|3|4|0|3|4|1|2|4|2|2|0|3|4|0|4|0|2|2|0|2|0|2|1|2|0|4|2|3|0|3|1|2|0|3|1|1|2|1|3|2|1|0|0|0|1|2|2|0|1|0|0|0|0|1|1|1|0|0|0|0|0|1|1|2|0|0|0|1|0|0|1|0|0|0|0|0|1|1|1|1|0|0|2|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.9800000190734863</MDI>
+      <MDI key="STATISTICS_MEAN">0.38545377529620645</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.3853999972343445</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10679999738931656</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.07532117441969358</MDI>
+      <MDI key="wavelength">842.0</MDI>
+      <MDI key="WavelengthMax">899.5</MDI>
+      <MDI key="WavelengthMin">784.5</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.5852000117301941</MDI>
+      <MDI key="STATISTICS_MEAN">0.3791978870793967</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.3796499967575073</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11460000276565552</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.0719345528155991</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="9">
+    <Description>B8A  central wavelength 865 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.11420000344514847</HistMin>
+        <HistMax>0.6115999817848206</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|0|0|1|1|0|0|1|0|1|1|1|0|0|1|1|0|1|1|2|1|1|0|0|4|1|0|1|2|2|0|1|1|2|1|1|1|1|0|0|1|5|2|2|2|2|4|1|0|3|1|3|1|2|0|1|3|5|2|3|0|3|3|1|1|0|1|3|2|1|2|2|0|2|0|1|1|1|4|3|0|1|2|2|1|3|1|1|1|0|2|2|1|1|0|0|2|0|0|0|0|0|1|1|0|0|0|0|0|2|0|1|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.8260999917984009</MDI>
+      <MDI key="STATISTICS_MEAN">0.3980992246411704</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.39910000562667847</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10589999705553055</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.07170782889167064</MDI>
+      <MDI key="wavelength">865.0</MDI>
+      <MDI key="WavelengthMax">875.0</MDI>
+      <MDI key="WavelengthMin">855.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.6115999817848206</MDI>
+      <MDI key="STATISTICS_MEAN">0.3910091549263034</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.3977999985218048</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.11420000344514847</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.07014952278844429</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="10">
+    <Description>B9  central wavelength 945 nm (60.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.10429999977350235</HistMin>
+        <HistMax>0.5365999937057495</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|1|0|2|0|0|0|2|0|0|1|0|1|1|1|0|0|0|0|0|0|0|1|0|1|1|0|0|1|0|3|2|1|1|1|0|1|0|0|1|1|2|0|5|1|1|0|1|0|1|1|3|0|6|0|4|6|1|0|1|5|1|6|3|2|1|0|4|3|2|2|1|0|1|1|3|1|5|0|2|2|0|1|1|1|1|1|1|0|1|1|3|1|0|2|3|1|0|0|1|0|1|0|0|0|1|1|1|0|1|0|1|0|0|0|2|1|1|1|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.6478000283241272</MDI>
+      <MDI key="STATISTICS_MEAN">0.39916330726109733</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.4007999897003174</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.1005999967455864</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.06123178742682288</MDI>
+      <MDI key="wavelength">945.0</MDI>
+      <MDI key="WavelengthMax">955.0</MDI>
+      <MDI key="WavelengthMin">935.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.5365999937057495</MDI>
+      <MDI key="STATISTICS_MEAN">0.3964183088654364</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.4004499912261963</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10429999977350235</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.06349752418144385</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="11">
+    <Description>B11  central wavelength 1610 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.10930000245571136</HistMin>
+        <HistMax>0.392300009727478</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|1|3|1|0|2|1|0|0|0|1|0|1|1|1|2|0|1|1|1|3|2|0|1|0|0|1|3|2|0|1|0|2|2|1|0|1|3|1|2|1|1|2|4|4|2|2|1|2|3|0|2|3|2|3|1|1|2|2|1|2|2|3|3|1|0|1|1|3|0|1|0|2|1|1|2|1|0|2|4|0|2|2|0|0|0|0|1|0|0|1|1|2|0|0|1|1|0|1|0|0|0|2|0|0|1|0|0|0|1|0|0|1|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|2|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.7008000016212463</MDI>
+      <MDI key="STATISTICS_MEAN">0.2800673558653479</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.2768000066280365</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10270000249147415</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.042734890579325745</MDI>
+      <MDI key="wavelength">1610.0</MDI>
+      <MDI key="WavelengthMax">1655.0</MDI>
+      <MDI key="WavelengthMin">1565.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.392300009727478</MDI>
+      <MDI key="STATISTICS_MEAN">0.2767330986303343</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.2768000066280365</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10930000245571136</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.04305009096152415</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="12">
+    <Description>B12  central wavelength 2190 nm (20.0m)</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.10379999876022339</HistMin>
+        <HistMax>0.33320000767707825</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|1|1|0|1|0|0|3|0|1|2|0|2|0|0|1|0|1|1|2|2|1|2|2|4|2|1|0|4|4|2|2|2|3|1|0|2|2|0|3|0|1|2|4|3|2|2|2|0|2|2|0|0|3|1|3|1|1|0|0|0|1|0|1|1|1|1|2|3|1|0|0|0|1|0|0|0|0|0|0|1|2|0|0|0|0|1|1|0|0|2|0|3|1|0|0|1|0|0|0|0|0|2|0|1|1|0|0|0|0|0|1|0|0|0|0|0|2|0|1|0|0|0|0|0|0|1|0|1|0|0|0|0|2|0|1|1|0|1|0|0|1|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|1|0|1|0|1|1|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">0.6166999936103821</MDI>
+      <MDI key="STATISTICS_MEAN">0.20428308912376683</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.19059999287128448</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10100000351667404</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.04838067848554331</MDI>
+      <MDI key="wavelength">2190.0</MDI>
+      <MDI key="WavelengthMax">2280.0</MDI>
+      <MDI key="WavelengthMin">2100.0</MDI>
+      <MDI key="wavelength_units">nanometers</MDI>
+      <MDI key="STATISTICS_MAXIMUM">0.33320000767707825</MDI>
+      <MDI key="STATISTICS_MEAN">0.20188873245472638</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.18734999746084213</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.10379999876022339</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.04614403282038549</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>

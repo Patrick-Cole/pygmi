@@ -1295,6 +1295,7 @@ def _testfn2():
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r'D:\workdata\PyGMI Test Data\Remote Sensing\ConditionIndex'
+    idir = r'D:\work\Programming\pygmi\pygmi\test\testdata'
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)

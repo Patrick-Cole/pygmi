@@ -1,0 +1,132 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>B4divB2 Iron Oxide</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.9161677</HistMin>
+        <HistMax>1.3751438</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|1|0|0|2|4|0|0|3|2|2|0|1|1|1|1|0|1|2|1|3|0|2|1|2|0|1|1|0|2|6|1|0|2|0|2|0|4|2|2|1|0|3|4|3|3|2|1|2|0|0|0|2|1|1|1|3|4|0|1|0|2|0|0|1|1|0|0|1|0|1|0|1|2|3|1|1|0|0|0|1|1|0|1|1|2|0|1|1|1|2|0|0|0|0|2|0|1|0|0|1|0|0|1|0|0|2|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|2|0|0|1|0|0|0|0|0|0|0|0|2|0|1|0|0|1|1|1|0|0|0|0|0|1|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">1.3751438</MDI>
+      <MDI key="STATISTICS_MEAN">1.0552448</MDI>
+      <MDI key="STATISTICS_MEDIAN">1.0264564</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.9161677</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.09166542</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="2">
+    <Description>B4divB3 Ferric Iron Fe3+</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.77511674</HistMin>
+        <HistMax>1.18083</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|1|1|0|0|0|1|0|1|0|0|0|1|1|0|2|2|1|4|2|0|1|1|2|2|0|2|3|4|2|2|3|3|1|3|1|2|1|0|4|3|1|3|0|6|3|0|0|0|1|3|2|1|0|2|1|2|1|2|1|0|0|1|0|0|1|0|1|1|3|0|2|0|0|1|1|0|0|1|0|0|2|2|0|0|0|4|0|0|0|1|1|0|1|0|1|1|1|1|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|1|0|1|0|0|0|0|1|1|0|1|0|1|0|1|1|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|0|1|1|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">1.18083</MDI>
+      <MDI key="STATISTICS_MEAN">0.92603314</MDI>
+      <MDI key="STATISTICS_MEDIAN">0.89722764</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.77511674</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.08192142</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="3">
+    <Description>B11divB4 Gossan</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.70795023</HistMin>
+        <HistMax>2.5345964</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|1|1|0|0|1|1|0|0|0|0|0|0|0|1|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|1|0|0|0|2|0|0|0|2|0|1|0|0|1|0|0|0|1|1|1|0|0|0|1|1|0|4|1|1|0|3|0|2|1|0|1|0|2|0|0|1|0|1|2|1|2|1|2|4|2|2|2|1|2|0|5|2|4|3|0|1|1|1|2|0|4|0|1|3|1|2|4|1|2|3|1|5|1|3|1|1|4|2|3|1|0|0|4|1|0|1|0|0|0|3|3|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">2.5345964</MDI>
+      <MDI key="STATISTICS_MEAN">1.9000118</MDI>
+      <MDI key="STATISTICS_MEDIAN">1.963387</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.70795023</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.29986215</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="4">
+    <Description>B11divB12 Laterite or Alteration</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>0.96181756</HistMin>
+        <HistMax>1.6093097</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|1|0|0|1|1|1|0|0|1|0|2|1|1|3|1|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|2|0|0|1|0|0|0|0|0|0|1|0|0|0|1|1|0|0|0|1|1|1|0|1|0|0|0|1|0|1|2|0|0|0|0|0|1|0|0|0|0|1|0|1|0|0|1|1|0|0|0|0|0|0|2|0|0|2|1|1|1|0|0|2|0|0|0|0|1|2|1|0|0|1|1|0|2|1|0|0|1|1|1|2|0|2|0|0|0|0|0|1|1|3|5|0|1|0|1|0|1|2|3|1|1|2|2|3|1|4|0|0|3|2|0|4|0|2|2|1|1|0|4|1|3|0|0|3|1|1|1|0|1|0|3|0|0|2|0|1|0|0|1|1|1|0|0|0|0|1|0|0|1|0|1|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">1.6093097</MDI>
+      <MDI key="STATISTICS_MEAN">1.3932084</MDI>
+      <MDI key="STATISTICS_MEDIAN">1.4498435</MDI>
+      <MDI key="STATISTICS_MINIMUM">0.96181756</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.14915673</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="5">
+    <Description>B12divB8+B3divB4 Ferrous Iron Fe2+</Description>
+    <Histograms>
+      <HistItem>
+        <HistMin>1.4423847</HistMin>
+        <HistMax>2.157506</HistMax>
+        <BucketCount>256</BucketCount>
+        <IncludeOutOfRange>1</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|1|0|0|0|1|0|0|0|1|0|0|0|0|3|0|2|0|0|0|1|4|0|2|3|0|1|0|2|0|0|0|0|2|1|0|3|0|2|2|2|1|2|4|1|2|4|1|0|5|3|2|1|2|4|4|2|1|2|2|5|2|3|2|0|2|1|1|2|1|2|0|0|1|1|4|0|3|1|0|1|0|0|0|1|2|1|0|0|2|0|0|1|0|1|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|2|0|1|0|0|1|0|0|0|0|0|0|1|0|0|0|1|0|0|0|1|1|0|0|1|0|0|0|1|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|1|0|0|1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="AcquisitionDate">2022-03-29 07:36:09</MDI>
+      <MDI key="Section">False</MDI>
+      <MDI key="Sensor">Generic</MDI>
+      <MDI key="STATISTICS_EXCLUDEDVALUES" />
+      <MDI key="STATISTICS_MAXIMUM">2.157506</MDI>
+      <MDI key="STATISTICS_MEAN">1.64642</MDI>
+      <MDI key="STATISTICS_MEDIAN">1.6106293</MDI>
+      <MDI key="STATISTICS_MINIMUM">1.4423847</MDI>
+      <MDI key="STATISTICS_SKIPFACTORX">1</MDI>
+      <MDI key="STATISTICS_SKIPFACTORY">1</MDI>
+      <MDI key="STATISTICS_STDDEV">0.13218299</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>
