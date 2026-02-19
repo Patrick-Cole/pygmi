@@ -980,13 +980,13 @@ class PlotInterp(BasicModule):
         self.le_contours.setPlaceholderText(
             'Number of contour levels (10 default)')
         self.le_contours.hide()
-        self.le_contours.setValidator(QtGui.QIntValidator(1, 999999999))
+        self.le_contours.setValidator(QtGui.QIntValidator(1, 2147483647))
         self.le_lineclipu.setPlaceholderText('% of high values to exclude')
         self.le_lineclipu.setValidator(
-            QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9))
+            QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.le_lineclipl.setPlaceholderText('% of low values to exclude')
         self.le_lineclipl.setValidator(
-            QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9))
+            QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.btn_saveimg.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 

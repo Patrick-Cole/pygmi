@@ -73,7 +73,7 @@ class ImageSeg(BasicModule):
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
         lbl_numclust = QtWidgets.QLabel('Number of clusters')
 
-        val = QtGui.QDoubleValidator(0.0, 1.0, 2)
+        val = QtGui.QDoubleValidator(0.0, 1.0, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.StandardNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.Language.C))
 
@@ -83,7 +83,8 @@ class ImageSeg(BasicModule):
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
-        self.le_scale.setValidator(QtGui.QIntValidator(self))
+        self.le_scale.setValidator(val)
+        self.le_numclust.setValidator(QtGui.QIntValidator(1, 2147483647))
 
         self.setWindowTitle(r'Image Segmentation')
 

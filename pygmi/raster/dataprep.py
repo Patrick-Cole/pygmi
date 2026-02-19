@@ -1011,8 +1011,8 @@ class Metadata(ContextModule):
         self.le_txt_null.setValidator(self.qval)
         self.le_tlx.setValidator(QtGui.QDoubleValidator(self))
         self.le_tly.setValidator(QtGui.QDoubleValidator(self))
-        self.le_xdim.setValidator(QtGui.QDoubleValidator(self))
-        self.le_ydim.setValidator(QtGui.QDoubleValidator(self))
+        self.le_xdim.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
+        self.le_ydim.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
 
         self.proj = GroupProj('Input Projection')
 

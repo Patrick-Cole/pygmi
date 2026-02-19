@@ -78,8 +78,8 @@ class Metadata(ContextModule):
         self.le_utmzone = QtWidgets.QLineEdit()
         self.le_rot = QtWidgets.QLineEdit()
 
-        self.le_lat.setValidator(QtGui.QDoubleValidator(self))
-        self.le_lon.setValidator(QtGui.QDoubleValidator(self))
+        self.le_lat.setValidator(QtGui.QDoubleValidator(-90, 90, -1))
+        self.le_lon.setValidator(QtGui.QDoubleValidator(-180, 180, -1))
         self.le_elev.setValidator(QtGui.QDoubleValidator(self))
         self.le_utmx.setValidator(self.qval)
         self.le_utmy.setValidator(self.qval)
@@ -1375,11 +1375,11 @@ class Occam1D(BasicModule):
         self.le_errfloorres.setValidator(QtGui.QDoubleValidator(self))
         self.le_errfloorphase.setValidator(QtGui.QDoubleValidator(self))
         self.le_targetdepth.setValidator(QtGui.QDoubleValidator(self))
-        self.le_nlayers.setValidator(QtGui.QIntValidator(self))
+        self.le_nlayers.setValidator(QtGui.QIntValidator(1, 2147483647))
         self.le_bottomlayer.setValidator(QtGui.QDoubleValidator(self))
         self.le_airlayer.setValidator(QtGui.QDoubleValidator(self))
         self.le_z1layer.setValidator(QtGui.QDoubleValidator(self))
-        self.le_maxiter.setValidator(QtGui.QIntValidator(self))
+        self.le_maxiter.setValidator(QtGui.QIntValidator(1, 2147483647))
         self.le_targetrms.setValidator(QtGui.QDoubleValidator(self))
 
         self.hs_profnum = MySlider()
@@ -1815,18 +1815,22 @@ def _testfn():
     datadir = r'd:\workdata\MT\\'
     edi_file = datadir + r"synth02.edi"
 
-    # Create an MT object
     mt_obj = MT(edi_file)
+
+    edi_file = datadir + r"synth01.edi"
+    mt_obj1 = MT(edi_file)
     print('loading complete')
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    test = StaticShiftEDI(None)
-    test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
-    test.settings()
-    # test.run()
+    # test = StaticShiftEDI(None)
+    test = Metadata()
+    test.indata['MT - EDI'] = {'SYNTH02': mt_obj, 'SYNTH01': mt_obj1}
+    # test.settings()
+
+    test.run()
 
 
 if __name__ == "__main__":
-    _testfn_occam()
+    _testfn()
