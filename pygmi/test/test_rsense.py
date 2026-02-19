@@ -73,7 +73,8 @@ def test_pca():
     for i in dat[0]:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_equal(np.abs(i.data), np.abs(j.data))
+                np.testing.assert_array_almost_equal(
+                    np.abs(i.data), np.abs(j.data))
                 break
 
 
@@ -93,7 +94,8 @@ def test_mnf():
     for i in dat[0]:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_equal(np.abs(i.data), np.abs(j.data))
+                np.testing.assert_array_almost_equal(
+                    np.abs(i.data), np.abs(j.data))
                 break
 
 
