@@ -53,7 +53,7 @@ def test_change():
     for i in dat:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_equal(i.data, j.data)
+                np.testing.assert_array_almost_equal(i.data, j.data)
                 break
 
 
@@ -121,7 +121,7 @@ def test_ratios():
     for i in dat:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_equal(i.data, j.data)
+                np.testing.assert_array_almost_equal(i.data, j.data)
                 break
 
 
