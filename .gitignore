@@ -5,9 +5,10 @@ data/
 cgs/
 build/
 docs/
+bin/
+.vscode/
 .doctrees/
 .pylint.d/
-
 *.py[co]
 *.cmd
 grvmagc_*.html
