@@ -2,6 +2,7 @@ __pycache__/
 seis/
 dist/
 data/
+cgs/
 build/
 docs/
 .doctrees/
