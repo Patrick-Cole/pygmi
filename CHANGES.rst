@@ -2,6 +2,109 @@
 Changelog
 =========
 
+v3.3.0.0, 19 February 2026
+--------------------------
+* Added rsense tests.
+* Update QLineEdit validators.
+* Save project updates.
+* Section gridding bugfix.
+* Added raps test.
+* Fixed a bug causing images to incorrectly plot on clip to zoom
+* Analytic signal added to testing.
+* Added GeoDataFrame support to project files
+* Bugfix on supervised classification when adding polygons
+* Update to cluster tests.
+* Simplified fftprep function call.
+* Fixed a bug calculating radially averaged power spectrum, where nan were present.
+* Update layer stacking to be more memory efficient
+* Fixed a bug exporting RGB images
+* Updated requirements
+* RGB data can be exported, with white forming nodata in an alpha channel
+* Beta detrend added
+* Added headlight to 3D viewer.
+* RGB files can now be reprojected.
+* Added raster to vector conversion.
+* Fixed half a cell offset on raster xyz export.
+* Fixed a bug where LST was excluded from condition index calculations.
+* Batch import will now automatically select LST as well
+* SEISAN macro file with + next to intensity can be imported.
+* Isoseismic contours will be ignored for datasets with only 1 value
+* Bugfix due to SimPEG API changes
+* MT graph labels no longer overlap
+* Fixed a bug where maps did not update properly on the scatterplot tool.
+* Clip to zoom now has standard font sizes.
+* Fixed a bug where supervised classification crashed on pressing calculate
+* Updated gridding help file.
+* Fixed a bug when gridding a dataset with line numbers.
+* Simple raster plot can now have a logarithmic scale.
+* Fixed a non-critical bug on entry into the vector equation editor
+* Stopped warning issued when signal disconnect attempted, and there is no signal.
+* Changed SelectionMode to ExtendedSelection to that Shift and Ctrl are possible.
+* Simple raster display now plots horizontal colourbar when the width is more than twice the height.
+* Bugfix - some settings functions returned 0 instead of False.
+* Added import of gtx files.
+* Fixed a bug when mosaicing 16 bit integer images
+* Bugfix to minimum curvature
+* Added a tool to calculate dip on the potential field modelling module.
+* Added an error message in cut raster using polygon, for when one of  the datasets has a projection issue.
+* Fixed colour bar export in contours
+* Voxels can be imported from UBC format
+* Voxels can be displayed
+* Gridding can now grid a voxel dataset
+* Voxels can be exported to UBC format
+* Fixed a bug with Geosoft GXF import
+* New features added.
+* Bugfix - PCA and MNF will exclude empty bands
+* Colourbar width can now be specified when exporting GeoTIFFS from the advanced viewer.
+* Structural complexity now includes zero as a null
+* Hyperspectral reflectances less than 1 are rescaled to % *  100 in feature processing
+* Bugfix - fixed a bug exporting contours to GeoTIFF, where the location was wrong
+* Number of contours can now be specified.
+* Help file update
+* X-coordinates on maps are vertical for consistency
+* Analytic Signal added
+* Added ability to import another ASTER tif format
+* Added vector equation editor
+* Added Floyd, Splash and Wheel colormaps
+* Fixed a bug with automatic naming of files in ratios.
+* Internal borehole format changed.
+* API updates for simpeg
+* Fixed a bug with the UBC export
+* Help files update
+* Fixed a bug in layer stacking where round off error affected the number of rows and columns estimated
+* Fixed a coordinate bug with exporting 3D UBC files
+* MT phase tensors can now adjust arrow information.
+* Sections can be exported to 3D UBC format
+* Sections will show UTM coordinates when hovering with mouse.
+* UTM coordinates for sections are exported in aux.xml file.
+* Simple raster display will make sure the colour bar range is not too large.
+* Anaconda dependancies updated in README.rst
+* Added support for S2C scenes
+* Fixed a bug copying data and resetting meta.
+* Fixed a bug in PCA where common mask was not applied.
+* Raster graphing modules will correctly identify sections
+* Update to help files
+* Grid data can now grid sections
+* Spatial variation of b value added
+* Use matched filtering as opposed to butterworth for dataset calculation in matched filtering
+* FFT bugfix.
+* Tests updated for new FFT preparation.
+* Improved FFT preparation by adding Hann taper
+* Restricted RAPS results to less than Nyquist
+* Added the plotting of phase tensor maps to MT
+* Fixed a bug displaying vectors with multiple coordinates.
+* Fixed a bug exporting to 3D kmz
+* Updates to tilt, tiltdepth, fft and matched filtering to show more information.
+* Added low latitude RTP
+* FFT routines now found in fft.py
+* Vertical functions replaced by verticalp
+* Padding for FFT now uses minimum curvature gridding
+* Routines affected include tilt, continuation, rtp
+* Fixed some tests.
+* Added Matched Filtering
+* Improved padding of datasets for FFTs
+* Added CG-6 support to gravity processing
+
 v3.2.9.7, 26 May 2025
 ---------------------
 * Added selected mtpy functions to solve conda problem.
