@@ -6,6 +6,7 @@ cgs/
 build/
 docs/
 bin/
+helpdocs/
 .vscode/
 .doctrees/
 .pylint.d/
