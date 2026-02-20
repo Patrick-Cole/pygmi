@@ -21,6 +21,7 @@ Classes
    pygmi.raster.dataprep.DataReproj
    pygmi.raster.dataprep.GetProf
    pygmi.raster.dataprep.Metadata
+   pygmi.raster.dataprep.RasterToVector
 
 
 Functions
@@ -29,13 +30,12 @@ Functions
 .. autoapisummary::
 
    pygmi.raster.dataprep.cluster_to_raster
-   pygmi.raster.dataprep.fftprep
-   pygmi.raster.dataprep.fft_getkxy
    pygmi.raster.dataprep.fftcont
    pygmi.raster.dataprep.get_shape_bounds
    pygmi.raster.dataprep.merge_median
    pygmi.raster.dataprep.merge_min
    pygmi.raster.dataprep.merge_max
+   pygmi.raster.dataprep.merge_order
    pygmi.raster.dataprep.mosaic
    pygmi.raster.dataprep.redistribute_vertices
    pygmi.raster.dataprep.taylorcont
@@ -54,7 +54,7 @@ Module Contents
    GUI to perform upward and downward continuation on potential field data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -106,7 +106,7 @@ Module Contents
    shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -140,7 +140,7 @@ Module Contents
    resamples them so that they have the same rows and columns.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -202,7 +202,7 @@ Module Contents
    resamples them so that they have the same rows and columns.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -278,7 +278,7 @@ Module Contents
    This class reprojects datasets using the rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -329,7 +329,7 @@ Module Contents
    This class extracts a profile from a raster dataset using a line shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -363,7 +363,7 @@ Module Contents
    GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: banddata
 
@@ -419,6 +419,45 @@ Module Contents
 
 
 
+.. py:class:: RasterToVector(parent=None)
+
+   Bases: :py:obj:`pygmi.misc.BasicModule`
+
+
+   Raster to vector GUI.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: pygmi.main.MainWidget, optional
+
+
+   .. py:method:: setupui()
+
+      Set up UI.
+
+      :rtype: None.
+
+
+
+   .. py:method:: settings(nodialog=False)
+
+      Entry point into item.
+
+      :param nodialog: Run settings without a dialog. The default is False.
+      :type nodialog: bool, optional
+
+      :returns: True if successful, False otherwise.
+      :rtype: bool
+
+
+
+   .. py:method:: saveproj()
+
+      Save project data from class.
+
+      :rtype: None.
+
+
+
 .. py:function:: cluster_to_raster(indata)
 
    Convert cluster datasets to raster datasets.
@@ -427,42 +466,14 @@ Module Contents
    analysis routines, since they are designated 'Cluster' and not 'Raster'.
    This provides a work-around for that.
 
-   :param indata: Dictionary of PyGMI datasets.
+   :param indata: Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
    :type indata: dict
 
-   :returns: **indata** -- Dictionary of PyGMI datasets.
+   :returns: **indata** -- Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
    :rtype: dict
 
 
-.. py:function:: fftprep(data)
-
-   FFT preparation.
-
-   :param data: Input dataset.
-   :type data: pygmi.raster.datatypes.Data
-
-   :returns: * **zfin** (*numpy array.*) -- Output prepared data.
-             * **rdiff** (*int*) -- rows divided by 2.
-             * **cdiff** (*int*) -- columns divided by 2.
-             * **datamedian** (*float*) -- Median of data.
-
-
-.. py:function:: fft_getkxy(fftmod, xdim, ydim)
-
-   Get KX and KY.
-
-   :param fftmod: FFT data.
-   :type fftmod: numpy array
-   :param xdim: cell x dimension.
-   :type xdim: float
-   :param ydim: cell y dimension.
-   :type ydim: float
-
-   :returns: * **KX** (*numpy array*) -- x sample frequencies.
-             * **KY** (*numpy array*) -- y sample frequencies.
-
-
-.. py:function:: fftcont(data, h)
+.. py:function:: fftcont(data, h, showlog=print, piter=iter)
 
    Continuation.
 
@@ -470,6 +481,10 @@ Module Contents
    :type data: pygmi.raster.datatypes.Data
    :param h: Height.
    :type h: float
+   :param showlog: Function for printing text. The default is print.
+   :type showlog: function, optional
+   :param piter: Progress bar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- PyGMI raster data.
    :rtype: pygmi.raster.datatypes.Data
@@ -559,13 +574,27 @@ Module Contents
    :rtype: None.
 
 
-.. py:function:: mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter, showlog=print, singleband=False, forcetype=None, shifttomedian=False, tmpdir=None, nodata=None, method='first', res=None)
+.. py:function:: merge_order(ifiles, igeoms)
+
+   Sort data in an order which ensures overlaps.
+
+   :param ifiles: list of filenames
+   :type ifiles: list
+   :param igeoms: list of geometries
+   :type igeoms: list
+
+   :returns: **ofiles** -- list of filenames
+   :rtype: list
+
+
+.. py:function:: mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter, showlog=print, singleband=False, forcetype=None, shifttomedian=False, tmpdir=None, nodata=None, method='first', res=None, ifiles=None)
 
    Merge files with different numbers of bands and/or band order.
 
    This uses more memory, but is flexible.
 
-   :param dat: List of PyGMI data bands to be merged. Can be empty if idir is provided.
+   :param dat: List of PyGMI data bands to be merged. Can be empty if idir is
+               provided.
    :type dat: list
    :param idir: Directory where file to be mosaiced are found. The default is None.
    :type idir: str, optional
@@ -588,10 +617,12 @@ Module Contents
    :param nodata: Nodata value. The default is None.
    :type nodata: float, optional
    :param method: Mosaic method. Can be 'first', 'last', 'merge_min', 'merge_max' or
-                  'merge_median. The default is 'first'.
+                  'merge_median'. The default is 'first'.
    :type method: str, optional
    :param res: Output resolution. Can be a tuple. The default is None.
    :type res: float, optional
+   :param ifiles: List of input files.
+   :type ifiles: list, optional
 
    :returns: **outdat** -- Output mosaiced dataset.
    :rtype: PyGMI raster data
@@ -601,7 +632,8 @@ Module Contents
 
    Redistribute vertices in a geometry.
 
-   From https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely,
+   From https://stackoverflow.com/questions/34906124/
+   interpolating-every-x-distance-along-multiline-in-shapely,
    and by Mike-T.
 
    :param geom: Geometry from geopandas.
@@ -615,7 +647,7 @@ Module Contents
    :rtype: shapely geometry
 
 
-.. py:function:: taylorcont(data, h)
+.. py:function:: taylorcont(data, h, showlog=print, piter=iter)
 
    Taylor Continuation.
 
@@ -623,6 +655,10 @@ Module Contents
    :type data: pygmi.raster.datatypes.Data
    :param h: Height.
    :type h: float
+   :param showlog: Function for printing text. The default is print.
+   :type showlog: function, optional
+   :param piter: Progress bar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- PyGMI raster data.
    :rtype: pygmi.raster.datatypes.Data
@@ -643,14 +679,18 @@ Module Contents
    :rtype: list of pygmi.raster.datatypes.Data
 
 
-.. py:function:: verticalp(data, order=1)
+.. py:function:: verticalp(data, order=1, showlog=print, piter=iter)
 
    Vertical derivative.
 
    :param data: Input data.
-   :type data: numpy array
+   :type data: pygmi.raster.datatypes.Data
    :param order: Order. The default is 1.
    :type order: float, optional
+   :param showlog: Function for printing text. The default is print.
+   :type showlog: function, optional
+   :param piter: Progress bar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dout** -- Output data
    :rtype: numpy array

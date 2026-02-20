@@ -7,6 +7,9 @@ pygmi.rsense.dataprep
 
    Data preparation for satellite data.
 
+   This focuses on routines to either prepare Sentinel 2 data for topographic
+   correction, or doing the topographic correction itself.
+
 
 
 Classes
@@ -37,7 +40,7 @@ Module Contents
    GUI to calculate topographic correction.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -86,7 +89,7 @@ Module Contents
    GUI to calculate atmospheric correction using Sen2Cor.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

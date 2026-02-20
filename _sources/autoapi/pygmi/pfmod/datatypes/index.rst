@@ -5,7 +5,7 @@ pygmi.pfmod.datatypes
 
 .. autoapi-nested-parse::
 
-   Class for data types.
+   Class for potential field modelling data types.
 
 
 

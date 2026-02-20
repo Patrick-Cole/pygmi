@@ -42,7 +42,7 @@ Module Contents
    GUI to perform MNF transform.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -99,7 +99,7 @@ Module Contents
    GUI to perform PCA transform.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -159,6 +159,8 @@ Module Contents
    :param noisetype: Noise type to calculate. Can be 'diagonal', 'hv average' or ''.
                      The default is ''.
    :type noisetype: str, optional
+   :param piter: Iteration function, used for progress bars. The default is iter.
+   :type piter: function, optional
 
    :returns: * **nevals** (*numpy array*) -- Noise eigenvalues.
              * **nevecs** (*numpy array*) -- Noise eigenvectors.
@@ -211,8 +213,8 @@ Module Contents
 
    PCA Calculation with using list of files in common fit.
 
-   :param dat: List of PyGMI Data.
-   :type dat: list of pygmi.raster.datatypes.Data.
+   :param flist: List of PyGMI Data. Can be 2D for multiple files.
+   :type flist: list of pygmi.raster.datatypes.Data.
    :param ncmps: Number of components to use for filtering. The default is None
                  (meaning all).
    :type ncmps: int or None, optional

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.grav.dataprep &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>pygmi.grav.dataprep &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=252627f5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/documentation_options.js?v=f6912064"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/grav/dataprep/index';</script>
     <link rel="icon" href="../../../../_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -678,6 +695,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.MyMplCanvas"><code class="docutils literal notranslate"><span class="pre">MyMplCanvas</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.MyMplCanvas.update_raster"><code class="docutils literal notranslate"><span class="pre">MyMplCanvas.update_raster()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.PlotDrift"><code class="docutils literal notranslate"><span class="pre">PlotDrift</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData"><code class="docutils literal notranslate"><span class="pre">ProcessData</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.setupui"><code class="docutils literal notranslate"><span class="pre">ProcessData.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.settings"><code class="docutils literal notranslate"><span class="pre">ProcessData.settings()</span></code></a></li>
@@ -686,6 +708,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.calcbase"><code class="docutils literal notranslate"><span class="pre">ProcessData.calcbase()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.gravcor"><code class="docutils literal notranslate"><span class="pre">gravcor()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.geocentric_radius"><code class="docutils literal notranslate"><span class="pre">geocentric_radius()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.theoretical_gravity"><code class="docutils literal notranslate"><span class="pre">theoretical_gravity()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.atmospheric_correction"><code class="docutils literal notranslate"><span class="pre">atmospheric_correction()</span></code></a></li>
@@ -712,6 +735,12 @@ document.write(`
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.MyMplCanvas" title="pygmi.grav.dataprep.MyMplCanvas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MyMplCanvas</span></code></a></p></td>
+<td><p>Matplotlib canvas widget for the actual plot.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.PlotDrift" title="pygmi.grav.dataprep.PlotDrift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotDrift</span></code></a></p></td>
+<td><p>Plot Raster Class.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.ProcessData" title="pygmi.grav.dataprep.ProcessData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProcessData</span></code></a></p></td>
 <td><p>Process Gravity Data.</p></td>
 </tr>
@@ -723,22 +752,25 @@ document.write(`
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.geocentric_radius" title="pygmi.grav.dataprep.geocentric_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocentric_radius</span></code></a>(lat)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.gravcor" title="pygmi.grav.dataprep.gravcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gravcor</span></code></a>(pdat, basethres[, kstat, absbase, dens, showlog])</p></td>
+<td><p>_summary_</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.geocentric_radius" title="pygmi.grav.dataprep.geocentric_radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geocentric_radius</span></code></a>(lat)</p></td>
 <td><p>Geocentric radius calculation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.theoretical_gravity" title="pygmi.grav.dataprep.theoretical_gravity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">theoretical_gravity</span></code></a>(lat)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.theoretical_gravity" title="pygmi.grav.dataprep.theoretical_gravity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">theoretical_gravity</span></code></a>(lat)</p></td>
 <td><p>Calculate the theoretical gravity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.atmospheric_correction" title="pygmi.grav.dataprep.atmospheric_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atmospheric_correction</span></code></a>(h)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.atmospheric_correction" title="pygmi.grav.dataprep.atmospheric_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atmospheric_correction</span></code></a>(h)</p></td>
 <td><p>Calculate the atmospheric correction.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.height_correction" title="pygmi.grav.dataprep.height_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_correction</span></code></a>(lat, h)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.height_correction" title="pygmi.grav.dataprep.height_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_correction</span></code></a>(lat, h)</p></td>
 <td><p>Calculate height correction.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.spherical_bouguer" title="pygmi.grav.dataprep.spherical_bouguer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_bouguer</span></code></a>(h, dens)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.spherical_bouguer" title="pygmi.grav.dataprep.spherical_bouguer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_bouguer</span></code></a>(h, dens)</p></td>
 <td><p>Calculate spherical Bouguer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.time_convert" title="pygmi.grav.dataprep.time_convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_convert</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.grav.dataprep.time_convert" title="pygmi.grav.dataprep.time_convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_convert</span></code></a>(x)</p></td>
 <td><p>Convert hh:mm:ss to seconds.</p></td>
 </tr>
 </tbody>
@@ -748,14 +780,47 @@ document.write(`
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="pygmi.grav.dataprep.MyMplCanvas">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></span><span class="sig-name descname"><span class="pre">MyMplCanvas</span></span><a class="headerlink" href="#pygmi.grav.dataprep.MyMplCanvas" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qtagg.FigureCanvasQTAgg</span></code></p>
+<p>Matplotlib canvas widget for the actual plot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.grav.dataprep.MyMplCanvas.update_raster">
+<span class="sig-name descname"><span class="pre">update_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.MyMplCanvas.update_raster" title="Link to this definition">#</a></dt>
+<dd><p>Update the raster plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>drift</strong> (<em>dict</em>) – Dictionary containing information for drift plots.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pygmi.grav.dataprep.PlotDrift">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></span><span class="sig-name descname"><span class="pre">PlotDrift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.PlotDrift" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>Plot Raster Class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="#pygmi.grav.dataprep.ProcessData" title="pygmi.grav.dataprep.ProcessData"><em>ProcessData</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pygmi.grav.dataprep.ProcessData">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></span><span class="sig-name descname"><span class="pre">ProcessData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></span><span class="sig-name descname"><span class="pre">ProcessData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>Process Gravity Data.</p>
 <p>This class processes gravity data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -821,6 +886,44 @@ document.write(`
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.grav.dataprep.gravcor">
+<span class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></span><span class="sig-name descname"><span class="pre">gravcor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basethres</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kstat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absbase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">978032.67715</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2670</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.gravcor" title="Link to this definition">#</a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdat</strong> (<em>Pandas DataFrame</em>) – _description_</p></li>
+<li><p><strong>basethres</strong> (<em>float</em>) – _description_</p></li>
+<li><p><strong>kstat</strong> (<em>float</em>) – _description_, by default ‘’</p></li>
+<li><p><strong>absbase</strong> (<em>float</em>) – _description_, by default 978032.67715</p></li>
+<li><p><strong>dens</strong> (<em>float</em>) – _description_, by default 2670</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – _description_, by default print</p></li>
+<li><p><strong>pdat</strong> – Gravity data.</p></li>
+<li><p><strong>basethres</strong> – Threshold for base station numbers.</p></li>
+<li><p><strong>kstat</strong> – Known base station number, by default ‘None’</p></li>
+<li><p><strong>absbase</strong> – Known base station absolute gravity, by default 978032.67715</p></li>
+<li><p><strong>dens</strong> – Background Density (kg/m3), by default 2670</p></li>
+<li><p><strong>showlog</strong> – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>_type_</em> – _description_</p></li>
+<li><p><em>Gravity corrections.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>pdat</strong> (<em>Pandas DataFrame</em>) – Gravity data.</p></li>
+<li><p><strong>drift</strong> (<em>dict</em>) – Dictionary containing information for drift plots.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -984,6 +1087,11 @@ surface at a specified geodetic latitude.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.MyMplCanvas"><code class="docutils literal notranslate"><span class="pre">MyMplCanvas</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.MyMplCanvas.update_raster"><code class="docutils literal notranslate"><span class="pre">MyMplCanvas.update_raster()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.PlotDrift"><code class="docutils literal notranslate"><span class="pre">PlotDrift</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData"><code class="docutils literal notranslate"><span class="pre">ProcessData</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.setupui"><code class="docutils literal notranslate"><span class="pre">ProcessData.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.settings"><code class="docutils literal notranslate"><span class="pre">ProcessData.settings()</span></code></a></li>
@@ -992,6 +1100,7 @@ surface at a specified geodetic latitude.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.ProcessData.calcbase"><code class="docutils literal notranslate"><span class="pre">ProcessData.calcbase()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.gravcor"><code class="docutils literal notranslate"><span class="pre">gravcor()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.geocentric_radius"><code class="docutils literal notranslate"><span class="pre">geocentric_radius()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.theoretical_gravity"><code class="docutils literal notranslate"><span class="pre">theoretical_gravity()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.grav.dataprep.atmospheric_correction"><code class="docutils literal notranslate"><span class="pre">atmospheric_correction()</span></code></a></li>
@@ -1024,7 +1133,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

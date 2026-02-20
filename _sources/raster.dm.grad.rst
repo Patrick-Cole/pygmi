@@ -22,6 +22,6 @@ where *n* is the **Strength Factor** that controls the strength of the filter. A
 
 References
 ^^^^^^^^^^
- Cooper, G.R.J. and Cowan, D.R. 2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences, 32, 1585–1591, https://doi.org/10.1016/j.cageo.2006.02.016.
+ Cooper, G.R.J. and Cowan, D.R. 2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences, 32, 1585-1591, https://doi.org/10.1016/j.cageo.2006.02.016.
  
  Cooper,G.R.J., Cowan, D.R. 2007. Enhancing linear features in image data using horizontal orthogonal gradient ratios. Computers and Geosciences, 33, p.981-984 

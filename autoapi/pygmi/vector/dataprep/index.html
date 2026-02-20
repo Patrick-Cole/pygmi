@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.vector.dataprep &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>pygmi.vector.dataprep &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,15 +37,15 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=252627f5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/documentation_options.js?v=f6912064"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/vector/dataprep/index';</script>
     <link rel="icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="pygmi.vector.graphs" href="../graphs/index.html" />
+    <link rel="next" title="pygmi.vector.datatypes" href="../datatypes/index.html" />
     <link rel="prev" title="pygmi.vector" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.vector</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -687,6 +704,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.setupui"><code class="docutils literal notranslate"><span class="pre">DataGrid.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.dxy_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.dxy_change()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.grid_method_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.grid_method_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.grid_type_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.grid_type_change()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.settings"><code class="docutils literal notranslate"><span class="pre">DataGrid.settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.saveproj"><code class="docutils literal notranslate"><span class="pre">DataGrid.saveproj()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.acceptall"><code class="docutils literal notranslate"><span class="pre">DataGrid.acceptall()</span></code></a></li>
@@ -694,7 +712,6 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj"><code class="docutils literal notranslate"><span class="pre">DataReproj</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.setupui"><code class="docutils literal notranslate"><span class="pre">DataReproj.setupui()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.acceptall"><code class="docutils literal notranslate"><span class="pre">DataReproj.acceptall()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.settings"><code class="docutils literal notranslate"><span class="pre">DataReproj.settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.saveproj"><code class="docutils literal notranslate"><span class="pre">DataReproj.saveproj()</span></code></a></li>
 </ul>
@@ -721,11 +738,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.txtlinecnt"><code class="docutils literal notranslate"><span class="pre">txtlinecnt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.filesplit"><code class="docutils literal notranslate"><span class="pre">filesplit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.gridxyz"><code class="docutils literal notranslate"><span class="pre">gridxyz()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.gridvolume"><code class="docutils literal notranslate"><span class="pre">gridvolume()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.lltomap"><code class="docutils literal notranslate"><span class="pre">lltomap()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.maptobounds"><code class="docutils literal notranslate"><span class="pre">maptobounds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.maptovector"><code class="docutils literal notranslate"><span class="pre">maptovector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.quickgrid"><code class="docutils literal notranslate"><span class="pre">quickgrid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.reprojxy"><code class="docutils literal notranslate"><span class="pre">reprojxy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.xy_to_r"><code class="docutils literal notranslate"><span class="pre">xy_to_r()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.fast_sort"><code class="docutils literal notranslate"><span class="pre">fast_sort()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -784,20 +804,29 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.gridxyz" title="pygmi.vector.dataprep.gridxyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridxyz</span></code></a>(x, y, z, dxy, *[, nullvalue, method, bdist, ...])</p></td>
 <td><p>Grid xyz data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.lltomap" title="pygmi.vector.dataprep.lltomap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lltomap</span></code></a>(lat, lon)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.gridvolume" title="pygmi.vector.dataprep.gridvolume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridvolume</span></code></a>(x, y, z, val, dxy, *[, dat, showlog])</p></td>
+<td><p>Grid volume data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.lltomap" title="pygmi.vector.dataprep.lltomap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lltomap</span></code></a>(lat, lon)</p></td>
 <td><p>Convert a latitude and longitude to a 1:50,000 sheet name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.maptobounds" title="pygmi.vector.dataprep.maptobounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maptobounds</span></code></a>(mapsheet[, crs_to, showlog])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.maptobounds" title="pygmi.vector.dataprep.maptobounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maptobounds</span></code></a>(mapsheet[, crs_to, showlog])</p></td>
 <td><p>Convert a South African map sheet name to bounds.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.maptovector" title="pygmi.vector.dataprep.maptovector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maptovector</span></code></a>(maplist)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.maptovector" title="pygmi.vector.dataprep.maptovector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maptovector</span></code></a>(maplist)</p></td>
 <td><p>Create a vector layer from map numbers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.quickgrid" title="pygmi.vector.dataprep.quickgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quickgrid</span></code></a>(x, y, z, dxy, *[, numits, showlog])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.quickgrid" title="pygmi.vector.dataprep.quickgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quickgrid</span></code></a>(x, y, z, dxy, *[, numits, showlog])</p></td>
 <td><p>Do a quick grid.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.reprojxy" title="pygmi.vector.dataprep.reprojxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reprojxy</span></code></a>(x, y, iwkt, owkt[, showlog])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.reprojxy" title="pygmi.vector.dataprep.reprojxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reprojxy</span></code></a>(x, y, iwkt, owkt[, showlog])</p></td>
 <td><p>Reproject x and y coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.xy_to_r" title="pygmi.vector.dataprep.xy_to_r"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_to_r</span></code></a>(x, y[, piter])</p></td>
+<td><p>Convert x an y values on a section to r.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.dataprep.fast_sort" title="pygmi.vector.dataprep.fast_sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fast_sort</span></code></a>(points[, piter])</p></td>
+<td><p>Fast sort of coordinate pairs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -807,14 +836,14 @@ document.write(`
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.PointCut">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">PointCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">PointCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.PointCut" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>GUI to cut data using shapefiles.</p>
 <p>This class cuts point datasets using a boundary defined by a polygon
 shapefile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -849,13 +878,13 @@ shapefile.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>GUI to grid point data.</p>
 <p>This class grids point data using a nearest neighbourhood technique.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -889,6 +918,12 @@ shapefile.</p>
 <dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataGrid.grid_type_change">
+<span class="sig-name descname"><span class="pre">grid_type_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataGrid.grid_type_change" title="Link to this definition">#</a></dt>
+<dd><p>Check whether section is checked.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -935,31 +970,19 @@ shapefile.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataReproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">DataReproj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>GUI to reproject vector data.</p>
 <p>This class reprojects datasets using the GeoPandas routines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.setupui">
 <span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.setupui" title="Link to this definition">#</a></dt>
 <dd><p>Set up UI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.dataprep.DataReproj.acceptall">
-<span class="sig-name descname"><span class="pre">acceptall</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.DataReproj.acceptall" title="Link to this definition">#</a></dt>
-<dd><p>Accept option.</p>
-<p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None.</p>
@@ -999,14 +1022,14 @@ shapefile.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.Metadata">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.Metadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
 <p>GUI to display and edit vector metadata.</p>
 <p>This class allows the editing of the metadata for a vector dataset using a
 GUI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -1071,12 +1094,12 @@ GUI.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.dataprep.TextFileSplit">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">TextFileSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">TextFileSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.TextFileSplit" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>GUI to split a text file into smaller text files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -1162,11 +1185,11 @@ GUI.</p>
 <li><p><strong>bdist</strong> (<em>int</em>) – Blanking distance in units for cell.</p></li>
 <li><p><strong>extent</strong> (<em>list</em>) – extent of grid.</p></li>
 <li><p><strong>dxy</strong> (<em>float</em>) – Cell size.</p></li>
-<li><p><strong>Nullvalue</strong> (<em>float</em>) – Null or nodata value.</p></li>
+<li><p><strong>nullvalue</strong> (<em>float</em>) – Null or nodata value.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>mask</strong> – Mask to be used for blanking.</p>
+<dd class="field-even"><p><strong>gdat</strong> – Masked output array.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy array</p>
@@ -1184,6 +1207,7 @@ GUI.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>GeoDataFrame</em>) – GeoPandas GeoDataFrame</p></li>
 <li><p><strong>ifile</strong> (<em>str</em>) – shapefile used to cut data</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1204,7 +1228,7 @@ GUI.</p>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – filename of text file.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Total number of lines in a file.</p>
+<dd class="field-even"><p><strong>linecnt</strong> – Total number of lines in a file.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
@@ -1223,7 +1247,7 @@ GUI.</p>
 <li><p><strong>num</strong> (<em>int</em>) – Number of bytes or lines to split by.</p></li>
 <li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Can be ‘bytes’, ‘files’ or ‘lines’. The default is ‘bytes’.</p></li>
 <li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
-<li><p><strong>piter</strong> (<em>iter</em><em>, </em><em>optional</em>) – Progress iterator. The default is None.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress iterator. The default is None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1246,6 +1270,31 @@ GUI.</p>
 <li><p><strong>nullvalue</strong> (<em>float</em><em>, </em><em>optional</em>) – null or nodata value. The default is 1e+20.</p></li>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Gridding method. The default is ‘Nearest Neighbour’.</p></li>
 <li><p><strong>bdist</strong> (<em>float</em><em>, </em><em>optional</em>) – Blanking distance. The default is 4.0.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dat</strong> – Output raster dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pygmi.raster.datatypes.Data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.gridvolume">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">gridvolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.gridvolume" title="Link to this definition">#</a></dt>
+<dd><p>Grid volume data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – X coordinate values.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Y coordinate values.</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – Z coordinate values.</p></li>
+<li><p><strong>val</strong> (<em>numpy array</em>) – Data values.</p></li>
+<li><p><strong>dxy</strong> (<em>float</em>) – Grid cell size, in distance units.</p></li>
+<li><p><strong>dat</strong> (<a class="reference internal" href="../../raster/datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – DEM data used to constrain surface. The default is None.</p></li>
 <li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Display information. The default is print.</p></li>
 </ul>
 </dd>
@@ -1354,6 +1403,7 @@ will be calculated and used.</p></li>
 <li><p><strong>y</strong> (<em>numpy array</em><em> or </em><em>float</em>) – y coordinates</p></li>
 <li><p><strong>iwkt</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>CRS</em>) – Input wkt description or EPSG code (int) or CRS</p></li>
 <li><p><strong>owkt</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>CRS</em>) – Output wkt description or EPSG code (int) or CRS</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1362,6 +1412,47 @@ will be calculated and used.</p></li>
 <li><p><strong>yout</strong> (<em>numpy array</em>) – y coordinates.</p></li>
 </ul>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.xy_to_r">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">xy_to_r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.xy_to_r" title="Link to this definition">#</a></dt>
+<dd><p>Convert x an y values on a section to r.</p>
+<p>This will take into account r being reset for each depth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em><em> or </em><em>float</em>) – x coordinates</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em><em> or </em><em>float</em>) – y coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>r</strong> – r coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.dataprep.fast_sort">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.dataprep.</span></span><span class="sig-name descname"><span class="pre">fast_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.fast_sort" title="Link to this definition">#</a></dt>
+<dd><p>Fast sort of coordinate pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>numpy array</em>) – Coordinates.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – progress bar iterable, default is iter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sorted_pts</strong> – Sorted coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1390,11 +1481,11 @@ will be calculated and used.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="../graphs/index.html"
+       href="../datatypes/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pygmi.vector.graphs</p>
+        <p class="prev-next-title">pygmi.vector.datatypes</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1426,6 +1517,7 @@ will be calculated and used.</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.setupui"><code class="docutils literal notranslate"><span class="pre">DataGrid.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.dxy_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.dxy_change()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.grid_method_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.grid_method_change()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.grid_type_change"><code class="docutils literal notranslate"><span class="pre">DataGrid.grid_type_change()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.settings"><code class="docutils literal notranslate"><span class="pre">DataGrid.settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.saveproj"><code class="docutils literal notranslate"><span class="pre">DataGrid.saveproj()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataGrid.acceptall"><code class="docutils literal notranslate"><span class="pre">DataGrid.acceptall()</span></code></a></li>
@@ -1433,7 +1525,6 @@ will be calculated and used.</p></li>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj"><code class="docutils literal notranslate"><span class="pre">DataReproj</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.setupui"><code class="docutils literal notranslate"><span class="pre">DataReproj.setupui()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.acceptall"><code class="docutils literal notranslate"><span class="pre">DataReproj.acceptall()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.settings"><code class="docutils literal notranslate"><span class="pre">DataReproj.settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.DataReproj.saveproj"><code class="docutils literal notranslate"><span class="pre">DataReproj.saveproj()</span></code></a></li>
 </ul>
@@ -1460,11 +1551,14 @@ will be calculated and used.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.txtlinecnt"><code class="docutils literal notranslate"><span class="pre">txtlinecnt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.filesplit"><code class="docutils literal notranslate"><span class="pre">filesplit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.gridxyz"><code class="docutils literal notranslate"><span class="pre">gridxyz()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.gridvolume"><code class="docutils literal notranslate"><span class="pre">gridvolume()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.lltomap"><code class="docutils literal notranslate"><span class="pre">lltomap()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.maptobounds"><code class="docutils literal notranslate"><span class="pre">maptobounds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.maptovector"><code class="docutils literal notranslate"><span class="pre">maptovector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.quickgrid"><code class="docutils literal notranslate"><span class="pre">quickgrid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.reprojxy"><code class="docutils literal notranslate"><span class="pre">reprojxy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.xy_to_r"><code class="docutils literal notranslate"><span class="pre">xy_to_r()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.dataprep.fast_sort"><code class="docutils literal notranslate"><span class="pre">fast_sort()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1491,7 +1585,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

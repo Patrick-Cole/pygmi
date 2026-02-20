@@ -5,7 +5,7 @@ pygmi.pfmod.misc
 
 .. autoapi-nested-parse::
 
-   These are miscellaneous functions for the program.
+   These are miscellaneous functions for the pfmod routines.
 
 
 
@@ -130,7 +130,7 @@ Module Contents
    Perform Merge of two models.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

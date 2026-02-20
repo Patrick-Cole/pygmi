@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Import Generic FPS &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>Import Generic FPS &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=252627f5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f6912064"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'seis.dm.importfps';</script>
     <link rel="icon" href="_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -741,7 +758,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

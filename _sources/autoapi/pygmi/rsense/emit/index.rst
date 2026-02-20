@@ -111,9 +111,17 @@ Module Contents
 
    :param xrds: an EMIT dataset read into xarray using the emit_xarray function.
    :type xrds: xarray.Dataset
+   :param piter: Progress bar iterator. The default is iter.
+   :type piter: function, optional
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+   :param tnames: list of band names to import, in order. The default is None.
+   :type tnames: list, optional
+   :param metaonly: Retrieve only the metadata for the file. The default is False.
+   :type metaonly: bool, optional
 
    :returns: **dat** -- list of pygmi.raster.datatypes.Data
-   :rtype: list
+   :rtype: list of pygmi.raster.datatypes.Data
 
 
 .. py:function:: main()

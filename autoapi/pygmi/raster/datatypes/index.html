@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.raster.datatypes &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>pygmi.raster.datatypes &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=252627f5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/documentation_options.js?v=f6912064"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/raster/datatypes/index';</script>
     <link rel="icon" href="../../../../_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.raster</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -702,10 +719,12 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.in_bounds"><code class="docutils literal notranslate"><span class="pre">Data.in_bounds()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.meta_from_rasterio"><code class="docutils literal notranslate"><span class="pre">Data.meta_from_rasterio()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.modify_mask"><code class="docutils literal notranslate"><span class="pre">Data.modify_mask()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.plot"><code class="docutils literal notranslate"><span class="pre">Data.plot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.set_mask"><code class="docutils literal notranslate"><span class="pre">Data.set_mask()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.set_transform"><code class="docutils literal notranslate"><span class="pre">Data.set_transform()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.to_mem"><code class="docutils literal notranslate"><span class="pre">Data.to_mem()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.get_vmin_vmax"><code class="docutils literal notranslate"><span class="pre">Data.get_vmin_vmax()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.get_boundary"><code class="docutils literal notranslate"><span class="pre">Data.get_boundary()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta"><code class="docutils literal notranslate"><span class="pre">RasterMeta</span></code></a><ul class="nav section-nav flex-column">
@@ -716,6 +735,8 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.tnames"><code class="docutils literal notranslate"><span class="pre">RasterMeta.tnames</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.banddata"><code class="docutils literal notranslate"><span class="pre">RasterMeta.banddata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.to_sutm"><code class="docutils literal notranslate"><span class="pre">RasterMeta.to_sutm</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.datetime"><code class="docutils literal notranslate"><span class="pre">RasterMeta.datetime</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.nodata"><code class="docutils literal notranslate"><span class="pre">RasterMeta.nodata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.fromData"><code class="docutils literal notranslate"><span class="pre">RasterMeta.fromData()</span></code></a></li>
 </ul>
 </li>
@@ -859,7 +880,7 @@ dxy/2 buffer. Therefore it cannot be used with raster bounds.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.Data">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.datatypes.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><a class="headerlink" href="#pygmi.raster.datatypes.Data" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.raster.datatypes.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><a class="headerlink" href="#pygmi.raster.datatypes.Data" title="Link to this definition">#</a></dt>
 <dd><p>PyGMI Data Object.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.Data.data">
@@ -1028,11 +1049,14 @@ dxy/2 buffer. Therefore it cannot be used with raster bounds.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.Data.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resetmeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.copy" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resetmeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.copy" title="Link to this definition">#</a></dt>
 <dd><p>Make a deepcopy of the function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>resetmeta</strong> (<em>bool</em><em>, </em><em>optional</em>) – This will clear metadata during copy. The default is False.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data0</strong> (<em>numpy arraay</em>) – Input data to replace old data. Must have same shape.</p></li>
+<li><p><strong>resetmeta</strong> (<em>bool</em><em>, </em><em>optional</em>) – This will clear metadata during copy. The default is False.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>data</strong> – PyGMI data type.</p>
@@ -1097,8 +1121,22 @@ dxy/2 buffer. Therefore it cannot be used with raster bounds.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.datatypes.Data.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.plot" title="Link to this definition">#</a></dt>
+<dd><p>Simple data plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ax</strong> (<em>Matplotlib axes</em>) – Matplotlib axes for plot.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.Data.set_mask">
-<span class="sig-name descname"><span class="pre">set_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.set_mask" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.set_mask" title="Link to this definition">#</a></dt>
 <dd><p>Replace the existing mask with a new one.</p>
 <p>The routine also fills the masked areas with nodata.</p>
 <dl class="field-list simple">
@@ -1169,11 +1207,18 @@ The default is 2.5.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.raster.datatypes.Data.get_boundary">
+<span class="sig-name descname"><span class="pre">get_boundary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.get_boundary" title="Link to this definition">#</a></dt>
+<dd><p>Get raster boundary.</p>
+<p>Sets self.geometry to a Polygon of the raster boundary.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.RasterMeta">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.raster.datatypes.</span></span><span class="sig-name descname"><span class="pre">RasterMeta</span></span><a class="headerlink" href="#pygmi.raster.datatypes.RasterMeta" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.raster.datatypes.</span></span><span class="sig-name descname"><span class="pre">RasterMeta</span></span><a class="headerlink" href="#pygmi.raster.datatypes.RasterMeta" title="Link to this definition">#</a></dt>
 <dd><p>PyGMI Raster Metadata Object.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pygmi.raster.datatypes.RasterMeta.sensor">
@@ -1248,6 +1293,28 @@ The default is 2.5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.raster.datatypes.RasterMeta.datetime">
+<span class="sig-name descname"><span class="pre">datetime</span></span><a class="headerlink" href="#pygmi.raster.datatypes.RasterMeta.datetime" title="Link to this definition">#</a></dt>
+<dd><p>date and time of dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pygmi.raster.datatypes.RasterMeta.nodata">
+<span class="sig-name descname"><span class="pre">nodata</span></span><a class="headerlink" href="#pygmi.raster.datatypes.RasterMeta.nodata" title="Link to this definition">#</a></dt>
+<dd><p>grid null or no data value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1343,10 +1410,12 @@ The default is 2.5.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.in_bounds"><code class="docutils literal notranslate"><span class="pre">Data.in_bounds()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.meta_from_rasterio"><code class="docutils literal notranslate"><span class="pre">Data.meta_from_rasterio()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.modify_mask"><code class="docutils literal notranslate"><span class="pre">Data.modify_mask()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.plot"><code class="docutils literal notranslate"><span class="pre">Data.plot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.set_mask"><code class="docutils literal notranslate"><span class="pre">Data.set_mask()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.set_transform"><code class="docutils literal notranslate"><span class="pre">Data.set_transform()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.to_mem"><code class="docutils literal notranslate"><span class="pre">Data.to_mem()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.get_vmin_vmax"><code class="docutils literal notranslate"><span class="pre">Data.get_vmin_vmax()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.Data.get_boundary"><code class="docutils literal notranslate"><span class="pre">Data.get_boundary()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta"><code class="docutils literal notranslate"><span class="pre">RasterMeta</span></code></a><ul class="nav section-nav flex-column">
@@ -1357,6 +1426,8 @@ The default is 2.5.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.tnames"><code class="docutils literal notranslate"><span class="pre">RasterMeta.tnames</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.banddata"><code class="docutils literal notranslate"><span class="pre">RasterMeta.banddata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.to_sutm"><code class="docutils literal notranslate"><span class="pre">RasterMeta.to_sutm</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.datetime"><code class="docutils literal notranslate"><span class="pre">RasterMeta.datetime</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.nodata"><code class="docutils literal notranslate"><span class="pre">RasterMeta.nodata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.raster.datatypes.RasterMeta.fromData"><code class="docutils literal notranslate"><span class="pre">RasterMeta.fromData()</span></code></a></li>
 </ul>
 </li>
@@ -1386,7 +1457,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

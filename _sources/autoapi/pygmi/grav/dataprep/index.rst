@@ -14,6 +14,8 @@ Classes
 
 .. autoapisummary::
 
+   pygmi.grav.dataprep.MyMplCanvas
+   pygmi.grav.dataprep.PlotDrift
    pygmi.grav.dataprep.ProcessData
 
 
@@ -22,6 +24,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.grav.dataprep.gravcor
    pygmi.grav.dataprep.geocentric_radius
    pygmi.grav.dataprep.theoretical_gravity
    pygmi.grav.dataprep.atmospheric_correction
@@ -33,6 +36,36 @@ Functions
 Module Contents
 ---------------
 
+.. py:class:: MyMplCanvas
+
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
+
+
+   Matplotlib canvas widget for the actual plot.
+
+
+   .. py:method:: update_raster(drift)
+
+      Update the raster plot.
+
+      :param drift: Dictionary containing information for drift plots.
+      :type drift: dict
+
+      :rtype: None.
+
+
+
+.. py:class:: PlotDrift(parent=None, data=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   Plot Raster Class.
+
+   :param parent: Reference to the parent routine. The default is None.
+   :type parent: ProcessData, optional
+
+
 .. py:class:: ProcessData(parent=None)
 
    Bases: :py:obj:`pygmi.misc.BasicModule`
@@ -43,7 +76,7 @@ Module Contents
    This class processes gravity data.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -92,6 +125,43 @@ Module Contents
 
       :rtype: None.
 
+
+
+.. py:function:: gravcor(pdat, basethres, kstat='', absbase=978032.67715, dens=2670, showlog=print)
+
+   _summary_
+
+   :param pdat: _description_
+   :type pdat: _type_
+   :param basethres: _description_
+   :type basethres: _type_
+   :param kstat: _description_, by default ''
+   :type kstat: str, optional
+   :param absbase: _description_, by default 978032.67715
+   :type absbase: float, optional
+   :param dens: _description_, by default 2670
+   :type dens: int, optional
+   :param showlog: _description_, by default print
+   :type showlog: _type_, optional
+
+   :returns: * *_type_* -- _description_
+             * *Gravity corrections.*
+
+   :param pdat: Gravity data.
+   :type pdat: Pandas DataFrame
+   :param basethres: Threshold for base station numbers.
+   :type basethres: float
+   :param kstat: Known base station number, by default 'None'
+   :type kstat: float
+   :param absbase: Known base station absolute gravity, by default 978032.67715
+   :type absbase: float
+   :param dens: Background Density (kg/m3), by default 2670
+   :type dens: float
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+
+   :returns: * **pdat** (*Pandas DataFrame*) -- Gravity data.
+             * **drift** (*dict*) -- Dictionary containing information for drift plots.
 
 
 .. py:function:: geocentric_radius(lat)

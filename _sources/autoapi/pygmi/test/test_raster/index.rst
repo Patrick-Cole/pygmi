@@ -19,6 +19,8 @@ Functions
    pygmi.test.test_raster.test_dratio
    pygmi.test.test_raster.test_thgrad
    pygmi.test.test_raster.test_vertical
+   pygmi.test.test_raster.test_raps
+   pygmi.test.test_raster.test_cont
    pygmi.test.test_raster.test_viz
    pygmi.test.test_raster.test_check_dataid
    pygmi.test.test_raster.test_trimraster
@@ -33,9 +35,6 @@ Functions
    pygmi.test.test_raster.test_norm255
    pygmi.test.test_raster.test_corr2d
    pygmi.test.test_raster.smalldata
-   pygmi.test.test_raster.test_io_rasterio
-   pygmi.test.test_raster.test_io_ascii
-   pygmi.test.test_raster.test_io_xyz
    pygmi.test.test_raster.test_normalisation
    pygmi.test.test_raster.test_smooth
    pygmi.test.test_raster.test_agc
@@ -62,6 +61,16 @@ Module Contents
 .. py:function:: test_vertical()
 
    test vertical derivative.
+
+
+.. py:function:: test_raps()
+
+   test raps.
+
+
+.. py:function:: test_cont()
+
+   test continuation.
 
 
 .. py:function:: test_viz()
@@ -132,21 +141,6 @@ Module Contents
 .. py:function:: smalldata()
 
    Small test dataset.
-
-
-.. py:function:: test_io_rasterio(smalldata, ext, drv)
-
-   Tests IO for rasterio files.
-
-
-.. py:function:: test_io_ascii(smalldata)
-
-   Tests IO for ascii files.
-
-
-.. py:function:: test_io_xyz(smalldata)
-
-   Tests IO for xyz files.
 
 
 .. py:function:: test_normalisation()

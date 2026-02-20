@@ -6,12 +6,12 @@ Different ways of defining these classes are available. The simplest is **k-mean
 
 The options available for **Crisp Clustering** are:
 
-1. **Cluster Algorithm** – This can be **k-means**, **advanced k-means** or **w-means**.
-2. **Minimum Clusters** – Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.
-3. **Maximum Clusters** – The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes. 
-4. **Maximum iterations** – Maximum number of iterations to use when generating a solution.
-5. **Terminate if relative change is less than** – Threshold for termination.
-6. **Repeated runs** – Run the algorithm a number of times to ensure robustness with regards to the initial guess.
+1. **Cluster Algorithm** - This can be **k-means**, **advanced k-means** or **w-means**.
+2. **Minimum Clusters** - Clustering can be done for a specific number of clusters or for a range of clusters. This option sets the minimum number of clusters that will be generated.
+3. **Maximum Clusters** - The maximum number in the range of clusters that will be generated. For example, if the minimum number of clusters is 5, and the maximum number of clusters is 7, then 3 interpretations are produced, namely one with 5 classes, one with 6 classes and one with 7 classes. 
+4. **Maximum iterations** - Maximum number of iterations to use when generating a solution.
+5. **Terminate if relative change is less than** - Threshold for termination.
+6. **Repeated runs** - Run the algorithm a number of times to ensure robustness with regards to the initial guess.
 7. **Constrain cluster shape (w-means only)** - 0 is unconstrained, 1 is spherical.
 
 .. figure:: _images/clustcrisp.png

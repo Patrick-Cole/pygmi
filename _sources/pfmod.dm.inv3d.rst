@@ -10,37 +10,37 @@ It is important to ensure the following:
 
 Select the **3D Magnetic Inversion** function from the :doc:`Potential Field Modelling<pfmod>` menu and connect the input rasters to this module. Double-click on the **3D Magnetic Inversion** module to bring up the **Inverse Modelling Parameters** interface:
 
-1. **Dataset Information** – The imported rasters are connected to the correct datasets. 
+1. **Dataset Information** - The imported rasters are connected to the correct datasets. 
 
-  * **DTM Dataset** – This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study.
-  * **Magnetic Dataset** – This is the magnetic data to be modelled.
+  * **DTM Dataset** - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study.
+  * **Magnetic Dataset** - This is the magnetic data to be modelled.
 
-2. **General Properties** – These general properties are important for the inversion. If they are incorrect, or if there is extensive remanence in the area, the inversion results may be poor.
+2. **General Properties** - These general properties are important for the inversion. If they are incorrect, or if there is extensive remanence in the area, the inversion results may be poor.
 
-  * **Height of observation - Magnetic** – The magnetic sensor height in metres.
-  * **Magnetic Field Intensity (nT)** – The intensity of the magnetic field at the time of the survey. This can be calculated using magnetic calculators provided by National Oceanic and Atmospheric Administration (NOAA) at https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm 
-  * **Magnetic Inclination** – The inclination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.
-  * **Magnetic Declination** – This is the declination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.
+  * **Height of observation - Magnetic** - The magnetic sensor height in metres.
+  * **Magnetic Field Intensity (nT)** - The intensity of the magnetic field at the time of the survey. This can be calculated using magnetic calculators provided by National Oceanic and Atmospheric Administration (NOAA) at https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm 
+  * **Magnetic Inclination** - The inclination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.
+  * **Magnetic Declination** - This is the declination of the magnetic field at the time of the survey (in degrees). This can be gotten from NOAA.
 
-3. **Model Extent Properties** – The model extents control the area size, depth and resolution of the model. Typically, one of your datasets are used to fill in most of the fields automatically.
+3. **Model Extent Properties** - The model extents control the area size, depth and resolution of the model. Typically, one of your datasets are used to fill in most of the fields automatically.
 
   * **Get Study Area from following Dataset** - Usually the DTM dataset is chosen, but it can be any of the datasets.
-  * **Upper Top Left X Coordinate** – The north-west corner’s X coordinate of the model in metres.
-  * **Upper Top Left Y Coordinate** – The north-west corner’s Y coordinate of your model in meters.
-  * **Upper Top Left Z Coordinate** – The north-west corner Z coordinate of the model in metres above sea level.
-  * **Total X Extent** – The distance from east to west of the model in metres.
-  * **Total Y Extent** – The distance from north to south of the model in metres.
-  * **Total Z Extent (Depth)** – The depth range of the model in metres.
-  * **X and Y Cell Size** – The width of each model cube in the X and Y direction (in metres).
-  * **Z Cell Size** – The height in metres of each model cube in Z direction.
+  * **Upper Top Left X Coordinate** - The north-west corner’s X coordinate of the model in metres.
+  * **Upper Top Left Y Coordinate** - The north-west corner’s Y coordinate of your model in meters.
+  * **Upper Top Left Z Coordinate** - The north-west corner Z coordinate of the model in metres above sea level.
+  * **Total X Extent** - The distance from east to west of the model in metres.
+  * **Total Y Extent** - The distance from north to south of the model in metres.
+  * **Total Z Extent (Depth)** - The depth range of the model in metres.
+  * **X and Y Cell Size** - The width of each model cube in the X and Y direction (in metres).
+  * **Z Cell Size** - The height in metres of each model cube in Z direction.
 
 4. The number of cells/voxels in the model with the specified extent parameters:
 
-  * **Columns (X)** – This is calculated automatically from extents and cell sizes.
-  * **Rows (Y)** – This is calculated automatically from extents and cell sizes.
-  * **Layers (Z)** – This is calculated automatically from extents and cell sizes.
+  * **Columns (X)** - This is calculated automatically from extents and cell sizes.
+  * **Rows (Y)** - This is calculated automatically from extents and cell sizes.
+  * **Layers (Z)** - This is calculated automatically from extents and cell sizes.
 
-5. **Number of output classes** – The number of classes (lithologies) generated during the inversion process.
+5. **Number of output classes** - The number of classes (lithologies) generated during the inversion process.
 
 .. figure:: _images/pfmodinvmag.png
 

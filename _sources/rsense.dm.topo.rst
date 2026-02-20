@@ -8,8 +8,8 @@ PyGMI uses the C correction (McDonald et al., 2000) to effect the topographic co
 
 Double-clicking on the **Topographic Correction** module brings up a dialog box with the following options:
 
-1. **Digital Elevation Model** – Ensure that the imported DEM file is selected here.
-2. **Solar Azimuth and Solar Zenith** – If the L2A Sentinel-2 in its original format is imported using Import Satellite Data, these values will be extracted automatically from the metadata. However, if the Sentinel-2 data have been exported to a standard raster format (e.g. **GeoTIFF**) and was imported using :doc:`Import Raster Data<raster.dm.importrasterdata>`, the user will need to enter these values. It is important that the values are as accurate as possible to get the best results.
+1. **Digital Elevation Model** - Ensure that the imported DEM file is selected here.
+2. **Solar Azimuth and Solar Zenith** - If the L2A Sentinel-2 in its original format is imported using Import Satellite Data, these values will be extracted automatically from the metadata. However, if the Sentinel-2 data have been exported to a standard raster format (e.g. **GeoTIFF**) and was imported using :doc:`Import Raster Data<raster.dm.importrasterdata>`, the user will need to enter these values. It is important that the values are as accurate as possible to get the best results.
 
 .. figure:: _images/rsensetopo2.png
 

@@ -85,3 +85,9 @@ Module Contents
 
 
 
+   .. py:method:: plot_phase()
+
+      Show phase tensor.
+
+
+

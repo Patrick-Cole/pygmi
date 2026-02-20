@@ -46,7 +46,7 @@ Module Contents
    A combobox to select data bands.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -66,7 +66,7 @@ Module Contents
    Import Data GUI - Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param ifile: Input file. The default is ''.
    :type ifile: str, optional
    :param filt: File filter. The default is ''.
@@ -101,7 +101,7 @@ Module Contents
    Import RGB Image GUI- Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -220,10 +220,10 @@ Module Contents
 
 .. py:function:: get_geosoft(hfile)
 
-   Get Geosoft file.
+   Get Geosoft file (uncompressed).
 
-   :param ifile: filename to import
-   :type ifile: str
+   :param hfile: filename to import
+   :type hfile: str
 
    :returns: **dat** -- Dataset imported
    :rtype: list of pygmi.raster.datatypes.Data
@@ -237,7 +237,7 @@ Module Contents
    Export Data GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: ofile
 
@@ -254,18 +254,29 @@ Module Contents
 
 
 
-   .. py:method:: run()
+   .. py:method:: run(option=None)
 
       Entry point into the routine, used to run context menu item.
 
-      :returns: True if successful, False otherwise.
-      :rtype: bool
+      :returns: * *bool* -- True if successful, False otherwise.
+                * **option** (*str*) -- A string option. The default is None.
 
 
 
    .. py:method:: acceptall()
 
       Accept choice.
+
+
+
+   .. py:method:: export_ubc(data)
+
+      Export a section to a 3D UBC mesh and model.
+
+      :param data: dataset to export
+      :type data: PyGMI raster Data
+
+      :rtype: None.
 
 
 

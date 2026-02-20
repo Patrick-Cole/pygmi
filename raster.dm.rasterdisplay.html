@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Raster Data Display &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>Raster Data Display &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,16 +37,16 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=252627f5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f6912064"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'raster.dm.rasterdisplay';</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Select Input Raster Bands" href="raster.cm.selectbands.html" />
-    <link rel="prev" title="Extract Profile from Raster" href="raster.dm.proffromraster.html" />
+    <link rel="prev" title="Convert Raster to Vector Dataset" href="raster.dm.rtov.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -696,15 +713,15 @@ document.write(`
 <p>This allows for the display of raster data in a variety of ways common to most image processing packages. The resultant dataset can then be exported as a <strong>GeoTIFF</strong> for vector interpretation in a Graphical Information System (GIS) package.</p>
 <p>The <strong>Raster Data Display</strong> interface has the following elements:</p>
 <ol class="arabic simple">
-<li><p>Raster display – the raster is displayed using the settings selected on the left of the interface.</p></li>
-<li><p>Histogram display – a histogram of the data distribution coloured using the selected colour bar. When the mouse pointer hovers over the raster display the data value at the pointer location appears in the top right corner of the histogram display.</p></li>
+<li><p>Raster display - the raster is displayed using the settings selected on the left of the interface.</p></li>
+<li><p>Histogram display - a histogram of the data distribution coloured using the selected colour bar. When the mouse pointer hovers over the raster display the data value at the pointer location appears in the top right corner of the histogram display.</p></li>
 <li><p>Coordinates - when the mouse pointer hovers over the raster display the coordinates of the pointer appears here.</p></li>
-<li><p><strong>Display Type</strong> – the type of data displayed in the raster display. Options are <strong>Single Colour Map</strong>, <strong>Contour</strong>, <strong>RGB Ternary</strong> and <strong>CMY Ternary</strong>.</p></li>
+<li><p><strong>Display Type</strong> - the type of data displayed in the raster display. Options are <strong>Single Colour Map</strong>, <strong>Contour</strong>, <strong>RGB Ternary</strong> and <strong>CMY Ternary</strong>.</p></li>
 <li><p><strong>Data Bands</strong> - the bands to be used in the main display are selected here. When a ternary displayed type is selected the user has the ability to select three bands to display.</p></li>
-<li><p><strong>Histogram Stretch</strong> – settings that determine the type of histogram stretch.</p></li>
-<li><p><strong>Colour Bar</strong> – a dropdown box allows the user to select from a long list of colour bars.</p></li>
+<li><p><strong>Histogram Stretch</strong> - settings that determine the type of histogram stretch.</p></li>
+<li><p><strong>Colour Bar</strong> - a dropdown box allows the user to select from a long list of colour bars.</p></li>
 <li><p><strong>Sunshading</strong> - this option applies a sunshade algorithm to the data.</p></li>
-<li><p><strong>Save GeoTIFF</strong> – Once the user is satisfied with the raster display they can save the data to a georeferenced image in <strong>GeoTIFF</strong> format. Note that this is an RGB image and does not contain actual data values.</p></li>
+<li><p><strong>Save GeoTIFF</strong> - Once the user is satisfied with the raster display they can save the data to a georeferenced image in <strong>GeoTIFF</strong> format. Note that this is an RGB image and does not contain actual data values.</p></li>
 <li><p>Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, etc.</p></li>
 </ol>
 <figure class="align-default" id="id1">
@@ -719,7 +736,7 @@ document.write(`
 <p>The four Display Types available in this module are:</p>
 <ol class="arabic simple">
 <li><p><strong>Single Colour Map</strong> - This displays a single band of data by mapping its values to a colour map or colour table. Other packages often refer to it as a pseudo colour map.</p></li>
-<li><p><strong>Contour</strong> - This has the same options as the single colour map but displays the data using contours instead.</p></li>
+<li><p><strong>Contour</strong> - This has the same options as the single colour map but displays the data using contours instead. The user can also enter in the number of contour levels. Ten levels is the default.</p></li>
 <li><p><strong>RGB Ternary</strong> - This option displays three bands, one red, one green and one blue. Because of this, no colour map can be chosen. Three bands must be chosen. Histogram stretch is the same as for previous sections.</p></li>
 <li><p><strong>CMY Ternary</strong> - This option displays three bands, one cyan, one magenta and one yellow. As before, no colour map can be chosen, and three bands must be chosen. Histogram stretch is the same as for previous sections.</p></li>
 </ol>
@@ -738,7 +755,7 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Linear with Percent Clip</strong> – the percentage clips determine the percentage of outliers that will be removed from the stretch.</p></li>
+<li><p><strong>Linear with Percent Clip</strong> - the percentage clips determine the percentage of outliers that will be removed from the stretch.</p></li>
 <li><p><strong>Histogram Equalisation</strong> - all colours are assigned the same amount of data samples so that maximum change is seen in the map.</p></li>
 </ul>
 </div></blockquote>
@@ -771,21 +788,27 @@ document.write(`
 <p><span class="caption-text">Sunshading options.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
+<figure class="align-default" id="id5">
+<img alt="_images/rasterinterp4b.png" src="_images/rasterinterp4b.png" />
+<figcaption>
+<p><span class="caption-text">Example of sunshading using different settings.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="save-geotiff">
 <h2>Save GeoTIFF<a class="headerlink" href="#save-geotiff" title="Link to this heading">#</a></h2>
 <p>Use this to save your final maps as a <strong>GeoTIFF</strong> image. This will also save two colour bars (one vertical and one horizontal) or a ternary colour bar. The size of the colour bar relates to how big you wish it to be on the paper map. Note that the GeoTIFF image is an RGB image and does not contain actual data values.</p>
 <p>The user is prompted for the following information:</p>
 <ol class="arabic simple">
-<li><p>The length of the colour bar in inches.</p></li>
+<li><p>The length and width of the colour bar in inches.</p></li>
 <li><p>For a <strong>Single Colour Map</strong> or <strong>Contour</strong> map the user must enter the data units. This will appear next to the colour bar.</p></li>
 <li><p>For an <strong>RGB Ternary</strong> or <strong>CMY Ternary</strong> image the user must enter the names that will appear at each colour on the ternary colour bar.</p></li>
 <li><p>The image as been saved once the <strong>Save to GeoTIFF is complete!</strong> message appears.</p></li>
 </ol>
-<figure class="align-default" id="id5">
+<figure class="align-default" id="id6">
 <img alt="_images/rasterinterp5.png" src="_images/rasterinterp5.png" />
 <figcaption>
-<p><span class="caption-text">Dialog boxes that appear when selecting Save GeoTIFF.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+<p><span class="caption-text">Dialog boxes that appear when selecting Save GeoTIFF.</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
@@ -809,12 +832,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="raster.dm.proffromraster.html"
+       href="raster.dm.rtov.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Extract Profile from Raster</p>
+        <p class="prev-next-title">Convert Raster to Vector Dataset</p>
       </div>
     </a>
     <a class="right-next"
@@ -871,7 +894,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

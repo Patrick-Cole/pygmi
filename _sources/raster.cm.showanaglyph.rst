@@ -7,9 +7,9 @@ An anaglyph of the raster data (3D image) can be displayed. Data is reprocessed 
 * **Bands** - dropdown to choose the band to display
 * **Type** - Choice for which type of anaglyph to calculate. This can be Dubois (red-green), green-magenta, amber-blue, True (red-green), gray (red-green), optimised (red-green)
 * **Colour Bar** - colours to map to the image.
-* **Scale** – Multiplier applied to Z values to exaggerate features. 
-* **Image angle** – angle to tilt each image used for the left and right eyes.
-* **Sunshade** – apply sunshade effect to anaglyph.
+* **Scale** - Multiplier applied to Z values to exaggerate features. 
+* **Image angle** - angle to tilt each image used for the left and right eyes.
+* **Sunshade** - apply sunshade effect to anaglyph.
 
 .. figure:: _images/rasteranaglyph.png
 

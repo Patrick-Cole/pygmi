@@ -28,6 +28,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.mag.tiltdepth.tiltdepth
    pygmi.mag.tiltdepth.distpc
    pygmi.mag.tiltdepth.vgrad
 
@@ -43,7 +44,7 @@ Module Contents
    Primary class for the Tilt Depth.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: self.mmc
 
@@ -74,14 +75,6 @@ Module Contents
 
       :returns: True if successful, False otherwise.
       :rtype: bool
-
-
-
-   .. py:method:: change_cbar1()
-
-      Change the colour map for the colour bar.
-
-      :rtype: None.
 
 
 
@@ -121,17 +114,25 @@ Module Contents
 
 
 
-   .. py:method:: tiltdepth(data)
+.. py:function:: tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print)
 
-      Calculate tilt depth.
+   Calculate tilt depth.
 
-      Output is stored in self.outdata.
+   Output is stored in self.outdata.
 
-      :param data: PyGMI raster dataset.
-      :type data: pygmi.raster.datatypes.Data
+   :param data: PyGMI raster dataset.
+   :type data: pygmi.raster.datatypes.Data
+   :param inc: Magnetic inclination, by default None.
+   :type inc: float
+   :param dec: Magnetic declination, by default None.
+   :type dec: float
+   :param piter: Progress bar iterator. The default is None.
+   :type piter: function, optional
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
 
-      :rtype: None.
-
+   :returns: **gdf** -- Resulting depths and coordinates.
+   :rtype: GeoDataFrame
 
 
 .. py:function:: distpc(dx, dy, dx0, dy0, dcnt)

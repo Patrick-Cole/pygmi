@@ -10,7 +10,7 @@ The interface contains the following features and options:
 4. **Rose Diagram Type** - The user can specify how features are defined:
 
   * **Average angle per feature** - one angle per feature defined by the start and end point of the feature.
-  * **Angle per segment in the feature** – each segment making up a feature is considered separately.
+  * **Angle per segment in the feature** - each segment making up a feature is considered separately.
   
 5. **Value** - The number of angles in the rose diagram.
 6. Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image, etc.
@@ -21,6 +21,6 @@ The interface contains the following features and options:
 
 References
 ^^^^^^^^^^
-Nemec, W. 1988. The shape of the rose. Sedimentary Geology, 59, 149–152, https://doi.org/10.1016/0037-0738(88)90105-4.
+Nemec, W. 1988. The shape of the rose. Sedimentary Geology, 59, 149-152, https://doi.org/10.1016/0037-0738(88)90105-4.
 
 Sanderson, D.J. and Peacock, D.C.P. 2020. Making rose diagrams fit-for-purpose. Earth-Science Reviews, 201, 103055, https://doi.org/10.1016/j.earscirev.2019.103055.

@@ -44,7 +44,7 @@ Module Contents
    GUI to calculate change indices.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -85,25 +85,9 @@ Module Contents
 
 
 
-   .. py:method:: setindices()
-
-      Set the available indices.
-
-      :rtype: None.
-
-
-
    .. py:method:: invert_selection()
 
       Invert the selected indices.
-
-      :rtype: None.
-
-
-
-   .. py:method:: set_selected_indices()
-
-      Set the selected indices.
 
       :rtype: None.
 

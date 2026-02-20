@@ -18,6 +18,7 @@ Functions
    pygmi.test.test_cluster.test_cluster
    pygmi.test.test_cluster.test_crisp
    pygmi.test.test_cluster.test_fuzzy
+   pygmi.test.test_cluster.test_segment
 
 
 Module Contents
@@ -36,5 +37,10 @@ Module Contents
 .. py:function:: test_fuzzy()
 
    test fuzzy cluster.
+
+
+.. py:function:: test_segment()
+
+   Test image segmentation.
 
 

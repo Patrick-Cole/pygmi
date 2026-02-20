@@ -8,22 +8,22 @@ The EM interface has the following sections and options:
 
 1. Data selection, sensor specifications and model settings:
 
-  * **Line Number** – The line number along which the station/sampling point is located.
-  * **Fid/Station Name** – The unique identifier of the sampling point or station name that will be modelled.
-  * **Bird Height** – The height of the sensor above the terrain.
-  * **Data channel prefix** – The prefix in the ASCII data file, indicating a data channel.
-  * **Waveform Type** – An option to select the waveform from a list of standard types.  This can be **VTEM Waveform**, **RampOffWaveform**, **TrapezoidWaveform**, **QuarterSineRampOnWaveform**, **TriangularWaveform** and **HalfSineWaveform**.
-  * **Tx Peak time** – The time when the input waveform is at its maximum.
-  * **Tx Ramp Off start time** – The time at which the input waveform turns off.
-  * **Tx Off Time** –  The time when the waveform is completely off.
-  * **Source Type** – Can be **CircularLoop** or **MagDipole**.
-  * **Tx Orientation** – The transmitter orientation, can be **x**, **y** or **z**.
-  * **Tx Area** – The transmitter area (only for a circular loop source).
-  * **Number of turns in loop** – Only available for a circular loop source.
-  * **Current in loop** – Only available for a circular loop source.
+  * **Line Number** - The line number along which the station/sampling point is located.
+  * **Fid/Station Name** - The unique identifier of the sampling point or station name that will be modelled.
+  * **Bird Height** - The height of the sensor above the terrain.
+  * **Data channel prefix** - The prefix in the ASCII data file, indicating a data channel.
+  * **Waveform Type** - An option to select the waveform from a list of standard types.  This can be **VTEM Waveform**, **RampOffWaveform**, **TrapezoidWaveform**, **QuarterSineRampOnWaveform**, **TriangularWaveform** and **HalfSineWaveform**.
+  * **Tx Peak time** - The time when the input waveform is at its maximum.
+  * **Tx Ramp Off start time** - The time at which the input waveform turns off.
+  * **Tx Off Time** -  The time when the waveform is completely off.
+  * **Source Type** - Can be **CircularLoop** or **MagDipole**.
+  * **Tx Orientation** - The transmitter orientation, can be **x**, **y** or **z**.
+  * **Tx Area** - The transmitter area (only for a circular loop source).
+  * **Number of turns in loop** - Only available for a circular loop source.
+  * **Current in loop** - Only available for a circular loop source.
   * **Permeability of the background**
-  * **Rx Orientation** – Receiver orientation, can be **x**, **y** or **z**.
-  * **Mesh properties** – The dimensional properties of the mesh that will be used to discretise the solutions:
+  * **Rx Orientation** - Receiver orientation, can be **x**, **y** or **z**.
+  * **Mesh properties** - The dimensional properties of the mesh that will be used to discretise the solutions:
   
     * **Mesh cell size**
     * **Mesh number cells in x direction**
@@ -31,10 +31,10 @@ The EM interface has the following sections and options:
     * **Mesh number of cells to pad**
     * **Pad cell multiplier**
   
-  * **Conductivity Air** – In S/m.
-  * **Conductivity Halfspace** – In S/m.
+  * **Conductivity Air** - In S/m.
+  * **Conductivity Halfspace** - In S/m.
   * **Data Relative Error (%)**
-  * **Data Noise Floor** – In V/Am\ :sup:`4` .
+  * **Data Noise Floor** - In V/Am\ :sup:`4` .
   * **Optimization**: Maximum number of iterations.
 
 2. **Load window times**: Select the text file with the window times.

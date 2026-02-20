@@ -10,9 +10,9 @@ When clicking on the **Calculate Band Ratios** module, as dialog box appears tha
 
 The **Calculate Band Ratios** interface has the following options:
 
-1. **Sensor** – The satellite sensor type of the input dataset.
-2. **Ratios** – Ratios applicable to the data sensor type. Ratios with a tick mark next to them will be calculated. To deselect a ratio click on it and the tick mark will disappear.
-3. **Invert Selection** – If only a few ratios must be calculated, it may be easier to deselect them and click on Invert Selection.
+1. **Sensor** - The satellite sensor type of the input dataset.
+2. **Ratios** - Ratios applicable to the data sensor type. Ratios with a tick mark next to them will be calculated. To deselect a ratio click on it and the tick mark will disappear.
+3. **Invert Selection** - If only a few ratios must be calculated, it may be easier to deselect them and click on Invert Selection.
  
 .. figure:: _images/rsenseratio2.png
 
@@ -24,4 +24,4 @@ References
 ^^^^^^^^^^
  Kalinowski, A., Oliver, S., 2004, ASTER Mineral Index Processing Manual. Remote Sensing Applications, Geoscience Australia, 36 pp.
 
- Van der Meer, F.D., van der Werff, H.M.A., van Ruitenbeek, F.J.A., 2014. Potential of ESA’s Sentinel-2 for geological applications. Remote Sensing of Environment 148, 124–133. https://doi.org/10.1016/j.rse.2014.03.022
+ Van der Meer, F.D., van der Werff, H.M.A., van Ruitenbeek, F.J.A., 2014. Potential of ESA’s Sentinel-2 for geological applications. Remote Sensing of Environment 148, 124-133. https://doi.org/10.1016/j.rse.2014.03.022

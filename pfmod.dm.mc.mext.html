@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Model Extent Parameters &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>Model Extent Parameters &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=252627f5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f6912064"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'pfmod.dm.mc.mext';</script>
     <link rel="icon" href="_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -700,32 +717,32 @@ document.write(`
 </figcaption>
 </figure>
 <ol class="arabic simple">
-<li><p>Current Model – This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.</p></li>
+<li><p>Current Model - This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.</p></li>
 <li><p>Dataset Information:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>DTM Dataset – This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (<a class="reference external" href="https://www.earthdata.nasa.gov/">https://www.earthdata.nasa.gov/</a>). It is not necessary if you are merely doing a theoretical model of, say, a dyke.</p></li>
-<li><p>Magnetic Dataset – The magnetic data to be modelled.</p></li>
-<li><p>Gravity Dataset – The gravity data to be modelled.</p></li>
-<li><p>Gravity Regional Dataset – This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.</p></li>
-<li><p>Other – Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.</p></li>
+<li><p>DTM Dataset - This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (<a class="reference external" href="https://www.earthdata.nasa.gov/">https://www.earthdata.nasa.gov/</a>). It is not necessary if you are merely doing a theoretical model of, say, a dyke.</p></li>
+<li><p>Magnetic Dataset - The magnetic data to be modelled.</p></li>
+<li><p>Gravity Dataset - The gravity data to be modelled.</p></li>
+<li><p>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.</p></li>
+<li><p>Other - Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p>Model Extent Properties – This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:</p></li>
+<li><p>Model Extent Properties - This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Get Study Area from the following Dataset – If data were imported into the model, the dataset that defines the study area can be selected.</p></li>
-<li><p>Upper Top Left X Coordinate –The north-west corner X coordinate of the model in metres.</p></li>
-<li><p>Upper Top Left Y Coordinate – The north-west corner Y coordinate of the model in metres.</p></li>
-<li><p>Upper Top Left Z Coordinate – The north-west corner Z coordinate of the model in metres above sea level.</p></li>
-<li><p>Total X Extent – The distance in metres from east to west in the model.</p></li>
-<li><p>Total Y Extent – The distance in metres from north to south in the model.</p></li>
-<li><p>Total Z Extent (Depth) – The depth range in metres of the model.</p></li>
-<li><p>X and Y Cell Size – The width of each model cube in the X and Y direction (in metres).</p></li>
-<li><p>Z Cell Size – The height in metres of each model cube in Z direction.</p></li>
+<li><p>Get Study Area from the following Dataset - If data were imported into the model, the dataset that defines the study area can be selected.</p></li>
+<li><p>Upper Top Left X Coordinate -The north-west corner X coordinate of the model in metres.</p></li>
+<li><p>Upper Top Left Y Coordinate - The north-west corner Y coordinate of the model in metres.</p></li>
+<li><p>Upper Top Left Z Coordinate - The north-west corner Z coordinate of the model in metres above sea level.</p></li>
+<li><p>Total X Extent - The distance in metres from east to west in the model.</p></li>
+<li><p>Total Y Extent - The distance in metres from north to south in the model.</p></li>
+<li><p>Total Z Extent (Depth) - The depth range in metres of the model.</p></li>
+<li><p>X and Y Cell Size - The width of each model cube in the X and Y direction (in metres).</p></li>
+<li><p>Z Cell Size - The height in metres of each model cube in Z direction.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="4">
@@ -733,13 +750,13 @@ document.write(`
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Columns (X) – The number of columns automatically calculated from the extents and cell sizes.</p></li>
-<li><p>Rows (Y) – The number of rows automatically calculated from the extents and cell sizes.</p></li>
-<li><p>Layers (Z) – The number of layers automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Columns (X) - The number of columns automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Rows (Y) - The number of rows automatically calculated from the extents and cell sizes.</p></li>
+<li><p>Layers (Z) - The number of layers automatically calculated from the extents and cell sizes.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="5">
-<li><p>Apply changes (reset calculation) – Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.</p></li>
+<li><p>Apply changes (reset calculation) - Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.</p></li>
 </ol>
 <p>The imported datasets can now be assigned to the datasets under Data Information. Make sure to connect the correct raster to the correct dataset. Under the Model Extent Properties, select the dataset that will be used to define the modelling area. The model coordinates and X and Y extents will be update automatically based on the selected dataset. The user selects the desired Z extent and cell sizes. Note that the top left X, Y and Z coordinates and the X and Y extents can be manually changed if you want to change the modelling area, but the area must be within the extent of the DTM that you loaded.</p>
 <figure class="align-default" id="id3">
@@ -812,7 +829,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

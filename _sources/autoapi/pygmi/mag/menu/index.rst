@@ -49,9 +49,21 @@ Module Contents
 
 
 
+   .. py:method:: asig()
+
+      Compute analytic signal.
+
+
+
    .. py:method:: igrf()
 
       Compute IGRF.
+
+
+
+   .. py:method:: mfilt()
+
+      Compute Matched Filtering.
 
 
 

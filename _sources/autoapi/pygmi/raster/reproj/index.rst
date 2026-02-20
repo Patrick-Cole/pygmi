@@ -5,7 +5,7 @@ pygmi.raster.reproj
 
 .. autoapi-nested-parse::
 
-   Reprojection functions.
+   Raster reprojection functions.
 
 
 
@@ -31,13 +31,13 @@ Module Contents
 
 .. py:class:: GroupProj(title='Projection', parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Group Projection GUI widget.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param title: Title for QGroupBox - self.gbox.
    :type title: str
 

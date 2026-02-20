@@ -35,7 +35,6 @@ Functions
    pygmi.raster.cooper.visibility2d
    pygmi.raster.cooper.visibilitytot
    pygmi.raster.cooper.nextpow2
-   pygmi.raster.cooper.vertical
    pygmi.raster.cooper.agc
 
 
@@ -50,7 +49,7 @@ Module Contents
    Class used to gather information via a GUI, for function gradients.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: azi
 
@@ -167,7 +166,7 @@ Module Contents
    Class used to gather information via a GUI, for function visibility2d.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: wsize
 
@@ -261,23 +260,6 @@ Module Contents
    :rtype: float or numpy array
 
 
-.. py:function:: vertical(data, npts=None, xint=1, order=1)
-
-   Vertical derivative.
-
-   :param data: Input data.
-   :type data: numpy array
-   :param npts: Number of points. The default is None.
-   :type npts: int, optional
-   :param xint: X interval. The default is 1.
-   :type xint: float, optional
-   :param order: Order. The default is 1.
-   :type order: int, optional
-
-   :returns: **dz** -- Output data
-   :rtype: numpy array
-
-
 .. py:class:: AGC(parent=None)
 
    Bases: :py:obj:`pygmi.misc.BasicModule`
@@ -286,7 +268,7 @@ Module Contents
    Class used to gather information via a GUI, for function AGC.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: wsize
 
@@ -331,7 +313,7 @@ Module Contents
    :type data: numpy array
    :param wsize: Window size, must be odd.
    :type wsize: int
-   :param atype: AGC type - can be median or mean, default is 'mean'.
+   :param atype: AGC type - can be median, rms or mean, default is 'mean'.
    :type atype: str, optional
    :param nodata: no data value, default is 0.
    :type nodata: float, optional

@@ -188,10 +188,12 @@ Module Contents
       :type: date
 
 
-   .. py:method:: copy(resetmeta=False)
+   .. py:method:: copy(data0=None, resetmeta=False)
 
       Make a deepcopy of the function.
 
+      :param data0: Input data to replace old data. Must have same shape.
+      :type data0: numpy arraay
       :param resetmeta: This will clear metadata during copy. The default is False.
       :type resetmeta: bool, optional
 
@@ -241,7 +243,18 @@ Module Contents
 
 
 
-   .. py:method:: set_mask(mask)
+   .. py:method:: plot(ax)
+
+      Simple data plot.
+
+      :param ax: Matplotlib axes for plot.
+      :type ax: Matplotlib axes
+
+      :rtype: None.
+
+
+
+   .. py:method:: set_mask(mask=None)
 
       Replace the existing mask with a new one.
 
@@ -304,6 +317,15 @@ Module Contents
 
 
 
+   .. py:method:: get_boundary()
+
+      Get raster boundary.
+
+      Sets self.geometry to a Polygon of the raster boundary.
+
+
+
+
 .. py:class:: RasterMeta
 
    PyGMI Raster Metadata Object.
@@ -349,6 +371,18 @@ Module Contents
       flag to convert a file to SUTM.
 
       :type: bool
+
+   .. attribute:: datetime
+
+      date and time of dataset.
+
+      :type: date
+
+   .. attribute:: nodata
+
+      grid null or no data value.
+
+      :type: float
 
 
    .. py:method:: fromData(dat)

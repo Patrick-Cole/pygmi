@@ -5,9 +5,9 @@ pygmi.raster.ginterp
 
 .. autoapi-nested-parse::
 
-   Plot Raster Data.
+   Raster Data Display.
 
-   This is the raster data interpretation module.  This module allows for the
+   This is the raster data display module.  This module allows for the
    display of raster data in a variety of modes, as well as the export of that
    display to GeoTIFF format.
 
@@ -36,15 +36,12 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
    .. attribute:: htype
 
@@ -317,15 +314,12 @@ Module Contents
 
 
 
-.. py:class:: MySunCanvas(parent=None)
+.. py:class:: MySunCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Canvas widget for the sunshading tool.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
    .. attribute:: sun
 
@@ -362,7 +356,7 @@ Module Contents
    modes, as well as the export of that display to GeoTIFF format.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: self.mmc
 

@@ -43,6 +43,7 @@ Functions
    pygmi.rsense.iodefs.get_sentinel2_metadata
    pygmi.rsense.iodefs.get_spot
    pygmi.rsense.iodefs.get_aster_zip
+   pygmi.rsense.iodefs.get_aster_tif
    pygmi.rsense.iodefs.get_aster_metadata
    pygmi.rsense.iodefs.get_aster_hdf
    pygmi.rsense.iodefs.get_aster_ged
@@ -63,7 +64,7 @@ Module Contents
    Import Data GUI - Interfaces with rasterio routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -111,7 +112,7 @@ Module Contents
    to be used by other routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: idir
 
@@ -170,7 +171,7 @@ Module Contents
    GUI import Sentinel 5P data and export to shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -246,7 +247,7 @@ Module Contents
    GUI to export Raster File List.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -319,7 +320,7 @@ Module Contents
 
 .. py:function:: convert_ll_to_utm(lon, lat)
 
-   Convert latitude and longitude to UTM.
+   Convert latitude and longitude to UTM EPSG code.
 
    https://stackoverflow.com/a/40140326/4556479
 
@@ -409,7 +410,7 @@ Module Contents
    :param bounds: Bounds of data to import as (left, bottom, right, top)
    :type bounds: tuple
 
-   :returns: **dat** -- dataset imported
+   :returns: **dat** -- Dataset imported
    :rtype: list of pygmi.raster.datatypes.Data
 
 
@@ -489,7 +490,7 @@ Module Contents
    :param metaonly: Retrieve only the metadata for the file. The default is False.
    :type metaonly: bool, optional
 
-   :returns: **out** -- PyGMI raster dataset
+   :returns: **dat** -- PyGMI raster dataset
    :rtype: pygmi.raster.datatypes.Data
 
 
@@ -508,7 +509,7 @@ Module Contents
    :param metaonly: Retrieve only the metadata for the file. The default is False.
    :type metaonly: bool, optional
 
-   :returns: **out** -- PyGMI raster dataset
+   :returns: **dat** -- PyGMI raster dataset
    :rtype: pygmi.raster.datatypes.Data
 
 
@@ -527,7 +528,7 @@ Module Contents
    :param metaonly: Retrieve only the metadata for the file. The default is False.
    :type metaonly: bool, optional
 
-   :returns: **out** -- PyGMI raster dataset
+   :returns: **dat** -- PyGMI raster dataset
    :rtype: pygmi.raster.datatypes.Data
 
 
@@ -604,6 +605,25 @@ Module Contents
 .. py:function:: get_aster_zip(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
 
    Get ASTER zip Data.
+
+   :param ifile: filename to import
+   :type ifile: str
+   :param piter: Progress bar iterable. Default is None.
+   :type piter: function, optional
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
+   :param tnames: list of band names to import, in order. The default is None.
+   :type tnames: list, optional
+   :param metaonly: Retrieve only the metadata for the file. The default is False.
+   :type metaonly: bool, optional
+
+   :returns: **dat** -- dataset imported
+   :rtype: PyGMI raster Data
+
+
+.. py:function:: get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False)
+
+   Get ASTER tif Data.
 
    :param ifile: filename to import
    :type ifile: str
@@ -717,6 +737,10 @@ Module Contents
    :type cell: float, optional
    :param alpha: How much incident light is reflected (0 to 1). The default is .75.
    :type alpha: float, optional
+   :param piter: Progress bar iterable. Default is None.
+   :type piter: function, optional
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
 
    :returns: **newimg** -- list of PyGMI data.
    :rtype: list of pygmi.raster.datatypes.Data.

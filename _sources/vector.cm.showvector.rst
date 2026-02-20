@@ -10,7 +10,7 @@ More options are available for point data. Data point values are displayed in co
 
 The options on this interface are:
 
-1. **Channel** – Select the attribute to be displayed.
+1. **Channel** - Select the attribute to be displayed.
 2. **Style** - Select the display style for the point data. the options are:
 
   * **Normal**
@@ -18,7 +18,7 @@ The options on this interface are:
   * **Group by Quartile**
   * **Group by K-Means classes**
 
-3. **Colour Bar** – Select a colormap for the data display. 
+3. **Colour Bar** - Select a colormap for the data display. 
 4. Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image with the colour bar, etc.
 
 .. figure:: _images/vectorpointmap.png

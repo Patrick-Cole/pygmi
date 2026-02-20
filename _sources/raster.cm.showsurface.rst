@@ -4,10 +4,9 @@ This shows a simple surface formed by the data. Change the view angle by holding
 
 The options on this interface are:
 
-1. **Bands** – Select the band to be displayed.
-2. **Colormap** – Select a colormap for the data display. The user can choose between **Viridis**, **Jet**, **Gray** and **Terrain**. 
-3. Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image with the colour bar, etc.
-
+1. **Bands** - Select the band to be displayed.
+2. **Colormap** - Select a colormap for the data display. The user can choose between **Viridis**, **Jet**, **Gray** and **Terrain**. 
+3. Vertical exaggeration slider - Used to enhance vertical features.
 
 .. figure:: _images/rastersurface.png
 

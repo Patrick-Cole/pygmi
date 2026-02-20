@@ -5,7 +5,9 @@ pygmi.clust.fuzzy_clust
 
 .. autoapi-nested-parse::
 
-   Fuzzy clustering is a set of clustering routines, making use of fuzzy logic.
+   Fuzzy clustering is a set of clustering routines.
+
+   This makes use of fuzzy logic.
 
 
 
@@ -22,6 +24,8 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.clust.fuzzy_clust.fuzzyclust
+   pygmi.clust.fuzzy_clust.fuzzy_means
    pygmi.clust.fuzzy_clust.fuzzy_dist
    pygmi.clust.fuzzy_clust.xie_beni
 
@@ -37,7 +41,7 @@ Module Contents
    Fuzzy clustering GUI class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -84,66 +88,92 @@ Module Contents
 
 
 
-   .. py:method:: acceptall()
+.. py:function:: fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5, cov_constr=0.0, no_runs=1, max_iter=100, expo=1.5, term_thresh=1e-05, init_type='random', ifiles=None, showlog=print, piter=iter)
 
-      Run.
+   Fuzzy Clustering.
 
-      :rtype: None.
+   :param data: List of PyGMI data (pygmi.raster.datatypes.Data).
+   :type data: list
+   :param cltype: Clustering method, by default 'k-means'
+   :type cltype: str, optional
+   :param min_cluster: minimum number of clusters, by default 5
+   :type min_cluster: int, optional
+   :param max_cluster: maximum number of clusters, by default 5
+   :type max_cluster: int, optional
+   :param cov_constr: scalar between [0 1], by default 0.
+   :type cov_constr: _type_, optional
+   :param no_runs: number of runs, by default 1
+   :type no_runs: int, optional
+   :param max_iter: maximum iterations, by default 100
+   :type max_iter: int, optional
+   :param expo: Fuzzification exponent, by default 1.5
+   :type expo: float, optional
+   :param term_thresh: terminating threshold, by default 0.00001
+   :type term_thresh: float, optional
+   :param init_type: initial guess, by default 'random'
+   :type init_type: str, optional
+   :param ifiles: Files used in 'manual' initial guess, by default None
+   :type ifiles: list, optional
+   :param showlog: Show information using a function. The default is print.
+   :type showlog: function, optional
+   :param piter: Progress bar iterator. The default is iter.
+   :type piter: function, optional
+
+   :returns: **dat_out** -- List of raster datasets of classes.
+   :rtype: list
 
 
+.. py:function:: fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh, expo, cltype, cov_constr, showlog=print, piter=iter)
 
-   .. py:method:: fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh, expo, cltype, cov_constr)
+   Fuzzy clustering.
 
-      Fuzzy clustering.
-
-      Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are
-      fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means.
+   Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are
+   fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means.
 
 
-      :param data: DATA is size M-by-N, where M is the number of samples
-                   and N is the number of coordinates (attributes) for each sample.
-      :type data: numpy array
-      :param no_clust: Number of clusters.
-      :type no_clust: int
-      :param init: INIT may be set to [], in this case the FCM generates random
-                   initial center locations to start the algorithm. Alternatively,
-                   INIT can be of matrix type, either containing a user-given
-                   membership matrix [NO_CLUST M] or a cluster center matrix
-                   [NO_CLUST, N].
-      :type init: numpy array
-      :param centfix: Constrains the position of cluster centers.
-      :type centfix: numpy array
-      :param maxit: MAXIT give the maximum number of iterations..
-      :type maxit: int
-      :param term_thresh: Gives the required minimum improvement in per cent per
-                          iteration. (termination threshold)
-      :type term_thresh: float
-      :param expo: Fuzzification exponent.
-      :type expo: float
-      :param cltype: either 'FCM' for fuzzy c-means (spherically shaped clusters),
-                     'DET' for advanced fuzzy c-means (ellipsoidal clusters, all
-                     clusters use the same ellipsoid), or 'GK' for Gustafson-Kessel
-                     clustering (ellipsoidal clusters, each cluster uses its own
-                     ellipsoid).
-      :type cltype: str
-      :param cov_constr: COV_CONSTR applies only to the GK algorithm. constrains the cluster
-                         shape towards spherical clusters to avoid needle-like clusters.
-                         COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-                         COV_CONSTR = 0 results in no constraining of the covariance
-                         matrices of the clusters.
-      :type cov_constr: float
+   :param data: DATA is size M-by-N, where M is the number of samples
+                and N is the number of coordinates (attributes) for each sample.
+   :type data: numpy array
+   :param no_clust: Number of clusters.
+   :type no_clust: int
+   :param init: INIT may be set to [], in this case the FCM generates random
+                initial center locations to start the algorithm. Alternatively,
+                INIT can be of matrix type, either containing a user-given
+                membership matrix [NO_CLUST M] or a cluster center matrix
+                [NO_CLUST, N].
+   :type init: numpy array
+   :param centfix: Constrains the position of cluster centers.
+   :type centfix: numpy array
+   :param maxit: MAXIT give the maximum number of iterations..
+   :type maxit: int
+   :param term_thresh: Gives the required minimum improvement in per cent per
+                       iteration. (termination threshold)
+   :type term_thresh: float
+   :param expo: Fuzzification exponent.
+   :type expo: float
+   :param cltype: either 'FCM' for fuzzy c-means (spherically shaped clusters),
+                  'DET' for advanced fuzzy c-means (ellipsoidal clusters, all
+                  clusters use the same ellipsoid), or 'GK' for Gustafson-Kessel
+                  clustering (ellipsoidal clusters, each cluster uses its own
+                  ellipsoid).
+   :type cltype: str
+   :param cov_constr: COV_CONSTR applies only to the GK algorithm. constrains the cluster
+                      shape towards spherical clusters to avoid needle-like clusters.
+                      COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
+                      COV_CONSTR = 0 results in no constraining of the covariance
+                      matrices of the clusters.
+   :type cov_constr: float
 
-      :returns: * **uuu** (*numpy array*) -- This membership function matrix contains the grade of
-                  membership of each data sample to each cluster.
-                * **cent** (*numpy array*) -- The coordinates for each cluster center are returned in the rows
-                  of the matrix CENT.
-                * **obj_fcn** (*numpy array*) -- At each iteration, an objective function is minimized to find the
-                  best location for the clusters and its values are returned in
-                  OBJ_FCN.
-                * **vrc** (*numpy array*) -- Variance ration criterion.
-                * *nce* -- Normalised class entropy.
-                * **xbi** (*numpy array*) -- Xie beni index.
-
+   :returns: * **uuu** (*numpy array*) -- This membership function matrix contains the grade of
+               membership of each data sample to each cluster.
+             * **cent** (*numpy array*) -- The coordinates for each cluster center are returned in the rows
+               of the matrix CENT.
+             * **obj_fcn** (*numpy array*) -- At each iteration, an objective function is minimized to find the
+               best location for the clusters and its values are returned in
+               OBJ_FCN.
+             * **vrc** (*numpy array*) -- Variance ration criterion.
+             * *nce* -- Normalised class entropy.
+             * **xbi** (*numpy array*) -- Xie beni index.
 
 
 .. py:function:: fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)

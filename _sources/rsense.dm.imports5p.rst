@@ -4,7 +4,7 @@ Sentinel-5P data is imported here, but unlike other imports, this converts data 
 
 The options are:
 
-1. **Product** – Relevant product contained in the NC file.
+1. **Product** - Relevant product contained in the NC file.
 2. When selecting **Clip using coordinates** the user can enter the following:
 
   * Minimum Longitude
@@ -13,7 +13,7 @@ The options are:
   * Maximum Latitude
 
 3. When selecting **Clip using shapefile** the user can upload a shapefile.
-4. **QA Threshold (0-100)** – The user can select the threshold above which the data will be kept. The QA values are part of the **NC** file.
+4. **QA Threshold (0-100)** - The user can select the threshold above which the data will be kept. The QA values are part of the **NC** file.
 
 
 .. figure:: _images/rsenseimp5p.png

@@ -4,10 +4,10 @@ This module allows the user to calculate condition indices such as temperature c
 
 The following options are available on the interface:
 
-1. **Sensor** – This is the satellite sensor being used. Depending on the sensor, different indices will result.
-2. **Index** – The vegetation index that will be used in the calculations of the VCI and can be EVI, NDVI or MSAVI2.
-3. **Condition Indices** – A list of condition indices to calculate. VCI uses the specified vegetation index, TCI uses land surface temperature and VHI uses VCI and TCI.
-4. **Invert selection** – Convenience button to invert the condition indices selection.
+1. **Sensor** - This is the satellite sensor being used. Depending on the sensor, different indices will result.
+2. **Index** - The vegetation index that will be used in the calculations of the VCI and can be EVI, NDVI or MSAVI2.
+3. **Condition Indices** - A list of condition indices to calculate. VCI uses the specified vegetation index, TCI uses land surface temperature and VHI uses VCI and TCI.
+4. **Invert selection** - Convenience button to invert the condition indices selection.
 
 .. figure:: _images/rsensecind.png
 

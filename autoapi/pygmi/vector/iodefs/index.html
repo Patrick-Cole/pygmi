@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.vector.iodefs &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>pygmi.vector.iodefs &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=252627f5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/documentation_options.js?v=f6912064"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/vector/iodefs/index';</script>
     <link rel="icon" href="../../../../_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.vector</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -683,6 +700,15 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ColumnSelect.saveproj"><code class="docutils literal notranslate"><span class="pre">ColumnSelect.saveproj()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector"><code class="docutils literal notranslate"><span class="pre">ImportVector</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.setupui"><code class="docutils literal notranslate"><span class="pre">ImportVector.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.settings"><code class="docutils literal notranslate"><span class="pre">ImportVector.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.change_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.change_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.get_sfile"><code class="docutils literal notranslate"><span class="pre">ImportVector.get_sfile()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.set_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.set_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVector.saveproj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ"><code class="docutils literal notranslate"><span class="pre">ImportXYZ</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.setupui"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.settings"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.settings()</span></code></a></li>
@@ -690,6 +716,11 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_GXYZ"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_GXYZ()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_delimited"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_delimited()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_excel"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_excel()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel"><code class="docutils literal notranslate"><span class="pre">ImportVoxel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel.settings"><code class="docutils literal notranslate"><span class="pre">ImportVoxel.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVoxel.saveproj()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportXYZ"><code class="docutils literal notranslate"><span class="pre">ExportXYZ</span></code></a><ul class="nav section-nav flex-column">
@@ -700,15 +731,12 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVector.run"><code class="docutils literal notranslate"><span class="pre">ExportVector.run()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector"><code class="docutils literal notranslate"><span class="pre">ImportVector</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.setupui"><code class="docutils literal notranslate"><span class="pre">ImportVector.setupui()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.settings"><code class="docutils literal notranslate"><span class="pre">ImportVector.settings()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.change_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.change_bounds()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.get_sfile"><code class="docutils literal notranslate"><span class="pre">ImportVector.get_sfile()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.set_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.set_bounds()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVector.saveproj()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVoxel"><code class="docutils literal notranslate"><span class="pre">ExportVoxel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVoxel.run"><code class="docutils literal notranslate"><span class="pre">ExportVoxel.run()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.import_ubc"><code class="docutils literal notranslate"><span class="pre">import_ubc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.export_ubc"><code class="docutils literal notranslate"><span class="pre">export_ubc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.get_GXYZ"><code class="docutils literal notranslate"><span class="pre">get_GXYZ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.get_intrepid"><code class="docutils literal notranslate"><span class="pre">get_intrepid()</span></code></a></li>
 </ul>
@@ -734,8 +762,14 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ColumnSelect" title="pygmi.vector.iodefs.ColumnSelect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ColumnSelect</span></code></a></p></td>
 <td><p>A combobox to select vector columns.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ImportXYZ" title="pygmi.vector.iodefs.ImportXYZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportXYZ</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ImportVector" title="pygmi.vector.iodefs.ImportVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportVector</span></code></a></p></td>
+<td><p>GUI to import vector data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ImportXYZ" title="pygmi.vector.iodefs.ImportXYZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportXYZ</span></code></a></p></td>
 <td><p>GUI to import XYZ data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ImportVoxel" title="pygmi.vector.iodefs.ImportVoxel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportVoxel</span></code></a></p></td>
+<td><p>GUI to import voxel data.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ExportXYZ" title="pygmi.vector.iodefs.ExportXYZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportXYZ</span></code></a></p></td>
 <td><p>GUI to export XYZ data.</p></td>
@@ -743,8 +777,8 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ExportVector" title="pygmi.vector.iodefs.ExportVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportVector</span></code></a></p></td>
 <td><p>GUI to export vector data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ImportVector" title="pygmi.vector.iodefs.ImportVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportVector</span></code></a></p></td>
-<td><p>GUI to import vector data.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.ExportVoxel" title="pygmi.vector.iodefs.ExportVoxel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportVoxel</span></code></a></p></td>
+<td><p>GUI to export voxel data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -754,6 +788,12 @@ document.write(`
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.import_ubc" title="pygmi.vector.iodefs.import_ubc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_ubc</span></code></a>(ifile)</p></td>
+<td><p>Import a 3D UBC mesh and model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.export_ubc" title="pygmi.vector.iodefs.export_ubc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_ubc</span></code></a>(ofile, data)</p></td>
+<td><p>Export a section to a 3D UBC mesh and model.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.vector.iodefs.get_GXYZ" title="pygmi.vector.iodefs.get_GXYZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_GXYZ</span></code></a>(ifile[, showlog, piter])</p></td>
 <td><p>Get Geosoft XYZ.</p></td>
 </tr>
@@ -768,12 +808,12 @@ document.write(`
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.iodefs.ColumnSelect">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ColumnSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ColumnSelect" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ColumnSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ColumnSelect" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>A combobox to select vector columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -807,14 +847,91 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>GUI to import vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>ppygmi.main.MainWidget</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.change_bounds">
+<span class="sig-name descname"><span class="pre">change_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.change_bounds" title="Link to this definition">#</a></dt>
+<dd><p>Change the bounds combo.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.get_sfile">
+<span class="sig-name descname"><span class="pre">get_sfile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.get_sfile" title="Link to this definition">#</a></dt>
+<dd><p>Get the filename and crs and bounds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.set_bounds">
+<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.set_bounds" title="Link to this definition">#</a></dt>
+<dd><p>Set the bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bounds</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Bounds defined as (xmin, ymin, xmax, ymax).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportXYZ">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportXYZ" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>GUI to import XYZ data.</p>
 <p>This class imports tabular data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -904,13 +1021,53 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVoxel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportVoxel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVoxel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>GUI to import voxel data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVoxel.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVoxel.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVoxel.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVoxel.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportXYZ">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportXYZ" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportXYZ" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
 <p>GUI to export XYZ data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -931,12 +1088,12 @@ document.write(`
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportVector">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVector" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
 <p>GUI to export vector data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -956,76 +1113,25 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ImportVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
-<p>GUI to import vector data.</p>
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportVoxel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">ExportVoxel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVoxel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.ContextModule" title="pygmi.misc.ContextModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.ContextModule</span></code></a></p>
+<p>GUI to export voxel data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.setupui">
-<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.setupui" title="Link to this definition">#</a></dt>
-<dd><p>Set up UI.</p>
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.ExportVoxel.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportVoxel.run" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into the routine, used to run context menu item.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.settings">
-<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.settings" title="Link to this definition">#</a></dt>
-<dd><p>Entry point into item.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if successful, False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.change_bounds">
-<span class="sig-name descname"><span class="pre">change_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.change_bounds" title="Link to this definition">#</a></dt>
-<dd><p>Change the bounds combo.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.get_sfile">
-<span class="sig-name descname"><span class="pre">get_sfile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.get_sfile" title="Link to this definition">#</a></dt>
-<dd><p>Get the filename and crs and bounds.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.set_bounds">
-<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.set_bounds" title="Link to this definition">#</a></dt>
-<dd><p>Set the bounds.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bounds</strong> (<em>list</em><em> or </em><em>numpy array</em>) – Bounds defined as (xmin, ymin, xmax, ymax).</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pygmi.vector.iodefs.ImportVector.saveproj">
-<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportVector.saveproj" title="Link to this definition">#</a></dt>
-<dd><p>Save project data from class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None.</p>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1033,15 +1139,53 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.import_ubc">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">import_ubc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.import_ubc" title="Link to this definition">#</a></dt>
+<dd><p>Import a 3D UBC mesh and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – Input file name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>vdat</strong> – Imported voxel model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../datatypes/index.html#pygmi.vector.datatypes.VoxModel" title="pygmi.vector.datatypes.VoxModel">pygmi.vector.datatypes.VoxModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.vector.iodefs.export_ubc">
+<span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">export_ubc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ofile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.export_ubc" title="Link to this definition">#</a></dt>
+<dd><p>Export a section to a 3D UBC mesh and model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="../datatypes/index.html#pygmi.vector.datatypes.VoxModel" title="pygmi.vector.datatypes.VoxModel"><em>pygmi.vector.datatypes.VoxModel</em></a>) – Dataset to export</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pygmi.vector.iodefs.get_GXYZ">
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">get_GXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.get_GXYZ" title="Link to this definition">#</a></dt>
 <dd><p>Get Geosoft XYZ.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df2</strong> – Pandas dataframe.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file name.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – progress bar iterable, default is iter.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>df2</strong> – Pandas dataframe.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1051,11 +1195,18 @@ document.write(`
 <span class="sig-prename descclassname"><span class="pre">pygmi.vector.iodefs.</span></span><span class="sig-name descname"><span class="pre">get_intrepid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.get_intrepid" title="Link to this definition">#</a></dt>
 <dd><p>Get Intrepid Database.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>df</strong> – Pandas Dataframe.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Input file name.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Routine to show text messages. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – progress bar iterable, default is iter.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>DataFrame</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>df</strong> – Pandas Dataframe.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1116,6 +1267,15 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ColumnSelect.saveproj"><code class="docutils literal notranslate"><span class="pre">ColumnSelect.saveproj()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector"><code class="docutils literal notranslate"><span class="pre">ImportVector</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.setupui"><code class="docutils literal notranslate"><span class="pre">ImportVector.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.settings"><code class="docutils literal notranslate"><span class="pre">ImportVector.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.change_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.change_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.get_sfile"><code class="docutils literal notranslate"><span class="pre">ImportVector.get_sfile()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.set_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.set_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVector.saveproj()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ"><code class="docutils literal notranslate"><span class="pre">ImportXYZ</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.setupui"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.settings"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.settings()</span></code></a></li>
@@ -1123,6 +1283,11 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_GXYZ"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_GXYZ()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_delimited"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_delimited()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportXYZ.get_excel"><code class="docutils literal notranslate"><span class="pre">ImportXYZ.get_excel()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel"><code class="docutils literal notranslate"><span class="pre">ImportVoxel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel.settings"><code class="docutils literal notranslate"><span class="pre">ImportVoxel.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVoxel.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVoxel.saveproj()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportXYZ"><code class="docutils literal notranslate"><span class="pre">ExportXYZ</span></code></a><ul class="nav section-nav flex-column">
@@ -1133,15 +1298,12 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVector.run"><code class="docutils literal notranslate"><span class="pre">ExportVector.run()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector"><code class="docutils literal notranslate"><span class="pre">ImportVector</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.setupui"><code class="docutils literal notranslate"><span class="pre">ImportVector.setupui()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.settings"><code class="docutils literal notranslate"><span class="pre">ImportVector.settings()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.change_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.change_bounds()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.get_sfile"><code class="docutils literal notranslate"><span class="pre">ImportVector.get_sfile()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.set_bounds"><code class="docutils literal notranslate"><span class="pre">ImportVector.set_bounds()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ImportVector.saveproj"><code class="docutils literal notranslate"><span class="pre">ImportVector.saveproj()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVoxel"><code class="docutils literal notranslate"><span class="pre">ExportVoxel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.ExportVoxel.run"><code class="docutils literal notranslate"><span class="pre">ExportVoxel.run()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.import_ubc"><code class="docutils literal notranslate"><span class="pre">import_ubc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.export_ubc"><code class="docutils literal notranslate"><span class="pre">export_ubc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.get_GXYZ"><code class="docutils literal notranslate"><span class="pre">get_GXYZ()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.vector.iodefs.get_intrepid"><code class="docutils literal notranslate"><span class="pre">get_intrepid()</span></code></a></li>
 </ul>
@@ -1170,7 +1332,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

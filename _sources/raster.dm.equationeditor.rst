@@ -5,8 +5,8 @@ The **Equation Editor** allows for script operations to be performed on either s
 The interface consists of the following:
 
 1. **Output Equation** box where the equation is typed out. The variables iall, i1, i2 etc. represents the bands of the input dataset in formulas.
-2. **Data Band Key** combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the bands in the data set are listed. When selecting a band the variable associated with the band is shown to the right of the combo box. The variable name is for information purposes only, the user must type the equation manually in the equation box. If you want to apply an equation to all the bands in a data set, use iall.
-3. **Output Data Type** combo box. This allows the user to specify the data type of the equation output. The auto option keeps the data type of the input data set.
+2. **Data Band Key** combo box. It shows which band is assigned to each variable. By clicking on the dropdown arrow, all the bands in the data set are listed (5 in the figure below). When selecting a band the variable associated with the band is shown to the right of the combo box. The variable name is for information purposes only, the user must type the equation manually in the equation box. If you want to apply an equation to all the bands in a data set, use iall.
+3. **Output Data Type** combo box. This allows the user to specify the data type of the equation output (6 in the figure below). The auto option keeps the data type of the input data set.
 4. **Examples** of some commonly used equations and **Commands** that are available. 
 
 .. figure:: _images/rastereq.png
@@ -37,7 +37,7 @@ Commands:
 
 * Logical operators: &, | , ~
 * Comparison operators: <;, <=, ==, !=, >=, >
-* Arithmetic operators: +, -, *, /, **, %, <<, >>
+* Arithmetic operators: +, -, \*, /, \*\*, %, <<, >>
 * where(bool, number1, number2) : number1 if the bool condition is true, number2 otherwise.
 * sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arctan2, arcsinh,
 * arccosh, arctanh

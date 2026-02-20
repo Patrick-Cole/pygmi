@@ -24,13 +24,13 @@ Module Contents
 
 .. py:class:: MergeLith(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for ranged copying.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ParamDisplay, optional
 
 
    .. py:method:: setupui()
@@ -43,13 +43,13 @@ Module Contents
 
 .. py:class:: LithNotes(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for lithology descriptions.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -86,13 +86,13 @@ Module Contents
 
 .. py:class:: ParamDisplay(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()

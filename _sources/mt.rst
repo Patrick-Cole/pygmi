@@ -5,6 +5,10 @@ Description of Modules
 ----------------------
 The magnetotellurics section adds some processing capability, based on the MTpy library (https://github.com/MTgeophysics/mtpy) (Krieger and Peacock, 2014; Kirkby et al., 2019). It allows the user to import MT data and perform simple functions on the data, including 1D inversion.
 
+.. figure:: _images/mtmenu.png
+
+   MT menu.
+
 .. toctree::
     :titlesonly:
 
@@ -18,12 +22,17 @@ Context Menu
 ------------
 These context menus are available for modules which have MT data. Output data is only available on green modules. To access the context menu, simply right-click a green module.
 
+.. figure:: _images/mtcontext1.png
+.. figure:: _images/mtcontext2.png
+
+   Context menus for MT functions.
 .. toctree::
     :titlesonly:
 
     mt.cm.meta
     mt.cm.showgraphs
     mt.cm.exportedi
+    mt.cm.phase
 
 References
 ----------

@@ -5,7 +5,7 @@ pygmi.raster.misc
 
 .. autoapi-nested-parse::
 
-   Miscellaneous functions.
+   Miscellaneous functions for raster data.
 
 
 
@@ -165,6 +165,12 @@ Module Contents
    :type commonmask: bool, optional
    :param masterid: ID of master dataset. The default is None.
    :type masterid: str, optional
+   :param nodeepcopy: Flag to avoid making a copy of the input data, by default False.
+   :type nodeepcopy: bool
+   :param resampling: The resampling to be used on output date. The default is 'nearest'.
+   :type resampling: str
+   :param checkdataid: Check to make sure there are no duplicate data ids. The default is True
+   :type checkdataid: bool
 
    :returns: **out** -- data object which stores datasets
    :rtype: list of pygmi.raster.datatypes.Data

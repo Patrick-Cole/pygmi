@@ -22,13 +22,13 @@ Module Contents
 
 .. py:class:: MainWidget(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QMainWindow`
+   Bases: :py:obj:`PySide6.QtWidgets.QMainWindow`
 
 
    MainWidget - Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

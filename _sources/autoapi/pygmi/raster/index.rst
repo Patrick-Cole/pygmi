@@ -17,10 +17,12 @@ Submodules
 
    /autoapi/pygmi/raster/anaglyph/index
    /autoapi/pygmi/raster/cliptozoom/index
+   /autoapi/pygmi/raster/colormaps/index
    /autoapi/pygmi/raster/cooper/index
    /autoapi/pygmi/raster/dataprep/index
    /autoapi/pygmi/raster/datatypes/index
    /autoapi/pygmi/raster/equation_editor/index
+   /autoapi/pygmi/raster/fft/index
    /autoapi/pygmi/raster/ginterp/index
    /autoapi/pygmi/raster/graphs/index
    /autoapi/pygmi/raster/iodefs/index

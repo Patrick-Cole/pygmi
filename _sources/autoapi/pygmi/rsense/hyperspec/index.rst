@@ -36,15 +36,12 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: GraphMap(parent=None)
+.. py:class:: GraphMap
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Graph Map widget.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: init_graph()
@@ -69,7 +66,7 @@ Module Contents
    Analyse spectra GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -91,7 +88,7 @@ Module Contents
 
 
 
-   .. py:method:: disp_splib(row)
+   .. py:method:: disp_splib()
 
       Change library spectra for display.
 
@@ -118,9 +115,14 @@ Module Contents
 
 
 
-   .. py:method:: load_splib()
+   .. py:method:: load_splib(checked=False, nofile=True)
 
       Load ENVI spectral library data.
+
+      :param checked: Set check state of button. Default is False.
+      :type checked: bool, optional
+      :param nofile: No input filename. The default is True.
+      :type nofile: bool, optional
 
       :rtype: None.
 
@@ -178,7 +180,7 @@ Module Contents
    GUI to process hyperspectral features.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -227,7 +229,7 @@ Module Contents
 
 
 
-.. py:function:: calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None, rfilt=True, piter=iter)
+.. py:function:: calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None, rfilt=True, piter=iter, showlog=print)
 
    Calculate feature dataset.
 
@@ -248,6 +250,8 @@ Module Contents
    :type rfilt: bool
    :param piter: Progress bar iterable. The default is iter.
    :type piter: function, optional
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
 
    :returns: **datfin** -- Output datasets.
    :rtype: list of pygmi.raster.datatypes.Data.
@@ -284,9 +288,12 @@ Module Contents
    :type i2a: int
    :param xdat: Wavelengths of feature definition.
    :type xdat: numpy array
+   :param mtmp: Used in crystallinity calculation.
+   :type mtmp: numpy array
 
    :returns: * **ptmp** (*numpy array*) -- Feature wavelengths.
              * **dtmp** (*numpy array*) -- Feature depths.
+             * **mtmp** (*numpy array*) -- Used in crystallinity calculation.
 
 
 .. py:function:: cubic_calc(xdat, crem, imin)

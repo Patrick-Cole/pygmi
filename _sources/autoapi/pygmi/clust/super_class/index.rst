@@ -38,7 +38,7 @@ Module Contents
    Graph map widget.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: SuperClass, optional
 
 
    .. py:method:: polyint(dat)
@@ -71,9 +71,20 @@ Module Contents
 
 
 
+   .. py:method:: update_class(dat)
+
+      Update plot.
+
+      :param dat: PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
+      :type dat: dict
+
+      :rtype: None.
+
+
+
 .. py:class:: PolygonInteractor(axtmp, pntxy)
 
-   Bases: :py:obj:`PyQt6.QtCore.QObject`
+   Bases: :py:obj:`PySide6.QtCore.QObject`
 
 
    Polygon Interactor for the supervised classification tool.
@@ -93,7 +104,7 @@ Module Contents
 
       Qt signal when polygon has changed.
 
-      :type: QtCore.pyqtSignal
+      :type: QtCore.Signal
 
 
    .. py:method:: draw_callback(event=None)
@@ -179,12 +190,20 @@ Module Contents
    Main supervised classification GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
 
       Set up UI.
+
+      :rtype: None.
+
+
+
+   .. py:method:: calculate()
+
+      Calculate new clusters.
 
       :rtype: None.
 
@@ -262,6 +281,14 @@ Module Contents
    .. py:method:: on_combo()
 
       On combo to choose type of plot for data.
+
+      :rtype: None.
+
+
+
+   .. py:method:: on_radio()
+
+      On radiobutton to choose type of plot for data.
 
       :rtype: None.
 

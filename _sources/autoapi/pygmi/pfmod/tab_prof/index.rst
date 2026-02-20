@@ -39,13 +39,13 @@ Module Contents
 
 .. py:class:: ProfileDisplay(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -110,6 +110,14 @@ Module Contents
    .. py:method:: borehole_import()
 
       Import borehole data.
+
+      :rtype: None.
+
+
+
+   .. py:method:: calculate_dip()
+
+      Calculate dip.
 
       :rtype: None.
 
@@ -323,7 +331,7 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: button_press(event)
@@ -351,6 +359,17 @@ Module Contents
    .. py:method:: move(event)
 
       Mouse move event.
+
+      :param event: Event variable.
+      :type event: event
+
+      :rtype: None.
+
+
+
+   .. py:method:: dip(event)
+
+      Calculate dip event.
 
       :param event: Event variable.
       :type event: event
@@ -473,7 +492,7 @@ Module Contents
 
    .. py:method:: init_plot(xdat, dat, extent, xdat2=None, dat2=None)
 
-      Initialise plot.
+      Initialise profile line plot.
 
       :param xdat: X coordinates.
       :type xdat: numpy array
@@ -509,7 +528,7 @@ Module Contents
 
 .. py:class:: MySlider(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QSlider`
+   Bases: :py:obj:`PySide6.QtWidgets.QSlider`
 
 
    My Slider.
@@ -518,7 +537,7 @@ Module Contents
    moving to click in a single step.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: mousePressEvent(event)
@@ -545,9 +564,9 @@ Module Contents
 
 
 
-.. py:class:: LithBound(lmod)
+.. py:class:: LithBound(parent, lmod)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for lithological boundary.
@@ -575,13 +594,13 @@ Module Contents
 
 .. py:class:: PlotScale(parent, lmod)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for plot axis scale.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
    :param lmod: Reference to the lithology model.
    :type lmod: pygmi.pfmod.datatypes.LithModel
 
@@ -604,13 +623,13 @@ Module Contents
 
 .. py:class:: RangedCopy(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to call up a dialog for ranged copying.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: setupui()
@@ -637,7 +656,7 @@ Module Contents
    Custom Matplotlib toolbar.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: axis_scale()
@@ -674,7 +693,7 @@ Module Contents
 
 .. py:class:: GaugeWidget(*args, **kwargs)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDial`
+   Bases: :py:obj:`PySide6.QtWidgets.QDial`
 
 
    Gauge widget.
@@ -693,13 +712,13 @@ Module Contents
 
 .. py:class:: ImportPicture(parent=None)
 
-   Bases: :py:obj:`pygmi.misc.BasicModule`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Import Picture dialog.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: ProfileDisplay, optional
 
 
    .. py:method:: setupui()

@@ -5,7 +5,7 @@ pygmi.pfmod.mvis3d
 
 .. autoapi-nested-parse::
 
-   Code for the 3d model creation.
+   Code for the 3d potential field model visualisation.
 
 
 
@@ -24,6 +24,8 @@ Functions
 .. autoapisummary::
 
    pygmi.pfmod.mvis3d.updatemod
+   pygmi.pfmod.mvis3d.calc_norms
+   pygmi.pfmod.mvis3d.normalize_v3
    pygmi.pfmod.mvis3d.MarchingCubes
    pygmi.pfmod.mvis3d.InterpolateVertices
    pygmi.pfmod.mvis3d.fancyindex
@@ -45,7 +47,7 @@ Module Contents
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -64,6 +66,12 @@ Module Contents
       :type QCloseEvent: TYPE
 
       :rtype: None.
+
+
+
+   .. py:method:: change_light()
+
+      Change light type
 
 
 
@@ -184,7 +192,7 @@ Module Contents
    Canvas for the sunshading tool.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: sun
 
@@ -209,7 +217,7 @@ Module Contents
 
 .. py:function:: updatemod(gdat2, cindx, cloc)
 
-   Update model without smooothing.
+   Update model without smoothing.
 
    :param gdat2: Model values.
    :type gdat2: numpy array
@@ -220,6 +228,30 @@ Module Contents
 
    :returns: * **newcorners** (*numpy array*) -- New corner coordinates.
              * **newfaces** (*numpy array*) -- New face indices.
+
+
+.. py:function:: calc_norms(faces, vtx)
+
+   Calculate normals.
+
+   :param faces: Array of faces.
+   :type faces: numpy array
+   :param vtx: Array of vertices.
+   :type vtx: numpy array.
+
+   :returns: **nrm** -- output normals.
+   :rtype: numpy array
+
+
+.. py:function:: normalize_v3(arr)
+
+   Normalize a numpy array of 3 component vectors shape=(n,3).
+
+   :param arr: Array of 3 component vectors.
+   :type arr: numpy array
+
+   :returns: **arr** -- Output array of 3 component vectors.
+   :rtype: numpy array
 
 
 .. py:function:: MarchingCubes(x, y, z, c, iso, *, showlog=print)

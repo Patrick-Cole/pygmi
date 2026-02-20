@@ -23,6 +23,7 @@ Functions
 .. autoapisummary::
 
    pygmi.raster.normalisation.datacommon
+   pygmi.raster.normalisation.norm
 
 
 Module Contents
@@ -36,7 +37,7 @@ Module Contents
    Class Normalisation GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -73,12 +74,26 @@ Module Contents
 
    :param data: PyGMI raster dataset.
    :type data: pygmi.raster.datatypes.Data.
-   :param tmp1: Parameter 1. Can be min, mean or median.
+   :param tmp1: Parameter 1. Can be min, mean or median of the data.
    :type tmp1: float
-   :param tmp2: Parameter 2. Can be range, std, or mad.
+   :param tmp2: Parameter 2. Can be range, std, or Median Absolute Deviation (MAD) of
+                the data.
    :type tmp2: float
 
    :returns: * **data** (*pygmi.raster.datatypes.Data*) -- PyGMI raster dataset.
              * **transform** (*numpy array.*) -- Transformation applied to data.
+
+
+.. py:function:: norm(data, ntype)
+
+   Normalise data.
+
+   :param data: PyGMI Data in a list.
+   :type data: list of pygmi.raster.datatypes.Data
+   :param ntype: Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
+   :type ntype: str
+
+   :returns: **data** -- PyGMI Data in a list.
+   :rtype: list of pygmi.raster.datatypes.Data
 
 

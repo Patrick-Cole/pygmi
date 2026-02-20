@@ -22,6 +22,7 @@ Functions
 
 .. autoapisummary::
 
+   pygmi.raster.smooth.mov_win_filt
    pygmi.raster.smooth.filters2d
 
 
@@ -36,7 +37,7 @@ Module Contents
    Smooth rasters.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -96,20 +97,31 @@ Module Contents
 
 
 
-   .. py:method:: mov_win_filt(dat, fmat, itype)
+.. py:function:: mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5, showlog=print, piter=iter)
 
-      Apply moving window filter function to data.
+   Apply moving window filter function to data.
 
-      :param dat: Data for a PyGMI raster dataset.
-      :type dat: numpy masked array.
-      :param fmat: Filter matrix.
-      :type fmat: numpy array
-      :param itype: Filter type. Can be '2D Mean' or '2D Median'.
-      :type itype: str
+   :param dat: Data for a PyGMI raster dataset.
+   :type dat: numpy masked array.
+   :param fmat: Filter matrix type.
+   :type fmat: str
+   :param itype: Filter type. Can be '2D Mean' or '2D Median'.
+   :type itype: str
+   :param box_x: number of columns for box, by default 5
+   :type box_x: int, optional
+   :param box_y: number of rows for box, by default 5
+   :type box_y: int, optional
+   :param rad: Radius of disc window, by default 5
+   :type rad: int, optional
+   :param sigma: Standard deviation, by default 5
+   :type sigma: int, optional
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
+   :param piter: progress bar iterable, default is iter.
+   :type piter: function, optional
 
-      :returns: **out** -- Data for a PyGMI raster dataset.
-      :rtype: numpy masked array
-
+   :returns: **out** -- Data for a PyGMI raster dataset.
+   :rtype: numpy masked array
 
 
 .. py:function:: filters2d(filtertype, sze, *sigma)

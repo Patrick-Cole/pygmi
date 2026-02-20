@@ -19,6 +19,7 @@ Functions
    pygmi.test.test_mag.test_rtp
    pygmi.test.test_mag.test_IGRF
    pygmi.test.test_mag.test_tilt
+   pygmi.test.test_mag.test_asig
 
 
 Module Contents
@@ -42,5 +43,10 @@ Module Contents
 .. py:function:: test_tilt()
 
    test tilt depth.
+
+
+.. py:function:: test_asig()
+
+   Test analytic signal.
 
 

@@ -6,8 +6,8 @@ PyGMI uses the Sen2Cor software package (Pignatale, 2024) provided by the Europe
 
 When selecting **Sen2Cor: Sentinel-2 Atmospheric Correction** the **Sen2Cor** module appears in the main PyGMI interface. Double-click on the module to bring up the **Sen2Cor: Sentinel-2 Atmospheric Correction** dialog box. The user needs to provide links to two folders:
 
-1. **Sen2Cor Directory** – The folder where the Sen2Cor software was extracted to (within this folder you should see some subfolders and a **BAT** and **TXT** file). 
-2. **Sentinel-2 L1C.SAFE** Directory – The L1C Sentinel data which is downloaded in ZIP format must be extracted so that a **SAFE** folder is visible. Select this folder. 
+1. **Sen2Cor Directory** - The folder where the Sen2Cor software was extracted to (within this folder you should see some subfolders and a **BAT** and **TXT** file). 
+2. **Sentinel-2 L1C.SAFE** Directory - The L1C Sentinel data which is downloaded in ZIP format must be extracted so that a **SAFE** folder is visible. Select this folder. 
 
 .. figure:: _images/rsenses2c1.png
 

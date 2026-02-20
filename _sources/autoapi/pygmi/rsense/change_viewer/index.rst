@@ -21,7 +21,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None, width=10, height=8, dpi=100)
+.. py:class:: MyMplCanvas(parent, width=10, height=8, dpi=100)
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
@@ -29,7 +29,7 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: SceneViewer
    :param width: Width of the plot.
    :type width: float
    :param height: Height of the plot.
@@ -80,7 +80,7 @@ Module Contents
    Scene viewer GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()

@@ -5,6 +5,10 @@ Description of Modules
 ----------------------
 The **Seismology** menu is a where operations on earthquake seismology data reside. Here, SEISAN data can be imported, and some basic operations performed on it.
 
+.. figure:: _images/seismenu.png
+
+   Seismology menu.
+
 .. toctree::
     :titlesonly:
 
@@ -19,7 +23,7 @@ Context Menu
 ------------
 The seismology context menus are available for modules which have seismology output data. Output data is only available on modules that have been executed (green modules). To access the context menu, simply right-click a green module.
 
-.. figure:: _images/seiscm.png
+.. figure:: _images/seiscontext.png
 
    Context menu for the Seismology modules.
 
@@ -28,6 +32,8 @@ The seismology context menus are available for modules which have seismology out
 
     seis.cm.showqc
     seis.cm.showtempb
+    seis.cm.showspatb
+    seis.cm.showiso
     seis.cm.exportseisan
     seis.cm.exportcsv
     seis.cm.exportsummary

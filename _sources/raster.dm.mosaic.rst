@@ -7,7 +7,7 @@ The user can mosaic/merge files with different numbers of bands, and only bands 
 
 The options for this module are as follows:
 
-1. **Batch Directory** – folder location of the files to be mosaicked.
+1. **Batch Directory** - folder location of the files to be mosaicked.
 2. **Shapefile or Raster for boundary (optional)** - This is an optional shapefile or raster file that can be used to cut the mosaicked data to a specific boundary.
 3. **Nodata Value (optional)** - Optional definition for a nodata/null value
 4. **Output Resolution (optional)** - Optional definition for the mosaicked dataset’s cell size.

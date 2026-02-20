@@ -18,34 +18,34 @@ When selecting the Model Creation and Editing menu option, the Potential Field M
 
    Model Extent Parameters interface with no datasets assigned.
 
-1. Current Model – This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.
+1. Current Model - This shows the name of an imported model. Since we are creating a model from scratch no model name will be displayed.
 2. Dataset Information:
 
-  * DTM Dataset – This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (https://www.earthdata.nasa.gov/). It is not necessary if you are merely doing a theoretical model of, say, a dyke.
-  * Magnetic Dataset – The magnetic data to be modelled.
-  * Gravity Dataset – The gravity data to be modelled.
-  * Gravity Regional Dataset – This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.
-  * Other – Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.
+  * DTM Dataset - This is a Digital Terrain Model (DTM) or DEM of the modelling area. If you are modelling actual data, this is compulsory. If nothing is available, you can download the Shuttle Radar Topography Mission (SRTM) data from NASA (https://www.earthdata.nasa.gov/). It is not necessary if you are merely doing a theoretical model of, say, a dyke.
+  * Magnetic Dataset - The magnetic data to be modelled.
+  * Gravity Dataset - The gravity data to be modelled.
+  * Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data. For large models that extend to great depths, it is convenient to model the deep-seated material as a separate model that has a much larger extent than the modelling area to eliminate edge effects. The response of this regional model can be saved to a raster dataset and imported to be added to the gravity response of the model.
+  * Other - Here you can add an additional layer for comparison purposes, for example a GeoTIFF of the geological map.
 
-3. Model Extent Properties – This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:
+3. Model Extent Properties - This controls the area size and depth of your model, as well as its resolution. The following settings can be specified:
 
-  * Get Study Area from the following Dataset – If data were imported into the model, the dataset that defines the study area can be selected.  
-  * Upper Top Left X Coordinate –The north-west corner X coordinate of the model in metres.
-  * Upper Top Left Y Coordinate – The north-west corner Y coordinate of the model in metres.
-  * Upper Top Left Z Coordinate – The north-west corner Z coordinate of the model in metres above sea level.
-  * Total X Extent – The distance in metres from east to west in the model.
-  * Total Y Extent – The distance in metres from north to south in the model.
-  * Total Z Extent (Depth) – The depth range in metres of the model.
-  * X and Y Cell Size – The width of each model cube in the X and Y direction (in metres).
-  * Z Cell Size – The height in metres of each model cube in Z direction.
+  * Get Study Area from the following Dataset - If data were imported into the model, the dataset that defines the study area can be selected.  
+  * Upper Top Left X Coordinate -The north-west corner X coordinate of the model in metres.
+  * Upper Top Left Y Coordinate - The north-west corner Y coordinate of the model in metres.
+  * Upper Top Left Z Coordinate - The north-west corner Z coordinate of the model in metres above sea level.
+  * Total X Extent - The distance in metres from east to west in the model.
+  * Total Y Extent - The distance in metres from north to south in the model.
+  * Total Z Extent (Depth) - The depth range in metres of the model.
+  * X and Y Cell Size - The width of each model cube in the X and Y direction (in metres).
+  * Z Cell Size - The height in metres of each model cube in Z direction.
   
 4. The number of cells/voxels in the model with the specified extent parameters:
 
-  * Columns (X) – The number of columns automatically calculated from the extents and cell sizes.
-  * Rows (Y) – The number of rows automatically calculated from the extents and cell sizes.
-  * Layers (Z) – The number of layers automatically calculated from the extents and cell sizes.
+  * Columns (X) - The number of columns automatically calculated from the extents and cell sizes.
+  * Rows (Y) - The number of rows automatically calculated from the extents and cell sizes.
+  * Layers (Z) - The number of layers automatically calculated from the extents and cell sizes.
 
-5. Apply changes (reset calculation) – Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.
+5. Apply changes (reset calculation) - Apply any changes in the model extent parameters to a model. It must be done when a model is created for the first time or if any of the model parameters were changed.
 
 The imported datasets can now be assigned to the datasets under Data Information. Make sure to connect the correct raster to the correct dataset. Under the Model Extent Properties, select the dataset that will be used to define the modelling area. The model coordinates and X and Y extents will be update automatically based on the selected dataset. The user selects the desired Z extent and cell sizes. Note that the top left X, Y and Z coordinates and the X and Y extents can be manually changed if you want to change the modelling area, but the area must be within the extent of the DTM that you loaded.
 

@@ -20,7 +20,7 @@ When importing the XYZ data, you did not specify the correct nodata value. In th
 
 Solution
 ^^^^^^^^
-Check the nodata value in the value and re-import the data using this value. The data will now plot correctly.
+Check the nodata value in the dataset and re-import the data using this value. The data will now plot correctly.
 
 .. figure:: _images/faqxyz3.png
 

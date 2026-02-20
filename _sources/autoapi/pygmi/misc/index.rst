@@ -31,7 +31,6 @@ Functions
 
    pygmi.misc.discrete_colorbar
    pygmi.misc.getinfo
-   pygmi.misc.limit_memory
    pygmi.misc.textwrap2
    pygmi.misc.tick_formatter
 
@@ -41,7 +40,7 @@ Module Contents
 
 .. py:class:: EmittingStream(textWritten)
 
-   Bases: :py:obj:`PyQt6.QtCore.QObject`
+   Bases: :py:obj:`PySide6.QtCore.QObject`
 
 
    Class to intercept stdout for later use in a textbox.
@@ -80,13 +79,13 @@ Module Contents
 
 .. py:class:: BasicModule(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Basic Module.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: parent
 
@@ -155,6 +154,26 @@ Module Contents
 
 
 
+   .. py:method:: check_validation()
+
+      Check a widget's validation.
+
+      :param obj: Combo box to add data to.
+      :type obj: QtWidgets.QComboBox
+
+
+
+   .. py:method:: cmb_update(obj, txtlist)
+
+      Update combo box.
+
+      :param obj: Combo box to add data to.
+      :type obj: QtWidgets.QComboBox
+      :param txtlist: List of strings to add to combo box.
+      :type txtlist: list
+
+
+
    .. py:method:: data_init()
 
       Initialise Data.
@@ -202,13 +221,13 @@ Module Contents
 
 .. py:class:: ContextModule(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Context Module.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: parent
 
@@ -247,6 +266,15 @@ Module Contents
       :type: stdout or alternative
 
 
+   .. py:method:: check_validation()
+
+      Check a widget's validation.
+
+      :param obj: Combo box to add data to.
+      :type obj: QtWidgets.QComboBox
+
+
+
    .. py:method:: run()
 
       Run context menu item.
@@ -257,13 +285,13 @@ Module Contents
 
 .. py:class:: PButtonBox(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QWidget`
+   Bases: :py:obj:`PySide6.QtWidgets.QWidget`
 
 
    Custom buttonbox with help.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: help_docs()
@@ -274,7 +302,7 @@ Module Contents
 
 .. py:class:: QVStack2Layout(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QGridLayout`
+   Bases: :py:obj:`PySide6.QtWidgets.QGridLayout`
 
 
    QVStack2Layout custom Qt QGridLayot.
@@ -282,7 +310,7 @@ Module Contents
    This works like VBoxLayout, except each row takes two widgets.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: addWidget(widget1, widget2)
@@ -345,7 +373,7 @@ Module Contents
 
 .. py:class:: ProgressBar(parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QProgressBar`
+   Bases: :py:obj:`PySide6.QtWidgets.QProgressBar`
 
 
    Qt custom progress bar.
@@ -355,7 +383,7 @@ Module Contents
    iterable.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: otime
 
@@ -462,18 +490,6 @@ Module Contents
    :type txt: str/int/float, optional
    :param reset: Flag used to reset the time difference to zero.
    :type reset: bool
-
-   :rtype: None.
-
-
-.. py:function:: limit_memory(memory_limit)
-
-   Limit memory in Windows.
-
-   Based on https://stackoverflow.com/questions/54949110/limit-python-script-ram-usage-in-windows
-
-   :param memory_limit: Memory limit in GB.
-   :type memory_limit: int
 
    :rtype: None.
 

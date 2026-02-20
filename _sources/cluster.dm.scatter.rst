@@ -21,8 +21,8 @@ The **Cross Plot Settings** control what is displayed in the scatter plot:
 
 The **Map Settings** control what is displayed in the scatter plot:
 
-1. **Data band** – The dataset that must be displayed in the map.
-2. **Cluster Overlay** – The classification results can be displayed. If **None** is selected the data selected under **Data Band** will be shown, or the user can select to display one of the classification results.
+1. **Data band** - The dataset that must be displayed in the map.
+2. **Cluster Overlay** - The classification results can be displayed. If **None** is selected the data selected under **Data Band** will be shown, or the user can select to display one of the classification results.
 3. The user can draw a polygon around an area of interest on the map by simply **left-clicking** on it. The pixels within the polygon will be highlighted in the scatter plot. Click **Delete Polygon** to remove the polygon.
 
 .. figure:: _images/clustscatter2.png

@@ -24,15 +24,12 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: update_classes(data1)
@@ -108,7 +105,7 @@ Module Contents
    Plot Raster Class GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -135,7 +132,7 @@ Module Contents
    Plot Bar Class GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -162,7 +159,7 @@ Module Contents
    Plot Fuzzy Membership data GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -195,7 +192,7 @@ Module Contents
    Plot VRC, NCE, OBJ and XBI GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()

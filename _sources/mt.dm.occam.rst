@@ -6,25 +6,25 @@ The module uses the OCCAM1DCSEM code distributed by the SCRIPPS Institute of Oce
 
 The **Occam 1D Inversion** interface requires the following inputs:
 
-1. **Occam executable location** – If you get the error message **No Occam1D executable found**, use this option to navigate to the folder where it is located. You may need to obtain the source code from https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ and compile it. It should be called **occam1d** for non-Windows platforms and **occam1d.exe** for Windows. 
-2. **Station Name** – Used to select a station, which is then displayed in the graph.
+1. **Occam executable location** - If you get the error message **No Occam1D executable found**, use this option to navigate to the folder where it is located. You may need to obtain the source code from https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ and compile it. It should be called **occam1d** for non-Windows platforms and **occam1d.exe** for Windows. 
+2. **Station Name** - Used to select a station, which is then displayed in the graph.
 3. Modelling parameters:
 
-  * **Mode** – Can be transverse electric (TE), transverse magnetic (TM) or determinant of the impedance tensor (DET) converted to apparent resistivity and phase
-  * **Resistivity Errorbar** – Either specified as ‘**data**’ which means it will be determined from the data, or in %.
-  * **Phase Errorbar** – Either specified as ‘**data**’ which means it will be determined from the data, or in %.
-  * **Resistivity Error Floor** – In %.
-  * **Phase Error Floor** – In degrees.
-  * **Height of air layer** – In metres.
-  * **Bottom of model** – In metres.
-  * **Depth of target to investigate** – In metres.
-  * **Depth of first layer** – In metres.
-  * **Number of layers** – Refers to number of model layers
-  * **Maximum Iterations** – Maximum number of iterations Occam uses to compute
-  * **Target root mean square (RMS)** – Target RMS misfit.
+  * **Mode** - Can be transverse electric (TE), transverse magnetic (TM) or determinant of the impedance tensor (DET) converted to apparent resistivity and phase
+  * **Resistivity Errorbar** - Either specified as ‘**data**’ which means it will be determined from the data, or in %.
+  * **Phase Errorbar** - Either specified as ‘**data**’ which means it will be determined from the data, or in %.
+  * **Resistivity Error Floor** - In %.
+  * **Phase Error Floor** - In degrees.
+  * **Height of air layer** - In metres.
+  * **Bottom of model** - In metres.
+  * **Depth of target to investigate** - In metres.
+  * **Depth of first layer** - In metres.
+  * **Number of layers** - Refers to number of model layers
+  * **Maximum Iterations** - Maximum number of iterations Occam uses to compute
+  * **Target root mean square (RMS)** - Target RMS misfit.
 
-4. **Remove resistivity/phase values out of 1st/3rd quadrant** – The phase must be between 0° and 90° for the algorithm to work. When this is option is selected, 180° are added to phases in the 3\ :sup:`rd`  quadrant, shifting it to the 1\ :sup:`st` quadrant.
-5. **Invert Station** – Calculate the Occam 1D inversion for the current station.
+4. **Remove resistivity/phase values out of 1st/3rd quadrant** - The phase must be between 0° and 90° for the algorithm to work. When this is option is selected, 180° are added to phases in the 3\ :sup:`rd`  quadrant, shifting it to the 1\ :sup:`st` quadrant.
+5. **Invert Station** - Calculate the Occam 1D inversion for the current station.
 6. Window showing the apparent resistivity and phase versus period graphs for the observed and modelled data.
 7. The **RMS** and **Roughness** parameter of the inversion result. The inversion is regularised to find the smoothest model rather than the best fit using the roughness parameter. Smaller values indicate a smoother model (Constable et al., 1987).
 8. The inversion result displayed in a depth versus layer resistivity graph.

@@ -20,5 +20,6 @@ Submodules
    /autoapi/pygmi/test/test_mag/index
    /autoapi/pygmi/test/test_pfmod/index
    /autoapi/pygmi/test/test_raster/index
+   /autoapi/pygmi/test/test_rsense/index
 
 

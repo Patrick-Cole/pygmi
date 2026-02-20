@@ -31,11 +31,14 @@ Functions
    pygmi.vector.dataprep.txtlinecnt
    pygmi.vector.dataprep.filesplit
    pygmi.vector.dataprep.gridxyz
+   pygmi.vector.dataprep.gridvolume
    pygmi.vector.dataprep.lltomap
    pygmi.vector.dataprep.maptobounds
    pygmi.vector.dataprep.maptovector
    pygmi.vector.dataprep.quickgrid
    pygmi.vector.dataprep.reprojxy
+   pygmi.vector.dataprep.xy_to_r
+   pygmi.vector.dataprep.fast_sort
 
 
 Module Contents
@@ -52,7 +55,7 @@ Module Contents
    shapefile.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: settings(nodialog=False)
@@ -85,7 +88,7 @@ Module Contents
    This class grids point data using a nearest neighbourhood technique.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -109,6 +112,12 @@ Module Contents
       When grid method is changed, this updated hidden controls.
 
       :rtype: None.
+
+
+
+   .. py:method:: grid_type_change()
+
+      Check whether section is checked.
 
 
 
@@ -152,22 +161,12 @@ Module Contents
    This class reprojects datasets using the GeoPandas routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
 
       Set up UI.
-
-      :rtype: None.
-
-
-
-   .. py:method:: acceptall()
-
-      Accept option.
-
-      Updates self.outdata, which is used as input to other modules.
 
       :rtype: None.
 
@@ -204,7 +203,7 @@ Module Contents
    GUI.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
    .. attribute:: banddata
 
@@ -252,7 +251,7 @@ Module Contents
    GUI to split a text file into smaller text files.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -323,10 +322,10 @@ Module Contents
    :type extent: list
    :param dxy: Cell size.
    :type dxy: float
-   :param Nullvalue: Null or nodata value.
-   :type Nullvalue: float
+   :param nullvalue: Null or nodata value.
+   :type nullvalue: float
 
-   :returns: **mask** -- Mask to be used for blanking.
+   :returns: **gdat** -- Masked output array.
    :rtype: numpy array
 
 
@@ -340,6 +339,8 @@ Module Contents
    :type data: GeoDataFrame
    :param ifile: shapefile used to cut data
    :type ifile: str
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
 
    :returns: **data** -- GeoPandas GeoDataFrame
    :rtype: GeoDataFrame
@@ -352,7 +353,7 @@ Module Contents
    :param filename: filename of text file.
    :type filename: str
 
-   :returns: Total number of lines in a file.
+   :returns: **linecnt** -- Total number of lines in a file.
    :rtype: int
 
 
@@ -369,7 +370,7 @@ Module Contents
    :param showlog: Display information. The default is print.
    :type showlog: function, optional
    :param piter: Progress iterator. The default is None.
-   :type piter: iter, optional
+   :type piter: function, optional
 
    :rtype: None.
 
@@ -392,6 +393,29 @@ Module Contents
    :type method: str, optional
    :param bdist: Blanking distance. The default is 4.0.
    :type bdist: float, optional
+   :param showlog: Display information. The default is print.
+   :type showlog: function, optional
+
+   :returns: **dat** -- Output raster dataset.
+   :rtype: pygmi.raster.datatypes.Data.
+
+
+.. py:function:: gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print)
+
+   Grid volume data.
+
+   :param x: X coordinate values.
+   :type x: numpy array
+   :param y: Y coordinate values.
+   :type y: numpy array
+   :param z: Z coordinate values.
+   :type z: numpy array
+   :param val: Data values.
+   :type val: numpy array
+   :param dxy: Grid cell size, in distance units.
+   :type dxy: float
+   :param dat: DEM data used to constrain surface. The default is None.
+   :type dat: pygmi.raster.datatypes.Data
    :param showlog: Display information. The default is print.
    :type showlog: function, optional
 
@@ -474,8 +498,38 @@ Module Contents
    :type iwkt: str, int, CRS
    :param owkt: Output wkt description or EPSG code (int) or CRS
    :type owkt: str, int, CRS
+   :param showlog: Routine to show text messages. The default is print.
+   :type showlog: function, optional
 
    :returns: * **xout** (*numpy array*) -- x coordinates.
              * **yout** (*numpy array*) -- y coordinates.
+
+
+.. py:function:: xy_to_r(x, y, piter=iter)
+
+   Convert x an y values on a section to r.
+
+   This will take into account r being reset for each depth.
+
+   :param x: x coordinates
+   :type x: numpy array or float
+   :param y: y coordinates
+   :type y: numpy array or float
+
+   :returns: **r** -- r coordinates.
+   :rtype: numpy array
+
+
+.. py:function:: fast_sort(points, piter=iter)
+
+   Fast sort of coordinate pairs.
+
+   :param points: Coordinates.
+   :type points: numpy array
+   :param piter: progress bar iterable, default is iter.
+   :type piter: function, optional
+
+   :returns: **sorted_pts** -- Sorted coordinates.
+   :rtype: list
 
 

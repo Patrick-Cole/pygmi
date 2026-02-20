@@ -1,5 +1,5 @@
 Import XYZ Data
--------------------------
+---------------
 This module imports XYZ/point data from a file, for example a **CSV** or Excel file. The user must choose the x and y columns.
 
 List of formats:

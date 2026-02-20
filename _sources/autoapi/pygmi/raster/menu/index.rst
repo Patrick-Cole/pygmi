@@ -73,6 +73,12 @@ Module Contents
 
 
 
+   .. py:method:: get_vector()
+
+      Raster to vector.
+
+
+
    .. py:method:: gradients()
 
       Compute different gradients.

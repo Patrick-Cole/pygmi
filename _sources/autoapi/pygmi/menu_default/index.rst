@@ -43,7 +43,7 @@ Module Contents
    Widget class to call the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: about()
@@ -58,17 +58,15 @@ Module Contents
 
 
 
-.. py:class:: HelpButton(htmlfile=None, parent=None)
+.. py:class:: HelpButton(htmlfile=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QPushButton`
+   Bases: :py:obj:`PySide6.QtWidgets.QPushButton`
 
 
    Help Button.
 
    Convenience class to add a Help image to a pushbutton
 
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
    :param htmlfile: HTML help file name.
    :type htmlfile: str
 

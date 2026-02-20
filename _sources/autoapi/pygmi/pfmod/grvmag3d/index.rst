@@ -24,6 +24,8 @@ Classes
 
 .. autoapisummary::
 
+   pygmi.pfmod.grvmag3d.MyMplCanvas
+   pygmi.pfmod.grvmag3d.PlotTest
    pygmi.pfmod.grvmag3d.GravMag
    pygmi.pfmod.grvmag3d.GeoData
 
@@ -46,6 +48,33 @@ Functions
 Module Contents
 ---------------
 
+.. py:class:: MyMplCanvas
+
+   Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
+
+
+   Matplotlib canvas widget for the actual plot.
+
+
+   .. py:method:: update_raster(lmod2)
+
+      Update the raster plot.
+
+      :param lmod2: Lithology dataset to be used.
+      :type lmod2: PyGMI lithology data
+
+      :rtype: None.
+
+
+
+.. py:class:: PlotTest(data=None)
+
+   Bases: :py:obj:`pygmi.misc.ContextModule`
+
+
+   Plot Raster Class.
+
+
 .. py:class:: GravMag(parent=None)
 
    The GravMag class holds generic magnetic and gravity modelling routines.
@@ -54,7 +83,7 @@ Module Contents
    related code is here as well, such as the inversion routines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.pfmod.pfmod.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -167,7 +196,7 @@ Module Contents
    only.
 
    :param parent: Reference to the parent routine.
-   :type parent: parent
+   :type parent: pygmi.pfmod.pfmod.MainWidget
    :param ncols: Number of columns in the model.
    :type ncols: int
    :param nrows: Number of rows in the model.
@@ -390,10 +419,14 @@ Module Contents
    :type pbars: module
    :param showtext: showtext routine if available. (internal use)
    :type showtext: module
-   :param showreports: show extra reports
+   :param parent: parent routine, the default is None.
+   :type parent: module
+   :param showreports: show extra reports, the default is False.
    :type showreports: bool
    :param magcalc: if True, calculates magnetic data, otherwise only gravity.
    :type magcalc: bool
+   :param demag: calculate demagnetization. The default is False.
+   :type demag: bool
 
    :returns: **lmod.griddata** -- dictionary of items of type Data.
    :rtype: dictionary
@@ -477,7 +510,7 @@ Module Contents
 
 .. py:function:: dircos(incl, decl, azim)
 
-   DIRCOS computes direction cosines from inclination and declination.
+   Compute direction cosines from inclination and declination.
 
    :param incl: inclination in degrees positive below horizontal.
    :type incl: float

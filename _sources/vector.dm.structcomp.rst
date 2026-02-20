@@ -38,9 +38,9 @@ The options on the **Structural Complexity** interface are:
 
 References
 ^^^^^^^^^^
- Dhansay, T., Brandl, G., & de Wit, M. J. (2016). Fractal geometry of the fault network across the Soutpansberg Mountains, Limpopo, South Africa. South African Journal of Geology, 119(1), 235–242. https://doi.org/10.2113/gssajg.119.1.235
+ Dhansay, T., Brandl, G., & de Wit, M. J. (2016). Fractal geometry of the fault network across the Soutpansberg Mountains, Limpopo, South Africa. South African Journal of Geology, 119(1), 235-242. https://doi.org/10.2113/gssajg.119.1.235
 
- Holden, E. J., Wong, J. C., Kovesi, P., Wedge, D., Dentith, M., & Bagas, L. (2012). Identifying structural complexity in aeromagnetic data: An image analysis approach to greenfields gold exploration. Ore Geology Reviews, 46, 47–59. https://doi.org/10.1016/j.oregeorev.2011.11.002
+ Holden, E. J., Wong, J. C., Kovesi, P., Wedge, D., Dentith, M., & Bagas, L. (2012). Identifying structural complexity in aeromagnetic data: An image analysis approach to greenfields gold exploration. Ore Geology Reviews, 46, 47-59. https://doi.org/10.1016/j.oregeorev.2011.11.002
 
  Montsion, R. M., Perrouty, S., Lindsay, M. D., Jessell, M. W., & Frieman, B. M. (2021). Mapping structural complexity using geophysics: A new geostatistical approach applied to greenstone belts of the southern Superior Province, Canada. Tectonophysics, 812. https://doi.org/10.1016/j.tecto.2021.228889
 

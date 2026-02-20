@@ -4,9 +4,9 @@ This tool performs image segmentation, following the technique by Baatz and Sch�
 
 It has the following parameters:
 
-1. **Compactness weight** – The weight assigned to compactness. Compactness indicates the degree of clustering in an area (Zhong et al., 2005). 
-2. **Colour weight** – The weight assigned to colour heterogeneity. The colour heterogeneity includes all channels of a multiband image (Zhong et al., 2005).
-3. **Maximum allowable cost function** – Only regions where the merge criterion is lower than this number will be combined into a segment. The merge criterion is given by (Zhong et al., 2005):
+1. **Compactness weight** - The weight assigned to compactness. Compactness indicates the degree of clustering in an area (Zhong et al., 2005). 
+2. **Colour weight** - The weight assigned to colour heterogeneity. The colour heterogeneity includes all channels of a multiband image (Zhong et al., 2005).
+3. **Maximum allowable cost function** - Only regions where the merge criterion is lower than this number will be combined into a segment. The merge criterion is given by (Zhong et al., 2005):
 
 .. math::
 
@@ -14,14 +14,14 @@ It has the following parameters:
 
 where: 
 
-  * :math:`w_{col}` – weight assigned to colour heterogeneity.
-  * :math:`h_{col}` – colour heterogeneity.
-  * :math:`w_{com}` – weight assigned to circle-like compactness homogeneity.
-  * :math:`h_{com}` – circle-like degree of homogeneity.
+  * :math:`w_{col}` - weight assigned to colour heterogeneity.
+  * :math:`h_{col}` - colour heterogeneity.
+  * :math:`w_{com}` - weight assigned to circle-like compactness homogeneity.
+  * :math:`h_{com}` - circle-like degree of homogeneity.
   * :math:`h_{sth}` - rectangle-like degree of homogeneity.
 
-4. **Use K-Means to group segments** – Segments can be group by means of a K-means classifier.
-5. **Number of clusters** – The number of clusters the K-means classifier must produce if that option was selected.
+4. **Use K-Means to group segments** - Segments can be group by means of a K-means classifier.
+5. **Number of clusters** - The number of clusters the K-means classifier must produce if that option was selected.
 
 .. figure:: _images/clustseg.png
 

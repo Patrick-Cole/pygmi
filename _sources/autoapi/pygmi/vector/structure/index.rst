@@ -43,7 +43,7 @@ Module Contents
    GUI for structure complexity.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -98,10 +98,11 @@ Module Contents
 
    :param gdf: A dataframe containing LINESTRINGs.
    :type gdf: GeoDataFrame
-   :param length: distance in metres to extend the line on either side.
-   :type length: float
-   :param piter: Progressbar iterable.
-   :type piter: iter
+   :param length: distance in metres to extend the line on either side. The default is
+                  500.
+   :type length: float, optional
+   :param piter: Progressbar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **gdf2** -- A dataframe containing extended LINESTRINGs.
    :rtype: GeoDataFrame
@@ -117,10 +118,10 @@ Module Contents
    :type dxy: float
    :param var: Variance.
    :type var: float
-   :param extend: Distance to extend linear features.
-   :type extend: float
-   :param piter: Progressbar iterable.
-   :type piter: iter
+   :param extend: Distance to extend linear features. The default is 500.
+   :type extend: float, optional
+   :param piter: Progressbar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: * **geom2** (*GeoDataFrame*) -- New geometry with intersection points.
              * **dat** (*pygmi.raster.datatypes.Data*) -- Output raster data
@@ -134,10 +135,10 @@ Module Contents
    :type gdf: GeoDataFrame
    :param dxy: Raster cell size
    :type dxy: float
-   :param wsize: Window size (must be odd)
-   :type wsize: int
-   :param piter: Progressbar iterable.
-   :type piter: iter
+   :param wsize: Window size (must be odd). The default is 3.
+   :type wsize: int, optional
+   :param piter: Progressbar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- Output raster data
    :rtype: pygmi.raster.datatypes.Data
@@ -151,10 +152,10 @@ Module Contents
    :type gdf: GeoDataFrame
    :param dxy: Raster cell size
    :type dxy: float
-   :param wsize: Window size (must be odd)
-   :type wsize: int
-   :param piter: Progressbar iterable.
-   :type piter: iter
+   :param wsize: Window size (must be odd). The default is 3.
+   :type wsize: int, optional
+   :param piter: Progressbar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- Output raster data
    :rtype: pygmi.raster.datatypes.Data
@@ -168,10 +169,10 @@ Module Contents
    :type gdf: GeoDataFrame
    :param dxy: Raster cell size
    :type dxy: float
-   :param wsize: Window size (must be odd)
-   :type wsize: int
-   :param piter: Progressbar iterable.
-   :type piter: iter
+   :param wsize: Window size (must be odd). The default is 21.
+   :type wsize: int, optional
+   :param piter: Progressbar iterable. The default is iter.
+   :type piter: function, optional
 
    :returns: **dat** -- Output raster data
    :rtype: pygmi.raster.datatypes.Data
@@ -204,6 +205,12 @@ Module Contents
 .. py:function:: linesplit(curve)
 
    Split LineString into segments.
+
+   :param curve: LineString to be split.
+   :type curve: LineString
+
+   :returns: Output segments.
+   :rtype: list
 
 
 .. py:function:: segments_to_angles(gdf, piter=iter)

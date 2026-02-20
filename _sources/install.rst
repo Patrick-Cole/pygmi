@@ -78,13 +78,13 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, one
 
 The process to install is as follows:
 
-   conda create -n pygmi python=3.12
+   conda create -n pygmi python=3.13
 
    conda activate pygmi
 
    conda config --env --add channels conda-forge
 
-   conda install pyqt
+   conda install pyside6
 
    conda install fiona
 
@@ -100,9 +100,15 @@ The process to install is as follows:
 
    conda install natsort
 
+   conda install numba
+
+   conda install scikit-learn
+
    conda install scikit-image
 
-   conda install pyopengl
+   conda install pyvista
+
+   conda install pyvistaqt
 
    conda install simpeg
 
@@ -116,7 +122,11 @@ The process to install is as follows:
 
    conda install pytest
 
-   pip install mtpy
+   conda install beautifulsoup4
+
+   conda install pyyaml
+
+   conda install pwlf
 
    conda update --all
 

@@ -17,11 +17,11 @@ Calculate Change Indices
 
 The following indices can be calculated:
 
-* **Difference** – Calculates the difference between two dates (latter date minus earlier date).
-* **Mean** – Average pixel value image over all dates.
-* **Standard Deviation** – Shows pixel variation through standard deviation.
-* **Coefficient of Variation** – Measure of variation, taking mean into account.
-* **Spectral Angle Mapper** – Find spectral angle between two scenes.
+* **Difference** - Calculates the difference between two dates (latter date minus earlier date).
+* **Mean** - Average pixel value image over all dates.
+* **Standard Deviation** - Shows pixel variation through standard deviation.
+* **Coefficient of Variation** - Measure of variation, taking mean into account.
+* **Spectral Angle Mapper** - Find spectral angle between two scenes.
 
 Note that for **Difference** and **Spectral Angle Mapper** calculations only two datasets are allowed.
 
@@ -37,11 +37,11 @@ Visualising change is an obvious need for change detection since an end user oft
 
 The viewer options are:
 
-1. **Display Type** – sets the image to be displayed, whether **Single Colour Map**, **RGB Ternary** or **CMY Ternary**.
-2. **Data Bands** – Select the bands to be displayed.
-3. **Start Capture** – The scenes can be exported to a **GIF** image, at the current resolution and zoom.
-4. **Scroll bar** – Drag the slider to select the scene to display.
-5. **Previous Scene and Next Scene** – Use these buttons to move forward and backward through the scenes.
+1. **Display Type** - sets the image to be displayed, whether **Single Colour Map**, **RGB Ternary** or **CMY Ternary**.
+2. **Data Bands** - Select the bands to be displayed.
+3. **Start Capture** - The scenes can be exported to a **GIF** image, at the current resolution and zoom.
+4. **Scroll bar** - Drag the slider to select the scene to display.
+5. **Previous Scene and Next Scene** - Use these buttons to move forward and backward through the scenes.
 6. Standard image display settings that allow the user to zoom into specific areas of the image , move the zoomed in area around, return to the full image, save the image with the colour bar, etc.
 
 .. figure:: _images/changeviewer.png

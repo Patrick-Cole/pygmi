@@ -45,7 +45,7 @@ Module Contents
    GUI to calculate satellite ratios.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -105,14 +105,6 @@ Module Contents
 
 
 
-   .. py:method:: set_selected_ratios()
-
-      Set the selected ratios.
-
-      :rtype: None.
-
-
-
 .. py:class:: ConditionIndices(parent=None)
 
    Bases: :py:obj:`pygmi.misc.BasicModule`
@@ -121,7 +113,7 @@ Module Contents
    GUI to calculate satellite condition indices.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: setupui()
@@ -201,6 +193,8 @@ Module Contents
    :type showlog: function, optional
    :param piter: Progress bar iterator. The default is iter.
    :type piter: function, optional
+   :param sensor: The sensor being processed. The default is None.
+   :type sensor: str
 
    :returns: **datfin** -- List of PyGMI Data.
    :rtype: list of pygmi.raster.datatypes.Data.
@@ -217,6 +211,8 @@ Module Contents
    :type rlist: list
    :param sensor: Target sensor.
    :type sensor: str
+   :param bfile: Data filename. The default is None.
+   :type bfile: str
 
    :returns: **rlist2** -- List of converted ratios.
    :rtype: list
@@ -229,7 +225,7 @@ Module Contents
    :param flist: List of filenames.
    :type flist: list
 
-   :returns: **flist** -- List of filenames.
+   :returns: **flist2** -- List of filenames.
    :rtype: list
 
 
@@ -240,7 +236,7 @@ Module Contents
    :param flist: List of filenames.
    :type flist: list
 
-   :returns: **flist** -- List of filenames.
+   :returns: **flist2** -- List of filenames.
    :rtype: list
 
 
@@ -251,7 +247,7 @@ Module Contents
    :param flist: List of filenames.
    :type flist: list
 
-   :returns: **flist** -- List of filenames.
+   :returns: **flist2** -- List of filenames.
    :rtype: list
 
 
@@ -303,6 +299,8 @@ Module Contents
 
    :param dat: List of PyGMI Data.
    :type dat: list of pygmi.raster.datatypes.Data.
+   :param sensor: The sensor being processed. The default is None.
+   :type sensor: str
    :param showlog: Display information. The default is print.
    :type showlog: function, optional
    :param piter: Progress bar iterator. The default is iter.

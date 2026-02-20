@@ -42,13 +42,13 @@ Module Contents
 
 .. py:class:: Arrow(start_item, end_item, parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsLineItem`
+   Bases: :py:obj:`PySide6.QtWidgets.QGraphicsLineItem`
 
 
    Class responsible for drawing arrows on the main interface.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget optional
    :param start_item: Starting DiagramItem object.
    :type start_item: DiagramItem
    :param end_item: End DiagramItem object.
@@ -106,13 +106,13 @@ Module Contents
 
 .. py:class:: DiagramItem(diagram_type, context_menu, my_class, parent)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsPolygonItem`
+   Bases: :py:obj:`PySide6.QtWidgets.QGraphicsPolygonItem`
 
 
    Diagram Item.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param diagram_type: string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
                         'Step'
    :type diagram_type: str
@@ -223,13 +223,13 @@ Module Contents
 
 .. py:class:: DiagramScene(item_menu, parent=None)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QGraphicsScene`
+   Bases: :py:obj:`PySide6.QtWidgets.QGraphicsScene`
 
 
    Diagram Scene.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
    :param item_menu: Item menu.
    :type item_menu: QtWidgets.QMenu
 
@@ -267,15 +267,12 @@ Module Contents
 
 
 
-.. py:class:: MainWidget(parent=None, nocgs=True)
+.. py:class:: MainWidget(nocgs=True)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QMainWindow`
+   Bases: :py:obj:`PySide6.QtWidgets.QMainWindow`
 
 
    Widget class to call the main interface.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
    .. attribute:: pdlg
 
@@ -344,8 +341,8 @@ Module Contents
 
       Get input data from the selected item on the main interface.
 
-      :returns: **idata** -- Input list of PyGMI Data (pygmi.raster.datatypes.Data)
-      :rtype: list
+      :returns: **idata** -- Input list of PyGMI Data.
+      :rtype: list of pygmi.raster.datatypes.Data
 
 
 
@@ -353,8 +350,8 @@ Module Contents
 
       Get output data from the selected item on the main interface.
 
-      :returns: **odata** -- Output list of PyGMI Data (pygmi.raster.datatypes.Data)
-      :rtype: list
+      :returns: **odata** -- Output list of PyGMI Data.
+      :rtype: list of pygmi.raster.datatypes.Data
 
 
 
@@ -384,12 +381,14 @@ Module Contents
 
 
 
-   .. py:method:: launch_context_item(newitem)
+   .. py:method:: launch_context_item(newitem, option=None)
 
       Launch a context menu item, using output data.
 
       :param newitem: newitem is the class to be called by the context menu item
       :type newitem: custom class
+      :param option: A string option. The default is None.
+      :type option: str
 
 
 
@@ -486,15 +485,13 @@ Module Contents
 
 
 
-.. py:class:: Startup(pbarmax, parent=None)
+.. py:class:: Startup(pbarmax)
 
-   Bases: :py:obj:`PyQt6.QtWidgets.QDialog`
+   Bases: :py:obj:`PySide6.QtWidgets.QDialog`
 
 
    Class to provide a startup display while PyGMI loads into memory.
 
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
    :param pbarmax: Progress bar maximum value.
    :type pbarmax: int
 

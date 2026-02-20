@@ -4,15 +4,15 @@ This allows for the display of raster data in a variety of ways common to most i
 
 The **Raster Data Display** interface has the following elements:
 
-1. Raster display – the raster is displayed using the settings selected on the left of the interface.
-2. Histogram display – a histogram of the data distribution coloured using the selected colour bar. When the mouse pointer hovers over the raster display the data value at the pointer location appears in the top right corner of the histogram display.
+1. Raster display - the raster is displayed using the settings selected on the left of the interface.
+2. Histogram display - a histogram of the data distribution coloured using the selected colour bar. When the mouse pointer hovers over the raster display the data value at the pointer location appears in the top right corner of the histogram display.
 3. Coordinates - when the mouse pointer hovers over the raster display the coordinates of the pointer appears here.
-4. **Display Type** – the type of data displayed in the raster display. Options are **Single Colour Map**, **Contour**, **RGB Ternary** and **CMY Ternary**. 
+4. **Display Type** - the type of data displayed in the raster display. Options are **Single Colour Map**, **Contour**, **RGB Ternary** and **CMY Ternary**. 
 5. **Data Bands** - the bands to be used in the main display are selected here. When a ternary displayed type is selected the user has the ability to select three bands to display.
-6. **Histogram Stretch** – settings that determine the type of histogram stretch.
-7. **Colour Bar** – a dropdown box allows the user to select from a long list of colour bars.
+6. **Histogram Stretch** - settings that determine the type of histogram stretch.
+7. **Colour Bar** - a dropdown box allows the user to select from a long list of colour bars.
 8. **Sunshading** - this option applies a sunshade algorithm to the data.
-9. **Save GeoTIFF** – Once the user is satisfied with the raster display they can save the data to a georeferenced image in **GeoTIFF** format. Note that this is an RGB image and does not contain actual data values.
+9. **Save GeoTIFF** - Once the user is satisfied with the raster display they can save the data to a georeferenced image in **GeoTIFF** format. Note that this is an RGB image and does not contain actual data values.
 10. Standard image display setting that allows the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, etc.
 
 .. figure:: _images/rasterinterp.png
@@ -26,7 +26,7 @@ Display Type
 The four Display Types available in this module are:
 
 1. **Single Colour Map** - This displays a single band of data by mapping its values to a colour map or colour table. Other packages often refer to it as a pseudo colour map.
-2. **Contour** - This has the same options as the single colour map but displays the data using contours instead.
+2. **Contour** - This has the same options as the single colour map but displays the data using contours instead. The user can also enter in the number of contour levels. Ten levels is the default.
 3. **RGB Ternary** - This option displays three bands, one red, one green and one blue. Because of this, no colour map can be chosen. Three bands must be chosen. Histogram stretch is the same as for previous sections.
 4. **CMY Ternary** - This option displays three bands, one cyan, one magenta and one yellow. As before, no colour map can be chosen, and three bands must be chosen. Histogram stretch is the same as for previous sections.
 
@@ -40,7 +40,7 @@ The preference of how to map the data to the colour bar is chosen here. The opti
 
 1. Two histogram stretches are available:
 
-  * **Linear with Percent Clip** – the percentage clips determine the percentage of outliers that will be removed from the stretch.
+  * **Linear with Percent Clip** - the percentage clips determine the percentage of outliers that will be removed from the stretch.
   * **Histogram Equalisation** - all colours are assigned the same amount of data samples so that maximum change is seen in the map.
 
 2. Percentage of low values to exclude when using the **Linear with Percent Clip** option.
@@ -67,13 +67,17 @@ This option applies a sunshade algorithm to the data. The shader used is Blinn�
 
    Sunshading options.
 
+.. figure:: _images/rasterinterp4b.png
+
+   Example of sunshading using different settings.
+
 Save GeoTIFF
 ^^^^^^^^^^^^
 Use this to save your final maps as a **GeoTIFF** image. This will also save two colour bars (one vertical and one horizontal) or a ternary colour bar. The size of the colour bar relates to how big you wish it to be on the paper map. Note that the GeoTIFF image is an RGB image and does not contain actual data values.
 
 The user is prompted for the following information:
 
-1. The length of the colour bar in inches.
+1. The length and width of the colour bar in inches.
 2. For a **Single Colour Map** or **Contour** map the user must enter the data units. This will appear next to the colour bar.
 3. For an **RGB Ternary** or **CMY Ternary** image the user must enter the names that will appear at each colour on the ternary colour bar.
 4. The image as been saved once the **Save to GeoTIFF is complete!** message appears.

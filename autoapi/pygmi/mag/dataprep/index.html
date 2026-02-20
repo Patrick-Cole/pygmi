@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pygmi.mag.dataprep &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>pygmi.mag.dataprep &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../../_static/documentation_options.js?v=252627f5"></script>
-    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/documentation_options.js?v=f6912064"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/pygmi/mag/dataprep/index';</script>
     <link rel="icon" href="../../../../_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">pygmi.mag</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -678,6 +695,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig"><code class="docutils literal notranslate"><span class="pre">ASig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.setupui"><code class="docutils literal notranslate"><span class="pre">ASig.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.settings"><code class="docutils literal notranslate"><span class="pre">ASig.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.saveproj"><code class="docutils literal notranslate"><span class="pre">ASig.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.asig"><code class="docutils literal notranslate"><span class="pre">asig()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1"><code class="docutils literal notranslate"><span class="pre">Tilt1</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1.azi"><code class="docutils literal notranslate"><span class="pre">Tilt1.azi</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1.smooth"><code class="docutils literal notranslate"><span class="pre">Tilt1.smooth</span></code></a></li>
@@ -688,7 +712,6 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.tilt1"><code class="docutils literal notranslate"><span class="pre">tilt1()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.nextpow2"><code class="docutils literal notranslate"><span class="pre">nextpow2()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.vertical"><code class="docutils literal notranslate"><span class="pre">vertical()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP"><code class="docutils literal notranslate"><span class="pre">RTP</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.setupui"><code class="docutils literal notranslate"><span class="pre">RTP.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.settings"><code class="docutils literal notranslate"><span class="pre">RTP.settings()</span></code></a></li>
@@ -696,9 +719,8 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.acceptall"><code class="docutils literal notranslate"><span class="pre">RTP.acceptall()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.fftprep"><code class="docutils literal notranslate"><span class="pre">fftprep()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.fft_getkxy"><code class="docutils literal notranslate"><span class="pre">fft_getkxy()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.rtp"><code class="docutils literal notranslate"><span class="pre">rtp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.gradient2D"><code class="docutils literal notranslate"><span class="pre">gradient2D()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -719,10 +741,13 @@ document.write(`
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.Tilt1" title="pygmi.mag.dataprep.Tilt1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tilt1</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.ASig" title="pygmi.mag.dataprep.ASig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ASig</span></code></a></p></td>
+<td><p>Calculate analytic signal via a GUI.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.Tilt1" title="pygmi.mag.dataprep.Tilt1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tilt1</span></code></a></p></td>
 <td><p>Class used to gather information via a GUI, for function tilt1.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.RTP" title="pygmi.mag.dataprep.RTP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RTP</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.RTP" title="pygmi.mag.dataprep.RTP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RTP</span></code></a></p></td>
 <td><p>Perform Reduction to the Pole on Magnetic data.</p></td>
 </tr>
 </tbody>
@@ -733,23 +758,20 @@ document.write(`
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.tilt1" title="pygmi.mag.dataprep.tilt1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tilt1</span></code></a>(data, azi, s[, k])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.asig" title="pygmi.mag.dataprep.asig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asig</span></code></a>(data1[, showlog, piter])</p></td>
 <td><p>Tilt angle calculations.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.nextpow2" title="pygmi.mag.dataprep.nextpow2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextpow2</span></code></a>(n)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.tilt1" title="pygmi.mag.dataprep.tilt1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tilt1</span></code></a>(data1, azi, s[, k, showlog, piter])</p></td>
+<td><p>Tilt angle calculations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.nextpow2" title="pygmi.mag.dataprep.nextpow2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextpow2</span></code></a>(n)</p></td>
 <td><p>Next power of 2.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.vertical" title="pygmi.mag.dataprep.vertical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertical</span></code></a>(data[, npts, xint, order])</p></td>
-<td><p>Vertical derivative.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.fftprep" title="pygmi.mag.dataprep.fftprep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fftprep</span></code></a>(data)</p></td>
-<td><p>FFT Preparation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.fft_getkxy" title="pygmi.mag.dataprep.fft_getkxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fft_getkxy</span></code></a>(fftmod, xdim, ydim)</p></td>
-<td><p>Get KX and KY.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.rtp" title="pygmi.mag.dataprep.rtp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rtp</span></code></a>(data, I_deg, D_deg)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.rtp" title="pygmi.mag.dataprep.rtp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rtp</span></code></a>(data, I_deg, D_deg[, Ia, showlog, piter])</p></td>
 <td><p>Reduction to the pole.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pygmi.mag.dataprep.gradient2D" title="pygmi.mag.dataprep.gradient2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient2D</span></code></a>(daty, datx)</p></td>
+<td><p>Perform 2D gradient where spacing is inconsistent in 2D.</p></td>
 </tr>
 </tbody>
 </table>
@@ -758,13 +780,89 @@ document.write(`
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.ASig">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">ASig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.ASig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
+<p>Calculate analytic signal via a GUI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.ASig.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.ASig.setupui" title="Link to this definition">#</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.ASig.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.ASig.settings" title="Link to this definition">#</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodialog</strong> (<em>bool</em><em>, </em><em>optional</em>) – Run settings without a dialog. The default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.ASig.saveproj">
+<span class="sig-name descname"><span class="pre">saveproj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.ASig.saveproj" title="Link to this definition">#</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.asig">
+<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">asig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.asig" title="Link to this definition">#</a></dt>
+<dd><p>Tilt angle calculations.</p>
+<dl class="simple">
+<dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<a class="reference internal" href="../../raster/datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – data with matrix of double to be filtered</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Show information using a function. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterator. The default is iter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>asig1</strong> – Analytic signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy masked array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pygmi.mag.dataprep.Tilt1">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">Tilt1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">Tilt1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>Class used to gather information via a GUI, for function tilt1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -832,7 +930,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pygmi.mag.dataprep.tilt1">
-<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">tilt1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.tilt1" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">tilt1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.tilt1" title="Link to this definition">#</a></dt>
 <dd><p>Tilt angle calculations.</p>
 <dl class="simple">
 <dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa)</p>
@@ -841,10 +939,12 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy masked array</em>) – matrix of double to be filtered</p></li>
+<li><p><strong>data1</strong> (<a class="reference internal" href="../../raster/datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – data with matrix of double to be filtered</p></li>
 <li><p><strong>azi</strong> (<em>float</em>) – directional filter azimuth in degrees from East</p></li>
 <li><p><strong>s</strong> (<em>int</em>) – size of smoothing matrix to use - must be odd input 0 for no smoothing</p></li>
 <li><p><strong>k</strong> (<em>int</em>) – Factor for EHGA filter. Must be &gt; 0. Optional.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Show information using a function. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterator. The default is iter.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -883,40 +983,14 @@ document.write(`
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pygmi.mag.dataprep.vertical">
-<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">vertical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.vertical" title="Link to this definition">#</a></dt>
-<dd><p>Vertical derivative.</p>
-<dl class="simple">
-<dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa).</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
-<li><p><strong>npts</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of points. The default is None.</p></li>
-<li><p><strong>xint</strong> (<em>float</em><em>, </em><em>optional</em>) – X interval. The default is 1.</p></li>
-<li><p><strong>order</strong> (<em>int</em>) – Order of derivative. The default is 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>dz</strong> – Output data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="pygmi.mag.dataprep.RTP">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">RTP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">RTP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../../misc/index.html#pygmi.misc.BasicModule" title="pygmi.misc.BasicModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pygmi.misc.BasicModule</span></code></a></p>
 <p>Perform Reduction to the Pole on Magnetic data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parent</strong> (<em>parent</em><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="../../main/index.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget"><em>pygmi.main.MainWidget</em></a><em>, </em><em>optional</em>) – Reference to the parent routine. The default is None.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -973,50 +1047,8 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pygmi.mag.dataprep.fftprep">
-<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">fftprep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fftprep" title="Link to this definition">#</a></dt>
-<dd><p>FFT Preparation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy array</em>) – Input dataset.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>zfin</strong> (<em>numpy array.</em>) – Output prepared data.</p></li>
-<li><p><strong>rdiff</strong> (<em>int</em>) – rows divided by 2.</p></li>
-<li><p><strong>cdiff</strong> (<em>int</em>) – columns divided by 2.</p></li>
-<li><p><strong>datamedian</strong> (<em>float</em>) – Median of data.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pygmi.mag.dataprep.fft_getkxy">
-<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">fft_getkxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fftmod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fft_getkxy" title="Link to this definition">#</a></dt>
-<dd><p>Get KX and KY.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fftmod</strong> (<em>numpy array</em>) – FFT data.</p></li>
-<li><p><strong>xdim</strong> (<em>float</em>) – cell x dimension.</p></li>
-<li><p><strong>ydim</strong> (<em>float</em>) – cell y dimension.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>KX</strong> (<em>numpy array</em>) – x sample frequencies.</p></li>
-<li><p><strong>KY</strong> (<em>numpy array</em>) – y sample frequencies.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="pygmi.mag.dataprep.rtp">
-<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">rtp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D_deg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.rtp" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">rtp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ia</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">print</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.rtp" title="Link to this definition">#</a></dt>
 <dd><p>Reduction to the pole.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1024,6 +1056,9 @@ document.write(`
 <li><p><strong>data</strong> (<a class="reference internal" href="../../raster/datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>pygmi.raster.datatypes.Data</em></a>) – PyGMI raster data.</p></li>
 <li><p><strong>I_deg</strong> (<em>float</em>) – Magnetic inclination.</p></li>
 <li><p><strong>D_deg</strong> (<em>float</em>) – Magnetic declination.</p></li>
+<li><p><strong>Ia</strong> (<em>float</em>) – Amplitude correction inclination Ia in degree. The default is 20.</p></li>
+<li><p><strong>showlog</strong> (<em>function</em><em>, </em><em>optional</em>) – Show information using a function. The default is print.</p></li>
+<li><p><strong>piter</strong> (<em>function</em><em>, </em><em>optional</em>) – Progress bar iterator. The default is iter.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1031,6 +1066,26 @@ document.write(`
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="../../raster/datatypes/index.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">pygmi.raster.datatypes.Data</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.mag.dataprep.gradient2D">
+<span class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></span><span class="sig-name descname"><span class="pre">gradient2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">daty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.gradient2D" title="Link to this definition">#</a></dt>
+<dd><p>Perform 2D gradient where spacing is inconsistent in 2D.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>daty</strong> (<em>numpy array</em>) – _description_</p></li>
+<li><p><strong>datx</strong> (<em>numpy array</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dx</strong> – output gradient array</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1086,6 +1141,13 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig"><code class="docutils literal notranslate"><span class="pre">ASig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.setupui"><code class="docutils literal notranslate"><span class="pre">ASig.setupui()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.settings"><code class="docutils literal notranslate"><span class="pre">ASig.settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.ASig.saveproj"><code class="docutils literal notranslate"><span class="pre">ASig.saveproj()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.asig"><code class="docutils literal notranslate"><span class="pre">asig()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1"><code class="docutils literal notranslate"><span class="pre">Tilt1</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1.azi"><code class="docutils literal notranslate"><span class="pre">Tilt1.azi</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.Tilt1.smooth"><code class="docutils literal notranslate"><span class="pre">Tilt1.smooth</span></code></a></li>
@@ -1096,7 +1158,6 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.tilt1"><code class="docutils literal notranslate"><span class="pre">tilt1()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.nextpow2"><code class="docutils literal notranslate"><span class="pre">nextpow2()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.vertical"><code class="docutils literal notranslate"><span class="pre">vertical()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP"><code class="docutils literal notranslate"><span class="pre">RTP</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.setupui"><code class="docutils literal notranslate"><span class="pre">RTP.setupui()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.settings"><code class="docutils literal notranslate"><span class="pre">RTP.settings()</span></code></a></li>
@@ -1104,9 +1165,8 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.RTP.acceptall"><code class="docutils literal notranslate"><span class="pre">RTP.acceptall()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.fftprep"><code class="docutils literal notranslate"><span class="pre">fftprep()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.fft_getkxy"><code class="docutils literal notranslate"><span class="pre">fft_getkxy()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.rtp"><code class="docutils literal notranslate"><span class="pre">rtp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pygmi.mag.dataprep.gradient2D"><code class="docutils literal notranslate"><span class="pre">gradient2D()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1133,7 +1193,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

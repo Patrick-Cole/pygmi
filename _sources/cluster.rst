@@ -9,6 +9,10 @@ A multiple band raster dataset, :doc:`imported<raster.dm.importrasterdata>` thro
 
 The Classification menu provides several classification/clustering tools.
 
+.. figure:: _images/clustmenu.png
+
+   Classification menu.
+
 .. toctree::
     :titlesonly:
 

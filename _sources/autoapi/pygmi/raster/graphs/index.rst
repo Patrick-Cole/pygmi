@@ -14,6 +14,7 @@ pygmi.raster.graphs
     * Images
     * Surfaces
     * Histograms
+    * Scatterplots
 
 
 
@@ -42,15 +43,26 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
 
    Matplotlib canvas widget for the actual plot.
 
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+
+   .. py:method:: format_coord(x, y)
+
+      Set format coordinate for correlation coefficient plot.
+
+      :param x: x coordinate.
+      :type x: float
+      :param y: y coordinate.
+      :type y: float
+
+      :returns: Output string to display.
+      :rtype: str
+
 
 
    .. py:method:: update_ccoef(data1, dmat)
@@ -66,7 +78,7 @@ Module Contents
 
 
 
-   .. py:method:: update_raster(data1, cmap)
+   .. py:method:: update_raster(data1, cmap, plotlog)
 
       Update the raster plot.
 
@@ -74,6 +86,8 @@ Module Contents
       :type data1: PyGMI raster Data
       :param cmap: Matplotlib colormap description
       :type cmap: str
+      :param plotlog: Use a logarithmic colour scale.
+      :type plotlog: bool
 
       :rtype: None.
 
@@ -128,7 +142,7 @@ Module Contents
    Plot 2D Correlation Coefficients.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: run()
@@ -147,7 +161,7 @@ Module Contents
    Plot Raster Class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -174,7 +188,7 @@ Module Contents
    Plot Surface Class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -209,7 +223,7 @@ Module Contents
    A Hexbin is a type of scatter plot which is raster.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -236,7 +250,7 @@ Module Contents
    Plot Histogram Class.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()

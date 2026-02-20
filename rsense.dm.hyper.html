@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Hyperspectral Imaging &#8212; PyGMI 3.2.9.0 documentation</title>
+    <title>Hyperspectral Imaging &#8212; PyGMI 3.3.0.0 documentation</title>
   
   
   
@@ -37,9 +37,9 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=252627f5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f6912064"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'rsense.dm.hyper';</script>
     <link rel="icon" href="_static/favicon.ico"/>
@@ -170,7 +170,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.2.9.0 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -256,6 +256,7 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.polycut.html">Cut Raster Using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.cliptozoom.html">Clip Raster to Zoom Extents</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.proffromraster.html">Extract Profile from Raster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="raster.dm.rtov.html">Convert Raster to Vector Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.rasterdisplay.html">Raster Data Display</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.selectbands.html">Select Input Raster Bands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.cm.meta.html">Display/Edit Metadata</a></li>
@@ -273,8 +274,10 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="vector.html">Vector Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importvectordata.html">Import Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.importxyzdata.html">Import XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.importvoxeldata.html">Import Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.colsel.html">Column Select</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.txtfilesplit.html">Text File Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.dm.equationeditor.html">Vector Equation Editor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.polycut.html">Cut Points using Polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.reproj.html">Reproject Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.dm.gridding.html">Dataset Gridding</a></li>
@@ -287,8 +290,10 @@
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.pltcorr.html">Plot Correlation Coefficients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showprof.html">Show Profile Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.showmapprof.html">Show Profiles on a Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.displayvoxel.html">Display Voxel Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvector.html">Export Vector Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="vector.cm.exportxyz.html">Export XYZ Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vector.cm.exportvoxel.html">Export Voxel Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="bholes.html">Boreholes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -316,14 +321,16 @@
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
 </ul>
 </details></li>
@@ -336,6 +343,7 @@
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.meta.html">Display/Edit Metadata</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.showgraphs.html">Show Graphs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mt.cm.exportedi.html">Export EDI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mt.cm.phase.html">Plot Phase Tensor</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -378,6 +386,8 @@
 <li class="toctree-l3"><a class="reference internal" href="seis.dm.quarry.html">Remove Quarry Events</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showqc.html">Show QC Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.showtempb.html">Show Temporal b-value Plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showspatb.html">Show Spatial Variation of the b-value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seis.cm.showiso.html">Show Isoseismic Plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportseisan.html">Export SEISAN Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportcsv.html">Export to CSV</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seis.cm.exportsummary.html">Export Summary to CSV</a></li>
@@ -429,6 +439,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
 </ul>
@@ -462,10 +473,12 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/raster/index.html">pygmi.raster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/anaglyph/index.html">pygmi.raster.anaglyph</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cliptozoom/index.html">pygmi.raster.cliptozoom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/colormaps/index.html">pygmi.raster.colormaps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/cooper/index.html">pygmi.raster.cooper</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/dataprep/index.html">pygmi.raster.dataprep</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/datatypes/index.html">pygmi.raster.datatypes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/equation_editor/index.html">pygmi.raster.equation_editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/fft/index.html">pygmi.raster.fft</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/ginterp/index.html">pygmi.raster.ginterp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/graphs/index.html">pygmi.raster.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/raster/iodefs/index.html">pygmi.raster.iodefs</a></li>
@@ -511,16 +524,20 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/vector/index.html">pygmi.vector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/dataprep/index.html">pygmi.vector.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/datatypes/index.html">pygmi.vector.datatypes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/equation_editor/index.html">pygmi.vector.equation_editor</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/graphs/index.html">pygmi.vector.graphs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/iodefs/index.html">pygmi.vector.iodefs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/menu/index.html">pygmi.vector.menu</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/minc/index.html">pygmi.vector.minc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/show_table/index.html">pygmi.vector.show_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/structure/index.html">pygmi.vector.structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/vector/vvis3d/index.html">pygmi.vector.vvis3d</a></li>
 </ul>
 </details></li>
 </ul>
@@ -697,9 +714,9 @@ document.write(`
 <p>This module allows for a user to select a spectrum from a dataset and compare it with library spectra. Different features can be highlighted, and a hull can be removed from the spectrum. This tool is essentially a viewer, allowing for the user to strategize interpretation strategies. The dataset that will be analysed must be projected.
 The interface has the following aspects:</p>
 <ol class="arabic simple">
-<li><p>Image display – A single band or a true colour image can be displayed. Click on the image to show die spectral graph at that point.</p></li>
-<li><p>Spectral graph – The spectrum at the point selected in the image is shown in blue. A library spectrum can be overlain and will be orange.</p></li>
-<li><p>Display options – Discussed separately below.</p></li>
+<li><p>Image display - A single band or a true colour image can be displayed. Click on the image to show die spectral graph at that point.</p></li>
+<li><p>Spectral graph - The spectrum at the point selected in the image is shown in blue. A library spectrum can be overlain and will be orange.</p></li>
+<li><p>Display options - Discussed separately below.</p></li>
 <li><p>Standard image display settings that allow the user to zoom into specific areas of the image, move the zoomed in area around, return to the full image, save the image with the colour bar, etc</p></li>
 </ol>
 <figure class="align-default" id="id1">
@@ -710,28 +727,29 @@ The interface has the following aspects:</p>
 </figure>
 <p>The display options are:</p>
 <ol class="arabic simple">
-<li><p><strong>Display Band</strong> – Choice of which data wavelength to display.</p></li>
-<li><p><strong>Feature</strong> – Highlight a standard spectral feature on the spectral graph. The features are associated with typical absorption features for certain minerals and mineral groups (Laukamp et al., 2021; Haest et al., 2012):</p></li>
+<li><p><strong>Display Band</strong> - Choice of which data wavelength to display.</p></li>
+<li><p><strong>Feature</strong> - Highlight a standard spectral feature on the spectral graph. The features are associated with typical absorption features for certain minerals and mineral groups (Laukamp et al., 2021; Haest et al., 2012):</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>900</strong> – Ferric iron absorption feature (e.g. hematite)</p></li>
-<li><p><strong>1300</strong> – Ferrous iron (e.g. magnetite)</p></li>
-<li><p><strong>1550</strong> – Epidote</p></li>
-<li><p><strong>1760</strong> – Sulphates (e.g. gypsum, alunite)</p></li>
-<li><p><strong>2080</strong> – Pyrophyllite, topaz, talc</p></li>
-<li><p><strong>2200</strong> – White micas, smectite</p></li>
-<li><p><strong>2250</strong> – Chlorite, epidote, biotite</p></li>
-<li><p><strong>2290</strong> – Ca-amphiboles, talc</p></li>
-<li><p><strong>2330</strong> – Chlorite, carbonate</p></li>
+<li><p><strong>900</strong> - Ferric iron absorption feature (e.g. hematite)</p></li>
+<li><p><strong>1300</strong> - Ferrous iron (e.g. magnetite)</p></li>
+<li><p><strong>1550</strong> - Epidote</p></li>
+<li><p><strong>1760</strong> - Sulphates (e.g. gypsum, alunite)</p></li>
+<li><p><strong>2080</strong> - Pyrophyllite, topaz, talc</p></li>
+<li><p><strong>2200</strong> - White micas, smectite</p></li>
+<li><p><strong>2250</strong> - Chlorite, epidote, biotite</p></li>
+<li><p><strong>2290</strong> - Ca-amphiboles, talc</p></li>
+<li><p><strong>2330</strong> - Chlorite, carbonate</p></li>
 <li><p><strong>2390</strong> - Amphiboles</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p><strong>True Colour Ternary</strong> – Select this to display a ternary image instead of a single band image.</p></li>
-<li><p><strong>Remove Hull</strong> – Allows for the hull removed representation of a spectrum.</p></li>
-<li><p><strong>Load ENVI spectral library</strong> – This can be any spectral library in ENVI spectral library format (<strong>SLI</strong>). The user then chooses the appropriate reference spectrum to compare with.</p></li>
+<li><p><strong>True Colour Ternary</strong> - Select this to display a ternary image instead of a single band image.</p></li>
+<li><p><strong>Remove Hull</strong> - Allows for the hull removed representation of a spectrum.</p></li>
+<li><p><strong>Load Spectral Library</strong> - This can be any spectral library in ENVI spectral library format (<strong>SLI</strong>)or USGS SPECPR format. The user then chooses the appropriate reference spectrum to compare with.</p></li>
 <li><p>Names of library spectra loaded in. Click on a name to display the spectrum in the spectral graph.</p></li>
+<li><p><strong>Current Spectrum Description</strong> – opens a description of the selected library spectrum.</p></li>
 </ol>
 <figure class="align-default" id="id2">
 <img alt="_images/rsenseanalyse2.png" src="_images/rsenseanalyse2.png" />
@@ -745,26 +763,26 @@ The interface has the following aspects:</p>
 <p>This module takes as input hyperspectral data (single dataset or batch list) and allows for a standard set of feature definitions to be calculated (Haest et al. 2012). These features are absorption features that are typically associated with certain minerals or mineral groups. Once a product is selected, the details of the various datasets which make up the calculation are shown in a table, including feature name, filter, threshold and description. The user can alter details such as the respective dataset thresholds.</p>
 <p>The <strong>Process Features</strong> interface has the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Product</strong> – A dropdown list of the minerals or mineral groups that can be detected:</p></li>
+<li><p><strong>Product</strong> - A dropdown list of the minerals or mineral groups that can be detected:</p></li>
 </ol>
 <blockquote>
 <div><ul class="simple">
-<li><p>Amphibole – The depth and wavelength (nm) of the 2390 nm feature are calculated.</p></li>
-<li><p>Carbonate – The depth and wavelength (nm) of the 2320 nm feature are calculated</p></li>
-<li><p>Chlorite – Features at 2250 nm and 2330 nm can be detected separately. The presence of both provides further information about the composition of the chlorite (Lypaczewski and Rivard, 2018). In both cases the feature depth and wavelength (nm) are calculated.</p></li>
+<li><p>Amphibole - The depth and wavelength (nm) of the 2390 nm feature are calculated.</p></li>
+<li><p>Carbonate - The depth and wavelength (nm) of the 2320 nm feature are calculated</p></li>
+<li><p>Chlorite - Features at 2250 nm and 2330 nm can be detected separately. The presence of both provides further information about the composition of the chlorite (Lypaczewski and Rivard, 2018). In both cases the feature depth and wavelength (nm) are calculated.</p></li>
 <li><p>Epidote - The depth and wavelength (nm) of the 1550 nm feature are calculated.</p></li>
-<li><p>Ferric iron – The depth and wavelength (nm) of the 900 nm feature are calculated. Note that the feature is usually broad making the wavelength difficult to calculate accurately.</p></li>
-<li><p>Ferrous iron – This is a ratio and therefore no wavelength information is available.</p></li>
-<li><p>Kaolin Group – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
-<li><p>Pyrophyllite – The depth and wavelength (nm) of the 2160 nm feature are calculated.</p></li>
-<li><p>Smectite – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
-<li><p>White micas – The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>Ferric iron - The depth and wavelength (nm) of the 900 nm feature are calculated. Note that the feature is usually broad making the wavelength difficult to calculate accurately.</p></li>
+<li><p>Ferrous iron - This is a ratio and therefore no wavelength information is available.</p></li>
+<li><p>Kaolin Group - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>Pyrophyllite - The depth and wavelength (nm) of the 2160 nm feature are calculated.</p></li>
+<li><p>Smectite - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
+<li><p>White micas - The depth and wavelength (nm) of the 2200 nm feature are calculated.</p></li>
 </ul>
 </div></blockquote>
 <ol class="arabic simple" start="2">
-<li><p><strong>Details</strong> – The first line in the table shows the wavelength of the defining feature. If the feature name starts with an f, the feature depth and minimum wavelength are calculated. If it starts with an r, a ratio is calculated. The remainder of the lines in the tables details filters that are used to link the specific feature to a mineral or mineral group. The <strong>Filter</strong> can be &lt; or &gt; and the user can set the threshold at which a feature is detected. The figure below shows an example to show how these details are used to detect a mineral.</p></li>
-<li><p><strong>Filter Albedo and Vegetation</strong> – When this option is selected, albedo and vegetation will appear in the table, and their filter and threshold settings can be adjusted.</p></li>
-<li><p><strong>If the final product is a ratio, filter out values less than 1</strong> – If this is selected only the pixels where the feature was detected will be kept.</p></li>
+<li><p><strong>Details</strong> - The first line in the table shows the wavelength of the defining feature. If the feature name starts with an f, the feature depth and minimum wavelength are calculated. If it starts with an r, a ratio is calculated. The remainder of the lines in the tables details filters that are used to link the specific feature to a mineral or mineral group. The <strong>Filter</strong> can be &lt; or &gt; and the user can set the threshold at which a feature is detected. The figure below shows an example to show how these details are used to detect a mineral.</p></li>
+<li><p><strong>Filter Albedo and Vegetation</strong> - When this option is selected, albedo and vegetation will appear in the table, and their filter and threshold settings can be adjusted.</p></li>
+<li><p><strong>If the final product is a ratio, filter out values less than 1</strong> - If this is selected only the pixels where the feature was detected will be kept.</p></li>
 </ol>
 <figure class="align-default" id="id3">
 <img alt="_images/rsensefproc.png" src="_images/rsensefproc.png" />
@@ -783,9 +801,9 @@ The interface has the following aspects:</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>Haest, M., Cudahy, T., Laukamp, C. and Gregory, S. 2012. Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the rocklea channel iron deposit in Western Australia. Economic Geology, 107, 209–228, <a class="reference external" href="https://doi.org/10.2113/econgeo.107.2.209">https://doi.org/10.2113/econgeo.107.2.209</a>.</p>
+<div><p>Haest, M., Cudahy, T., Laukamp, C. and Gregory, S. 2012. Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the rocklea channel iron deposit in Western Australia. Economic Geology, 107, 209-228, <a class="reference external" href="https://doi.org/10.2113/econgeo.107.2.209">https://doi.org/10.2113/econgeo.107.2.209</a>.</p>
 <p>Laukamp, C., Rodger, A., Legras, M., Lampinen, H., Lau, I.C., Pejcic, B., Stromberg, J., Francis, N. and Ramanaidou, E. 2021. Mineral physicochemistry underlying feature‐based extraction of mineral abundance and composition from shortwave, mid and thermal infrared reflectance spectra. Minerals, 11, <a class="reference external" href="https://doi.org/10.3390/min11040347">https://doi.org/10.3390/min11040347</a>.</p>
-<p>Lypaczewski, P. and Rivard, B. 2018. Estimating the Mg# and AlVI content of biotite and chlorite from shortwave infrared reflectance spectroscopy: Predictive equations and recommendations for their use. International Journal of Applied Earth Observation and Geoinformation, 68, 116–126, <a class="reference external" href="https://doi.org/10.1016/j.jag.2018.02.003">https://doi.org/10.1016/j.jag.2018.02.003</a>.</p>
+<p>Lypaczewski, P. and Rivard, B. 2018. Estimating the Mg# and AlVI content of biotite and chlorite from shortwave infrared reflectance spectroscopy: Predictive equations and recommendations for their use. International Journal of Applied Earth Observation and Geoinformation, 68, 116-126, <a class="reference external" href="https://doi.org/10.1016/j.jag.2018.02.003">https://doi.org/10.1016/j.jag.2018.02.003</a>.</p>
 </div></blockquote>
 </section>
 </section>
@@ -862,7 +880,7 @@ By Patrick Cole
 
   <p class="copyright">
     
-      © Copyright 2025 Council for Geoscience.
+      © Copyright 2026 Council for Geoscience.
       <br/>
     
   </p>

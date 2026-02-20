@@ -5,7 +5,7 @@ Description of Modules
 ----------------------
 The Raster menu contains general functions related to raster (grid) data sets. Here, gridded data can be imported, filtered and displayed.
 
-.. figure:: _images/rastercontext.png
+.. figure:: _images/rastermenu.png
 
    Raster menu.
 
@@ -27,6 +27,7 @@ The Raster menu contains general functions related to raster (grid) data sets. H
     raster.dm.polycut
     raster.dm.cliptozoom
     raster.dm.proffromraster
+    raster.dm.rtov
     raster.dm.rasterdisplay
 
 Context Menu

@@ -139,6 +139,15 @@ Module Contents
 
 
 
+   .. py:method:: scale_external_to_res(full_res)
+
+      Scale to resolution.
+
+      Change self._A and _extent to render an image whose resolution is
+      matched to the eventual rendering.
+
+
+
    .. py:method:: draw(renderer, *args, **kwargs)
 
       Draw.

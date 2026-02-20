@@ -10,16 +10,16 @@ The two input datasets must both be connected to the **Remove IGRF** module. Alt
 
 The IGRF correction interface requires the following inputs:
 
-1. **Input Projection** – Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. Under the first dropdown list the Datum can be selected, and the projection is selected under the second dropdown list. If the data sets have projections these will be imported automatically, but the user must confirm that it is correct.
+1. **Input Projection** - Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. Under the first dropdown list the Datum can be selected, and the projection is selected under the second dropdown list. If the data sets have projections these will be imported automatically, but the user must confirm that it is correct.
 2. Survey information:
 
-  * **Sensor clearance above ground** – the height of the magnetic sensor above the ground in metres.
-  * **Date** – The magnetic survey date. For large surveys that lasted for multiple or weeks, any date during the survey can be entered since the changes in the geomagnetic field will be negligible on this time scale.
+  * **Sensor clearance above ground** - the height of the magnetic sensor above the ground in metres.
+  * **Date** - The magnetic survey date. For large surveys that lasted for multiple or weeks, any date during the survey can be entered since the changes in the geomagnetic field will be negligible on this time scale.
 
 3. Input data:
 
-  * **Digital Elevation Model** – Raster grid of the terrain in height above sea level. 
-  * **Magnetic Data** – Raster grid of the magnetic data to be corrected.
+  * **Digital Elevation Model** - Raster grid of the terrain in height above sea level. 
+  * **Magnetic Data** - Raster grid of the magnetic data to be corrected.
 
 .. figure:: _images/igrf2.png
 
@@ -27,10 +27,10 @@ The IGRF correction interface requires the following inputs:
 
 The result of the calculation is a four-band raster dataset with the following bands:
 
-* *IGRF* – The total intensity of the IGRF in nT.
-* *Inclination* – The inclination of the IGRF.
-* *Declination* – The declination of the IGRF
-* *Magnetic data* – The IGRF-corrected magnetic data. The IGRF parameters are included in the band name.
+* *IGRF* - The total intensity of the IGRF in nT.
+* *Inclination* - The inclination of the IGRF.
+* *Declination* - The declination of the IGRF
+* *Magnetic data* - The IGRF-corrected magnetic data. The IGRF parameters are included in the band name.
 
 The IGRF parameters are also shown in the **Process Log** window of the main PyGMI interface 
 

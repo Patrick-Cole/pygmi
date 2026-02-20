@@ -26,14 +26,32 @@ Module Contents
 
    SPECPR import function.
 
+   :param ifile: Input file.
+   :type ifile: str
+
+   :returns: **spec** -- Output spectra.
+   :rtype: dict
+
 
 .. py:function:: case1(dat)
 
    Case 1.
 
+   :param dat: Binary record.
+   :type dat: bytes
+
+   :returns: **rec** -- Output record.
+   :rtype: dict
+
 
 .. py:function:: unpack_icflag(icflag)
 
    Unpack the bits from icflag.
+
+   :param icflag: Binary icflag.
+   :type icflag: bytes
+
+   :returns: **b** -- Unpacked bits.
+   :rtype: list
 
 

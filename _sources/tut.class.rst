@@ -76,4 +76,4 @@ References
 ^^^^^^^^^^
  Osborne, J.W. 2002. Notes on the Use of Data Transformation. Practical Assessment, Research & Evaluation, 8.
 
- Paasche, H. and Eberle, D.G. 2009. Rapid integration of large airborne geophysical data suites using a fuzzy partitioning cluster algorithm: a tool for geological mapping and mineral exploration targeting. Exploration Geophysics, 40, 277–287, https://doi.org/10.1071/EG08028.
+ Paasche, H. and Eberle, D.G. 2009. Rapid integration of large airborne geophysical data suites using a fuzzy partitioning cluster algorithm: a tool for geological mapping and mineral exploration targeting. Exploration Geophysics, 40, 277-287, https://doi.org/10.1071/EG08028.

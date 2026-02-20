@@ -9,17 +9,13 @@ For geological work the complete range of 14 bands are usually required. The rec
 
 When downloading the data be sure to select **AST_07XT** and **AST_05** scenes with exactly the same date and time of collection. PyGMI will automatically link the VNIR, SWIR and TIR datasets collected at the same time.
 
-Data can be saved in two formats, namely **HDF** or a **ZIP** file containing the bands as **GeoTIFFs**. Both files will have an accompanying **MET** file. Both of the formats will be delivered as **ZIP** files, one for the VNIR and SWIR data, and one for the TIR data.
+Data can be saved in two formats, namely **HDF** or a **ZIP** file containing the bands as **GeoTIFFs**. PyGMI supports the latter due to API limitations. Both files will have an accompanying **MET** file. Both of the formats will be delivered as **ZIP** files, one for the VNIR and SWIR data, and one for the TIR data.
 
 .. figure:: _images/tutimportaster1.png
 
    ASTER file formats.
 
-Move the VNIR, SWIR and TIR files (files on the right-hand side of above figure) to a single folder (Figure 214).
-
-.. figure:: _images/tutimportaster2.png
-
-   VNIR, SWIR and TIR files in a single folder.
+Move the VNIR, SWIR and TIR files (files on the right-hand side of above figure) to a single folder.
 
 Go to :doc:`Import Satellite Data<rsense.dm.importdata>` on the **Remote Sensing menu** and select any of the files (VNIR,SWIR or TIR), it will automatically look for the other files. If you don’t see 14 bands it means one of the files was collected at a different date and time.
 

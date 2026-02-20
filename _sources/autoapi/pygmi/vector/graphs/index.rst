@@ -37,7 +37,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:class:: MyMplCanvas(parent=None)
+.. py:class:: MyMplCanvas
 
    Bases: :py:obj:`matplotlib.backends.backend_qtagg.FigureCanvasQTAgg`
 
@@ -45,9 +45,6 @@ Module Contents
    Matplotlib canvas widget for the actual plot.
 
    This routine will also allow the picking and movement of nodes of data.
-
-   :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
 
 
    .. py:method:: button_release_callback(event)
@@ -220,7 +217,7 @@ Module Contents
    GUI to plot correlation coefficients.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -247,7 +244,7 @@ Module Contents
    GUI to plot histogram from vectors.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -274,7 +271,7 @@ Module Contents
    GUI to plot lines.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -301,7 +298,7 @@ Module Contents
    GUI to plot a line map.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -328,7 +325,7 @@ Module Contents
    GUI to plot rose diagrams.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -355,7 +352,7 @@ Module Contents
    GUI to plot vectors.
 
    :param parent: Reference to the parent routine. The default is None.
-   :type parent: parent, optional
+   :type parent: pygmi.main.MainWidget, optional
 
 
    .. py:method:: change_band()
@@ -381,12 +378,21 @@ Module Contents
    From Matplotlib.org
 
    :param data: A 2D numpy array of shape (M, N).
+   :type data: numpy array
    :param row_labels: A list or array of length M with the labels for the rows.
+   :type row_labels: list or numpy array
    :param col_labels: A list or array of length N with the labels for the columns.
+   :type col_labels: list or numpy array
    :param ax: A `matplotlib.axes.Axes` instance to which the heatmap is plotted.
+   :type ax: matplotlib.axes.Axes
    :param cbar_kw: A dictionary with arguments to `matplotlib.Figure.colorbar`.  Optional.
+   :type cbar_kw: dict
    :param cbarlabel: The label for the colorbar.  Optional.
+   :type cbarlabel: str
    :param \*\*kwargs: All other arguments are forwarded to `imshow`.
+
+   :returns: * **im** (*matplotlib.image.AxesImage*) -- Image for map.
+             * **cbar** (*matplotlib.Figure.colorbar*) -- Colour bar for map
 
 
 .. py:function:: annotate_heatmap(im, data=None, valfmt='{x:.2f}', textcolors=('black', 'white'), threshold=None, **textkw)
@@ -396,17 +402,25 @@ Module Contents
    From Matplotlib.org.
 
    :param im: The AxesImage to be labelled.
+   :type im: matplotlib.image.AxesImage
    :param data: Data used to annotate.  If None, the image's data is used.  Optional.
+   :type data: list or numpy array
    :param valfmt: The format of the annotations inside the heatmap.  This should either
                   use the string format method, e.g. "$ {x:.2f}", or be a
                   `matplotlib.ticker.Formatter`.  Optional.
+   :type valfmt: format string
    :param textcolors: A pair of colours.  The first is used for values below a threshold,
                       the second for those above.  Optional.
+   :type textcolors: list
    :param threshold: Value in data units according to which the colours from textcolors are
                      applied.  If None (the default) uses the middle of the colormap as
                      separation.  Optional.
-   :param \*\*kwargs: All other arguments are forwarded to each call to `text` used to create
+   :type threshold: float
+   :param \*\*textkw: All other arguments are forwarded to each call to `text` used to create
                       the text labels.
+
+   :returns: **im** -- Image for map.
+   :rtype: matplotlib.image.AxesImage
 
 
 .. py:function:: histogram(x, y=None, xmin=None, xmax=None, bins=10)

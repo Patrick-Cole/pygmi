@@ -37,6 +37,7 @@ Add a second module and connect it to the first module
 8. Double-click on the Smoothing module. A dialog will pop up. You can leave the defaults for now and press OK.
 
 The process log will now turn red indicating that an activity is happening. Once the processing is complete it will turn white again.
+
 9. Right-click on the Smoothing module and select Show Raster Data (Simple) to see the smoothing results.
  
 .. figure:: _images/ex5.png
