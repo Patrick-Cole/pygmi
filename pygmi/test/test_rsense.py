@@ -58,7 +58,7 @@ def test_change():
 
 
 def test_pca():
-    """test pca."""
+    """test PCA."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r'testdata/rsense1.tif')
@@ -79,7 +79,7 @@ def test_pca():
 
 
 def test_mnf():
-    """test mnf."""
+    """test MNF."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r'testdata/rsense1.tif')
