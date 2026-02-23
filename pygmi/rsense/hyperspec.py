@@ -73,6 +73,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.rotate = False
         self.nodata = 0.
         self.ax1 = None
+        self.ax2 = None
         self.im1 = None
 
     def init_graph(self):
@@ -84,19 +85,35 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        dat = self.datarr[self.mindx].data
-
-        if self.refl != 1.:
-            dat = dat / self.refl
-
         self.figure.clf()
+
         ax1 = self.figure.add_subplot(211)
         self.ax1 = ax1
-
         self.compute_initial_figure()
 
         ax2 = self.figure.add_subplot(212)
+        self.ax2 = ax2
+        self.compute_spectra()
 
+        self.figure.canvas.draw()
+
+    def update_graph(self):
+        """
+        Initialise the graph.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.compute_spectra()
+        self.figure.canvas.draw()
+
+    def compute_spectra(self):
+        """Compute the spectra."""
+
+        ax2 = self.ax2
+        ax2.cla()
         prof = [i.data[self.row, self.col] for i in self.datarr]
 
         prof = np.ma.stack(prof).filled(0) / self.refl
@@ -120,12 +137,16 @@ class GraphMap(FigureCanvasQTAgg):
             spec = self.spectra[self.currentspectra]
             prof2 = spec['refl']
 
+            filt = ~np.isnan(prof2)
+            wvl = spec['wvl'][filt]
+            prof2 = prof2[filt]
+
             if self.remhull is True:
                 hull = phull(prof2)
-                ax2.plot(spec['wvl'], prof2 / hull)
+                ax2.plot(wvl, prof2 / hull)
                 ax2.set_ylim(top=1.01)
             else:
-                ax2.plot(spec['wvl'], prof2)
+                ax2.plot(wvl, prof2)
 
         zmin, zmax = ax2.get_ylim()
 
@@ -136,8 +157,6 @@ class GraphMap(FigureCanvasQTAgg):
         rect.set_facecolor([0, 1, 0])
         rect.set_alpha(0.5)
         ax2.add_patch(rect)
-
-        self.figure.canvas.draw()
 
     def compute_initial_figure(self):
         """Compute initial figure."""
@@ -213,17 +232,8 @@ class AnalSpec(BasicModule):
         self.filt = ''
 
         self.spectra = None
-        self.feature = {}
-        self.feature[900] = [776, 1050, 850, 910]
-        self.feature[1300] = [1260, 1420]
-        self.feature[1550] = [1510, 1610]
-        self.feature[1760] = [1730, 1790]
-        self.feature[2080] = [2000, 2150]
-        self.feature[2200] = [2120, 2245]
-        self.feature[2250] = [2230, 2280]
-        self.feature[2290] = [2270, 2330]
-        self.feature[2330] = [2120, 2370]
-        self.feature[2390] = [2375, 2435]
+
+        self.feature = features.feature
 
         self.map = GraphMap()
         self.cmb_1 = QtWidgets.QComboBox()
@@ -255,6 +265,7 @@ class AnalSpec(BasicModule):
         pb_speclib = QtWidgets.QPushButton('Load Spectral Library')
         pb_specd = QtWidgets.QPushButton('Current Spectrum Description')
         self.cb_rgb.setChecked(True)
+        self.cmb_1.setDisabled(True)
 
         self.setWindowTitle('Analyse Features')
         lbl_combo = QtWidgets.QLabel('Display Band:')
@@ -277,7 +288,7 @@ class AnalSpec(BasicModule):
 
         self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
-        self.cb_rgb.clicked.connect(self.rotate_view)
+        self.cb_rgb.clicked.connect(self.toggle_rgb_view)
         pb_speclib.clicked.connect(self.load_splib)
         pb_specd.clicked.connect(self.showtext)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
@@ -305,22 +316,12 @@ class AnalSpec(BasicModule):
         if event.inaxes != self.map.ax1:
             return
 
-        ax = event.inaxes
-        if ax.get_navigate_mode() is not None:
-            return
-
-        if ax != self.map.ax1:
-            return
-
-        self.map.row = int(event.ydata)
-        self.map.col = int(event.xdata)
-
         dat = self.map.datarr[self.map.mindx]
 
-        self.map.row = int((dat.extent[-1] - self.map.row) // dat.ydim)
-        self.map.col = int((self.map.col - dat.extent[0]) // dat.xdim)
+        self.map.row = int((dat.extent[-1] - event.ydata) // dat.ydim)
+        self.map.col = int((event.xdata - dat.extent[0]) // dat.xdim)
 
-        self.map.init_graph()
+        self.map.update_graph()
 
     def disp_splib(self):
         """
@@ -338,7 +339,7 @@ class AnalSpec(BasicModule):
         """
         self.map.currentspectra = self.lw_speclib.currentItem().text()
 
-        self.map.init_graph()
+        self.map.update_graph()
 
     def feature_change(self):
         """
@@ -350,10 +351,9 @@ class AnalSpec(BasicModule):
 
         """
         txt = self.cmb_feature.currentText()
+        self.map.feature = [int(txt[1:].replace('p', ''))] + self.feature[txt]
 
-        self.map.feature = [int(txt)] + self.feature[int(txt)]
-
-        self.map.init_graph()
+        self.map.update_graph()
 
     def hull(self):
         """
@@ -365,7 +365,7 @@ class AnalSpec(BasicModule):
 
         """
         self.map.remhull = self.cb_hull.isChecked()
-        self.map.init_graph()
+        self.map.update_graph()
 
     def load_splib(self, checked=False, nofile=True):
         """
@@ -419,9 +419,9 @@ class AnalSpec(BasicModule):
         self.map.mindx = self.cmb_1.currentIndex()
         self.map.init_graph()
 
-    def rotate_view(self):
+    def toggle_rgb_view(self):
         """
-        Rotates view.
+        Toggle RGB view and single band view.
 
         Returns
         -------
@@ -429,6 +429,11 @@ class AnalSpec(BasicModule):
 
         """
         self.map.rgb = self.cb_rgb.isChecked()
+        if self.cb_rgb.isChecked():
+            self.cmb_1.setDisabled(True)
+        else:
+            self.cmb_1.setDisabled(False)
+
         self.map.init_graph()
 
     def settings(self, nodialog=False):
@@ -507,12 +512,14 @@ class AnalSpec(BasicModule):
 
         self.cmb_update(self.cmb_feature, ftxt)
 
-        self.feature_change()
+        txt = self.cmb_feature.currentText()
+        self.map.feature = [int(txt[1:].replace('p', ''))] + self.feature[txt]
+        self.map.init_graph()
 
         if self.filename != '':
             self.load_splib(nofile=False)
             self.map.currentspectra = self.lw_speclib.selectedItems()[0].text()
-            self.map.init_graph()
+            self.map.update_graph()
         else:
             self.lw_speclib.addItem('None')
 
@@ -733,9 +740,7 @@ class ProcFeatures(BasicModule):
         self.feature = features.feature
         self.ratio = features.ratio
 
-        # self.cmb_ratios.currentIndexChanged.disconnect()
         self.product = features.product.copy()
-
         self.product = {key: value for (key, value) in self.product.items()
                         if 'crystallinity' not in key}
         self.cryst = {key: value for (key, value) in features.product.items()
@@ -935,7 +940,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         xval.append(refl)
 
     xval = np.array(xval)
-    dat2 = np.ma.array(dat2)  # This line is very slow.
+    dat2 = np.ma.array(dat2)
 
     # This gets nearest wavelength and assigns to R number.
     # It does not interpolate.
