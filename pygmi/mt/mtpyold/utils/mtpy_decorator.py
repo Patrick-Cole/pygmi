@@ -81,8 +81,8 @@ class gdal_data_check(object):
         if not self._gdal_data_found:
             if (raise_error):
                 raise ImportError("GDAL  is NOT installed correctly")
-            else:
-                print("Ignore GDAL as it is not working. Will use pyproj")
+            # else:
+            #     print("Ignore GDAL as it is not working. Will use pyproj")
 
     def __call__(self, *args, **kwargs):  # pragma: no cover
         return self._func(*args, **kwargs)
@@ -91,8 +91,8 @@ class gdal_data_check(object):
         if 'GDAL_DATA' not in os.environ:
             # gdal data not defined, try to define
             from subprocess import Popen, PIPE
-            self._logger.warning(
-                "GDAL_DATA environment variable is not set  Please see https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable ")
+            # self._logger.warning(
+            #     "GDAL_DATA environment variable is not set  Please see https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable ")
             try:
                 # try to find out gdal_data path using gdal-config
                 self._logger.info("Trying to find gdal-data path ...")
