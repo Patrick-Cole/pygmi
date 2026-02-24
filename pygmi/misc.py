@@ -501,6 +501,22 @@ class ContextModule(QtWidgets.QDialog):
 
         return True
 
+    def cmb_update(self, obj, txtlist):
+        """
+        Update combo box.
+
+        Parameters
+        ----------
+        obj : QtWidgets.QComboBox
+            Combo box to add data to.
+        txtlist : list
+            List of strings to add to combo box.
+        """
+        obj.blockSignals(True)
+        obj.clear()
+        obj.addItems(txtlist)
+        obj.blockSignals(False)
+
     def run(self):
         """
         Run context menu item.

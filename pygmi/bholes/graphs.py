@@ -34,8 +34,9 @@ from matplotlib.path import Path
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from matplotlib.collections import PatchCollection
 
-from pygmi.misc import ContextModule
+from pygmi.misc import ContextModule, getinfo
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -45,14 +46,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure()
         super().__init__(fig)
 
-    def update_legend(self, data1):
+    def update_legend(self, df, hatch, clith, col, stratcol):
         """
         Update the plot legend.
 
         Parameters
         ----------
-        data1 : dictionary
-            Dictionary containing the data.
+        df : Pandas DataFrame
+            Dataframe containing the data.
 
         Returns
         -------
@@ -63,59 +64,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig.clear()
         ax = fig.gca()
 
-        idir = __file__.rpartition('\\')[0]
-        logfile = idir + '\\logplot.xlsx'
-
         pagewidth = 8
         pageheight = 4
         dpp = 14  # depth per page
         wpp = dpp * pagewidth / pageheight
 
-    # #########################################################################
-    # Load in logplot init
-        xl = pd.ExcelFile(logfile)
-        usgs = xl.parse('USGS')
-        cgs = xl.parse('CGS')
-        cgslookup = xl.parse('250K Lookup')
-        colours = xl.parse('Colours')
-        xl.close()
-
-        usgs = usgs.set_index('code').to_dict()['description']
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply(
-            '{0:0>3}'.format)
-        stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
-        col = colours.set_index('code').to_dict()['colour']
-        clith = cgs.set_index('lithology').to_dict()['lithology description']
-        cgs = cgs.set_index('lithology').to_dict()['code']
-        col['none'] = 'ffffff'
-        col['nan'] = 'ffffff'
-        stratcol['none'] = 'none'
-
-    # Load in hatches
-        hatch = {}
-        for i in cgs:
-            if np.isnan(cgs[i]):
-                hatch[i] = [[], []]
-                continue
-            svgfile = idir + '\\svg\\' + str(int(cgs[i])) + '.svg'
-            pverts, pcodes = gethatch(svgfile)
-            hatch[i] = [pverts, pcodes]
-
-        df = data1  # ['log']
-        hdf = data1  # ['header']
-
-        companyno = np.array(df['Companyno'])
         lith = np.array(df['Lithology'])
         strat = np.array(df['Stratigraphy'].replace(np.nan, 'none'))
         rank = np.array(df['Rank'].replace(np.nan, 'none'))
-
-        hcompanyno = hdf['Companyno'].iloc[0]
-        indx = np.nonzero(companyno == hcompanyno)[0]
-
-        strat1 = strat
-        lith1 = lith
-        rank1 = rank
 
         rlookup = {'SUI': 'Suite',
                    'SBSUI': 'Sub Suite',
@@ -135,14 +91,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax.get_yaxis().set_visible(False)
         ax.set_frame_on(False)
 
-        strat, idx = np.unique(strat1[indx], return_index=True)
-        lith = np.unique(lith1[indx])
-        rank = rank1[indx][idx]
+        strat, idx = np.unique(strat, return_index=True)
+        lith = np.unique(lith)
+        rank = rank[idx]
 
     # Do hatch legend
         ax.text(0.5, 0.7, 'Lithology', size=8)
         for j in np.arange(0, len(lith)):
-            pverts, pcodes = hatch[lith[j]]
+            if lith[j] in hatch:
+                pverts, pcodes = hatch[lith[j]]
+            else:
+                pverts, pcodes = hatch['NOR']
 
             for k in pverts:
                 pathfin = Path(pverts[k] + [0.5, j * 2 + 1], pcodes[k])
@@ -160,7 +119,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             rect = mpatches.Rectangle([0.5, j * 2 + 1], 4, 1, fc='none',
                                       ec='k')
             ax.add_patch(rect)
-            ax.text(4.7, j * 2 + 1.9, clith[lith[j]], size=6)
+            if lith[j] in clith:
+                txt = clith[lith[j]]
+            else:
+                txt = lith[j]
+            ax.text(4.7, j * 2 + 1.9, txt, size=6)
 
     # do color legend
         ax.text(15., 0.7, 'Stratigraphy', size=8)
@@ -176,14 +139,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_log(self, data1):
+    def update_log(self, df, hatch, col, stratcol):
         """
         Update the borehole log plot.
 
         Parameters
         ----------
-        data1 : dictionary.
-            PyGMI log dataset to be used.
+        df : Pandas DataFrame
+            Dataframe containing the data.
 
         Returns
         -------
@@ -198,74 +161,36 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig.subplots_adjust(left=0.01)
         fig.subplots_adjust(right=0.3)
 
-        idir = __file__.rpartition('\\')[0]
-        logfile = idir + '\\logplot.xlsx'
-
         pageheight = 8
         dpp = 25  # depth per page
         fontsize = 6
         dpi = (fontsize / 72) * (dpp / pageheight)
 
-    ###########################################################################
-    # Load in logplot init
-        xl = pd.ExcelFile(logfile)
-        usgs = xl.parse('USGS')
-        cgs = xl.parse('CGS')
-        cgslookup = xl.parse('250K Lookup')
-        colours = xl.parse('Colours')
-        xl.close()
-
-        usgs = usgs.set_index('code').to_dict()['description']
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
-        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply(
-            '{0:0>3}'.format)
-        stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
-        col = colours.set_index('code').to_dict()['colour']
-        cgs = cgs.set_index('lithology').to_dict()['code']
-        col['none'] = 'ffffff'
-        col['nan'] = 'ffffff'
-        stratcol['none'] = 'none'
-
-    # Load in hatches
-        hatch = {}
-        for i in cgs:
-            if np.isnan(cgs[i]):
-                hatch[i] = [[], []]
-                continue
-            svgfile = idir + '\\svg\\' + str(int(cgs[i])) + '.svg'
-            pverts, pcodes = gethatch(svgfile)
-            hatch[i] = [pverts, pcodes]
-
-        df = data1  # ['log']
-        hdf = data1  # ['header']
-
-        companyno = np.array(df['Companyno'])
         depthfrom = -1 * np.array(df['Depth from'])
         depthto = -1 * np.array(df['Depth to'])
         lithd = np.array(df['Lithology description'].replace(np.nan, ''))
         lith = np.array(df['Lithology'])
         strat = np.array(df['Stratigraphy'].replace(np.nan, 'none'))
 
-        hcompanyno = hdf['Companyno'].iloc[0]
-        indx = np.nonzero(companyno == hcompanyno)[0]
-        numpages = abs(depthto[indx][-1] // dpp)
+        numpages = abs(depthto[-1] // dpp)
 
     ###########################################################################
     # Start of each borehole plot
     # Locations of the text lithology labels
 
-        lithdpos = depthfrom[indx]
+        lithdpos = depthfrom
         yfin = lithdpos[0]
         if yfin == 0.:
             yfin = -dpi
 
-        for i, _ in enumerate(lithd[indx]):
-            lithd[indx[i]] = commentprep(lithd[indx[i]])
+        for i, _ in enumerate(lithd):
+            lithd[i] = commentprep(lithd[i])
             if lithdpos[i] > yfin:
                 lithdpos[i] = yfin
-            if i < len(lithd[indx]) - 1:
-                if depthfrom[indx][i] != depthfrom[indx][i + 1]:
+            if i < len(lithd) - 1:
+                if depthfrom[i] != depthfrom[i + 1]:
                     yfin = lithdpos[i] - dpi * (1 + lithd[i].count('\n')) * 1.4
+
     # Start creating plots
         ax.set_ylim((-dpp * numpages, 0.))
         ax.set_aspect('equal')
@@ -273,25 +198,31 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax.set_frame_on(False)
         ax.margins(x=0)
 
-        for i in indx:
+        for i in range(depthfrom.size):
             # This next line is to skip summary lines for a group.
-            if i < indx[-1]:
+            if i + 1 < depthfrom.size - 1:
                 if depthfrom[i] == depthfrom[i + 1]:
                     continue
 
-            pverts, pcodes = hatch[lith[i]]
+            patches = []
+            if lith[i] in hatch:
+                pverts, pcodes = hatch[lith[i]]
+            else:
+                pverts, pcodes = hatch['NOR']
+
             scol = '#' + col[stratcol[strat[i]]]
 
             dfrom = depthfrom[i]
             dto = depthto[i]
-            texty = lithdpos[np.nonzero(indx == i)[0][0]]
+            texty = lithdpos[i]
             ax.plot([4, 5], [dfrom, texty], 'k', linewidth=1.0)
             ax.text(5.2, texty, '{0:.2f}'.format(dfrom) + ' ' + lithd[i],
                     va='center', size=fontsize)
 
             rect = mpatches.Rectangle([0, dto], 4, (dfrom - dto), fc=scol,
                                       ec='k')
-            ax.add_patch(rect)
+            patches.append(rect)
+
             for j in np.arange(-dfrom, -dto, 4):
                 for k in pverts:
                     pathfin = Path(pverts[k] - [0, j + 4], pcodes[k])
@@ -301,16 +232,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
                         pp1.set_facecolor(scol)
                     elif k != 'none':
                         pp1.set_facecolor('k')
-                    ax.add_patch(pp1)
-            rect = mpatches.Rectangle([0, dto - 4], 4.1, 4, fc='w')
-            ax.add_patch(rect)
+                    patches.append(pp1)
 
-            if lith[indx[-1]] == 'NOR':
+            rect = mpatches.Rectangle([0, dto - 4], 4.1, 4, fc='w')
+            patches.append(rect)
+
+            collection = PatchCollection(patches, match_original=True)
+            ax.add_collection(collection)
+
+            if lith[-1] == 'NOR':
                 ax.text(5.2, -dpp * numpages + dpi,
                         '(Last entry; log truncated due to length)',
                         va='center', size=fontsize)
 
-            ax.hlines(dto, 0, 4)  # Bottom of log
+            ax.hlines(dto, 0, 4, 'k')  # Bottom of log
 
         self.figure.canvas.draw()
 
@@ -328,6 +263,11 @@ class PlotLog(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.hatch = None
+        self.clith = None
+        self.col = None
+        self.stratcol = None
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle('Borehole Log')
@@ -352,7 +292,6 @@ class PlotLog(ContextModule):
         self.scroll.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll.setWidget(self.mmc)
-        # self.scroll.resize(900,600)
 
         self.buttonbox.htmlfile = 'bholes.cm.showlog'
         self.buttonbox.buttonbox.hide()
@@ -391,19 +330,21 @@ class PlotLog(ContextModule):
         data = self.indata['Borehole']
         data = data.loc[data['Boreholeid'] == i]
 
-        hdf = data
-        dfrom = hdf['Depth from'].iloc[0]
-        dto = hdf['Depth to'].iloc[-1]
+        dfrom = data['Depth from'].iloc[0]
+        dto = data['Depth to'].iloc[-1]
         depth = int((dto - dfrom) * 10.)
         self.mmc.setFixedHeight(depth)
 
-        hcompanyno = hdf['Companyno'].iloc[0]
-        hfilt = (hdf['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
-        hrow = hdf.iloc[hfilt].astype(str)
+        hcompanyno = data['Companyno'].iloc[0]
+        hfilt = (data['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
+        hrow = data.iloc[hfilt].astype(str)
         topleft = (hrow['Company'] + '\n' + hrow['Farmname'] +
                    ' (' + hrow['Farmno'] + ')')
         topright = 'Hole no: ' + hrow['Companyno'] + '\n Sheet 1 of 1'
-        bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
+        if hrow['Drill date'] is np.nan:
+            bottomleft = 'Drill date: None'
+        else:
+            bottomleft = 'Drill date: ' + hrow['Drill date'].split()[0]
         bottomleft += '\nDepth from: ' + hrow['Depth from']
         bottomleft += '\nDepth to: ' + f'{dto}'
         bottomright = 'Elevation: ' + hrow['Elevation']
@@ -414,8 +355,54 @@ class PlotLog(ContextModule):
         self.lbl_bottomleft.setText(bottomleft)
         self.lbl_bottomright.setText(bottomright)
 
-        self.mmc2.update_legend(data)
-        self.mmc.update_log(data)
+        self.mmc2.update_legend(
+            data, self.hatch, self.clith, self.col, self.stratcol)
+        self.mmc.update_log(data, self.hatch, self.col, self.stratcol)
+
+    def load_hatch(self):
+        """
+        Load all hatchings.
+
+        Returns
+        -------
+        None.
+
+        """
+        idir = __file__.rpartition('\\')[0]
+        logfile = idir + '\\logplot.xlsx'
+
+        xl = pd.ExcelFile(logfile)
+        usgs = xl.parse('USGS')
+        cgs = xl.parse('CGS')
+        cgslookup = xl.parse('250K Lookup')
+        colours = xl.parse('Colours')
+        xl.close()
+
+        usgs = usgs.set_index('code').to_dict()['description']
+        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
+        cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply(
+            '{0:0>3}'.format)
+        stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
+        col = colours.set_index('code').to_dict()['colour']
+        clith = cgs.set_index('lithology').to_dict()['lithology description']
+        cgs = cgs.set_index('lithology').to_dict()['code']
+        col['none'] = 'ffffff'
+        col['nan'] = 'ffffff'
+        stratcol['none'] = 'none'
+
+    # Load in hatches
+        self.hatch = {}
+        for i in cgs:
+            if np.isnan(cgs[i]):
+                self.hatch[i] = [[], []]
+                continue
+            svgfile = idir + '\\svg\\' + str(int(cgs[i])) + '.svg'
+            pverts, pcodes = gethatch(svgfile)
+            self.hatch[i] = [pverts, pcodes]
+
+        self.clith = clith
+        self.col = col
+        self.stratcol = stratcol
 
     def run(self):
         """
@@ -433,7 +420,10 @@ class PlotLog(ContextModule):
             self.showlog('Error: You must have borehole data.')
             return
 
-        self.cmb_1.addItems(data.Boreholeid.unique())
+        self.cmb_update(self.cmb_1, data.Boreholeid.unique())
+
+        self.showlog('Loading Hatching...')
+        self.load_hatch()
 
         self.show()
         self.change_band()
@@ -625,21 +615,27 @@ def chkname(iname):
 def _testfn():
     """Test routine."""
     import sys
-    from pygmi.bholes.iodefs import get_CGS
+    from pygmi.bholes.iodefs import ImportData
 
     lfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(lith).xlsx"
     hfile = r"D:\workdata\PyGMI Test Data\boreholes\olma-coredata(headers).xlsx"
-    lfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes - lith.xlsx"
-    hfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes.xlsx"
+    # lfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes - lith.xlsx"
+    # hfile = r"D:\Sithilo Complex Data\Borehole Logs\Tugela Ultramafic Complexes - Boreholes.xlsx"
+    # lfile = r"D:\workdata\PyGMI Test Data\boreholes\Marinda_actualCCUS_(Lithology).xlsx"
+    # hfile = r"D:\workdata\PyGMI Test Data\boreholes\Marinda_actualCCUS_(headers).xlsx"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    data = get_CGS(lfile, hfile)
+    tmp1 = ImportData()
+    tmp1.le_headfile.setText(hfile)
+    tmp1.le_lithfile.setText(lfile)
+    tmp1.fillcombos()
+    tmp1.settings(True)
 
-    tmp1 = PlotLog()
-    tmp1.indata = {'Borehole': data}
-    tmp1.run()
+    tmp2 = PlotLog()
+    tmp2.indata = tmp1.outdata
+    tmp2.run()
 
     app.exec()
 
