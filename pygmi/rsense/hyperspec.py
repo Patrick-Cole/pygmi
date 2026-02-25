@@ -1399,7 +1399,7 @@ def readsli(ifile):
     data[data == -1.23e+34] = np.nan
     data = data / hdr3['reflectance scale factor']
 
-    data.shape = (hdr3['lines'], hdr3['samples'])
+    data = data.reshape(hdr3['lines'], hdr3['samples'])
 
     spectra = {}
     wmult = 1.

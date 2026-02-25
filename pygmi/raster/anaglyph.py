@@ -611,8 +611,8 @@ def anaglyph(red, blue, atype='dubois'):
     newshape = (red.shape[0] * red.shape[1], 3)
     data1 = red[:, :, :3].copy()
     data2 = blue[:, :, :3].copy()
-    data1.shape = newshape
-    data2.shape = newshape
+    data1 = data1.reshape(newshape)
+    data2 = data2.reshape(newshape)
     mask = red[:, :, 3]
     data = np.transpose(np.hstack((data1, data2)))
 
@@ -622,7 +622,7 @@ def anaglyph(red, blue, atype='dubois'):
 
     rgb = np.vstack((rgb, mask.flatten()))
     rgb = rgb.T
-    rgb.shape = red.shape
+    rgb = rgb.reshape(red.shape)
 
 #    red1 = RL*0.4154 + GL*0.4710 + BL*0.1669
 #    red2 = (-RR*0.0109 - GR*0.0364 - BR*0.006)

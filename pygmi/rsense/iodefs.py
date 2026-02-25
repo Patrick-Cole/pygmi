@@ -3583,7 +3583,7 @@ def get_aster_ged_bin(ifile):
 
     data = np.fromfile(ifile, dtype=np.int32)
     rows_cols = int((data.size / 19)**0.5)
-    data.shape = (19, rows_cols, rows_cols)
+    data = data.reshape(19, rows_cols, rows_cols)
 
     lats = data[16] * scale[16]
     lons = data[17] * scale[17]

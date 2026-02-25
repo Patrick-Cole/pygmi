@@ -982,7 +982,7 @@ def import_ubc(ifile):
     zmin = zmax - dz * nz
 
     vals = np.loadtxt(ifile[:-3] + 'mod')
-    vals.shape = [ny, nx, nz]
+    vals = vals.reshape(ny, nx, nz)
     vals = vals[:, :, ::-1]
 
     vals[vals == 0] = np.nan
@@ -1197,7 +1197,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
             nodata[cname] = -np.inf
 
         if numbands[cname] > 1:
-            tmp.shape = (tmp.size // numbands[cname], numbands[cname])
+            tmp = tmp.reshape(tmp.size // numbands[cname], numbands[cname])
 
         data[cname] = tmp
 

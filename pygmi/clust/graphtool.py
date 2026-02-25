@@ -817,17 +817,7 @@ class ScatterPlot(BasicModule):
         self.cmb_update(self.cp_combo2, bands)
         self.cmb_update(self.map_combo, bands)
 
-        # self.cp_combo.clear()
-        # self.cp_combo2.clear()
-        # self.map_combo.clear()
-
-        # self.cp_combo.addItems(bands)
-        # self.cp_combo2.addItems(bands)
-        # self.map_combo.addItems(bands)
-        # self.cp_combo2.setCurrentIndex(1)
-        # self.cp_combo.currentIndexChanged.connect(self.on_cp_combo)
-        # self.cp_combo2.currentIndexChanged.connect(self.on_cp_combo2)
-        # self.map_combo.currentIndexChanged.connect(self.on_map_combo)
+        self.show()
 
         cbands = ['Scatter Amplitudes']
         mbands = ['None']
@@ -842,14 +832,6 @@ class ScatterPlot(BasicModule):
 
         self.cmb_update(self.cp_combo3, cbands)
         self.cmb_update(self.map_combo2, mbands)
-
-        # self.cp_combo3.clear()
-        # self.map_combo2.clear()
-
-        # self.cp_combo3.addItems(cbands)
-        # self.map_combo2.addItems(mbands)
-        # self.cp_combo3.currentIndexChanged.connect(self.on_cp_combo3)
-        # self.map_combo2.currentIndexChanged.connect(self.on_map_combo2)
 
         self.hist.init_graph()
         self.map.init_graph()
@@ -903,7 +885,7 @@ class ScatterPlot(BasicModule):
         mtmp = self.map_combo.currentIndex()
         mask = self.indata['Raster'][mtmp].data.mask
 
-        polymask.shape = mask.shape
+        polymask = polymask.reshape(mask.shape)
         polymask = np.logical_or(~polymask, mask)
 
         dattmp = self.map.csp.get_array()
@@ -988,7 +970,6 @@ def _testfn():
 
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
-    # dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))

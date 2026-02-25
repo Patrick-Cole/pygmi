@@ -214,7 +214,7 @@ def basicstats3d_calc(lmod):
             mass = lvol * density
 
             lidx = i.lith_index.copy()
-            lidx.shape = (-1, lidx.shape[-1])
+            lidx = lidx.reshape(-1, lidx.shape[-1])
 
             air = (lidx == -1).sum(1)
             thick = (lidx == lindex).sum(1)

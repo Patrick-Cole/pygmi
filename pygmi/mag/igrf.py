@@ -412,15 +412,15 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
         igrf_D[i] = np.rad2deg(decl)
 
     igrf_F = np.ma.array(igrf_F)
-    igrf_F.shape = data.data.shape
+    igrf_F = igrf_F.reshape(data.data.shape)
     igrf_F.mask = np.ma.getmaskarray(data.data)
 
     igrf_I = np.ma.array(igrf_I)
-    igrf_I.shape = data.data.shape
+    igrf_I = igrf_I.reshape(data.data.shape)
     igrf_I.mask = np.ma.getmaskarray(data.data)
 
     igrf_D = np.ma.array(igrf_D)
-    igrf_D.shape = data.data.shape
+    igrf_D = igrf_D.reshape(data.data.shape)
     igrf_D.mask = np.ma.getmaskarray(data.data)
 
     fmean = igrf_F.mean()

@@ -371,7 +371,7 @@ class MextDisplay(QtWidgets.QDialog):
         points2 = np.where(outg)
         outg = si.griddata(points1, z, points2, method='nearest')
 
-        outg.shape = gtmp.shape
+        outg = outg.reshape(gtmp.shape)
         outg[gmask] = gdata[gmask]
         outg = np.ma.array(outg)
         outg.mask = np.ma.getmaskarray(gdata)

@@ -27,7 +27,6 @@
 from PySide6 import QtWidgets, QtGui
 import numpy as np
 import numexpr as ne
-from scipy import signal
 
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
@@ -325,7 +324,7 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
                 'value instead of a minimum of one band.')
         return False
     if findat.ndim == 2:
-        findat.shape = (1, findat.shape[0], findat.shape[1])
+        findat = findat.reshape(1, findat.shape[0], findat.shape[1])
 
     for i, findati in enumerate(findat):
         findati = findati.astype(indata[i].data.dtype)

@@ -387,7 +387,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
     masterid : str, optional
         ID of master dataset. The default is None.
     nodeepcopy : bool
-        Flag to avoid making a copy of the input data, by default False. 
+        Flag to avoid making a copy of the input data, by default False.
     resampling : str
         The resampling to be used on output date. The default is 'nearest'.
     checkdataid : bool

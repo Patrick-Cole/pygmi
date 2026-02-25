@@ -75,3 +75,19 @@ pygmi = 'pygmi'
 
 [tool.setuptools.dynamic]
 version = {attr = 'pygmi.version.__version__'}
+
+[tool.pyright]
+reportDeprecated = 'warning'
+reportAttributeAccessIssue = false
+reportOptionalMemberAccess = false
+reportArgumentType = false
+reportCallIssue = false
+reportOptionalSubscript = false
+reportIncompatibleMethodOverride = false
+reportOperatorIssue = false
+reportPossiblyUnboundVariable = false
+reportGeneralTypeIssues = false
+reportIndexIssue = false
+reportOptionalIterable = false
+reportOptionalOperand = false
+reportPrivateImportUsage = false

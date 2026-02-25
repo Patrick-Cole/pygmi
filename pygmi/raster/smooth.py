@@ -425,7 +425,7 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
     out = np.ma.masked_invalid(out)
     out = np.ma.array(out)
 
-    out.shape = out.shape[0:2]
+    out = out.reshape(out.shape[0:2])
     out.mask[:rowf // 2] = True
     out.mask[-rowf // 2:] = True
     out.mask[:, :colf // 2] = True

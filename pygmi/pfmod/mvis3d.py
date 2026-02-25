@@ -38,6 +38,7 @@ import pyvista as pv
 from pyvistaqt import QtInteractor
 
 from pygmi.pfmod import misc
+from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import ContextModule
 
 
@@ -55,10 +56,10 @@ class Mod3dDisplay(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.lmod1 = None
+        self.lmod1 = LithModel()
         self.outdata = self.indata
 
-        if hasattr(parent, 'showtext'):
+        if parent is not None and hasattr(parent, 'showtext'):
             self.showtext = parent.showtext
         else:
             self.showtext = sys.stdout
@@ -98,7 +99,7 @@ class Mod3dDisplay(ContextModule):
         self.cb_ortho = QtWidgets.QCheckBox('Orthographic Projection')
         self.cb_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
-        self.plotter = QtInteractor(self)  # , lighting='none')
+        self.plotter = QtInteractor()  # , lighting='none')
         self.cmb_light = QtWidgets.QComboBox()
         self.lbl_light = QtWidgets.QLabel('Light Position:')
 
@@ -253,7 +254,8 @@ class Mod3dDisplay(ContextModule):
             for i in self.faces:
                 self.gfaces[i] = np.append(self.faces[i][:, :-1],
                                            self.faces[i][:, [0, 2, 3]])
-                self.gfaces[i].shape = (int(self.gfaces[i].shape[0] / 3), 3)
+                self.gfaces[i] = self.gfaces[i].reshape(
+                    int(self.gfaces[i].shape[0] / 3), 3)
         else:
             self.gfaces = self.faces.copy()
 
@@ -383,7 +385,7 @@ class Mod3dDisplay(ContextModule):
 
             clr = np.append(clr, self.faces[lno].shape[0] * [clrtmp])
 
-        clr.shape = (clr.shape[0] // 4, 4)
+        clr = clr.reshape(clr.shape[0] // 4, 4)
         clr = clr.astype(np.uint8)
 
         self.pvmesh['clr'] = clr
@@ -478,7 +480,7 @@ class Mod3dDisplay(ContextModule):
                 psides = 4
                 ctype = pv.CellType.QUAD
             numcells = cells.size // psides
-            cells.shape = (numcells, psides)
+            cells = cells.reshape(numcells, psides)
 
             tmp = np.full(numcells, psides).reshape(-1, 1)
             cells = np.hstack([tmp, cells]).ravel()
@@ -549,7 +551,7 @@ class Mod3dDisplay(ContextModule):
                 (igd + 1) * (jgd + 1) * (kgd + 1), 3).T[::-1].T
             cloc = cloc * self.spacing + self.origin
             cindx = np.arange(cloc.size / 3, dtype=int)
-            cindx.shape = (igd + 1, jgd + 1, kgd + 1)
+            cindx = cindx.reshape(igd + 1, jgd + 1, kgd + 1)
 
             tmpdat = np.zeros([igd + 2, jgd + 2, kgd + 2]) - 1
             tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
@@ -670,8 +672,8 @@ class Mod3dDisplay(ContextModule):
             idx = np.append(idx, self.faces[lno].flatten() + idxmax)
             idxmax = idx.max() + 1
 
-        vtx.shape = (vtx.shape[0] // 3, 3)
-        clr.shape = (clr.shape[0] // 4, 4)
+        vtx = vtx.reshape(vtx.shape[0] // 3, 3)
+        clr = clr.reshape(clr.shape[0] // 4, 4)
         clr = clr.astype(np.uint8)
 
         vtx[:, -1] = (vtx[:, -1] - self.origin[-1]) * \
@@ -736,7 +738,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.set_yticks([-np.pi / 4, 0, np.pi / 4])
         self.axes.tick_params(axis='x', pad=0)
 
-        self.sun, = self.axes.plot(np.pi / 4., -np.pi / 4., 'yo')
+        self.sun = self.axes.plot(np.pi / 4., -np.pi / 4., 'yo')
         self.figure.canvas.draw()
 
 
@@ -829,7 +831,7 @@ def updatemod(gdat2, cindx, cloc):
     n_f = np.arange(uuu.size)
     newfaces = n_f[i]
     newcorners = cloc[uuu]
-    newfaces.shape = (newfaces.size // 4, 4)
+    newfaces = newfaces.reshape(newfaces.size // 4, 4)
 
     return newcorners, newfaces
 

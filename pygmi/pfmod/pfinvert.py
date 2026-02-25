@@ -399,7 +399,7 @@ class MagInvert(BasicModule):
         points2 = np.where(outg)
         outg = si.griddata(points1, z, points2, method='nearest')
 
-        outg.shape = gtmp.shape
+        outg = outg.reshape(gtmp.shape)
         outg[gmask] = gdata[gmask]
         outg = np.ma.array(outg)
         outg.mask = np.ma.getmaskarray(gdata)
@@ -873,9 +873,9 @@ class MagInvert(BasicModule):
         soln_map = maps.InjectActiveCells(mesh, ind_active, np.nan)
 
         r2 = soln_map * recovered_model
-        r2.shape = (mesh.shape_cells[2],
-                    mesh.shape_cells[1],
-                    mesh.shape_cells[0])
+        r2 = r2.reshape(mesh.shape_cells[2],
+                        mesh.shape_cells[1],
+                        mesh.shape_cells[0])
         r2 = r2[::-1]
 
         r3 = r2[:-5, 5:-5, 5:-5]

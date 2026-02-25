@@ -1541,26 +1541,41 @@ class PlotInterp(BasicModule):
         if filename == '':
             return False
 
-        text, okay = QtWidgets.QInputDialog.getText(
-            self, 'Colorbar', 'Enter length and width in inches:',
-            QtWidgets.QLineEdit.EchoMode.Normal, '4, 0.25')
-
-        if not okay:
-            return False
-
-        try:
-            text = text.split(',')
-            blen = float(text[0])
-            bwid = float(text[1])
-        except ValueError:
-            QtWidgets.QMessageBox.warning(
-                self.parent, 'Error', 'Invalid value.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
-            return False
-
-        # bwid = blen / 16.
-
         dtype = str(self.cmb_dtype.currentText())
+
+        if 'Ternary' not in dtype:
+            text, okay = QtWidgets.QInputDialog.getText(
+                self, 'Colorbar', 'Enter length and width in inches:',
+                QtWidgets.QLineEdit.EchoMode.Normal, '4, 0.25')
+
+            if not okay:
+                return False
+
+            try:
+                text = text.split(',')
+                blen = float(text[0])
+                bwid = float(text[1])
+            except ValueError:
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', 'Invalid value.',
+                    QtWidgets.QMessageBox.StandardButton.Ok)
+                return False
+        else:
+            text, okay = QtWidgets.QInputDialog.getText(
+                self, 'Colorbar', 'Enter length in inches:',
+                QtWidgets.QLineEdit.EchoMode.Normal, '4')
+
+            if not okay:
+                return False
+
+            try:
+                blen = float(text)
+            except ValueError:
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error', 'Invalid value.',
+                    QtWidgets.QMessageBox.StandardButton.Ok)
+                return False
+        # bwid = blen / 16.
 
         rtext = 'Red'
         gtext = 'Green'
@@ -1725,7 +1740,7 @@ class PlotInterp(BasicModule):
             self.mmc.axes.spines['right'].set_color('black')
             self.mmc.figure.canvas.draw()
 
-            img.shape = (h, w, 4)
+            img = img.reshape(h, w, 4)
             img = np.roll(img, 3, axis=2)
 
             cmask = np.ones(img.shape[1], dtype=bool)
@@ -1836,7 +1851,7 @@ class PlotInterp(BasicModule):
             canvas = FigureCanvasQTAgg(fig)
 
             tmp = np.array([[list(range(255))] * 255])
-            tmp.shape = (255, 255)
+            tmp = tmp.reshape(255, 255)
             tmp = np.transpose(tmp)
 
             red = ndimage.rotate(tmp, 0)
@@ -1860,7 +1875,7 @@ class PlotInterp(BasicModule):
             data = np.transpose([red.flatten(),
                                  green.flatten(),
                                  blue.flatten()])
-            data.shape = (red.shape[0], red.shape[1], 3)
+            data = data.reshape(red.shape[0], red.shape[1], 3)
 
             data = data[:221, 90:350]
 
@@ -1879,10 +1894,11 @@ class PlotInterp(BasicModule):
             im.set_clip_path(patch)
 
             ax.text(0, -5, gtext, horizontalalignment='center',
-                    verticalalignment='top')
+                    verticalalignment='top', fontsize='xx-large')
             ax.text(254, -5, btext, horizontalalignment='center',
-                    verticalalignment='top')
-            ax.text(127.5, 225, rtext, horizontalalignment='center')
+                    verticalalignment='top', fontsize='xx-large')
+            ax.text(127.5, 225, rtext, horizontalalignment='center',
+                    fontsize='xx-large')
             ax.tick_params(top='off', right='off', bottom='off', left='off',
                            labelbottom='off', labelleft='off')
 

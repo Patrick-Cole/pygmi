@@ -1258,7 +1258,7 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
     newpoints = np.transpose([xxx.flatten(), yyy.flatten(), zzz.flatten()])
     d_interpolated = interpolator(newpoints)
     d_limited = np.clip(d_interpolated, min_limit, max_limit)
-    d_limited.shape = xxx.shape
+    d_limited = d_limited.reshape(xxx.shape)
 
     if dat is not None:
         extent = dat.extent

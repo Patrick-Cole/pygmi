@@ -36,7 +36,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.collections import PatchCollection
 
-from pygmi.misc import ContextModule, getinfo
+from pygmi.misc import ContextModule
 
 
 class MyMplCanvas(FigureCanvasQTAgg):

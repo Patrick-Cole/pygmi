@@ -447,7 +447,7 @@ def get_ascii(ifile):
     bandid = ifile[:-4].rsplit('/')[-1]
 
     adata = np.array(adata, dtype=float)
-    adata.shape = (nrows, ncols)
+    adata = adata.reshape(nrows, ncols)
 
     if nbands > 1:
         warnings.warn('PyGMI only supports single band ASCII files. '
@@ -907,10 +907,10 @@ def get_bil(ifile, bands, cols, rows, dtype, *, piter=iter, iraster=None,
     datin = np.concatenate(datin)
 
     if interleave == 'LINE':
-        datin.shape = (ysize, bands, cols)
+        datin = datin.reshape(ysize, bands, cols)
         datin = np.swapaxes(datin, 0, 1)
     else:
-        datin.shape = (ysize, cols, bands)
+        datin = datin.reshape(ysize, cols, bands)
         datin = np.moveaxis(datin, [0, 1, 2], [1, 2, 0])
 
     if iraster is not None:
@@ -1007,7 +1007,7 @@ def get_geopak(hfile):
 
     data = np.ma.masked_equal(data, nval)
     data = data / gfactor + gbase
-    data.shape = (nrows, ncols)
+    data = data.reshape(nrows, ncols)
     data = data[::-1]
 
     dat = []
@@ -1112,7 +1112,7 @@ def get_geosoft(hfile):
         data = np.ma.masked_equal(data, nval)
 
         data = data / zmult + zbase
-        data.shape = (nrows, ncols)
+        data = data.reshape(nrows, ncols)
         data = data[::-1]
 
     dat = []
@@ -1935,7 +1935,7 @@ def calccov(data, showlog=print):
     del data2
 
     if dcov.size == 1:
-        dcov.shape = (1, 1)
+        dcov = dcov.reshape(1, 1)
 
     return dcov
 
