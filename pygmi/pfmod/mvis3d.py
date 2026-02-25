@@ -532,6 +532,14 @@ class Mod3dDisplay(ContextModule):
         self.faces = {}
         self.corners = {}
         self.norms = {}
+        tmpdat = None
+        cindx = 0
+        cloc = 0
+        nshape = 0
+        cci = 0.
+        xx = None
+        yy = None
+        zz = None
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array

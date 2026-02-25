@@ -397,6 +397,9 @@ def crispclust(data, cltype='k-means', min_cluster=5, max_cluster=5,
     clidx = None
     clcent = None
     clvrc = None
+    startmdat = {}
+    startmfix = {}
+    clobj_fcn = None
 
     for i in range(no_clust[0], no_clust[1] + 1):
         showlog('Number of Clusters:' + str(i))
@@ -711,6 +714,7 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
             # determinant criterion see Spath, Helmuth,
             # "Cluster-Formation and Analyse", chapter 3
     elif cltype == 'advanced k-means':
+        mat_a0 = None
         for j in range(no_clust):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster

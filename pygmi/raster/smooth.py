@@ -498,14 +498,15 @@ def filters2d(filtertype, sze, *sigma):
         Returns the filter to be used.
 
     """
+    radius = sze
     if filtertype == 'disc':
-        radius = sze
         sze = [2 * radius + 1, 2 * radius + 1]
 
     rows = sze[0]
     cols = sze[1]
     r2 = (rows - 1) / 2
     c2 = (cols - 1) / 2
+    f = np.array([])
 
     if filtertype == 'average':
         rows = sze[0]

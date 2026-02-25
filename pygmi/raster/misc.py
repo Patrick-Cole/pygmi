@@ -451,6 +451,7 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
 
     # showlog('Merging data...')
     if masterid is not None:
+        data = dat[0]
         for i in dat:
             if i.dataid == masterid:
                 data = i

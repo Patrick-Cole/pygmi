@@ -399,6 +399,7 @@ class PCA(BasicModule):
         ncmps = self.sb_comps.value()
         fitlist = self.cb_fitlist.isChecked()
         fwdonly = self.cb_fwdonly.isChecked()
+        flist = []
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
@@ -797,6 +798,8 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
 
     odir = os.path.join(os.path.dirname(filename), 'PCA')
     os.makedirs(odir, exist_ok=True)
+    odata = []
+    ev = np.array([])
 
     pca = IncrementalPCA(n_components=ncmps)
 

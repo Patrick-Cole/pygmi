@@ -469,6 +469,7 @@ class Quarry(BasicModule):
         """
         self.showlog('Calculating random Rq values for calibration')
         elist = [50, 100, 150, 200]
+        rperc = None
 
         for N in elist:
             rqmean = []

@@ -538,6 +538,7 @@ class Data():
 
         minpixels = min(mask.size // 2, 100000)
         mask = sieve(mask, minpixels)
+        shape1 = None
 
         polys = []
         for shape1, _ in shapes(mask, mask=mask, transform=self.transform):

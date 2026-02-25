@@ -344,6 +344,10 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
             sm2 = []
             nm2 = []
             mean2 = []
+            nm = None
+            n1 = None
+            n2 = None
+
             ollist = list(olist3[i])
             for k in range(bands):
                 s2 = np.array([slist[(k, j)] for j in ollist])

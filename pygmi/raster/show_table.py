@@ -424,20 +424,12 @@ def _testfn():
     """Test."""
     import sys
     from pygmi.raster.iodefs import get_raster
-    # from pygmi.clust.cluster import Cluster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-
-    # DM = Cluster()
-    # DM.indata['Raster'] = data
-    # DM.settings()
-
-    # dat = DM.outdata
-    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
 
     tmp2 = BasicStats()
     tmp2.indata['Raster'] = data

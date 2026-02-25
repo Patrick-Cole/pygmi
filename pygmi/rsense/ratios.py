@@ -1200,10 +1200,10 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     datfin = calc_ratios(dat, rlist, showlog=showlog, piter=piter)
 
-    NDVI = None
-    NDWI = None
-    SWIR = None
-    BSI = None
+    NDVI = datfin[0].data
+    NDWI = datfin[1].data
+    SWIR = datfin[2].data
+    BSI = datfin[3].data
 
     for i in datfin:
         if 'NDVI' in i.dataid:
@@ -1264,7 +1264,7 @@ def _testfn():
     from pygmi.rsense.iodefs import ImportBatch, ImportData
 
     idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
-    idir = r"D:\VMS\S2"
+    # idir = r"D:\VMS\S2"
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1321,4 +1321,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

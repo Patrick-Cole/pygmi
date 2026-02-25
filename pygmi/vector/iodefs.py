@@ -1161,6 +1161,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
     numbands = {}
     nodata = {}
     celltype = 'IEEE4ByteReal'
+    null = 1e+20
 
     for j in piter(range(len(files))):
         ifile = files[j]

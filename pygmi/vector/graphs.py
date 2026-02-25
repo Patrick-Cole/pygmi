@@ -61,8 +61,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.pickevents = False
         self.cmap = colormaps['viridis']
 
-        self.ccoeflbls = None
-        self.dmat = None
+        self.ccoeflbls = []
+        self.dmat = np.array([])
         self.texts = None
 
         super().__init__(fig)
@@ -381,6 +381,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         datagrp = data.groupby('line')
         datagrp = list(datagrp)
+        data1 = datagrp[0][1]
 
         for line in datagrp:
             data1 = line[1]

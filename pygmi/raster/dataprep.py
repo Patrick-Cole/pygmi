@@ -159,6 +159,7 @@ class Continuation(BasicModule):
         """
         h = self.dsb_height.value()
         ctype = self.cmb_cont.currentText()
+        data = None
 
         # Get data
         for i in self.indata['Raster']:
@@ -338,6 +339,7 @@ class DataLayerStack(BasicModule):
         dxy = self.dsb_dxy.value()
 
         xmin0, xmax0, ymin0, ymax0 = data.extent
+        xmin, xmax, ymin, ymax = data.extent
 
         for data in self.indata['Raster']:
             xmin, xmax, ymin, ymax = data.extent
@@ -772,6 +774,7 @@ class DataReproj(BasicModule):
 
         # Now create virtual dataset
         dat = []
+        data2 = None
         for data in self.piter(self.indata['Raster']):
             if data.isrgb:
                 _, _, bands = data.data.shape
@@ -1325,32 +1328,34 @@ class RasterToVector(BasicModule):
             self.showlog('No Raster Data.')
             return False
 
+        gdf = gpd.GeoDataFrame()
+
         if not nodialog:
-            data = self.indata['Raster']
             tmp = self.exec()
             if tmp != 1:
                 return False
 
-            data = lstack(data, piter=self.piter, showlog=self.showlog)
+        data = self.indata['Raster']
+        data = lstack(data, piter=self.piter, showlog=self.showlog)
 
-            xmin = data[0].extent[0]
-            ymax = data[0].extent[-1]
-            krows, kcols = data[0].data.shape
+        xmin = data[0].extent[0]
+        ymax = data[0].extent[-1]
+        krows, kcols = data[0].data.shape
 
-            x = []
-            y = []
-            for j in self.piter(range(krows)):
-                for i in range(kcols):
-                    x.append(xmin + (i + 0.5) * data[0].xdim)
-                    y.append(ymax - (j + 0.5) * data[0].ydim)
+        x = []
+        y = []
+        for j in self.piter(range(krows)):
+            for i in range(kcols):
+                x.append(xmin + (i + 0.5) * data[0].xdim)
+                y.append(ymax - (j + 0.5) * data[0].ydim)
 
-            geom = gpd.points_from_xy(x, y)
-            gdf = gpd.GeoDataFrame(geometry=geom)
-            gdf['x'] = x
-            gdf['y'] = y
+        geom = gpd.points_from_xy(x, y)
+        gdf = gpd.GeoDataFrame(geometry=geom)
+        gdf['x'] = x
+        gdf['y'] = y
 
-            for band in self.piter(data):
-                gdf[band.dataid] = band.data.flatten()
+        for band in self.piter(data):
+            gdf[band.dataid] = band.data.flatten()
 
         gdf = gdf.dropna(subset=gdf.columns[3:].values.tolist(), how='all')
         gdf = gdf.set_crs(data[0].crs)
@@ -1801,6 +1806,10 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         ifiles = []
         allmval = []
         geomlist = []
+        metadata = {}
+        datetime = None
+        ofile = ''
+
         for i in piter(indata):
             if i.dataid != dataid and singleband is False:
                 continue

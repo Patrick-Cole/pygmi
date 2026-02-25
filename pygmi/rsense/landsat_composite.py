@@ -120,10 +120,10 @@ class LandsatComposite(BasicModule):
                            recursive=True)
 
         if not ifiles:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'No *MTL.txt in the directory or '
-                                          'subdirectories.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error',
+                'No *MTL.txt in the directory or subdirectories.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         mean = self.sb_tday.value()

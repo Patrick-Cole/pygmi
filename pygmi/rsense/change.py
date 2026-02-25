@@ -200,9 +200,11 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
         showlog('You need a minimum of two datasets.')
         return None
 
-    meandat = None
+    meandat = {}
     std = None
     datfin = []
+    M = []
+    cnt = []
 
     if ('Standard Deviation' in ilist or 'Coefficient of Variation' in ilist or
             'Mean' in ilist):

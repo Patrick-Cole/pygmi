@@ -319,7 +319,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
 
     gh = np.zeros([4, MAXCOEFF])
 
-    with open(os.path.join(os.path.dirname(__file__), 'IGRF13.COF'),
+    with open(os.path.join(os.path.dirname(__file__), 'IGRF14.COF'),
               encoding='utf-8') as mdf:
         modbuff = mdf.readlines()
     fileline = -1                            # First line will be 1
@@ -842,6 +842,10 @@ def dihf(x, y, z):
 
     """
     sn = 0.0001
+    h = 0.
+    f = 0.
+    i = 0.
+    d = 0.
 
     for _ in range(2):
         h2 = x * x + y * y

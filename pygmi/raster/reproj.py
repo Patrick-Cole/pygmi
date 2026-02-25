@@ -327,6 +327,8 @@ def _testfn():
     _, _, bands = dat[0].data.shape
     data3 = []
     data1 = [dat[0].copy() for i in range(bands)]
+    data2 = Data()
+
     for i, band in enumerate(data1):
         band.data = band.data[:, :, i]
         data2 = data_reproject(band, 4326)

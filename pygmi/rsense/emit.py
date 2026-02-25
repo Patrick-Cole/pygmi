@@ -258,6 +258,7 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
 
     # Create empty dictionary for orthocorrected data vars
     data_vars = {}
+    out_ds = []
 
     # Extract Rawspace Dataset Variable Values (Typically Reflectance)
     for var in var_list:
@@ -346,6 +347,7 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
 
     """
     dat = []
+    xrdat = None
     var_names = list(xrds.data_vars)
 
     # Loop through variable names

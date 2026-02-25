@@ -283,6 +283,7 @@ def SPECPR(ifile):
 
     idata = iter(data)
     recs = {}
+    rec = {}
     recnum = 0
     for dat in idata:
         recnum += 1

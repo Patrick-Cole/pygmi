@@ -113,6 +113,7 @@ class Normalisation(BasicModule):
 
         data = [i.copy() for i in self.indata['Raster']]
 
+        ntype = 'interval'
         if self.rb_interval.isChecked():
             ntype = 'interval'
         elif self.rb_mean.isChecked():

@@ -765,6 +765,7 @@ class ImportSentinel5P(BasicModule):
         lats = lats.flatten()
         lons = lons.flatten()
         pnts = np.transpose([lons, lats])
+        shp = None
 
         if self.rb_cclip.isChecked():
             lonmin = float(self.le_lonmin.text())
@@ -1853,6 +1854,7 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None,
                     'B11': [11500, 12510]}
 
     idir = os.path.dirname(ifilet)
+    tarnames = []
 
     if '.tar' in ifilet:
         with tarfile.open(ifilet) as tar:
@@ -3319,6 +3321,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None,
 
         dat.append(Data())
 
+        utmzone = 1
         for kmeta in meta:
             if 'UTMZONECODE' in kmeta:
                 utmzone = float(meta[kmeta])
@@ -3415,6 +3418,7 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
     dat = []
     ifile = ifile[:]
     bandid = None
+    xdim, xmin, ydim, ymax = 1, 1, 1, 1
 
     with rasterio.open(ifile) as dataset:
         subdata = dataset.subdatasets
@@ -3439,6 +3443,7 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None,
             units = 'number per pixel'
 
         nbands = 1
+        rtmp2 = None
         if metaonly is False:
             with rasterio.open(ifile2) as dataset:
                 rtmp2 = dataset.read()
@@ -3652,6 +3657,7 @@ def get_ternary(dat, sunfile=None, clippercl=1., clippercu=1.,
     data = lstack(dat, nodeepcopy=True, checkdataid=False, piter=piter,
                   showlog=showlog)
     sundata = None
+    sdata = None
 
     if sunfile is not None:
         sdata = None

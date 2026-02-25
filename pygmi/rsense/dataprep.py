@@ -109,7 +109,7 @@ class TopoCorrect(BasicModule):
 
         """
         tmp = []
-        if 'Raster' not in self.indata:  # and 'RasterFileList' not in self.indata:
+        if 'Raster' not in self.indata:
             self.showlog('No Satellite Data')
             return False
 
@@ -288,41 +288,41 @@ class Sen2Cor(BasicModule):
 
         return True
 
-    def get_sdir(self, nodialog=False):
+    def get_sdir(self):
         """Get the satellite directory."""
-        if not nodialog:
-            idir = QtWidgets.QFileDialog.getExistingDirectory(
-                self.parent, 'Select Sentinel 2 L1A Data Directory')
 
-            if not idir:
-                return False
+        idir = QtWidgets.QFileDialog.getExistingDirectory(
+            self.parent, 'Select Sentinel 2 L1A Data Directory')
 
-            if 'L1C' not in os.path.basename(idir):
-                self.showlog('Error: not L1C data.')
-                self.le_sdir.setText('')
-                return False
+        if not idir:
+            return False
+
+        if 'L1C' not in os.path.basename(idir):
+            self.showlog('Error: not L1C data.')
+            self.le_sdir.setText('')
+            return False
 
         self.le_sdir.setText(idir)
 
         return True
 
-    def get_sen2cor(self, nodialog=False):
+    def get_sen2cor(self):
         """Get the sen2cor directory."""
-        if not nodialog:
-            idir = QtWidgets.QFileDialog.getExistingDirectory(
-                self.parent, 'Select Sen2Cor Directory')
 
-            if not idir:
-                return False
+        idir = QtWidgets.QFileDialog.getExistingDirectory(
+            self.parent, 'Select Sen2Cor Directory')
 
-            sen2cor = os.path.join(idir, 'L2A_Process')
-            if platform.system() == 'Windows':
-                sen2cor += '.bat'
-            if not os.path.exists(sen2cor):
-                self.showlog('Could not find L2A_process file in this '
-                             'location')
-                self.le_sen2cor.setText('')
-                return False
+        if not idir:
+            return False
+
+        sen2cor = os.path.join(idir, 'L2A_Process')
+        if platform.system() == 'Windows':
+            sen2cor += '.bat'
+        if not os.path.exists(sen2cor):
+            self.showlog('Could not find L2A_process file in this '
+                         'location')
+            self.le_sen2cor.setText('')
+            return False
 
         self.le_sen2cor.setText(idir)
 
@@ -452,20 +452,20 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
 
 def _testfn2():
     """Test routine sen2cor."""
-    from pygmi.rsense.iodefs import ImportBatch
+    # from pygmi.rsense.iodefs import ImportBatch
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    tmp1 = ImportBatch()
-    tmp1.idir = r'D:\Landslides\L1C'
-    tmp1.get_sfile(True)
-    tmp1.settings()
+    # tmp1 = ImportBatch()
+    # tmp1.idir = r'D:\Landslides\L1C'
+    # tmp1.get_sfile(True)
+    # tmp1.settings()
 
-    dat = tmp1.outdata
+    # dat = tmp1.outdata
 
     tmp = Sen2Cor()
-    tmp.indata = dat
+    # tmp.indata = dat
     # tmp.le_sdir.setText(r"D:\Landslides\L1C\S2B_MSIL1C_20220329T073609_N0400_R092_T36JTN_20220329T094612.SAFE")
     tmp.le_sen2cor.setText(r'C:\Sen2Cor-02.12.03-win64')
     tmp.settings()
@@ -473,9 +473,9 @@ def _testfn2():
 
 def _testfn():
     """Test routine topo."""
-    from rasterio.vrt import WarpedVRT
-    from rasterio.warp import calculate_default_transform
-    import rasterio
+    # from rasterio.vrt import WarpedVRT
+    # from rasterio.warp import calculate_default_transform
+    # import rasterio
     # import matplotlib.pyplot as plt
     # from pygmi.raster.misc import norm2
     # from pygmi.misc import frm
@@ -618,4 +618,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

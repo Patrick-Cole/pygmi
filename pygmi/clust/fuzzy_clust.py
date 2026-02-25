@@ -414,6 +414,9 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
     clnce = None
     clxbi = None
     clvrc = None
+    startmdat = {}
+    startmfix = {}
+    clobj_fcn = None
 
     for i in range(no_clust[0], no_clust[1] + 1):
         showlog(f'Number of Clusters: {i}')
@@ -606,6 +609,9 @@ def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
     data_types = data.shape[1]
 
     uuu = []  # dummy definition of membership matrix
+    cent = None
+    edist = None
+    m_f = None
 
     # if neither initial centers nor initial meberships are provided ->
     # random guess
@@ -724,6 +730,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     no_datasets = data.shape[1]
     no_cent = cent.shape[0]
     ddd = np.zeros([cent.shape[0], no_samples])
+    aaa0 = None
 
     # FCM
     if cltype in ('FCM', 'fcm'):

@@ -218,6 +218,7 @@ class TiltDepth(BasicModule):
         """
         txt = str(self.cmb_band1.currentText())
 
+        zout = self.indata['Raster'][0]
         for i in self.indata['Raster']:
             if i.dataid == txt:
                 zout = i
@@ -226,7 +227,7 @@ class TiltDepth(BasicModule):
         #     return
 
         # gdf = self.outdata['Vector'][0]
-        # zout = self.indata['Raster'][0]
+
         txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
@@ -286,6 +287,7 @@ class TiltDepth(BasicModule):
 
         txt = str(self.cmb_band1.currentText())
 
+        dat = self.indata['Raster'][0]
         for i in self.indata['Raster']:
             if i.dataid == txt:
                 dat = i

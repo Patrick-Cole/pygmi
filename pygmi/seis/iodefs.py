@@ -2386,6 +2386,7 @@ class ExportCSV(ContextModule):
         if 'F' not in data:
             return None
 
+        tmp = ''
         for dat in data['F'].values():
             tmp = ' ' * 80 + '\n'
             tmp = sform('{0:10.1f}', dat.strike, tmp, 1, 10)
@@ -3062,6 +3063,7 @@ class FilterSeisan(BasicModule):
         recdesc = self.cmb_recdesc.currentText()
         minval = self.dsb_from.value()
         maxval = self.dsb_to.value()
+        badrec = False
 
         newdat = []
         for i in data:
@@ -3112,76 +3114,6 @@ class FilterSeisan(BasicModule):
             newdat.append(i)
 
         self.outdata['Seis'] = newdat
-
-
-def _testxlstomacro():
-    """
-    Convert an excel file to macro file.
-
-    1.  Line
-        Location, GMT time, Local time. Format a30,i4,1x,2i2,1x,2i2,1x,i2,
-        'GMT',1x,i4,1x,2i2,1x,2i2,1x,i2,1x,'Local time'
-    2.  Line Comments
-    3.  Line Observations: Latitude, Longitude,intensity, code for scale,
-        postal code or similar, location,Format 2f10.4,f5.1,1x,a3,1x,a10,2x,a.
-        Note the postal code is an ascii string and left justified (a10).
-
-    """
-    # from geopy.geocoders import Nominatim, ArcGIS, GoogleV3
-    from geopy.geocoders import ArcGIS
-    from pygmi.misc import ProgressBarText
-
-    piter = ProgressBarText().iter
-
-    ifile = r"D:\Workdata\seismology\macro\Copy of Intensity_Database_30September2022 (002).xlsx"
-    odir = os.path.dirname(ifile)
-
-    df = pd.read_excel(ifile, skiprows=1)
-    df2 = df.set_index(['elat', 'elon'])
-    indx = df2.index.unique()
-
-    geolocator = ArcGIS()
-
-    for i in piter(indx):
-        df3 = df2.loc[i]
-        location = str(i)[1:-1]
-        year = df3.iloc[0].year
-        mon = df3.iloc[0].mon
-        day = df3.iloc[0].day
-        hour = int(df3.iloc[0].hour)
-        mins = int(df3.iloc[0].mins)
-
-        ofile = f'{year:4d}-{mon:02d}-{day:02d}-{hour:02d}{mins:02d}-00.macro'
-        ofile = os.path.join(odir, ofile)
-
-        tmp = geolocator.reverse(location)
-        tmp = tmp.raw
-        pcode = tmp['Postal']
-        state = tmp['Region']
-        suburb = tmp['ShortLabel']
-
-        location = f'{pcode}, {suburb}, {state}'
-        location = location[:35]
-
-        txt = (f'{location:35s} {year:4d} {mon:2d}{day:2d} '
-               f'{hour:2d}{mins:2d} 00.0 GMT {mon:2d}{day:2d} '
-               f'{hour - 2:2d}{mins:2d} 00.0 Local Time\n Comment\n')
-        for row in df3.iterrows():
-            lat = float(row[1].lat)
-            lon = float(row[1].lon)
-            intensity2 = float(row[1].intensity2)
-            rloc = row[1].IDP
-
-            tmp = geolocator.reverse(f'{lat}, {lon}')
-            tmp = tmp.raw
-            pcode = tmp['Postal']
-            txt += (f' {lat:9.3f}{lon:8.3f}  {intensity2:5.1f}  MM  '
-                    f'{pcode:10s}       {rloc}\n')
-
-        with open(ofile, 'w') as io:
-            io.write(txt)
-
-    print('Finished!')
 
 
 def _testfn():

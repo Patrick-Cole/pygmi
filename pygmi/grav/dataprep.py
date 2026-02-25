@@ -659,7 +659,7 @@ def _testfn():
     PD = ProcessData()
     PD.indata = IO.outdata
     PD.le_basethres.setText(bthres)
-    # PD.le_knownstat.setText(kbase)
+    PD.le_knownstat.setText(kbase)
     PD.le_knownbase.setText('978794.53')
 
     PD.settings()

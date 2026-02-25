@@ -329,6 +329,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         clippercu = self.clippercu[self.hband[0]]
         clippercl = self.clippercl[self.hband[0]]
 
+        dat = self.data.data
+
         for i in self.data:
             if i.dataid == self.hband[0]:
                 dat = i.data.copy()
@@ -648,6 +650,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         clippercl = self.clippercl[self.hband[0]]
 
         sun = None
+        pseudo = self.data.data
+
         for i in self.data:
             if i.dataid == self.hband[0]:
                 pseudo = i.data
@@ -1570,12 +1574,12 @@ class PlotInterp(BasicModule):
 
             try:
                 blen = float(text)
+                bwid = blen
             except ValueError:
                 QtWidgets.QMessageBox.warning(
                     self.parent, 'Error', 'Invalid value.',
                     QtWidgets.QMessageBox.StandardButton.Ok)
                 return False
-        # bwid = blen / 16.
 
         rtext = 'Red'
         gtext = 'Green'
@@ -1617,10 +1621,12 @@ class PlotInterp(BasicModule):
         htype = str(self.cmb_htype.currentText())
         cmin = None
         cmax = None
+        img = np.array([])
 
         if dtype == 'Single Colour Map':
             clippercu = self.mmc.clippercu[self.mmc.hband[0]]
             clippercl = self.mmc.clippercl[self.mmc.hband[0]]
+            pseudo = self.mmc.data.data
             for i in self.mmc.data:
                 if i.dataid == self.mmc.hband[0]:
                     pseudo = i.data

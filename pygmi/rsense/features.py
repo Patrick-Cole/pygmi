@@ -103,7 +103,8 @@ product['ferric iron'] = ['f900']
 product['carbonate'] = ['f2320', 'r2250D < 1.009', 'r2380D < 1.0',
                         'r2200D < 1.0']
 
-# product['amphibole1, talc'] = ['r2380D', 'r2330D > 1.01', 'r2160D2190 < 1.005']
+# product['amphibole1, talc'] = ['r2380D', 'r2330D > 1.01',
+#                                'r2160D2190 < 1.005']
 # product['amphibole'] = ['r2380D', 'r2330D > 1.01', 'r2160D2190 < 1.005',
 #                         'r2200D < 1.01']
 # product['amphibole'] = ['r2380D', 'r2320D > 1.01', 'r2160D2190 < 1.005',

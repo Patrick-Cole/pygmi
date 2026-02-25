@@ -1179,6 +1179,11 @@ class ProfileDisplay(QtWidgets.QWidget):
         if curprof is None:
             curprof = self.sb_profnum.value()
 
+        y1 = np.array([yrng[0]])
+        y2 = np.array([yrng[1]])
+        x1 = np.array([xrng[1] - dxy / 2 - curprof * dxy])
+        x2 = x1
+
         if pdirval == 90:
             x1 = np.array([xrng[0]])
             x2 = np.array([xrng[1]])

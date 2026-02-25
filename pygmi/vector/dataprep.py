@@ -435,6 +435,7 @@ class DataGrid(BasicModule):
         dataid = self.cmb_dataid.currentText()
         zcol = self.cmb_z.currentText()
         demid = self.cmb_grid_dem.currentText()
+        scoords = None
         newdat = []
 
         if bdist < 1:
@@ -1191,7 +1192,7 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
         elif method == 'Linear':
             gdat = griddata(points, z, (xxx, yyy), method='linear',
                             fill_value=nullvalue)
-        elif method == 'Cubic':
+        else:
             gdat = griddata(points, z, (xxx, yyy), method='cubic',
                             fill_value=nullvalue)
 
@@ -1479,6 +1480,7 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     if numits < 1:
         numits = int(max(np.log2(cols), np.log2(rows)))
 
+    zfin = np.zeros([1, 1])
     while np.max(newmask) > 0 and j < (numits - 1):
         j += 1
         jj = 2**j
@@ -1798,4 +1800,4 @@ def _testfn_vol():
 
 
 if __name__ == "__main__":
-    _testfn_grid()
+    _testfn_pointcut()
