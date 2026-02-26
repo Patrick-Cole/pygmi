@@ -1626,7 +1626,7 @@ class PlotInterp(BasicModule):
         if dtype == 'Single Colour Map':
             clippercu = self.mmc.clippercu[self.mmc.hband[0]]
             clippercl = self.mmc.clippercl[self.mmc.hband[0]]
-            pseudo = self.mmc.data.data
+            pseudo = self.mmc.data[0].data
             for i in self.mmc.data:
                 if i.dataid == self.mmc.hband[0]:
                     pseudo = i.data
