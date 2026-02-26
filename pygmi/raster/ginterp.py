@@ -329,7 +329,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         clippercu = self.clippercu[self.hband[0]]
         clippercl = self.clippercl[self.hband[0]]
 
-        dat = self.data.data
+        dat = self.data[0].data
 
         for i in self.data:
             if i.dataid == self.hband[0]:
@@ -650,7 +650,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         clippercl = self.clippercl[self.hband[0]]
 
         sun = None
-        pseudo = self.data.data
+        pseudo = self.data[0].data
 
         for i in self.data:
             if i.dataid == self.hband[0]:
