@@ -155,8 +155,6 @@ class BasicStats3D(ContextModule):
 
         self.combo()
 
-        self.show()
-
     def save(self):
         """
         Save Table.
