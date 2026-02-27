@@ -307,15 +307,15 @@ class ImportRGBData(BasicModule):
                          showlog=self.showlog)
 
         if dat is None:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the image.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'Could not import the image.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         if len(dat) < 3:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Not RGB Image, less than 3 bands.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'Not RGB Image, less than 3 bands.',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'Raster'

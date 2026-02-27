@@ -153,7 +153,8 @@ class MNF(BasicModule):
             plt.tight_layout()
 
             if hasattr(plt.get_current_fig_manager(), 'window'):
-                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+                plt.get_current_fig_manager().window.setWindowIcon(
+                    self.parent.windowIcon())
 
             plt.show()
 
@@ -354,7 +355,8 @@ class PCA(BasicModule):
             plt.tight_layout()
 
             if hasattr(plt.get_current_fig_manager(), 'window'):
-                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+                plt.get_current_fig_manager().window.setWindowIcon(
+                    self.parent.windowIcon())
 
             plt.show()
 

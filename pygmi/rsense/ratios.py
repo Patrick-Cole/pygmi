@@ -1261,7 +1261,7 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
-    from pygmi.rsense.iodefs import ImportBatch, ImportData
+    from pygmi.rsense.iodefs import ImportBatch  # , ImportData
 
     idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
     # idir = r"D:\VMS\S2"

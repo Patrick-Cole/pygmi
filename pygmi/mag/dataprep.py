@@ -769,7 +769,7 @@ def _testfn2():
     dfile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Areas_A_and_B_DTM_utm35s.hdr"
 
     datm = get_raster(ifile)[0]
-    datd = get_raster(ifile)[0]
+    datd = get_raster(dfile)[0]
     # dat = rtp(dat1, -62.5, -16.75)
     # sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
 

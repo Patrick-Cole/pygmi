@@ -1679,7 +1679,7 @@ def _testfn():
 def _testfn_pointcut():
     """Test routine."""
     import sys
-    from pygmi.vector.iodefs import ImportXYZ, ImportVector
+    from pygmi.vector.iodefs import ImportXYZ  # , ImportVector
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))

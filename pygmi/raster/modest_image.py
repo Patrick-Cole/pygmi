@@ -267,9 +267,9 @@ class ModestImage(mi.AxesImage):
         # Find out how we need to slice the array to make sure we match the
         # resolution of the display. We pass self._world2pixel which matters
         # for cases where the extent has been set.
-        x0, x1, sx, y0, y1, sy = extract_matched_slices(axes=self.axes,
-                                                        shape=self._full_res.shape,
-                                                        transform=self._world2pixel)
+        x0, x1, sx, y0, y1, sy = extract_matched_slices(
+            axes=self.axes, shape=self._full_res.shape,
+            transform=self._world2pixel)
 
         # Check whether we've already calculated what we need, and if so just
         # return without doing anything further.
@@ -305,8 +305,8 @@ class ModestImage(mi.AxesImage):
         else:
             xmin, xmax, ymin, ymax = x0 - .5, x1 - .5, y0 - .5, y1 - .5
 
-        xmin, ymin, xmax, ymax = self._pixel2world.transform([(xmin, ymin),
-                                                              (xmax, ymax)]).ravel()
+        xmin, ymin, xmax, ymax = self._pixel2world.transform(
+            [(xmin, ymin), (xmax, ymax)]).ravel()
 
         mi.AxesImage.set_extent(self, [xmin, xmax, ymin, ymax])
 

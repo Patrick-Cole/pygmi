@@ -82,9 +82,9 @@ class ImportEDI(BasicModule):
         self.ifile = os.path.dirname(self.ifilelist[0]) + r'\EDI List'
 
         if dat is None:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import dataset. ',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', 'Could not import dataset. ',
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return False
 
         output_type = 'MT - EDI'

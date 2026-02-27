@@ -286,15 +286,17 @@ class ProcessData(BasicModule):
 
         if self.le_knownstat.text() == 'None':
             txt = ('Invalid base station number.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', txt,
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         kstat = float(self.le_knownstat.text())
         if kstat not in pdat['STATION'].values:
             txt = ('Invalid base station number.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', txt,
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         # Drift Correction, to abs base value
@@ -317,8 +319,9 @@ class ProcessData(BasicModule):
         if x.size == 0:
             txt = ('Your known base values need to be before and after at '
                    'least one local base station value.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', txt,
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error', txt,
+                QtWidgets.QMessageBox.StandardButton.Ok)
             return
 
         absbase = grv - np.interp(x, xp, fp) + float(self.le_knownbase.text())
@@ -663,8 +666,6 @@ def _testfn():
     PD.le_knownbase.setText('978794.53')
 
     PD.settings()
-
-    # datout = PD.outdata['Vector']
 
 
 def _test_lacoste():

@@ -127,8 +127,9 @@ class LithNotes(QtWidgets.QDialog):
         lbl_1 = QtWidgets.QLabel('Lithology Code')
         lbl_2 = QtWidgets.QLabel('Notes')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                                           QtWidgets.QSizePolicy.Policy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -281,8 +282,9 @@ class ParamDisplay(QtWidgets.QDialog):
         self.setWindowTitle('Geophysical Parameters')
         helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                                           QtWidgets.QSizePolicy.Policy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(

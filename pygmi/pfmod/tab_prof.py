@@ -1669,7 +1669,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
-            if self.calcdip == False:
+            if self.calcdip is False:
                 self.move(event)
             else:
                 self.dip(event)
