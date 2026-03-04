@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Class for seismic data types.
+Classes for seismic data types.
 
 Docstring information is from SEISAN documentation.
 """

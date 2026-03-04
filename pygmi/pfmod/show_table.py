@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Routine which displays a table graphically with various stats."""
+"""Routine which displays a table graphically with various statistics."""
 
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt

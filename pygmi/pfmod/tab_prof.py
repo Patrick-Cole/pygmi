@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Profile Display Tab Routines."""
+"""Profile display routines for 3D modelling."""
 
 import copy
 import os

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Parameter Display Tab Routines."""
+"""Parameter display routines for 3D modelling."""
 
 from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np

@@ -22,7 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Class for vector data types."""
+"""
+Vector data types.
+
+This module contains custom vector data types.
+"""
 
 
 class VoxModel():

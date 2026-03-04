@@ -22,10 +22,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Anaglyph routine."""
+"""
+Anaglyph routine.
+
+This module allows for the creation of anaglyphs - which can then be used for
+feature detection and interpretation.
+"""
 
 from PySide6 import QtWidgets, QtCore
-# from scipy import ndimage
 import numpy as np
 from matplotlib import colormaps
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg

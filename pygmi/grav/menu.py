@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Gravity Menu Routines."""
+"""Gravity menu routines."""
 
 from PySide6 import QtWidgets, QtGui
 

@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Raster Data Display.
+Raster data display.
 
 This is the raster data display module.  This module allows for the
 display of raster data in a variety of modes, as well as the export of that

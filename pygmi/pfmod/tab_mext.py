@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Model Extents Display Routines."""
+"""Model extents display routines for 3D modelling."""
 
 from PySide6 import QtWidgets, QtCore
 import numpy as np

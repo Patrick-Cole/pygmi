@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Clip to Zoom.
+Clip to zoom.
 
 This module allows a raster dataset to be clipped to the current zoomed
 extents.

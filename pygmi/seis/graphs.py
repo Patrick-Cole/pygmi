@@ -23,10 +23,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Seismology Data.
+Plot seismology data.
 
-This module provides a variety of methods to plot raster data via the context
-menu.
+This module provides a variety of methods to plot seismology data via the
+context menu.
 """
 
 import os

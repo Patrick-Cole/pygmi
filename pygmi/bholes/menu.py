@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Borehole Menu Routines."""
+"""Borehole menu routines."""
 
 from PySide6 import QtWidgets, QtGui
 from pygmi.bholes import iodefs
