@@ -476,66 +476,66 @@ def _testfn():
     # from rasterio.vrt import WarpedVRT
     # from rasterio.warp import calculate_default_transform
     # import rasterio
-    # import matplotlib.pyplot as plt
-    # from pygmi.raster.misc import norm2
-    # from pygmi.misc import frm
+    import matplotlib.pyplot as plt
+    from pygmi.raster.misc import norm2
+    from pygmi.misc import frm
 
-    ifile1 = r"D:\Landslides\old\JTNdem.tif"
-    ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
-    # ifile2 = r"D:\Landslides\test.tif"
+    # ifile1 = r"D:\Landslides\old\JTNdem.tif"
+    # ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
+    # # ifile2 = r"D:\Landslides\test.tif"
 
-    dat1 = get_raster(ifile1)  # 15 GB
-    dat2 = get_raster(ifile2)  # 7 GB
+    # dat1 = get_raster(ifile1)  # 15 GB
+    # dat2 = get_raster(ifile2)  # 7 GB
 
-    dat = dat1 + dat2
+    # dat = dat1 + dat2
 
-    app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    # app = QtWidgets.QApplication(sys.argv)
+    # app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    tmp1 = TopoCorrect()
-    tmp1.indata['Raster'] = dat
-    tmp1.settings()
+    # tmp1 = TopoCorrect()
+    # tmp1.indata['Raster'] = dat
+    # tmp1.settings()
 
-    # ifile = r"D:\Landslides\oneclip.tif"
-    # zenith = 42.7956361279988
-    # azimuth = 44.8154655713449
+    ifile = r"D:\Landslides\oneclip.tif"
+    zenith = 42.7956361279988
+    azimuth = 44.8154655713449
 
-    # data = get_raster(ifile)
-    # dem = data.pop(-1)
+    data = get_raster(ifile)
+    dem = data.pop(-1)
 
-    # data = lstack(data)
-    # dem = lstack(data+[dem], masterid=data[0].dataid)
-    # dem = dem.pop(-1)
+    data = lstack(data)
+    dem = lstack(data + [dem], masterid=data[0].dataid)
+    dem = dem.pop(-1)
 
-    # data2 = c_correction(data, dem, azimuth, zenith)
+    data2 = c_correction(data, dem, azimuth, zenith)
 
-    # for dat in [data, data2]:
-    #     plt.figure(dpi=200)
-    #     ax = plt.gca()
+    for dat in [data, data2]:
+        plt.figure(dpi=200)
+        ax = plt.gca()
 
-    #     red = dat[3].data
-    #     green = dat[2].data
-    #     blue = dat[1].data
+        red = dat[3].data
+        green = dat[2].data
+        blue = dat[1].data
 
-    #     rmin, rmax = .1, .2
-    #     gmin, gmax = .1, .2
-    #     bmin, bmax = .1, .2
+        rmin, rmax = .1, .2
+        gmin, gmax = .1, .2
+        bmin, bmax = .1, .2
 
-    #     img = np.zeros((red.shape[0], red.shape[1], 3), dtype=np.uint8)
+        img = np.zeros((red.shape[0], red.shape[1], 3), dtype=np.uint8)
 
-    #     img[:, :, 0] = norm2(red, rmin, rmax)*255
-    #     img[:, :, 1] = norm2(green, gmin, gmax)*255
-    #     img[:, :, 2] = norm2(blue, bmin, bmax)*255
+        img[:, :, 0] = norm2(red, rmin, rmax) * 255
+        img[:, :, 1] = norm2(green, gmin, gmax) * 255
+        img[:, :, 2] = norm2(blue, bmin, bmax) * 255
 
-    #     plt.imshow(img, extent=dat[0].extent)
+        plt.imshow(img, extent=dat[0].extent)
 
-    #     ax.set_xlabel('Eastings')
-    #     ax.set_ylabel('Northings')
+        ax.set_xlabel('Eastings')
+        ax.set_ylabel('Northings')
 
-    #     ax.xaxis.set_major_formatter(frm)
-    #     ax.yaxis.set_major_formatter(frm)
+        ax.xaxis.set_major_formatter(frm)
+        ax.yaxis.set_major_formatter(frm)
 
-    #     plt.show()
+        plt.show()
 
     # for i, _ in enumerate(data):
 
@@ -618,4 +618,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

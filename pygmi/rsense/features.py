@@ -107,9 +107,9 @@ product['carbonate'] = ['f2320', 'r2250D < 1.009', 'r2380D < 1.0',
 #                                'r2160D2190 < 1.005']
 # product['amphibole'] = ['r2380D', 'r2330D > 1.01', 'r2160D2190 < 1.005',
 #                         'r2200D < 1.01']
-# product['amphibole'] = ['r2380D', 'r2320D > 1.01', 'r2160D2190 < 1.005',
-#                         'r2200D < 1.01', 'r2250D < 1.01']
-# product['pyrophyllite'] = ['f2160', 'r2160D2190 < 1.005']
+product['amphibole'] = ['r2380D', 'r2320D > 1.01', 'r2160D2190 < 1.005',
+                        'r2200D < 1.01', 'r2250D < 1.01']
+product['pyrophyllite'] = ['f2160', 'r2160D2190 < 1.005']
 # product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
 
 # product['gypsum'] = ['r1750D', 'r1750D > 1.0'] #, 'r1950D > 1.001']

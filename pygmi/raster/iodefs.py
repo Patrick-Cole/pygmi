@@ -1952,6 +1952,7 @@ def _filespeedtest():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
+    ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
 
     dataset = get_raster(ifile)
 
@@ -1967,9 +1968,9 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
     # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
 
-    tmp = ExportData()
-    tmp.indata['Raster'] = dataset
-    tmp.run()
+    # tmp = ExportData()
+    # tmp.indata['Raster'] = dataset
+    # tmp.run()
 
     getinfo('End')
 
