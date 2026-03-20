@@ -763,6 +763,10 @@ def get_raster(ifile, *, nval=None, piter=None, showlog=print,
 
             if metaonly is False:
                 dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                if nval is None and dataset.nodata is not None and np.isnan(dataset.nodata):
+                    nval = dat[-1].data.fill_value
+                    if dtype == 'float32':
+                        nval = np.float32(nval)
                 dat[-1].data = dat[-1].data.filled(nval)
                 dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
                 dat[-1].data.set_fill_value(nval)
@@ -1953,6 +1957,7 @@ def _filespeedtest():
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
     ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
+    ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
 
     dataset = get_raster(ifile)
 
@@ -2025,6 +2030,26 @@ def _testfn():
     pass
 
 
+def _testfn2():
+    """Test."""
+    import glob
+    from pygmi.misc import ProgressBarText
+
+    idir = r"D:\SANRAL\Remote sensing data\Buffer_250m"
+
+    piter = ProgressBarText().iter
+    ifiles = glob.glob(idir + '//**/*.hdr', recursive=True)
+
+    for ifile in ifiles:
+        print(ifile)
+        ofile = ifile[:-4] + '.tif'
+        if os.path.exists(ofile):
+            print('Output exists, skipping')
+            continue
+        dat = get_raster(ifile)
+        export_raster(ofile, dat, drv='GTiff', compression='DEFLATE')
+
+
 if __name__ == "__main__":
-    _filespeedtest()
-    # _testfn()
+    # _filespeedtest()
+    _testfn2()
