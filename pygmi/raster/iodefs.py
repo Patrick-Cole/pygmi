@@ -2035,14 +2035,14 @@ def _testfn2():
     import glob
     from pygmi.misc import ProgressBarText
 
-    idir = r"D:\SANRAL\Remote sensing data\Buffer_250m"
+    idir = r"D:\SANRAL\RMSE and coherence"
 
     piter = ProgressBarText().iter
-    ifiles = glob.glob(idir + '//**/*.hdr', recursive=True)
+    ifiles = glob.glob(idir + '//**/*.tif', recursive=True)
 
     for ifile in ifiles:
         print(ifile)
-        ofile = ifile[:-4] + '.tif'
+        ofile = ifile[:-5] + '.tif'
         if os.path.exists(ofile):
             print('Output exists, skipping')
             continue

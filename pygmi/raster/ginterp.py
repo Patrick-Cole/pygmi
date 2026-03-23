@@ -57,8 +57,10 @@ from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
 from matplotlib.colors import ListedColormap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from pygmi.misc import BasicModule
+from pygmi.misc import frm
 from pygmi.raster import iodefs, dataprep
 from pygmi.raster.colormaps import *
 from pygmi.raster.modest_image import imshow
@@ -127,7 +129,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure()
+        fig = Figure(figsize=(12, 8))
         super().__init__(fig)
 
         # figure stuff
@@ -139,7 +141,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.data = []
         self.sdata = []
         self.gmode = None
+        self.axes = None
         self.argb = [None, None, None]
+        self.argbvis = [True, False, False]
+        self.argbunit = ['', '', '']
         self.bgrgb = [None, None, None]
         self.hhist = [[], [], []]
         self.hband = [None, None, None, None]
@@ -153,6 +158,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bbox_hist_blue = None
         self.shade = False
         self.ccbar = None
+        self.scbar = None
         self.clippercu = {}
         self.clippercl = {}
         self.flagresize = False
@@ -160,23 +166,26 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.clipvall = [None, None, None]
         self.levels = 10
 
-        gspc = gridspec.GridSpec(3, 4)
-        self.axes = fig.add_subplot(gspc[0:, 1:])
-        self.axes.xaxis.set_visible(False)
-        self.axes.yaxis.set_visible(False)
+        # gspc = gridspec.GridSpec(3, 4)
+        # self.axes = fig.add_subplot(gspc[0:, 1:])
+        # self.axes.tick_params(axis='x', rotation=90)
+        # self.axes.tick_params(axis='y', rotation=0)
+        # self.axes.ticklabel_format(style='plain', axis='both')
+        # self.axes.xaxis.set_visible(False)
+        # self.axes.yaxis.set_visible(False)
 
-        for i in range(3):
-            self.argb[i] = fig.add_subplot(gspc[i, 0])
-            self.argb[i].xaxis.set_visible(False)
-            self.argb[i].yaxis.set_visible(False)
-            self.argb[i].autoscale(False)
+        # for i in range(3):
+        #     self.argb[i] = fig.add_subplot(gspc[i, 0])
+        #     self.argb[i].xaxis.set_visible(False)
+        #     self.argb[i].yaxis.set_visible(False)
+        #     self.argb[i].autoscale(False)
 
-        fig.subplots_adjust(bottom=0.05)
-        fig.subplots_adjust(top=.95)
-        fig.subplots_adjust(left=0.05)
-        fig.subplots_adjust(right=.95)
-        fig.subplots_adjust(wspace=0.05)
-        fig.subplots_adjust(hspace=0.05)
+        # fig.subplots_adjust(bottom=0.05)
+        # fig.subplots_adjust(top=.95)
+        # fig.subplots_adjust(left=0.05)
+        # fig.subplots_adjust(right=.95)
+        # fig.subplots_adjust(wspace=0.05)
+        # fig.subplots_adjust(hspace=0.05)
 
         FigureCanvasQTAgg.setSizePolicy(self,
                                         QtWidgets.QSizePolicy.Policy.Expanding,
@@ -227,10 +236,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.ccbar = None
 
         self.figure.canvas.mpl_disconnect(self.cid)
+        self.figure.clear()
 
-        self.axes.clear()
+        gspc = gridspec.GridSpec(3, 4)
+        self.axes = self.figure.add_subplot(gspc[0:, 1:])
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.ticklabel_format(style='plain', axis='both')
+        self.axes.xaxis.set_visible(False)
+        self.axes.yaxis.set_visible(False)
+
         for i in range(3):
-            self.argb[i].clear()
+            self.argb[i] = self.figure.add_subplot(gspc[i, 0])
+            self.argb[i].xaxis.set_visible(False)
+            self.argb[i].yaxis.set_visible(False)
+            self.argb[i].autoscale(False)
+            self.argb[i].set_visible(self.argbvis[i])
 
         x_1, x_2, y_1, y_2 = self.data[0].extent
 
@@ -238,6 +259,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylim(y_1, y_2)
         self.axes.set_aspect('equal')
 
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
         self.bgrgb[0] = self.figure.canvas.copy_from_bbox(self.argb[0].bbox)
@@ -288,6 +310,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     if i.dataid == self.hband[j]:
                         col = int((event.xdata - itlx) / i.xdim)
                         row = int((itly - event.ydata) / i.ydim)
+
+                        if row == i.data.shape[0] or col == i.data.shape[1]:
+                            return
+
                         zval[j] = i.data[row, col]
 
             if self.gmode == 'Single Colour Map':
@@ -532,6 +558,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for j in range(3):
                 if i.dataid == self.hband[j]:
                     dat[j] = i.data
+                    self.argbunit[j] = i.units
 
         self.image.set_shade(self.shade, self.cell, self.theta, self.phi,
                              self.alpha)
@@ -655,6 +682,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for i in self.data:
             if i.dataid == self.hband[0]:
                 pseudo = i.data
+                self.argbunit[0] = i.units
             if i.dataid == self.hband[3]:
                 sun = i.data
 
@@ -867,6 +895,7 @@ class PlotInterp(BasicModule):
         self.mmc = MyMplCanvas()
         self.msc = MySunCanvas()
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTIFF')
+        self.btn_savepng = QtWidgets.QPushButton('Save PNG')
         self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
                                                'lines')
         self.cmb_dtype = QtWidgets.QComboBox()
@@ -903,10 +932,6 @@ class PlotInterp(BasicModule):
         self.setFocus()
 
         self.mmc.gmode = 'Single Colour Map'
-        self.mmc.argb[0].set_visible(True)
-        self.mmc.argb[1].set_visible(False)
-        self.mmc.argb[2].set_visible(False)
-
         self.cmb_band1.show()
         self.cmb_band2.hide()
         self.cmb_band3.hide()
@@ -1043,6 +1068,7 @@ class PlotInterp(BasicModule):
         vbl_4.addWidget(self.aslider)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveimg)
+        vbl_raster.addWidget(self.btn_savepng)
         vbl_raster.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
@@ -1060,6 +1086,7 @@ class PlotInterp(BasicModule):
         self.kslider.sliderReleased.connect(self.change_kval)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
+        self.btn_savepng.clicked.connect(self.save_png)
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
         btn_apply.clicked.connect(self.change_lclip)
         self.cb_histtype.clicked.connect(self.change_dtype)
@@ -1166,9 +1193,7 @@ class PlotInterp(BasicModule):
             self.cmb_band2.hide()
             self.cmb_band3.hide()
             self.cmb_cbar.show()
-            self.mmc.argb[0].set_visible(True)
-            self.mmc.argb[1].set_visible(False)
-            self.mmc.argb[2].set_visible(False)
+            self.mmc.argbvis = [True, False, False]
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
@@ -1180,9 +1205,7 @@ class PlotInterp(BasicModule):
             self.cmb_band2.hide()
             self.cmb_band3.hide()
             self.cmb_cbar.show()
-            self.mmc.argb[0].set_visible(False)
-            self.mmc.argb[1].set_visible(False)
-            self.mmc.argb[2].set_visible(False)
+            self.mmc.argbvis = [False, False, False]
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
@@ -1200,9 +1223,7 @@ class PlotInterp(BasicModule):
             self.cmb_band2.show()
             self.cmb_band3.show()
             self.cmb_cbar.hide()
-            self.mmc.argb[0].set_visible(True)
-            self.mmc.argb[1].set_visible(True)
-            self.mmc.argb[2].set_visible(True)
+            self.mmc.argbvis = [True, True, True]
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
@@ -1527,6 +1548,162 @@ class PlotInterp(BasicModule):
         self.data_init()
         self.settings()
 
+    def save_png(self):
+        """
+        Save image as a GeoTIFF.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'PNG (*.png)'
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', ext)
+        if filename == '':
+            return False
+
+        dtype = str(self.cmb_dtype.currentText())
+
+        fig = self.mmc.figure
+        axes = self.mmc.axes
+
+        divider = make_axes_locatable(axes)
+        axes.xaxis.set_visible(True)
+        axes.yaxis.set_visible(True)
+        axes.set_xlabel('Eastings')
+        axes.set_ylabel('Northings')
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
+
+        if dtype == 'Single Colour Map':
+            cax = divider.append_axes("right", size="7%", pad=0.05)
+            cbar = fig.colorbar(self.mmc.image, cax=cax)
+
+            text = self.mmc.argbunit[0]
+            if text == '':
+                text, okay = QtWidgets.QInputDialog.getText(
+                    self, 'Colorbar', 'Enter colorbar unit label:',
+                    QtWidgets.QLineEdit.EchoMode.Normal,
+                    self.units[str(self.cmb_band1.currentText())])
+
+                if not okay:
+                    self.change_dtype()
+                    return
+
+            cbar.set_label(text)
+        elif 'Ternary' in dtype:
+            cax = divider.append_axes("right", size="50%", pad=0.05)
+            rtext = self.mmc.argbunit[0]
+            gtext = self.mmc.argbunit[1]
+            btext = self.mmc.argbunit[2]
+
+            if rtext == '':
+                if 'RGB' in dtype:
+                    rtext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter red label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'red')
+                else:
+                    rtext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter cyan label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'cyan')
+
+                if not okay:
+                    self.change_dtype()
+                    return
+            if gtext == '':
+                if 'RGB' in dtype:
+                    gtext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter green label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'green')
+                else:
+                    gtext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter magenta label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'magenta')
+
+                if not okay:
+                    self.change_dtype()
+                    return
+
+            if btext == '':
+                if 'RGB' in dtype:
+                    btext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter blue label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'blue')
+                else:
+                    btext, okay = QtWidgets.QInputDialog.getText(
+                        self, 'Ternary Colorbar', 'Enter yellow label:',
+                        QtWidgets.QLineEdit.EchoMode.Normal, 'yellow')
+
+                if not okay:
+                    self.change_dtype()
+                    return
+
+            tmp = np.array([[list(range(255))] * 255])
+            tmp = tmp.reshape(255, 255)
+            tmp = np.transpose(tmp)
+
+            red = ndimage.rotate(tmp, 0)
+            green = ndimage.rotate(tmp, 120)
+            blue = ndimage.rotate(tmp, -120)
+
+            tmp = np.zeros((blue.shape[0], 90))
+            blue = np.hstack((tmp, blue))
+            green = np.hstack((green, tmp))
+
+            rtmp = np.zeros_like(blue)
+            j = 92
+            rtmp[:255, j:j + 255] = red
+            red = rtmp
+
+            if 'RGB' in dtype:
+                red = red.max() - red
+                green = green.max() - green
+                blue = blue.max() - blue
+
+            data = np.transpose([red.flatten(),
+                                 green.flatten(),
+                                 blue.flatten()])
+            data = data.reshape(red.shape[0], red.shape[1], 3)
+
+            data = data[:221, 90:350]
+
+            ax = cax
+            ax.set_xlim((-100, 355))
+            ax.set_ylim((-100, 322))
+
+            path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
+            patch = PathPatch(path, facecolor='none')
+            ax.add_patch(patch)
+
+            data = data.astype(int)
+
+            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
+                           clip_on=True)
+            im.set_clip_path(patch)
+
+            ax.text(0, -5, gtext, horizontalalignment='center',
+                    verticalalignment='top')
+            ax.text(254, -5, btext, horizontalalignment='center',
+                    verticalalignment='top')
+            ax.text(127.5, 225, rtext, horizontalalignment='center')
+            ax.tick_params(top='off', right='off', bottom='off', left='off',
+                           labelbottom='off', labelleft='off')
+
+            ax.axis('off')
+
+        for i in range(3):
+            self.mmc.argb[i].set_visible(False)
+
+        fig.tight_layout()
+
+        fig.savefig(filename, bbox_inches='tight', dpi=300)
+
+        self.change_dtype()
+
+        return
+
     def save_img(self):
         """
         Save image as a GeoTIFF.
@@ -1612,7 +1789,7 @@ class PlotInterp(BasicModule):
 
             units = str(self.cmb_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
-                self, 'Ternary Colorbar', 'Enter blue/yelow label:',
+                self, 'Ternary Colorbar', 'Enter blue/yellow label:',
                 QtWidgets.QLineEdit.EchoMode.Normal, units)
 
             if not okay:
@@ -1998,6 +2175,7 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     # ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic\S2B_20220329_mosaic.tif"
 
     data = iodefs.get_raster(ifile)
 
