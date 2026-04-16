@@ -1569,5 +1569,35 @@ def _testfn():
     app.exec()
 
 
+def _testfn2():
+    """Test."""
+    import sys
+    import os
+    from pygmi.vector.iodefs import ImportVector
+    from pygmi.cgs.misc import SurveyPlan
+
+    sfile = r"D:\temp\Murchison_area.shp"
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+
+    os.chdir(os.path.dirname(sfile))
+
+    IO = ImportVector()
+    IO.le_sfile.setText(sfile)
+    IO.ifile = sfile
+    IO.settings(True)
+
+    SP = SurveyPlan()
+    SP.indata = IO.outdata
+    SP.settings(True)
+
+    SC = PlotVector()
+    SC.indata = SP.outdata
+    SC.run()
+
+    app.exec()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
