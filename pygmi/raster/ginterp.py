@@ -76,8 +76,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
     ----------
     htype : str
         string indicating the histogram stretch to apply to the data
-    hstype : str
-        string indicating the histogram stretch to apply to the sun data
     cbar : matplotlib colour map
         colour map to be used for pseudo colour bars
     data : list of pygmi.raster.datatypes.Data
@@ -133,8 +131,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(fig)
 
         # figure stuff
-        self.htype = 'Linear'
-        self.hstype = 'Linear'
+        self.htype = 'Linear with Percent Clip'
         self.cbar = colormaps['jet']
         self.newcmp = self.cbar
         self.fullhist = False
@@ -161,6 +158,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.scbar = None
         self.clippercu = {}
         self.clippercl = {}
+        self.clipmin = {}
+        self.clipmax = {}
         self.flagresize = False
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
@@ -583,7 +582,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if self.htype == 'Histogram Equalization':
             self.image.dohisteq = True
-        else:
+        elif self.htype == 'Linear with Percent Clip':
             self.image.dohisteq = False
             clippercu = self.clippercu[self.hband[0]]
             clippercl = self.clippercl[self.hband[0]]
@@ -601,6 +600,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.image.rgbclip = [[lclip[0], uclip[0]],
                                   [lclip[1], uclip[1]],
                                   [lclip[2], uclip[2]]]
+        else:
+            self.image.dohisteq = False
+            lclip[0] = self.clipmin[self.hband[0]]
+            uclip[0] = self.clipmax[self.hband[0]]
+            lclip[1] = self.clipmin[self.hband[1]]
+            uclip[1] = self.clipmax[self.hband[1]]
+            lclip[2] = self.clipmin[self.hband[2]]
+            uclip[2] = self.clipmax[self.hband[2]]
+            self.image.rgbclip = [[lclip[0], uclip[0]],
+                                  [lclip[1], uclip[1]],
+                                  [lclip[2], uclip[2]]]
 
         for i in range(3):
             hdata = dat[:, :, i]
@@ -609,7 +619,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             if ((clippercu > 0. or clippercl > 0.) and
                     self.fullhist is True and
-                    self.htype != 'Histogram Equalization'):
+                    self.htype == 'Linear with Percent Clip'):
                 self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
                                                   ec='none')
                 self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
@@ -708,10 +718,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pseudoc = pseudo.compressed()
             lclip = pseudoc.min()
             uclip = pseudoc.max()
-        else:
+        elif self.htype == 'Linear with Percent Clip':
             self.image.dohisteq = False
             pseudoc = pseudo.compressed()
             lclip, uclip = np.percentile(pseudoc, [clippercl, 100 - clippercu])
+        else:
+            self.image.dohisteq = False
+            pseudoc = pseudo.compressed()
+            lclip = self.clipmin[self.hband[0]]
+            uclip = self.clipmax[self.hband[0]]
 
         self.image.cmap = self.cbar
         self.image.set_clim(lclip, uclip)
@@ -720,7 +735,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.newcmp = self.cbar
         if ((clippercu > 0. or clippercl > 0.) and
                 self.fullhist is True and
-                self.htype != 'Histogram Equalization'):
+                self.htype == 'Linear with Percent Clip'):
             self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none')
             tmp = self.hhist[0][1]
             filt = (tmp > lclip) & (tmp < uclip)
@@ -891,6 +906,8 @@ class PlotInterp(BasicModule):
         self.units = {}
         self.clippercu = {}
         self.clippercl = {}
+        self.clipmin = {}
+        self.clipmax = {}
 
         self.mmc = MyMplCanvas()
         self.msc = MySunCanvas()
@@ -908,6 +925,12 @@ class PlotInterp(BasicModule):
         self.le_contours = QtWidgets.QLineEdit()
         self.le_lineclipu = QtWidgets.QLineEdit()
         self.le_lineclipl = QtWidgets.QLineEdit()
+        self.dsb_lineclipl = QtWidgets.QDoubleSpinBox()
+        self.dsb_lineclipu = QtWidgets.QDoubleSpinBox()
+        self.dsb_linemin = QtWidgets.QDoubleSpinBox()
+        self.dsb_linemax = QtWidgets.QDoubleSpinBox()
+        self.le_linemax = QtWidgets.QLineEdit()
+        self.le_linemin = QtWidgets.QLineEdit()
         self.cmb_cbar = QtWidgets.QComboBox(self)
         self.kslider = QtWidgets.QSlider(
             QtCore.Qt.Orientation.Horizontal)  # CMYK
@@ -1016,6 +1039,10 @@ class PlotInterp(BasicModule):
         self.le_lineclipl.setPlaceholderText('% of low values to exclude')
         self.le_lineclipl.setValidator(
             QtGui.QDoubleValidator(1e-300, np.inf, -1))
+        self.le_linemax.setPlaceholderText('Maximum value')
+        self.le_linemax.setValidator(QtGui.QDoubleValidator())
+        self.le_linemin.setPlaceholderText('Minimum value')
+        self.le_linemin.setValidator(QtGui.QDoubleValidator())
         self.btn_saveimg.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 
@@ -1032,9 +1059,19 @@ class PlotInterp(BasicModule):
         self.cmb_dtype.addItems(['Single Colour Map', 'Contour',
                                  'RGB Ternary', 'CMY Ternary'])
         self.cmb_htype.addItems(['Linear with Percent Clip',
+                                 'Linear with Range',
                                  'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Display')
+        self.dsb_lineclipl.setPrefix('Low Exclude %: ')
+        self.dsb_lineclipu.setPrefix('High Exclude %: ')
+        self.dsb_linemin.setPrefix('Minimum: ')
+        self.dsb_linemin.setRange(-1e+20, 1e+20)
+        self.dsb_linemax.setPrefix('Maximum: ')
+        self.dsb_linemax.setRange(-1e+20, 1e+20)
+
+        self.dsb_linemax.hide()
+        self.dsb_linemin.hide()
 
         vbl_1.addWidget(self.cmb_dtype)
         vbl_1.addWidget(self.le_contours)
@@ -1049,8 +1086,10 @@ class PlotInterp(BasicModule):
 
         vbl_3.addWidget(self.cmb_htype)
         vbl_3.addWidget(self.cmb_bandh)
-        vbl_3.addWidget(self.le_lineclipl)
-        vbl_3.addWidget(self.le_lineclipu)
+        vbl_3.addWidget(self.dsb_lineclipl)
+        vbl_3.addWidget(self.dsb_lineclipu)
+        vbl_3.addWidget(self.dsb_linemin)
+        vbl_3.addWidget(self.dsb_linemax)
         vbl_3.addWidget(self.cb_histtype)
         vbl_3.addWidget(self.btn_allclipperc)
         vbl_3.addWidget(btn_apply)
@@ -1170,6 +1209,7 @@ class PlotInterp(BasicModule):
         dattxt = self.cmb_bandh.currentText()
         self.le_lineclipl.setText(str(self.clippercl[dattxt]))
         self.le_lineclipu.setText(str(self.clippercu[dattxt]))
+        self.set_minmax()
 
     def change_dtype(self):
         """
@@ -1283,15 +1323,29 @@ class PlotInterp(BasicModule):
         txt = str(self.cmb_htype.currentText())
 
         if txt == 'Histogram Equalization':
-            self.le_lineclipl.hide()
-            self.le_lineclipu.hide()
+            self.dsb_lineclipl.hide()
+            self.dsb_lineclipu.hide()
+            self.dsb_linemin.hide()
+            self.dsb_linemax.hide()
             self.cmb_bandh.hide()
             self.btn_allclipperc.hide()
-        else:
-            self.le_lineclipl.show()
-            self.le_lineclipu.show()
+            self.cb_histtype.hide()
+        elif txt == 'Linear with Percent Clip':
+            self.dsb_lineclipl.show()
+            self.dsb_lineclipu.show()
+            self.dsb_linemin.hide()
+            self.dsb_linemax.hide()
             self.cmb_bandh.show()
             self.btn_allclipperc.show()
+            self.cb_histtype.show()
+        else:
+            self.dsb_lineclipl.hide()
+            self.dsb_lineclipu.hide()
+            self.dsb_linemin.show()
+            self.dsb_linemax.show()
+            self.cmb_bandh.show()
+            self.btn_allclipperc.hide()
+            self.cb_histtype.hide()
 
         self.mmc.htype = txt
         self.mmc.update_graph()
@@ -1317,49 +1371,31 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        txt = self.le_lineclipu.text()
         dattxt = self.cmb_bandh.currentText()
 
-        try:
-            uclip = float(txt)
-        except ValueError:
-            if txt == '':
-                uclip = 0.0
-            else:
-                uclip = self.mmc.clippercu[dattxt]
-            self.le_lineclipu.setText(str(uclip))
-
-        if uclip < 0.0 or uclip >= 100.0:
-            uclip = self.mmc.clippercu[dattxt]
-            self.le_lineclipu.setText(str(uclip))
-
-        txt = self.le_lineclipl.text()
-        try:
-            lclip = float(txt)
-        except ValueError:
-            if txt == '':
-                lclip = 0.0
-            else:
-                lclip = self.mmc.clippercl[dattxt]
-            self.le_lineclipl.setText(str(lclip))
-
-        if lclip < 0.0 or lclip >= 100.0:
-            lclip = self.mmc.clippercl[dattxt]
-            self.le_lineclipl.setText(str(lclip))
+        uclip = self.dsb_lineclipu.value()
+        lclip = self.dsb_lineclipl.value()
+        clipmax = self.dsb_linemax.value()
+        clipmin = self.dsb_linemin.value()
 
         if (lclip + uclip) >= 100.:
             clip = self.mmc.clippercu[dattxt]
-            self.le_lineclipu.setText(str(clip))
+            self.dsb_lineclipu.setValue(clip)
             clip = self.mmc.clippercl[dattxt]
-            self.le_lineclipl.setText(str(clip))
+            self.dsb_lineclipl.setValue(clip)
             return
 
         self.clippercl[dattxt] = lclip
         self.clippercu[dattxt] = uclip
         self.mmc.clippercu = self.clippercu
         self.mmc.clippercl = self.clippercl
+        self.clipmax[dattxt] = clipmax
+        self.clipmin[dattxt] = clipmin
+        self.mmc.clipmax = self.clipmax
+        self.mmc.clipmin = self.clipmin
 
         self.change_dtype()
+        # self.set_minmax()
 
     def change_red(self):
         """
@@ -1493,6 +1529,8 @@ class PlotInterp(BasicModule):
 
         for i in data:
             self.units[i.dataid] = i.units
+            self.clipmin[i.dataid] = i.data.min()
+            self.clipmax[i.dataid] = i.data.max()
 
         self.mmc.data = data
         self.mmc.sdata = sdata
@@ -1511,12 +1549,30 @@ class PlotInterp(BasicModule):
 
         self.mmc.clippercu = self.clippercu
         self.mmc.clippercl = self.clippercl
+        self.mmc.clipmin = self.clipmin
+        self.mmc.clipmax = self.clipmax
 
         self.cmb_update(self.cmb_band1, blist)
         self.cmb_update(self.cmb_band2, blist)
         self.cmb_update(self.cmb_band3, blist)
         self.cmb_update(self.cmb_bands, blist)
         self.cmb_update(self.cmb_bandh, blist)
+
+    def set_minmax(self):
+        """Get minimum and maximum of histogram band."""
+        dattxt = self.cmb_bandh.currentText()
+        uclip = self.dsb_lineclipu.value()
+        lclip = self.dsb_lineclipl.value()
+
+        dat = self.mmc.data[0]
+        for i in self.mmc.data:
+            if i.dataid == dattxt:
+                dat = i
+
+        lmin, lmax = np.percentile(dat.data.compressed(), [lclip, 100 - uclip])
+
+        self.dsb_linemin.setValue(lmin)
+        self.dsb_linemax.setValue(lmax)
 
     def move(self, event):
         """
@@ -2130,6 +2186,8 @@ class PlotInterp(BasicModule):
         self.mmc.init_graph()
         self.msc.init_graph()
 
+        self.set_minmax()
+
         tmp = self.exec()
 
         if tmp == 0:
@@ -2175,7 +2233,7 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     # ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic\S2B_20220329_mosaic.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic\S2B_20220329_mosaic.tif"
 
     data = iodefs.get_raster(ifile)
 

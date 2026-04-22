@@ -1248,7 +1248,7 @@ def consolidate_aster_list(flist):
     #     adate = os.path.basename(ifile).split('_')[2]
     #     tmp[adate] = ifile
 
-    asterfiles += list(tmp.values())
+    # asterfiles += list(tmp.values())
 
     flist = asterfiles + otherfiles
 
@@ -3906,10 +3906,11 @@ def _testfn2():
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
-    tmp1.idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic"
+    # tmp1.idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic"
+    tmp1.idir = r"D:\temp\AST_07XT_004-20260313_053451"
     # tmp1.get_sfile(True)
     tmp1.settings()
-    tmp1.saveproj()
+    # tmp1.saveproj()
 
     dat = tmp1.outdata
 
@@ -3980,4 +3981,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _test5P()
+    _testfn2()
