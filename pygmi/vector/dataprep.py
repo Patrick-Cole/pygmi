@@ -1284,7 +1284,7 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
 
 def lltomap(lat, lon):
     """
-    Convert a latitude and longitude to a 1:50,000 sheet name.
+    Convert a latitude and longitude to a 1:50,000 map sheet name.
 
     Parameters
     ----------
@@ -1299,6 +1299,9 @@ def lltomap(lat, lon):
         Map sheet number.
 
     """
+    if np.isnan(lat) or np.isnan(lon):
+        return ''
+
     cdict = {(0, 0): 'A',
              (0, 1): 'B',
              (1, 0): 'C',
@@ -1799,5 +1802,15 @@ def _testfn_vol():
     p.show()
 
 
+def _testfn():
+    """Test."""
+
+    lat = -29.5
+    lon = 28.7
+    sheet = lltomap(lat, lon)
+
+    pass
+
+
 if __name__ == "__main__":
-    _testfn_pointcut()
+    _testfn()

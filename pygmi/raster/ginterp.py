@@ -1207,8 +1207,10 @@ class PlotInterp(BasicModule):
 
         """
         dattxt = self.cmb_bandh.currentText()
-        self.le_lineclipl.setText(str(self.clippercl[dattxt]))
-        self.le_lineclipu.setText(str(self.clippercu[dattxt]))
+
+        self.dsb_lineclipu.setValue(self.clippercu[dattxt])
+        self.dsb_lineclipl.setValue(self.clippercl[dattxt])
+
         self.set_minmax()
 
     def change_dtype(self):
