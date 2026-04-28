@@ -923,14 +923,10 @@ class PlotInterp(BasicModule):
         self.cmb_bandh = QtWidgets.QComboBox()
         self.cmb_htype = QtWidgets.QComboBox()
         self.le_contours = QtWidgets.QLineEdit()
-        self.le_lineclipu = QtWidgets.QLineEdit()
-        self.le_lineclipl = QtWidgets.QLineEdit()
         self.dsb_lineclipl = QtWidgets.QDoubleSpinBox()
         self.dsb_lineclipu = QtWidgets.QDoubleSpinBox()
         self.dsb_linemin = QtWidgets.QDoubleSpinBox()
         self.dsb_linemax = QtWidgets.QDoubleSpinBox()
-        self.le_linemax = QtWidgets.QLineEdit()
-        self.le_linemin = QtWidgets.QLineEdit()
         self.cmb_cbar = QtWidgets.QComboBox(self)
         self.kslider = QtWidgets.QSlider(
             QtCore.Qt.Orientation.Horizontal)  # CMYK
@@ -1033,16 +1029,6 @@ class PlotInterp(BasicModule):
             'Number of contour levels (10 default)')
         self.le_contours.hide()
         self.le_contours.setValidator(QtGui.QIntValidator(1, 2147483647))
-        self.le_lineclipu.setPlaceholderText('% of high values to exclude')
-        self.le_lineclipu.setValidator(
-            QtGui.QDoubleValidator(1e-300, np.inf, -1))
-        self.le_lineclipl.setPlaceholderText('% of low values to exclude')
-        self.le_lineclipl.setValidator(
-            QtGui.QDoubleValidator(1e-300, np.inf, -1))
-        self.le_linemax.setPlaceholderText('Maximum value')
-        self.le_linemax.setValidator(QtGui.QDoubleValidator())
-        self.le_linemin.setPlaceholderText('Minimum value')
-        self.le_linemin.setValidator(QtGui.QDoubleValidator())
         self.btn_saveimg.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
 
@@ -1149,19 +1135,8 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        utxt = self.le_lineclipu.text()
-        ltxt = self.le_lineclipl.text()
-        dattxt = self.cmb_bandh.currentText()
-
-        try:
-            lclip = float(ltxt)
-        except ValueError:
-            lclip = self.clippercl[dattxt]
-
-        try:
-            uclip = float(utxt)
-        except ValueError:
-            uclip = self.clippercu[dattxt]
+        uclip = self.dsb_lineclipu.value()
+        lclip = self.dsb_lineclipl.value()
 
         for key in self.clippercl:
             self.clippercl[key] = lclip
@@ -1169,6 +1144,8 @@ class PlotInterp(BasicModule):
 
         self.mmc.clippercu = self.clippercu
         self.mmc.clippercl = self.clippercl
+
+        self.change_lclip()
 
     def change_blue(self):
         """
@@ -1240,6 +1217,7 @@ class PlotInterp(BasicModule):
             self.aslider.hide()
             self.kslider.hide()
             self.le_contours.hide()
+            self.cmb_bandh.hide()
 
         if txt == 'Contour':
             self.lbl_k.hide()
@@ -1253,6 +1231,7 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             self.gbox_sun.setChecked(False)
             self.le_contours.show()
+            self.cmb_bandh.hide()
 
             try:
                 self.mmc.levels = int(self.le_contours.text())
@@ -1270,6 +1249,7 @@ class PlotInterp(BasicModule):
             self.aslider.hide()
             self.kslider.hide()
             self.le_contours.hide()
+            self.cmb_bandh.show()
             if 'CMY' in txt:
                 self.kslider.show()
                 self.lbl_k.show()
@@ -2213,8 +2193,8 @@ class PlotInterp(BasicModule):
         self.saveobj(self.cmb_bands)
         self.saveobj(self.cmb_bandh)
         self.saveobj(self.cmb_htype)
-        self.saveobj(self.le_lineclipu)
-        self.saveobj(self.le_lineclipl)
+        self.saveobj(self.dsb_lineclipu)
+        self.saveobj(self.dsb_lineclipl)
         self.saveobj(self.cmb_cbar)
         self.saveobj(self.kslider)
         self.saveobj(self.sslider)
