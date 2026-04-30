@@ -1375,6 +1375,92 @@ class RasterToVector(BasicModule):
         """
 
 
+class RasterToVectorBoundary(BasicModule):
+    """
+    Raster to vector boundary GUI.
+
+    Parameters
+    ----------
+    parent : pygmi.main.MainWidget, optional
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gl_main = QtWidgets.QGridLayout(self)
+
+        self.buttonbox.htmlfile = 'raster.dm.rtov'
+
+        self.setWindowTitle('Raster to Vector (Boundary Dataset)')
+
+        gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Raster' not in self.indata:
+            self.showlog('No Raster Data.')
+            return False
+
+        gdf = gpd.GeoDataFrame()
+
+        if not nodialog:
+            tmp = self.exec()
+            if tmp != 1:
+                return False
+
+        data = self.indata['Raster']
+
+        geoms = {'Data_ID': [], 'geometry': []}
+
+        for band in self.piter(data):
+            band.get_boundary()
+            geoms['Data_ID'].append(band.dataid)
+            geoms['geometry'].append(band.geometry)
+
+        gdf = gpd.GeoDataFrame(geoms)
+        gdf = gdf.set_crs(data[0].crs)
+
+        self.outdata['Vector'] = [gdf]
+
+        return True
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        None.
+
+        """
+
+
 def cluster_to_raster(indata):
     """
     Convert cluster datasets to raster datasets.
@@ -2194,6 +2280,7 @@ def _testfn():
     """Test."""
     import sys
     import os
+    import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -2204,9 +2291,15 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    tmp = RasterToVector()
+    tmp = RasterToVectorBoundary()
     tmp.indata['Raster'] = dat
     tmp.settings()
+
+    gdf = tmp.outdata['Vector'][0]
+
+    gdf.plot()
+
+    plt.show()
 
 
 def _testmosaic():
@@ -2218,4 +2311,4 @@ def _testmosaic():
 
 
 if __name__ == "__main__":
-    _testmosaic()
+    _testfn()

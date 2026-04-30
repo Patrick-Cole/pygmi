@@ -176,11 +176,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
             rows, cols = data1.data.shape
             if cols > 2 * rows:
                 location = 'bottom'
+                shrink = 0.5
             else:
                 location = 'right'
+                shrink = 1.0
 
             cbar = self.figure.colorbar(
-                rdata, format=frm, location=location, aspect=30, pad=0.2)
+                rdata, format=frm, location=location, aspect=30, pad=0.2,
+                shrink=shrink)
             cbar.set_label(data1.units)
 
         if data1.metadata['Raster']['Section'] is True:

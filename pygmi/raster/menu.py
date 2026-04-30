@@ -131,9 +131,14 @@ class MenuWidget():
         self.action_get_prof.triggered.connect(self.get_prof)
 
         self.action_get_vector = QtGui.QAction('Convert Raster to Vector '
-                                               'Dataset')
+                                               'Points')
         self.menu.addAction(self.action_get_vector)
         self.action_get_vector.triggered.connect(self.get_vector)
+
+        self.action_get_vectorb = QtGui.QAction('Convert Raster to Vector '
+                                                '(Dataset Boundary)')
+        self.menu.addAction(self.action_get_vectorb)
+        self.action_get_vectorb.triggered.connect(self.get_vectorb)
 
         self.menu.addSeparator()
 
@@ -227,6 +232,11 @@ class MenuWidget():
         """Raster to vector."""
         self.parent.item_insert('Step', 'Raster to Vector',
                                 dataprep.RasterToVector)
+
+    def get_vectorb(self):
+        """Raster to vector."""
+        self.parent.item_insert('Step', 'Raster to Vector (Boundary)',
+                                dataprep.RasterToVectorBoundary)
 
     def gradients(self):
         """Compute different gradients."""
