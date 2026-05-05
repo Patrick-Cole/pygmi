@@ -1739,9 +1739,9 @@ def export_raster(ofile, dat, *, drv='GTiff', piter=None, compression='NONE',
         #     kwargs['BIGTIFF'] = 'IF_NEEDED'
         if compression == 'ZSTD':
             kwargs['ZSTD_LEVEL'] = '1'
-        if dtype in (np.float32, np.float64):
+        if dtype in (np.float32, np.float64) and compression != 'NONE':
             kwargs['PREDICTOR'] = '3'
-        else:
+        elif compression != 'NONE':
             kwargs['PREDICTOR'] = '2'
         if compression == 'JPEG':
             kwargs['TILED'] = 'YES'

@@ -3072,10 +3072,11 @@ def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None,
         # gmeta = get_aster_metadata(os.path.join(idir, zfile))
 
         # bname = zfile[zfile.index('Band'):zfile.index('.tif')]
-        if len(zfile.split('.')) > 2:
-            bname = zfile.split('.')[-2]
+        bname = os.path.basename(zfile)
+        if len(bname.split('.')) > 2:
+            bname = bname.split('.')[-2]
         else:
-            bname = zfile.split('_')[-1][:-4]
+            bname = bname.split('_')[-1][:-4]
         if 'Band' not in bname:
             bname = bname.replace('B', 'Band')
             bname = bname.replace('Band0', 'Band')
@@ -3928,6 +3929,7 @@ def _testfn3():
     ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
     ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
     ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
+    ifile = r"D:\temp\patrick.cole\AST_07XT_004-20260313_053451\AST_05_00409272006084535_20250531031504_SRE_TIR_B10.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
@@ -3981,4 +3983,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()
