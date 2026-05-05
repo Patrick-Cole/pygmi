@@ -562,9 +562,10 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
                 data.data = data.data + doffset
 
         if cmask is None:
-            cmask = dat2[-1].data.mask
+            cmask = np.ma.getmaskarray(dat2[-1].data)
         else:
-            cmask = np.logical_or(cmask, dat2[-1].data.mask)
+            cmask = np.logical_or(
+                cmask, np.ma.getmaskarray(dat2[-1].data))
 
     if commonmask is True:
         for idat in piter(dat2):

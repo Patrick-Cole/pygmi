@@ -1095,6 +1095,7 @@ def _testfn3():
 
     idir = r'd:\aster'
     idir = r"D:\VMS\Enmap"
+    idir = r'D:\Onshore\Sentinel_2'
     os.chdir(r'D:\\')
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1106,8 +1107,8 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    tmp2 = PCA()
-    # tmp2 = MNF()
+    # tmp2 = PCA()
+    tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 
