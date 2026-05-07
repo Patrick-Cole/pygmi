@@ -78,7 +78,8 @@ class SatRatios(BasicModule):
                                   'Landsat 8 and 9 (OLI)',
                                   'Landsat 7 (ETM+)',
                                   'Landsat 4 and 5 (TM)',
-                                  'Sentinel-2', 'WorldView', 'Unknown'])
+                                  'Sentinel-2', 'WorldView', 'EMIT',
+                                  'Unknown'])
 
         self.setWindowTitle('Band Ratio Calculations')
 
@@ -133,6 +134,8 @@ class SatRatios(BasicModule):
             self.cmb_sensor.setCurrentText('WorldView')
         elif 'Sentinel-2' in instr:
             self.cmb_sensor.setCurrentText('Sentinel-2')
+        elif 'EMIT' in instr:
+            self.cmb_sensor.setCurrentText('EMIT')
         else:
             self.cmb_sensor.setCurrentText('Unknown')
 
@@ -184,6 +187,8 @@ class SatRatios(BasicModule):
                 flist = get_landsat_list(flist, sensor)
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
+            elif 'EMIT' in sensor:
+                flist = get_EMIT_list(flist)
             if not flist:
                 self.showlog('Warning: This might not be ' + sensor +
                              ' data. Will attempt to do calculation '
@@ -209,6 +214,9 @@ class SatRatios(BasicModule):
 
             if dat is None:
                 continue
+
+            if sensor=='EMIT':
+                dat = correct_EMIT_bands(rlist, dat)
 
             datfin = calc_ratios(dat, rlist, showlog=self.showlog,
                                  piter=self.piter, sensor=sensor)
@@ -281,7 +289,7 @@ class SatRatios(BasicModule):
         # Other
         rlist += [r'B3/B2 Vegetation',
                   r'(B3-B2)/(B3+B2) NDVI',
-                  r'(B3-B4)/(B3+B4) NDWI/NDMI water in leaves',
+                  r'(B3-B4)/(B3+B4) NDWI or NDMI water in leaves',
                   r'(B1-B3)/(B1+B3) NDWI water bodies',
                   r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI',
                   r'B3/B1 GRVI',
@@ -293,6 +301,11 @@ class SatRatios(BasicModule):
                   r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2',
                   r'(B3A-B4+B5)/(B3A+B4-B5) NMDI',
                   r'((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI']
+        
+        # EMIT
+        rlist += [r'B1603/(B2185+B2225) Al-OH',
+                  r'B1603/(B2230+B2296) Fe-OH',
+                  r'B1603/(B2306+B2365) Mg-OH or CO3']
 
         # Colour composite
 
@@ -305,7 +318,7 @@ class SatRatios(BasicModule):
 
         # Landslides
 
-        rlist += ['B0,B1,B2,B3,B4 Landslide Index']
+        # rlist += ['B0,B1,B2,B3,B4 Landslide Index']
 
         rlist2 = correct_bands(rlist, sensor)
 
@@ -794,7 +807,7 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
     """
     datsml = []
 
-    for i in dat:
+    for i in dat: 
         tmp = i.dataid.split()
         txt = tmp[0]
 
@@ -939,6 +952,23 @@ def correct_bands(rlist, sensor, bfile=None):
                            'B2A': 'B5'}
     sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',
                           'B3A': 'B7', 'B2A': 'B5'}
+    # sdict['EMIT'] = {'B1': 'B559', 'B2': 'B663', 'B3': 'B812', 
+    #                  'B4': 'B1647', 'B3A': 'B865', 'B2A': 'B700',
+    #                   'B5': 'B2167', 'B6': 'B2204', 'B7': 'B2263', 
+    #                   'B8': 'B2330', 'B9': 'B2396', 'B0': 'B492', 
+    #                   'B1603': 'B1603', 'B2185':'B2189', 'B2225':'B2226', 
+    #                   'B2230':'B2234', 'B2296':'B2293', 'B2306':'B2308', 
+    #                   'B2365':'B2367'}
+    
+    sdict['EMIT'] = {'B0': 'B492', 'B1': 'B559', 'B2': 'B663', 'B2A': 'B700',
+                     'B3': 'B812', 'B3A': 'B865',
+                     'B4': 'B1647',
+                      'B5': 'B2167', 'B6' : 'B2204', 'B7': 'B2263', 
+                      'B8': 'B2330', 'B9': 'B2396',  
+                      'B1603': 'B1603', 'B2185':'B2185', 'B2225':'B2225', 
+                      'B2230':'B2230', 'B2296': 'B2296', 'B2306': 'B2306', 
+                      'B2365': 'B2365'}
+
     sdict['Unknown'] = {}
 
     if sensor == 'Landsat (All)':
@@ -965,6 +995,38 @@ def correct_bands(rlist, sensor, bfile=None):
             rlist2.append(tmp + lbl)
 
     return rlist2
+def correct_EMIT_bands(rlist, dat):
+    """Correct EMIT band names."""
+
+    blist1 = []
+    for i in rlist:
+        formula = i.split(' ')[0]
+        formula = re.sub(r'B(\d+)', r'Band\1', formula)
+        blist = formula
+        for j in ['/', '*', '+', '-', '(', ')']:
+            blist = blist.replace(j, ' ')
+        blist = blist.split()
+        blist = list(set(blist))
+        blist1 += [i for i in blist if 'Band' in i] 
+    blist = list(set(blist1))
+    blist = [int(i[4:]) for i in blist]
+
+    dlist = []
+    for i in dat:
+        dlist.append(i.metadata['Raster']['wavelength'])
+
+    dataids = {x: min(dlist, key=lambda y: abs(x - y)) for x in blist}
+
+    dat1 = {}
+    for i in dat:
+        dat1[i.metadata['Raster']['wavelength']] = i
+
+    dat2 = []
+    for i in dataids:
+        dat2.append(dat1[dataids[i]].copy())
+        dat2[-1].dataid = f'B{i}'  
+
+    return dat2
 
 
 def get_aster_list(flist):
@@ -990,6 +1052,28 @@ def get_aster_list(flist):
 
     return flist2
 
+def get_EMIT_list(flist):
+    """
+    Get EMIT files from a file list.
+
+    Parameters
+    ----------
+    flist : list
+        List of filenames.
+
+    Returns
+    -------
+    flist2 : list
+        List of filenames.
+
+    """
+    flist2 = []
+    for i in flist:
+        if 'EMIT' not in i.sensor:
+            continue
+        flist2.append(i)
+
+    return flist2
 
 def get_landsat_list(flist, sensor=None, allsats=False):
     """
@@ -1263,14 +1347,17 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.rsense.iodefs import ImportBatch  # , ImportData
 
-    idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
+    # idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
     # idir = r"D:\VMS\S2"
+    idir = r"C:\Work\EMIT"
+
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
     tmp1 = ImportBatch()
+    tmp1.idir = idir
     # tmp1 = ImportData()
     tmp1.settings()
 
@@ -1278,15 +1365,15 @@ def _testfn():
     SR.indata = tmp1.outdata
     SR.settings()
 
-    dat2 = SR.outdata['Raster']
-    for i in dat2:
-        plt.figure(dpi=150)
-        plt.title(i.dataid)
-        vmin = i.data.mean() - 2 * i.data.std()
-        vmax = i.data.mean() + 2 * i.data.std()
-        plt.imshow(i.data, vmin=vmin, vmax=vmax)
-        plt.colorbar()
-        plt.show()
+    # dat2 = SR.outdata['Raster']
+    # for i in dat2:
+    #     plt.figure(dpi=150)
+    #     plt.title(i.dataid)
+    #     vmin = i.data.mean() - 2 * i.data.std()
+    #     vmax = i.data.mean() + 2 * i.data.std()
+    #     plt.imshow(i.data, vmin=vmin, vmax=vmax)
+    #     plt.colorbar()
+    #     plt.show()
 
 
 def _testfn2():

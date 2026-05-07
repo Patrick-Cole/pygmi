@@ -366,7 +366,7 @@ class ImportBatch(BasicModule):
 
         self.le_sfile.setText(self.idir)
 
-        types = ['*.tif', '*.hdr', '*.zip', '*.tar', '*.tar.gz',
+        types = ['*.tif', '*.hdr', '*.zip', '*.tar', '*.tar.gz', '*.nc',
                  '*[!aux].xml', '*.h5', '*.SAFE/MTD_MSIL*.xml']
 
         allfiles = []
@@ -1659,6 +1659,9 @@ def get_emit(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
 
     if not dat:
         dat = None
+    else:
+        for i in dat:
+            i.filename = ifile
 
     return dat
 
