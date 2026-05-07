@@ -921,7 +921,11 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     dat2 = []
     xval = []
     for j in piter(dat):
-        dat2.append(j.data * dmult)
+        if dmult == 1:
+            dat2.append(j.data)
+        else:
+            dat2.append(j.data * dmult)
+
         if 'wavelength' in j.metadata['Raster']:
             refl = float(j.metadata['Raster']['wavelength'])
         elif 'WavelengthMin' in j.metadata['Raster']:
@@ -1423,7 +1427,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
+    ifile = r"C:\Work\2817AA-E_hyperspec_utm33s.tif"
 
     data = get_data(ifile)
 
@@ -1436,7 +1440,7 @@ def _testfn2():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
 
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
+    ifile = r"C:\Work\2817AA-E_hyperspec_utm33s.tif"
 
     data = get_data(ifile)
 
@@ -1449,4 +1453,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
