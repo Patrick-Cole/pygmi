@@ -1663,6 +1663,27 @@ def get_emit(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
         for i in dat:
             i.filename = ifile
 
+    if '_MIN_' in os.path.basename(ifile) and not metaonly:
+        dat2 = []
+        for i in piter(dat):
+            if 'mineral' in i.dataid:
+                vals = np.ma.unique(i.data)
+                vals = vals[~np.isnan(vals)]
+                vals = vals.astype(int)
+                vals = vals.compressed()
+                for j in vals:
+                    if j==0:
+                        continue
+                    tmp = i.copy()
+                    tmp.dataid = tmp.metadata['Raster']['MineralNames'][j]
+                    tmp.data = (tmp.data==j)
+                    tmp.data = np.ma.masked_equal(tmp.data.astype(int), 0)
+                    dat2.append(tmp)
+            else:
+                dat2.append(i)
+        dat = dat2
+
+
     return dat
 
 
@@ -3929,10 +3950,11 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
-    ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
-    ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
-    ifile = r"D:\temp\patrick.cole\AST_07XT_004-20260313_053451\AST_05_00409272006084535_20250531031504_SRE_TIR_B10.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
+    # ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
+    # ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
+    # ifile = r"D:\temp\patrick.cole\AST_07XT_004-20260313_053451\AST_05_00409272006084535_20250531031504_SRE_TIR_B10.tif"
+    ifile = r"C:\Work\EMITL2BMIN_001-20260414_132443\EMIT_L2B_MIN_001_20250316T123747_2507508_005.nc"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
@@ -3944,7 +3966,7 @@ def _testfn3():
 
     dat = tmp1.outdata['Raster']
 
-    print(dat[-1].metadata)
+    # print(dat[-1].metadata)
 
     for i in dat:
         plt.figure(dpi=150)
