@@ -25,18 +25,17 @@
 """Transforms such as PCA and MNF."""
 
 import os
+
+import matplotlib.pyplot as plt
+import numexpr as ne
 import numpy as np
 from PySide6 import QtWidgets
 from sklearn.decomposition import IncrementalPCA
-import numexpr as ne
-import matplotlib.pyplot as plt
 
 from pygmi.misc import BasicModule
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
-from pygmi.rsense.iodefs import get_data
-from pygmi.rsense.iodefs import get_from_rastermeta
-from pygmi.rsense.iodefs import set_export_filename
+from pygmi.rsense.iodefs import get_data, get_from_rastermeta, set_export_filename
 
 
 class MNF(BasicModule):
@@ -56,14 +55,14 @@ class MNF(BasicModule):
         self.ev = None
 
         self.sb_comps = QtWidgets.QSpinBox()
-        self.cb_fwdonly = QtWidgets.QCheckBox('Forward Transform Only.')
-        self.rb_noise_diag = QtWidgets.QRadioButton('Noise estimated by '
-                                                    'diagonal shift')
-        self.rb_noise_hv = QtWidgets.QRadioButton('Noise estimated by average '
-                                                  'of horizontal and vertical '
-                                                  'shift')
-        self.rb_noise_quad = QtWidgets.QRadioButton('Noise estimated by local '
-                                                    'quadratic surface')
+        self.cb_fwdonly = QtWidgets.QCheckBox("Forward Transform Only.")
+        self.rb_noise_diag = QtWidgets.QRadioButton("Noise estimated by diagonal shift")
+        self.rb_noise_hv = QtWidgets.QRadioButton(
+            "Noise estimated by average of horizontal and vertical shift"
+        )
+        self.rb_noise_quad = QtWidgets.QRadioButton(
+            "Noise estimated by local quadratic surface"
+        )
 
         self.setupui()
 
@@ -78,16 +77,16 @@ class MNF(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.mnf'
+        self.buttonbox.htmlfile = "rsense.dm.mnf"
         gl_main = QtWidgets.QGridLayout(self)
-        lbl_comps = QtWidgets.QLabel('Number of components:')
+        lbl_comps = QtWidgets.QLabel("Number of components:")
 
         self.cb_fwdonly.setChecked(True)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
         self.rb_noise_hv.setChecked(True)
 
-        self.setWindowTitle('Minimum Noise Fraction')
+        self.setWindowTitle("Minimum Noise Fraction")
 
         gl_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
         gl_main.addWidget(lbl_comps, 2, 0, 1, 1)
@@ -115,16 +114,16 @@ class MNF(BasicModule):
         """
         self.ev = None
         tmp = []
-        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showlog('No Satellite Data')
+        if "Raster" not in self.indata and "RasterFileList" not in self.indata:
+            self.showlog("No Satellite Data")
             return False
 
-        if 'RasterFileList' in self.indata:
-            if len(self.indata['RasterFileList'][0].bands) > 5:
+        if "RasterFileList" in self.indata:
+            if len(self.indata["RasterFileList"][0].bands) > 5:
                 self.sb_comps.setValue(5)
 
-        if 'Raster' in self.indata:
-            indata = self.indata['Raster']
+        if "Raster" in self.indata:
+            indata = self.indata["Raster"]
             self.sb_comps.setMaximum(len(indata))
             if len(indata) > 5:
                 self.sb_comps.setValue(5)
@@ -143,18 +142,19 @@ class MNF(BasicModule):
             ncmps = self.sb_comps.value()
             xvals = range(1, ncmps + 1)
 
-            plt.figure('Explained Variance')
+            plt.figure("Explained Variance")
             plt.subplot(1, 1, 1)
             plt.plot(xvals, self.ev)
             plt.xticks(xvals)
-            plt.xlabel('Component')
-            plt.ylabel('Explained Variance')
+            plt.xlabel("Component")
+            plt.ylabel("Explained Variance")
             plt.grid(True)
             plt.tight_layout()
 
-            if hasattr(plt.get_current_fig_manager(), 'window'):
+            if hasattr(plt.get_current_fig_manager(), "window"):
                 plt.get_current_fig_manager().window.setWindowIcon(
-                    self.parent.windowIcon())
+                    self.parent.windowIcon()
+                )
 
             plt.show()
 
@@ -198,8 +198,8 @@ class MNF(BasicModule):
         None.
 
         """
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
+        if "RasterFileList" in self.indata:
+            flist = self.indata["RasterFileList"]
         else:
             flist = None
 
@@ -207,43 +207,51 @@ class MNF(BasicModule):
         odata = []
 
         if self.rb_noise_diag.isChecked():
-            noise = 'diagonal'
+            noise = "diagonal"
         elif self.rb_noise_hv.isChecked():
-            noise = 'hv average'
+            noise = "hv average"
         else:
-            noise = 'quad'
+            noise = "quad"
 
-        if 'RasterFileList' in self.indata:
+        if "RasterFileList" in self.indata:
             filename = flist[0].filename
-            odir = os.path.join(os.path.dirname(filename), 'MNF')
+            odir = os.path.join(os.path.dirname(filename), "MNF")
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
                 filename = ifile.filename
 
-                self.showlog('Processing ' + os.path.basename(filename))
+                self.showlog("Processing " + os.path.basename(filename))
 
-                dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showlog=self.showlog)
-                odata, self.ev = mnf_calc(dat, ncmps=ncmps, piter=self.piter,
-                                          showlog=self.showlog,
-                                          noisetxt=noise,
-                                          fwdonly=self.cb_fwdonly.isChecked())
+                dat = get_from_rastermeta(ifile, piter=self.piter, showlog=self.showlog)
+                odata, self.ev = mnf_calc(
+                    dat,
+                    ncmps=ncmps,
+                    piter=self.piter,
+                    showlog=self.showlog,
+                    noisetxt=noise,
+                    fwdonly=self.cb_fwdonly.isChecked(),
+                )
 
-                ofile = set_export_filename(dat, odir, 'mnf')
+                ofile = set_export_filename(dat, odir, "mnf")
 
-                self.showlog('Exporting ' + os.path.basename(ofile))
-                export_raster(ofile, odata, drv='GTiff', piter=self.piter,
-                              showlog=self.showlog)
+                self.showlog("Exporting " + os.path.basename(ofile))
+                export_raster(
+                    ofile, odata, drv="GTiff", piter=self.piter, showlog=self.showlog
+                )
 
-        elif 'Raster' in self.indata:
-            dat = self.indata['Raster']
-            odata, self.ev = mnf_calc(dat, ncmps=ncmps, piter=self.piter,
-                                      showlog=self.showlog,
-                                      noisetxt=noise,
-                                      fwdonly=self.cb_fwdonly.isChecked())
+        elif "Raster" in self.indata:
+            dat = self.indata["Raster"]
+            odata, self.ev = mnf_calc(
+                dat,
+                ncmps=ncmps,
+                piter=self.piter,
+                showlog=self.showlog,
+                noisetxt=noise,
+                fwdonly=self.cb_fwdonly.isChecked(),
+            )
 
-        self.outdata['Raster'] = odata
+        self.outdata["Raster"] = odata
         return True
 
 
@@ -264,8 +272,8 @@ class PCA(BasicModule):
         self.ev = None
 
         self.sb_comps = QtWidgets.QSpinBox()
-        self.cb_fwdonly = QtWidgets.QCheckBox('Forward Transform Only.')
-        self.cb_fitlist = QtWidgets.QCheckBox('Fit PCA to all files.')
+        self.cb_fwdonly = QtWidgets.QCheckBox("Forward Transform Only.")
+        self.cb_fitlist = QtWidgets.QCheckBox("Fit PCA to all files.")
 
         self.setupui()
 
@@ -280,9 +288,9 @@ class PCA(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.pca'
+        self.buttonbox.htmlfile = "rsense.dm.pca"
         gl_main = QtWidgets.QGridLayout(self)
-        lbl_comps = QtWidgets.QLabel('Number of components:')
+        lbl_comps = QtWidgets.QLabel("Number of components:")
 
         self.cb_fwdonly.setChecked(True)
         self.cb_fitlist.setChecked(True)
@@ -290,7 +298,7 @@ class PCA(BasicModule):
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
 
-        self.setWindowTitle('Principal Component Analysis')
+        self.setWindowTitle("Principal Component Analysis")
 
         gl_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
         gl_main.addWidget(lbl_comps, 2, 0, 1, 1)
@@ -316,17 +324,17 @@ class PCA(BasicModule):
         """
         self.ev = None
         tmp = []
-        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showlog('No Satellite Data')
+        if "Raster" not in self.indata and "RasterFileList" not in self.indata:
+            self.showlog("No Satellite Data")
             return False
 
-        if 'RasterFileList' in self.indata:
+        if "RasterFileList" in self.indata:
             self.cb_fitlist.setVisible(True)
-            if len(self.indata['RasterFileList'][0].bands) > 5:
+            if len(self.indata["RasterFileList"][0].bands) > 5:
                 self.sb_comps.setValue(5)
 
-        if 'Raster' in self.indata:
-            indata = self.indata['Raster']
+        if "Raster" in self.indata:
+            indata = self.indata["Raster"]
             self.sb_comps.setMaximum(len(indata))
             if len(indata) > 5:
                 self.sb_comps.setValue(5)
@@ -345,18 +353,19 @@ class PCA(BasicModule):
             ncmps = self.sb_comps.value()
             xvals = range(1, ncmps + 1)
 
-            plt.figure('Explained Variance')
+            plt.figure("Explained Variance")
             plt.subplot(1, 1, 1)
             plt.plot(xvals, self.ev)
             plt.xticks(xvals)
-            plt.xlabel('Component')
-            plt.ylabel('Explained Variance')
+            plt.xlabel("Component")
+            plt.ylabel("Explained Variance")
             plt.grid(True)
             plt.tight_layout()
 
-            if hasattr(plt.get_current_fig_manager(), 'window'):
+            if hasattr(plt.get_current_fig_manager(), "window"):
                 plt.get_current_fig_manager().window.setWindowIcon(
-                    self.parent.windowIcon())
+                    self.parent.windowIcon()
+                )
 
             plt.show()
 
@@ -403,58 +412,64 @@ class PCA(BasicModule):
         fwdonly = self.cb_fwdonly.isChecked()
         flist = []
 
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
+        if "RasterFileList" in self.indata:
+            flist = self.indata["RasterFileList"]
 
             sensors = [i.sensor for i in flist]
             sensors = list(set(sensors))
 
             if fitlist is True and len(sensors) > 1:
-                self.showlog('Error: You have more than one sensor type in '
-                             'your raster file list directory. Fit list is not'
-                             ' possible.')
+                self.showlog(
+                    "Error: You have more than one sensor type in "
+                    "your raster file list directory. Fit list is not"
+                    " possible."
+                )
                 return False
 
         odata = []
 
-        if 'RasterFileList' in self.indata and fitlist is False:
+        if "RasterFileList" in self.indata and fitlist is False:
             filename = flist[0].filename
-            odir = os.path.join(os.path.dirname(filename), 'PCA')
+            odir = os.path.join(os.path.dirname(filename), "PCA")
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
                 filename = ifile.filename
 
-                self.showlog('Processing ' + os.path.basename(filename))
+                self.showlog("Processing " + os.path.basename(filename))
 
-                dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showlog=self.showlog)
-                odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
-                                          showlog=self.showlog,
-                                          fwdonly=fwdonly)
+                dat = get_from_rastermeta(ifile, piter=self.piter, showlog=self.showlog)
+                odata, self.ev = pca_calc(
+                    dat, ncmps, piter=self.piter, showlog=self.showlog, fwdonly=fwdonly
+                )
 
-                ofile = set_export_filename(dat, odir, 'pca')
+                ofile = set_export_filename(dat, odir, "pca")
 
-                self.showlog('Exporting ' + os.path.basename(ofile))
-                export_raster(ofile, odata, drv='GTiff', piter=self.piter,
-                              showlog=self.showlog)
+                self.showlog("Exporting " + os.path.basename(ofile))
+                export_raster(
+                    ofile, odata, drv="GTiff", piter=self.piter, showlog=self.showlog
+                )
 
-        elif 'RasterFileList' in self.indata and fitlist is True:
-            odata, self.ev = pca_calc_fitlist(flist, ncmps, piter=self.piter,
-                                              showlog=self.showlog,
-                                              fwdonly=fwdonly)
+        elif "RasterFileList" in self.indata and fitlist is True:
+            odata, self.ev = pca_calc_fitlist(
+                flist, ncmps, piter=self.piter, showlog=self.showlog, fwdonly=fwdonly
+            )
 
-        elif 'Raster' in self.indata:
-            dat = self.indata['Raster']
-            odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
-                                      showlog=self.showlog,
-                                      fwdonly=self.cb_fwdonly.isChecked())
+        elif "Raster" in self.indata:
+            dat = self.indata["Raster"]
+            odata, self.ev = pca_calc(
+                dat,
+                ncmps,
+                piter=self.piter,
+                showlog=self.showlog,
+                fwdonly=self.cb_fwdonly.isChecked(),
+            )
 
-        self.outdata['Raster'] = odata
+        self.outdata["Raster"] = odata
         return True
 
 
-def get_noise(x2d, mask, noisetype='', piter=iter):
+def get_noise(x2d, mask, noisetype="", piter=iter):
     """
     Calculate noise dataset from original data.
 
@@ -483,29 +498,29 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
     pbar = piter([1, 2, 3])
     next(pbar)
 
-    if noisetype == 'diagonal':
+    if noisetype == "diagonal":
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, 1:]
-        noise = ne.evaluate('t1-t2')
+        noise = ne.evaluate("t1-t2")
 
         mask2 = mask[:-1, :-1] * mask[1:, 1:]
         noise = noise[mask2]
 
         ncov = blockwise_cov(noise.T)
 
-    elif noisetype == 'hv average':
+    elif noisetype == "hv average":
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, :-1]
         t3 = x2d[:-1, :-1]
         t4 = x2d[:-1, 1:]
 
-        noise = ne.evaluate('(t1-t2+t3-t4)')
+        noise = ne.evaluate("(t1-t2+t3-t4)/2")
 
         mask2 = mask[:-1, :-1] * mask[1:, :-1] * mask[:-1, 1:]
 
         noise = noise[mask2]
 
-        ncov = blockwise_cov(noise.T) / 4
+        ncov = blockwise_cov(noise.T)  # / 4
 
     else:
         t1 = x2d[:-2, :-2]
@@ -518,28 +533,70 @@ def get_noise(x2d, mask, noisetype='', piter=iter):
         t8 = x2d[2:, 1:-1]
         t9 = x2d[2:, 2:]
 
-        noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)')
+        noise = ne.evaluate("(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9")
 
-        mask2 = (mask[:-2, :-2] * mask[:-2, 1:-1] * mask[:-2, 2:] *
-                 mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
-                 mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
+        mask2 = (
+            mask[:-2, :-2]
+            * mask[:-2, 1:-1]
+            * mask[:-2, 2:]
+            * mask[1:-1, :-2]
+            * mask[1:-1, 1:-1]
+            * mask[1:-1, 2:]
+            * mask[2:, :-2]
+            * mask[2:, 1:-1]
+            * mask[2:, 2:]
+        )
 
         noise = noise[mask2]
 
-        ncov = blockwise_cov(noise.T) / 81
+        ncov = blockwise_cov(noise.T)  # / 81
 
-    del noise
+    # del noise
     next(pbar)
     # Calculate evecs and evals
-    nevals, nevecs = np.linalg.eig(ncov)
+    nevals, nevecs = np.linalg.eigh(ncov)
+    Ln = np.power(nevals, -0.5)
+    Ln = np.diag(Ln)
+
+    W1 = np.dot(Ln, nevecs.T)
+    W1 = W1.T
+    # x = x2d[mask]
+
+    # Pnorm = blockwise_dot(x, W.T)
+    # Pnorm = x @ W1.T
+
+    # Calculate SVD
+    # rows, cols, bands = x2d.shape
+    # X = x2d.reshape(-1, bands)
+    # X = x2d[mask]
+    # noise = noise.reshape(-1, bands)
+    # noise_cov = np.cov(noise, rowvar=False)
+
+    u, s, v = np.linalg.svd(ncov)
+
+    s_inv_sqrt = np.diag(1.0 / np.sqrt(s + 1e-10))
+    # W = u @ s_inv_sqrt
+
+    # us = standardize_sign(u)
+
+    W = blockwise_dot(u, s_inv_sqrt)
+    # X_whitened = X @ W
+    # X_whitened = X_whitened.reshape(rows, cols, bands)
+
+    # noise_stds = s / np.sqrt(noise.shape[0] - 1)
+    # W = v.T @ np.diag(1.0 / noise_stds)
+    # X_whitened2 = X @ W2
 
     next(pbar)
 
-    return nevals, nevecs
+    # return nevals, nevecs
+
+    return W
 
 
-def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
-             piter=iter, fwdonly=True):
+def mnf_calc(
+    dat, *, ncmps=None, noisetxt="hv average", showlog=print, piter=iter, fwdonly=True
+):
     """
     MNF Calculation.
 
@@ -591,38 +648,36 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
 
     mask = maskall[:, :, 0]
 
-    showlog('Calculating noise data...')
-    nevals, nevecs = get_noise(x2d, mask, noisetxt, piter)
+    showlog("Calculating noise data...")
+    W = get_noise(x2d, mask, noisetxt, piter)
 
-    showlog('Calculating MNF...')
-    Ln = np.power(nevals, -0.5)
-    Ln = np.diag(Ln)
-
-    W = np.dot(Ln, nevecs.T)
+    showlog("Calculating MNF...")
 
     x = x2d[~mask]
     del x2d
 
-    Pnorm = blockwise_dot(x, W.T)
+    # Pnorm = blockwise_dot(x, W.T)
+    Pnorm = blockwise_dot(x, W)
+    # Pnorm = x @ W
 
     pca = IncrementalPCA(n_components=ncmps)
 
     iold = 0
-    showlog('Fitting PCA')
+    showlog("Fitting PCA")
     for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
         if i == 0:
             continue
-        pca.partial_fit(Pnorm[iold: i])
+        pca.partial_fit(Pnorm[iold:i])
         iold = i
 
-    showlog('Calculating PCA transform...')
+    showlog("Calculating PCA transform...")
 
     x2 = np.zeros((Pnorm.shape[0], pca.n_components_))
     iold = 0
     for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
         if i == 0:
             continue
-        x2[iold: i] = pca.transform(Pnorm[iold: i])
+        x2[iold:i] = pca.transform(Pnorm[iold:i])
         iold = i
 
     del Pnorm
@@ -630,7 +685,7 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
     evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
-        showlog('Calculating inverse MNF...')
+        showlog("Calculating inverse MNF...")
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
         x2 = blockwise_dot(P, Winv.T)
@@ -653,8 +708,7 @@ def mnf_calc(dat, *, ncmps=None, noisetxt='hv average', showlog=print,
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'MNF{j + 1} Explained Variance Ratio '
-                           f'{evr[j] * 100:.2f}%')
+            band.dataid = f"MNF{j + 1} Explained Variance Ratio {evr[j] * 100:.2f}%"
 
     del datall
 
@@ -715,21 +769,21 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     pca = IncrementalPCA(n_components=ncmps)
 
     iold = 0
-    showlog('Fitting PCA')
+    showlog("Fitting PCA")
     for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
         if i == 0:
             continue
-        pca.partial_fit(x2d[iold: i])
+        pca.partial_fit(x2d[iold:i])
         iold = i
 
-    showlog('Calculating PCA transform...')
+    showlog("Calculating PCA transform...")
 
     x2 = np.zeros((x2d.shape[0], pca.n_components_))
     iold = 0
     for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
         if i == 0:
             continue
-        x2[iold: i] = pca.transform(x2d[iold: i])
+        x2[iold:i] = pca.transform(x2d[iold:i])
         iold = i
 
     del x2d
@@ -737,7 +791,7 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
-        showlog('Calculating inverse PCA...')
+        showlog("Calculating inverse PCA...")
         x2 = pca.inverse_transform(x2)
     else:
         x2dshape[-1] = ncmps
@@ -759,15 +813,13 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = (f'PCA{j + 1} Explained Variance Ratio '
-                           f'{evr[j] * 100:.2f}%')
+            band.dataid = f"PCA{j + 1} Explained Variance Ratio {evr[j] * 100:.2f}%"
     del datall
 
     return odata, ev
 
 
-def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
-                     fwdonly=True):
+def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     """
     PCA Calculation with using list of files in common fit.
 
@@ -798,7 +850,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
     else:
         filename = flist[0].filename
 
-    odir = os.path.join(os.path.dirname(filename), 'PCA')
+    odir = os.path.join(os.path.dirname(filename), "PCA")
     os.makedirs(odir, exist_ok=True)
     odata = []
     ev = np.array([])
@@ -811,7 +863,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         else:
             filename = ifile.filename
 
-        showlog('Fitting ' + os.path.basename(filename))
+        showlog("Fitting " + os.path.basename(filename))
 
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
@@ -842,7 +894,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
             if i == 0:
                 continue
-            pca.partial_fit(x2d[iold: i])
+            pca.partial_fit(x2d[iold:i])
             iold = i
 
     for ifile in flist:
@@ -851,7 +903,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         else:
             filename = ifile.filename
 
-        showlog('Transforming ' + os.path.basename(filename))
+        showlog("Transforming " + os.path.basename(filename))
 
         dat = get_from_rastermeta(ifile, piter=piter, showlog=showlog)
 
@@ -876,7 +928,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
             if i == 0:
                 continue
-            x2[iold: i] = pca.transform(x2d[iold: i])
+            x2[iold:i] = pca.transform(x2d[iold:i])
             iold = i
 
         del x2d
@@ -884,7 +936,7 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         evr = pca.explained_variance_ratio_
 
         if fwdonly is False:
-            showlog('Calculating inverse PCA...')
+            showlog("Calculating inverse PCA...")
             x2 = pca.inverse_transform(x2)
         else:
             x2dshape[-1] = ncmps
@@ -906,15 +958,15 @@ def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter,
         for j, band in enumerate(odata):
             band.data = datall[:, :, j]
             if fwdonly is True:
-                band.dataid = (f'PCA{j + 1} Explained Variance Ratio '
-                               f'{evr[j] * 100:.2f}%')
+                band.dataid = f"PCA{j + 1} Explained Variance Ratio {evr[j] * 100:.2f}%"
         del datall
 
-        ofile = set_export_filename(dat, odir, 'pca')
+        ofile = set_export_filename(dat, odir, "pca")
 
-        showlog('Exporting ' + os.path.basename(ofile))
-        export_raster(ofile, odata, drv='GTiff', piter=piter,
-                      compression='ZSTD', showlog=showlog)
+        showlog("Exporting " + os.path.basename(ofile))
+        export_raster(
+            ofile, odata, drv="GTiff", piter=piter, compression="ZSTD", showlog=showlog
+        )
 
     return odata, ev
 
@@ -997,7 +1049,7 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
     n1, o = B.shape
 
     if n1 != n:
-        raise ValueError('matrices are not aligned')
+        raise ValueError("matrices are not aligned")
 
     if A.flags.f_contiguous:
         # prioritize processing as many columns of A as possible
@@ -1021,6 +1073,21 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
     return out
 
 
+def standardize_sign(components):
+    """
+    Standardizes the sign of eigenvectors/singular vectors.
+    Forces the element with the largest absolute value to be positive.
+    """
+    # Find index of the maximum absolute value in each vector
+    max_abs_idx = np.argmax(np.abs(components), axis=0)
+
+    # Extract the signs of these elements
+    signs = np.sign(components[range(components.shape[0]), max_abs_idx])
+
+    # Apply the signs to flip the vectors where necessary
+    return components * signs[:, np.newaxis]
+
+
 def _testfn():
     """Test routine."""
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperion\EO1H1760802013198110KF_1T.ZIP"
@@ -1036,13 +1103,13 @@ def _testfn():
         vmin = dati.data.min()
 
         plt.figure(dpi=150)
-        plt.title('█████████████████Old dat2 band' + str(i))
+        plt.title("█████████████████Old dat2 band" + str(i))
         plt.imshow(dati.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
         plt.figure(dpi=150)
-        plt.title('New MNF denoised band' + str(i))
+        plt.title("New MNF denoised band" + str(i))
         plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
@@ -1050,37 +1117,38 @@ def _testfn():
 
 def _testfn2():
     import sys
+
     from matplotlib import rcParams
+
     from pygmi.rsense.iodefs import ImportData
 
-    rcParams['figure.dpi'] = 150
+    rcParams["figure.dpi"] = 150
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     ifile = r"D:\VMS\EnMAP\ENMAP01-____L2A-DT0000002353_20220808T091834Z_003_V010502_20251104T115035Z.tif"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(ifile))
 
     tmp = ImportData()
     tmp.settings()
 
-    dat = tmp.outdata['Raster']
+    dat = tmp.outdata["Raster"]
 
     tmp = PCA()
     # tmp = MNF()
-    tmp.indata['Raster'] = dat
+    tmp.indata["Raster"] = dat
     try:
         tmp.settings()
     except MemoryError:
         print("error")
         return
 
-    outdat = tmp.outdata['Raster']
+    outdat = tmp.outdata["Raster"]
 
     for i, dat in enumerate(outdat):
-
         plt.subplot(121)
         plt.title(dat.dataid)
         vmin = dat.data.mean() - dat.data.std() * 2
@@ -1091,15 +1159,17 @@ def _testfn2():
 
 def _testfn3():
     import sys
+
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r'd:\aster'
+    idir = r"d:\aster"
     idir = r"D:\VMS\Enmap"
-    idir = r'D:\Onshore\Sentinel_2'
-    os.chdir(r'D:\\')
+    idir = r"C:\Work\EMIT"
+    idir = r"C:\Work\Hyper"
+    os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
@@ -1109,8 +1179,13 @@ def _testfn3():
 
     # tmp2 = PCA()
     tmp2 = MNF()
+    tmp2.cb_fwdonly.setChecked(False)
     tmp2.indata = dat
-    tmp2.settings()
+    tmp2.settings(True)
+
+    plt.imshow(tmp2.outdata["Raster"][0].data)
+    plt.colorbar()
+    plt.show()
 
 
 if __name__ == "__main__":
