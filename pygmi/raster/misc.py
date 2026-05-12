@@ -72,7 +72,8 @@ def aspect2(data):
 
     # Aspect Section
     pi = np.pi
-    adeg = ne.evaluate("90-arctan2(dzdy, -dzdx)*180./pi")
+    local = {"pi": pi, "dzdy": dzdy, "dzdx": dzdx}
+    adeg = ne.evaluate("90-arctan2(dzdy, -dzdx)*180./pi", local_dict=local)
     adeg = np.ma.masked_invalid(adeg)
     adeg[np.ma.less(adeg, 0.0)] += 360.0
     adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.0
@@ -139,25 +140,54 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
 
 
     """
+    local = {}
+
     _, pinit, qinit = aspect2(data)
+    local["pinit"] = pinit
+    local["qinit"] = qinit
+    local["cell"] = cell
     n = 2
     # pinit = asp[1]
     # qinit = asp[2]
+
     p = ne.evaluate("pinit/cell")
     q = ne.evaluate("qinit/cell")
-    sqrt_1p2q2 = ne.evaluate("sqrt(1+p**2+q**2)")
+
+    local["n"] = n
+    local["p"] = p
+    local["q"] = q
+
+    sqrt_1p2q2 = ne.evaluate("sqrt(1+p**2+q**2)", local_dict=local)
+    local["sqrt_1p2q2"] = sqrt_1p2q2
 
     cosg2 = cos(theta / 2)
     p0 = -cos(phi) * tan(theta)
     q0 = -sin(phi) * tan(theta)
-    sqrttmp = ne.evaluate("(1+sqrt(1+p0**2+q0**2))")
-    p1 = ne.evaluate("p0 / sqrttmp")
-    q1 = ne.evaluate("q0 / sqrttmp")
 
-    cosi = ne.evaluate("((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))")
-    coss = ne.evaluate("((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))")
-    Ps = ne.evaluate("coss**n")
-    R = np.ma.masked_invalid(ne.evaluate("((1-alpha)+alpha*Ps)*cosi/cosg2"))
+    local["cosg2"] = cosg2
+    local["p0"] = p0
+    local["q0"] = q0
+
+    sqrttmp = ne.evaluate("(1+sqrt(1+p0**2+q0**2))", local_dict=local)
+    local["sqrttmp"] = sqrttmp
+    p1 = ne.evaluate("p0 / sqrttmp", local_dict=local)
+    q1 = ne.evaluate("q0 / sqrttmp", local_dict=local)
+    local["p1"] = p1
+    local["q1"] = q1
+
+    cosi = ne.evaluate(
+        "((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))", local_dict=local
+    )
+    coss = ne.evaluate(
+        "((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))", local_dict=local
+    )
+    local["cosi"] = cosi
+    local["coss"] = coss
+    Ps = ne.evaluate("coss**n", local_dict=local)
+    local["Ps"] = Ps
+    R = np.ma.masked_invalid(
+        ne.evaluate("((1-alpha)+alpha*Ps)*cosi/cosg2"), local_dict=local
+    )
 
     return R
 
@@ -195,15 +225,7 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
         poly = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)])
         gdf = gpd.GeoDataFrame({"geometry": [poly]})
     else:
-        try:
-            gdf = gpd.read_file(ibnd)
-        except:
-            showlog(
-                "There was a problem importing the shapefile. Please make "
-                "sure you have at all the individual files which make up "
-                "the shapefile."
-            )
-            return None
+        gdf = gpd.read_file(ibnd)
 
     if gdf.crs is None:
         gdf = gdf.set_crs(data[0].crs)
@@ -622,7 +644,8 @@ def norm2(dat, datmin=None, datmax=None):
     if datmax is None:
         datmax = float(dat.max())
     datptp = datmax - datmin
-    out = np.ma.array(ne.evaluate("(dat-datmin)/datptp"))
+    local = {"datmin": datmin, "dat": dat, "datptp": datptp}
+    out = np.ma.array(ne.evaluate("(dat-datmin)/datptp", local_dict=local))
     out.mask = np.ma.getmaskarray(dat)
     out[out < 0] = 0.0
     out[out > 1] = 1.0
@@ -646,7 +669,10 @@ def norm255(dat):
     """
     datmin = float(dat.min())
     datptp = float(np.ma.ptp(dat))
-    out = ne.evaluate("254*(dat-datmin)/datptp+1")
+
+    local = {"datmin": datmin, "dat": dat, "datptp": datptp}
+
+    out = ne.evaluate("254*(dat-datmin)/datptp+1", local_dict=local)
     out = out.round()
     out = out.astype(np.uint8)
     return out

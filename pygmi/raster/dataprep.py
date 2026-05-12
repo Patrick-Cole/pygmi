@@ -382,8 +382,7 @@ class DataLayerStack(BasicModule):
         if "RasterFileList" in self.indata:
             ifiles = self.indata["RasterFileList"]
             self.showlog(
-                "Warning: Layer stacking a file list assumes "
-                "all datasets overlap in the same area"
+                "Warning: Layer stacking a file list assumes all datasets overlap in the same area"
             )
             self.indata["Raster"] = []
             for ifile in ifiles:
@@ -492,10 +491,7 @@ class DataMerge(BasicModule):
             "Max - copy pixel wise maximum at overlap."
         )
         self.rb_median = QtWidgets.QRadioButton(
-            "Median - shift last file to "
-            "median "
-            "overlap value and copy over "
-            "first file at overlap."
+            "Median - shift last file to median overlap value and copy over first file at overlap."
         )
 
         self.le_idirlist = QtWidgets.QLineEdit("")
@@ -852,8 +848,7 @@ class DataReproj(BasicModule):
 
         if self.indata["Raster"][0].crs is None:
             self.showlog(
-                "Your input data has no projection. "
-                "Please assign one in the metadata summary."
+                "Your input data has no projection. Please assign one in the metadata summary."
             )
             return False
 
@@ -936,15 +931,7 @@ class GetProf(BasicModule):
 
         os.chdir(os.path.dirname(self.ifile))
 
-        try:
-            gdf = gpd.read_file(self.ifile, engine="pyogrio")
-        except:
-            self.showlog(
-                "There was a problem importing the shapefile. "
-                "Please make sure you have at all the "
-                "individual files which make up the shapefile."
-            )
-            return None
+        gdf = gpd.read_file(self.ifile, engine="pyogrio")
 
         gdf = gdf[gdf.geometry != None]
 
@@ -1609,8 +1596,7 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
 
     if gdf.geom_type.iloc[0] == "MultiPolygon":
         showlog(
-            "You have a MultiPolygon. Only the first Polygon "
-            "of the MultiPolygon will be used."
+            "You have a MultiPolygon. Only the first Polygon of the MultiPolygon will be used."
         )
         poly = gdf["geometry"].iloc[0]
         tmp = poly.geoms[0]

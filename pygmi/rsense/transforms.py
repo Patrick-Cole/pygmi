@@ -537,7 +537,21 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
         t8 = x2d[2:, 1:-1]
         t9 = x2d[2:, 2:]
 
-        noise = ne.evaluate("(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9")
+        local = {
+            "t1": t1,
+            "t2": t2,
+            "t3": t3,
+            "t4": t4,
+            "t5": t5,
+            "t6": t6,
+            "t7": t7,
+            "t8": t8,
+            "t9": t9,
+        }
+
+        noise = ne.evaluate(
+            "(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9", local_dict=local
+        )
 
         mask2 = (
             mask[:-2, :-2]

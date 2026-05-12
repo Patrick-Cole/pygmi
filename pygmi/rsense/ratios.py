@@ -25,16 +25,17 @@
 """Calculate remote sensing ratios and condition indices."""
 
 import os
-import sys
 import re
+import sys
+
 import numexpr as ne
 import numpy as np
 from PySide6 import QtWidgets
 
-from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
+from pygmi.misc import BasicModule
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
-from pygmi.misc import BasicModule
+from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
 
 
 class SatRatios(BasicModule):
@@ -65,23 +66,30 @@ class SatRatios(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.ratios'
+        self.buttonbox.htmlfile = "rsense.dm.ratios"
         gl_main = QtWidgets.QGridLayout(self)
-        btn_invert = QtWidgets.QPushButton('Invert Selection')
-        lbl_sensor = QtWidgets.QLabel('Sensor:')
-        lbl_ratios = QtWidgets.QLabel('Ratios:')
+        btn_invert = QtWidgets.QPushButton("Invert Selection")
+        lbl_sensor = QtWidgets.QLabel("Sensor:")
+        lbl_ratios = QtWidgets.QLabel("Ratios:")
 
         self.lw_ratios.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
-        self.cmb_sensor.addItems(['ASTER',
-                                  'Landsat 8 and 9 (OLI)',
-                                  'Landsat 7 (ETM+)',
-                                  'Landsat 4 and 5 (TM)',
-                                  'Sentinel-2', 'WorldView', 'EMIT',
-                                  'Unknown'])
+        self.cmb_sensor.addItems(
+            [
+                "ASTER",
+                "Landsat 8 and 9 (OLI)",
+                "Landsat 7 (ETM+)",
+                "Landsat 4 and 5 (TM)",
+                "Sentinel-2",
+                "WorldView",
+                "EMIT",
+                "Unknown",
+            ]
+        )
 
-        self.setWindowTitle('Band Ratio Calculations')
+        self.setWindowTitle("Band Ratio Calculations")
 
         gl_main.addWidget(lbl_sensor, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_sensor, 0, 1, 1, 1)
@@ -111,33 +119,33 @@ class SatRatios(BasicModule):
 
         """
         tmp = []
-        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showlog('No Satellite Data')
+        if "Raster" not in self.indata and "RasterFileList" not in self.indata:
+            self.showlog("No Satellite Data")
             return False
 
-        if 'RasterFileList' in self.indata:
-            dat = self.indata['RasterFileList']
+        if "RasterFileList" in self.indata:
+            dat = self.indata["RasterFileList"]
             instr = dat[0].sensor
         else:
-            dat = self.indata['Raster']
-            instr = dat[0].metadata['Raster']['Sensor']
+            dat = self.indata["Raster"]
+            instr = dat[0].metadata["Raster"]["Sensor"]
 
-        if 'ASTER' in instr:
-            self.cmb_sensor.setCurrentText('ASTER')
-        elif 'LC08' in instr or 'LC09' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
-        elif 'LE07' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 7 (ETM+)')
-        elif 'LT04' in instr or 'LT05' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 4 and 5 (TM)')
-        elif 'WorldView' in instr and 'Multi' in instr:
-            self.cmb_sensor.setCurrentText('WorldView')
-        elif 'Sentinel-2' in instr:
-            self.cmb_sensor.setCurrentText('Sentinel-2')
-        elif 'EMIT' in instr:
-            self.cmb_sensor.setCurrentText('EMIT')
+        if "ASTER" in instr:
+            self.cmb_sensor.setCurrentText("ASTER")
+        elif "LC08" in instr or "LC09" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 8 and 9 (OLI)")
+        elif "LE07" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 7 (ETM+)")
+        elif "LT04" in instr or "LT05" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 4 and 5 (TM)")
+        elif "WorldView" in instr and "Multi" in instr:
+            self.cmb_sensor.setCurrentText("WorldView")
+        elif "Sentinel-2" in instr:
+            self.cmb_sensor.setCurrentText("Sentinel-2")
+        elif "EMIT" in instr:
+            self.cmb_sensor.setCurrentText("EMIT")
         else:
-            self.cmb_sensor.setCurrentText('Unknown')
+            self.cmb_sensor.setCurrentText("Unknown")
 
         if self.lw_ratios.count() == 0:
             self.setratios()
@@ -179,60 +187,69 @@ class SatRatios(BasicModule):
         """
         sensor = self.cmb_sensor.currentText()
 
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
-            if sensor == 'ASTER':
+        if "RasterFileList" in self.indata:
+            flist = self.indata["RasterFileList"]
+            if sensor == "ASTER":
                 flist = get_aster_list(flist)
-            elif 'Landsat' in sensor:
+            elif "Landsat" in sensor:
                 flist = get_landsat_list(flist, sensor)
-            elif 'Sentinel-2' in sensor:
+            elif "Sentinel-2" in sensor:
                 flist = get_sentinel_list(flist)
-            elif 'EMIT' in sensor:
+            elif "EMIT" in sensor:
                 flist = get_EMIT_list(flist)
             if not flist:
-                self.showlog('Warning: This might not be ' + sensor +
-                             ' data. Will attempt to do calculation '
-                             'anyway.')
-                flist = self.indata['RasterFileList']
+                self.showlog(
+                    "Warning: This might not be "
+                    + sensor
+                    + " data. Will attempt to do calculation "
+                    "anyway."
+                )
+                flist = self.indata["RasterFileList"]
         else:
-            flist = [self.indata['Raster']]
+            flist = [self.indata["Raster"]]
 
         rlist = []
         for i in self.lw_ratios.selectedItems():
             rlist.append(i.text())
 
         if not rlist:
-            self.showlog('You need to select a ratio to calculate.')
+            self.showlog("You need to select a ratio to calculate.")
             return False
 
         for ifile in flist:
-            if 'RasterFileList' in self.indata:
-                dat = get_from_rastermeta(ifile, piter=self.piter,
-                                          showlog=self.showlog)
+            if "RasterFileList" in self.indata:
+                dat = get_from_rastermeta(ifile, piter=self.piter, showlog=self.showlog)
             else:
                 dat = ifile
 
             if dat is None:
                 continue
 
-            if sensor=='EMIT':
+            if sensor == "EMIT":
                 dat = correct_EMIT_bands(rlist, dat)
 
-            datfin = calc_ratios(dat, rlist, showlog=self.showlog,
-                                 piter=self.piter, sensor=sensor)
+            datfin = calc_ratios(
+                dat, rlist, showlog=self.showlog, piter=self.piter, sensor=sensor
+            )
 
             if datfin:
                 odir = os.path.dirname(dat[0].filename)
-                odir = os.path.join(odir, 'ratios')
+                odir = os.path.join(odir, "ratios")
 
                 os.makedirs(odir, exist_ok=True)
 
-                ofile = set_export_filename(dat, odir, 'ratio')
+                ofile = set_export_filename(dat, odir, "ratio")
 
-                self.showlog('Exporting to ' + ofile)
-                export_raster(ofile, datfin, drv='GTiff', piter=self.piter,
-                              compression='DEFLATE', showlog=self.showlog)
-                self.outdata['Raster'] = datfin
+                self.showlog("Exporting to " + ofile)
+                export_raster(
+                    ofile,
+                    datfin,
+                    drv="GTiff",
+                    piter=self.piter,
+                    compression="DEFLATE",
+                    showlog=self.showlog,
+                )
+                self.outdata["Raster"] = datfin
 
         return True
 
@@ -253,68 +270,82 @@ class SatRatios(BasicModule):
         rlist = []
 
         # carbonates/mafic minerals bands
-        rlist += [r'(B7+B9)/B8 carbonate chlorite epidote',
-                  r'(B6+B9)/(B7+B8) epidote chlorite amphibole',
-                  r'(B6+B9)/B8 amphibole MgOH',
-                  r'B6/B8 amphibole',
-                  r'(B6+B8)/B7 dolomite',
-                  r'B13/B14 carbonate']
+        rlist += [
+            r"(B7+B9)/B8 carbonate chlorite epidote",
+            r"(B6+B9)/(B7+B8) epidote chlorite amphibole",
+            r"(B6+B9)/B8 amphibole MgOH",
+            r"B6/B8 amphibole",
+            r"(B6+B8)/B7 dolomite",
+            r"B13/B14 carbonate",
+        ]
 
         # iron bands (All, but possibly only swir and vnir)
-        rlist += [r'B2/B1 Ferric Iron Fe3+',
-                  r'B2/B0 Iron Oxide',
-                  r'B5/B3+B1/B2 Ferrous Iron Fe2+',
-                  r'B4/B5 Laterite or Alteration',
-                  r'B4/B2 Gossan',
-                  r'B5/B4 Ferrous Silicates (biotite, chloride, amphibole)',
-                  r'B4/B3 Ferric Oxides (can be ambiguous)']  # lsat ferrous?
+        rlist += [
+            r"B2/B1 Ferric Iron Fe3+",
+            r"B2/B0 Iron Oxide",
+            r"B5/B3+B1/B2 Ferrous Iron Fe2+",
+            r"B4/B5 Laterite or Alteration",
+            r"B4/B2 Gossan",
+            r"B5/B4 Ferrous Silicates (biotite, chloride, amphibole)",
+            r"B4/B3 Ferric Oxides (can be ambiguous)",
+        ]  # lsat ferrous?
 
         # silicates bands
-        rlist += [r'(B5+B7)/B6 sericite muscovite illite smectite',
-                  r'(B4+B6)/B5 alunite kaolinite pyrophyllite',
-                  r'B5/B6 phengitic or host rock',
-                  r'B7/B6 muscovite',
-                  r'B7/B5 kaolinite',
-                  r'(B5*B7)/(B6*B6) clay']
+        rlist += [
+            r"(B5+B7)/B6 sericite muscovite illite smectite",
+            r"(B4+B6)/B5 alunite kaolinite pyrophyllite",
+            r"B5/B6 phengitic or host rock",
+            r"B7/B6 muscovite",
+            r"B7/B5 kaolinite",
+            r"(B5*B7)/(B6*B6) clay",
+        ]
 
         # silica
-        rlist += [r'B14/B12 quartz',
-                  r'B12/B13 basic degree index (gnt cpx epi chl) or SiO2',
-                  r'B13/B12 SiO2 same as B14/B12',
-                  r'(B11*B11)/(B10*B12) siliceous rocks',
-                  r'B11/B10 silica',
-                  r'B11/B12 silica',
-                  r'B13/B10 silica']
+        rlist += [
+            r"B14/B12 quartz",
+            r"B12/B13 basic degree index (gnt cpx epi chl) or SiO2",
+            r"B13/B12 SiO2 same as B14/B12",
+            r"(B11*B11)/(B10*B12) siliceous rocks",
+            r"B11/B10 silica",
+            r"B11/B12 silica",
+            r"B13/B10 silica",
+        ]
 
         # Other
-        rlist += [r'B3/B2 Vegetation',
-                  r'(B3-B2)/(B3+B2) NDVI',
-                  r'(B3-B4)/(B3+B4) NDWI or NDMI water in leaves',
-                  r'(B1-B3)/(B1+B3) NDWI water bodies',
-                  r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI',
-                  r'B3/B1 GRVI',
-                  r'(B3-B2)/sqrt(B3+B2) RDVI',
-                  r'1.5*(B3-B2)/(B3+B2+0.5) SAVI',
-                  r'B3A/B1 GRVI Landslide',
-                  r'(B3A-B2)/sqrt(B3A+B2A) RDVI Landslide',
-                  r'1.5*(B3-B2)/(B3+B2A+0.5) SAVI Landslide',
-                  r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2',
-                  r'(B3A-B4+B5)/(B3A+B4-B5) NMDI',
-                  r'((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI']
-        
+        rlist += [
+            r"B3/B2 Vegetation",
+            r"(B3-B2)/(B3+B2) NDVI",
+            r"(B3-B4)/(B3+B4) NDWI or NDMI water in leaves",
+            r"(B1-B3)/(B1+B3) NDWI water bodies",
+            r"2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI",
+            r"B3/B1 GRVI",
+            r"(B3-B2)/sqrt(B3+B2) RDVI",
+            r"1.5*(B3-B2)/(B3+B2+0.5) SAVI",
+            r"B3A/B1 GRVI Landslide",
+            r"(B3A-B2)/sqrt(B3A+B2A) RDVI Landslide",
+            r"1.5*(B3-B2)/(B3+B2A+0.5) SAVI Landslide",
+            r"0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2",
+            r"(B3A-B4+B5)/(B3A+B4-B5) NMDI",
+            r"((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI",
+        ]
+
         # EMIT
-        rlist += [r'B1603/(B2185+B2225) Al-OH',
-                  r'B1603/(B2230+B2296) Fe-OH',
-                  r'B1603/(B2306+B2365) Mg-OH or CO3']
+        rlist += [
+            r"B1603/(B2185+B2225) Al-OH",
+            r"B1603/(B2230+B2296) Fe-OH",
+            r"B1603/(B2306+B2365) Mg-OH or CO3",
+        ]
 
         # Colour composite
 
-        rlist += [r'B5/B3 Used in colour composites',
-                  r'B4/B0 Used in colour composites',
-                  r'B5/B1 Used in colour composites',
-                  r'B4/B7 Used in colour composites',
-                  r'B12/B14 Used in colour composites',
-                  r'B3/B4 Used in colour composites']
+        rlist += [
+            r"B5/B3 Used in colour composites",
+            r"B4/B0 Used in colour composites",
+            r"B5/B1 Used in colour composites",
+            r"B4/B7 Used in colour composites",
+            r"B12/B14 Used in colour composites",
+            r"B3/B4 Used in colour composites",
+        ]
 
         # Landslides
 
@@ -394,28 +425,33 @@ class ConditionIndices(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.calccondind'
+        self.buttonbox.htmlfile = "rsense.dm.calccondind"
         gl_main = QtWidgets.QGridLayout(self)
-        btn_invert = QtWidgets.QPushButton('Invert Selection')
-        lbl_index = QtWidgets.QLabel('Index:')
-        lbl_ratios = QtWidgets.QLabel('Condition Indices:')
-        lbl_sensor = QtWidgets.QLabel('Sensor:')
+        btn_invert = QtWidgets.QPushButton("Invert Selection")
+        lbl_index = QtWidgets.QLabel("Index:")
+        lbl_ratios = QtWidgets.QLabel("Condition Indices:")
+        lbl_sensor = QtWidgets.QLabel("Sensor:")
 
         self.lw_ratios.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
-        self.cmb_index.addItems(['EVI',
-                                 'NDVI',
-                                 'MSAVI2'])
+        self.cmb_index.addItems(["EVI", "NDVI", "MSAVI2"])
 
-        self.cmb_sensor.addItems(['ASTER',
-                                  'Landsat 8 and 9 (OLI)',
-                                  'Landsat 7 (ETM+)',
-                                  'Landsat 4 and 5 (TM)',
-                                  'Landsat (All)',
-                                  'Sentinel-2', 'WorldView', 'Unknown'])
+        self.cmb_sensor.addItems(
+            [
+                "ASTER",
+                "Landsat 8 and 9 (OLI)",
+                "Landsat 7 (ETM+)",
+                "Landsat 4 and 5 (TM)",
+                "Landsat (All)",
+                "Sentinel-2",
+                "WorldView",
+                "Unknown",
+            ]
+        )
 
-        self.setWindowTitle('Condition Indices Calculations')
+        self.setWindowTitle("Condition Indices Calculations")
 
         gl_main.addWidget(lbl_sensor, 0, 0, 1, 2)
         gl_main.addWidget(self.cmb_sensor, 0, 1, 1, 1)
@@ -447,36 +483,35 @@ class ConditionIndices(BasicModule):
 
         """
         tmp = []
-        if 'RasterFileList' not in self.indata:
-            self.showlog('You need a raster file list as input.')
+        if "RasterFileList" not in self.indata:
+            self.showlog("You need a raster file list as input.")
             return False
 
-        if len(self.indata['RasterFileList']) < 2:
-            self.showlog('You need more than one scene in your raster file '
-                         'list.')
+        if len(self.indata["RasterFileList"]) < 2:
+            self.showlog("You need more than one scene in your raster file list.")
             return False
 
-        bfile = os.path.basename(self.indata['RasterFileList'][0].filename)
+        bfile = os.path.basename(self.indata["RasterFileList"][0].filename)
         self.bfile = bfile[:4]
 
-        dat = self.indata['RasterFileList'][0]
+        dat = self.indata["RasterFileList"][0]
 
         instr = dat.sensor
 
-        if 'ASTER' in instr:
-            self.cmb_sensor.setCurrentText('ASTER')
-        elif 'LC08' in instr or 'LC09' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
-        elif 'LE07' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 7 (ETM+)')
-        elif 'LT04' in instr or 'LT05' in instr:
-            self.cmb_sensor.setCurrentText('Landsat 4 and 5 (TM)')
-        elif 'WorldView' in instr and 'Multi' in instr:
-            self.cmb_sensor.setCurrentText('WorldView')
-        elif 'Sentinel-2' in instr:
-            self.cmb_sensor.setCurrentText('Sentinel-2')
+        if "ASTER" in instr:
+            self.cmb_sensor.setCurrentText("ASTER")
+        elif "LC08" in instr or "LC09" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 8 and 9 (OLI)")
+        elif "LE07" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 7 (ETM+)")
+        elif "LT04" in instr or "LT05" in instr:
+            self.cmb_sensor.setCurrentText("Landsat 4 and 5 (TM)")
+        elif "WorldView" in instr and "Multi" in instr:
+            self.cmb_sensor.setCurrentText("WorldView")
+        elif "Sentinel-2" in instr:
+            self.cmb_sensor.setCurrentText("Sentinel-2")
         else:
-            self.cmb_sensor.setCurrentText('Unknown')
+            self.cmb_sensor.setCurrentText("Unknown")
 
         if self.lw_ratios.count() == 0:
             self.setratios()
@@ -525,17 +560,16 @@ class ConditionIndices(BasicModule):
             rlist1.append(i.text())
 
         if not rlist1:
-            self.showlog('You need to select a condition index to '
-                         'calculate.')
+            self.showlog("You need to select a condition index to calculate.")
             return False
 
         rlist2 = []
-        if 'VCI' in rlist1 and 'EVI' in index:
-            rlist2 += [r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI']
-        elif 'VCI' in rlist1 and 'NDVI' in index:
-            rlist2 += [r'(B3-B2)/(B3+B2) NDVI']
-        elif 'VCI' in rlist1 and 'MSAVI2' in index:
-            rlist2 += [r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
+        if "VCI" in rlist1 and "EVI" in index:
+            rlist2 += [r"2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI"]
+        elif "VCI" in rlist1 and "NDVI" in index:
+            rlist2 += [r"(B3-B2)/(B3+B2) NDVI"]
+        elif "VCI" in rlist1 and "MSAVI2" in index:
+            rlist2 += [r"0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2"]
 
         evi = []
         tci = []
@@ -543,22 +577,24 @@ class ConditionIndices(BasicModule):
         vhi = []
         lst = []
 
-        flist = self.indata['RasterFileList']
-        if sensor == 'ASTER':
+        flist = self.indata["RasterFileList"]
+        if sensor == "ASTER":
             flist = get_aster_list(flist)
-        elif 'Landsat' in sensor:
+        elif "Landsat" in sensor:
             flist = get_landsat_list(flist, sensor)
-        elif 'Sentinel-2' in sensor:
+        elif "Sentinel-2" in sensor:
             flist = get_sentinel_list(flist)
         else:
-            self.showlog('Warning: This might not be ' + sensor +
-                         ' data. Will attempt to do calculation '
-                         'anyway.')
-            flist = self.indata['RasterFileList']
+            self.showlog(
+                "Warning: This might not be "
+                + sensor
+                + " data. Will attempt to do calculation "
+                "anyway."
+            )
+            flist = self.indata["RasterFileList"]
 
         for ifile in flist:
-            dat = get_from_rastermeta(ifile, piter=self.piter,
-                                      showlog=self.showlog)
+            dat = get_from_rastermeta(ifile, piter=self.piter, showlog=self.showlog)
 
             if dat is None:
                 continue
@@ -566,15 +602,17 @@ class ConditionIndices(BasicModule):
             ofile = dat[0].filename
 
             # Prepare for layer stacking
-            if sensor == 'WorldView':
-                wvlabels = {'CoastalBlue': 'B1',
-                            'Blue': 'B2',
-                            'Green': 'B3',
-                            'Yellow': 'B4',
-                            'Red': 'B5',
-                            'RedEdge': 'B6',
-                            'NIR1': 'B7',
-                            'NIR2': 'B8'}
+            if sensor == "WorldView":
+                wvlabels = {
+                    "CoastalBlue": "B1",
+                    "Blue": "B2",
+                    "Green": "B3",
+                    "Yellow": "B4",
+                    "Red": "B5",
+                    "RedEdge": "B6",
+                    "NIR1": "B7",
+                    "NIR2": "B8",
+                }
                 for i in dat:
                     if i.dataid.split()[0] in wvlabels:
                         i.dataid = wvlabels[i.dataid.split()[0]]
@@ -586,21 +624,21 @@ class ConditionIndices(BasicModule):
             for i in dat:
                 txt = i.dataid.split()[0]
 
-                if 'Band' not in txt and 'B' in txt:
-                    txt = txt.replace('B', 'Band')
+                if "Band" not in txt and "B" in txt:
+                    txt = txt.replace("B", "Band")
 
-                if 'Band' not in txt and 'LST' not in txt:
+                if "Band" not in txt and "LST" not in txt:
                     continue
 
                 i.data = i.data.astype(float)
-                i.data = i.data.filled(1e+20)
-                i.data = np.ma.masked_equal(i.data, 1e+20)
-                i.nodata = 1e+20
+                i.data = i.data.filled(1e20)
+                i.data = np.ma.masked_equal(i.data, 1e20)
+                i.nodata = 1e20
 
-                formula = ','.join(rlist)
-                formula = re.sub(r'B(\d+)', r'Band\1', formula)
+                formula = ",".join(rlist)
+                formula = re.sub(r"B(\d+)", r"Band\1", formula)
 
-                if txt in formula or txt == 'LST':
+                if txt in formula or txt == "LST":
                     datsml.append(i)
 
             dat = lstack(datsml, piter=self.piter, showlog=self.showlog)
@@ -613,90 +651,87 @@ class ConditionIndices(BasicModule):
             for i in dat:
                 tmp = i.dataid.split()
                 txt = tmp[0]
-                if txt == 'Band':
+                if txt == "Band":
                     txt = tmp[0] + tmp[1]
 
-                if 'Band' not in txt and 'B' in txt and ',' in txt:
-                    txt = txt.replace('B', 'Band')
-                    txt = txt.replace(',', '')
+                if "Band" not in txt and "B" in txt and "," in txt:
+                    txt = txt.replace("B", "Band")
+                    txt = txt.replace(",", "")
 
-                if 'Band' not in txt and 'B' in txt:
-                    txt = txt.replace('B', 'Band')
+                if "Band" not in txt and "B" in txt:
+                    txt = txt.replace("B", "Band")
 
-                if txt == 'Band3N':
-                    txt = 'Band3'
+                if txt == "Band3N":
+                    txt = "Band3"
 
                 datd[txt] = i.data
 
-                if 'LST' in txt:
+                if "LST" in txt:
                     lst.append(i)
 
             # Calculate ratios
             for i in self.piter(rlist):
-                self.showlog('Calculating ' + i)
-                formula = i.split(' ')[0]
-                formula = re.sub(r'B(\d+)', r'Band\1', formula)
+                self.showlog("Calculating " + i)
+                formula = i.split(" ")[0]
+                formula = re.sub(r"B(\d+)", r"Band\1", formula)
                 blist = formula
-                for j in ['/', '*', '+', '-', '(', ')']:
-                    blist = blist.replace(j, ' ')
+                for j in ["/", "*", "+", "-", "(", ")"]:
+                    blist = blist.replace(j, " ")
                 blist = blist.split()
                 blist = list(set(blist))
-                blist = [i for i in blist if 'Band' in i]
+                blist = [i for i in blist if "Band" in i]
 
                 abort = []
                 for j in blist:
-                    if 'B' not in j:
+                    if "B" not in j:
                         continue
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showlog('Error: ' + ' '.join(abort) + ' missing.')
+                    self.showlog("Error: " + " ".join(abort) + " missing.")
                     continue
 
                 newmask = datd[blist[0]].mask
                 for j in blist:
-                    newmask = (newmask | datd[j].mask)
+                    newmask = newmask | datd[j].mask
 
-                if len(formula.split(r'/')) == 2:
-                    f1, f2 = formula.split(r'/')
+                if len(formula.split(r"/")) == 2:
+                    f1, f2 = formula.split(r"/")
                     a1 = ne.evaluate(f1, datd)
                     a2 = ne.evaluate(f2, datd)
 
-                    a2[np.isclose(a2, 0.)] = 0.
+                    a2[np.isclose(a2, 0.0)] = 0.0
                     ratio = a1 / a2
                 else:
                     ratio = ne.evaluate(formula, datd)
 
                 newmask = newmask | (ratio < -1) | (ratio > 1)
                 ratio = ratio.astype(np.float32)
-                ratio[newmask] = 1e+20
-                ratio = np.ma.array(ratio, mask=newmask,
-                                    fill_value=1e+20)
+                ratio[newmask] = 1e20
+                ratio = np.ma.array(ratio, mask=newmask, fill_value=1e20)
 
                 ratio = np.ma.fix_invalid(ratio)
 
                 tmp = dat[0].copy(resetmeta=True)
                 tmp.data = ratio
-                tmp.nodata = 1e+20
+                tmp.nodata = 1e20
                 evi.append(tmp)
 
         if lst:
-            lst = lstack(lst, piter=self.piter, showlog=self.showlog,
-                         commonmask=True)
+            lst = lstack(lst, piter=self.piter, showlog=self.showlog, commonmask=True)
         if evi:
-            evi = lstack(evi, piter=self.piter, showlog=self.showlog,
-                         commonmask=True)
+            evi = lstack(evi, piter=self.piter, showlog=self.showlog, commonmask=True)
 
-        ofile = ''
-        if ('TCI' in rlist1 or 'VHI' in rlist1) and lst:
+        ofile = ""
+        if ("TCI" in rlist1 or "VHI" in rlist1) and lst:
             tci = get_TCI(lst)
-            ofile += '_TCI'
-        if ('VCI' in rlist1 or 'VHI' in rlist1) and evi:
+            ofile += "_TCI"
+        if ("VCI" in rlist1 or "VHI" in rlist1) and evi:
             vci = get_VCI(evi, index)
-            ofile += '_VCI_' + index
-        if 'VHI' in rlist1 and tci and vci:
+            ofile += "_VCI_" + index
+        if "VHI" in rlist1 and tci and vci:
             vhi = get_VHI(tci, vci)
-            ofile += '_VHI'
+            ofile += "_VHI"
 
         datfin = tci + vci + vhi
 
@@ -705,7 +740,7 @@ class ConditionIndices(BasicModule):
             i.nodata = np.float32(i.nodata)
 
         if datfin:
-            self.outdata['Raster'] = datfin
+            self.outdata["Raster"] = datfin
 
         return True
 
@@ -721,11 +756,11 @@ class ConditionIndices(BasicModule):
         sensor = self.cmb_sensor.currentText()
         rlist = []
 
-        if 'Unknown' not in sensor:
-            rlist += ['VCI']
+        if "Unknown" not in sensor:
+            rlist += ["VCI"]
 
-        if 'Landsat' in sensor:
-            rlist += ['TCI', 'VHI']
+        if "Landsat" in sensor:
+            rlist += ["TCI", "VHI"]
 
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist)
@@ -765,11 +800,11 @@ class ConditionIndices(BasicModule):
             item = self.lw_ratios.item(i)
             idict[item.text()] = i
 
-        if currentitem.text() == 'VHI' and currentitem.isSelected():
+        if currentitem.text() == "VHI" and currentitem.isSelected():
             for i in range(self.lw_ratios.count()):
                 self.lw_ratios.item(i).setSelected(currentitem.isSelected())
-        elif not currentitem.isSelected() and 'VHI' in idict:
-            self.lw_ratios.item(idict['VHI']).setSelected(False)
+        elif not currentitem.isSelected() and "VHI" in idict:
+            self.lw_ratios.item(idict["VHI"]).setSelected(False)
 
         # for i in range(self.lw_ratios.count()):
         #     item = self.lw_ratios.item(i)
@@ -807,21 +842,21 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
     """
     datsml = []
 
-    for i in dat: 
+    for i in dat:
         tmp = i.dataid.split()
         txt = tmp[0]
 
-        if 'Band' not in txt and 'B' in txt:
-            txt = txt.replace('B', 'Band')
+        if "Band" not in txt and "B" in txt:
+            txt = txt.replace("B", "Band")
 
-        if 'Band' not in txt and 'LST' not in txt:
+        if "Band" not in txt and "LST" not in txt:
             continue
 
-        formula = ','.join(rlist)
-        formula = re.sub(r'B(\d+)', r'Band\1', formula)
+        formula = ",".join(rlist)
+        formula = re.sub(r"B(\d+)", r"Band\1", formula)
 
-        if txt == 'Band3N':
-            txt = 'Band3'
+        if txt == "Band3N":
+            txt = "Band3"
 
         if txt in formula:
             datsml.append(i)
@@ -835,60 +870,60 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
     for i in dat:
         tmp = i.dataid.split()
         txt = tmp[0]
-        if txt == 'Band':
+        if txt == "Band":
             txt = tmp[0] + tmp[1]
 
-        if 'Band' not in txt and 'B' in txt and ',' in txt:
-            txt = txt.replace('B', 'Band')
-            txt = txt.replace(',', '')
+        if "Band" not in txt and "B" in txt and "," in txt:
+            txt = txt.replace("B", "Band")
+            txt = txt.replace(",", "")
 
-        if 'Band' not in txt and 'B' in txt:
-            txt = txt.replace('B', 'Band')
+        if "Band" not in txt and "B" in txt:
+            txt = txt.replace("B", "Band")
 
-        if txt == 'Band3N':
-            txt = 'Band3'
+        if txt == "Band3N":
+            txt = "Band3"
 
         datd[txt] = i.data
 
     datfin = []
     for i in piter(rlist):
-        showlog('Calculating ' + i)
-        if 'Landslide Index' in i:
+        showlog("Calculating " + i)
+        if "Landslide Index" in i:
             rband = landslide_index(dat, sensor, showlog, piter)
             datfin += rband
             continue
 
-        formula = i.split(' ')[0]
-        formula = re.sub(r'B(\d+)', r'Band\1', formula)
+        formula = i.split(" ")[0]
+        formula = re.sub(r"B(\d+)", r"Band\1", formula)
         blist = formula
-        for j in ['/', '*', '+', '-', '(', ')']:
-            blist = blist.replace(j, ' ')
+        for j in ["/", "*", "+", "-", "(", ")"]:
+            blist = blist.replace(j, " ")
         blist = blist.split()
         blist = list(set(blist))
-        blist = [i for i in blist if 'Band' in i]
+        blist = [i for i in blist if "Band" in i]
 
         abort = []
         for j in blist:
-            if 'B' not in j:
+            if "B" not in j:
                 continue
             if j not in datd:
                 abort.append(j)
         if abort:
-            showlog('Error: ' + ' '.join(abort) + ' missing.')
+            showlog("Error: " + " ".join(abort) + " missing.")
             continue
 
         newmask = datd[blist[0]].mask
         for j in blist:
-            newmask = (newmask | datd[j].mask)
+            newmask = newmask | datd[j].mask
 
-        if len(formula.split(r'/')) == 2:
-            f1, f2 = formula.split(r'/')
+        if len(formula.split(r"/")) == 2:
+            f1, f2 = formula.split(r"/")
             a1 = ne.evaluate(f1, datd)
             a1 = a1.astype(np.float32)
             a2 = ne.evaluate(f2, datd)
             a2 = a2.astype(np.float32)
 
-            a2[np.isclose(a2, 0.)] = 0.
+            a2[np.isclose(a2, 0.0)] = 0.0
             ratio = a1 / a2
 
             del a1
@@ -898,14 +933,13 @@ def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
 
         ratio = ratio.astype(np.float32)
         ratio[newmask] = np.float32(dat[0].nodata)
-        ratio = np.ma.array(ratio, mask=newmask,
-                            fill_value=dat[0].nodata)
+        ratio = np.ma.array(ratio, mask=newmask, fill_value=dat[0].nodata)
 
         ratio = np.ma.fix_invalid(ratio)
 
         rband = dat[0].copy(resetmeta=True)
         rband.data = ratio
-        rband.dataid = i.replace(r'/', 'div')
+        rband.dataid = i.replace(r"/", "div")
         datfin.append(rband)
 
     return datfin
@@ -935,96 +969,151 @@ def correct_bands(rlist, sensor, bfile=None):
     """
     sdict = {}
 
-    sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
-                      'B3A': 'B3', 'B2A': 'B2',
-                      'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
-                      'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
-                      'B13': 'B13', 'B14': 'B14'}
-    sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
-                                      'B3': 'B5', 'B4': 'B6', 'B5': 'B7',
-                                      'B3A': 'B5', 'B2A': 'B4'}
-    sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
-                                 'B3': 'B4', 'B4': 'B5', 'B5': 'B7',
-                                 'B3A': 'B4', 'B2A': 'B3'}
-    sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
-    sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
-                           'B4': 'B11', 'B5': 'B12', 'B3A': 'B8A',
-                           'B2A': 'B5'}
-    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',
-                          'B3A': 'B7', 'B2A': 'B5'}
-    # sdict['EMIT'] = {'B1': 'B559', 'B2': 'B663', 'B3': 'B812', 
+    sdict["ASTER"] = {
+        "B1": "B1",
+        "B2": "B2",
+        "B3": "B3",
+        "B4": "B4",
+        "B3A": "B3",
+        "B2A": "B2",
+        "B5": "B5",
+        "B6": "B6",
+        "B7": "B7",
+        "B8": "B8",
+        "B9": "B9",
+        "B10": "B10",
+        "B11": "B11",
+        "B12": "B12",
+        "B13": "B13",
+        "B14": "B14",
+    }
+    sdict["Landsat 8 and 9 (OLI)"] = {
+        "B0": "B2",
+        "B1": "B3",
+        "B2": "B4",
+        "B3": "B5",
+        "B4": "B6",
+        "B5": "B7",
+        "B3A": "B5",
+        "B2A": "B4",
+    }
+    sdict["Landsat 7 (ETM+)"] = {
+        "B0": "B1",
+        "B1": "B2",
+        "B2": "B3",
+        "B3": "B4",
+        "B4": "B5",
+        "B5": "B7",
+        "B3A": "B4",
+        "B2A": "B3",
+    }
+    sdict["Landsat 4 and 5 (TM)"] = sdict["Landsat 7 (ETM+)"]
+    sdict["Sentinel-2"] = {
+        "B0": "B2",
+        "B1": "B3",
+        "B2": "B4",
+        "B3": "B8",
+        "B4": "B11",
+        "B5": "B12",
+        "B3A": "B8A",
+        "B2A": "B5",
+    }
+    sdict["WorldView"] = {
+        "B0": "B2",
+        "B1": "B3",
+        "B2": "B5",
+        "B3": "B7",
+        "B3A": "B7",
+        "B2A": "B5",
+    }
+    # sdict['EMIT'] = {'B1': 'B559', 'B2': 'B663', 'B3': 'B812',
     #                  'B4': 'B1647', 'B3A': 'B865', 'B2A': 'B700',
-    #                   'B5': 'B2167', 'B6': 'B2204', 'B7': 'B2263', 
-    #                   'B8': 'B2330', 'B9': 'B2396', 'B0': 'B492', 
-    #                   'B1603': 'B1603', 'B2185':'B2189', 'B2225':'B2226', 
-    #                   'B2230':'B2234', 'B2296':'B2293', 'B2306':'B2308', 
+    #                   'B5': 'B2167', 'B6': 'B2204', 'B7': 'B2263',
+    #                   'B8': 'B2330', 'B9': 'B2396', 'B0': 'B492',
+    #                   'B1603': 'B1603', 'B2185':'B2189', 'B2225':'B2226',
+    #                   'B2230':'B2234', 'B2296':'B2293', 'B2306':'B2308',
     #                   'B2365':'B2367'}
-    
-    sdict['EMIT'] = {'B0': 'B492', 'B1': 'B559', 'B2': 'B664', 'B2A': 'B704',
-                     'B3': 'B833', 'B3A': 'B865',
-                     'B4': 'B1614',
-                      'B5': 'B2167', 'B6' : 'B2209', 'B7': 'B2262', 
-                      'B8': 'B2330', 'B9': 'B2400',  
-                      'B1603': 'B1603', 'B2185':'B2185', 'B2225':'B2225', 
-                      'B2230':'B2230', 'B2296': 'B2296', 'B2306': 'B2306', 
-                      'B2365': 'B2365'}
 
-    sdict['Unknown'] = {}
+    sdict["EMIT"] = {
+        "B0": "B492",
+        "B1": "B559",
+        "B2": "B664",
+        "B2A": "B704",
+        "B3": "B833",
+        "B3A": "B865",
+        "B4": "B1614",
+        "B5": "B2167",
+        "B6": "B2209",
+        "B7": "B2262",
+        "B8": "B2330",
+        "B9": "B2400",
+        "B1603": "B1603",
+        "B2185": "B2185",
+        "B2225": "B2225",
+        "B2230": "B2230",
+        "B2296": "B2296",
+        "B2306": "B2306",
+        "B2365": "B2365",
+    }
 
-    if sensor == 'Landsat (All)':
-        if 'LC09' in bfile or 'LC08' in bfile:
-            sensor = 'Landsat 8 and 9 (OLI)'
-        elif 'LE07' in bfile:
-            sensor = 'Landsat 7 (ETM+)'
+    sdict["Unknown"] = {}
+
+    if sensor == "Landsat (All)":
+        if "LC09" in bfile or "LC08" in bfile:
+            sensor = "Landsat 8 and 9 (OLI)"
+        elif "LE07" in bfile:
+            sensor = "Landsat 7 (ETM+)"
         else:
-            sensor = 'Landsat 4 and 5 (TM)'
+            sensor = "Landsat 4 and 5 (TM)"
 
     bandmap = sdict[sensor]
     # Sort the keys so we do long names like B3A first
     svalues = sorted(sorted(set(bandmap.keys())), key=lambda el: len(el))[::-1]
     rlist2 = []
     for i in rlist:
-        formula = i.split(' ')[0]
-        lbl = i[i.index(' '):]
-        bands = set(re.findall(r'B\d+\w?', formula))
+        formula = i.split(" ")[0]
+        lbl = i[i.index(" ") :]
+        bands = set(re.findall(r"B\d+\w?", formula))
         if bands.issubset(svalues):
-            tmp = re.sub(r'B(\d+\w?)', r'tmpB\1', formula)
+            tmp = re.sub(r"B(\d+\w?)", r"tmpB\1", formula)
             for j in svalues:
-                tmp = tmp.replace('tmp' + j, bandmap[j])
+                tmp = tmp.replace("tmp" + j, bandmap[j])
 
             rlist2.append(tmp + lbl)
 
     return rlist2
+
+
 def correct_EMIT_bands(rlist, dat):
     """Correct EMIT band names."""
 
     blist1 = []
     for i in rlist:
-        formula = i.split(' ')[0]
-        formula = re.sub(r'B(\d+)', r'Band\1', formula)
+        formula = i.split(" ")[0]
+        formula = re.sub(r"B(\d+)", r"Band\1", formula)
         blist = formula
-        for j in ['/', '*', '+', '-', '(', ')']:
-            blist = blist.replace(j, ' ')
+        for j in ["/", "*", "+", "-", "(", ")"]:
+            blist = blist.replace(j, " ")
         blist = blist.split()
         blist = list(set(blist))
-        blist1 += [i for i in blist if 'Band' in i] 
+        blist1 += [i for i in blist if "Band" in i]
     blist = list(set(blist1))
     blist = [int(i[4:]) for i in blist]
 
     dlist = []
     for i in dat:
-        dlist.append(i.metadata['Raster']['wavelength'])
+        dlist.append(i.metadata["Raster"]["wavelength"])
 
     dataids = {x: min(dlist, key=lambda y: abs(x - y)) for x in blist}
 
     dat1 = {}
     for i in dat:
-        dat1[i.metadata['Raster']['wavelength']] = i
+        dat1[i.metadata["Raster"]["wavelength"]] = i
 
     dat2 = []
     for i in dataids:
         dat2.append(dat1[dataids[i]].copy())
-        dat2[-1].dataid = f'B{i}'  
+        dat2[-1].dataid = f"B{i}"
 
     return dat2
 
@@ -1046,11 +1135,12 @@ def get_aster_list(flist):
     """
     flist2 = []
     for i in flist:
-        if 'ASTER' not in i.sensor:
+        if "ASTER" not in i.sensor:
             continue
         flist2.append(i)
 
     return flist2
+
 
 def get_EMIT_list(flist):
     """
@@ -1069,11 +1159,12 @@ def get_EMIT_list(flist):
     """
     flist2 = []
     for i in flist:
-        if 'EMIT' not in i.sensor:
+        if "EMIT" not in i.sensor:
             continue
         flist2.append(i)
 
     return flist2
+
 
 def get_landsat_list(flist, sensor=None, allsats=False):
     """
@@ -1092,18 +1183,18 @@ def get_landsat_list(flist, sensor=None, allsats=False):
     """
     if isinstance(flist[0], list):
         bfile = os.path.basename(flist[0][0].filename)
-        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']:
+        if bfile[:4] in ["LT04", "LT05", "LE07", "LC08", "LC09"]:
             return flist
         return []
 
     if allsats is True or sensor is None:
-        fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
-    elif sensor == 'Landsat 8 and 9 (OLI)':
-        fid = ['LC08', 'LC09']
-    elif sensor == 'Landsat 7 (ETM+)':
-        fid = ['LE07']
-    elif sensor == 'Landsat 4 and 5 (TM)':
-        fid = ['LT04', 'LT05']
+        fid = ["LT04", "LT05", "LE07", "LC08", "LC09"]
+    elif sensor == "Landsat 8 and 9 (OLI)":
+        fid = ["LC08", "LC09"]
+    elif sensor == "Landsat 7 (ETM+)":
+        fid = ["LE07"]
+    elif sensor == "Landsat 4 and 5 (TM)":
+        fid = ["LT04", "LT05"]
     else:
         return None
 
@@ -1112,7 +1203,7 @@ def get_landsat_list(flist, sensor=None, allsats=False):
         for j in fid:
             if j not in i.sensor:
                 continue
-            if '.tif' in i.filename:
+            if ".tif" in i.filename:
                 continue
             flist2.append(i)
 
@@ -1136,7 +1227,7 @@ def get_sentinel_list(flist):
     """
     flist2 = []
     for i in flist:
-        if 'Sentinel-2' not in i.sensor:
+        if "Sentinel-2" not in i.sensor:
             continue
         flist2.append(i)
 
@@ -1173,7 +1264,7 @@ def get_TCI(lst):
 
         tmp.data = (lstmax - dat.data) / (lstmax - lstmin)
 
-        tmp.dataid = os.path.basename(dat.filename)[:-4] + '_TCI'
+        tmp.dataid = os.path.basename(dat.filename)[:-4] + "_TCI"
         tci.append(tmp)
 
     return tci
@@ -1211,7 +1302,7 @@ def get_VCI(evi, index):
 
         tmp.data = (dat.data - evimin) / (evimax - evimin)
 
-        tmp.dataid = os.path.basename(dat.filename)[:-4] + '_VCI_' + index
+        tmp.dataid = os.path.basename(dat.filename)[:-4] + "_VCI_" + index
         vci.append(tmp)
 
     return vci
@@ -1242,7 +1333,7 @@ def get_VHI(tci, vci, alpha=0.5):
             if tci1.filename == vci1.filename:
                 tmp = tci1.copy(resetmeta=True)
                 tmp.data = vci1.data * alpha + tci1.data * (1 - alpha)
-                tmp.dataid = os.path.basename(tci1.filename)[:-4] + '_VHI'
+                tmp.dataid = os.path.basename(tci1.filename)[:-4] + "_VHI"
 
                 vhi.append(tmp)
 
@@ -1273,13 +1364,15 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
         Red, green and blue PyGMI Data.
 
     """
-    rlist = [r'(B3-B2)/(B3+B2) NDVI',
-             r'(B1-B3)/(B1+B3) NDWI water bodies',
-             r'B4 SWIR',
-             r'((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI']
+    rlist = [
+        r"(B3-B2)/(B3+B2) NDVI",
+        r"(B1-B3)/(B1+B3) NDWI water bodies",
+        r"B4 SWIR",
+        r"((B4+B2)-(B3+B0))/((B4+B2)+(B3+B0)) BSI",
+    ]
 
     if sensor is None:
-        sensor = dat[0].metadata['Raster']['Sensor']
+        sensor = dat[0].metadata["Raster"]["Sensor"]
     rlist = correct_bands(rlist, sensor)
 
     datfin = calc_ratios(dat, rlist, showlog=showlog, piter=piter)
@@ -1290,13 +1383,13 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
     BSI = datfin[3].data
 
     for i in datfin:
-        if 'NDVI' in i.dataid:
+        if "NDVI" in i.dataid:
             NDVI = i.data
-        elif 'NDWI' in i.dataid:
+        elif "NDWI" in i.dataid:
             NDWI = i.data
-        elif 'SWIR' in i.dataid:
+        elif "SWIR" in i.dataid:
             SWIR = i.data
-        elif 'BSI' in i.dataid:
+        elif "BSI" in i.dataid:
             BSI = i.data
 
     red = dat[0].copy(resetmeta=True)
@@ -1309,42 +1402,41 @@ def landslide_index(dat, sensor=None, showlog=print, piter=iter):
 
     red.data[:] = 3.5 * BSI
     green.data[~green.data.mask] = 0.3
-    blue.data[~blue.data.mask] = 0.
+    blue.data[~blue.data.mask] = 0.0
 
-    filt = ((SWIR > 0.8) | (NDVI < 0.15))
+    filt = (SWIR > 0.8) | (NDVI < 0.15)
     red.data[filt] = 1.5
     green.data[filt] = 0.7
-    blue.data[filt] = -1.
+    blue.data[filt] = -1.0
 
-    filt = (NDVI > 0.25)
-    red.data[filt] = 0.
+    filt = NDVI > 0.25
+    red.data[filt] = 0.0
     green.data[filt] = 0.2 * NDVI[filt]
-    blue.data[filt] = 0.
+    blue.data[filt] = 0.0
 
-    filt = (NDWI > 0.15)
-    red.data[filt] = 0.
+    filt = NDWI > 0.15
+    red.data[filt] = 0.0
     green.data[filt] = 0.2
     blue.data[filt] = NDWI[filt]
 
-    red.data = np.ma.masked_equal(red.data.filled(1e+20), 1e+20)
-    red.nodata = 1e+20
+    red.data = np.ma.masked_equal(red.data.filled(1e20), 1e20)
+    red.nodata = 1e20
 
-    green.data = np.ma.masked_equal(green.data.filled(1e+20), 1e+20)
-    green.nodata = 1e+20
+    green.data = np.ma.masked_equal(green.data.filled(1e20), 1e20)
+    green.nodata = 1e20
 
-    blue.data = np.ma.masked_equal(blue.data.filled(1e+20), 1e+20)
-    blue.nodata = 1e+20
+    blue.data = np.ma.masked_equal(blue.data.filled(1e20), 1e20)
+    blue.nodata = 1e20
 
-    red.dataid = 'Landslide Index Red'
-    green.dataid = 'Landslide Index Green'
-    blue.dataid = 'Landslide Index Blue'
+    red.dataid = "Landslide Index Red"
+    green.dataid = "Landslide Index Green"
+    blue.dataid = "Landslide Index Blue"
 
     return [red, green, blue]
 
 
 def _testfn():
     """Test routine."""
-    import matplotlib.pyplot as plt
     from pygmi.rsense.iodefs import ImportBatch  # , ImportData
 
     # idir = r'D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat'
@@ -1354,7 +1446,7 @@ def _testfn():
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
@@ -1379,14 +1471,15 @@ def _testfn():
 def _testfn2():
     """Test routine."""
     import matplotlib.pyplot as plt
+
     from pygmi.rsense.iodefs import ImportBatch
 
-    idir = r'D:\workdata\PyGMI Test Data\Remote Sensing\ConditionIndex'
-    idir = r'D:\work\Programming\pygmi\pygmi\test\testdata'
+    idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\ConditionIndex"
+    idir = r"D:\work\Programming\pygmi\pygmi\test\testdata"
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
@@ -1396,7 +1489,7 @@ def _testfn2():
     SR.indata = tmp1.outdata
     SR.settings()
 
-    dat2 = SR.outdata['Raster']
+    dat2 = SR.outdata["Raster"]
     for i in dat2:
         plt.figure(dpi=150)
         plt.title(i.dataid)

@@ -23,37 +23,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """Hyperspectral interpretation routines."""
-import sys
-import re
+
 import os
+import re
+import sys
 
-import numpy as np
-import numexpr as ne
-from numba import njit
-from PySide6 import QtWidgets, QtCore
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 import matplotlib.patches as mpatches
-from scipy.spatial import ConvexHull
-from scipy.interpolate import interp1d
+import numexpr as ne
+import numpy as np
 from bs4 import BeautifulSoup
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from natsort import natsorted
+from numba import njit
+from PySide6 import QtCore, QtWidgets
+from scipy.interpolate import interp1d
+from scipy.spatial import ConvexHull
 
-from pygmi.rsense.render_html import render_in_browser as ren
-from pygmi.misc import frm, BasicModule
-from pygmi.rsense.iodefs import get_from_rastermeta
+from pygmi.misc import BasicModule, frm
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
-from pygmi.rsense import features
-from pygmi.rsense.usgs import SPECPR
 from pygmi.raster.modest_image import imshow
+from pygmi.rsense import features
+from pygmi.rsense.iodefs import get_from_rastermeta
+from pygmi.rsense.render_html import render_in_browser as ren
+from pygmi.rsense.usgs import SPECPR
 
 
 class GraphMap(FigureCanvasQTAgg):
     """Graph Map widget."""
 
     def __init__(self):
-        self.figure = Figure(layout='tight')
+        self.figure = Figure(layout="tight")
 
         super().__init__(self.figure)
         self.rgb = True
@@ -67,11 +69,11 @@ class GraphMap(FigureCanvasQTAgg):
         self.row = 20
         self.col = 20
         self.remhull = False
-        self.currentspectra = 'None'
+        self.currentspectra = "None"
         self.spectra = None
-        self.refl = 1.
+        self.refl = 1.0
         self.rotate = False
-        self.nodata = 0.
+        self.nodata = 0.0
         self.ax1 = None
         self.ax2 = None
         self.im1 = None
@@ -118,9 +120,9 @@ class GraphMap(FigureCanvasQTAgg):
 
         prof = np.ma.stack(prof).filled(0) / self.refl
 
-        ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
+        ax2.format_coord = lambda x, y: f"Wavelength: {x:1.2f}, Y: {y:1.2f}"
         ax2.grid(True)
-        ax2.set_xlabel('Wavelength')
+        ax2.set_xlabel("Wavelength")
 
         if self.remhull is True:
             hull = phull(prof)
@@ -128,17 +130,17 @@ class GraphMap(FigureCanvasQTAgg):
         else:
             ax2.plot(self.wvl, prof)
 
-        ax2.axvline(self.feature[0], ls='--', c='r')
+        ax2.axvline(self.feature[0], ls="--", c="r")
 
         ax2.xaxis.set_major_formatter(frm)
         ax2.yaxis.set_major_formatter(frm)
 
-        if self.currentspectra != 'None':
+        if self.currentspectra != "None":
             spec = self.spectra[self.currentspectra]
-            prof2 = spec['refl']
+            prof2 = spec["refl"]
 
             filt = ~np.isnan(prof2)
-            wvl = spec['wvl'][filt]
+            wvl = spec["wvl"][filt]
             prof2 = prof2[filt]
 
             if self.remhull is True:
@@ -179,36 +181,42 @@ class GraphMap(FigureCanvasQTAgg):
             lclip = [0, 0, 0]
             uclip = [0, 0, 0]
 
-            lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100 - clippercu])
+            lclip[0], uclip[0] = np.percentile(
+                red.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[1], uclip[1] = np.percentile(
+                green.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[2], uclip[2] = np.percentile(
+                blue.compressed(), [clippercl, 100 - clippercu]
+            )
         else:
             data = dat[self.mindx].data / self.refl
-            lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100 - clippercu])
+            lclip, uclip = np.percentile(
+                data.compressed(), [clippercl, 100 - clippercu]
+            )
 
         extent = dat[self.mindx].extent
 
         self.im1 = imshow(self.ax1, data, extent=extent)
 
         if self.rgb is True:
-            self.im1.rgbmode = 'RGB Ternary'
-            self.im1.rgbclip = [[lclip[0], uclip[0]],
-                                [lclip[1], uclip[1]],
-                                [lclip[2], uclip[2]]]
+            self.im1.rgbmode = "RGB Ternary"
+            self.im1.rgbclip = [
+                [lclip[0], uclip[0]],
+                [lclip[1], uclip[1]],
+                [lclip[2], uclip[2]],
+            ]
         else:
-            self.im1.rgbmode = 'None'
+            self.im1.rgbmode = "None"
             self.im1.set_clim(lclip, uclip)
 
         if dat[self.mindx].crs.is_geographic:
-            self.ax1.set_xlabel('Longitude')
-            self.ax1.set_ylabel('Latitude')
+            self.ax1.set_xlabel("Longitude")
+            self.ax1.set_ylabel("Latitude")
         else:
-            self.ax1.set_xlabel('Eastings')
-            self.ax1.set_ylabel('Northings')
+            self.ax1.set_xlabel("Eastings")
+            self.ax1.set_ylabel("Northings")
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
@@ -228,8 +236,8 @@ class AnalSpec(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.filename = ''
-        self.filt = ''
+        self.filename = ""
+        self.filt = ""
 
         self.spectra = None
 
@@ -239,16 +247,15 @@ class AnalSpec(BasicModule):
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
-        self.cb_hull = QtWidgets.QCheckBox('Remove Hull')
-        self.cb_rgb = QtWidgets.QCheckBox('True Colour Ternary')
+        self.cb_hull = QtWidgets.QCheckBox("Remove Hull")
+        self.cb_rgb = QtWidgets.QCheckBox("True Colour Ternary")
         self.lw_speclib = QtWidgets.QListWidget()
 
         self.setupui()
 
         self.canvas = self.map.figure.canvas
 
-        self.canvas.mpl_connect('button_press_event',
-                                self.button_press_callback)
+        self.canvas.mpl_connect("button_press_event", self.button_press_callback)
 
     def setupui(self):
         """
@@ -259,17 +266,17 @@ class AnalSpec(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = r'rsense.dm.hyper.html#analyse-spectra'
+        self.buttonbox.htmlfile = r"rsense.dm.hyper.html#analyse-spectra"
         gl_main = QtWidgets.QGridLayout(self)
 
-        pb_speclib = QtWidgets.QPushButton('Load Spectral Library')
-        pb_specd = QtWidgets.QPushButton('Current Spectrum Description')
+        pb_speclib = QtWidgets.QPushButton("Load Spectral Library")
+        pb_specd = QtWidgets.QPushButton("Current Spectrum Description")
         self.cb_rgb.setChecked(True)
         self.cmb_1.setDisabled(True)
 
-        self.setWindowTitle('Analyse Features')
-        lbl_combo = QtWidgets.QLabel('Display Band:')
-        lbl_feature = QtWidgets.QLabel('Feature:')
+        self.setWindowTitle("Analyse Features")
+        lbl_combo = QtWidgets.QLabel("Display Band:")
+        lbl_feature = QtWidgets.QLabel("Feature:")
 
         gl_main.addWidget(lbl_combo, 0, 1)
         gl_main.addWidget(self.cmb_1, 0, 2)
@@ -351,7 +358,7 @@ class AnalSpec(BasicModule):
 
         """
         txt = self.cmb_feature.currentText()
-        self.map.feature = [int(txt[1:].replace('p', ''))] + self.feature[txt]
+        self.map.feature = [int(txt[1:].replace("p", ""))] + self.feature[txt]
 
         self.map.update_graph()
 
@@ -384,16 +391,17 @@ class AnalSpec(BasicModule):
 
         """
         if nofile is True:
-            ext = 'USGS SPECPR (*);; ENVI Spectral Library (*.sli)'
+            ext = "USGS SPECPR (*);; ENVI Spectral Library (*.sli)"
 
             self.filename, self.filt = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.filename == '':
+                self.parent, "Open File", ".", ext
+            )
+            if self.filename == "":
                 return
 
-        if self.filt == 'ENVI Spectral Library (*.sli)':
+        if self.filt == "ENVI Spectral Library (*.sli)":
             self.spectra = readsli(self.filename)
-        elif self.filt == 'USGS SPECPR (*)':
+        elif self.filt == "USGS SPECPR (*)":
             self.spectra = SPECPR(self.filename)
         else:
             return
@@ -401,7 +409,7 @@ class AnalSpec(BasicModule):
         if nofile is True:
             self.lw_speclib.currentRowChanged.disconnect()
             self.lw_speclib.clear()
-            tmp = ['None'] + list(self.spectra.keys())
+            tmp = ["None"] + list(self.spectra.keys())
             self.lw_speclib.addItems(tmp)
             self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
@@ -451,18 +459,19 @@ class AnalSpec(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('Error: You must have a multi-band raster '
-                         'dataset in addition to your cluster '
-                         'analysis results')
+        if "Raster" not in self.indata:
+            self.showlog(
+                "Error: You must have a multi-band raster "
+                "dataset in addition to your cluster "
+                "analysis results"
+            )
             return False
 
-        if 'wavelength' not in self.indata['Raster'][0].metadata['Raster']:
-            self.showlog('Error: Your data should have wavelengths in'
-                         ' the metadata')
+        if "wavelength" not in self.indata["Raster"][0].metadata["Raster"]:
+            self.showlog("Error: Your data should have wavelengths in the metadata")
             return False
 
-        dat = self.indata['Raster']
+        dat = self.indata["Raster"]
 
         needsmerge = False
         rows, cols = dat[0].data.shape
@@ -473,26 +482,27 @@ class AnalSpec(BasicModule):
                 needsmerge = True
 
         if needsmerge is True:
-            self.showlog('Error: Your data bands have different sizes. '
-                         'Use Layer Stack to fix this first')
+            self.showlog(
+                "Error: Your data bands have different sizes. "
+                "Use Layer Stack to fix this first"
+            )
             return False
 
         wavelengths = []
         dat2 = []
         for i in dat:
-            if 'wavelength' in i.metadata['Raster']:
-                wavelengths.append(i.metadata['Raster']['wavelength'])
+            if "wavelength" in i.metadata["Raster"]:
+                wavelengths.append(i.metadata["Raster"]["wavelength"])
                 dat2.append(i)
 
         dat = [i for _, i in sorted(zip(wavelengths, dat2))]
 
-        if 'reflectance_scale_factor' in dat[0].metadata['Raster']:
-            self.map.refl = float(
-                dat[0].metadata['Raster']['reflectance_scale_factor'])
+        if "reflectance_scale_factor" in dat[0].metadata["Raster"]:
+            self.map.refl = float(dat[0].metadata["Raster"]["reflectance_scale_factor"])
 
         wvl = []
         for j in dat:
-            wvl.append(float(j.metadata['Raster']['wavelength']))
+            wvl.append(float(j.metadata["Raster"]["wavelength"]))
 
         dat2 = np.ma.array(dat2)
 
@@ -500,11 +510,12 @@ class AnalSpec(BasicModule):
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
-            self.map.wvl = self.map.wvl * 1000.
-            self.showlog('Wavelengths appear to be in nanometers. '
-                         'Converting to micrometers.')
+            self.map.wvl = self.map.wvl * 1000.0
+            self.showlog(
+                "Wavelengths appear to be in nanometers. Converting to micrometers."
+            )
 
-        bands = [i.dataid for i in self.indata['Raster']]
+        bands = [i.dataid for i in self.indata["Raster"]]
 
         self.cmb_update(self.cmb_1, bands)
 
@@ -513,22 +524,22 @@ class AnalSpec(BasicModule):
         self.cmb_update(self.cmb_feature, ftxt)
 
         txt = self.cmb_feature.currentText()
-        self.map.feature = [int(txt[1:].replace('p', ''))] + self.feature[txt]
+        self.map.feature = [int(txt[1:].replace("p", ""))] + self.feature[txt]
         self.map.init_graph()
 
-        if self.filename != '':
+        if self.filename != "":
             self.load_splib(nofile=False)
             self.map.currentspectra = self.lw_speclib.selectedItems()[0].text()
             self.map.update_graph()
         else:
-            self.lw_speclib.addItem('None')
+            self.lw_speclib.addItem("None")
 
         tmp = self.exec()
 
         if tmp == 0:
             return False
 
-        self.outdata['Raster'] = self.indata['Raster']
+        self.outdata["Raster"] = self.indata["Raster"]
 
         return True
 
@@ -564,14 +575,14 @@ class AnalSpec(BasicModule):
         title = self.lw_speclib.currentItem().text()
         if title not in self.spectra:
             return
-        if 'text' not in self.spectra[title]:
-            self.showlog('No description.')
+        if "text" not in self.spectra[title]:
+            self.showlog("No description.")
             return
 
-        text = self.spectra[title]['text']
+        text = self.spectra[title]["text"]
 
-        soup = BeautifulSoup(text, 'html.parser')
-        for a in soup.find_all('a', href=True):
+        soup = BeautifulSoup(text, "html.parser")
+        for a in soup.find_all("a", href=True):
             a.decompose()
 
         ren(str(soup))
@@ -597,11 +608,10 @@ class ProcFeatures(BasicModule):
         self.cryst = None
 
         self.cmb_ratios = QtWidgets.QComboBox()
-        self.cb_rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
-                                                 'ratio, filter out values '
-                                                 'less than 1.')
-        self.cb_filtercheck = QtWidgets.QCheckBox('Filter Albedo and '
-                                                  'Vegetation')
+        self.cb_rfiltcheck = QtWidgets.QCheckBox(
+            "If the final product is a ratio, filter out values less than 1."
+        )
+        self.cb_filtercheck = QtWidgets.QCheckBox("Filter Albedo and Vegetation")
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
@@ -617,20 +627,19 @@ class ProcFeatures(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.hyper.html#process-features'
+        self.buttonbox.htmlfile = "rsense.dm.hyper.html#process-features"
         gl_main = QtWidgets.QGridLayout(self)
-        lbl_ratios = QtWidgets.QLabel('Product:')
-        lbl_details = QtWidgets.QLabel('Details:')
+        lbl_ratios = QtWidgets.QLabel("Product:")
+        lbl_details = QtWidgets.QLabel("Details:")
 
         self.tablewidget.setRowCount(2)
         self.tablewidget.setColumnCount(3)
-        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
-                                                    'Threshold'])
+        self.tablewidget.setHorizontalHeaderLabels(["Feature", "Filter", "Threshold"])
         self.tablewidget.resizeColumnsToContents()
         self.cb_filtercheck.setChecked(True)
         self.cb_rfiltcheck.setChecked(True)
 
-        self.setWindowTitle('Process Hyperspectral Features')
+        self.setWindowTitle("Process Hyperspectral Features")
 
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
         gl_main.addWidget(self.cmb_ratios, 1, 1, 1, 1)
@@ -659,34 +668,34 @@ class ProcFeatures(BasicModule):
         product = self.product[txt]
 
         if self.cb_filtercheck.isChecked():
-            product = product + self.product['filter']
+            product = product + self.product["filter"]
 
         numrows = len(product)
 
         self.tablewidget.setRowCount(numrows)
         self.tablewidget.setColumnCount(4)
-        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
-                                                    'Threshold',
-                                                    'Description'])
+        self.tablewidget.setHorizontalHeaderLabels(
+            ["Feature", "Filter", "Threshold", "Description"]
+        )
 
         item = QtWidgets.QTableWidgetItem(str(product[0]))
         item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 0, item)
 
-        item = QtWidgets.QTableWidgetItem('None')
+        item = QtWidgets.QTableWidgetItem("None")
         item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 1, item)
 
-        item = QtWidgets.QTableWidgetItem('None')
+        item = QtWidgets.QTableWidgetItem("None")
         item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(0, 2, item)
 
         if product[0] in self.feature:
-            desc = 'Feature Depth'
+            desc = "Feature Depth"
         elif product[0] in self.ratio:
             desc = self.ratio[product[0]]
         else:
-            desc = 'None'
+            desc = "None"
 
         item = QtWidgets.QTableWidgetItem(desc)
         item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
@@ -694,7 +703,7 @@ class ProcFeatures(BasicModule):
 
         for i in range(1, numrows):
             cmb_1 = QtWidgets.QComboBox()
-            cmb_1.addItems(['<', '>'])
+            cmb_1.addItems(["<", ">"])
             self.tablewidget.setCellWidget(i, 1, cmb_1)
 
             txt2 = str(product[i])
@@ -710,7 +719,7 @@ class ProcFeatures(BasicModule):
             if txt2[0] in self.ratio:
                 desc = self.ratio[txt2[0]]
             else:
-                desc = 'Feature between ' + str(self.feature[txt2[0]])
+                desc = "Feature between " + str(self.feature[txt2[0]])
             item = QtWidgets.QTableWidgetItem(desc)
             item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             self.tablewidget.setItem(i, 3, item)
@@ -733,28 +742,34 @@ class ProcFeatures(BasicModule):
 
         """
         tmp = []
-        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showlog('No Satellite Data')
+        if "Raster" not in self.indata and "RasterFileList" not in self.indata:
+            self.showlog("No Satellite Data")
             return False
 
         self.feature = features.feature
         self.ratio = features.ratio
 
         self.product = features.product.copy()
-        self.product = {key: value for (key, value) in self.product.items()
-                        if 'crystallinity' not in key}
-        self.cryst = {key: value for (key, value) in features.product.items()
-                      if 'crystallinity' in key}
+        self.product = {
+            key: value
+            for (key, value) in self.product.items()
+            if "crystallinity" not in key
+        }
+        self.cryst = {
+            key: value
+            for (key, value) in features.product.items()
+            if "crystallinity" in key
+        }
 
         self.product = dict(sorted(self.product.items()))
 
-        del self.product['filter']
+        del self.product["filter"]
 
         self.cmb_update(self.cmb_ratios, self.product)
 
         # The filter line is added after the other products so that it does
         # not make it into the list widget
-        self.product['filter'] = features.product['filter']
+        self.product["filter"] = features.product["filter"]
         self.product_change()
 
         if not nodialog:
@@ -810,57 +825,91 @@ class ProcFeatures(BasicModule):
             product = [self.tablewidget.item(0, 0).text()]
         for i in range(1, self.tablewidget.rowCount()):
             product.append(self.tablewidget.item(i, 0).text())
-            product[-1] += (' ' +
-                            self.tablewidget.cellWidget(i, 1).currentText())
-            product[-1] += ' ' + self.tablewidget.item(i, 2).text()
+            product[-1] += " " + self.tablewidget.cellWidget(i, 1).currentText()
+            product[-1] += " " + self.tablewidget.item(i, 2).text()
 
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
-            odir = os.path.join(os.path.dirname(flist[0].filename), 'feature')
+        if "RasterFileList" in self.indata:
+            flist = self.indata["RasterFileList"]
+            odir = os.path.join(os.path.dirname(flist[0].filename), "feature")
 
             os.makedirs(odir, exist_ok=True)
             for idat in flist:
                 ifile = idat.filename
-                self.showlog('Processing ' + os.path.basename(ifile))
+                self.showlog("Processing " + os.path.basename(ifile))
 
-                dat = get_from_rastermeta(idat, showlog=self.showlog,
-                                          piter=self.piter)
-                self.showlog('Calculating features...')
-                datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                      product, cryst=cryst,
-                                      showlog=self.showlog,
-                                      rfilt=rfilt, piter=self.piter)
+                dat = get_from_rastermeta(idat, showlog=self.showlog, piter=self.piter)
+                self.showlog("Calculating features...")
+                datfin = calcfeatures(
+                    dat,
+                    mineral,
+                    self.feature,
+                    self.ratio,
+                    product,
+                    cryst=cryst,
+                    showlog=self.showlog,
+                    rfilt=rfilt,
+                    piter=self.piter,
+                )
 
-                ofile = (os.path.basename(ifile).split('.')[0] + '_' +
-                         mineral.replace(' ', '_') + '.tif')
+                ofile = (
+                    os.path.basename(ifile).split(".")[0]
+                    + "_"
+                    + mineral.replace(" ", "_")
+                    + ".tif"
+                )
                 ofile = os.path.join(odir, ofile)
                 if np.all(datfin[0].data.mask):
-                    self.showlog(' Could not find any ' + mineral +
-                                 '. No data to export.')
+                    self.showlog(
+                        " Could not find any " + mineral + ". No data to export."
+                    )
                 else:
-                    self.showlog('Exporting ' + os.path.basename(ofile))
-                    export_raster(ofile, datfin, drv='GTiff', piter=self.piter,
-                                  showlog=self.showlog)
+                    self.showlog("Exporting " + os.path.basename(ofile))
+                    export_raster(
+                        ofile,
+                        datfin,
+                        drv="GTiff",
+                        piter=self.piter,
+                        showlog=self.showlog,
+                    )
 
-        elif 'Raster' in self.indata:
-            dat = self.indata['Raster']
-            datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                  product, cryst=cryst, rfilt=rfilt,
-                                  piter=self.piter)
+        elif "Raster" in self.indata:
+            dat = self.indata["Raster"]
+            datfin = calcfeatures(
+                dat,
+                mineral,
+                self.feature,
+                self.ratio,
+                product,
+                cryst=cryst,
+                rfilt=rfilt,
+                piter=self.piter,
+            )
 
         if np.all(datfin[0].data.mask):
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Warning', ' Could not find any ' + mineral +
-                '. No data to export.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent,
+                "Warning",
+                " Could not find any " + mineral + ". No data to export.",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return False
 
-        self.outdata['Raster'] = datfin
+        self.outdata["Raster"] = datfin
         return True
 
 
-def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
-                 rfilt=True, piter=iter, showlog=print):
+def calcfeatures(
+    dat,
+    mineral,
+    feature,
+    ratio,
+    product,
+    *,
+    cryst=None,
+    rfilt=True,
+    piter=iter,
+    showlog=print,
+):
     """
     Calculate feature dataset.
 
@@ -913,7 +962,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
 
     if maxdat <= 1.0:
         dmult = 10000
-        showlog('Converting reflectances to units of % * 100')
+        showlog("Converting reflectances to units of % * 100")
     else:
         dmult = 1
 
@@ -926,22 +975,28 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         else:
             dat2.append(j.data * dmult)
 
-        if 'wavelength' in j.metadata['Raster']:
-            refl = float(j.metadata['Raster']['wavelength'])
-        elif 'WavelengthMin' in j.metadata['Raster']:
-            wmin = float(j.metadata['Raster']['WavelengthMin'])
-            wmax = float(j.metadata['Raster']['WavelengthMax'])
-            refl = (wmax + wmin) / 2.
+        if "wavelength" in j.metadata["Raster"]:
+            refl = float(j.metadata["Raster"]["wavelength"])
+        elif "WavelengthMin" in j.metadata["Raster"]:
+            wmin = float(j.metadata["Raster"]["WavelengthMin"])
+            wmax = float(j.metadata["Raster"]["WavelengthMax"])
+            refl = (wmax + wmin) / 2.0
         else:
-            showlog(f'No wavelength metadata for {j.dataid}. Trying to extract'
-                    ' from bandname. If the wavelength is not on the bandname,'
-                    ' this will not work.')
-            refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
+            showlog(
+                f"No wavelength metadata for {j.dataid}. Trying to extract"
+                " from bandname. If the wavelength is not on the bandname,"
+                " this will not work."
+            )
+            refl = float(re.findall(r"[\d\.\d]+", j.dataid)[-1])
 
-        if refl < 100.:
+        if refl < 100.0:
             refl = refl * 1000
         refl = round(refl, 2)
         xval.append(refl)
+
+    dorder = [i for _, i in natsorted(zip(xval, range(len(xval))))]
+    dat = [dat[i] for i in dorder]
+    xval = [xval[i] for i in dorder]
 
     xval = np.array(xval)
     dat2 = np.ma.array(dat2)
@@ -951,7 +1006,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     RBands = {}
     for j in range(1, 2501):
         i = abs(xval - j).argmin()
-        RBands['R' + str(j)] = dat2[i]
+        RBands["R" + str(j)] = dat2[i]
 
     datfin = []
     # Calclate ratios
@@ -977,8 +1032,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         i1 = abs(xval - fmin).argmin()
         i2 = abs(xval - fmax).argmin()
 
-        fdat = dat2[i1:i2 + 1]
-        xdat = xval[i1:i2 + 1]
+        fdat = dat2[i1 : i2 + 1]
+        xdat = xval[i1 : i2 + 1]
 
         # Raster calculation
         _, rows, cols = dat2.shape
@@ -993,8 +1048,9 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
         fdat = np.moveaxis(fdat, 0, -1)
 
         for i in piter(range(rows)):
-            ptmp[i], dtmp[i], mtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i],
-                                              i1a, i2a, xdat, mtmp[i])
+            ptmp[i], dtmp[i], mtmp[i] = fproc(
+                fdat[i].data, ptmp[i], dtmp[i], i1a, i2a, xdat, mtmp[i]
+            )
         depths[fname] = dtmp
         wvl[fname] = ptmp
         datcalc[fname] = dtmp
@@ -1004,7 +1060,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     datout2 = None
 
     for i in product:
-        if i.count('f') > 1:
+        if i.count("f") > 1:
             dattmp = {}
             for j in datcalc:
                 if j in i:
@@ -1017,15 +1073,15 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             datout = np.nan_to_num(tmp)
         else:
             if tmp.max() > 1:
-                showlog('Problem with filter. Max value greater that 1')
+                showlog("Problem with filter. Max value greater that 1")
                 return datfin
             datout = datout * np.nan_to_num(tmp)
 
-    if product[0][0] == 'f':
-        label = f'{mineral} depth'
+    if product[0][0] == "f":
+        label = f"{mineral} depth"
         datout2 = np.nan_to_num(wvl[product[[0][0]]])
     else:
-        label = f'{mineral} ratio'
+        label = f"{mineral} ratio"
         if rfilt is True:
             datout[datout < 1] = 0
 
@@ -1035,12 +1091,12 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
     if datout2 is not None:
         datout2 = np.ma.masked_equal(datout2, 0)
         datout2.mask = np.logical_or(datout.mask, datout2.mask)
-        datfin.append(numpy_to_pygmi(datout2, dat[0], f'{mineral} wvl'))
+        datfin.append(numpy_to_pygmi(datout2, dat[0], f"{mineral} wvl"))
 
     # Add crystallinity if present.
     datout3 = None
     for i in cryst:
-        if i.count('f') > 1:
+        if i.count("f") > 1:
             dattmp = {}
             for j in datcalc:
                 if j in i:
@@ -1053,15 +1109,14 @@ def calcfeatures(dat, mineral, feature, ratio, product, *, cryst=None,
             datout3 = np.nan_to_num(tmp)
         else:
             if tmp.max() > 1:
-                showlog('Problem with filter. Max value greater that 1')
+                showlog("Problem with filter. Max value greater that 1")
                 return datfin
             datout3 = datout3 * np.nan_to_num(tmp)
 
     if datout3 is not None:
         datout3 = np.ma.masked_equal(datout3, 0)
         datout3.mask = np.logical_or(datout.mask, datout3.mask)
-        datfin.append(numpy_to_pygmi(datout3, dat[0],
-                                     f'{mineral} crystallinity'))
+        datfin.append(numpy_to_pygmi(datout3, dat[0], f"{mineral} crystallinity"))
 
     return datfin
 
@@ -1142,14 +1197,14 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
         imin = crem[i1a:i2a].argmin()
 
         if imin in (0, i2a - i1a - 1):
-            dtmp[j] = 1. - crem[i1a:i2a][imin]
+            dtmp[j] = 1.0 - crem[i1a:i2a][imin]
             ptmp[j] = xdat[i1a:i2a][imin]
             continue
 
         x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
 
         ptmp[j] = x
-        dtmp[j] = 1. - y
+        dtmp[j] = 1.0 - y
 
     return ptmp, dtmp, mtmp
 
@@ -1187,59 +1242,107 @@ def cubic_calc(xdat, crem, imin):
     x = x2
     y = y2
 
-    a1 = (2 * x1**3 * x2 * y3 - 2 * x1**3 * x3 * y2 - x1**2 * x2**2 * y2 -
-          3 * x1**2 * x2**2 * y3 +
-          2 * x1**2 * x2 * x3 * y2 + 2 * x1**2 * x3**2 * y2 + x1 * x2**3 * y1 +
-          x1 * x2**3 * y3 +
-          x1 * x2**2 * x3 * y1 + x1 * x2**2 * x3 * y2 -
-          2 * x1 * x2 * x3**2 * y1 -
-          2 * x1 * x2 * x3**2 * y2 - 2 * x2**3 * x3 * y1 +
-          2 * x2**2 * x3**2 * y1) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
-    b1 = (2 * x1**3 * y2 - 2 * x1**3 * y3 - 4 * x1 * x2**2 * y1 +
-          x1 * x2**2 * y2 +
-          3 * x1 * x2**2 * y3 + 2 * x1 * x2 * x3 * y1 - 2 * x1 * x2 * x3 * y2 +
-          2 * x1 * x3**2 * y1 -
-          2 * x1 * x3**2 * y2 + x2**3 * y1 - x2**3 * y3 + x2**2 * x3 * y1 -
-          x2**2 * x3 * y2 -
-          2 * x2 * x3**2 * y1 + 2 * x2 * x3**2 * y2) / (2 * (x1 - x2)**2 *
-                                                        (x1 - x3) * (x2 - x3))
-    c1 = -3 * x1 * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
-                    x3 * y2) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
-    d1 = (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
-          x3 * y2) / (2 * (x1 - x2)**2 * (x1 - x3) * (x2 - x3))
+    a1 = (
+        2 * x1**3 * x2 * y3
+        - 2 * x1**3 * x3 * y2
+        - x1**2 * x2**2 * y2
+        - 3 * x1**2 * x2**2 * y3
+        + 2 * x1**2 * x2 * x3 * y2
+        + 2 * x1**2 * x3**2 * y2
+        + x1 * x2**3 * y1
+        + x1 * x2**3 * y3
+        + x1 * x2**2 * x3 * y1
+        + x1 * x2**2 * x3 * y2
+        - 2 * x1 * x2 * x3**2 * y1
+        - 2 * x1 * x2 * x3**2 * y2
+        - 2 * x2**3 * x3 * y1
+        + 2 * x2**2 * x3**2 * y1
+    ) / (2 * (x1 - x2) ** 2 * (x1 - x3) * (x2 - x3))
+    b1 = (
+        2 * x1**3 * y2
+        - 2 * x1**3 * y3
+        - 4 * x1 * x2**2 * y1
+        + x1 * x2**2 * y2
+        + 3 * x1 * x2**2 * y3
+        + 2 * x1 * x2 * x3 * y1
+        - 2 * x1 * x2 * x3 * y2
+        + 2 * x1 * x3**2 * y1
+        - 2 * x1 * x3**2 * y2
+        + x2**3 * y1
+        - x2**3 * y3
+        + x2**2 * x3 * y1
+        - x2**2 * x3 * y2
+        - 2 * x2 * x3**2 * y1
+        + 2 * x2 * x3**2 * y2
+    ) / (2 * (x1 - x2) ** 2 * (x1 - x3) * (x2 - x3))
+    c1 = (
+        -3
+        * x1
+        * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 - x3 * y2)
+        / (2 * (x1 - x2) ** 2 * (x1 - x3) * (x2 - x3))
+    )
+    d1 = (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 - x3 * y2) / (
+        2 * (x1 - x2) ** 2 * (x1 - x3) * (x2 - x3)
+    )
 
-    a2 = (2 * x1**2 * x2**2 * y3 - 2 * x1**2 * x2 * x3 * y2 -
-          2 * x1**2 * x2 * x3 * y3 +
-          2 * x1**2 * x3**2 * y2 - 2 * x1 * x2**3 * y3 + x1 * x2**2 * x3 * y2 +
-          x1 * x2**2 * x3 * y3 +
-          2 * x1 * x2 * x3**2 * y2 - 2 * x1 * x3**3 * y2 + x2**3 * x3 * y1 +
-          x2**3 * x3 * y3 -
-          3 * x2**2 * x3**2 * y1 - x2**2 * x3**2 * y2 +
-          2 * x2 * x3**3 * y1) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
-    b2 = (2 * x1**2 * x2 * y2 - 2 * x1**2 * x2 * y3 - 2 * x1**2 * x3 * y2 +
-          2 * x1**2 * x3 * y3 -
-          x1 * x2**2 * y2 + x1 * x2**2 * y3 - 2 * x1 * x2 * x3 * y2 +
-          2 * x1 * x2 * x3 * y3 -
-          x2**3 * y1 + x2**3 * y3 + 3 * x2**2 * x3 * y1 + x2**2 * x3 * y2 -
-          4 * x2**2 * x3 * y3 -
-          2 * x3**3 * y1 + 2 * x3**3 * y2) / (2 * (x1 - x2) * (x1 - x3) *
-                                              (x2 - x3)**2)
-    c2 = 3 * x3 * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
-                   x3 * y2) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
-    d2 = -(x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 -
-           x3 * y2) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3)**2)
+    a2 = (
+        2 * x1**2 * x2**2 * y3
+        - 2 * x1**2 * x2 * x3 * y2
+        - 2 * x1**2 * x2 * x3 * y3
+        + 2 * x1**2 * x3**2 * y2
+        - 2 * x1 * x2**3 * y3
+        + x1 * x2**2 * x3 * y2
+        + x1 * x2**2 * x3 * y3
+        + 2 * x1 * x2 * x3**2 * y2
+        - 2 * x1 * x3**3 * y2
+        + x2**3 * x3 * y1
+        + x2**3 * x3 * y3
+        - 3 * x2**2 * x3**2 * y1
+        - x2**2 * x3**2 * y2
+        + 2 * x2 * x3**3 * y1
+    ) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3) ** 2)
+    b2 = (
+        2 * x1**2 * x2 * y2
+        - 2 * x1**2 * x2 * y3
+        - 2 * x1**2 * x3 * y2
+        + 2 * x1**2 * x3 * y3
+        - x1 * x2**2 * y2
+        + x1 * x2**2 * y3
+        - 2 * x1 * x2 * x3 * y2
+        + 2 * x1 * x2 * x3 * y3
+        - x2**3 * y1
+        + x2**3 * y3
+        + 3 * x2**2 * x3 * y1
+        + x2**2 * x3 * y2
+        - 4 * x2**2 * x3 * y3
+        - 2 * x3**3 * y1
+        + 2 * x3**3 * y2
+    ) / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3) ** 2)
+    c2 = (
+        3
+        * x3
+        * (x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 - x3 * y2)
+        / (2 * (x1 - x2) * (x1 - x3) * (x2 - x3) ** 2)
+    )
+    d2 = -(x1 * y2 - x1 * y3 - x2 * y1 + x2 * y3 + x3 * y1 - x3 * y2) / (
+        2 * (x1 - x2) * (x1 - x3) * (x2 - x3) ** 2
+    )
 
-    if abs(d1) > 2.22e+16:
-        min1 = [(-c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1),
-                -(c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1)]
+    if abs(d1) > 2.22e16:
+        min1 = [
+            (-c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1),
+            -(c1 + np.sqrt(-3 * b1 * d1 + c1**2)) / (3 * d1),
+        ]
         for i in min1:
             if x1 < i < x2:
                 x = i
                 y = a1 + b1 * x + c1 * x**2 + d1 * x**3
 
-    if abs(d2) > 2.22e+16:
-        min2 = [(-c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2),
-                -(c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2)]
+    if abs(d2) > 2.22e16:
+        min2 = [
+            (-c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2),
+            -(c2 + np.sqrt(-3 * b2 * d2 + c2**2)) / (3 * d2),
+        ]
 
         for i in min2:
             if x2 < i < x3:
@@ -1282,7 +1385,7 @@ def phulljit(sample1):
         pivot = np.argmax(grad)
         edge[0, 0] = rest[pivot, 0]
         edge[0, 1] = rest[pivot, 1]
-        rest = rest[pivot + 1:]
+        rest = rest[pivot + 1 :]
         hull.append(pivot)
 
     hull = np.array(hull) + 1
@@ -1315,11 +1418,11 @@ def phull(y):
     x = np.arange(y.size, dtype=np.int64)
     points = np.transpose([x, y])
 
-    augmented = np.concatenate([points, [(x[0], np.min(y) - 1),
-                                         (x[-1], np.min(y) - 1)]], axis=0)
+    augmented = np.concatenate(
+        [points, [(x[0], np.min(y) - 1), (x[-1], np.min(y) - 1)]], axis=0
+    )
     hull = ConvexHull(augmented)
-    continuum_points = points[np.sort([v for v in hull.vertices
-                                       if v < len(points)])]
+    continuum_points = points[np.sort([v for v in hull.vertices if v < len(points)])]
     continuum_function = interp1d(*continuum_points.T)
 
     out = continuum_function(x)
@@ -1341,10 +1444,10 @@ def readsli(ifile):
     spectra : dictionary
         Dictionary of spectra with wavelengths and reflectances.
     """
-    with open(ifile[:-4] + '.hdr', encoding='utf-8') as file:
+    with open(ifile[:-4] + ".hdr", encoding="utf-8") as file:
         hdr = file.read()
 
-    hdr = hdr.split('\n')
+    hdr = hdr.split("\n")
 
     hdr2 = []
     i = -1
@@ -1355,37 +1458,37 @@ def readsli(ifile):
             hdr2.append(tmp)
         else:
             hdr2[-1] += tmp
-        if '{' in tmp:
+        if "{" in tmp:
             brackets = True
-        if '}' in tmp:
+        if "}" in tmp:
             brackets = False
 
     hdr3 = {}
     for i in hdr2:
-        tmp = i.split('=')
+        tmp = i.split("=")
         if len(tmp) > 1:
             hdr3[tmp[0].strip()] = tmp[1].strip()
 
     for i in hdr3:
-        if i in ['samples', 'lines', 'bands', 'header offset', 'data type']:
+        if i in ["samples", "lines", "bands", "header offset", "data type"]:
             hdr3[i] = int(hdr3[i])
             continue
-        if i in ['reflectance scale factor']:
+        if i in ["reflectance scale factor"]:
             hdr3[i] = float(hdr3[i])
             continue
-        if '{' in hdr3[i]:
-            hdr3[i] = hdr3[i].replace('{', '')
-            hdr3[i] = hdr3[i].replace('}', '')
-            hdr3[i] = hdr3[i].split(',')
+        if "{" in hdr3[i]:
+            hdr3[i] = hdr3[i].replace("{", "")
+            hdr3[i] = hdr3[i].replace("}", "")
+            hdr3[i] = hdr3[i].split(",")
             hdr3[i] = [j.strip() for j in hdr3[i]]
-            if i in ['wavelength', 'z plot range']:
+            if i in ["wavelength", "z plot range"]:
                 hdr3[i] = [float(j) for j in hdr3[i]]
 
-    if hdr3['bands'] > 1:
-        print('More than one band in sli file. Cannot import')
+    if hdr3["bands"] > 1:
+        print("More than one band in sli file. Cannot import")
         return None
 
-    dtype = hdr3['data type']
+    dtype = hdr3["data type"]
     dt2np = {}
     dt2np[1] = np.uint8
     dt2np[2] = np.int16
@@ -1400,22 +1503,21 @@ def readsli(ifile):
     dt2np[15] = np.uint64
 
     data = np.fromfile(ifile, dtype=dt2np[dtype])
-    data[data == -1.23e+34] = np.nan
-    data = data / hdr3['reflectance scale factor']
+    data[data == -1.23e34] = np.nan
+    data = data / hdr3["reflectance scale factor"]
 
-    data = data.reshape(hdr3['lines'], hdr3['samples'])
+    data = data.reshape(hdr3["lines"], hdr3["samples"])
 
     spectra = {}
-    wmult = 1.
+    wmult = 1.0
 
-    if hdr3['wavelength units'].lower() == 'micrometers':
-        wmult = 1000.
+    if hdr3["wavelength units"].lower() == "micrometers":
+        wmult = 1000.0
 
-    hdr3['wavelength'] = np.array(hdr3['wavelength']) * wmult
+    hdr3["wavelength"] = np.array(hdr3["wavelength"]) * wmult
 
-    for i, val in enumerate(hdr3['spectra names']):
-        spectra[val] = {'wvl': hdr3['wavelength'],
-                        'refl': data[i]}
+    for i, val in enumerate(hdr3["spectra names"]):
+        spectra[val] = {"wvl": hdr3["wavelength"], "refl": data[i]}
 
     return spectra
 
@@ -1425,15 +1527,35 @@ def _testfn():
     from pygmi.rsense.iodefs import get_data
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r"C:\Work\2817AA-E_hyperspec_utm33s.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
 
-    data = get_data(ifile)
+    dat = get_data(ifile)
 
-    tmp = ProcFeatures(None)
-    tmp.indata['Raster'] = data
-    tmp.settings()
+    # tmp = ProcFeatures(None)
+    # tmp.indata['Raster'] = dat
+    # tmp.settings()
+
+    # dataid = [i.dataid for i in dat]
+    # dorder = [i for _, i in natsorted(zip(dataid, range(len(dataid))))]
+    # dat = [dat[i] for i in dorder]
+
+    feature = features.feature
+    ratio = features.ratio
+    products = features.product
+
+    datfin = []
+    for mineral in products:
+        if mineral == "filter":
+            continue
+        product = products[mineral] + products["filter"]
+
+        datfin += calcfeatures(dat, mineral, feature, ratio, product)
+
+    ofile = ifile[:-4] + "_features.tif"
+    export_raster(ofile, datfin, compression="DEFLATE")
+    pass
 
 
 def _testfn2():
@@ -1445,10 +1567,10 @@ def _testfn2():
     data = get_data(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = AnalSpec()
-    tmp.indata['Raster'] = data
+    tmp.indata["Raster"] = data
     tmp.settings()
 
 
