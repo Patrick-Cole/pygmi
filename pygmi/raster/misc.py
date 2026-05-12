@@ -24,18 +24,19 @@
 # -----------------------------------------------------------------------------
 """Miscellaneous functions for raster data."""
 
-from math import cos, sin, tan
 from collections import Counter
-import numpy as np
+from math import cos, sin, tan
+
+import geopandas as gpd
 import numexpr as ne
-from scipy import ndimage
+import numpy as np
+import rasterio
 from matplotlib.pyplot import colormaps
 from pyproj.crs import CRS
 from pyproj.exceptions import ProjError
-import rasterio
-from rasterio.warp import reproject
 from rasterio.mask import mask as riomask
-import geopandas as gpd
+from rasterio.warp import reproject
+from scipy import ndimage
 from shapely import Polygon
 
 from pygmi.misc import ProgressBarText
@@ -60,21 +61,21 @@ def aspect2(data):
     dzdy : numpy array
         gradient in y direction
     """
-    cdy = np.array([[1., 2., 1.], [0., 0., 0.], [-1., -2., -1.]])
-    cdx = np.array([[1., 0., -1.], [2., 0., -2.], [1., 0., -1.]])
+    cdy = np.array([[1.0, 2.0, 1.0], [0.0, 0.0, 0.0], [-1.0, -2.0, -1.0]])
+    cdx = np.array([[1.0, 0.0, -1.0], [2.0, 0.0, -2.0], [1.0, 0.0, -1.0]])
 
     dzdx = ndimage.convolve(data, cdx)  # Use convolve: matrix filtering
     dzdy = ndimage.convolve(data, cdy)  # 'valid' gets reduced array
 
-    dzdx = ne.evaluate('dzdx/8.')
-    dzdy = ne.evaluate('dzdy/8.')
+    dzdx = ne.evaluate("dzdx/8.")
+    dzdy = ne.evaluate("dzdy/8.")
 
     # Aspect Section
     pi = np.pi
-    adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
+    adeg = ne.evaluate("90-arctan2(dzdy, -dzdx)*180./pi")
     adeg = np.ma.masked_invalid(adeg)
-    adeg[np.ma.less(adeg, 0.)] += 360.
-    adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.
+    adeg[np.ma.less(adeg, 0.0)] += 360.0
+    adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.0
 
     return adeg, dzdx, dzdy
 
@@ -103,13 +104,13 @@ def check_dataid(out):
         j = 1
         for i in out:
             if elt == i.dataid and count > 1:
-                i.dataid += '(' + str(j) + ')'
+                i.dataid += "(" + str(j) + ")"
                 j += 1
 
     return out
 
 
-def currentshader(data, cell=1., theta=np.pi / 4., phi=-np.pi / 4., alpha=1.0):
+def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0):
     """
     Blinn shader - used for sun shading.
 
@@ -142,21 +143,21 @@ def currentshader(data, cell=1., theta=np.pi / 4., phi=-np.pi / 4., alpha=1.0):
     n = 2
     # pinit = asp[1]
     # qinit = asp[2]
-    p = ne.evaluate('pinit/cell')
-    q = ne.evaluate('qinit/cell')
-    sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
+    p = ne.evaluate("pinit/cell")
+    q = ne.evaluate("qinit/cell")
+    sqrt_1p2q2 = ne.evaluate("sqrt(1+p**2+q**2)")
 
     cosg2 = cos(theta / 2)
     p0 = -cos(phi) * tan(theta)
     q0 = -sin(phi) * tan(theta)
-    sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
-    p1 = ne.evaluate('p0 / sqrttmp')
-    q1 = ne.evaluate('q0 / sqrttmp')
+    sqrttmp = ne.evaluate("(1+sqrt(1+p0**2+q0**2))")
+    p1 = ne.evaluate("p0 / sqrttmp")
+    q1 = ne.evaluate("q0 / sqrttmp")
 
-    cosi = ne.evaluate('((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))')
-    coss = ne.evaluate('((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))')
-    Ps = ne.evaluate('coss**n')
-    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
+    cosi = ne.evaluate("((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))")
+    coss = ne.evaluate("((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))")
+    Ps = ne.evaluate("coss**n")
+    R = np.ma.masked_invalid(ne.evaluate("((1-alpha)+alpha*Ps)*cosi/cosg2"))
 
     return R
 
@@ -192,14 +193,16 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
     elif isinstance(ibnd, (list, tuple)):
         x0, y0, x1, y1 = ibnd
         poly = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)])
-        gdf = gpd.GeoDataFrame({'geometry': [poly]})
+        gdf = gpd.GeoDataFrame({"geometry": [poly]})
     else:
         try:
             gdf = gpd.read_file(ibnd)
         except:
-            showlog('There was a problem importing the shapefile. Please make '
-                    'sure you have at all the individual files which make up '
-                    'the shapefile.')
+            showlog(
+                "There was a problem importing the shapefile. Please make "
+                "sure you have at all the individual files which make up "
+                "the shapefile."
+            )
             return None
 
     if gdf.crs is None:
@@ -208,31 +211,38 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
         try:
             gdf = gdf.to_crs(data[0].crs)
         except ProjError:
-            showlog('There was a problem converting the shapefile projection '
-                    'to the raster projection. Check to see that both files '
-                    'have valid projections.')
+            showlog(
+                "There was a problem converting the shapefile projection "
+                "to the raster projection. Check to see that both files "
+                "have valid projections."
+            )
             return None
     gdf = gdf[gdf.geometry != None]
 
-    if 'Polygon' not in gdf.geom_type.iloc[0]:
-        showlog('You need a polygon in that shape file')
+    if "Polygon" not in gdf.geom_type.iloc[0]:
+        showlog("You need a polygon in that shape file")
         return None
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
         dext = idata.bounds
-        lext = gdf['geometry'].total_bounds
+        lext = gdf["geometry"].total_bounds
 
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
-                (dext[1] > lext[3]) or (dext[3] < lext[1])):
-
-            showlog('The shapefile or bounds is not in the same area as the '
-                    'raster dataset. Please check its coordinates and make '
-                    'sure its projection is the same as the raster dataset')
+        if (
+            (dext[0] > lext[2])
+            or (dext[2] < lext[0])
+            or (dext[1] > lext[3])
+            or (dext[3] < lext[1])
+        ):
+            showlog(
+                "The shapefile or bounds is not in the same area as the "
+                "raster dataset. Please check its coordinates and make "
+                "sure its projection is the same as the raster dataset"
+            )
             return None
 
         # This section converts PolygonZ to Polygon, and takes first polygon.
-        coords = gdf['geometry']
+        coords = gdf["geometry"]
 
         dat, trans = riomask(idata.to_mem(), coords, crop=True)
 
@@ -245,7 +255,7 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
     return data
 
 
-def histcomp(img, perc=5., uperc=None):
+def histcomp(img, perc=5.0, uperc=None):
     """
     Histogram Compaction.
 
@@ -333,7 +343,7 @@ def histeq(img, nbrbins=32768):
     return im2
 
 
-def img2rgb(img, cbar=colormaps['jet']):
+def img2rgb(img, cbar=colormaps["jet"]):
     """
     Image to RGB.
 
@@ -354,7 +364,7 @@ def img2rgb(img, cbar=colormaps['jet']):
     im2 = img.copy()
     im2 = norm255(im2)
     cbartmp = cbar(range(255))
-    cbartmp = np.array([[0., 0., 0., 1.]] + cbartmp.tolist()) * 255
+    cbartmp = np.array([[0.0, 0.0, 0.0, 1.0]] + cbartmp.tolist()) * 255
     cbartmp = cbartmp.round()
     cbartmp = cbartmp.astype(np.uint8)
     im2 = cbartmp[im2]
@@ -363,9 +373,18 @@ def img2rgb(img, cbar=colormaps['jet']):
     return im2
 
 
-def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
-           masterid=None, nodeepcopy=False, resampling='nearest',
-           checkdataid=True):
+def lstack(
+    dat,
+    *,
+    piter=None,
+    dxy=None,
+    showlog=print,
+    commonmask=False,
+    masterid=None,
+    nodeepcopy=False,
+    resampling="nearest",
+    checkdataid=True,
+):
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -482,26 +501,25 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
     trans = rasterio.Affine(dxy, 0, float(xmin), 0, -1 * dxy, float(ymax))
 
     if cols == 0 or rows == 0:
-        showlog('Your rows or cols are zero. '
-                'Your input projection may be wrong')
+        showlog("Your rows or cols are zero. Your input projection may be wrong")
         return None
 
     dat2 = []
     cmask = None
     for data in piter(dat):
-
         # if dtype is not None:
         #     data.data = data.data.astype(dtype)
         #     data.nodata = nodata
 
         if data.crs is None:
-            showlog(f'{data.dataid} has no defined projection. '
-                    'Assigning local.')
+            showlog(f"{data.dataid} has no defined projection. Assigning local.")
 
-            data.crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
-                                       'AUTHORITY["EPSG","9001"]],'
-                                       'AXIS["Easting",EAST],'
-                                       'AXIS["Northing",NORTH]]')
+            data.crs = CRS.from_string(
+                'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                'AUTHORITY["EPSG","9001"]],'
+                'AXIS["Easting",EAST],'
+                'AXIS["Northing",NORTH]]'
+            )
 
         doffset = 0.0
         # data.data.set_fill_value(data.nodata)
@@ -516,20 +534,22 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
                 dat2.append(data)
         else:
             if data.data.min() <= 0:
-                doffset = data.data.min() - 1.
+                doffset = data.data.min() - 1.0
                 data.data = data.data - doffset
             # height, width = data.data.shape
 
             data.data = data.data.filled(0)
             odata = np.zeros((rows, cols), dtype=data.data.dtype)
-            odata, _ = reproject(source=data.data,
-                                 destination=odata,
-                                 src_transform=trans0,
-                                 src_crs=data.crs,
-                                 src_nodata=data.nodata,
-                                 dst_transform=trans,
-                                 dst_crs=data.crs,
-                                 resampling=resampling)
+            odata, _ = reproject(
+                source=data.data,
+                destination=odata,
+                src_transform=trans0,
+                src_crs=data.crs,
+                src_nodata=data.nodata,
+                dst_transform=trans,
+                dst_crs=data.crs,
+                resampling=resampling,
+            )
 
             data2 = Data()
             odata[odata == 0] = data.nodata
@@ -558,14 +578,13 @@ def lstack(dat, *, piter=None, dxy=None, showlog=print, commonmask=False,
             data.data[data.data == 0] = data.nodata
             data.data = np.ma.masked_equal(data.data, data.nodata)
 
-            if doffset != 0.:
+            if doffset != 0.0:
                 data.data = data.data + doffset
 
         if cmask is None:
             cmask = np.ma.getmaskarray(dat2[-1].data)
         else:
-            cmask = np.logical_or(
-                cmask, np.ma.getmaskarray(dat2[-1].data))
+            cmask = np.logical_or(cmask, np.ma.getmaskarray(dat2[-1].data))
 
     if commonmask is True:
         for idat in piter(dat2):
@@ -603,10 +622,10 @@ def norm2(dat, datmin=None, datmax=None):
     if datmax is None:
         datmax = float(dat.max())
     datptp = datmax - datmin
-    out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
+    out = np.ma.array(ne.evaluate("(dat-datmin)/datptp"))
     out.mask = np.ma.getmaskarray(dat)
-    out[out < 0] = 0.
-    out[out > 1] = 1.
+    out[out < 0] = 0.0
+    out[out > 1] = 1.0
 
     return out
 
@@ -627,7 +646,7 @@ def norm255(dat):
     """
     datmin = float(dat.min())
     datptp = float(np.ma.ptp(dat))
-    out = ne.evaluate('254*(dat-datmin)/datptp+1')
+    out = ne.evaluate("254*(dat-datmin)/datptp+1")
     out = out.round()
     out = out.astype(np.uint8)
     return out

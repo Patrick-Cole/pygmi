@@ -501,7 +501,9 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
     if noisetype == "diagonal":
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, 1:]
-        noise = ne.evaluate("t1-t2")
+
+        local = {"t1": t1, "t2": t2}
+        noise = ne.evaluate("t1-t2", local_dict=local)
 
         mask2 = mask[:-1, :-1] * mask[1:, 1:]
         noise = noise[mask2]
@@ -514,7 +516,9 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
         t3 = x2d[:-1, :-1]
         t4 = x2d[:-1, 1:]
 
-        noise = ne.evaluate("(t1-t2+t3-t4)/2")
+        local = {"t1": t1, "t2": t2, "t3": t3, "t4": t4}
+
+        noise = ne.evaluate("(t1-t2+t3-t4)/2", local_dict=local)
 
         mask2 = mask[:-1, :-1] * mask[1:, :-1] * mask[:-1, 1:]
 
@@ -551,41 +555,28 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
 
         ncov = blockwise_cov(noise.T)  # / 81
 
-    # del noise
     next(pbar)
     # Calculate evecs and evals
-    nevals, nevecs = np.linalg.eigh(ncov)
-    Ln = np.power(nevals, -0.5)
-    Ln = np.diag(Ln)
+    # nevals, nevecs = np.linalg.eigh(ncov)
+    # Ln = np.power(nevals, -0.5)
+    # Ln = np.diag(Ln)
 
-    W1 = np.dot(Ln, nevecs.T)
-    W1 = W1.T
+    # W1 = np.dot(Ln, nevecs.T)
+    # W1 = W1.T
+    # ###########################################
+
     # x = x2d[mask]
-
     # Pnorm = blockwise_dot(x, W.T)
     # Pnorm = x @ W1.T
 
     # Calculate SVD
-    # rows, cols, bands = x2d.shape
-    # X = x2d.reshape(-1, bands)
-    # X = x2d[mask]
-    # noise = noise.reshape(-1, bands)
-    # noise_cov = np.cov(noise, rowvar=False)
-
-    u, s, v = np.linalg.svd(ncov)
+    u, s, v = np.linalg.svd(ncov, full_matrices=False, hermitian=True)
 
     s_inv_sqrt = np.diag(1.0 / np.sqrt(s + 1e-10))
-    # W = u @ s_inv_sqrt
 
-    # us = standardize_sign(u)
+    u, v = standardise_signs(u, v)
 
     W = blockwise_dot(u, s_inv_sqrt)
-    # X_whitened = X @ W
-    # X_whitened = X_whitened.reshape(rows, cols, bands)
-
-    # noise_stds = s / np.sqrt(noise.shape[0] - 1)
-    # W = v.T @ np.diag(1.0 / noise_stds)
-    # X_whitened2 = X @ W2
 
     next(pbar)
 
@@ -688,7 +679,7 @@ def mnf_calc(
         showlog("Calculating inverse MNF...")
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
-        x2 = blockwise_dot(P, Winv.T)
+        x2 = blockwise_dot(P, Winv)
         del P
     else:
         x2dshape[-1] = ncmps
@@ -1073,19 +1064,22 @@ def blockwise_dot(A, B, max_elements=int(2**27)):
     return out
 
 
-def standardize_sign(components):
+def standardise_signs(u, vh):
     """
-    Standardizes the sign of eigenvectors/singular vectors.
-    Forces the element with the largest absolute value to be positive.
+    Standardize the signs of U and Vh matrices from SVD.
+    Ensures the largest absolute value in each column of U is positive.
     """
-    # Find index of the maximum absolute value in each vector
-    max_abs_idx = np.argmax(np.abs(components), axis=0)
+    # Find index of max absolute value for each column in U
+    max_abs_indices = np.argmax(np.abs(u), axis=0)
 
-    # Extract the signs of these elements
-    signs = np.sign(components[range(components.shape[0]), max_abs_idx])
+    # Get the sign of the elements at those indices
+    signs = np.sign(u[max_abs_indices, range(u.shape[1])])
 
-    # Apply the signs to flip the vectors where necessary
-    return components * signs[:, np.newaxis]
+    # Flip signs of U columns and Vh rows
+    u_std = u * signs
+    vh_std = vh * signs[:, np.newaxis]
+
+    return u_std, vh_std
 
 
 def _testfn():
@@ -1165,7 +1159,7 @@ def _testfn3():
     idir = r"d:\aster"
     idir = r"D:\VMS\Enmap"
     idir = r"C:\Work\EMIT"
-    idir = r"C:\Work\Hyper"
+    idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\hyper"
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1183,9 +1177,12 @@ def _testfn3():
     tmp2.indata = dat
     tmp2.settings(True)
 
-    plt.imshow(tmp2.outdata["Raster"][0].data)
-    plt.colorbar()
-    plt.show()
+    for i in range(5):
+        plt.clf()
+        plt.imshow(tmp2.outdata["Raster"][i].data)
+        plt.colorbar()
+        plt.savefig(f"D:\\bandnew{i}.png")
+        plt.show()
 
 
 if __name__ == "__main__":

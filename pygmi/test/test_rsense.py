@@ -28,21 +28,27 @@ the tests.
 """
 
 import os
+
 import numpy as np
 
-from pygmi.rsense import iodefs, change, transforms, ratios
+from pygmi.rsense import change, iodefs, ratios, transforms
 
 
 def test_change():
     """test change detection."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    file1 = os.path.join(idir, r'testdata/rsense1.tif')
-    file2 = os.path.join(idir, r'testdata/rsense2.tif')
-    file3 = os.path.join(idir, r'testdata/change.tif')
+    file1 = os.path.join(idir, r"testdata/rsense1.tif")
+    file2 = os.path.join(idir, r"testdata/rsense2.tif")
+    file3 = os.path.join(idir, r"testdata/change.tif")
 
-    ilist = ['Difference', 'Mean', 'Standard Deviation',
-             'Coefficient of Variation', 'Spectral Angle Mapper']
+    ilist = [
+        "Difference",
+        "Mean",
+        "Standard Deviation",
+        "Coefficient of Variation",
+        "Spectral Angle Mapper",
+    ]
 
     bands, tnames, filelist = iodefs.files_to_rastermeta([file1, file2])
 
@@ -61,8 +67,8 @@ def test_pca():
     """test PCA."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    file1 = os.path.join(idir, r'testdata/rsense1.tif')
-    file3 = os.path.join(idir, r'testdata/pca.tif')
+    file1 = os.path.join(idir, r"testdata/rsense1.tif")
+    file3 = os.path.join(idir, r"testdata/pca.tif")
 
     dat1 = iodefs.get_data(file1)
 
@@ -73,8 +79,7 @@ def test_pca():
     for i in dat[0]:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_almost_equal(
-                    np.abs(i.data), np.abs(j.data))
+                np.testing.assert_array_almost_equal(np.abs(i.data), np.abs(j.data))
                 break
 
 
@@ -82,8 +87,8 @@ def test_mnf():
     """test MNF."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    file1 = os.path.join(idir, r'testdata/rsense1.tif')
-    file3 = os.path.join(idir, r'testdata/mnf.tif')
+    file1 = os.path.join(idir, r"testdata/rsense1.tif")
+    file3 = os.path.join(idir, r"testdata/mnf.tif")
 
     dat1 = iodefs.get_data(file1)
 
@@ -94,8 +99,7 @@ def test_mnf():
     for i in dat[0]:
         for j in dat2:
             if i.dataid == j.dataid:
-                np.testing.assert_array_almost_equal(
-                    np.abs(i.data), np.abs(j.data))
+                np.testing.assert_array_almost_equal(np.abs(i.data), np.abs(j.data))
                 break
 
 
@@ -103,16 +107,18 @@ def test_ratios():
     """test ratios."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    file1 = os.path.join(idir, r'testdata/rsense1.tif')
-    file3 = os.path.join(idir, r'testdata/ratio.tif')
+    file1 = os.path.join(idir, r"testdata/rsense1.tif")
+    file3 = os.path.join(idir, r"testdata/ratio.tif")
 
     dat1 = iodefs.get_data(file1)
 
-    rlist = [r'B4/B2 Iron Oxide',
-             r'B4/B3 Ferric Iron Fe3+',
-             r'B11/B4 Gossan',
-             r'B11/B12 Laterite or Alteration',
-             r'B12/B8+B3/B4 Ferrous Iron Fe2+']
+    rlist = [
+        r"B4/B2 Iron Oxide",
+        r"B4/B3 Ferric Iron Fe3+",
+        r"B11/B4 Gossan",
+        r"B11/B12 Laterite or Alteration",
+        r"B12/B8+B3/B4 Ferrous Iron Fe2+",
+    ]
 
     dat = ratios.calc_ratios(dat1, rlist)
 
@@ -126,4 +132,4 @@ def test_ratios():
 
 
 if __name__ == "__main__":
-    test_ratios()
+    test_mnf()

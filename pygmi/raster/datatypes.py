@@ -24,16 +24,16 @@
 # -----------------------------------------------------------------------------
 """Classes for raster data types and conversion routines."""
 
-from copy import deepcopy
-import warnings
 import datetime
+import warnings
+from copy import deepcopy
 
 import numpy as np
-from rasterio.io import MemoryFile
 from rasterio import Affine
-from rasterio.windows import Window
 from rasterio.features import shapes, sieve
-from shapely.geometry import shape, Polygon
+from rasterio.io import MemoryFile
+from rasterio.windows import Window
+from shapely.geometry import Polygon, shape
 
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):
@@ -60,7 +60,7 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
         PyGMI raster dataset
     """
     if data.ndim != 2:
-        warnings.warn('Error: you need 2 dimensions')
+        warnings.warn("Error: you need 2 dimensions")
         return None
 
     tmp = Data()
@@ -71,8 +71,9 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
 
     if isinstance(pdata, Data):
         if pdata.data.shape != data.shape:
-            warnings.warn('Error: you need your data and pygmi data '
-                          'shape to be the same')
+            warnings.warn(
+                "Error: you need your data and pygmi data shape to be the same"
+            )
             return None
         tmp.extent = pdata.extent
         tmp.bounds = pdata.bounds
@@ -172,7 +173,7 @@ def bounds_intersection(dataset, bounds, showlog=print):
         xmin1, ymin1, xmax1, ymax1 = bounds
 
         if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
-            showlog('Warning: No data in polygon.')
+            showlog("Warning: No data in polygon.")
             return (False, False)
 
         xmin2 = max(xmin, xmin1)
@@ -187,10 +188,12 @@ def bounds_intersection(dataset, bounds, showlog=print):
         ysize = int((ymax2 - ymin2) // xdim)
 
         # iraster = (xoff, yoff, xsize, ysize)
-        newbounds = (xmin + xoff * xdim,
-                     ymax - yoff * ydim - ysize * ydim,
-                     xmin + xoff * xdim + xsize * xdim,
-                     ymax - yoff * ydim)
+        newbounds = (
+            xmin + xoff * xdim,
+            ymax - yoff * ydim - ysize * ydim,
+            xmin + xoff * xdim + xsize * xdim,
+            ymax - yoff * ydim,
+        )
         window = Window(xoff, yoff, xsize, ysize)
     else:
         newbounds = None
@@ -199,7 +202,7 @@ def bounds_intersection(dataset, bounds, showlog=print):
     return (window, newbounds)
 
 
-class Data():
+class Data:
     """
     PyGMI Data Object.
 
@@ -243,14 +246,16 @@ class Data():
         self.bounds = None  # left, bottom, right, top
         self.xdim = None
         self.ydim = None
-        self.dataid = ''
+        self.dataid = ""
         self.nodata = None
-        self.units = ''
+        self.units = ""
         self.isrgb = False
-        self.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic',
-                                                   'Section': False}}
+        self.metadata = {
+            "Cluster": {},
+            "Raster": {"Sensor": "Generic", "Section": False},
+        }
         self.meta = {}  # rasterio meta
-        self.filename = ''
+        self.filename = ""
         self.transform = None
         self.crs = None
         self.datetime = datetime.datetime(1900, 1, 1)
@@ -276,18 +281,19 @@ class Data():
 
         """
         data = Data()
-        data.__dict__ = {key: deepcopy(value) for key, value in
-                         self.__dict__.items()}
+        data.__dict__ = {key: deepcopy(value) for key, value in self.__dict__.items()}
 
         if resetmeta is True:
-            data.metadata = {'Cluster': {}, 'Raster': {'Sensor': 'Generic',
-                                                       'Section': False}}
+            data.metadata = {
+                "Cluster": {},
+                "Raster": {"Sensor": "Generic", "Section": False},
+            }
 
         if data0 is not None:
             if data0.shape == data.data.shape:
                 data.data = np.ma.array(data0)
             else:
-                print('Datasets have different shapes')
+                print("Datasets have different shapes")
 
         return data
 
@@ -348,7 +354,7 @@ class Data():
         self.extent = (left, right, bottom, top)
         self.bounds = (left, bottom, right, top)
 
-    def modify_mask(self, mask, oper='or'):
+    def modify_mask(self, mask, oper="or"):
         """
         Modify the existing mask with a new one.
 
@@ -367,7 +373,7 @@ class Data():
         None.
 
         """
-        if oper == 'or':
+        if oper == "or":
             self.data.mask = np.logical_or(self.data.mask, mask)
         else:
             self.data.mask = np.logical_and(self.data.mask, mask)
@@ -390,8 +396,9 @@ class Data():
 
         """
         vmin, vmax = self.get_vmin_vmax()
-        im = ax.imshow(self.data, vmin=vmin, vmax=vmax, extent=self.extent,
-                       interpolation='none')
+        im = ax.imshow(
+            self.data, vmin=vmin, vmax=vmax, extent=self.extent, interpolation="none"
+        )
         return im
 
     def set_mask(self, mask=None):
@@ -416,8 +423,17 @@ class Data():
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)
 
-    def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
-                      transform=None, iraster=None, rows=None, cols=None):
+    def set_transform(
+        self,
+        xdim=None,
+        xmin=None,
+        ydim=None,
+        ymax=None,
+        transform=None,
+        iraster=None,
+        rows=None,
+        cols=None,
+    ):
         """
         Set the transform, xdim, ydim, extent and bounds.
 
@@ -490,14 +506,16 @@ class Data():
             rasterio memory file.
 
         """
-        raster = MemoryFile().open(driver='GTiff',
-                                   height=self.data.shape[0],
-                                   width=self.data.shape[1],
-                                   count=1,
-                                   dtype=self.data.dtype,
-                                   transform=self.transform,
-                                   crs=self.crs,
-                                   nodata=self.nodata)
+        raster = MemoryFile().open(
+            driver="GTiff",
+            height=self.data.shape[0],
+            width=self.data.shape[1],
+            count=1,
+            dtype=self.data.dtype,
+            transform=self.transform,
+            crs=self.crs,
+            nodata=self.nodata,
+        )
         raster.write(self.data, 1)
         return raster
 
@@ -536,21 +554,24 @@ class Data():
         mask = ~np.ma.getmaskarray(self.data)
         mask = mask.astype(np.uint8)
 
-        minpixels = min(mask.sum() // 2, 100000)
-        mask = sieve(mask, minpixels, mask=self.data.mask)
+        # minpixels = min(mask.sum() // 2, 100000)
+        # minpixels = mask.sum() // 2
+        minpixels = max(1, int(np.sqrt(mask.sum())))
+        mask = sieve(mask, minpixels)  # , mask=self.data.mask)
         shape1 = None
 
         polys = []
+
         for shape1, _ in shapes(mask, mask=mask, transform=self.transform):
             polys.append(shape1)
 
         if len(polys) > 1:
-            print('Warning, more than one polygon, choosing largest')
-            lens = np.argmax([i.area for i in polys])
+            print("Warning, more than one polygon, choosing largest")
+            lens = np.argmax([shape(i).area for i in polys])
             shape1 = polys[lens]
 
         geom = shape(shape1)
-        geom = geom.simplify(tolerance=.001)
+        geom = geom.simplify(tolerance=0.001)
 
         if geom.interiors:
             geom = Polygon(list(geom.exterior.coords))
@@ -558,7 +579,7 @@ class Data():
         self.geometry = geom
 
 
-class RasterMeta():
+class RasterMeta:
     """
     PyGMI Raster Metadata Object.
 
@@ -586,9 +607,9 @@ class RasterMeta():
     """
 
     def __init__(self):
-        self.sensor = 'Generic'
+        self.sensor = "Generic"
         self.crs = None
-        self.filename = ''
+        self.filename = ""
         self.bands = []
         self.tnames = []
         self.banddata = []
@@ -611,7 +632,7 @@ class RasterMeta():
 
         """
         data = dat[0]
-        self.sensor = data.metadata['Raster']['Sensor']
+        self.sensor = data.metadata["Raster"]["Sensor"]
         self.crs = data.crs
         self.filename = data.filename
         self.datetime = data.datetime
@@ -623,11 +644,11 @@ class RasterMeta():
         for i in dat:
             self.bands.append(i.dataid)
             self.banddata.append(i)
-            if i.dataid[0] == 'B':
+            if i.dataid[0] == "B":
                 self.tnames.append(i.dataid)
 
         if not self.tnames:
             self.tnames = self.bands.copy()
 
-        if 'ASTER' in self.sensor:
-            self.sensor = 'ASTER'
+        if "ASTER" in self.sensor:
+            self.sensor = "ASTER"

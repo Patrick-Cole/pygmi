@@ -24,30 +24,29 @@
 # -----------------------------------------------------------------------------
 """A set of raster data preparation routines."""
 
-import tempfile
+import glob
 import math
 import os
-import glob
-from PySide6 import QtWidgets, QtGui
+import tempfile
 
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio
 import rasterio.merge
 from pyproj.crs import CRS
+from PySide6 import QtGui, QtWidgets
 from rasterio.warp import calculate_default_transform
-import geopandas as gpd
 from shapely import LineString, unary_union
 
-from pygmi.raster.datatypes import Data
-from pygmi.misc import ContextModule, BasicModule
-from pygmi.raster.datatypes import numpy_to_pygmi
+from pygmi.misc import BasicModule, ContextModule
+from pygmi.raster.datatypes import Data, numpy_to_pygmi
+from pygmi.raster.fft import fft_getkxy, fftprep
 from pygmi.raster.iodefs import export_raster
-from pygmi.vector.dataprep import reprojxy
-from pygmi.raster.misc import lstack, cut_raster
+from pygmi.raster.misc import cut_raster, lstack
 from pygmi.raster.reproj import GroupProj, data_reproject
 from pygmi.rsense.iodefs import get_data, get_from_rastermeta
-from pygmi.raster.fft import fftprep, fft_getkxy
+from pygmi.vector.dataprep import reprojxy
 
 
 class Continuation(BasicModule):
@@ -79,18 +78,18 @@ class Continuation(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'raster.dm.cont'
-        lbl_band = QtWidgets.QLabel('Band to perform continuation:')
-        lbl_cont = QtWidgets.QLabel('Continuation type:')
-        lbl_height = QtWidgets.QLabel('Continuation distance:')
+        self.buttonbox.htmlfile = "raster.dm.cont"
+        lbl_band = QtWidgets.QLabel("Band to perform continuation:")
+        lbl_cont = QtWidgets.QLabel("Continuation type:")
+        lbl_height = QtWidgets.QLabel("Continuation distance:")
 
         self.dsb_height.setMaximum(1000000.0)
         self.dsb_height.setMinimum(0.0)
         self.dsb_height.setValue(0.0)
         self.cmb_cont.clear()
-        self.cmb_cont.addItems(['Upward', 'Downward'])
+        self.cmb_cont.addItems(["Upward", "Downward"])
 
-        self.setWindowTitle('Continuation')
+        self.setWindowTitle("Continuation")
 
         gl_main.addWidget(lbl_band, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
@@ -116,11 +115,11 @@ class Continuation(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        items = [i.dataid for i in self.indata['Raster']]
+        items = [i.dataid for i in self.indata["Raster"]]
         self.cmb_update(self.cmb_dataid, items)
 
         if not nodialog:
@@ -162,17 +161,17 @@ class Continuation(BasicModule):
         data = None
 
         # Get data
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             if i.dataid == self.cmb_dataid.currentText():
                 data = i
                 break
 
-        if ctype == 'Downward':
+        if ctype == "Downward":
             dat = taylorcont(data, h, self.showlog, self.piter)
         else:
             dat = fftcont(data, h, self.showlog, self.piter)
 
-        self.outdata['Raster'] = [dat]
+        self.outdata["Raster"] = [dat]
 
 
 class DataCut(BasicModule):
@@ -207,18 +206,22 @@ class DataCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if ('Raster' not in self.indata and 'Cluster' not in self.indata and
-                'RasterFileList' not in self.indata):
-            self.showlog('No raster data')
+        if (
+            "Raster" not in self.indata
+            and "Cluster" not in self.indata
+            and "RasterFileList" not in self.indata
+        ):
+            self.showlog("No raster data")
             return False
 
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open Shape File', '.', 'Shape file (*.shp)')
-            if self.ifile == '':
+                self.parent, "Open Shape File", ".", "Shape file (*.shp)"
+            )
+            if self.ifile == "":
                 return False
 
-        for datatype in ['Raster', 'Cluster']:
+        for datatype in ["Raster", "Cluster"]:
             if datatype not in self.indata:
                 continue
             data = self.indata[datatype]
@@ -231,27 +234,34 @@ class DataCut(BasicModule):
 
             self.outdata[datatype] = data
 
-        if 'RasterFileList' in self.indata:
-            flist = self.indata['RasterFileList']
+        if "RasterFileList" in self.indata:
+            flist = self.indata["RasterFileList"]
             for ifile in flist:
-                data = get_from_rastermeta(ifile, piter=self.piter,
-                                           showlog=self.showlog)
+                data = get_from_rastermeta(
+                    ifile, piter=self.piter, showlog=self.showlog
+                )
                 os.chdir(os.path.dirname(self.ifile))
                 data = cut_raster(data, self.ifile, showlog=self.showlog)
 
                 if data:
                     odir = os.path.dirname(data[0].filename)
-                    odir = os.path.join(odir, 'cut')
+                    odir = os.path.join(odir, "cut")
 
                     os.makedirs(odir, exist_ok=True)
 
                     ofile = os.path.basename(data[0].filename)
                     ofile = os.path.join(odir, ofile)
 
-                    self.showlog('Exporting to ' + ofile)
-                    export_raster(ofile, data, drv='GTiff', piter=self.piter,
-                                  compression='DEFLATE', showlog=self.showlog)
-                    self.outdata['Raster'] = data
+                    self.showlog("Exporting to " + ofile)
+                    export_raster(
+                        ofile,
+                        data,
+                        drv="GTiff",
+                        piter=self.piter,
+                        compression="DEFLATE",
+                        showlog=self.showlog,
+                    )
+                    self.outdata["Raster"] = data
 
         return True
 
@@ -284,11 +294,11 @@ class DataLayerStack(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.dxy = None
-        self.cb_cmask = QtWidgets.QCheckBox('Common mask for all bands')
+        self.cb_cmask = QtWidgets.QCheckBox("Common mask for all bands")
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.lbl_rows = QtWidgets.QLabel('Rows: 0')
-        self.lbl_cols = QtWidgets.QLabel('Columns: 0')
+        self.lbl_rows = QtWidgets.QLabel("Rows: 0")
+        self.lbl_cols = QtWidgets.QLabel("Columns: 0")
 
         self.setupui()
 
@@ -303,17 +313,17 @@ class DataLayerStack(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'raster.dm.layerstack'
-        lbl_dxy = QtWidgets.QLabel('Cell Size:')
+        self.buttonbox.htmlfile = "raster.dm.layerstack"
+        lbl_dxy = QtWidgets.QLabel("Cell Size:")
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
-        self.dsb_dxy.setValue(40.)
+        self.dsb_dxy.setValue(40.0)
 
         self.cb_cmask.setChecked(True)
 
-        self.setWindowTitle('Dataset Layer Stack and Resample')
+        self.setWindowTitle("Dataset Layer Stack and Resample")
 
         gl_main.addWidget(lbl_dxy, 0, 0, 1, 1)
         gl_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
@@ -335,13 +345,13 @@ class DataLayerStack(BasicModule):
         None.
 
         """
-        data = self.indata['Raster'][0]
+        data = self.indata["Raster"][0]
         dxy = self.dsb_dxy.value()
 
         xmin0, xmax0, ymin0, ymax0 = data.extent
         xmin, xmax, ymin, ymax = data.extent
 
-        for data in self.indata['Raster']:
+        for data in self.indata["Raster"]:
             xmin, xmax, ymin, ymax = data.extent
             xmin = min(xmin, xmin0)
             xmax = max(xmax, xmax0)
@@ -351,8 +361,8 @@ class DataLayerStack(BasicModule):
         cols = int(round((xmax - xmin) / dxy, 9))
         rows = int(round((ymax - ymin) / dxy, 9))
 
-        self.lbl_rows.setText('Rows: ' + str(rows))
-        self.lbl_cols.setText('Columns: ' + str(cols))
+        self.lbl_rows.setText("Rows: " + str(rows))
+        self.lbl_cols.setText("Columns: " + str(cols))
 
     def settings(self, nodialog=False):
         """
@@ -369,30 +379,31 @@ class DataLayerStack(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'RasterFileList' in self.indata:
-            ifiles = self.indata['RasterFileList']
-            self.showlog('Warning: Layer stacking a file list assumes '
-                         'all datasets overlap in the same area')
-            self.indata['Raster'] = []
+        if "RasterFileList" in self.indata:
+            ifiles = self.indata["RasterFileList"]
+            self.showlog(
+                "Warning: Layer stacking a file list assumes "
+                "all datasets overlap in the same area"
+            )
+            self.indata["Raster"] = []
             for ifile in ifiles:
-                self.showlog('Processing ' + os.path.basename(ifile))
-                dat = get_data(ifile, piter=self.piter,
-                               showlog=self.showlog)
+                self.showlog("Processing " + os.path.basename(ifile))
+                dat = get_data(ifile, piter=self.piter, showlog=self.showlog)
                 # for i in dat:
                 #     i.data = i.data.astype(np.float32)
                 #     i.nodata = np.float32(i.nodata)
-                self.indata['Raster'] += dat
+                self.indata["Raster"] += dat
 
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
-            data = self.indata['Raster'][0]
+            data = self.indata["Raster"][0]
 
             if self.dxy is None:
                 self.dxy = min(data.xdim, data.ydim)
-                for data in self.indata['Raster']:
+                for data in self.indata["Raster"]:
                     self.dxy = min(self.dxy, data.xdim, data.ydim)
 
             self.dsb_dxy.setValue(self.dxy)
@@ -404,7 +415,7 @@ class DataLayerStack(BasicModule):
 
         self.acceptall()
 
-        if self.outdata['Raster'] is None:
+        if self.outdata["Raster"] is None:
             self.outdata = {}
             return False
 
@@ -436,10 +447,14 @@ class DataLayerStack(BasicModule):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-        dat = lstack(self.indata['Raster'], piter=self.piter, dxy=dxy,
-                     showlog=self.showlog,
-                     commonmask=self.cb_cmask.isChecked())
-        self.outdata['Raster'] = dat
+        dat = lstack(
+            self.indata["Raster"],
+            piter=self.piter,
+            dxy=dxy,
+            showlog=self.showlog,
+            commonmask=self.cb_cmask.isChecked(),
+        )
+        self.outdata["Raster"] = dat
 
 
 class DataMerge(BasicModule):
@@ -461,36 +476,44 @@ class DataMerge(BasicModule):
         self.idir = None
         self.tmpdir = None
         self.is_import = True
-        self.method = 'merge_median'
+        self.method = "merge_median"
         self.res = None
 
-        self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
-                                               'last file at overlap.')
-        self.rb_last = QtWidgets.QRadioButton('Last - copy last file over '
-                                              'first file at overlap.')
-        self.rb_min = QtWidgets.QRadioButton('Min - copy pixel wise minimum '
-                                             'at overlap.')
-        self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum '
-                                             'at overlap.')
-        self.rb_median = QtWidgets.QRadioButton('Median - shift last file to '
-                                                'median '
-                                                'overlap value and copy over '
-                                                'first file at overlap.')
+        self.rb_first = QtWidgets.QRadioButton(
+            "First - copy first file over last file at overlap."
+        )
+        self.rb_last = QtWidgets.QRadioButton(
+            "Last - copy last file over first file at overlap."
+        )
+        self.rb_min = QtWidgets.QRadioButton(
+            "Min - copy pixel wise minimum at overlap."
+        )
+        self.rb_max = QtWidgets.QRadioButton(
+            "Max - copy pixel wise maximum at overlap."
+        )
+        self.rb_median = QtWidgets.QRadioButton(
+            "Median - shift last file to "
+            "median "
+            "overlap value and copy over "
+            "first file at overlap."
+        )
 
-        self.le_idirlist = QtWidgets.QLineEdit('')
-        self.le_sfile = QtWidgets.QLineEdit('')
-        self.le_nodata = QtWidgets.QLineEdit('')
-        self.le_res = QtWidgets.QLineEdit('')
+        self.le_idirlist = QtWidgets.QLineEdit("")
+        self.le_sfile = QtWidgets.QLineEdit("")
+        self.le_nodata = QtWidgets.QLineEdit("")
+        self.le_res = QtWidgets.QLineEdit("")
 
         self.le_nodata.setValidator(self.qval)
         self.le_res.setValidator(self.qval)
 
         self.cb_shift_to_median = QtWidgets.QCheckBox(
-            'Shift bands to median value before mosaic. May '
-            'allow for cleaner mosaic if datasets are offset.')
+            "Shift bands to median value before mosaic. May "
+            "allow for cleaner mosaic if datasets are offset."
+        )
 
         self.cb_bands_to_files = QtWidgets.QCheckBox(
-            'Save each band separately in a "mosaic" subdirectory.')
+            'Save each band separately in a "mosaic" subdirectory.'
+        )
         self.forcetype = None
         self.singleband = False
         self.setupui()
@@ -505,24 +528,23 @@ class DataMerge(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'raster.dm.mosaic'
-        pb_idirlist = QtWidgets.QPushButton('Batch Directory')
-        pb_sfile = QtWidgets.QPushButton('Shapefile or Raster for boundary '
-                                         '(optional)')
+        self.buttonbox.htmlfile = "raster.dm.mosaic"
+        pb_idirlist = QtWidgets.QPushButton("Batch Directory")
+        pb_sfile = QtWidgets.QPushButton("Shapefile or Raster for boundary (optional)")
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
         pb_idirlist.setIcon(icon)
-        pb_sfile.setStyleSheet('text-align:left;')
-        pb_idirlist.setStyleSheet('text-align:left;')
+        pb_sfile.setStyleSheet("text-align:left;")
+        pb_idirlist.setStyleSheet("text-align:left;")
 
         self.cb_shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)
 
-        self.setWindowTitle('Dataset Mosaic')
+        self.setWindowTitle("Dataset Mosaic")
 
-        gbox_merge_method = QtWidgets.QGroupBox('Mosiac method')
+        gbox_merge_method = QtWidgets.QGroupBox("Mosiac method")
         vbl_merge_method = QtWidgets.QVBoxLayout(gbox_merge_method)
 
         vbl_merge_method.addWidget(self.rb_median)
@@ -535,11 +557,9 @@ class DataMerge(BasicModule):
         gl_main.addWidget(self.le_idirlist, 1, 1, 1, 1)
         gl_main.addWidget(pb_sfile, 2, 0, 1, 1)
         gl_main.addWidget(self.le_sfile, 2, 1, 1, 1)
-        gl_main.addWidget(QtWidgets.QLabel('Nodata Value (optional):'),
-                          3, 0, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel("Nodata Value (optional):"), 3, 0, 1, 1)
         gl_main.addWidget(self.le_nodata, 3, 1, 1, 1)
-        gl_main.addWidget(QtWidgets.QLabel('Output Resolution (optional):'),
-                          4, 0, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel("Output Resolution (optional):"), 4, 0, 1, 1)
         gl_main.addWidget(self.le_res, 4, 1, 1, 1)
 
         gl_main.addWidget(self.cb_shift_to_median, 5, 0, 1, 2)
@@ -566,15 +586,15 @@ class DataMerge(BasicModule):
 
         """
         if self.rb_first.isChecked():
-            self.method = 'first'
+            self.method = "first"
         if self.rb_last.isChecked():
-            self.method = 'last'
+            self.method = "last"
         if self.rb_min.isChecked():
-            self.method = 'merge_min'
+            self.method = "merge_min"
         if self.rb_max.isChecked():
-            self.method = 'merge_max'
+            self.method = "merge_max"
         if self.rb_median.isChecked():
-            self.method = 'merge_median'
+            self.method = "merge_median"
 
     def get_idir(self):
         """
@@ -586,11 +606,12 @@ class DataMerge(BasicModule):
 
         """
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-            self.parent, 'Select Directory')
+            self.parent, "Select Directory"
+        )
 
         self.le_idirlist.setText(self.idir)
 
-        if self.idir == '':
+        if self.idir == "":
             self.idir = None
 
     def get_sfile(self):
@@ -602,10 +623,11 @@ class DataMerge(BasicModule):
         None.
 
         """
-        ext = 'Common formats (*.shp *.hdr *.tif);;'
+        ext = "Common formats (*.shp *.hdr *.tif);;"
 
         sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+            self.parent, "Open File", ".", ext
+        )
 
         if not sfile:
             return False
@@ -683,24 +705,33 @@ class DataMerge(BasicModule):
         bandstofiles = self.cb_bands_to_files.isChecked()
         shifttomedian = self.cb_shift_to_median.isChecked()
 
-        if self.le_nodata.text().strip() == '':
+        if self.le_nodata.text().strip() == "":
             nodata = None
         else:
             nodata = float(self.le_nodata.text())
-        if self.le_res.text().strip() == '':
+        if self.le_res.text().strip() == "":
             res = None
         else:
             res = float(self.le_res.text())
 
-        outdat = mosaic(self.indata, idir=self.idir, bfile=bfile,
-                        bandstofiles=bandstofiles, piter=self.piter,
-                        showlog=self.showlog, singleband=self.singleband,
-                        forcetype=self.forcetype, shifttomedian=shifttomedian,
-                        tmpdir=self.tmpdir, nodata=nodata, method=self.method,
-                        res=res)
+        outdat = mosaic(
+            self.indata,
+            idir=self.idir,
+            bfile=bfile,
+            bandstofiles=bandstofiles,
+            piter=self.piter,
+            showlog=self.showlog,
+            singleband=self.singleband,
+            forcetype=self.forcetype,
+            shifttomedian=shifttomedian,
+            tmpdir=self.tmpdir,
+            nodata=nodata,
+            method=self.method,
+            res=res,
+        )
 
         if outdat:
-            self.outdata['Raster'] = outdat
+            self.outdata["Raster"] = outdat
 
         return True
 
@@ -723,8 +754,8 @@ class DataReproj(BasicModule):
         self.orig_wkt = None
         self.targ_wkt = None
 
-        self.in_proj = GroupProj('Input Projection')
-        self.out_proj = GroupProj('Output Projection')
+        self.in_proj = GroupProj("Input Projection")
+        self.out_proj = GroupProj("Output Projection")
 
         self.setupui()
 
@@ -739,9 +770,9 @@ class DataReproj(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'raster.dm.reproj'
+        self.buttonbox.htmlfile = "raster.dm.reproj"
 
-        self.setWindowTitle('Dataset Reprojection')
+        self.setWindowTitle("Dataset Reprojection")
 
         gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
@@ -758,12 +789,12 @@ class DataReproj(BasicModule):
         None.
 
         """
-        if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.showlog('Unknown Projection. Could not reproject')
+        if self.in_proj.wkt == "Unknown" or self.out_proj.wkt == "Unknown":
+            self.showlog("Unknown Projection. Could not reproject")
             return
 
-        if self.in_proj.wkt == '' or self.out_proj.wkt == '':
-            self.showlog('Unknown Projection. Could not reproject')
+        if self.in_proj.wkt == "" or self.out_proj.wkt == "":
+            self.showlog("Unknown Projection. Could not reproject")
             return
 
         # Input stuff
@@ -775,7 +806,7 @@ class DataReproj(BasicModule):
         # Now create virtual dataset
         dat = []
         data2 = None
-        for data in self.piter(self.indata['Raster']):
+        for data in self.piter(self.indata["Raster"]):
             if data.isrgb:
                 _, _, bands = data.data.shape
                 data3 = []
@@ -798,7 +829,7 @@ class DataReproj(BasicModule):
 
         self.orig_wkt = self.in_proj.wkt
         self.targ_wkt = self.out_proj.wkt
-        self.outdata['Raster'] = dat
+        self.outdata["Raster"] = dat
 
     def settings(self, nodialog=False):
         """
@@ -815,19 +846,21 @@ class DataReproj(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        if self.indata['Raster'][0].crs is None:
-            self.showlog('Your input data has no projection. '
-                         'Please assign one in the metadata summary.')
+        if self.indata["Raster"][0].crs is None:
+            self.showlog(
+                "Your input data has no projection. "
+                "Please assign one in the metadata summary."
+            )
             return False
 
         if self.orig_wkt is None:
-            self.orig_wkt = self.indata['Raster'][0].crs.to_wkt()
+            self.orig_wkt = self.indata["Raster"][0].crs.to_wkt()
         if self.targ_wkt is None:
-            self.targ_wkt = self.indata['Raster'][0].crs.to_wkt()
+            self.targ_wkt = self.indata["Raster"][0].crs.to_wkt()
 
         self.in_proj.set_current(self.orig_wkt)
         self.out_proj.set_current(self.targ_wkt)
@@ -885,35 +918,38 @@ class GetProf(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' in self.indata:
-            data = [i.copy() for i in self.indata['Raster']]
+        if "Raster" in self.indata:
+            data = [i.copy() for i in self.indata["Raster"]]
             icrs = data[0].crs
         else:
-            self.showlog('No raster data')
+            self.showlog("No raster data")
             return False
 
-        ext = 'Shape file (*.shp)'
+        ext = "Shape file (*.shp)"
 
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open Shape File', '.', ext)
-            if self.ifile == '':
+                self.parent, "Open Shape File", ".", ext
+            )
+            if self.ifile == "":
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
 
         try:
-            gdf = gpd.read_file(self.ifile, engine='pyogrio')
+            gdf = gpd.read_file(self.ifile, engine="pyogrio")
         except:
-            self.showlog('There was a problem importing the shapefile. '
-                         'Please make sure you have at all the '
-                         'individual files which make up the shapefile.')
+            self.showlog(
+                "There was a problem importing the shapefile. "
+                "Please make sure you have at all the "
+                "individual files which make up the shapefile."
+            )
             return None
 
         gdf = gdf[gdf.geometry != None]
 
-        if gdf.geom_type.iloc[0] != 'LineString':
-            self.showlog('You need lines in that shape file')
+        if gdf.geom_type.iloc[0] != "LineString":
+            self.showlog("You need lines in that shape file")
             return False
 
         data = lstack(data, piter=self.piter, showlog=self.showlog)
@@ -934,18 +970,17 @@ class GetProf(BasicModule):
                     z.append(idata.data[mdata.index(pnt[0], pnt[1])])
 
                 if ogdf is None:
-                    ogdf = pd.DataFrame(xy[:, 0], columns=['X'])
-                    ogdf['Y'] = xy[:, 1]
+                    ogdf = pd.DataFrame(xy[:, 0], columns=["X"])
+                    ogdf["Y"] = xy[:, 1]
 
-                    x = ogdf['X']
-                    y = ogdf['Y']
-                    ogdf = gpd.GeoDataFrame(ogdf,
-                                            geometry=gpd.points_from_xy(x, y))
+                    x = ogdf["X"]
+                    y = ogdf["Y"]
+                    ogdf = gpd.GeoDataFrame(ogdf, geometry=gpd.points_from_xy(x, y))
 
                 ogdf[idata.dataid] = z
 
             icnt += 1
-            ogdf['line'] = str(icnt)
+            ogdf["line"] = str(icnt)
             ogdf.crs = icrs
 
             if ogdf2 is None:
@@ -953,7 +988,7 @@ class GetProf(BasicModule):
             else:
                 ogdf2 = ogdf2.append(ogdf, ignore_index=True)
 
-        self.outdata['Vector'] = [ogdf2]
+        self.outdata["Vector"] = [ogdf2]
 
         return True
 
@@ -993,10 +1028,10 @@ class Metadata(ContextModule):
         super().__init__(parent)
         self.banddata = {}
         self.dataid = {}
-        self.oldtxt = ''
+        self.oldtxt = ""
 
         self.cmb_bandid = QtWidgets.QComboBox()
-        self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
+        self.pb_rename_id = QtWidgets.QPushButton("Rename Band Name")
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
         self.le_txt_null = QtWidgets.QLineEdit()
@@ -1017,7 +1052,7 @@ class Metadata(ContextModule):
         self.le_xdim.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.le_ydim.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
 
-        self.proj = GroupProj('Input Projection')
+        self.proj = GroupProj("Input Projection")
 
         self.setupui()
 
@@ -1031,32 +1066,33 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        gbox = QtWidgets.QGroupBox('Dataset')
-        self.buttonbox.htmlfile = 'raster.cm.meta'
+        gbox = QtWidgets.QGroupBox("Dataset")
+        self.buttonbox.htmlfile = "raster.cm.meta"
 
         gl_1 = QtWidgets.QGridLayout(gbox)
-        lbl_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
-        lbl_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
-        lbl_xdim = QtWidgets.QLabel('X Dimension:')
-        lbl_ydim = QtWidgets.QLabel('Y Dimension:')
-        lbl_null = QtWidgets.QLabel('Null/Nodata value:')
-        lbl_rows = QtWidgets.QLabel('Rows:')
-        lbl_cols = QtWidgets.QLabel('Columns:')
-        lbl_min = QtWidgets.QLabel('Dataset Minimum:')
-        lbl_max = QtWidgets.QLabel('Dataset Maximum:')
-        lbl_mean = QtWidgets.QLabel('Dataset Mean:')
-        lbl_units = QtWidgets.QLabel('Dataset Units:')
-        lbl_bandid = QtWidgets.QLabel('Band Name:')
-        lbl_dtype = QtWidgets.QLabel('Data Type:')
-        lbl_date = QtWidgets.QLabel('Acquisition Date:')
+        lbl_tlx = QtWidgets.QLabel("Top Left X Coordinate:")
+        lbl_tly = QtWidgets.QLabel("Top Left Y Coordinate:")
+        lbl_xdim = QtWidgets.QLabel("X Dimension:")
+        lbl_ydim = QtWidgets.QLabel("Y Dimension:")
+        lbl_null = QtWidgets.QLabel("Null/Nodata value:")
+        lbl_rows = QtWidgets.QLabel("Rows:")
+        lbl_cols = QtWidgets.QLabel("Columns:")
+        lbl_min = QtWidgets.QLabel("Dataset Minimum:")
+        lbl_max = QtWidgets.QLabel("Dataset Maximum:")
+        lbl_mean = QtWidgets.QLabel("Dataset Mean:")
+        lbl_units = QtWidgets.QLabel("Dataset Units:")
+        lbl_bandid = QtWidgets.QLabel("Band Name:")
+        lbl_dtype = QtWidgets.QLabel("Data Type:")
+        lbl_date = QtWidgets.QLabel("Acquisition Date:")
 
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Preferred,
-            QtWidgets.QSizePolicy.Policy.Expanding)
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         gbox.setSizePolicy(sizepolicy)
         self.proj.setSizePolicy(sizepolicy)
 
-        self.setWindowTitle('Dataset Metadata')
+        self.setWindowTitle("Dataset Metadata")
         self.date.setCalendarPopup(True)
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
@@ -1110,7 +1146,7 @@ class Metadata(ContextModule):
         wkt = self.proj.wkt
 
         self.update_vals()
-        for tmp in self.indata['Raster']:
+        for tmp in self.indata["Raster"]:
             for j in self.dataid.items():
                 if j[1] == tmp.dataid:
                     i = self.banddata[j[0]]
@@ -1118,12 +1154,12 @@ class Metadata(ContextModule):
                     tmp.set_transform(transform=i.transform)
                     tmp.nodata = i.nodata
                     tmp.datetime = i.datetime
-                    if wkt == 'None':
+                    if wkt == "None":
                         tmp.crs = None
                     else:
                         tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
-                    tmp.data.mask = (tmp.data.data == i.nodata)
+                    tmp.data.mask = tmp.data.data == i.nodata
 
         self.accept()
 
@@ -1138,9 +1174,12 @@ class Metadata(ContextModule):
         """
         ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
-            self.parent, 'Rename Band Name',
-            'Please type in the new name for the band',
-            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
+            self.parent,
+            "Rename Band Name",
+            "Please type in the new name for the band",
+            QtWidgets.QLineEdit.EchoMode.Normal,
+            ctxt,
+        )
 
         if isokay:
             self.cmb_bandid.currentIndexChanged.disconnect()
@@ -1171,11 +1210,11 @@ class Metadata(ContextModule):
         odata = self.banddata[self.oldtxt]
 
         utxt = self.le_led_units.text()
-        if utxt.lower() == 'none':
-            utxt = ''
+        if utxt.lower() == "none":
+            utxt = ""
         odata.units = utxt
 
-        if self.le_txt_null.text() == '':
+        if self.le_txt_null.text() == "":
             odata.nodata = None
         else:
             odata.nodata = float(self.le_txt_null.text())
@@ -1198,7 +1237,7 @@ class Metadata(ContextModule):
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
         if idata.nodata is None:
-            self.le_txt_null.setText('')
+            self.le_txt_null.setText("")
         else:
             self.le_txt_null.setText(str(idata.nodata))
 
@@ -1224,13 +1263,13 @@ class Metadata(ContextModule):
 
         """
         bandid = []
-        if self.indata['Raster'][0].crs is None:
-            self.proj.set_current('None')
+        if self.indata["Raster"][0].crs is None:
+            self.proj.set_current("None")
         else:
-            crs = CRS.from_user_input(self.indata['Raster'][0].crs)
+            crs = CRS.from_user_input(self.indata["Raster"][0].crs)
             self.proj.set_current(crs.to_wkt(pretty=True))
 
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             bandid.append(i.dataid)
             self.banddata[i.dataid] = Data()
             tmp = self.banddata[i.dataid]
@@ -1257,7 +1296,7 @@ class Metadata(ContextModule):
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
         if idata.nodata is None:
-            self.le_txt_null.setText('')
+            self.le_txt_null.setText("")
         else:
             self.le_txt_null.setText(str(idata.nodata))
         self.le_tlx.setText(str(idata.extent[0]))
@@ -1303,9 +1342,9 @@ class RasterToVector(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'raster.dm.rtov'
+        self.buttonbox.htmlfile = "raster.dm.rtov"
 
-        self.setWindowTitle('Raster to Vector')
+        self.setWindowTitle("Raster to Vector")
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
@@ -1324,8 +1363,8 @@ class RasterToVector(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         gdf = gpd.GeoDataFrame()
@@ -1335,7 +1374,7 @@ class RasterToVector(BasicModule):
             if tmp != 1:
                 return False
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         data = lstack(data, piter=self.piter, showlog=self.showlog)
 
         xmin = data[0].extent[0]
@@ -1351,16 +1390,16 @@ class RasterToVector(BasicModule):
 
         geom = gpd.points_from_xy(x, y)
         gdf = gpd.GeoDataFrame(geometry=geom)
-        gdf['x'] = x
-        gdf['y'] = y
+        gdf["x"] = x
+        gdf["y"] = y
 
         for band in self.piter(data):
             gdf[band.dataid] = band.data.flatten()
 
-        gdf = gdf.dropna(subset=gdf.columns[3:].values.tolist(), how='all')
+        gdf = gdf.dropna(subset=gdf.columns[3:].values.tolist(), how="all")
         gdf = gdf.set_crs(data[0].crs)
 
-        self.outdata['Vector'] = [gdf]
+        self.outdata["Vector"] = [gdf]
 
         return True
 
@@ -1402,9 +1441,9 @@ class RasterToVectorBoundary(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'raster.dm.rtov'
+        self.buttonbox.htmlfile = "raster.dm.rtov"
 
-        self.setWindowTitle('Raster to Vector (Boundary Dataset)')
+        self.setWindowTitle("Raster to Vector (Boundary Dataset)")
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
@@ -1423,8 +1462,8 @@ class RasterToVectorBoundary(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         gdf = gpd.GeoDataFrame()
@@ -1434,19 +1473,19 @@ class RasterToVectorBoundary(BasicModule):
             if tmp != 1:
                 return False
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
 
-        geoms = {'Data_ID': [], 'geometry': []}
+        geoms = {"Data_ID": [], "geometry": []}
 
         for band in self.piter(data):
             band.get_boundary()
-            geoms['Data_ID'].append(band.dataid)
-            geoms['geometry'].append(band.geometry)
+            geoms["Data_ID"].append(band.dataid)
+            geoms["geometry"].append(band.geometry)
 
         gdf = gpd.GeoDataFrame(geoms)
         gdf = gdf.set_crs(data[0].crs)
 
-        self.outdata['Vector'] = [gdf]
+        self.outdata["Vector"] = [gdf]
 
         return True
 
@@ -1480,14 +1519,14 @@ def cluster_to_raster(indata):
         Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
 
     """
-    if 'Cluster' not in indata:
+    if "Cluster" not in indata:
         return indata
-    if 'Raster' not in indata:
-        indata['Raster'] = []
+    if "Raster" not in indata:
+        indata["Raster"] = []
 
-    for i in indata['Cluster']:
-        indata['Raster'].append(i)
-        indata['Raster'][-1].data = indata['Raster'][-1].data + 1
+    for i in indata["Cluster"]:
+        indata["Raster"].append(i)
+        indata["Raster"][-1].data = indata["Raster"][-1].data + 1
 
     return indata
 
@@ -1531,10 +1570,10 @@ def fftcont(data, h, showlog=print, piter=iter):
     zout = zout + datamedian
     dat = ndat.copy()
     dat.data = np.ma.array(zout)
-    dat.dataid = 'Upward_' + str(h) + '_' + data.dataid
-    dat = lstack([dat, data], piter=piter,
-                 showlog=showlog,
-                 masterid=data.dataid, commonmask=True)[0]
+    dat.dataid = "Upward_" + str(h) + "_" + data.dataid
+    dat = lstack(
+        [dat, data], piter=piter, showlog=showlog, masterid=data.dataid, commonmask=True
+    )[0]
 
     return dat
 
@@ -1558,7 +1597,7 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
         Rasterio bounds.
 
     """
-    if sfile == '' or sfile is None:
+    if sfile == "" or sfile is None:
         return None
 
     gdf = gpd.read_file(sfile)
@@ -1568,16 +1607,18 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
     if crs is not None:
         gdf = gdf.to_crs(crs)
 
-    if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        showlog('You have a MultiPolygon. Only the first Polygon '
-                'of the MultiPolygon will be used.')
-        poly = gdf['geometry'].iloc[0]
+    if gdf.geom_type.iloc[0] == "MultiPolygon":
+        showlog(
+            "You have a MultiPolygon. Only the first Polygon "
+            "of the MultiPolygon will be used."
+        )
+        poly = gdf["geometry"].iloc[0]
         tmp = poly.geoms[0]
 
         gdf.geometry.iloc[0] = tmp
 
-    if gdf.geom_type.iloc[0] != 'Polygon':
-        showlog('You need a polygon in that shape file')
+    if gdf.geom_type.iloc[0] != "Polygon":
+        showlog("You need a polygon in that shape file")
         return None
 
     bounds = gdf.geometry.iloc[0].bounds
@@ -1585,8 +1626,9 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
     return bounds
 
 
-def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
-                 roff=None, coff=None):
+def merge_median(
+    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
+):
     """
     Merge using median for rasterio, taking minimum value.
 
@@ -1630,8 +1672,9 @@ def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
     merged_data[:] = tmp1
 
 
-def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
-              roff=None, coff=None):
+def merge_min(
+    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
+):
     """
     Merge using minimum for rasterio, taking minimum value.
 
@@ -1667,8 +1710,9 @@ def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
     merged_data[:] = tmp1
 
 
-def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
-              roff=None, coff=None):
+def merge_max(
+    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
+):
     """
     Merge using maximum for rasterio, taking maximum value.
 
@@ -1741,10 +1785,23 @@ def merge_order(ifiles, igeoms):
     return ofiles
 
 
-def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
-           showlog=print, singleband=False, forcetype=None,
-           shifttomedian=False, tmpdir=None, nodata=None, method='first',
-           res=None, ifiles=None):
+def mosaic(
+    dat,
+    *,
+    idir=None,
+    bfile=None,
+    bandstofiles=False,
+    piter=iter,
+    showlog=print,
+    singleband=False,
+    forcetype=None,
+    shifttomedian=False,
+    tmpdir=None,
+    nodata=None,
+    method="first",
+    res=None,
+    ifiles=None,
+):
     """
     Merge files with different numbers of bands and/or band order.
 
@@ -1789,30 +1846,30 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         Output mosaiced dataset.
 
     """
-    if method == 'merge_min':
+    if method == "merge_min":
         method = merge_min
-    if method == 'merge_max':
+    if method == "merge_max":
         method = merge_max
-    if method == 'merge_median':
+    if method == "merge_median":
         method = merge_median
 
     indata = []
-    if 'Raster' in dat:
-        for i in dat['Raster']:
+    if "Raster" in dat:
+        for i in dat["Raster"]:
             indata.append(i)
 
-    if 'RasterFileList' in dat:
-        for i in dat['RasterFileList']:
+    if "RasterFileList" in dat:
+        for i in dat["RasterFileList"]:
             indata += get_from_rastermeta(i, piter=iter, metaonly=True)
 
     if idir is not None or ifiles is not None:
         if ifiles is None:
             ifiles = []
-            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+            for ftype in ["*.tif", "*.hdr", "*.img", "*.ers"]:
                 ifiles += glob.glob(os.path.join(idir, ftype))
 
         if not ifiles:
-            showlog('No input files in that directory')
+            showlog("No input files in that directory")
             return False
 
         for ifile in piter(ifiles):
@@ -1822,7 +1879,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             singleband = True
 
     if indata is None:
-        showlog('No input datasets')
+        showlog("No input datasets")
         return False
 
     # Get projection information
@@ -1830,18 +1887,16 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
     crs = []
     for i in indata:
         if i.crs is None:
-            showlog(f'{i.dataid} has no projection. Please assign one.')
+            showlog(f"{i.dataid} has no projection. Please assign one.")
             return False
 
         wkt.append(i.crs.to_wkt())
         crs.append(i.crs)
         # nodata = i.nodata
 
-    wkt, iwkt, numwkt = np.unique(wkt, return_index=True,
-                                  return_counts=True)
+    wkt, iwkt, numwkt = np.unique(wkt, return_index=True, return_counts=True)
     if len(wkt) > 1:
-        showlog('Error: Mismatched input projections. '
-                'Selecting most common projection')
+        showlog("Error: Mismatched input projections. Selecting most common projection")
 
         crs = crs[iwkt[numwkt == numwkt.max()][0]]
     else:
@@ -1849,7 +1904,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
 
     if bfile is None:
         bounds = None
-    elif bfile[-3:] == 'shp':
+    elif bfile[-3:] == "shp":
         bounds = get_shape_bounds(bfile, crs, showlog)
     else:
         dattmp = get_data(bfile, piter=iter, metaonly=True)
@@ -1870,23 +1925,23 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
     bandlist = list(set(bandlist))
 
     if singleband is True:
-        bandlist = ['Band_1']
+        bandlist = ["Band_1"]
 
     outdat = []
     for dataid in bandlist:
-        showlog('Extracting ' + dataid + '...')
+        showlog("Extracting " + dataid + "...")
 
         if bandstofiles:
-            odir = os.path.join(idir, 'mosaic')
+            odir = os.path.join(idir, "mosaic")
             os.makedirs(odir, exist_ok=True)
-            ofile = dataid + '.tif'
-            ofile = ofile.replace(' ', '_')
-            ofile = ofile.replace(',', '_')
-            ofile = ofile.replace('*', 'mult')
+            ofile = dataid + ".tif"
+            ofile = ofile.replace(" ", "_")
+            ofile = ofile.replace(",", "_")
+            ofile = ofile.replace("*", "mult")
             ofile = os.path.join(odir, ofile)
 
             if os.path.exists(ofile):
-                showlog('Output file exists, skipping.')
+                showlog("Output file exists, skipping.")
                 continue
 
         ifiles = []
@@ -1894,7 +1949,7 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         geomlist = []
         metadata = {}
         datetime = None
-        ofile = ''
+        ofile = ""
 
         for i in piter(indata):
             if i.dataid != dataid and singleband is False:
@@ -1910,8 +1965,13 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             else:
                 bounds2 = None
 
-            i2 = get_data(i.filename, piter=iter, tnames=[i.dataid],
-                          bounds=bounds2, showlog=showlog)
+            i2 = get_data(
+                i.filename,
+                piter=iter,
+                tnames=[i.dataid],
+                bounds=bounds2,
+                showlog=showlog,
+            )
 
             if i2 is None:
                 continue
@@ -1922,14 +1982,16 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
                 src_height, src_width = i2.data.shape
                 try:
                     transform, width, height = calculate_default_transform(
-                        i2.crs, crs, src_width, src_height, *i2.bounds)
+                        i2.crs, crs, src_width, src_height, *i2.bounds
+                    )
                 except rasterio.errors.CRSError:
-                    showlog('Problem with projection,aborting....')
+                    showlog("Problem with projection,aborting....")
                     return False
                 i2 = data_reproject(i2, crs, transform, height, width)
 
-            i2.get_boundary()
-            geomlist.append(i2.geometry)
+            if method == "merge_median":
+                i2.get_boundary()
+                geomlist.append(i2.geometry)
 
             if forcetype is not None:
                 i2.data = i2.data.astype(forcetype)
@@ -1941,40 +2003,46 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             allmval.append(mval)
 
             if singleband is True:
-                i2.dataid = 'Band_1'
+                i2.dataid = "Band_1"
 
-            trans = rasterio.transform.from_origin(i2.extent[0],
-                                                   i2.extent[3],
-                                                   i2.xdim, i2.ydim)
+            trans = rasterio.transform.from_origin(
+                i2.extent[0], i2.extent[3], i2.xdim, i2.ydim
+            )
 
             if tmpdir is None:
                 tmpdir = tempfile.gettempdir()
 
-            if i.meta['driver'] == 'SENTINEL2':
+            if i.meta["driver"] == "SENTINEL2":
                 tmpfile = os.path.join(
-                    tmpdir, os.path.basename(os.path.dirname(i.filename)))
+                    tmpdir, os.path.basename(os.path.dirname(i.filename))
+                )
             else:
                 tmpfile = os.path.join(tmpdir, os.path.basename(i.filename))
 
             tmpid = i2.dataid
-            tmpid = tmpid.replace(' ', '_')
-            tmpid = tmpid.replace(',', '_')
-            tmpid = tmpid.replace('*', 'mult')
-            tmpid = tmpid.replace(r'/', 'div')
+            tmpid = tmpid.replace(" ", "_")
+            tmpid = tmpid.replace(",", "_")
+            tmpid = tmpid.replace("*", "mult")
+            tmpid = tmpid.replace(r"/", "div")
 
-            tmpfile = tmpfile[:-4] + '_' + tmpid + '.tif'
+            tmpfile = tmpfile[:-4] + "_" + tmpid + ".tif"
 
             if i2.data.dtype == np.int16:
                 i2.data = i2.data.astype(np.int32)
 
-            raster = rasterio.open(tmpfile, 'w', driver='GTiff',
-                                   height=i2.data.shape[0],
-                                   width=i2.data.shape[1], count=1,
-                                   dtype=i2.data.dtype,
-                                   transform=trans)
+            raster = rasterio.open(
+                tmpfile,
+                "w",
+                driver="GTiff",
+                height=i2.data.shape[0],
+                width=i2.data.shape[1],
+                count=1,
+                dtype=i2.data.dtype,
+                transform=trans,
+            )
 
             if nodata is None and np.issubdtype(i2.data.dtype, np.floating):
-                nodata = 1.0e+20
+                nodata = 1.0e20
             elif nodata is None:
                 nodata = -99999
 
@@ -1994,22 +2062,23 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
             del i2
 
         if len(ifiles) < 2:
-            showlog('Too few bands of name ' + dataid)
+            showlog("Too few bands of name " + dataid)
             continue
 
-        ifiles = merge_order(ifiles, geomlist)
-        showlog('Mosaicing ' + dataid + '...')
+        if geomlist:
+            ifiles = merge_order(ifiles, geomlist)
+        showlog("Mosaicing " + dataid + "...")
 
         with rasterio.Env(CPL_DEBUG=True):
-            datmos, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
-                                                  method=method, res=res,
-                                                  bounds=bounds)
+            datmos, otrans = rasterio.merge.merge(
+                ifiles, nodata=nodata, method=method, res=res, bounds=bounds
+            )
 
         for j in ifiles:
             if os.path.exists(j):
                 os.remove(j)
-            if os.path.exists(j + '.msk'):
-                os.remove(j + '.msk')
+            if os.path.exists(j + ".msk"):
+                os.remove(j + ".msk")
 
         datmos = datmos.squeeze()
         datmos = np.ma.masked_equal(datmos, nodata)
@@ -2022,14 +2091,20 @@ def mosaic(dat, *, idir=None, bfile=None, bandstofiles=False, piter=iter,
         outdat[-1].datetime = datetime
 
         if bandstofiles:
-            export_raster(ofile, outdat, drv='GTiff', compression='DEFLATE',
-                          showlog=showlog, piter=piter)
+            export_raster(
+                ofile,
+                outdat,
+                drv="GTiff",
+                compression="DEFLATE",
+                showlog=showlog,
+                piter=piter,
+            )
 
             del outdat
             del datmos
             outdat = []
 
-    if bounds is not None and bfile[-3:] == 'shp':
+    if bounds is not None and bfile[-3:] == "shp":
         outdat = cut_raster(outdat, bfile, deepcopy=False)
 
     return outdat
@@ -2061,18 +2136,20 @@ def redistribute_vertices(geom, distance):
         New geometry.
 
     """
-    if geom.geom_type == 'LineString':
+    if geom.geom_type == "LineString":
         num_vert = int(round(geom.length / distance))
         if num_vert == 0:
             num_vert = 1
         return LineString(
-            [geom.interpolate(float(n) / num_vert, normalized=True)
-             for n in range(num_vert + 1)])
-    if geom.geom_type == 'MultiLineString':
-        parts = [redistribute_vertices(part, distance)
-                 for part in geom]
+            [
+                geom.interpolate(float(n) / num_vert, normalized=True)
+                for n in range(num_vert + 1)
+            ]
+        )
+    if geom.geom_type == "MultiLineString":
+        parts = [redistribute_vertices(part, distance) for part in geom]
         return type(geom)([p for p in parts if not p.is_empty])
-    raise ValueError(f'unhandled geometry {geom.geom_type}')
+    raise ValueError(f"unhandled geometry {geom.geom_type}")
 
 
 def taylorcont(data, h, showlog=print, piter=iter):
@@ -2099,14 +2176,18 @@ def taylorcont(data, h, showlog=print, piter=iter):
     dz = verticalp(data, order=1, showlog=showlog, piter=piter)
     dz2 = verticalp(data, order=2, showlog=showlog, piter=piter)
     dz3 = verticalp(data, order=3, showlog=showlog, piter=piter)
-    zout = (data.data + h * dz + h**2 * dz2 / math.factorial(2) +
-            h**3 * dz3 / math.factorial(3))
+    zout = (
+        data.data
+        + h * dz
+        + h**2 * dz2 / math.factorial(2)
+        + h**3 * dz3 / math.factorial(3)
+    )
 
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
-    dat.dataid = 'Downward_' + str(h) + '_' + data.dataid
+    dat.dataid = "Downward_" + str(h) + "_" + data.dataid
     dat.set_transform(transform=data.transform)
     dat.crs = data.crs
     return dat
@@ -2206,10 +2287,10 @@ def verticalp(data, order=1, showlog=print, piter=iter):
 
     dat = ndat.copy()
     dat.data = np.ma.array(zout)
-    dat.dataid = 'VD_' + data.dataid
-    dat = lstack([dat, data], piter=piter,
-                 showlog=showlog,
-                 masterid=data.dataid, commonmask=True)[0]
+    dat.dataid = "VD_" + data.dataid
+    dat = lstack(
+        [dat, data], piter=piter, showlog=showlog, masterid=data.dataid, commonmask=True
+    )[0]
 
     zout = dat.data
 
@@ -2219,41 +2300,44 @@ def verticalp(data, order=1, showlog=print, piter=iter):
 def _testdown():
     """Continuation testing routine."""
     import matplotlib.pyplot as plt
-    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+
+    from pygmi.pfmod.grvmag3d import calc_field, quick_model
     # from IPython import get_ipython
     # get_ipython().run_line_magic('matplotlib', 'inline')
 
-    h = 4.
-    dxy = 1.
+    h = 4.0
+    dxy = 1.0
     magcalc = True
 
     # quick model
-    lmod = quick_model(numx=100, numy=100, numz=10,
-                       dxy=dxy, d_z=1, tlx=1000., tly=1000.)
+    lmod = quick_model(
+        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000.0
+    )
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
     lmod.ght = 10
     lmod.mht = 10
     calc_field(lmod, magcalc=magcalc)
     if magcalc:
-        z = lmod.griddata['Calculated Magnetics']
+        z = lmod.griddata["Calculated Magnetics"]
         z.data = z.data + 5
     else:
-        z = lmod.griddata['Calculated Gravity']
+        z = lmod.griddata["Calculated Gravity"]
 
     # Calculate the field
-    lmod = quick_model(numx=100, numy=100, numz=10,
-                       dxy=dxy, d_z=1, tlx=1000., tly=1000)
+    lmod = quick_model(
+        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000
+    )
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
     lmod.ght = 10 - h
     lmod.mht = 10 - h
     calc_field(lmod, magcalc=magcalc)
     if magcalc:
-        downz0 = lmod.griddata['Calculated Magnetics']
+        downz0 = lmod.griddata["Calculated Magnetics"]
         downz0.data = downz0.data + 5
     else:
-        downz0 = lmod.griddata['Calculated Gravity']
+        downz0 = lmod.griddata["Calculated Gravity"]
 
     # downz0, z = z, downz0
 
@@ -2266,21 +2350,27 @@ def _testdown():
 
     # downward, taylor
     # h = -h
-    zdown = (z.data + h * dz + h**2 * dz2 / math.factorial(2) +
-             h**3 * dz3 / math.factorial(3))
+    zdown = (
+        z.data
+        + h * dz
+        + h**2 * dz2 / math.factorial(2)
+        + h**3 * dz3 / math.factorial(3)
+    )
 
     # Plotting
-    plt.plot(downz0.data[50], 'r')
-    plt.plot(zdown.data[50], 'b')
-    plt.plot(zdownn.data[50], 'k+')
+    plt.plot(downz0.data[50], "r")
+    plt.plot(zdown.data[50], "b")
+    plt.plot(zdownn.data[50], "k+")
     plt.show()
 
 
 def _testfn():
     """Test."""
-    import sys
     import os
+    import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -2289,13 +2379,13 @@ def _testfn():
     os.chdir(os.path.dirname(ifile))
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = RasterToVectorBoundary()
-    tmp.indata['Raster'] = dat
+    tmp.indata["Raster"] = dat
     tmp.settings()
 
-    gdf = tmp.outdata['Vector'][0]
+    gdf = tmp.outdata["Vector"][0]
 
     gdf.plot()
 
@@ -2304,11 +2394,11 @@ def _testfn():
 
 def _testmosaic():
     """Test."""
-    idir = r"D:\workdata\PyGMI Test Data\Raster\mosaic"
+    idir = r"D:\tmp"
     dat = {}
 
     mosaic(dat, idir=idir)
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testmosaic()
