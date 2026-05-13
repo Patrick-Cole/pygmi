@@ -146,6 +146,7 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
     local["pinit"] = pinit
     local["qinit"] = qinit
     local["cell"] = cell
+    local["alpha"] = alpha
     n = 2
     # pinit = asp[1]
     # qinit = asp[2]
@@ -186,7 +187,7 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
     Ps = ne.evaluate("coss**n", local_dict=local)
     local["Ps"] = Ps
     R = np.ma.masked_invalid(
-        ne.evaluate("((1-alpha)+alpha*Ps)*cosi/cosg2"), local_dict=local
+        ne.evaluate("((1-alpha)+alpha*Ps)*cosi/cosg2", local_dict=local)
     )
 
     return R
