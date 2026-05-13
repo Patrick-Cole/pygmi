@@ -28,13 +28,14 @@ the tests.
 """
 
 import os
-import psutil
+
 import numpy as np
+import psutil
 
-from pygmi.raster.datatypes import Data
 from pygmi.clust import cluster, crisp_clust, fuzzy_clust, segmentation
+from pygmi.raster.datatypes import Data
 
-os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
+os.environ["LOKY_MAX_CPU_COUNT"] = str(psutil.cpu_count(logical=False))
 
 
 def test_cluster():
@@ -52,13 +53,10 @@ def test_cluster():
 
     data = [dat1, dat2, dat1]
 
-    datout2 = cluster.cluster(data, cltype='K-Means', min_cluster=2,
-                              max_cluster=2)
+    datout2 = cluster.cluster(data, cltype="K-Means", min_cluster=2, max_cluster=2)
 
     datout2 = datout2[0].data.data
-    datout = np.array([[1, 2, 2],
-                       [2, 1, 2],
-                       [2, 2, 1]])
+    datout = np.array([[1, 2, 2], [2, 1, 2], [2, 2, 1]])
     if datout2[0, 0] == 2:
         datout = np.abs(datout - 3)
 
@@ -80,9 +78,7 @@ def test_crisp():
     datout2 = crisp_clust.crispclust(data, min_cluster=2, max_cluster=2)
 
     datout2 = datout2[0].data.data
-    datout = np.array([[1, 2, 2],
-                       [2, 1, 2],
-                       [2, 2, 1]])
+    datout = np.array([[1, 2, 2], [2, 1, 2], [2, 2, 1]])
     if datout2[0, 0] == 2:
         datout = np.abs(datout - 3)
 
@@ -105,9 +101,7 @@ def test_fuzzy():
     datout2 = fuzzy_clust.fuzzyclust(data, min_cluster=2, max_cluster=2)
 
     datout2 = datout2[0].data.data
-    datout = np.array([[1, 2, 2],
-                       [2, 1, 2],
-                       [2, 2, 1]])
+    datout = np.array([[1, 2, 2], [2, 1, 2], [2, 2, 1]])
     if datout2[0, 0] == 2:
         datout = np.abs(datout - 3)
 
@@ -138,9 +132,7 @@ def test_segment():
 
     datout2 = segmentation.segment1(data1, scale=10)
 
-    datout = np.array([[0, 1, 1],
-                       [0, 1, 1],
-                       [1, 1, 1]])
+    datout = np.array([[0, 1, 1], [0, 1, 1], [1, 1, 1]])
 
     np.testing.assert_array_equal(datout2, datout)
 

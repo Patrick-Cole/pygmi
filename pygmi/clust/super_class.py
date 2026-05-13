@@ -27,26 +27,26 @@
 import os
 import sys
 
-import numpy as np
-from PySide6 import QtWidgets, QtCore
-from matplotlib.figure import Figure
-from matplotlib.patches import Polygon as mPolygon
-from matplotlib.lines import Line2D
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-import pandas as pd
 import geopandas as gpd
-from shapely.geometry import Polygon
-from PIL import Image, ImageDraw
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
+import numpy as np
+import pandas as pd
 import sklearn.metrics as skm
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
+from matplotlib.patches import Polygon as mPolygon
+from PIL import Image, ImageDraw
+from PySide6 import QtCore, QtWidgets
+from shapely.geometry import Polygon
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
+from pygmi.misc import BasicModule, frm
 from pygmi.raster.datatypes import Data
-from pygmi.misc import frm, BasicModule
 from pygmi.raster.modest_image import imshow
 
 
@@ -72,7 +72,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.im1 = None
 
         self.bands = [0, 1, 2]
-        self.manip = 'RGB Ternary'
+        self.manip = "RGB Ternary"
 
     def polyint(self, dat):
         """
@@ -114,7 +114,7 @@ class GraphMap(FigureCanvasQTAgg):
         clippercu = 1
         clippercl = 1
 
-        if 'Ternary' in self.manip:
+        if "Ternary" in self.manip:
             red = dat[self.bands[0]].data
             green = dat[self.bands[1]].data
             blue = dat[self.bands[2]].data
@@ -125,40 +125,46 @@ class GraphMap(FigureCanvasQTAgg):
             lclip = [0, 0, 0]
             uclip = [0, 0, 0]
 
-            lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100 - clippercu])
+            lclip[0], uclip[0] = np.percentile(
+                red.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[1], uclip[1] = np.percentile(
+                green.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[2], uclip[2] = np.percentile(
+                blue.compressed(), [clippercl, 100 - clippercu]
+            )
         else:
             data = dat[self.bands[0]].data
-            lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100 - clippercu])
+            lclip, uclip = np.percentile(
+                data.compressed(), [clippercl, 100 - clippercu]
+            )
 
         extent = dat[self.bands[0]].extent
 
         self.im1 = imshow(self.ax1, data, extent=extent)
         self.im1.rgbmode = self.manip
 
-        if 'Ternary' in self.manip:
-            self.im1.rgbclip = [[lclip[0], uclip[0]],
-                                [lclip[1], uclip[1]],
-                                [lclip[2], uclip[2]]]
+        if "Ternary" in self.manip:
+            self.im1.rgbclip = [
+                [lclip[0], uclip[0]],
+                [lclip[1], uclip[1]],
+                [lclip[2], uclip[2]],
+            ]
         else:
             self.im1.set_clim(lclip, uclip)
 
         if dat[self.bands[0]].crs.is_geographic:
-            self.ax1.set_xlabel('Longitude')
-            self.ax1.set_ylabel('Latitude')
+            self.ax1.set_xlabel("Longitude")
+            self.ax1.set_ylabel("Latitude")
         else:
-            self.ax1.set_xlabel('Eastings')
-            self.ax1.set_ylabel('Northings')
+            self.ax1.set_xlabel("Eastings")
+            self.ax1.set_ylabel("Northings")
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis='x', rotation=90)
-        self.ax1.tick_params(axis='y', rotation=0)
+        self.ax1.tick_params(axis="x", rotation=90)
+        self.ax1.tick_params(axis="y", rotation=0)
 
     def update_plot(self, dat):
         """
@@ -177,7 +183,7 @@ class GraphMap(FigureCanvasQTAgg):
         clippercu = 1
         clippercl = 1
 
-        if 'Ternary' in self.manip:
+        if "Ternary" in self.manip:
             red = dat[self.bands[0]].data
             green = dat[self.bands[1]].data
             blue = dat[self.bands[2]].data
@@ -188,20 +194,26 @@ class GraphMap(FigureCanvasQTAgg):
             lclip = [0, 0, 0]
             uclip = [0, 0, 0]
 
-            lclip[0], uclip[0] = np.percentile(red.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[1], uclip[1] = np.percentile(green.compressed(),
-                                               [clippercl, 100 - clippercu])
-            lclip[2], uclip[2] = np.percentile(blue.compressed(),
-                                               [clippercl, 100 - clippercu])
-            self.im1.rgbclip = [[lclip[0], uclip[0]],
-                                [lclip[1], uclip[1]],
-                                [lclip[2], uclip[2]]]
+            lclip[0], uclip[0] = np.percentile(
+                red.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[1], uclip[1] = np.percentile(
+                green.compressed(), [clippercl, 100 - clippercu]
+            )
+            lclip[2], uclip[2] = np.percentile(
+                blue.compressed(), [clippercl, 100 - clippercu]
+            )
+            self.im1.rgbclip = [
+                [lclip[0], uclip[0]],
+                [lclip[1], uclip[1]],
+                [lclip[2], uclip[2]],
+            ]
 
         else:
             data = dat[self.bands[0]].data
-            lclip, uclip = np.percentile(data.compressed(),
-                                         [clippercl, 100 - clippercu])
+            lclip, uclip = np.percentile(
+                data.compressed(), [clippercl, 100 - clippercu]
+            )
 
             self.im1.set_clim(lclip, uclip)
 
@@ -213,8 +225,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis='x', rotation=90)
-        self.ax1.tick_params(axis='y', rotation=0)
+        self.ax1.tick_params(axis="x", rotation=90)
+        self.ax1.tick_params(axis="y", rotation=0)
         self.figure.canvas.draw()
 
     def update_class(self, dat):
@@ -235,21 +247,20 @@ class GraphMap(FigureCanvasQTAgg):
         clippercl = 0
 
         data = dat
-        lclip, uclip = np.percentile(data.compressed(),
-                                     [clippercl, 100 - clippercu])
+        lclip, uclip = np.percentile(data.compressed(), [clippercl, 100 - clippercu])
 
         self.im1.set_clim(lclip, uclip)
 
         # extent = dat.extent
 
-        self.im1.rgbmode = 'Single Colour Map'
+        self.im1.rgbmode = "Single Colour Map"
         self.im1.set_data(data)
         # self.im1.set_extent(extent)
 
         self.ax1.xaxis.set_major_formatter(frm)
         self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis='x', rotation=90)
-        self.ax1.tick_params(axis='y', rotation=0)
+        self.ax1.tick_params(axis="x", rotation=90)
+        self.ax1.tick_params(axis="y", rotation=0)
         self.figure.canvas.draw()
 
 
@@ -289,19 +300,17 @@ class PolygonInteractor(QtCore.QObject):
 
         xtmp, ytmp = zip(*self.poly.xy)
 
-        self.line = Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
-                           color='y', animated=True)
+        self.line = Line2D(
+            xtmp, ytmp, marker="o", markerfacecolor="r", color="y", animated=True
+        )
         self.ax.add_line(self.line)
 
         self._ind = None  # the active vert
 
-        self.canvas.mpl_connect('draw_event', self.draw_callback)
-        self.canvas.mpl_connect('button_press_event',
-                                self.button_press_callback)
-        self.canvas.mpl_connect('button_release_event',
-                                self.button_release_callback)
-        self.canvas.mpl_connect('motion_notify_event',
-                                self.motion_notify_callback)
+        self.canvas.mpl_connect("draw_event", self.draw_callback)
+        self.canvas.mpl_connect("button_press_event", self.button_press_callback)
+        self.canvas.mpl_connect("button_release_event", self.button_release_callback)
+        self.canvas.mpl_connect("motion_notify_event", self.motion_notify_callback)
 
     def draw_callback(self, event=None):
         """
@@ -403,13 +412,12 @@ class PolygonInteractor(QtCore.QObject):
 
         if self._ind is None:
             xys = self.poly.get_transform().transform(self.poly.xy)
-            ptmp = self.poly.get_transform().transform([event.xdata,
-                                                        event.ydata])
+            ptmp = self.poly.get_transform().transform([event.xdata, event.ydata])
 
             if len(xys) == 1:
                 self.poly.xy = np.array(
-                    [(event.xdata, event.ydata)] +
-                    [(event.xdata, event.ydata)])
+                    [(event.xdata, event.ydata)] + [(event.xdata, event.ydata)]
+                )
                 self.line.set_data(zip(*self.poly.xy))
 
                 self.ax.draw_artist(self.poly)
@@ -434,9 +442,11 @@ class PolygonInteractor(QtCore.QObject):
             if np.array_equal(self.poly.xy, np.ones((2, 2))):
                 self.poly.set_xy([[event.xdata, event.ydata]])
             else:
-                self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-                                        [(event.xdata, event.ydata)] +
-                                        list(self.poly.xy[i + 1:]))
+                self.poly.xy = np.array(
+                    list(self.poly.xy[: i + 1])
+                    + [(event.xdata, event.ydata)]
+                    + list(self.poly.xy[i + 1 :])
+                )
 
             self.line.set_data(list(zip(*self.poly.xy)))
 
@@ -530,12 +540,12 @@ class SuperClass(BasicModule):
         self.c = [0, 1, 0]
         self.data = {}
         self.zonal = None
-        self.df = gpd.GeoDataFrame(columns=['class', 'geometry'])
-        self.df.set_geometry('geometry')
+        self.df = gpd.GeoDataFrame(columns=["class", "geometry"])
+        self.df.set_geometry("geometry")
 
         self.map = GraphMap(self)
-        self.dpoly = QtWidgets.QPushButton('Delete Polygon')
-        self.apoly = QtWidgets.QPushButton('Add Polygon')
+        self.dpoly = QtWidgets.QPushButton("Delete Polygon")
+        self.apoly = QtWidgets.QPushButton("Add Polygon")
         self.cmb_class = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.cmb_KNalgorithm = QtWidgets.QComboBox()
@@ -547,8 +557,8 @@ class SuperClass(BasicModule):
         self.cmb_band2 = QtWidgets.QComboBox()
         self.cmb_band3 = QtWidgets.QComboBox()
         self.cmb_manip = QtWidgets.QComboBox()
-        self.rb_data = QtWidgets.QRadioButton('Data')
-        self.rb_results = QtWidgets.QRadioButton('Results')
+        self.rb_data = QtWidgets.QRadioButton("Data")
+        self.rb_results = QtWidgets.QRadioButton("Results")
 
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
 
@@ -563,28 +573,28 @@ class SuperClass(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'cluster.dm.super'
+        self.buttonbox.htmlfile = "cluster.dm.super"
 
         gl_main = QtWidgets.QGridLayout(self)
-        gbox_map = QtWidgets.QGroupBox('Class Edit')
+        gbox_map = QtWidgets.QGroupBox("Class Edit")
         gl_right = QtWidgets.QGridLayout(gbox_map)
 
-        gbox_1 = QtWidgets.QGroupBox('Display Type')
+        gbox_1 = QtWidgets.QGroupBox("Display Type")
         vbl_1b = QtWidgets.QVBoxLayout()
         gbox_1.setLayout(vbl_1b)
 
-        gbox_2 = QtWidgets.QGroupBox('Data Bands')
+        gbox_2 = QtWidgets.QGroupBox("Data Bands")
         vbl_2b = QtWidgets.QVBoxLayout()
         gbox_2.setLayout(vbl_2b)
 
-        gbox_class = QtWidgets.QGroupBox('Supervised Classification')
+        gbox_class = QtWidgets.QGroupBox("Supervised Classification")
         gl_class = QtWidgets.QGridLayout(gbox_class)
 
         vbl_2b.addWidget(self.cmb_band1)
         vbl_2b.addWidget(self.cmb_band2)
         vbl_2b.addWidget(self.cmb_band3)
 
-        actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
+        actions = ["RGB Ternary", "CMY Ternary", "Single Colour Map"]
         self.cmb_manip.addItems(actions)
 
         vbl_1b.addWidget(self.cmb_manip)
@@ -594,35 +604,36 @@ class SuperClass(BasicModule):
         self.rb_data.setChecked(True)
         self.rb_results.setEnabled(False)
 
-        loadshape = QtWidgets.QPushButton('Load Class Shapefile')
-        saveshape = QtWidgets.QPushButton('Save Class Shapefile')
-        calcmetrics = QtWidgets.QPushButton('Display Metrics')
-        pb_calc = QtWidgets.QPushButton('Calculate')
+        loadshape = QtWidgets.QPushButton("Load Class Shapefile")
+        saveshape = QtWidgets.QPushButton("Save Class Shapefile")
+        calcmetrics = QtWidgets.QPushButton("Display Metrics")
+        pb_calc = QtWidgets.QPushButton("Calculate")
 
-        self.setWindowTitle('Supervised Classification')
+        self.setWindowTitle("Supervised Classification")
         self.tablewidget.setRowCount(0)
         self.tablewidget.setColumnCount(1)
-        self.tablewidget.setHorizontalHeaderLabels(['Class Names'])
+        self.tablewidget.setHorizontalHeaderLabels(["Class Names"])
 
         self.apoly.setAutoDefault(False)
         self.dpoly.setAutoDefault(False)
 
-        choices = ['K Neighbours Classifier',
-                   'Decision Tree Classifier',
-                   'Random Forest Classifier',
-                   'Support Vector Classifier']
+        choices = [
+            "K Neighbours Classifier",
+            "Decision Tree Classifier",
+            "Random Forest Classifier",
+            "Support Vector Classifier",
+        ]
 
         self.cmb_class.clear()
         self.cmb_class.addItems(choices)
 
-        lbl_class = QtWidgets.QLabel('Classifier:')
-        self.lbl_1.setText('Algorithm:')
+        lbl_class = QtWidgets.QLabel("Classifier:")
+        self.lbl_1.setText("Algorithm:")
 
-        self.cmb_KNalgorithm.addItems(['auto', 'ball_tree', 'kd_tree',
-                                       'brute'])
-        self.cmb_DTcriterion.addItems(['gini', 'entropy'])
-        self.cmb_RFcriterion.addItems(['gini', 'entropy'])
-        self.cmb_SVCkernel.addItems(['rbf', 'linear', 'poly'])
+        self.cmb_KNalgorithm.addItems(["auto", "ball_tree", "kd_tree", "brute"])
+        self.cmb_DTcriterion.addItems(["gini", "entropy"])
+        self.cmb_RFcriterion.addItems(["gini", "entropy"])
+        self.cmb_SVCkernel.addItems(["rbf", "linear", "poly"])
 
         self.cmb_SVCkernel.setHidden(True)
         self.cmb_DTcriterion.setHidden(True)
@@ -683,7 +694,7 @@ class SuperClass(BasicModule):
         if self.df is None:
             return
 
-        self.map.figure.set_facecolor('r')
+        self.map.figure.set_facecolor("r")
 
         self.rb_data.setChecked(True)
         self.on_radio()
@@ -704,7 +715,7 @@ class SuperClass(BasicModule):
         yout[~mask] = yout1
 
         yout2 = np.zeros_like(datall[:, :, 0], dtype=int)
-        if self.map.im1.origin == 'upper':
+        if self.map.im1.origin == "upper":
             yout2[y0:y1:sy, x0:x1:sx] = yout[::-1]
             yout2 = yout2[::-1]
         else:
@@ -712,7 +723,7 @@ class SuperClass(BasicModule):
 
         self.zonal = np.ma.array(yout2, mask=self.map.data[0].data.mask)
 
-        self.map.figure.set_facecolor('w')
+        self.map.figure.set_facecolor("w")
         self.rb_results.setEnabled(True)
         self.rb_results.setChecked(True)
         self.on_radio()
@@ -733,18 +744,18 @@ class SuperClass(BasicModule):
         self.cmb_RFcriterion.setHidden(True)
         self.cmb_KNalgorithm.setHidden(True)
 
-        if ctext == 'K Neighbours Classifier':
+        if ctext == "K Neighbours Classifier":
             self.cmb_KNalgorithm.setHidden(False)
-            self.lbl_1.setText('Algorithm:')
-        elif ctext == 'Decision Tree Classifier':
+            self.lbl_1.setText("Algorithm:")
+        elif ctext == "Decision Tree Classifier":
             self.cmb_DTcriterion.setHidden(False)
-            self.lbl_1.setText('Criterion:')
-        elif ctext == 'Random Forest Classifier':
+            self.lbl_1.setText("Criterion:")
+        elif ctext == "Random Forest Classifier":
             self.cmb_RFcriterion.setHidden(False)
-            self.lbl_1.setText('Criterion:')
-        elif ctext == 'Support Vector Classifier':
+            self.lbl_1.setText("Criterion:")
+        elif ctext == "Support Vector Classifier":
             self.cmb_SVCkernel.setHidden(False)
-            self.lbl_1.setText('Kernel:')
+            self.lbl_1.setText("Kernel:")
 
     def calc_metrics(self):
         """
@@ -767,26 +778,27 @@ class SuperClass(BasicModule):
         accuracy = skm.accuracy_score(y_test, y_pred)
         kappa = skm.cohen_kappa_score(y_pred, y_test)
 
-        message = '<p>Confusion Matrix:</p>'
+        message = "<p>Confusion Matrix:</p>"
         message += pd.DataFrame(cmat, columns=tlbls, index=tlbls).to_html()
-        message += '<p>Accuracy: ' + str(accuracy) + '</p>'
-        message += '<p>Kappa:\t  ' + str(kappa) + '</p>'
+        message += "<p>Accuracy: " + str(accuracy) + "</p>"
+        message += "<p>Kappa:\t  " + str(kappa) + "</p>"
 
         qsave = QtWidgets.QMessageBox.StandardButton.Save
         qokay = QtWidgets.QMessageBox.StandardButton.Ok
-        ret = QtWidgets.QMessageBox.information(self, 'Metrics',
-                                                message,
-                                                buttons=qsave | qokay)
+        ret = QtWidgets.QMessageBox.information(
+            self, "Metrics", message, buttons=qsave | qokay
+        )
         if ret == qsave:
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-                self.parent, 'Save File', '.', 'Excel spreadsheet (*.xlsx)')
+                self.parent, "Save File", ".", "Excel spreadsheet (*.xlsx)"
+            )
 
-            if filename != '':
+            if filename != "":
                 df = pd.DataFrame(cmat, columns=tlbls, index=tlbls)
-                df.loc['Accuracy'] = np.nan
-                df.loc['Accuracy', tlbls[0]] = accuracy
-                df.loc['Kappa'] = np.nan
-                df.loc['Kappa', tlbls[0]] = kappa
+                df.loc["Accuracy"] = np.nan
+                df.loc["Accuracy", tlbls[0]] = accuracy
+                df.loc["Kappa"] = np.nan
+                df.loc["Kappa", tlbls[0]] = kappa
 
                 df.to_excel(filename)
 
@@ -808,13 +820,13 @@ class SuperClass(BasicModule):
         if row == -1:
             return
 
-        self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
+        self.df.loc[row, "class"] = self.tablewidget.item(row, 0).text()
 
         xycoords = self.map.polyi.poly.xy
         if xycoords.size < 8:
-            self.df.loc[row, 'geometry'] = Polygon([])
+            self.df.loc[row, "geometry"] = Polygon([])
         else:
-            self.df.loc[row, 'geometry'] = Polygon(xycoords)
+            self.df.loc[row, "geometry"] = Polygon(xycoords)
 
     def oncellchange(self, row, col):
         """
@@ -835,7 +847,7 @@ class SuperClass(BasicModule):
         if self.tablewidget.currentItem() is None or col != 0:
             return
 
-        self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
+        self.df.loc[row, "class"] = self.tablewidget.item(row, 0).text()
 
     def onrowchange(self, current, previous):
         """
@@ -859,9 +871,9 @@ class SuperClass(BasicModule):
             return
         row = current.row()
 
-        if self.df.loc[row, 'geometry'] == Polygon([]):
+        if self.df.loc[row, "geometry"] == Polygon([]):
             return
-        coords = list(self.df.loc[row, 'geometry'].exterior.coords)
+        coords = list(self.df.loc[row, "geometry"].exterior.coords)
 
         self.update_class_polys()
 
@@ -877,15 +889,15 @@ class SuperClass(BasicModule):
 
         """
         if self.df is None:
-            self.df = gpd.GeoDataFrame(columns=['class', 'geometry'])
-            self.df.set_geometry('geometry')
+            self.df = gpd.GeoDataFrame(columns=["class", "geometry"])
+            self.df.set_geometry("geometry")
 
         row = self.tablewidget.rowCount()
         self.tablewidget.insertRow(row)
-        item = QtWidgets.QTableWidgetItem('Class ' + str(row + 1))
+        item = QtWidgets.QTableWidgetItem("Class " + str(row + 1))
         self.tablewidget.setItem(row, 0, item)
 
-        item = QtWidgets.QTableWidgetItem('1')
+        item = QtWidgets.QTableWidgetItem("1")
         item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
         self.tablewidget.setItem(row, 1, item)
 
@@ -893,8 +905,8 @@ class SuperClass(BasicModule):
         self.map.polyi.new_poly([[1, 1]])
 
         # self.df.loc[row] = pd.Series(dtype='object')
-        self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
-        self.df.loc[row, 'geometry'] = Polygon([])
+        self.df.loc[row, "class"] = self.tablewidget.item(row, 0).text()
+        self.df.loc[row, "geometry"] = Polygon([])
 
         self.tablewidget.selectRow(row)
         self.map.polyi.isactive = True
@@ -929,16 +941,18 @@ class SuperClass(BasicModule):
         """
         maniptxt = self.cmb_manip.currentText()
 
-        if 'Ternary' in maniptxt:
+        if "Ternary" in maniptxt:
             self.cmb_band2.show()
             self.cmb_band3.show()
         else:
             self.cmb_band2.hide()
             self.cmb_band3.hide()
 
-        self.map.bands = [self.cmb_band1.currentText(),
-                          self.cmb_band2.currentText(),
-                          self.cmb_band3.currentText()]
+        self.map.bands = [
+            self.cmb_band1.currentText(),
+            self.cmb_band2.currentText(),
+            self.cmb_band3.currentText(),
+        ]
 
         self.map.manip = maniptxt
         if self.rb_data.isChecked():
@@ -968,32 +982,32 @@ class SuperClass(BasicModule):
             True if successful, False otherwise.
 
         """
-        ext = 'Shapefile (*.shp)'
+        ext = "Shapefile (*.shp)"
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                            'Open File',
-                                                            '.', ext)
-        if filename == '':
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, "Open File", ".", ext
+        )
+        if filename == "":
             return False
 
         df = gpd.read_file(filename)
         df.columns = df.columns.str.lower()
-        if 'id' in df:
-            df = df.drop('id', axis='columns')
+        if "id" in df:
+            df = df.drop("id", axis="columns")
 
-        if 'class' not in df or 'geometry' not in df:
+        if "class" not in df or "geometry" not in df:
             return False
 
         self.df = df.dropna()
         self.tablewidget.setRowCount(0)
         for index, _ in self.df.iterrows():
             self.tablewidget.insertRow(index)
-            item = QtWidgets.QTableWidgetItem(self.df['class'].iloc[index])
+            item = QtWidgets.QTableWidgetItem(self.df["class"].iloc[index])
             self.tablewidget.setItem(index, 0, item)
 
         self.map.polyi.isactive = True
         self.tablewidget.selectRow(0)
-        coords = list(self.df.loc[0, 'geometry'].exterior.coords)
+        coords = list(self.df.loc[0, "geometry"].exterior.coords)
         self.map.polyi.new_poly(coords)
 
         self.update_class_polys()
@@ -1011,9 +1025,10 @@ class SuperClass(BasicModule):
 
         """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'Shapefile (*.shp)')
+            self.parent, "Save File", ".", "Shapefile (*.shp)"
+        )
 
-        if filename == '':
+        if filename == "":
             return False
 
         self.df.to_file(filename)
@@ -1034,25 +1049,29 @@ class SuperClass(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('Error: You must have a multi-band raster dataset in '
-                         'addition to your cluster analysis results')
+        if "Raster" not in self.indata:
+            self.showlog(
+                "Error: You must have a multi-band raster dataset in "
+                "addition to your cluster analysis results"
+            )
             return False
 
-        self.map.data = self.indata['Raster']
+        self.map.data = self.indata["Raster"]
 
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             self.data[i.dataid] = i
 
-        bands = [i.dataid for i in self.indata['Raster']]
+        bands = [i.dataid for i in self.indata["Raster"]]
 
         self.cmb_update(self.cmb_band1, bands)
         self.cmb_update(self.cmb_band2, bands)
         self.cmb_update(self.cmb_band3, bands)
 
-        self.map.bands = [self.cmb_band1.currentText(),
-                          self.cmb_band2.currentText(),
-                          self.cmb_band3.currentText()]
+        self.map.bands = [
+            self.cmb_band1.currentText(),
+            self.cmb_band2.currentText(),
+            self.cmb_band3.currentText(),
+        ]
         self.map.manip = self.cmb_manip.currentText()
 
         self.map.compute_initial_figure(self.data)
@@ -1066,12 +1085,12 @@ class SuperClass(BasicModule):
             self.tablewidget.setRowCount(0)
             for index, _ in self.df.iterrows():
                 self.tablewidget.insertRow(index)
-                item = QtWidgets.QTableWidgetItem(self.df['class'].iloc[index])
+                item = QtWidgets.QTableWidgetItem(self.df["class"].iloc[index])
                 self.tablewidget.setItem(index, 0, item)
 
             self.map.polyi.isactive = True
             self.tablewidget.selectRow(0)
-            coords = list(self.df.loc[0, 'geometry'].exterior.coords)
+            coords = list(self.df.loc[0, "geometry"].exterior.coords)
             self.map.polyi.new_poly(coords)
 
             self.update_class_polys()
@@ -1090,12 +1109,12 @@ class SuperClass(BasicModule):
         yout1 = classifier.predict(datall)
         yout[~mask] = yout1
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         dat_out = [Data()]
 
-        dat_out[-1].metadata['Cluster']['input_type'] = []
+        dat_out[-1].metadata["Cluster"]["input_type"] = []
         for k in data:
-            dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
+            dat_out[-1].metadata["Cluster"]["input_type"].append(k.dataid)
 
         zonal = np.ma.array(yout, mask=self.map.data[0].data.mask)
 
@@ -1103,11 +1122,10 @@ class SuperClass(BasicModule):
 
         dat_out[-1].data = zonal
         dat_out[-1].nodata = zonal.fill_value
-        dat_out[-1].metadata['Cluster']['labels'] = tlbls
-        dat_out[-1].metadata['Cluster']['no_clusters'] = i
-        dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
-        dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i,
-                                                                  len(data)])
+        dat_out[-1].metadata["Cluster"]["labels"] = tlbls
+        dat_out[-1].metadata["Cluster"]["no_clusters"] = i
+        dat_out[-1].metadata["Cluster"]["center"] = np.zeros([i, len(data)])
+        dat_out[-1].metadata["Cluster"]["center_std"] = np.zeros([i, len(data)])
 
         m = []
         s = []
@@ -1115,13 +1133,14 @@ class SuperClass(BasicModule):
             m.append(datall[yout1 == i2].mean(0))
             s.append(datall[yout1 == i2].std(0))
 
-        dat_out[-1].metadata['Cluster']['center'] = np.array(m)
-        dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
-        dat_out[-1].metadata['Cluster']['super_type'] = self.cmb_class.currentText()
+        dat_out[-1].metadata["Cluster"]["center"] = np.array(m)
+        dat_out[-1].metadata["Cluster"]["center_std"] = np.array(s)
+        dat_out[-1].metadata["Cluster"]["super_type"] = self.cmb_class.currentText()
 
         dat_out[-1].crs = data[0].crs
-        dat_out[-1].dataid = 'Clusters: ' + \
-            str(dat_out[-1].metadata['Cluster']['no_clusters'])
+        dat_out[-1].dataid = "Clusters: " + str(
+            dat_out[-1].metadata["Cluster"]["no_clusters"]
+        )
         dat_out[-1].nodata = data[0].nodata
         dat_out[-1].set_transform(transform=data[0].transform)
 
@@ -1130,10 +1149,10 @@ class SuperClass(BasicModule):
             i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
             i.nodata = 0
 
-        self.showlog('Cluster complete')
+        self.showlog("Cluster complete")
 
-        self.outdata['Cluster'] = dat_out
-        self.outdata['Raster'] = self.indata['Raster']
+        self.outdata["Cluster"] = dat_out
+        self.outdata["Raster"] = self.indata["Raster"]
 
         return True
 
@@ -1182,20 +1201,20 @@ class SuperClass(BasicModule):
         alg = self.cmb_KNalgorithm.currentText()
         classifier = KNeighborsClassifier(algorithm=alg)
 
-        if ctext == 'Decision Tree Classifier':
+        if ctext == "Decision Tree Classifier":
             crit = self.cmb_DTcriterion.currentText()
             classifier = DecisionTreeClassifier(criterion=crit)
-        elif ctext == 'Random Forest Classifier':
+        elif ctext == "Random Forest Classifier":
             crit = self.cmb_RFcriterion.currentText()
             classifier = RandomForestClassifier(criterion=crit)
-        elif ctext == 'Support Vector Classifier':
+        elif ctext == "Support Vector Classifier":
             ker = self.cmb_SVCkernel.currentText()
-            classifier = SVC(gamma='scale', kernel=ker)
+            classifier = SVC(gamma="scale", kernel=ker)
 
         rows, cols = self.map.data[0].data.shape
         masks = {}
         for _, row in self.df.iterrows():
-            pixels = np.array(row['geometry'].exterior.coords)
+            pixels = np.array(row["geometry"].exterior.coords)
             pixels[:, 0] = pixels[:, 0] - self.map.data[0].extent[0]
             pixels[:, 0] /= self.map.data[0].xdim
             pixels[:, 1] = self.map.data[0].extent[3] - pixels[:, 1]
@@ -1203,7 +1222,7 @@ class SuperClass(BasicModule):
 
             pixels = tuple(map(tuple, pixels))
 
-            cname = row['class']
+            cname = row["class"]
             if cname not in masks:
                 masks[cname] = np.zeros((rows, cols), dtype=bool)
 
@@ -1233,7 +1252,7 @@ class SuperClass(BasicModule):
         lbls = np.unique(y)
 
         if len(lbls) < 2:
-            self.showlog('Error: You need at least two classes')
+            self.showlog("Error: You need at least two classes")
 
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
 
@@ -1248,11 +1267,11 @@ class SuperClass(BasicModule):
         [p.remove() for p in reversed(axes.patches)]
 
         for _, row in self.df.iterrows():
-            if row['geometry'] is None or pd.isna(row.geometry):
+            if row["geometry"] is None or pd.isna(row.geometry):
                 return
-            crds = np.array(row['geometry'].exterior.coords)
+            crds = np.array(row["geometry"].exterior.coords)
 
-            poly = mPolygon(crds, ec='k', fill=False)
+            poly = mPolygon(crds, ec="k", fill=False)
             axes.add_patch(poly)
 
         self.map.figure.canvas.draw()
@@ -1303,22 +1322,20 @@ def dist_point_to_segment(p, s0, s1):
 
 def _testfn():
     """Test."""
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                 '..//..')))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..//..")))
     from pygmi.raster import iodefs
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\clipsmall.tif"
 
     data = iodefs.get_raster(ifile)
 
     tmp = SuperClass(None)
-    tmp.indata['Raster'] = data
+    tmp.indata["Raster"] = data
     tmp.settings()
 
 
 if __name__ == "__main__":
-
     _testfn()

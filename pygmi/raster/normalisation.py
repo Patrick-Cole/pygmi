@@ -25,13 +25,14 @@
 """Raster normalisation routine."""
 
 import warnings
-from PySide6 import QtWidgets
+
 import numpy as np
+from PySide6 import QtWidgets
 
-from pygmi.raster.misc import histeq
 from pygmi.misc import BasicModule
+from pygmi.raster.misc import histeq
 
-warnings.simplefilter('always', RuntimeWarning)
+warnings.simplefilter("always", RuntimeWarning)
 
 
 class Normalisation(BasicModule):
@@ -48,14 +49,12 @@ class Normalisation(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.rb_interval = QtWidgets.QRadioButton('Interval [0 1]')
-        self.rb_mean = QtWidgets.QRadioButton('Mean: zero,  '
-                                              'Standard deviation: unity')
-        self.rb_median = QtWidgets.QRadioButton('Median: zero,  '
-                                                'Median absolute '
-                                                'deviation: unity')
-        self.rb_8bit = QtWidgets.QRadioButton('8-bit histogram '
-                                              'equalisation [0 255]')
+        self.rb_interval = QtWidgets.QRadioButton("Interval [0 1]")
+        self.rb_mean = QtWidgets.QRadioButton("Mean: zero,  Standard deviation: unity")
+        self.rb_median = QtWidgets.QRadioButton(
+            "Median: zero,  Median absolute deviation: unity"
+        )
+        self.rb_8bit = QtWidgets.QRadioButton("8-bit histogram equalisation [0 255]")
 
         self.setupui()
 
@@ -70,11 +69,11 @@ class Normalisation(BasicModule):
         """
         vbl_1 = QtWidgets.QVBoxLayout(self)
 
-        self.buttonbox.htmlfile = 'raster.dm.norm'
+        self.buttonbox.htmlfile = "raster.dm.norm"
 
         self.rb_interval.setChecked(True)
 
-        gbox = QtWidgets.QGroupBox('Normalisation/Scaling')
+        gbox = QtWidgets.QGroupBox("Normalisation/Scaling")
         vbl_2 = QtWidgets.QVBoxLayout(gbox)
 
         vbl_2.addWidget(self.rb_interval)
@@ -85,7 +84,7 @@ class Normalisation(BasicModule):
         vbl_1.addWidget(gbox)
         vbl_1.addWidget(self.buttonbox)
 
-        self.setWindowTitle('Normalisation')
+        self.setWindowTitle("Normalisation")
 
     def settings(self, nodialog=False):
         """
@@ -102,8 +101,8 @@ class Normalisation(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
@@ -111,17 +110,17 @@ class Normalisation(BasicModule):
             if temp == 0:
                 return False
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
 
-        ntype = 'interval'
+        ntype = "interval"
         if self.rb_interval.isChecked():
-            ntype = 'interval'
+            ntype = "interval"
         elif self.rb_mean.isChecked():
-            ntype = 'mean'
+            ntype = "mean"
         elif self.rb_median.isChecked():
-            ntype = 'median'
+            ntype = "median"
         elif self.rb_8bit.isChecked():
-            ntype = '8bit'
+            ntype = "8bit"
 
         # Correct the null value
         for i in data:
@@ -129,7 +128,7 @@ class Normalisation(BasicModule):
 
         data = norm(data, ntype)
 
-        self.outdata['Raster'] = data
+        self.outdata["Raster"] = data
         if self.pbar is not None:
             self.pbar.to_max()
         return True
@@ -203,22 +202,22 @@ def norm(data, ntype):
         PyGMI Data in a list.
 
     """
-    if ntype == 'interval':
+    if ntype == "interval":
         for i in data:
             tmp1 = i.data.min()
             tmp2 = i.data.max() - i.data.min()
             i, _ = datacommon(i, tmp1, tmp2)
-    elif ntype == 'mean':
+    elif ntype == "mean":
         for i in data:
             tmp1 = i.data.mean()
             tmp2 = i.data.std()
             i, _ = datacommon(i, tmp1, tmp2)
-    elif ntype == 'median':
+    elif ntype == "median":
         for i in data:
             tmp1 = np.median(i.data.compressed())
             tmp2 = np.median(abs(i.data.compressed() - tmp1))
             i, _ = datacommon(i, tmp1, tmp2)
-    elif ntype == '8bit':
+    elif ntype == "8bit":
         for i in data:
             i.data = histeq(i.data)
             i.data = 255 * (i.data / np.ma.ptp(i.data))
@@ -232,6 +231,7 @@ def norm(data, ntype):
 
 def _testfn():
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -239,10 +239,10 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = Normalisation()
-    DM.indata['Raster'] = dat
+    DM.indata["Raster"] = dat
     DM.settings()
 
 

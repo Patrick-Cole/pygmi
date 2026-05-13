@@ -35,23 +35,23 @@ pygmi packages.
 
 """
 
-import json
-import sys
-import os
 import gc
-import textwrap
-import pkgutil
-import math
 import importlib
+import json
+import math
+import os
+import pkgutil
+import sys
+import textwrap
 import webbrowser
-from PySide6 import QtWidgets, QtCore, QtGui
+
 import numpy as np
 import psutil
+from PySide6 import QtCore, QtGui, QtWidgets
 
 import pygmi
 from pygmi import menu_default
 from pygmi.misc import ProgressBar, textwrap2
-
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
@@ -85,21 +85,26 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         super().__init__(parent)
 
         app = QtWidgets.QApplication.instance()
-        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
+        isdark = app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark
 
         self.arrow_head = QtGui.QPolygonF()
 
         self.my_start_item = start_item
         self.my_end_item = end_item
-        self.setFlag(
-            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
         if isdark:
             self.my_color = QtCore.Qt.GlobalColor.white
         else:
             self.my_color = QtCore.Qt.GlobalColor.black
-        self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.PenStyle.SolidLine,
-                               QtCore.Qt.PenCapStyle.RoundCap,
-                               QtCore.Qt.PenJoinStyle.RoundJoin))
+        self.setPen(
+            QtGui.QPen(
+                self.my_color,
+                2,
+                QtCore.Qt.PenStyle.SolidLine,
+                QtCore.Qt.PenCapStyle.RoundCap,
+                QtCore.Qt.PenJoinStyle.RoundJoin,
+            )
+        )
 
     def boundingRect(self):
         """
@@ -115,8 +120,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         extra = (self.pen().width() + 20) / 2.0
         p1 = self.line().p1()
         p2 = self.line().p2()
-        tmp = QtCore.QRectF(p1, QtCore.QSizeF(
-            p2.x() - p1.x(), p2.y() - p1.y()))
+        tmp = QtCore.QRectF(p1, QtCore.QSizeF(p2.x() - p1.x(), p2.y() - p1.y()))
 
         return tmp.normalized().adjusted(-extra, -extra, extra, extra)
 
@@ -145,8 +149,9 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         x1, y1 = np.mean(self.my_end_item.np_poly, 0)
         my_end_off = QtCore.QPointF(x1, y1)
 
-        center_line = QtCore.QLineF(self.my_start_item.pos() + my_start_off,
-                                    self.my_end_item.pos() + my_end_off)
+        center_line = QtCore.QLineF(
+            self.my_start_item.pos() + my_start_off, self.my_end_item.pos() + my_end_off
+        )
         end_polygon = self.my_end_item.polygon()
         p1 = end_polygon.first() + self.my_end_item.pos()
 
@@ -159,22 +164,22 @@ class Arrow(QtWidgets.QGraphicsLineItem):
                 break
             p1 = p2
 
-        self.setLine(QtCore.QLineF(intersect_point,
-                                   self.my_start_item.pos() + my_start_off))
+        self.setLine(
+            QtCore.QLineF(intersect_point, self.my_start_item.pos() + my_start_off)
+        )
         line = self.line()
 
         angle = math.acos(line.dx() / line.length())
         if line.dy() >= 0:
             angle = (math.pi * 2.0) - angle
 
-        arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle + pi / 3) *
-                                               arrow_size,
-                                               math.cos(angle + pi / 3) *
-                                               arrow_size))
-        arrow_p2 = (line.p1() + QtCore.QPointF(math.sin(angle + pi - pi / 3) *
-                                               arrow_size,
-                                               math.cos(angle + pi - pi / 3) *
-                                               arrow_size))
+        arrow_p1 = line.p1() + QtCore.QPointF(
+            math.sin(angle + pi / 3) * arrow_size, math.cos(angle + pi / 3) * arrow_size
+        )
+        arrow_p2 = line.p1() + QtCore.QPointF(
+            math.sin(angle + pi - pi / 3) * arrow_size,
+            math.cos(angle + pi - pi / 3) * arrow_size,
+        )
 
         self.arrow_head.clear()
         for point in [line.p1(), arrow_p1, arrow_p2]:
@@ -183,8 +188,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         painter.drawLine(line)
         painter.drawPolygon(self.arrow_head)
         if self.isSelected():
-            painter.setPen(QtGui.QPen(self.my_color, 1,
-                                      QtCore.Qt.PenStyle.DashLine))
+            painter.setPen(QtGui.QPen(self.my_color, 1, QtCore.Qt.PenStyle.DashLine))
             my_line = QtCore.QLineF(line)
             my_line.translate(0, 4.0)
             painter.drawLine(my_line)
@@ -235,14 +239,14 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.context_menu = context_menu
         self.my_class = my_class
         self.text_item = None
-        self.my_class_name = ''
+        self.my_class_name = ""
         self.showlog = parent.showlog
 
-        if hasattr(self.my_class, 'arrows'):
+        if hasattr(self.my_class, "arrows"):
             self.my_class.arrows = self.arrows
 
         path = QtGui.QPainterPath()
-        if self.diagram_type == 'StartEnd':
+        if self.diagram_type == "StartEnd":
             path.moveTo(200, 50)
             path.arcTo(150, 0, 50, 50, 0, 90)
             path.arcTo(50, 0, 50, 50, 90, 90)
@@ -250,24 +254,32 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             path.arcTo(150, 50, 50, 50, 270, 90)
             path.lineTo(200, 25)
             self.my_polygon = path.toFillPolygon()
-        elif self.diagram_type == 'Conditional':
-            self.np_poly = np.array([[-100., 0.],
-                                     [0., 100.],
-                                     [100., 0.],
-                                     [0., -100.],
-                                     [-100., 0.]])
+        elif self.diagram_type == "Conditional":
+            self.np_poly = np.array(
+                [
+                    [-100.0, 0.0],
+                    [0.0, 100.0],
+                    [100.0, 0.0],
+                    [0.0, -100.0],
+                    [-100.0, 0.0],
+                ]
+            )
 
             my_points = []
             for i in self.np_poly:
                 my_points.append(QtCore.QPointF(i[0], i[1]))
             self.my_polygon = QtGui.QPolygonF(my_points)
 
-        elif self.diagram_type == 'Step':
-            self.np_poly = np.array([[-100., -100.],
-                                     [100., -100.],
-                                     [100., 100.],
-                                     [-100., 100.],
-                                     [-100., -100.]])
+        elif self.diagram_type == "Step":
+            self.np_poly = np.array(
+                [
+                    [-100.0, -100.0],
+                    [100.0, -100.0],
+                    [100.0, 100.0],
+                    [-100.0, 100.0],
+                    [-100.0, -100.0],
+                ]
+            )
 
             my_points = []
             for i in self.np_poly:
@@ -275,11 +287,15 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.my_polygon = QtGui.QPolygonF(my_points)
 
         else:
-            self.np_poly = np.array([[-120., -80.],
-                                     [-70., 80.],
-                                     [120., 80.],
-                                     [70., -80.],
-                                     [-120., -80.]])
+            self.np_poly = np.array(
+                [
+                    [-120.0, -80.0],
+                    [-70.0, 80.0],
+                    [120.0, 80.0],
+                    [70.0, -80.0],
+                    [-120.0, -80.0],
+                ]
+            )
 
             my_points = []
             for i in self.np_poly:
@@ -287,10 +303,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.my_polygon = QtGui.QPolygonF(my_points)
 
         self.setPolygon(self.my_polygon)
-        self.setFlag(
-            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
-        self.setFlag(
-            QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
         """Add Arrow.
@@ -317,7 +331,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
                     data[j] = odata[j]
 
         self.my_class.indata = data
-        if hasattr(self.my_class, 'data_init'):
+        if hasattr(self.my_class, "data_init"):
             self.my_class.data_init()
 
     def contextMenuEvent(self, event):
@@ -331,33 +345,41 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        tmp = self.context_menu['Basic'].actions()
-        if ('Raster' in self.my_class.indata and
-                'RasterFileList' not in self.my_class.indata):
-            tmp += self.context_menu['inRaster'].actions()
+        tmp = self.context_menu["Basic"].actions()
+        if (
+            "Raster" in self.my_class.indata
+            and "RasterFileList" not in self.my_class.indata
+        ):
+            tmp += self.context_menu["inRaster"].actions()
 
         tmplist = list(self.my_class.outdata.keys())
         for i in tmplist:
             if i not in self.context_menu:
                 continue
             tmp += self.context_menu[i].actions()
-            if (i == 'Cluster' and i in self.my_class.outdata and 'memdat' in
-                    self.my_class.outdata['Cluster'][0].metadata['Cluster']):
-                tmp += self.context_menu['memCluster'].actions()
-            if (i == 'Cluster' and i in self.my_class.outdata and 'super_type'
-                    not in
-                    self.my_class.outdata['Cluster'][0].metadata['Cluster']):
-                tmp += self.context_menu['objCluster'].actions()
-            if i == 'Vector':
-                gtype = self.my_class.outdata['Vector'][0].geom_type.iloc[0]
-                if gtype == 'LineString':
-                    tmp += self.context_menu['lineVector'].actions()
-                if gtype == 'Point':
-                    tmp += self.context_menu['pntVector'].actions()
+            if (
+                i == "Cluster"
+                and i in self.my_class.outdata
+                and "memdat" in self.my_class.outdata["Cluster"][0].metadata["Cluster"]
+            ):
+                tmp += self.context_menu["memCluster"].actions()
+            if (
+                i == "Cluster"
+                and i in self.my_class.outdata
+                and "super_type"
+                not in self.my_class.outdata["Cluster"][0].metadata["Cluster"]
+            ):
+                tmp += self.context_menu["objCluster"].actions()
+            if i == "Vector":
+                gtype = self.my_class.outdata["Vector"][0].geom_type.iloc[0]
+                if gtype == "LineString":
+                    tmp += self.context_menu["lineVector"].actions()
+                if gtype == "Point":
+                    tmp += self.context_menu["pntVector"].actions()
         tmp1 = []
         tmp2 = []
         for val in tmp:
-            if 'Export' in val.text():
+            if "Export" in val.text():
                 tmp2.append(val)
             else:
                 tmp1.append(val)
@@ -381,7 +403,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         try:
             temp = self.settings()
         except MemoryError:
-            self.parent.showlog('Memory Error! Process aborted.')
+            self.parent.showlog("Memory Error! Process aborted.")
             temp = False
             self.my_class.parent.process_is_active(False)
         self.parent.scene.selected_item_info()
@@ -430,30 +452,33 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         if self.my_class.indata == {} and self.my_class.is_import is False:
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Warning', ' You need to connect data first!',
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent,
+                "Warning",
+                " You need to connect data first!",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return False
 
         if self.text_item is not None:
             self.text_item.setPlainText(self.my_class_name)
 
-        my_class_name = ' '.join(self.my_class_name.split())
+        my_class_name = " ".join(self.my_class_name.split())
 
         self.my_class.parent.process_is_active()
-        self.showlog(my_class_name + ' busy...')
+        self.showlog(my_class_name + " busy...")
         iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
-            self.showlog(my_class_name + ' finished!')
+            self.showlog(my_class_name + " finished!")
         else:
-            self.showlog(my_class_name + ' cancelled.')
+            self.showlog(my_class_name + " cancelled.")
 
         if self.my_class.is_import is True and self.text_item is not None:
             ifile = os.path.basename(self.my_class.ifile)
             ifile = textwrap2(ifile, width=10, max_lines=2)
 
-            if ifile != '':
-                self.text_item.setPlainText(f'{self.my_class_name}:\n{ifile}')
+            if ifile != "":
+                self.text_item.setPlainText(f"{self.my_class_name}:\n{ifile}")
 
         return iflag
 
@@ -473,11 +498,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
     def __init__(self, item_menu, parent=None):
         super().__init__(parent)
         app = QtWidgets.QApplication.instance()
-        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
+        isdark = app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark
 
         self.my_item_menu = item_menu
-        self.my_mode = 'MoveItem'
-        self.my_item_type = 'Step'
+        self.my_mode = "MoveItem"
+        self.my_item_type = "Step"
         self.line = None
         self.text_item = None
         self.my_item_color = QtCore.Qt.GlobalColor.cyan
@@ -502,9 +527,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         """
         if mouse_event.button() != QtCore.Qt.MouseButton.LeftButton:
             return
-        if self.my_mode == 'InsertLine':
+        if self.my_mode == "InsertLine":
             self.line = QtWidgets.QGraphicsLineItem(
-                QtCore.QLineF(mouse_event.scenePos(), mouse_event.scenePos()))
+                QtCore.QLineF(mouse_event.scenePos(), mouse_event.scenePos())
+            )
             self.line.setPen(QtGui.QPen(self.my_line_color, 2))
             self.addItem(self.line)
 
@@ -516,59 +542,59 @@ class DiagramScene(QtWidgets.QGraphicsScene):
     def selected_item_info(self):
         """Display info about selected item."""
         tmp = self.selectedItems()
-        self.parent.showdatainfo('')
+        self.parent.showdatainfo("")
 
         if not tmp:
             return
 
-        if not hasattr(tmp[0], 'my_class'):
+        if not hasattr(tmp[0], "my_class"):
             return
 
-        text = ''
+        text = ""
 
-        if hasattr(tmp[0].my_class, 'indata'):
+        if hasattr(tmp[0].my_class, "indata"):
             idata = tmp[0].my_class.indata
 
             for i in idata:
-                text += '\nInput ' + i + ' dataset: '
-                if i in 'Raster':
-                    if idata[i] and hasattr(idata[i][0], 'filename'):
+                text += "\nInput " + i + " dataset: "
+                if i in "Raster":
+                    if idata[i] and hasattr(idata[i][0], "filename"):
                         file = idata[i][0].filename
                     else:
                         file = i
-                    if '.SAFE' in file:
-                        file = file.split('.SAFE')[0] + '.SAFE'
-                    text += os.path.basename(file) + '\n'
+                    if ".SAFE" in file:
+                        file = file.split(".SAFE")[0] + ".SAFE"
+                    text += os.path.basename(file) + "\n"
                     for j in idata[i]:
-                        text += '  ' + j.dataid + '\n'
+                        text += "  " + j.dataid + "\n"
 
-        if hasattr(tmp[0].my_class, 'outdata'):
+        if hasattr(tmp[0].my_class, "outdata"):
             odata = tmp[0].my_class.outdata
 
             for i in odata:
-                text += '\nOutput ' + i + ' dataset: '
-                if i == 'RasterFileList':
-                    text += i + '\n'
+                text += "\nOutput " + i + " dataset: "
+                if i == "RasterFileList":
+                    text += i + "\n"
                     for j in odata[i]:
-                        text += os.path.basename(j.filename) + '\n'
-                if i in ('Raster', 'Cluster'):
-                    if hasattr(odata[i][0], 'filename'):
+                        text += os.path.basename(j.filename) + "\n"
+                if i in ("Raster", "Cluster"):
+                    if hasattr(odata[i][0], "filename"):
                         file = odata[i][0].filename
                     else:
                         file = i
-                    if '.SAFE' in file:
-                        file = file.split('.SAFE')[0] + '.SAFE'
-                    text += os.path.basename(file) + '\n'
+                    if ".SAFE" in file:
+                        file = file.split(".SAFE")[0] + ".SAFE"
+                    text += os.path.basename(file) + "\n"
                     for j in odata[i]:
-                        text += '  ' + j.dataid + '\n'
-                if i == 'Model3D':
-                    text += i + '\n'
+                        text += "  " + j.dataid + "\n"
+                if i == "Model3D":
+                    text += i + "\n"
                     for j in odata[i][0].lith_list:
-                        text += '  ' + j + '\n'
-                if i == 'MT - EDI':
-                    text += i + '\n'
+                        text += "  " + j + "\n"
+                if i == "MT - EDI":
+                    text += i + "\n"
                     for j in odata[i]:
-                        text += '  ' + j + '\n'
+                        text += "  " + j + "\n"
 
         self.parent.showdatainfo(text)
 
@@ -581,11 +607,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         mouse_event: QGraphicsSceneMouseEvent
             mouse event.
         """
-        if self.my_mode == 'InsertLine' and self.line:
-            new_line = QtCore.QLineF(self.line.line().p1(),
-                                     mouse_event.scenePos())
+        if self.my_mode == "InsertLine" and self.line:
+            new_line = QtCore.QLineF(self.line.line().p1(), mouse_event.scenePos())
             self.line.setLine(new_line)
-        elif self.my_mode == 'MoveItem':
+        elif self.my_mode == "MoveItem":
             super().mouseMoveEvent(mouse_event)
 
     def mouseReleaseEvent(self, mouse_event):
@@ -597,7 +622,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         mouse_event: QGraphicsSceneMouseEvent
             mouse event.
         """
-        if self.line and self.my_mode == 'InsertLine':
+        if self.line and self.my_mode == "InsertLine":
             start_items = self.items(self.line.line().p1())
             if start_items and start_items[0] == self.line:
                 start_items.pop(0)
@@ -608,10 +633,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             self.removeItem(self.line)
             self.line = None
 
-            if (start_items and end_items and
-                    isinstance(start_items[-1], DiagramItem) and
-                    isinstance(end_items[-1], DiagramItem) and
-                    start_items[-1] != end_items[-1]):
+            if (
+                start_items
+                and end_items
+                and isinstance(start_items[-1], DiagramItem)
+                and isinstance(end_items[-1], DiagramItem)
+                and start_items[-1] != end_items[-1]
+            ):
                 start_item = start_items[-1]
                 end_item = end_items[-1]
                 arrow = Arrow(start_item, end_item)
@@ -622,7 +650,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                 end_item.update_indata()
 
         self.line = None
-        self.my_mode = 'MoveItem'
+        self.my_mode = "MoveItem"
         self.parent.action_pointer.setChecked(True)
         super().mouseReleaseEvent(mouse_event)
 
@@ -640,15 +668,15 @@ class MainWidget(QtWidgets.QMainWindow):
     def __init__(self, nocgs=True):
         super().__init__()
 
-        ipth = os.path.dirname(menu_default.__file__) + r'/images/'
+        ipth = os.path.dirname(menu_default.__file__) + r"/images/"
 
         self.__version__ = pygmi.__version__
         self.pdlg = []
         self.context_menu = {}
-        self.add_to_context('Basic')
+        self.add_to_context("Basic")
 
         app = QtWidgets.QApplication.instance()
-        isdark = (app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark)
+        isdark = app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark
 
         self.menubar = QtWidgets.QMenuBar()
 
@@ -677,44 +705,41 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_pointer.setChecked(True)
 
         if isdark:
-            self.action_run.setIcon(QtGui.QIcon(ipth + 'playdark.png'))
-            self.action_linepointer.setIcon(
-                QtGui.QIcon(ipth + 'linepointerdark.png'))
+            self.action_run.setIcon(QtGui.QIcon(ipth + "playdark.png"))
+            self.action_linepointer.setIcon(QtGui.QIcon(ipth + "linepointerdark.png"))
         else:
-            self.action_run.setIcon(QtGui.QIcon(ipth + 'play.png'))
-            self.action_linepointer.setIcon(
-                QtGui.QIcon(ipth + 'linepointer.png'))
+            self.action_run.setIcon(QtGui.QIcon(ipth + "play.png"))
+            self.action_linepointer.setIcon(QtGui.QIcon(ipth + "linepointer.png"))
 
-        self.action_delete.setIcon(QtGui.QIcon(ipth + 'delete.png'))
-        self.action_bring_to_front.setIcon(
-            QtGui.QIcon(ipth + 'bringtofront.png'))
-        self.action_send_to_back.setIcon(QtGui.QIcon(ipth + 'sendtoback.png'))
-        self.action_pointer.setIcon(QtGui.QIcon(ipth + 'pointer.png'))
-        self.action_help.setIcon(QtGui.QIcon(ipth + 'Qhelp.png'))
+        self.action_delete.setIcon(QtGui.QIcon(ipth + "delete.png"))
+        self.action_bring_to_front.setIcon(QtGui.QIcon(ipth + "bringtofront.png"))
+        self.action_send_to_back.setIcon(QtGui.QIcon(ipth + "sendtoback.png"))
+        self.action_pointer.setIcon(QtGui.QIcon(ipth + "pointer.png"))
+        self.action_help.setIcon(QtGui.QIcon(ipth + "Qhelp.png"))
 
-        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
+        self.setWindowIcon(QtGui.QIcon(ipth + "logo256.ico"))
         self.setupui()
 
         menus = []
         for _, modname, _ in pkgutil.walk_packages(
-                path=pygmi.__path__, prefix=pygmi.__name__ + '.',
-                onerror=lambda x: None):
+            path=pygmi.__path__, prefix=pygmi.__name__ + ".", onerror=lambda x: None
+        ):
             menus.append(modname)
 
-        if nocgs is True and 'pygmi.cgs.menu' in menus:
-            menus.pop(menus.index('pygmi.cgs.menu'))
+        if nocgs is True and "pygmi.cgs.menu" in menus:
+            menus.pop(menus.index("pygmi.cgs.menu"))
 
-        raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
-        vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
+        raster_menu = menus.pop(menus.index("pygmi.raster.menu"))
+        vector_menu = menus.pop(menus.index("pygmi.vector.menu"))
         menus = [raster_menu, vector_menu] + menus
-        menus = [i for i in menus if 'menu' in i[-5:]]
+        menus = [i for i in menus if "menu" in i[-5:]]
 
         start = Startup(len(menus) + 1)
         start.update()
 
         menuimports = []
         for i in menus:
-            if i == 'pygmi.__pycache__.menu':
+            if i == "pygmi.__pycache__.menu":
                 continue
             start.update()
             menuimports.append(importlib.import_module(i))
@@ -731,7 +756,7 @@ class MainWidget(QtWidgets.QMainWindow):
             self.menus.append(i.MenuWidget(self))
         self.menus.append(menu_default.HelpMenu(self))
 
-        self.scene = DiagramScene(self.context_menu['Basic'], self)
+        self.scene = DiagramScene(self.context_menu["Basic"], self)
 
         self.view = self.graphics_view
         self.view.setScene(self.scene)
@@ -758,15 +783,18 @@ class MainWidget(QtWidgets.QMainWindow):
         self.resize(800, 600)
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Preferred,
-            QtWidgets.QSizePolicy.Policy.Expanding)
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
-            self.graphics_view.sizePolicy().hasHeightForWidth())
+            self.graphics_view.sizePolicy().hasHeightForWidth()
+        )
 
         self.graphics_view.setSizePolicy(sizepolicy)
         self.graphics_view.setTransformationAnchor(
-            QtWidgets.QGraphicsView.ViewportAnchor.AnchorUnderMouse)
+            QtWidgets.QGraphicsView.ViewportAnchor.AnchorUnderMouse
+        )
 
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
@@ -781,8 +809,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.gl_1.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
         self.gl_1.addWidget(self.pbar, 5, 0, 1, 3)
 
-        lbl_1 = QtWidgets.QLabel('Dataset Information:')
-        lbl_2 = QtWidgets.QLabel('Process Log:')
+        lbl_1 = QtWidgets.QLabel("Dataset Information:")
+        lbl_2 = QtWidgets.QLabel("Process Log:")
         self.gl_1.addWidget(lbl_1, 0, 2, 1, 1)
         self.gl_1.addWidget(lbl_2, 2, 2, 1, 1)
 
@@ -803,15 +831,17 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
-            'PyGMI - Python Geoscience Modelling and Interpretation (' +
-            pygmi.__version__ + ')')
-        self.action_delete.setText('Delete')
-        self.action_bring_to_front.setText('Bring to Front')
-        self.action_send_to_back.setText('Send to Back')
-        self.action_pointer.setText('Pointer')
-        self.action_linepointer.setText('LinePointer')
+            "PyGMI - Python Geoscience Modelling and Interpretation ("
+            + pygmi.__version__
+            + ")"
+        )
+        self.action_delete.setText("Delete")
+        self.action_bring_to_front.setText("Bring to Front")
+        self.action_send_to_back.setText("Send to Back")
+        self.action_pointer.setText("Pointer")
+        self.action_linepointer.setText("LinePointer")
 
-        item_menu = self.context_menu['Basic']
+        item_menu = self.context_menu["Basic"]
         item_menu.addAction(self.action_delete)
         item_menu.addAction(self.action_bring_to_front)
         item_menu.addAction(self.action_send_to_back)
@@ -849,7 +879,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def clearprocesslog(self):
         """Clear the process log."""
-        self.textbrowser_processlog.setPlainText('')
+        self.textbrowser_processlog.setPlainText("")
 
     def delete_item(self):
         """Delete the selected item from main interface."""
@@ -862,8 +892,7 @@ class MainWidget(QtWidgets.QMainWindow):
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
                 item.update_indata()
-                if (item.my_class.indata == {} and
-                        item.my_class.is_import is False):
+                if item.my_class.indata == {} and item.my_class.is_import is False:
                     item.setBrush(self.scene.my_item_color)
         gc.collect()
 
@@ -918,12 +947,11 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def help_docs(self):
         """Help Routine."""
-        ipth = os.path.dirname(__file__) + r'//helpdocs//html'
-        hfile = os.path.join(ipth, 'interface.html')
+        ipth = os.path.dirname(__file__) + r"//helpdocs//html"
+        hfile = os.path.join(ipth, "interface.html")
         webbrowser.open(hfile)
 
-    def item_insert(self, item_type, item_name, class_name,
-                    projimport=False, **kwargs):
+    def item_insert(self, item_type, item_name, class_name, projimport=False, **kwargs):
         """
         Item insert.
 
@@ -945,36 +973,35 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
-        if 'nodialog' in kwargs:
-            nodialog = kwargs['nodialog']
-            del kwargs['nodialog']
+        if "nodialog" in kwargs:
+            nodialog = kwargs["nodialog"]
+            del kwargs["nodialog"]
         else:
             nodialog = False
 
         class_name_active = class_name(self, **kwargs)
 
-        item = DiagramItem(item_type, self.scene.my_item_menu,
-                           class_name_active, self)
+        item = DiagramItem(item_type, self.scene.my_item_menu, class_name_active, self)
 
         item_color = self.scene.my_item_color
 
         item_name = textwrap.wrap(item_name, width=13, break_long_words=False)
-        item_name = [f'{i: <13}' for i in item_name]
-        item_name = '\n'.join(item_name)
+        item_name = [f"{i: <13}" for i in item_name]
+        item_name = "\n".join(item_name)
         item_name = item_name.strip()
 
         item.my_class_name = item_name
 
-        if item_type == 'Io' and projimport is False:
+        if item_type == "Io" and projimport is False:
             iflag = item.settings(nodialog)
             if iflag is False:
                 return None
-            if item.my_class.ifile != '':
+            if item.my_class.ifile != "":
                 ifile = os.path.basename(item.my_class.ifile)
                 ifile = textwrap2(ifile, width=13, max_lines=2)
-                if '\n' not in ifile:
-                    ifile = ifile + '\n'
-                item_name = f'{item_name}:\n{ifile}'
+                if "\n" not in ifile:
+                    ifile = ifile + "\n"
+                item_name = f"{item_name}:\n{ifile}"
             item_color = QtGui.QColor(0, 255, 0, 127)
 
         # Do text first, since this determines size of polygon
@@ -992,8 +1019,9 @@ class MainWidget(QtWidgets.QMainWindow):
         # Actual polygon item
         text_width = text_item.boundingRect().width()
         item.np_poly *= 1.5 * text_width / np.ptp(item.np_poly[:, 0])
-        item.np_poly[:, 0] += (text_item.boundingRect().left() -
-                               item.np_poly[:, 0].min() - text_width / 4)
+        item.np_poly[:, 0] += (
+            text_item.boundingRect().left() - item.np_poly[:, 0].min() - text_width / 4
+        )
         item.np_poly[:, 1] += text_item.boundingRect().height() / 2
 
         my_points = []
@@ -1010,8 +1038,7 @@ class MainWidget(QtWidgets.QMainWindow):
         # Add item to scene and merge
         self.scene.addItem(item)
 
-        xxyy = self.view.mapToScene(self.view.width() // 2,
-                                    self.view.height() // 2)
+        xxyy = self.view.mapToScene(self.view.width() // 2, self.view.height() // 2)
         item.setPos(xxyy)
 
         text_item.setParentItem(item)
@@ -1019,7 +1046,7 @@ class MainWidget(QtWidgets.QMainWindow):
         item.text_item = text_item
 
         # Enable moving
-        self.scene.my_mode = 'MoveItem'
+        self.scene.my_mode = "MoveItem"
         return item
 
     def launch_context_item(self, newitem, option=None):
@@ -1070,11 +1097,11 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def linepointer(self):
         """Select line pointer."""
-        self.scene.my_mode = 'InsertLine'
+        self.scene.my_mode = "InsertLine"
 
     def pointer(self):
         """Select pointer."""
-        self.scene.my_mode = 'MoveItem'
+        self.scene.my_mode = "MoveItem"
 
     def process_is_active(self, isactive=True):
         """
@@ -1087,11 +1114,13 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         if isactive is True:
             self.textbrowser_processlog.setStyleSheet(
-                'QTextBrowser { background-color: rgba(255, 0, 0, 127); }')
+                "QTextBrowser { background-color: rgba(255, 0, 0, 127); }"
+            )
             self.pbar.setValue(0)
         else:
             self.textbrowser_processlog.setStyleSheet(
-                'QTextBrowser { background-color: rgb(255, 255, 255); }')
+                "QTextBrowser { background-color: rgb(255, 255, 255); }"
+            )
 
         QtWidgets.QApplication.processEvents()
 
@@ -1105,38 +1134,38 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         self.process_is_active()
-        self.showlog('Project load busy...')
+        self.showlog("Project load busy...")
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, 'Open Project', '.', 'PyGMI project (*.json);;')
-        if ifile == '':
+            self, "Open Project", ".", "PyGMI project (*.json);;"
+        )
+        if ifile == "":
             return False
 
-        with open(ifile, 'r', encoding='utf-8') as fromdisk:
+        with open(ifile, "r", encoding="utf-8") as fromdisk:
             ilist = json.load(fromdisk)
 
         ditems = {}
         for key in ilist:
-            if '.Arrow' in key:
+            if ".Arrow" in key:
                 continue
 
             item = ilist[key]
             my_class = key
             my_class = my_class.split()[0][1:]
-            if '(' in my_class:
-                my_class = my_class.split('(')[0]
-            my_class = my_class.rsplit('.', 1)
+            if "(" in my_class:
+                my_class = my_class.split("(")[0]
+            my_class = my_class.rsplit(".", 1)
 
             class_name = getattr(sys.modules[my_class[0]], my_class[1])
 
-            item_name = item['my_class_name']
-            item_type = item['diagram_type']
+            item_name = item["my_class_name"]
+            item_type = item["diagram_type"]
 
-            citem = self.item_insert(item_type, item_name, class_name,
-                                     projimport=True)
+            citem = self.item_insert(item_type, item_name, class_name, projimport=True)
 
-            citem.setX(item['x'])
-            citem.setY(item['y'])
+            citem.setX(item["x"])
+            citem.setY(item["y"])
 
             ditems[key] = citem
 
@@ -1144,17 +1173,17 @@ class MainWidget(QtWidgets.QMainWindow):
 
             class_name = citem.my_class
 
-            if hasattr(class_name, 'loadproj'):
-                chk = class_name.loadproj(item['itemdata'])
+            if hasattr(class_name, "loadproj"):
+                chk = class_name.loadproj(item["itemdata"])
                 if chk is True:
                     citem.setBrush(QtGui.QColor(0, 255, 0, 127))
 
         for key in ilist:
-            if '.Arrow' not in key:
+            if ".Arrow" not in key:
                 continue
 
-            start_item = ditems[ilist[key]['my_start_item']]
-            end_item = ditems[ilist[key]['my_end_item']]
+            start_item = ditems[ilist[key]["my_start_item"]]
+            end_item = ditems[ilist[key]["my_end_item"]]
 
             arrow = Arrow(start_item, end_item)
             start_item.add_arrow(arrow)
@@ -1164,7 +1193,7 @@ class MainWidget(QtWidgets.QMainWindow):
             end_item.update_indata()
 
         self.process_is_active(False)
-        self.showlog('Project load completed.')
+        self.showlog("Project load completed.")
         return True
 
     def save(self):
@@ -1177,33 +1206,35 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self, 'Save Project', '.', 'PyGMI project (*.json);;')
-        if ofile == '':
+            self, "Save Project", ".", "PyGMI project (*.json);;"
+        )
+        if ofile == "":
             return False
 
         ilist = {}
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
                 cname = str(item.my_class)
-                ilist[cname] = {'my_class_name': item.my_class_name,
-                                'diagram_type': item.diagram_type,
-                                'x': item.x(),
-                                'y': item.y()}
+                ilist[cname] = {
+                    "my_class_name": item.my_class_name,
+                    "diagram_type": item.diagram_type,
+                    "x": item.x(),
+                    "y": item.y(),
+                }
 
-                if hasattr(item.my_class, 'saveproj'):
+                if hasattr(item.my_class, "saveproj"):
                     item.my_class.saveproj()
-                    ilist[cname]['itemdata'] = item.my_class.projdata
+                    ilist[cname]["itemdata"] = item.my_class.projdata
 
             if isinstance(item, Arrow):
                 sname = str(item.my_start_item.my_class)
                 ename = str(item.my_end_item.my_class)
-                ilist[str(item)] = {'my_start_item': sname,
-                                    'my_end_item': ename}
+                ilist[str(item)] = {"my_start_item": sname, "my_end_item": ename}
 
-        with open(ofile, 'w', encoding='utf-8') as todisk:
+        with open(ofile, "w", encoding="utf-8") as todisk:
             json.dump(ilist, todisk, indent=4)
 
-        self.showlog('Project saved.')
+        self.showlog("Project saved.")
         return True
 
     def run(self):
@@ -1222,7 +1253,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 alist[str(item)] = item
 
         if not alist:
-            self.showlog('No connections. Aborting run.')
+            self.showlog("No connections. Aborting run.")
             return
 
         # Collect only items receiving data
@@ -1326,11 +1357,11 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         txtobj = self.textbrowser_processlog
 
-        txtmsg = str(txtobj.toPlainText() + '\n')
+        txtmsg = str(txtobj.toPlainText() + "\n")
         if replacelast is True:
-            txtmsg = txtmsg[:txtmsg.rfind('\n')]
-            txtmsg = txtmsg[:txtmsg.rfind('\n')]
-            txtmsg += '\n'
+            txtmsg = txtmsg[: txtmsg.rfind("\n")]
+            txtmsg = txtmsg[: txtmsg.rfind("\n")]
+            txtmsg += "\n"
         txtmsg += txt
         txtmsg = txtmsg.strip()
         txtobj.setPlainText(txtmsg)
@@ -1381,24 +1412,24 @@ class Startup(QtWidgets.QDialog):
         self.vbl_main = QtWidgets.QVBoxLayout(self)
         self.lbl_info = QtWidgets.QLabel()
         self.lbl_pic = QtWidgets.QLabel()
-        self.lbl_ver = QtWidgets.QLabel("<font color='brown'>" +
-                                        pygmi.__version__ + "</font>")
-        self.lbl_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
-                                             r'/images/logo256.ico'))
+        self.lbl_ver = QtWidgets.QLabel(
+            "<font color='brown'>" + pygmi.__version__ + "</font>"
+        )
+        self.lbl_pic.setPixmap(
+            QtGui.QPixmap(pygmi.__path__[0] + r"/images/logo256.ico")
+        )
         self.lbl_info.setScaledContents(True)
         self.pbar = QtWidgets.QProgressBar(self)
 
         labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
-        fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Weight.Bold)
+        fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Weight.Bold)
         self.lbl_info.setFont(fnt)
         self.lbl_info.setText(labeltext)
-        self.lbl_ver.setFont(QtGui.QFont('Arial', 18, QtGui.QFont.Weight.Bold))
+        self.lbl_ver.setFont(QtGui.QFont("Arial", 18, QtGui.QFont.Weight.Bold))
         self.vbl_main.addWidget(self.lbl_info)
-        self.vbl_main.addWidget(self.lbl_pic, 0,
-                                QtCore.Qt.AlignmentFlag.AlignHCenter)
-        self.vbl_main.addWidget(self.lbl_ver, 0,
-                                QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.vbl_main.addWidget(self.lbl_pic, 0, QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.vbl_main.addWidget(self.lbl_ver, 0, QtCore.Qt.AlignmentFlag.AlignHCenter)
 
         self.pbar.setMaximum(pbarmax - 1)
         self.vbl_main.addWidget(self.pbar)
@@ -1415,7 +1446,7 @@ def main(nocgs=False):
     """Entry point for the PyGMI software."""
     # Set environment variables.
     # The line below is to fix a problem in windows with loky library.
-    os.environ['LOKY_MAX_CPU_COUNT'] = str(psutil.cpu_count(logical=False))
+    os.environ["LOKY_MAX_CPU_COUNT"] = str(psutil.cpu_count(logical=False))
 
     # if 'GDAL_DATA' not in os.environ:
     #     import rasterio
@@ -1435,13 +1466,13 @@ def main(nocgs=False):
 
     # Start program.
     if len(sys.argv) > 0:
-        if sys.argv[-1] == '--help' or sys.argv[-1] == '--version':
-            print(f'PyGMI version: {pygmi.__version__}')
+        if sys.argv[-1] == "--help" or sys.argv[-1] == "--version":
+            print(f"PyGMI version: {pygmi.__version__}")
             return
 
     app = QtWidgets.QApplication(sys.argv)
 
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     screen_resolution = app.primaryScreen().geometry()
     width, height = screen_resolution.width(), screen_resolution.height()
@@ -1451,15 +1482,16 @@ def main(nocgs=False):
     wid = MainWidget(nocgs=nocgs)
     wid.resize(width, height)
 
-    wid.setWindowState(wid.windowState() &
-                       ~QtCore.Qt.WindowState.WindowMinimized |
-                       QtCore.Qt.WindowState.WindowActive)
+    wid.setWindowState(
+        wid.windowState() & ~QtCore.Qt.WindowState.WindowMinimized
+        | QtCore.Qt.WindowState.WindowActive
+    )
 
     # this will activate the window
     wid.show()
     wid.activateWindow()
 
-    if hasattr(__builtins__, '__IPYTHON__'):
+    if hasattr(__builtins__, "__IPYTHON__"):
         app.exec()
     else:
         sys.exit(app.exec())

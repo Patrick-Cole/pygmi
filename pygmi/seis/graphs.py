@@ -30,23 +30,22 @@ context menu.
 """
 
 import os
-import numpy as np
-from PySide6 import QtWidgets, QtCore, QtGui
+
 import geopandas as gpd
-from shapely.geometry import Polygon
-from scipy.stats import kstest
-from scipy.spatial.distance import cdist
-from scipy.spatial.distance import pdist
-from scipy.spatial import ConvexHull
-from scipy.stats import linregress, zscore
+import numpy as np
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
+from PySide6 import QtCore, QtGui, QtWidgets
+from scipy.spatial import ConvexHull
+from scipy.spatial.distance import cdist, pdist
+from scipy.stats import kstest, linregress, zscore
+from shapely.geometry import Polygon
 from shapelysmooth import catmull_rom_smooth
 
-from pygmi.vector.dataprep import gridxyz
 from pygmi.misc import ContextModule
+from pygmi.vector.dataprep import gridxyz
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -54,7 +53,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def __init__(self):
 
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
 
         self.ellipses = []
@@ -87,8 +86,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.figure.canvas.draw()
             return
 
-        x = np.ma.masked_invalid(datd['1_longitude'])
-        y = np.ma.masked_invalid(datd['1_latitude'])
+        x = np.ma.masked_invalid(datd["1_longitude"])
+        y = np.ma.masked_invalid(datd["1_latitude"])
 
         xmin = x.min() - 0.5
         xmax = x.max() + 0.5
@@ -99,35 +98,43 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylim(ymin, ymax)
 
         for dat in dats:
-            if 'E' not in dat:
+            if "E" not in dat:
                 continue
 
-            lon = dat['1'].longitude
-            lat = dat['1'].latitude
+            lon = dat["1"].longitude
+            lat = dat["1"].latitude
 
-            erx = dat['E'].longitude_error
-            ery = dat['E'].latitude_error
-            erz = dat['E'].depth_error
-            cvxy = dat['E'].cov_xy
-            cvxz = dat['E'].cov_xz
-            cvyz = dat['E'].cov_yz
+            erx = dat["E"].longitude_error
+            ery = dat["E"].latitude_error
+            erz = dat["E"].depth_error
+            cvxy = dat["E"].cov_xy
+            cvxz = dat["E"].cov_xz
+            cvyz = dat["E"].cov_yz
 
             if nodepth is True:
                 cvxz = 0
                 cvyz = 0
                 erz = 0
 
-            cov = np.array([[erx * erx, cvxy, cvxz],
-                            [cvxy, ery * ery, cvyz],
-                            [cvxz, cvyz, erz * erz]])
+            cov = np.array(
+                [
+                    [erx * erx, cvxy, cvxz],
+                    [cvxy, ery * ery, cvyz],
+                    [cvxz, cvyz, erz * erz],
+                ]
+            )
 
             if True in np.isnan(cov):
                 continue
 
             vals, vecs = eigsorted(cov)
-            abc = (2 * np.sqrt(abs(vals)) *
-                   np.cos(np.arctan2(vecs[2, :],
-                                     np.sqrt(vecs[0, :]**2 + vecs[1, :]**2))))
+            abc = (
+                2
+                * np.sqrt(abs(vals))
+                * np.cos(
+                    np.arctan2(vecs[2, :], np.sqrt(vecs[0, :] ** 2 + vecs[1, :] ** 2))
+                )
+            )
 
             idx = np.argmax(abc)
             ang = np.rad2deg(np.arctan2(vecs[1, idx], vecs[0, idx]))
@@ -141,18 +148,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
             # long from lat
             demaj = emaj / (111.3 * np.cos(np.deg2rad(lat + demin)))
 
-            ell = Ellipse(xy=(lon, lat),
-                          width=demaj, height=demin,
-                          angle=ang, color='black')
-            ell.set_facecolor('none')
+            ell = Ellipse(
+                xy=(lon, lat), width=demaj, height=demin, angle=ang, color="black"
+            )
+            ell.set_facecolor("none")
 
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
 
         self.figure.canvas.draw()
 
-    def update_hexbin(self, data1, data2, *, xlbl='Time', ylbl='ML',
-                      xbin=None, xrng=None):
+    def update_hexbin(
+        self, data1, data2, *, xlbl="Time", ylbl="ML", xbin=None, xrng=None
+    ):
         """
         Update the hexbin plot.
 
@@ -222,12 +230,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
             tick.set_rotation(90)
 
         cbar = self.figure.colorbar(hbin[3])
-        cbar.set_label('Number of Events')
+        cbar.set_label("Number of Events")
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data1, *, xlbl='Data Value',
-                    ylbl='Number of Observations', bins='doane', rng=None):
+    def update_hist(
+        self,
+        data1,
+        *,
+        xlbl="Data Value",
+        ylbl="Number of Observations",
+        bins="doane",
+        rng=None,
+    ):
         """
         Update the histogram plot.
 
@@ -267,7 +282,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             bins = 5
             rng = (np.unique(dattmp)[0] - 2.5, np.unique(dattmp)[0] + 2.5)
 
-        self.axes.hist(dattmp, bins, edgecolor='black', range=rng)
+        self.axes.hist(dattmp, bins, edgecolor="black", range=rng)
         self.axes.set_xlabel(xlbl, fontsize=8)
         self.axes.set_ylabel(ylbl, fontsize=8)
 
@@ -280,7 +295,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_bvalue(self, data1a, bins='doane'):
+    def update_bvalue(self, data1a, bins="doane"):
         """
         Update the b value plot.
 
@@ -307,34 +322,38 @@ class MyMplCanvas(FigureCanvasQTAgg):
         data1 = np.ma.masked_invalid(data1a)
         data1 = data1.compressed()
 
-        xtmp = out['binctr'][out['binctr'] >= out['cmax']]
+        xtmp = out["binctr"][out["binctr"] >= out["cmax"]]
 
         # Plotting
-        self.axes.hist(data1, bins, edgecolor='black',
-                       label='Actual distribution')
-        self.axes.set_yscale('log')
+        self.axes.hist(data1, bins, edgecolor="black", label="Actual distribution")
+        self.axes.set_yscale("log")
 
-        self.axes.plot(out['binctr'], out['cumnum'], '.',
-                       label='Cumulative distribution')
+        self.axes.plot(
+            out["binctr"], out["cumnum"], ".", label="Cumulative distribution"
+        )
 
-        self.axes.plot([out['cmax'], out['cmax']],
-                       [0, out['cumnum'].max()], 'k--',
-                       label=f'Magnitude of completeness: {out["cmax"]}\n')
+        self.axes.plot(
+            [out["cmax"], out["cmax"]],
+            [0, out["cumnum"].max()],
+            "k--",
+            label=f"Magnitude of completeness: {out['cmax']}\n",
+        )
 
-        txt = (f'a-value (Least Squares): {out["aval"]}\n'
-               f'b-value (Least Squares): {out["bval"]}\n'
-               f'b-value (Maximum Likelihood): {out["b_mle"]}')
-        self.axes.plot(xtmp, 10**np.poly1d(out['abvals'])(xtmp),
-                       'k', label=txt)
+        txt = (
+            f"a-value (Least Squares): {out['aval']}\n"
+            f"b-value (Least Squares): {out['bval']}\n"
+            f"b-value (Maximum Likelihood): {out['b_mle']}"
+        )
+        self.axes.plot(xtmp, 10 ** np.poly1d(out["abvals"])(xtmp), "k", label=txt)
 
-        self.axes.set_xlabel('ML', fontsize=8)
-        self.axes.set_ylabel('Number of observations', fontsize=8)
+        self.axes.set_xlabel("ML", fontsize=8)
+        self.axes.set_ylabel("Number of observations", fontsize=8)
 
         self.axes.legend()
 
         self.figure.canvas.draw()
 
-    def update_pres(self, data1, phase='P'):
+    def update_pres(self, data1, phase="P"):
         """
         Update the plot.
 
@@ -356,9 +375,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.figure.canvas.draw()
             return
 
-        pid = np.array(data1['4_phase_id'])
-        tres = np.array(data1['4_travel_time_residual'])
-        weight = np.array(data1['4_weighting_indicator'])
+        pid = np.array(data1["4_phase_id"])
+        tres = np.array(data1["4_travel_time_residual"])
+        weight = np.array(data1["4_weighting_indicator"])
         pid = pid[weight != 9]
         tres = tres[weight != 9]
 
@@ -367,23 +386,23 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         pid = np.strings.strip(pid)
 
-        if phase == 'P':
-            ptres = tres[pid == 'P']
+        if phase == "P":
+            ptres = tres[pid == "P"]
         else:
-            ptres = tres[pid == 'S']
+            ptres = tres[pid == "S"]
 
-        txt = 'mean: ' + str(np.around(ptres.mean(), 3))
-        txt += '\nstd: ' + str(np.around(ptres.std(), 3))
+        txt = "mean: " + str(np.around(ptres.mean(), 3))
+        txt += "\nstd: " + str(np.around(ptres.std(), 3))
 
         weights = 100 * np.ones_like(ptres) / ptres.size
         self.axes.text(0.75, 0.9, txt, transform=self.axes.transAxes)
-        self.axes.hist(ptres, 40, weights=weights, edgecolor='black')
-        self.axes.set_xlabel('Time Residual (seconds)')
-        self.axes.set_ylabel('Frequency (%)')
+        self.axes.hist(ptres, 40, weights=weights, edgecolor="black")
+        self.axes.set_xlabel("Time Residual (seconds)")
+        self.axes.set_ylabel("Frequency (%)")
 
         self.figure.canvas.draw()
 
-    def update_residual(self, dat, res='ML'):
+    def update_residual(self, dat, res="ML"):
         """
         Update the residual plot.
 
@@ -412,20 +431,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for event in dat:
             A1 = {}
             T1 = {}
-            for rec in event['4']:
+            for rec in event["4"]:
                 i = rec.station_name
                 if rec.magnitude is not None:
                     if i not in A:
                         A[i] = []
                     A[i].append(rec.magnitude_residual)
-                elif (rec.quality + rec.phase_id).strip() in ['IAML', 'AML',
-                                                              'ES', 'E']:
-                    if (rec.amplitude is None or
-                            rec.epicentral_distance is None):
+                elif (rec.quality + rec.phase_id).strip() in ["IAML", "AML", "ES", "E"]:
+                    if rec.amplitude is None or rec.epicentral_distance is None:
                         continue
-                    ML = (np.log10(rec.amplitude) +
-                          1.149 * np.log10(rec.epicentral_distance) +
-                          0.00063 * rec.epicentral_distance - 2.04)
+                    ML = (
+                        np.log10(rec.amplitude)
+                        + 1.149 * np.log10(rec.epicentral_distance)
+                        + 0.00063 * rec.epicentral_distance
+                        - 2.04
+                    )
                     A1[i] = ML
                 if rec.travel_time_residual is not None:
                     T1[i] = rec.travel_time_residual
@@ -447,7 +467,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         dmean = {}
         dstd = {}
 
-        if res != 'ML':
+        if res != "ML":
             A = T
 
         sname_list = list(A.keys())
@@ -459,20 +479,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dmean[i] = np.nanmean(A[i])
             dstd[i] = np.nanstd(A[i])
 
-            self.axes.errorbar(j, dmean[i], yerr=dstd[i], fmt='k+', capsize=5)
+            self.axes.errorbar(j, dmean[i], yerr=dstd[i], fmt="k+", capsize=5)
 
         self.axes.set_xticks(range(len(sname_list)))
         self.axes.set_xticklabels(sname_list, rotation=90)
-        self.axes.set_xlabel('Station Name')
-        if res != 'ML':
-            self.axes.set_ylabel('Travel Time Residual (Seconds)')
+        self.axes.set_xlabel("Station Name")
+        if res != "ML":
+            self.axes.set_ylabel("Travel Time Residual (Seconds)")
         else:
-            self.axes.set_ylabel('ML-mean(ML)')
+            self.axes.set_ylabel("ML-mean(ML)")
 
         self.figure.canvas.draw()
 
-    def update_wadati(self, dat, min_wad=5, min_vps=1.53,
-                      max_vps=1.93):
+    def update_wadati(self, dat, min_wad=5, min_vps=1.53, max_vps=1.93):
         """
         Update the wadati plot.
 
@@ -502,13 +521,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for event in dat:
             P = {}
             S = {}
-            for rec in event['4']:
+            for rec in event["4"]:
                 if rec.weighting_indicator == 9:
                     continue
                 time = rec.hour * 3600 + rec.minutes * 60 + rec.seconds
-                if rec.phase_id.strip() == 'P':
+                if rec.phase_id.strip() == "P":
                     P[rec.station_name] = time
-                if rec.phase_id.strip() == 'S':
+                if rec.phase_id.strip() == "S":
                     S[rec.station_name] = time
 
             # Make sure P and S times are from same stations
@@ -540,18 +559,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 continue
 
             VPS.append(PSfit)
-            self.axes.plot(Pdist, Sdist, '.')
+            self.axes.plot(Pdist, Sdist, ".")
 
         slope = np.mean([i.slope for i in VPS])
         intercept = np.mean([i.intercept for i in VPS])
 
         x = self.axes.get_xlim()
-        self.axes.plot(x, np.poly1d([slope, intercept])(x), 'k')
+        self.axes.plot(x, np.poly1d([slope, intercept])(x), "k")
 
-        txt = 'Vp/Vs (Ave)=' + str(np.around(np.mean(slope), 4))
+        txt = "Vp/Vs (Ave)=" + str(np.around(np.mean(slope), 4))
         self.axes.text(0.1, 0.9, txt, transform=self.axes.transAxes)
-        self.axes.set_xlabel('P Time (seconds)')
-        self.axes.set_ylabel('S-P Time (seconds)')
+        self.axes.set_xlabel("P Time (seconds)")
+        self.axes.set_ylabel("S-P Time (seconds)")
 
         self.figure.canvas.draw()
 
@@ -579,7 +598,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for i in uvals:
             df2 = df1[df1.intensity >= i]
-            hull = df2.union_all(method='unary').convex_hull
+            hull = df2.union_all(method="unary").convex_hull
             hull = catmull_rom_smooth(hull)
 
             plist.append(hull)
@@ -590,10 +609,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.plot(x, y, 'k.')
+        self.axes.plot(x, y, "k.")
 
-        gdf.plot(ax=self.axes, column='Intensity', legend=True, edgecolor='k',
-                 legend_kwds={'label': 'Intensity'})
+        gdf.plot(
+            ax=self.axes,
+            column="Intensity",
+            legend=True,
+            edgecolor="k",
+            legend_kwds={"label": "Intensity"},
+        )
 
         self.figure.canvas.draw()
 
@@ -628,7 +652,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         r = pdist(X)
         dxy = np.percentile(r, 10) / 10
 
-        dat = gridxyz(x, y, z, dxy, method='Linear', bdist=None)
+        dat = gridxyz(x, y, z, dxy, method="Linear", bdist=None)
 
         xmin, xmax, ymin, ymax = dat.extent
         rows, cols = dat.data.shape
@@ -642,23 +666,23 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.plot(x, y, 'k.')
+        self.axes.plot(x, y, "k.")
 
         zi = zi[::-1] + 0.0001
-        cntr1 = self.axes.contour(xi, yi, zi, levels=uvals, colors='k')
-        cntr = self.axes.contourf(xi, yi, zi, levels=uvals, extend='max')
+        cntr1 = self.axes.contour(xi, yi, zi, levels=uvals, colors="k")
+        cntr = self.axes.contourf(xi, yi, zi, levels=uvals, extend="max")
 
         self.figure.colorbar(cntr)
         self.figure.canvas.draw()
 
         pnts = np.transpose([x, y])
         hull0 = ConvexHull(pnts)
-        gdict = {'Intensity': [0], 'geometry': [Polygon(pnts[hull0.vertices])]}
+        gdict = {"Intensity": [0], "geometry": [Polygon(pnts[hull0.vertices])]}
 
         plist, pvals = contourtopoly(cntr1)
 
-        gdict['Intensity'] += pvals
-        gdict['geometry'] += plist
+        gdict["Intensity"] += pvals
+        gdict["geometry"] += plist
 
         gdf = gpd.GeoDataFrame(gdict)
 
@@ -683,12 +707,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.plot(datetot, btot, 'g',
-                       label='b-value (maximum likelihood)')
+        self.axes.plot(datetot, btot, "g", label="b-value (maximum likelihood)")
         self.axes.legend()
-        self.axes.set_xlabel('Date', fontsize=8)
-        self.axes.set_ylabel('b-value', fontsize=8)
-        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.set_xlabel("Date", fontsize=8)
+        self.axes.set_ylabel("b-value", fontsize=8)
+        self.axes.tick_params(axis="x", rotation=90)
 
         self.figure.canvas.draw()
 
@@ -714,9 +737,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         scatter = self.axes.scatter(x, y, c=bval)
-        self.axes.legend(*scatter.legend_elements(), title='b-value')
-        self.axes.set_xlabel('Longitude', fontsize=8)
-        self.axes.set_ylabel('Latitude', fontsize=8)
+        self.axes.legend(*scatter.legend_elements(), title="b-value")
+        self.axes.set_xlabel("Longitude", fontsize=8)
+        self.axes.set_ylabel("Latitude", fontsize=8)
         # self.axes.tick_params(axis='x', rotation=90)
 
         self.figure.canvas.draw()
@@ -739,19 +762,19 @@ class PlotQC(ContextModule):
         self.datd = None
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('QC Plots')
+        self.setWindowTitle("QC Plots")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+        self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'seis.cm.showqc'
+        self.buttonbox.htmlfile = "seis.cm.showqc"
 
         self.cmb_1 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel('Product:')
+        self.lbl_1 = QtWidgets.QLabel("Product:")
         self.hbl.addWidget(self.buttonbox)
         self.hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         self.hbl.addWidget(self.cmb_1)
@@ -778,66 +801,77 @@ class PlotQC(ContextModule):
         self.btn_saveshp.hide()
 
         i = self.cmb_1.currentText()
-        if i == 'Hour Histogram':
-            self.mmc.update_hist(self.datd['1_hour'], xlbl='Hour', bins=24,
-                                 rng=(-0.5, 23.5))
-        elif i == 'Month Histogram':
-            self.mmc.update_hist(self.datd['1_month'], xlbl='Month', bins=12,
-                                 rng=(0.5, 12.5))
-        elif i == 'Year Histogram':
-            bins = max(self.datd['1_year']) - min(self.datd['1_year']) + 1
-            bmin = np.nanmin(self.datd['1_year']) - 0.5
-            bmax = np.nanmax(self.datd['1_year']) + 0.5
-            self.mmc.update_hist(self.datd['1_year'], xlbl='Year', bins=bins,
-                                 rng=(bmin, bmax))
-        elif i == 'Number of Stations':
-            if np.isnan(self.datd['1_number_of_stations_used']).all():
+        if i == "Hour Histogram":
+            self.mmc.update_hist(
+                self.datd["1_hour"], xlbl="Hour", bins=24, rng=(-0.5, 23.5)
+            )
+        elif i == "Month Histogram":
+            self.mmc.update_hist(
+                self.datd["1_month"], xlbl="Month", bins=12, rng=(0.5, 12.5)
+            )
+        elif i == "Year Histogram":
+            bins = max(self.datd["1_year"]) - min(self.datd["1_year"]) + 1
+            bmin = np.nanmin(self.datd["1_year"]) - 0.5
+            bmax = np.nanmax(self.datd["1_year"]) + 0.5
+            self.mmc.update_hist(
+                self.datd["1_year"], xlbl="Year", bins=bins, rng=(bmin, bmax)
+            )
+        elif i == "Number of Stations":
+            if np.isnan(self.datd["1_number_of_stations_used"]).all():
                 bmin = 0.5
                 bmax = 1.5
             else:
-                bmin = np.nanmin(self.datd['1_number_of_stations_used']) + 0.5
-                bmax = np.nanmax(self.datd['1_number_of_stations_used']) + 1.5
+                bmin = np.nanmin(self.datd["1_number_of_stations_used"]) + 0.5
+                bmax = np.nanmax(self.datd["1_number_of_stations_used"]) + 1.5
 
-            bins = np.unique(self.datd['1_number_of_stations_used']).size
+            bins = np.unique(self.datd["1_number_of_stations_used"]).size
 
-            self.mmc.update_hist(self.datd['1_number_of_stations_used'],
-                                 xlbl=i, bins=bins, rng=(bmin, bmax))
-        elif i == 'RMS of time residuals':
-            rts = np.array(self.datd['1_rms_of_time_residuals'])
-            self.mmc.update_hist(rts, xlbl=i + ' (sec)')
-        elif i == 'ML vs Time':
-            self.mmc.update_hexbin(self.datd['1_ML_time'], self.datd['1_ML'],
-                                   xlbl='Time (Hours)', ylbl='ML',
-                                   xbin=25, xrng=(-0.5, 24.5))
-        elif i == 'ML vs Year':
-            self.mmc.update_hexbin(self.datd['1_ML_year'], self.datd['1_ML'],
-                                   xlbl='Year', ylbl='ML')
-        elif i == 'Error Ellipse':
-            self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd, self.indata['Seis'])
-        elif i == 'Error Ellipse (No depth errors)':
-            self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd, self.indata['Seis'], True)
-        elif i == 'GAP':
-            self.mmc.update_hist(self.datd['E_gap'], xlbl=i + ' (°)')
-        elif i == 'Longitude Error':
-            self.mmc.update_hist(self.datd['E_longitude_error'],
-                                 xlbl=i + ' (km)')
-        elif i == 'Latitude Error':
             self.mmc.update_hist(
-                self.datd['E_latitude_error'], xlbl=i + ' (km)')
-        elif i == 'b-Value':
-            self.mmc.update_bvalue(self.datd['1_ML'])
-        elif i == 'P-Phase Residuals':
-            self.mmc.update_pres(self.datd, 'P')
-        elif i == 'S-Phase Residuals':
-            self.mmc.update_pres(self.datd, 'S')
-        elif i == 'ML Residual':
-            self.mmc.update_residual(self.indata['Seis'], 'ML')
-        elif i == 'Time Residual':
-            self.mmc.update_residual(self.indata['Seis'], 'Time')
-        elif i == 'Wadati':
-            self.mmc.update_wadati(self.indata['Seis'])
+                self.datd["1_number_of_stations_used"],
+                xlbl=i,
+                bins=bins,
+                rng=(bmin, bmax),
+            )
+        elif i == "RMS of time residuals":
+            rts = np.array(self.datd["1_rms_of_time_residuals"])
+            self.mmc.update_hist(rts, xlbl=i + " (sec)")
+        elif i == "ML vs Time":
+            self.mmc.update_hexbin(
+                self.datd["1_ML_time"],
+                self.datd["1_ML"],
+                xlbl="Time (Hours)",
+                ylbl="ML",
+                xbin=25,
+                xrng=(-0.5, 24.5),
+            )
+        elif i == "ML vs Year":
+            self.mmc.update_hexbin(
+                self.datd["1_ML_year"], self.datd["1_ML"], xlbl="Year", ylbl="ML"
+            )
+        elif i == "Error Ellipse":
+            self.btn_saveshp.show()
+            self.mmc.update_ellipse(self.datd, self.indata["Seis"])
+        elif i == "Error Ellipse (No depth errors)":
+            self.btn_saveshp.show()
+            self.mmc.update_ellipse(self.datd, self.indata["Seis"], True)
+        elif i == "GAP":
+            self.mmc.update_hist(self.datd["E_gap"], xlbl=i + " (°)")
+        elif i == "Longitude Error":
+            self.mmc.update_hist(self.datd["E_longitude_error"], xlbl=i + " (km)")
+        elif i == "Latitude Error":
+            self.mmc.update_hist(self.datd["E_latitude_error"], xlbl=i + " (km)")
+        elif i == "b-Value":
+            self.mmc.update_bvalue(self.datd["1_ML"])
+        elif i == "P-Phase Residuals":
+            self.mmc.update_pres(self.datd, "P")
+        elif i == "S-Phase Residuals":
+            self.mmc.update_pres(self.datd, "S")
+        elif i == "ML Residual":
+            self.mmc.update_residual(self.indata["Seis"], "ML")
+        elif i == "Time Residual":
+            self.mmc.update_residual(self.indata["Seis"], "Time")
+        elif i == "Wadati":
+            self.mmc.update_wadati(self.indata["Seis"])
 
     def run(self):
         """
@@ -849,33 +883,39 @@ class PlotQC(ContextModule):
 
         """
         self.show()
-        data = self.indata['Seis']
+        data = self.indata["Seis"]
         self.datd = import_for_plots(data)
 
         if not self.datd:
-            self.showlog('There is no compatible data in the file')
+            self.showlog("There is no compatible data in the file")
             return
 
-        products = ['Hour Histogram',
-                    'Month Histogram',
-                    'Year Histogram',
-                    'Number of Stations',
-                    'RMS of time residuals',
-                    'ML vs Time',
-                    'ML vs Year',
-                    'b-Value']
-        if 'E_gap' in self.datd:
-            products += ['Error Ellipse',
-                         'Error Ellipse (No depth errors)',
-                         'GAP',
-                         'Longitude Error',
-                         'Latitude Error']
-        if '4_phase_id' in self.datd:
-            products += ['P-Phase Residuals',
-                         'S-Phase Residuals',
-                         'ML Residual',
-                         'Time Residual',
-                         'Wadati']
+        products = [
+            "Hour Histogram",
+            "Month Histogram",
+            "Year Histogram",
+            "Number of Stations",
+            "RMS of time residuals",
+            "ML vs Time",
+            "ML vs Year",
+            "b-Value",
+        ]
+        if "E_gap" in self.datd:
+            products += [
+                "Error Ellipse",
+                "Error Ellipse (No depth errors)",
+                "GAP",
+                "Longitude Error",
+                "Latitude Error",
+            ]
+        if "4_phase_id" in self.datd:
+            products += [
+                "P-Phase Residuals",
+                "S-Phase Residuals",
+                "ML Residual",
+                "Time Residual",
+                "Wadati",
+            ]
 
         for i in products:
             self.cmb_1.addItem(i)
@@ -893,11 +933,12 @@ class PlotQC(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'Shape file (*.shp)'
+        ext = "Shape file (*.shp)"
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save Shape File', '.', ext)
-        if filename == '':
+            self.parent, "Save Shape File", ".", ext
+        )
+        if filename == "":
             return False
         os.chdir(os.path.dirname(filename))
 
@@ -905,15 +946,15 @@ class PlotQC(ContextModule):
 
         if os.path.isfile(ifile):
             tmp = ifile[:-4]
-            os.remove(tmp + '.shp')
-            os.remove(tmp + '.shx')
-            os.remove(tmp + '.prj')
-            os.remove(tmp + '.dbf')
+            os.remove(tmp + ".shp")
+            os.remove(tmp + ".shx")
+            os.remove(tmp + ".prj")
+            os.remove(tmp + ".dbf")
 
         indata = self.mmc.ellipses
         geom = [Polygon(i) for i in indata]
 
-        gdict = {'geometry': geom}
+        gdict = {"geometry": geom}
 
         gdf = gpd.GeoDataFrame(gdict)
         gdf = gdf.set_crs(4326)
@@ -940,19 +981,19 @@ class PlotIso(ContextModule):
         self.datd = None
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Isoseismic Plots')
+        self.setWindowTitle("Isoseismic Plots")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+        self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'seis.cm.showiso'
+        self.buttonbox.htmlfile = "seis.cm.showiso"
 
         self.cmb_1 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel('Product:')
+        self.lbl_1 = QtWidgets.QLabel("Product:")
         hbl.addWidget(self.buttonbox)
         hbl.addWidget(self.btn_saveshp)
         hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -977,9 +1018,9 @@ class PlotIso(ContextModule):
 
         """
         i = self.cmb_1.currentText()
-        if i == 'Convex Hull Method':
+        if i == "Convex Hull Method":
             self.mmc.update_isohull(self.datd)
-        elif i == 'Standard Contours':
+        elif i == "Standard Contours":
             self.mmc.update_isocontour(self.datd)
 
     def run(self):
@@ -991,14 +1032,13 @@ class PlotIso(ContextModule):
         None.
 
         """
-        if 'MacroSeis' not in self.indata:
-            self.showlog('No macroseismic data')
+        if "MacroSeis" not in self.indata:
+            self.showlog("No macroseismic data")
             return False
 
-        self.datd = self.indata['MacroSeis']
+        self.datd = self.indata["MacroSeis"]
 
-        products = ['Convex Hull Method',
-                    'Standard Contours']
+        products = ["Convex Hull Method", "Standard Contours"]
 
         for i in products:
             self.cmb_1.addItem(i)
@@ -1017,11 +1057,12 @@ class PlotIso(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'Shape file (*.shp)'
+        ext = "Shape file (*.shp)"
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save Shape File', '.', ext)
-        if filename == '':
+            self.parent, "Save Shape File", ".", ext
+        )
+        if filename == "":
             return False
         os.chdir(os.path.dirname(filename))
 
@@ -1029,10 +1070,10 @@ class PlotIso(ContextModule):
 
         if os.path.isfile(ifile):
             tmp = ifile[:-4]
-            os.remove(tmp + '.shp')
-            os.remove(tmp + '.shx')
-            os.remove(tmp + '.prj')
-            os.remove(tmp + '.dbf')
+            os.remove(tmp + ".shp")
+            os.remove(tmp + ".shx")
+            os.remove(tmp + ".prj")
+            os.remove(tmp + ".dbf")
 
         gdf = self.mmc.isolines
         gdf = gdf.set_crs(4326)
@@ -1057,20 +1098,20 @@ class PlotTempB(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Temporal b value')
+        self.setWindowTitle("Temporal b value")
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'seis.cm.showtempb'
+        self.buttonbox.htmlfile = "seis.cm.showtempb"
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.le_1 = QtWidgets.QLineEdit('300')
+        self.le_1 = QtWidgets.QLineEdit("300")
         self.le_1.setValidator(QtGui.QIntValidator(1, 2147483647))
-        lbl_1 = QtWidgets.QLabel('Window size:')
-        btn_apply = QtWidgets.QPushButton('Apply')
+        lbl_1 = QtWidgets.QLabel("Window size:")
+        btn_apply = QtWidgets.QPushButton("Apply")
 
         hbl.addWidget(self.buttonbox)
         hbl.addWidget(lbl_1)
@@ -1095,7 +1136,7 @@ class PlotTempB(ContextModule):
 
         """
         dat2 = self.data
-        numrecs = len(dat2['1_year'])
+        numrecs = len(dat2["1_year"])
 
         if not self.check_validation():
             return
@@ -1105,23 +1146,24 @@ class PlotTempB(ContextModule):
         if window_size > numrecs:
             window_size = numrecs
             self.le_1.setText(str(numrecs))
-            self.showlog('Error: window size too large, resetting to '
-                         f'{numrecs}')
+            self.showlog(f"Error: window size too large, resetting to {numrecs}")
 
-        year = dat2['1_year']
-        mon = dat2['1_month']
-        day = dat2['1_day']
-        hour = dat2['1_hour']
-        mins = dat2['1_minutes']
-        secs = dat2['1_seconds']
+        year = dat2["1_year"]
+        mon = dat2["1_month"]
+        day = dat2["1_day"]
+        hour = dat2["1_hour"]
+        mins = dat2["1_minutes"]
+        secs = dat2["1_seconds"]
 
         edate = []
         for i in range(len(year)):
-            txt = (f'{year[i]}-{mon[i]:02}-{day[i]:02}'
-                   f'T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}')
+            txt = (
+                f"{year[i]}-{mon[i]:02}-{day[i]:02}"
+                f"T{hour[i]:02}:{mins[i]:02}:{secs[i]:06.3f}"
+            )
             edate.append(txt)
 
-        seq = sorted(list(zip(edate, dat2['1_ML'])))
+        seq = sorted(list(zip(edate, dat2["1_ML"])))
         tseq = list(zip(*seq))
         dates, ml = tseq
 
@@ -1129,14 +1171,14 @@ class PlotTempB(ContextModule):
         datetot = []
 
         for i in range(len(dates) - window_size + 1):
-            mlwin = ml[i: i + window_size]
+            mlwin = ml[i : i + window_size]
             mlwin = np.ma.masked_invalid(mlwin)
             mlwin = mlwin.compressed()
             meandate = np.datetime64(dates[i + window_size - 1])
 
             out = bvalue(mlwin)
 
-            b2tot.append(out['b_mle'])
+            b2tot.append(out["b_mle"])
             datetot.append(meandate)
 
         b2tot = np.array(b2tot)
@@ -1151,7 +1193,7 @@ class PlotTempB(ContextModule):
         None.
 
         """
-        dat1 = self.indata['Seis']
+        dat1 = self.indata["Seis"]
         self.data = import_for_plots(dat1)
 
         self.show()
@@ -1173,26 +1215,26 @@ class PlotSpatialB(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Spatial variation of b values')
+        self.setWindowTitle("Spatial variation of b values")
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'seis.cm.showspatb'
+        self.buttonbox.htmlfile = "seis.cm.showspatb"
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl3 = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.le_1 = QtWidgets.QLineEdit('0.2')
+        self.le_1 = QtWidgets.QLineEdit("0.2")
         self.le_1.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
-        self.le_2 = QtWidgets.QLineEdit('0.5')
+        self.le_2 = QtWidgets.QLineEdit("0.5")
         self.le_2.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
-        self.le_3 = QtWidgets.QLineEdit('20')
+        self.le_3 = QtWidgets.QLineEdit("20")
         self.le_3.setValidator(QtGui.QIntValidator(1, 2147483647))
-        lbl_1 = QtWidgets.QLabel('Grid Spacing:')
-        lbl_2 = QtWidgets.QLabel('Search radius:')
-        lbl_3 = QtWidgets.QLabel('Minimum number of events:')
-        btn_apply = QtWidgets.QPushButton('Apply')
+        lbl_1 = QtWidgets.QLabel("Grid Spacing:")
+        lbl_2 = QtWidgets.QLabel("Search radius:")
+        lbl_3 = QtWidgets.QLabel("Minimum number of events:")
+        btn_apply = QtWidgets.QPushButton("Apply")
 
         hbl3.addWidget(self.buttonbox)
         hbl3.addWidget(lbl_1)
@@ -1228,16 +1270,16 @@ class PlotSpatialB(ContextModule):
         N = int(self.le_3.text())
 
         dat2 = self.data
-        x = dat2['1_longitude']
-        y = dat2['1_latitude']
-        mag = dat2['1_magnitude_1']
-        magtype = np.array(dat2['1_type_of_magnitude_1'])
+        x = dat2["1_longitude"]
+        y = dat2["1_latitude"]
+        mag = dat2["1_magnitude_1"]
+        magtype = np.array(dat2["1_type_of_magnitude_1"])
 
         x = np.array(x)
         y = np.array(y)
         mag = np.array(mag)
 
-        filt = (magtype == 'L')
+        filt = magtype == "L"
 
         x = x[filt]
         y = y[filt]
@@ -1267,7 +1309,7 @@ class PlotSpatialB(ContextModule):
             out = b_mle(mag1)
             if out is None:
                 continue
-            bval[i] = out['b_mle']
+            bval[i] = out["b_mle"]
 
         filt = ~np.isnan(bval)
 
@@ -1286,7 +1328,7 @@ class PlotSpatialB(ContextModule):
         None.
 
         """
-        dat1 = self.indata['Seis']
+        dat1 = self.indata["Seis"]
         self.data = import_for_plots(dat1)
 
         self.show()
@@ -1324,7 +1366,7 @@ def contourtopoly(cntr):
                 poly = Polygon(list(zip(x, y)))
 
                 if not poly.is_valid:
-                    poly = poly.buffer(0.)
+                    poly = poly.buffer(0.0)
 
                 plist.append(poly)
                 pvals.append(val)
@@ -1350,46 +1392,49 @@ def import_for_plots(dat):
     datd = {}
 
     # Next 3 lines are so that certain plots don't break
-    datd['1_ML'] = []
-    datd['1_ML_year'] = []
-    datd['1_ML_time'] = []
+    datd["1_ML"] = []
+    datd["1_ML_year"] = []
+    datd["1_ML_time"] = []
 
     for event in dat:
-        if '1' not in event:
+        if "1" not in event:
             continue
 
         for rectype in event:
-            if rectype in ('1', 'E'):
+            if rectype in ("1", "E"):
                 tmp = vars(event[rectype])
                 for j in tmp:
-                    newkey = rectype + '_' + j
+                    newkey = rectype + "_" + j
                     if newkey not in datd:
                         datd[newkey] = []
                     datd[newkey].append(tmp[j])
 
-                    if 'type_of_magnitude' in j:
-                        newkey = '1_M' + tmp[j]
+                    if "type_of_magnitude" in j:
+                        newkey = "1_M" + tmp[j]
                         if newkey not in datd:
                             datd[newkey] = []
-                        datd[newkey].append(tmp[j.split('_of_')[1]])
+                        datd[newkey].append(tmp[j.split("_of_")[1]])
 
-                        time = (tmp['hour'] + tmp['minutes'] / 60. +
-                                tmp['seconds'] / 3600.)
-                        newkey = '1_M' + tmp[j] + '_time'
+                        time = (
+                            tmp["hour"]
+                            + tmp["minutes"] / 60.0
+                            + tmp["seconds"] / 3600.0
+                        )
+                        newkey = "1_M" + tmp[j] + "_time"
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(time)
 
-                        newkey = '1_M' + tmp[j] + '_year'
+                        newkey = "1_M" + tmp[j] + "_year"
                         if newkey not in datd:
                             datd[newkey] = []
-                        datd[newkey].append(tmp['year'])
+                        datd[newkey].append(tmp["year"])
 
-            if rectype == '4':
+            if rectype == "4":
                 for i in event[rectype]:
                     tmp = vars(i)
                     for j in tmp:
-                        newkey = rectype + '_' + j
+                        newkey = rectype + "_" + j
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
@@ -1419,7 +1464,7 @@ def eigsorted(cov):
     return vals[order], vecs[:, order]
 
 
-def bvalue(data1a, mbin=0.1, bins='doane', cmax=None):
+def bvalue(data1a, mbin=0.1, bins="doane", cmax=None):
     """
     Update the b value plot.
 
@@ -1448,8 +1493,9 @@ def bvalue(data1a, mbin=0.1, bins='doane', cmax=None):
     data1 = data1[abs(zscore(data1)) < 2.5]
 
     # Frequency Magnitude Distribution.
-    bins = np.arange(np.round(data1.min(), 1) - mbin / 2,
-                     np.round(data1.max(), 1) + mbin * 1.5, mbin)
+    bins = np.arange(
+        np.round(data1.min(), 1) - mbin / 2, np.round(data1.max(), 1) + mbin * 1.5, mbin
+    )
 
     num, binsedges = np.histogram(data1, bins)
     binctr = binsedges[:-1] + mbin / 2
@@ -1475,7 +1521,7 @@ def bvalue(data1a, mbin=0.1, bins='doane', cmax=None):
     # ytmp = ytmp[ytmp > 0]
 
     if xtmp.size < 2:
-        print('No enough magnitudes above magnitude of completeness')
+        print("No enough magnitudes above magnitude of completeness")
         return None
         # return np.nan, np.nan, np.nan
 
@@ -1502,20 +1548,20 @@ def bvalue(data1a, mbin=0.1, bins='doane', cmax=None):
     # b_gh = np.log((dmean-cmax+mbin)/(dmean - cmax))/(mbin*np.log(10))
 
     out = {}
-    out['aval'] = aval
-    out['bval'] = bval
-    out['b_mle'] = b_mle
-    out['a_mle'] = a_mle
+    out["aval"] = aval
+    out["bval"] = bval
+    out["b_mle"] = b_mle
+    out["a_mle"] = a_mle
     # out['b_gh'] = b_gh
-    out['binctr'] = binctr
-    out['cumnum'] = cumnum
-    out['cmax'] = cmax
-    out['abvals'] = abvals
+    out["binctr"] = binctr
+    out["cumnum"] = cumnum
+    out["cmax"] = cmax
+    out["abvals"] = abvals
 
     return out
 
 
-def b_mle(data1a, mbin=0.1, bins='doane', cmax=None):
+def b_mle(data1a, mbin=0.1, bins="doane", cmax=None):
     """
     Update the maximum likelihood b value.
 
@@ -1544,8 +1590,9 @@ def b_mle(data1a, mbin=0.1, bins='doane', cmax=None):
     data1 = data1[abs(zscore(data1)) < 2.5]
 
     # Frequency Magnitude Distribution.
-    bins = np.arange(np.round(data1.min(), 1) - mbin / 2,
-                     np.round(data1.max(), 1) + mbin * 1.5, mbin)
+    bins = np.arange(
+        np.round(data1.min(), 1) - mbin / 2, np.round(data1.max(), 1) + mbin * 1.5, mbin
+    )
 
     num, binsedges = np.histogram(data1, bins)
     binctr = binsedges[:-1] + mbin / 2
@@ -1568,11 +1615,11 @@ def b_mle(data1a, mbin=0.1, bins='doane', cmax=None):
     a_mle = np.log10(cumnum[0]) + b_mle * (cmax - mbin / 2)
 
     out = {}
-    out['b_mle'] = b_mle
-    out['a_mle'] = a_mle
-    out['binctr'] = binctr
-    out['cumnum'] = cumnum
-    out['cmax'] = cmax
+    out["b_mle"] = b_mle
+    out["a_mle"] = a_mle
+    out["binctr"] = binctr
+    out["cumnum"] = cumnum
+    out["cmax"] = cmax
 
     return out
 
@@ -1598,8 +1645,11 @@ def fmd(mag, mbin=0.1):
         Dictionary containing M  vs cumulative and non cumulative counts.
 
     """
-    mi = np.arange(np.min(np.round(mag / mbin) * mbin),
-                   np.max(np.round(mag / mbin) * mbin) + mbin, mbin)
+    mi = np.arange(
+        np.min(np.round(mag / mbin) * mbin),
+        np.max(np.round(mag / mbin) * mbin) + mbin,
+        mbin,
+    )
 
     nbm = len(mi)
     cumnbmag = np.zeros(nbm)
@@ -1611,7 +1661,7 @@ def fmd(mag, mbin=0.1):
     cumnbmagtmp = np.append(cumnbmag, 0)
     nbmag = np.abs(np.diff(cumnbmagtmp))
 
-    res = {'m': mi, 'cum': cumnbmag, 'noncum': nbmag}
+    res = {"m": mi, "cum": cumnbmag, "noncum": nbmag}
     return res
 
 
@@ -1637,7 +1687,7 @@ def maxc(mag, mbin=0.1):
 
     """
     FMD = fmd(mag, mbin)
-    Mc = FMD['m'][np.argmax(FMD['noncum'])]
+    Mc = FMD["m"][np.argmax(FMD["noncum"])]
     return Mc
 
 
@@ -1666,17 +1716,17 @@ def get_cmax(mag):
             continue
         # aval = out['aval']
         # bval = out['bval']
-        aval = out['a_mle']
-        bval = out['b_mle']
-        M = out['binctr']
-        cumnum = out['cumnum']
-        N = 10**(aval - bval * M)
+        aval = out["a_mle"]
+        bval = out["b_mle"]
+        M = out["binctr"]
+        cumnum = out["cumnum"]
+        N = 10 ** (aval - bval * M)
 
         # bval = 1 / (mag2.mean() - mag2[-1]) / np.log(10)
         # aval = np.log10(cumnum[0]) + bval * M[0]
         # N = 10**(aval - bval * M)
 
-        ks1 = kstest(N, cumnum, method='asymp').statistic
+        ks1 = kstest(N, cumnum, method="asymp").statistic
         # ks1 = kstest(N, norm.cdf).statistic
         Ck = bval * np.log10(i) * (1 - ks1)
         ks.append(Ck)
@@ -1689,17 +1739,18 @@ def get_cmax(mag):
 
 def _testiso():
     """Test creation of isoseismal maps."""
-    from pygmi.seis.iodefs import importmacro
     import sys
 
+    from pygmi.seis.iodefs import importmacro
+
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\2015-12-02-0714-54.macro"
 
     df1 = importmacro(ifile)
 
     tmp = PlotIso()
-    tmp.indata['MacroSeis'] = df1
+    tmp.indata["MacroSeis"] = df1
     tmp.run()
 
     tmp.exec()
@@ -1708,10 +1759,11 @@ def _testiso():
 def _testfn1():
     """Test routine."""
     import sys
+
     from pygmi.seis.iodefs import ImportSeisan
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = ImportSeisan()
     tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
@@ -1738,7 +1790,7 @@ def _testfn():
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect1.out"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = ImportSeisan()
     tmp.ifile = ifile

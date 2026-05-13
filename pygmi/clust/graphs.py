@@ -25,14 +25,14 @@
 """Routines to plot cluster data."""
 
 import numpy as np
-from PySide6 import QtWidgets, QtCore
 from matplotlib import colormaps
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
+from PySide6 import QtCore, QtWidgets
 
-from pygmi.misc import frm, ContextModule
+from pygmi.misc import ContextModule, frm
 from pygmi.raster.modest_image import imshow
 
 
@@ -41,7 +41,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def __init__(self):
         # figure stuff
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -63,27 +63,27 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111, label='map')
+        self.axes = self.figure.add_subplot(111, label="map")
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
         cdat = data1.data
         # csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
         #              extent=data1.extent)
 
         # cannot use modestimage when changing colorbar labels
-        csp = self.axes.imshow(cdat, cmap=colormaps['jet'],
-                               extent=data1.extent)
+        csp = self.axes.imshow(cdat, cmap=colormaps["jet"], extent=data1.extent)
 
         vals = np.unique(cdat)
         vals = vals.compressed()
-        bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+        bnds = (vals - 0.5).tolist() + [vals.max() + 0.5]
 
-        if 'labels' in data1.metadata['Cluster']:
-            lbls = data1.metadata['Cluster']['labels']
-            csp.format_cursor_data = (lambda z: f'{lbls[int(z) - 1]}' if not
-                                      np.ma.is_masked(z) else 'masked')
+        if "labels" in data1.metadata["Cluster"]:
+            lbls = data1.metadata["Cluster"]["labels"]
+            csp.format_cursor_data = lambda z: (
+                f"{lbls[int(z) - 1]}" if not np.ma.is_masked(z) else "masked"
+            )
         else:
             lbls = None
 
@@ -92,11 +92,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cbar.set_ticks(vals, labels=lbls)
 
         if data1.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -118,16 +118,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        cnr = data1.metadata['Cluster']['no_clusters']
+        cnr = data1.metadata["Cluster"]["no_clusters"]
         x = range(cnr)
 
-        if 'labels' in data1.metadata['Cluster']:
-            lbls = data1.metadata['Cluster']['labels']
+        if "labels" in data1.metadata["Cluster"]:
+            lbls = data1.metadata["Cluster"]["labels"]
         else:
-            lbls = [f'{i + 1}' for i in x]
+            lbls = [f"{i + 1}" for i in x]
 
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111, label='map')
+        self.axes = self.figure.add_subplot(111, label="map")
 
         cdata = {}
         cdatab = {}
@@ -145,22 +145,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
         dataids = [i.dataid for i in rdata]
 
         x = np.arange(len(dataids))
-        width = .8 / cnr
+        width = 0.8 / cnr
         multiplier = 0
 
         for attribute, measurement in cdata.items():
             bottom = cdatab[attribute]
             offset = width * multiplier
-            rects = self.axes.bar(x + offset, measurement, width, bottom,
-                                  label=attribute)
-            # ax.bar_label(rects, padding=5)
+            self.axes.bar(x + offset, measurement, width, bottom, label=attribute)
+
             multiplier += 1
 
         # Add some text for labels, title and custom x-axis tick labels, etc.
-        self.axes.set_ylabel('Value')
-        self.axes.set_title(f'Dataset ranges for {cnr} classes')
-        self.axes.set_xticks(x + .4, dataids)
-        self.axes.legend(loc='upper left')
+        self.axes.set_ylabel("Value")
+        self.axes.set_title(f"Dataset ranges for {cnr} classes")
+        self.axes.set_xticks(x + 0.4, dataids)
+        self.axes.legend(loc="upper left")
 
         self.figure.canvas.draw()
 
@@ -190,7 +189,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.scatter(x, y)
         self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_xlabel('Number of Classes')
+        self.axes.set_xlabel("Number of Classes")
         self.axes.xaxis.set_ticks(x)
         self.figure.canvas.draw()
 
@@ -213,11 +212,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111, projection='3d')
+        self.axes = self.figure.add_subplot(111, projection="3d")
         self.axes.plot_wireframe(y, x, z)
-        self.axes.set_title('log(Objective Function)')
+        self.axes.set_title("log(Objective Function)")
         self.axes.set_ylabel("Number of Classes")
-        self.axes.set_xlabel('Iteration')
+        self.axes.set_xlabel("Iteration")
         self.axes.yaxis.set_major_locator(MaxNLocator(integer=True))
         self.axes.xaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -242,12 +241,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
-        rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
-                       extent=data1.extent, cmap=colormaps['jet'],
-                       vmin=0., vmax=1.)
+        rdata = imshow(
+            self.axes,
+            data1.metadata["Cluster"]["memdat"][mem],
+            extent=data1.extent,
+            cmap=colormaps["jet"],
+            vmin=0.0,
+            vmax=1.0,
+        )
 
         self.figure.colorbar(rdata)
 
@@ -255,11 +259,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.yaxis.set_major_formatter(frm)
 
         if data1.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         self.figure.canvas.draw()
 
@@ -279,7 +283,7 @@ class PlotRaster(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Class Data')
+        self.setWindowTitle("Class Data")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -287,9 +291,9 @@ class PlotRaster(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
 
-        self.buttonbox.htmlfile = 'cluster.cm.showclass'
+        self.buttonbox.htmlfile = "cluster.cm.showclass"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -314,7 +318,7 @@ class PlotRaster(ContextModule):
 
         """
         i = self.cmb_1.currentIndex()
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
         self.mmc.update_classes(data[i])
 
     def run(self):
@@ -326,7 +330,7 @@ class PlotRaster(ContextModule):
         None.
 
         """
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
 
         self.cmb_1.currentIndexChanged.disconnect()
         for i in data:
@@ -353,7 +357,7 @@ class PlotBars(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Class Dataset Ranges')
+        self.setWindowTitle("Class Dataset Ranges")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -361,9 +365,9 @@ class PlotBars(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
 
-        self.buttonbox.htmlfile = 'cluster.cm.showbars'
+        self.buttonbox.htmlfile = "cluster.cm.showbars"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -388,8 +392,8 @@ class PlotBars(ContextModule):
 
         """
         i = self.cmb_1.currentIndex()
-        data = self.indata['Cluster']
-        self.mmc.update_bars(data[i], self.indata['Raster'])
+        data = self.indata["Cluster"]
+        self.mmc.update_bars(data[i], self.indata["Raster"])
 
     def run(self):
         """
@@ -400,7 +404,7 @@ class PlotBars(ContextModule):
         None.
 
         """
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
 
         self.cmb_1.currentIndexChanged.disconnect()
         for i in data:
@@ -427,7 +431,7 @@ class PlotMembership(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Membership Data')
+        self.setWindowTitle("Membership Data")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -436,10 +440,10 @@ class PlotMembership(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Number of Clusters:')
-        lbl_2 = QtWidgets.QLabel('Membership:')
+        lbl_1 = QtWidgets.QLabel("Number of Clusters:")
+        lbl_2 = QtWidgets.QLabel("Membership:")
 
-        self.buttonbox.htmlfile = 'cluster.cm.showmembership'
+        self.buttonbox.htmlfile = "cluster.cm.showmembership"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -466,13 +470,13 @@ class PlotMembership(ContextModule):
         None.
 
         """
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
         i = self.cmb_1.currentIndex()
         self.cmb_2.clear()
         self.cmb_2.currentIndexChanged.disconnect()
 
-        for j in range(data[i].metadata['Cluster']['no_clusters']):
-            self.cmb_2.addItem('Membership Map for Cluster ' + str(j + 1))
+        for j in range(data[i].metadata["Cluster"]["no_clusters"]):
+            self.cmb_2.addItem("Membership Map for Cluster " + str(j + 1))
 
         self.cmb_2.currentIndexChanged.connect(self.change_band_two)
         self.change_band_two()
@@ -486,10 +490,12 @@ class PlotMembership(ContextModule):
         None.
 
         """
-        data = self.indata['Cluster']
-        if ('memdat' not in data[0].metadata['Cluster'] or
-                len(data[0].metadata['Cluster']['memdat']) == 0):
-            self.showlog('No membership data.')
+        data = self.indata["Cluster"]
+        if (
+            "memdat" not in data[0].metadata["Cluster"]
+            or len(data[0].metadata["Cluster"]["memdat"]) == 0
+        ):
+            self.showlog("No membership data.")
             return
 
         self.show()
@@ -500,7 +506,7 @@ class PlotMembership(ContextModule):
 
     def change_band_two(self):
         """Combo box to choose band."""
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
 
         i = self.cmb_1.currentIndex()
         j = self.cmb_2.currentIndex()
@@ -523,7 +529,7 @@ class PlotVRCetc(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Cluster Analysis Graphs')
+        self.setWindowTitle("Cluster Analysis Graphs")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -531,9 +537,9 @@ class PlotVRCetc(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Graph Type:')
+        lbl_1 = QtWidgets.QLabel("Graph Type:")
 
-        self.buttonbox.htmlfile = 'cluster.cm.showgraphs'
+        self.buttonbox.htmlfile = "cluster.cm.showgraphs"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -557,48 +563,53 @@ class PlotVRCetc(ContextModule):
         None.
 
         """
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
 
         j = str(self.cmb_1.currentText())
 
-        if (j == 'Objective Function' and
-                data[0].metadata['Cluster']['obj_fcn'] is not None):
+        if (
+            j == "Objective Function"
+            and data[0].metadata["Cluster"]["obj_fcn"] is not None
+        ):
             x = len(data)
             y = 0
             for i in data:
-                y = max(y, len(i.metadata['Cluster']['obj_fcn']))
+                y = max(y, len(i.metadata["Cluster"]["obj_fcn"]))
 
             z = np.zeros([x, y])
             x = list(range(x))
             y = list(range(y))
 
             for i in x:
-                for j in range(len(data[i].metadata['Cluster']['obj_fcn'])):
-                    z[i, j] = data[i].metadata['Cluster']['obj_fcn'][j]
+                for j in range(len(data[i].metadata["Cluster"]["obj_fcn"])):
+                    z[i, j] = data[i].metadata["Cluster"]["obj_fcn"][j]
 
             for i in x:
                 z[i][z[i] == 0] = z[i][z[i] != 0].min()
 
             x, y = np.meshgrid(x, y)
-            x += data[0].metadata['Cluster']['no_clusters']
+            x += data[0].metadata["Cluster"]["no_clusters"]
             self.mmc.update_wireframe(x.T, y.T, np.log(z))
 
-        if (j == 'Variance Ratio Criterion' and
-                data[0].metadata['Cluster']['vrc'] is not None):
-            x = [k.metadata['Cluster']['no_clusters'] for k in data]
-            y = [k.metadata['Cluster']['vrc'] for k in data]
+        if (
+            j == "Variance Ratio Criterion"
+            and data[0].metadata["Cluster"]["vrc"] is not None
+        ):
+            x = [k.metadata["Cluster"]["no_clusters"] for k in data]
+            y = [k.metadata["Cluster"]["vrc"] for k in data]
             self.mmc.update_scatter(x, y)
 
         # nce and xbi are fuzzy clustering only.
-        if (j == 'Normalized Class Entropy' and
-                data[0].metadata['Cluster']['nce'] is not None):
-            x = [k.metadata['Cluster']['no_clusters'] for k in data]
-            y = [k.metadata['Cluster']['nce'] for k in data]
+        if (
+            j == "Normalized Class Entropy"
+            and data[0].metadata["Cluster"]["nce"] is not None
+        ):
+            x = [k.metadata["Cluster"]["no_clusters"] for k in data]
+            y = [k.metadata["Cluster"]["nce"] for k in data]
             self.mmc.update_scatter(x, y)
-        if (j == 'Xie-Beni Index' and
-                data[0].metadata['Cluster']['xbi'] is not None):
-            x = [k.metadata['Cluster']['no_clusters'] for k in data]
-            y = [k.metadata['Cluster']['xbi'] for k in data]
+        if j == "Xie-Beni Index" and data[0].metadata["Cluster"]["xbi"] is not None:
+            x = [k.metadata["Cluster"]["no_clusters"] for k in data]
+            y = [k.metadata["Cluster"]["xbi"] for k in data]
             self.mmc.update_scatter(x, y)
 
     def run(self):
@@ -611,23 +622,23 @@ class PlotVRCetc(ContextModule):
 
         """
         items = []
-        data = self.indata['Cluster']
-        meta = data[0].metadata['Cluster']
+        data = self.indata["Cluster"]
+        meta = data[0].metadata["Cluster"]
 
-        if 'obj_fcn' in meta:
-            items += ['Objective Function']
+        if "obj_fcn" in meta:
+            items += ["Objective Function"]
 
-        if 'vrc' in meta and len(data) > 1:
-            items += ['Variance Ratio Criterion']
+        if "vrc" in meta and len(data) > 1:
+            items += ["Variance Ratio Criterion"]
 
-        if 'nce' in meta and len(data) > 1:
-            items += ['Normalized Class Entropy']
+        if "nce" in meta and len(data) > 1:
+            items += ["Normalized Class Entropy"]
 
-        if 'xbi' in meta and len(data) > 1:
-            items += ['Xie-Beni Index']
+        if "xbi" in meta and len(data) > 1:
+            items += ["Xie-Beni Index"]
 
         if len(items) == 0:
-            self.showlog('Your dataset does not qualify')
+            self.showlog("Your dataset does not qualify")
             return
 
         self.cmb_1.clear()
@@ -640,67 +651,67 @@ class PlotVRCetc(ContextModule):
 def _testfn_bars():
     """Test."""
     import sys
+
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster
+
     from pygmi.clust.cluster import Cluster
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = Cluster()
-    DM.indata['Raster'] = data
+    DM.indata["Raster"] = data
     DM.settings()
 
     dat = DM.outdata
-    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+    dat["Cluster"][0].metadata["Cluster"]["labels"] = ["a", "b", "c", "d", "e"]
 
     width = 0.25
     multiplier = 0
 
-    cdat = dat['Cluster'][0]
+    cdat = dat["Cluster"][0]
 
-    cnr = cdat.metadata['Cluster']['no_clusters']
+    cnr = cdat.metadata["Cluster"]["no_clusters"]
 
     x = range(cnr)
     cdata = {}
     cdatab = {}
     for i in x:
-        cdata[f'{i + 1}'] = []
-        cdatab[f'{i + 1}'] = []
+        cdata[f"{i + 1}"] = []
+        cdatab[f"{i + 1}"] = []
 
-    for rdat in dat['Raster']:
+    for rdat in dat["Raster"]:
         for i in x:
             cmin = rdat.data[cdat.data == (i + 1)].min()
             cmax = rdat.data[cdat.data == (i + 1)].max()
-            cdata[f'{i + 1}'].append(cmax - cmin)
-            cdatab[f'{i + 1}'].append(cmin)
+            cdata[f"{i + 1}"].append(cmax - cmin)
+            cdatab[f"{i + 1}"].append(cmin)
 
-    dataids = [i.dataid for i in dat['Raster']]
+    dataids = [i.dataid for i in dat["Raster"]]
 
     x = np.arange(len(dataids))
-    width = .8 / cnr
+    width = 0.8 / cnr
     multiplier = 0
 
-    fig, ax = plt.subplots(layout='constrained')
+    fig, ax = plt.subplots(layout="constrained")
 
     for attribute, measurement in cdata.items():
         bottom = cdatab[attribute]
         offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, bottom, label=attribute)
-        # ax.bar_label(rects, padding=5)
+        ax.bar(x + offset, measurement, width, bottom, label=attribute)
+
         multiplier += 1
-        # break
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Value')
-    ax.set_title(f'Dataset ranges for {cnr} classes')
-    ax.set_xticks(x + .4, dataids)
-    ax.legend(loc='upper left', ncols=3)
-    # ax.set_ylim(0, 250)
+    ax.set_ylabel("Value")
+    ax.set_title(f"Dataset ranges for {cnr} classes")
+    ax.set_xticks(x + 0.4, dataids)
+    ax.legend(loc="upper left", ncols=3)
 
     plt.show()
 
@@ -708,59 +719,66 @@ def _testfn_bars():
 def _testfn_viol():
     """Test."""
     import sys
+
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster
+
     from pygmi.clust.cluster import Cluster
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
     data = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = Cluster()
-    DM.indata['Raster'] = data
+    DM.indata["Raster"] = data
     DM.settings()
 
     dat = DM.outdata
-    dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd', 'e']
+    dat["Cluster"][0].metadata["Cluster"]["labels"] = ["a", "b", "c", "d", "e"]
 
     width = 0.25
     multiplier = 0
 
-    cdat = dat['Cluster'][0]
+    cdat = dat["Cluster"][0]
 
-    cnr = cdat.metadata['Cluster']['no_clusters']
+    cnr = cdat.metadata["Cluster"]["no_clusters"]
 
     cdata = {}
     cdatab = {}
     for i in range(cnr):
-        cdata[f'{i + 1}'] = []
-        cdatab[f'{i + 1}'] = []
+        cdata[f"{i + 1}"] = []
+        cdatab[f"{i + 1}"] = []
 
-    dataids = [i.dataid for i in dat['Raster']]
+    dataids = [i.dataid for i in dat["Raster"]]
 
     x = np.arange(len(dataids))
-    width = .8 / cnr
+    width = 0.8 / cnr
     multiplier = 0
 
-    fig, ax = plt.subplots(layout='constrained')
+    fig, ax = plt.subplots(layout="constrained")
 
-    for rdat in dat['Raster']:
+    for rdat in dat["Raster"]:
         offset = 1 * multiplier
         for i in range(cnr):
             data = rdat.data[cdat.data == (i + 1)].compressed()
-            ax.violinplot(data, [i * width + offset], widths=width,
-                          showmeans=False, showmedians=False,
-                          showextrema=False)
+            ax.violinplot(
+                data,
+                [i * width + offset],
+                widths=width,
+                showmeans=False,
+                showmedians=False,
+                showextrema=False,
+            )
         multiplier += 1
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Value')
-    ax.set_title(f'Dataset ranges for {cnr} classes')
-    ax.set_xticks(x + .4, dataids)
-    ax.legend(loc='upper left', ncols=3)
+    ax.set_ylabel("Value")
+    ax.set_title(f"Dataset ranges for {cnr} classes")
+    ax.set_xticks(x + 0.4, dataids)
+    ax.legend(loc="upper left", ncols=3)
     # ax.set_ylim(0, 250)
 
     plt.show()
@@ -769,8 +787,9 @@ def _testfn_viol():
 def _testfn():
     """Test."""
     import sys
-    from pygmi.raster.iodefs import get_raster
+
     from pygmi.clust.cluster import Cluster
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
 
@@ -779,7 +798,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     DM = Cluster()
-    DM.indata['Raster'] = data
+    DM.indata["Raster"] = data
     DM.settings()
 
     dat = DM.outdata

@@ -28,9 +28,10 @@ the tests .
 """
 
 import os
+
 import numpy as np
 
-from pygmi.grav import iodefs, dataprep
+from pygmi.grav import dataprep, iodefs
 
 
 def test_process_data():
@@ -38,30 +39,46 @@ def test_process_data():
 
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    grvfile = os.path.join(idir, r'testdata/GravityCG5.txt')
-    gpsfile = os.path.join(idir, r'testdata/GravityDGPS.csv')
+    grvfile = os.path.join(idir, r"testdata/GravityCG5.txt")
+    gpsfile = os.path.join(idir, r"testdata/GravityDGPS.csv")
 
     # Import Data
 
-    pdat = iodefs.merge_gpsmag(grvfile, gpsfile, basethres=10000.)
+    pdat = iodefs.merge_gpsmag(grvfile, gpsfile, basethres=10000.0)
 
-    datout, _ = dataprep.gravcor(pdat, 10000, '', 978032.67715, 2670)
+    datout, _ = dataprep.gravcor(pdat, 10000, "", 978032.67715, 2670)
 
-    boug = datout['BOUGUER']
+    boug = datout["BOUGUER"]
     boug = np.array(boug)
 
-    datout2 = np.array([-716.5271207830797, -716.5167383494435,
-                        -716.3040775379834, -716.3141448945184,
-                        -716.1779168502552, -716.2380602844478,
-                        -716.0745685905054, -716.0335678754984,
-                        -716.0125048061484, -715.9501174250662,
-                        -715.9810255366001, -716.0802093258817,
-                        -715.9757727522261, -715.8399624210209,
-                        -716.0774210031059, -715.7307423337603,
-                        -715.7356179855093, -715.62703373732,
-                        -715.7836328320539, -715.6793901363467,
-                        -715.5077653510672, -715.622045673794,
-                        -715.6187909466202, -715.6485139794081,
-                        -715.5684009646598])
+    datout2 = np.array(
+        [
+            -716.5271207830797,
+            -716.5167383494435,
+            -716.3040775379834,
+            -716.3141448945184,
+            -716.1779168502552,
+            -716.2380602844478,
+            -716.0745685905054,
+            -716.0335678754984,
+            -716.0125048061484,
+            -715.9501174250662,
+            -715.9810255366001,
+            -716.0802093258817,
+            -715.9757727522261,
+            -715.8399624210209,
+            -716.0774210031059,
+            -715.7307423337603,
+            -715.7356179855093,
+            -715.62703373732,
+            -715.7836328320539,
+            -715.6793901363467,
+            -715.5077653510672,
+            -715.622045673794,
+            -715.6187909466202,
+            -715.6485139794081,
+            -715.5684009646598,
+        ]
+    )
 
     np.testing.assert_array_almost_equal(datout2, boug)

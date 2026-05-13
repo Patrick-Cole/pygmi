@@ -273,7 +273,7 @@ def SPECPR(ifile):
     # Import data into records indexed by record number
 
     data = []
-    with open(ifile, 'rb') as f:
+    with open(ifile, "rb") as f:
         _ = f.read(1536)
         while True:
             chunk = f.read(1536)
@@ -293,36 +293,38 @@ def SPECPR(ifile):
         if b[0] == 0 and b[1] == 0:
             rec = case1(dat)
 
-            if rec['itchan'] > 256:
-                numrecs = (rec['itchan'] - 256) // 383 + 1
+            if rec["itchan"] > 256:
+                numrecs = (rec["itchan"] - 256) // 383 + 1
                 for i in range(numrecs):
                     dat = next(idata)
                     recnum += 1
-                    cdata = struct.unpack('>383f', dat[4:])
-                    rec['data'] += cdata
-            rec['data'] = rec['data'][:rec['itchan']]
+                    cdata = struct.unpack(">383f", dat[4:])
+                    rec["data"] += cdata
+            rec["data"] = rec["data"][: rec["itchan"]]
 
         elif b[0] == 0 and b[1] == 1:
             rec = {}
-            rec['rectype'] = 3
-            rec['icflag'] = unpack_icflag(dat[:4])
-            rec['ititle'] = dat[4:44].decode('latin-1')
-            rec['usernm'] = dat[44:52].decode('latin-1')
-            rec['itxtpt'] = struct.unpack('>i', dat[52:56])[0]
-            rec['itxtch'] = struct.unpack('>i', dat[56:60])[0]
-            rec['itext'] = dat[60:][:rec['itxtch']].decode('latin-1')
+            rec["rectype"] = 3
+            rec["icflag"] = unpack_icflag(dat[:4])
+            rec["ititle"] = dat[4:44].decode("latin-1")
+            rec["usernm"] = dat[44:52].decode("latin-1")
+            rec["itxtpt"] = struct.unpack(">i", dat[52:56])[0]
+            rec["itxtch"] = struct.unpack(">i", dat[56:60])[0]
+            rec["itext"] = dat[60:][: rec["itxtch"]].decode("latin-1")
 
-            if rec['itxtch'] > 1476:
-                numrecs = (rec['itxtch'] - 1476) // 1532 + 1
+            if rec["itxtch"] > 1476:
+                numrecs = (rec["itxtch"] - 1476) // 1532 + 1
                 for i in range(numrecs):
                     dat = next(idata)
                     recnum += 1
-                    rec['itext'] += dat[4:].decode('latin-1')
+                    rec["itext"] += dat[4:].decode("latin-1")
 
-            rec['itext'] = rec['itext'][:rec['itxtch']]
+            rec["itext"] = rec["itext"][: rec["itxtch"]]
 
-            if rec['ititle'] in ['----------------------------------------',
-                                 '****************************************']:
+            if rec["ititle"] in [
+                "----------------------------------------",
+                "****************************************",
+            ]:
                 continue
 
         recs[orecnum] = rec
@@ -332,17 +334,17 @@ def SPECPR(ifile):
     chapter = None
     for recnum in recs:
         rec = recs[recnum]
-        if 'Chapter' in rec['ititle'] and ':' in rec['ititle']:
-            chapter = rec['ititle']
+        if "Chapter" in rec["ititle"] and ":" in rec["ititle"]:
+            chapter = rec["ititle"]
         if chapter is None:
             continue
-        if rec['rectype'] == 1 and 'error' not in rec['ititle'].lower():
-            rec['refl'] = np.array(rec['data'])
-            rec['refl'][rec['refl'] <= -1.23e34] = np.nan
-            rec['wvl'] = np.array(recs[rec['irwav']]['data']) * 1000.
-            rec['fwhm'] = recs[rec['irespt']]['data']
-            rec['text'] = recs[rec['itpntr']]['itext']
-            spec[rec['ititle']] = rec
+        if rec["rectype"] == 1 and "error" not in rec["ititle"].lower():
+            rec["refl"] = np.array(rec["data"])
+            rec["refl"][rec["refl"] <= -1.23e34] = np.nan
+            rec["wvl"] = np.array(recs[rec["irwav"]]["data"]) * 1000.0
+            rec["fwhm"] = recs[rec["irespt"]]["data"]
+            rec["text"] = recs[rec["itpntr"]]["itext"]
+            spec[rec["ititle"]] = rec
 
             # if 'BECK' in rec['ititle']:
 
@@ -365,39 +367,39 @@ def case1(dat):
     """
     rec = {}
 
-    rec['rectype'] = 1
-    rec['icflag'] = unpack_icflag(dat[:4])
-    rec['ititle'] = dat[4:44].decode('latin-1')
-    rec['usernm'] = dat[44:52].decode('latin-1')
-    rec['iscta'] = struct.unpack('>i', dat[52:56])[0] / 24000.
-    rec['isctb'] = struct.unpack('>i', dat[56:60])[0] / 24000.
-    rec['jdatea'] = struct.unpack('>i', dat[60:64])[0] / 10.
-    rec['jdateb'] = struct.unpack('>i', dat[64:68])[0] / 10.
-    rec['istb'] = struct.unpack('>i', dat[68:72])[0] / 24000.
-    rec['isra'] = struct.unpack('>i', dat[72:76])[0] / 1000.
-    rec['isdec'] = struct.unpack('>i', dat[76:80])[0] / 1000.
-    rec['itchan'] = struct.unpack('>i', dat[80:84])[0]
-    rec['irmas'] = struct.unpack('>i', dat[84:88])[0]
-    rec['revs'] = struct.unpack('>i', dat[88:92])[0]
-    rec['iband'] = struct.unpack('>2i', dat[92:100])
-    rec['irwav'] = struct.unpack('>i', dat[100:104])[0]
-    rec['irespt'] = struct.unpack('>i', dat[104:108])[0]
-    rec['irecno'] = struct.unpack('>i', dat[108:112])[0]
-    rec['itpntr'] = struct.unpack('>i', dat[112:116])[0]
-    rec['ihist'] = dat[116:176].decode('latin-1')
-    rec['mhist'] = dat[176:472].decode('latin-1')
-    rec['nruns'] = struct.unpack('>i', dat[472:476])[0]
-    rec['siangl'] = struct.unpack('>i', dat[476:480])[0] / 6000.
-    rec['seangl'] = struct.unpack('>i', dat[480:484])[0] / 6000.
-    rec['sphase'] = struct.unpack('>i', dat[484:488])[0] / 1500.
-    rec['iwtrns'] = struct.unpack('>i', dat[488:492])[0]
-    rec['itimch'] = struct.unpack('>i', dat[492:496])[0]
-    rec['xnrm'] = struct.unpack('>f', dat[496:500])[0]
-    rec['scatim'] = struct.unpack('>f', dat[500:504])[0]
-    rec['timint'] = struct.unpack('>f', dat[504:508])[0]
-    rec['tempd'] = struct.unpack('>f', dat[508:512])[0]
-    rec['data'] = struct.unpack('>256f', dat[512:])
-    rec['errors'] = None
+    rec["rectype"] = 1
+    rec["icflag"] = unpack_icflag(dat[:4])
+    rec["ititle"] = dat[4:44].decode("latin-1")
+    rec["usernm"] = dat[44:52].decode("latin-1")
+    rec["iscta"] = struct.unpack(">i", dat[52:56])[0] / 24000.0
+    rec["isctb"] = struct.unpack(">i", dat[56:60])[0] / 24000.0
+    rec["jdatea"] = struct.unpack(">i", dat[60:64])[0] / 10.0
+    rec["jdateb"] = struct.unpack(">i", dat[64:68])[0] / 10.0
+    rec["istb"] = struct.unpack(">i", dat[68:72])[0] / 24000.0
+    rec["isra"] = struct.unpack(">i", dat[72:76])[0] / 1000.0
+    rec["isdec"] = struct.unpack(">i", dat[76:80])[0] / 1000.0
+    rec["itchan"] = struct.unpack(">i", dat[80:84])[0]
+    rec["irmas"] = struct.unpack(">i", dat[84:88])[0]
+    rec["revs"] = struct.unpack(">i", dat[88:92])[0]
+    rec["iband"] = struct.unpack(">2i", dat[92:100])
+    rec["irwav"] = struct.unpack(">i", dat[100:104])[0]
+    rec["irespt"] = struct.unpack(">i", dat[104:108])[0]
+    rec["irecno"] = struct.unpack(">i", dat[108:112])[0]
+    rec["itpntr"] = struct.unpack(">i", dat[112:116])[0]
+    rec["ihist"] = dat[116:176].decode("latin-1")
+    rec["mhist"] = dat[176:472].decode("latin-1")
+    rec["nruns"] = struct.unpack(">i", dat[472:476])[0]
+    rec["siangl"] = struct.unpack(">i", dat[476:480])[0] / 6000.0
+    rec["seangl"] = struct.unpack(">i", dat[480:484])[0] / 6000.0
+    rec["sphase"] = struct.unpack(">i", dat[484:488])[0] / 1500.0
+    rec["iwtrns"] = struct.unpack(">i", dat[488:492])[0]
+    rec["itimch"] = struct.unpack(">i", dat[492:496])[0]
+    rec["xnrm"] = struct.unpack(">f", dat[496:500])[0]
+    rec["scatim"] = struct.unpack(">f", dat[500:504])[0]
+    rec["timint"] = struct.unpack(">f", dat[504:508])[0]
+    rec["tempd"] = struct.unpack(">f", dat[508:512])[0]
+    rec["data"] = struct.unpack(">256f", dat[512:])
+    rec["errors"] = None
 
     return rec
 
@@ -433,4 +435,4 @@ def unpack_icflag(icflag):
 if __name__ == "__main__":
     SPECPR(r"D:\usgs_splib07\SPECPRsplib07\splib07a")
 
-    print('Finished!')
+    print("Finished!")

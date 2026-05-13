@@ -25,8 +25,7 @@
 """A set of FFT routines."""
 
 import numpy as np
-from scipy.fft import fft2, fftshift, fftfreq
-from scipy.fft import rfft, rfftfreq
+from scipy.fft import fft2, fftfreq, fftshift, rfft, rfftfreq
 from scipy.stats import binned_statistic
 
 
@@ -55,7 +54,7 @@ def fftprep(data):
     xmin, xmax, ymin, ymax = data.extent
 
     nmax = np.max([nr, nc])
-    npts = int(2**nextpow2(nmax))
+    npts = int(2 ** nextpow2(nmax))
 
     cdiff = int(np.floor((npts - nc) / 2))
     rdiff = int(np.floor((npts - nr) / 2))
@@ -67,8 +66,12 @@ def fftprep(data):
     zfin.data = zfin.data.filled(0)
     nr, nc = zfin.data.shape
 
-    zfin.data = np.pad(zfin.data, [[rdiff, rdiff2], [cdiff, cdiff2]],
-                       mode='constant', constant_values=0)
+    zfin.data = np.pad(
+        zfin.data,
+        [[rdiff, rdiff2], [cdiff, cdiff2]],
+        mode="constant",
+        constant_values=0,
+    )
 
     dx = zfin.xdim
     dy = zfin.ydim
@@ -158,7 +161,7 @@ def calculate_raps(dat):
     F_shifted = fftshift(F)
 
     # 3. Calculate the 2D power spectrum.
-    power_spectrum_2D = np.abs(F_shifted)**2
+    power_spectrum_2D = np.abs(F_shifted) ** 2
 
     # 4. Create 2D arrays of frequency coordinates.
     ny, nx = data.shape
@@ -175,10 +178,8 @@ def calculate_raps(dat):
 
     # Use scipy's binned_statistic to perform the radial average.
     raps, _, _ = binned_statistic(
-        k_radial.ravel(),
-        power_spectrum_2D.ravel(),
-        statistic='mean',
-        bins=k_bins)
+        k_radial.ravel(), power_spectrum_2D.ravel(), statistic="mean", bins=k_bins
+    )
 
     nyq = np.pi / min(dx, dy)
 
@@ -198,6 +199,7 @@ def calculate_raps(dat):
 def _testfft():
     """Test FFT."""
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
@@ -207,7 +209,7 @@ def _testfft():
     datm, _ = fftprep(data)
 
     plt.figure()
-    plt.title('datm')
+    plt.title("datm")
     vmin, vmax = datm.get_vmin_vmax()
     plt.imshow(datm.data, vmin=vmin, vmax=vmax)
 
@@ -217,8 +219,8 @@ def _testfft():
     xm, ym, _, _ = calculate_raps(datm)
 
     plt.figure()
-    plt.title('datm')
-    plt.semilogy(xm, ym, 'b')
+    plt.title("datm")
+    plt.semilogy(xm, ym, "b")
     plt.tight_layout()
     plt.show()
 
@@ -226,6 +228,7 @@ def _testfft():
 def _testfft1d():
     """Test FFT."""
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
     # import pycurious
 
@@ -239,7 +242,7 @@ def _testfft1d():
     datm, _ = fftprep(data)
 
     plt.figure()
-    plt.title('datm')
+    plt.title("datm")
 
     for data in datm.data:
         if data.max() == 0:
@@ -249,7 +252,7 @@ def _testfft1d():
         yf = rfft(data)
         xm = rfftfreq(N, dt)
 
-        ym = np.abs(yf)**2 / N
+        ym = np.abs(yf) ** 2 / N
 
         plt.semilogy(xm, ym)
 
@@ -261,7 +264,7 @@ def _testfft1d():
         yf = rfft(data)
         xm = rfftfreq(N, dt)
 
-        ym = np.abs(yf)**2 / N
+        ym = np.abs(yf) ** 2 / N
 
         plt.semilogy(xm, ym)
 

@@ -40,32 +40,39 @@ It can be very effectively used in conjunction with a GIS package which
 supports GeoTIFF files.
 """
 
+import copy
 import os
 import sys
-import copy
 from math import cos
-import numpy as np
-from PySide6 import QtWidgets, QtCore, QtGui
-from scipy import ndimage
-from matplotlib.figure import Figure
-from matplotlib import gridspec
-import matplotlib.colors as mcolors
-import matplotlib.colorbar as mcolorbar
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.path import Path
-from matplotlib.patches import PathPatch
-from matplotlib.pyplot import colormaps
-from matplotlib.colors import ListedColormap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from pygmi.misc import BasicModule
-from pygmi.misc import frm
-from pygmi.raster import iodefs, dataprep
+import matplotlib.colorbar as mcolorbar
+import matplotlib.colors as mcolors
+import numpy as np
+from matplotlib import gridspec
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.colors import ListedColormap
+from matplotlib.figure import Figure
+from matplotlib.patches import PathPatch
+from matplotlib.path import Path
+from matplotlib.pyplot import colormaps
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from PySide6 import QtCore, QtGui, QtWidgets
+from scipy import ndimage
+
+from pygmi.misc import BasicModule, frm
+from pygmi.raster import dataprep, iodefs
 from pygmi.raster.colormaps import *
+from pygmi.raster.misc import (
+    currentshader,
+    histcomp,
+    histeq,
+    img2rgb,
+    lstack,
+    norm2,
+    norm255,
+)
 from pygmi.raster.modest_image import imshow
-from pygmi.raster.misc import currentshader, histcomp, histeq, img2rgb
-from pygmi.raster.misc import norm2, norm255, lstack
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -131,8 +138,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(fig)
 
         # figure stuff
-        self.htype = 'Linear with Percent Clip'
-        self.cbar = colormaps['jet']
+        self.htype = "Linear with Percent Clip"
+        self.cbar = colormaps["jet"]
         self.newcmp = self.cbar
         self.fullhist = False
         self.data = []
@@ -141,7 +148,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = None
         self.argb = [None, None, None]
         self.argbvis = [True, False, False]
-        self.argbunit = ['', '', '']
+        self.argbunit = ["", "", ""]
         self.bgrgb = [None, None, None]
         self.hhist = [[], [], []]
         self.hband = [None, None, None, None]
@@ -186,21 +193,23 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # fig.subplots_adjust(wspace=0.05)
         # fig.subplots_adjust(hspace=0.05)
 
-        FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Policy.Expanding,
-                                        QtWidgets.QSizePolicy.Policy.Expanding)
+        FigureCanvasQTAgg.setSizePolicy(
+            self,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         FigureCanvasQTAgg.updateGeometry(self)
 
-        self.figure.canvas.mpl_connect('motion_notify_event', self.move)
-        self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
+        self.figure.canvas.mpl_connect("motion_notify_event", self.move)
+        self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
 
         # sun shading stuff
         self.pinit = None
         self.qinit = None
-        self.phi = -np.pi / 4.
-        self.theta = np.pi / 4.
-        self.cell = 100.
-        self.alpha = .0
+        self.phi = -np.pi / 4.0
+        self.theta = np.pi / 4.0
+        self.cell = 100.0
+        self.alpha = 0.0
 
         # cmyk stuff
         self.kval = 0.01
@@ -239,9 +248,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = self.figure.add_subplot(gspc[0:, 1:])
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-        self.axes.ticklabel_format(style='plain', axis='both')
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
+        self.axes.ticklabel_format(style="plain", axis="both")
         self.axes.xaxis.set_visible(False)
         self.axes.yaxis.set_visible(False)
 
@@ -256,7 +265,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.set_xlim(x_1, x_2)
         self.axes.set_ylim(y_1, y_2)
-        self.axes.set_aspect('equal')
+        self.axes.set_aspect("equal")
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -268,15 +277,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         tmp = np.ma.array([[np.nan]])
-        self.image = imshow(self.axes, tmp, origin='upper',
-                            extent=(x_1, x_2, y_1, y_2))
+        self.image = imshow(self.axes, tmp, origin="upper", extent=(x_1, x_2, y_1, y_2))
 
         # This line prevents imshow from generating colour values on the
         # toolbar
         self.image.format_cursor_data = lambda x: ""
         self.update_graph()
 
-        self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
+        self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
 
     def move(self, event):
         """
@@ -292,7 +300,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        if not self.data or self.gmode == 'Contour':
+        if not self.data or self.gmode == "Contour":
             return
 
         if event.inaxes == self.axes:
@@ -315,7 +323,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                         zval[j] = i.data[row, col]
 
-            if self.gmode == 'Single Colour Map':
+            if self.gmode == "Single Colour Map":
                 bnum = self.update_hist_single(zval[0])
                 self.figure.canvas.restore_region(self.bbox_hist_red)
                 self.argb[0].draw_artist(self.htxt[0])
@@ -324,7 +332,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.argb[0].draw_artist(self.clipvall[0])
                 self.figure.canvas.update()
 
-            if 'Ternary' in self.gmode:
+            if "Ternary" in self.gmode:
                 bnum = self.update_hist_rgb(zval)
                 self.figure.canvas.restore_region(self.bbox_hist_red)
                 self.figure.canvas.restore_region(self.bbox_hist_green)
@@ -360,23 +368,29 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[0]:
                 dat = i.data.copy()
 
-        if self.htype == 'Histogram Equalization':
+        if self.htype == "Histogram Equalization":
             dat = histeq(dat)
-        elif clippercl > 0. or clippercu > 0.:
-            dat, _, _ = histcomp(dat, perc=clippercl,
-                                 uperc=clippercu)
+        elif clippercl > 0.0 or clippercu > 0.0:
+            dat, _, _ = histcomp(dat, perc=clippercl, uperc=clippercu)
 
         xdim = (x2 - x1) / dat.data.shape[1] / 2
         ydim = (y2 - y1) / dat.data.shape[0] / 2
         xi = np.linspace(x1 + xdim, x2 - xdim, dat.data.shape[1])
         yi = np.linspace(y2 - ydim, y1 + ydim, dat.data.shape[0])
 
-        self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                     linewidths=2, colors='k',
-                                     levels=self.levels,
-                                     linestyles='solid')
-        self.cntf = self.axes.contourf(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                       levels=self.levels, cmap=self.cbar)
+        self.cnt = self.axes.contour(
+            xi,
+            yi,
+            dat,
+            extent=(x1, x2, y1, y2),
+            linewidths=2,
+            colors="k",
+            levels=self.levels,
+            linestyles="solid",
+        )
+        self.cntf = self.axes.contourf(
+            xi, yi, dat, extent=(x1, x2, y1, y2), levels=self.levels, cmap=self.cbar
+        )
 
         self.ccbar = self.figure.colorbar(self.cntf, ax=self.axes)
         self.figure.canvas.draw()
@@ -407,16 +421,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bgrgb[1] = self.figure.canvas.copy_from_bbox(self.argb[1].bbox)
         self.bgrgb[2] = self.figure.canvas.copy_from_bbox(self.argb[2].bbox)
 
-        if self.gmode == 'Single Colour Map':
+        if self.gmode == "Single Colour Map":
             self.update_single_color_map()
 
-        if self.gmode == 'Contour':
+        if self.gmode == "Contour":
             self.update_contour()
 
-        if 'Ternary' in self.gmode:
+        if "Ternary" in self.gmode:
             self.update_rgb()
 
-        if self.gmode == 'Sunshade':
+        if self.gmode == "Sunshade":
             self.update_shade_plot()
 
     def update_hist_rgb(self, zval):
@@ -434,9 +448,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Bin numbers.
 
         """
-        hcol = ['r', 'g', 'b']
-        if 'CMY' in self.gmode:
-            hcol = ['c', 'm', 'y']
+        hcol = ["r", "g", "b"]
+        if "CMY" in self.gmode:
+            hcol = ["c", "m", "y"]
 
         hst = self.hhist
         bnum = []
@@ -453,9 +467,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             binnum = (bins < zval[i]).sum() - 1
 
-            if (-1 < binnum < len(patches) and
-                    self.htype != 'Histogram Equalization'):
-                patches[binnum].set_color('k')
+            if -1 < binnum < len(patches) and self.htype != "Histogram Equalization":
+                patches[binnum].set_color("k")
                 bnum.append(binnum)
             else:
                 bnum.append(0)
@@ -486,7 +499,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if hno == 0:
             bincol = self.newcmp(binave)
         else:
-            bincol = colormaps['gray'](binave)
+            bincol = colormaps["gray"](binave)
 
         for j, patchesj in enumerate(patches):
             patchesj.set_color(bincol[j])
@@ -502,9 +515,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return 0
 
         self.update_hist_text(self.htxt[hno], zval)
-        if self.htype == 'Histogram Equalization':
+        if self.htype == "Histogram Equalization":
             return 0
-        patches[binnum].set_color('k')
+        patches[binnum].set_color("k")
 
         return binnum
 
@@ -530,9 +543,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         hst.set_position((xnew, ynew))
 
         if zval is None:
-            hst.set_text('')
+            hst.set_text("")
         else:
-            hst.set_text(f'{zval:.4f}')
+            hst.set_text(f"{zval:.4f}")
 
     def update_rgb(self):
         """
@@ -559,8 +572,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     dat[j] = i.data
                     self.argbunit[j] = i.units
 
-        self.image.set_shade(self.shade, self.cell, self.theta, self.phi,
-                             self.alpha)
+        self.image.set_shade(self.shade, self.cell, self.theta, self.phi, self.alpha)
 
         if self.shade is True:
             dat.append(sun)
@@ -580,26 +592,31 @@ class MyMplCanvas(FigureCanvasQTAgg):
         lclip = [0, 0, 0]
         uclip = [0, 0, 0]
 
-        if self.htype == 'Histogram Equalization':
+        if self.htype == "Histogram Equalization":
             self.image.dohisteq = True
-        elif self.htype == 'Linear with Percent Clip':
+        elif self.htype == "Linear with Percent Clip":
             self.image.dohisteq = False
             clippercu = self.clippercu[self.hband[0]]
             clippercl = self.clippercl[self.hband[0]]
-            lclip[0], uclip[0] = np.percentile(dat[:, :, 0].compressed(),
-                                               [clippercl, 100 - clippercu])
+            lclip[0], uclip[0] = np.percentile(
+                dat[:, :, 0].compressed(), [clippercl, 100 - clippercu]
+            )
             clippercu = self.clippercu[self.hband[1]]
             clippercl = self.clippercl[self.hband[1]]
-            lclip[1], uclip[1] = np.percentile(dat[:, :, 1].compressed(),
-                                               [clippercl, 100 - clippercu])
+            lclip[1], uclip[1] = np.percentile(
+                dat[:, :, 1].compressed(), [clippercl, 100 - clippercu]
+            )
             clippercu = self.clippercu[self.hband[2]]
             clippercl = self.clippercl[self.hband[2]]
-            lclip[2], uclip[2] = np.percentile(dat[:, :, 2].compressed(),
-                                               [clippercl, 100 - clippercu])
+            lclip[2], uclip[2] = np.percentile(
+                dat[:, :, 2].compressed(), [clippercl, 100 - clippercu]
+            )
 
-            self.image.rgbclip = [[lclip[0], uclip[0]],
-                                  [lclip[1], uclip[1]],
-                                  [lclip[2], uclip[2]]]
+            self.image.rgbclip = [
+                [lclip[0], uclip[0]],
+                [lclip[1], uclip[1]],
+                [lclip[2], uclip[2]],
+            ]
         else:
             self.image.dohisteq = False
             lclip[0] = self.clipmin[self.hband[0]]
@@ -608,35 +625,37 @@ class MyMplCanvas(FigureCanvasQTAgg):
             uclip[1] = self.clipmax[self.hband[1]]
             lclip[2] = self.clipmin[self.hband[2]]
             uclip[2] = self.clipmax[self.hband[2]]
-            self.image.rgbclip = [[lclip[0], uclip[0]],
-                                  [lclip[1], uclip[1]],
-                                  [lclip[2], uclip[2]]]
+            self.image.rgbclip = [
+                [lclip[0], uclip[0]],
+                [lclip[1], uclip[1]],
+                [lclip[2], uclip[2]],
+            ]
 
         for i in range(3):
             hdata = dat[:, :, i]
             clippercu = self.clippercu[self.hband[i]]
             clippercl = self.clippercl[self.hband[i]]
 
-            if ((clippercu > 0. or clippercl > 0.) and
-                    self.fullhist is True and
-                    self.htype == 'Linear with Percent Clip'):
-                self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
-                                                  ec='none')
-                self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
-                self.clipvalu[i] = self.argb[i].axvline(uclip[i], ls='--')
+            if (
+                (clippercu > 0.0 or clippercl > 0.0)
+                and self.fullhist is True
+                and self.htype == "Linear with Percent Clip"
+            ):
+                self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50, ec="none")
+                self.clipvall[i] = self.argb[i].axvline(lclip[i], ls="--")
+                self.clipvalu[i] = self.argb[i].axvline(uclip[i], ls="--")
 
-            elif self.htype == 'Histogram Equalization':
+            elif self.htype == "Histogram Equalization":
                 hdata = histeq(hdata)
                 hdata = hdata.compressed()
-                self.hhist[i] = self.argb[i].hist(hdata, 50, ec='none')
+                self.hhist[i] = self.argb[i].hist(hdata, 50, ec="none")
             else:
-                self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
-                                                  ec='none',
-                                                  range=(lclip[i], uclip[i]))
-            self.htxt[i] = self.argb[i].text(0., 0., '', ha='right', va='top')
+                self.hhist[i] = self.argb[i].hist(
+                    hdata.compressed(), 50, ec="none", range=(lclip[i], uclip[i])
+                )
+            self.htxt[i] = self.argb[i].text(0.0, 0.0, "", ha="right", va="top")
 
-            self.argb[i].set_xlim(self.hhist[i][1].min(),
-                                  self.hhist[i][1].max())
+            self.argb[i].set_xlim(self.hhist[i][1].min(), self.hhist[i][1].max())
             self.argb[i].set_ylim(0, self.hhist[i][0].max() * 1.2)
 
         self.figure.canvas.restore_region(self.bgrgb[0])
@@ -653,12 +672,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.update()
 
-        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
-            self.argb[0].bbox)
-        self.bbox_hist_green = self.figure.canvas.copy_from_bbox(
-            self.argb[1].bbox)
-        self.bbox_hist_blue = self.figure.canvas.copy_from_bbox(
-            self.argb[2].bbox)
+        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(self.argb[0].bbox)
+        self.bbox_hist_green = self.figure.canvas.copy_from_bbox(self.argb[1].bbox)
+        self.bbox_hist_blue = self.figure.canvas.copy_from_bbox(self.argb[2].bbox)
 
         for j in range(3):
             self.argb[j].draw_artist(self.htxt[j])
@@ -696,8 +712,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[3]:
                 sun = i.data
 
-        self.image.set_shade(self.shade, self.cell, self.theta, self.phi,
-                             self.alpha)
+        self.image.set_shade(self.shade, self.cell, self.theta, self.phi, self.alpha)
         if self.shade is True:
             pseudo = np.ma.stack([pseudo, sun])
             pseudo = np.moveaxis(pseudo, 0, -1)
@@ -712,13 +727,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         lclip = None
         uclip = None
-        if self.htype == 'Histogram Equalization':
+        if self.htype == "Histogram Equalization":
             self.image.dohisteq = True
             pseudo = histeq(pseudo)
             pseudoc = pseudo.compressed()
             lclip = pseudoc.min()
             uclip = pseudoc.max()
-        elif self.htype == 'Linear with Percent Clip':
+        elif self.htype == "Linear with Percent Clip":
             self.image.dohisteq = False
             pseudoc = pseudo.compressed()
             lclip, uclip = np.percentile(pseudoc, [clippercl, 100 - clippercu])
@@ -733,10 +748,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.image.set_clim(lclip, uclip)
 
         self.newcmp = self.cbar
-        if ((clippercu > 0. or clippercl > 0.) and
-                self.fullhist is True and
-                self.htype == 'Linear with Percent Clip'):
-            self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none')
+        if (
+            (clippercu > 0.0 or clippercl > 0.0)
+            and self.fullhist is True
+            and self.htype == "Linear with Percent Clip"
+        ):
+            self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec="none")
             tmp = self.hhist[0][1]
             filt = (tmp > lclip) & (tmp < uclip)
             bcnt = np.sum(filt)
@@ -751,15 +768,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 tmp1 = np.vstack((tmp1, [cols[-1]] * (49 - tmp[0][-1])))
             self.newcmp = ListedColormap(tmp1)
         else:
-            self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none',
-                                              range=(lclip, uclip))
+            self.hhist[0] = self.argb[0].hist(
+                pseudoc, 50, ec="none", range=(lclip, uclip)
+            )
 
-        self.htxt[0] = self.argb[0].text(0.0, 0.0, '', ha='right', va='top')
+        self.htxt[0] = self.argb[0].text(0.0, 0.0, "", ha="right", va="top")
         self.argb[0].set_xlim(self.hhist[0][1].min(), self.hhist[0][1].max())
         self.argb[0].set_ylim(0, self.hhist[0][0].max() * 1.2)
 
-        self.clipvall[0] = self.argb[0].axvline(lclip, ls='--')
-        self.clipvalu[0] = self.argb[0].axvline(uclip, ls='--')
+        self.clipvall[0] = self.argb[0].axvline(lclip, ls="--")
+        self.clipvalu[0] = self.argb[0].axvline(uclip, ls="--")
 
         self.figure.canvas.restore_region(self.bgrgb[0])
         self.update_hist_single()
@@ -770,8 +788,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.update()
 
-        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
-            self.argb[0].bbox)
+        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(self.argb[0].bbox)
 
         self.argb[0].draw_artist(self.htxt[0])
         self.argb[0].draw_artist(self.clipvalu[0])
@@ -828,8 +845,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[3]:
                 sun = i.data
 
-        sunshader = currentshader(sun.data, self.cell, self.theta,
-                                  self.phi, self.alpha)
+        sunshader = currentshader(sun.data, self.cell, self.theta, self.phi, self.alpha)
 
         snorm = norm2(sunshader)
 
@@ -849,7 +865,7 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         super().__init__(fig)
 
         self.sun = None
@@ -874,7 +890,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.axes.set_rmin(0.0)
         self.axes.set_xticklabels([])
 
-        self.sun, = self.axes.plot(np.pi / 4., cos(np.pi / 4.), 'o')
+        (self.sun,) = self.axes.plot(np.pi / 4.0, cos(np.pi / 4.0), "o")
         self.figure.canvas.draw()
 
 
@@ -911,10 +927,9 @@ class PlotInterp(BasicModule):
 
         self.mmc = MyMplCanvas()
         self.msc = MySunCanvas()
-        self.btn_saveimg = QtWidgets.QPushButton('Save GeoTIFF')
-        self.btn_savepng = QtWidgets.QPushButton('Save PNG')
-        self.cb_histtype = QtWidgets.QCheckBox('Full histogram with clip '
-                                               'lines')
+        self.btn_saveimg = QtWidgets.QPushButton("Save GeoTIFF")
+        self.btn_savepng = QtWidgets.QPushButton("Save PNG")
+        self.cb_histtype = QtWidgets.QCheckBox("Full histogram with clip lines")
         self.cmb_dtype = QtWidgets.QComboBox()
         self.cmb_band1 = QtWidgets.QComboBox()
         self.cmb_band2 = QtWidgets.QComboBox()
@@ -928,20 +943,19 @@ class PlotInterp(BasicModule):
         self.dsb_linemin = QtWidgets.QDoubleSpinBox()
         self.dsb_linemax = QtWidgets.QDoubleSpinBox()
         self.cmb_cbar = QtWidgets.QComboBox(self)
-        self.kslider = QtWidgets.QSlider(
-            QtCore.Qt.Orientation.Horizontal)  # CMYK
-        self.sslider = QtWidgets.QSlider(
-            QtCore.Qt.Orientation.Horizontal)  # sunshade
+        self.kslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # CMYK
+        self.sslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-        self.lbl_4 = QtWidgets.QLabel('Sunshade Data:')
-        self.lbl_s = QtWidgets.QLabel('Sunshade Detail')
-        self.lbl_a = QtWidgets.QLabel('Light Reflectance')
-        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
-        self.lbl_k = QtWidgets.QLabel('K value:')
-        self.gbox_sun = QtWidgets.QGroupBox('Sunshading')
+        self.lbl_4 = QtWidgets.QLabel("Sunshade Data:")
+        self.lbl_s = QtWidgets.QLabel("Sunshade Detail")
+        self.lbl_a = QtWidgets.QLabel("Light Reflectance")
+        self.lbl_c = QtWidgets.QLabel("Colour Bar:")
+        self.lbl_k = QtWidgets.QLabel("K value:")
+        self.gbox_sun = QtWidgets.QGroupBox("Sunshading")
 
-        self.btn_allclipperc = QtWidgets.QPushButton('Set current exclusion %'
-                                                     ' to all bands')
+        self.btn_allclipperc = QtWidgets.QPushButton(
+            "Set current exclusion % to all bands"
+        )
 
         self.setupui()
 
@@ -950,7 +964,7 @@ class PlotInterp(BasicModule):
 
         self.setFocus()
 
-        self.mmc.gmode = 'Single Colour Map'
+        self.mmc.gmode = "Single Colour Map"
         self.cmb_band1.show()
         self.cmb_band2.hide()
         self.cmb_band3.hide()
@@ -974,21 +988,21 @@ class PlotInterp(BasicModule):
 
         """
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.dm.rasterdisplay'
-        btn_apply = QtWidgets.QPushButton('Apply Histogram')
+        self.buttonbox.htmlfile = "raster.dm.rasterdisplay"
+        btn_apply = QtWidgets.QPushButton("Apply Histogram")
 
         self.btn_allclipperc.setDefault(False)
         self.btn_allclipperc.setAutoDefault(False)
 
-        gbox_1 = QtWidgets.QGroupBox('Display Type')
+        gbox_1 = QtWidgets.QGroupBox("Display Type")
         vbl_1 = QtWidgets.QVBoxLayout()
         gbox_1.setLayout(vbl_1)
 
-        gbox_2 = QtWidgets.QGroupBox('Data Bands')
+        gbox_2 = QtWidgets.QGroupBox("Data Bands")
         vbl_2 = QtWidgets.QVBoxLayout()
         gbox_2.setLayout(vbl_2)
 
-        gbox_3 = QtWidgets.QGroupBox('Histogram Stretch')
+        gbox_3 = QtWidgets.QGroupBox("Histogram Stretch")
         vbl_3 = QtWidgets.QVBoxLayout()
         gbox_3.setLayout(vbl_3)
 
@@ -1007,13 +1021,17 @@ class PlotInterp(BasicModule):
         scroll = QtWidgets.QScrollArea()
         scroll.setWidget(widget)
         scroll.setWidgetResizable(True)
-        scroll.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                             QtWidgets.QSizePolicy.Policy.Preferred)
+        scroll.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Preferred
+        )
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40,
-                                       QtWidgets.QSizePolicy.Policy.Fixed,
-                                       QtWidgets.QSizePolicy.Policy.Expanding)
+        spacer = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)
@@ -1025,8 +1043,7 @@ class PlotInterp(BasicModule):
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
 
-        self.le_contours.setPlaceholderText(
-            'Number of contour levels (10 default)')
+        self.le_contours.setPlaceholderText("Number of contour levels (10 default)")
         self.le_contours.hide()
         self.le_contours.setValidator(QtGui.QIntValidator(1, 2147483647))
         self.btn_saveimg.setAutoDefault(False)
@@ -1034,27 +1051,28 @@ class PlotInterp(BasicModule):
 
         tmp = sorted(m for m in colormaps())
 
-        self.cmb_cbar.addItem('jet')
-        self.cmb_cbar.addItem('viridis')
-        self.cmb_cbar.addItem('terrain')
-        self.cmb_cbar.addItem('Floyd')
-        self.cmb_cbar.addItem('MarineCopper')
-        self.cmb_cbar.addItem('Splash')
-        self.cmb_cbar.addItem('Wheel')
+        self.cmb_cbar.addItem("jet")
+        self.cmb_cbar.addItem("viridis")
+        self.cmb_cbar.addItem("terrain")
+        self.cmb_cbar.addItem("Floyd")
+        self.cmb_cbar.addItem("MarineCopper")
+        self.cmb_cbar.addItem("Splash")
+        self.cmb_cbar.addItem("Wheel")
         self.cmb_cbar.addItems(tmp)
-        self.cmb_dtype.addItems(['Single Colour Map', 'Contour',
-                                 'RGB Ternary', 'CMY Ternary'])
-        self.cmb_htype.addItems(['Linear with Percent Clip',
-                                 'Linear with Range',
-                                 'Histogram Equalization'])
+        self.cmb_dtype.addItems(
+            ["Single Colour Map", "Contour", "RGB Ternary", "CMY Ternary"]
+        )
+        self.cmb_htype.addItems(
+            ["Linear with Percent Clip", "Linear with Range", "Histogram Equalization"]
+        )
 
-        self.setWindowTitle('Raster Data Display')
-        self.dsb_lineclipl.setPrefix('Low Exclude %: ')
-        self.dsb_lineclipu.setPrefix('High Exclude %: ')
-        self.dsb_linemin.setPrefix('Minimum: ')
-        self.dsb_linemin.setRange(-1e+20, 1e+20)
-        self.dsb_linemax.setPrefix('Maximum: ')
-        self.dsb_linemax.setRange(-1e+20, 1e+20)
+        self.setWindowTitle("Raster Data Display")
+        self.dsb_lineclipl.setPrefix("Low Exclude %: ")
+        self.dsb_lineclipu.setPrefix("High Exclude %: ")
+        self.dsb_linemin.setPrefix("Minimum: ")
+        self.dsb_linemin.setRange(-1e20, 1e20)
+        self.dsb_linemax.setPrefix("Maximum: ")
+        self.dsb_linemax.setRange(-1e20, 1e20)
 
         self.dsb_linemax.hide()
         self.dsb_linemin.hide()
@@ -1109,7 +1127,7 @@ class PlotInterp(BasicModule):
         self.sslider.sliderReleased.connect(self.change_sunsliders)
         self.aslider.sliderReleased.connect(self.change_sunsliders)
         self.kslider.sliderReleased.connect(self.change_kval)
-        self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
+        self.msc.figure.canvas.mpl_connect("button_press_event", self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
         self.btn_savepng.clicked.connect(self.save_png)
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
@@ -1206,7 +1224,7 @@ class PlotInterp(BasicModule):
         self.cmb_band1.show()
         self.mmc.fullhist = self.cb_histtype.isChecked()
 
-        if txt == 'Single Colour Map':
+        if txt == "Single Colour Map":
             self.lbl_c.show()
             self.lbl_k.hide()
             self.cmb_band2.hide()
@@ -1219,7 +1237,7 @@ class PlotInterp(BasicModule):
             self.le_contours.hide()
             self.cmb_bandh.hide()
 
-        if txt == 'Contour':
+        if txt == "Contour":
             self.lbl_k.hide()
             self.lbl_c.show()
             self.cmb_band2.hide()
@@ -1238,7 +1256,7 @@ class PlotInterp(BasicModule):
             except ValueError:
                 self.mmc.levels = 10
 
-        if 'Ternary' in txt:
+        if "Ternary" in txt:
             self.lbl_k.hide()
             self.lbl_c.hide()
             self.cmb_band2.show()
@@ -1250,10 +1268,10 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             self.le_contours.hide()
             self.cmb_bandh.show()
-            if 'CMY' in txt:
+            if "CMY" in txt:
                 self.kslider.show()
                 self.lbl_k.show()
-                self.mmc.kval = float(self.kslider.value()) / 100.
+                self.mmc.kval = float(self.kslider.value()) / 100.0
 
         if self.gbox_sun.isChecked():
             self.msc.show()
@@ -1264,7 +1282,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.show()
             self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
-            self.mmc.alpha = float(self.aslider.value()) / 100.
+            self.mmc.alpha = float(self.aslider.value()) / 100.0
             self.mmc.shade = True
             self.msc.init_graph()
         else:
@@ -1275,8 +1293,9 @@ class PlotInterp(BasicModule):
             self.cmb_bands.hide()
             self.mmc.shade = False
 
-        self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
-                                                          self.mmc.revent)
+        self.mmc.cid = self.mmc.figure.canvas.mpl_connect(
+            "resize_event", self.mmc.revent
+        )
         self.mmc.init_graph()
 
     def change_green(self):
@@ -1304,7 +1323,7 @@ class PlotInterp(BasicModule):
         """
         txt = str(self.cmb_htype.currentText())
 
-        if txt == 'Histogram Equalization':
+        if txt == "Histogram Equalization":
             self.dsb_lineclipl.hide()
             self.dsb_lineclipu.hide()
             self.dsb_linemin.hide()
@@ -1312,7 +1331,7 @@ class PlotInterp(BasicModule):
             self.cmb_bandh.hide()
             self.btn_allclipperc.hide()
             self.cb_histtype.hide()
-        elif txt == 'Linear with Percent Clip':
+        elif txt == "Linear with Percent Clip":
             self.dsb_lineclipl.show()
             self.dsb_lineclipu.show()
             self.dsb_linemin.hide()
@@ -1341,7 +1360,7 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        self.mmc.kval = float(self.kslider.value()) / 100.
+        self.mmc.kval = float(self.kslider.value()) / 100.0
         self.mmc.update_graph()
 
     def change_lclip(self):
@@ -1360,7 +1379,7 @@ class PlotInterp(BasicModule):
         clipmax = self.dsb_linemax.value()
         clipmin = self.dsb_linemin.value()
 
-        if (lclip + uclip) >= 100.:
+        if (lclip + uclip) >= 100.0:
             clip = self.mmc.clippercu[dattxt]
             self.dsb_lineclipu.setValue(clip)
             clip = self.mmc.clippercl[dattxt]
@@ -1426,7 +1445,7 @@ class PlotInterp(BasicModule):
             self.lbl_a.show()
             self.lbl_s.show()
             self.mmc.cell = self.sslider.value()
-            self.mmc.alpha = float(self.aslider.value()) / 100.
+            self.mmc.alpha = float(self.aslider.value()) / 100.0
             self.mmc.shade = True
             self.msc.init_graph()
             QtWidgets.QApplication.processEvents()
@@ -1442,8 +1461,9 @@ class PlotInterp(BasicModule):
             QtWidgets.QApplication.processEvents()
         self.mmc.update_graph()
 
-        self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
-                                                          self.mmc.revent)
+        self.mmc.cid = self.mmc.figure.canvas.mpl_connect(
+            "resize_event", self.mmc.revent
+        )
 
     def change_sunsliders(self):
         """
@@ -1455,7 +1475,7 @@ class PlotInterp(BasicModule):
 
         """
         self.mmc.cell = self.sslider.value()
-        self.mmc.alpha = float(self.aslider.value()) / 100.
+        self.mmc.alpha = float(self.aslider.value()) / 100.0
         self.mmc.update_shade()
 
     def data_init(self):
@@ -1471,16 +1491,16 @@ class PlotInterp(BasicModule):
         None.
 
         """
-        if 'Cluster' in self.indata:
+        if "Cluster" in self.indata:
             self.indata = copy.deepcopy(self.indata)
             self.indata = dataprep.cluster_to_raster(self.indata)
 
-        if 'Raster' not in self.indata:
+        if "Raster" not in self.indata:
             return
 
         # Get rid of RGB bands.
         indata = []
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             if i.isrgb is True:
                 continue
             indata.append(i)
@@ -1491,17 +1511,16 @@ class PlotInterp(BasicModule):
         indata = lstack(indata, showlog=self.showlog, piter=self.piter)
 
         # Add membership data.
-        if 'Cluster' in self.indata:
+        if "Cluster" in self.indata:
             newdat = copy.copy(indata)
-            for i in self.indata['Cluster']:
-                if 'memdat' not in i.metadata['Cluster']:
+            for i in self.indata["Cluster"]:
+                if "memdat" not in i.metadata["Cluster"]:
                     continue
-                for j, val in enumerate(i.metadata['Cluster']['memdat']):
+                for j, val in enumerate(i.metadata["Cluster"]["memdat"]):
                     tmp = copy.deepcopy(i)
                     tmp.memdat = None
                     tmp.data = val
-                    tmp.dataid = ('Membership of class ' + str(j + 1) +
-                                  ': ' + tmp.dataid)
+                    tmp.dataid = "Membership of class " + str(j + 1) + ": " + tmp.dataid
                     newdat.append(tmp)
             data = newdat
             sdata = newdat
@@ -1576,7 +1595,7 @@ class PlotInterp(BasicModule):
             self.msc.figure.canvas.draw()
 
             phi = -event.xdata
-            theta = np.pi / 2. - np.arccos(event.ydata)
+            theta = np.pi / 2.0 - np.arccos(event.ydata)
             self.mmc.phi = phi
             self.mmc.theta = theta
             self.mmc.update_shade()
@@ -1596,10 +1615,11 @@ class PlotInterp(BasicModule):
             True if successful, False otherwise.
 
         """
-        ext = 'PNG (*.png)'
+        ext = "PNG (*.png)"
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
-        if filename == '':
+            self.parent, "Save File", ".", ext
+        )
+        if filename == "":
             return False
 
         dtype = str(self.cmb_dtype.currentText())
@@ -1610,69 +1630,96 @@ class PlotInterp(BasicModule):
         divider = make_axes_locatable(axes)
         axes.xaxis.set_visible(True)
         axes.yaxis.set_visible(True)
-        axes.set_xlabel('Eastings')
-        axes.set_ylabel('Northings')
+        axes.set_xlabel("Eastings")
+        axes.set_ylabel("Northings")
         axes.xaxis.set_major_formatter(frm)
         axes.yaxis.set_major_formatter(frm)
 
-        if dtype == 'Single Colour Map':
+        if dtype == "Single Colour Map":
             cax = divider.append_axes("right", size="7%", pad=0.05)
             cbar = fig.colorbar(self.mmc.image, cax=cax)
 
             text = self.mmc.argbunit[0]
-            if text == '':
+            if text == "":
                 text, okay = QtWidgets.QInputDialog.getText(
-                    self, 'Colorbar', 'Enter colorbar unit label:',
+                    self,
+                    "Colorbar",
+                    "Enter colorbar unit label:",
                     QtWidgets.QLineEdit.EchoMode.Normal,
-                    self.units[str(self.cmb_band1.currentText())])
+                    self.units[str(self.cmb_band1.currentText())],
+                )
 
                 if not okay:
                     self.change_dtype()
                     return
 
             cbar.set_label(text)
-        elif 'Ternary' in dtype:
+        elif "Ternary" in dtype:
             cax = divider.append_axes("right", size="50%", pad=0.05)
             rtext = self.mmc.argbunit[0]
             gtext = self.mmc.argbunit[1]
             btext = self.mmc.argbunit[2]
 
-            if rtext == '':
-                if 'RGB' in dtype:
+            if rtext == "":
+                if "RGB" in dtype:
                     rtext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter red label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'red')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter red label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "red",
+                    )
                 else:
                     rtext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter cyan label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'cyan')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter cyan label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "cyan",
+                    )
 
                 if not okay:
                     self.change_dtype()
                     return
-            if gtext == '':
-                if 'RGB' in dtype:
+            if gtext == "":
+                if "RGB" in dtype:
                     gtext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter green label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'green')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter green label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "green",
+                    )
                 else:
                     gtext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter magenta label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'magenta')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter magenta label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "magenta",
+                    )
 
                 if not okay:
                     self.change_dtype()
                     return
 
-            if btext == '':
-                if 'RGB' in dtype:
+            if btext == "":
+                if "RGB" in dtype:
                     btext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter blue label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'blue')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter blue label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "blue",
+                    )
                 else:
                     btext, okay = QtWidgets.QInputDialog.getText(
-                        self, 'Ternary Colorbar', 'Enter yellow label:',
-                        QtWidgets.QLineEdit.EchoMode.Normal, 'yellow')
+                        self,
+                        "Ternary Colorbar",
+                        "Enter yellow label:",
+                        QtWidgets.QLineEdit.EchoMode.Normal,
+                        "yellow",
+                    )
 
                 if not okay:
                     self.change_dtype()
@@ -1692,17 +1739,15 @@ class PlotInterp(BasicModule):
 
             rtmp = np.zeros_like(blue)
             j = 92
-            rtmp[:255, j:j + 255] = red
+            rtmp[:255, j : j + 255] = red
             red = rtmp
 
-            if 'RGB' in dtype:
+            if "RGB" in dtype:
                 red = red.max() - red
                 green = green.max() - green
                 blue = blue.max() - blue
 
-            data = np.transpose([red.flatten(),
-                                 green.flatten(),
-                                 blue.flatten()])
+            data = np.transpose([red.flatten(), green.flatten(), blue.flatten()])
             data = data.reshape(red.shape[0], red.shape[1], 3)
 
             data = data[:221, 90:350]
@@ -1712,31 +1757,36 @@ class PlotInterp(BasicModule):
             ax.set_ylim((-100, 322))
 
             path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
-            patch = PathPatch(path, facecolor='none')
+            patch = PathPatch(path, facecolor="none")
             ax.add_patch(patch)
 
             data = data.astype(int)
 
-            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
-                           clip_on=True)
+            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
             im.set_clip_path(patch)
 
-            ax.text(0, -5, gtext, horizontalalignment='center',
-                    verticalalignment='top')
-            ax.text(254, -5, btext, horizontalalignment='center',
-                    verticalalignment='top')
-            ax.text(127.5, 225, rtext, horizontalalignment='center')
-            ax.tick_params(top='off', right='off', bottom='off', left='off',
-                           labelbottom='off', labelleft='off')
+            ax.text(0, -5, gtext, horizontalalignment="center", verticalalignment="top")
+            ax.text(
+                254, -5, btext, horizontalalignment="center", verticalalignment="top"
+            )
+            ax.text(127.5, 225, rtext, horizontalalignment="center")
+            ax.tick_params(
+                top="off",
+                right="off",
+                bottom="off",
+                left="off",
+                labelbottom="off",
+                labelleft="off",
+            )
 
-            ax.axis('off')
+            ax.axis("off")
 
         for i in range(3):
             self.mmc.argb[i].set_visible(False)
 
         fig.tight_layout()
 
-        fig.savefig(filename, bbox_inches='tight', dpi=300)
+        fig.savefig(filename, bbox_inches="tight", dpi=300)
 
         self.change_dtype()
 
@@ -1754,35 +1804,47 @@ class PlotInterp(BasicModule):
         """
         snorm = self.mmc.update_shade_plot()
 
-        ext = 'GeoTIFF (*.tif)'
+        ext = "GeoTIFF (*.tif)"
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
-        if filename == '':
+            self.parent, "Save File", ".", ext
+        )
+        if filename == "":
             return False
 
         dtype = str(self.cmb_dtype.currentText())
 
-        if 'Ternary' not in dtype:
+        if "Ternary" not in dtype:
             text, okay = QtWidgets.QInputDialog.getText(
-                self, 'Colorbar', 'Enter length and width in inches:',
-                QtWidgets.QLineEdit.EchoMode.Normal, '4, 0.25')
+                self,
+                "Colorbar",
+                "Enter length and width in inches:",
+                QtWidgets.QLineEdit.EchoMode.Normal,
+                "4, 0.25",
+            )
 
             if not okay:
                 return False
 
             try:
-                text = text.split(',')
+                text = text.split(",")
                 blen = float(text[0])
                 bwid = float(text[1])
             except ValueError:
                 QtWidgets.QMessageBox.warning(
-                    self.parent, 'Error', 'Invalid value.',
-                    QtWidgets.QMessageBox.StandardButton.Ok)
+                    self.parent,
+                    "Error",
+                    "Invalid value.",
+                    QtWidgets.QMessageBox.StandardButton.Ok,
+                )
                 return False
         else:
             text, okay = QtWidgets.QInputDialog.getText(
-                self, 'Colorbar', 'Enter length in inches:',
-                QtWidgets.QLineEdit.EchoMode.Normal, '4')
+                self,
+                "Colorbar",
+                "Enter length in inches:",
+                QtWidgets.QLineEdit.EchoMode.Normal,
+                "4",
+            )
 
             if not okay:
                 return False
@@ -1792,43 +1854,61 @@ class PlotInterp(BasicModule):
                 bwid = blen
             except ValueError:
                 QtWidgets.QMessageBox.warning(
-                    self.parent, 'Error', 'Invalid value.',
-                    QtWidgets.QMessageBox.StandardButton.Ok)
+                    self.parent,
+                    "Error",
+                    "Invalid value.",
+                    QtWidgets.QMessageBox.StandardButton.Ok,
+                )
                 return False
 
-        rtext = 'Red'
-        gtext = 'Green'
-        btext = 'Blue'
+        rtext = "Red"
+        gtext = "Green"
+        btext = "Blue"
 
-        if 'Ternary' not in dtype:
+        if "Ternary" not in dtype:
             text, okay = QtWidgets.QInputDialog.getText(
-                self, 'Colorbar', 'Enter colorbar unit label:',
+                self,
+                "Colorbar",
+                "Enter colorbar unit label:",
                 QtWidgets.QLineEdit.EchoMode.Normal,
-                self.units[str(self.cmb_band1.currentText())])
+                self.units[str(self.cmb_band1.currentText())],
+            )
 
             if not okay:
                 return False
         else:
             units = str(self.cmb_band1.currentText())
             rtext, okay = QtWidgets.QInputDialog.getText(
-                self, 'Ternary Colorbar', 'Enter red/cyan label:',
-                QtWidgets.QLineEdit.EchoMode.Normal, units)
+                self,
+                "Ternary Colorbar",
+                "Enter red/cyan label:",
+                QtWidgets.QLineEdit.EchoMode.Normal,
+                units,
+            )
 
             if not okay:
                 return False
 
             units = str(self.cmb_band2.currentText())
             gtext, okay = QtWidgets.QInputDialog.getText(
-                self, 'Ternary Colorbar', 'Enter green/magenta label:',
-                QtWidgets.QLineEdit.EchoMode.Normal, units)
+                self,
+                "Ternary Colorbar",
+                "Enter green/magenta label:",
+                QtWidgets.QLineEdit.EchoMode.Normal,
+                units,
+            )
 
             if not okay:
                 return False
 
             units = str(self.cmb_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
-                self, 'Ternary Colorbar', 'Enter blue/yellow label:',
-                QtWidgets.QLineEdit.EchoMode.Normal, units)
+                self,
+                "Ternary Colorbar",
+                "Enter blue/yellow label:",
+                QtWidgets.QLineEdit.EchoMode.Normal,
+                units,
+            )
 
             if not okay:
                 return False
@@ -1838,7 +1918,7 @@ class PlotInterp(BasicModule):
         cmax = None
         img = np.array([])
 
-        if dtype == 'Single Colour Map':
+        if dtype == "Single Colour Map":
             clippercu = self.mmc.clippercu[self.mmc.hband[0]]
             clippercl = self.mmc.clippercl[self.mmc.hband[0]]
             pseudo = self.mmc.data[0].data
@@ -1846,11 +1926,10 @@ class PlotInterp(BasicModule):
                 if i.dataid == self.mmc.hband[0]:
                     pseudo = i.data
 
-            if htype == 'Histogram Equalization':
+            if htype == "Histogram Equalization":
                 pseudo = histeq(pseudo)
-            elif clippercl > 0. or clippercu > 0.:
-                pseudo, _, _ = histcomp(pseudo, perc=clippercl,
-                                        uperc=clippercu)
+            elif clippercl > 0.0 or clippercu > 0.0:
+                pseudo, _, _ = histcomp(pseudo, perc=clippercl, uperc=clippercu)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1864,7 +1943,7 @@ class PlotInterp(BasicModule):
             img[:, :, 2] = img[:, :, 2] * snorm  # blue
             img = img.astype(np.uint8)
 
-        elif 'Ternary' in dtype:
+        elif "Ternary" in dtype:
             dat = [None, None, None]
             for i in self.mmc.data:
                 for j in range(3):
@@ -1879,7 +1958,7 @@ class PlotInterp(BasicModule):
             mask = np.logical_and(mask, blue.mask)
             mask = np.logical_not(mask)
 
-            if htype == 'Histogram Equalization':
+            if htype == "Histogram Equalization":
                 red = histeq(red)
                 green = histeq(green)
                 blue = histeq(blue)
@@ -1904,7 +1983,7 @@ class PlotInterp(BasicModule):
             img = np.zeros((red.shape[0], red.shape[1], 4), dtype=np.uint8)
             img[:, :, 3] = mask * 254 + 1
 
-            if 'CMY' in dtype:
+            if "CMY" in dtype:
                 img[:, :, 0] = (1 - norm2(red)) * 254 + 1
                 img[:, :, 1] = (1 - norm2(green)) * 254 + 1
                 img[:, :, 2] = (1 - norm2(blue)) * 254 + 1
@@ -1918,7 +1997,7 @@ class PlotInterp(BasicModule):
             img[:, :, 2] = img[:, :, 2] * snorm  # blue
             img = img.astype(np.uint8)
 
-        elif dtype == 'Contour':
+        elif dtype == "Contour":
             # clippercu = self.mmc.clippercu[self.mmc.hband[0]]
             # clippercl = self.mmc.clippercl[self.mmc.hband[0]]
 
@@ -1941,24 +2020,23 @@ class PlotInterp(BasicModule):
 
             self.mmc.figure.set_frameon(False)
             # self.mmc.axes.set_axis_off()
-            self.mmc.axes.spines['bottom'].set_color('white')
-            self.mmc.axes.spines['top'].set_color('white')
-            self.mmc.axes.spines['left'].set_color('white')
-            self.mmc.axes.spines['right'].set_color('white')
+            self.mmc.axes.spines["bottom"].set_color("white")
+            self.mmc.axes.spines["top"].set_color("white")
+            self.mmc.axes.spines["left"].set_color("white")
+            self.mmc.axes.spines["right"].set_color("white")
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize * 3)
             self.mmc.figure.canvas.draw()
-            img = np.frombuffer(self.mmc.figure.canvas.tostring_argb(),
-                                dtype=np.uint8)
+            img = np.frombuffer(self.mmc.figure.canvas.tostring_argb(), dtype=np.uint8)
             w, h = self.mmc.figure.canvas.get_width_height()
 
             self.mmc.figure.set_size_inches(tmpsize)
             self.mmc.figure.set_frameon(True)
             # self.mmc.axes.set_axis_on()
-            self.mmc.axes.spines['bottom'].set_color('black')
-            self.mmc.axes.spines['top'].set_color('black')
-            self.mmc.axes.spines['left'].set_color('black')
-            self.mmc.axes.spines['right'].set_color('black')
+            self.mmc.axes.spines["bottom"].set_color("black")
+            self.mmc.axes.spines["top"].set_color("black")
+            self.mmc.axes.spines["left"].set_color("black")
+            self.mmc.axes.spines["right"].set_color("black")
             self.mmc.figure.canvas.draw()
 
             img = img.reshape(h, w, 4)
@@ -1977,17 +2055,18 @@ class PlotInterp(BasicModule):
 
             mask = img[:, :, 3]
             mask[mask < 255] = 0
-            tmp = (img[:, :, 0] == 255) & (
-                img[:, :, 1] == 255) & (img[:, :, 2] == 255)
+            tmp = (img[:, :, 0] == 255) & (img[:, :, 1] == 255) & (img[:, :, 2] == 255)
             mask[tmp] = 0
             img[:, :, 3] = mask
 
         os.chdir(os.path.dirname(filename))
 
-        newimg = [copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0])]
+        newimg = [
+            copy.deepcopy(self.mmc.data[0]),
+            copy.deepcopy(self.mmc.data[0]),
+            copy.deepcopy(self.mmc.data[0]),
+            copy.deepcopy(self.mmc.data[0]),
+        ]
 
         xmin, xmax, ymin, ymax = newimg[0].extent
         ydim = (ymax - ymin) / img.shape[0]
@@ -2020,55 +2099,61 @@ class PlotInterp(BasicModule):
         newimg[0].dataid = rtext
         newimg[1].dataid = gtext
         newimg[2].dataid = btext
-        newimg[3].dataid = 'Alpha'
+        newimg[3].dataid = "Alpha"
 
-        iodefs.export_raster(str(filename), newimg, drv='GTiff',
-                             piter=self.piter, bandsort=False,
-                             updatestats=True,
-                             showlog=self.showlog, compression='DEFLATE')
+        iodefs.export_raster(
+            str(filename),
+            newimg,
+            drv="GTiff",
+            piter=self.piter,
+            bandsort=False,
+            updatestats=True,
+            showlog=self.showlog,
+            compression="DEFLATE",
+        )
 
         # Section for colorbars
-        if 'Ternary' not in dtype:
+        if "Ternary" not in dtype:
             txt = str(self.cmb_cbar.currentText())
             cmap = colormaps[txt]
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
             # Horizontal Bar
-            fig = Figure(layout='tight')
+            fig = Figure(layout="tight")
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
             fig.set_figheight(bwid + 0.75)
             ax = fig.gca()
 
-            if 'Contour' in dtype:
-                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf,
-                                            orientation='horizontal')
+            if "Contour" in dtype:
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, orientation="horizontal")
             else:
-                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                            orientation='horizontal')
+                cb = mcolorbar.ColorbarBase(
+                    ax, cmap=cmap, norm=norm, orientation="horizontal"
+                )
             cb.set_label(text)
 
-            fname = filename[:-4] + '_hcbar.png'
+            fname = filename[:-4] + "_hcbar.png"
             canvas.print_figure(fname, dpi=300)
 
             # Vertical Bar
-            fig = Figure(layout='tight')
+            fig = Figure(layout="tight")
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid + 1)
             fig.set_figheight(blen)
             ax = fig.gca()
-            if 'Contour' in dtype:
-                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf,
-                                            orientation='vertical')
+            if "Contour" in dtype:
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, orientation="vertical")
             else:
-                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                            orientation='vertical')
+                cb = mcolorbar.ColorbarBase(
+                    ax, cmap=cmap, norm=norm, orientation="vertical"
+                )
             cb.set_label(text)
 
-            fname = filename[:-4] + '_vcbar.png'
+            fname = filename[:-4] + "_vcbar.png"
             canvas.print_figure(fname, dpi=300)
         else:
-            fig = Figure(figsize=[blen, blen], layout='tight')
+            fig = Figure(figsize=[blen, blen], layout="tight")
             canvas = FigureCanvasQTAgg(fig)
 
             tmp = np.array([[list(range(255))] * 255])
@@ -2085,17 +2170,15 @@ class PlotInterp(BasicModule):
 
             rtmp = np.zeros_like(blue)
             j = 92
-            rtmp[:255, j:j + 255] = red
+            rtmp[:255, j : j + 255] = red
             red = rtmp
 
-            if 'RGB' in dtype:
+            if "RGB" in dtype:
                 red = red.max() - red
                 green = green.max() - green
                 blue = blue.max() - blue
 
-            data = np.transpose([red.flatten(),
-                                 green.flatten(),
-                                 blue.flatten()])
+            data = np.transpose([red.flatten(), green.flatten(), blue.flatten()])
             data = data.reshape(red.shape[0], red.shape[1], 3)
 
             data = data[:221, 90:350]
@@ -2105,31 +2188,52 @@ class PlotInterp(BasicModule):
             ax.set_ylim((-100, 322))
 
             path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
-            patch = PathPatch(path, facecolor='none')
+            patch = PathPatch(path, facecolor="none")
             ax.add_patch(patch)
 
             data = data.astype(int)
 
-            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
-                           clip_on=True)
+            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
             im.set_clip_path(patch)
 
-            ax.text(0, -5, gtext, horizontalalignment='center',
-                    verticalalignment='top', fontsize='xx-large')
-            ax.text(254, -5, btext, horizontalalignment='center',
-                    verticalalignment='top', fontsize='xx-large')
-            ax.text(127.5, 225, rtext, horizontalalignment='center',
-                    fontsize='xx-large')
-            ax.tick_params(top='off', right='off', bottom='off', left='off',
-                           labelbottom='off', labelleft='off')
+            ax.text(
+                0,
+                -5,
+                gtext,
+                horizontalalignment="center",
+                verticalalignment="top",
+                fontsize="xx-large",
+            )
+            ax.text(
+                254,
+                -5,
+                btext,
+                horizontalalignment="center",
+                verticalalignment="top",
+                fontsize="xx-large",
+            )
+            ax.text(
+                127.5, 225, rtext, horizontalalignment="center", fontsize="xx-large"
+            )
+            ax.tick_params(
+                top="off",
+                right="off",
+                bottom="off",
+                left="off",
+                labelbottom="off",
+                labelleft="off",
+            )
 
-            ax.axis('off')
-            fname = filename[:-4] + '_tern.png'
+            ax.axis("off")
+            fname = filename[:-4] + "_tern.png"
             canvas.print_figure(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(
-            self, 'Information', 'Save to GeoTIFF is complete!',
-            QtWidgets.QMessageBox.StandardButton.Ok)
+            self,
+            "Information",
+            "Save to GeoTIFF is complete!",
+            QtWidgets.QMessageBox.StandardButton.Ok,
+        )
 
         return True
 
@@ -2151,12 +2255,12 @@ class PlotInterp(BasicModule):
         if nodialog:
             return True
 
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return False
 
         self.mmc.hband[0] = str(self.cmb_band1.currentText())
@@ -2208,10 +2312,9 @@ class PlotInterp(BasicModule):
 def _testfn():
     """Test routine."""
 
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                 '..//..')))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..//..")))
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     # ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
@@ -2220,7 +2323,7 @@ def _testfn():
     data = iodefs.get_raster(ifile)
 
     tmp = PlotInterp()
-    tmp.indata['Raster'] = data
+    tmp.indata["Raster"] = data
     tmp.data_init()
 
     tmp.settings()

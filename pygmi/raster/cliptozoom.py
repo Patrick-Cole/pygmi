@@ -29,24 +29,24 @@ This module allows a raster dataset to be clipped to the current zoomed
 extents.
 """
 
-from PySide6 import QtWidgets, QtCore
+import geopandas as gpd
 from matplotlib import colormaps
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from PySide6 import QtCore, QtWidgets
 from shapely import Polygon
-import geopandas as gpd
 
-from pygmi.misc import frm, BasicModule
-from pygmi.raster.modest_image import imshow
+from pygmi.misc import BasicModule, frm
 from pygmi.raster.misc import cut_raster
+from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
         # self.fwidth = self.figure.get_figwidth()
@@ -73,11 +73,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # self.figure.set_figheight(self.fheight)
 
         self.axes = self.figure.add_subplot(111)
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
-        rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=colormaps[cmap], interpolation='nearest')
+        rdata = imshow(
+            self.axes,
+            data1.data,
+            extent=data1.extent,
+            cmap=colormaps[cmap],
+            interpolation="nearest",
+        )
 
         if not data1.isrgb:
             rdata.set_clim_std(2.5)
@@ -85,11 +90,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         #     cbar.set_label(data1.units)
 
         if data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -118,29 +123,29 @@ class ClipToZoom(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Clip to Zoom')
+        self.setWindowTitle("Clip to Zoom")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.buttonbox.htmlfile = 'raster.dm.cliptozoom'
+        self.buttonbox.htmlfile = "raster.dm.cliptozoom"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_2 = QtWidgets.QLabel('Colormap:')
+        lbl_2 = QtWidgets.QLabel("Colormap:")
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+        self.cmb_2.addItems(["viridis", "jet", "gray", "terrain"])
 
-        self.btn_clip = QtWidgets.QPushButton('Clip')
+        self.btn_clip = QtWidgets.QPushButton("Clip")
         hbl.addWidget(self.btn_clip)
 
         vbl.addWidget(self.mmc)
@@ -163,8 +168,8 @@ class ClipToZoom(BasicModule):
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
             self.mmc.update_raster(data[i], cmap)
 
     def settings(self, nodialog=False):
@@ -177,10 +182,10 @@ class ClipToZoom(BasicModule):
 
         """
         data = []
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
-        elif 'Cluster' in self.indata:
-            data = self.indata['Cluster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
+        elif "Cluster" in self.indata:
+            data = self.indata["Cluster"]
 
         items = [i.dataid for i in data]
         self.cmb_update(self.cmb_1, items)
@@ -198,9 +203,9 @@ class ClipToZoom(BasicModule):
         y0, y1 = ylim
 
         poly = Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1), (x0, y0)])
-        gdf = gpd.GeoDataFrame({'geometry': [poly]})
+        gdf = gpd.GeoDataFrame({"geometry": [poly]})
 
-        for datatype in ['Raster', 'Cluster']:
+        for datatype in ["Raster", "Cluster"]:
             if datatype not in self.indata:
                 continue
             data = self.indata[datatype]
@@ -230,17 +235,18 @@ class ClipToZoom(BasicModule):
 def _testfn():
     """Test."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     data = get_raster(ifile)
 
     tmp = ClipToZoom()
-    tmp.indata['Raster'] = data
+    tmp.indata["Raster"] = data
 
     tmp.settings()
 

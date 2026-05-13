@@ -30,17 +30,17 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
 """
 
 import os
-import numpy as np
-import numexpr as ne
-from PySide6 import QtWidgets
+
 import geopandas as gpd
-from shapely import Polygon, make_valid
-from matplotlib import colormaps
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib import patches
+import numexpr as ne
+import numpy as np
 import scipy.spatial.distance as sdist
+from matplotlib import colormaps, patches
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from PySide6 import QtWidgets
+from shapely import Polygon, make_valid
 
 from pygmi.misc import BasicModule
 
@@ -64,8 +64,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.showlog = parent.showlog
 
         # figure stuff
-        self.htype = 'Linear'
-        self.cbar = colormaps['jet']
+        self.htype = "Linear"
+        self.cbar = colormaps["jet"]
         self.data = []
         self.gmode = None
         self.argb = [None, None, None]
@@ -83,9 +83,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes = fig.add_subplot(111)
 
-        FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Policy.Expanding,
-                                        QtWidgets.QSizePolicy.Policy.Expanding)
+        FigureCanvasQTAgg.setSizePolicy(
+            self,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         FigureCanvasQTAgg.updateGeometry(self)
 
     def init_graph(self):
@@ -98,7 +100,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.axes.clear()
-        self.axes.set_aspect('equal')
+        self.axes.set_aspect("equal")
 
         maxdiam = self.pwidth * self.data[:, -1].max()
         xmin = self.data[:, 0].min() - maxdiam
@@ -121,16 +123,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             # self.axes.add_collection(patch)
 
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
-                                             self.isgeog)
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth, self.isgeog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            self.axes.add_patch(patches.Polygon(pvert1,
-                                                edgecolor=(0.0, 0.0, 0.0)))
-            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none',
-                                                edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(
+                patches.Polygon(pvert0, facecolor="none", edgecolor=(0.0, 0.0, 0.0))
+            )
 
         self.figure.canvas.draw()
 
@@ -149,16 +150,16 @@ class BeachBall(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.algorithm = 'FPFIT'
+        self.algorithm = "FPFIT"
         self.nofps = False
-        self.stype = 'Seis'
+        self.stype = "Seis"
 
         self.mmc = MyMplCanvas(self)
-        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+        self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
-        self.rb_geog = QtWidgets.QRadioButton('Geographic Units')
-        self.rb_proj = QtWidgets.QRadioButton('Projected Units')
+        self.rb_geog = QtWidgets.QRadioButton("Geographic Units")
+        self.rb_proj = QtWidgets.QRadioButton("Projected Units")
 
         self.setupui()
 
@@ -176,10 +177,10 @@ class BeachBall(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Seis' in self.indata:
-            self.stype = 'Seis'
-        elif 'GenFPS' in self.indata:
-            self.stype = 'GenFPS'
+        if "Seis" in self.indata:
+            self.stype = "Seis"
+        elif "GenFPS" in self.indata:
+            self.stype = "GenFPS"
         else:
             return False
 
@@ -187,11 +188,11 @@ class BeachBall(BasicModule):
 
         alist = []
         for i in data:
-            alist += list(i['F'].keys())
+            alist += list(i["F"].keys())
         alist = sorted(set(alist))
 
         if not alist:
-            self.showlog('Error: no Fault Plane Solutions')
+            self.showlog("Error: no Fault Plane Solutions")
             self.nofps = True
             return False
         self.nofps = False
@@ -200,22 +201,19 @@ class BeachBall(BasicModule):
 
         self.algorithm = alist[0]
 
-        pwidth = 1.
+        pwidth = 1.0
 
         for j in alist:
             tmpxy = []
             tmpmag = []
             for i in data:
-                if i['F'].get(j) is not None:
-                    tmp = [i['1'].longitude,
-                           i['1'].latitude,
-                           i['1'].magnitude_1]
+                if i["F"].get(j) is not None:
+                    tmp = [i["1"].longitude, i["1"].latitude, i["1"].magnitude_1]
                     tmpxy.append([tmp[0], tmp[1]])
                     tmpmag.append(tmp[-1])
 
             if len(tmpmag) > 1:
-                pwidth = min(np.median(sdist.pdist(tmpxy)) / (2 * max(tmpmag)),
-                             pwidth)
+                pwidth = min(np.median(sdist.pdist(tmpxy)) / (2 * max(tmpmag)), pwidth)
 
         if self.dsb_dist.value() == 0.0001:
             self.dsb_dist.setValue(pwidth)
@@ -234,26 +232,29 @@ class BeachBall(BasicModule):
 
         """
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'seis.dm.fps'
+        self.buttonbox.htmlfile = "seis.dm.fps"
 
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
-        lbl_2 = QtWidgets.QLabel('FPS Algorithm:')
-        lbl_3 = QtWidgets.QLabel('Width Scale Factor:')
+        lbl_2 = QtWidgets.QLabel("FPS Algorithm:")
+        lbl_3 = QtWidgets.QLabel("Width Scale Factor:")
 
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
-        self.dsb_dist.setProperty('value', 0.0001)
+        self.dsb_dist.setProperty("value", 0.0001)
 
         self.rb_geog.setChecked(True)
 
-        spacer = QtWidgets.QSpacerItem(20, 40,
-                                       QtWidgets.QSizePolicy.Policy.Minimum,
-                                       QtWidgets.QSizePolicy.Policy.Expanding)
+        spacer = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
 
-        self.setWindowTitle('Fault Plane Solution (FPS)')
+        self.setWindowTitle("Fault Plane Solution (FPS)")
 
         vbl_raster.addWidget(lbl_2)
         vbl_raster.addWidget(self.cmb_alg)
@@ -285,11 +286,12 @@ class BeachBall(BasicModule):
             True if successful, False otherwise.
 
         """
-        ext = 'Shape file (*.shp)'
+        ext = "Shape file (*.shp)"
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save Shape File', '.', ext)
-        if filename == '':
+            self.parent, "Save Shape File", ".", ext
+        )
+        if filename == "":
             return False
         os.chdir(os.path.dirname(filename))
 
@@ -299,18 +301,20 @@ class BeachBall(BasicModule):
 
         if os.path.isfile(self.ifile):
             tmp = self.ifile[:-4]
-            os.remove(tmp + '.shp')
-            os.remove(tmp + '.shx')
-            os.remove(tmp + '.prj')
-            os.remove(tmp + '.dbf')
+            os.remove(tmp + ".shp")
+            os.remove(tmp + ".shx")
+            os.remove(tmp + ".prj")
+            os.remove(tmp + ".dbf")
 
-        layer = {'Strike': [],
-                 'Dip': [],
-                 'Rake': [],
-                 'Magnitude': [],
-                 'Quadrant': [],
-                 'Depth': [],
-                 'geometry': []}
+        layer = {
+            "Strike": [],
+            "Dip": [],
+            "Rake": [],
+            "Magnitude": [],
+            "Quadrant": [],
+            "Depth": [],
+            "geometry": [],
+        }
 
         # Calculate BeachBall
         for idat in indata:
@@ -318,9 +322,9 @@ class BeachBall(BasicModule):
             np1 = idat[3:-1]
             depth = idat[2]
             pwidth = self.mmc.pwidth * idat[-1]
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
-                                             self.mmc.isgeog,
-                                             showlog=self.showlog)
+            xxx, yyy, xxx2, yyy2 = beachball(
+                np1, pxy[0], pxy[1], pwidth, self.mmc.isgeog, showlog=self.showlog
+            )
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
@@ -331,21 +335,21 @@ class BeachBall(BasicModule):
             poly1 = make_valid(poly1)
             poly0 = make_valid(poly0)
 
-            layer['geometry'].append(poly0)
-            layer['Strike'].append(0)
-            layer['Dip'].append(0)
-            layer['Rake'].append(0)
-            layer['Magnitude'].append(0)
-            layer['Depth'].append(depth)
-            layer['Quadrant'].append('Tensional (White)')
+            layer["geometry"].append(poly0)
+            layer["Strike"].append(0)
+            layer["Dip"].append(0)
+            layer["Rake"].append(0)
+            layer["Magnitude"].append(0)
+            layer["Depth"].append(depth)
+            layer["Quadrant"].append("Tensional (White)")
 
-            layer['geometry'].append(poly1)
-            layer['Strike'].append(np1[0])
-            layer['Dip'].append(np1[1])
-            layer['Rake'].append(np1[2])
-            layer['Magnitude'].append(idat[-1])
-            layer['Depth'].append(depth)
-            layer['Quadrant'].append('Compressional (Colour)')
+            layer["geometry"].append(poly1)
+            layer["Strike"].append(np1[0])
+            layer["Dip"].append(np1[1])
+            layer["Rake"].append(np1[2])
+            layer["Magnitude"].append(idat[-1])
+            layer["Depth"].append(depth)
+            layer["Quadrant"].append("Compressional (Colour)")
 
         gdf = gpd.GeoDataFrame(layer)
         gdf = gdf.set_crs(4326)
@@ -368,12 +372,16 @@ class BeachBall(BasicModule):
 
         indata = []
         for i in data:
-            if i['F'].get(self.algorithm) is not None:
-                tmp = [i['1'].longitude, i['1'].latitude, i['1'].depth,
-                       i['F'][self.algorithm].strike,
-                       i['F'][self.algorithm].dip,
-                       i['F'][self.algorithm].rake,
-                       i['1'].magnitude_1]
+            if i["F"].get(self.algorithm) is not None:
+                tmp = [
+                    i["1"].longitude,
+                    i["1"].latitude,
+                    i["1"].depth,
+                    i["F"][self.algorithm].strike,
+                    i["F"][self.algorithm].dip,
+                    i["F"][self.algorithm].rake,
+                    i["1"].magnitude_1,
+                ]
                 indata.append(tmp)
 
         self.mmc.isgeog = self.rb_geog.isChecked()
@@ -397,7 +405,7 @@ class BeachBall(BasicModule):
 
         """
         if self.nofps:
-            self.showlog('Error: no Fault Plane Solutions')
+            self.showlog("Error: no Fault Plane Solutions")
             return False
 
         QtWidgets.QApplication.processEvents()
@@ -492,8 +500,9 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
         d1 = np.zeros(ne)
         r1 = np.zeros(ne)
         for j in range(ne):
-            s1[j], d1[j], r1[j] = mij2sdr(fm[j, 0], fm[j, 1], fm[j, 2],
-                                          fm[j, 3], fm[j, 4], fm[j, 5])
+            s1[j], d1[j], r1[j] = mij2sdr(
+                fm[j, 0], fm[j, 1], fm[j, 2], fm[j, 3], fm[j, 4], fm[j, 5]
+            )
     else:
         s1 = fm[:, 0]
         d1 = fm[:, 1]
@@ -503,7 +512,7 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
     ampy = np.cos(np.mean(centery) * d2r)
 
     if ne1 > 1:
-        [_, i] = np.sort(diam, 1, 'descend')
+        [_, i] = np.sort(diam, 1, "descend")
         diam = diam[i]
         s1 = s1[i]
         d1 = d1[i]
@@ -543,17 +552,17 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
     if D2 >= 90:
         D2 = 89.9999
 
-    phi = np.arange(0, np.pi, .01)
+    phi = np.arange(0, np.pi, 0.01)
     d = 90 - D1
     m = 90
-    l1 = np.sqrt(d**2 / (np.sin(phi)**2 + np.cos(phi)**2 * d**2 / m**2))
+    l1 = np.sqrt(d**2 / (np.sin(phi) ** 2 + np.cos(phi) ** 2 * d**2 / m**2))
 
     d = 90 - D2
     m = 90
-    l2 = np.sqrt(d**2 / (np.sin(phi)**2 + np.cos(phi)**2 * d**2 / m**2))
+    l2 = np.sqrt(d**2 / (np.sin(phi) ** 2 + np.cos(phi) ** 2 * d**2 / m**2))
 
     if D == 0:
-        showlog('Enter a diameter for the beachballs!')
+        showlog("Enter a diameter for the beachballs!")
         return None
 
     inc = 1
@@ -749,26 +758,28 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     rake : float
         rake of first focal plane (degrees)
     """
-    a = np.array([[mxx, mxy, mxz],
-                  [mxy, myy, myz],
-                  [mxz, myz, mzz]])
+    a = np.array([[mxx, mxy, mxz], [mxy, myy, myz], [mxz, myz, mzz]])
     d, V = np.linalg.eig(a)
 
     D = np.array([d[1], d[0], d[2]])
 
-    V = np.array([[-V[1, 1], V[1, 0], V[1, 2]],
-                  [-V[2, 1], V[2, 0], V[2, 2]],
-                  [V[0, 1], -V[0, 0], -V[0, 2]]])
+    V = np.array(
+        [
+            [-V[1, 1], V[1, 0], V[1, 2]],
+            [-V[2, 1], V[2, 0], V[2, 2]],
+            [V[0, 1], -V[0, 0], -V[0, 2]],
+        ]
+    )
 
     imax = np.nonzero(D == np.max(D))
     imin = np.nonzero(D == np.min(D))
     AE = (V[:, imax] + V[:, imin]) / np.sqrt(2.0)
     AN = (V[:, imax] - V[:, imin]) / np.sqrt(2.0)
-    aer = np.sqrt(AE[0]**2 + AE[1]**2 + AE[2]**2)
-    anr = np.sqrt(AN[0]**2 + AN[1]**2 + AN[2]**2)
+    aer = np.sqrt(AE[0] ** 2 + AE[1] ** 2 + AE[2] ** 2)
+    anr = np.sqrt(AN[0] ** 2 + AN[1] ** 2 + AN[2] ** 2)
     AE = AE / aer
     AN = AN / anr
-    if AN[2] <= 0.:
+    if AN[2] <= 0.0:
         an1 = AN
         ae1 = AE
     else:
@@ -803,31 +814,31 @@ def TDL(AN, BN):
     """
     XN, YN, ZN = AN.flatten()
     XE, YE, ZE = BN.flatten()
-    aaa = 1.0E-06
+    aaa = 1.0e-06
     fdh = 57.2957795
     if abs(ZN) < aaa:
-        FD = 90.
+        FD = 90.0
         axn = min(abs(XN), 1.0)
         FT = np.arcsin(axn) * fdh
         ST = -XN
         CT = YN
-        if CT < 0. <= ST:
-            FT = 180. - FT
-        if ST < 0. and CT <= 0:
-            FT = 180. + FT
-        if ST < 0. < CT:
-            FT = 360. - FT
+        if CT < 0.0 <= ST:
+            FT = 180.0 - FT
+        if ST < 0.0 and CT <= 0:
+            FT = 180.0 + FT
+        if ST < 0.0 < CT:
+            FT = 360.0 - FT
         FL = np.arcsin(abs(ZE)) * fdh
         SL = -ZE
         if abs(XN) < aaa:
             CL = XE / YN
         else:
             CL = -YE / XN
-        if CL < 0. <= SL:
-            FL = 180. - FL
-        if SL < 0. and CL <= 0:
-            FL = FL - 180.
-        if SL < 0. < CL:
+        if CL < 0.0 <= SL:
+            FL = 180.0 - FL
+        if SL < 0.0 and CL <= 0:
+            FL = FL - 180.0
+        if SL < 0.0 < CL:
             FL = -FL
     else:
         if -ZN > 1.0:
@@ -841,12 +852,12 @@ def TDL(AN, BN):
         CT = YN / SD
         SX = min(abs(ST), 1.0)
         FT = np.arcsin(SX) * fdh
-        if CT < 0. <= ST:
-            FT = 180. - FT
-        if ST < 0. and CT <= 0:
-            FT = 180. + FT
-        if ST < 0. < CT:
-            FT = 360. - FT
+        if CT < 0.0 <= ST:
+            FT = 180.0 - FT
+        if ST < 0.0 and CT <= 0:
+            FT = 180.0 + FT
+        if ST < 0.0 < CT:
+            FT = 360.0 - FT
         SL = -ZE / SD
         SX = min(np.abs(SL), 1.0)
         FL = np.arcsin(SX) * fdh
@@ -857,11 +868,11 @@ def TDL(AN, BN):
             CL = -SD * xxx / XN
             if CT == 0:
                 CL = YE / ST
-        if CL < 0. <= SL:
-            FL = 180. - FL
-        if SL < 0. and CL <= 0:
-            FL = FL - 180.
-        if SL < 0. < CL:
+        if CL < 0.0 <= SL:
+            FL = 180.0 - FL
+        if SL < 0.0 and CL <= 0:
+            FL = FL - 180.0
+        if SL < 0.0 < CL:
             FL = -FL
 
     return FT, FD, FL
@@ -870,10 +881,11 @@ def TDL(AN, BN):
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.seis.iodefs import ImportSeisan
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = ImportSeisan()
     tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect2.out"
@@ -900,7 +912,7 @@ def _testfn2():
 
     plt.figure(dpi=200)
     ax = plt.gca()
-    ax.set_aspect('equal')
+    ax.set_aspect("equal")
 
     xmin = 29
     xmax = 31

@@ -49,7 +49,7 @@ def var_ratio(data, uuu, center, dist_orig):
     vrc : numpy array
         variance ration criterion
     """
-    if uuu.ndim == 1:   # check whether fuzzy or crisp info is given
+    if uuu.ndim == 1:  # check whether fuzzy or crisp info is given
         crisp = uuu
     else:
         crisp = uuu.argmin(0)

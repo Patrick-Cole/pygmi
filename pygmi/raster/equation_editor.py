@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """Equation editor for raster data."""
 
-from PySide6 import QtWidgets, QtGui
-import numpy as np
 import numexpr as ne
+import numpy as np
+from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
 from pygmi.raster.misc import lstack
@@ -62,7 +62,7 @@ class EquationEditor(BasicModule):
 
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
-        self.lbl_bands = QtWidgets.QLabel(': iall')
+        self.lbl_bands = QtWidgets.QLabel(": iall")
         self.cmb_dtype = QtWidgets.QComboBox()
 
         self.setupui()
@@ -78,66 +78,75 @@ class EquationEditor(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
 
-        lbl_1 = QtWidgets.QLabel('Data Band Key:')
-        lbl_2 = QtWidgets.QLabel('Output Equation:')
-        lbl_3 = QtWidgets.QLabel('Output Data Type:')
-        self.cmb_dtype.addItems(['auto', 'uint8', 'int16', 'int32',
-                                 'float32', 'float64'])
-        self.buttonbox.htmlfile = 'raster.dm.equationeditor'
+        lbl_1 = QtWidgets.QLabel("Data Band Key:")
+        lbl_2 = QtWidgets.QLabel("Output Equation:")
+        lbl_3 = QtWidgets.QLabel("Output Data Type:")
+        self.cmb_dtype.addItems(
+            ["auto", "uint8", "int16", "int32", "float32", "float64"]
+        )
+        self.buttonbox.htmlfile = "raster.dm.equationeditor"
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
 
         ptmp = self.textbrowser2.palette()
 
-        ptmp.setColor(ptmp.ColorGroup.Active,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
-        ptmp.setColor(ptmp.ColorGroup.Disabled,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
-        ptmp.setColor(ptmp.ColorGroup.Inactive,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
+        ptmp.setColor(
+            ptmp.ColorGroup.Active,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
+        ptmp.setColor(
+            ptmp.ColorGroup.Disabled,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
+        ptmp.setColor(
+            ptmp.ColorGroup.Inactive,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
 
         self.textbrowser2.setPalette(ptmp)
         self.textbrowser2.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
 
-        self.setWindowTitle('Equation Editor')
-        self.textbrowser.setText('iall')
-        tmp = ('<h1>Instructions:</h1>'
-               '<p>Equation editor uses the numexpr library. Use the variables'
-               ' iall, i1, i2 etc in formulas. The combobox above shows which '
-               'band is assigned to each variable.</p>'
-               '<h2>Examples</h2>'
-               '<p>Sum:</p>'
-               '<pre>    i1 + 1000</pre>'
-               '<p>Mean (can be any number of arguments):</p>'
-               '<pre>    mean(i0, i1, i2) or mean(iall)</pre>'
-               '<p>Standard Deviation (can be any number of arguments):</p>'
-               '<pre>    std(i0, i1, i2) or std(iall)</pre>'
-               '<p>Mosaic two bands into one:</p>'
-               '<pre>    mosaic(i0, i1)</pre>'
-               '<p>Threshold between values 1 and 98, substituting -999 as a '
-               'value:</p>'
-               '<pre>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)'
-               '</pre>'
-               '<p>Replacing the value 0 with a nodata or null value:</p>'
-               '<pre>    where(iall!=0, iall, nodata)</pre>'
-               '<h2>Commands</h2>'
-               '<ul>'
-               ' <li> Logical operators: &amp;, |, ~</li>'
-               ' <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;'
-               '</li>'
-               ' <li> Arithmetic operators: +, -, *, /, **, %, <<, >></li>'
-               ' <li> where(bool, number1, number2) : number1 if the bool '
-               'condition is true, number2 otherwise.</li>'
-               ' <li> sin, cos, tan, arcsin, arccos, arctan, '
-               'sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</li>'
-               ' <li> log, log10, log1p, exp, expm1</li>'
-               ' <li> sqrt, abs</li>'
-               ' <li> nodata or null value of first band: nodata</li>'
-               '</ul>')
+        self.setWindowTitle("Equation Editor")
+        self.textbrowser.setText("iall")
+        tmp = (
+            "<h1>Instructions:</h1>"
+            "<p>Equation editor uses the numexpr library. Use the variables"
+            " iall, i1, i2 etc in formulas. The combobox above shows which "
+            "band is assigned to each variable.</p>"
+            "<h2>Examples</h2>"
+            "<p>Sum:</p>"
+            "<pre>    i1 + 1000</pre>"
+            "<p>Mean (can be any number of arguments):</p>"
+            "<pre>    mean(i0, i1, i2) or mean(iall)</pre>"
+            "<p>Standard Deviation (can be any number of arguments):</p>"
+            "<pre>    std(i0, i1, i2) or std(iall)</pre>"
+            "<p>Mosaic two bands into one:</p>"
+            "<pre>    mosaic(i0, i1)</pre>"
+            "<p>Threshold between values 1 and 98, substituting -999 as a "
+            "value:</p>"
+            "<pre>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)"
+            "</pre>"
+            "<p>Replacing the value 0 with a nodata or null value:</p>"
+            "<pre>    where(iall!=0, iall, nodata)</pre>"
+            "<h2>Commands</h2>"
+            "<ul>"
+            " <li> Logical operators: &amp;, |, ~</li>"
+            " <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;"
+            "</li>"
+            " <li> Arithmetic operators: +, -, *, /, **, %, <<, >></li>"
+            " <li> where(bool, number1, number2) : number1 if the bool "
+            "condition is true, number2 otherwise.</li>"
+            " <li> sin, cos, tan, arcsin, arccos, arctan, "
+            "sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</li>"
+            " <li> log, log10, log1p, exp, expm1</li>"
+            " <li> sqrt, abs</li>"
+            " <li> nodata or null value of first band: nodata</li>"
+            "</ul>"
+        )
         self.textbrowser2.setHtml(tmp)
 
         gl_1.addWidget(lbl_2, 0, 0, 1, 1)
@@ -162,8 +171,8 @@ class EquationEditor(BasicModule):
 
         """
         txt = self.cmb_1.currentText()
-        if txt != '':
-            self.lbl_bands.setText(': ' + self.bands[txt])
+        if txt != "":
+            self.lbl_bands.setText(": " + self.bands[txt])
 
     def settings(self, nodialog=False):
         """
@@ -181,25 +190,25 @@ class EquationEditor(BasicModule):
 
         """
         self.bands = {}
-        self.bands['all data'] = 'iall'
+        self.bands["all data"] = "iall"
 
         # self.cmb_1.clear()
         # self.cmb_1.addItem('all data')
 
-        if 'Cluster' in self.indata:
-            intype = 'Cluster'
-        elif 'Raster' in self.indata:
-            intype = 'Raster'
+        if "Cluster" in self.indata:
+            intype = "Cluster"
+        elif "Raster" in self.indata:
+            intype = "Raster"
         else:
-            self.showlog('No raster data.')
+            self.showlog("No raster data.")
             return False
 
         indata = self.indata[intype]
-        items = ['all data']
+        items = ["all data"]
 
         for j, i in enumerate(indata):
             items.append(i.dataid)
-            self.bands[i.dataid] = 'i' + str(j)
+            self.bands[i.dataid] = "i" + str(j)
 
         self.cmb_update(self.cmb_1, items)
 
@@ -211,14 +220,13 @@ class EquationEditor(BasicModule):
 
             self.equation = self.textbrowser.toPlainText()
 
-        if self.equation == '':
-            self.showlog('Error: You need to enter an equation.')
+        if self.equation == "":
+            self.showlog("Error: You need to enter an equation.")
             return False
 
         dtype = self.cmb_dtype.currentText()
 
-        outdata = eqedit(indata, self.equation, dtype,
-                         self.showlog, self.piter)
+        outdata = eqedit(indata, self.equation, dtype, self.showlog, self.piter)
 
         self.outdata[intype] = outdata
 
@@ -239,7 +247,7 @@ class EquationEditor(BasicModule):
         self.saveobj(self.cmb_1)
 
 
-def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
+def eqedit(data, equation, dtype="auto", showlog=print, piter=iter):
     """
     Use equations on raster data.
 
@@ -269,15 +277,15 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
     for j, i in enumerate(indata):
         # self.bands[i.dataid] = 'i' + str(j)
         bandsall.append(i.data)
-        localdict['i' + str(j)] = i.data
+        localdict["i" + str(j)] = i.data
 
     localdict_list = list(localdict.keys())
-    localdict['iall'] = np.ma.array(bandsall)
+    localdict["iall"] = np.ma.array(bandsall)
 
-    if equation == '':
+    if equation == "":
         return None
 
-    if 'iall' in equation:
+    if "iall" in equation:
         usedbands = localdict_list
     else:
         usedbands = []
@@ -294,16 +302,16 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
 
     neweq = eq_fix(indata, equation, showlog)
 
-    if 'mosaic' in neweq:
+    if "mosaic" in neweq:
         findat = mosaic(neweq, localdict)
         mask = findat.mask
-    elif 'mean' in neweq:
+    elif "mean" in neweq:
         findat = mean(neweq, localdict)
         mask = findat.mask
-    elif 'std' in neweq:
+    elif "std" in neweq:
         findat = std(neweq, localdict)
         mask = findat.mask
-    elif 'detrend' in neweq:
+    elif "detrend" in neweq:
         findat = detrend(neweq, localdict)
         mask = findat.mask
     else:
@@ -313,15 +321,16 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
             findat = None
 
     if findat is None:
-        showlog('Error: Nothing processed! '
-                'Your equation most likely had an error.')
+        showlog("Error: Nothing processed! Your equation most likely had an error.")
         return False
 
     outdata = []
 
     if np.size(findat) == 1:
-        showlog('Warning: Nothing processed! Your equation outputs a single '
-                'value instead of a minimum of one band.')
+        showlog(
+            "Warning: Nothing processed! Your equation outputs a single "
+            "value instead of a minimum of one band."
+        )
         return False
     if findat.ndim == 2:
         findat = findat.reshape(1, findat.shape[0], findat.shape[1])
@@ -331,15 +340,14 @@ def eqedit(data, equation, dtype='auto', showlog=print, piter=iter):
         findati[mask] = indata[i].nodata
 
         outdata.append(indata[i].copy())
-        outdata[-1].data = np.ma.masked_equal(findati,
-                                              indata[i].nodata)
+        outdata[-1].data = np.ma.masked_equal(findati, indata[i].nodata)
         outdata[-1].nodata = indata[i].nodata
 
     # This is needed to get rid of bad, unmasked values etc.
     for i, outdatai in enumerate(outdata):
         outdatai.data.set_fill_value(indata[i].nodata)
         outdatai.data = np.ma.fix_invalid(outdatai.data)
-        if dtype != 'auto':
+        if dtype != "auto":
             outdatai.data = outdatai.data.astype(dtype)
 
     if len(outdata) == 1:
@@ -368,17 +376,15 @@ def eq_fix(indata, equation, showlog=print):
 
     """
     neweq = str(equation)
-    neweq = neweq.replace('ln', 'log')
-    neweq = neweq.replace('^', '**')
-    neweq = neweq.replace('nodata', str(indata[0].nodata))
+    neweq = neweq.replace("ln", "log")
+    neweq = neweq.replace("^", "**")
+    neweq = neweq.replace("nodata", str(indata[0].nodata))
 
-    if 'log' in neweq:
-        showlog('Warning, if you have invalid log values, they will '
-                'be masked out.')
+    if "log" in neweq:
+        showlog("Warning, if you have invalid log values, they will be masked out.")
 
-    if 'sqrt' in neweq:
-        showlog('Warning, if you have invalid sqrt values, they will '
-                'be masked out.')
+    if "sqrt" in neweq:
+        showlog("Warning, if you have invalid sqrt values, they will be masked out.")
 
     neweq = neweq.strip()
 
@@ -430,17 +436,17 @@ def mosaic(eq, localdict):
         Output array.
 
     """
-    idx = eq.index('mosaic(') + 7
+    idx = eq.index("mosaic(") + 7
     eq2 = eq[idx:]
-    idx = eq2.index(')')
+    idx = eq2.index(")")
     eq2 = eq2[:idx]
-    eq2 = eq2.replace(' ', '')
-    eq3 = eq2.split(',')
+    eq2 = eq2.replace(" ", "")
+    eq3 = eq2.split(",")
 
     localdict_list = list(localdict.keys())
 
     # Check for problems
-    if 'iall' in eq:
+    if "iall" in eq:
         return None
 
     if len(eq3) < 2:
@@ -491,12 +497,12 @@ def mean(eq, localdict):
         Output array.
 
     """
-    idx = eq.index('mean(') + 5
+    idx = eq.index("mean(") + 5
     eq2 = eq[idx:]
-    idx = eq2.index(')')
+    idx = eq2.index(")")
     eq2 = eq2[:idx]
-    eq2 = eq2.replace(' ', '')
-    eq3 = eq2.split(',')
+    eq2 = eq2.replace(" ", "")
+    eq3 = eq2.split(",")
 
     stack = []
     mask = None
@@ -508,7 +514,7 @@ def mean(eq, localdict):
         else:
             mask = np.logical_and(mask, localdict[i].mask)
 
-        if i == 'iall':
+        if i == "iall":
             stack.append(localdict[i])
         else:
             stack.append([localdict[i]])
@@ -537,12 +543,12 @@ def detrend(eq, localdict):
         Output array.
 
     """
-    idx = eq.index('detrend(') + 8
+    idx = eq.index("detrend(") + 8
     eq2 = eq[idx:]
-    idx = eq2.index(')')
+    idx = eq2.index(")")
     eq2 = eq2[:idx]
-    eq2 = eq2.replace(' ', '')
-    eq3 = eq2.split(',')
+    eq2 = eq2.replace(" ", "")
+    eq3 = eq2.split(",")
 
     top = float(eq3[1])
     bottom = float(eq3[2])
@@ -557,7 +563,7 @@ def detrend(eq, localdict):
         else:
             mask = np.logical_and(mask, localdict[i].mask)
 
-        if i == 'iall':
+        if i == "iall":
             stack.append(localdict[i])
         else:
             stack.append([localdict[i]])
@@ -600,12 +606,12 @@ def std(eq, localdict):
         Output array.
 
     """
-    idx = eq.index('std(') + 4
+    idx = eq.index("std(") + 4
     eq2 = eq[idx:]
-    idx = eq2.index(')')
+    idx = eq2.index(")")
     eq2 = eq2[:idx]
-    eq2 = eq2.replace(' ', '')
-    eq3 = eq2.split(',')
+    eq2 = eq2.replace(" ", "")
+    eq3 = eq2.split(",")
 
     stack = []
     mask = None
@@ -617,7 +623,7 @@ def std(eq, localdict):
         else:
             mask = np.logical_and(mask, localdict[i].mask)
 
-        if i == 'iall':
+        if i == "iall":
             stack.append(localdict[i])
         else:
             stack.append([localdict[i]])
@@ -632,24 +638,27 @@ def std(eq, localdict):
 def _test():
     """Test."""
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
-    print('Starting')
+
+    print("Starting")
 
     ifile = r"D:\workdata\modelling\regional\Model_mag.hdr"
 
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     EE = EquationEditor()
-    EE.indata['Raster'] = dat
-    EE.textbrowser.setText('detrend(i0,40,-10)')
+    EE.indata["Raster"] = dat
+    EE.textbrowser.setText("detrend(i0,40,-10)")
 
     EE.settings()
 
-    out = EE.outdata['Raster']
+    out = EE.outdata["Raster"]
 
     plt.figure(dpi=300)
     plt.imshow(out[0].data)

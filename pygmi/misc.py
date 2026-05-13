@@ -26,17 +26,18 @@
 
 import os
 import sys
-import types
-import time
 import textwrap
-import psutil
+import time
+import types
 import webbrowser
+
+import geopandas as gpd
 import numpy as np
-from matplotlib import ticker, cm, colors
-from PySide6 import QtWidgets, QtCore, QtGui
+import psutil
+from matplotlib import cm, colors, ticker
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QRegularExpression
 from PySide6.QtGui import QRegularExpressionValidator
-import geopandas as gpd
 
 from pygmi.raster.reproj import GroupProj
 
@@ -156,7 +157,7 @@ class BasicModule(QtWidgets.QDialog):
             self.stdout_redirect = EmittingStream(parent.showlog)
             self.showlog = parent.showlog
             self.pbar = parent.pbar
-            if hasattr(parent, 'process_is_active'):
+            if hasattr(parent, "process_is_active"):
                 self.process_is_active = parent.process_is_active
             else:
                 self.process_is_active = lambda *args, **kwargs: None
@@ -168,14 +169,13 @@ class BasicModule(QtWidgets.QDialog):
         self.projdata = {}
         self.parent = parent
         self.is_import = False
-        self.ifile = ''
+        self.ifile = ""
 
         regex_pattern = r"^$|^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$"
-        self.qval = QRegularExpressionValidator(
-            QRegularExpression(regex_pattern))
+        self.qval = QRegularExpressionValidator(QRegularExpression(regex_pattern))
 
-        ipth = os.path.dirname(__file__) + r'/images/'
-        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
+        ipth = os.path.dirname(__file__) + r"/images/"
+        self.setWindowIcon(QtGui.QIcon(ipth + "logo256.ico"))
 
         self.buttonbox = PButtonBox(self)
         self.buttonbox.buttonbox.accepted.connect(self.accept)
@@ -211,8 +211,7 @@ class BasicModule(QtWidgets.QDialog):
         for value in vars(self).values():
             if isinstance(value, QtWidgets.QLineEdit):
                 if not value.hasAcceptableInput():
-                    self.showlog('One of your inputs is incorrect. '
-                                 'Please check.')
+                    self.showlog("One of your inputs is incorrect. Please check.")
                     return False
 
         return True
@@ -233,7 +232,7 @@ class BasicModule(QtWidgets.QDialog):
 
         obj.clear()
         obj.addItems(txtlist)
-        if txt != '':
+        if txt != "":
             obj.setCurrentText(txt)
 
         obj.blockSignals(False)
@@ -271,8 +270,9 @@ class BasicModule(QtWidgets.QDialog):
 
         for otxt in projdata:
             if otxt not in vars(self):
-                self.showlog('Cannot load project, you may be using an '
-                             'old project format.')
+                self.showlog(
+                    "Cannot load project, you may be using an old project format."
+                )
                 return False
 
         for otxt in projdata:
@@ -281,13 +281,11 @@ class BasicModule(QtWidgets.QDialog):
             if obj is None:
                 vars(self)[otxt] = projdata[otxt]
 
-            if isinstance(obj, (float, int, bool, list, np.ndarray, tuple,
-                                str, dict)):
+            if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str, dict)):
                 vars(self)[otxt] = projdata[otxt]
 
             if isinstance(obj, gpd.GeoDataFrame):
-                vars(self)[otxt] = gpd.read_file(
-                    projdata[otxt], driver='GeoJSON')
+                vars(self)[otxt] = gpd.read_file(projdata[otxt], driver="GeoJSON")
 
             if isinstance(obj, QtWidgets.QComboBox):
                 obj.blockSignals(True)
@@ -301,14 +299,16 @@ class BasicModule(QtWidgets.QDialog):
                 obj.setText(projdata[otxt])
                 obj.blockSignals(False)
 
-            if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
-                                QtWidgets.QSlider)):
+            if isinstance(
+                obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox, QtWidgets.QSlider)
+            ):
                 obj.blockSignals(True)
                 obj.setValue(projdata[otxt])
                 obj.blockSignals(False)
 
-            if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox,
-                                QtWidgets.QGroupBox)):
+            if isinstance(
+                obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox, QtWidgets.QGroupBox)
+            ):
                 obj.blockSignals(True)
                 obj.setChecked(projdata[otxt])
                 obj.blockSignals(False)
@@ -322,22 +322,22 @@ class BasicModule(QtWidgets.QDialog):
             if isinstance(obj, QtWidgets.QListWidget):
                 obj.blockSignals(True)
                 if obj.count() == 0:
-                    obj.addItems(self.projdata[otxt]['all'])
+                    obj.addItems(self.projdata[otxt]["all"])
 
                 for i in range(obj.count()):
-                    if obj.item(i).text() in self.projdata[otxt]['selected']:
+                    if obj.item(i).text() in self.projdata[otxt]["selected"]:
                         obj.item(i).setSelected(True)
 
                 obj.blockSignals(False)
 
             if isinstance(obj, GroupProj):
                 obj.cmb_datum.blockSignals(True)
-                obj.cmb_datum.setCurrentText(projdata[otxt]['datum'])
+                obj.cmb_datum.setCurrentText(projdata[otxt]["datum"])
                 obj.cmb_datum.blockSignals(False)
                 obj.combo_datum_change()
 
                 obj.cmb_proj.blockSignals(True)
-                obj.cmb_proj.setCurrentText(projdata[otxt]['proj'])
+                obj.cmb_proj.setCurrentText(projdata[otxt]["proj"])
                 obj.cmb_proj.blockSignals(False)
                 obj.combo_change()
 
@@ -382,8 +382,7 @@ class BasicModule(QtWidgets.QDialog):
         if otxt is None:
             return
 
-        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str,
-                            dict)):
+        if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str, dict)):
             self.projdata[otxt] = obj
 
         if isinstance(obj, gpd.GeoDataFrame):
@@ -398,28 +397,32 @@ class BasicModule(QtWidgets.QDialog):
         if isinstance(obj, QtWidgets.QTextEdit):
             self.projdata[otxt] = obj.toPlainText()
 
-        if isinstance(obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox,
-                            QtWidgets.QSlider)):
+        if isinstance(
+            obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox, QtWidgets.QSlider)
+        ):
             self.projdata[otxt] = obj.value()
 
-        if isinstance(obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox,
-                            QtWidgets.QGroupBox)):
+        if isinstance(
+            obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox, QtWidgets.QGroupBox)
+        ):
             self.projdata[otxt] = obj.isChecked()
 
         if isinstance(obj, QtWidgets.QDateEdit):
             self.projdata[otxt] = obj.date().toString()
 
         if isinstance(obj, QtWidgets.QListWidget):
-            self.projdata[otxt] = {'all': [], 'selected': []}
+            self.projdata[otxt] = {"all": [], "selected": []}
 
             tmp = [i.text() for i in obj.selectedItems()]
-            self.projdata[otxt]['selected'] = tmp
+            self.projdata[otxt]["selected"] = tmp
             tmp = [obj.item(i).text() for i in range(obj.count())]
-            self.projdata[otxt]['all'] = tmp
+            self.projdata[otxt]["all"] = tmp
 
         if isinstance(obj, GroupProj):
-            self.projdata[otxt] = {'datum': obj.cmb_datum.currentText(),
-                                   'proj': obj.cmb_proj.currentText()}
+            self.projdata[otxt] = {
+                "datum": obj.cmb_datum.currentText(),
+                "proj": obj.cmb_proj.currentText(),
+            }
 
         return
 
@@ -460,7 +463,7 @@ class ContextModule(QtWidgets.QDialog):
             self.stdout_redirect = EmittingStream(parent.showlog)
             self.showlog = parent.showlog
             self.pbar = parent.pbar
-            if hasattr(parent, 'process_is_active'):
+            if hasattr(parent, "process_is_active"):
                 self.process_is_active = parent.process_is_active
             else:
                 self.process_is_active = lambda *args, **kwargs: None
@@ -472,11 +475,10 @@ class ContextModule(QtWidgets.QDialog):
         self.parent = parent
 
         regex_pattern = r"^$|^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$"
-        self.qval = QRegularExpressionValidator(
-            QRegularExpression(regex_pattern))
+        self.qval = QRegularExpressionValidator(QRegularExpression(regex_pattern))
 
-        ipth = os.path.dirname(__file__) + r'/images/'
-        self.setWindowIcon(QtGui.QIcon(ipth + 'logo256.ico'))
+        ipth = os.path.dirname(__file__) + r"/images/"
+        self.setWindowIcon(QtGui.QIcon(ipth + "logo256.ico"))
 
         self.buttonbox = PButtonBox(self)
         self.buttonbox.buttonbox.accepted.connect(self.accept)
@@ -495,8 +497,7 @@ class ContextModule(QtWidgets.QDialog):
         for value in vars(self).values():
             if isinstance(value, QtWidgets.QLineEdit):
                 if not value.hasAcceptableInput():
-                    self.showlog('One of your inputs is incorrect. '
-                                 'Please check.')
+                    self.showlog("One of your inputs is incorrect. Please check.")
                     return False
 
         return True
@@ -550,17 +551,18 @@ class PButtonBox(QtWidgets.QWidget):
         helpdocs.setMinimumHeight(32)
         helpdocs.setMinimumWidth(52)
 
-        ipth = os.path.dirname(__file__) + r'/images/'
+        ipth = os.path.dirname(__file__) + r"/images/"
 
-        helpdocs.setIcon(QtGui.QIcon(ipth + 'help.png'))
+        helpdocs.setIcon(QtGui.QIcon(ipth + "help.png"))
         helpdocs.setIconSize(helpdocs.minimumSize())
         helpdocs.clicked.connect(self.help_docs)
         helpdocs.setFlat(True)
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.StandardButton.Cancel |
-                                     buttonbox.StandardButton.Ok)
+        buttonbox.setStandardButtons(
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok
+        )
 
         hbl = QtWidgets.QHBoxLayout()
 
@@ -574,11 +576,11 @@ class PButtonBox(QtWidgets.QWidget):
     def help_docs(self):
         """Help Routine."""
         if self.htmlfile is not None:
-            ipth = os.path.dirname(__file__) + r'/helpdocs/html'
-            if '.html' not in self.htmlfile:
-                self.htmlfile = self.htmlfile + '.html'
+            ipth = os.path.dirname(__file__) + r"/helpdocs/html"
+            if ".html" not in self.htmlfile:
+                self.htmlfile = self.htmlfile + ".html"
             hfile = os.path.join(ipth, self.htmlfile)
-            webbrowser.open('file://' + hfile)
+            webbrowser.open("file://" + hfile)
 
 
 class QVStack2Layout(QtWidgets.QGridLayout):
@@ -630,7 +632,7 @@ class QVStack2Layout(QtWidgets.QGridLayout):
         super().addWidget(*args, **kwargs)
 
 
-class PTime():
+class PTime:
     """
     PTime class.
 
@@ -647,7 +649,7 @@ class PTime():
     def __init__(self):
         self.tchk = [time.perf_counter()]
 
-    def since_first_call(self, msg='since first call', show=True):
+    def since_first_call(self, msg="since first call", show=True):
         """
         Time lapsed since first call.
 
@@ -663,14 +665,14 @@ class PTime():
         tdiff = self.tchk[-1] - self.tchk[0]
         if show:
             if tdiff < 60:
-                print(msg, 'time (s):', tdiff)
+                print(msg, "time (s):", tdiff)
             else:
                 mins = int(tdiff / 60)
                 secs = tdiff - mins * 60
-                print(msg, 'time (s): ', mins, ' minutes ', secs, ' seconds')
+                print(msg, "time (s): ", mins, " minutes ", secs, " seconds")
         return tdiff
 
-    def since_last_call(self, msg='since last call', show=True):
+    def since_last_call(self, msg="since last call", show=True):
         """
         Time lapsed since last call.
 
@@ -685,7 +687,7 @@ class PTime():
         self.tchk.append(time.perf_counter())
         tdiff = self.tchk[-1] - self.tchk[-2]
         if show:
-            print(msg, 'time(s):', tdiff, 'since last call')
+            print(msg, "time(s):", tdiff, "since last call")
         return tdiff
 
 
@@ -743,14 +745,14 @@ class ProgressBar(QtWidgets.QProgressBar):
                 tleft = (self.total - i) * (time2 - self.otime) / i
                 if tleft > 60:
                     tleft = int(tleft // 60)
-                    self.setFormat('%p% ' + str(tleft) + 'min left ')
+                    self.setFormat("%p% " + str(tleft) + "min left ")
                 else:
                     tleft = int(tleft)
-                    self.setFormat('%p% ' + str(tleft) + 's left   ')
+                    self.setFormat("%p% " + str(tleft) + "s left   ")
                 QtWidgets.QApplication.processEvents()
                 time1 = time2
 
-        self.setFormat('%p%')
+        self.setFormat("%p%")
         self.setValue(self.total)
 
     def to_max(self):
@@ -761,7 +763,7 @@ class ProgressBar(QtWidgets.QProgressBar):
         QtWidgets.QApplication.processEvents()
 
 
-class ProgressBarText():
+class ProgressBarText:
     """
     Text Progress bar.
 
@@ -779,8 +781,8 @@ class ProgressBarText():
         self.total = 100
         self.decimals = 1
         self.length = 40
-        self.fill = '#'
-        self.prefix = 'Progress:'
+        self.fill = "#"
+        self.prefix = "Progress:"
 
     def iter(self, iterable):
         """Iterate Routine."""
@@ -806,10 +808,10 @@ class ProgressBarText():
 
                 tleft = (self.total - i) * (time2 - self.otime) / i
                 if tleft > 60:
-                    timestr = f' {tleft // 60:.0f} min left '
+                    timestr = f" {tleft // 60:.0f} min left "
                 else:
-                    timestr = f' {tleft:.1f} sec left '
-                timestr += f' {time2 - self.otime:.1f} sec total      '
+                    timestr = f" {tleft:.1f} sec left "
+                timestr += f" {time2 - self.otime:.1f} sec total      "
 
                 self.printprogressbar(i, suffix=timestr)
                 if i == self.total:
@@ -818,7 +820,7 @@ class ProgressBarText():
         if not gottototal:
             self.printprogressbar(self.total)
 
-    def printprogressbar(self, iteration, suffix=''):
+    def printprogressbar(self, iteration, suffix=""):
         """
         Call in a loop to create terminal progress bar.
 
@@ -837,11 +839,11 @@ class ProgressBarText():
 
         """
         perc = 100 * (iteration / float(self.total))
-        percent = f'{perc:.{self.decimals}f}'
+        percent = f"{perc:.{self.decimals}f}"
         filledlength = int(self.length * iteration // self.total)
-        pbar = self.fill * filledlength + '-' * (self.length - filledlength)
-        pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
-        print(pbar, end='\r')
+        pbar = self.fill * filledlength + "-" * (self.length - filledlength)
+        pbar = f"\r{self.prefix} |{pbar}| {percent}% {suffix}"
+        print(pbar, end="\r")
         # Print New Line on Complete
         if iteration == self.total:
             print()
@@ -884,19 +886,18 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
     vals = vals[~np.isnan(vals)]
 
     if len(vals) < 2:
-        print('Too few discrete values')
+        print("Too few discrete values")
         return
     # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
 
-    if hasattr(csp.norm, 'boundaries'):
+    if hasattr(csp.norm, "boundaries"):
         bnds = csp.norm.boundaries
         ticks = np.diff(bnds) / 2 + vals
         cbar = axes.figure.colorbar(csp, ticks=ticks)
     else:
         bnds = vals.tolist() + [vals.max() + 1]
         ticks = np.diff(bnds) / 2 + vals
-        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals,
-                                    ticks=ticks)
+        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals, ticks=ticks)
 
     if lbls is not None:
         cbar.ax.set_yticklabels(lbls)
@@ -927,19 +928,19 @@ def getinfo(txt=None, reset=False):
     PTIME = time.perf_counter()
 
     if timebefore is None or reset is True:
-        tdiff = 0.
+        tdiff = 0.0
     else:
         tdiff = PTIME - timebefore
 
     if txt is not None:
-        heading = '===== ' + str(txt) + ': '
+        heading = "===== " + str(txt) + ": "
     else:
-        heading = '===== Info: '
+        heading = "===== Info: "
 
     mem = psutil.virtual_memory()
-    memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
+    memtxt = f"RAM memory used: {mem.used:,.1f} B ({mem.percent}%)"
 
-    print(heading + memtxt + f' Time(s): {tdiff:.3f}')
+    print(heading + memtxt + f" Time(s): {tdiff:.3f}")
 
 
 # def limit_memory(memory_limit):
@@ -972,7 +973,7 @@ def getinfo(txt=None, reset=False):
 #         hjob, win32job.JobObjectExtendedLimitInformation, info)
 
 
-def textwrap2(text, width, placeholder='...', max_lines=None):
+def textwrap2(text, width, placeholder="...", max_lines=None):
     """
     Provide slightly different placeholder functionality to textwrap.
 
@@ -1000,9 +1001,9 @@ def textwrap2(text, width, placeholder='...', max_lines=None):
     if max_lines is not None and text2:
         text2 = text2[:max_lines]
         if len(text2[-1]) == width:
-            text2[-1] = text2[-1][:-len(placeholder)] + placeholder
+            text2[-1] = text2[-1][: -len(placeholder)] + placeholder
 
-    text2 = '\n'.join(text2)
+    text2 = "\n".join(text2)
 
     return text2
 
@@ -1025,9 +1026,9 @@ def tick_formatter(x, pos):
 
     """
     if np.ma.is_masked(x):
-        return '--'
+        return "--"
 
-    newx = f'{x:,.5f}'.rstrip('0').rstrip('.')
+    newx = f"{x:,.5f}".rstrip("0").rstrip(".")
 
     return newx
 
@@ -1047,11 +1048,9 @@ def _testfn():
 
     import matplotlib.pyplot as plt
 
-    data = [[0, 45, 50],
-            [0, 45, 50],
-            [0, 44, 50]]
+    data = [[0, 45, 50], [0, 45, 50], [0, 44, 50]]
 
-    lbls = ['a', 'b', 'c', 'd']
+    lbls = ["a", "b", "c", "d"]
 
     vals = np.unique(data)
     if np.ma.isMaskedArray(vals):

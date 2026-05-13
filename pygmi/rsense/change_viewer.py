@@ -25,15 +25,15 @@
 """Change detection viewer."""
 
 import datetime
-from PySide6 import QtWidgets, QtCore
-import pandas as pd
-from matplotlib.figure import Figure
-import matplotlib.animation as manimation
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 
-from pygmi.misc import frm
-from pygmi.misc import BasicModule
+import matplotlib.animation as manimation
+import pandas as pd
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from PySide6 import QtCore, QtWidgets
+
+from pygmi.misc import BasicModule, frm
 from pygmi.raster.modest_ioimage import imshow
 
 
@@ -61,7 +61,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.im1 = None
         self.bands = [0, 1, 2]
         self.rcid = None
-        self.manip = 'RGB Ternary'
+        self.manip = "RGB Ternary"
         self.cbar = None
         self.capture_active = False
         self.writer = None
@@ -70,9 +70,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         super().__init__(self.fig)
 
-        FigureCanvasQTAgg.setSizePolicy(self,
-                                        QtWidgets.QSizePolicy.Policy.Expanding,
-                                        QtWidgets.QSizePolicy.Policy.Expanding)
+        FigureCanvasQTAgg.setSizePolicy(
+            self,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         FigureCanvasQTAgg.updateGeometry(self)
 
     def capture(self):
@@ -87,10 +89,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.capture_active = not self.capture_active
 
         if self.capture_active:
-            ext = 'GIF (*.gif)'
+            ext = "GIF (*.gif)"
             wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
-                None, 'Save File', '.', ext)
-            if wfile == '':
+                None, "Save File", ".", ext
+            )
+            if wfile == "":
                 self.capture_active = not self.capture_active
                 return
 
@@ -115,7 +118,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        if 'Ternary' in self.manip:
+        if "Ternary" in self.manip:
             red = dat.banddict[self.bands[0]]
             green = dat.banddict[self.bands[1]]
             blue = dat.banddict[self.bands[2]]
@@ -126,8 +129,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         extent = dat.banddict[self.bands[0]].extent
 
-        self.im1 = imshow(self.ax1, data, extent=extent, piter=self.piter,
-                          showlog=self.showlog)
+        self.im1 = imshow(
+            self.ax1, data, extent=extent, piter=self.piter, showlog=self.showlog
+        )
         self.im1.rgbmode = self.manip
         self.im1.rgbclip = None
         self.cbar = None
@@ -157,7 +161,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         extent = dat.banddata[0].extent
         self.im1.rgbmode = self.manip
 
-        if 'Ternary' in self.manip:
+        if "Ternary" in self.manip:
             red = dat.banddict[self.bands[0]]
             green = dat.banddict[self.bands[1]]
             blue = dat.banddict[self.bands[2]]
@@ -201,9 +205,9 @@ class SceneViewer(BasicModule):
         self.slider = QtWidgets.QSlider()
         self.slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
-        self.button1 = QtWidgets.QPushButton('Start Capture')
-        self.button2 = QtWidgets.QPushButton('Previous Scene')
-        self.button3 = QtWidgets.QPushButton('Next Scene')
+        self.button1 = QtWidgets.QPushButton("Start Capture")
+        self.button2 = QtWidgets.QPushButton("Previous Scene")
+        self.button3 = QtWidgets.QPushButton("Next Scene")
         self.cmb_band1 = QtWidgets.QComboBox()
         self.cmb_band2 = QtWidgets.QComboBox()
         self.cmb_band3 = QtWidgets.QComboBox()
@@ -221,7 +225,7 @@ class SceneViewer(BasicModule):
 
         """
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'rsense.dm.change.html#view-change-data'
+        self.buttonbox.htmlfile = "rsense.dm.change.html#view-change-data"
         vbl_1 = QtWidgets.QVBoxLayout()
         vbl_2 = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout()
@@ -230,23 +234,26 @@ class SceneViewer(BasicModule):
         self.setWindowTitle("View Change Data")
         self.slider.setTracking(False)
 
-        gbox_1 = QtWidgets.QGroupBox('Display Type')
+        gbox_1 = QtWidgets.QGroupBox("Display Type")
         vbl_1b = QtWidgets.QVBoxLayout()
         gbox_1.setLayout(vbl_1b)
 
-        gbox_2 = QtWidgets.QGroupBox('Data Bands')
+        gbox_2 = QtWidgets.QGroupBox("Data Bands")
         vbl_2b = QtWidgets.QVBoxLayout()
         gbox_2.setLayout(vbl_2b)
 
-        spacer = QtWidgets.QSpacerItem(20, 40,
-                                       QtWidgets.QSizePolicy.Policy.Fixed,
-                                       QtWidgets.QSizePolicy.Policy.Expanding)
+        spacer = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Fixed,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
 
         vbl_2b.addWidget(self.cmb_band1)
         vbl_2b.addWidget(self.cmb_band2)
         vbl_2b.addWidget(self.cmb_band3)
 
-        actions = ['RGB Ternary', 'CMY Ternary', 'Single Colour Map']
+        actions = ["RGB Ternary", "CMY Ternary", "Single Colour Map"]
         self.cmb_manip.addItems(actions)
 
         vbl_1b.addWidget(self.cmb_manip)
@@ -294,8 +301,8 @@ class SceneViewer(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'RasterFileList' not in self.indata:
-            self.showlog('No batch file list detected.')
+        if "RasterFileList" not in self.indata:
+            self.showlog("No batch file list detected.")
             return False
 
         chk = self.updatescenelist()
@@ -319,9 +326,11 @@ class SceneViewer(BasicModule):
         self.cmb_update(self.cmb_band2, bands)
         self.cmb_update(self.cmb_band3, bands)
 
-        self.canvas.bands = [self.cmb_band1.currentText(),
-                             self.cmb_band2.currentText(),
-                             self.cmb_band3.currentText()]
+        self.canvas.bands = [
+            self.cmb_band1.currentText(),
+            self.cmb_band2.currentText(),
+            self.cmb_band3.currentText(),
+        ]
 
         self.canvas.manip = self.cmb_manip.currentText()
         self.canvas.compute_initial_figure(dat, dates)
@@ -343,15 +352,15 @@ class SceneViewer(BasicModule):
             Boolean to indicate success.
 
         """
-        dat = self.indata['RasterFileList']
+        dat = self.indata["RasterFileList"]
 
         subfiles = []
         for i in dat:
-            if '.tif' in i.filename.lower():
+            if ".tif" in i.filename.lower():
                 subfiles.append(i)
 
         if not subfiles:
-            self.showlog('No GeoTIFF images found.')
+            self.showlog("No GeoTIFF images found.")
             return False
 
         dtime = []
@@ -369,13 +378,13 @@ class SceneViewer(BasicModule):
             flist.append(i)
 
         if nodates is True:
-            self.showlog('Some of your scenes do not have dates.')
+            self.showlog("Some of your scenes do not have dates.")
 
         self.df = pd.DataFrame()
-        self.df['Datetime'] = dtime
-        self.df['Filename'] = flist
+        self.df["Datetime"] = dtime
+        self.df["Filename"] = flist
 
-        self.df.sort_values('Datetime', inplace=True)
+        self.df.sort_values("Datetime", inplace=True)
 
         return True
 
@@ -404,16 +413,18 @@ class SceneViewer(BasicModule):
         """
         maniptxt = self.cmb_manip.currentText()
 
-        if 'Ternary' in maniptxt:
+        if "Ternary" in maniptxt:
             self.cmb_band2.show()
             self.cmb_band3.show()
         else:
             self.cmb_band2.hide()
             self.cmb_band3.hide()
 
-        self.canvas.bands = [self.cmb_band1.currentText(),
-                             self.cmb_band2.currentText(),
-                             self.cmb_band3.currentText()]
+        self.canvas.bands = [
+            self.cmb_band1.currentText(),
+            self.cmb_band2.currentText(),
+            self.cmb_band3.currentText(),
+        ]
 
         self.canvas.manip = maniptxt
         self.newdata(self.curimage)
@@ -463,7 +474,7 @@ class SceneViewer(BasicModule):
             dat.banddict[i.dataid] = i
 
         if self.canvas.bands[0] not in dat.banddict:
-            self.showlog('Band name not in dataset.')
+            self.showlog("Band name not in dataset.")
             return
 
         self.canvas.update_plot(dat, dates)
@@ -477,7 +488,7 @@ class SceneViewer(BasicModule):
         None.
 
         """
-        self.showlog('Starting capture...')
+        self.showlog("Starting capture...")
         self.slider.valueChanged.disconnect()
 
         self.canvas.capture()
@@ -494,18 +505,19 @@ class SceneViewer(BasicModule):
         self.slider.valueChanged.connect(self.newdata)
         self.slider.setValue(self.curimage)
 
-        self.showlog('Capture complete.')
+        self.showlog("Capture complete.")
 
 
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir

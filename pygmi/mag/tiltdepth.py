@@ -34,21 +34,21 @@ Salem et al., 2007, Leading Edge, Dec,p1502-5
 
 import os
 from math import pi
-import numpy as np
 
-from PySide6 import QtWidgets
-from matplotlib import colormaps
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-import matplotlib.pyplot as plt
-from numba import jit
 import geopandas as gpd
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import colormaps
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from numba import jit
+from PySide6 import QtWidgets
 
+from pygmi.mag.dataprep import rtp
+from pygmi.misc import BasicModule, ProgressBar, ProgressBarText, frm
 from pygmi.raster.dataprep import verticalp
 from pygmi.raster.misc import lstack
-from pygmi.mag.dataprep import rtp
-from pygmi.misc import frm, BasicModule, ProgressBarText, ProgressBar
 
 
 class TiltDepth(BasicModule):
@@ -73,7 +73,7 @@ class TiltDepth(BasicModule):
         self.Y = None
         self.Z = None
         self.depths = None
-        self.cbar = colormaps['jet']
+        self.cbar = colormaps["jet"]
 
         self.x0 = None
         self.x1 = None
@@ -90,9 +90,9 @@ class TiltDepth(BasicModule):
         self.cmb_cbar = QtWidgets.QComboBox(self)
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
-        self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
-        self.btn_save = QtWidgets.QPushButton('Save Depths to Text File')
-        self.cb_rtp = QtWidgets.QCheckBox('Perform RTP on data')
+        self.btn_apply = QtWidgets.QPushButton("Calculate Tilt Depth")
+        self.btn_save = QtWidgets.QPushButton("Save Depths to Text File")
+        self.cb_rtp = QtWidgets.QCheckBox("Perform RTP on data")
         self.pbar = ProgressBar()
 
         self.setupui()
@@ -106,19 +106,19 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'mag.dm.tiltdepth'
+        self.buttonbox.htmlfile = "mag.dm.tiltdepth"
         self.buttonbox.buttonbox.hide()
-        lbl_2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
-        lbl_c = QtWidgets.QLabel('Colour Bar:')
-        lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
-        lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
+        lbl_2 = QtWidgets.QLabel("Band to perform Tilt Depth:")
+        lbl_c = QtWidgets.QLabel("Colour Bar:")
+        lbl_inc = QtWidgets.QLabel("Inclination of Magnetic Field:")
+        lbl_dec = QtWidgets.QLabel("Declination of Magnetic Field:")
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
-        self.dsb_inc.setValue(-67.)
+        self.dsb_inc.setValue(-67.0)
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
-        self.dsb_dec.setValue(-17.)
+        self.dsb_dec.setValue(-17.0)
         self.cb_rtp.setChecked(True)
 
         vbl_raster = QtWidgets.QVBoxLayout()
@@ -126,14 +126,17 @@ class TiltDepth(BasicModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40,
-                                       QtWidgets.QSizePolicy.Policy.Minimum,
-                                       QtWidgets.QSizePolicy.Policy.Expanding)
+        spacer = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         tmp = sorted(colormaps.keys())
-        self.cmb_cbar.addItem('viridis')
+        self.cmb_cbar.addItem("viridis")
         self.cmb_cbar.addItems(tmp)
 
-        self.setWindowTitle('Tilt Depth Interpretation')
+        self.setWindowTitle("Tilt Depth Interpretation")
 
         vbl_raster.addWidget(lbl_2)
         vbl_raster.addWidget(self.cmb_band1)
@@ -191,19 +194,18 @@ class TiltDepth(BasicModule):
         if self.depths is None:
             return False
 
-        ext = 'Text File (*.csv)'
+        ext = "Text File (*.csv)"
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
-                                                            'Save File',
-                                                            '.', ext)
-        if filename == '':
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, "Save File", ".", ext
+        )
+        if filename == "":
             return False
 
         os.chdir(os.path.dirname(filename))
         self.depths.to_csv(filename, index=False)
 
-        QtWidgets.QMessageBox.information(self.parent, 'Information',
-                                          'Save completed!')
+        QtWidgets.QMessageBox.information(self.parent, "Information", "Save completed!")
 
         return True
 
@@ -218,8 +220,8 @@ class TiltDepth(BasicModule):
         """
         txt = str(self.cmb_band1.currentText())
 
-        zout = self.indata['Raster'][0]
-        for i in self.indata['Raster']:
+        zout = self.indata["Raster"][0]
+        for i in self.indata["Raster"]:
             if i.dataid == txt:
                 zout = i
                 break
@@ -233,16 +235,22 @@ class TiltDepth(BasicModule):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
         cmap = colormaps[txt]
 
         vmin = zout.data.mean() - 2.5 * zout.data.std()
         vmax = zout.data.mean() + 2.5 * zout.data.std()
 
-        self.axes.imshow(zout.data, extent=zout.extent, cmap='gray',
-                         interpolation='nearest', vmin=vmin, vmax=vmax)
+        self.axes.imshow(
+            zout.data,
+            extent=zout.extent,
+            cmap="gray",
+            interpolation="nearest",
+            vmin=vmin,
+            vmax=vmax,
+        )
 
         cmap = colormaps.get_cmap(txt)
         cmap2 = np.array([cmap(i) for i in range(cmap.N)])
@@ -250,21 +258,20 @@ class TiltDepth(BasicModule):
         high = int(cmap.N * (135 / 180))
         cmap2[low:high] = cmap2[int(cmap.N / 2)]
 
-        if 'Vector' in self.outdata:
-            gdf = self.outdata['Vector'][0]
-            ims = self.axes.scatter(
-                gdf['x'], gdf['y'], c=gdf['depth'], cmap=cmap)
-            self.figure.colorbar(ims, format=frm, label='Depth (m)')
+        if "Vector" in self.outdata:
+            gdf = self.outdata["Vector"][0]
+            ims = self.axes.scatter(gdf["x"], gdf["y"], c=gdf["depth"], cmap=cmap)
+            self.figure.colorbar(ims, format=frm, label="Depth (m)")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
         if zout.crs is not None and zout.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         # self.figure.colorbar(ims, format=frm, label='Depth (m)')
 
@@ -282,13 +289,13 @@ class TiltDepth(BasicModule):
 
         """
 
-        self.btn_apply.setText('Calculating...')
+        self.btn_apply.setText("Calculating...")
         self.btn_apply.setEnabled(False)
 
         txt = str(self.cmb_band1.currentText())
 
-        dat = self.indata['Raster'][0]
-        for i in self.indata['Raster']:
+        dat = self.indata["Raster"][0]
+        for i in self.indata["Raster"]:
             if i.dataid == txt:
                 dat = i
                 break
@@ -301,11 +308,11 @@ class TiltDepth(BasicModule):
             dec = None
 
         self.depths = tiltdepth(dat, inc, dec, self.pbar, self.showlog)
-        self.outdata['Vector'] = [self.depths]
+        self.outdata["Vector"] = [self.depths]
         self.change_cbar()
 
         self.btn_apply.setEnabled(True)
-        self.btn_apply.setText('Calculate Tilt Depth')
+        self.btn_apply.setText("Calculate Tilt Depth")
 
     def settings(self, nodialog=False):
         """
@@ -322,13 +329,13 @@ class TiltDepth(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        self.indata['Raster'] = lstack(self.indata['Raster'])
+        self.indata["Raster"] = lstack(self.indata["Raster"])
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         blist = []
         for i in data:
             blist.append(i.dataid)
@@ -475,7 +482,7 @@ def tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print):
 
     dist = np.min([dist1, dist2], 0)
 
-    tmp = {'x': gx0, 'y': gy0, 'id': cntid0.astype(int), 'depth': dist}
+    tmp = {"x": gx0, "y": gy0, "id": cntid0.astype(int), "depth": dist}
 
     gdf = gpd.GeoDataFrame(tmp, geometry=gpd.points_from_xy(gx0, gy0))
 
@@ -507,10 +514,10 @@ def distpc(dx, dy, dx0, dy0, dcnt):
 
     """
     num = dx.size
-    dmin = (dx0 - dx[dcnt])**2 + (dy0 - dy[dcnt])**2
+    dmin = (dx0 - dx[dcnt]) ** 2 + (dy0 - dy[dcnt]) ** 2
 
     for i in range(num):
-        dist = (dx0 - dx[i])**2 + (dy0 - dy[i])**2
+        dist = (dx0 - dx[i]) ** 2 + (dy0 - dy[i]) ** 2
         if dmin > dist:
             dcnt = i
             dmin = dist
@@ -547,7 +554,6 @@ def vgrad(cnt):
 
     n = 0
     for path in cnt.get_paths():
-
         cntv = path.vertices
         cntc = path.codes
         cnt2 = np.split(cntv, np.where(cntc == 1)[0][1:])
@@ -566,8 +572,8 @@ def vgrad(cnt):
 
     cgrad = np.arctan2(dy2, dx2)
     cgrad = np.rad2deg(cgrad)
-    cgrad[cgrad > 90] -= 180.
-    cgrad[cgrad < -90] += 180.
+    cgrad[cgrad > 90] -= 180.0
+    cgrad[cgrad < -90] += 180.0
 
     return np.array(gx), np.array(gy), cgrad, np.array(cntid)
 
@@ -575,6 +581,7 @@ def vgrad(cnt):
 def _testfn():
     """RTP testing routine."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
@@ -582,13 +589,13 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = TiltDepth()
-    tmp1.indata['Raster'] = dat
+    tmp1.indata["Raster"] = dat
     tmp1.cb_rtp.setChecked(False)
-    tmp1.dsb_inc.setValue(-63.)
-    tmp1.dsb_dec.setValue(-16.)
+    tmp1.dsb_inc.setValue(-63.0)
+    tmp1.dsb_dec.setValue(-16.0)
 
     tmp1.settings()
 

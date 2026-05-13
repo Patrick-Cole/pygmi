@@ -27,13 +27,14 @@
 import math
 import os
 import sys
+
 import numpy as np
 from numba import jit
 from PySide6 import QtWidgets
 
-from pygmi.rsense.iodefs import get_from_rastermeta
-from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
+from pygmi.raster.misc import lstack
+from pygmi.rsense.iodefs import get_from_rastermeta
 
 
 class CalculateChange(BasicModule):
@@ -63,20 +64,26 @@ class CalculateChange(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.change.html#calculate-change-indices'
+        self.buttonbox.htmlfile = "rsense.dm.change.html#calculate-change-indices"
         gl_main = QtWidgets.QGridLayout(self)
-        btn_invert = QtWidgets.QPushButton('Invert Selection')
-        lbl_ratios = QtWidgets.QLabel('Indices:')
+        btn_invert = QtWidgets.QPushButton("Invert Selection")
+        lbl_ratios = QtWidgets.QLabel("Indices:")
 
         self.lw_indices.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
-        ilist = ['Difference', 'Mean', 'Standard Deviation',
-                 'Coefficient of Variation', 'Spectral Angle Mapper']
+        ilist = [
+            "Difference",
+            "Mean",
+            "Standard Deviation",
+            "Coefficient of Variation",
+            "Spectral Angle Mapper",
+        ]
 
         self.lw_indices.addItems(ilist)
 
-        self.setWindowTitle('Calculate Change Indices')
+        self.setWindowTitle("Calculate Change Indices")
 
         gl_main.addWidget(lbl_ratios, 1, 0, 1, 1)
         gl_main.addWidget(self.lw_indices, 1, 1, 1, 1)
@@ -103,8 +110,8 @@ class CalculateChange(BasicModule):
 
         """
         tmp = []
-        if 'RasterFileList' not in self.indata:
-            self.showlog('No batch file list detected.')
+        if "RasterFileList" not in self.indata:
+            self.showlog("No batch file list detected.")
             return False
 
         if not nodialog:
@@ -141,23 +148,22 @@ class CalculateChange(BasicModule):
         None.
 
         """
-        flist = self.indata['RasterFileList']
+        flist = self.indata["RasterFileList"]
 
         ilist = []
         for i in self.lw_indices.selectedItems():
             ilist.append(i.text())
 
         if not ilist:
-            self.showlog('You need to select an index to calculate.')
+            self.showlog("You need to select an index to calculate.")
             return False
 
-        datfin = calc_change(flist, ilist, showlog=self.showlog,
-                             piter=self.piter)
+        datfin = calc_change(flist, ilist, showlog=self.showlog, piter=self.piter)
 
         if not datfin:
             return False
 
-        self.outdata['Raster'] = datfin
+        self.outdata["Raster"] = datfin
 
         return True
 
@@ -197,7 +203,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
     """
     if len(flist) < 2:
-        showlog('You need a minimum of two datasets.')
+        showlog("You need a minimum of two datasets.")
         return None
 
     meandat = {}
@@ -206,22 +212,25 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
     M = []
     cnt = []
 
-    if ('Standard Deviation' in ilist or 'Coefficient of Variation' in ilist or
-            'Mean' in ilist):
+    if (
+        "Standard Deviation" in ilist
+        or "Coefficient of Variation" in ilist
+        or "Mean" in ilist
+    ):
         meandat, cnt, M = calc_mean(flist, showlog, piter)
 
-    if 'Standard Deviation' in ilist:
-        showlog('Calculating STD...')
+    if "Standard Deviation" in ilist:
+        showlog("Calculating STD...")
 
         std = {}
         for i in meandat:
             std[i] = meandat[i].copy(resetmeta=True)
             std[i].data = stddev(M[i], cnt[i])
-            std[i].dataid += '_STD'
+            std[i].dataid += "_STD"
         datfin += list(std.values())
 
-    if 'Coefficient of Variation' in ilist:
-        showlog('Calculating CV...')
+    if "Coefficient of Variation" in ilist:
+        showlog("Calculating CV...")
 
         if std is None:
             std = {}
@@ -233,27 +242,27 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
         for i in meandat:
             cv[i] = meandat[i].copy(resetmeta=True)
             cv[i].data = coefv(meandat[i].data, std[i].data)
-            cv[i].dataid += '_CV'
+            cv[i].dataid += "_CV"
 
         datfin += list(cv.values())
 
-    if 'Mean' in ilist:
+    if "Mean" in ilist:
         for i in meandat:
-            meandat[i].dataid += '_MEAN'
+            meandat[i].dataid += "_MEAN"
         datfin += list(meandat.values())
 
-    if 'Spectral Angle Mapper' in ilist and len(flist) != 2:
-        showlog('Only two datasets allowed for SAM.')
+    if "Spectral Angle Mapper" in ilist and len(flist) != 2:
+        showlog("Only two datasets allowed for SAM.")
         # Add loop for maximum angle deviation and std dev.
-    elif 'Spectral Angle Mapper' in ilist:
+    elif "Spectral Angle Mapper" in ilist:
         sam1 = calc_sam(flist, showlog, piter)
-        sam1.dataid += '_SAM'
+        sam1.dataid += "_SAM"
         datfin += [sam1]
 
-    if 'Difference' in ilist and len(flist) != 2:
-        showlog('Only two datasets allowed for difference.')
-    elif 'Difference' in ilist:
-        showlog('Calculating difference...')
+    if "Difference" in ilist and len(flist) != 2:
+        showlog("Only two datasets allowed for difference.")
+    elif "Difference" in ilist:
+        showlog("Calculating difference...")
 
         dat1, dat2 = match_data(flist, showlog=showlog, piter=piter)
         if dat1 is not None:
@@ -261,7 +270,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
 
             for i, dband in enumerate(diff):
                 dband.data = dat2[i].data - dat1[i].data
-                dband.dataid += '_DIFF'
+                dband.dataid += "_DIFF"
             datfin += diff
 
     return datfin
@@ -290,7 +299,7 @@ def calc_mean(flist, showlog=print, piter=iter):
         Variance parameter, where Variance = M/cnt.
 
     """
-    showlog('Calculating mean...')
+    showlog("Calculating mean...")
     tmp = get_from_rastermeta(flist[0], piter=piter, showlog=showlog)
 
     meandat = {}
@@ -316,12 +325,11 @@ def calc_mean(flist, showlog=print, piter=iter):
 
         for i in meandat:
             if i not in dat:
-                showlog(f'{i} not in new dataset, skipping.')
+                showlog(f"{i} not in new dataset, skipping.")
                 continue
 
             ltmp = [meandat[i], dat[i], cnt[i], M[i]]
-            ltmp = lstack(ltmp, showlog=showlog, piter=piter,
-                          checkdataid=False)
+            ltmp = lstack(ltmp, showlog=showlog, piter=piter, checkdataid=False)
             meandat[i], dat[i], cnt[i], M[i] = ltmp
 
             tmp = imean(meandat[i].data, dat[i].data, cnt[i].data, M[i].data)
@@ -353,7 +361,7 @@ def calc_sam(flist, showlog=print, piter=iter):
         PyGMI Data of SAM angles.
 
     """
-    showlog('Calculating SAM...')
+    showlog("Calculating SAM...")
 
     dat1, dat2 = match_data(flist, showlog=showlog, piter=piter)
     if dat1 is None:
@@ -375,7 +383,7 @@ def calc_sam(flist, showlog=print, piter=iter):
     # Init variables
     angle = dat1[0].copy(resetmeta=True)
     angle.data = angle.data.astype(float)
-    angle.data *= 0.
+    angle.data *= 0.0
 
     rows, cols = angle.data.shape
 
@@ -385,9 +393,9 @@ def calc_sam(flist, showlog=print, piter=iter):
             s2 = dat2b[i, j]
             angle.data[i, j] = sam(s1, s2)
 
-    angle.nodata = 0.
+    angle.nodata = 0.0
     angle.data.mask = dat1[0].data.mask
-    angle.data = angle.data.filled(0.)
+    angle.data = angle.data.filled(0.0)
     angle.data = np.ma.array(angle.data, mask=dat1[0].data.mask)
 
     return angle
@@ -491,8 +499,10 @@ def match_data(flist, showlog=print, piter=iter):
 
     """
     if len(flist) > 2:
-        showlog('You have more than two datasets being matched. '
-                'Only the first two will be used.')
+        showlog(
+            "You have more than two datasets being matched. "
+            "Only the first two will be used."
+        )
 
     if isinstance(flist[0], list):
         tnames1 = [i.dataid for i in flist[0]]
@@ -502,18 +512,16 @@ def match_data(flist, showlog=print, piter=iter):
         tnames = list(set(flist[0].tnames).intersection(set(flist[1].tnames)))
 
     if not tnames:
-        showlog('Error: Could not find common band names.')
+        showlog("Error: Could not find common band names.")
         return None, None
 
-    dat1 = get_from_rastermeta(flist[0], piter=piter, showlog=showlog,
-                               tnames=tnames)
-    dat2 = get_from_rastermeta(flist[1], piter=piter, showlog=showlog,
-                               tnames=tnames)
+    dat1 = get_from_rastermeta(flist[0], piter=piter, showlog=showlog, tnames=tnames)
+    dat2 = get_from_rastermeta(flist[1], piter=piter, showlog=showlog, tnames=tnames)
 
     tmp = lstack(dat1 + dat2, showlog=showlog, piter=piter, checkdataid=False)
 
-    dat1 = tmp[:len(tnames)]
-    dat2 = tmp[len(tnames):]
+    dat1 = tmp[: len(tnames)]
+    dat2 = tmp[len(tnames) :]
 
     if dat1[0].datetime > dat2[0].datetime:
         dat1, dat2 = dat2, dat1
@@ -539,13 +547,13 @@ def sam(s1, s2):
         Output angles.
 
     """
-    s1a = s1.astype('d')
-    s2a = s2.astype('d')
+    s1a = s1.astype("d")
+    s2a = s2.astype("d")
 
     num = np.dot(s1a, s2a)
     denom = np.sqrt(np.sum(s1a**2)) * np.sqrt(np.sum(s2a**2))
 
-    if denom == 0.:
+    if denom == 0.0:
         result = 0.0
     else:
         result = math.acos(num / denom)
@@ -570,8 +578,8 @@ def scm(s1, s2):
         Output angles.
 
     """
-    s1 = s1.astype('d')
-    s2 = s2.astype('d')
+    s1 = s1.astype("d")
+    s2 = s2.astype("d")
 
     s1a = s1 - s1.mean()
     s2a = s2 - s2.mean()
@@ -579,7 +587,7 @@ def scm(s1, s2):
     num = np.dot(s1a, s2a)
     denom = np.sqrt(np.sum(s1a**2)) * np.sqrt(np.sum(s2a**2))
 
-    if denom == 0.:
+    if denom == 0.0:
         result = -1.0
     else:
         result = num / denom
@@ -613,13 +621,14 @@ def stddev(M, cnt):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
+
     from pygmi.rsense.iodefs import ImportBatch
 
     idir = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\ratios"
     os.chdir(idir)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportBatch()
     tmp1.idir = idir
@@ -630,7 +639,7 @@ def _testfn():
     tmp2.indata = tmp1.outdata
     tmp2.settings()
 
-    dat2 = tmp2.outdata['Raster']
+    dat2 = tmp2.outdata["Raster"]
     for i in dat2:
         plt.figure(dpi=150)
         plt.title(i.dataid)

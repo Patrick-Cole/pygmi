@@ -6,15 +6,14 @@ set_extent as well as better integration into PyGMI
 
 pcole, 2021  - Bug fix to allow for correct zooming if origin is set to 'upper'
 """
-from __future__ import print_function, division
 
-import numpy as np
+from __future__ import division, print_function
 
-from matplotlib import rcParams
-import matplotlib.image as mi
 import matplotlib.colors as mcolors
-from matplotlib import cbook
-from matplotlib.transforms import IdentityTransform, Affine2D
+import matplotlib.image as mi
+import numpy as np
+from matplotlib import cbook, rcParams
+from matplotlib.transforms import Affine2D, IdentityTransform
 
 from pygmi.raster.misc import currentshader, histeq, norm2
 
@@ -41,14 +40,14 @@ class ModestImage(mi.AxesImage):
 
     def __init__(self, *args, **kwargs):
         self._full_res = None
-        self._full_extent = kwargs.get('extent', None)
-        self.origin = kwargs.get('origin', 'lower')
+        self._full_extent = kwargs.get("extent", None)
+        self.origin = kwargs.get("origin", "lower")
         super().__init__(*args, **kwargs)
         self.invalidate_cache()
 
         # Custom lines for PyGMI
         self.shade = None
-        self.rgbmode = ''  # Can be None, CMY Ternary or RGB Ternary
+        self.rgbmode = ""  # Can be None, CMY Ternary or RGB Ternary
         self.rgbclip = [[None, None], [None, None], [None, None]]
         self.dohisteq = False
         self.kval = 0.01  # For CMYK Ternary
@@ -75,14 +74,16 @@ class ModestImage(mi.AxesImage):
         self._full_res = A
         self._A = A
 
-        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
-                                                         float):
+        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype, float):
             raise TypeError("Image data can not convert to float")
 
         if self._A.ndim not in (2, 3):
             raise TypeError("Invalid dimensions for image data")
-        if (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4) and
-                self.shade is False):
+        if (
+            self._A.ndim == 3
+            and self._A.shape[-1] not in (3, 4)
+            and self.shade is False
+        ):
             raise TypeError("Invalid dimensions for image data")
 
         self.invalidate_cache()
@@ -213,9 +214,9 @@ class ModestImage(mi.AxesImage):
 
         """
         if np.ma.is_masked(data) or isinstance(data, (list, np.ndarray)):
-            zval = 'z = None'
+            zval = "z = None"
         else:
-            zval = f'z = {data:,.5f}'
+            zval = f"z = {data:,.5f}"
 
         return zval
 
@@ -223,7 +224,6 @@ class ModestImage(mi.AxesImage):
     def _pixel2world(self):
 
         if self._pixel2world_cache is None:
-
             # Pre-compute affine transforms to convert between the 'world'
             # coordinates of the axes (what is shown by the axis labels) to
             # 'pixel' coordinates in the underlying array.
@@ -231,19 +231,17 @@ class ModestImage(mi.AxesImage):
             extent = self._full_extent
 
             if extent is None:
-
                 self._pixel2world_cache = IDENTITY_TRANSFORM
 
             else:
-
                 self._pixel2world_cache = Affine2D()
 
                 self._pixel2world.translate(+0.5, +0.5)
 
-                self._pixel2world.scale((extent[1] - extent[0]) /
-                                        self._full_res.shape[1],
-                                        (extent[3] - extent[2]) /
-                                        self._full_res.shape[0])
+                self._pixel2world.scale(
+                    (extent[1] - extent[0]) / self._full_res.shape[1],
+                    (extent[3] - extent[2]) / self._full_res.shape[0],
+                )
 
                 self._pixel2world.translate(extent[0], extent[2])
 
@@ -268,8 +266,8 @@ class ModestImage(mi.AxesImage):
         # resolution of the display. We pass self._world2pixel which matters
         # for cases where the extent has been set.
         x0, x1, sx, y0, y1, sy = extract_matched_slices(
-            axes=self.axes, shape=self._full_res.shape,
-            transform=self._world2pixel)
+            axes=self.axes, shape=self._full_res.shape, transform=self._world2pixel
+        )
 
         # Check whether we've already calculated what we need, and if so just
         # return without doing anything further.
@@ -284,7 +282,7 @@ class ModestImage(mi.AxesImage):
         # sx=1
         # sy=1
 
-        if self.origin == 'upper':
+        if self.origin == "upper":
             self._A = self._full_res[::-1][y0:y1:sy, x0:x1:sx]
             self._A = cbook.safe_masked_invalid(self._A)
             self._A = self._A[::-1]
@@ -300,13 +298,14 @@ class ModestImage(mi.AxesImage):
         # demonstration of why origin='upper' and extent=None needs to be
         # special-cased.
 
-        if self.origin == 'upper' and self._full_extent is None:
-            xmin, xmax, ymin, ymax = x0 - .5, x1 - .5, y1 - .5, y0 - .5
+        if self.origin == "upper" and self._full_extent is None:
+            xmin, xmax, ymin, ymax = x0 - 0.5, x1 - 0.5, y1 - 0.5, y0 - 0.5
         else:
-            xmin, xmax, ymin, ymax = x0 - .5, x1 - .5, y0 - .5, y1 - .5
+            xmin, xmax, ymin, ymax = x0 - 0.5, x1 - 0.5, y0 - 0.5, y1 - 0.5
 
         xmin, ymin, xmax, ymax = self._pixel2world.transform(
-            [(xmin, ymin), (xmax, ymax)]).ravel()
+            [(xmin, ymin), (xmax, ymax)]
+        ).ravel()
 
         mi.AxesImage.set_extent(self, [xmin, xmax, ymin, ymax])
 
@@ -329,9 +328,10 @@ class ModestImage(mi.AxesImage):
         # resolution of the display. We pass self._world2pixel which matters
         # for cases where the extent has been set.
         x0, x1, sx, y0, y1, sy = extract_matched_slices(
-            axes=self.axes, shape=full_res.shape, transform=self._world2pixel)
+            axes=self.axes, shape=full_res.shape, transform=self._world2pixel
+        )
 
-        if self.origin == 'upper':
+        if self.origin == "upper":
             A = full_res[::-1][y0:y1:sy, x0:x1:sx]
             A = cbook.safe_masked_invalid(A)
             A = A[::-1]
@@ -346,13 +346,16 @@ class ModestImage(mi.AxesImage):
         if self._full_res.shape is None:
             return
         self._scale_to_res()
-        if (self.dohisteq is True and self.shade is None and
-                'Ternary' not in self.rgbmode):
+        if (
+            self.dohisteq is True
+            and self.shade is None
+            and "Ternary" not in self.rgbmode
+        ):
             self._A = norm2(histeq(self._A))
             self.set_clim(0, 1)
             self.set_clim(0, 1)
 
-        if 'Ternary' in self.rgbmode:
+        if "Ternary" in self.rgbmode:
             colormap = self.draw_ternary()
         else:
             colormap = self._A
@@ -379,22 +382,24 @@ class ModestImage(mi.AxesImage):
             colormap[:, :, 1] = norm2(histeq(self._A[:, :, 1]))
             colormap[:, :, 2] = norm2(histeq(self._A[:, :, 2]))
         else:
-            colormap[:, :, 0] = norm2(self._A[:, :, 0],
-                                      self.rgbclip[0][0], self.rgbclip[0][1])
-            colormap[:, :, 1] = norm2(self._A[:, :, 1],
-                                      self.rgbclip[1][0], self.rgbclip[1][1])
-            colormap[:, :, 2] = norm2(self._A[:, :, 2],
-                                      self.rgbclip[2][0], self.rgbclip[2][1])
+            colormap[:, :, 0] = norm2(
+                self._A[:, :, 0], self.rgbclip[0][0], self.rgbclip[0][1]
+            )
+            colormap[:, :, 1] = norm2(
+                self._A[:, :, 1], self.rgbclip[1][0], self.rgbclip[1][1]
+            )
+            colormap[:, :, 2] = norm2(
+                self._A[:, :, 2], self.rgbclip[2][0], self.rgbclip[2][1]
+            )
 
-        if 'CMY' in self.rgbmode:
+        if "CMY" in self.rgbmode:
             colormap[:, :, 0] = (1 - colormap[:, :, 0]) * (1 - self.kval)
             colormap[:, :, 1] = (1 - colormap[:, :, 1]) * (1 - self.kval)
             colormap[:, :, 2] = (1 - colormap[:, :, 2]) * (1 - self.kval)
 
         if np.ma.isMaskedArray(self._A):
             colormap = colormap.filled(0)
-            mask = np.logical_and(self._A[:, :, 0].mask,
-                                  self._A[:, :, 1].mask)
+            mask = np.logical_and(self._A[:, :, 0].mask, self._A[:, :, 1].mask)
             mask = np.logical_and(mask, self._A[:, :, 2].mask)
             colormap[:, :, 3] = np.logical_not(mask)
         return colormap
@@ -421,7 +426,7 @@ class ModestImage(mi.AxesImage):
         sunshader = currentshader(sun.data, cell, theta, phi, alpha)
         snorm = norm2(sunshader)
 
-        if 'Ternary' not in self.rgbmode:
+        if "Ternary" not in self.rgbmode:
             colormap = self.cmap(self._A)
 
         colormap[:, :, 0] *= snorm  # red
@@ -467,12 +472,30 @@ class ModestImage(mi.AxesImage):
         self.set_clim(vmin, vmax)
 
 
-def imshow(axes, X, cmap=None, norm=None, aspect=None,
-           interpolation=None, alpha=None, vmin=None, vmax=None,
-           origin=None, extent=None, shape=None, filternorm=1,
-           filterrad=4.0, imlim=None, resample=None, url=None,
-           suncell=None, suntheta=None, sunphi=None, sunalpha=None,
-           **kwargs):
+def imshow(
+    axes,
+    X,
+    cmap=None,
+    norm=None,
+    aspect=None,
+    interpolation=None,
+    alpha=None,
+    vmin=None,
+    vmax=None,
+    origin=None,
+    extent=None,
+    shape=None,
+    filternorm=1,
+    filterrad=4.0,
+    imlim=None,
+    resample=None,
+    url=None,
+    suncell=None,
+    suntheta=None,
+    sunphi=None,
+    sunalpha=None,
+    **kwargs,
+):
     """
     Similar to matplotlib's imshow command, but produces a ModestImage.
 
@@ -481,22 +504,31 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     if norm is not None:
         assert isinstance(norm, mcolors.Normalize)
     if aspect is None:
-        aspect = rcParams['image.aspect']
+        aspect = rcParams["image.aspect"]
     axes.set_aspect(aspect)
 
     if interpolation is None:
-        interpolation = 'none'
+        interpolation = "none"
 
-    im = ModestImage(axes, cmap=cmap, norm=norm, interpolation=interpolation,
-                     origin=origin, extent=extent, filternorm=filternorm,
-                     filterrad=filterrad, resample=resample, **kwargs)
+    im = ModestImage(
+        axes,
+        cmap=cmap,
+        norm=norm,
+        interpolation=interpolation,
+        origin=origin,
+        extent=extent,
+        filternorm=filternorm,
+        filterrad=filterrad,
+        resample=resample,
+        **kwargs,
+    )
 
     im.set_data(X)
     im.set_alpha(alpha)
 
     axes._set_artist_props(im)
 
-    axes.format_coord = lambda x, y: f'x = {x:,.5f}, y = {y:,.5f}'
+    axes.format_coord = lambda x, y: f"x = {x:,.5f}, y = {y:,.5f}"
 
     if im.get_clip_path() is None:
         # image does not already have clipping set, clip to axes patch
@@ -524,8 +556,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     return im
 
 
-def extract_matched_slices(axes=None, shape=None,
-                           transform=IDENTITY_TRANSFORM):
+def extract_matched_slices(axes=None, shape=None, transform=IDENTITY_TRANSFORM):
     """
     Determine the slice parameters to use, matched to the screen.
 
@@ -561,8 +592,7 @@ def extract_matched_slices(axes=None, shape=None,
     """
     # Find extent in display pixels (this gives the resolution we need
     # to sample the array to)
-    ext = (axes.transAxes.transform([(1, 1)]) -
-           axes.transAxes.transform([(0, 0)]))[0]
+    ext = (axes.transAxes.transform([(1, 1)]) - axes.transAxes.transform([(0, 0)]))[0]
 
     # Find the extent of the axes in 'world' coordinates
     xlim, ylim = axes.get_xlim(), axes.get_ylim()
@@ -584,21 +614,20 @@ def extract_matched_slices(axes=None, shape=None,
     x1 = _clip(ind1[0] + 5, 1, shape[1])
 
     # Determine the strides that can be used when extracting the array
-    sy = int(max(1, min((y1 - y0) / 5., np.ceil(abs((ind1[1] - ind0[1]) /
-                                                    ext[1])))))
-    sx = int(max(1, min((x1 - x0) / 5., np.ceil(abs((ind1[0] - ind0[0]) /
-                                                    ext[0])))))
+    sy = int(max(1, min((y1 - y0) / 5.0, np.ceil(abs((ind1[1] - ind0[1]) / ext[1])))))
+    sx = int(max(1, min((x1 - x0) / 5.0, np.ceil(abs((ind1[0] - ind0[0]) / ext[0])))))
 
     return x0, x1, sx, y0, y1, sy
 
 
 def _testfn():
     """Test function."""
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
 
-    ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
+    from pygmi.misc import ProgressBarText
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"d:\Work\Programming\mpl-modest-image-master\test.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     pbar = ProgressBarText()
@@ -618,7 +647,7 @@ def _testfn():
 
     im = plt.imshow(cdat, extent=extent)
 
-    im.format_cursor_data = lambda data: f'z = {data:,.5f}'
+    im.format_cursor_data = lambda data: f"z = {data:,.5f}"
 
     plt.grid(True)
     plt.show()

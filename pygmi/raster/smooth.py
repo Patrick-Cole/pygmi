@@ -25,9 +25,10 @@
 """Routines to smooth raster data."""
 
 import warnings
-from PySide6 import QtWidgets
+
 import numpy as np
 import scipy.signal as ssig
+from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
 
@@ -46,26 +47,26 @@ class Smooth(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.lbl_1 = QtWidgets.QLabel('X:')
+        self.lbl_1 = QtWidgets.QLabel("X:")
         self.sb_x = QtWidgets.QSpinBox()
-        self.lbl_2 = QtWidgets.QLabel('Y:')
-        self.lbl_3 = QtWidgets.QLabel('Radius in Samples:')
+        self.lbl_2 = QtWidgets.QLabel("Y:")
+        self.lbl_3 = QtWidgets.QLabel("Radius in Samples:")
         self.sb_y = QtWidgets.QSpinBox()
         self.sb_radius = QtWidgets.QSpinBox()
-        self.lbl_4 = QtWidgets.QLabel('Standard Deviation:')
+        self.lbl_4 = QtWidgets.QLabel("Standard Deviation:")
         self.sb_stddev = QtWidgets.QSpinBox()
 
-        self.rb_2dmedian = QtWidgets.QRadioButton('2D Median')
-        self.rb_2dmean = QtWidgets.QRadioButton('2D Mean')
-        self.rb_box = QtWidgets.QRadioButton('Box Window')
-        self.rb_disk = QtWidgets.QRadioButton('Disk Window')
-        self.rb_gaussian = QtWidgets.QRadioButton('Gaussian Window')
+        self.rb_2dmedian = QtWidgets.QRadioButton("2D Median")
+        self.rb_2dmean = QtWidgets.QRadioButton("2D Mean")
+        self.rb_box = QtWidgets.QRadioButton("Box Window")
+        self.rb_disk = QtWidgets.QRadioButton("Disk Window")
+        self.rb_gaussian = QtWidgets.QRadioButton("Gaussian Window")
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
 
         self.fmat = None
-        self.fmtype = 'box'
+        self.fmtype = "box"
 
         self.choosefilter()
 
@@ -79,31 +80,31 @@ class Smooth(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        gbox = QtWidgets.QGroupBox('Filter Size')
+        gbox = QtWidgets.QGroupBox("Filter Size")
         gl_2 = QtWidgets.QGridLayout(gbox)
-        gbox_2 = QtWidgets.QGroupBox('Filter Type')
-        gbox_3 = QtWidgets.QGroupBox('Filter Shape')
+        gbox_2 = QtWidgets.QGroupBox("Filter Type")
+        gbox_3 = QtWidgets.QGroupBox("Filter Shape")
 
-        self.buttonbox.htmlfile = 'raster.dm.smoothing'
+        self.buttonbox.htmlfile = "raster.dm.smoothing"
 
         self.sb_x.setMinimum(1)
         self.sb_x.setMaximum(999999)
-        self.sb_x.setProperty('value', 5)
+        self.sb_x.setProperty("value", 5)
         self.sb_y.setMinimum(1)
         self.sb_y.setMaximum(9999999)
-        self.sb_y.setProperty('value', 5)
+        self.sb_y.setProperty("value", 5)
         self.sb_radius.setMinimum(1)
         self.sb_radius.setMaximum(99999)
-        self.sb_radius.setProperty('value', 5)
+        self.sb_radius.setProperty("value", 5)
         self.sb_stddev.setMinimum(1)
         self.sb_stddev.setMaximum(99999)
-        self.sb_stddev.setProperty('value', 5)
+        self.sb_stddev.setProperty("value", 5)
         self.rb_2dmean.setChecked(True)
         self.rb_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
 
-        self.setWindowTitle('Smoothing Filters')
+        self.setWindowTitle("Smoothing Filters")
 
         vbl_1 = QtWidgets.QVBoxLayout(gbox_2)
         vbl_1.addWidget(self.rb_2dmean)
@@ -153,8 +154,8 @@ class Smooth(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         self.choosefilter()
@@ -165,13 +166,13 @@ class Smooth(BasicModule):
             if self.parent is not None:
                 self.parent.process_is_active(True)
 
-        self.showlog('Smoothing ')
-        data = [i.copy() for i in self.indata['Raster']]
+        self.showlog("Smoothing ")
+        data = [i.copy() for i in self.indata["Raster"]]
 
         if self.rb_2dmean.isChecked():
-            filt = '2D Mean'
+            filt = "2D Mean"
         else:
-            filt = '2D Median'
+            filt = "2D Median"
 
         box_x = self.sb_x.value()
         box_y = self.sb_y.value()
@@ -179,16 +180,24 @@ class Smooth(BasicModule):
         sigma = self.sb_stddev.value()
 
         for dat in data:
-            dat.data = mov_win_filt(dat.data, self.fmtype, filt,
-                                    box_x, box_y, rad, sigma,
-                                    self.showlog, self.piter)
-            dat.dataid = dat.dataid + ' ' + filt
+            dat.data = mov_win_filt(
+                dat.data,
+                self.fmtype,
+                filt,
+                box_x,
+                box_y,
+                rad,
+                sigma,
+                self.showlog,
+                self.piter,
+            )
+            dat.dataid = dat.dataid + " " + filt
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
 
-        self.outdata['Raster'] = data
-        self.showlog('Finished!', True)
+        self.outdata["Raster"] = data
+        self.showlog("Finished!", True)
 
         return True
 
@@ -233,25 +242,25 @@ class Smooth(BasicModule):
         if self.rb_2dmean.isChecked():
             self.rb_gaussian.setVisible(True)
             if self.rb_box.isChecked():
-                self.fmtype = 'box'
-                fmat = filters2d('average', [box_y, box_x])
+                self.fmtype = "box"
+                fmat = filters2d("average", [box_y, box_x])
             elif self.rb_disk.isChecked():
-                self.fmtype = 'disc'
-                fmat = filters2d('disc', rad)
+                self.fmtype = "disc"
+                fmat = filters2d("disc", rad)
             elif self.rb_gaussian.isChecked():
-                self.fmtype = 'gaussian'
-                fmat = filters2d('gaussian', [box_x, box_y], sigma)
+                self.fmtype = "gaussian"
+                fmat = filters2d("gaussian", [box_x, box_y], sigma)
         else:
             self.rb_gaussian.setVisible(False)
             if self.rb_gaussian.isChecked():
                 self.rb_box.setChecked(True)
             if self.rb_box.isChecked():
-                self.fmtype = 'box'
+                self.fmtype = "box"
                 fmat = np.ones((box_y, box_x))
             elif self.rb_disk.isChecked():
-                fmat = filters2d('disc', rad)
+                fmat = filters2d("disc", rad)
                 fmat[fmat > 0] = 1
-                self.fmtype = 'disc'
+                self.fmtype = "disc"
 
         if self.rb_box.isChecked():
             self.sb_x.setVisible(True)
@@ -312,11 +321,13 @@ class Smooth(BasicModule):
                     i = 127
                 else:
                     i = int(255 * (self.fmat[row, col] - fmin) / frange)
-                ltmp = QtWidgets.QLabel(f'{self.fmat[row, col]:g}')
+                ltmp = QtWidgets.QLabel(f"{self.fmat[row, col]:g}")
                 ltmp.setStyleSheet(
-                    'Background: rgb' +
-                    str((red[i], green[i], blue[i])) + '; Color: rgb' +
-                    str((255 - red[i], 255 - green[i], 255 - blue[i])))
+                    "Background: rgb"
+                    + str((red[i], green[i], blue[i]))
+                    + "; Color: rgb"
+                    + str((255 - red[i], 255 - green[i], 255 - blue[i]))
+                )
                 self.tablewidget.setCellWidget(row, col, ltmp)
 
         self.tablewidget.resizeColumnsToContents()
@@ -337,12 +348,14 @@ class Smooth(BasicModule):
         None.
 
         """
-        QtWidgets.QMessageBox.warning(self.parent, title, message,
-                                      QtWidgets.QMessageBox.StandardButton.Ok)
+        QtWidgets.QMessageBox.warning(
+            self.parent, title, message, QtWidgets.QMessageBox.StandardButton.Ok
+        )
 
 
-def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
-                 showlog=print, piter=iter):
+def mov_win_filt(
+    dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5, showlog=print, piter=iter
+):
     """
     Apply moving window filter function to data.
 
@@ -373,21 +386,21 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
         Data for a PyGMI raster dataset.
 
     """
-    if itype == '2D Mean':
-        if fmat == 'box':
-            fmat = filters2d('average', [box_y, box_x])
-        elif fmat == 'disc':
-            fmat = filters2d('disc', rad)
-        elif fmat == 'gaussian':
-            fmat = filters2d('gaussian', [box_x, box_y], sigma)
+    if itype == "2D Mean":
+        if fmat == "box":
+            fmat = filters2d("average", [box_y, box_x])
+        elif fmat == "disc":
+            fmat = filters2d("disc", rad)
+        elif fmat == "gaussian":
+            fmat = filters2d("gaussian", [box_x, box_y], sigma)
     else:
-        if fmat == 'gaussian':
-            showlog('2D Median cannnot have a gaussian matrix')
+        if fmat == "gaussian":
+            showlog("2D Median cannnot have a gaussian matrix")
             return None
-        if fmat == 'box':
+        if fmat == "box":
             fmat = np.ones((box_y, box_x))
-        elif fmat == 'disc':
-            fmat = filters2d('disc', rad)
+        elif fmat == "disc":
+            fmat = filters2d("disc", rad)
             fmat[fmat > 0] = 1
 
     out = dat.tolist()
@@ -400,17 +413,17 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
     dcc = round(colf / 2.0)
 
     dummy = np.ma.masked_all((rowd + rowf - 1, cold + colf - 1))
-    dummy[drr - 1:drr - 1 + rowd, dcc - 1:dcc - 1 + cold] = dat
+    dummy[drr - 1 : drr - 1 + rowd, dcc - 1 : dcc - 1 + cold] = dat
 
     dummy.data[dummy.mask] = np.nan
     dat = dat.astype(float)
     dat.data[dat.mask] = np.nan
 
-    if itype == '2D Mean':
-        out = ssig.correlate(dat, fmat, 'same', method='direct')
+    if itype == "2D Mean":
+        out = ssig.correlate(dat, fmat, "same", method="direct")
 
-    elif itype == '2D Median':
-        showlog('Calculating Median...')
+    elif itype == "2D Median":
+        showlog("Calculating Median...")
         out = np.ma.zeros([rowd, cold]) * np.nan
         out.mask = np.ma.getmaskarray(dat)
         fmat = fmat.astype(bool)
@@ -418,7 +431,7 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
 
         for i in piter(range(rowd)):
             for j in range(cold):
-                tmp1 = dummy[i:i + rowf, j:j + colf][fmat]
+                tmp1 = dummy[i : i + rowf, j : j + colf][fmat]
                 if np.any(~np.isnan(tmp1)):  # if any are False
                     out[i, j] = np.nanmedian(tmp1)
 
@@ -426,10 +439,10 @@ def mov_win_filt(dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5,
     out = np.ma.array(out)
 
     out = out.reshape(out.shape[0:2])
-    out.mask[:rowf // 2] = True
-    out.mask[-rowf // 2:] = True
-    out.mask[:, :colf // 2] = True
-    out.mask[:, -colf // 2:] = True
+    out.mask[: rowf // 2] = True
+    out.mask[-rowf // 2 :] = True
+    out.mask[:, : colf // 2] = True
+    out.mask[:, -colf // 2 :] = True
     return out
 
 
@@ -499,7 +512,7 @@ def filters2d(filtertype, sze, *sigma):
 
     """
     radius = sze
-    if filtertype == 'disc':
+    if filtertype == "disc":
         sze = [2 * radius + 1, 2 * radius + 1]
 
     rows = sze[0]
@@ -508,25 +521,25 @@ def filters2d(filtertype, sze, *sigma):
     c2 = (cols - 1) / 2
     f = np.array([])
 
-    if filtertype == 'average':
+    if filtertype == "average":
         rows = sze[0]
         cols = sze[1]
         f = np.ones(sze) / (rows * cols)
 
-    elif filtertype == 'disc':
-        [x, y] = np.mgrid[-c2: c2, -r2: r2]
+    elif filtertype == "disc":
+        [x, y] = np.mgrid[-c2:c2, -r2:r2]
         rad = np.sqrt(x**2 + y**2)
         f = rad <= radius
         f = f / np.sum(f[:])
 
-    elif filtertype == 'gaussian':
-        [x, y] = np.mgrid[-c2: c2, -r2:r2]
+    elif filtertype == "gaussian":
+        [x, y] = np.mgrid[-c2:c2, -r2:r2]
         radsqrd = x**2 + y**2
-        f = np.exp(-radsqrd / (2 * sigma[0]**2))
+        f = np.exp(-radsqrd / (2 * sigma[0] ** 2))
         f = f / np.sum(f[:])
 
     else:
-        warnings.warn('Unrecognized filter type')
+        warnings.warn("Unrecognized filter type")
 
     return f
 
@@ -534,7 +547,9 @@ def filters2d(filtertype, sze, *sigma):
 def _test():
     """Test."""
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -542,14 +557,14 @@ def _test():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = Smooth()
-    tmp.indata['Raster'] = dat
+    tmp.indata["Raster"] = dat
 
     tmp.settings()
 
-    out = tmp.outdata['Raster']
+    out = tmp.outdata["Raster"]
 
     plt.figure(dpi=150)
     plt.imshow(out[1].data)

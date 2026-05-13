@@ -30,9 +30,8 @@ the tests.
 import numpy as np
 from pyproj.crs import CRS
 
+from pygmi.mag import dataprep, igrf, tiltdepth
 from pygmi.raster.datatypes import Data
-from pygmi.mag import dataprep
-from pygmi.mag import igrf, tiltdepth
 
 
 def test_tilt1():
@@ -42,22 +41,26 @@ def test_tilt1():
     datin.set_transform(10, 100, 10, 100)
     # t12 = [[-1.2626272556789115, 1.2626272556789115],
     #        [-1.2626272556789115, 1.2626272556789115]]
-    t12 = [[-1.0038848218538872, 1.0038848218538872],
-           [-1.0038848218538872, 1.0038848218538872]]
+    t12 = [
+        [-1.0038848218538872, 1.0038848218538872],
+        [-1.0038848218538872, 1.0038848218538872],
+    ]
 
-    th2 = [[0.0, 0.0],
-           [0.0, 0.0]]
-    t22 = [[0.0, 0.0],
-           [0.0, 0.0]]
+    th2 = [[0.0, 0.0], [0.0, 0.0]]
+    t22 = [[0.0, 0.0], [0.0, 0.0]]
     # ta2 = [[1.8572654805528055e-17, 1.8572654805528055e-17],
     #        [1.8572654805528055e-17, 1.8572654805528055e-17]]
-    ta2 = [[3.7229941089390133e-17, 3.722994108939016e-17],
-           [3.7229941089390133e-17, 3.722994108939016e-17]]
+    ta2 = [
+        [3.7229941089390133e-17, 3.722994108939016e-17],
+        [3.7229941089390133e-17, 3.722994108939016e-17],
+    ]
     # tdx2 = [[0.30816907111598496, 0.30816907111598496],
     #         [0.30816907111598496, 0.30816907111598496]]
 
-    tdx2 = [[0.5669115049410095, 0.5669115049410095],
-            [0.5669115049410095, 0.5669115049410095]]
+    tdx2 = [
+        [0.5669115049410095, 0.5669115049410095],
+        [0.5669115049410095, 0.5669115049410095],
+    ]
 
     t1, th, t2, ta, tdx, _, _ = dataprep.tilt1(datin, 90, 0)
 
@@ -73,8 +76,10 @@ def test_rtp():
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(1, 1000, 1, 1000)
-    dat2 = [[0.9792899408284023, 2.0207100591715976],
-            [0.9792899408284023, 2.0207100591715976]]
+    dat2 = [
+        [0.9792899408284023, 2.0207100591715976],
+        [0.9792899408284023, 2.0207100591715976],
+    ]
 
     dat = dataprep.rtp(datin, 60, 30)
 
@@ -84,26 +89,25 @@ def test_rtp():
 def test_IGRF():
     """Tests IGRF Calculation."""
     dat = Data()
-    dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
-                           mask=[[0, 0], [0, 0]])
+    dat.data = np.ma.array(
+        [[29000.0, 29000.0], [29000.0, 29000.0]], mask=[[0, 0], [0, 0]]
+    )
 
     dat.set_transform(1, 25, 1, -27)
     dat.crs = CRS.from_epsg(4326)
-    dat.dataid = 'mag'
+    dat.dataid = "mag"
 
     datin2 = Data()
-    datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
+    datin2.data = np.ma.array([[0.0, 0.0], [0.0, 0.0]], mask=[[0, 0], [0, 0]])
 
     datin2.set_transform(1, 25, 1, -27)
     datin2.crs = CRS.from_epsg(4326)
-    datin2.dataid = 'dtm'
+    datin2.dataid = "dtm"
 
-    dat2 = [[940.640983, 864.497698],
-            [1164.106631, 1079.494023]]
+    dat2 = [[940.640983, 864.497698], [1164.106631, 1079.494023]]
 
     sdate = 2000.0027322404371
-    odata, _, _, _ = igrf.calc_igrf(datin2, sdate, sen_alt=0.,
-                                    igrfonly=False)
+    odata, _, _, _ = igrf.calc_igrf(datin2, sdate, sen_alt=0.0, igrfonly=False)
 
     dat = dat.data - odata[0].data
 
@@ -114,20 +118,28 @@ def test_tilt():
     """test tilt depth."""
 
     datin = Data()
-    datin.data = np.ma.array([[0, 0, .1, .5, 1],
-                              [0, .1, .5, 1, .5],
-                              [.1, .5, 1, .5, .1],
-                              [.5, 1, .5, .1, 0],
-                              [1, .5, .1, 0, 0]])
+    datin.data = np.ma.array(
+        [
+            [0, 0, 0.1, 0.5, 1],
+            [0, 0.1, 0.5, 1, 0.5],
+            [0.1, 0.5, 1, 0.5, 0.1],
+            [0.5, 1, 0.5, 0.1, 0],
+            [1, 0.5, 0.1, 0, 0],
+        ]
+    )
 
     datin.set_transform(1, 1000, 1, 1000)
     tmp = tiltdepth.tiltdepth(datin)
-    del tmp['geometry']
+    del tmp["geometry"]
 
     datout2 = tmp.to_numpy()
-    datout = np.array([[1001.70525926, 997.29474074, 1., 0.20841317],
-                       [1002.04458616, 998.96576832, 2., 0.46793456],
-                       [1004., 996.02856543, 3., 0.30354594]])
+    datout = np.array(
+        [
+            [1001.70525926, 997.29474074, 1.0, 0.20841317],
+            [1002.04458616, 998.96576832, 2.0, 0.46793456],
+            [1004.0, 996.02856543, 3.0, 0.30354594],
+        ]
+    )
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
@@ -137,8 +149,7 @@ def test_asig():
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(1, 1000, 1, 1000)
-    dat2 = np.array([[1.86209589, 1.86209589],
-                     [1.86209589, 1.86209589]])
+    dat2 = np.array([[1.86209589, 1.86209589], [1.86209589, 1.86209589]])
 
     dat = dataprep.asig(datin)
 

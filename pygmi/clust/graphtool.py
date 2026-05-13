@@ -25,14 +25,14 @@
 """Multi-function graphing tool for use with cluster analysis."""
 
 import numpy as np
-from PySide6 import QtWidgets, QtCore
-from matplotlib.figure import Figure
 from matplotlib import colormaps
-from matplotlib.patches import Polygon
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
+from matplotlib.patches import Polygon
 from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from PySide6 import QtCore, QtWidgets
 
 from pygmi.misc import BasicModule
 
@@ -136,9 +136,9 @@ class GraphHist(FigureCanvasQTAgg):
         rect_histx = [left, bottom_h, width, 0.2]
         rect_histy = [left_h, bottom, 0.2, height]
 
-        self.axscatter = self.figure.add_axes(rect_scatter, label='s')
-        self.axhistx = self.figure.add_axes(rect_histx, label='x')
-        self.axhisty = self.figure.add_axes(rect_histy, label='y')
+        self.axscatter = self.figure.add_axes(rect_scatter, label="s")
+        self.axhistx = self.figure.add_axes(rect_histx, label="x")
+        self.axhisty = self.figure.add_axes(rect_histy, label="y")
 
         # Setup the coordinates
         self.setup_coords()
@@ -152,9 +152,9 @@ class GraphHist(FigureCanvasQTAgg):
         self.axscatter.get_xaxis().set_visible(False)
         self.axscatter.get_yaxis().set_visible(False)
 
-        self.csp = self.axscatter.imshow(xymahist.T, interpolation='nearest',
-                                         cmap=colormaps['jet'],
-                                         aspect='auto')
+        self.csp = self.axscatter.imshow(
+            xymahist.T, interpolation="nearest", cmap=colormaps["jet"], aspect="auto"
+        )
 
         self.csp.set_clim(xymahist.min(), xymahist.max())
         self.csp.set_clim(xymahist.min(), xymahist.max())
@@ -213,8 +213,9 @@ class GraphHist(FigureCanvasQTAgg):
         xrng = [self.xcoord.min(), self.xcoord.max()]
         yrng = [self.ycoord.min(), self.ycoord.max()]
         self.histx = self.axhistx.hist(self.xcoord.compressed(), self.nbins)
-        self.histy = self.axhisty.hist(self.ycoord.compressed(), self.nbins,
-                                       orientation='horizontal')
+        self.histy = self.axhisty.hist(
+            self.ycoord.compressed(), self.nbins, orientation="horizontal"
+        )
         self.axhistx.set_xlim(xrng)
         self.axhisty.set_ylim(yrng[::-1])
 
@@ -288,7 +289,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=colormaps['jet'])
+        self.csp = self.subplot.imshow(dat.data, cmap=colormaps["jet"])
         self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -339,11 +340,12 @@ class GraphMap(FigureCanvasQTAgg):
             self.csp.set_clim(cdat.min(), cdat.max())
             vals = np.unique(cdat)
             vals = vals.compressed()
-            bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+            bnds = (vals - 0.5).tolist() + [vals.max() + 0.5]
 
             if len(vals) > 1:
-                self.subplot.figure.colorbar(self.csp, boundaries=bnds,
-                                             values=vals, ticks=vals)
+                self.subplot.figure.colorbar(
+                    self.csp, boundaries=bnds, values=vals, ticks=vals
+                )
         else:
             self.csp.set_data(dat.data)
             self.csp.set_clim(dat.data.min(), dat.data.max())
@@ -386,18 +388,16 @@ class PolygonInteractor(QtCore.QObject):
 
         xtmp, ytmp = list(zip(*self.poly.xy))
 
-        self.line = Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
-                           color='y', animated=True)
+        self.line = Line2D(
+            xtmp, ytmp, marker="o", markerfacecolor="r", color="y", animated=True
+        )
         self.ax.add_line(self.line)
 
         self._ind = None  # the active vert
 
-        self.canvas.mpl_connect('button_press_event',
-                                self.button_press_callback)
-        self.canvas.mpl_connect('button_release_event',
-                                self.button_release_callback)
-        self.canvas.mpl_connect('motion_notify_event',
-                                self.motion_notify_callback)
+        self.canvas.mpl_connect("button_press_event", self.button_press_callback)
+        self.canvas.mpl_connect("button_release_event", self.button_release_callback)
+        self.canvas.mpl_connect("motion_notify_event", self.motion_notify_callback)
 
     def draw_callback(self):
         """
@@ -490,13 +490,12 @@ class PolygonInteractor(QtCore.QObject):
 
         if self._ind is None:
             xys = self.poly.get_transform().transform(self.poly.xy)
-            ptmp = self.poly.get_transform().transform([event.xdata,
-                                                        event.ydata])
+            ptmp = self.poly.get_transform().transform([event.xdata, event.ydata])
 
             if len(xys) == 1:
                 self.poly.xy = np.array(
-                    [(event.xdata, event.ydata)] +
-                    [(event.xdata, event.ydata)])
+                    [(event.xdata, event.ydata)] + [(event.xdata, event.ydata)]
+                )
                 self.line.set_data(list(zip(*self.poly.xy)))
 
                 self.canvas.restore_region(self.background)
@@ -522,9 +521,11 @@ class PolygonInteractor(QtCore.QObject):
             if np.array_equal(self.poly.xy, np.ones((2, 2))):
                 self.poly.set_xy([[event.xdata, event.ydata]])
             else:
-                self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-                                        [(event.xdata, event.ydata)] +
-                                        list(self.poly.xy[i + 1:]))
+                self.poly.xy = np.array(
+                    list(self.poly.xy[: i + 1])
+                    + [(event.xdata, event.ydata)]
+                    + list(self.poly.xy[i + 1 :])
+                )
 
             self.line.set_data(list(zip(*self.poly.xy)))
 
@@ -619,11 +620,11 @@ class ScatterPlot(BasicModule):
         self.map = GraphMap()
         self.hist = GraphHist()
 
-        self.cp_dpoly = QtWidgets.QPushButton('Delete Polygon')
+        self.cp_dpoly = QtWidgets.QPushButton("Delete Polygon")
         self.cp_combo = QtWidgets.QComboBox()
         self.cp_combo2 = QtWidgets.QComboBox()
         self.cp_combo3 = QtWidgets.QComboBox()
-        self.map_dpoly = QtWidgets.QPushButton('Delete Polygon')
+        self.map_dpoly = QtWidgets.QPushButton("Delete Polygon")
         self.map_combo = QtWidgets.QComboBox()
         self.map_combo2 = QtWidgets.QComboBox()
 
@@ -639,18 +640,18 @@ class ScatterPlot(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        gbox_cp = QtWidgets.QGroupBox('Cross Plot Settings')
+        gbox_cp = QtWidgets.QGroupBox("Cross Plot Settings")
         gl_left = QtWidgets.QGridLayout(gbox_cp)
-        gbox_map = QtWidgets.QGroupBox('Map Settings')
+        gbox_map = QtWidgets.QGroupBox("Map Settings")
         gl_right = QtWidgets.QGridLayout(gbox_map)
 
-        self.setWindowTitle('Scatter Plot Tool')
+        self.setWindowTitle("Scatter Plot Tool")
 
-        lbl_combo_left = QtWidgets.QLabel('X Data Band:')
-        lbl_combo2_left = QtWidgets.QLabel('Y Data Band:')
-        lbl_combo3_left = QtWidgets.QLabel('Cluster Overlay:')
-        lbl_combo_right = QtWidgets.QLabel('Data Band:')
-        lbl_combo2_right = QtWidgets.QLabel('Cluster Overlay:')
+        lbl_combo_left = QtWidgets.QLabel("X Data Band:")
+        lbl_combo2_left = QtWidgets.QLabel("Y Data Band:")
+        lbl_combo3_left = QtWidgets.QLabel("Cluster Overlay:")
+        lbl_combo_right = QtWidgets.QLabel("Data Band:")
+        lbl_combo2_right = QtWidgets.QLabel("Cluster Overlay:")
 
         gl_left.addWidget(lbl_combo_left, 0, 0, 1, 1)
         gl_left.addWidget(lbl_combo2_left, 1, 0, 1, 1)
@@ -669,7 +670,7 @@ class ScatterPlot(BasicModule):
         gl_main.addWidget(gbox_cp, 1, 0, 1, 1)
         gl_main.addWidget(gbox_map, 1, 1, 1, 1)
 
-        self.buttonbox.htmlfile = 'cluster.dm.scatter'
+        self.buttonbox.htmlfile = "cluster.dm.scatter"
 
         gl_main.addWidget(self.buttonbox, 2, 0, 1, 2)
 
@@ -693,7 +694,7 @@ class ScatterPlot(BasicModule):
         self.hist.polyi.new_poly([[1, 1]])
 
         mtmp = self.map_combo.currentIndex()
-        mask = self.indata['Raster'][mtmp].data.mask
+        mask = self.indata["Raster"][mtmp].data.mask
 
         dattmp = self.map.csp.get_array()
         dattmp.mask = mask
@@ -711,7 +712,7 @@ class ScatterPlot(BasicModule):
         """
         self.map.polyi.new_poly([[1, 1]])
         dattmp = self.hist.csp.get_array()
-        dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.))
+        dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.0))
         self.hist.csp.changed()
         self.hist.figure.canvas.draw()
 
@@ -800,18 +801,20 @@ class ScatterPlot(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('Error: You must have a multi-band raster dataset '
-                         'in addition to your cluster analysis results')
+        if "Raster" not in self.indata:
+            self.showlog(
+                "Error: You must have a multi-band raster dataset "
+                "in addition to your cluster analysis results"
+            )
             return False
 
-        self.dat_tmp = self.indata['Raster']
-        self.map.data = self.indata['Raster']
-        self.hist.data = self.indata['Raster']
+        self.dat_tmp = self.indata["Raster"]
+        self.map.data = self.indata["Raster"]
+        self.hist.data = self.indata["Raster"]
         self.hist.cindx = self.c
         self.map.mindx = self.m
 
-        bands = [i.dataid for i in self.indata['Raster']]
+        bands = [i.dataid for i in self.indata["Raster"]]
 
         self.cmb_update(self.cp_combo, bands)
         self.cmb_update(self.cp_combo2, bands)
@@ -819,16 +822,18 @@ class ScatterPlot(BasicModule):
 
         self.show()
 
-        cbands = ['Scatter Amplitudes']
-        mbands = ['None']
+        cbands = ["Scatter Amplitudes"]
+        mbands = ["None"]
 
-        if 'Cluster' in self.indata:
-            self.hist.cdata = self.indata['Cluster']
-            self.map.cdata = self.indata['Cluster']
-            cbands += [i.dataid for i in self.indata['Cluster']
-                       if 'Membership' not in i.dataid]
-            mbands += [i.dataid for i in self.indata['Cluster']
-                       if 'Membership' not in i.dataid]
+        if "Cluster" in self.indata:
+            self.hist.cdata = self.indata["Cluster"]
+            self.map.cdata = self.indata["Cluster"]
+            cbands += [
+                i.dataid for i in self.indata["Cluster"] if "Membership" not in i.dataid
+            ]
+            mbands += [
+                i.dataid for i in self.indata["Cluster"] if "Membership" not in i.dataid
+            ]
 
         self.cmb_update(self.cp_combo3, cbands)
         self.cmb_update(self.map_combo2, mbands)
@@ -883,7 +888,7 @@ class ScatterPlot(BasicModule):
             return
 
         mtmp = self.map_combo.currentIndex()
-        mask = self.indata['Raster'][mtmp].data.mask
+        mask = self.indata["Raster"][mtmp].data.mask
 
         polymask = polymask.reshape(mask.shape)
         polymask = np.logical_or(~polymask, mask)
@@ -909,8 +914,7 @@ class ScatterPlot(BasicModule):
             return
 
         dattmp = self.hist.csp.get_array()
-        atmp = np.array([self.hist.xcoord[polymask],
-                         self.hist.ycoord[polymask]]).T
+        atmp = np.array([self.hist.xcoord[polymask], self.hist.ycoord[polymask]]).T
         dattmp.mask = np.ones_like(np.ma.getmaskarray(dattmp))
         for i in atmp:
             dattmp.mask[int(i[1]), int(i[0])] = False
@@ -963,6 +967,7 @@ def dist_point_to_segment(p, s0, s1):
 
 def _testfn():
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile1 = r"D:\Workdata\PyGMI Test Data\Classification\clipsmall.tif"
@@ -972,11 +977,11 @@ def _testfn():
     dat2 = get_raster(ifile2)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ScatterPlot()
-    tmp1.indata['Raster'] = dat1
-    tmp1.indata['Cluster'] = dat2
+    tmp1.indata["Raster"] = dat1
+    tmp1.indata["Cluster"] = dat2
     tmp1.settings()
 
 

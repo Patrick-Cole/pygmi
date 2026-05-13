@@ -25,12 +25,13 @@
 """Delete SEISAN records."""
 
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 from PySide6 import QtWidgets
-import matplotlib.pyplot as plt
 
-from pygmi.seis import iodefs
 from pygmi.misc import BasicModule
+from pygmi.seis import iodefs
 
 
 class DeleteRecord(BasicModule):
@@ -47,7 +48,7 @@ class DeleteRecord(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.indata = {'tmp': True}
+        self.indata = {"tmp": True}
 
         self.settings()
 
@@ -66,12 +67,12 @@ class DeleteRecord(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.showlog('Delete Rows starting')
+        self.showlog("Delete Rows starting")
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
-        if ifile == '':
+        if ifile == "":
             return False
-        os.chdir(ifile.rpartition('/')[0])
+        os.chdir(ifile.rpartition("/")[0])
 
         self.delrec(ifile)
 
@@ -101,35 +102,38 @@ class DeleteRecord(BasicModule):
         None.
 
         """
-        ofile = ifile[:-4] + '_new.out'
+        ofile = ifile[:-4] + "_new.out"
 
-        self.showlog('Input Filename: ' + ifile)
-        self.showlog('Output Filename: ' + ofile)
+        self.showlog("Input Filename: " + ifile)
+        self.showlog("Output Filename: " + ofile)
 
         skey = QtWidgets.QInputDialog.getText(
-            self.parent, 'Delete Criteria',
-            'Please input the terms used to decide on lines to delete',
-            QtWidgets.QLineEdit.EchoMode.Normal, 'AML, IAML')[0]
+            self.parent,
+            "Delete Criteria",
+            "Please input the terms used to decide on lines to delete",
+            QtWidgets.QLineEdit.EchoMode.Normal,
+            "AML, IAML",
+        )[0]
 
         skey = str(skey).upper()
 
-        self.showlog('Delete Criteria: ' + skey)
-        self.showlog('Working...')
+        self.showlog("Delete Criteria: " + skey)
+        self.showlog("Working...")
 
-        skey = skey.replace(' ', '')
-        skey = skey.split(',')
+        skey = skey.replace(" ", "")
+        skey = skey.split(",")
 
-        with open(ifile, encoding='utf-8') as inputf:
+        with open(ifile, encoding="utf-8") as inputf:
             idata = inputf.readlines()
 
         odata = idata
         for j in skey:
             odata = [i for i in odata if i.find(j) < 0]
 
-        with open(ofile, 'w', encoding='utf-8') as outputf:
+        with open(ofile, "w", encoding="utf-8") as outputf:
             outputf.writelines(odata)
 
-        self.showlog('Completed!')
+        self.showlog("Completed!")
 
 
 class Quarry(BasicModule):
@@ -165,29 +169,29 @@ class Quarry(BasicModule):
             True if successful, False otherwise.
 
         """
-        self.showlog('Delete quarry events starting')
-        self.showlog('Daytime defined from 9am to 7pm')
-        self.showlog('Events radius: .2 degrees')
+        self.showlog("Delete quarry events starting")
+        self.showlog("Daytime defined from 9am to 7pm")
+        self.showlog("Events radius: .2 degrees")
 
-        if 'Seis' not in self.indata:
+        if "Seis" not in self.indata:
             return False
 
-        data = self.indata['Seis']
+        data = self.indata["Seis"]
 
         alist = []
         for i in data:
-            if '1' in i:
+            if "1" in i:
                 alist.append(i)
 
         if not alist:
-            self.showlog('Error: no Type 1 records')
+            self.showlog("Error: no Type 1 records")
             return False
 
         self.events = alist
 
         data = self.calcrq2b()
         if data is not None:
-            self.outdata['Seis'] = data
+            self.outdata["Seis"] = data
         else:
             return False
 
@@ -213,7 +217,7 @@ class Quarry(BasicModule):
             New events
 
         """
-        self.showlog('Working...')
+        self.showlog("Working...")
 
         hour = []
         lat = []
@@ -263,15 +267,16 @@ class Quarry(BasicModule):
         #     clusters.append([lontmp, lattmp])
 
         # clusters = np.array(clusters)
-        self.showlog('Calculating Rq values')
+        self.showlog("Calculating Rq values")
 
         while stayinloop:
             lls = np.transpose([lat, lon])
             cnt = lls.shape[0]
             nd = []
             rstot = []
-            self.showlog('daylight events left: ' + str(hour.sum()) +
-                         ' of ' + str(hour.size))
+            self.showlog(
+                "daylight events left: " + str(hour.sum()) + " of " + str(hour.size)
+            )
 
             # instead of a grid, we are using an actual event location
             # instead of centering on every event, we should use only daytime
@@ -281,7 +286,7 @@ class Quarry(BasicModule):
             # also, perhaps if total events less than 50, is that even allowed?
 
             for i in range(cnt):  # i is node number, centered on an event
-                r = ((lls - lls[i])**2).sum(1)
+                r = ((lls - lls[i]) ** 2).sum(1)
 
                 rs = np.argpartition(r, N)[:N]
                 hrs = hour[rs]  # daylight hours for this node
@@ -309,7 +314,7 @@ class Quarry(BasicModule):
                 stayinloop = False
             stayinloop = False
 
-        self.showlog('Completed!')
+        self.showlog("Completed!")
 
         return newevents
 
@@ -323,7 +328,7 @@ class Quarry(BasicModule):
             New events
 
         """
-        self.showlog('Working...')
+        self.showlog("Working...")
 
         hour = []
         lat = []
@@ -331,7 +336,7 @@ class Quarry(BasicModule):
         newevents = []
 
         for i2 in self.events:
-            i = i2['1']
+            i = i2["1"]
             if np.isnan(i.latitude) or np.isnan(i.longitude):
                 continue
             hour.append(i.hour)
@@ -354,17 +359,16 @@ class Quarry(BasicModule):
         # rperc = self.randrqb(N, day, ehourall.shape[0])
         rperc = 3.0
 
-        self.showlog('Calculating Rq values')
+        self.showlog("Calculating Rq values")
 
         lls = np.transpose([lat, lon])
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        self.showlog('daylight events:' + str(hour.sum()) + ' of ' +
-                     str(hour.size))
+        self.showlog("daylight events:" + str(hour.sum()) + " of " + str(hour.size))
 
         for i in range(cnt):  # i is node number, centered on an event
-            r = np.sqrt(((lls - lls[i])**2).sum(1))
+            r = np.sqrt(((lls - lls[i]) ** 2).sum(1))
 
             rs = np.argpartition(r, N)[:N]
 
@@ -376,7 +380,7 @@ class Quarry(BasicModule):
             nd.append(hrs)
 
         if len(nd) == 0:
-            self.showlog('Not enough events within 0.2 degrees. Aborting.')
+            self.showlog("Not enough events within 0.2 degrees. Aborting.")
             return None
         nd = np.sum(nd, 1)
         nn = (N - nd).astype(float)
@@ -399,7 +403,7 @@ class Quarry(BasicModule):
         ehour = np.delete(ehour, maxel)
         newevents = np.delete(newevents, maxel)
 
-        self.showlog('Completed!')
+        self.showlog("Completed!")
 
         return newevents.tolist()
 
@@ -424,10 +428,18 @@ class Quarry(BasicModule):
             Percentiles
 
         """
-        rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
-                 1.3234714, 1.28444936, 1.26923077]
+        rperc = [
+            1.97435897,
+            1.64253394,
+            1.46153846,
+            1.41025641,
+            1.35737179,
+            1.3234714,
+            1.28444936,
+            1.26923077,
+        ]
 
-        self.showlog('Calculating random Rq values for calibration')
+        self.showlog("Calculating random Rq values for calibration")
         rperc = []
         nd = 0
         ld = day[1] - day[0]
@@ -435,7 +447,7 @@ class Quarry(BasicModule):
 
         nrange = [10]
         for N in nrange:
-            self.showlog(str(N) + ' of ' + str(nmax), True)
+            self.showlog(str(N) + " of " + str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
             tmp *= 24
 
@@ -467,7 +479,7 @@ class Quarry(BasicModule):
             Percentiles
 
         """
-        self.showlog('Calculating random Rq values for calibration')
+        self.showlog("Calculating random Rq values for calibration")
         elist = [50, 100, 150, 200]
         rperc = None
 
@@ -502,7 +514,7 @@ class Quarry(BasicModule):
         return rperc
 
 
-def import_for_plots(ifile, dind='R'):
+def import_for_plots(ifile, dind="R"):
     """
     Import data to plot.
 
@@ -522,13 +534,13 @@ def import_for_plots(ifile, dind='R'):
     iseis = iodefs.ImportSeisan()
     iseis.settings(ifile)
 
-    dat = iseis.outdata['Seis']
+    dat = iseis.outdata["Seis"]
     datd = {}
 
     for event in dat:
-        if '1' not in event:
+        if "1" not in event:
             continue
-        if event['1'].distance_indicator not in dind:
+        if event["1"].distance_indicator not in dind:
             continue
 
         for rectype in event:
@@ -536,30 +548,30 @@ def import_for_plots(ifile, dind='R'):
                 datd[rectype] = []
             datd[rectype].append(event[rectype])
 
-            if rectype in ('1', 'E'):
+            if rectype in ("1", "E"):
                 tmp = vars(event[rectype])
                 for j in tmp:
-                    newkey = rectype + '_' + j
+                    newkey = rectype + "_" + j
                     if newkey not in datd:
                         datd[newkey] = []
                     datd[newkey].append(tmp[j])
                     # Custom
-                    if 'type_of_magnitude' in j:
-                        newkey = '1_M' + tmp[j]
+                    if "type_of_magnitude" in j:
+                        newkey = "1_M" + tmp[j]
                         if newkey not in datd:
                             datd[newkey] = []
-                        datd[newkey].append(tmp[j.split('_of_')[1]])
+                        datd[newkey].append(tmp[j.split("_of_")[1]])
 
-                        newkey = '1_M' + tmp[j] + '_year'
+                        newkey = "1_M" + tmp[j] + "_year"
                         if newkey not in datd:
                             datd[newkey] = []
-                        datd[newkey].append(tmp['year'])
+                        datd[newkey].append(tmp["year"])
 
-            if rectype == '4':
+            if rectype == "4":
                 for i in event[rectype]:
                     tmp = vars(i)
                     for j in tmp:
-                        newkey = rectype + '_' + j
+                        newkey = rectype + "_" + j
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
@@ -571,9 +583,9 @@ def _testfn():
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r'd:\Work\Workdata\review\seismology\pygmi.out'
+    ifile = r"d:\Work\Workdata\review\seismology\pygmi.out"
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 
     quarry = Quarry()

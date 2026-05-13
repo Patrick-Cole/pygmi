@@ -24,14 +24,14 @@
 # -----------------------------------------------------------------------------
 """A set of Magnetic Data routines."""
 
-from PySide6 import QtWidgets
 import numpy as np
+from PySide6 import QtWidgets
 from scipy import signal
 
-from pygmi.raster.dataprep import verticalp
 from pygmi.misc import BasicModule
+from pygmi.raster.dataprep import verticalp
+from pygmi.raster.fft import fft_getkxy, fftprep
 from pygmi.raster.misc import lstack
-from pygmi.raster.fft import fftprep, fft_getkxy
 
 
 class ASig(BasicModule):
@@ -60,9 +60,9 @@ class ASig(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'mag.dm.asig'
+        self.buttonbox.htmlfile = "mag.dm.asig"
 
-        self.setWindowTitle('Analytic Signal')
+        self.setWindowTitle("Analytic Signal")
 
         gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
@@ -81,8 +81,8 @@ class ASig(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
@@ -90,21 +90,21 @@ class ASig(BasicModule):
             if temp == 0:
                 return False
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         data2 = []
 
         for i in self.piter(range(len(data))):
             asignal = asig(data[i])
             data2.append(data[i].copy())
             data2[-1].data = asignal
-            data2[-1].dataid += ' Analytic Signal'
+            data2[-1].dataid += " Analytic Signal"
 
         for i in data2:
             if i.nodata is None:
                 continue
             i.data.data[i.data.mask] = i.nodata
 
-        self.outdata['Raster'] = data2
+        self.outdata["Raster"] = data2
         return True
 
     def saveproj(self):
@@ -201,23 +201,23 @@ class Tilt1(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'mag.dm.tilt'
+        self.buttonbox.htmlfile = "mag.dm.tilt"
 
-        lbl_1 = QtWidgets.QLabel('Azimuth (degrees from east)')
-        lbl_2 = QtWidgets.QLabel('Smoothing Matrix Size (Odd, 0 for None)')
-        lbl_3 = QtWidgets.QLabel('EHGA k factor (2 or greater)')
+        lbl_1 = QtWidgets.QLabel("Azimuth (degrees from east)")
+        lbl_2 = QtWidgets.QLabel("Smoothing Matrix Size (Odd, 0 for None)")
+        lbl_3 = QtWidgets.QLabel("EHGA k factor (2 or greater)")
 
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
-        self.sb_azi.setProperty('value', 0)
-        self.sb_s.setPrefix('')
+        self.sb_azi.setProperty("value", 0)
+        self.sb_s.setPrefix("")
         self.sb_s.setMinimum(0)
         self.sb_s.setMaximum(100000)
         self.sb_s.setSingleStep(1)
         self.sb_k.setMinimum(1)
         self.sb_k.setMaximum(1000)
 
-        self.setWindowTitle('Tilt Angle')
+        self.setWindowTitle("Tilt Angle")
 
         gl_1.addWidget(lbl_2, 0, 0, 1, 1)
         gl_1.addWidget(self.sb_s, 0, 1, 1, 1)
@@ -242,8 +242,8 @@ class Tilt1(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
@@ -255,12 +255,13 @@ class Tilt1(BasicModule):
         self.azi = self.sb_azi.value()
         kval = self.sb_k.value()
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         data2 = []
 
         for i in self.piter(range(len(data))):
-            t1, th, t2, ta, tdx, tahg, ehga = tilt1(data[i], self.azi,
-                                                    self.smooth, kval)
+            t1, th, t2, ta, tdx, tahg, ehga = tilt1(
+                data[i], self.azi, self.smooth, kval
+            )
             data2.append(data[i].copy())
             data2.append(data[i].copy())
             data2.append(data[i].copy())
@@ -275,20 +276,20 @@ class Tilt1(BasicModule):
             data2[-3].data = tdx
             data2[-2].data = tahg
             data2[-1].data = ehga
-            data2[-7].dataid += ' Standard Tilt Angle'
-            data2[-6].dataid += ' Hyperbolic Tilt Angle'
-            data2[-5].dataid += ' 2nd Order Tilt Angle'
-            data2[-4].dataid += ' Tilt Based Directional Derivative'
-            data2[-3].dataid += ' Total Derivative'
-            data2[-2].dataid += ' Tilt Angle of the Horizontal Gradient'
-            data2[-1].dataid += ' Enhanced Horizontal Gradient Amplitude'
+            data2[-7].dataid += " Standard Tilt Angle"
+            data2[-6].dataid += " Hyperbolic Tilt Angle"
+            data2[-5].dataid += " 2nd Order Tilt Angle"
+            data2[-4].dataid += " Tilt Based Directional Derivative"
+            data2[-3].dataid += " Total Derivative"
+            data2[-2].dataid += " Tilt Angle of the Horizontal Gradient"
+            data2[-1].dataid += " Enhanced Horizontal Gradient Amplitude"
 
         for i in data2:
             if i.nodata is None:
                 continue
             i.data.data[i.data.mask] = i.nodata
 
-        self.outdata['Raster'] = data2
+        self.outdata["Raster"] = data2
         return True
 
     def saveproj(self):
@@ -354,9 +355,9 @@ def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
 
     if s > 0:
         se = np.ones((s, s)) / (s * s)
-        data2 = signal.convolve2d(data, se, 'valid')  # smooth
+        data2 = signal.convolve2d(data, se, "valid")  # smooth
         mask = np.ma.getmaskarray(data.data)
-        mask = signal.convolve2d(mask, se, 'valid')
+        mask = signal.convolve2d(mask, se, "valid")
         data = np.ma.array(data2, mask=mask)
 
     dtr = np.pi / 180.0
@@ -374,13 +375,13 @@ def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
     dx1 = dx * np.cos(azi) + dy * np.sin(azi)
     dx2 = dx * np.cos(azi + np.pi / 2) + dy * np.sin(azi + np.pi / 2)
     dxz = np.ma.sqrt(dx2 * dx2 + dz * dz)
-    ta = np.ma.arctan2(dx1, dxz)         # Tilt directional derivative
+    ta = np.ma.arctan2(dx1, dxz)  # Tilt directional derivative
 
     # 2nd order Tilt angle
 
     s = max(s, 3)
     se = np.ones([s, s]) / (s * s)
-    ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
+    ts = signal.convolve2d(t1.filled(t1.mean()), se, "same")
     ts = np.ma.array(ts, mask=t1.mask)
     ts = data1.copy(ts)
 
@@ -462,13 +463,14 @@ class RTP(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'mag.dm.rtp'
+        self.buttonbox.htmlfile = "mag.dm.rtp"
 
-        lbl_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
-        lbl_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        lbl_band = QtWidgets.QLabel("Band to Reduce to the Pole:")
+        lbl_inc = QtWidgets.QLabel("Inclination of Magnetic Field:")
         lbl_inca = QtWidgets.QLabel(
-            'Amplitude Correction Inclination for low latitudes:')
-        lbl_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
+            "Amplitude Correction Inclination for low latitudes:"
+        )
+        lbl_dec = QtWidgets.QLabel("Declination of Magnetic Field:")
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -480,7 +482,7 @@ class RTP(BasicModule):
         self.dsb_inca.setValue(20)
         self.dsb_dec.setValue(-16.75)
 
-        self.setWindowTitle('Reduction to the Pole')
+        self.setWindowTitle("Reduction to the Pole")
 
         gl_main.addWidget(lbl_band, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
@@ -509,11 +511,11 @@ class RTP(BasicModule):
 
         """
         tmp = []
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             tmp.append(i.dataid)
 
         self.cmb_update(self.cmb_dataid, tmp)
@@ -557,13 +559,13 @@ class RTP(BasicModule):
         Ia = self.dsb_inca.value()
 
         newdat = []
-        for data in self.piter(self.indata['Raster']):
+        for data in self.piter(self.indata["Raster"]):
             if data.dataid != self.cmb_dataid.currentText():
                 continue
             dat = rtp(data, I_deg, D_deg, Ia, self.showlog, self.piter)
             newdat.append(dat)
 
-        self.outdata['Raster'] = newdat
+        self.outdata["Raster"] = newdat
 
 
 def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
@@ -603,16 +605,16 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
     # Ia = min(90, max(0, ((int((0.008 * I_deg**2 - 1.71 * abs(I_deg) + 80) / 2.5)) * 2.5)))
 
     Ia = np.deg2rad(Ia)
-    I = np.deg2rad(I_deg)
+    Inc = np.deg2rad(I_deg)
     D = np.deg2rad(D_deg)
     alpha = np.arctan2(KX, KY)
 
-    if abs(I) >= abs(Ia):
-        Ia = I
+    if abs(Inc) >= abs(Ia):
+        Ia = Inc
 
-    filt = (np.sin(I) - 1j * np.cos(I) * np.cos(D - alpha))**2
-    filt2 = (np.sin(Ia)**2 + np.cos(Ia)**2 * np.cos(D - alpha)**2)
-    filt2 = filt2 * (np.sin(I)**2 + np.cos(I)**2 * np.cos(D - alpha)**2)
+    filt = (np.sin(Inc) - 1j * np.cos(Inc) * np.cos(D - alpha)) ** 2
+    filt2 = np.sin(Ia) ** 2 + np.cos(Ia) ** 2 * np.cos(D - alpha) ** 2
+    filt2 = filt2 * (np.sin(Inc) ** 2 + np.cos(Inc) ** 2 * np.cos(D - alpha) ** 2)
     filt = filt / filt2
 
     zout = np.real(np.fft.ifft2(fftmod * filt))
@@ -620,10 +622,10 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
     zout = zout + datamedian
     dat = ndat.copy()
     dat.data = np.ma.array(zout)
-    dat.dataid = 'RTP_' + data.dataid
-    dat = lstack([dat, data], piter=piter,
-                 showlog=showlog,
-                 masterid=data.dataid, commonmask=True)[0]
+    dat.dataid = "RTP_" + data.dataid
+    dat = lstack(
+        [dat, data], piter=piter, showlog=showlog, masterid=data.dataid, commonmask=True
+    )[0]
 
     return dat
 
@@ -673,7 +675,8 @@ def _testfn_rtp():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import colormaps
-    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+
+    from pygmi.pfmod.grvmag3d import calc_field, quick_model
 
     # quick model
     finc = -57
@@ -691,20 +694,21 @@ def _testfn_rtp():
 
     # magval = lmod.griddata['Calculated Magnetics'].data
 
-    ndata = lmod.griddata['Calculated Magnetics'].copy()
-    ndata.data += np.random.normal(0, .5, ndata.data.shape)
+    ndata = lmod.griddata["Calculated Magnetics"].copy()
+    ndata.data += np.random.normal(0, 0.5, ndata.data.shape)
     dat2 = rtp(ndata, finc, fdec)
 
     plt.subplot(121)
-    plt.imshow(ndata.data, cmap=colormaps['jet'])
+    plt.imshow(ndata.data, cmap=colormaps["jet"])
     plt.subplot(122)
-    plt.imshow(dat2.data, cmap=colormaps['jet'])
+    plt.imshow(dat2.data, cmap=colormaps["jet"])
     plt.show()
 
 
 def _testfn():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
     from pygmi.raster.modest_image import imshow
 
@@ -738,16 +742,16 @@ def _testfn():
     ax = plt.gca()
     vmin = t1.mean() - 2.5 * t1.std()
     vmax = t1.mean() + 2.5 * t1.std()
-    imshow(ax, t1, extent=dat.extent, interpolation='none', vmin=vmin,
-           vmax=vmax)
+    imshow(ax, t1, extent=dat.extent, interpolation="none", vmin=vmin, vmax=vmax)
     plt.show()
 
 
 def _testfn_vert():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster
+
     from pygmi.raster.dataprep import verticalp
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
     ifile = r"D:\mergemag5_IGRFremoved_RTP.hdr"
@@ -757,14 +761,16 @@ def _testfn_vert():
     dzp = verticalp(zout)
 
     plt.figure(dpi=150)
-    plt.imshow(dzp, interpolation='none', vmin=-1, vmax=1.5)
+    plt.imshow(dzp, interpolation="none", vmin=-1, vmax=1.5)
     plt.colorbar()
 
 
 def _testfn2():
-    from pygmi.raster.iodefs import get_raster
-    from pygmi.mag.igrf import calc_igrf
     import matplotlib.pyplot as plt
+
+    from pygmi.mag.igrf import calc_igrf
+    from pygmi.raster.iodefs import get_raster
+
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
     dfile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Areas_A_and_B_DTM_utm35s.hdr"
 
@@ -790,17 +796,18 @@ def _testfn2():
     ddec = np.ma.array(ddec, mask=datr.data.mask)
 
     drdix = gradient2D(datr.data, inc.data)
-    drdiy = gradient2D(datr.data.T, inc.data.T)
+    # drdiy = gradient2D(datr.data.T, inc.data.T)
     d2rdi2x = gradient2D(drdix, inc.data)
-    d2rdi2y = gradient2D(drdiy, inc.data.T)
+    # d2rdi2y = gradient2D(drdiy, inc.data.T)
 
     drddx = gradient2D(datr.data, dec.data)
-    drddy = gradient2D(datr.data.T, dec.data.T)
+    # drddy = gradient2D(datr.data.T, dec.data.T)
     d2rdd2x = gradient2D(drddx, dec.data)
-    d2rdd2y = gradient2D(drddy, dec.data.T)
+    # d2rdd2y = gradient2D(drddy, dec.data.T)
 
-    rtpx = datr.data + (dinc * drdix + .5 * dinc**2 * d2rdi2x +
-                        ddec * drddx + .5 * ddec**2 * d2rdd2x)
+    rtpx = datr.data + (
+        dinc * drdix + 0.5 * dinc**2 * d2rdi2x + ddec * drddx + 0.5 * ddec**2 * d2rdd2x
+    )
 
     plt.figure()
     plt.subplot(121)

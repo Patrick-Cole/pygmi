@@ -933,7 +933,7 @@ class GetProf(BasicModule):
 
         gdf = gpd.read_file(self.ifile, engine="pyogrio")
 
-        gdf = gdf[gdf.geometry != None]
+        gdf = gdf[gdf.geometry.notna()]
 
         if gdf.geom_type.iloc[0] != "LineString":
             self.showlog("You need lines in that shape file")
@@ -1589,7 +1589,7 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
 
     gdf = gpd.read_file(sfile)
 
-    gdf = gdf[gdf.geometry != None]
+    gdf = gdf[gdf.geometry.notna()]
 
     if crs is not None:
         gdf = gdf.to_crs(crs)

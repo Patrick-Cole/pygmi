@@ -24,15 +24,12 @@
 # -----------------------------------------------------------------------------
 """Magnetic menu routines."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
-from pygmi.mag import dataprep
-from pygmi.mag import igrf
-from pygmi.mag import tiltdepth
-from pygmi.mag import matchedfilt
+from pygmi.mag import dataprep, igrf, matchedfilt, tiltdepth
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Widget class to call the main interface.
 
@@ -49,60 +46,59 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Raster')
-        self.parent.add_to_context('inRaster')
+        self.parent.add_to_context("Raster")
+        self.parent.add_to_context("inRaster")
 
         # Normal menus
-        self.menu = QtWidgets.QMenu('Magnetics')
+        self.menu = QtWidgets.QMenu("Magnetics")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_asig = QtGui.QAction('Analytic Signal')
+        self.action_asig = QtGui.QAction("Analytic Signal")
         self.menu.addAction(self.action_asig)
         self.action_asig.triggered.connect(self.asig)
 
-        self.action_tilt = QtGui.QAction('Tilt Angle and Related Edge '
-                                         'Filters')
+        self.action_tilt = QtGui.QAction("Tilt Angle and Related Edge Filters")
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 
-        self.action_rtp = QtGui.QAction('Reduction to the Pole')
+        self.action_rtp = QtGui.QAction("Reduction to the Pole")
         self.menu.addAction(self.action_rtp)
         self.action_rtp.triggered.connect(self.rtp)
 
-        self.action_igrf = QtGui.QAction('Calculate IGRF Corrected Data')
+        self.action_igrf = QtGui.QAction("Calculate IGRF Corrected Data")
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
 
-        self.action_mfilt = QtGui.QAction('Matched Filtering')
+        self.action_mfilt = QtGui.QAction("Matched Filtering")
         self.menu.addAction(self.action_mfilt)
         self.action_mfilt.triggered.connect(self.mfilt)
 
-        self.action_depth_susc = QtGui.QAction('Tilt Depth Interpretation')
+        self.action_depth_susc = QtGui.QAction("Tilt Depth Interpretation")
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
 
     def depth_susc(self):
         """Depth and Susceptibility calculations."""
-        self.parent.item_insert('Step', 'Tilt Depth Interpretation',
-                                tiltdepth.TiltDepth)
+        self.parent.item_insert(
+            "Step", "Tilt Depth Interpretation", tiltdepth.TiltDepth
+        )
 
     def rtp(self):
         """Compute RTP."""
-        self.parent.item_insert('Step', 'RTP', dataprep.RTP)
+        self.parent.item_insert("Step", "RTP", dataprep.RTP)
 
     def tilt(self):
         """Compute tilt angle."""
-        self.parent.item_insert('Step', 'Tilt Angle', dataprep.Tilt1)
+        self.parent.item_insert("Step", "Tilt Angle", dataprep.Tilt1)
 
     def asig(self):
         """Compute analytic signal."""
-        self.parent.item_insert('Step', 'Analytic Signal', dataprep.ASig)
+        self.parent.item_insert("Step", "Analytic Signal", dataprep.ASig)
 
     def igrf(self):
         """Compute IGRF."""
-        self.parent.item_insert('Step', 'Remove IGRF', igrf.IGRF)
+        self.parent.item_insert("Step", "Remove IGRF", igrf.IGRF)
 
     def mfilt(self):
         """Compute Matched Filtering."""
-        self.parent.item_insert(
-            'Step', 'Matched Filtering', matchedfilt.MatchedFilt)
+        self.parent.item_insert("Step", "Matched Filtering", matchedfilt.MatchedFilt)

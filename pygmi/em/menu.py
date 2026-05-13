@@ -24,12 +24,12 @@
 # -----------------------------------------------------------------------------
 """EM menu routines."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
 from pygmi.em import tdem
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Widget class to call the main interface.
 
@@ -48,13 +48,13 @@ class MenuWidget():
         self.parent = parent
 
         # Normal menus
-        self.menu = QtWidgets.QMenu('EM')
+        self.menu = QtWidgets.QMenu("EM")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_tdem1d = QtGui.QAction('TDEM 1D Inversion')
+        self.action_tdem1d = QtGui.QAction("TDEM 1D Inversion")
         self.menu.addAction(self.action_tdem1d)
         self.action_tdem1d.triggered.connect(self.tdem1d)
 
     def tdem1d(self):
         """TDEM 1D inversion."""
-        self.parent.item_insert('Step', 'TDEM 1D Inversion', tdem.TDEM1D)
+        self.parent.item_insert("Step", "TDEM 1D Inversion", tdem.TDEM1D)

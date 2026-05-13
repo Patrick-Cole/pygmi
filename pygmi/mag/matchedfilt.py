@@ -25,17 +25,17 @@
 """Matched filtering routine."""
 
 import numpy as np
-from scipy import signal
 import pwlf
-from PySide6 import QtWidgets
-from matplotlib import style, gridspec
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib import gridspec, style
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+from PySide6 import QtWidgets
+from scipy import signal
 
-from pygmi.raster.misc import lstack
 from pygmi.misc import BasicModule
-from pygmi.raster.fft import fftprep, calculate_raps
+from pygmi.raster.fft import calculate_raps, fftprep
+from pygmi.raster.misc import lstack
 
 
 class MatchedFilt(BasicModule):
@@ -80,26 +80,29 @@ class MatchedFilt(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'mag.dm.match'
+        self.buttonbox.htmlfile = "mag.dm.match"
 
-        lbl_1 = QtWidgets.QLabel('Band to perform Filtering:')
-        lbl_3 = QtWidgets.QLabel('Number of depth slices:')
+        lbl_1 = QtWidgets.QLabel("Band to perform Filtering:")
+        lbl_3 = QtWidgets.QLabel("Number of depth slices:")
 
-        pb_calculate = QtWidgets.QPushButton('Recalculate')
+        pb_calculate = QtWidgets.QPushButton("Recalculate")
 
         self.sb_nsegs.setMinimum(2)
-        self.sb_nsegs.setProperty('value', 2)
+        self.sb_nsegs.setProperty("value", 2)
 
         vbl_raster = QtWidgets.QVBoxLayout()
         hbl_all = QtWidgets.QHBoxLayout(self)
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40,
-                                       QtWidgets.QSizePolicy.Policy.Minimum,
-                                       QtWidgets.QSizePolicy.Policy.Expanding)
+        spacer = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
 
-        self.setWindowTitle('Matched Filtering')
+        self.setWindowTitle("Matched Filtering")
 
         vbl_raster.addWidget(lbl_1)
         vbl_raster.addWidget(self.cmb_band1)
@@ -134,13 +137,13 @@ class MatchedFilt(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        self.indata['Raster'] = lstack(self.indata['Raster'])
+        self.indata["Raster"] = lstack(self.indata["Raster"])
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         blist = []
         for i in data:
             blist.append(i.dataid)
@@ -164,14 +167,18 @@ class MatchedFilt(BasicModule):
             zout = zout + self.datamedian
             tmp = self.datapad.copy()
             tmp.data = np.ma.array(zout)
-            tmp.dataid = f'depth {self.depth[i]:.2f}'
-            tmp = lstack([tmp, self.data], piter=self.piter,
-                         showlog=self.showlog,
-                         masterid=self.data.dataid, commonmask=True)[0]
+            tmp.dataid = f"depth {self.depth[i]:.2f}"
+            tmp = lstack(
+                [tmp, self.data],
+                piter=self.piter,
+                showlog=self.showlog,
+                masterid=self.data.dataid,
+                commonmask=True,
+            )[0]
 
             odat.append(tmp)
 
-        self.outdata['Raster'] = odat
+        self.outdata["Raster"] = odat
 
         return True
 
@@ -184,12 +191,14 @@ class MatchedFilt(BasicModule):
 
         # n = -2.9
         n = 0
-        y_data = np.log(power_data / x_data**(n))
+        y_data = np.log(power_data / x_data ** (n))
 
         my_pwlf = pwlf.PiecewiseLinFit(x_data, y_data)
 
         m = []
         i = nsegs
+        breaks1 = None
+        breaks2 = None
         while len(m) < nsegs:
             breaks = my_pwlf.fit(i)
             m1 = my_pwlf.calc_slopes()
@@ -210,11 +219,11 @@ class MatchedFilt(BasicModule):
 
         fsum = 0
         for i in range(nsegs):
-            fsum += c[i] * x_data**(n / 2) * np.exp(-x_data * d[i])
+            fsum += c[i] * x_data ** (n / 2) * np.exp(-x_data * d[i])
 
         f = []
         for i in range(nsegs):
-            f.append(c[i] * x_data**(n / 2) * np.exp(-x_data * d[i]) / fsum)
+            f.append(c[i] * x_data ** (n / 2) * np.exp(-x_data * d[i]) / fsum)
 
         self.filt = []
         for i in range(nsegs):
@@ -223,7 +232,7 @@ class MatchedFilt(BasicModule):
         self.depth = d
 
         # Plotting
-        style.use('bmh')
+        style.use("bmh")
         self.figure.clear()
         gs = gridspec.GridSpec(3, 1)
         axes = self.figure.add_subplot(gs[:2, 0])
@@ -231,8 +240,9 @@ class MatchedFilt(BasicModule):
 
         for i in range(nsegs):
             xtmp = [breaks1[i], breaks2[i]]
-            axes.plot(xtmp, my_pwlf.predict(xtmp), f'C{i + 1}',
-                      label=f'Depth: {d[i]:.2f}')
+            axes.plot(
+                xtmp, my_pwlf.predict(xtmp), f"C{i + 1}", label=f"Depth: {d[i]:.2f}"
+            )
 
         for i in breaks1:
             axes.axvline(x=i, color="green", linestyle="--")
@@ -244,15 +254,15 @@ class MatchedFilt(BasicModule):
         # axes.set_ylabel(r"$\ln(Power/k^{-2.9})$", fontsize=10)
         axes.set_ylabel(r"$\ln(Power)$", fontsize=10)
         axes.set_title("Piecewise Linear Fit", fontsize=10)
-        axes.tick_params(axis='x', labelsize=8)
-        axes.tick_params(axis='y', labelsize=8)
+        axes.tick_params(axis="x", labelsize=8)
+        axes.tick_params(axis="y", labelsize=8)
 
         axes = self.figure.add_subplot(gs[2, 0])
-        axes.tick_params(axis='x', labelsize=8)
-        axes.tick_params(axis='y', labelsize=8)
+        axes.tick_params(axis="x", labelsize=8)
+        axes.tick_params(axis="y", labelsize=8)
         axes.set_title("FFT Filters", fontsize=10)
         for i, fi in enumerate(f):
-            axes.plot(x_data, abs(fi), f'C{i + 1}')
+            axes.plot(x_data, abs(fi), f"C{i + 1}")
         axes.set_xlabel("$Wavenumbers (k)$", fontsize=10)
 
         self.figure.tight_layout()
@@ -261,7 +271,7 @@ class MatchedFilt(BasicModule):
     def fftprep(self):
         """FFT preparation when choosing band."""
         txt = str(self.cmb_band1.currentText())
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             if i.dataid == txt:
                 self.data = i
                 break
@@ -309,14 +319,13 @@ def getbutter(lowcut, highcut, f, order=5):
     for i, low in enumerate(lowcut):
         high = highcut[i]
         if high / nq == 1.0:
-            sos = signal.butter(
-                order, low / nq, btype='highpass', output='sos')
+            sos = signal.butter(order, low / nq, btype="highpass", output="sos")
         elif low == 0.0:
-            sos = signal.butter(
-                order, high / nq, btype='lowpass', output='sos')
+            sos = signal.butter(order, high / nq, btype="lowpass", output="sos")
         else:
             sos = signal.butter(
-                order, [low / nq, high / nq], btype='bandpass', output='sos')
+                order, [low / nq, high / nq], btype="bandpass", output="sos"
+            )
 
         _, h = signal.freqz_sos(sos, fs=fs, worN=f)
 
@@ -328,7 +337,9 @@ def getbutter(lowcut, highcut, f, order=5):
 def _testfn():
     """Testing routine."""
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
@@ -338,14 +349,14 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = MatchedFilt()
-    tmp1.indata['Raster'] = dat
+    tmp1.indata["Raster"] = dat
 
     tmp1.settings()
 
-    dat = tmp1.outdata['Raster']
+    dat = tmp1.outdata["Raster"]
 
     for i in dat:
         plt.figure()
@@ -355,23 +366,5 @@ def _testfn():
         plt.show()
 
 
-def _testfft():
-    """Test FFT."""
-    from scipy import signal
-    import matplotlib.pyplot as plt
-
-    b, a = signal.butter(4, [.2, .4], 'band')
-    w, h = signal.freqz(b, a, fs=100)
-    plt.plot(w, abs(h))
-    plt.title('Butterworth filter frequency response')
-    plt.xlabel('Frequency [rad/s]')
-    plt.ylabel('Amplitude [dB]')
-    plt.margins(0, 0.1)
-    plt.grid(which='both', axis='both')
-    plt.axvline(100, color='green')  # cutoff frequency
-    plt.show()
-
-
 if __name__ == "__main__":
     _testfn()
-    # _testfft()

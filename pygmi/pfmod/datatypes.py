@@ -29,7 +29,7 @@ import numpy as np
 from pygmi.raster.datatypes import Data
 
 
-class LithModel():
+class LithModel:
     """
     Lithological Model Data.
 
@@ -99,12 +99,12 @@ class LithModel():
         self.lith_list_reverse = {}
         self.mht = None
         self.ght = None
-        self.gregional = 0.
-        self.dataid = '3D Model'
+        self.gregional = 0.0
+        self.dataid = "3D Model"
         self.tmpfiles = None
         self.name = None
         # Next line calls a function to update the variables above.
-        self.update(50, 40, 5, 0., 0., 0., 100., 100., 100., 0.)
+        self.update(50, 40, 5, 0.0, 0.0, 0.0, 100.0, 100.0, 100.0, 0.0)
 
         self.olith_index = None
         self.odxy = None
@@ -172,10 +172,11 @@ class LithModel():
                     o_k = int((self.ozrng[1] - x_k) / self.od_z)
                     k = int((self.zrange[1] - x_k) / self.d_z)
 
-                    if (self.lith_index[i, j, k] != -1 and
-                            self.olith_index[o_i, o_j, o_k] != -1) or nodtm:
-                        self.lith_index[i, j, k] = \
-                            self.olith_index[o_i, o_j, o_k]
+                    if (
+                        self.lith_index[i, j, k] != -1
+                        and self.olith_index[o_i, o_j, o_k] != -1
+                    ) or nodtm:
+                        self.lith_index[i, j, k] = self.olith_index[o_i, o_j, o_k]
 
     def dtm_to_lith(self, pbar=None):
         """
@@ -194,7 +195,7 @@ class LithModel():
         None.
 
         """
-        if 'DTM Dataset' not in self.griddata:
+        if "DTM Dataset" not in self.griddata:
             return
 
         if pbar is not None:
@@ -202,10 +203,9 @@ class LithModel():
         else:
             piter = iter
 
-        self.lith_index = np.zeros([self.numx, self.numy, self.numz],
-                                   dtype=int)
+        self.lith_index = np.zeros([self.numx, self.numy, self.numz], dtype=int)
 
-        curgrid = self.griddata['DTM Dataset']
+        curgrid = self.griddata["DTM Dataset"]
 
         d_x = curgrid.xdim
         d_y = curgrid.ydim
@@ -218,18 +218,21 @@ class LithModel():
         self.lith_index[:, :, :] = 0
 
         for i in piter(range(self.numx)):
-            xcrd = self.xrange[0] + (i + .5) * self.dxy
+            xcrd = self.xrange[0] + (i + 0.5) * self.dxy
             xcrd2 = int((xcrd - gxmin) / d_x)
             for j in range(self.numy):
-                ycrd = self.yrange[1] - (j + .5) * self.dxy
+                ycrd = self.yrange[1] - (j + 0.5) * self.dxy
                 ycrd2 = grows - int((gymax - ycrd) / d_y)
                 if ycrd2 == grows:
                     ycrd2 = grows - 1
 
-                if (0 <= ycrd2 < grows and 0 <= xcrd2 < gcols):
+                if 0 <= ycrd2 < grows and 0 <= xcrd2 < gcols:
                     alt = curgrid.data.data[ycrd2, xcrd2]
-                    if (np.ma.getmaskarray(curgrid.data)[ycrd2, xcrd2] or
-                            np.isnan(alt) or alt == curgrid.nodata):
+                    if (
+                        np.ma.getmaskarray(curgrid.data)[ycrd2, xcrd2]
+                        or np.isnan(alt)
+                        or alt == curgrid.nodata
+                    ):
                         alt = curgrid.data.mean()
                     k_2 = int((utlz - alt) / self.d_z)
                     self.lith_index[i, j, :k_2] = -1
@@ -271,12 +274,12 @@ class LithModel():
 
         """
         tmp = np.ma.zeros([self.numy, self.numx])
-        self.griddata['Calculated Magnetics'] = self.init_grid(tmp.copy())
-        self.griddata['Calculated Magnetics'].dataid = 'Calculated Magnetics'
-        self.griddata['Calculated Magnetics'].units = 'nT'
-        self.griddata['Calculated Gravity'] = self.init_grid(tmp.copy())
-        self.griddata['Calculated Gravity'].dataid = 'Calculated Gravity'
-        self.griddata['Calculated Gravity'].units = 'mGal'
+        self.griddata["Calculated Magnetics"] = self.init_grid(tmp.copy())
+        self.griddata["Calculated Magnetics"].dataid = "Calculated Magnetics"
+        self.griddata["Calculated Magnetics"].units = "nT"
+        self.griddata["Calculated Gravity"] = self.init_grid(tmp.copy())
+        self.griddata["Calculated Gravity"].dataid = "Calculated Gravity"
+        self.griddata["Calculated Gravity"].units = "mGal"
 
     def is_modified(self, modified=True):
         """
@@ -296,8 +299,21 @@ class LithModel():
         for i in self.lith_list:
             self.lith_list[i].modified = modified
 
-    def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
-               ght=-1, usedtm=True, pbar=None):
+    def update(
+        self,
+        cols,
+        rows,
+        layers,
+        utlx,
+        utly,
+        utlz,
+        dxy,
+        d_z,
+        mht=-1,
+        ght=-1,
+        usedtm=True,
+        pbar=None,
+    ):
         """
         Update the local variables for the LithModel class.
 
@@ -361,14 +377,11 @@ class LithModel():
 
         self.dxy = dxy
         self.d_z = d_z
-        self.lith_index = np.zeros([self.numx, self.numy, self.numz],
-                                   dtype=int)
-        self.lith_index_mag_old = np.zeros([self.numx, self.numy, self.numz],
-                                           dtype=int)
+        self.lith_index = np.zeros([self.numx, self.numy, self.numz], dtype=int)
+        self.lith_index_mag_old = np.zeros([self.numx, self.numy, self.numz], dtype=int)
         self.lith_index_mag_old[:] = -1
 
-        self.lith_index_grv_old = np.zeros([self.numx, self.numy, self.numz],
-                                           dtype=int)
+        self.lith_index_grv_old = np.zeros([self.numx, self.numy, self.numz], dtype=int)
         self.lith_index_grv_old[:] = -1
 
         self.init_calc_grids()
@@ -388,9 +401,16 @@ class LithModel():
 
         """
         for i in self.lith_list:
-            self.lith_list[i].set_xyz(self.numx, self.numy, self.numz,
-                                      self.dxy, self.mht, self.ght, self.d_z,
-                                      modified=False)
+            self.lith_list[i].set_xyz(
+                self.numx,
+                self.numy,
+                self.numz,
+                self.dxy,
+                self.mht,
+                self.ght,
+                self.d_z,
+                modified=False,
+            )
 
     def update_lith_list_reverse(self):
         """

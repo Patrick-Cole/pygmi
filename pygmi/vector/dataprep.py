@@ -24,25 +24,25 @@
 # -----------------------------------------------------------------------------
 """Data preparation for vector data."""
 
-import os
 import copy
 import glob
+import os
 from functools import partial
-from PySide6 import QtWidgets, QtCore, QtGui
+
+import geopandas as gpd
 import numpy as np
-from scipy.interpolate import griddata
-from scipy.interpolate import RBFInterpolator
+from pyproj import CRS, Transformer
+from PySide6 import QtCore, QtGui, QtWidgets
+from scipy.interpolate import RBFInterpolator, griddata
 from scipy.ndimage import distance_transform_edt
 from scipy.spatial import KDTree
-import geopandas as gpd
-from pyproj import CRS, Transformer
 from shapely import Polygon
 
-from pygmi.raster.reproj import GroupProj
-from pygmi.raster.datatypes import Data
-from pygmi.vector.minc import minc
-from pygmi.vector.datatypes import VoxModel
 from pygmi.misc import BasicModule, ContextModule, ProgressBarText
+from pygmi.raster.datatypes import Data
+from pygmi.raster.reproj import GroupProj
+from pygmi.vector.datatypes import VoxModel
+from pygmi.vector.minc import minc
 
 
 class PointCut(BasicModule):
@@ -78,17 +78,18 @@ class PointCut(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Vector' in self.indata:
-            data = copy.deepcopy(self.indata['Vector'][0])
+        if "Vector" in self.indata:
+            data = copy.deepcopy(self.indata["Vector"][0])
         else:
-            self.showlog('No point or vector data')
+            self.showlog("No point or vector data")
             return False
 
         if not nodialog:
-            ext = 'Shape file (*.shp)'
+            ext = "Shape file (*.shp)"
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open Shape File', '.', ext)
-            if self.ifile == '':
+                self.parent, "Open Shape File", ".", ext
+            )
+            if self.ifile == "":
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
@@ -99,7 +100,7 @@ class PointCut(BasicModule):
 
         if self.pbar is not None:
             self.pbar.to_max()
-        self.outdata['Vector'] = [data]
+        self.outdata["Vector"] = [data]
 
         return True
 
@@ -132,20 +133,20 @@ class DataGrid(BasicModule):
         super().__init__(parent)
         self.dxy = None
 
-        self.le_dxy = QtWidgets.QLineEdit('1.0')
-        self.le_null = QtWidgets.QLineEdit('0.0')
-        self.le_bdist = QtWidgets.QLineEdit('4.0')
+        self.le_dxy = QtWidgets.QLineEdit("1.0")
+        self.le_null = QtWidgets.QLineEdit("0.0")
+        self.le_bdist = QtWidgets.QLineEdit("4.0")
 
         self.cmb_dataid = QtWidgets.QComboBox()
         self.cmb_grid_method = QtWidgets.QComboBox()
         self.cmb_grid_type = QtWidgets.QComboBox()
         self.cmb_grid_dem = QtWidgets.QComboBox()
-        self.lbl_rows = QtWidgets.QLabel('Rows: 0')
-        self.lbl_cols = QtWidgets.QLabel('Columns: 0')
-        self.lbl_layers = QtWidgets.QLabel('Layers: 0')
-        self.lbl_bdist = QtWidgets.QLabel('Blanking Distance:')
-        self.lbl_method = QtWidgets.QLabel('Gridding Method:')
-        self.lbl_dem = QtWidgets.QLabel('DEM Grid:')
+        self.lbl_rows = QtWidgets.QLabel("Rows: 0")
+        self.lbl_cols = QtWidgets.QLabel("Columns: 0")
+        self.lbl_layers = QtWidgets.QLabel("Layers: 0")
+        self.lbl_bdist = QtWidgets.QLabel("Blanking Distance:")
+        self.lbl_method = QtWidgets.QLabel("Gridding Method:")
+        self.lbl_dem = QtWidgets.QLabel("DEM Grid:")
 
         self.cmb_line = QtWidgets.QComboBox()
         self.cmb_z = QtWidgets.QComboBox()
@@ -163,13 +164,13 @@ class DataGrid(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'vector.dm.gridding'
-        lbl_band = QtWidgets.QLabel('Column to Grid:')
-        lbl_dxy = QtWidgets.QLabel('Cell Size:')
-        lbl_null = QtWidgets.QLabel('Null Value:')
-        lbl_type = QtWidgets.QLabel('Gridding Type:')
-        self.lbl_line = QtWidgets.QLabel('Line Number:')
-        self.lbl_z = QtWidgets.QLabel('Z Coordinate Value:')
+        self.buttonbox.htmlfile = "vector.dm.gridding"
+        lbl_band = QtWidgets.QLabel("Column to Grid:")
+        lbl_dxy = QtWidgets.QLabel("Cell Size:")
+        lbl_null = QtWidgets.QLabel("Null Value:")
+        lbl_type = QtWidgets.QLabel("Gridding Type:")
+        self.lbl_line = QtWidgets.QLabel("Line Number:")
+        self.lbl_z = QtWidgets.QLabel("Z Coordinate Value:")
 
         val = QtGui.QDoubleValidator(1e-300, np.inf, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
@@ -182,9 +183,10 @@ class DataGrid(BasicModule):
         self.le_null.setValidator(val2)
         self.le_bdist.setValidator(val)
 
-        self.cmb_grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
-                                       'Minimum Curvature'])
-        self.cmb_grid_type.addItems(['Raster', 'Section', 'Voxel'])
+        self.cmb_grid_method.addItems(
+            ["Nearest Neighbour", "Linear", "Cubic", "Minimum Curvature"]
+        )
+        self.cmb_grid_type.addItems(["Raster", "Section", "Voxel"])
         self.cmb_line.hide()
         self.cmb_z.hide()
         self.lbl_line.hide()
@@ -193,7 +195,7 @@ class DataGrid(BasicModule):
         self.cmb_grid_dem.hide()
         self.lbl_dem.hide()
 
-        self.setWindowTitle('Dataset Gridding')
+        self.setWindowTitle("Dataset Gridding")
 
         gl_main.addWidget(lbl_type, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_grid_type, 0, 1, 1, 1)
@@ -221,10 +223,8 @@ class DataGrid(BasicModule):
         self.le_dxy.textChanged.connect(self.dxy_change)
         self.cmb_z.currentIndexChanged.connect(self.dxy_change)
         self.cmb_line.currentIndexChanged.connect(self.dxy_change)
-        self.cmb_grid_method.currentIndexChanged.connect(
-            self.grid_method_change)
-        self.cmb_grid_type.currentIndexChanged.connect(
-            self.grid_type_change)
+        self.cmb_grid_method.currentIndexChanged.connect(self.grid_method_change)
+        self.cmb_grid_type.currentIndexChanged.connect(self.grid_type_change)
 
     def dxy_change(self):
         """
@@ -236,23 +236,23 @@ class DataGrid(BasicModule):
 
         """
         txt = str(self.le_dxy.text())
-        if txt.replace('.', '', 1).isdigit():
+        if txt.replace(".", "", 1).isdigit():
             self.dxy = float(self.le_dxy.text())
         else:
             return
 
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
 
         x = data.geometry.x.values
         y = data.geometry.y.values
         zcol = self.cmb_z.currentText()
         z = np.array([0, self.dxy])
-        if zcol != '':
+        if zcol != "":
             z = data[zcol].values
 
-        if self.cmb_grid_type.currentText() == 'Section' and zcol != '':
+        if self.cmb_grid_type.currentText() == "Section" and zcol != "":
             line = self.cmb_line.currentText()
-            if line.lower() not in ['none', '']:
+            if line.lower() not in ["none", ""]:
                 data1 = data[data.line == line]
             else:
                 data1 = data
@@ -267,9 +267,9 @@ class DataGrid(BasicModule):
         rows = round(np.ptp(y) / self.dxy)
         layers = round(np.ptp(z) / self.dxy)
 
-        self.lbl_rows.setText('Rows: ' + str(rows))
-        self.lbl_cols.setText('Columns: ' + str(cols))
-        self.lbl_layers.setText('Layers: ' + str(layers))
+        self.lbl_rows.setText("Rows: " + str(rows))
+        self.lbl_cols.setText("Columns: " + str(cols))
+        self.lbl_layers.setText("Layers: " + str(layers))
 
     def grid_method_change(self):
         """
@@ -282,7 +282,7 @@ class DataGrid(BasicModule):
         """
         txt = self.cmb_grid_type.currentText()
 
-        if txt != 'Voxel':
+        if txt != "Voxel":
             self.lbl_bdist.show()
             self.le_bdist.show()
         else:
@@ -293,7 +293,7 @@ class DataGrid(BasicModule):
         """Check whether section is checked."""
         txt = self.cmb_grid_type.currentText()
 
-        if txt == 'Section':
+        if txt == "Section":
             self.cmb_line.show()
             self.cmb_z.show()
             self.lbl_line.show()
@@ -303,7 +303,7 @@ class DataGrid(BasicModule):
             self.lbl_method.show()
             self.cmb_grid_dem.hide()
             self.lbl_dem.hide()
-        elif txt == 'Voxel':
+        elif txt == "Voxel":
             self.cmb_line.hide()
             self.cmb_z.show()
             self.lbl_line.hide()
@@ -342,19 +342,19 @@ class DataGrid(BasicModule):
 
         """
         tmp = []
-        if 'Vector' not in self.indata:
-            self.showlog('No Point Data')
+        if "Vector" not in self.indata:
+            self.showlog("No Point Data")
             return False
 
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
 
-        if data.geom_type.iloc[0] != 'Point':
-            self.showlog('No Point Data')
+        if data.geom_type.iloc[0] != "Point":
+            self.showlog("No Point Data")
             return False
 
-        demlist = ['None']
-        if 'Raster' in self.indata:
-            tmp = [i.dataid for i in self.indata['Raster']]
+        demlist = ["None"]
+        if "Raster" in self.indata:
+            tmp = [i.dataid for i in self.indata["Raster"]]
             demlist += tmp
 
         self.cmb_update(self.cmb_grid_dem, demlist)
@@ -368,17 +368,16 @@ class DataGrid(BasicModule):
             self.dxy = max(dx, dy)
             self.dxy = min([np.ptp(x), np.ptp(y), self.dxy])
 
-        self.le_dxy.setText(f'{self.dxy:.8f}')
+        self.le_dxy.setText(f"{self.dxy:.8f}")
         self.grid_type_change()
 
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
+        filt = (data.columns != "geometry") & (data.columns != "line")
 
         cols = list(data.columns[filt])
         self.cmb_update(self.cmb_dataid, cols)
         self.cmb_update(self.cmb_z, cols)
 
-        lines = data.line[data.line != 'nan'].unique()
+        lines = data.line[data.line != "nan"].unique()
 
         self.cmb_update(self.cmb_line, lines)
 
@@ -431,7 +430,7 @@ class DataGrid(BasicModule):
         line = self.cmb_line.currentText()
         nullvalue = float(self.le_null.text())
         bdist = float(self.le_bdist.text())
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
         dataid = self.cmb_dataid.currentText()
         zcol = self.cmb_z.currentText()
         demid = self.cmb_grid_dem.currentText()
@@ -440,19 +439,22 @@ class DataGrid(BasicModule):
 
         if bdist < 1:
             bdist = None
-            self.showlog('Blanking distance too small.')
-        if line.lower() not in ['none', ''] and self.cmb_grid_type.currentText() == 'Section':
+            self.showlog("Blanking distance too small.")
+        if (
+            line.lower() not in ["none", ""]
+            and self.cmb_grid_type.currentText() == "Section"
+        ):
             data1 = data[data.line == line]
         else:
             data1 = data
 
         if dataid == zcol:
-            data2 = data1[['geometry', dataid]]
+            data2 = data1[["geometry", dataid]]
         else:
-            data2 = data1[['geometry', dataid, zcol]]
+            data2 = data1[["geometry", dataid, zcol]]
         data2 = data2.dropna()
 
-        filt = (data2[dataid] != nullvalue)
+        filt = data2[dataid] != nullvalue
         if filt.ndim > 1:
             filt = filt.iloc[:, 0]
 
@@ -463,7 +465,7 @@ class DataGrid(BasicModule):
         if val.ndim > 1:
             val = val[:, 0]
 
-        if self.cmb_grid_type.currentText() == 'Section':
+        if self.cmb_grid_type.currentText() == "Section":
             x1 = x
             y1 = y
             x = xy_to_r(x, y, self.piter)
@@ -474,14 +476,14 @@ class DataGrid(BasicModule):
             sortidx = scoords[:, 2].argsort()
             scoords = scoords[sortidx]
 
-        if self.cmb_grid_type.currentText() == 'Voxel':
+        if self.cmb_grid_type.currentText() == "Voxel":
             z = data2[zcol].values[filt]
 
             if z.ndim > 1:
                 z = z[:, 0]
             ddat = None
-            if 'Raster' in self.indata:
-                for i in self.indata['Raster']:
+            if "Raster" in self.indata:
+                for i in self.indata["Raster"]:
                     if i.dataid == demid:
                         ddat = i
 
@@ -489,22 +491,30 @@ class DataGrid(BasicModule):
             if dat is None:
                 return False
         else:
-            dat = gridxyz(x, y, val, dxy, nullvalue=nullvalue, method=method,
-                          bdist=bdist, showlog=self.showlog)
+            dat = gridxyz(
+                x,
+                y,
+                val,
+                dxy,
+                nullvalue=nullvalue,
+                method=method,
+                bdist=bdist,
+                showlog=self.showlog,
+            )
         dat.dataid = dataid
         dat.crs = data2.crs
 
-        if self.cmb_grid_type.currentText() == 'Section':
-            dat.metadata['Raster']['Section'] = True
-            dat.metadata['Raster']['SectionCoords'] = scoords
+        if self.cmb_grid_type.currentText() == "Section":
+            dat.metadata["Raster"]["Section"] = True
+            dat.metadata["Raster"]["SectionCoords"] = scoords
 
         newdat.append(dat)
 
-        if self.cmb_grid_type.currentText() == 'Voxel':
-            self.outdata['Voxel'] = newdat
+        if self.cmb_grid_type.currentText() == "Voxel":
+            self.outdata["Voxel"] = newdat
         else:
-            self.outdata['Raster'] = newdat
-        self.outdata['Vector'] = self.indata['Vector']
+            self.outdata["Raster"] = newdat
+        self.outdata["Vector"] = self.indata["Vector"]
 
         return True
 
@@ -527,8 +537,8 @@ class DataReproj(BasicModule):
         self.orig_wkt = None
         self.targ_wkt = None
 
-        self.in_proj = GroupProj('Input Projection')
-        self.out_proj = GroupProj('Output Projection')
+        self.in_proj = GroupProj("Input Projection")
+        self.out_proj = GroupProj("Output Projection")
 
         self.setupui()
 
@@ -542,9 +552,9 @@ class DataReproj(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'vector.dm.reproj'
+        self.buttonbox.htmlfile = "vector.dm.reproj"
 
-        self.setWindowTitle('Dataset Reprojection')
+        self.setWindowTitle("Dataset Reprojection")
 
         gl_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
@@ -565,22 +575,22 @@ class DataReproj(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Vector' not in self.indata:
-            self.showlog('No vector data.')
+        if "Vector" not in self.indata:
+            self.showlog("No vector data.")
             return False
 
-        if self.indata['Vector'][0].crs is not None:
-            self.orig_wkt = self.indata['Vector'][0].crs.to_wkt()
+        if self.indata["Vector"][0].crs is not None:
+            self.orig_wkt = self.indata["Vector"][0].crs.to_wkt()
 
         if self.orig_wkt is None:
-            indx = self.in_proj.cmb_datum.findText(r'WGS 84')
+            indx = self.in_proj.cmb_datum.findText(r"WGS 84")
             self.in_proj.cmb_datum.setCurrentIndex(indx)
             self.orig_wkt = self.in_proj.wkt
         else:
             self.in_proj.set_current(self.orig_wkt)
 
         if self.targ_wkt is None:
-            indx = self.in_proj.cmb_datum.findText(r'WGS 84')
+            indx = self.in_proj.cmb_datum.findText(r"WGS 84")
             self.out_proj.cmb_datum.setCurrentIndex(indx)
             self.targ_wkt = self.out_proj.wkt
         else:
@@ -595,10 +605,10 @@ class DataReproj(BasicModule):
         self.orig_wkt = self.in_proj.wkt
         self.targ_wkt = self.out_proj.wkt
 
-        self.outdata['Vector'] = []
-        for ivec in self.indata['Vector']:
+        self.outdata["Vector"] = []
+        for ivec in self.indata["Vector"]:
             ivec = ivec.set_crs(self.in_proj.wkt)
-            self.outdata['Vector'].append(ivec.to_crs(self.out_proj.wkt))
+            self.outdata["Vector"].append(ivec.to_crs(self.out_proj.wkt))
 
         return True
 
@@ -639,7 +649,7 @@ class Metadata(ContextModule):
         super().__init__(parent)
 
         self.cmb_bandid = QtWidgets.QComboBox()
-        self.proj = GroupProj('Input Projection')
+        self.proj = GroupProj("Input Projection")
 
         self.setupui()
 
@@ -653,10 +663,10 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'vector.cm.meta'
-        lbl_bandid = QtWidgets.QLabel('Source:')
+        self.buttonbox.htmlfile = "vector.cm.meta"
+        lbl_bandid = QtWidgets.QLabel("Source:")
 
-        self.setWindowTitle('Vector Dataset Metadata')
+        self.setWindowTitle("Vector Dataset Metadata")
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
@@ -677,8 +687,8 @@ class Metadata(ContextModule):
         """
         wkt = self.proj.wkt
 
-        for tmp in self.indata['Vector']:
-            if wkt == 'None':
+        for tmp in self.indata["Vector"]:
+            if wkt == "None":
                 tmp.crs = None
             else:
                 tmp.crs = CRS.from_wkt(wkt)
@@ -696,16 +706,16 @@ class Metadata(ContextModule):
 
         """
         bandid = []
-        if self.indata['Vector'][0].crs is None:
-            self.proj.set_current('None')
+        if self.indata["Vector"][0].crs is None:
+            self.proj.set_current("None")
         else:
-            self.proj.set_current(self.indata['Vector'][0].crs.to_wkt())
+            self.proj.set_current(self.indata["Vector"][0].crs.to_wkt())
 
-        for i in self.indata['Vector']:
-            if 'source' in i.attrs:
-                bandid.append(i.attrs['source'])
+        for i in self.indata["Vector"]:
+            if "source" in i.attrs:
+                bandid.append(i.attrs["source"])
             else:
-                bandid.append('Unknown')
+                bandid.append("Unknown")
 
         self.cmb_bandid.clear()
         self.cmb_bandid.addItems(bandid)
@@ -728,17 +738,17 @@ class TextFileSplit(BasicModule):
         super().__init__(parent)
         self.is_import = True
 
-        self.le_ifile = QtWidgets.QLineEdit('')
-        self.le_files = QtWidgets.QLineEdit('1')
-        self.le_lines = QtWidgets.QLineEdit('1')
-        self.le_bytes = QtWidgets.QLineEdit('1')
-        self.cb_allfiles = QtWidgets.QCheckBox('Split all text files with '
-                                               'same extension in current '
-                                               'directory')
+        self.le_ifile = QtWidgets.QLineEdit("")
+        self.le_files = QtWidgets.QLineEdit("1")
+        self.le_lines = QtWidgets.QLineEdit("1")
+        self.le_bytes = QtWidgets.QLineEdit("1")
+        self.cb_allfiles = QtWidgets.QCheckBox(
+            "Split all text files with same extension in current directory"
+        )
 
         self.cmb_method = QtWidgets.QComboBox()
-        self.lbl_totsize = QtWidgets.QLabel('0')
-        self.lbl_totlines = QtWidgets.QLabel('0')
+        self.lbl_totsize = QtWidgets.QLabel("0")
+        self.lbl_totlines = QtWidgets.QLabel("0")
 
         self.setupui()
 
@@ -751,16 +761,16 @@ class TextFileSplit(BasicModule):
         None.
 
         """
-        pb_ifile = QtWidgets.QPushButton(' Filename')
+        pb_ifile = QtWidgets.QPushButton(" Filename")
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'vector.dm.txtfilesplit'
-        lbl_files = QtWidgets.QLabel('Number of files:')
-        lbl_lines = QtWidgets.QLabel('Max lines per file:')
-        lbl_bytes = QtWidgets.QLabel('Max bytes per file:')
-        lbl_method = QtWidgets.QLabel('Split Method:')
-        self.lbl_totsize = QtWidgets.QLabel('0')
-        self.lbl_totlines = QtWidgets.QLabel('0')
+        self.buttonbox.htmlfile = "vector.dm.txtfilesplit"
+        lbl_files = QtWidgets.QLabel("Number of files:")
+        lbl_lines = QtWidgets.QLabel("Max lines per file:")
+        lbl_bytes = QtWidgets.QLabel("Max bytes per file:")
+        lbl_method = QtWidgets.QLabel("Split Method:")
+        self.lbl_totsize = QtWidgets.QLabel("0")
+        self.lbl_totlines = QtWidgets.QLabel("0")
 
         val = QtGui.QIntValidator(1, 2147483647)
 
@@ -771,17 +781,17 @@ class TextFileSplit(BasicModule):
         self.le_lines.setDisabled(True)
         self.le_bytes.setDisabled(True)
 
-        self.cmb_method.addItems(['Files', 'Bytes', 'Lines'])
+        self.cmb_method.addItems(["Files", "Bytes", "Lines"])
 
-        self.setWindowTitle('Text File Split')
+        self.setWindowTitle("Text File Split")
 
         gl_main.addWidget(pb_ifile, 0, 0, 1, 1)
         gl_main.addWidget(self.le_ifile, 0, 1, 1, 1)
         gl_main.addWidget(lbl_method, 1, 0, 1, 1)
         gl_main.addWidget(self.cmb_method, 1, 1, 1, 1)
-        gl_main.addWidget(QtWidgets.QLabel('Total File Size:'), 2, 0, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel("Total File Size:"), 2, 0, 1, 1)
         gl_main.addWidget(self.lbl_totsize, 2, 1, 1, 1)
-        gl_main.addWidget(QtWidgets.QLabel('Total Lines:'), 3, 0, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel("Total Lines:"), 3, 0, 1, 1)
         gl_main.addWidget(self.lbl_totlines, 3, 1, 1, 1)
         gl_main.addWidget(lbl_files, 4, 0, 1, 1)
         gl_main.addWidget(self.le_files, 4, 1, 1, 1)
@@ -803,30 +813,30 @@ class TextFileSplit(BasicModule):
         """Update fields when method changes."""
         method = self.cmb_method.currentText()
 
-        totlines = int(self.lbl_totlines.text().replace(',', ''))
-        totbytes = int(self.lbl_totsize.text().replace(',', ''))
+        totlines = int(self.lbl_totlines.text().replace(",", ""))
+        totbytes = int(self.lbl_totsize.text().replace(",", ""))
 
         try:
-            numfiles = int(self.le_files.text().replace(',', ''))
-            numlines = int(self.le_lines.text().replace(',', ''))
-            numbytes = int(self.le_bytes.text().replace(',', ''))
+            numfiles = int(self.le_files.text().replace(",", ""))
+            numlines = int(self.le_lines.text().replace(",", ""))
+            numbytes = int(self.le_bytes.text().replace(",", ""))
         except ValueError:
             return
 
-        if method == 'Files':
+        if method == "Files":
             numlines = totlines // numfiles + 1
             numbytes = totbytes // numfiles + 1
             self.le_files.setEnabled(True)
             self.le_lines.setDisabled(True)
             self.le_bytes.setDisabled(True)
-        elif method == 'Lines':
+        elif method == "Lines":
             numfiles = totlines // numlines + 1
             numbytes = totbytes // numfiles + 1
             self.le_files.setDisabled(True)
             self.le_lines.setEnabled(True)
             self.le_bytes.setDisabled(True)
 
-        elif method == 'Bytes':
+        elif method == "Bytes":
             numfiles = totbytes // numbytes + 1
             numlines = totlines // numfiles + 1
             self.le_files.setDisabled(True)
@@ -837,9 +847,9 @@ class TextFileSplit(BasicModule):
         self.le_lines.blockSignals(True)
         self.le_bytes.blockSignals(True)
 
-        self.le_files.setText(f'{numfiles:,}')
-        self.le_lines.setText(f'{numlines:,}')
-        self.le_bytes.setText(f'{numbytes:,}')
+        self.le_files.setText(f"{numfiles:,}")
+        self.le_lines.setText(f"{numlines:,}")
+        self.le_bytes.setText(f"{numbytes:,}")
 
         self.le_files.blockSignals(False)
         self.le_lines.blockSignals(False)
@@ -854,10 +864,11 @@ class TextFileSplit(BasicModule):
         None.
 
         """
-        ext = 'Common formats (*.txt *.xyz *.csv);;'
+        ext = "Common formats (*.txt *.xyz *.csv);;"
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+            self.parent, "Open File", ".", ext
+        )
 
         if not self.ifile:
             return
@@ -866,8 +877,8 @@ class TextFileSplit(BasicModule):
         fsize = os.path.getsize(self.ifile)
         tlines = txtlinecnt(self.ifile)
 
-        self.lbl_totsize.setText(f'{fsize:,}')
-        self.lbl_totlines.setText(f'{tlines:,}')
+        self.lbl_totsize.setText(f"{fsize:,}")
+        self.lbl_totlines.setText(f"{tlines:,}")
 
         self.le_files.setValidator(QtGui.QIntValidator(1, fsize))
         self.le_lines.setValidator(QtGui.QIntValidator(1, tlines))
@@ -931,15 +942,15 @@ class TextFileSplit(BasicModule):
         method = self.cmb_method.currentText()
 
         try:
-            numfiles = int(self.le_files.text().replace(',', ''))
-            numlines = int(self.le_lines.text().replace(',', ''))
-            numbytes = int(self.le_bytes.text().replace(',', ''))
+            numfiles = int(self.le_files.text().replace(",", ""))
+            numlines = int(self.le_lines.text().replace(",", ""))
+            numbytes = int(self.le_bytes.text().replace(",", ""))
         except ValueError:
             return
 
-        if method == 'Bytes':
+        if method == "Bytes":
             num = numbytes
-        elif method == 'Lines':
+        elif method == "Lines":
             num = numlines
         else:
             num = numfiles
@@ -947,14 +958,15 @@ class TextFileSplit(BasicModule):
         if self.cb_allfiles.isChecked():
             _, fext = os.path.splitext(self.ifile)
             fdir = os.path.dirname(self.ifile)
-            ifiles = glob.glob(os.path.join(fdir, f'*{fext}'))
+            ifiles = glob.glob(os.path.join(fdir, f"*{fext}"))
         else:
             ifiles = [self.ifile]
 
         for ifile in ifiles:
-            self.showlog(f'Splitting {os.path.basename(ifile)}...')
-            filesplit(ifile, num, method.lower(), showlog=self.showlog,
-                      piter=self.piter)
+            self.showlog(f"Splitting {os.path.basename(ifile)}...")
+            filesplit(
+                ifile, num, method.lower(), showlog=self.showlog, piter=self.piter
+            )
 
 
 def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
@@ -998,7 +1010,7 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
         mask[row, col] = 1
 
     dist = distance_transform_edt(np.logical_not(mask))
-    mask = (dist > bdist)
+    mask = dist > bdist
 
     gdat[mask] = nullvalue
 
@@ -1028,21 +1040,25 @@ def cut_point(data, ifile, showlog=print):
     gdf = gpd.read_file(ifile)
     gdf = gdf[gdf.geometry != None]
 
-    if 'Polygon' not in gdf.geom_type.iloc[0]:
-        showlog('No polygons in shapefile.')
+    if "Polygon" not in gdf.geom_type.iloc[0]:
+        showlog("No polygons in shapefile.")
         return None
 
     if data.crs is None and gdf.crs is not None:
-        showlog('Your vectors need a projection assigned, assuming it is the '
-                'same as the shapefile.')
+        showlog(
+            "Your vectors need a projection assigned, assuming it is the "
+            "same as the shapefile."
+        )
         data = data.set_crs(gdf.crs)
     elif data.crs is None:
-        showlog('Your vectors need a projection assigned.')
+        showlog("Your vectors need a projection assigned.")
         return None
 
     if gdf.crs is None:
-        showlog('Your shapefile needs a projection assigned, assuming it is '
-                'the same as your vectors.')
+        showlog(
+            "Your shapefile needs a projection assigned, assuming it is "
+            "the same as your vectors."
+        )
         gdf = gdf.set_crs(data.crs)
     else:
         gdf = gdf.to_crs(data.crs)
@@ -1051,7 +1067,7 @@ def cut_point(data, ifile, showlog=print):
     data = data.explode()
 
     if data.size == 0:
-        showlog('Nothing found in the clip area.')
+        showlog("Nothing found in the clip area.")
         return None
 
     return data
@@ -1072,13 +1088,13 @@ def txtlinecnt(filename):
         Total number of lines in a file.
 
     """
-    with open(filename, 'rb') as f:
-        bufgen = iter(partial(f.raw.read, 1024 * 1024), b'')
-        linecnt = sum(buf.count(b'\n') for buf in bufgen)
+    with open(filename, "rb") as f:
+        bufgen = iter(partial(f.raw.read, 1024 * 1024), b"")
+        linecnt = sum(buf.count(b"\n") for buf in bufgen)
     return linecnt
 
 
-def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
+def filesplit(ifile, num, mode="bytes", showlog=print, piter=None):
     """
     Split an input file into a number of output files.
 
@@ -1108,30 +1124,30 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
     numfiles = 0
     numcnt = 0
 
-    if mode == 'files':
+    if mode == "files":
         numfiles = num
         numcnt = fsize // num + 1
-    elif mode == 'bytes':
+    elif mode == "bytes":
         numcnt = num
         numfiles = fsize // num + 1
-    elif mode == 'lines':
+    elif mode == "lines":
         totlines = txtlinecnt(ifile)
         numfiles = totlines // num + 1
         numcnt = num
 
     txt = None
-    with open(ifile, encoding='utf-8') as reader:
+    with open(ifile, encoding="utf-8") as reader:
         for i in piter(range(numfiles)):
-            if txt == '':
+            if txt == "":
                 continue
 
-            with open(f'{fname}_{i + 1}{fext}', 'w', encoding='utf-8') as writer:
+            with open(f"{fname}_{i + 1}{fext}", "w", encoding="utf-8") as writer:
                 fread = 0
                 while fread < numcnt:
                     txt = reader.readline()
-                    if txt == '':
+                    if txt == "":
                         break
-                    if mode == 'lines':
+                    if mode == "lines":
                         fread += 1
                     else:
                         fread += len(txt)
@@ -1139,8 +1155,17 @@ def filesplit(ifile, num, mode='bytes', showlog=print, piter=None):
                     writer.write(txt)
 
 
-def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
-            bdist=4.0, showlog=print):
+def gridxyz(
+    x,
+    y,
+    z,
+    dxy,
+    *,
+    nullvalue=1e20,
+    method="Nearest Neighbour",
+    bdist=4.0,
+    showlog=print,
+):
     """
     Grid xyz data.
 
@@ -1171,11 +1196,10 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
     """
     if bdist is not None and bdist < 1:
         bdist = None
-        showlog('Blanking distance too small.')
+        showlog("Blanking distance too small.")
 
-    if method == 'Minimum Curvature':
-        gdat = minc(x, y, z, dxy, showlog=showlog,
-                    bdist=bdist)
+    if method == "Minimum Curvature":
+        gdat = minc(x, y, z, dxy, showlog=showlog, bdist=bdist)
         gdat = np.ma.filled(gdat, fill_value=nullvalue)
     else:
         extent = np.array([x.min(), x.max(), y.min(), y.max()])
@@ -1187,14 +1211,14 @@ def gridxyz(x, y, z, dxy, *, nullvalue=1e+20, method='Nearest Neighbour',
 
         points = np.transpose([x.flatten(), y.flatten()])
 
-        if method == 'Nearest Neighbour':
-            gdat = griddata(points, z, (xxx, yyy), method='nearest')
-        elif method == 'Linear':
-            gdat = griddata(points, z, (xxx, yyy), method='linear',
-                            fill_value=nullvalue)
+        if method == "Nearest Neighbour":
+            gdat = griddata(points, z, (xxx, yyy), method="nearest")
+        elif method == "Linear":
+            gdat = griddata(
+                points, z, (xxx, yyy), method="linear", fill_value=nullvalue
+            )
         else:
-            gdat = griddata(points, z, (xxx, yyy), method='cubic',
-                            fill_value=nullvalue)
+            gdat = griddata(points, z, (xxx, yyy), method="cubic", fill_value=nullvalue)
 
         gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
         gdat = gdat[::-1]
@@ -1244,9 +1268,9 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
     """
     points = np.transpose([x, y, z])
     try:
-        interpolator = RBFInterpolator(points, val, kernel='linear')
+        interpolator = RBFInterpolator(points, val, kernel="linear")
     except np.linalg.LinAlgError:
-        showlog('Problem with coordinates, csnnot calculate.')
+        showlog("Problem with coordinates, csnnot calculate.")
         return None
     min_limit = np.min(val)
     max_limit = np.max(val)
@@ -1271,7 +1295,7 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
         xxx1, yyy1 = np.meshgrid(xxx1, yyy1)
         points = np.transpose([xxx1.flatten(), yyy1.flatten()])
         zz = dat.data.flatten()
-        gdat = griddata(points, zz, (xxx, yyy), method='nearest')
+        gdat = griddata(points, zz, (xxx, yyy), method="nearest")
         d_limited[zzz > gdat] = np.nan
 
     out = VoxModel()
@@ -1300,29 +1324,26 @@ def lltomap(lat, lon):
 
     """
     if np.isnan(lat) or np.isnan(lon):
-        return ''
+        return ""
 
-    cdict = {(0, 0): 'A',
-             (0, 1): 'B',
-             (1, 0): 'C',
-             (1, 1): 'D'}
+    cdict = {(0, 0): "A", (0, 1): "B", (1, 0): "C", (1, 1): "D"}
 
     latfrac = abs(lat) % 1
     lonfrac = lon % 1
 
-    latf = latfrac // .5
-    lonf = lonfrac // .5
+    latf = latfrac // 0.5
+    lonf = lonfrac // 0.5
     letter1 = cdict[(latf, lonf)]
 
-    latf = latfrac % .5
-    lonf = lonfrac % .5
+    latf = latfrac % 0.5
+    lonf = lonfrac % 0.5
 
-    latf = latf // .25
-    lonf = lonf // .25
+    latf = latf // 0.25
+    lonf = lonf // 0.25
 
     letter2 = cdict[(latf, lonf)]
 
-    mapsheet = f'{int(abs(lat))}{int(lon)}{letter1}{letter2}'
+    mapsheet = f"{int(abs(lat))}{int(lon)}{letter1}{letter2}"
 
     return mapsheet
 
@@ -1353,41 +1374,29 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
         lat = float(i[:2])
         lon = float(i[2:4])
     except ValueError:
-        showlog('Invalid Map Sheet Number')
+        showlog("Invalid Map Sheet Number")
         return None
 
-    q1 = 'A'
-    q2 = 'A'
+    q1 = "A"
+    q2 = "A"
     latincr = 1
     lonincr = 2
     if len(i) > 4:
         q1 = i[4:5]
-        lonincr = .5
-        latincr = .5
+        lonincr = 0.5
+        latincr = 0.5
     if len(i) > 5:
         q2 = i[5:6]
-        lonincr = .25
-        latincr = .25
+        lonincr = 0.25
+        latincr = 0.25
 
-    qlat1 = {'A': 0.,
-             'B': 0.,
-             'C': 0.5,
-             'D': 0.5}
+    qlat1 = {"A": 0.0, "B": 0.0, "C": 0.5, "D": 0.5}
 
-    qlon1 = {'A': 0.,
-             'B': 0.5,
-             'C': 0.,
-             'D': 0.5}
+    qlon1 = {"A": 0.0, "B": 0.5, "C": 0.0, "D": 0.5}
 
-    qlat2 = {'A': 0.,
-             'B': 0.,
-             'C': 0.25,
-             'D': 0.25}
+    qlat2 = {"A": 0.0, "B": 0.0, "C": 0.25, "D": 0.25}
 
-    qlon2 = {'A': 0.,
-             'B': 0.25,
-             'C': 0.,
-             'D': 0.25}
+    qlon2 = {"A": 0.0, "B": 0.25, "C": 0.0, "D": 0.25}
 
     lat = -(lat + qlat1[q1] + qlat2[q2])
     lon = lon + qlon1[q1] + qlon2[q2]
@@ -1432,9 +1441,9 @@ def maptovector(maplist):
 
         allpolys.append(poly)
 
-    data = gpd.GeoDataFrame({'geometry': allpolys})
+    data = gpd.GeoDataFrame({"geometry": allpolys})
     newgeom = [data.union_all()]
-    data = gpd.GeoDataFrame({'geometry': newgeom})
+    data = gpd.GeoDataFrame({"geometry": newgeom})
 
     data = data.set_crs(4326)
 
@@ -1466,7 +1475,7 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     newz : numpy array
         M x N array of z values
     """
-    showlog('Creating Grid')
+    showlog("Creating Grid")
     x = x.flatten()
     y = y.flatten()
     z = z.flatten()
@@ -1517,9 +1526,9 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
             zfin[xx, yy] = newz[xx2, yy2]
             newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
 
-        showlog('Iteration done: ' + str(j + 1) + ' of ' + str(numits))
+        showlog("Iteration done: " + str(j + 1) + " of " + str(numits))
 
-    showlog('Finished!')
+    showlog("Finished!")
 
     newz = np.ma.array(zfin)
     newz.mask = newmask
@@ -1567,8 +1576,8 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
 
     try:
         transformer = Transformer.from_crs(crs_from, crs_to, always_xy=True)
-    except:
-        showlog('Problem reprojecting. Aborting.')
+    except Exception:
+        showlog("Problem reprojecting. Aborting.")
         return None, None
 
     xout, yout = transformer.transform(x, y)
@@ -1606,7 +1615,7 @@ def xy_to_r(x, y, piter=iter):
     x1a = points[0]
     y1a = points[1]
 
-    r = np.sqrt((x1a[1:] - x1a[:-1])**2 + (y1a[1:] - y1a[:-1])**2)
+    r = np.sqrt((x1a[1:] - x1a[:-1]) ** 2 + (y1a[1:] - y1a[:-1]) ** 2)
     r = np.concatenate(([np.nan], r))
 
     x1a = x1a[r != 0]
@@ -1669,11 +1678,11 @@ def _testfn():
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ofile = r"D:\mining_guidelines\2430\2430.shp"
 
-    maplist = ['2430DA', '2430DB', '2430DC', '2430DD']
+    maplist = ["2430DA", "2430DB", "2430DC", "2430DD"]
     data = maptovector(maplist)
 
     data.to_file(ofile)
@@ -1682,17 +1691,18 @@ def _testfn():
 def _testfn_pointcut():
     """Test routine."""
     import sys
+
     from pygmi.vector.iodefs import ImportXYZ  # , ImportVector
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2.csv"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\linecut\test2_cut_outline.shp"
 
     IO = ImportXYZ()
     IO.ifile = ifile
-    IO.filt = 'Comma Delimited (*.csv)'
+    IO.filt = "Comma Delimited (*.csv)"
     IO.settings(True)
 
     # ifile = r"E:\WorkProjects\ST-2025-1365 Energy Mapping\lineaments\MP_mag_lineaments_utm36s.shp"
@@ -1713,11 +1723,13 @@ def _testfn_pointcut():
 def _testfn_grid():
     """Test routine."""
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
@@ -1727,15 +1739,15 @@ def _testfn_grid():
 
     IO = ImportXYZ()
     IO.ifile = ifile
-    IO.filt = 'Comma Delimited (*.csv)'
-    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.filt = "Comma Delimited (*.csv)"
+    IO.filt = "Geosoft XYZ (*.xyz)"
     IO.settings(True)
 
     DR = DataGrid()
     DR.indata = IO.outdata
     DR.settings()
 
-    data = DR.outdata['Raster'][0]
+    data = DR.outdata["Raster"][0]
 
     plt.imshow(data.data, extent=data.extent)
     plt.show()
@@ -1744,13 +1756,14 @@ def _testfn_grid():
 def _testfn_vol():
     """Test routine."""
     import sys
+
     import pyvista as pv
 
     from pygmi.raster.iodefs import get_raster
     from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
     dfile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\SRTM_ER_Mapper.ers"
@@ -1759,16 +1772,16 @@ def _testfn_vol():
 
     IO = ImportXYZ()
     IO.ifile = ifile
-    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.filt = "Geosoft XYZ (*.xyz)"
     IO.settings(True)
 
-    IO.outdata['Raster'] = [dat]
+    IO.outdata["Raster"] = [dat]
 
     DR = DataGrid()
     DR.indata = IO.outdata
     DR.settings()
 
-    vdat = DR.outdata['Voxel'][0]
+    vdat = DR.outdata["Voxel"][0]
 
     # Create the spatial reference
     grid = pv.ImageData()
@@ -1784,7 +1797,7 @@ def _testfn_vol():
     grid.spacing = vdat.spacing  # These are the cell sizes along each axis
 
     # Add the data values to the cell data
-    grid.cell_data['values'] = values.flatten(order='F')  # Flatten the array
+    grid.cell_data["values"] = values.flatten(order="F")  # Flatten the array
 
     # Get rid of nan values
     grid = grid.threshold()

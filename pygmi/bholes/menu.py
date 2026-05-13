@@ -24,12 +24,12 @@
 # -----------------------------------------------------------------------------
 """Borehole menu routines."""
 
-from PySide6 import QtWidgets, QtGui
-from pygmi.bholes import iodefs
-from pygmi.bholes import graphs
+from PySide6 import QtGui, QtWidgets
+
+from pygmi.bholes import graphs, iodefs
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Menu widget class for the main interface.
 
@@ -45,29 +45,29 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Borehole')
+        self.parent.add_to_context("Borehole")
         context_menu = self.parent.context_menu
 
-# Normal menus
-        self.menu = QtWidgets.QMenu('Boreholes')
+        # Normal menus
+        self.menu = QtWidgets.QMenu("Boreholes")
         self.parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtGui.QAction('Import Borehole Data')
+        self.action_import_data = QtGui.QAction("Import Borehole Data")
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
-# Context menus
-        context_menu['Borehole'].addSeparator()
+        # Context menus
+        context_menu["Borehole"].addSeparator()
 
-        self.action_show_log = QtGui.QAction('Show Borehole Log')
-        context_menu['Borehole'].addAction(self.action_show_log)
+        self.action_show_log = QtGui.QAction("Show Borehole Log")
+        context_menu["Borehole"].addAction(self.action_show_log)
         self.action_show_log.triggered.connect(self.show_log)
 
     def import_data(self):
         """Import log data."""
-        self.parent.item_insert('Io', 'Import Data', iodefs.ImportData)
+        self.parent.item_insert("Io", "Import Data", iodefs.ImportData)
 
     def show_log(self):
         """Show log data."""

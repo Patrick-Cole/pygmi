@@ -30,17 +30,18 @@ correction, or doing the topographic correction itself.
 
 """
 
-import os
-import sys
 import glob
+import os
 import platform
-from subprocess import Popen, PIPE
-import numpy as np
-from PySide6 import QtWidgets, QtGui
+import sys
+from subprocess import PIPE, Popen
 
-from pygmi.raster.misc import lstack, aspect2
-from pygmi.raster.iodefs import get_raster
+import numpy as np
+from PySide6 import QtGui, QtWidgets
+
 from pygmi.misc import BasicModule
+from pygmi.raster.iodefs import get_raster
+from pygmi.raster.misc import aspect2, lstack
 
 
 class TopoCorrect(BasicModule):
@@ -58,8 +59,8 @@ class TopoCorrect(BasicModule):
         super().__init__(parent)
 
         self.cmb_dem = QtWidgets.QComboBox()
-        self.le_azi = QtWidgets.QLineEdit('0.0')
-        self.le_zen = QtWidgets.QLineEdit('0.0')
+        self.le_azi = QtWidgets.QLineEdit("0.0")
+        self.le_zen = QtWidgets.QLineEdit("0.0")
 
         self.le_azi.setValidator(QtGui.QDoubleValidator(self))
         self.le_zen.setValidator(QtGui.QDoubleValidator(self))
@@ -75,14 +76,14 @@ class TopoCorrect(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.topo'
+        self.buttonbox.htmlfile = "rsense.dm.topo"
         gl_main = QtWidgets.QGridLayout(self)
 
-        lbl_dem = QtWidgets.QLabel('Digital Elevation Model:')
-        lbl_azi = QtWidgets.QLabel('Solar Azimuth:')
-        lbl_zen = QtWidgets.QLabel('Solar Zenith:')
+        lbl_dem = QtWidgets.QLabel("Digital Elevation Model:")
+        lbl_azi = QtWidgets.QLabel("Solar Azimuth:")
+        lbl_zen = QtWidgets.QLabel("Solar Zenith:")
 
-        self.setWindowTitle('Topographic Correction')
+        self.setWindowTitle("Topographic Correction")
 
         gl_main.addWidget(lbl_dem, 1, 0, 1, 1)
         gl_main.addWidget(self.cmb_dem, 1, 1, 1, 1)
@@ -109,30 +110,29 @@ class TopoCorrect(BasicModule):
 
         """
         tmp = []
-        if 'Raster' not in self.indata:
-            self.showlog('No Satellite Data')
+        if "Raster" not in self.indata:
+            self.showlog("No Satellite Data")
             return False
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
 
-        demused = 'None'
+        demused = "None"
         azimuth = None
         zenith = None
 
         tmp = []
         for i in data:
             tmp.append(i.dataid)
-            rmeta = i.metadata['Raster']
-            if 'DEM' in rmeta:
-                demused = rmeta['DEM']
-                azimuth = rmeta['Solar Azimuth']
-                zenith = rmeta['Solar Zenith']
+            rmeta = i.metadata["Raster"]
+            if "DEM" in rmeta:
+                demused = rmeta["DEM"]
+                azimuth = rmeta["Solar Azimuth"]
+                zenith = rmeta["Solar Zenith"]
 
         self.cmb_update(self.cmb_dem, tmp)
 
-        if demused != 'None':
-            self.showlog('This dataset already has a topographic correction '
-                         'applied.')
+        if demused != "None":
+            self.showlog("This dataset already has a topographic correction applied.")
             return False
 
         if azimuth is not None:
@@ -177,28 +177,33 @@ class TopoCorrect(BasicModule):
         """
         data = []
         dem = None
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             if i.dataid == self.cmb_dem.currentText():
                 dem = i
             else:
                 data.append(i)
 
-        data = lstack(data, piter=self.piter,
-                      showlog=self.showlog, nodeepcopy=True)
-        dem = lstack([data[0]] + [dem], piter=self.piter, showlog=self.showlog,
-                     masterid=data[0].dataid, nodeepcopy=True)
+        data = lstack(data, piter=self.piter, showlog=self.showlog, nodeepcopy=True)
+        dem = lstack(
+            [data[0]] + [dem],
+            piter=self.piter,
+            showlog=self.showlog,
+            masterid=data[0].dataid,
+            nodeepcopy=True,
+        )
 
         dem = dem.pop(-1)
         azimuth = float(self.le_azi.text())
         zenith = float(self.le_zen.text())
 
-        datfin = c_correction(data, dem, azimuth, zenith, showlog=self.showlog,
-                              piter=self.piter)
+        datfin = c_correction(
+            data, dem, azimuth, zenith, showlog=self.showlog, piter=self.piter
+        )
 
         if not datfin:
             return False
 
-        self.outdata['Raster'] = datfin
+        self.outdata["Raster"] = datfin
 
         return True
 
@@ -218,10 +223,10 @@ class Sen2Cor(BasicModule):
         super().__init__(parent)
 
         self.is_import = True
-        self.le_sdir = QtWidgets.QLineEdit('')
-        self.le_sen2cor = QtWidgets.QLineEdit('')
-        self.pb_sen2cor = QtWidgets.QPushButton(' Sen2Cor Directory')
-        self.pb_sdir = QtWidgets.QPushButton(' Sentinel-2 L1C .SAFE Directory')
+        self.le_sdir = QtWidgets.QLineEdit("")
+        self.le_sen2cor = QtWidgets.QLineEdit("")
+        self.pb_sen2cor = QtWidgets.QPushButton(" Sen2Cor Directory")
+        self.pb_sdir = QtWidgets.QPushButton(" Sentinel-2 L1C .SAFE Directory")
 
         self.setupui()
 
@@ -234,18 +239,18 @@ class Sen2Cor(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.sen2cor'
+        self.buttonbox.htmlfile = "rsense.dm.sen2cor"
         gl_main = QtWidgets.QGridLayout(self)
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
 
         self.pb_sdir.setIcon(icon)
-        self.pb_sdir.setStyleSheet('text-align:left;')
+        self.pb_sdir.setStyleSheet("text-align:left;")
         self.pb_sen2cor.setIcon(icon)
-        self.pb_sen2cor.setStyleSheet('text-align:left;')
+        self.pb_sen2cor.setStyleSheet("text-align:left;")
 
-        self.setWindowTitle('Sen2Cor - Sentinel 2 Atmospheric Correction')
+        self.setWindowTitle("Sen2Cor - Sentinel 2 Atmospheric Correction")
 
         gl_main.addWidget(self.pb_sen2cor, 1, 0, 1, 1)
         gl_main.addWidget(self.le_sen2cor, 1, 1, 1, 1)
@@ -272,7 +277,7 @@ class Sen2Cor(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'RasterFileList' in self.indata:
+        if "RasterFileList" in self.indata:
             self.pb_sdir.hide()
             self.le_sdir.hide()
         else:
@@ -292,14 +297,15 @@ class Sen2Cor(BasicModule):
         """Get the satellite directory."""
 
         idir = QtWidgets.QFileDialog.getExistingDirectory(
-            self.parent, 'Select Sentinel 2 L1A Data Directory')
+            self.parent, "Select Sentinel 2 L1A Data Directory"
+        )
 
         if not idir:
             return False
 
-        if 'L1C' not in os.path.basename(idir):
-            self.showlog('Error: not L1C data.')
-            self.le_sdir.setText('')
+        if "L1C" not in os.path.basename(idir):
+            self.showlog("Error: not L1C data.")
+            self.le_sdir.setText("")
             return False
 
         self.le_sdir.setText(idir)
@@ -310,18 +316,18 @@ class Sen2Cor(BasicModule):
         """Get the sen2cor directory."""
 
         idir = QtWidgets.QFileDialog.getExistingDirectory(
-            self.parent, 'Select Sen2Cor Directory')
+            self.parent, "Select Sen2Cor Directory"
+        )
 
         if not idir:
             return False
 
-        sen2cor = os.path.join(idir, 'L2A_Process')
-        if platform.system() == 'Windows':
-            sen2cor += '.bat'
+        sen2cor = os.path.join(idir, "L2A_Process")
+        if platform.system() == "Windows":
+            sen2cor += ".bat"
         if not os.path.exists(sen2cor):
-            self.showlog('Could not find L2A_process file in this '
-                         'location')
-            self.le_sen2cor.setText('')
+            self.showlog("Could not find L2A_process file in this location")
+            self.le_sen2cor.setText("")
             return False
 
         self.le_sen2cor.setText(idir)
@@ -351,31 +357,32 @@ class Sen2Cor(BasicModule):
         None.
 
         """
-        sen2cor = os.path.join(self.le_sen2cor.text(), 'L2A_Process')
-        if platform.system() == 'Windows':
-            sen2cor += '.bat'
-        if 'RasterFileList' in self.indata:
-            sdirs = [i.filename for i in self.indata['RasterFileList']]
-            sdirs = [i for i in sdirs if 'MTD_MSIL1C.xml' in i]
+        sen2cor = os.path.join(self.le_sen2cor.text(), "L2A_Process")
+        if platform.system() == "Windows":
+            sen2cor += ".bat"
+        if "RasterFileList" in self.indata:
+            sdirs = [i.filename for i in self.indata["RasterFileList"]]
+            sdirs = [i for i in sdirs if "MTD_MSIL1C.xml" in i]
             if not sdirs:
-                self.showlog('No extracted L1C data found.')
+                self.showlog("No extracted L1C data found.")
                 return False
             sdirs = [os.path.dirname(i) for i in sdirs]
         else:
             sdirs = [self.le_sdir.text()]
-        l2agip = os.path.join(os.path.dirname(__file__), 'L2A_GIPP.xml')
+        l2agip = os.path.join(os.path.dirname(__file__), "L2A_GIPP.xml")
 
         for sdir in self.piter(sdirs):
-            with Popen([sen2cor, sdir, '--GIP_L2A=' + l2agip], stdout=PIPE,
-                       text=True) as proc:
+            with Popen(
+                [sen2cor, sdir, "--GIP_L2A=" + l2agip], stdout=PIPE, text=True
+            ) as proc:
                 for line in proc.stdout:
                     self.showlog(line.rstrip())
 
-            odir = glob.glob(os.path.dirname(sdir) + '//*L2A*.SAFE')
-            sdate = os.path.basename(sdir).split('_')[2]
+            odir = glob.glob(os.path.dirname(sdir) + "//*L2A*.SAFE")
+            sdate = os.path.basename(sdir).split("_")[2]
             odir = [i for i in odir if sdate in i][-1]
 
-            self.showlog(f'Output is saved in the {odir} directory')
+            self.showlog(f"Output is saved in the {odir} directory")
 
         return True
 
@@ -405,12 +412,12 @@ def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
         List of c-corrected data arrays.
 
     """
-    showlog('Calculating topographic c-correction...')
+    showlog("Calculating topographic c-correction...")
     adeg, _, _ = aspect2(dem.data)
 
     px, py = np.gradient(dem.data, dem.xdim)
 
-    slope = np.ma.sqrt(px ** 2 + py ** 2)
+    slope = np.ma.sqrt(px**2 + py**2)
     # slope_deg = np.degrees(np.ma.arctan(slope))
     s = np.ma.arctan(slope)
 
@@ -455,7 +462,7 @@ def _testfn2():
     # from pygmi.rsense.iodefs import ImportBatch
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     # tmp1 = ImportBatch()
     # tmp1.idir = r'D:\Landslides\L1C'
@@ -467,7 +474,7 @@ def _testfn2():
     tmp = Sen2Cor()
     # tmp.indata = dat
     # tmp.le_sdir.setText(r"D:\Landslides\L1C\S2B_MSIL1C_20220329T073609_N0400_R092_T36JTN_20220329T094612.SAFE")
-    tmp.le_sen2cor.setText(r'C:\Sen2Cor-02.12.03-win64')
+    tmp.le_sen2cor.setText(r"C:\Sen2Cor-02.12.03-win64")
     tmp.settings()
 
 
@@ -477,8 +484,9 @@ def _testfn():
     # from rasterio.warp import calculate_default_transform
     # import rasterio
     import matplotlib.pyplot as plt
-    from pygmi.raster.misc import norm2
+
     from pygmi.misc import frm
+    from pygmi.raster.misc import norm2
 
     # ifile1 = r"D:\Landslides\old\JTNdem.tif"
     # ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
@@ -517,9 +525,9 @@ def _testfn():
         green = dat[2].data
         blue = dat[1].data
 
-        rmin, rmax = .1, .2
-        gmin, gmax = .1, .2
-        bmin, bmax = .1, .2
+        rmin, rmax = 0.1, 0.2
+        gmin, gmax = 0.1, 0.2
+        bmin, bmax = 0.1, 0.2
 
         img = np.zeros((red.shape[0], red.shape[1], 3), dtype=np.uint8)
 
@@ -529,8 +537,8 @@ def _testfn():
 
         plt.imshow(img, extent=dat[0].extent)
 
-        ax.set_xlabel('Eastings')
-        ax.set_ylabel('Northings')
+        ax.set_xlabel("Eastings")
+        ax.set_ylabel("Northings")
 
         ax.xaxis.set_major_formatter(frm)
         ax.yaxis.set_major_formatter(frm)
@@ -559,14 +567,14 @@ def _testfn():
 def _testfn3():
     """Test routine topo."""
     from pygmi.raster.dataprep import mosaic
-    from pygmi.rsense.iodefs import get_data
     from pygmi.raster.iodefs import export_raster
     from pygmi.raster.reproj import data_reproject
+    from pygmi.rsense.iodefs import get_data
 
-    ddir = r'D:\Landslides\DEM'
+    ddir = r"D:\Landslides\DEM"
     sdir = r"D:\Landslides\L2A"
 
-    ifiles = glob.glob(sdir + '/S2B_MSIL2A*')
+    ifiles = glob.glob(sdir + "/S2B_MSIL2A*")
 
     icnt = 0
     for bfile in ifiles:
@@ -580,23 +588,23 @@ def _testfn3():
 
         dat2 = []
         for i in data:
-            if 'central' in i.dataid:
+            if "central" in i.dataid:
                 i.data = i.data.astype(np.float32)
                 dat2.append(i)
         data = dat2
         del dat2
 
-        ofile = f'D:/Landslides/test/{bname}.tif'
-        export_raster(ofile, data, compression='DEFLATE')
+        ofile = f"D:/Landslides/test/{bname}.tif"
+        export_raster(ofile, data, compression="DEFLATE")
 
         azimuth = None
         zenith = None
 
         for i in data:
-            rmeta = i.metadata['Raster']
-            if 'DEM' in rmeta:
-                azimuth = rmeta['Solar Azimuth']
-                zenith = rmeta['Solar Zenith']
+            rmeta = i.metadata["Raster"]
+            if "DEM" in rmeta:
+                azimuth = rmeta["Solar Azimuth"]
+                zenith = rmeta["Solar Zenith"]
 
         zenith = float(zenith)
         azimuth = float(azimuth)
@@ -611,8 +619,8 @@ def _testfn3():
 
         data = c_correction(data, dem, azimuth, zenith)
 
-        ofile = f'D:/Landslides/test/{bname}_tc.tif'
-        export_raster(ofile, data, compression='DEFLATE')
+        ofile = f"D:/Landslides/test/{bname}_tc.tif"
+        export_raster(ofile, data, compression="DEFLATE")
 
         del data, dem
 

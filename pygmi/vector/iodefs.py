@@ -24,19 +24,19 @@
 # -----------------------------------------------------------------------------
 """Import and export of vector data."""
 
-import os
 import glob
+import os
 import re
 from io import StringIO
 
-from PySide6 import QtWidgets, QtGui
+import fiona
+import geopandas as gpd
 import numpy as np
 import pandas as pd
-import geopandas as gpd
-import fiona
+from PySide6 import QtGui, QtWidgets
 
-from pygmi.raster.reproj import GroupProj
 from pygmi.misc import BasicModule, ContextModule
+from pygmi.raster.reproj import GroupProj
 from pygmi.vector.dataprep import maptobounds
 from pygmi.vector.datatypes import VoxModel
 
@@ -54,18 +54,19 @@ class ColumnSelect(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Column Selection')
+        self.setWindowTitle("Column Selection")
 
         vbl = QtWidgets.QVBoxLayout()
         self.setLayout(vbl)
 
         self.lw_1 = QtWidgets.QListWidget()
         self.lw_1.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
         vbl.addWidget(self.lw_1)
 
-        self.buttonbox.htmlfile = 'vector.dm.colsel'
+        self.buttonbox.htmlfile = "vector.dm.colsel"
         vbl.addWidget(self.buttonbox)
 
     def settings(self, nodialog=False):
@@ -83,14 +84,14 @@ class ColumnSelect(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Vector' not in self.indata:
-            self.showlog('No vector data.')
+        if "Vector" not in self.indata:
+            self.showlog("No vector data.")
             return False
 
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
         if not self.projdata:
             tmp = list(data.columns)
-            tmp = [i for i in tmp if i != 'geometry']
+            tmp = [i for i in tmp if i != "geometry"]
 
             self.lw_1.clear()
             self.lw_1.addItems(tmp)
@@ -105,12 +106,12 @@ class ColumnSelect(BasicModule):
                 return False
 
         atmp = [i.text() for i in self.lw_1.selectedItems()]
-        if 'geometry' in data.columns:
-            atmp.append('geometry')
+        if "geometry" in data.columns:
+            atmp.append("geometry")
 
         data = data.loc[:, atmp]
 
-        self.outdata['Vector'] = [data]
+        self.outdata["Vector"] = [data]
 
         return True
 
@@ -143,17 +144,17 @@ class ImportVector(BasicModule):
         self.crs = None
 
         self.cmb_bounds = QtWidgets.QComboBox()
-        self.le_sfile = QtWidgets.QLineEdit('')
-        self.le_xmin = QtWidgets.QLineEdit('0.0')
-        self.le_xmax = QtWidgets.QLineEdit('1.0')
-        self.le_ymin = QtWidgets.QLineEdit('0.0')
-        self.le_ymax = QtWidgets.QLineEdit('1.0')
-        self.le_mapsheet = QtWidgets.QLineEdit('2918AA')
-        self.lbl_xmin = QtWidgets.QLabel('West:')
-        self.lbl_xmax = QtWidgets.QLabel('East:')
-        self.lbl_ymin = QtWidgets.QLabel('South:')
-        self.lbl_ymax = QtWidgets.QLabel('North:')
-        self.lbl_mapsheet = QtWidgets.QLabel('Mapsheet:')
+        self.le_sfile = QtWidgets.QLineEdit("")
+        self.le_xmin = QtWidgets.QLineEdit("0.0")
+        self.le_xmax = QtWidgets.QLineEdit("1.0")
+        self.le_ymin = QtWidgets.QLineEdit("0.0")
+        self.le_ymax = QtWidgets.QLineEdit("1.0")
+        self.le_mapsheet = QtWidgets.QLineEdit("2918AA")
+        self.lbl_xmin = QtWidgets.QLabel("West:")
+        self.lbl_xmax = QtWidgets.QLabel("East:")
+        self.lbl_ymin = QtWidgets.QLabel("South:")
+        self.lbl_ymax = QtWidgets.QLabel("North:")
+        self.lbl_mapsheet = QtWidgets.QLabel("Mapsheet:")
 
         self.le_xmin.setValidator(QtGui.QDoubleValidator(self))
         self.le_xmax.setValidator(QtGui.QDoubleValidator(self))
@@ -171,22 +172,22 @@ class ImportVector(BasicModule):
         None.
 
         """
-        pb_sfile = QtWidgets.QPushButton(' Filename')
+        pb_sfile = QtWidgets.QPushButton(" Filename")
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_sfile.setIcon(icon)
-        pb_sfile.setStyleSheet('text-align:left;')
+        pb_sfile.setStyleSheet("text-align:left;")
 
-        self.setWindowTitle('Import Vector Data')
+        self.setWindowTitle("Import Vector Data")
 
-        self.cmb_bounds.addItems(['None', 'Manual', 'SA Mapsheet'])
+        self.cmb_bounds.addItems(["None", "Manual", "SA Mapsheet"])
 
         gl_1 = QtWidgets.QGridLayout(self)
 
         gl_1.addWidget(pb_sfile, 1, 0, 1, 1)
         gl_1.addWidget(self.le_sfile, 1, 1, 1, 1)
-        gl_1.addWidget(QtWidgets.QLabel('Bounds:'), 2, 0, 1, 1)
+        gl_1.addWidget(QtWidgets.QLabel("Bounds:"), 2, 0, 1, 1)
         gl_1.addWidget(self.cmb_bounds, 2, 1, 1, 1)
         gl_1.addWidget(self.lbl_xmin, 3, 0, 1, 1)
         gl_1.addWidget(self.le_xmin, 3, 1, 1, 1)
@@ -199,7 +200,7 @@ class ImportVector(BasicModule):
         gl_1.addWidget(self.lbl_mapsheet, 7, 0, 1, 1)
         gl_1.addWidget(self.le_mapsheet, 7, 1, 1, 1)
 
-        self.buttonbox.htmlfile = 'vector.dm.importvectordata'
+        self.buttonbox.htmlfile = "vector.dm.importvectordata"
         gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
         pb_sfile.pressed.connect(self.get_sfile)
@@ -221,7 +222,7 @@ class ImportVector(BasicModule):
 
         """
         bounds = None
-        ext = ''
+        ext = ""
         self.change_bounds()
 
         if not nodialog:
@@ -231,12 +232,12 @@ class ImportVector(BasicModule):
                 return False
 
         if not self.ifile:
-            self.showlog('No vector file specified.')
+            self.showlog("No vector file specified.")
             return False
 
         txt = self.cmb_bounds.currentText()
 
-        if txt == 'Manual':
+        if txt == "Manual":
             if not self.check_validation():
                 return False
 
@@ -246,19 +247,19 @@ class ImportVector(BasicModule):
             ymax = float(self.le_ymax.text())
 
             bounds = (xmin, ymin, xmax, ymax)
-        elif txt == 'SA Mapsheet':
-            bounds = maptobounds(self.le_mapsheet.text(), self.crs,
-                                 self.showlog)
+        elif txt == "SA Mapsheet":
+            bounds = maptobounds(self.le_mapsheet.text(), self.crs, self.showlog)
             if bounds is None:
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
 
-        if 'KML' in ext or '.kml' in self.ifile or '.kmz' in self.ifile:
-            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='fiona',
-                                allow_unsupported_drivers=True)
+        if "KML" in ext or ".kml" in self.ifile or ".kmz" in self.ifile:
+            gdf = gpd.read_file(
+                self.ifile, bbox=bounds, engine="fiona", allow_unsupported_drivers=True
+            )
         else:
-            gdf = gpd.read_file(self.ifile, bbox=bounds, engine='pyogrio')
+            gdf = gpd.read_file(self.ifile, bbox=bounds, engine="pyogrio")
 
         if bounds is not None:
             gdf = gdf.clip(mask=bounds)
@@ -267,17 +268,17 @@ class ImportVector(BasicModule):
         gdf = gdf.explode(ignore_index=True)
 
         if gdf.size == 0:
-            self.showlog('Unable to load data. Check file or bounds.')
+            self.showlog("Unable to load data. Check file or bounds.")
             return False
 
-        if gdf.geom_type.loc[0] == 'Point':
-            if 'line' not in gdf.columns:
-                gdf['line'] = 'None'
+        if gdf.geom_type.loc[0] == "Point":
+            if "line" not in gdf.columns:
+                gdf["line"] = "None"
             else:
-                gdf['line'] = gdf['line'].astype(str)
+                gdf["line"] = gdf["line"].astype(str)
 
-        gdf.attrs['source'] = os.path.basename(self.ifile)
-        self.outdata['Vector'] = [gdf]
+        gdf.attrs["source"] = os.path.basename(self.ifile)
+        self.outdata["Vector"] = [gdf]
 
         return True
 
@@ -285,7 +286,7 @@ class ImportVector(BasicModule):
         """Change the bounds combo."""
         txt = self.cmb_bounds.currentText()
 
-        if txt == 'None':
+        if txt == "None":
             self.le_xmin.hide()
             self.le_xmax.hide()
             self.le_ymin.hide()
@@ -296,7 +297,7 @@ class ImportVector(BasicModule):
             self.lbl_ymin.hide()
             self.lbl_ymax.hide()
             self.lbl_mapsheet.hide()
-        elif txt == 'Manual':
+        elif txt == "Manual":
             self.le_xmin.show()
             self.le_xmax.show()
             self.le_ymin.show()
@@ -307,7 +308,7 @@ class ImportVector(BasicModule):
             self.lbl_ymin.show()
             self.lbl_ymax.show()
             self.lbl_mapsheet.hide()
-        elif txt == 'SA Mapsheet':
+        elif txt == "SA Mapsheet":
             self.le_xmin.hide()
             self.le_xmax.hide()
             self.le_ymin.hide()
@@ -321,16 +322,19 @@ class ImportVector(BasicModule):
 
     def get_sfile(self):
         """Get the filename and crs and bounds."""
-        self.le_sfile.setText('')
+        self.le_sfile.setText("")
 
-        ext = ('Shapefile (*.shp);;'
-               'Zipped Shapefile (*.shp.zip);;'
-               'GeoPackage (*.gpkg);;'
-               'KML (*.kml);;'
-               'KMZ (*.kmz)')
+        ext = (
+            "Shapefile (*.shp);;"
+            "Zipped Shapefile (*.shp.zip);;"
+            "GeoPackage (*.gpkg);;"
+            "KML (*.kml);;"
+            "KMZ (*.kmz)"
+        )
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+            self.parent, "Open File", ".", ext
+        )
 
         if not self.ifile:
             return False
@@ -366,7 +370,7 @@ class ImportVector(BasicModule):
         None.
 
         """
-        self.cmb_bounds.setCurrentText('Manual')
+        self.cmb_bounds.setCurrentText("Manual")
 
         xmin, ymin, xmax, ymax = bounds
 
@@ -409,13 +413,13 @@ class ImportXYZ(BasicModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.filt = ''
+        self.filt = ""
         self.is_import = True
 
         self.cmb_xchan = QtWidgets.QComboBox()
         self.cmb_ychan = QtWidgets.QComboBox()
-        self.le_nodata = QtWidgets.QLineEdit('99999')
-        self.proj = GroupProj('Input Projection')
+        self.le_nodata = QtWidgets.QLineEdit("99999")
+        self.proj = GroupProj("Input Projection")
 
         self.le_nodata.setValidator(QtGui.QDoubleValidator(self))
 
@@ -431,15 +435,15 @@ class ImportXYZ(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'vector.dm.importxyzdata'
-        lbl_xchan = QtWidgets.QLabel('X Channel:')
-        lbl_ychan = QtWidgets.QLabel('Y Channel:')
-        lbl_nodata = QtWidgets.QLabel('Nodata Value:')
+        self.buttonbox.htmlfile = "vector.dm.importxyzdata"
+        lbl_xchan = QtWidgets.QLabel("X Channel:")
+        lbl_ychan = QtWidgets.QLabel("Y Channel:")
+        lbl_nodata = QtWidgets.QLabel("Nodata Value:")
 
         self.cmb_xchan.setMinimumSize = 10
         self.cmb_ychan.setMinimumSize = 10
 
-        self.setWindowTitle(r'Import XYZ Data')
+        self.setWindowTitle(r"Import XYZ Data")
 
         gl_main.addWidget(lbl_xchan, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_xchan, 0, 1, 1, 1)
@@ -470,34 +474,37 @@ class ImportXYZ(BasicModule):
 
         """
         if not nodialog:
-            ext = ('Common formats (*.xlsx *.csv);;'
-                   'Excel (*.xlsx);;'
-                   'Comma Delimited (*.csv);;'
-                   'Geosoft XYZ (*.xyz);;'
-                   'ASCII XYZ (*.xyz);;'
-                   'Space Delimited (*.txt);;'
-                   'Tab Delimited (*.txt);;'
-                   'Intrepid Database (*..DIR)')
+            ext = (
+                "Common formats (*.xlsx *.csv);;"
+                "Excel (*.xlsx);;"
+                "Comma Delimited (*.csv);;"
+                "Geosoft XYZ (*.xyz);;"
+                "ASCII XYZ (*.xyz);;"
+                "Space Delimited (*.txt);;"
+                "Tab Delimited (*.txt);;"
+                "Intrepid Database (*..DIR)"
+            )
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
+                self.parent, "Open File", ".", ext
+            )
+            if self.ifile == "":
                 return False
 
-        if self.filt == 'Geosoft XYZ (*.xyz)':
+        if self.filt == "Geosoft XYZ (*.xyz)":
             gdf = self.get_GXYZ()
 
-        elif '.xlsx' in self.ifile:
+        elif ".xlsx" in self.ifile:
             gdf = self.get_excel()
-        elif self.filt == 'ASCII XYZ (*.xyz)':
-            gdf = self.get_delimited(' ')
-        elif '.csv' in self.ifile:
-            gdf = self.get_delimited(',')
-        elif self.filt == 'Tab Delimited (*.txt)':
-            gdf = self.get_delimited('\t')
-        elif self.filt == 'Space Delimited (*.txt)':
-            gdf = self.get_delimited(' ')
-        elif self.filt == 'Intrepid Database (*..DIR)':
+        elif self.filt == "ASCII XYZ (*.xyz)":
+            gdf = self.get_delimited(" ")
+        elif ".csv" in self.ifile:
+            gdf = self.get_delimited(",")
+        elif self.filt == "Tab Delimited (*.txt)":
+            gdf = self.get_delimited("\t")
+        elif self.filt == "Space Delimited (*.txt)":
+            gdf = self.get_delimited(" ")
+        elif self.filt == "Intrepid Database (*..DIR)":
             gdf = get_intrepid(self.ifile, self.showlog, self.piter)
             self.le_nodata.setDisabled(True)
         else:
@@ -510,23 +517,25 @@ class ImportXYZ(BasicModule):
         self.cmb_update(self.cmb_ychan, gdf.columns.values)
 
         if not self.projdata:
-            self.proj.set_current('None')
+            self.proj.set_current("None")
             xind = -1
             yind = -1
 
             ltmp = gdf.columns.str.lower()
 
-            exactpairs = [['lon', 'lat'],
-                          ['long', 'lat'],
-                          ['longitude', 'latitude'],
-                          ['x', 'y'],
-                          ['e', 'n']]
+            exactpairs = [
+                ["lon", "lat"],
+                ["long", "lat"],
+                ["longitude", "latitude"],
+                ["x", "y"],
+                ["e", "n"],
+            ]
 
             for i, j in exactpairs:
                 if i in ltmp and j in ltmp:
                     xind = ltmp.get_loc(i)
                     yind = ltmp.get_loc(j)
-                    if 'lon' in i:
+                    if "lon" in i:
                         self.proj.cmb_datum.setCurrentIndex(1)
                     break
 
@@ -535,9 +544,9 @@ class ImportXYZ(BasicModule):
                 # Check for flexible matches
                 for i, tmp in enumerate(ltmp):
                     tmpl = tmp.lower()
-                    if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
+                    if "lon" in tmpl or "x" in tmpl or "east" in tmpl:
                         xind = i
-                    if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
+                    if "lat" in tmpl or "y" in tmpl or "north" in tmpl:
                         yind = i
 
             if xind == -1:
@@ -566,22 +575,22 @@ class ImportXYZ(BasicModule):
         x = gdf[xcol]
         y = gdf[ycol]
 
-        if x.dtype == 'O' or y.dtype == 'O':
-            self.showlog('Error: You have text in your coordinates.')
+        if x.dtype == "O" or y.dtype == "O":
+            self.showlog("Error: You have text in your coordinates.")
             return False
 
         gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x, y))
 
-        gdf['line'] = gdf['line'].astype(str)
+        gdf["line"] = gdf["line"].astype(str)
 
         if self.le_nodata.isEnabled():
             gdf = gdf.replace(nodata, np.nan)
 
-        if self.proj.wkt != '':
+        if self.proj.wkt != "":
             gdf = gdf.set_crs(self.proj.wkt)
 
-        gdf.attrs['source'] = os.path.basename(self.ifile)
-        self.outdata['Vector'] = [gdf]
+        gdf.attrs["source"] = os.path.basename(self.ifile)
+        self.outdata["Vector"] = [gdf]
 
         return True
 
@@ -615,7 +624,7 @@ class ImportXYZ(BasicModule):
 
         return df
 
-    def get_delimited(self, delimiter=','):
+    def get_delimited(self, delimiter=","):
         """
         Get a delimited file.
 
@@ -631,16 +640,15 @@ class ImportXYZ(BasicModule):
 
         """
         try:
-            gdf = pd.read_csv(self.ifile, delimiter=delimiter,
-                              index_col=False)
-        except:
-            self.showlog('Error reading file.')
+            gdf = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
+        except Exception:
+            self.showlog("Error reading file.")
             return None
 
         gdf.columns = gdf.columns.str.lower()
 
-        if 'line' not in gdf.columns:
-            gdf['line'] = 'None'
+        if "line" not in gdf.columns:
+            gdf["line"] = "None"
 
         return gdf
 
@@ -658,8 +666,8 @@ class ImportXYZ(BasicModule):
 
         gdf.columns = gdf.columns.str.lower()
 
-        if 'line' not in gdf.columns:
-            gdf['line'] = 'None'
+        if "line" not in gdf.columns:
+            gdf["line"] = "None"
 
         return gdf
 
@@ -677,7 +685,7 @@ class ImportVoxel(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.filt = ''
+        self.filt = ""
         self.is_import = True
 
     def settings(self, nodialog=False):
@@ -696,21 +704,22 @@ class ImportVoxel(ContextModule):
 
         """
         if not nodialog:
-            ext = ('UBC 3D Mesh (*.msh)')
+            ext = "UBC 3D Mesh (*.msh)"
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
+                self.parent, "Open File", ".", ext
+            )
+            if self.ifile == "":
                 return False
 
-        self.showlog('Import busy...')
+        self.showlog("Import busy...")
 
         vdat = import_ubc(self.ifile)
-        self.outdata['Voxel'] = [vdat]
+        self.outdata["Voxel"] = [vdat]
 
         self.parent.process_is_active(False)
 
-        self.showlog('Import completed')
+        self.showlog("Import completed")
 
         return True
 
@@ -753,29 +762,30 @@ class ExportXYZ(ContextModule):
         """
         self.parent.process_is_active(True)
 
-        if 'Vector' not in self.indata:
-            self.showlog('Error: You need to have line data first!')
+        if "Vector" not in self.indata:
+            self.showlog("Error: You need to have line data first!")
             self.parent.process_is_active(False)
             return False
 
-        data = self.indata['Vector'][0]
-        if data.geom_type.iloc[0] != 'Point':
-            self.showlog('No point type data.')
+        data = self.indata["Vector"][0]
+        if data.geom_type.iloc[0] != "Point":
+            self.showlog("No point type data.")
             self.parent.process_is_active(False)
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'csv (*.csv);; Excel (*.xlsx)')
+            self.parent, "Save File", ".", "csv (*.csv);; Excel (*.xlsx)"
+        )
 
-        if filename == '':
+        if filename == "":
             self.parent.process_is_active(False)
             return False
 
-        self.showlog('Export busy...')
+        self.showlog("Export busy...")
 
         os.chdir(os.path.dirname(filename))
 
-        filt = (data.columns != 'geometry')
+        filt = data.columns != "geometry"
         cols = list(data.columns[filt])
 
         # from https://stackoverflow.com/questions/64695352/pandas-to-csv-
@@ -783,19 +793,21 @@ class ExportXYZ(ContextModule):
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
 
-        if filename[-3:] == 'csv':
+        if filename[-3:] == "csv":
             for chunck, subset in enumerate(self.piter(chunks)):
                 if chunck == 0:  # first row
-                    data.loc[subset].to_csv(filename, mode='w', index=False,
-                                            columns=cols)
+                    data.loc[subset].to_csv(
+                        filename, mode="w", index=False, columns=cols
+                    )
                 else:
-                    data.loc[subset].to_csv(filename, header=None, mode='a',
-                                            index=False, columns=cols)
+                    data.loc[subset].to_csv(
+                        filename, header=None, mode="a", index=False, columns=cols
+                    )
         else:
-
             if data.shape[0] > 1048576:
-                self.showlog('Your data has too many rows. Truncating it to '
-                             '1,048,576 rows')
+                self.showlog(
+                    "Your data has too many rows. Truncating it to 1,048,576 rows"
+                )
                 data2 = data.iloc[:1048576]
             else:
                 data2 = data
@@ -804,7 +816,7 @@ class ExportXYZ(ContextModule):
 
         self.parent.process_is_active(False)
 
-        self.showlog('Export completed')
+        self.showlog("Export completed")
 
         return True
 
@@ -835,37 +847,42 @@ class ExportVector(ContextModule):
         """
         self.parent.process_is_active(True)
 
-        if 'Vector' not in self.indata:
-            self.showlog('Error: You need to have vector data first!')
+        if "Vector" not in self.indata:
+            self.showlog("Error: You need to have vector data first!")
             self.parent.process_is_active(False)
             return False
 
         filename, filt = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson);;'
-            'GeoPackage (*.gpkg)')
+            self.parent,
+            "Save File",
+            ".",
+            "shp (*.shp);;GeoJSON (*.geojson);;GeoPackage (*.gpkg)",
+        )
 
-        if filename == '':
+        if filename == "":
             self.parent.process_is_active(False)
             return False
 
-        self.showlog('Export busy...')
+        self.showlog("Export busy...")
 
         os.chdir(os.path.dirname(filename))
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
 
-        if filt == 'GeoPackage (*.gpkg)' and 'fid' in data.columns.str.lower():
+        if filt == "GeoPackage (*.gpkg)" and "fid" in data.columns.str.lower():
             for i in data.columns:  # don't know case of fid column name
-                if i.lower() == 'fid':
-                    data['fid_original'] = data[i]
+                if i.lower() == "fid":
+                    data["fid_original"] = data[i]
                     data.drop(i, axis=1, inplace=True)
                     break
 
-        if filt == 'shp (*.shp)':
+        if filt == "shp (*.shp)":
             test = [i for i in data.columns if len(i) > 10]
             if test:
-                self.showlog('You have columns with more than 10 characters. '
-                             'They will be renamed but could still cause '
-                             'problems.')
+                self.showlog(
+                    "You have columns with more than 10 characters. "
+                    "They will be renamed but could still cause "
+                    "problems."
+                )
 
         chunks = np.array_split(data.index, 100)  # split into 100 chunks
         chunks = [i for i in chunks if i.size > 0]
@@ -873,17 +890,16 @@ class ExportVector(ContextModule):
         try:
             for chunck, subset in enumerate(self.piter(chunks)):
                 if chunck == 0:  # first row
-                    data.loc[subset].to_file(filename, engine='pyogrio')
+                    data.loc[subset].to_file(filename, engine="pyogrio")
                 else:
-                    data.loc[subset].to_file(filename, engine='pyogrio',
-                                             append=True)
+                    data.loc[subset].to_file(filename, engine="pyogrio", append=True)
         except RuntimeError as e:
             self.showlog(str(e))
-            self.showlog('Export aborted.')
+            self.showlog("Export aborted.")
             self.parent.process_is_active(False)
             return False
 
-        self.showlog('Export completed')
+        self.showlog("Export completed")
         self.parent.process_is_active(False)
 
         return True
@@ -915,29 +931,30 @@ class ExportVoxel(ContextModule):
         """
         self.parent.process_is_active(True)
 
-        if 'Voxel' not in self.indata:
-            self.showlog('Error: You need to have voxel data first!')
+        if "Voxel" not in self.indata:
+            self.showlog("Error: You need to have voxel data first!")
             self.parent.process_is_active(False)
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'UBC 3D Mesh (*.msh)')
+            self.parent, "Save File", ".", "UBC 3D Mesh (*.msh)"
+        )
 
-        if filename == '':
+        if filename == "":
             self.parent.process_is_active(False)
             return False
 
-        self.showlog('Export busy...')
+        self.showlog("Export busy...")
 
         os.chdir(os.path.dirname(filename))
 
-        if filename[-3:] == 'msh':
-            vdat = self.indata['Voxel'][0]
+        if filename[-3:] == "msh":
+            vdat = self.indata["Voxel"][0]
             export_ubc(filename, vdat)
 
         self.parent.process_is_active(False)
 
-        self.showlog('Export completed')
+        self.showlog("Export completed")
 
         return True
 
@@ -957,15 +974,15 @@ def import_ubc(ifile):
         Imported voxel model.
 
     """
-    ifile = ifile.rpartition('.')[0] + '.msh'
+    ifile = ifile.rpartition(".")[0] + ".msh"
     with open(ifile) as inp:
         hdf = inp.readlines()
 
     nx, ny, nz = hdf[0].strip().split()
     xmin, ymin, zmax = hdf[1].strip().split()
-    dx = hdf[2].strip().split('*')[1]
-    dy = hdf[3].strip().split('*')[1]
-    dz = hdf[4].strip().split('*')[1]
+    dx = hdf[2].strip().split("*")[1]
+    dy = hdf[3].strip().split("*")[1]
+    dz = hdf[4].strip().split("*")[1]
 
     nx = int(nx)
     ny = int(ny)
@@ -981,7 +998,7 @@ def import_ubc(ifile):
 
     zmin = zmax - dz * nz
 
-    vals = np.loadtxt(ifile[:-3] + 'mod')
+    vals = np.loadtxt(ifile[:-3] + "mod")
     vals = vals.reshape(ny, nx, nz)
     vals = vals[:, :, ::-1]
 
@@ -1009,7 +1026,7 @@ def export_ubc(ofile, data):
     None.
 
     """
-    ofile = ofile.rpartition('.')[0] + '.msh'
+    ofile = ofile.rpartition(".")[0] + ".msh"
 
     ny, nx, nz = data.data.shape
     xmin, ymin, zmin = data.origin
@@ -1017,17 +1034,17 @@ def export_ubc(ofile, data):
 
     zmax = dz * nz + zmin
 
-    with open(ofile, 'w') as out:
+    with open(ofile, "w") as out:
         print(nx, ny, nz, file=out)
         print(xmin, ymin, zmax, file=out)
-        print(f'{nx}*{dx}', file=out)
-        print(f'{ny}*{dy}', file=out)
-        print(f'{nz}*{dz}', file=out)
+        print(f"{nx}*{dx}", file=out)
+        print(f"{ny}*{dy}", file=out)
+        print(f"{nz}*{dz}", file=out)
 
     smod2 = data.data[:, :, ::-1].flatten()
     smod2[np.isnan(smod2)] = 0
 
-    np.savetxt(ofile[:-3] + 'mod', smod2)
+    np.savetxt(ofile[:-3] + "mod", smod2)
 
 
 def get_GXYZ(ifile, showlog=print, piter=iter):
@@ -1049,57 +1066,57 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
         Pandas dataframe.
 
     """
-    with open(ifile, encoding='utf-8') as fno:
+    with open(ifile, encoding="utf-8") as fno:
         tmp = fno.readlines()
 
-    if r'/' not in tmp[0]:
-        showlog('Not Geosoft XYZ format')
+    if r"/" not in tmp[0]:
+        showlog("Not Geosoft XYZ format")
         return None
 
-    if '/ --' in tmp[0]:
+    if "/ --" in tmp[0]:
         tmp.pop(0)
 
-    if '/ XYZ EXPORT' in tmp[0]:
+    if "/ XYZ EXPORT" in tmp[0]:
         tmp.pop(0)
 
-    if '/ DATABASE' in tmp[0]:
+    if "/ DATABASE" in tmp[0]:
         tmp.pop(0)
 
-    if '/ --' in tmp[0]:
+    if "/ --" in tmp[0]:
         tmp.pop(0)
 
-    if '/\n' in tmp[0]:
+    if "/\n" in tmp[0]:
         tmp.pop(0)
 
-    if '/==' in tmp[1]:
+    if "/==" in tmp[1]:
         tmp.pop(1)
 
-    if '/\n' in tmp[1]:
+    if "/\n" in tmp[1]:
         tmp.pop(1)
 
-    while '//' in tmp[1]:
+    while "//" in tmp[1]:
         tmp.pop(1)
 
-    tmp = ''.join(tmp)
+    tmp = "".join(tmp)
 
     head = None
 
-    while r'/' in tmp[:tmp.index('\n')]:
-        head = tmp[:tmp.index('\n')]
-        tmp = tmp[tmp.index('\n') + 1:]
+    while r"/" in tmp[: tmp.index("\n")]:
+        head = tmp[: tmp.index("\n")]
+        tmp = tmp[tmp.index("\n") + 1 :]
         head = head.split()
         head.pop(0)
 
-    while r'/' in tmp:
-        t1 = tmp[:tmp.index(r'/')]
-        t2 = tmp[tmp.index(r'/') + 1:]
-        t3 = t2[t2.index('\n') + 1:]
+    while r"/" in tmp:
+        t1 = tmp[: tmp.index(r"/")]
+        t2 = tmp[tmp.index(r"/") + 1 :]
+        t3 = t2[t2.index("\n") + 1 :]
         tmp = t1 + t3
 
     tmp = tmp.lower()
     tmp = tmp.lstrip()
-    tmp = re.split('(line|tie)', tmp)
-    if tmp[0] == '':
+    tmp = re.split("(line|tie)", tmp)
+    if tmp[0] == "":
         tmp.pop(0)
 
     df2 = None
@@ -1107,16 +1124,17 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
     for i in piter(range(0, len(tmp), 2)):
         tmp2 = tmp[i + 1]
 
-        line = tmp[i] + ' ' + tmp2[:tmp2.index('\n')].strip()
-        tmp2 = tmp2[tmp2.index('\n') + 1:]
+        line = tmp[i] + " " + tmp2[: tmp2.index("\n")].strip()
+        tmp2 = tmp2[tmp2.index("\n") + 1 :]
         if head is None:
-            head = [f'Column {i + 1}' for i in
-                    range(len(tmp2[:tmp2.index('\n')].split()))]
+            head = [
+                f"Column {i + 1}" for i in range(len(tmp2[: tmp2.index("\n")].split()))
+            ]
 
-        tmp2 = tmp2.replace('*', 'NaN')
-        df1 = pd.read_csv(StringIO(tmp2), sep=r'\s+', names=head)
+        tmp2 = tmp2.replace("*", "NaN")
+        df1 = pd.read_csv(StringIO(tmp2), sep=r"\s+", names=head)
 
-        df1['line'] = line
+        df1["line"] = line
         dflist.append(df1)
 
     # Concat in all df in one go is much faster
@@ -1144,50 +1162,52 @@ def get_intrepid(ifile, showlog=print, piter=iter):
         Pandas Dataframe.
 
     """
-    if '..dir' not in ifile.lower():
+    if "..dir" not in ifile.lower():
         return None
 
     idir = ifile[:-5]
 
-    dconv = {'IEEE4ByteReal': 'f',
-             'IEEE8ByteReal': 'd',
-             'Signed32BitInteger': 'i',
-             'Signed16BitInteger': 'h'}
+    dconv = {
+        "IEEE4ByteReal": "f",
+        "IEEE8ByteReal": "d",
+        "Signed32BitInteger": "i",
+        "Signed16BitInteger": "h",
+    }
 
-    files = glob.glob(os.path.join(idir, '*.PD'))
-    vfiles = glob.glob(os.path.join(idir, '*.vec'))
+    files = glob.glob(os.path.join(idir, "*.PD"))
+    vfiles = glob.glob(os.path.join(idir, "*.vec"))
 
     data = {}
     numbands = {}
     nodata = {}
-    celltype = 'IEEE4ByteReal'
-    null = 1e+20
+    celltype = "IEEE4ByteReal"
+    null = 1e20
 
     for j in piter(range(len(files))):
         ifile = files[j]
         vfile = vfiles[j]
         cname = os.path.basename(ifile)[:-3].lower()
 
-        with open(vfile, encoding='utf-8') as file:
+        with open(vfile, encoding="utf-8") as file:
             header = file.readlines()
 
         for i in header:
-            tmp = i.replace('\t', '')
-            tmp = tmp.replace('\n', '')
-            tmp = tmp.replace(' ', '')
+            tmp = i.replace("\t", "")
+            tmp = tmp.replace("\n", "")
+            tmp = tmp.replace(" ", "")
 
-            if 'CellType' in tmp:
-                tmp = tmp.split('=')
+            if "CellType" in tmp:
+                tmp = tmp.split("=")
                 celltype = tmp[-1]
-            if 'NullCellValue' in tmp:
-                tmp = tmp.split('=')
+            if "NullCellValue" in tmp:
+                tmp = tmp.split("=")
                 null = tmp[-1]
-            if 'NrOfBands' in tmp:
-                tmp = tmp.split('=')
+            if "NrOfBands" in tmp:
+                tmp = tmp.split("=")
                 numbands[cname] = int(tmp[-1])
 
         fmt = dconv[celltype]
-        if fmt in ['i', 'h']:
+        if fmt in ["i", "h"]:
             null = int(null)
         else:
             null = float(null)
@@ -1202,15 +1222,15 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 
         data[cname] = tmp
 
-    if 'linenumber' in data:
-        linename = 'linenumber'
-        nodata['line'] = nodata[linename]
+    if "linenumber" in data:
+        linename = "linenumber"
+        nodata["line"] = nodata[linename]
     else:
-        linename = 'line'
+        linename = "line"
 
     line = data.pop(linename, None)
-    data.pop('linetype', None)
-    indx = data.pop('index', None)
+    data.pop("linetype", None)
+    indx = data.pop("index", None)
 
     i = list(data.keys())[0]
     tmp = data[i].shape
@@ -1221,14 +1241,14 @@ def get_intrepid(ifile, showlog=print, piter=iter):
         t2 = t1 + indxi[1] + 1
         linenumber[t1:t2] = line[i]
 
-    data['line'] = linenumber
-    numbands['line'] = 1
+    data["line"] = linenumber
+    numbands["line"] = 1
 
     dkeys = list(data.keys())
     for cname in dkeys:
         if numbands[cname] > 1:
             for j in range(numbands[cname]):
-                txt = f'{cname}_{j + 1}'
+                txt = f"{cname}_{j + 1}"
                 data[txt] = data[cname][:, j]
                 nodata[txt] = nodata[cname]
             del data[cname]
@@ -1245,10 +1265,11 @@ def get_intrepid(ifile, showlog=print, piter=iter):
 def _test():
     """Test."""
     import sys
+
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(ifile))
 

@@ -51,14 +51,11 @@ translated into Python from the GEOMAG code.
 """
 
 import os
-from math import sin
-from math import cos
-from math import sqrt
-from math import atan2
+from math import atan2, cos, sin, sqrt
 
+import numpy as np
 from numba import jit
 from PySide6 import QtWidgets
-import numpy as np
 
 import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule
@@ -92,7 +89,7 @@ class IGRF(BasicModule):
         self.dateedit = QtWidgets.QDateEdit()
         self.cmb_dtm = QtWidgets.QComboBox()
         self.cmb_mag = QtWidgets.QComboBox()
-        self.proj = dp.GroupProj('Input Projection')
+        self.proj = dp.GroupProj("Input Projection")
 
         self.setupui()
 
@@ -106,16 +103,16 @@ class IGRF(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'mag.dm.igrf'
+        self.buttonbox.htmlfile = "mag.dm.igrf"
 
-        lbl_0 = QtWidgets.QLabel('Sensor clearance above ground (m):')
-        lbl_1 = QtWidgets.QLabel('Date:')
-        lbl_2 = QtWidgets.QLabel('Digital Elevation Model (m):')
-        lbl_3 = QtWidgets.QLabel('Magnetic Data:')
+        lbl_0 = QtWidgets.QLabel("Sensor clearance above ground (m):")
+        lbl_1 = QtWidgets.QLabel("Date:")
+        lbl_2 = QtWidgets.QLabel("Digital Elevation Model (m):")
+        lbl_3 = QtWidgets.QLabel("Magnetic Data:")
 
         self.dsb_alt.setMaximum(99999.9)
 
-        self.setWindowTitle('IGRF')
+        self.setWindowTitle("IGRF")
 
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(lbl_0, 2, 0, 1, 1)
@@ -143,22 +140,21 @@ class IGRF(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             if i.crs is None:
-                self.showlog(f'{i.dataid} has no projection. '
-                             'Please assign one.')
+                self.showlog(f"{i.dataid} has no projection. Please assign one.")
                 return False
 
         if self.wkt is None:
-            self.wkt = self.indata['Raster'][0].crs.to_wkt()
+            self.wkt = self.indata["Raster"][0].crs.to_wkt()
 
         self.proj.set_current(self.wkt)
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
 
         tmp = [i.dataid for i in data]
 
@@ -177,10 +173,9 @@ class IGRF(BasicModule):
             if i.dataid == self.cmb_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
 
-        data = dp.lstack(data, dxy=dxy, piter=self.piter,
-                         showlog=self.showlog)
+        data = dp.lstack(data, dxy=dxy, piter=self.piter, showlog=self.showlog)
 
-        wkt = ''
+        wkt = ""
         maggrid = None
         for i in data:
             if i.dataid == self.cmb_mag.currentText():
@@ -193,21 +188,26 @@ class IGRF(BasicModule):
         sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
         alt = self.dsb_alt.value()
 
-        odata, fmean, imean, dmean = calc_igrf(data, sdate, sen_alt=alt,
-                                               wkt=wkt, igrfonly=False,
-                                               piter=self.piter,
-                                               showlog=self.showlog)
+        odata, fmean, imean, dmean = calc_igrf(
+            data,
+            sdate,
+            sen_alt=alt,
+            wkt=wkt,
+            igrfonly=False,
+            piter=self.piter,
+            showlog=self.showlog,
+        )
         if odata is None:
             return False
 
-        bname = 'Magnetic Data: IGRF Corrected '
-        bname = bname + f'F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}'
+        bname = "Magnetic Data: IGRF Corrected "
+        bname = bname + f"F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}"
 
-        self.outdata['Raster'] = odata
+        self.outdata["Raster"] = odata
 
-        self.outdata['Raster'].append(maggrid.copy())
-        self.outdata['Raster'][-1].data -= odata[0].data
-        self.outdata['Raster'][-1].dataid = bname
+        self.outdata["Raster"].append(maggrid.copy())
+        self.outdata["Raster"][-1].data -= odata[0].data
+        self.outdata["Raster"][-1].dataid = bname
         return True
 
     def saveproj(self):
@@ -226,8 +226,9 @@ class IGRF(BasicModule):
         self.saveobj(self.cmb_mag)
 
 
-def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
-              showlog=print):
+def calc_igrf(
+    data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter, showlog=print
+):
     """
     Calculate IGRF.
 
@@ -319,10 +320,11 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
 
     gh = np.zeros([4, MAXCOEFF])
 
-    with open(os.path.join(os.path.dirname(__file__), 'IGRF14.COF'),
-              encoding='utf-8') as mdf:
+    with open(
+        os.path.join(os.path.dirname(__file__), "IGRF14.COF"), encoding="utf-8"
+    ) as mdf:
         modbuff = mdf.readlines()
-    fileline = -1                            # First line will be 1
+    fileline = -1  # First line will be 1
     model = []
     epoch = []
     max1 = []
@@ -336,7 +338,7 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     # First model will be 0
     for i in modbuff:
         fileline += 1  # On new line
-        if i[:3] == '   ':
+        if i[:3] == "   ":
             i2 = i.split()
             model.append(i2[0])
             epoch.append(float(i2[1]))
@@ -356,8 +358,8 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     drows, dcols = data.data.shape
     dtlx = data.extent[0]
     dtly = data.extent[-1]
-    xrange = dtlx + data.xdim / 2. + np.arange(dcols) * data.xdim
-    yrange = dtly - data.ydim / 2. - np.arange(drows) * data.ydim
+    xrange = dtlx + data.xdim / 2.0 + np.arange(dcols) * data.xdim
+    yrange = dtly - data.ydim / 2.0 - np.arange(drows) * data.ydim
 
     xdat, ydat = np.meshgrid(xrange, yrange)
     xdat = xdat.flatten()
@@ -372,24 +374,36 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     igdgc = 1
 
     if maxyr < sdate < maxyr + 1:
-        showlog('Warning: The date ' + str(sdate) + ' is out of range,')
-        showlog('but still within one year of model expiration date.')
-        showlog('An updated model file is available before 1.1.' + str(maxyr))
+        showlog("Warning: The date " + str(sdate) + " is out of range,")
+        showlog("but still within one year of model expiration date.")
+        showlog("An updated model file is available before 1.1." + str(maxyr))
 
     if max2[modelI] == 0:
         gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
         gh = getshc(modbuff, 1, irec_pos[modelI + 1], max1[modelI + 1], 1, gh)
-        nmax, gh = interpsh(sdate, yrmin[modelI], max1[modelI],
-                            yrmin[modelI + 1], max1[modelI + 1], 2, gh)
-        nmax, gh = interpsh(sdate + 1, yrmin[modelI], max1[modelI],
-                            yrmin[modelI + 1], max1[modelI + 1], 3, gh)
+        nmax, gh = interpsh(
+            sdate,
+            yrmin[modelI],
+            max1[modelI],
+            yrmin[modelI + 1],
+            max1[modelI + 1],
+            2,
+            gh,
+        )
+        nmax, gh = interpsh(
+            sdate + 1,
+            yrmin[modelI],
+            max1[modelI],
+            yrmin[modelI + 1],
+            max1[modelI + 1],
+            3,
+            gh,
+        )
     else:
         gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
         gh = getshc(modbuff, 0, irec_pos[modelI], max2[modelI], 1, gh)
-        nmax, gh = extrapsh(sdate, epoch[modelI], max1[modelI],
-                            max2[modelI], 2, gh)
-        nmax, gh = extrapsh(sdate + 1, epoch[modelI], max1[modelI],
-                            max2[modelI], 3, gh)
+        nmax, gh = extrapsh(sdate, epoch[modelI], max1[modelI], max2[modelI], 2, gh)
+        nmax, gh = extrapsh(sdate + 1, epoch[modelI], max1[modelI], max2[modelI], 3, gh)
 
     if wkt is not None:
         xdat, ydat = reprojxy(xdat, ydat, wkt, 4326, showlog)
@@ -427,25 +441,25 @@ def calc_igrf(data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter,
     imean = igrf_I.mean()
     dmean = igrf_D.mean()
 
-    showlog('Mean Values in Calculation')
-    showlog('=============================')
-    showlog(f'Total Intensity: {fmean:.2f}')
-    showlog(f'Inclination: {imean:.2f}')
-    showlog(f'Declination: {dmean:.2f}')
+    showlog("Mean Values in Calculation")
+    showlog("=============================")
+    showlog(f"Total Intensity: {fmean:.2f}")
+    showlog(f"Inclination: {imean:.2f}")
+    showlog(f"Declination: {dmean:.2f}")
 
     outdata = []
     outdata.append(data.copy())
     outdata[-1].data = igrf_F
-    outdata[-1].dataid = 'IGRF'
+    outdata[-1].dataid = "IGRF"
 
     if not igrfonly:
         outdata.append(data.copy())
         outdata[-1].data = igrf_I
-        outdata[-1].dataid = 'Inclination'
+        outdata[-1].dataid = "Inclination"
 
         outdata.append(data.copy())
         outdata[-1].data = igrf_D
-        outdata[-1].dataid = 'Declination'
+        outdata[-1].dataid = "Declination"
 
     return outdata, fmean, imean, dmean
 
@@ -554,15 +568,15 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
     else:
         if nmax1 > nmax2:
             k = nmax2 * (nmax2 + 2)
-            l = nmax1 * (nmax1 + 2)
-            for ii in range(k, l):
+            l1 = nmax1 * (nmax1 + 2)
+            for ii in range(k, l1):
                 gh[igh][ii] = gh[0][ii]
 
             nmax = nmax1
         else:
             k = nmax1 * (nmax1 + 2)
-            l = nmax2 * (nmax2 + 2)
-            for ii in range(k, l):
+            l1 = nmax2 * (nmax2 + 2)
+            for ii in range(k, l1):
                 gh[igh][ii] = factor * gh[1][ii]
 
             nmax = nmax2
@@ -620,14 +634,14 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
     else:
         if nmax1 > nmax2:
             k = nmax2 * (nmax2 + 2)
-            l = nmax1 * (nmax1 + 2)
-            for ii in range(k, l):
+            l1 = nmax1 * (nmax1 + 2)
+            for ii in range(k, l1):
                 gh[igh][ii] = gh[0][ii] + factor * (-gh[0][ii])
             nmax = nmax1
         else:
             k = nmax1 * (nmax1 + 2)
-            l = nmax2 * (nmax2 + 2)
-            for ii in range(k, l):
+            l1 = nmax2 * (nmax2 + 2)
+            for ii in range(k, l1):
                 gh[igh][ii] = factor * gh[1][ii]
 
             nmax = nmax2
@@ -692,15 +706,15 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
     # spheroid used for transforming between geodetic and geocentric
     # coordinates or components
 
-    a2 = 40680631.59            # WGS84
-    b2 = 40408299.98            # WGS84
+    a2 = 40680631.59  # WGS84
+    b2 = 40408299.98  # WGS84
     r = elev
     argument = flat * dtr
     slat = sin(argument)
     if (90.0 - flat) < 0.001:
-        aa = 89.999            # 300 ft. from North pole
+        aa = 89.999  # 300 ft. from North pole
     elif (90.0 + flat) < 0.001:
-        aa = -89.999        # 300 ft. from South pole
+        aa = -89.999  # 300 ft. from South pole
     else:
         aa = flat
 
@@ -716,7 +730,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
 
     sd = 0.0
     cd = 1.0
-    l = 0
+    l1 = 0
     n = 0
     m = 1
     # Initialise to avoid loop warning
@@ -776,28 +790,26 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
                 cc = (2.0 * fn - 1.0) / aa
                 ii = k - n
                 j = k - 2 * n + 1
-                p[k] = (fn + 1.0) * (cc * slat / fn *
-                                     p[ii] - bb / (fn - 1.0) * p[j])
+                p[k] = (fn + 1.0) * (cc * slat / fn * p[ii] - bb / (fn - 1.0) * p[j])
                 q[k] = cc * (slat * q[ii] - clat / fn * p[ii]) - bb * q[j]
 
-        aa = rr * gh[igh - 1][l]
+        aa = rr * gh[igh - 1][l1]
 
         if m == 0:
             x = x + aa * q[k]
             z = z - aa * p[k]
 
-            l = l + 1
+            l1 = l1 + 1
         else:
-            bb = rr * gh[igh - 1][l + 1]
+            bb = rr * gh[igh - 1][l1 + 1]
             cc = aa * cl[m] + bb * sl[m]
             x = x + cc * q[k]
             z = z - cc * p[k]
             if clat > 0:
-                y = y + (aa * sl[m] - bb * cl[m]) * \
-                    fm * p[k] / ((fn + 1.0) * clat)
+                y = y + (aa * sl[m] - bb * cl[m]) * fm * p[k] / ((fn + 1.0) * clat)
             else:
                 y = y + (aa * sl[m] - bb * cl[m]) * q[k] * slat
-            l = l + 2
+            l1 = l1 + 2
 
         m = m + 1
 
@@ -842,20 +854,20 @@ def dihf(x, y, z):
 
     """
     sn = 0.0001
-    h = 0.
-    f = 0.
-    i = 0.
-    d = 0.
+    h = 0.0
+    f = 0.0
+    i = 0.0
+    d = 0.0
 
     for _ in range(2):
         h2 = x * x + y * y
         argument = h2
-        h = sqrt(argument)       # calculate horizontal intensity
+        h = sqrt(argument)  # calculate horizontal intensity
         argument = h2 + z * z
-        f = sqrt(argument)       # calculate total intensity
+        f = sqrt(argument)  # calculate total intensity
         if f < sn:
-            d = np.nan           # If d and i cannot be determined,
-            i = np.nan           # set equal to NaN
+            d = np.nan  # If d and i cannot be determined,
+            i = np.nan  # set equal to NaN
         else:
             argument = z
             argument2 = h
@@ -877,6 +889,7 @@ def dihf(x, y, z):
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -884,10 +897,10 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     igrf = IGRF()
-    igrf.indata['Raster'] = dat
+    igrf.indata["Raster"] = dat
     igrf.settings()
 
 

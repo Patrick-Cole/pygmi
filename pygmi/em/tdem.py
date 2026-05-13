@@ -24,31 +24,38 @@
 # -----------------------------------------------------------------------------
 """Time Domain EM inversion, based on the SimPEG library."""
 
-import sys
-import os
 import copy
+import os
+import sys
 from contextlib import redirect_stdout
-from PySide6 import QtWidgets, QtGui
-import numpy as np
 
+import numpy as np
+import simpeg.data as Sdata
+from discretize import CylindricalMesh, TensorMesh
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from discretize import CylindricalMesh, TensorMesh
-from simpeg import (maps, data_misfit, regularization,
-                    optimization, inversion, inverse_problem, directives)
+from PySide6 import QtGui, QtWidgets
+from simpeg import (
+    data_misfit,
+    directives,
+    inverse_problem,
+    inversion,
+    maps,
+    optimization,
+    regularization,
+)
 from simpeg.electromagnetics import time_domain
-import simpeg.data as Sdata
 from simpeg.utils import get_default_solver
 
-from pygmi.misc import QVStack2Layout, BasicModule
+from pygmi.misc import BasicModule, QVStack2Layout
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         super().__init__(fig)
 
     def update_line(self, sigma, z, times_off, zobs, zpred):
@@ -75,32 +82,39 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         """
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(121, label='Profile')
-        ax1.semilogx(sigma, z, 'b', lw=2)
+        ax1 = self.figure.add_subplot(121, label="Profile")
+        ax1.semilogx(sigma, z, "b", lw=2)
         ax1.grid(True)
         ax1.set_ylabel("Depth (m)")
         ax1.set_xlabel("Conductivity (S/m)")
         ax1.set_title("Recovered Model")
-        ax1.tick_params(axis='x', which='major', labelsize=6, labelrotation=90)
-        ax1.tick_params(axis='x', which='minor', labelsize=6, labelrotation=90)
-        ax1.tick_params(axis='y', which='major', labelsize=6)
-        ax1.tick_params(axis='y', which='minor', labelsize=6)
+        ax1.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
+        ax1.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
+        ax1.tick_params(axis="y", which="major", labelsize=6)
+        ax1.tick_params(axis="y", which="minor", labelsize=6)
 
         ax2 = self.figure.add_subplot(122)
-        ax2.grid(True, 'both')
-        ax2.loglog(times_off, zobs, 'b-', label="Observed")
-        ax2.loglog(times_off, zpred, 'bo', ms=4,
-                   markeredgecolor='k', markeredgewidth=0.5, label="Predicted")
+        ax2.grid(True, "both")
+        ax2.loglog(times_off, zobs, "b-", label="Observed")
+        ax2.loglog(
+            times_off,
+            zpred,
+            "bo",
+            ms=4,
+            markeredgecolor="k",
+            markeredgewidth=0.5,
+            label="Predicted",
+        )
         ax2.set_xlim(times_off.min() * 1.2, times_off.max() * 1.1)
         ax2.set_xlabel(r"Time ($\mu s$)")
         ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
         ax2.set_title("High-moment")
         ax2.grid(True)
         ax2.legend(loc=3)
-        ax2.tick_params(axis='x', which='major', labelsize=6, labelrotation=90)
-        ax2.tick_params(axis='x', which='minor', labelsize=6, labelrotation=90)
-        ax2.tick_params(axis='y', which='major', labelsize=6)
-        ax2.tick_params(axis='y', which='minor', labelsize=6)
+        ax2.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
+        ax2.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
+        ax2.tick_params(axis="y", which="major", labelsize=6)
+        ax2.tick_params(axis="y", which="minor", labelsize=6)
 
         self.figure.canvas.draw()
 
@@ -126,11 +140,11 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         ax1 = self.figure.add_subplot(111)
         ax1.grid(True)
-        ax1.set_ylabel('Amplitude')
-        ax1.set_xlabel('Time (s)')
+        ax1.set_ylabel("Amplitude")
+        ax1.set_xlabel("Time (s)")
         ax1.set_title(title)
-        ax1.tick_params(axis='both', which='major', labelsize=6)
-        ax1.tick_params(axis='both', which='minor', labelsize=6)
+        ax1.tick_params(axis="both", which="major", labelsize=6)
+        ax1.tick_params(axis="both", which="minor", labelsize=6)
 
         ax1.plot(times, wave)
 
@@ -154,8 +168,8 @@ class TDEM1D(BasicModule):
         self.cursoln = 0
         self.times = None
 
-        self.setWindowTitle('TDEM 1D Inversion')
-        self.buttonbox.htmlfile = 'em.dm.tdem1dinv'
+        self.setWindowTitle("TDEM 1D Inversion")
+        self.buttonbox.htmlfile = "em.dm.tdem1dinv"
         self.buttonbox.buttonbox.hide()
 
         vbl = QtWidgets.QVBoxLayout()
@@ -167,53 +181,55 @@ class TDEM1D(BasicModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_stype = QtWidgets.QComboBox()
-        self.cmb_stype.addItems(['CircularLoop',
-                                 'MagDipole'])
+        self.cmb_stype.addItems(["CircularLoop", "MagDipole"])
 
         self.cmb_wtype = QtWidgets.QComboBox()
-        self.cmb_wtype.addItems(['VTEMWaveform',
-                                 'RampOffWaveform',
-                                 'TrapezoidWaveform',
-                                 'QuarterSineRampOnWaveform',
-                                 'TriangularWaveform',
-                                 'HalfSineWaveform'])
+        self.cmb_wtype.addItems(
+            [
+                "VTEMWaveform",
+                "RampOffWaveform",
+                "TrapezoidWaveform",
+                "QuarterSineRampOnWaveform",
+                "TriangularWaveform",
+                "HalfSineWaveform",
+            ]
+        )
         self.cmb_txori = QtWidgets.QComboBox()
-        self.cmb_txori.addItems(['z', 'x', 'y'])
+        self.cmb_txori.addItems(["z", "x", "y"])
         self.cmb_rxori = QtWidgets.QComboBox()
-        self.cmb_rxori.addItems(['z', 'x', 'y'])
+        self.cmb_rxori.addItems(["z", "x", "y"])
         self.cmb_line = QtWidgets.QComboBox()
         self.cmb_fid = QtWidgets.QComboBox()
         self.cmb_balt = QtWidgets.QComboBox()
-        self.le_loopturns = QtWidgets.QLineEdit('1.0')
-        self.le_loopcurrent = QtWidgets.QLineEdit('1.0')
-        self.le_mu = QtWidgets.QLineEdit('1.25663706212e-06')
-        self.le_txarea = QtWidgets.QLineEdit('313.98')
-        self.le_txofftime = QtWidgets.QLineEdit('0.0100286')
-        self.le_txrampoff1 = QtWidgets.QLineEdit('0.01')
-        self.le_txpeaktime = QtWidgets.QLineEdit('0.01')
-        self.le_datachan = QtWidgets.QLineEdit('Z_Ch')
-        self.le_sig_half = QtWidgets.QLineEdit('0.1')
-        self.le_sig_air = QtWidgets.QLineEdit('1e-08')
-        self.le_rel_err = QtWidgets.QLineEdit('12')
-        self.le_noise_floor = QtWidgets.QLineEdit('7.5e-12')
-        self.le_wfile = QtWidgets.QLineEdit('')
-        self.le_maxiter = QtWidgets.QLineEdit('5')
-        pb_wfile = QtWidgets.QPushButton('Load Window Times')
-        pb_wdisp = QtWidgets.QPushButton('Refresh Waveform')
+        self.le_loopturns = QtWidgets.QLineEdit("1.0")
+        self.le_loopcurrent = QtWidgets.QLineEdit("1.0")
+        self.le_mu = QtWidgets.QLineEdit("1.25663706212e-06")
+        self.le_txarea = QtWidgets.QLineEdit("313.98")
+        self.le_txofftime = QtWidgets.QLineEdit("0.0100286")
+        self.le_txrampoff1 = QtWidgets.QLineEdit("0.01")
+        self.le_txpeaktime = QtWidgets.QLineEdit("0.01")
+        self.le_datachan = QtWidgets.QLineEdit("Z_Ch")
+        self.le_sig_half = QtWidgets.QLineEdit("0.1")
+        self.le_sig_air = QtWidgets.QLineEdit("1e-08")
+        self.le_rel_err = QtWidgets.QLineEdit("12")
+        self.le_noise_floor = QtWidgets.QLineEdit("7.5e-12")
+        self.le_wfile = QtWidgets.QLineEdit("")
+        self.le_maxiter = QtWidgets.QLineEdit("5")
+        pb_wfile = QtWidgets.QPushButton("Load Window Times")
+        pb_wdisp = QtWidgets.QPushButton("Refresh Waveform")
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_wfile.setIcon(icon)
-        pb_wfile.setStyleSheet('text-align:left;')
+        pb_wfile.setStyleSheet("text-align:left;")
 
-        self.le_mesh_cs = QtWidgets.QLineEdit('1')
-        self.le_mesh_ncx = QtWidgets.QLineEdit('10')
-        self.le_mesh_ncz = QtWidgets.QLineEdit('10')
-        self.le_mesh_npad = QtWidgets.QLineEdit('20')
-        self.le_mesh_padrate = QtWidgets.QLineEdit('1.3')
+        self.le_mesh_cs = QtWidgets.QLineEdit("1")
+        self.le_mesh_ncx = QtWidgets.QLineEdit("10")
+        self.le_mesh_ncz = QtWidgets.QLineEdit("10")
+        self.le_mesh_npad = QtWidgets.QLineEdit("20")
+        self.le_mesh_padrate = QtWidgets.QLineEdit("1.3")
 
-        self.le_loopturns.setValidator(
-            QtGui.QDoubleValidator(1e-300, np.inf, -1))
+        self.le_loopturns.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
         self.le_loopcurrent.setValidator(QtGui.QDoubleValidator(self))
         self.le_mu.setValidator(QtGui.QDoubleValidator(self))
         self.le_txarea.setValidator(QtGui.QDoubleValidator(self))
@@ -231,35 +247,35 @@ class TDEM1D(BasicModule):
         self.le_mesh_npad.setValidator(QtGui.QIntValidator(1, 2147483647))
         self.le_mesh_padrate.setValidator(QtGui.QDoubleValidator(self))
 
-        self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
+        self.lbl_profnum = QtWidgets.QLabel("Solution: 0")
 
-        pb_apply = QtWidgets.QPushButton('Invert Station')
+        pb_apply = QtWidgets.QPushButton("Invert Station")
 
-        vsl.addWidget('Line Number:', self.cmb_line)
-        vsl.addWidget(r'Fid/Station Name:', self.cmb_fid)
-        vsl.addWidget('Bird Height:', self.cmb_balt)
-        vsl.addWidget('Data channel prefix:', self.le_datachan)
-        vsl.addWidget('Waveform Type:', self.cmb_wtype)
-        vsl.addWidget('Tx Peak time:', self.le_txpeaktime)
-        vsl.addWidget('Tx Ramp Off start time:', self.le_txrampoff1)
-        vsl.addWidget('Tx Off time:', self.le_txofftime)
-        vsl.addWidget('Source Type:', self.cmb_stype)
-        vsl.addWidget('Tx Orientation:', self.cmb_txori)
-        vsl.addWidget('Tx Area:', self.le_txarea)
-        vsl.addWidget('Number of turns in loop:', self.le_loopturns)
-        vsl.addWidget('Current in loop:', self.le_loopcurrent)
-        vsl.addWidget('Magnetic permeability of the background:', self.le_mu)
-        vsl.addWidget('Rx Orientation:', self.cmb_rxori)
-        vsl.addWidget('Mesh cell size:', self.le_mesh_cs)
-        vsl.addWidget('Mesh number cells in x direction:', self.le_mesh_ncx)
-        vsl.addWidget('Mesh number cells in z direction:', self.le_mesh_ncz)
-        vsl.addWidget('Mesh number of cells to pad:', self.le_mesh_npad)
-        vsl.addWidget('Pad cell multiplier:', self.le_mesh_padrate)
-        vsl.addWidget('Conductivity Air:', self.le_sig_air)
-        vsl.addWidget('Conductivity Halfspace:', self.le_sig_half)
-        vsl.addWidget('Data Relative Error (%):', self.le_rel_err)
-        vsl.addWidget('Data Noise Floor:', self.le_noise_floor)
-        vsl.addWidget('Optimization - maximum iterations:', self.le_maxiter)
+        vsl.addWidget("Line Number:", self.cmb_line)
+        vsl.addWidget(r"Fid/Station Name:", self.cmb_fid)
+        vsl.addWidget("Bird Height:", self.cmb_balt)
+        vsl.addWidget("Data channel prefix:", self.le_datachan)
+        vsl.addWidget("Waveform Type:", self.cmb_wtype)
+        vsl.addWidget("Tx Peak time:", self.le_txpeaktime)
+        vsl.addWidget("Tx Ramp Off start time:", self.le_txrampoff1)
+        vsl.addWidget("Tx Off time:", self.le_txofftime)
+        vsl.addWidget("Source Type:", self.cmb_stype)
+        vsl.addWidget("Tx Orientation:", self.cmb_txori)
+        vsl.addWidget("Tx Area:", self.le_txarea)
+        vsl.addWidget("Number of turns in loop:", self.le_loopturns)
+        vsl.addWidget("Current in loop:", self.le_loopcurrent)
+        vsl.addWidget("Magnetic permeability of the background:", self.le_mu)
+        vsl.addWidget("Rx Orientation:", self.cmb_rxori)
+        vsl.addWidget("Mesh cell size:", self.le_mesh_cs)
+        vsl.addWidget("Mesh number cells in x direction:", self.le_mesh_ncx)
+        vsl.addWidget("Mesh number cells in z direction:", self.le_mesh_ncz)
+        vsl.addWidget("Mesh number of cells to pad:", self.le_mesh_npad)
+        vsl.addWidget("Pad cell multiplier:", self.le_mesh_padrate)
+        vsl.addWidget("Conductivity Air:", self.le_sig_air)
+        vsl.addWidget("Conductivity Halfspace:", self.le_sig_half)
+        vsl.addWidget("Data Relative Error (%):", self.le_rel_err)
+        vsl.addWidget("Data Noise Floor:", self.le_noise_floor)
+        vsl.addWidget("Optimization - maximum iterations:", self.le_maxiter)
 
         vsl.addWidget(pb_wfile, self.le_wfile)
         vsl.addWidget(self.buttonbox, pb_apply)
@@ -275,8 +291,9 @@ class TDEM1D(BasicModule):
         scroll = QtWidgets.QScrollArea()
         scroll.setWidget(widget)
         scroll.setWidgetResizable(True)
-        scroll.setSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed,
-                             QtWidgets.QSizePolicy.Policy.Preferred)
+        scroll.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Preferred
+        )
 
         hbl.addWidget(scroll)
         hbl.addLayout(vbl)
@@ -301,10 +318,10 @@ class TDEM1D(BasicModule):
 
         """
         if self.times is None:
-            text = 'You need to load window times first.'
+            text = "You need to load window times first."
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Error', text,
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent, "Error", text, QtWidgets.QMessageBox.StandardButton.Ok
+            )
             return
 
         if not self.check_validation():
@@ -330,7 +347,7 @@ class TDEM1D(BasicModule):
         npad = float(self.le_mesh_npad.text())
         sig_half = float(self.le_sig_half.text())
         sig_air = float(self.le_sig_air.text())
-        rel_err = float(self.le_rel_err.text()) / 100.
+        rel_err = float(self.le_rel_err.text()) / 100.0
         floor = float(self.le_noise_floor.text())
         maxiter = int(self.le_maxiter.text())
 
@@ -351,10 +368,10 @@ class TDEM1D(BasicModule):
         emdata = emdata.values.flatten()
 
         if not datachans:
-            text = 'Could not find data channels, your prefix may be wrong'
+            text = "Could not find data channels, your prefix may be wrong"
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Error', text,
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent, "Error", text, QtWidgets.QMessageBox.StandardButton.Ok
+            )
             return
 
         # ------------------ Mesh ------------------ #
@@ -371,15 +388,16 @@ class TDEM1D(BasicModule):
         # cs, ncx, ncz, npad = 1., 10., 10., 20
         hx = [(cs, ncx), (cs, npad, padrate)]
         hz = [(cs, npad, -padrate), (cs, ncz * 2), (cs, npad, padrate)]
-        mesh = CylindricalMesh([hx, 1, hz], '00C')
+        mesh = CylindricalMesh([hx, 1, hz], "00C")
 
         # Step2: Set a SurjectVertical1D mapping
         # Note: this sets our inversion model as 1D log conductivity
         # below subsurface
 
-        active = mesh.cell_centers_z < 0.
-        actmap = maps.InjectActiveCells(mesh, active, np.log(1e-8),
-                                        nC=mesh.shape_cells[2])
+        active = mesh.cell_centers_z < 0.0
+        actmap = maps.InjectActiveCells(
+            mesh, active, np.log(1e-8), nC=mesh.shape_cells[2]
+        )
         mapping = maps.ExpMap(mesh) * maps.SurjectVertical1D(mesh) * actmap
         sigma = np.ones(mesh.shape_cells[2]) * sig_air
         sigma[active] = sig_half
@@ -392,53 +410,59 @@ class TDEM1D(BasicModule):
 
         # Bird height from the surface
         src_height = skytem[balt].iloc[0]
-        srcloc = np.array([0., 0., src_height])
+        srcloc = np.array([0.0, 0.0, src_height])
 
         # Radius of the source loop
         radius = np.sqrt(txarea / np.pi)
-        rxloc = np.array([[radius, 0., src_height]])
+        rxloc = np.array([[radius, 0.0, src_height]])
 
         # Parameters for current waveform
         # Note: we are Using theoretical VTEM waveform,
         # but effectively fits SkyTEM waveform
 
         dbdt_z = time_domain.Rx.PointMagneticFluxTimeDerivative(
-            locations=rxloc, times=times, orientation=rxori)  # vertical db_dt
+            locations=rxloc, times=times, orientation=rxori
+        )  # vertical db_dt
         rxlist = [dbdt_z]  # list of receivers
 
         wform = self.update_wave()
 
         srclist = []
-        if stype == 'CircularLoop':
-            srclist = [time_domain.Src.CircularLoop(rxlist,
-                                                    n_turns=loopturns,
-                                                    mu=mu,
-                                                    current=loopcurrent,
-                                                    location=srcloc,
-                                                    radius=radius,
-                                                    orientation=txori,
-                                                    waveform=wform)]
-        elif stype == 'MagDipole':
-            srclist = [time_domain.Src.MagDipole(rxlist,
-                                                 location=srcloc,
-                                                 mu=mu,
-                                                 orientation=txori,
-                                                 waveform=wform)]
+        if stype == "CircularLoop":
+            srclist = [
+                time_domain.Src.CircularLoop(
+                    rxlist,
+                    n_turns=loopturns,
+                    mu=mu,
+                    current=loopcurrent,
+                    location=srcloc,
+                    radius=radius,
+                    orientation=txori,
+                    waveform=wform,
+                )
+            ]
+        elif stype == "MagDipole":
+            srclist = [
+                time_domain.Src.MagDipole(
+                    rxlist, location=srcloc, mu=mu, orientation=txori, waveform=wform
+                )
+            ]
 
         # solve the problem at these times
         dtimes = np.diff(times).tolist()
 
-        timesteps = ([peaktime / 5] * 5 +               # On time section
-                     [(offtime - peaktime) / 5] * 5 +     # Off time section
-                     dtimes + [dtimes[-1]])         # Current zero from here
+        timesteps = (
+            [peaktime / 5] * 5  # On time section
+            + [(offtime - peaktime) / 5] * 5  # Off time section
+            + dtimes
+            + [dtimes[-1]]
+        )  # Current zero from here
 
         survey = time_domain.Survey(srclist)
         solver = get_default_solver()
-        sim = time_domain.Simulation3DElectricField(mesh,
-                                                    solver=solver,
-                                                    time_steps=timesteps,
-                                                    sigmaMap=mapping,
-                                                    survey=survey)
+        sim = time_domain.Simulation3DElectricField(
+            mesh, solver=solver, time_steps=timesteps, sigmaMap=mapping, survey=survey
+        )
 
         src = srclist[0]
         wave = []
@@ -452,8 +476,9 @@ class TDEM1D(BasicModule):
 
         # ------------------ SkyTEM Inversion ------------------ #
         # Data Misfit
-        data = Sdata.Data(survey, dobs=-dobs_sky, relative_error=rel_err,
-                          noise_floor=floor)
+        data = Sdata.Data(
+            survey, dobs=-dobs_sky, relative_error=rel_err, noise_floor=floor
+        )
         dmisfit = data_misfit.L2DataMisfit(data=data, simulation=sim)
 
         # Regularization
@@ -470,7 +495,7 @@ class TDEM1D(BasicModule):
 
         # statement of the inverse problem
         invprob = inverse_problem.BaseInvProblem(dmisfit, reg, opt)
-        invprob.beta = 20.
+        invprob.beta = 20.0
 
         # Directives and Inversion Parameters
         target = directives.TargetMisfit()
@@ -479,7 +504,7 @@ class TDEM1D(BasicModule):
         # inv = inversion.BaseInversion(invprob, directiveList=[beta, betaest])
         inv = inversion.BaseInversion(invprob, directiveList=[target])
 
-        opt.remember('xc')
+        opt.remember("xc")
 
         # run the inversion
         try:
@@ -487,16 +512,15 @@ class TDEM1D(BasicModule):
                 mopt_sky = inv.run(m0)
         except Exception as e:
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Error', str(e),
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent, "Error", str(e), QtWidgets.QMessageBox.StandardButton.Ok
+            )
             return
 
         dpred_sky = np.array(invprob.dpred)
 
         sigma = np.repeat(np.exp(mopt_sky), 2, axis=0)
         z = np.repeat(mesh.cell_centers_z[active][1:], 2, axis=0)
-        z = np.r_[mesh.cell_centers_z[active][0], z,
-                  mesh.cell_centers_z[active][-1]]
+        z = np.r_[mesh.cell_centers_z[active][0], z, mesh.cell_centers_z[active][-1]]
 
         times_off = (times - offtime) * 1e6
         zobs = dobs_sky / txarea
@@ -515,11 +539,11 @@ class TDEM1D(BasicModule):
         """
         stype = self.cmb_stype.currentText()
 
-        if stype == 'CircularLoop':
+        if stype == "CircularLoop":
             self.le_loopcurrent.setEnabled(True)
             self.le_loopturns.setEnabled(True)
             self.le_txarea.setEnabled(True)
-        elif stype == 'MagDipole':
+        elif stype == "MagDipole":
             self.le_loopcurrent.setDisabled(True)
             self.le_loopturns.setDisabled(True)
             self.le_txarea.setDisabled(True)
@@ -536,25 +560,25 @@ class TDEM1D(BasicModule):
         offtime = float(self.le_txofftime.text())
         times = np.linspace(0, offtime, 1000)
         wtype = self.cmb_wtype.currentText()
-        title = ''
+        title = ""
 
         wform = self.update_wave()
 
-        if wtype == 'VTEMWaveform':
-            title = 'VTEM Waveform'
-        elif wtype == 'TrapezoidWaveform':
-            title = 'Trapezoid Waveform'
+        if wtype == "VTEMWaveform":
+            title = "VTEM Waveform"
+        elif wtype == "TrapezoidWaveform":
+            title = "Trapezoid Waveform"
 
-        elif wtype == 'TriangularWaveform':
-            title = 'Triangular Waveform'
+        elif wtype == "TriangularWaveform":
+            title = "Triangular Waveform"
 
-        elif wtype == 'QuarterSineRampOnWaveform':
-            title = 'Quarter Sine Ramp On Waveform'
+        elif wtype == "QuarterSineRampOnWaveform":
+            title = "Quarter Sine Ramp On Waveform"
 
-        elif wtype == 'HalfSineWaveform':
-            title = 'Half Sine Waveform'
-        elif wtype == 'RampOffWaveform':
-            title = 'Ramp Off Waveform'
+        elif wtype == "HalfSineWaveform":
+            title = "Half Sine Waveform"
+        elif wtype == "RampOffWaveform":
+            title = "Ramp Off Waveform"
 
         wave = [wform.eval(t) for t in times]
 
@@ -570,7 +594,7 @@ class TDEM1D(BasicModule):
             Waveform.
 
         """
-        starttime = 0.
+        starttime = 0.0
         offtime = float(self.le_txofftime.text())
         peaktime = float(self.le_txpeaktime.text())
         rampoff1 = float(self.le_txrampoff1.text())
@@ -581,28 +605,33 @@ class TDEM1D(BasicModule):
         wtype = self.cmb_wtype.currentText()
         wform = None
 
-        if wtype == 'VTEMWaveform':
-            wform = time_domain.sources.VTEMWaveform(off_time=offtime,
-                                                     peak_time=peaktime)
-        elif wtype == 'TrapezoidWaveform':
-            wform = time_domain.sources.TrapezoidWaveform(ramp_on=rampon,
-                                                          ramp_off=rampoff)
-        elif wtype == 'TriangularWaveform':
+        if wtype == "VTEMWaveform":
+            wform = time_domain.sources.VTEMWaveform(
+                off_time=offtime, peak_time=peaktime
+            )
+        elif wtype == "TrapezoidWaveform":
+            wform = time_domain.sources.TrapezoidWaveform(
+                ramp_on=rampon, ramp_off=rampoff
+            )
+        elif wtype == "TriangularWaveform":
             wform = time_domain.sources.TriangularWaveform(
-                start_time=starttime, peak_time=peaktime, off_time=offtime)
-        elif wtype == 'QuarterSineRampOnWaveform':
+                start_time=starttime, peak_time=peaktime, off_time=offtime
+            )
+        elif wtype == "QuarterSineRampOnWaveform":
             wform = time_domain.sources.QuarterSineRampOnWaveform(
-                ramp_on=rampon, ramp_off=rampoff)
-        elif wtype == 'HalfSineWaveform':
-            wform = time_domain.sources.HalfSineWaveform(ramp_on=rampon,
-                                                         ramp_off=rampoff)
+                ramp_on=rampon, ramp_off=rampoff
+            )
+        elif wtype == "HalfSineWaveform":
+            wform = time_domain.sources.HalfSineWaveform(
+                ramp_on=rampon, ramp_off=rampoff
+            )
 
-        elif wtype == 'RampOffWaveform':
+        elif wtype == "RampOffWaveform":
             wform = time_domain.sources.RampOffWaveform(offTime=offtime)
 
         return wform
 
-    def get_wfile(self, filename=''):
+    def get_wfile(self, filename=""):
         """
         Get the window time filename.
 
@@ -616,12 +645,13 @@ class TDEM1D(BasicModule):
         None.
 
         """
-        ext = 'Text file (*.txt)'
+        ext = "Text file (*.txt)"
 
-        if filename == '':
+        if filename == "":
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if filename == '':
+                self.parent, "Open File", ".", ext
+            )
+            if filename == "":
                 return
 
         os.chdir(os.path.dirname(filename))
@@ -641,8 +671,7 @@ class TDEM1D(BasicModule):
         self.cmb_fid.clear()
 
         line = self.cmb_line.currentText()
-        fid = self.data.fid[self.data.line.astype(
-            str) == line].values.astype(str)
+        fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
@@ -661,10 +690,10 @@ class TDEM1D(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Vector' in self.indata:
-            self.data = copy.deepcopy(self.indata['Vector'][0])
+        if "Vector" in self.indata:
+            self.data = copy.deepcopy(self.indata["Vector"][0])
         else:
-            self.showlog('No line data')
+            self.showlog("No line data")
             return False
 
         self.cmb_line.currentIndexChanged.disconnect()
@@ -672,8 +701,7 @@ class TDEM1D(BasicModule):
         self.cmb_fid.clear()
         self.cmb_balt.clear()
 
-        filt = ((self.data.columns != 'geometry') &
-                (self.data.columns != 'line'))
+        filt = (self.data.columns != "geometry") & (self.data.columns != "line")
 
         cnames = list(self.data.columns[filt])
 
@@ -681,8 +709,7 @@ class TDEM1D(BasicModule):
         self.cmb_balt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
-            if ('elev' in tmp or 'alt' in tmp or 'height' in tmp or
-                    'radar' in tmp):
+            if "elev" in tmp or "alt" in tmp or "height" in tmp or "radar" in tmp:
                 self.cmb_balt.setCurrentIndex(i)
                 break
 
@@ -693,14 +720,13 @@ class TDEM1D(BasicModule):
         self.cmb_line.setCurrentIndex(0)
         line = self.cmb_line.currentText()
 
-        fid = self.data.fid[self.data.line.astype(
-            str) == line].values.astype(str)
+        fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
         self.cmb_line.currentIndexChanged.connect(self.change_line)
 
-        if self.le_wfile.text() != '':
+        if self.le_wfile.text() != "":
             self.get_wfile(self.le_wfile.text())
 
         tmp = self.exec()
@@ -769,10 +795,10 @@ def tonumber(test, alttext=None):
     if alttext is not None and test.lower() == alttext.lower():
         return test.lower()
 
-    if not test.replace('.', '', 1).isdigit():
+    if not test.replace(".", "", 1).isdigit():
         return -999
 
-    if '.' in test:
+    if "." in test:
         return float(test)
 
     return int(test)
@@ -783,14 +809,16 @@ def _testfn():
     from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     # Load in line data
-    filename = r'D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
-    wfile = r'D:\Workdata\PyGMI Test Data\EM\wtimes.txt'
+    filename = (
+        r"D:\Workdata\PyGMI Test Data\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt"
+    )
+    wfile = r"D:\Workdata\PyGMI Test Data\EM\wtimes.txt"
 
     IO = ImportXYZ()
-    IO.filt = 'Tab Delimited (*.txt)'
+    IO.filt = "Tab Delimited (*.txt)"
     IO.ifile = filename
     # IO.xchan.setCurrentText('e')
     # IO.ychan.setCurrentText('n')

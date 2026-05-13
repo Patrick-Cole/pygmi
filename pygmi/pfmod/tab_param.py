@@ -24,12 +24,11 @@
 # -----------------------------------------------------------------------------
 """Parameter display routines for 3D modelling."""
 
-from PySide6 import QtWidgets, QtCore, QtGui
 import numpy as np
+from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.pfmod import grvmag3d
-from pygmi.pfmod import misc
 from pygmi import menu_default
+from pygmi.pfmod import grvmag3d, misc
 
 
 class MergeLith(QtWidgets.QDialog):
@@ -63,18 +62,21 @@ class MergeLith(QtWidgets.QDialog):
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
-        lbl_1 = QtWidgets.QLabel('Master Lithology')
-        lbl_2 = QtWidgets.QLabel('Lithologies To Merge')
+        lbl_1 = QtWidgets.QLabel("Master Lithology")
+        lbl_2 = QtWidgets.QLabel("Lithologies To Merge")
 
         self.lw_lithmaster.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection
+        )
         self.lw_lithmerge.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection
+        )
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok
+        )
 
-        self.setWindowTitle('Merge Lithologies')
+        self.setWindowTitle("Merge Lithologies")
 
         gl_1.addWidget(lbl_1, 0, 0, 1, 1)
         gl_1.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
@@ -124,28 +126,31 @@ class LithNotes(QtWidgets.QDialog):
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
-        lbl_1 = QtWidgets.QLabel('Lithology Code')
-        lbl_2 = QtWidgets.QLabel('Notes')
+        lbl_1 = QtWidgets.QLabel("Lithology Code")
+        lbl_2 = QtWidgets.QLabel("Notes")
 
         sizepolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Fixed,
-            QtWidgets.QSizePolicy.Policy.Preferred)
+            QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Preferred
+        )
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
-            self.lw_param_defs.sizePolicy().hasHeightForWidth())
+            self.lw_param_defs.sizePolicy().hasHeightForWidth()
+        )
 
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
-            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+        )
 
         self.lithcode.setMaximum(9999999)
 
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok
+        )
 
-        self.setWindowTitle('Lithology Notes')
+        self.setWindowTitle("Lithology Notes")
 
         gl_1.addWidget(self.lw_param_defs, 0, 1, 1, 1)
         gl_1.addWidget(lbl_1, 1, 0, 1, 1)
@@ -240,7 +245,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.parent = parent
         self.lmod1 = parent.lmod1
-        self.grid_stretch = 'linear'
+        self.grid_stretch = "linear"
         self.showtext = parent.showtext
         self.islmod1 = True
 
@@ -251,11 +256,10 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_ght = QtWidgets.QDoubleSpinBox()
         self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
-        self.pb_rename_def = QtWidgets.QPushButton('Rename Current Definition')
-        self.pb_rem_def = QtWidgets.QPushButton('Remove Current Definition')
-        self.pb_merge_def = QtWidgets.QPushButton('Merge Definitions')
-        self.pb_add_def = QtWidgets.QPushButton('Add New Lithological'
-                                                ' Definition')
+        self.pb_rename_def = QtWidgets.QPushButton("Rename Current Definition")
+        self.pb_rem_def = QtWidgets.QPushButton("Remove Current Definition")
+        self.pb_merge_def = QtWidgets.QPushButton("Merge Definitions")
+        self.pb_add_def = QtWidgets.QPushButton("Add New Lithological Definition")
         self.lw_param_defs = QtWidgets.QListWidget()
 
         self.gbox_lithprops = QtWidgets.QGroupBox()
@@ -279,16 +283,17 @@ class ParamDisplay(QtWidgets.QDialog):
         None.
 
         """
-        self.setWindowTitle('Geophysical Parameters')
-        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
+        self.setWindowTitle("Geophysical Parameters")
+        helpdocs = menu_default.HelpButton("pfmod.dm.modelcreate")
 
         sizepolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Fixed,
-            QtWidgets.QSizePolicy.Policy.Preferred)
+            QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Preferred
+        )
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
-            self.lw_param_defs.sizePolicy().hasHeightForWidth())
+            self.lw_param_defs.sizePolicy().hasHeightForWidth()
+        )
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -296,18 +301,19 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok
+        )
 
         # General Properties
-        gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
+        gbox_gen_prop = QtWidgets.QGroupBox("General Properties")
         gl_gen_prop = QtWidgets.QGridLayout(gbox_gen_prop)
 
-        lbl_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
-        lbl_2 = QtWidgets.QLabel('Height of observation - Gravity')
-        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic')
-        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
-        lbl_5 = QtWidgets.QLabel('Magnetic Inclination')
-        lbl_6 = QtWidgets.QLabel('Magnetic Declination')
+        lbl_1 = QtWidgets.QLabel("Gravity Regional (mGal)")
+        lbl_2 = QtWidgets.QLabel("Height of observation - Gravity")
+        lbl_3 = QtWidgets.QLabel("Height of observation - Magnetic")
+        lbl_4 = QtWidgets.QLabel("Magnetic Field Intensity (nT)")
+        lbl_5 = QtWidgets.QLabel("Magnetic Inclination")
+        lbl_6 = QtWidgets.QLabel("Magnetic Declination")
 
         gl_gen_prop.addWidget(lbl_1, 0, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
@@ -323,30 +329,31 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Lithological Properties
-        gbox_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
+        gbox_lith_prop = QtWidgets.QGroupBox("Lithological Properties")
         gl_lith_prop = QtWidgets.QGridLayout(gbox_lith_prop)
 
-        pb_applylith = QtWidgets.QPushButton('Apply Changes')
+        pb_applylith = QtWidgets.QPushButton("Apply Changes")
 
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
         self.dsb_gregional.setSingleStep(1.0)
-        self.dsb_gregional.setProperty('value', 0.0)
+        self.dsb_gregional.setProperty("value", 0.0)
         self.dsb_ght.setMaximum(999999999.0)
         self.dsb_mht.setMaximum(999999999.0)
-        self.dsb_mht.setProperty('value', 100.0)
+        self.dsb_mht.setProperty("value", 100.0)
         self.dsb_hint.setMaximum(999999999.0)
-        self.dsb_hint.setProperty('value', 27000.0)
+        self.dsb_hint.setProperty("value", 27000.0)
         self.dsb_hinc.setMinimum(-90.0)
         self.dsb_hinc.setMaximum(90.0)
-        self.dsb_hinc.setProperty('value', -63.0)
+        self.dsb_hinc.setProperty("value", -63.0)
         self.dsb_hdec.setMinimum(-360.0)
         self.dsb_hdec.setMaximum(360.0)
-        self.dsb_hdec.setProperty('value', -17.0)
+        self.dsb_hdec.setProperty("value", -17.0)
 
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
-            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+        )
 
         gl_lith_prop.addWidget(self.pb_add_def, 0, 0, 1, 1)
         gl_lith_prop.addWidget(self.gbox_lithprops, 0, 1, 5, 1)
@@ -357,18 +364,18 @@ class ParamDisplay(QtWidgets.QDialog):
 
         gl_lithprops = QtWidgets.QGridLayout(self.gbox_lithprops)
 
-        lbl_7 = QtWidgets.QLabel('Magnetic Susceptibility (SI)')
-        lbl_8 = QtWidgets.QLabel('Remanent Magnetization Intensity (nT)')
-        lbl_9 = QtWidgets.QLabel('Q Ratio')
-        lbl_10 = QtWidgets.QLabel('Remanent Magnetization (A/m)')
-        lbl_11 = QtWidgets.QLabel('Remanent Inclination')
-        lbl_12 = QtWidgets.QLabel('Remanent Declination')
-        lbl_13 = QtWidgets.QLabel('Density (g/cm3)')
+        lbl_7 = QtWidgets.QLabel("Magnetic Susceptibility (SI)")
+        lbl_8 = QtWidgets.QLabel("Remanent Magnetization Intensity (nT)")
+        lbl_9 = QtWidgets.QLabel("Q Ratio")
+        lbl_10 = QtWidgets.QLabel("Remanent Magnetization (A/m)")
+        lbl_11 = QtWidgets.QLabel("Remanent Inclination")
+        lbl_12 = QtWidgets.QLabel("Remanent Declination")
+        lbl_13 = QtWidgets.QLabel("Density (g/cm3)")
 
         self.dsb_susc.setDecimals(7)
         self.dsb_susc.setMaximum(999999999.0)
         self.dsb_susc.setSingleStep(0.01)
-        self.dsb_susc.setProperty('value', 0.01)
+        self.dsb_susc.setProperty("value", 0.01)
         self.dsb_rmi.setEnabled(True)
         self.dsb_rmi.setDecimals(5)
         self.dsb_rmi.setMaximum(999999999.0)
@@ -381,14 +388,14 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_minc.setEnabled(True)
         self.dsb_minc.setMinimum(-90.0)
         self.dsb_minc.setMaximum(90.0)
-        self.dsb_minc.setProperty('value', -63.0)
+        self.dsb_minc.setProperty("value", -63.0)
         self.dsb_mdec.setEnabled(True)
         self.dsb_mdec.setMinimum(-360.0)
         self.dsb_mdec.setMaximum(360.0)
-        self.dsb_mdec.setProperty('value', -17.0)
+        self.dsb_mdec.setProperty("value", -17.0)
         self.dsb_density.setDecimals(5)
         self.dsb_density.setSingleStep(0.01)
-        self.dsb_density.setProperty('value', 2.75)
+        self.dsb_density.setProperty("value", 2.75)
 
         gl_lithprops.addWidget(lbl_13, 3, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_density, 3, 1, 1, 1)
@@ -413,7 +420,7 @@ class ParamDisplay(QtWidgets.QDialog):
         vbl.addWidget(gbox_lith_prop)
         vbl.addLayout(hbl)
 
-        self.add_defs(deftxt='Background')  # First call is for background
+        self.add_defs(deftxt="Background")  # First call is for background
         self.add_defs()  # Second is for the first lithology type
 
         self.lw_param_defs.currentItemChanged.connect(self.lw_index_change)
@@ -433,7 +440,7 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
 
-    def add_defs(self, deftxt='', getcol=False, lmod=None):
+    def add_defs(self, deftxt="", getcol=False, lmod=None):
         """
         Add geophysical definitions and make them editable.
 
@@ -463,14 +470,21 @@ class ParamDisplay(QtWidgets.QDialog):
             new_lith_index = max(lmod.lith_list_reverse.keys()) + 1
 
         defnum = self.lw_param_defs.count()
-        if deftxt == '':
-            deftxt = 'Generic ' + str(defnum)
+        if deftxt == "":
+            deftxt = "Generic " + str(defnum)
 
         lmod.lith_list[deftxt] = grvmag3d.GeoData(
-            self.parent, lmod.numx, lmod.numy, lmod.numz, lmod.dxy, lmod.d_z,
-            lmod.mht, lmod.ght)
+            self.parent,
+            lmod.numx,
+            lmod.numy,
+            lmod.numz,
+            lmod.dxy,
+            lmod.d_z,
+            lmod.mht,
+            lmod.ght,
+        )
 
-        litho = lmod.lith_list['Background']
+        litho = lmod.lith_list["Background"]
         lithn = lmod.lith_list[deftxt]
         lithn.hintn = litho.hintn
         lithn.finc = litho.finc
@@ -481,7 +495,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         lithn.lith_index = new_lith_index
 
-        if deftxt == 'Background':
+        if deftxt == "Background":
             lithn.susc = 0
             lithn.density = lithn.bdensity
 
@@ -509,7 +523,7 @@ class ParamDisplay(QtWidgets.QDialog):
         """
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
-        if lith == self.lmod1.lith_list['Background']:
+        if lith == self.lmod1.lith_list["Background"]:
             for lith2 in list(self.lmod1.lith_list.values()):
                 lith2.bdensity = self.dsb_density.value()
 
@@ -523,7 +537,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.lmod1.lith_index_mag_old[:] = -1
         self.lmod1.lith_index_grv_old[:] = -1
 
-        self.showtext('Lithological changes applied.')
+        self.showtext("Lithological changes applied.")
 
     def apply_changes(self):
         """
@@ -544,7 +558,7 @@ class ParamDisplay(QtWidgets.QDialog):
             lith.finc = self.dsb_hinc.value()
             lith.fdec = self.dsb_hdec.value()
             lith.modified = True
-        self.showtext('Geophysical properties applied.')
+        self.showtext("Geophysical properties applied.")
 
         self.accept()
 
@@ -669,7 +683,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         for i in self.lmod1.lith_list.copy():
             if i not in itxtlist:
-                if i == 'Background':
+                if i == "Background":
                     j = self.lw_param_defs.currentRow()
                     self.lw_param_defs.item(j).setText(i)
                 else:
@@ -688,7 +702,7 @@ class ParamDisplay(QtWidgets.QDialog):
         """
         i = self.lw_param_defs.currentRow()
         if i == -1:
-            itxt = 'Background'
+            itxt = "Background"
         else:
             itxt = str(self.lw_param_defs.item(i).text())
 
@@ -789,12 +803,12 @@ class ParamDisplay(QtWidgets.QDialog):
         if crow == -1:
             return
         ctxt = str(self.lw_param_defs.currentItem().text())
-        if ctxt == 'Background':
-            self.showtext('You cannot delete the background lithology')
+        if ctxt == "Background":
+            self.showtext("You cannot delete the background lithology")
             return
 
         if self.lw_param_defs.count() <= 2:
-            self.showtext('You must have at least two lithologies')
+            self.showtext("You must have at least two lithologies")
             return
 
         lind = self.lmod1.lith_list[ctxt].lith_index
@@ -833,7 +847,7 @@ class ParamDisplay(QtWidgets.QDialog):
             j = self.lmod1.lith_list[mtxt].lith_index
             self.lmod1.lith_index[self.lmod1.lith_index == j] = index_master
 
-            if mtxt != 'Background':
+            if mtxt != "Background":
                 del self.lmod1.lith_list[mtxt]
 
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
@@ -854,9 +868,12 @@ class ParamDisplay(QtWidgets.QDialog):
         ctxt = str(self.lw_param_defs.currentItem().text())
 
         (skey, isokay) = QtWidgets.QInputDialog.getText(
-            self.parent, 'Rename Definition',
-            'Please type in the new name for the definition',
-            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
+            self.parent,
+            "Rename Definition",
+            "Please type in the new name for the definition",
+            QtWidgets.QLineEdit.EchoMode.Normal,
+            ctxt,
+        )
 
         if isokay:
             self.lw_param_defs.currentItem().setText(skey)
@@ -898,7 +915,7 @@ class ParamDisplay(QtWidgets.QDialog):
         """
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
-# Need this to init the first values.
+        # Need this to init the first values.
         itxt = str(self.lw_param_defs.item(0).text())
         lith = self.lmod1.lith_list[itxt]
 

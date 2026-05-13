@@ -26,6 +26,7 @@
 
 import difflib
 import os
+
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
@@ -49,7 +50,7 @@ class CorrectDescriptions(BasicModule):
         super().__init__(parent)
 
         idir = os.path.dirname(os.path.realpath(__file__))
-        tfile = os.path.join(idir, r'descriptions.txt')
+        tfile = os.path.join(idir, r"descriptions.txt")
 
         self.le_textfile = QtWidgets.QLineEdit(tfile)
 
@@ -64,11 +65,11 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'seis.dm.corrtyp3'
+        self.buttonbox.htmlfile = "seis.dm.corrtyp3"
         gl_main = QtWidgets.QGridLayout(self)
-        pb_textfile = QtWidgets.QPushButton('Load Description List')
+        pb_textfile = QtWidgets.QPushButton("Load Description List")
 
-        self.setWindowTitle(r'Correct Descriptions')
+        self.setWindowTitle(r"Correct Descriptions")
 
         gl_main.addWidget(self.le_textfile, 0, 0, 1, 1)
         gl_main.addWidget(pb_textfile, 0, 1, 1, 1)
@@ -77,7 +78,7 @@ class CorrectDescriptions(BasicModule):
 
         pb_textfile.pressed.connect(self.get_textfile)
 
-    def get_textfile(self, filename=''):
+    def get_textfile(self, filename=""):
         """
         Get description list filename.
 
@@ -91,12 +92,13 @@ class CorrectDescriptions(BasicModule):
         None.
 
         """
-        ext = 'Description list (*.txt)'
+        ext = "Description list (*.txt)"
 
-        if filename == '':
+        if filename == "":
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if filename == '':
+                self.parent, "Open File", ".", ext
+            )
+            if filename == "":
                 return
 
         self.le_textfile.setText(filename)
@@ -116,7 +118,7 @@ class CorrectDescriptions(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Seis' not in self.indata:
+        if "Seis" not in self.indata:
             return False
 
         tmp = self.exec()
@@ -151,20 +153,20 @@ class CorrectDescriptions(BasicModule):
 
         """
         filename = self.le_textfile.text()
-        with open(filename, encoding='utf-8') as fno:
+        with open(filename, encoding="utf-8") as fno:
             tmp = fno.read()
 
-        masterlist = tmp.split('\n')
+        masterlist = tmp.split("\n")
 
-        data = self.indata['Seis']
+        data = self.indata["Seis"]
 
         nomatch = []
         correction = []
 
         for i in data:
-            if '3' not in i:
+            if "3" not in i:
                 continue
-            text = i['3'].region
+            text = i["3"].region
 
             cmatch = difflib.get_close_matches(text, masterlist, 1, cutoff=0.7)
             if cmatch:
@@ -174,10 +176,10 @@ class CorrectDescriptions(BasicModule):
                 continue
 
             if cmatch != text:
-                correction.append(text + ' to ' + cmatch)
-                i['3'].region = cmatch
+                correction.append(text + " to " + cmatch)
+                i["3"].region = cmatch
 
-        self.outdata['Seis'] = data
+        self.outdata["Seis"] = data
 
 
 def _testfn():
@@ -190,10 +192,11 @@ def _testfn():
 
     """
     import sys
+
     from pygmi.seis import iodefs
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect1.out"
 

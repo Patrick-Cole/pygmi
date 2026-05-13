@@ -24,20 +24,21 @@
 # -----------------------------------------------------------------------------
 """Clustering menu routines."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
-from pygmi.clust import cluster
-from pygmi.clust import graphtool
-from pygmi.clust import graphs
-from pygmi.raster import show_table
-from pygmi.raster import iodefs
-from pygmi.clust import crisp_clust
-from pygmi.clust import fuzzy_clust
-from pygmi.clust import super_class
-from pygmi.clust import segmentation
+from pygmi.clust import (
+    cluster,
+    crisp_clust,
+    fuzzy_clust,
+    graphs,
+    graphtool,
+    segmentation,
+    super_class,
+)
+from pygmi.raster import iodefs, show_table
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Widget class to call the main interface.
 
@@ -54,16 +55,16 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Cluster')
-        self.parent.add_to_context('memCluster')
-        self.parent.add_to_context('objCluster')
+        self.parent.add_to_context("Cluster")
+        self.parent.add_to_context("memCluster")
+        self.parent.add_to_context("objCluster")
         context_menu = self.parent.context_menu
 
         # Normal menus
-        self.menu = QtWidgets.QMenu('Classification')
+        self.menu = QtWidgets.QMenu("Classification")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_clustering = QtGui.QAction('Cluster Analysis')
+        self.action_clustering = QtGui.QAction("Cluster Analysis")
         self.menu.addAction(self.action_clustering)
         self.action_clustering.triggered.connect(self.cluster)
 
@@ -77,7 +78,7 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.action_segmentation = QtGui.QAction('Image Segmentation')
+        self.action_segmentation = QtGui.QAction("Image Segmentation")
         self.menu.addAction(self.action_segmentation)
         self.action_segmentation.triggered.connect(self.segmentation)
 
@@ -87,41 +88,37 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.action_scatter_plot = QtGui.QAction('Scatter Plot Tool')
+        self.action_scatter_plot = QtGui.QAction("Scatter Plot Tool")
         self.menu.addAction(self.action_scatter_plot)
         self.action_scatter_plot.triggered.connect(self.scatter_plot)
 
-# Context menus
-        context_menu['Cluster'].addSeparator()
+        # Context menus
+        context_menu["Cluster"].addSeparator()
 
-        self.action_cluster_statistics = QtGui.QAction('Cluster Statistics')
-        context_menu['Cluster'].addAction(self.action_cluster_statistics)
+        self.action_cluster_statistics = QtGui.QAction("Cluster Statistics")
+        context_menu["Cluster"].addAction(self.action_cluster_statistics)
         self.action_cluster_statistics.triggered.connect(self.cluster_stats)
 
-        self.action_show_class_data = QtGui.QAction('Show Class Data')
-        context_menu['Cluster'].addAction(self.action_show_class_data)
+        self.action_show_class_data = QtGui.QAction("Show Class Data")
+        context_menu["Cluster"].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_class_range = QtGui.QAction('Show Class Data Ranges')
-        context_menu['Cluster'].addAction(self.action_show_class_range)
+        self.action_show_class_range = QtGui.QAction("Show Class Data Ranges")
+        context_menu["Cluster"].addAction(self.action_show_class_range)
         self.action_show_class_range.triggered.connect(self.show_class_range)
 
-        self.action_show_membership_data = QtGui.QAction("Show Membership "
-                                                         "Data")
-        context_menu['memCluster'].addAction(self.action_show_membership_data)
-        self.action_show_membership_data.triggered.connect(
-            self.show_membership_data)
+        self.action_show_membership_data = QtGui.QAction("Show Membership Data")
+        context_menu["memCluster"].addAction(self.action_show_membership_data)
+        self.action_show_membership_data.triggered.connect(self.show_membership_data)
 
-        self.action_show_objvrcncexbigraphs = QtGui.QAction("Show OBJ, "
-                                                            "VRC, NCE, "
-                                                            "XBI Graphs")
-        context_menu['objCluster'].addAction(
-            self.action_show_objvrcncexbigraphs)
-        self.action_show_objvrcncexbigraphs.triggered.connect(
-            self.show_vrc_etc)
+        self.action_show_objvrcncexbigraphs = QtGui.QAction(
+            "Show OBJ, VRC, NCE, XBI Graphs"
+        )
+        context_menu["objCluster"].addAction(self.action_show_objvrcncexbigraphs)
+        self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 
-        self.action_export_data = QtGui.QAction('Export Class Data')
-        context_menu['Cluster'].addAction(self.action_export_data)
+        self.action_export_data = QtGui.QAction("Export Class Data")
+        context_menu["Cluster"].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 
     def cluster_stats(self):
@@ -130,31 +127,29 @@ class MenuWidget():
 
     def cluster(self):
         """Clustering of data."""
-        self.parent.item_insert('Step', 'Cluster Analysis', cluster.Cluster)
+        self.parent.item_insert("Step", "Cluster Analysis", cluster.Cluster)
 
     def crisp_cluster(self):
         """Crisp Clustering of data."""
-        self.parent.item_insert('Step', 'Crisp Clustering',
-                                crisp_clust.CrispClust)
+        self.parent.item_insert("Step", "Crisp Clustering", crisp_clust.CrispClust)
 
     def fuzzy_cluster(self):
         """Fuzzy Clustering of data."""
-        self.parent.item_insert('Step', 'Fuzzy Clustering',
-                                fuzzy_clust.FuzzyClust)
+        self.parent.item_insert("Step", "Fuzzy Clustering", fuzzy_clust.FuzzyClust)
 
     def super_class(self):
         """Supervised Classification."""
-        self.parent.item_insert('Step', 'Supervised Classification',
-                                super_class.SuperClass)
+        self.parent.item_insert(
+            "Step", "Supervised Classification", super_class.SuperClass
+        )
 
     def export_data(self):
         """Export raster data."""
-        self.parent.launch_context_item(iodefs.ExportData, 'class')
+        self.parent.launch_context_item(iodefs.ExportData, "class")
 
     def scatter_plot(self):
         """Scatter Plot Tool."""
-        self.parent.item_insert('Step', 'Scatter Plot Tool',
-                                graphtool.ScatterPlot)
+        self.parent.item_insert("Step", "Scatter Plot Tool", graphtool.ScatterPlot)
 
     def show_raster_data(self):
         """Show class data."""
@@ -174,5 +169,4 @@ class MenuWidget():
 
     def segmentation(self):
         """Image Segmentation."""
-        self.parent.item_insert('Step', 'Image Segmentation',
-                                segmentation.ImageSeg)
+        self.parent.item_insert("Step", "Image Segmentation", segmentation.ImageSeg)

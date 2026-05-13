@@ -24,23 +24,24 @@
 # -----------------------------------------------------------------------------
 """A set of data preparation routines for MT data."""
 
-import os
-import sys
 import copy
 import glob
+import os
 import platform
+import sys
 from contextlib import redirect_stdout
-from PySide6 import QtWidgets, QtCore, QtGui
+
 import numpy as np
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
-from pygmi.mt.mtpyold.modeling import occam1d
-from pygmi.mt.mtpyold.core.mt import MT
-from pygmi.mt.mtpyold.core.z import Z, Tipper
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.misc import BasicModule, ContextModule
+from pygmi.mt.mtpyold.core.mt import MT
+from pygmi.mt.mtpyold.core.z import Tipper, Z
+from pygmi.mt.mtpyold.modeling import occam1d
 
 # The lines below are a temporary fix for pygmi.mt.mtpyold. Removed in future.
 np.float = float
@@ -66,10 +67,10 @@ class Metadata(ContextModule):
 
         self.banddata = {}
         self.dataid = {}
-        self.oldtxt = ''
+        self.oldtxt = ""
 
         self.cmb_bandid = QtWidgets.QComboBox()
-        self.pb_rename_id = QtWidgets.QPushButton('Rename Station Name')
+        self.pb_rename_id = QtWidgets.QPushButton("Rename Station Name")
         self.le_lat = QtWidgets.QLineEdit()
         self.le_lon = QtWidgets.QLineEdit()
         self.le_elev = QtWidgets.QLineEdit()
@@ -97,25 +98,26 @@ class Metadata(ContextModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'mt.cm.meta'
-        gbox = QtWidgets.QGroupBox('Dataset')
+        self.buttonbox.htmlfile = "mt.cm.meta"
+        gbox = QtWidgets.QGroupBox("Dataset")
 
         gl_1 = QtWidgets.QGridLayout(gbox)
-        lbl_utmx = QtWidgets.QLabel('UTM X Coordinate:')
-        lbl_utmy = QtWidgets.QLabel('UTM Y Coordinate:')
-        lbl_lat = QtWidgets.QLabel('Latitude:')
-        lbl_lon = QtWidgets.QLabel('Longitude:')
-        lbl_elev = QtWidgets.QLabel('Elevation:')
-        lbl_utmzone = QtWidgets.QLabel('UTM Zone:')
-        lbl_rot = QtWidgets.QLabel('Rotation:')
-        lbl_bandid = QtWidgets.QLabel('Station Name:')
+        lbl_utmx = QtWidgets.QLabel("UTM X Coordinate:")
+        lbl_utmy = QtWidgets.QLabel("UTM Y Coordinate:")
+        lbl_lat = QtWidgets.QLabel("Latitude:")
+        lbl_lon = QtWidgets.QLabel("Longitude:")
+        lbl_elev = QtWidgets.QLabel("Elevation:")
+        lbl_utmzone = QtWidgets.QLabel("UTM Zone:")
+        lbl_rot = QtWidgets.QLabel("Rotation:")
+        lbl_bandid = QtWidgets.QLabel("Station Name:")
 
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Preferred,
-            QtWidgets.QSizePolicy.Policy.Expanding)
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         gbox.setSizePolicy(sizepolicy)
 
-        self.setWindowTitle('Dataset Metadata')
+        self.setWindowTitle("Dataset Metadata")
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 1)
@@ -151,7 +153,7 @@ class Metadata(ContextModule):
 
         """
         self.update_vals()
-        self.indata['MT - EDI'] = self.banddata
+        self.indata["MT - EDI"] = self.banddata
 
     def rename_id(self):
         """
@@ -164,9 +166,12 @@ class Metadata(ContextModule):
         """
         ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
-            self.parent, 'Rename Station Name',
-            'Please type in the new name for the station',
-            QtWidgets.QLineEdit.EchoMode.Normal, ctxt)
+            self.parent,
+            "Rename Station Name",
+            "Please type in the new name for the station",
+            QtWidgets.QLineEdit.EchoMode.Normal,
+            ctxt,
+        )
 
         if isokay:
             self.cmb_bandid.currentIndexChanged.disconnect()
@@ -191,9 +196,9 @@ class Metadata(ContextModule):
 
         odata.lat = float(self.le_lat.text())
         odata.lon = float(self.le_lon.text())
-        if self.le_utmx.text() != '':
+        if self.le_utmx.text() != "":
             odata.east = float(self.le_utmx.text())
-        if self.le_utmy.text() != '':
+        if self.le_utmy.text() != "":
             odata.north = float(self.le_utmy.text())
         odata.elev = float(self.le_elev.text())
         odata.rotation_angle = float(self.le_rot.text())
@@ -207,11 +212,11 @@ class Metadata(ContextModule):
         self.le_lon.setText(str(idata.lon))
         self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.le_utmx.setText('')
+            self.le_utmx.setText("")
         else:
             self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.le_utmy.setText('')
+            self.le_utmy.setText("")
         else:
             self.le_utmy.setText(str(idata.north))
         self.le_utmzone.setText(str(idata.utm_zone))
@@ -229,9 +234,9 @@ class Metadata(ContextModule):
         """
         bandid = []
 
-        for i in self.indata['MT - EDI']:
+        for i in self.indata["MT - EDI"]:
             bandid.append(i)
-            self.banddata[i] = copy.deepcopy(self.indata['MT - EDI'][i])
+            self.banddata[i] = copy.deepcopy(self.indata["MT - EDI"][i])
             self.dataid[i] = i
 
         self.cmb_bandid.currentIndexChanged.disconnect()
@@ -247,11 +252,11 @@ class Metadata(ContextModule):
         self.le_lon.setText(str(idata.lon))
         self.le_elev.setText(str(idata.elev))
         if np.isinf(idata.east):
-            self.le_utmx.setText('')
+            self.le_utmx.setText("")
         else:
             self.le_utmx.setText(str(idata.east))
         if np.isinf(idata.north):
-            self.le_utmy.setText('')
+            self.le_utmy.setText("")
         else:
             self.le_utmy.setText(str(idata.north))
         self.le_utmzone.setText(str(idata.utm_zone))
@@ -276,7 +281,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         super().__init__(fig)
 
     def update_line(self, data, ival, itype):
@@ -301,14 +306,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(211, label='Profile')
+        ax1 = self.figure.add_subplot(211, label="Profile")
 
         ax1.set_title(ival)
-        ax1.grid(True, 'both')
+        ax1.grid(True, "both")
 
         x = 1 / data1.Z.freq
 
-        if itype == 'xy, yx':
+        if itype == "xy, yx":
             res1 = data1.Z.resistivity[:, 0, 1]
             res1_err = data1.Z.resistivity_err[:, 0, 1]
             res2 = data1.Z.resistivity[:, 1, 0]
@@ -317,10 +322,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pha1_err = data1.Z.phase_err[:, 0, 1]
             pha2 = data1.Z.phase[:, 1, 0]
             pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xy}$'
-            label2 = r'$\rho_{yx}$'
-            label3 = r'$\varphi_{xy}$'
-            label4 = r'$\varphi_{yx}$'
+            label1 = r"$\rho_{xy}$"
+            label2 = r"$\rho_{yx}$"
+            label3 = r"$\varphi_{xy}$"
+            label4 = r"$\varphi_{yx}$"
 
         else:
             res1 = data1.Z.resistivity[:, 0, 0]
@@ -331,37 +336,73 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pha1_err = data1.Z.phase_err[:, 0, 1]
             pha2 = data1.Z.phase[:, 1, 1]
             pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xx}$'
-            label2 = r'$\rho_{yy}$'
-            label3 = r'$\varphi_{xx}$'
-            label4 = r'$\varphi_{yy}$'
+            label1 = r"$\rho_{xx}$"
+            label2 = r"$\rho_{yy}$"
+            label3 = r"$\varphi_{xx}$"
+            label4 = r"$\varphi_{yy}$"
 
-        ax1.errorbar(x, res1, yerr=res1_err, label=label1,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax1.errorbar(x, res2, yerr=res2_err, label=label2,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        ax1.errorbar(
+            x,
+            res1,
+            yerr=res1_err,
+            label=label1,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax1.errorbar(
+            x,
+            res2,
+            yerr=res2_err,
+            label=label2,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
 
-        ax1.set_xscale('log')
-        ax1.set_yscale('log')
-        ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+        ax1.set_xscale("log")
+        ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
 
         ax2 = self.figure.add_subplot(212, sharex=ax1)
-        ax2.grid(True, 'both')
+        ax2.grid(True, "both")
 
-        ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax2.errorbar(x, pha2, yerr=pha2_err, label=label4,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        ax2.errorbar(
+            x,
+            pha1,
+            yerr=pha1_err,
+            label=label3,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax2.errorbar(
+            x,
+            pha2,
+            yerr=pha2_err,
+            label=label4,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
 
-        ax2.set_ylim(-180., 180.)
+        ax2.set_ylim(-180.0, 180.0)
 
-        ax2.set_xscale('log')
-        ax2.set_yscale('linear')
-        ax2.legend(loc='upper left')
-        ax2.set_xlabel('Period (s)')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.legend(loc="upper left")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
 
         self.figure.canvas.draw()
 
@@ -381,8 +422,8 @@ class StaticShiftEDI(BasicModule):
         super().__init__(parent)
         self.data = None
 
-        self.setWindowTitle('Remove Static Shift')
-        self.buttonbox.htmlfile = 'mt.dm.removesshift'
+        self.setWindowTitle("Remove Static Shift")
+        self.buttonbox.htmlfile = "mt.dm.removesshift"
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -393,24 +434,24 @@ class StaticShiftEDI(BasicModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.addItems(["xy, yx", "xx, yy"])
         self.cmb_2.setCurrentIndex(0)
 
         self.dsb_shiftx = QtWidgets.QDoubleSpinBox()
-        self.dsb_shiftx.setMinimum(0.)
-        self.dsb_shiftx.setMaximum(100000.)
-        self.dsb_shiftx.setValue(1.)
+        self.dsb_shiftx.setMinimum(0.0)
+        self.dsb_shiftx.setMaximum(100000.0)
+        self.dsb_shiftx.setValue(1.0)
         self.dsb_shifty = QtWidgets.QDoubleSpinBox()
-        self.dsb_shifty.setMinimum(0.)
-        self.dsb_shifty.setMaximum(100000.)
-        self.dsb_shifty.setValue(1.)
-        lbl_1 = QtWidgets.QLabel('Station Name:')
-        lbl_2 = QtWidgets.QLabel('Graph Type:')
-        lbl_3 = QtWidgets.QLabel('Shift X:')
-        lbl_4 = QtWidgets.QLabel('Shift Y:')
-        self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
-        pb_apply = QtWidgets.QPushButton('Remove Static Shift')
-        pb_reset = QtWidgets.QPushButton('Reset data')
+        self.dsb_shifty.setMinimum(0.0)
+        self.dsb_shifty.setMaximum(100000.0)
+        self.dsb_shifty.setValue(1.0)
+        lbl_1 = QtWidgets.QLabel("Station Name:")
+        lbl_2 = QtWidgets.QLabel("Graph Type:")
+        lbl_3 = QtWidgets.QLabel("Shift X:")
+        lbl_4 = QtWidgets.QLabel("Shift Y:")
+        self.cb_applyall = QtWidgets.QCheckBox("Apply to all stations:")
+        pb_apply = QtWidgets.QPushButton("Remove Static Shift")
+        pb_reset = QtWidgets.QPushButton("Reset data")
 
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
@@ -449,7 +490,7 @@ class StaticShiftEDI(BasicModule):
         None.
 
         """
-        self.outdata['MT - EDI'] = self.data
+        self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
@@ -484,9 +525,9 @@ class StaticShiftEDI(BasicModule):
         i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
+            self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
 
         self.change_band()
 
@@ -518,10 +559,10 @@ class StaticShiftEDI(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'MT - EDI' in self.indata:
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+        if "MT - EDI" in self.indata:
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.showlog('No EDI data')
+            self.showlog("No EDI data")
             return False
 
         items = [i for i in self.data]
@@ -570,7 +611,7 @@ class RotateEDI(BasicModule):
         super().__init__(parent)
         self.data = None
 
-        self.setWindowTitle('Rotate EDI data')
+        self.setWindowTitle("Rotate EDI data")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -580,20 +621,20 @@ class RotateEDI(BasicModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.addItems(["xy, yx", "xx, yy"])
         self.cmb_2.setCurrentIndex(0)
 
         self.dsb_rotangle = QtWidgets.QDoubleSpinBox()
-        self.dsb_rotangle.setMinimum(0.)
-        self.dsb_rotangle.setMaximum(360.)
-        lbl_1 = QtWidgets.QLabel('Station Name:')
-        lbl_2 = QtWidgets.QLabel('Graph Type:')
-        lbl_3 = QtWidgets.QLabel('Rotate Z (0 is North):')
-        self.cb_applyall = QtWidgets.QCheckBox('Apply to all stations:')
-        pb_apply = QtWidgets.QPushButton('Apply rotation')
-        pb_reset = QtWidgets.QPushButton('Reset data')
+        self.dsb_rotangle.setMinimum(0.0)
+        self.dsb_rotangle.setMaximum(360.0)
+        lbl_1 = QtWidgets.QLabel("Station Name:")
+        lbl_2 = QtWidgets.QLabel("Graph Type:")
+        lbl_3 = QtWidgets.QLabel("Rotate Z (0 is North):")
+        self.cb_applyall = QtWidgets.QCheckBox("Apply to all stations:")
+        pb_apply = QtWidgets.QPushButton("Apply rotation")
+        pb_reset = QtWidgets.QPushButton("Reset data")
 
-        self.buttonbox.htmlfile = 'mt.dm.rotateedi'
+        self.buttonbox.htmlfile = "mt.dm.rotateedi"
 
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
@@ -628,7 +669,7 @@ class RotateEDI(BasicModule):
         None.
 
         """
-        self.outdata['MT - EDI'] = self.data
+        self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
@@ -664,9 +705,9 @@ class RotateEDI(BasicModule):
         i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
+            self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
 
         self.dsb_rotangle.setValue(self.data[i].rotation_angle)
 
@@ -700,10 +741,10 @@ class RotateEDI(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'MT - EDI' in self.indata:
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+        if "MT - EDI" in self.indata:
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.showlog('No EDI data')
+            self.showlog("No EDI data")
             return False
 
         items = [i for i in self.data]
@@ -747,13 +788,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
 
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
         self.background = None
-        self.itype = 'xy, yx'
+        self.itype = "xy, yx"
         self.ival = None
         self.data = None
         self.maskrange = None
@@ -762,14 +803,15 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         super().__init__(fig)
 
-        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-        self.figure.canvas.mpl_connect('button_press_event',
-                                       self.button_press_callback)
-        self.figure.canvas.mpl_connect('button_release_event',
-                                       self.button_release_callback)
-        self.figure.canvas.mpl_connect('motion_notify_event',
-                                       self.motion_notify_callback)
-        self.figure.canvas.mpl_connect('resize_event', self.revent)
+        self.figure.canvas.mpl_connect("pick_event", self.onpick)
+        self.figure.canvas.mpl_connect("button_press_event", self.button_press_callback)
+        self.figure.canvas.mpl_connect(
+            "button_release_event", self.button_release_callback
+        )
+        self.figure.canvas.mpl_connect(
+            "motion_notify_event", self.motion_notify_callback
+        )
+        self.figure.canvas.mpl_connect("resize_event", self.revent)
 
     def button_press_callback(self, event):
         """
@@ -840,11 +882,9 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             self.line2.set_data(xxx, yyy)
         elif event.button == 1:
             xxx, yyy = self.line.get_data()
-            rect = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0],
-                             yyy[1] - yyy[0])
+            rect = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0], yyy[1] - yyy[0])
             xxx, yyy = self.line2.get_data()
-            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0],
-                              yyy[1] - yyy[0])
+            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0], yyy[1] - yyy[0])
             self.maskrange = np.sort([xxx[0], event.xdata])
 
         self.figure.canvas.restore_region(self.background)
@@ -929,14 +969,14 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(211, label='Profile')
-        ax1.grid(True, 'both')
+        ax1 = self.figure.add_subplot(211, label="Profile")
+        ax1.grid(True, "both")
 
         ax1.set_title(ival)
         self.axes = ax1
         x = 1 / data1.Z.freq
 
-        if itype == 'xy, yx':
+        if itype == "xy, yx":
             res1 = data1.Z.resistivity[:, 0, 1]
             res1_err = data1.Z.resistivity_err[:, 0, 1]
             res2 = data1.Z.resistivity[:, 1, 0]
@@ -945,10 +985,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             pha1_err = data1.Z.phase_err[:, 0, 1]
             pha2 = data1.Z.phase[:, 1, 0]
             pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xy}$'
-            label2 = r'$\rho_{yx}$'
-            label3 = r'$\varphi_{xy}$'
-            label4 = r'$\varphi_{yx}$'
+            label1 = r"$\rho_{xy}$"
+            label2 = r"$\rho_{yx}$"
+            label3 = r"$\varphi_{xy}$"
+            label4 = r"$\varphi_{yx}$"
 
         else:
             res1 = data1.Z.resistivity[:, 0, 0]
@@ -959,50 +999,86 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             pha1_err = data1.Z.phase_err[:, 0, 1]
             pha2 = data1.Z.phase[:, 1, 1]
             pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r'$\rho_{xx}$'
-            label2 = r'$\rho_{yy}$'
-            label3 = r'$\varphi_{xx}$'
-            label4 = r'$\varphi_{yy}$'
+            label1 = r"$\rho_{xx}$"
+            label2 = r"$\rho_{yy}$"
+            label3 = r"$\varphi_{xx}$"
+            label4 = r"$\varphi_{yy}$"
 
-        ax1.errorbar(x, res1, yerr=res1_err, label=label1,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax1.errorbar(x, res2, yerr=res2_err, label=label2,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        ax1.errorbar(
+            x,
+            res1,
+            yerr=res1_err,
+            label=label1,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax1.errorbar(
+            x,
+            res2,
+            yerr=res2_err,
+            label=label2,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
 
-        ax1.set_xscale('log')
-        ax1.set_yscale('log')
-        ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+        ax1.set_xscale("log")
+        ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
 
         ax2 = self.figure.add_subplot(212, sharex=ax1)
-        ax2.grid(True, 'both')
+        ax2.grid(True, "both")
 
         self.axes2 = ax2
 
-        ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
-                     ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
-        ax2.errorbar(x, pha2, yerr=pha2_err, label=label4,
-                     ls=' ', marker='.', mfc='r', mec='r', ecolor='r')
+        ax2.errorbar(
+            x,
+            pha1,
+            yerr=pha1_err,
+            label=label3,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax2.errorbar(
+            x,
+            pha2,
+            yerr=pha2_err,
+            label=label4,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
 
-        ax2.set_ylim(-180., 180.)
+        ax2.set_ylim(-180.0, 180.0)
 
-        ax2.set_xscale('log')
-        ax2.set_yscale('linear')
-        ax2.legend(loc='upper left')
-        ax2.set_xlabel('Period (s)')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.legend(loc="upper left")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(self.figure.bbox)
 
         x0 = self.axes.get_xlim()[0]
         y0, y1 = self.axes.get_ylim()
-        self.line, = self.axes.plot([x0, x0], [y0, y1])
+        (self.line,) = self.axes.plot([x0, x0], [y0, y1])
 
         x0 = self.axes2.get_xlim()[0]
         y0, y1 = self.axes2.get_ylim()
-        self.line2, = self.axes2.plot([x0, x0], [y0, y1])
+        (self.line2,) = self.axes2.plot([x0, x0], [y0, y1])
 
         self.figure.canvas.draw()
 
@@ -1022,8 +1098,8 @@ class EditEDI(BasicModule):
         super().__init__(parent)
         self.data = None
 
-        self.setWindowTitle('Mask and Interpolate')
-        self.buttonbox.htmlfile = 'mt.dm.mask'
+        self.setWindowTitle("Mask and Interpolate")
+        self.buttonbox.htmlfile = "mt.dm.mask"
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -1033,13 +1109,13 @@ class EditEDI(BasicModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        self.cmb_2.addItems(['xy, yx', 'xx, yy'])
+        self.cmb_2.addItems(["xy, yx", "xx, yy"])
         self.cmb_2.setCurrentIndex(0)
 
-        lbl_1 = QtWidgets.QLabel('Station Name:')
-        lbl_2 = QtWidgets.QLabel('Graph Type:')
-        pb_apply = QtWidgets.QPushButton('Mask and Interpolate')
-        pb_reset = QtWidgets.QPushButton('Reset data')
+        lbl_1 = QtWidgets.QLabel("Station Name:")
+        lbl_2 = QtWidgets.QLabel("Graph Type:")
+        pb_apply = QtWidgets.QPushButton("Mask and Interpolate")
+        pb_reset = QtWidgets.QPushButton("Reset data")
 
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
@@ -1071,7 +1147,7 @@ class EditEDI(BasicModule):
         None.
 
         """
-        self.outdata['MT - EDI'] = self.data
+        self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
@@ -1096,13 +1172,17 @@ class EditEDI(BasicModule):
 
         mt_obj = self.data[i]
 
-        mt_obj.Z = Z(z_array=mt_obj.Z.z[mask],
-                     z_err_array=mt_obj.Z.z_err[mask],
-                     freq=mt_obj.Z.freq[mask])
+        mt_obj.Z = Z(
+            z_array=mt_obj.Z.z[mask],
+            z_err_array=mt_obj.Z.z_err[mask],
+            freq=mt_obj.Z.freq[mask],
+        )
 
-        mt_obj.Tipper = Tipper(tipper_array=mt_obj.Tipper.tipper[mask],
-                               tipper_err_array=mt_obj.Tipper.tipper_err[mask],
-                               freq=mt_obj.Tipper.freq[mask])
+        mt_obj.Tipper = Tipper(
+            tipper_array=mt_obj.Tipper.tipper[mask],
+            tipper_err_array=mt_obj.Tipper.tipper_err[mask],
+            freq=mt_obj.Tipper.freq[mask],
+        )
 
         if x1 < xcrds.max():
             new_freq_list = 1 / xcrds
@@ -1122,7 +1202,7 @@ class EditEDI(BasicModule):
 
         """
         i = self.cmb_1.currentText()
-        self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
+        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
         self.change_band()
 
     def change_band(self):
@@ -1153,10 +1233,10 @@ class EditEDI(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'MT - EDI' in self.indata:
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+        if "MT - EDI" in self.indata:
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.showlog('No EDI data')
+            self.showlog("No EDI data")
             return False
 
         items = [i for i in self.data]
@@ -1213,10 +1293,11 @@ class MySlider(QtWidgets.QSlider):
 
         """
         xpos = int(event.position().x())
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               xpos,
-                                                               self.width()))
+        self.setValue(
+            QtWidgets.QStyle.sliderValueFromPosition(
+                self.minimum(), self.maximum(), xpos, self.width()
+            )
+        )
 
     def mouseMoveEvent(self, event):
         """
@@ -1233,21 +1314,21 @@ class MySlider(QtWidgets.QSlider):
 
         """
         xpos = int(event.position().x())
-        self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
-                                                               self.maximum(),
-                                                               xpos,
-                                                               self.width()))
+        self.setValue(
+            QtWidgets.QStyle.sliderValueFromPosition(
+                self.minimum(), self.maximum(), xpos, self.width()
+            )
+        )
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         super().__init__(fig)
 
-    def update_line(self, x, pdata, rdata, *,
-                    depths=None, res=None, title=None):
+    def update_line(self, x, pdata, rdata, *, depths=None, res=None, title=None):
         """
         Update the plot from data.
 
@@ -1274,46 +1355,46 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         self.figure.clear()
         gs = self.figure.add_gridspec(3, 3)
 
-        ax1 = self.figure.add_subplot(gs[:2, :2], label='Profile')
+        ax1 = self.figure.add_subplot(gs[:2, :2], label="Profile")
         self.figure.suptitle(title)
-        ax1.grid(True, 'both')
+        ax1.grid(True, "both")
 
         res1 = rdata[0]
         res2 = rdata[1]
         pha1 = pdata[0]
         pha2 = pdata[1]
-        label1 = r'Measured'
-        label2 = r'Modelled'
+        label1 = r"Measured"
+        label2 = r"Modelled"
 
-        ax1.plot(x, res1, 'b.', label=label1)
-        ax1.plot(x, res2, 'r.', label=label2)
+        ax1.plot(x, res1, "b.", label=label1)
+        ax1.plot(x, res2, "r.", label=label2)
 
-        ax1.set_xscale('log')
+        ax1.set_xscale("log")
         if res1.any() > 0 and res2.any() > 0:
-            ax1.set_yscale('log')
-        ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+            ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
 
         ax2 = self.figure.add_subplot(gs[2:, :2], sharex=ax1)
-        ax2.grid(True, 'both')
+        ax2.grid(True, "both")
 
-        ax2.plot(x, pha1, 'b.')
-        ax2.plot(x, pha2, 'r.')
+        ax2.plot(x, pha1, "b.")
+        ax2.plot(x, pha2, "r.")
 
-        ax2.set_ylim(-180., 180.)
+        ax2.set_ylim(-180.0, 180.0)
 
-        ax2.set_xscale('log')
-        ax2.set_yscale('linear')
-        ax2.set_xlabel('Period (s)')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
 
         ax3 = self.figure.add_subplot(gs[:, 2])
-        ax3.grid(True, 'both')
+        ax3.grid(True, "both")
         ax3.yaxis.tick_right()
         ax3.yaxis.set_label_position("right")
-        ax3.set_xlabel(r'Res. ($\Omega.m$)')
-        ax3.set_ylabel(r'Depth (km)')
+        ax3.set_xlabel(r"Res. ($\Omega.m$)")
+        ax3.set_ylabel(r"Depth (km)")
 
         if depths is not None:
             ax3.plot(res, np.array(depths) / 1000)
@@ -1338,8 +1419,8 @@ class Occam1D(BasicModule):
         self.data = None
         self.cursoln = 0
 
-        self.setWindowTitle('Occam 1D Inversion')
-        self.buttonbox.htmlfile = 'mt.dm.occam'
+        self.setWindowTitle("Occam 1D Inversion")
+        self.buttonbox.htmlfile = "mt.dm.occam"
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
@@ -1349,27 +1430,29 @@ class Occam1D(BasicModule):
         self.mmc = MyMplCanvas2()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.le_occfile = QtWidgets.QLineEdit('')
+        self.le_occfile = QtWidgets.QLineEdit("")
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
         self.cmb_mode = QtWidgets.QComboBox()
-        self.cmb_mode.addItems(['TE', 'TM', 'DET'])
+        self.cmb_mode.addItems(["TE", "TM", "DET"])
         self.cmb_mode.setCurrentIndex(0)
-        self.le_errres = QtWidgets.QLineEdit('data')
-        self.le_errphase = QtWidgets.QLineEdit('data')
-        self.le_errfloorres = QtWidgets.QLineEdit('4.')
-        self.le_errfloorphase = QtWidgets.QLineEdit('2.')
-        self.cb_remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
-                                                      r'Phase values out of '
-                                                      r'1st/3rd Quadrant')
+        self.le_errres = QtWidgets.QLineEdit("data")
+        self.le_errphase = QtWidgets.QLineEdit("data")
+        self.le_errfloorres = QtWidgets.QLineEdit("4.")
+        self.le_errfloorphase = QtWidgets.QLineEdit("2.")
+        self.cb_remove_out_quad = QtWidgets.QCheckBox(
+            r"Remove Resistivity/"
+            r"Phase values out of "
+            r"1st/3rd Quadrant"
+        )
 
-        self.le_targetdepth = QtWidgets.QLineEdit('40000.')
-        self.le_nlayers = QtWidgets.QLineEdit('100')
-        self.le_bottomlayer = QtWidgets.QLineEdit('100000.')
-        self.le_airlayer = QtWidgets.QLineEdit('10000.')
-        self.le_z1layer = QtWidgets.QLineEdit('10.')
-        self.le_maxiter = QtWidgets.QLineEdit('200')
-        self.le_targetrms = QtWidgets.QLineEdit('1.')
+        self.le_targetdepth = QtWidgets.QLineEdit("40000.")
+        self.le_nlayers = QtWidgets.QLineEdit("100")
+        self.le_bottomlayer = QtWidgets.QLineEdit("100000.")
+        self.le_airlayer = QtWidgets.QLineEdit("10000.")
+        self.le_z1layer = QtWidgets.QLineEdit("10.")
+        self.le_maxiter = QtWidgets.QLineEdit("200")
+        self.le_targetrms = QtWidgets.QLineEdit("1.")
         self.cb_remove_out_quad.setChecked(True)
 
         self.le_errfloorres.setValidator(QtGui.QDoubleValidator(self))
@@ -1385,24 +1468,24 @@ class Occam1D(BasicModule):
         self.hs_profnum = MySlider()
         self.hs_profnum.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
-        pb_occ = QtWidgets.QPushButton('Occam executable location')
-        lbl_1 = QtWidgets.QLabel('Station Name:')
-        lbl_3 = QtWidgets.QLabel('Mode:')
-        lbl_4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
-        lbl_5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
-        lbl_6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
-        lbl_7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        lbl_8 = QtWidgets.QLabel('Height of air layer:')
-        lbl_9 = QtWidgets.QLabel('Bottom of model:')
-        lbl_10 = QtWidgets.QLabel('Depth of target to investigate:')
-        lbl_11 = QtWidgets.QLabel('Depth of first layer:')
-        lbl_12 = QtWidgets.QLabel('Number of layers:')
-        lbl_13 = QtWidgets.QLabel('Maximum Iterations:')
-        lbl_14 = QtWidgets.QLabel('Target RMS:')
+        pb_occ = QtWidgets.QPushButton("Occam executable location")
+        lbl_1 = QtWidgets.QLabel("Station Name:")
+        lbl_3 = QtWidgets.QLabel("Mode:")
+        lbl_4 = QtWidgets.QLabel("Resistivity Errorbar (Data or %):")
+        lbl_5 = QtWidgets.QLabel("Phase Errorbar (Data or %):")
+        lbl_6 = QtWidgets.QLabel("Resistivity Error Floor (%):")
+        lbl_7 = QtWidgets.QLabel("Phase Error Floor (degrees):")
+        lbl_8 = QtWidgets.QLabel("Height of air layer:")
+        lbl_9 = QtWidgets.QLabel("Bottom of model:")
+        lbl_10 = QtWidgets.QLabel("Depth of target to investigate:")
+        lbl_11 = QtWidgets.QLabel("Depth of first layer:")
+        lbl_12 = QtWidgets.QLabel("Number of layers:")
+        lbl_13 = QtWidgets.QLabel("Maximum Iterations:")
+        lbl_14 = QtWidgets.QLabel("Target RMS:")
 
-        self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
+        self.lbl_profnum = QtWidgets.QLabel("Solution: 0")
 
-        pb_apply = QtWidgets.QPushButton('Invert Station')
+        pb_apply = QtWidgets.QPushButton("Invert Station")
 
         gl_1.addWidget(pb_occ, 0, 0)
         gl_1.addWidget(self.le_occfile, 0, 1)
@@ -1461,8 +1544,7 @@ class Occam1D(BasicModule):
         None.
 
         """
-        self.lbl_profnum.setText('Solution: ' +
-                                 str(self.hs_profnum.sliderPosition()))
+        self.lbl_profnum.setText("Solution: " + str(self.hs_profnum.sliderPosition()))
         self.change_band()
 
     def acceptall(self):
@@ -1476,7 +1558,7 @@ class Occam1D(BasicModule):
         None.
 
         """
-        self.outdata['MT - EDI'] = self.data
+        self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
@@ -1491,18 +1573,18 @@ class Occam1D(BasicModule):
             return
         parm = {}
 
-        parm['tdepth'] = tonumber(self.le_targetdepth.text())
-        parm['nlayers'] = tonumber(self.le_nlayers.text())
-        parm['blayer'] = tonumber(self.le_bottomlayer.text())
-        parm['alayer'] = tonumber(self.le_airlayer.text())
-        parm['z1layer'] = tonumber(self.le_z1layer.text())
-        parm['miter'] = tonumber(self.le_maxiter.text())
-        parm['trms'] = tonumber(self.le_targetrms.text())
-        parm['rerr'] = tonumber(self.le_errres.text(), 'data')
-        parm['perr'] = tonumber(self.le_errphase.text(), 'data')
-        parm['perrflr'] = tonumber(self.le_errfloorphase.text())
-        parm['rerrflr'] = tonumber(self.le_errfloorres.text())
-        parm['routq'] = self.cb_remove_out_quad.isChecked()
+        parm["tdepth"] = tonumber(self.le_targetdepth.text())
+        parm["nlayers"] = tonumber(self.le_nlayers.text())
+        parm["blayer"] = tonumber(self.le_bottomlayer.text())
+        parm["alayer"] = tonumber(self.le_airlayer.text())
+        parm["z1layer"] = tonumber(self.le_z1layer.text())
+        parm["miter"] = tonumber(self.le_maxiter.text())
+        parm["trms"] = tonumber(self.le_targetrms.text())
+        parm["rerr"] = tonumber(self.le_errres.text(), "data")
+        parm["perr"] = tonumber(self.le_errphase.text(), "data")
+        parm["perrflr"] = tonumber(self.le_errfloorphase.text())
+        parm["rerrflr"] = tonumber(self.le_errfloorres.text())
+        parm["routq"] = self.cb_remove_out_quad.isChecked()
 
         if -999 in parm.values():
             return
@@ -1511,10 +1593,10 @@ class Occam1D(BasicModule):
         i = self.cmb_1.currentText()
         edi_file = str(self.data[i].fn)
 
-        save_path = edi_file[:-4] + '-' + mode
+        save_path = edi_file[:-4] + "-" + mode
 
         if os.path.exists(save_path):
-            r = glob.glob(save_path + r'\*')
+            r = glob.glob(save_path + r"\*")
             for i in r:
                 os.remove(i)
         else:
@@ -1522,67 +1604,72 @@ class Occam1D(BasicModule):
 
         with redirect_stdout(self.stdout_redirect):
             d1 = occam1d.Data()
-            d1.write_data_file(edi_file=edi_file,
-                               mode=mode,
-                               save_path=save_path,
-                               res_err=parm['rerr'],
-                               phase_err=parm['perr'],
-                               res_errorfloor=parm['rerrflr'],
-                               phase_errorfloor=parm['perrflr'],
-                               remove_outofquadrant=parm['routq']
-                               )
+            d1.write_data_file(
+                edi_file=edi_file,
+                mode=mode,
+                save_path=save_path,
+                res_err=parm["rerr"],
+                phase_err=parm["perr"],
+                res_errorfloor=parm["rerrflr"],
+                phase_errorfloor=parm["perrflr"],
+                remove_outofquadrant=parm["routq"],
+            )
 
-            m1 = occam1d.Model(target_depth=parm['tdepth'],
-                               n_layers=parm['nlayers'],
-                               bottom_layer=parm['blayer'],
-                               z1_layer=parm['z1layer'],
-                               air_layer_height=parm['alayer']
-                               )
+            m1 = occam1d.Model(
+                target_depth=parm["tdepth"],
+                n_layers=parm["nlayers"],
+                bottom_layer=parm["blayer"],
+                z1_layer=parm["z1layer"],
+                air_layer_height=parm["alayer"],
+            )
             m1.write_model_file(save_path=d1.save_path)
 
-            s1 = occam1d.Startup(data_fn=d1.data_fn,
-                                 model_fn=m1.model_fn,
-                                 max_iter=parm['miter'],
-                                 target_rms=parm['trms'])
+            s1 = occam1d.Startup(
+                data_fn=d1.data_fn,
+                model_fn=m1.model_fn,
+                max_iter=parm["miter"],
+                target_rms=parm["trms"],
+            )
 
             s1.write_startup_file()
 
-            occam_path = os.path.dirname(__file__)[:-2] + r'\bin\occam1d'
-            if platform.system() == 'Windows':
-                occam_path += '.exe'
+            occam_path = os.path.dirname(__file__)[:-2] + r"\bin\occam1d"
+            if platform.system() == "Windows":
+                occam_path += ".exe"
 
             occam_path = self.le_occfile.text()
 
             if not os.path.exists(occam_path):
-                text = ('No Occam1D executable found. Please place it in the '
-                        'bin directory. You may need to obtain the source '
-                        'code from '
-                        'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
-                        'and compile it. It should be called occam1d for '
-                        'non-windows platforms and occam1d.exe for windows.')
+                text = (
+                    "No Occam1D executable found. Please place it in the "
+                    "bin directory. You may need to obtain the source "
+                    "code from "
+                    "https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ "
+                    "and compile it. It should be called occam1d for "
+                    "non-windows platforms and occam1d.exe for windows."
+                )
                 QtWidgets.QMessageBox.warning(
-                    self.parent, 'Error', text,
-                    QtWidgets.QMessageBox.StandardButton.Ok)
+                    self.parent, "Error", text, QtWidgets.QMessageBox.StandardButton.Ok
+                )
                 return
 
             self.mmc.figure.clear()
-            self.mmc.figure.set_facecolor('r')
-            self.mmc.figure.suptitle('Busy, please wait...', fontsize=14,
-                                     y=0.5)
+            self.mmc.figure.set_facecolor("r")
+            self.mmc.figure.suptitle("Busy, please wait...", fontsize=14, y=0.5)
             self.mmc.figure.canvas.draw()
             QtWidgets.QApplication.processEvents()
 
             occam1d.Run(s1.startup_fn, occam_path, mode=mode)
 
-        self.mmc.figure.set_facecolor('w')
+        self.mmc.figure.set_facecolor("w")
 
-        allfiles = glob.glob(save_path + r'\*.resp')
+        allfiles = glob.glob(save_path + r"\*.resp")
         self.hs_profnum.setMaximum(len(allfiles))
         self.hs_profnum.setMinimum(1)
 
         self.change_band()
 
-    def get_occfile(self, filename=''):
+    def get_occfile(self, filename=""):
         """
         Get Occam executable filename.
 
@@ -1596,12 +1683,13 @@ class Occam1D(BasicModule):
         None.
 
         """
-        ext = 'Occam executable (*.exe *.)'
+        ext = "Occam executable (*.exe *.)"
 
-        if filename == '':
+        if filename == "":
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if filename == '':
+                self.parent, "Open File", ".", ext
+            )
+            if filename == "":
                 return
 
         os.chdir(os.path.dirname(filename))
@@ -1618,7 +1706,7 @@ class Occam1D(BasicModule):
 
         """
         i = self.cmb_1.currentText()
-        self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
+        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
         self.change_band()
 
     def change_band(self):
@@ -1635,19 +1723,19 @@ class Occam1D(BasicModule):
         n = self.hs_profnum.value()
 
         edi_file = str(self.data[i].fn)
-        save_path = edi_file[:-4] + '-' + mode
+        save_path = edi_file[:-4] + "-" + mode
 
         if not os.path.exists(save_path):
             return
         if os.path.exists(save_path):
-            r = glob.glob(save_path + r'\*.resp')
+            r = glob.glob(save_path + r"\*.resp")
             if len(r) == 0:
                 return
 
-        iterfn = os.path.join(save_path, mode + '_' + f'{n:03}' + '.iter')
-        respfn = os.path.join(save_path, mode + '_' + f'{n:03}' + '.resp')
-        model_fn = os.path.join(save_path, 'Model1D')
-        data_fn = os.path.join(save_path, 'Occam1d_DataFile_' + mode + '.dat')
+        iterfn = os.path.join(save_path, mode + "_" + f"{n:03}" + ".iter")
+        respfn = os.path.join(save_path, mode + "_" + f"{n:03}" + ".resp")
+        model_fn = os.path.join(save_path, "Model1D")
+        data_fn = os.path.join(save_path, "Occam1d_DataFile_" + mode + ".dat")
 
         oc1m = occam1d.Model(model_fn=model_fn)
         oc1m.read_iter_file(iterfn)
@@ -1655,12 +1743,12 @@ class Occam1D(BasicModule):
         oc1d = occam1d.Data(data_fn=data_fn)
         oc1d.read_resp_file(respfn)
 
-        rough = float(oc1m.itdict['Roughness Value'])
-        rms = float(oc1m.itdict['Misfit Value'])
-        rough = f'{rough:.1f}'
-        rms = f'{rms:.1f}'
+        rough = float(oc1m.itdict["Roughness Value"])
+        rms = float(oc1m.itdict["Misfit Value"])
+        rough = f"{rough:.1f}"
+        rms = f"{rms:.1f}"
 
-        title = 'RMS: ' + rms + '    Roughness: ' + rough
+        title = "RMS: " + rms + "    Roughness: " + rough
 
         depths = []
         res = []
@@ -1676,11 +1764,10 @@ class Occam1D(BasicModule):
             res.append(val)
 
         x = 1 / oc1d.freq
-        rdata = [oc1d.data['resxy'][0], oc1d.data['resxy'][2]]
-        pdata = [oc1d.data['phasexy'][0], oc1d.data['phasexy'][2]]
+        rdata = [oc1d.data["resxy"][0], oc1d.data["resxy"][2]]
+        pdata = [oc1d.data["phasexy"][0], oc1d.data["phasexy"][2]]
 
-        self.mmc.update_line(x, pdata, rdata, depths=depths, res=res,
-                             title=title)
+        self.mmc.update_line(x, pdata, rdata, depths=depths, res=res, title=title)
 
     def settings(self, nodialog=False):
         """
@@ -1697,15 +1784,15 @@ class Occam1D(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'MT - EDI' in self.indata:
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+        if "MT - EDI" in self.indata:
+            self.data = copy.deepcopy(self.indata["MT - EDI"])
         else:
-            self.showlog('No EDI data')
+            self.showlog("No EDI data")
             return False
 
-        occam_path = os.path.dirname(__file__)[:-2] + r'\bin\occam1d'
-        if platform.system() == 'Windows':
-            occam_path += '.exe'
+        occam_path = os.path.dirname(__file__)[:-2] + r"\bin\occam1d"
+        if platform.system() == "Windows":
+            occam_path += ".exe"
 
         if os.path.exists(occam_path):
             self.le_occfile.setText(occam_path)
@@ -1717,10 +1804,10 @@ class Occam1D(BasicModule):
         i = self.cmb_1.currentText()
         mode = self.cmb_mode.currentText()
         edi_file = str(self.data[i].fn)
-        save_path = edi_file[:-4] + '-' + mode
+        save_path = edi_file[:-4] + "-" + mode
 
         if os.path.exists(save_path):
-            allfiles = glob.glob(save_path + r'\*.resp')
+            allfiles = glob.glob(save_path + r"\*.resp")
             if len(allfiles) > 0:
                 self.hs_profnum.setMaximum(len(allfiles))
                 self.hs_profnum.setMinimum(1)
@@ -1782,10 +1869,10 @@ def tonumber(test, alttext=None):
     if alttext is not None and test.lower() == alttext.lower():
         return test.lower()
 
-    if not test.replace('.', '', 1).isdigit():
+    if not test.replace(".", "", 1).isdigit():
         return -999
 
-    if '.' in test:
+    if "." in test:
         return float(test)
 
     return int(test)
@@ -1793,40 +1880,40 @@ def tonumber(test, alttext=None):
 
 def _testfn_occam():
     """Test routine."""
-    datadir = r'd:\workdata\MT\\'
+    datadir = r"d:\workdata\MT\\"
     edi_file = datadir + r"synth02.edi"
 
     # Create an MT object
     # from pygmi.mt.mtpyold import MT
     mt_obj = MT(edi_file)
 
-    print('loading complete')
+    print("loading complete")
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     test = Occam1D(None)
-    test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
+    test.indata["MT - EDI"] = {"SYNTH02": mt_obj}
     test.settings()
 
 
 def _testfn():
     """Test routine."""
-    datadir = r'd:\workdata\MT\\'
+    datadir = r"d:\workdata\MT\\"
     edi_file = datadir + r"synth02.edi"
 
     mt_obj = MT(edi_file)
 
     edi_file = datadir + r"synth01.edi"
     mt_obj1 = MT(edi_file)
-    print('loading complete')
+    print("loading complete")
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     # test = StaticShiftEDI(None)
     test = Metadata()
-    test.indata['MT - EDI'] = {'SYNTH02': mt_obj, 'SYNTH01': mt_obj1}
+    test.indata["MT - EDI"] = {"SYNTH02": mt_obj, "SYNTH01": mt_obj1}
     # test.settings()
 
     test.run()

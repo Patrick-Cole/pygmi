@@ -4272,7 +4272,7 @@ def get_aster_ged(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
         try:
             year = int(meta["Emissivity_Mean_Description"].split("2000-")[-1])
             date = datetime.date(year, 1, 1)
-        except:
+        except Exception:
             showlog("Date uncertian, setting it to 2000-01-01")
             date = datetime.date(2000, 1, 1)
 

@@ -22,17 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import os
 import platform
+import tempfile
 import time
 import webbrowser
-import tempfile
-import os
 
 
 class BrowserNotFoundException(Exception):
     def __init__(self, browser: str):
-        super(BrowserNotFoundException, self).__init__(
-            f"Browser not found: {browser}")
+        super(BrowserNotFoundException, self).__init__(f"Browser not found: {browser}")
 
 
 class UnknownBrowserException(Exception):

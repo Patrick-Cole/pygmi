@@ -26,22 +26,30 @@
 
 import sys
 from contextlib import redirect_stdout
+
 import numpy as np
-from PySide6 import QtWidgets
 import scipy.interpolate as si
+import sklearn.cluster as skc
 from discretize import TensorMesh
 from discretize.utils import active_from_xyz
+from PySide6 import QtWidgets
+from simpeg import (
+    data,
+    data_misfit,
+    directives,
+    inverse_problem,
+    inversion,
+    maps,
+    optimization,
+    regularization,
+)
 from simpeg.potential_fields import magnetics
 from simpeg.utils import model_builder
-from simpeg import (maps, data, inverse_problem, data_misfit,
-                    regularization, optimization, directives,
-                    inversion)
-import sklearn.cluster as skc
 
 from pygmi.misc import BasicModule
 from pygmi.pfmod.datatypes import LithModel
-from pygmi.raster.misc import lstack
 from pygmi.pfmod.grvmag3d import quick_model
+from pygmi.raster.misc import lstack
 
 
 class MagInvert(BasicModule):
@@ -99,21 +107,22 @@ class MagInvert(BasicModule):
         None.
 
         """
-        self.setWindowTitle('Inverse Modelling Parameters')
-        self.buttonbox.htmlfile = 'pfmod.dm.inv3d'
+        self.setWindowTitle("Inverse Modelling Parameters")
+        self.buttonbox.htmlfile = "pfmod.dm.inv3d"
 
         vbl = QtWidgets.QVBoxLayout(self)
 
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Preferred)
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
 
         # Current Models Groupbox
         hbl_model = QtWidgets.QHBoxLayout()
 
-        lbl_model = QtWidgets.QLabel('Current Model:')
+        lbl_model = QtWidgets.QLabel("Current Model:")
 
-        self.cmb_model.addItems(['None'])
+        self.cmb_model.addItems(["None"])
         self.cmb_model.setSizePolicy(sizepolicy)
 
         hbl_model.addWidget(lbl_model)
@@ -121,26 +130,26 @@ class MagInvert(BasicModule):
 
         # General Properties
         self.dsb_mht.setMaximum(999999999.0)
-        self.dsb_mht.setProperty('value', 30.0)
+        self.dsb_mht.setProperty("value", 30.0)
         self.dsb_hint.setMaximum(999999999.0)
-        self.dsb_hint.setProperty('value', 28923.0)
+        self.dsb_hint.setProperty("value", 28923.0)
         self.dsb_hinc.setMinimum(-90.0)
         self.dsb_hinc.setMaximum(90.0)
-        self.dsb_hinc.setProperty('value', -61.22)
+        self.dsb_hinc.setProperty("value", -61.22)
         self.dsb_hdec.setMinimum(-360.0)
         self.dsb_hdec.setMaximum(360.0)
-        self.dsb_hdec.setProperty('value', -21.35)
-        self.sb_classes.setProperty('value', 5)
+        self.dsb_hdec.setProperty("value", -21.35)
+        self.sb_classes.setProperty("value", 5)
         self.sb_classes.setMinimum(2)
         self.sb_classes.setMaximum(1000)
 
-        gbox_gen_prop = QtWidgets.QGroupBox('General Properties')
+        gbox_gen_prop = QtWidgets.QGroupBox("General Properties")
         gl_gen_prop = QtWidgets.QGridLayout(gbox_gen_prop)
 
-        lbl_3 = QtWidgets.QLabel('Height of observation - Magnetic:')
-        lbl_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT):')
-        lbl_5 = QtWidgets.QLabel('Magnetic Inclination:')
-        lbl_6 = QtWidgets.QLabel('Magnetic Declination:')
+        lbl_3 = QtWidgets.QLabel("Height of observation - Magnetic:")
+        lbl_4 = QtWidgets.QLabel("Magnetic Field Intensity (nT):")
+        lbl_5 = QtWidgets.QLabel("Magnetic Inclination:")
+        lbl_6 = QtWidgets.QLabel("Magnetic Declination:")
 
         gl_gen_prop.setColumnStretch(0, 1)
         gl_gen_prop.setColumnStretch(1, 1)
@@ -156,41 +165,40 @@ class MagInvert(BasicModule):
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
         # Data Information Groupbox
-        gbox_data_info = QtWidgets.QGroupBox('Dataset Information')
+        gbox_data_info = QtWidgets.QGroupBox("Dataset Information")
         gl_data_info = QtWidgets.QGridLayout(gbox_data_info)
 
-        self.cmb_mag.addItems(['None'])
-        self.cmb_grv.addItems(['None'])
-        self.cmb_reggrv.addItems(['None'])
-        self.cmb_dtm.addItems(['None'])
-        self.cmb_other.addItems(['None'])
+        self.cmb_mag.addItems(["None"])
+        self.cmb_grv.addItems(["None"])
+        self.cmb_reggrv.addItems(["None"])
+        self.cmb_dtm.addItems(["None"])
+        self.cmb_other.addItems(["None"])
 
         gl_data_info.setColumnStretch(0, 1)
         gl_data_info.setColumnStretch(1, 1)
         gl_data_info.setColumnStretch(2, 1)
 
-        gl_data_info.addWidget(QtWidgets.QLabel('DTM Dataset:'), 0, 0, 1, 1)
-        gl_data_info.addWidget(QtWidgets.QLabel('Magnetic Dataset:'),
-                               1, 0, 1, 1)
+        gl_data_info.addWidget(QtWidgets.QLabel("DTM Dataset:"), 0, 0, 1, 1)
+        gl_data_info.addWidget(QtWidgets.QLabel("Magnetic Dataset:"), 1, 0, 1, 1)
         gl_data_info.addWidget(self.cmb_dtm, 0, 1, 1, 1)
         gl_data_info.addWidget(self.cmb_mag, 1, 1, 1, 1)
 
         # Data Extents Groupbox
-        gbox_extent = QtWidgets.QGroupBox('Model Extent Properties')
+        gbox_extent = QtWidgets.QGroupBox("Model Extent Properties")
         gl_extent = QtWidgets.QGridLayout(gbox_extent)
 
-        self.cmb_dataset.addItems(['None'])
+        self.cmb_dataset.addItems(["None"])
 
-        lbl_0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
-        lbl_3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
-        lbl_4 = QtWidgets.QLabel('Upper Top Left Y Coordinate:')
-        lbl_1 = QtWidgets.QLabel('Upper Top Left Z Coordinate (from DTM):')
-        lbl_8 = QtWidgets.QLabel('Total X Extent:')
-        lbl_9 = QtWidgets.QLabel('Total Y Extent:')
-        lbl_10 = QtWidgets.QLabel('Total Z Extent (Depth):')
-        lbl_5 = QtWidgets.QLabel('X and Y Cell Size:')
-        lbl_6 = QtWidgets.QLabel('Z Cell Size:')
-        lbl_99 = QtWidgets.QLabel('Number of output classes:')
+        lbl_0 = QtWidgets.QLabel("Get Study Area from following Dataset:")
+        lbl_3 = QtWidgets.QLabel("Upper Top Left X Coordinate:")
+        lbl_4 = QtWidgets.QLabel("Upper Top Left Y Coordinate:")
+        lbl_1 = QtWidgets.QLabel("Upper Top Left Z Coordinate (from DTM):")
+        lbl_8 = QtWidgets.QLabel("Total X Extent:")
+        lbl_9 = QtWidgets.QLabel("Total Y Extent:")
+        lbl_10 = QtWidgets.QLabel("Total Z Extent (Depth):")
+        lbl_5 = QtWidgets.QLabel("X and Y Cell Size:")
+        lbl_6 = QtWidgets.QLabel("Z Cell Size:")
+        lbl_99 = QtWidgets.QLabel("Number of output classes:")
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -218,15 +226,15 @@ class MagInvert(BasicModule):
         self.sb_cols.setEnabled(False)
         self.sb_cols.setMinimum(1)
         self.sb_cols.setMaximum(1000000)
-        self.sb_cols.setPrefix('Columns (X): ')
+        self.sb_cols.setPrefix("Columns (X): ")
         self.sb_rows.setEnabled(False)
         self.sb_rows.setMinimum(1)
         self.sb_rows.setMaximum(1000000)
-        self.sb_rows.setPrefix('Rows (Y): ')
+        self.sb_rows.setPrefix("Rows (Y): ")
         self.sb_layers.setEnabled(False)
         self.sb_layers.setMinimum(1)
         self.sb_layers.setMaximum(1000000)
-        self.sb_layers.setPrefix('Layers (Z): ')
+        self.sb_layers.setPrefix("Layers (Z): ")
 
         gl_extent.addWidget(lbl_0, 0, 0, 1, 1)
         gl_extent.addWidget(lbl_3, 1, 0, 1, 1)
@@ -282,11 +290,11 @@ class MagInvert(BasicModule):
         None.
 
         """
-        self.showlog('Working...')
+        self.showlog("Working...")
 
-        self.choose_combo(self.cmb_dtm, 'DTM Dataset')
-        self.choose_combo(self.cmb_mag, 'Magnetic Dataset')
-        self.choose_combo(self.cmb_dataset, 'Study Area Dataset')
+        self.choose_combo(self.cmb_dtm, "DTM Dataset")
+        self.choose_combo(self.cmb_mag, "Magnetic Dataset")
+        self.choose_combo(self.cmb_dataset, "Study Area Dataset")
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -297,16 +305,17 @@ class MagInvert(BasicModule):
         dxy = self.dsb_xycell.value()
         d_z = self.dsb_zcell.value()
 
-        self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
-                          pbar=self.pbar, usedtm=True)
+        self.lmod1.update(
+            cols, rows, layers, utlx, utly, utlz, dxy, d_z, pbar=self.pbar, usedtm=True
+        )
 
         self.update_vals()
 
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
         tmp = list(set(self.lmod1.griddata.values()))
-        self.outdata['Raster'] = tmp
-        self.showlog('Changes applied.')
+        self.outdata["Raster"] = tmp
+        self.showlog("Changes applied.")
 
         self.accept()
 
@@ -327,9 +336,9 @@ class MagInvert(BasicModule):
 
         """
         ctxt = str(combo.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             self.lmod1.griddata[dtxt] = self.inraster[ctxt]
-        elif ctxt == 'None' and dtxt in self.lmod1.griddata:
+        elif ctxt == "None" and dtxt in self.lmod1.griddata:
             self.lmod1.griddata.pop(dtxt)
 
     def choose_dtm(self):
@@ -342,7 +351,7 @@ class MagInvert(BasicModule):
 
         """
         ctxt = str(self.cmb_dtm.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             curgrid = self.inraster[ctxt]
 
             self.dsb_utlz.setValue(curgrid.data.max())
@@ -362,9 +371,9 @@ class MagInvert(BasicModule):
 
         """
         ctxt = str(self.cmb_model.currentText())
-        if ctxt == 'None' or 'Model3D' not in self.indata:
+        if ctxt == "None" or "Model3D" not in self.indata:
             return
-        for i in self.indata['Model3D']:
+        for i in self.indata["Model3D"]:
             if i.name == ctxt:
                 self.lmod1 = i
                 self.update_vals()
@@ -397,7 +406,7 @@ class MagInvert(BasicModule):
         z = gdata[gmask]
         outg = np.ones_like(gtmp)
         points2 = np.where(outg)
-        outg = si.griddata(points1, z, points2, method='nearest')
+        outg = si.griddata(points1, z, points2, method="nearest")
 
         outg = outg.reshape(gtmp.shape)
         outg[gmask] = gdata[gmask]
@@ -416,7 +425,7 @@ class MagInvert(BasicModule):
 
         """
         ctxt = str(self.cmb_dataset.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             curgrid = self.inraster[ctxt]
 
             crows, ccols = curgrid.data.shape
@@ -490,9 +499,9 @@ class MagInvert(BasicModule):
         None.
 
         """
-        modnames = ['None']
-        if 'Model3D' in self.indata:
-            for i in self.indata['Model3D']:
+        modnames = ["None"]
+        if "Model3D" in self.indata:
+            for i in self.indata["Model3D"]:
                 modnames.append(i.name)
 
         self.cmb_model.currentIndexChanged.disconnect()
@@ -518,11 +527,11 @@ class MagInvert(BasicModule):
         self.cmb_dataset.currentIndexChanged.disconnect()
 
         gkeys = list(self.inraster.keys())
-        if 'Calculated Gravity' in gkeys:
-            gkeys.remove('Calculated Gravity')
-        if 'Calculated Magnetics' in gkeys:
-            gkeys.remove('Calculated Magnetics')
-        gkeys = ['None'] + gkeys
+        if "Calculated Gravity" in gkeys:
+            gkeys.remove("Calculated Gravity")
+        if "Calculated Magnetics" in gkeys:
+            gkeys.remove("Calculated Magnetics")
+        gkeys = ["None"] + gkeys
 
         if len(gkeys) > 1:
             self.cmb_other.clear()
@@ -545,28 +554,28 @@ class MagInvert(BasicModule):
             self.cmb_dataset.setCurrentIndex(0)
 
             lkeys = list(self.lmod1.griddata.keys())
-            if 'DTM Dataset' in lkeys:
-                tmp = self.lmod1.griddata['DTM Dataset'].dataid
+            if "DTM Dataset" in lkeys:
+                tmp = self.lmod1.griddata["DTM Dataset"].dataid
                 self.cmb_dtm.setCurrentIndex(gkeys.index(tmp))
 
-            if 'Magnetic Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Magnetic Dataset'].dataid
+            if "Magnetic Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Magnetic Dataset"].dataid
                 self.cmb_mag.setCurrentIndex(gkeys.index(tmp))
 
-            if 'Gravity Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Dataset'].dataid
+            if "Gravity Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Gravity Dataset"].dataid
                 self.cmb_grv.setCurrentIndex(gkeys.index(tmp))
 
-            if 'Gravity Regional' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Regional'].dataid
+            if "Gravity Regional" in lkeys:
+                tmp = self.lmod1.griddata["Gravity Regional"].dataid
                 self.cmb_reggrv.setCurrentIndex(gkeys.index(tmp))
 
-            if 'Study Area Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Study Area Dataset'].dataid
+            if "Study Area Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Study Area Dataset"].dataid
                 self.cmb_dataset.setCurrentIndex(gkeys.index(tmp))
 
-            if 'Other' in lkeys:
-                tmp = self.lmod1.griddata['Other'].dataid
+            if "Other" in lkeys:
+                tmp = self.lmod1.griddata["Other"].dataid
                 self.cmb_other.setCurrentIndex(gkeys.index(tmp))
 
         self.cmb_dataset.currentIndexChanged.connect(self.get_area)
@@ -659,14 +668,14 @@ class MagInvert(BasicModule):
         """
         datatmp = list(set(self.lmod1.griddata.values()))
 
-        if 'Raster' not in self.indata:
-            self.indata['Raster'] = datatmp
+        if "Raster" not in self.indata:
+            self.indata["Raster"] = datatmp
 
         self.inraster = {}
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             self.inraster[i.dataid] = i
-        if 'Model3D' in self.indata:
-            self.lmod1 = self.indata['Model3D'][0]
+        if "Model3D" in self.indata:
+            self.lmod1 = self.indata["Model3D"][0]
 
         self.update_model_combos()
         self.choose_model()
@@ -686,7 +695,7 @@ class MagInvert(BasicModule):
         tmp = self.acceptall()
 
         if tmp is True:
-            self.outdata['Model3D'] = [self.lmod2]
+            self.outdata["Model3D"] = [self.lmod2]
 
         return tmp
 
@@ -735,13 +744,20 @@ class MagInvert(BasicModule):
         None.
 
         """
-        dat = [self.lmod1.griddata['Magnetic Dataset'],
-               self.lmod1.griddata['DTM Dataset']]
+        dat = [
+            self.lmod1.griddata["Magnetic Dataset"],
+            self.lmod1.griddata["DTM Dataset"],
+        ]
 
-        masterid = self.lmod1.griddata['Magnetic Dataset'].dataid
+        masterid = self.lmod1.griddata["Magnetic Dataset"].dataid
 
-        dat = lstack(dat, masterid=masterid, commonmask=True,
-                     piter=self.piter, showlog=self.showlog)
+        dat = lstack(
+            dat,
+            masterid=masterid,
+            commonmask=True,
+            piter=self.piter,
+            showlog=self.showlog,
+        )
 
         mag = dat[0]
         dtm = dat[1]
@@ -775,8 +791,9 @@ class MagInvert(BasicModule):
 
         # Defining the Survey
         components = ["tmi"]
-        receiver_list = magnetics.receivers.Point(receiver_locations,
-                                                  components=components)
+        receiver_list = magnetics.receivers.Point(
+            receiver_locations, components=components
+        )
         receiver_list = [receiver_list]
 
         inclination = self.dsb_hinc.value()
@@ -784,8 +801,11 @@ class MagInvert(BasicModule):
         strength = self.dsb_hint.value()
 
         source_field = magnetics.UniformBackgroundField(
-            receiver_list=receiver_list, amplitude=strength,
-            inclination=inclination, declination=declination)
+            receiver_list=receiver_list,
+            amplitude=strength,
+            inclination=inclination,
+            declination=declination,
+        )
 
         # Define the survey, data and tensor mesh
         survey = magnetics.survey.Survey(source_field)
@@ -797,10 +817,9 @@ class MagInvert(BasicModule):
         hy = [(dhxy, 5, -1.3), (dhxy, self.lmod1.numy), (dhxy, 5, 1.3)]
         hz = [(dh, 5, -1.3), (dh, self.lmod1.numz)]
 
-        x0 = xmin - (np.sum([dhxy * 1.3**(i + 1) for i in range(5)]))
-        y0 = ymin - (np.sum([dhxy * 1.3**(i + 1) for i in range(5)]))
-        z0 = -(dh * self.lmod1.numz) - \
-            (np.sum([dh * 1.3**(i + 1) for i in range(5)]))
+        x0 = xmin - (np.sum([dhxy * 1.3 ** (i + 1) for i in range(5)]))
+        y0 = ymin - (np.sum([dhxy * 1.3 ** (i + 1) for i in range(5)]))
+        z0 = -(dh * self.lmod1.numz) - (np.sum([dh * 1.3 ** (i + 1) for i in range(5)]))
 
         mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
 
@@ -816,37 +835,49 @@ class MagInvert(BasicModule):
 
         # Define the Physics
         simulation = magnetics.simulation.Simulation3DIntegral(
-            survey=survey, mesh=mesh, model_type="scalar", chiMap=model_map,
-            active_cells=ind_active)
+            survey=survey,
+            mesh=mesh,
+            model_type="scalar",
+            chiMap=model_map,
+            active_cells=ind_active,
+        )
 
         # Define Inverse Problem
-        dmis = data_misfit.L2DataMisfit(data=data_object,
-                                        simulation=simulation)
-        reg = regularization.Sparse(mesh, active_cells=ind_active,
-                                    mapping=model_map,
-                                    reference_model=starting_model,
-                                    gradient_type="total")
+        dmis = data_misfit.L2DataMisfit(data=data_object, simulation=simulation)
+        reg = regularization.Sparse(
+            mesh,
+            active_cells=ind_active,
+            mapping=model_map,
+            reference_model=starting_model,
+            gradient_type="total",
+        )
         reg.norms = [0, 0, 0, 0]
 
-        opt = optimization.ProjectedGNCG(maxIter=20, lower=0.0, upper=1.0,
-                                         maxIterLS=20, maxIterCG=10,
-                                         tolCG=1e-3)
+        opt = optimization.ProjectedGNCG(
+            maxIter=20, lower=0.0, upper=1.0, maxIterLS=20, maxIterCG=10, tolCG=1e-3
+        )
         inv_prob = inverse_problem.BaseInvProblem(dmis, reg, opt)
 
         # Define Inversion Directives
         starting_beta = directives.BetaEstimate_ByEig(beta0_ratio=5)
         save_iteration = directives.SaveOutputEveryIteration(save_txt=False)
-        update_IRLS = directives.UpdateIRLS(f_min_change=1e-4,
-                                            max_irls_iterations=30,
-                                            cooling_factor=1.5,
-                                            misfit_tolerance=1e-2)
+        update_IRLS = directives.UpdateIRLS(
+            f_min_change=1e-4,
+            max_irls_iterations=30,
+            cooling_factor=1.5,
+            misfit_tolerance=1e-2,
+        )
         update_jacobi = directives.UpdatePreconditioner()
 
         target_misfit = directives.TargetMisfit(chifact=1)
-        sensitivity_weights = directives.UpdateSensitivityWeights(
-            every_iteration=False)
-        directives_list = [sensitivity_weights, starting_beta, save_iteration,
-                           update_IRLS, update_jacobi]
+        sensitivity_weights = directives.UpdateSensitivityWeights(every_iteration=False)
+        directives_list = [
+            sensitivity_weights,
+            starting_beta,
+            save_iteration,
+            update_IRLS,
+            update_jacobi,
+        ]
 
         # Running the Inversion
         inv = inversion.BaseInversion(inv_prob, directives_list)
@@ -855,7 +886,7 @@ class MagInvert(BasicModule):
             with redirect_stdout(self.stdout_redirect):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
-            self.showlog('Error: ' + str(e))
+            self.showlog("Error: " + str(e))
             return False
 
         # Recreate True Model
@@ -864,7 +895,8 @@ class MagInvert(BasicModule):
 
         true_model = background_susceptibility * np.ones(nC)
         ind_sphere = model_builder.get_indices_sphere(
-            np.r_[0.0, 0.0, -45.0], 15.0, mesh.cell_centers)
+            np.r_[0.0, 0.0, -45.0], 15.0, mesh.cell_centers
+        )
         ind_sphere = ind_sphere[ind_active]
         true_model[ind_sphere] = sphere_susceptibility
 
@@ -873,9 +905,7 @@ class MagInvert(BasicModule):
         soln_map = maps.InjectActiveCells(mesh, ind_active, np.nan)
 
         r2 = soln_map * recovered_model
-        r2 = r2.reshape(mesh.shape_cells[2],
-                        mesh.shape_cells[1],
-                        mesh.shape_cells[0])
+        r2 = r2.reshape(mesh.shape_cells[2], mesh.shape_cells[1], mesh.shape_cells[0])
         r2 = r2[::-1]
 
         r3 = r2[:-5, 5:-5, 5:-5]
@@ -885,7 +915,7 @@ class MagInvert(BasicModule):
         X = r3.compressed().reshape(-1, 1)
 
         numclasses = self.sb_classes.value()
-        cfit = skc.KMeans(n_clusters=numclasses, n_init='auto').fit(X)
+        cfit = skc.KMeans(n_clusters=numclasses, n_init="auto").fit(X)
 
         zout = cfit.labels_
         r3[~r3.mask] = zout
@@ -894,8 +924,8 @@ class MagInvert(BasicModule):
         r4 = r4.filled(-1)
 
         cnt = cfit.labels_.max() + 1
-        susc = [0.] * cnt
-        inputliths = [''] * cnt
+        susc = [0.0] * cnt
+        inputliths = [""] * cnt
         dens = [2.67] * cnt
         for i2 in range(cnt):
             susc[i2] = X[cfit.labels_ == i2].mean()
@@ -927,14 +957,27 @@ class MagInvert(BasicModule):
         numz = self.sb_layers.value()
         d_z = self.dsb_zcell.value()
 
-        self.lmod2 = quick_model(numx, numy, numz, dxy, d_z, tlx, tly, tlz,
-                                 mht, finc=inclination, fdec=declination,
-                                 inputliths=inputliths, susc=susc, dens=dens,
-                                 hintn=strength)
+        self.lmod2 = quick_model(
+            numx,
+            numy,
+            numz,
+            dxy,
+            d_z,
+            tlx,
+            tly,
+            tlz,
+            mht,
+            finc=inclination,
+            fdec=declination,
+            inputliths=inputliths,
+            susc=susc,
+            dens=dens,
+            hintn=strength,
+        )
 
-        self.lmod2.lith_list['Background'].susc = bsusc
+        self.lmod2.lith_list["Background"].susc = bsusc
         self.lmod2.lith_index = r4.astype(int)
-        self.lmod2.name = 'Internal Inverted Model'
+        self.lmod2.name = "Internal Inverted Model"
         self.lmod2.griddata = self.lmod1.griddata
 
         return True
@@ -942,11 +985,11 @@ class MagInvert(BasicModule):
 
 def _testfn():
     """Test Function."""
-    from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
     import matplotlib as mpl
+    import matplotlib.pyplot as plt
 
     from pygmi.pfmod.pfmod import MainWidget
+    from pygmi.raster.iodefs import get_raster
 
     # from IPython import get_ipython
     # get_ipython().run_line_magic('matplotlib', 'inline')
@@ -957,19 +1000,19 @@ def _testfn():
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
 
-    mdat[0].dataid = 'mag'
-    ddat[0].dataid = 'dem'
+    mdat[0].dataid = "mag"
+    ddat[0].dataid = "dem"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = MagInvert()
-    DM.indata['Raster'] = mdat + ddat
+    DM.indata["Raster"] = mdat + ddat
 
-    for i in DM.indata['Raster']:
+    for i in DM.indata["Raster"]:
         DM.inraster[i.dataid] = i
-    if 'Model3D' in DM.indata:
-        DM.lmod1 = DM.indata['Model3D'][0]
+    if "Model3D" in DM.indata:
+        DM.lmod1 = DM.indata["Model3D"][0]
 
     cols = 40
     rows = 40
@@ -977,16 +1020,16 @@ def _testfn():
     utlx = -80
     utly = 90
     utlz = 0
-    dxy = 10.
-    d_z = 5.
-    mht = 10.
+    dxy = 10.0
+    d_z = 5.0
+    mht = 10.0
 
     DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
 
     DM.update_combos()
-    DM.cmb_dtm.setCurrentText('dem')
-    DM.cmb_mag.setCurrentText('mag')
-    DM.cmb_dataset.setCurrentText('mag')
+    DM.cmb_dtm.setCurrentText("dem")
+    DM.cmb_mag.setCurrentText("mag")
+    DM.cmb_dataset.setCurrentText("mag")
 
     DM.choose_dtm()
 
@@ -1017,11 +1060,14 @@ def _testfn():
     ax1.set_title("Model slice at y = 0 m")
 
     ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
-    norm = mpl.colors.Normalize(vmin=np.min(true_model),
-                                vmax=np.max(true_model))
-    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.colormaps['viridis'],
-                                     format="%.1e")
+    norm = mpl.colors.Normalize(vmin=np.min(true_model), vmax=np.max(true_model))
+    cbar = mpl.colorbar.ColorbarBase(
+        ax2,
+        norm=norm,
+        orientation="vertical",
+        cmap=mpl.colormaps["viridis"],
+        format="%.1e",
+    )
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1042,11 +1088,16 @@ def _testfn():
     ax1.set_title("Model slice at y = 0 m")
 
     ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
-    norm = mpl.colors.Normalize(vmin=np.min(recovered_model),
-                                vmax=np.max(recovered_model))
-    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.colormaps['viridis'],
-                                     format="%.1e")
+    norm = mpl.colors.Normalize(
+        vmin=np.min(recovered_model), vmax=np.max(recovered_model)
+    )
+    cbar = mpl.colorbar.ColorbarBase(
+        ax2,
+        norm=norm,
+        orientation="vertical",
+        cmap=mpl.colormaps["viridis"],
+        format="%.1e",
+    )
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1059,13 +1110,14 @@ def _testfn():
 
 def _testfn2():
     """Test Function."""
-    import matplotlib.pyplot as plt
     import matplotlib as mpl
-    from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
+
     from pygmi.pfmod.pfmod import MainWidget
+    from pygmi.raster.iodefs import get_raster
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     mfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcmagdem.tif"
     dfile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\MagInv\pcdem.tif"
@@ -1073,16 +1125,16 @@ def _testfn2():
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
 
-    mdat[0].dataid = 'mag'
-    ddat[0].dataid = 'dem'
+    mdat[0].dataid = "mag"
+    ddat[0].dataid = "dem"
 
     DM = MagInvert()
-    DM.indata['Raster'] = mdat + ddat
+    DM.indata["Raster"] = mdat + ddat
 
-    for i in DM.indata['Raster']:
+    for i in DM.indata["Raster"]:
         DM.inraster[i.dataid] = i
-    if 'Model3D' in DM.indata:
-        DM.lmod1 = DM.indata['Model3D'][0]
+    if "Model3D" in DM.indata:
+        DM.lmod1 = DM.indata["Model3D"][0]
 
     cols = 50
     rows = 40
@@ -1090,9 +1142,9 @@ def _testfn2():
     utlx = 0
     utly = 0
     utlz = 0
-    dxy = 100.
-    d_z = 100.
-    mht = 100.
+    dxy = 100.0
+    d_z = 100.0
+    mht = 100.0
 
     cols = 50
     rows = 40
@@ -1100,16 +1152,16 @@ def _testfn2():
     utlx = 0
     utly = 0
     utlz = 58.11
-    dxy = 100.
-    d_z = 100.
-    mht = 100.
+    dxy = 100.0
+    d_z = 100.0
+    mht = 100.0
 
     DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
 
     DM.update_combos()
-    DM.combo_dtm.setCurrentText('dem')
-    DM.combo_mag.setCurrentText('mag')
-    DM.combo_dataset.setCurrentText('mag')
+    DM.combo_dtm.setCurrentText("dem")
+    DM.combo_mag.setCurrentText("mag")
+    DM.combo_dataset.setCurrentText("mag")
 
     DM.choose_dtm()
 
@@ -1135,11 +1187,14 @@ def _testfn2():
     ax1.set_title("Model slice at y = 0 m")
 
     ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
-    norm = mpl.colors.Normalize(vmin=np.min(true_model),
-                                vmax=np.max(true_model))
-    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.colormaps['viridis'],
-                                     format="%.1e")
+    norm = mpl.colors.Normalize(vmin=np.min(true_model), vmax=np.max(true_model))
+    cbar = mpl.colorbar.ColorbarBase(
+        ax2,
+        norm=norm,
+        orientation="vertical",
+        cmap=mpl.colormaps["viridis"],
+        format="%.1e",
+    )
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
@@ -1160,11 +1215,16 @@ def _testfn2():
     ax1.set_title("Model slice at y = 0 m")
 
     ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
-    norm = mpl.colors.Normalize(vmin=np.min(recovered_model),
-                                vmax=np.max(recovered_model))
-    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
-                                     cmap=mpl.colormaps['viridis'],
-                                     format="%.1e")
+    norm = mpl.colors.Normalize(
+        vmin=np.min(recovered_model), vmax=np.max(recovered_model)
+    )
+    cbar = mpl.colorbar.ColorbarBase(
+        ax2,
+        norm=norm,
+        orientation="vertical",
+        cmap=mpl.colormaps["viridis"],
+        format="%.1e",
+    )
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 

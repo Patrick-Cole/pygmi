@@ -29,7 +29,7 @@ Docstring information is from SEISAN documentation.
 """
 
 
-class seisan_1():
+class seisan_1:
     """
     Class to hold Seisan Type 1 data.
 
@@ -84,34 +84,34 @@ class seisan_1():
         self.year = None
         self.month = None
         self.day = None
-        self.fixed_origin_time = ' '
+        self.fixed_origin_time = " "
         self.hour = None
         self.minutes = None
         self.seconds = None
-        self.location_model_indicator = ' '
-        self.distance_indicator = ' '
-        self.event_id = ' '
+        self.location_model_indicator = " "
+        self.distance_indicator = " "
+        self.event_id = " "
         self.latitude = None
         self.longitude = None
         self.depth = None
-        self.depth_indicator = ' '
-        self.locating_indicator = ' '
-        self.hypocenter_reporting_agency = ' '
+        self.depth_indicator = " "
+        self.locating_indicator = " "
+        self.hypocenter_reporting_agency = " "
         self.number_of_stations_used = None
         self.rms_of_time_residuals = None
         self.magnitude_1 = None
-        self.type_of_magnitude_1 = ' '
-        self.magnitude_reporting_agency_1 = ' '
+        self.type_of_magnitude_1 = " "
+        self.magnitude_reporting_agency_1 = " "
         self.magnitude_2 = None
-        self.type_of_magnitude_2 = ' '
-        self.magnitude_reporting_agency_2 = ' '
+        self.type_of_magnitude_2 = " "
+        self.magnitude_reporting_agency_2 = " "
         self.magnitude_3 = None
-        self.type_of_magnitude_3 = ' '
-        self.magnitude_reporting_agency_3 = ' '
-        self.dataid = ''
+        self.type_of_magnitude_3 = " "
+        self.magnitude_reporting_agency_3 = " "
+        self.dataid = ""
 
 
-class seisan_2():
+class seisan_2:
     """
     Type 2 line (Macroseismic information).
 
@@ -180,30 +180,30 @@ class seisan_2():
     """
 
     def __init__(self):
-        self.description = ' '
-        self.diastrophism_code = ' '
-        self.tsunami_code = ' '
-        self.seiche_code = ' '
-        self.cultural_effects = ' '
-        self.unusual_events = ' '
+        self.description = " "
+        self.diastrophism_code = " "
+        self.tsunami_code = " "
+        self.seiche_code = " "
+        self.cultural_effects = " "
+        self.unusual_events = " "
         self.max_intensity = None
-        self.max_intensity_qualifier = ' '
-        self.intensity_scale = ' '
+        self.max_intensity_qualifier = " "
+        self.intensity_scale = " "
         self.macroseismic_latitude = None
         self.macroseismic_longitude = None
         self.macroseismic_magnitude = None
-        self.type_of_magnitude = ' '
+        self.type_of_magnitude = " "
         self.log_of_felt_area_radius = None
         self.log_of_area_1 = None
         self.intensity_bordering_area_1 = None
         self.log_of_area_2 = None
         self.intensity_bordering_area_2 = None
-        self.quality_rank = ' '
-        self.reporting_agency = ' '
-        self.dataid = ''
+        self.quality_rank = " "
+        self.reporting_agency = " "
+        self.dataid = ""
 
 
-class seisan_3():
+class seisan_3:
     """
     Type 3 Line (Optional).
 
@@ -214,12 +214,12 @@ class seisan_3():
     """
 
     def __init__(self):
-        self.text = ''
-        self.region = ''
-        self.dataid = ''
+        self.text = ""
+        self.region = ""
+        self.dataid = ""
 
 
-class seisan_4():
+class seisan_4:
     """
     Type 4 (phase) line.
 
@@ -310,14 +310,14 @@ class seisan_4():
     """
 
     def __init__(self):
-        self.station_name = ' '
-        self.instrument_type = ' '
-        self.component = ' '
-        self.quality = ' '
-        self.phase_id = ''
+        self.station_name = " "
+        self.instrument_type = " "
+        self.component = " "
+        self.quality = " "
+        self.phase_id = ""
         self.weighting_indicator = None
         self.flag_auto_pick = None
-        self.first_motion = ' '
+        self.first_motion = " "
         self.hour = None
         self.minutes = None
         self.seconds = None
@@ -332,20 +332,20 @@ class seisan_4():
         self.weight = None
         self.epicentral_distance = None
         self.azimuth_at_source = None
-        self.dataid = ''
+        self.dataid = ""
 
-        self.network_code = ''
-        self.location = ''
+        self.network_code = ""
+        self.location = ""
         self.polarity = None
         self.back_azimuth = None
-        self.agency = ''
-        self.operator = ''
+        self.agency = ""
+        self.operator = ""
         self.magnitude_residual = None
 
         self.magnitude = None
 
 
-class seisan_5():
+class seisan_5:
     """
     Type 5 line (optional).
 
@@ -359,11 +359,11 @@ class seisan_5():
     """
 
     def __init__(self):
-        self.text = ' '
-        self.dataid = ''
+        self.text = " "
+        self.dataid = ""
 
 
-class seisan_6():
+class seisan_6:
     """
     Type 6 Line (Optional).
 
@@ -374,11 +374,11 @@ class seisan_6():
     """
 
     def __init__(self):
-        self.tracedata_files = ' '
-        self.dataid = ''
+        self.tracedata_files = " "
+        self.dataid = ""
 
 
-class seisan_E():
+class seisan_E:
     """
     Type E Line (Optional): Hyp error estimates.
 
@@ -427,13 +427,13 @@ class seisan_E():
         self.cov_xy = None  # cvxy
         self.cov_xz = None  # cvxz
         self.cov_yz = None  # cvyz
-        self.dataid = ''
+        self.dataid = ""
 
         self.agency = None
         self.location_indicator = None
 
 
-class seisan_F():
+class seisan_F:
     """
     Type F Line (Optional): Fault plane solution.
 
@@ -467,13 +467,13 @@ class seisan_F():
         self.amplitude_ratio = None
         self.number_of_bad_polarities = None
         self.number_of_bad_amplitude_ratios = None
-        self.agency_code = ' '
-        self.program_used = ' '
-        self.solution_quality = ' '
-        self.dataid = ''
+        self.agency_code = " "
+        self.program_used = " "
+        self.solution_quality = " "
+        self.dataid = ""
 
 
-class seisan_H():
+class seisan_H:
     """
     Type H line, High accuracy hypocenter line.
 
@@ -498,7 +498,7 @@ class seisan_H():
         self.year = None
         self.month = None
         self.day = None
-        self.fixed_origin_time = ' '
+        self.fixed_origin_time = " "
         self.hour = None
         self.minutes = None
         self.seconds = None
@@ -506,10 +506,10 @@ class seisan_H():
         self.longitude = None
         self.depth = None
         self.rms = None
-        self.dataid = ''
+        self.dataid = ""
 
 
-class seisan_I():
+class seisan_I:
     """
     Type I Line, ID line.
 
@@ -545,19 +545,19 @@ class seisan_I():
     """
 
     def __init__(self):
-        self.last_action_done = ' '
-        self.date_time_of_last_action = ' '
-        self.operator = ' '
-        self.status = ' '
-        self.id = ' '
-        self.new_id_created = ' '
-        self.id_locked = ' '
-        self.dataid = ''
+        self.last_action_done = " "
+        self.date_time_of_last_action = " "
+        self.operator = " "
+        self.status = " "
+        self.id = " "
+        self.new_id_created = " "
+        self.id_locked = " "
+        self.dataid = ""
         # This is used in a type 3 line
-        self.region = ''
+        self.region = ""
 
 
-class seisan_M():
+class seisan_M:
     """
     Type M Line (Optional): Moment tensor solution.
 
@@ -617,29 +617,29 @@ class seisan_M():
         self.latitude = None
         self.longitude = None
         self.depth = None
-        self.reporting_agency = ' '
+        self.reporting_agency = " "
         self.megnitude = None
-        self.magnitude_type = ' '
-        self.magnitude_reporting_agency = ' '
-        self.method_used = ' '
-        self.quality = ' '
-        self.mt = ' '
+        self.magnitude_type = " "
+        self.magnitude_reporting_agency = " "
+        self.method_used = " "
+        self.quality = " "
+        self.mt = " "
         self.mrr_mzz = None
         self.mtt_mxx = None
         self.mpp_myy = None
         self.mrt_mzx = None
         self.mrp_mzy = None
         self.mtp_mxy = None
-        self.reporting_agency2 = ' '
-        self.mt_coordinate_system = ' '
+        self.reporting_agency2 = " "
+        self.mt_coordinate_system = " "
         self.exponential = None
         self.scalar_moment = None
-        self.method_used_2 = ' '
-        self.quality_2 = ' '
-        self.dataid = ''
+        self.method_used_2 = " "
+        self.quality_2 = " "
+        self.dataid = ""
 
 
-class seisan_P():
+class seisan_P:
     """
     Type P line, file name of a picture file.
 
@@ -650,5 +650,5 @@ class seisan_P():
     """
 
     def __init__(self):
-        self.filename = ' '
-        self.dataid = ''
+        self.filename = " "
+        self.dataid = ""

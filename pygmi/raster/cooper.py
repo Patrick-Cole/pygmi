@@ -30,11 +30,11 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-from PySide6 import QtWidgets
 import numpy as np
 from numba import jit
+from PySide6 import QtWidgets
 
-from pygmi.misc import ProgressBarText, BasicModule
+from pygmi.misc import BasicModule, ProgressBarText
 from pygmi.raster.dataprep import verticalp
 
 
@@ -64,12 +64,12 @@ class Gradients(BasicModule):
 
         self.dsb_order = QtWidgets.QDoubleSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
-        self.rb_ddir = QtWidgets.QRadioButton('Directional Derivative')
-        self.rb_vgrad = QtWidgets.QRadioButton('Vertical Derivative')
-        self.rb_dratio = QtWidgets.QRadioButton('Derivative Ratio')
-        self.rb_thg = QtWidgets.QRadioButton('Total Horizonal Gradient')
-        self.lbl_or = QtWidgets.QLabel('Strength Factor')
-        self.lbl_az = QtWidgets.QLabel('Azimuth')
+        self.rb_ddir = QtWidgets.QRadioButton("Directional Derivative")
+        self.rb_vgrad = QtWidgets.QRadioButton("Vertical Derivative")
+        self.rb_dratio = QtWidgets.QRadioButton("Derivative Ratio")
+        self.rb_thg = QtWidgets.QRadioButton("Total Horizonal Gradient")
+        self.lbl_or = QtWidgets.QLabel("Strength Factor")
+        self.lbl_az = QtWidgets.QLabel("Azimuth")
 
         self.setupui()
 
@@ -86,17 +86,17 @@ class Gradients(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'raster.dm.grad'
+        self.buttonbox.htmlfile = "raster.dm.grad"
 
         self.dsb_order.setMinimum(0.1)
-        self.sb_azi.setPrefix('')
+        self.sb_azi.setPrefix("")
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.rb_ddir.setChecked(True)
         self.dsb_order.hide()
         self.lbl_or.hide()
 
-        self.setWindowTitle('Gradient Calculation')
+        self.setWindowTitle("Gradient Calculation")
 
         gl_1.addWidget(self.rb_ddir, 0, 0, 1, 1)
         gl_1.addWidget(self.rb_dratio, 1, 0, 1, 1)
@@ -128,8 +128,8 @@ class Gradients(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         self.radiochange()
@@ -141,33 +141,33 @@ class Gradients(BasicModule):
         self.azi = self.sb_azi.value()
         self.order = self.dsb_order.value()
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
 
         for i in self.piter(range(len(data))):
             if self.rb_ddir.isChecked():
-                data[i].data = gradients(data[i].data, self.azi, data[i].xdim,
-                                         data[i].ydim)
+                data[i].data = gradients(
+                    data[i].data, self.azi, data[i].xdim, data[i].ydim
+                )
             elif self.rb_dratio.isChecked():
-                data[i].data = derivative_ratio(data[i].data, self.azi,
-                                                self.order)
+                data[i].data = derivative_ratio(data[i].data, self.azi, self.order)
             elif self.rb_thg.isChecked():
                 data[i].data = thgrad(data[i].data, data[i].xdim, data[i].ydim)
             else:
                 if data[i].xdim != data[i].ydim:
-                    self.showlog('X and Y dimension are different. '
-                                 'Please resample')
+                    self.showlog("X and Y dimension are different. Please resample")
                     return False
 
                 data[i].data = verticalp(
-                    data[i], showlog=self.showlog, piter=self.piter)
+                    data[i], showlog=self.showlog, piter=self.piter
+                )
 
-            data[i].units = ''
+            data[i].units = ""
 
             mask = data[i].data.mask
             data[i].data = data[i].data.filled(data[i].nodata)
             data[i].data = np.ma.array(data[i].data, mask=mask)
 
-        self.outdata['Raster'] = data
+        self.outdata["Raster"] = data
 
         return True
 
@@ -297,7 +297,7 @@ def derivative_ratio(data, azi, order):
 
     dt2 = -dy * np.sin(azi + np.pi / 2) - dx * np.cos(azi + np.pi / 2)
     dt2 = dt2.astype(np.float64)
-    dr = np.arctan2(dt1, abs(dt2)**order)
+    dr = np.arctan2(dt1, abs(dt2) ** order)
 
     return dr
 
@@ -342,18 +342,18 @@ class Visibility2d(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'raster.dm.visibility'
-        lbl_1 = QtWidgets.QLabel('Viewing Height (% std dev)')
-        lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
+        self.buttonbox.htmlfile = "raster.dm.visibility"
+        lbl_1 = QtWidgets.QLabel("Viewing Height (% std dev)")
+        lbl_2 = QtWidgets.QLabel("Window Size (Odd)")
 
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
-        self.sb_wsize.setPrefix('')
+        self.sb_wsize.setPrefix("")
         self.sb_wsize.setMinimum(5)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
 
-        self.setWindowTitle('Visibility')
+        self.setWindowTitle("Visibility")
 
         gl_1.addWidget(lbl_2, 0, 0, 1, 1)
         gl_1.addWidget(self.sb_wsize, 0, 1, 1, 1)
@@ -376,8 +376,8 @@ class Visibility2d(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
@@ -388,15 +388,15 @@ class Visibility2d(BasicModule):
         self.wsize = self.sb_wsize.value()
         self.dh = self.sb_dh.value()
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         data2 = []
 
         for i, datai in enumerate(data):
-            self.showlog(datai.dataid + ':')
+            self.showlog(datai.dataid + ":")
 
-            vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
-                                            self.dh * datai.data.std() / 100.,
-                                            self.piter)
+            vtot, vstd, vsum = visibility2d(
+                datai.data, self.wsize, self.dh * datai.data.std() / 100.0, self.piter
+            )
 
             buff = self.wsize // 2
 
@@ -410,9 +410,9 @@ class Visibility2d(BasicModule):
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum
-            data2[-3].dataid += ' Total Visibility'
-            data2[-2].dataid += ' Visibility Variation'
-            data2[-1].dataid += ' Visibility Vector Resultant'
+            data2[-3].dataid += " Total Visibility"
+            data2[-2].dataid += " Visibility Variation"
+            data2[-1].dataid += " Visibility Vector Resultant"
             data2[-3].set_transform(xdim, xmin, ydim, ymax)
             data2[-2].set_transform(xdim, xmin, ydim, ymax)
             data2[-1].set_transform(xdim, xmin, ydim, ymax)
@@ -422,8 +422,8 @@ class Visibility2d(BasicModule):
                 data2[i].data = data2[i].data.filled(data2[i].nodata)
                 data2[i].data = np.ma.array(data2[i].data, mask=mask)
 
-        self.outdata['Raster'] = data2
-        self.showlog('Finished!')
+        self.outdata["Raster"] = data2
+        self.showlog("Finished!")
 
         return True
 
@@ -495,15 +495,15 @@ def visibility2d(data, wsize, dh, piter=iter):
     data = data.data
     data[mask] = mean
 
-    for j in piter(range(nc)):    # Columns
+    for j in piter(range(nc)):  # Columns
         for i in range(w2, nr - w2):
-            dtmp = data[i - w2:i + w2 + 1, j]
+            dtmp = data[i - w2 : i + w2 + 1, j]
             vn[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
             vs[i, j] = __visible2(dtmp, w2 + 1, dh)
 
-    for j in piter(range(w2, nc - w2)):    # Rows
+    for j in piter(range(w2, nc - w2)):  # Rows
         for i in range(nr):
-            dtmp = data[i, j - w2:j + w2 + 1]
+            dtmp = data[i, j - w2 : j + w2 + 1]
             ve[i, j] = __visible1(dtmp, wsize, w2 + 1, dh)
             vw[i, j] = __visible2(dtmp, w2 + 1, dh)
 
@@ -521,15 +521,25 @@ def visibility2d(data, wsize, dh, piter=iter):
             vd4[i, j] = __visible2(dtmp, w2 + 1, dh)
 
     vtot = vn + vs + ve + vw + vd1 + vd2 + vd3 + vd4
-    vtot = vtot[w2:nr - w2, w2:nc - w2]
+    vtot = vtot[w2 : nr - w2, w2 : nc - w2]
 
     for j in piter(range(nc)):
         for i in range(nr):
-            vstd[i, j] = np.std([vn[i, j], vs[i, j], ve[i, j], vw[i, j],
-                                 vd1[i, j], vd2[i, j], vd3[i, j],
-                                 vd4[i, j]], ddof=1)
+            vstd[i, j] = np.std(
+                [
+                    vn[i, j],
+                    vs[i, j],
+                    ve[i, j],
+                    vw[i, j],
+                    vd1[i, j],
+                    vd2[i, j],
+                    vd3[i, j],
+                    vd4[i, j],
+                ],
+                ddof=1,
+            )
 
-    vstd = vstd[w2:nr - w2, w2:nc - w2]
+    vstd = vstd[w2 : nr - w2, w2 : nc - w2]
 
     dtr = np.pi / 180
     c45 = np.cos(45 * dtr)
@@ -537,7 +547,7 @@ def visibility2d(data, wsize, dh, piter=iter):
     vsumx = ve - vw + vd1 * c45 - vd2 * c45 + vd3 * c45 - vd4 * c45
     vsumy = vn - vs + vd1 * s45 - vd2 * s45 - vd3 * s45 + vd4 * s45
     vsum = np.sqrt(vsumx * vsumx + vsumy * vsumy)
-    vsum = vsum[w2:nr - w2, w2:nc - w2]
+    vsum = vsum[w2 : nr - w2, w2 : nc - w2]
 
     vtot = np.ma.array(vtot)
     vstd = np.ma.array(vstd)
@@ -586,15 +596,15 @@ def visibilitytot(data, wsize, dh):
     # data = data.data
     # data[mask] = mean
 
-    for j in range(nc):    # Columns
+    for j in range(nc):  # Columns
         for i in range(w2, nr - w2):
-            dtmp = data[i - w2:i + w2 + 1, j]
+            dtmp = data[i - w2 : i + w2 + 1, j]
             vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
             vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
-    for j in range(w2, nc - w2):    # Rows
+    for j in range(w2, nc - w2):  # Rows
         for i in range(nr):
-            dtmp = data[i, j - w2:j + w2 + 1]
+            dtmp = data[i, j - w2 : j + w2 + 1]
             vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
             vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
@@ -612,7 +622,7 @@ def visibilitytot(data, wsize, dh):
             vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
     # vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
-    vtot = vtot[w2:nr - w2, w2:nc - w2]
+    vtot = vtot[w2 : nr - w2, w2 : nc - w2]
 
     # vtot = np.ma.array(vtot)
     # vtot.mask = mask[w2:-w2, w2:-w2]
@@ -649,7 +659,7 @@ def __visible1(dat, nr, cp, dh):
         cpn = cp - 1
         thetamax = float(dat[cpn + 1] - dat[cpn] - dh)
         for i in range(cpn + 2, nr):
-            theta = ((dat[i] - dat[cpn] - dh) / float(i - cpn))
+            theta = (dat[i] - dat[cpn] - dh) / float(i - cpn)
             if theta >= thetamax:
                 num = num + 1
                 thetamax = theta
@@ -682,9 +692,9 @@ def __visible2(dat, cp, dh):
     if cp > 2 and dat.size > 0:
         num = 1
         cpn = cp - 1
-        thetamax = (dat[cpn - 1] - dat[cpn] - dh)
+        thetamax = dat[cpn - 1] - dat[cpn] - dh
         for i in range(cpn - 2, -1, -1):
-            theta = ((dat[i] - dat[cpn] - dh) / (cpn - i))
+            theta = (dat[i] - dat[cpn] - dh) / (cpn - i)
             if theta >= thetamax:
                 num = num + 1
                 thetamax = theta
@@ -730,9 +740,9 @@ class AGC(BasicModule):
         self.wsize = 11
 
         self.sb_wsize = QtWidgets.QSpinBox()
-        self.rb_mean = QtWidgets.QRadioButton('Mean')
-        self.rb_median = QtWidgets.QRadioButton('Median')
-        self.rb_rms = QtWidgets.QRadioButton('RMS')
+        self.rb_mean = QtWidgets.QRadioButton("Mean")
+        self.rb_median = QtWidgets.QRadioButton("Median")
+        self.rb_rms = QtWidgets.QRadioButton("RMS")
 
         self.setupui()
 
@@ -748,17 +758,17 @@ class AGC(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'raster.dm.agc'
-        lbl_2 = QtWidgets.QLabel('Window Size (Odd)')
+        self.buttonbox.htmlfile = "raster.dm.agc"
+        lbl_2 = QtWidgets.QLabel("Window Size (Odd)")
 
-        self.sb_wsize.setPrefix('')
+        self.sb_wsize.setPrefix("")
         self.sb_wsize.setMinimum(3)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
         self.sb_wsize.setValue(self.wsize)
         self.rb_mean.setChecked(True)
 
-        self.setWindowTitle('Automatic Gain Control')
+        self.setWindowTitle("Automatic Gain Control")
 
         gl_1.addWidget(self.rb_mean, 0, 0, 1, 1)
         gl_1.addWidget(self.rb_median, 1, 0, 1, 1)
@@ -782,8 +792,8 @@ class AGC(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         if not nodialog:
@@ -791,28 +801,29 @@ class AGC(BasicModule):
             if temp == 0:
                 return False
 
-        atype = 'mean'
+        atype = "mean"
         if self.rb_median.isChecked():
-            atype = 'median'
+            atype = "median"
         if self.rb_rms.isChecked():
-            atype = 'rms'
+            atype = "rms"
 
         self.wsize = self.sb_wsize.value()
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         data2 = []
 
         for datai in data:
-            self.showlog(datai.dataid + ':')
+            self.showlog(datai.dataid + ":")
 
-            agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
-                          piter=self.piter)
+            agcdata = agc(
+                datai.data, self.wsize, atype, nodata=datai.nodata, piter=self.piter
+            )
             data2.append(datai.copy())
             data2[-1].data = agcdata
-            data2[-1].dataid += ' AGC'
+            data2[-1].dataid += " AGC"
 
-        self.outdata['Raster'] = data2
-        self.showlog('Finished!')
+        self.outdata["Raster"] = data2
+        self.showlog("Finished!")
 
         return True
 
@@ -832,7 +843,7 @@ class AGC(BasicModule):
         self.saveobj(self.rb_rms)
 
 
-def agc(data, wsize, atype='mean', nodata=0., piter=iter):
+def agc(data, wsize, atype="mean", nodata=0.0, piter=iter):
     """
     AGC for map data, based on code by Gordon Cooper.
 
@@ -864,12 +875,12 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
 
     for i in piter(range(w2, nr - w2)):
         for j in range(w2, nc - w2):
-            w = data[i - w2:i + w2 + 1, j - w2:j + w2 + 1]
-            if atype == 'mean':
+            w = data[i - w2 : i + w2 + 1, j - w2 : j + w2 + 1]
+            if atype == "mean":
                 weight[i, j] = np.ma.mean(w)
-            elif atype == 'median':
+            elif atype == "median":
                 weight[i, j] = np.ma.median(w)
-            elif atype == 'rms':
+            elif atype == "rms":
                 weight[i, j] = np.ma.sqrt(np.ma.mean(w**2))
 
     mask = np.ones((nr, nc), dtype=int)
@@ -887,9 +898,11 @@ def agc(data, wsize, atype='mean', nodata=0., piter=iter):
 def _testfn():
     """Test Reprojection."""
     import sys
-    from pygmi.raster.iodefs import get_raster
+
     import matplotlib.pyplot as plt
+
     from pygmi.misc import getinfo
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
 
@@ -897,20 +910,20 @@ def _testfn():
 
     dat = get_raster(ifile, piter=piter)
 
-    dat[0].data = dat[0].data.filled(1e+20)
-    dat[0].data = np.ma.masked_equal(dat[0].data, 1e+20)
+    dat[0].data = dat[0].data.filled(1e20)
+    dat[0].data = np.ma.masked_equal(dat[0].data, 1e20)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     V2D = Gradients()
-    V2D.indata['Raster'] = dat
+    V2D.indata["Raster"] = dat
 
     getinfo()
     V2D.settings()
     getinfo()
 
-    odat = V2D.outdata['Raster']
+    odat = V2D.outdata["Raster"]
 
     for idat in odat:
         plt.figure(dpi=150)

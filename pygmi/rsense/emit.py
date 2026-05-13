@@ -28,8 +28,8 @@ EMIT is used to import EMIT satellite data into PyGMI.
 It uses code by Erik Bolch, ebolch@contractor.usgs.gov
 """
 
-import os
 import datetime
+import os
 
 import numpy as np
 import xarray as xr
@@ -117,8 +117,8 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
     out_xr.attrs["granule_id"] = granule_id
 
     if band := product_band_map.get(
-        next((k for k in product_band_map.keys() if k in granule_id),
-             "unknown"), None):
+        next((k for k in product_band_map.keys() if k in granule_id), "unknown"), None
+    ):
         if "minerals" in list(out_xr.dims):
             out_xr = out_xr.swap_dims({"minerals": band})
             out_xr = out_xr.rename({band: "mineral_name"})
@@ -245,8 +245,8 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
     # Build glt_ds
 
     glt_ds = np.nan_to_num(
-        np.stack([ds["glt_x"].data, ds["glt_y"].data], axis=-1),
-        nan=GLT_NODATA_VALUE).astype(int)
+        np.stack([ds["glt_x"].data, ds["glt_y"].data], axis=-1), nan=GLT_NODATA_VALUE
+    ).astype(int)
 
     # List Variables
     var_list = list(ds.data_vars)
@@ -290,14 +290,14 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
     del glt_ds
 
     # Create Coordinate Dictionary
-    coords = {"latitude": (["latitude"], lat),
-              "longitude": (["longitude"], lon),
-              **ds.coords,
-              }  # unpack to add appropriate coordinates
+    coords = {
+        "latitude": (["latitude"], lat),
+        "longitude": (["longitude"], lon),
+        **ds.coords,
+    }  # unpack to add appropriate coordinates
 
     # Remove Unnecessary Coords
-    for key in ["downtrack", "crosstrack", "lat", "lon", "glt_x", "glt_y",
-                "elev"]:
+    for key in ["downtrack", "crosstrack", "lat", "lon", "glt_x", "glt_y", "elev"]:
         del coords[key]
 
     # Add Orthocorrected Elevation
@@ -379,33 +379,30 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
         # Add band parameter information to metadata (ie wavelengths/obs etc.)
         for m in meta_vars:
             if m in ("wavelengths", "radiance_wl"):
-                metadata["wavelength"] = np.array(
-                    xrds[m].data).astype(str).tolist()
+                metadata["wavelength"] = np.array(xrds[m].data).astype(str).tolist()
             elif m in ("fwhm", "radiance_fwhm"):
                 metadata["fwhm"] = np.array(xrds[m].data).astype(str).tolist()
             elif m == "good_wavelengths":
                 metadata["good_wavelengths"] = (
-                    np.array(xrds[m].data).astype(int).tolist())
+                    np.array(xrds[m].data).astype(int).tolist()
+                )
             elif m == "observation_bands":
-                metadata["band names"] = np.array(
-                    xrds[m].data).astype(str).tolist()
+                metadata["band names"] = np.array(xrds[m].data).astype(str).tolist()
             elif m == "mask_bands":
                 if var == "band_mask":
                     metadata["band names"] = [
                         "packed_bands_" + bn
-                        for bn in np.arange(285 / 8).astype(str).tolist()]
+                        for bn in np.arange(285 / 8).astype(str).tolist()
+                    ]
                 else:
-                    metadata["band names"] = (
-                        np.array(xrds[m].data).astype(str).tolist()
-                    )
+                    metadata["band names"] = np.array(xrds[m].data).astype(str).tolist()
         if "band names" not in metadata:
             if "wavelength" in metadata:
                 metadata["band names"] = metadata["wavelength"]
             elif nbands == 1:
                 metadata["band names"] = [var]
             else:
-                metadata["band names"] = [f'{var} Band {i + 1}' for i in
-                                          range(nbands)]
+                metadata["band names"] = [f"{var} Band {i + 1}" for i in range(nbands)]
 
         # Replace NaN values in each layer with fill_value
         nval = -9999
@@ -421,39 +418,38 @@ def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
             tmp = Data()
             if not metaonly:
                 tmp.data = np.ma.masked_equal(xrdat[:, :, bandnr], nval)
-            tmp.dataid = metadata['band names'][bandnr]
+            tmp.dataid = metadata["band names"][bandnr]
             if tnames is not None and tmp.dataid not in tnames:
                 continue
             tmp.crs = CRS.from_epsg(4326)
 
-            ymax = float(metadata['northernmost_latitude'][1:-1])
-            xmin = float(metadata['westernmost_longitude'][1:-1])
+            ymax = float(metadata["northernmost_latitude"][1:-1])
+            xmin = float(metadata["westernmost_longitude"][1:-1])
 
-            dxy = float(metadata['spatialResolution'][1:-1])
+            dxy = float(metadata["spatialResolution"][1:-1])
 
             tmp.set_transform(dxy, xmin, dxy, ymax)
             tmp.meta = metadata
 
             tmp.nodata = nval
-            timetxt = metadata['time_coverage_start'][1:-1].strip()
+            timetxt = metadata["time_coverage_start"][1:-1].strip()
             tmp.datetime = datetime.datetime.fromisoformat(timetxt)
 
-            bmeta = tmp.metadata['Raster']
-            bmeta['Sensor'] = f'EMIT {var}'
+            bmeta = tmp.metadata["Raster"]
+            bmeta["Sensor"] = f"EMIT {var}"
 
-            if 'mineral_id' in var:
-                bmeta['MineralNames'] = xrds.mineral_name.to_numpy()
-                bmeta['MineralNames'] = np.insert(bmeta['MineralNames'], 0,
-                                                  'None')
-            if 'wavelength' in metadata:
+            if "mineral_id" in var:
+                bmeta["MineralNames"] = xrds.mineral_name.to_numpy()
+                bmeta["MineralNames"] = np.insert(bmeta["MineralNames"], 0, "None")
+            if "wavelength" in metadata:
                 tmp.units = var.capitalize()
-                wlen = float(metadata['wavelength'][bandnr])
-                bmeta['wavelength'] = wlen
+                wlen = float(metadata["wavelength"][bandnr])
+                bmeta["wavelength"] = wlen
 
-                if 'fwhm' in metadata:
-                    bwidth = float(metadata['fwhm'][bandnr])
-                    bmeta['WavelengthMin'] = wlen - bwidth / 2
-                    bmeta['WavelengthMax'] = wlen + bwidth / 2
+                if "fwhm" in metadata:
+                    bwidth = float(metadata["fwhm"][bandnr])
+                    bmeta["WavelengthMin"] = wlen - bwidth / 2
+                    bmeta["WavelengthMax"] = wlen + bwidth / 2
             dat.append(tmp)
 
     return dat
@@ -463,6 +459,7 @@ def main():
     """EMIT data."""
     import matplotlib.pyplot as plt
     from matplotlib import cm, colors
+
     from pygmi.misc import discrete_colorbar, getinfo
 
     # ifile = r"D:/EMIT/EMIT_L1B_OBS_001_20240430T101307_2412107_042.nc"
@@ -490,7 +487,7 @@ def main():
         ax = fig.gca()
         plt.title(i.dataid)
         cax = ax.imshow(i.data, extent=i.extent)
-        if 'mineral' in i.dataid:
+        if "mineral" in i.dataid:
             vals = np.unique(i.data)
             if np.ma.isMaskedArray(vals):
                 vals = vals.compressed()
@@ -503,7 +500,7 @@ def main():
             norm = colors.BoundaryNorm(bnds, cmap.N)
             cax = ax.imshow(i.data, extent=i.extent, norm=norm)
 
-            minerals = i.metadata['Raster']['MineralNames'][vals]
+            minerals = i.metadata["Raster"]["MineralNames"][vals]
 
             discrete_colorbar(ax, cax, i.data, minerals)
         else:
@@ -515,4 +512,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-    print('Finished!')
+    print("Finished!")

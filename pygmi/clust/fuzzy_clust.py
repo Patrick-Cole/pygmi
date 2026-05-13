@@ -28,12 +28,12 @@ Fuzzy clustering is a set of clustering routines.
 This makes use of fuzzy logic.
 """
 
-from PySide6 import QtWidgets
 import numpy as np
+from PySide6 import QtWidgets
 
-from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 
 
 class FuzzyClust(BasicModule):
@@ -64,7 +64,7 @@ class FuzzyClust(BasicModule):
 
         self.setupui()
 
-        self.cltype = 'fuzzy c-means'
+        self.cltype = "fuzzy c-means"
         self.min_cluster = 5
         self.max_cluster = 5
         self.max_iter = 100
@@ -72,13 +72,13 @@ class FuzzyClust(BasicModule):
         self.runs = 1
         self.constrain = 0.0
         self.denorm = False
-        self.init_type = 'random'
-        self.type = 'fuzzy'
+        self.init_type = "random"
+        self.type = "fuzzy"
         self.fexp = 1.5
 
-        self.cmb_alg.addItems(['fuzzy c-means',
-                               'advanced fuzzy c-means',
-                               'Gustafson-Kessel'])  # , 'Gath-Geva'])
+        self.cmb_alg.addItems(
+            ["fuzzy c-means", "advanced fuzzy c-means", "Gustafson-Kessel"]
+        )  # , 'Gath-Geva'])
 
         self.cmb_alg.currentIndexChanged.connect(self.combo)
         self.combo()
@@ -92,7 +92,7 @@ class FuzzyClust(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'cluster.dm.fuzzy'
+        self.buttonbox.htmlfile = "cluster.dm.fuzzy"
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox(self)
         vbl = QtWidgets.QVBoxLayout(gbox)
@@ -106,34 +106,32 @@ class FuzzyClust(BasicModule):
         lbl_8 = QtWidgets.QLabel()
 
         self.sb_maxclusters.setMinimum(1)
-        self.sb_maxclusters.setProperty('value', 5)
+        self.sb_maxclusters.setProperty("value", 5)
         self.sb_maxiterations.setMinimum(1)
         self.sb_maxiterations.setMaximum(1000)
-        self.sb_maxiterations.setProperty('value', 100)
+        self.sb_maxiterations.setProperty("value", 100)
         self.sb_repeatedruns.setMinimum(1)
         self.sb_minclusters.setMinimum(1)
-        self.sb_minclusters.setProperty('value', 5)
+        self.sb_minclusters.setProperty("value", 5)
         self.dsb_maxerror.setDecimals(5)
-        self.dsb_maxerror.setProperty('value', 1e-05)
-        self.dsb_fuzzynessexp.setProperty('value', 1.5)
+        self.dsb_maxerror.setProperty("value", 1e-05)
+        self.dsb_fuzzynessexp.setProperty("value", 1.5)
         self.rb_random.setChecked(True)
 
-        self.setWindowTitle('Fuzzy Clustering')
-        gbox.setTitle('Initial Guess')
+        self.setWindowTitle("Fuzzy Clustering")
+        gbox.setTitle("Initial Guess")
         gbox.hide()
-        lbl_1.setText('Cluster Algorithm:')
-        lbl_2.setText('Minimum Clusters:')
-        lbl_3.setText('Maximum Clusters')
-        lbl_4.setText('Maximum Iterations:')
-        lbl_5.setText('Terminate if relative change per iteration is less '
-                      'than:')
-        lbl_6.setText('Repeated Runs:')
-        self.lbl_7.setText('Constrain Cluster Shape (0: unconstrained, '
-                           '1: spherical)')
-        lbl_8.setText('Fuzziness Exponent')
-        self.rb_random.setText('Random')
-        self.rb_manual.setText('Manual')
-        self.rb_datadriven.setText('Data Driven')
+        lbl_1.setText("Cluster Algorithm:")
+        lbl_2.setText("Minimum Clusters:")
+        lbl_3.setText("Maximum Clusters")
+        lbl_4.setText("Maximum Iterations:")
+        lbl_5.setText("Terminate if relative change per iteration is less than:")
+        lbl_6.setText("Repeated Runs:")
+        self.lbl_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
+        lbl_8.setText("Fuzziness Exponent")
+        self.rb_random.setText("Random")
+        self.rb_manual.setText("Manual")
+        self.rb_datadriven.setText("Data Driven")
 
         gl_1.addWidget(lbl_1, 0, 0, 1, 1)
         gl_1.addWidget(lbl_2, 1, 0, 1, 1)
@@ -169,7 +167,7 @@ class FuzzyClust(BasicModule):
 
         """
         i = str(self.cmb_alg.currentText())
-        if i in ('Gath-Geva', 'Gustafson-Kessel'):
+        if i in ("Gath-Geva", "Gustafson-Kessel"):
             self.lbl_7.show()
             self.dsb_constraincluster.show()
         else:
@@ -191,14 +189,15 @@ class FuzzyClust(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
-        tst = np.unique([i.data.shape for i in self.indata['Raster']])
+        tst = np.unique([i.data.shape for i in self.indata["Raster"]])
         if tst.size > 2:
-            self.showlog('Error: Your input datasets have different '
-                         'sizes. Merge the data first')
+            self.showlog(
+                "Error: Your input datasets have different sizes. Merge the data first"
+            )
             return False
 
         if not nodialog:
@@ -210,31 +209,42 @@ class FuzzyClust(BasicModule):
             if self.parent is not None:
                 self.parent.process_is_active()
 
-        data = [i.copy() for i in self.indata['Raster']]
+        data = [i.copy() for i in self.indata["Raster"]]
         self.update_vars()
 
         ifiles = []
-        if self.init_type == 'manual':
-            ext = ('ASCII matrix (*.txt);;'
-                   'ASCII matrix (*.asc);;'
-                   'ASCII matrix (*.dat)')
+        if self.init_type == "manual":
+            ext = "ASCII matrix (*.txt);;ASCII matrix (*.asc);;ASCII matrix (*.dat)"
             filename = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Read Cluster Centers', '.', ext)
-            if filename == '':
+                self.parent, "Read Cluster Centers", ".", ext
+            )
+            if filename == "":
                 return False
             ifiles.append(filename)
 
             filename = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Read Cluster Center Constraints', '.', ext)
+                self.parent, "Read Cluster Center Constraints", ".", ext
+            )
             ifiles.append(filename)
 
-        dat_out = fuzzyclust(data, self.cltype, self.min_cluster,
-                             self.max_cluster, self.constrain, self.runs,
-                             self.max_iter, self.fexp, self.term_thresh,
-                             self.init_type, ifiles, self.showlog, self.piter)
+        dat_out = fuzzyclust(
+            data,
+            self.cltype,
+            self.min_cluster,
+            self.max_cluster,
+            self.constrain,
+            self.runs,
+            self.max_iter,
+            self.fexp,
+            self.term_thresh,
+            self.init_type,
+            ifiles,
+            self.showlog,
+            self.piter,
+        )
 
-        self.outdata['Cluster'] = dat_out
-        self.outdata['Raster'] = self.indata['Raster']
+        self.outdata["Cluster"] = dat_out
+        self.outdata["Raster"] = self.indata["Raster"]
 
         if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
@@ -296,17 +306,28 @@ class FuzzyClust(BasicModule):
         self.fexp = self.dsb_fuzzynessexp.value()
 
         if self.rb_datadriven.isChecked():
-            self.init_type = 'data driven'
+            self.init_type = "data driven"
         elif self.rb_manual.isChecked():
-            self.init_type = 'manual'
+            self.init_type = "manual"
         else:
-            self.init_type = 'random'
+            self.init_type = "random"
 
 
-def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
-               cov_constr=0., no_runs=1, max_iter=100, expo=1.5,
-               term_thresh=0.00001, init_type='random', ifiles=None,
-               showlog=print, piter=iter):
+def fuzzyclust(
+    data,
+    cltype="fuzzy c-means",
+    min_cluster=5,
+    max_cluster=5,
+    cov_constr=0.0,
+    no_runs=1,
+    max_iter=100,
+    expo=1.5,
+    term_thresh=0.00001,
+    init_type="random",
+    ifiles=None,
+    showlog=print,
+    piter=iter,
+):
     """
     Fuzzy Clustering.
 
@@ -346,16 +367,16 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
 
     """
     no_clust = np.array([min_cluster, max_cluster])
-    showlog('Fuzzy Clustering started')
+    showlog("Fuzzy Clustering started")
 
-# #############################################################################
-# Section to deal with different bands having different null values.
-#         masktmp = data[0].data.mask   # Start with the first entry
-# Add the masks to this.This promotes False values to True if necessary
-#         for i in data:
-#             masktmp += i.data.mask
-#         for i, _ in enumerate(data):    # Apply this to all the bands
-#             data[i].data.mask = masktmp
+    # #############################################################################
+    # Section to deal with different bands having different null values.
+    #         masktmp = data[0].data.mask   # Start with the first entry
+    # Add the masks to this.This promotes False values to True if necessary
+    #         for i in data:
+    #             masktmp += i.data.mask
+    #         for i, _ in enumerate(data):    # Apply this to all the bands
+    #             data[i].data.mask = masktmp
 
     masktmp = ~data[0].data.mask
     for i in data:
@@ -363,15 +384,15 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
     masktmp = ~masktmp
     for datai in data:
         if datai.nodata != 0.0:
-            showlog('Setting ' + datai.dataid + ' nodata to 0.')
+            showlog("Setting " + datai.dataid + " nodata to 0.")
             datai.data = np.ma.array(datai.data.filled(0))
         datai.data.mask = masktmp
 
-# #############################################################################
+    # #############################################################################
 
     dat_in = np.array([i.data.compressed() for i in data]).T
 
-    if init_type == 'manual':
+    if init_type == "manual":
         ifile = ifiles[0]
 
         dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
@@ -379,7 +400,7 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
         ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
 
         if dat_in.shape[1] != col or row != ro1:
-            showlog('Warning: Incorrect matrix size!')
+            showlog("Warning: Incorrect matrix size!")
 
         cnt = -1
         for i in range(no_clust[0], no_clust[1] + 1):
@@ -390,15 +411,15 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
             startmdat = {i: smtmp}
             startmfix = {i: []}
 
-        if ifiles[1] == '':
-            showlog('Warning :Running cluster analysis without constraints')
+        if ifiles[1] == "":
+            showlog("Warning :Running cluster analysis without constraints")
         else:
             ifile = ifiles[1]
             dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
             [row, col] = np.shape(dummy_mod)
             ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
             if dat_in.shape[1] != col or row != ro1:
-                showlog('Warning:  Incorrect matrix size!')
+                showlog("Warning:  Incorrect matrix size!")
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
                 smtmp = np.zeros(i)
@@ -419,10 +440,10 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
     clobj_fcn = None
 
     for i in range(no_clust[0], no_clust[1] + 1):
-        showlog(f'Number of Clusters: {i}')
+        showlog(f"Number of Clusters: {i}")
         cnt = cnt + 1
-        if init_type == 'data driven':
-            showlog('Initial guess: data driven')
+        if init_type == "data driven":
+            showlog("Initial guess: data driven")
 
             no_samp = dat_in.shape[0]
             dno_samp = no_samp / i
@@ -433,40 +454,70 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
             smtmp = np.zeros([i, dat_in.shape[1]])
             for k in range(dat_in.shape[1]):
                 for j in range(i):
-                    smtmp[j, k] = np.median(dat_in1[idx[j]:idx[j + 1], k])
+                    smtmp[j, k] = np.median(dat_in1[idx[j] : idx[j + 1], k])
             startmdat = {i: smtmp}
             startmfix = {i: np.array([])}
             del dat_in1
 
             clu, clcent, clobj_fcn, clvrc, clnce, clxbi = fuzzy_means(
-                dat_in, i, startmdat[i], startmfix[i], max_iter,
-                term_thresh, expo, cltype, cov_constr, showlog, piter)
+                dat_in,
+                i,
+                startmdat[i],
+                startmfix[i],
+                max_iter,
+                term_thresh,
+                expo,
+                cltype,
+                cov_constr,
+                showlog,
+                piter,
+            )
 
-        elif init_type == 'manual':
-            showlog('Initial guess: manual')
+        elif init_type == "manual":
+            showlog("Initial guess: manual")
 
             clu, clcent, clobj_fcn, clvrc, clnce, clxbi = fuzzy_means(
-                dat_in, i, startmdat[i], startmfix[i],
-                max_iter, term_thresh, expo, cltype, cov_constr, showlog,
-                piter)
+                dat_in,
+                i,
+                startmdat[i],
+                startmfix[i],
+                max_iter,
+                term_thresh,
+                expo,
+                cltype,
+                cov_constr,
+                showlog,
+                piter,
+            )
 
-        elif init_type == 'random':
-            showlog('Initial guess: random')
+        elif init_type == "random":
+            showlog("Initial guess: random")
 
             clobj_fcn = np.array([np.inf])
             for j in range(no_runs):
-                showlog(f'Run {j + 1} of {no_runs}')
+                showlog(f"Run {j + 1} of {no_runs}")
 
                 xmins = np.minimum(dat_in, 1)
                 xmaxs = np.maximum(dat_in, 1)
-                startm1dat = {i: np.random.uniform(
-                    xmins[np.zeros(i, int), :],
-                    xmaxs[np.zeros(i, int), :])}
+                startm1dat = {
+                    i: np.random.uniform(
+                        xmins[np.zeros(i, int), :], xmaxs[np.zeros(i, int), :]
+                    )
+                }
                 startmfix = {i: np.array([])}
-                clu1, clcent1, clobj_fcn1, clvrc1, clnce1, clxbi1 = \
-                    fuzzy_means(dat_in, i, startm1dat[i],
-                                startmfix[i], max_iter, term_thresh,
-                                expo, cltype, cov_constr, showlog, piter)
+                clu1, clcent1, clobj_fcn1, clvrc1, clnce1, clxbi1 = fuzzy_means(
+                    dat_in,
+                    i,
+                    startm1dat[i],
+                    startmfix[i],
+                    max_iter,
+                    term_thresh,
+                    expo,
+                    cltype,
+                    cov_constr,
+                    showlog,
+                    piter,
+                )
 
                 if clobj_fcn1[-1] < clobj_fcn[-1]:
                     clu = clu1
@@ -485,54 +536,63 @@ def fuzzyclust(data, cltype='fuzzy c-means', min_cluster=5, max_cluster=5,
         clalp[clalp < 0] = 0
         zonal = np.ma.zeros(data[0].data.shape) - 9999.0
         alpha = np.ma.zeros(data[0].data.shape) - 9999.0
-        alpha1 = (data[0].data.mask == 0)
+        alpha1 = data[0].data.mask == 0
         zonal[alpha1 == 1] = clidx
         alpha[alpha1 == 1] = clalp
         zonal.mask = data[0].data.mask
         alpha.mask = data[0].data.mask
 
-        cent_std = np.array([np.std(dat_in[clidx == k], 0)
-                             for k in range(i)])
+        cent_std = np.array([np.std(dat_in[clidx == k], 0) for k in range(i)])
 
         # if de_norm == 1:
         #     pass
 
-        dat_out[cnt].metadata['Cluster']['input_type'] = []
+        dat_out[cnt].metadata["Cluster"]["input_type"] = []
         for k in data:
-            dat_out[cnt].metadata['Cluster']['input_type'].append(k.dataid)
+            dat_out[cnt].metadata["Cluster"]["input_type"].append(k.dataid)
 
         dat_out[cnt].data = np.ma.array(zonal)
-        dat_out[cnt].metadata['Cluster']['no_clusters'] = i
-        dat_out[cnt].metadata['Cluster']['center'] = clcent
-        dat_out[cnt].metadata['Cluster']['center_std'] = cent_std
+        dat_out[cnt].metadata["Cluster"]["no_clusters"] = i
+        dat_out[cnt].metadata["Cluster"]["center"] = clcent
+        dat_out[cnt].metadata["Cluster"]["center_std"] = cent_std
 
-        dat_out[cnt].metadata['Cluster']['memdat'] = []
+        dat_out[cnt].metadata["Cluster"]["memdat"] = []
         for k in range(clcent.shape[0]):
             dummy = np.ones(data[0].data.shape) * np.nan
-            alpha1 = (data[0].data.mask == 0)
+            alpha1 = data[0].data.mask == 0
             dummy[alpha1 == 1] = clu[k, :]
             dummy = np.ma.masked_invalid(dummy)
-            dat_out[cnt].metadata['Cluster']['memdat'].append(dummy)
-        dat_out[cnt].metadata['Cluster']['vrc'] = clvrc
-        dat_out[cnt].metadata['Cluster']['nce'] = clnce
-        dat_out[cnt].metadata['Cluster']['xbi'] = clxbi
-        dat_out[cnt].metadata['Cluster']['obj_fcn'] = clobj_fcn
+            dat_out[cnt].metadata["Cluster"]["memdat"].append(dummy)
+        dat_out[cnt].metadata["Cluster"]["vrc"] = clvrc
+        dat_out[cnt].metadata["Cluster"]["nce"] = clnce
+        dat_out[cnt].metadata["Cluster"]["xbi"] = clxbi
+        dat_out[cnt].metadata["Cluster"]["obj_fcn"] = clobj_fcn
 
     for i in dat_out:
-        i.dataid = ('Fuzzy Cluster: ' +
-                    str(i.metadata['Cluster']['no_clusters']))
+        i.dataid = "Fuzzy Cluster: " + str(i.metadata["Cluster"]["no_clusters"])
         i.nodata = data[0].nodata
         i.set_transform(transform=data[0].transform)
         i.data += 1
         i.crs = data[0].crs
 
-    showlog(f'Fuzzy Cluster complete ({cltype} {init_type})')
+    showlog(f"Fuzzy Cluster complete ({cltype} {init_type})")
 
     return dat_out
 
 
-def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
-                expo, cltype, cov_constr, showlog=print, piter=iter):
+def fuzzy_means(
+    data,
+    no_clust,
+    init,
+    centfix,
+    maxit,
+    term_thresh,
+    expo,
+    cltype,
+    cov_constr,
+    showlog=print,
+    piter=iter,
+):
     """
     Fuzzy clustering.
 
@@ -594,16 +654,16 @@ def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
     xbi : numpy array
         Xie beni index.
     """
-    showlog(' ')
+    showlog(" ")
 
-    if cltype == 'fuzzy c-means':
-        cltype = 'fcm'
-    if cltype == 'advanced fuzzy c-means':
-        cltype = 'det'
-    if cltype == 'Gustafson-Kessel':
-        cltype = 'gk'
-    if cltype == 'Gath-Geva':
-        cltype = 'gg'
+    if cltype == "fuzzy c-means":
+        cltype = "fcm"
+    if cltype == "advanced fuzzy c-means":
+        cltype = "det"
+    if cltype == "Gustafson-Kessel":
+        cltype = "gk"
+    if cltype == "Gath-Geva":
+        cltype = "gg"
 
     no_samples = data.shape[0]
     data_types = data.shape[1]
@@ -619,41 +679,41 @@ def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
         xmins = np.minimum(data, 1)
         xmaxs = np.maximum(data, 1)
         # initial guess of centroids
-        cent = np.random.uniform(xmins[np.zeros(no_clust, int), :],
-                                 xmaxs[np.zeros(no_clust, int), :])
+        cent = np.random.uniform(
+            xmins[np.zeros(no_clust, int), :], xmaxs[np.zeros(no_clust, int), :]
+        )
         # GK and det clustering require center and memberships for distance
         # calculation: here initial guess for uuu assuming spherically
         # shaped clusters
         # calc distances of each data point to each cluster centre assuming
         # spherical clusters
-        edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
+        edist = fuzzy_dist(cent, data, [], [], "fcm", cov_constr)
         tmp = edist ** (-2 / (expo - 1))  # calc new U, suppose expo != 1
         uuu = tmp / (np.ones([no_clust, 1]) * np.sum(tmp, 0))
-        m_f = uuu ** expo   # m_f matrix after exponential modification
+        m_f = uuu**expo  # m_f matrix after exponential modification
     # if center matrix is provided
     elif init.shape[0] == no_clust and init.shape[1] == data_types:
         cent = init
         # calc distances of each data point to each cluster centre assuming
         # spherical clusters
-        edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
+        edist = fuzzy_dist(cent, data, [], [], "fcm", cov_constr)
         tmp = edist ** (-2.0 / (expo - 1))  # calc new U, suppose expo != 1
         uuu = tmp / (np.ones([no_clust, 1]) * np.sum(tmp, 0))
-        m_f = uuu ** expo  # MF matrix after exponential modification
+        m_f = uuu**expo  # MF matrix after exponential modification
 
     # if membership matrix is provided
     elif init.shape[0] == no_clust and init.shape[1] == no_samples:
         if init[init < 0].size > 0:  # check for negative memberships
-            showlog('No negative memberships allowed!')
+            showlog("No negative memberships allowed!")
             # scale given memberships to a column sum of unity
         uuu = init / (np.ones([no_clust, 1]) * init.sum())
         # MF matrix after exponential modification
-        m_f = uuu ** expo
+        m_f = uuu**expo
         # new inital center matrix based on the given membership
-        cent = m_f * data / ((np.ones([np.size(data, 2), 1]) *
-                              (m_f.T).sum()).T)
+        cent = m_f * data / ((np.ones([np.size(data, 2), 1]) * (m_f.T).sum()).T)
         # calc distances of each data point to each cluster centre assuming
         # spherical clusters
-        edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
+        edist = fuzzy_dist(cent, data, [], [], "fcm", cov_constr)
 
     centfix = abs(centfix)
 
@@ -665,19 +725,18 @@ def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
         dist_prev = edist
         if i > 0:
             # calc new centers
-            cent = np.dot(m_f, data) / ((np.ones([data.shape[1], 1]) *
-                                         np.sum(m_f, 1)).T)
+            cent = np.dot(m_f, data) / (
+                (np.ones([data.shape[1], 1]) * np.sum(m_f, 1)).T
+            )
         # calc distances of each data point to each cluster centre
         edist = fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)
         tmp = edist ** (-2 / (expo - 1))  # calc new uuu, suppose expo != 1
         uuu = tmp / np.sum(tmp, 0)
-        m_f = uuu ** expo
-        obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
+        m_f = uuu**expo
+        obj_fcn[i] = np.sum((edist**2) * m_f)  # objective function
         if i > 0:
-            objperc = 100 * ((obj_fcn[i - 1] - obj_fcn[i]) /
-                             obj_fcn[i - 1])
-            showlog(f'Iteration: {i} Threshold: {term_thresh} '
-                    f'Current: {objperc:.2e}')
+            objperc = 100 * ((obj_fcn[i - 1] - obj_fcn[i]) / obj_fcn[i - 1])
+            showlog(f"Iteration: {i} Threshold: {term_thresh} Current: {objperc:.2e}")
 
             # if objective function has increased
             if obj_fcn[i] > obj_fcn[i - 1]:
@@ -693,8 +752,11 @@ def fuzzy_means(data, no_clust, init, centfix, maxit, term_thresh,
 
     idx = np.argmax(uuu, 0)
     vrc = vr.var_ratio(data, idx, cent, edist)
-    nce = (-1.0 * (np.sum(uuu * np.log10(uuu)) / np.shape(uuu)[1]) /
-           np.log10(np.shape(uuu)[0]))
+    nce = (
+        -1.0
+        * (np.sum(uuu * np.log10(uuu)) / np.shape(uuu)[1])
+        / np.log10(np.shape(uuu)[0])
+    )
     xbi = xie_beni(data, expo, uuu, cent, edist)
 
     return uuu, cent, obj_fcn, vrc, nce, xbi
@@ -733,34 +795,37 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     aaa0 = None
 
     # FCM
-    if cltype in ('FCM', 'fcm'):
+    if cltype in ("FCM", "fcm"):
         for j in range(no_cent):
-            ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
-                                         cent[j])**2), 1))
+            ddd[j, :] = np.sqrt(
+                np.sum(((data - np.ones([no_samples, 1]) * cent[j]) ** 2), 1)
+            )
         # determinant criterion see Spath, Helmuth,
         # "Cluster-Formation and Analyse", chapter 3
-    elif cltype in ('DET', 'det'):
-        m_f = uuu ** expo
+    elif cltype in ("DET", "det"):
+        m_f = uuu**expo
         for j in range(no_cent):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
             dcent = data - np.ones([no_samples, 1]) * cent[j]
             # Covar of the j-th cluster
-            aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))
+            aaa = np.dot(
+                np.ones([no_datasets, 1]) * m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0)
+            )
 
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(aaa) > 1e10:
                 e_d, e_v = np.linalg.eig(aaa)
                 edmax = np.max(e_d)
                 e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
+                aaa = np.dot(
+                    np.dot(e_v, (e_d * np.eye(no_datasets))), np.linalg.inv(e_v)
+                )
             if j == 0:  # sum all covariance matrices for all clusters
                 aaa0 = aaa
             else:
                 aaa0 = aaa0 + aaa
-        mmm = np.linalg.det(aaa0)**(1.0 / no_datasets) * np.linalg.pinv(aaa0)
+        mmm = np.linalg.det(aaa0) ** (1.0 / no_datasets) * np.linalg.pinv(aaa0)
         dtmp = []
         # calc new distances using the same covariance matrix for all
         # clusters --> ellisoidal clusters, all clusters use equal
@@ -772,16 +837,17 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
         ddd = np.sqrt(np.array(dtmp))
     # GK
-    elif cltype in ['GK', 'gk']:
-        m_f = uuu ** expo
+    elif cltype in ["GK", "gk"]:
+        m_f = uuu**expo
         dtmp = []
         for j in range(no_cent):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
             dcent = data - np.ones([no_samples, 1]) * cent[j]
             # Covariance of the j-th cluster
-            aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))
+            aaa = np.dot(
+                np.ones([no_datasets, 1]) * m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0)
+            )
             aaa0 = np.eye(no_datasets)
             # if cov_constr>0, this enforces not to elongated ellipsoids -->
             # avoid the needle-like cluster
@@ -791,15 +857,16 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 e_d, e_v = np.linalg.eig(aaa)
                 edmax = np.max(e_d)
                 e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
+                aaa = np.dot(
+                    np.dot(e_v, (e_d * np.eye(no_datasets))), np.linalg.inv(e_v)
+                )
             # GK Code
-            mmm = np.linalg.det(aaa)**(1.0 / no_datasets) * np.linalg.pinv(aaa)
+            mmm = np.linalg.det(aaa) ** (1.0 / no_datasets) * np.linalg.pinv(aaa)
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
         ddd = np.sqrt(np.array(dtmp))
     # GG
-    elif cltype in ['GG', 'gg']:
-        m_f = uuu ** expo
+    elif cltype in ["GG", "gg"]:
+        m_f = uuu**expo
         dtmp = []
         for j in range(no_cent):
             # difference between each sample attribute to the corresponding
@@ -817,12 +884,13 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 e_d, e_v = np.linalg.eig(aaa)
                 edmax = np.max(e_d)
                 e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
+                aaa = np.dot(
+                    np.dot(e_v, (e_d * np.eye(no_datasets))), np.linalg.inv(e_v)
+                )
             # GG code
             ppp = 1.0 / no_samples * np.sum(m_f[j])
 
-            t_1 = np.linalg.det(aaa)**0.5 / ppp
+            t_1 = np.linalg.det(aaa) ** 0.5 / ppp
             t_4 = np.linalg.pinv(aaa)
             t_5 = np.dot(dcent, t_4) * dcent * 0.5
             t_7 = np.exp(t_5)
@@ -867,8 +935,7 @@ def xie_beni(data, expo, uuu, center, edist):
         for k in range(center.shape[0]):  # no of clusters
             # squared distance of all data values to the k-th cluster,
             # contains nan for missing values
-            dummy = np.dot(data - np.ones(np.size(data, 1), 1),
-                           center[k] ** 2).T
+            dummy = np.dot(data - np.ones(np.size(data, 1), 1), center[k] ** 2).T
             # put in zero distances for all missing values, now all nans are
             # replaced by zeros.
             dummy[np.isnan(dummy) == 1] = 0
@@ -876,9 +943,9 @@ def xie_beni(data, expo, uuu, center, edist):
             # (equals distfcm_mv.m)
             edist[k] = np.sqrt(np.sum(dummy))
 
-    m_f = uuu ** expo
+    m_f = uuu**expo
     # equal to objective function without spatial constraints
-    numerator = np.sum((edist ** 2) * m_f)
+    numerator = np.sum((edist**2) * m_f)
 
     min_cdist = np.inf  # set minimal centre distance to infinity
     cdist = []
@@ -900,7 +967,9 @@ def xie_beni(data, expo, uuu, center, edist):
 
 def _testfn():
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
@@ -909,13 +978,13 @@ def _testfn():
     dat = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = FuzzyClust()
-    DM.indata['Raster'] = dat
+    DM.indata["Raster"] = dat
     DM.settings()
 
-    dat2 = DM.outdata['Cluster']
+    dat2 = DM.outdata["Cluster"]
 
     plt.figure(dpi=150)
     plt.imshow(dat2[0].data)

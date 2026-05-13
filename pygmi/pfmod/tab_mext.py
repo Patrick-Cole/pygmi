@@ -24,12 +24,12 @@
 # -----------------------------------------------------------------------------
 """Model extents display routines for 3D modelling."""
 
-from PySide6 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
+from PySide6 import QtCore, QtWidgets
 
-from pygmi import menu_default
 import pygmi.misc as pmisc
+from pygmi import menu_default
 
 
 class MextDisplay(QtWidgets.QDialog):
@@ -81,54 +81,57 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
-        self.setWindowTitle('Model Extent Parameters')
-        helpdocs = menu_default.HelpButton('pfmod.dm.modelcreate')
+        self.setWindowTitle("Model Extent Parameters")
+        helpdocs = menu_default.HelpButton("pfmod.dm.modelcreate")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Preferred)
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Orientation.Horizontal)
         buttonbox.setStandardButtons(
-            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok)
-        buttonbox.button(buttonbox.StandardButton.Cancel).setText('No changes')
+            buttonbox.StandardButton.Cancel | buttonbox.StandardButton.Ok
+        )
+        buttonbox.button(buttonbox.StandardButton.Cancel).setText("No changes")
         buttonbox.button(buttonbox.StandardButton.Ok).setText(
-            'Apply changes (reset calculations)')
+            "Apply changes (reset calculations)"
+        )
 
         # Current Models Groupbox
         hbl_model = QtWidgets.QHBoxLayout()
 
-        lbl_model = QtWidgets.QLabel('Current Model:')
+        lbl_model = QtWidgets.QLabel("Current Model:")
 
-        self.cmb_model.addItems(['None'])
+        self.cmb_model.addItems(["None"])
         self.cmb_model.setSizePolicy(sizepolicy)
 
         hbl_model.addWidget(lbl_model)
         hbl_model.addWidget(self.cmb_model)
 
         # Data Information Groupbox
-        gbox_data_info = QtWidgets.QGroupBox('Dataset Information')
+        gbox_data_info = QtWidgets.QGroupBox("Dataset Information")
         gl_data_info = QtWidgets.QGridLayout(gbox_data_info)
 
-        self.cmb_mag.addItems(['None'])
-        self.cmb_grv.addItems(['None'])
-        self.cmb_reggrv.addItems(['None'])
-        self.cmb_dtm.addItems(['None'])
-        self.cmb_other.addItems(['None'])
+        self.cmb_mag.addItems(["None"])
+        self.cmb_grv.addItems(["None"])
+        self.cmb_reggrv.addItems(["None"])
+        self.cmb_dtm.addItems(["None"])
+        self.cmb_other.addItems(["None"])
 
         gl_data_info.setColumnStretch(0, 1)
         gl_data_info.setColumnStretch(1, 1)
         gl_data_info.setColumnStretch(2, 1)
 
-        lbl_1_data_info = QtWidgets.QLabel('DTM Dataset:')
-        lbl_2_data_info = QtWidgets.QLabel('Magnetic Dataset:')
-        lbl_3_data_info = QtWidgets.QLabel('Gravity Dataset:')
-        lbl_4_data_info = QtWidgets.QLabel('Gravity Regional Dataset:')
-        lbl_5_data_info = QtWidgets.QLabel('Other:')
+        lbl_1_data_info = QtWidgets.QLabel("DTM Dataset:")
+        lbl_2_data_info = QtWidgets.QLabel("Magnetic Dataset:")
+        lbl_3_data_info = QtWidgets.QLabel("Gravity Dataset:")
+        lbl_4_data_info = QtWidgets.QLabel("Gravity Regional Dataset:")
+        lbl_5_data_info = QtWidgets.QLabel("Other:")
 
         gl_data_info.addWidget(lbl_1_data_info, 0, 0, 1, 1)
         gl_data_info.addWidget(lbl_2_data_info, 1, 0, 1, 1)
@@ -142,20 +145,20 @@ class MextDisplay(QtWidgets.QDialog):
         gl_data_info.addWidget(self.cmb_other, 4, 1, 1, 1)
 
         # Data Extents Groupbox
-        gbox_extent = QtWidgets.QGroupBox('Model Extent Properties')
+        gbox_extent = QtWidgets.QGroupBox("Model Extent Properties")
         gl_extent = QtWidgets.QGridLayout(gbox_extent)
 
-        self.cmb_dataset.addItems(['None'])
+        self.cmb_dataset.addItems(["None"])
 
-        lbl_0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
-        lbl_3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
-        lbl_4 = QtWidgets.QLabel('Upper Top Left Y Coordinate:')
-        lbl_1 = QtWidgets.QLabel('Upper Top Left Z Coordinate (from DTM):')
-        lbl_8 = QtWidgets.QLabel('Total X Extent:')
-        lbl_9 = QtWidgets.QLabel('Total Y Extent:')
-        lbl_10 = QtWidgets.QLabel('Total Z Extent (Depth):')
-        lbl_5 = QtWidgets.QLabel('X and Y Cell Size:')
-        lbl_6 = QtWidgets.QLabel('Z Cell Size:')
+        lbl_0 = QtWidgets.QLabel("Get Study Area from following Dataset:")
+        lbl_3 = QtWidgets.QLabel("Upper Top Left X Coordinate:")
+        lbl_4 = QtWidgets.QLabel("Upper Top Left Y Coordinate:")
+        lbl_1 = QtWidgets.QLabel("Upper Top Left Z Coordinate (from DTM):")
+        lbl_8 = QtWidgets.QLabel("Total X Extent:")
+        lbl_9 = QtWidgets.QLabel("Total Y Extent:")
+        lbl_10 = QtWidgets.QLabel("Total Z Extent (Depth):")
+        lbl_5 = QtWidgets.QLabel("X and Y Cell Size:")
+        lbl_6 = QtWidgets.QLabel("Z Cell Size:")
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -183,15 +186,15 @@ class MextDisplay(QtWidgets.QDialog):
         self.sb_cols.setEnabled(False)
         self.sb_cols.setMinimum(1)
         self.sb_cols.setMaximum(1000000)
-        self.sb_cols.setPrefix('Columns (X): ')
+        self.sb_cols.setPrefix("Columns (X): ")
         self.sb_rows.setEnabled(False)
         self.sb_rows.setMinimum(1)
         self.sb_rows.setMaximum(1000000)
-        self.sb_rows.setPrefix('Rows (Y): ')
+        self.sb_rows.setPrefix("Rows (Y): ")
         self.sb_layers.setEnabled(False)
         self.sb_layers.setMinimum(1)
         self.sb_layers.setMaximum(1000000)
-        self.sb_layers.setPrefix('Layers (Z): ')
+        self.sb_layers.setPrefix("Layers (Z): ")
 
         gl_extent.addWidget(lbl_0, 0, 0, 1, 1)
         gl_extent.addWidget(lbl_3, 1, 0, 1, 1)
@@ -251,14 +254,14 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
-        self.showtext('Working...')
+        self.showtext("Working...")
 
-        self.choose_combo(self.cmb_dtm, 'DTM Dataset')
-        self.choose_combo(self.cmb_mag, 'Magnetic Dataset')
-        self.choose_combo(self.cmb_grv, 'Gravity Dataset')
-        self.choose_combo(self.cmb_reggrv, 'Gravity Regional')
-        self.choose_combo(self.cmb_dataset, 'Study Area Dataset')
-        self.choose_combo(self.cmb_other, 'Other')
+        self.choose_combo(self.cmb_dtm, "DTM Dataset")
+        self.choose_combo(self.cmb_mag, "Magnetic Dataset")
+        self.choose_combo(self.cmb_grv, "Gravity Dataset")
+        self.choose_combo(self.cmb_reggrv, "Gravity Regional")
+        self.choose_combo(self.cmb_dataset, "Study Area Dataset")
+        self.choose_combo(self.cmb_other, "Other")
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -269,16 +272,17 @@ class MextDisplay(QtWidgets.QDialog):
         dxy = self.dsb_xycell.value()
         d_z = self.dsb_zcell.value()
 
-        self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
-                          pbar=self.pbar, usedtm=True)
+        self.lmod1.update(
+            cols, rows, layers, utlx, utly, utlz, dxy, d_z, pbar=self.pbar, usedtm=True
+        )
 
         self.update_vals()
 
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
         tmp = list(set(self.lmod1.griddata.values()))
-        self.parent.outdata['Raster'] = tmp
-        self.showtext('Changes applied.')
+        self.parent.outdata["Raster"] = tmp
+        self.showtext("Changes applied.")
 
         self.accept()
 
@@ -299,9 +303,9 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         ctxt = str(combo.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             self.lmod1.griddata[dtxt] = self.parent.inraster[ctxt]
-        elif ctxt == 'None' and dtxt in self.lmod1.griddata:
+        elif ctxt == "None" and dtxt in self.lmod1.griddata:
             self.lmod1.griddata.pop(dtxt)
 
     def choose_dtm(self):
@@ -314,7 +318,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         ctxt = str(self.cmb_dtm.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             curgrid = self.parent.inraster[ctxt]
 
             self.dsb_utlz.setValue(curgrid.data.max())
@@ -334,9 +338,9 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         ctxt = str(self.cmb_model.currentText())
-        if ctxt == 'None' or 'Model3D' not in self.parent.indata:
+        if ctxt == "None" or "Model3D" not in self.parent.indata:
             return
-        for i in self.parent.indata['Model3D']:
+        for i in self.parent.indata["Model3D"]:
             if i.name == ctxt:
                 self.lmod1 = i
                 self.parent.lmod1 = i
@@ -370,7 +374,7 @@ class MextDisplay(QtWidgets.QDialog):
         z = gdata[gmask]
         outg = np.ones_like(gtmp)
         points2 = np.where(outg)
-        outg = si.griddata(points1, z, points2, method='nearest')
+        outg = si.griddata(points1, z, points2, method="nearest")
 
         outg = outg.reshape(gtmp.shape)
         outg[gmask] = gdata[gmask]
@@ -389,7 +393,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         """
         ctxt = str(self.cmb_dataset.currentText())
-        if ctxt not in ('None', ''):
+        if ctxt not in ("None", ""):
             curgrid = self.parent.inraster[ctxt]
 
             crows, ccols = curgrid.data.shape
@@ -461,9 +465,9 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
-        modnames = ['None']
-        if 'Model3D' in self.parent.indata:
-            for i in self.parent.indata['Model3D']:
+        modnames = ["None"]
+        if "Model3D" in self.parent.indata:
+            for i in self.parent.indata["Model3D"]:
                 modnames.append(i.name)
 
         self.cmb_model.currentIndexChanged.disconnect()
@@ -489,11 +493,11 @@ class MextDisplay(QtWidgets.QDialog):
         self.cmb_dataset.currentIndexChanged.disconnect()
 
         gkeys = list(self.parent.inraster.keys())
-        if 'Calculated Gravity' in gkeys:
-            gkeys.remove('Calculated Gravity')
-        if 'Calculated Magnetics' in gkeys:
-            gkeys.remove('Calculated Magnetics')
-        gkeys = ['None'] + gkeys
+        if "Calculated Gravity" in gkeys:
+            gkeys.remove("Calculated Gravity")
+        if "Calculated Magnetics" in gkeys:
+            gkeys.remove("Calculated Magnetics")
+        gkeys = ["None"] + gkeys
 
         if len(gkeys) > 1:
             self.cmb_other.clear()
@@ -516,47 +520,47 @@ class MextDisplay(QtWidgets.QDialog):
             self.cmb_dataset.setCurrentIndex(0)
 
             lkeys = list(self.lmod1.griddata.keys())
-            if 'DTM Dataset' in lkeys:
-                tmp = self.lmod1.griddata['DTM Dataset'].dataid
+            if "DTM Dataset" in lkeys:
+                tmp = self.lmod1.griddata["DTM Dataset"].dataid
                 if tmp in gkeys:
                     self.cmb_dtm.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['DTM Dataset']
+                    del self.lmod1.griddata["DTM Dataset"]
 
-            if 'Magnetic Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Magnetic Dataset'].dataid
+            if "Magnetic Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Magnetic Dataset"].dataid
                 if tmp in gkeys:
                     self.cmb_mag.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['Magnetic Dataset']
+                    del self.lmod1.griddata["Magnetic Dataset"]
 
-            if 'Gravity Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Dataset'].dataid
+            if "Gravity Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Gravity Dataset"].dataid
                 if tmp in gkeys:
                     self.cmb_grv.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['Gravity Dataset']
+                    del self.lmod1.griddata["Gravity Dataset"]
 
-            if 'Gravity Regional' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Regional'].dataid
+            if "Gravity Regional" in lkeys:
+                tmp = self.lmod1.griddata["Gravity Regional"].dataid
                 if tmp in gkeys:
                     self.cmb_reggrv.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['Gravity Regional']
+                    del self.lmod1.griddata["Gravity Regional"]
 
-            if 'Study Area Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Study Area Dataset'].dataid
+            if "Study Area Dataset" in lkeys:
+                tmp = self.lmod1.griddata["Study Area Dataset"].dataid
                 if tmp in gkeys:
                     self.cmb_dataset.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['Study Area Dataset']
+                    del self.lmod1.griddata["Study Area Dataset"]
 
-            if 'Other' in lkeys:
-                tmp = self.lmod1.griddata['Other'].dataid
+            if "Other" in lkeys:
+                tmp = self.lmod1.griddata["Other"].dataid
                 if tmp in gkeys:
                     self.cmb_other.setCurrentIndex(gkeys.index(tmp))
                 else:
-                    del self.lmod1.griddata['Other']
+                    del self.lmod1.griddata["Other"]
 
         self.cmb_dataset.currentIndexChanged.connect(self.get_area)
 

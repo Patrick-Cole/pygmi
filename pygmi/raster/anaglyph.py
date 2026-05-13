@@ -29,23 +29,23 @@ This module allows for the creation of anaglyphs - which can then be used for
 feature detection and interpretation.
 """
 
-from PySide6 import QtWidgets, QtCore
 import numpy as np
+from matplotlib import collections as mc
 from matplotlib import colormaps
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib import collections as mc
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from PySide6 import QtCore, QtWidgets
 
-from pygmi.misc import frm, ContextModule
-from pygmi.raster.misc import norm2, currentshader, histcomp
+from pygmi.misc import ContextModule, frm
+from pygmi.raster.misc import currentshader, histcomp, norm2
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         super().__init__(fig)
 
         self.axes = fig.add_subplot(111)
@@ -61,8 +61,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.cnum = 10
 
         FigureCanvasQTAgg.setSizePolicy(
-            self, QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Expanding)
+            self,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         FigureCanvasQTAgg.updateGeometry(self)
 
     def update_contours(self, data1, scale=7, rotang=10):
@@ -149,20 +151,28 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.add_collection(lc)
 
         self.axes.autoscale()
-        self.axes.set_aspect('equal')
+        self.axes.set_aspect("equal")
 
-        self.axes.set_xlabel('Eastings')
-        self.axes.set_ylabel('Northings')
+        self.axes.set_xlabel("Eastings")
+        self.axes.set_ylabel("Northings")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
-        self.axes.tick_params(axis='y', labelrotation=0)
-        self.axes.tick_params(axis='x', labelrotation=90)
+        self.axes.tick_params(axis="y", labelrotation=0)
+        self.axes.tick_params(axis="x", labelrotation=90)
 
         self.figure.canvas.draw()
 
-    def update_raster(self, data1, *, scale=7, rotang=10, atype='dubois',
-                      cmap=colormaps['jet'], shade=False):
+    def update_raster(
+        self,
+        data1,
+        *,
+        scale=7,
+        rotang=10,
+        atype="dubois",
+        cmap=colormaps["jet"],
+        shade=False,
+    ):
         """
         Update the raster plot.
 
@@ -197,13 +207,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.x = x * int(dxy)
         y = y * int(dxy)
 
-        self.red1 = rot_and_clean(self.x, y, self.z, rotang, 'red')
-        self.blue1 = rot_and_clean(self.x, y, self.z, rotang, 'blue')
+        self.red1 = rot_and_clean(self.x, y, self.z, rotang, "red")
+        self.blue1 = rot_and_clean(self.x, y, self.z, rotang, "blue")
 
         self.update_colors(shade, cmap, atype)
 
-    def update_colors(self, doshade=False, cmap=colormaps['jet'],
-                      atype='dubois'):
+    def update_colors(self, doshade=False, cmap=colormaps["jet"], atype="dubois"):
         """
         Update colors.
 
@@ -226,14 +235,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
             zmax = 2 * np.std(self.z)
 
             tmp = norm2(self.red1, zmin, zmax)
-            tmp[tmp < 0] = 0.
-            tmp[tmp > 1] = 1.
+            tmp[tmp < 0] = 0.0
+            tmp[tmp > 1] = 1.0
             self.red = cmap(tmp)
             self.red[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.red1))
 
             tmp = norm2(self.blue1, zmin, zmax)
-            tmp[tmp < 0] = 0.
-            tmp[tmp > 1] = 1.
+            tmp[tmp < 0] = 0.0
+            tmp[tmp > 1] = 1.0
             self.blue = cmap(tmp)
             self.blue[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.blue1))
         else:
@@ -241,14 +250,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cell = 100
             azim = np.deg2rad(45)
             elev = np.deg2rad(45)
-            self.red = sunshade(self.red1, azim=azim, elev=elev, alpha=alpha,
-                                cell=cell, cmap=cmap)
-            self.blue = sunshade(self.blue1, azim=azim, elev=elev, alpha=alpha,
-                                 cell=cell, cmap=cmap)
+            self.red = sunshade(
+                self.red1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
+            )
+            self.blue = sunshade(
+                self.blue1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
+            )
 
         self.update_atype(atype)
 
-    def update_atype(self, atype='dubois'):
+    def update_atype(self, atype="dubois"):
         """
         Update anaglyph type.
 
@@ -267,13 +278,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         adata = anaglyph(self.red, self.blue, atype)
 
-        self.axes.imshow(adata, extent=self.extent, interpolation='nearest')
+        self.axes.imshow(adata, extent=self.extent, interpolation="nearest")
 
-        self.axes.set_xlabel('Eastings')
-        self.axes.set_ylabel('Northings')
+        self.axes.set_xlabel("Eastings")
+        self.axes.set_ylabel("Northings")
 
-        self.axes.tick_params(axis='y', labelrotation=0)
-        self.axes.tick_params(axis='x', labelrotation=90)
+        self.axes.tick_params(axis="y", labelrotation=0)
+        self.axes.tick_params(axis="x", labelrotation=90)
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -295,11 +306,11 @@ class PlotAnaglyph(ContextModule):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Anaglyph (3D Image: Glasses Needed)')
+        self.setWindowTitle("Anaglyph (3D Image: Glasses Needed)")
 
         sizepolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Minimum,
-            QtWidgets.QSizePolicy.Policy.Minimum)
+            QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
+        )
 
         # Define Layouts
         hbl = QtWidgets.QHBoxLayout(self)  # self is where layout is assigned
@@ -312,10 +323,9 @@ class PlotAnaglyph(ContextModule):
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
         self.cmb_cbar = QtWidgets.QComboBox()
-        self.cb_shade = QtWidgets.QCheckBox('Sunshade:')
-        self.rb_doimage = QtWidgets.QRadioButton('Full Image:')
-        self.rb_docontour = QtWidgets.QRadioButton('Contour '
-                                                   '(Slider sets number):')
+        self.cb_shade = QtWidgets.QCheckBox("Sunshade:")
+        self.rb_doimage = QtWidgets.QRadioButton("Full Image:")
+        self.rb_docontour = QtWidgets.QRadioButton("Contour (Slider sets number):")
         self.slider_scale = QtWidgets.QSlider()
         self.slider_angle = QtWidgets.QSlider()
         self.slider_cnt = QtWidgets.QSlider()
@@ -333,55 +343,53 @@ class PlotAnaglyph(ContextModule):
         self.slider_cnt.setSizePolicy(sizepolicy)
 
         # Configure Widgets
-        self.cmb_2.addItem('Dubois (Red-Green)')
-        self.cmb_2.addItem('Green-Magenta')
-        self.cmb_2.addItem('Amber-Blue')
-        self.cmb_2.addItem('True (Red-Green)')
-        self.cmb_2.addItem('Gray (Red-Green)')
-        self.cmb_2.addItem('Optimized (Red-Green)')
+        self.cmb_2.addItem("Dubois (Red-Green)")
+        self.cmb_2.addItem("Green-Magenta")
+        self.cmb_2.addItem("Amber-Blue")
+        self.cmb_2.addItem("True (Red-Green)")
+        self.cmb_2.addItem("Gray (Red-Green)")
+        self.cmb_2.addItem("Optimized (Red-Green)")
 
-        maps = sorted(m for m in colormaps() if not
-                      m.startswith(('spectral', 'Vega', 'jet')))
+        maps = sorted(
+            m for m in colormaps() if not m.startswith(("spectral", "Vega", "jet"))
+        )
 
-        self.cmb_cbar.addItem('jet')
+        self.cmb_cbar.addItem("jet")
         self.cmb_cbar.addItems(maps)
         self.rb_doimage.setChecked(True)
         self.slider_cnt.setMinimum(3)
         self.slider_cnt.setMaximum(30)
         self.slider_cnt.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_cnt.setTickPosition(
-            QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_cnt.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_cnt.setValue(10)
         self.slider_scale.setMinimum(1)
         self.slider_scale.setMaximum(30)
         self.slider_scale.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_scale.setTickPosition(
-            QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_scale.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_scale.setValue(5)
         self.slider_angle.setMinimum(1)
         self.slider_angle.setMaximum(20)
         self.slider_angle.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.slider_angle.setTickPosition(
-            QtWidgets.QSlider.TickPosition.TicksAbove)
+        self.slider_angle.setTickPosition(QtWidgets.QSlider.TickPosition.TicksAbove)
         self.slider_angle.setValue(10)
 
         # Add widgets to layout
         vbl_left.addWidget(self.rb_doimage)
         vbl_left.addWidget(self.rb_docontour)
         vbl_left.addWidget(self.slider_cnt)
-        vbl_left.addWidget(QtWidgets.QLabel('Bands:'))
+        vbl_left.addWidget(QtWidgets.QLabel("Bands:"))
         vbl_left.addWidget(self.cmb_1)
-        vbl_left.addWidget(QtWidgets.QLabel('Type:'))
+        vbl_left.addWidget(QtWidgets.QLabel("Type:"))
         vbl_left.addWidget(self.cmb_2)
-        vbl_left.addWidget(QtWidgets.QLabel('Colour Bar:'))
+        vbl_left.addWidget(QtWidgets.QLabel("Colour Bar:"))
         vbl_left.addWidget(self.cmb_cbar)
-        vbl_left.addWidget(QtWidgets.QLabel('Scale (1-30):'))
+        vbl_left.addWidget(QtWidgets.QLabel("Scale (1-30):"))
         vbl_left.addWidget(self.slider_scale)
-        vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
+        vbl_left.addWidget(QtWidgets.QLabel("Image Angle (1-20):"))
         vbl_left.addWidget(self.slider_angle)
         vbl_left.addWidget(self.cb_shade)
 
-        self.buttonbox.htmlfile = 'raster.cm.showanaglyph'
+        self.buttonbox.htmlfile = "raster.cm.showanaglyph"
         self.buttonbox.buttonbox.hide()
         vbl_left.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
@@ -418,13 +426,18 @@ class PlotAnaglyph(ContextModule):
         rotang = self.slider_angle.value()
 
         if self.rb_docontour.isChecked():
-            data = self.indata['Raster']
+            data = self.indata["Raster"]
             self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
         else:
-            data = self.indata['Raster']
-            self.mmc.update_raster(data[i], atype=self.cmb_2.currentText(),
-                                   cmap=cbar, shade=shade, scale=scale,
-                                   rotang=rotang)
+            data = self.indata["Raster"]
+            self.mmc.update_raster(
+                data[i],
+                atype=self.cmb_2.currentText(),
+                cmap=cbar,
+                shade=shade,
+                scale=scale,
+                rotang=rotang,
+            )
 
     def change_colors(self):
         """
@@ -439,8 +452,7 @@ class PlotAnaglyph(ContextModule):
         cbar = colormaps[txt]
         shade = self.cb_shade.isChecked()
 
-        self.mmc.update_colors(atype=self.cmb_2.currentText(),
-                               cmap=cbar, doshade=shade)
+        self.mmc.update_colors(atype=self.cmb_2.currentText(), cmap=cbar, doshade=shade)
 
     def change_atype(self):
         """
@@ -473,7 +485,7 @@ class PlotAnaglyph(ContextModule):
         self.cmb_2.setDisabled(True)
         self.cmb_cbar.setDisabled(True)
 
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
 
         self.mmc.cnum = self.slider_cnt.value()
         self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
@@ -505,13 +517,13 @@ class PlotAnaglyph(ContextModule):
         None.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
         else:
             return
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return
 
         for i in data:
@@ -521,8 +533,15 @@ class PlotAnaglyph(ContextModule):
         self.exec()
 
 
-def sunshade(data, *, azim=-np.pi / 4., elev=np.pi / 4., alpha=1, cell=100,
-             cmap=colormaps['terrain']):
+def sunshade(
+    data,
+    *,
+    azim=-np.pi / 4.0,
+    elev=np.pi / 4.0,
+    alpha=1,
+    cell=100,
+    cmap=colormaps["terrain"],
+):
     """
     Perform Sunshading on data.
 
@@ -563,7 +582,7 @@ def sunshade(data, *, azim=-np.pi / 4., elev=np.pi / 4., alpha=1, cell=100,
     return colormap
 
 
-def anaglyph(red, blue, atype='dubois'):
+def anaglyph(red, blue, atype="dubois"):
     """
     Colour Anaglyph.
 
@@ -583,34 +602,71 @@ def anaglyph(red, blue, atype='dubois'):
 
     """
     # Dubois' is the default.
-    mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
-                    [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
-                    [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
+    mat = np.array(
+        [
+            [0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
+            [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
+            [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234],
+        ]
+    )
 
-    mat = np.array([[456, 500, 176, -43, -88, -2],
-                    [-40, -38, -16, 378, 734, -18],
-                    [-15, -21, -5, -72, -113, 1226]]) / 1000.
-    if 'Green-Magenta' in atype:
-        mat = np.array([[-62, -158, -39, 529, 705, 24],
-                        [284, 668, 143, -16, -15, -65],
-                        [-15, -27, 21, 9, 75, 937]]) / 1000.
-    elif 'Amber-Blue' in atype:
-        mat = np.array([[1062, -205, 299, -16, -123, -17],
-                        [-26, 908, 68, 6, 62, -17],
-                        [-38, -173, 22, 94, 185, 911]]) / 1000.
-    elif 'True' in atype:
-        mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
-    elif 'Gray' in atype:
-        mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
-                        [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
+    mat = (
+        np.array(
+            [
+                [456, 500, 176, -43, -88, -2],
+                [-40, -38, -16, 378, 734, -18],
+                [-15, -21, -5, -72, -113, 1226],
+            ]
+        )
+        / 1000.0
+    )
+    if "Green-Magenta" in atype:
+        mat = (
+            np.array(
+                [
+                    [-62, -158, -39, 529, 705, 24],
+                    [284, 668, 143, -16, -15, -65],
+                    [-15, -27, 21, 9, 75, 937],
+                ]
+            )
+            / 1000.0
+        )
+    elif "Amber-Blue" in atype:
+        mat = (
+            np.array(
+                [
+                    [1062, -205, 299, -16, -123, -17],
+                    [-26, 908, 68, 6, 62, -17],
+                    [-38, -173, 22, 94, 185, 911],
+                ]
+            )
+            / 1000.0
+        )
+    elif "True" in atype:
+        mat = np.array(
+            [
+                [0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
+            ]
+        )
+    elif "Gray" in atype:
+        mat = np.array(
+            [
+                [0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
+                [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
+            ]
+        )
 
-    elif 'Optimized' in atype:
-        mat = np.array([[0.0, 0.7, 0.3, 0.0, 0.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
+    elif "Optimized" in atype:
+        mat = np.array(
+            [
+                [0.0, 0.7, 0.3, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+            ]
+        )
 
     newshape = (red.shape[0] * red.shape[1], 3)
     data1 = red[:, :, :3].copy()
@@ -628,17 +684,17 @@ def anaglyph(red, blue, atype='dubois'):
     rgb = rgb.T
     rgb = rgb.reshape(red.shape)
 
-#    red1 = RL*0.4154 + GL*0.4710 + BL*0.1669
-#    red2 = (-RR*0.0109 - GR*0.0364 - BR*0.006)
-#    green1 = -RL*0.0458 - GL*0.0484 - BL*0.0257
-#    green2 = RR*0.3756 + GR*0.7333 + BR*0.0111
-#    blue1 = -RL*0.0547 - GL*0.0615 + BL*0.0128
-#    blue2 = (-RR*0.0651 - GR*0.1287 + BR*1.2971)
+    #    red1 = RL*0.4154 + GL*0.4710 + BL*0.1669
+    #    red2 = (-RR*0.0109 - GR*0.0364 - BR*0.006)
+    #    green1 = -RL*0.0458 - GL*0.0484 - BL*0.0257
+    #    green2 = RR*0.3756 + GR*0.7333 + BR*0.0111
+    #    blue1 = -RL*0.0547 - GL*0.0615 + BL*0.0128
+    #    blue2 = (-RR*0.0651 - GR*0.1287 + BR*1.2971)
 
     return rgb
 
 
-def rot_and_clean(x, y, z, rotang=5, rtype='red'):
+def rot_and_clean(x, y, z, rotang=5, rtype="red"):
     """
     Rotate and clean rotated data for 2d view.
 
@@ -661,10 +717,10 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red'):
         Output data.
 
     """
-    if rtype == 'red':
-        rotang = -1. * abs(rotang)
+    if rtype == "red":
+        rotang = -1.0 * abs(rotang)
     else:
-        rotang = -1. * abs(rotang)
+        rotang = -1.0 * abs(rotang)
         z = z[:, ::-1]
 
     a = np.deg2rad(rotang)
@@ -682,16 +738,16 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red'):
 
     zmap = np.zeros(x.shape)
 
-# Note that when you rotate about the y-axis, a peak will be rotated
-# this means that you can have more that one solution for an x coordinate
-# np.interp always takes the first solution, which co-incidentally happens
-# to be the one we want in this case.
+    # Note that when you rotate about the y-axis, a peak will be rotated
+    # this means that you can have more that one solution for an x coordinate
+    # np.interp always takes the first solution, which co-incidentally happens
+    # to be the one we want in this case.
 
     zi = np.ma.filled(z)
     for j, xi in enumerate(x1):
         zmap[j] = np.interp(x[0], xi, zi[j])
 
-    if rtype != 'red':
+    if rtype != "red":
         zmap = zmap[:, ::-1]
 
     zmap = np.ma.masked_equal(zmap, 0)
@@ -702,17 +758,18 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red'):
 def _testfn():
     """Test."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dataset = get_raster(ifile)
 
     tmp = PlotAnaglyph()
-    tmp.indata['Raster'] = dataset
+    tmp.indata["Raster"] = dataset
     tmp.run()
 
 

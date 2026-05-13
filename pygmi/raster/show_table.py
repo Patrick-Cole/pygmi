@@ -24,10 +24,10 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various statistics."""
 
-from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
 import numpy as np
 import scipy.stats.mstats as st
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
 
 from pygmi.misc import ContextModule
 
@@ -50,7 +50,7 @@ class BasicStats(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
-        self.pushbutton_save = QtWidgets.QPushButton('Save')
+        self.pushbutton_save = QtWidgets.QPushButton("Save")
 
         self.setupui()
         self.bands = None
@@ -68,7 +68,7 @@ class BasicStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        self.buttonbox.htmlfile = 'raster.cm.stats'
+        self.buttonbox.htmlfile = "raster.cm.stats"
         self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
@@ -78,7 +78,7 @@ class BasicStats(ContextModule):
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 
-        self.setWindowTitle('Basic Statistics')
+        self.setWindowTitle("Basic Statistics")
 
         self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -99,9 +99,9 @@ class BasicStats(ContextModule):
             for col in range(data.shape[1]):
                 datnum = data[row, col]
                 if isinstance(datnum, int):
-                    txt = f' {datnum}'
+                    txt = f" {datnum}"
                 else:
-                    txt = f' {datnum:,.5f}'
+                    txt = f" {datnum:,.5f}"
 
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignmentFlag.AlignRight)
@@ -119,7 +119,7 @@ class BasicStats(ContextModule):
         None.
 
         """
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         self.bands, self.cols, self.data = basicstats_calc(data)
 
         data = self.data[0][:, 1:]
@@ -161,10 +161,9 @@ class BasicStats(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'CSV Format (*.csv)'
-        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
-                                                         '.', ext)
-        if ifile == '':
+        ext = "CSV Format (*.csv)"
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Table", ".", ext)
+        if ifile == "":
             return False
 
         savetable(ifile, self.bands, self.cols, self.data)
@@ -191,8 +190,8 @@ def basicstats_calc(data):
         List of arrays containing statistics.
 
     """
-# Minimum, maximum, mean, std dev, median, median abs deviation
-# no samples, no samples in x dir, no samples in y dir, band
+    # Minimum, maximum, mean, std dev, median, median abs deviation
+    # no samples, no samples in x dir, no samples in y dir, band
     stats = []
     for i in data:
         srow = []
@@ -206,16 +205,26 @@ def basicstats_calc(data):
         srow.append(dtmp.size)
         srow.append(i.data.shape[1])
         srow.append(i.data.shape[0])
-        srow.append(st.skew(dtmp) * 1.)
+        srow.append(st.skew(dtmp) * 1.0)
         srow.append(st.kurtosis(dtmp))
         # srow = np.array(srow).tolist()
         stats.append([i.dataid] + srow)
 
-    bands = ['Data Column']
-    cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',
-            'Median Abs Dev', 'No Unmasked Samples',
-            'No cols (samples in x-dir)',
-            'No rows (samples in y-dir)', 'Skewness', 'Kurtosis']
+    bands = ["Data Column"]
+    cols = [
+        "Band",
+        "Minimum",
+        "Maximum",
+        "Mean",
+        "Std Dev",
+        "Median",
+        "Median Abs Dev",
+        "No Unmasked Samples",
+        "No cols (samples in x-dir)",
+        "No rows (samples in y-dir)",
+        "Skewness",
+        "Kurtosis",
+    ]
     dattmp = [np.array(stats, dtype=object)]
     return bands, cols, dattmp
 
@@ -236,7 +245,7 @@ class ClusterStats(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
-        self.pushbutton_save = QtWidgets.QPushButton('Save')
+        self.pushbutton_save = QtWidgets.QPushButton("Save")
 
         self.setupui()
         self.data = None
@@ -255,7 +264,7 @@ class ClusterStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        self.buttonbox.htmlfile = 'cluster.cm.stat'
+        self.buttonbox.htmlfile = "cluster.cm.stat"
         self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
@@ -265,8 +274,7 @@ class ClusterStats(ContextModule):
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 
-        self.setWindowTitle(
-            'Cluster Statistics (Mean Value : Std Deviation)')
+        self.setWindowTitle("Cluster Statistics (Mean Value : Std Deviation)")
 
         self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -282,20 +290,21 @@ class ClusterStats(ContextModule):
         """
         i = self.cmb_1.currentIndex()
         data = self.data[i]
-        data1 = self.indata['Cluster'][i]
+        data1 = self.indata["Cluster"][i]
 
         self.tablewidget.setRowCount(len(data))
 
-        if 'labels' in data1.metadata['Cluster']:
-            rows = data1.metadata['Cluster']['labels']
+        if "labels" in data1.metadata["Cluster"]:
+            rows = data1.metadata["Cluster"]["labels"]
         else:
-            rows = ['Class ' + str(j + 1) for j in range(len(data))]
+            rows = ["Class " + str(j + 1) for j in range(len(data))]
         self.tablewidget.setVerticalHeaderLabels(rows)
 
         for row, _ in enumerate(data):
             for col, _ in enumerate(data[0]):
                 self.tablewidget.setCellWidget(
-                    row, col, QtWidgets.QLabel(str(data[row][col])))
+                    row, col, QtWidgets.QLabel(str(data[row][col]))
+                )
 
         self.tablewidget.resizeColumnsToContents()
 
@@ -310,31 +319,32 @@ class ClusterStats(ContextModule):
 
         """
         self.show()
-        data = self.indata['Cluster']
+        data = self.indata["Cluster"]
 
-        self.bands = ['Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
-                      for i in data]
+        self.bands = [
+            "Clusters: " + str(i.metadata["Cluster"]["no_clusters"]) for i in data
+        ]
 
-        if 'input_type' not in data[0].metadata['Cluster']:
-            self.showlog('Your dataset does not qualify')
+        if "input_type" not in data[0].metadata["Cluster"]:
+            self.showlog("Your dataset does not qualify")
             return False
 
-        self.cols = list(data[0].metadata['Cluster']['input_type'])
+        self.cols = list(data[0].metadata["Cluster"]["input_type"])
         self.data = []
 
         for i in data:
-            val = i.metadata['Cluster']['center'].tolist()
-            std = i.metadata['Cluster']['center_std'].tolist()
+            val = i.metadata["Cluster"]["center"].tolist()
+            std = i.metadata["Cluster"]["center_std"].tolist()
 
             for j, _ in enumerate(val):
                 for k, _ in enumerate(val[0]):
-                    val[j][k] = f'{val[j][k]:,.4f} : {std[j][k]:,.4f}'
+                    val[j][k] = f"{val[j][k]:,.4f} : {std[j][k]:,.4f}"
             self.data.append(val)
 
-        if 'labels' in data[0].metadata['Cluster']:
-            rows = data[0].metadata['Cluster']['labels']
+        if "labels" in data[0].metadata["Cluster"]:
+            rows = data[0].metadata["Cluster"]["labels"]
         else:
-            rows = ['Class ' + str(j + 1) for j in range(len(self.data[0]))]
+            rows = ["Class " + str(j + 1) for j in range(len(self.data[0]))]
         cols = self.cols
 
         data = self.data[0]
@@ -373,10 +383,9 @@ class ClusterStats(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'CSV Format (*.csv)'
-        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
-                                                         '.', ext)
-        if ifile == '':
+        ext = "CSV Format (*.csv)"
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Table", ".", ext)
+        if ifile == "":
             return False
 
         savetable(ifile, self.bands, self.cols, self.data)
@@ -404,25 +413,26 @@ def savetable(ofile, bands, cols, data):
     None.
 
     """
-    with open(ofile, 'a', encoding='utf-8') as fobj:
+    with open(ofile, "a", encoding="utf-8") as fobj:
         htmp = cols[0]
         for i in cols[1:]:
-            htmp += ',' + i
+            htmp += "," + i
 
         for k, bandsk in enumerate(bands):
-            fobj.write(bandsk + '\n')
-            fobj.write(htmp + '\n')
+            fobj.write(bandsk + "\n")
+            fobj.write(htmp + "\n")
             for i, _ in enumerate(data[k]):
                 rtmp = str(data[k][i][0])
                 for j in range(1, len(data[k][0])):
-                    rtmp += ',' + str(data[k][i][j])
-                fobj.write(rtmp + '\n')
-            fobj.write('\n')
+                    rtmp += "," + str(data[k][i][j])
+                fobj.write(rtmp + "\n")
+            fobj.write("\n")
 
 
 def _testfn():
     """Test."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
@@ -432,7 +442,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     tmp2 = BasicStats()
-    tmp2.indata['Raster'] = data
+    tmp2.indata["Raster"] = data
     tmp2.run()
 
     app.exec()

@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various statistics."""
 
+import numpy as np
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-import numpy as np
 
 from pygmi.misc import ContextModule
 
@@ -49,7 +49,7 @@ class BasicStats3D(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
-        self.pushbutton_save = QtWidgets.QPushButton('Save')
+        self.pushbutton_save = QtWidgets.QPushButton("Save")
 
         self.setupui()
         self.bands = None
@@ -77,7 +77,7 @@ class BasicStats3D(ContextModule):
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 
-        self.setWindowTitle('Basic Statistics')
+        self.setWindowTitle("Basic Statistics")
 
         self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -98,9 +98,8 @@ class BasicStats3D(ContextModule):
             for col in range(data.shape[1]):
                 text = data[row, col]
                 if not isinstance(text, str):
-                    text = f'{text:,.1f}'
-                self.tablewidget.setCellWidget(
-                    row, col, QtWidgets.QLabel(text))
+                    text = f"{text:,.1f}"
+                self.tablewidget.setCellWidget(row, col, QtWidgets.QLabel(text))
 
         self.tablewidget.resizeColumnsToContents()
 
@@ -113,7 +112,7 @@ class BasicStats3D(ContextModule):
         None.
 
         """
-        data = self.indata['Model3D']
+        data = self.indata["Model3D"]
         self.bands, self.cols, self.data = basicstats3d_calc(data)
 
         data = self.data[0][:, 1:]
@@ -144,7 +143,7 @@ class BasicStats3D(ContextModule):
 
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
-                txt = f' {data[row, col]:,.5f}'
+                txt = f" {data[row, col]:,.5f}"
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignmentFlag.AlignRight)
 
@@ -165,10 +164,9 @@ class BasicStats3D(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'CSV Format (*.csv)'
-        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
-                                                         '.', ext)
-        if ifile == '':
+        ext = "CSV Format (*.csv)"
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Table", ".", ext)
+        if ifile == "":
             return False
 
         savetable(ifile, self.bands, self.cols, self.data)
@@ -234,10 +232,15 @@ def basicstats3d_calc(lmod):
             srow.append(depthtobot)
             stats.append(srow)
 
-    bands = ['Data Column']
-    cols = ['Lithology', 'Volume (m\u00b3)', 'Mass (kg)',
-            'Mean Thickness (m)', 'Mean Depth to Top (m)',
-            'Mean Depth to Bottom (m)']
+    bands = ["Data Column"]
+    cols = [
+        "Lithology",
+        "Volume (m\u00b3)",
+        "Mass (kg)",
+        "Mean Thickness (m)",
+        "Mean Depth to Top (m)",
+        "Mean Depth to Bottom (m)",
+    ]
     dattmp = [np.array(stats, dtype=object)]
     return bands, cols, dattmp
 
@@ -262,30 +265,32 @@ def savetable(ofile, bands, cols, data):
     None.
 
     """
-    with open(ofile, 'a', encoding='utf-8') as fobj:
+    with open(ofile, "a", encoding="utf-8") as fobj:
         htmp = cols[0]
         for i in cols[1:]:
-            htmp += ',' + i
+            htmp += "," + i
 
         for k, band in enumerate(bands):
-            fobj.write(band + '\n')
-            fobj.write(htmp + '\n')
+            fobj.write(band + "\n")
+            fobj.write(htmp + "\n")
             for i, _ in enumerate(data[k]):
                 rtmp = str(data[k][i][0])
                 for j in range(1, len(data[k][0])):
-                    rtmp += ',' + str(data[k][i][j])
-                fobj.write(rtmp + '\n')
-            fobj.write('\n')
+                    rtmp += "," + str(data[k][i][j])
+                fobj.write(rtmp + "\n")
+            fobj.write("\n")
 
 
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.pfmod.iodefs import ImportMod3D
+
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\small_upper.npz"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = ImportMod3D()
     DM.ifile = ifile

@@ -25,11 +25,11 @@
 """Raster reprojection functions."""
 
 import numpy as np
-from PySide6 import QtWidgets, QtGui
 import pyproj
+import rasterio
 from pyproj.crs import CRS, ProjectedCRS
 from pyproj.crs.coordinate_operation import TransverseMercatorConversion
-import rasterio
+from PySide6 import QtGui, QtWidgets
 from rasterio.warp import calculate_default_transform, reproject
 
 from pygmi.raster.datatypes import Data
@@ -48,10 +48,10 @@ class GroupProj(QtWidgets.QWidget):
 
     """
 
-    def __init__(self, title='Projection', parent=None):
+    def __init__(self, title="Projection", parent=None):
         super().__init__(parent)
 
-        self.wkt = ''
+        self.wkt = ""
 
         self.gl_1 = QtWidgets.QGridLayout(self)
         self.gbox = QtWidgets.QGroupBox(title)
@@ -69,15 +69,15 @@ class GroupProj(QtWidgets.QWidget):
         gl_1.addWidget(self.lbl_wkt, 2, 0, 1, 1)
 
         self.epsg_proj = getepsgcodes()
-        self.epsg_proj[r'Current / Current'] = self.wkt
-        self.epsg_proj[r'None / None'] = ''
+        self.epsg_proj[r"Current / Current"] = self.wkt
+        self.epsg_proj[r"None / None"] = ""
         tmp = list(self.epsg_proj.keys())
         tmp.sort(key=lambda c: c.lower())
 
         self.plist = {}
         for i in tmp:
-            if r' / ' in i:
-                datum, proj = i.split(r' / ')
+            if r" / " in i:
+                datum, proj = i.split(r" / ")
             else:
                 datum = i
                 proj = i
@@ -88,15 +88,15 @@ class GroupProj(QtWidgets.QWidget):
 
         tmp = list(set(self.plist.keys()))
         tmp.sort()
-        tmp = ['Current', 'WGS 84'] + tmp
+        tmp = ["Current", "WGS 84"] + tmp
 
         for i in tmp:
             j = self.plist[i]
-            if r'Geodetic Geographic' in j and j[0] != r'Geodetic Geographic':
-                self.plist[i] = [r'Geodetic Geographic'] + self.plist[i]
+            if r"Geodetic Geographic" in j and j[0] != r"Geodetic Geographic":
+                self.plist[i] = [r"Geodetic Geographic"] + self.plist[i]
 
         self.cmb_datum.addItems(tmp)
-        self.cmb_proj.addItem('Current')
+        self.cmb_proj.addItem("Current")
         self.cmb_datum.currentIndexChanged.connect(self.combo_datum_change)
         self.cmb_proj.currentIndexChanged.connect(self.combo_change)
 
@@ -114,12 +114,12 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
-        if wkt in ['', 'None']:
-            self.cmb_datum.setCurrentText('None')
+        if wkt in ["", "None"]:
+            self.cmb_datum.setCurrentText("None")
             return
 
         self.wkt = wkt
-        self.epsg_proj[r'Current / Current'] = self.wkt
+        self.epsg_proj[r"Current / Current"] = self.wkt
         self.combo_change()
 
     def combo_datum_change(self):
@@ -155,25 +155,33 @@ class GroupProj(QtWidgets.QWidget):
         dtxt = self.cmb_datum.currentText()
         ptxt = self.cmb_proj.currentText()
 
-        txt = dtxt + r' / ' + ptxt
+        txt = dtxt + r" / " + ptxt
 
         self.wkt = self.epsg_proj[txt]
 
         # if self.wkt is not a string, it must be epsg code
         if not isinstance(self.wkt, str):
             self.wkt = CRS.from_epsg(self.wkt).to_wkt(pretty=True)
-        elif self.wkt not in ['', 'None']:
+        elif self.wkt not in ["", "None"]:
             self.wkt = CRS.from_wkt(self.wkt).to_wkt(pretty=True)
 
         # The next two lines make sure we have spaces after ALL commas.
-        wkttmp = self.wkt.replace(', ', ',')
-        wkttmp = wkttmp.replace(',', ', ')
+        wkttmp = self.wkt.replace(", ", ",")
+        wkttmp = wkttmp.replace(",", ", ")
 
         self.lbl_wkt.setText(wkttmp)
 
 
-def data_reproject(data, ocrs, otransform=None, orows=None,
-                   ocolumns=None, icrs=None, showlog=print, forcereproj=False):
+def data_reproject(
+    data,
+    ocrs,
+    otransform=None,
+    orows=None,
+    ocolumns=None,
+    icrs=None,
+    showlog=print,
+    forcereproj=False,
+):
     """
     Reproject dataset.
 
@@ -206,7 +214,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
         icrs = data.crs
 
     if icrs == ocrs and forcereproj is False:
-        showlog('Input and output projections are the same, skipping...')
+        showlog("Input and output projections are the same, skipping...")
         return data
 
     ocrs = CRS.from_user_input(ocrs)
@@ -215,9 +223,10 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
         src_height, src_width = data.data.shape
         try:
             otransform, ocolumns, orows = calculate_default_transform(
-                icrs, ocrs, src_width, src_height, *data.bounds)
+                icrs, ocrs, src_width, src_height, *data.bounds
+            )
         except rasterio.errors.CRSError:
-            showlog('Problem with projection,aborting....')
+            showlog("Problem with projection,aborting....")
             return None
 
     nodata = data.nodata
@@ -229,15 +238,17 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     data.data.mask = np.ma.getmaskarray(data.data)
 
-    odata, _ = reproject(source=data.data,
-                         destination=odata,
-                         src_transform=data.transform,
-                         src_crs=icrs,
-                         dst_transform=otransform,
-                         dst_crs=ocrs,
-                         dst_nodata=dst_nodata,
-                         src_nodata=nodata,
-                         resampling=rasterio.enums.Resampling['bilinear'])
+    odata, _ = reproject(
+        source=data.data,
+        destination=odata,
+        src_transform=data.transform,
+        src_crs=icrs,
+        dst_transform=otransform,
+        dst_crs=ocrs,
+        dst_nodata=dst_nodata,
+        src_nodata=nodata,
+        resampling=rasterio.enums.Resampling["bilinear"],
+    )
 
     data2 = Data()
     data2.data = odata
@@ -246,7 +257,7 @@ def data_reproject(data, ocrs, otransform=None, orows=None,
     data2.data = data2.data.astype(data.data.dtype)
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
-    data2.filename = data.filename[:-4] + '_prj' + data.filename[-4:]
+    data2.filename = data.filename[:-4] + "_prj" + data.filename[-4:]
     data2.units = data.units
 
     data2.data = np.ma.masked_equal(data2.data, nodata)
@@ -267,38 +278,40 @@ def getepsgcodes():
         Dictionary of codes per projection in WKT format.
 
     """
-    crs_list = pyproj.database.query_crs_info(auth_name='EPSG', pj_types=None)
+    crs_list = pyproj.database.query_crs_info(auth_name="EPSG", pj_types=None)
 
     pcodes = {}
     for i in crs_list:
-        if '/' in i.name:
+        if "/" in i.name:
             pcodes[i.name] = int(i.code)
         else:
-            pcodes[i.name + r' / Geodetic Geographic'] = int(i.code)
+            pcodes[i.name + r" / Geodetic Geographic"] = int(i.code)
 
-    pcodes['WGS 84 / Geodetic Geographic'] = 4326
+    pcodes["WGS 84 / Geodetic Geographic"] = 4326
 
     for datum in [4222, 4148]:
         for clong in range(15, 35, 2):
             geog_crs = CRS.from_epsg(datum)
-            proj_crs = ProjectedCRS(name=f'{geog_crs.name} / TM{clong}',
-                                    conversion=TransverseMercatorConversion(
-                                        latitude_natural_origin=0,
-                                        longitude_natural_origin=clong,
-                                        false_easting=0,
-                                        false_northing=0,
-                                        scale_factor_natural_origin=1.0,),
-                                    geodetic_crs=geog_crs)
+            proj_crs = ProjectedCRS(
+                name=f"{geog_crs.name} / TM{clong}",
+                conversion=TransverseMercatorConversion(
+                    latitude_natural_origin=0,
+                    longitude_natural_origin=clong,
+                    false_easting=0,
+                    false_northing=0,
+                    scale_factor_natural_origin=1.0,
+                ),
+                geodetic_crs=geog_crs,
+            )
 
-            pcodes[f'{geog_crs.name} / TM{clong}'] = proj_crs.to_wkt(
-                pretty=True)
+            pcodes[f"{geog_crs.name} / TM{clong}"] = proj_crs.to_wkt(pretty=True)
 
     return pcodes
 
 
 def _testfn():
     """Test."""
-    from pygmi.raster.iodefs import get_raster, export_raster
+    from pygmi.raster.iodefs import export_raster, get_raster
 
     ifile1 = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
     ofile = r"D:\temp\RegGrav_BA_Up50000_REs2.tif"
@@ -306,11 +319,11 @@ def _testfn():
     dat = get_raster(ifile1)
 
     if len(dat) == 4:
-        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                dat[2].data.T, dat[3].data.T])
+        dat2 = np.ma.transpose(
+            [dat[0].data.T, dat[1].data.T, dat[2].data.T, dat[3].data.T]
+        )
     else:
-        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                dat[2].data.T])
+        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T, dat[2].data.T])
     dat = [dat[0]]
     dat[0].data = dat2
     dat[0].isrgb = True

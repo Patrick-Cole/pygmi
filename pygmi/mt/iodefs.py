@@ -25,11 +25,12 @@
 """Import and export of EDI data."""
 
 import os
-from PySide6 import QtWidgets
-import pygmi.mt.mtpyold.core.mt as mt
-import numpy as np
 
-from pygmi.misc import ContextModule, BasicModule
+import numpy as np
+from PySide6 import QtWidgets
+
+import pygmi.mt.mtpyold.core.mt as mt
+from pygmi.misc import BasicModule, ContextModule
 
 # The lines below are a temporary fix for pygmi.mt.mtpyold. Removed in future.
 np.float = float
@@ -47,8 +48,7 @@ class ImportEDI(BasicModule):
     """
 
     def __init__(self, parent=None):
-        super().__init__(parent
-                         )
+        super().__init__(parent)
         self.ifilelist = []
         self.is_import = True
 
@@ -68,10 +68,11 @@ class ImportEDI(BasicModule):
 
         """
         if not nodialog:
-            ext = 'EDI (*.edi)'
+            ext = "EDI (*.edi)"
 
             self.ifilelist, _ = QtWidgets.QFileDialog.getOpenFileNames(
-                self.parent, 'Open EDI Files (single or multiple)', '.', ext)
+                self.parent, "Open EDI Files (single or multiple)", ".", ext
+            )
             if not self.ifilelist:
                 return False
 
@@ -79,15 +80,18 @@ class ImportEDI(BasicModule):
 
         dat = get_EDI(self.ifilelist)
 
-        self.ifile = os.path.dirname(self.ifilelist[0]) + r'\EDI List'
+        self.ifile = os.path.dirname(self.ifilelist[0]) + r"\EDI List"
 
         if dat is None:
             QtWidgets.QMessageBox.warning(
-                self.parent, 'Error', 'Could not import dataset. ',
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self.parent,
+                "Error",
+                "Could not import dataset. ",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return False
 
-        output_type = 'MT - EDI'
+        output_type = "MT - EDI"
 
         self.outdata[output_type] = dat
         return True
@@ -144,7 +148,7 @@ class ExportEDI(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.ofile = ''
+        self.ofile = ""
 
     def run(self):
         """
@@ -158,33 +162,37 @@ class ExportEDI(ContextModule):
         """
         self.parent.process_is_active(True)
 
-        if 'MT - EDI' in self.indata:
-            data = self.indata['MT - EDI']
+        if "MT - EDI" in self.indata:
+            data = self.indata["MT - EDI"]
         else:
-            self.showlog('No EDI data')
+            self.showlog("No EDI data")
             self.parent.process_is_active(False)
             return False
 
-        ext = 'EDI (*.edi)'
+        ext = "EDI (*.edi)"
 
         self.ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext,
-            options=QtWidgets.QFileDialog.DontConfirmOverwrite)
+            self.parent,
+            "Save File",
+            ".",
+            ext,
+            options=QtWidgets.QFileDialog.DontConfirmOverwrite,
+        )
 
-        if self.ofile == '':
+        if self.ofile == "":
             self.parent.process_is_active(False)
             return False
         os.chdir(os.path.dirname(self.ofile))
 
         ext = self.ofile[-3:]
 
-        self.showlog('Export Data Busy...')
+        self.showlog("Export Data Busy...")
 
         # Pop up save dialog box
-        if ext == 'edi':
+        if ext == "edi":
             self.export_edi(data)
 
-        self.showlog('Export EDI Finished!')
+        self.showlog("Export EDI Finished!")
         self.parent.process_is_active(False)
         return True
 
@@ -205,8 +213,10 @@ class ExportEDI(ContextModule):
         savepath = os.path.dirname(self.ofile)
         basename = os.path.basename(self.ofile)[:-4]
         for i in dat:
-            dat[i].write_mt_file(save_dir=savepath,
-                                 fn_basename=basename + '_' + i,
-                                 file_type='edi',
-                                 longitude_format='LONG',
-                                 latlon_format='dd')
+            dat[i].write_mt_file(
+                save_dir=savepath,
+                fn_basename=basename + "_" + i,
+                file_type="edi",
+                longitude_format="LONG",
+                latlon_format="dd",
+            )

@@ -24,13 +24,12 @@
 # -----------------------------------------------------------------------------
 """Gravity menu routines."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
-from pygmi.grav import iodefs
-from pygmi.grav import dataprep
+from pygmi.grav import dataprep, iodefs
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Widget class to call the main interface.
 
@@ -49,25 +48,23 @@ class MenuWidget():
         self.parent = parent
 
         # Normal menus
-        self.menu = QtWidgets.QMenu('Gravity')
+        self.menu = QtWidgets.QMenu("Gravity")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtGui.QAction('Import CG-5 or CG-6 Data')
+        self.action_import_data = QtGui.QAction("Import CG-5 or CG-6 Data")
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
-        self.action_process = QtGui.QAction('Process Gravity Data')
+        self.action_process = QtGui.QAction("Process Gravity Data")
         self.menu.addAction(self.action_process)
         self.action_process.triggered.connect(self.process_data)
 
     def import_data(self):
         """Import data."""
-        self.parent.item_insert('Io', 'Import CG-5 or CG-6 Data',
-                                iodefs.ImportCG5)
+        self.parent.item_insert("Io", "Import CG-5 or CG-6 Data", iodefs.ImportCG5)
 
     def process_data(self):
         """Process data."""
-        self.parent.item_insert('Step', 'Process Gravity Data',
-                                dataprep.ProcessData)
+        self.parent.item_insert("Step", "Process Gravity Data", dataprep.ProcessData)

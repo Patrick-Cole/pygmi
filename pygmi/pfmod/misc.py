@@ -25,12 +25,13 @@
 """These are miscellaneous functions for the pfmod routines."""
 
 import time
-from PySide6 import QtWidgets, QtCore, QtGui
+
 import numpy as np
 import rasterio
+from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.raster.reproj import data_reproject
 from pygmi.misc import BasicModule
+from pygmi.raster.reproj import data_reproject
 
 
 def update_lith_lw(lmod, lwidget):
@@ -59,14 +60,14 @@ def update_lith_lw(lmod, lwidget):
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
-        L = (tcol[0] * 299 + tcol[1] * 587 + tcol[2] * 114) / 1000.
-        if L > 128.:
-            tmp.setForeground(QtGui.QColor('black'))
+        L = (tcol[0] * 299 + tcol[1] * 587 + tcol[2] * 114) / 1000.0
+        if L > 128.0:
+            tmp.setForeground(QtGui.QColor("black"))
         else:
-            tmp.setForeground(QtGui.QColor('white'))
+            tmp.setForeground(QtGui.QColor("white"))
 
 
-class ProgressBar():
+class ProgressBar:
     """
     Wrapper for a progress bar. It consists of two progress bars.
 
@@ -147,14 +148,14 @@ class ProgressBar():
                 tleft = (total - i) * (time2 - self.otime) / i
                 if tleft > 60:
                     tleft = int(tleft // 60)
-                    self.pbar.setFormat('%p% ' + str(tleft) + 'min left')
+                    self.pbar.setFormat("%p% " + str(tleft) + "min left")
                 else:
                     tleft = int(tleft)
-                    self.pbar.setFormat('%p% ' + str(tleft) + 's left')
+                    self.pbar.setFormat("%p% " + str(tleft) + "s left")
                 QtWidgets.QApplication.processEvents()
                 time1 = time2
 
-        self.pbar.setFormat('%p%')
+        self.pbar.setFormat("%p%")
         self.pbar.setValue(total)
 
         self.incrmain()
@@ -183,10 +184,10 @@ class ProgressBar():
         tleft = (total - n) * (time.perf_counter() - self.mtime) / n
         if tleft > 60:
             tleft = int(tleft // 60)
-            self.pbarmain.setFormat('%p% ' + str(tleft) + 'min left')
+            self.pbarmain.setFormat("%p% " + str(tleft) + "min left")
         else:
             tleft = int(tleft)
-            self.pbarmain.setFormat('%p% ' + str(tleft) + 's left')
+            self.pbarmain.setFormat("%p% " + str(tleft) + "s left")
         QtWidgets.QApplication.processEvents()
 
     def maxall(self):
@@ -202,8 +203,8 @@ class ProgressBar():
         self.value = self.max
         self.pbarmain.setValue(self.mvalue)
         self.pbar.setValue(self.value)
-        self.pbar.setFormat('%p%')
-        self.pbarmain.setFormat('%p%')
+        self.pbar.setFormat("%p%")
+        self.pbarmain.setFormat("%p%")
 
     def resetall(self, maximum=1, mmax=1):
         """
@@ -221,8 +222,8 @@ class ProgressBar():
         None.
 
         """
-        self.pbar.setFormat('%p%')
-        self.pbarmain.setFormat('%p%')
+        self.pbar.setFormat("%p%")
+        self.pbarmain.setFormat("%p%")
         self.mtime = time.perf_counter()
 
         self.max = maximum
@@ -250,7 +251,7 @@ class ProgressBar():
         None.
 
         """
-        self.pbar.setFormat('%p%')
+        self.pbar.setFormat("%p%")
         self.max = maximum
         self.value = 0
         self.pbar.setMinimum(self.value)
@@ -301,12 +302,12 @@ class MergeMod3D(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'pfmod.dm.merge3dmodels'
+        self.buttonbox.htmlfile = "pfmod.dm.merge3dmodels"
 
-        lbl_master = QtWidgets.QLabel('Primary Dataset:')
-        lbl_slave = QtWidgets.QLabel('Secondary Dataset:')
+        lbl_master = QtWidgets.QLabel("Primary Dataset:")
+        lbl_slave = QtWidgets.QLabel("Secondary Dataset:")
 
-        self.setWindowTitle('3D Model Merge')
+        self.setWindowTitle("3D Model Merge")
 
         gl_main.addWidget(lbl_master, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_master, 0, 1, 1, 1)
@@ -331,13 +332,13 @@ class MergeMod3D(BasicModule):
 
         """
         tmp = []
-        if 'Model3D' not in self.indata:
+        if "Model3D" not in self.indata:
             return False
-        if len(self.indata['Model3D']) != 2:
-            self.showlog('You need two datasets connected!')
+        if len(self.indata["Model3D"]) != 2:
+            self.showlog("You need two datasets connected!")
             return False
 
-        for i in self.indata['Model3D']:
+        for i in self.indata["Model3D"]:
             tmp.append(i.name)
 
         self.cmb_master.clear()
@@ -383,14 +384,13 @@ class MergeMod3D(BasicModule):
 
         """
         if self.cmb_master.currentText() == self.cmb_slave.currentText():
-            self.showlog('Your master dataset must be different'
-                         ' to the slave dataset!')
+            self.showlog("Your master dataset must be different to the slave dataset!")
             return False
 
-        datmaster = self.indata['Model3D'][0]
-        datslave = self.indata['Model3D'][1]
+        datmaster = self.indata["Model3D"][0]
+        datslave = self.indata["Model3D"][1]
 
-        for data in self.indata['Model3D']:
+        for data in self.indata["Model3D"]:
             if data.name == self.cmb_master.currentText():
                 datmaster = data
             if data.name == self.cmb_slave.currentText():
@@ -421,24 +421,26 @@ class MergeMod3D(BasicModule):
         rows = int(yextent // dxy)
         layers = int(zextent // d_z)
 
-        self.outdata['Raster'] = []
+        self.outdata["Raster"] = []
 
         for i in datmaster.griddata:
-            if i in ('DTM Dataset', 'Magnetic Dataset',
-                     'Gravity Dataset', 'Study Area Dataset',
-                     'Gravity Regional'):
+            if i in (
+                "DTM Dataset",
+                "Magnetic Dataset",
+                "Gravity Dataset",
+                "Study Area Dataset",
+                "Gravity Regional",
+            ):
                 if i in datslave.griddata:
-                    datmaster.griddata[i] = gmerge(datmaster.griddata[i],
-                                                   datslave.griddata[i],
-                                                   xrange, yrange)
-                self.outdata['Raster'].append(datmaster.griddata[i])
-            if i == 'Other':
-                self.outdata['Raster'].append(datmaster.griddata[i])
+                    datmaster.griddata[i] = gmerge(
+                        datmaster.griddata[i], datslave.griddata[i], xrange, yrange
+                    )
+                self.outdata["Raster"].append(datmaster.griddata[i])
+            if i == "Other":
+                self.outdata["Raster"].append(datmaster.griddata[i])
 
-        datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
-                         usedtm=False)
-        datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
-                        usedtm=False)
+        datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
+        datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
 
         lithcnt = 0
         newmlut = {0: datmaster.mlut[0]}
@@ -446,27 +448,28 @@ class MergeMod3D(BasicModule):
         all_liths = list(set(datmaster.lith_list) | set(datslave.lith_list))
 
         for lith in all_liths:
-            if lith == 'Background':
+            if lith == "Background":
                 continue
             lithcnt += 1
             if lith in datslave.lith_list:
                 oldlithindex = datslave.lith_list[lith].lith_index
                 newslut[lithcnt] = datslave.mlut[oldlithindex]
-                tmp = (datslave.lith_index == oldlithindex)
+                tmp = datslave.lith_index == oldlithindex
                 datslave.lith_index[tmp] = lithcnt
                 datslave.lith_list[lith].lith_index = lithcnt
 
             if lith in datmaster.lith_list:
                 oldlithindex = datmaster.lith_list[lith].lith_index
                 newmlut[lithcnt] = datmaster.mlut[oldlithindex]
-                tmp = (datmaster.lith_index == oldlithindex)
+                tmp = datmaster.lith_index == oldlithindex
                 datmaster.lith_index[tmp] = lithcnt
                 datmaster.lith_list[lith].lith_index = lithcnt
 
         datslave.mlut = newslut
         datmaster.mlut = newmlut
-        datmaster.lith_index[datmaster.lith_index == 0] = \
-            datslave.lith_index[datmaster.lith_index == 0]
+        datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[
+            datmaster.lith_index == 0
+        ]
 
         for lith in datslave.lith_list:
             if lith not in datmaster.lith_list:
@@ -474,7 +477,7 @@ class MergeMod3D(BasicModule):
                 lithnum = datmaster.lith_list[lith].lith_index
                 datmaster.mlut[lithnum] = datslave.mlut[lithnum]
 
-        self.outdata['Model3D'] = [datmaster]
+        self.outdata["Model3D"] = [datmaster]
         return True
 
 
@@ -530,10 +533,11 @@ def gmerge(master, slave, xrange=None, yrange=None):
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.pfmod.iodefs import ImportMod3D
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"
@@ -546,14 +550,16 @@ def _testfn():
     IO2.ifile = ifile2
     IO2.settings(True)
 
-    data = {'Model3D': IO1.outdata['Model3D'] + IO2.outdata['Model3D'],
-            'Raster': IO1.outdata['Raster'] + IO2.outdata['Raster']}
+    data = {
+        "Model3D": IO1.outdata["Model3D"] + IO2.outdata["Model3D"],
+        "Raster": IO1.outdata["Raster"] + IO2.outdata["Raster"],
+    }
 
     MM = MergeMod3D()
     MM.indata = data
     MM.settings()
 
-    for i in MM.outdata['Raster']:
+    for i in MM.outdata["Raster"]:
         print(i.dataid)
 
 

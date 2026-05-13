@@ -240,7 +240,7 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
                 "have valid projections."
             )
             return None
-    gdf = gdf[gdf.geometry != None]
+    gdf = gdf[gdf.geometry.notna()]
 
     if "Polygon" not in gdf.geom_type.iloc[0]:
         showlog("You need a polygon in that shape file")

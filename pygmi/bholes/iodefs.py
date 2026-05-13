@@ -25,8 +25,9 @@
 """Import borehole data, currently supports Council for Geoscience data."""
 
 import os
-from PySide6 import QtWidgets
+
 import pandas as pd
+from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
 
@@ -45,11 +46,11 @@ class ImportData(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.hfile = ''
+        self.hfile = ""
         self.is_import = True
 
-        self.le_lithfile = QtWidgets.QLineEdit('')
-        self.le_headfile = QtWidgets.QLineEdit('')
+        self.le_lithfile = QtWidgets.QLineEdit("")
+        self.le_headfile = QtWidgets.QLineEdit("")
         self.cmb_companyno = QtWidgets.QComboBox()
         self.cmb_boreholeid = QtWidgets.QComboBox()
         self.cmb_depthfrom = QtWidgets.QComboBox()
@@ -73,30 +74,30 @@ class ImportData(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = 'rsense.dm.importdata'
-        lbl_companyno = QtWidgets.QLabel('Company number:')
-        lbl_boreholeid = QtWidgets.QLabel('Borehole ID:')
-        lbl_depthfrom = QtWidgets.QLabel('Depth from:')
-        lbl_depthto = QtWidgets.QLabel('Depth to:')
-        lbl_lat = QtWidgets.QLabel('Latitude:')
-        lbl_long = QtWidgets.QLabel('Longitude:')
-        lbl_drilldate = QtWidgets.QLabel('Drill date:')
-        lbl_elevation = QtWidgets.QLabel('Elevation:')
-        lbl_lith = QtWidgets.QLabel('Lithology:')
-        lbl_strat = QtWidgets.QLabel('Stratigraphy:')
-        lbl_rank = QtWidgets.QLabel('Rank:')
+        self.buttonbox.htmlfile = "rsense.dm.importdata"
+        lbl_companyno = QtWidgets.QLabel("Company number:")
+        lbl_boreholeid = QtWidgets.QLabel("Borehole ID:")
+        lbl_depthfrom = QtWidgets.QLabel("Depth from:")
+        lbl_depthto = QtWidgets.QLabel("Depth to:")
+        lbl_lat = QtWidgets.QLabel("Latitude:")
+        lbl_long = QtWidgets.QLabel("Longitude:")
+        lbl_drilldate = QtWidgets.QLabel("Drill date:")
+        lbl_elevation = QtWidgets.QLabel("Elevation:")
+        lbl_lith = QtWidgets.QLabel("Lithology:")
+        lbl_strat = QtWidgets.QLabel("Stratigraphy:")
+        lbl_rank = QtWidgets.QLabel("Rank:")
 
-        pb_lithfile = QtWidgets.QPushButton(' Lithology Filename')
-        pb_headfile = QtWidgets.QPushButton(' Header Filename')
+        pb_lithfile = QtWidgets.QPushButton(" Lithology Filename")
+        pb_headfile = QtWidgets.QPushButton(" Header Filename")
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
         icon = self.style().standardIcon(pixmapi)
         pb_lithfile.setIcon(icon)
-        pb_lithfile.setStyleSheet('text-align:left;')
+        pb_lithfile.setStyleSheet("text-align:left;")
         pb_headfile.setIcon(icon)
-        pb_headfile.setStyleSheet('text-align:left;')
+        pb_headfile.setStyleSheet("text-align:left;")
 
-        self.setWindowTitle('Import Borehole Data')
+        self.setWindowTitle("Import Borehole Data")
 
         gl_1 = QtWidgets.QGridLayout(self)
 
@@ -161,34 +162,30 @@ class ImportData(BasicModule):
         df = get_CGS(lithfile, headfile, boreholeid)
 
         if df is None:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import dataset. '
-                                          'Please make sure it not '
-                                          'another format.',
-                                          QtWidgets.QMessageBox.StandardButton.Ok)
+            QtWidgets.QMessageBox.warning(
+                self.parent,
+                "Error",
+                "Could not import dataset. Please make sure it not another format.",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return False
 
-        df = rename_or_create(
-            df, self.cmb_boreholeid.currentText(), 'Boreholeid')
-        df = rename_or_create(
-            df, self.cmb_companyno.currentText(), 'Companyno')
-        df = rename_or_create(
-            df, self.cmb_depthfrom.currentText(), 'Depth from')
-        df = rename_or_create(df, self.cmb_depthto.currentText(), 'Depth to')
-        df = rename_or_create(df, self.cmb_lat.currentText(), 'Declat')
-        df = rename_or_create(df, self.cmb_long.currentText(), 'Declon')
-        df = rename_or_create(
-            df, self.cmb_drilldate.currentText(), 'Drill date')
-        df = rename_or_create(
-            df, self.cmb_elevation.currentText(), 'Elevation')
-        df = rename_or_create(df, self.cmb_lith.currentText(), 'Lithology')
-        df = rename_or_create(df, self.cmb_strat.currentText(), 'Stratigraphy')
-        df = rename_or_create(df, self.cmb_rank.currentText(), 'Rank')
+        df = rename_or_create(df, self.cmb_boreholeid.currentText(), "Boreholeid")
+        df = rename_or_create(df, self.cmb_companyno.currentText(), "Companyno")
+        df = rename_or_create(df, self.cmb_depthfrom.currentText(), "Depth from")
+        df = rename_or_create(df, self.cmb_depthto.currentText(), "Depth to")
+        df = rename_or_create(df, self.cmb_lat.currentText(), "Declat")
+        df = rename_or_create(df, self.cmb_long.currentText(), "Declon")
+        df = rename_or_create(df, self.cmb_drilldate.currentText(), "Drill date")
+        df = rename_or_create(df, self.cmb_elevation.currentText(), "Elevation")
+        df = rename_or_create(df, self.cmb_lith.currentText(), "Lithology")
+        df = rename_or_create(df, self.cmb_strat.currentText(), "Stratigraphy")
+        df = rename_or_create(df, self.cmb_rank.currentText(), "Rank")
 
         # df.rename(columns=rencols, inplace=True)
-        df = df.dropna(subset=['Depth from', 'Depth to'])
+        df = df.dropna(subset=["Depth from", "Depth to"])
 
-        self.outdata['Borehole'] = df
+        self.outdata["Borehole"] = df
         return True
 
     def saveproj(self):
@@ -208,13 +205,12 @@ class ImportData(BasicModule):
         list_b = [obj.itemText(i) for i in range(obj.count())]
         set_a_folded = set(item.casefold() for item in list_a)
 
-        matches_b = [item for item in list_b if item.casefold() in
-                     set_a_folded]
+        matches_b = [item for item in list_b if item.casefold() in set_a_folded]
 
         if matches_b:
             obj.setCurrentText(matches_b[0])
         else:
-            obj.setCurrentText('None')
+            obj.setCurrentText("None")
 
     def fillcombos(self):
         """Load in data and fill combo boxes."""
@@ -230,7 +226,7 @@ class ImportData(BasicModule):
 
         allcols = list(set(colsh + colsl))
         allcols.sort()
-        allcols = ['None'] + allcols
+        allcols = ["None"] + allcols
         self.cmb_update(self.cmb_boreholeid, allcols)
         self.cmb_update(self.cmb_companyno, allcols)
         self.cmb_update(self.cmb_depthfrom, allcols)
@@ -243,28 +239,31 @@ class ImportData(BasicModule):
         self.cmb_update(self.cmb_strat, allcols)
         self.cmb_update(self.cmb_rank, allcols)
 
-        self.cmb_settext(self.cmb_boreholeid, ['Boreholeid', 'Borehole id'])
-        self.cmb_settext(self.cmb_companyno, ['Companyno', 'Company no'])
-        self.cmb_settext(self.cmb_depthfrom, ['Depth from', 'Depthfrom'])
-        self.cmb_settext(self.cmb_depthto, ['Depth to', 'Depthto'])
-        self.cmb_settext(self.cmb_lat, ['Declat', 'Latitude', 'lat'])
-        self.cmb_settext(self.cmb_long, ['Declon', 'Longitude', 'long'])
-        self.cmb_settext(self.cmb_drilldate, ['Drill date', 'Drilldate'])
-        self.cmb_settext(self.cmb_elevation, ['Elevation'])
-        self.cmb_settext(self.cmb_lith, ['Lithology'])
-        self.cmb_settext(self.cmb_strat, ['Stratigraphy'])
-        self.cmb_settext(self.cmb_rank, ['Rank'])
+        self.cmb_settext(self.cmb_boreholeid, ["Boreholeid", "Borehole id"])
+        self.cmb_settext(self.cmb_companyno, ["Companyno", "Company no"])
+        self.cmb_settext(self.cmb_depthfrom, ["Depth from", "Depthfrom"])
+        self.cmb_settext(self.cmb_depthto, ["Depth to", "Depthto"])
+        self.cmb_settext(self.cmb_lat, ["Declat", "Latitude", "lat"])
+        self.cmb_settext(self.cmb_long, ["Declon", "Longitude", "long"])
+        self.cmb_settext(self.cmb_drilldate, ["Drill date", "Drilldate"])
+        self.cmb_settext(self.cmb_elevation, ["Elevation"])
+        self.cmb_settext(self.cmb_lith, ["Lithology"])
+        self.cmb_settext(self.cmb_strat, ["Stratigraphy"])
+        self.cmb_settext(self.cmb_rank, ["Rank"])
 
     def get_headfile(self):
         """Get the header filename."""
-        self.le_headfile.setText('')
+        self.le_headfile.setText("")
 
-        ext = ('Common formats (*.xls *.xlsx *.csv);;'
-               'Excel (*.xls *.xlsx);;'
-               'Comma Delimited (*.csv)')
+        ext = (
+            "Common formats (*.xls *.xlsx *.csv);;"
+            "Excel (*.xls *.xlsx);;"
+            "Comma Delimited (*.csv)"
+        )
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+            self.parent, "Open File", ".", ext
+        )
 
         if not ifile:
             return False
@@ -272,19 +271,22 @@ class ImportData(BasicModule):
 
         self.le_headfile.setText(ifile)
 
-        if self.le_lithfile.text() != '':
+        if self.le_lithfile.text() != "":
             self.fillcombos()
 
     def get_lithfile(self):
         """Get the lithology filename."""
-        self.le_lithfile.setText('')
+        self.le_lithfile.setText("")
 
-        ext = ('Common formats (*.xls *.xlsx *.csv);;'
-               'Excel (*.xls *.xlsx);;'
-               'Comma Delimited (*.csv)')
+        ext = (
+            "Common formats (*.xls *.xlsx *.csv);;"
+            "Excel (*.xls *.xlsx);;"
+            "Comma Delimited (*.csv)"
+        )
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+            self.parent, "Open File", ".", ext
+        )
 
         if not ifile:
             return False
@@ -292,7 +294,7 @@ class ImportData(BasicModule):
 
         self.le_lithfile.setText(ifile)
 
-        if self.le_headfile.text() != '':
+        if self.le_headfile.text() != "":
             self.fillcombos()
 
 
@@ -364,7 +366,7 @@ def _testfn():
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(r"D:\workdata\PyGMI Test Data\boreholes")
 

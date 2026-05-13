@@ -37,26 +37,25 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 """
 
 import tempfile
-from PySide6 import QtWidgets, QtCore, QtGui
 
 import numpy as np
-from numba import jit, prange
 from matplotlib import colormaps
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from numba import jit, prange
+from PySide6 import QtCore, QtGui, QtWidgets
 
-
-from pygmi.raster.reproj import data_reproject
+from pygmi.misc import ContextModule, PTime, frm
 from pygmi.pfmod.datatypes import LithModel
-from pygmi.misc import PTime, frm, ContextModule
+from pygmi.raster.reproj import data_reproject
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -76,37 +75,39 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
 
-        magtmp = lmod2.griddata['Calculated Magnetics'].data
-        grvtmp = lmod2.griddata['Calculated Gravity'].data
+        magtmp = lmod2.griddata["Calculated Magnetics"].data
+        grvtmp = lmod2.griddata["Calculated Gravity"].data
 
         axes = self.figure.add_subplot(121)
-        etmp = dat_extent(lmod2.griddata['Calculated Magnetics'], axes)
-        axes.set_title('Magnetic Data')
+        etmp = dat_extent(lmod2.griddata["Calculated Magnetics"], axes)
+        axes.set_title("Magnetic Data")
         ims = axes.imshow(magtmp, extent=etmp)
         mmin = magtmp.mean() - 2 * magtmp.std()
         mmax = magtmp.mean() + 2 * magtmp.std()
-        mint = (magtmp.std() * 4) / 10.
+        mint = (magtmp.std() * 4) / 10.0
         if np.ma.ptp(magtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
-            axes.contour(magtmp, levels=csrange, colors='b', extent=etmp,
-                         linewidths=0.5)
-        cbar = self.figure.colorbar(ims, orientation='horizontal', format=frm)
-        cbar.set_label('nT')
+            axes.contour(
+                magtmp, levels=csrange, colors="b", extent=etmp, linewidths=0.5
+            )
+        cbar = self.figure.colorbar(ims, orientation="horizontal", format=frm)
+        cbar.set_label("nT")
 
         axes = self.figure.add_subplot(122)
-        etmp = dat_extent(lmod2.griddata['Calculated Gravity'], axes)
-        axes.set_title('Gravity Data')
+        etmp = dat_extent(lmod2.griddata["Calculated Gravity"], axes)
+        axes.set_title("Gravity Data")
         ims = axes.imshow(grvtmp, extent=etmp)
         mmin = grvtmp.mean() - 2 * grvtmp.std()
         mmax = grvtmp.mean() + 2 * grvtmp.std()
-        mint = (grvtmp.std() * 4) / 10.
+        mint = (grvtmp.std() * 4) / 10.0
 
         if np.ma.ptp(grvtmp) > 0:
             csrange = np.arange(mmin, mmax, mint)
-            axes.contour(grvtmp, levels=csrange, colors='y', extent=etmp,
-                         linewidths=0.5)
-        cbar = self.figure.colorbar(ims, orientation='horizontal', format=frm)
-        cbar.set_label('mGal')
+            axes.contour(
+                grvtmp, levels=csrange, colors="y", extent=etmp, linewidths=0.5
+            )
+        cbar = self.figure.colorbar(ims, orientation="horizontal", format=frm)
+        cbar.set_label("mGal")
 
         self.figure.canvas.draw()
 
@@ -118,7 +119,7 @@ class PlotTest(ContextModule):
         super().__init__()
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Test Plot')
+        self.setWindowTitle("Test Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)
         # hbl = QtWidgets.QHBoxLayout()
@@ -139,7 +140,7 @@ class PlotTest(ContextModule):
             self.mmc.update_raster(data)
 
 
-class GravMag():
+class GravMag:
     """
     The GravMag class holds generic magnetic and gravity modelling routines.
 
@@ -160,23 +161,19 @@ class GravMag():
         self.lmod1 = parent.lmod1
         self.lmod = self.lmod1
         self.showtext = parent.showtext
-        if hasattr(parent, 'pbars'):
+        if hasattr(parent, "pbars"):
             self.pbars = parent.pbars
         else:
             self.pbars = None
         self.oldlithindex = None
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtGui.QAction('Regional\nTest')
-        self.actioncalculate = QtGui.QAction('Calculate\nGravity\n(All)')
-        self.actioncalculate2 = QtGui.QAction('Calculate\nMagnetics\n'
-                                              '(All)')
-        self.actioncalculate3 = QtGui.QAction('Calculate\nGravity\n'
-                                              '(Changes Only)')
-        self.actioncalculate4 = QtGui.QAction('Calculate\nMagnetics\n'
-                                              '(Changes Only)')
-        self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\n'
-                                            'Correction')
+        self.actionregionaltest = QtGui.QAction("Regional\nTest")
+        self.actioncalculate = QtGui.QAction("Calculate\nGravity\n(All)")
+        self.actioncalculate2 = QtGui.QAction("Calculate\nMagnetics\n(All)")
+        self.actioncalculate3 = QtGui.QAction("Calculate\nGravity\n(Changes Only)")
+        self.actioncalculate4 = QtGui.QAction("Calculate\nMagnetics\n(Changes Only)")
+        self.cb_demag = QtWidgets.QCheckBox("Apply\nDemagnetization\nCorrection")
         self.setupui()
 
     def setupui(self):
@@ -224,7 +221,7 @@ class GravMag():
         # now do the calculations
         self.calc_field2(True, True)
 
-        self.parent.profile.update_combo_overview('Calculated Magnetics')
+        self.parent.profile.update_combo_overview("Calculated Magnetics")
         self.parent.profile.update_plot()
 
         self.actioncalculate4.setEnabled(True)
@@ -247,7 +244,7 @@ class GravMag():
 
         # now do the calculations
         self.calc_field2(True)
-        self.parent.profile.update_combo_overview('Calculated Gravity')
+        self.parent.profile.update_combo_overview("Calculated Gravity")
         self.parent.profile.update_plot()
 
         self.actioncalculate3.setEnabled(True)
@@ -304,9 +301,15 @@ class GravMag():
         """
         demag = self.cb_demag.isChecked()
 
-        calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
-                   parent=self.parent, showreports=showreports,
-                   magcalc=magcalc, demag=demag)
+        calc_field(
+            self.lmod,
+            pbars=self.pbars,
+            showtext=self.showtext,
+            parent=self.parent,
+            showreports=showreports,
+            magcalc=magcalc,
+            demag=demag,
+        )
 
     def calc_regional(self):
         """
@@ -328,12 +331,11 @@ class GravMag():
 
         """
         ltmp = list(self.lmod1.lith_list.keys())
-        ltmp.pop(ltmp.index('Background'))
+        ltmp.pop(ltmp.index("Background"))
 
         text, okay = QtWidgets.QInputDialog.getItem(
-            self.parent, 'Regional Test',
-            'Please choose the lithology to use:',
-            ltmp)
+            self.parent, "Regional Test", "Please choose the lithology to use:", ltmp
+        )
 
         if not okay:
             return
@@ -345,22 +347,45 @@ class GravMag():
         numlayers = lmod1.numz
         layerthickness = lmod1.d_z
 
-        self.lmod2.update(lmod1.numx, lmod1.numy, numlayers, lmod1.xrange[0],
-                          lmod1.yrange[1], lmod1.zrange[1], lmod1.dxy,
-                          layerthickness, lmod1.mht, lmod1.ght)
+        self.lmod2.update(
+            lmod1.numx,
+            lmod1.numy,
+            numlayers,
+            lmod1.xrange[0],
+            lmod1.yrange[1],
+            lmod1.zrange[1],
+            lmod1.dxy,
+            layerthickness,
+            lmod1.mht,
+            lmod1.ght,
+        )
 
         self.lmod2.lith_index = self.lmod1.lith_index.copy()
         self.lmod2.lith_index[self.lmod2.lith_index != -1] = 1
 
-        self.lmod2.lith_list['Background'] = GeoData(
-            self.parent, lmod1.numx, lmod1.numy, self.lmod2.numz, lmod1.dxy,
-            self.lmod2.d_z, lmod1.mht, lmod1.ght)
+        self.lmod2.lith_list["Background"] = GeoData(
+            self.parent,
+            lmod1.numx,
+            lmod1.numy,
+            self.lmod2.numz,
+            lmod1.dxy,
+            self.lmod2.d_z,
+            lmod1.mht,
+            lmod1.ght,
+        )
 
-        self.lmod2.lith_list['Regional'] = GeoData(
-            self.parent, lmod1.numx, lmod1.numy, self.lmod2.numz, lmod1.dxy,
-            self.lmod2.d_z, lmod1.mht, lmod1.ght)
+        self.lmod2.lith_list["Regional"] = GeoData(
+            self.parent,
+            lmod1.numx,
+            lmod1.numy,
+            self.lmod2.numz,
+            lmod1.dxy,
+            self.lmod2.d_z,
+            lmod1.mht,
+            lmod1.ght,
+        )
 
-        lithn = self.lmod2.lith_list['Regional']
+        lithn = self.lmod2.lith_list["Regional"]
         litho = self.lmod1.lith_list[text]
         lithn.hintn = litho.hintn
         lithn.finc = litho.finc
@@ -424,16 +449,16 @@ class GravMag():
         tlabel = self.parent.tabwidget.tabText(indx)
 
         self.lmod.lith_index = modind.copy()
-        self.lmod.griddata['Calculated Gravity'].data = grvval.T.copy()
-        self.lmod.griddata['Calculated Magnetics'].data = magval.T.copy()
+        self.lmod.griddata["Calculated Gravity"].data = grvval.T.copy()
+        self.lmod.griddata["Calculated Magnetics"].data = magval.T.copy()
 
-        if tlabel == 'Layer Editor':
+        if tlabel == "Layer Editor":
             self.parent.layer.combo()
-        if tlabel == 'Profile Editor':
+        if tlabel == "Profile Editor":
             self.parent.profile.update_plot(slide=True)
 
 
-class GeoData():
+class GeoData:
     """
     Data layer class.
 
@@ -465,37 +490,38 @@ class GeoData():
 
     """
 
-    def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,
-                 d_z=10., mht=80., ght=0.):
+    def __init__(
+        self, parent, ncols=10, nrows=10, numz=10, dxy=10.0, d_z=10.0, mht=80.0, ght=0.0
+    ):
         self.lithcode = 0
-        self.lithnotes = ''
+        self.lithnotes = ""
 
-        self.hintn = 30000.
+        self.hintn = 30000.0
         self.susc = 0.01
-        self.mstrength = 0.
-        self.finc = -63.
-        self.fdec = -17.
-        self.minc = -63.
-        self.mdec = -17.
-        self.theta = 90.
+        self.mstrength = 0.0
+        self.finc = -63.0
+        self.fdec = -17.0
+        self.minc = -63.0
+        self.mdec = -17.0
+        self.theta = 90.0
         self.bdensity = 2.67
         self.density = 2.85
         self.qratio = 0.0
         self.lith_index = 0
         self.parent = parent
-        if hasattr(parent, 'pbars'):
+        if hasattr(parent, "pbars"):
             self.pbars = parent.pbars
         else:
             self.pbars = None
 
-        if hasattr(parent, 'showtext'):
+        if hasattr(parent, "showtext"):
             self.showtext = parent.showtext
         else:
             self.showtext = print
 
-    # ncols and nrows are the smaller dimension of the original grid.
-    # numx, numy, numz are the dimensions of the larger grid to be used as a
-    # template.
+        # ncols and nrows are the smaller dimension of the original grid.
+        # numx, numy, numz are the dimensions of the larger grid to be used as a
+        # template.
 
         self.modified = True
         self.g_cols = None
@@ -535,19 +561,21 @@ class GeoData():
             numx = self.g_cols * self.g_dxy
             numy = self.g_rows * self.g_dxy
 
-# The 2 lines below ensure that the profile goes over the center of the grid
-# cell
-            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2,
-                              self.g_dxy, dtype=float)
-            ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
-                              -1 * self.g_dxy, dtype=float)
+            # The 2 lines below ensure that the profile goes over the center of the grid
+            # cell
+            xdist = np.arange(
+                self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy, dtype=float
+            )
+            ydist = np.arange(
+                numy - self.g_dxy / 2, -1 * self.g_dxy / 2, -1 * self.g_dxy, dtype=float
+            )
 
             if hcor is None:
                 hcor2 = 0
             else:
                 hcor2 = int(self.numz - hcor.max())
 
-            self.showtext('   Calculate gravity origin field')
+            self.showtext("   Calculate gravity origin field")
             self.gboxmain(xdist, ydist, self.zobsg, hcor2)
 
             self.modified = False
@@ -570,14 +598,16 @@ class GeoData():
             numx = self.g_cols * self.g_dxy
             numy = self.g_rows * self.g_dxy
 
-# The 2 lines below ensure that the profile goes over the center of the grid
-# cell
-            xdist = np.arange(self.g_dxy / 2, numx + self.g_dxy / 2,
-                              self.g_dxy, dtype=float)
-            ydist = np.arange(numy - self.g_dxy / 2, -1 * self.g_dxy / 2,
-                              -1 * self.g_dxy, dtype=float)
+            # The 2 lines below ensure that the profile goes over the center of the grid
+            # cell
+            xdist = np.arange(
+                self.g_dxy / 2, numx + self.g_dxy / 2, self.g_dxy, dtype=float
+            )
+            ydist = np.arange(
+                numy - self.g_dxy / 2, -1 * self.g_dxy / 2, -1 * self.g_dxy, dtype=float
+            )
 
-            self.showtext('   Calculate magnetic origin field')
+            self.showtext("   Calculate magnetic origin field")
 
             if hcor is None:
                 hcor2 = 0
@@ -600,8 +630,9 @@ class GeoData():
         """
         return self.density - self.bdensity
 
-    def set_xyz(self, ncols, nrows, numz, g_dxy, mht, ght, d_z, dxy=None,
-                modified=True):
+    def set_xyz(
+        self, ncols, nrows, numz, g_dxy, mht, ght, d_z, dxy=None, modified=True
+    ):
         """
         Sets/updates xyz parameters.
 
@@ -733,9 +764,24 @@ class GeoData():
 
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
-                         x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
-                         np.array([-1, 1]))
+            gval = _gbox(
+                gval,
+                xobs,
+                yobs,
+                numx,
+                numy,
+                z_0,
+                x_1,
+                y_1,
+                z1,
+                x_2,
+                y_2,
+                z2,
+                np.ones(2),
+                np.ones(2),
+                np.ones(2),
+                np.array([-1, 1]),
+            )
 
             gval *= 6.6732e-3
             glayers.append(gval)
@@ -815,9 +861,12 @@ class GeoData():
         m3 = mr + mi
 
         if demag is True:
-            m3 = calc_demag(m3, self.susc,
-                            np.abs(self.x12[1] - self.x12[0]),
-                            np.abs(self.z12[1] - self.z12[0]))
+            m3 = calc_demag(
+                m3,
+                self.susc,
+                np.abs(self.x12[1] - self.x12[0]),
+                np.abs(self.z12[1] - self.z12[0]),
+            )
 
         mt = np.sqrt(m3 @ m3)
         if mt > 0:
@@ -844,8 +893,27 @@ class GeoData():
 
             mval = np.zeros([self.g_cols, self.g_rows])
 
-            mval = _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
-                         fm1, fm2, fm3, fm4, fm5, fm6, np.ones(2), np.ones(2))
+            mval = _mbox(
+                mval,
+                xobs,
+                yobs,
+                numx,
+                numy,
+                z0,
+                x1,
+                y1,
+                z1,
+                x2,
+                y2,
+                fm1,
+                fm2,
+                fm3,
+                fm4,
+                fm5,
+                fm6,
+                np.ones(2),
+                np.ones(2),
+            )
 
             mlayers.append(mval)
 
@@ -929,8 +997,8 @@ def save_layer(mlist):
 
     outdict = {}
 
-    outdict['mlayers'] = mlist[1].mlayers
-    outdict['glayers'] = mlist[1].glayers
+    outdict["mlayers"] = mlist[1].mlayers
+    outdict["glayers"] = mlist[1].glayers
 
     np.savez(outfile, **outdict)
     outfile.seek(0)
@@ -965,14 +1033,22 @@ def gridmatch(lmod, ctxt, rtxt):
 
     rows, cols = cdata.data.shape
 
-    dat = data_reproject(rdata, cdata.crs, cdata.transform, rows, cols,
-                         forcereproj=True)
+    dat = data_reproject(
+        rdata, cdata.crs, cdata.transform, rows, cols, forcereproj=True
+    )
 
     return dat.data
 
 
-def calc_field(lmod, pbars=None, showtext=None, parent=None,
-               showreports=False, magcalc=False, demag=False):
+def calc_field(
+    lmod,
+    pbars=None,
+    showtext=None,
+    parent=None,
+    showreports=False,
+    magcalc=False,
+    demag=False,
+):
     """
     Calculate magnetic and gravity field.
 
@@ -1010,7 +1086,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     else:
         piter = iter
     if np.max(lmod.lith_index) == -1:
-        showtext('Error: Create a model first')
+        showtext("Error: Create a model first")
         return None
 
     ptime = PTime()
@@ -1033,7 +1109,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if modind.shape != modindcheck.shape:
         modindcheck = np.zeros_like(modind) - 1
 
-    tmp = (modind == modindcheck)
+    tmp = modind == modindcheck
     modind[tmp] = -1
     modindcheck[tmp] = -1
 
@@ -1047,7 +1123,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     modindcheckmax = modindcheck.max()
 
     if False not in tmp:
-        showtext('No changes to model!')
+        showtext("No changes to model!")
         return None
 
     # get height corrections
@@ -1059,9 +1135,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
             continue
-        if mlist[0] != 'Background':
+        if mlist[0] != "Background":
             mlist[1].modified = True
-            showtext(mlist[0] + ':')
+            showtext(mlist[0] + ":")
             if parent is not None:
                 mlist[1].parent = parent
                 mlist[1].pbars = parent.pbars
@@ -1074,7 +1150,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.tmpfiles = tmpfiles
 
     if showreports is True:
-        showtext('Summing data')
+        showtext("Summing data")
 
     QtCore.QCoreApplication.processEvents()
 
@@ -1092,10 +1168,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     # These two lines are to eliminate background and improve time estimate.
     lith_list = lmod.lith_list.copy()
-    del lith_list['Background']
+    del lith_list["Background"]
 
     for mlist in piter(lith_list.items()):
-        if mlist[0] == 'Background':
+        if mlist[0] == "Background":
             continue
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
@@ -1105,12 +1181,16 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         mfile = np.load(lmod.tmpfiles[mlist[0]])
 
         if magcalc:
-            mglayers = mfile['mlayers']
+            mglayers = mfile["mlayers"]
         else:
-            mglayers = mfile['glayers'] * mlist[1].rho()
+            mglayers = mfile["glayers"] * mlist[1].rho()
 
-        showtext('Summing ' + mlist[0] + ' (PyGMI may become non-responsive' +
-                 ' during this calculation)')
+        showtext(
+            "Summing "
+            + mlist[0]
+            + " (PyGMI may become non-responsive"
+            + " during this calculation)"
+        )
 
         if modindmax > -1 and mijk in modind:
             QtWidgets.QApplication.processEvents()
@@ -1118,8 +1198,18 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
-                                  mglayers, hcorflat, mijk)
+                baba = sum_fields(
+                    k,
+                    mgval,
+                    numx,
+                    numy,
+                    modind,
+                    aaa[0],
+                    aaa[1],
+                    mglayers,
+                    hcorflat,
+                    mijk,
+                )
                 mgvalin += baba
 
         if modindcheckmax > -1 and mijk in modindcheck:
@@ -1128,11 +1218,21 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = sum_fields(k, mgval, numx, numy, modindcheck, aaa[0],
-                                  aaa[1], mglayers, hcorflat, mijk)
+                baba = sum_fields(
+                    k,
+                    mgval,
+                    numx,
+                    numy,
+                    modindcheck,
+                    aaa[0],
+                    aaa[1],
+                    mglayers,
+                    hcorflat,
+                    mijk,
+                )
                 mgvalin -= baba
 
-        showtext('Done')
+        showtext("Done")
 
         if pbars is not None:
             pbars.incrmain()
@@ -1148,42 +1248,47 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     if modindcheckmax > -1:
         if magcalc:
-            mgvalin += lmod.griddata['Calculated Magnetics'].data
+            mgvalin += lmod.griddata["Calculated Magnetics"].data
         else:
-            mgvalin += lmod.griddata['Calculated Gravity'].data
+            mgvalin += lmod.griddata["Calculated Gravity"].data
 
     if magcalc:
-        lmod.griddata['Calculated Magnetics'].data = mgvalin
+        lmod.griddata["Calculated Magnetics"].data = mgvalin
     else:
-        lmod.griddata['Calculated Gravity'].data = mgvalin
+        lmod.griddata["Calculated Gravity"].data = mgvalin
 
-    if ('Gravity Regional' in lmod.griddata and not magcalc and
-            np.unique(modindcheck).size == 1):
-        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-        lmod.griddata['Calculated Gravity'].data += zfin
+    if (
+        "Gravity Regional" in lmod.griddata
+        and not magcalc
+        and np.unique(modindcheck).size == 1
+    ):
+        zfin = gridmatch(lmod, "Calculated Gravity", "Gravity Regional")
+        lmod.griddata["Calculated Gravity"].data += zfin
 
     if lmod.lith_index.max() <= 0:
-        lmod.griddata['Calculated Magnetics'].data *= 0.
-        lmod.griddata['Calculated Gravity'].data *= 0.
+        lmod.griddata["Calculated Magnetics"].data *= 0.0
+        lmod.griddata["Calculated Gravity"].data *= 0.0
 
-    if 'Magnetic Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
-        lmod.griddata['Magnetic Residual'] = lmod.griddata['Magnetic Dataset'].copy()
-        lmod.griddata['Magnetic Residual'].data = (
-            lmod.griddata['Magnetic Dataset'].data - ztmp)
-        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
+    if "Magnetic Dataset" in lmod.griddata:
+        ztmp = gridmatch(lmod, "Magnetic Dataset", "Calculated Magnetics")
+        lmod.griddata["Magnetic Residual"] = lmod.griddata["Magnetic Dataset"].copy()
+        lmod.griddata["Magnetic Residual"].data = (
+            lmod.griddata["Magnetic Dataset"].data - ztmp
+        )
+        lmod.griddata["Magnetic Residual"].dataid = "Magnetic Residual"
 
-    if 'Gravity Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
-        lmod.griddata['Gravity Residual'] = lmod.griddata['Gravity Dataset'].copy()
-        lmod.griddata['Gravity Residual'].data = (
-            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
-        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
+    if "Gravity Dataset" in lmod.griddata:
+        ztmp = gridmatch(lmod, "Gravity Dataset", "Calculated Gravity")
+        lmod.griddata["Gravity Residual"] = lmod.griddata["Gravity Dataset"].copy()
+        lmod.griddata["Gravity Residual"].data = (
+            lmod.griddata["Gravity Dataset"].data - ztmp - lmod.gregional
+        )
+        lmod.griddata["Gravity Residual"].dataid = "Gravity Residual"
 
     if parent is not None:
         tmp = list(set(lmod.griddata.values()))
-        parent.outdata['Raster'] = tmp
-    showtext('Calculation Finished')
+        parent.outdata["Raster"] = tmp
+    showtext("Calculation Finished")
     if pbars is not None:
         pbars.maxall()
 
@@ -1196,15 +1301,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     else:
         lmod.lith_index_grv_old = np.copy(lmod.lith_index)
 
-    showtext('Total Time: ' + str(mins) +
-             ' minutes and ' + str(secs) + ' seconds')
+    showtext("Total Time: " + str(mins) + " minutes and " + str(secs) + " seconds")
 
     return lmod.griddata
 
 
 @jit(nopython=True, parallel=False)
-def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
-               mijk):
+def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat, mijk):
     """
     Sum magnetic and gravity field datasets to produce final model field.
 
@@ -1239,13 +1342,13 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     """
     b = numx * numy
     for j in range(b):
-        mgval[j] = 0.
+        mgval[j] = 0.0
 
     for i in range(numx):
         xoff = numx - i
         for j in range(numy):
             yoff = numy - j
-            if (modind[i, j, k] != mijk):
+            if modind[i, j, k] != mijk:
                 continue
             for ijk in prange(b):
                 xoff2 = xoff + aaa0[ijk]
@@ -1256,10 +1359,27 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     return mgval
 
 
-def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
-                tlx=0., tly=0., tlz=0., mht=100., ght=0., finc=-67, fdec=-17,
-                inputliths=None, susc=None, dens=None, minc=None, mdec=None,
-                mstrength=None, hintn=30000.):
+def quick_model(
+    numx=50,
+    numy=40,
+    numz=5,
+    dxy=100.0,
+    d_z=100.0,
+    tlx=0.0,
+    tly=0.0,
+    tlz=0.0,
+    mht=100.0,
+    ght=0.0,
+    finc=-67,
+    fdec=-17,
+    inputliths=None,
+    susc=None,
+    dens=None,
+    minc=None,
+    mdec=None,
+    mstrength=None,
+    hintn=30000.0,
+):
     """
     Quick model function.
 
@@ -1311,7 +1431,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
 
     """
     if inputliths is None:
-        inputliths = ['Generic']
+        inputliths = ["Generic"]
     if susc is None:
         susc = [0.01]
     if dens is None:
@@ -1320,22 +1440,21 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     lmod = LithModel()
     lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
 
-    lmod.lith_list['Background'] = GeoData(None, numx, numy, numz, dxy, d_z,
-                                           mht, ght)
-    lmod.lith_list['Background'].susc = 0
-    lmod.lith_list['Background'].density = 2.67
-    lmod.lith_list['Background'].finc = finc
-    lmod.lith_list['Background'].fdec = fdec
-    lmod.lith_list['Background'].minc = finc
-    lmod.lith_list['Background'].mdec = fdec
-    lmod.lith_list['Background'].hintn = hintn
+    lmod.lith_list["Background"] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
+    lmod.lith_list["Background"].susc = 0
+    lmod.lith_list["Background"].density = 2.67
+    lmod.lith_list["Background"].finc = finc
+    lmod.lith_list["Background"].fdec = fdec
+    lmod.lith_list["Background"].minc = finc
+    lmod.lith_list["Background"].mdec = fdec
+    lmod.lith_list["Background"].hintn = hintn
 
     j = 0
     if len(inputliths) == 1:
         clrtmp = np.array([0])
     else:
         clrtmp = np.arange(len(inputliths)) / (len(inputliths) - 1)
-    clrtmp = colormaps['jet'](clrtmp)[:, :-1]
+    clrtmp = colormaps["jet"](clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)
     clrtmp = clrtmp.tolist()
@@ -1360,8 +1479,27 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
 
 
 @jit(nopython=True, parallel=False)
-def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
-          fm4, fm5, fm6, alpha, beta):
+def _mbox(
+    mval,
+    xobs,
+    yobs,
+    numx,
+    numy,
+    z0,
+    x1,
+    y1,
+    z1,
+    x2,
+    y2,
+    fm1,
+    fm2,
+    fm3,
+    fm4,
+    fm5,
+    fm6,
+    alpha,
+    beta,
+):
     """
     Mbox routine by Blakely, continued from Geodata.mboxmain.
 
@@ -1453,15 +1591,15 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
         for jj in range(numy):
             beta[0] = y1 - yobs[jj]
             beta[1] = y2 - yobs[jj]
-            t = 0.
+            t = 0.0
 
             for i in range(2):
-                alphasq = alpha[i]**2
+                alphasq = alpha[i] ** 2
                 for j in range(2):
-                    sign = 1.
+                    sign = 1.0
                     if i != j:
-                        sign = -1.
-                    r0sq = alphasq + beta[j]**2 + hsq
+                        sign = -1.0
+                    r0sq = alphasq + beta[j] ** 2 + hsq
                     r0 = np.sqrt(r0sq)
                     r0h = r0 * h
                     alphabeta = alpha[i] * beta[j]
@@ -1469,11 +1607,16 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
                     arg2 = (r0 - beta[j]) / (r0 + beta[j])
                     arg3 = alphasq + r0h + hsq
                     arg4 = r0sq + r0h - alphasq
-                    tlog = (fm3 * np.log(arg1) / 2. + fm2 * np.log(arg2) / 2. -
-                            fm1 * np.log(r0 + h))
-                    tatan = (-fm4 * np.arctan2(alphabeta, arg3) -
-                             fm5 * np.arctan2(alphabeta, arg4) +
-                             fm6 * np.arctan2(alphabeta, r0h))
+                    tlog = (
+                        fm3 * np.log(arg1) / 2.0
+                        + fm2 * np.log(arg2) / 2.0
+                        - fm1 * np.log(r0 + h)
+                    )
+                    tatan = (
+                        -fm4 * np.arctan2(alphabeta, arg3)
+                        - fm5 * np.arctan2(alphabeta, arg4)
+                        + fm6 * np.arctan2(alphabeta, r0h)
+                    )
 
                     t = t + sign * (tlog + tatan)
             mval[ii, jj] = t
@@ -1482,8 +1625,9 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
 
 
 @jit(nopython=True, parallel=False)
-def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
-          x, y, z, isign):
+def _gbox(
+    gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2, x, y, z, isign
+):
     """
     Gbox routine by Blakely, continued from Geodata.gboxmain.
 
@@ -1557,7 +1701,7 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
         for jj in range(numy):
             y[0] = yobs[jj] - y_1
             y[1] = yobs[jj] - y_2
-            sumi = 0.
+            sumi = 0.0
             for i in range(2):
                 for j in range(2):
                     for k in range(2):
@@ -1565,7 +1709,7 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
                         ijk = isign[i] * isign[j] * isign[k]
                         arg1 = np.arctan2(x[i] * y[j], z[k] * rijk)
 
-                        if arg1 < 0.:
+                        if arg1 < 0.0:
                             arg1 = arg1 + 2 * np.pi
                         arg2 = rijk + y[j]
                         arg3 = rijk + x[i]
@@ -1600,7 +1744,7 @@ def dircos(incl, decl, azim):
         Third direction cosine.
 
     """
-    d2rad = np.pi / 180.
+    d2rad = np.pi / 180.0
     xincl = incl * d2rad
     xdecl = decl * d2rad
     xazim = azim * d2rad
@@ -1637,15 +1781,15 @@ def dat_extent(dat, axes):
     left, right, bottom, top = dat.extent
 
     if (right - left) > 10000 or (top - bottom) > 10000:
-        axes.xaxis.set_label_text('Eastings (km)')
-        axes.yaxis.set_label_text('Northings (km)')
-        left /= 1000.
-        right /= 1000.
-        top /= 1000.
-        bottom /= 1000.
+        axes.xaxis.set_label_text("Eastings (km)")
+        axes.yaxis.set_label_text("Northings (km)")
+        left /= 1000.0
+        right /= 1000.0
+        top /= 1000.0
+        bottom /= 1000.0
     else:
-        axes.xaxis.set_label_text('Eastings (m)')
-        axes.yaxis.set_label_text('Northings (m)')
+        axes.xaxis.set_label_text("Eastings (m)")
+        axes.yaxis.set_label_text("Northings (m)")
 
     return (left, right, bottom, top)
 

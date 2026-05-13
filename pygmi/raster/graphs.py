@@ -35,26 +35,26 @@ menu. The following are supported:
  * Scatterplots
 """
 
+import matplotlib.colors as mcolors
 import numpy as np
-from PySide6 import QtWidgets, QtCore
+import pyvista as pv
 from matplotlib import colormaps, colors
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-import matplotlib.colors as mcolors
-import pyvista as pv
+from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 
-from pygmi.misc import frm, ContextModule
-from pygmi.raster.modest_image import imshow
+from pygmi.misc import ContextModule, frm
 from pygmi.raster.colormaps import *
+from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -77,14 +77,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Output string to display.
 
         """
-        scoords = self.data.metadata['Raster']['SectionCoords']
+        scoords = self.data.metadata["Raster"]["SectionCoords"]
         r1 = scoords[:, 2]
         difference_array = np.absolute(r1 - x)
         idx = difference_array.argmin()
         x1 = scoords[idx, 0]
         y1 = scoords[idx, 1]
 
-        text = f'X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}'
+        text = f"X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}"
         return text
 
     def update_ccoef(self, data1, dmat):
@@ -103,30 +103,37 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        cmap = colormaps['viridis']
+        cmap = colormaps["viridis"]
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         rdata = self.axes.pcolormesh(dmat, cmap=cmap)
-        self.axes.axis('scaled')
-        self.axes.set_title('Correlation Coefficients')
+        self.axes.axis("scaled")
+        self.axes.set_title("Correlation Coefficients")
         for i in range(len(data1)):
             for j in range(len(data1)):
-                ctmp = np.array([1., 1., 1., 0.]) - np.array(cmap(dmat[i, j]))
+                ctmp = np.array([1.0, 1.0, 1.0, 0.0]) - np.array(cmap(dmat[i, j]))
                 ctmp = np.abs(ctmp)
                 ctmp = ctmp.tolist()
 
-                atext = f'{dmat[i, j]:.2f}'
+                atext = f"{dmat[i, j]:.2f}"
 
-                self.axes.text(i + .5, j + .5, atext, c=ctmp, rotation=45,
-                               ha='center', va='center')
+                self.axes.text(
+                    i + 0.5,
+                    j + 0.5,
+                    atext,
+                    c=ctmp,
+                    rotation=45,
+                    ha="center",
+                    va="center",
+                )
         dat_mat = [i.dataid for i in data1]
-        self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
+        self.axes.set_xticks(np.array(list(range(len(data1)))) + 0.5)
 
-        self.axes.set_xticklabels(dat_mat, rotation='vertical')
-        self.axes.set_yticks(np.array(list(range(len(data1)))) + .5)
+        self.axes.set_xticklabels(dat_mat, rotation="vertical")
+        self.axes.set_yticks(np.array(list(range(len(data1)))) + 0.5)
 
-        self.axes.set_yticklabels(dat_mat, rotation='horizontal')
+        self.axes.set_yticklabels(dat_mat, rotation="horizontal")
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
 
@@ -156,49 +163,63 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
         if data1.isrgb is True:
-            rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                           cmap=colormaps[cmap], interpolation='none')
+            rdata = imshow(
+                self.axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+            )
         elif plotlog is True:
-            rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                           cmap=colormaps[cmap], interpolation='none',
-                           norm=colors.LogNorm(vmin=data1.data.min(),
-                                               vmax=data1.data.max()))
+            rdata = imshow(
+                self.axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+                norm=colors.LogNorm(vmin=data1.data.min(), vmax=data1.data.max()),
+            )
         else:
-            rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                           cmap=colormaps[cmap], interpolation='none')
+            rdata = imshow(
+                self.axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+            )
             rdata.set_clim_std(2.5)
 
         if not data1.isrgb:
             rows, cols = data1.data.shape
             if cols > 2 * rows:
-                location = 'bottom'
+                location = "bottom"
                 shrink = 0.5
             else:
-                location = 'right'
+                location = "right"
                 shrink = 1.0
 
             cbar = self.figure.colorbar(
-                rdata, format=frm, location=location, aspect=30, pad=0.2,
-                shrink=shrink)
+                rdata, format=frm, location=location, aspect=30, pad=0.2, shrink=shrink
+            )
             cbar.set_label(data1.units)
 
-        if data1.metadata['Raster']['Section'] is True:
-            self.axes.set_xlabel('Distance')
-            self.axes.set_ylabel('Elevation')
+        if data1.metadata["Raster"]["Section"] is True:
+            self.axes.set_xlabel("Distance")
+            self.axes.set_ylabel("Elevation")
             self.axes.format_coord = self.format_coord
-            rdata.format_cursor_data = lambda x: f'Data: {x}'
+            rdata.format_cursor_data = lambda x: f"Data: {x}"
         elif data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
-        self.axes.ticklabel_format(style='plain', axis='both')
+        self.axes.ticklabel_format(style="plain", axis="both")
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -223,8 +244,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
         self.axes.set_xlabel(data1.dataid)
         self.axes.set_ylabel(data2.dataid)
 
@@ -242,19 +263,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ymin = y.min()
         ymax = y.max()
 
-        hbin = self.axes.hexbin(x, y, bins='log', cmap='inferno')
+        hbin = self.axes.hexbin(x, y, bins="log", cmap="inferno")
         self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_title('Hexbin Plot')
+        self.axes.set_title("Hexbin Plot")
         cbar = self.figure.colorbar(hbin, format=frm)
-        cbar.set_label('log10(N)')
+        cbar.set_label("log10(N)")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        if data1.units != '':
-            self.axes.set_xlabel(f'{data1.dataid} ({data1.units})')
-        if data2.units != '':
-            self.axes.set_ylabel(f'{data2.dataid} ({data2.units})')
+        if data1.units != "":
+            self.axes.set_xlabel(f"{data1.dataid} ({data1.units})")
+        if data2.units != "":
+            self.axes.set_ylabel(f"{data2.dataid} ({data2.units})")
 
         self.figure.canvas.draw()
 
@@ -298,13 +319,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
         z = z.data
 
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111, projection='3d')
+        self.axes = self.figure.add_subplot(111, projection="3d")
 
         vmin, vmax = np.percentile(z, [1, 99])
 
-        surf = self.axes.plot_surface(x, y, z, cmap=cmap,
-                                      norm=norml, vmin=vmin, vmax=vmax,
-                                      shade=False, antialiased=False)
+        surf = self.axes.plot_surface(
+            x,
+            y,
+            z,
+            cmap=cmap,
+            norm=norml,
+            vmin=vmin,
+            vmax=vmax,
+            shade=False,
+            antialiased=False,
+        )
 
         self.figure.colorbar(surf, format=frm)
 
@@ -312,10 +341,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.yaxis.set_major_formatter(frm)
         self.axes.zaxis.set_major_formatter(frm)
 
-        self.axes.set_title('')
-        self.axes.set_xlabel('X')
-        self.axes.set_ylabel('Y')
-        self.axes.set_zlabel('Z')
+        self.axes.set_title("")
+        self.axes.set_xlabel("X")
+        self.axes.set_ylabel("Y")
+        self.axes.set_zlabel("Z")
 
         self.figure.canvas.draw()
 
@@ -340,21 +369,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
         dattmp = data1.data[data1.data.mask == 0].flatten()
-        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum,
-                       histtype='stepfilled', edgecolor='k')
+        self.axes.hist(
+            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
+        )
         self.axes.set_title(data1.dataid)
         self.axes.set_xlabel(data1.dataid)
-        self.axes.set_ylabel('Counts')
+        self.axes.set_ylabel("Counts")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
         if ylog is True:
-            self.axes.set_yscale('log')
+            self.axes.set_yscale("log")
 
         self.figure.canvas.draw()
 
@@ -373,7 +403,7 @@ class PlotCCoef(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Correlation Coefficients')
+        self.setWindowTitle("Correlation Coefficients")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -381,7 +411,7 @@ class PlotCCoef(ContextModule):
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.cm.showcorr'
+        self.buttonbox.htmlfile = "raster.cm.showcorr"
 
         vbl.addWidget(self.mmc)
         hbl.addWidget(mpl_toolbar)
@@ -401,24 +431,27 @@ class PlotCCoef(ContextModule):
         None.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
         else:
             return
 
-        if data[0].metadata['Raster']['Section'] is True:
-            self.showlog('Sections are not supported.')
+        if data[0].metadata["Raster"]["Section"] is True:
+            self.showlog("Sections are not supported.")
             return
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return
 
         if not check_bands(data):
             QtWidgets.QMessageBox.warning(
-                self, 'Warning', 'Different size input datasets. '
-                'Merge and resample your input data to fix this.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self,
+                "Warning",
+                "Different size input datasets. "
+                "Merge and resample your input data to fix this.",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return
 
         self.show()
@@ -443,7 +476,7 @@ class PlotRaster(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Raster Plot (Simple)')
+        self.setWindowTitle("Raster Plot (Simple)")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -454,24 +487,34 @@ class PlotRaster(ContextModule):
         #                        QtWidgets.QSizePolicy.Policy.Preferred)
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.cm.showsimple'
+        self.buttonbox.htmlfile = "raster.cm.showsimple"
 
         hbl.addWidget(self.buttonbox)
 
-        self.cb_log = QtWidgets.QCheckBox('Log Colour Scale')
+        self.cb_log = QtWidgets.QCheckBox("Log Colour Scale")
         hbl.addWidget(self.cb_log)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_2 = QtWidgets.QLabel('Colormap:')
+        lbl_2 = QtWidgets.QLabel("Colormap:")
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain', 'Floyd',
-                             'MarineCopper', 'Splash', 'Wheel'])
+        self.cmb_2.addItems(
+            [
+                "viridis",
+                "jet",
+                "gray",
+                "terrain",
+                "Floyd",
+                "MarineCopper",
+                "Splash",
+                "Wheel",
+            ]
+        )
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
@@ -495,8 +538,8 @@ class PlotRaster(ContextModule):
         cmap = self.cmb_2.currentText()
         plotlog = self.cb_log.isChecked()
 
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
             self.mmc.update_raster(data[i], cmap, plotlog)
 
     def run(self):
@@ -509,10 +552,10 @@ class PlotRaster(ContextModule):
 
         """
         data = []
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
-        elif 'Cluster' in self.indata:
-            data = self.indata['Cluster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
+        elif "Cluster" in self.indata:
+            data = self.indata["Cluster"]
 
         for i in data:
             self.cmb_1.addItem(i.dataid)
@@ -540,7 +583,7 @@ class PlotSurface(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Surface Plot')
+        self.setWindowTitle("Surface Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -550,20 +593,30 @@ class PlotSurface(ContextModule):
         self.vslider = QtWidgets.QSlider()
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.cm.showsurface'
+        self.buttonbox.htmlfile = "raster.cm.showsurface"
         hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
 
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_2 = QtWidgets.QLabel('Colormap:')
+        lbl_2 = QtWidgets.QLabel("Colormap:")
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_2)
-        self.cmb_2.addItems(['viridis', 'jet', 'gray', 'terrain', 'Floyd',
-                             'MarineCopper', 'Splash', 'Wheel'])
+        self.cmb_2.addItems(
+            [
+                "viridis",
+                "jet",
+                "gray",
+                "terrain",
+                "Floyd",
+                "MarineCopper",
+                "Splash",
+                "Wheel",
+            ]
+        )
 
         hbl2.addWidget(self.vslider)
         hbl2.addWidget(self.plotter)
@@ -588,10 +641,10 @@ class PlotSurface(ContextModule):
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
-        if 'Raster' not in self.indata:
+        if "Raster" not in self.indata:
             return
 
-        dat = self.indata['Raster'][i]
+        dat = self.indata["Raster"][i]
         dat.data = dat.data.astype(float)
 
         rows, cols = dat.data.shape
@@ -611,7 +664,7 @@ class PlotSurface(ContextModule):
         z = z.filled(np.nan)
 
         grid = pv.StructuredGrid(x, y, z)
-        grid['values'] = z.T.flatten()
+        grid["values"] = z.T.flatten()
 
         # xptp = xmax - xmin
         # yptp = ymax - ymin
@@ -627,20 +680,25 @@ class PlotSurface(ContextModule):
 
         # bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
 
-        sargs = dict(title_font_size=20,
-                     label_font_size=16,
-                     shadow=True,
-                     n_labels=5,
-                     italic=True,
-                     fmt="%.1f",
-                     font_family="arial",
-                     vertical=True,
-                     title=dat.units,
-                     )
+        sargs = dict(
+            title_font_size=20,
+            label_font_size=16,
+            shadow=True,
+            n_labels=5,
+            italic=True,
+            fmt="%.1f",
+            font_family="arial",
+            vertical=True,
+            title=dat.units,
+        )
 
         self.plotter.clear()
-        self.plotter.add_mesh(grid, cmap=cmap, scalars='values',
-                              scalar_bar_args=sargs,)
+        self.plotter.add_mesh(
+            grid,
+            cmap=cmap,
+            scalars="values",
+            scalar_bar_args=sargs,
+        )
         # self.plotter.show_grid(xtitle='Eastings (m)',
         #                        ytitle='Northings (m)',
         #                        ztitle='',
@@ -668,17 +726,17 @@ class PlotSurface(ContextModule):
         None.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
         else:
             return
 
-        if data[0].metadata['Raster']['Section'] is True:
-            self.showlog('Sections are not supported.')
+        if data[0].metadata["Raster"]["Section"] is True:
+            self.showlog("Sections are not supported.")
             return
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return
 
         self.show()
@@ -707,7 +765,7 @@ class PlotScatter(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Hexbin Plot')
+        self.setWindowTitle("Hexbin Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -715,13 +773,13 @@ class PlotScatter(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.cm.showhexbin'
+        self.buttonbox.htmlfile = "raster.cm.showhexbin"
         hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('X Band:')
-        lbl_2 = QtWidgets.QLabel('Y Band:')
+        lbl_1 = QtWidgets.QLabel("X Band:")
+        lbl_2 = QtWidgets.QLabel("Y Band:")
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         hbl.addWidget(self.cmb_1)
         hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -745,7 +803,7 @@ class PlotScatter(ContextModule):
         None.
 
         """
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
         j = self.cmb_2.currentIndex()
 
@@ -753,9 +811,12 @@ class PlotScatter(ContextModule):
         y = data[j]
         if x.data.shape != y.data.shape:
             QtWidgets.QMessageBox.warning(
-                self, 'Warning', 'Different size input datasets. '
-                'Merge and resample your input data to fix this.',
-                QtWidgets.QMessageBox.StandardButton.Ok)
+                self,
+                "Warning",
+                "Different size input datasets. "
+                "Merge and resample your input data to fix this.",
+                QtWidgets.QMessageBox.StandardButton.Ok,
+            )
             return
 
         self.mmc.update_hexbin(x, y)
@@ -769,17 +830,17 @@ class PlotScatter(ContextModule):
         None.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
         else:
             return
 
-        if data[0].metadata['Raster']['Section'] is True:
-            self.showlog('Sections are not supported.')
+        if data[0].metadata["Raster"]["Section"] is True:
+            self.showlog("Sections are not supported.")
             return
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return
 
         self.show()
@@ -804,7 +865,7 @@ class PlotHist(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Histogram')
+        self.setWindowTitle("Histogram")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -812,13 +873,13 @@ class PlotHist(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'raster.cm.showhist'
+        self.buttonbox.htmlfile = "raster.cm.showhist"
         hbl.addWidget(self.buttonbox)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
-        self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
-        self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
+        self.cb_log = QtWidgets.QCheckBox("Log Y Axis:")
+        self.cb_cum = QtWidgets.QCheckBox("Cumulative:")
         hbl.addWidget(self.cb_log)
         hbl.addWidget(self.cb_cum)
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -843,7 +904,7 @@ class PlotHist(ContextModule):
         None.
 
         """
-        data = self.indata['Raster']
+        data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
         ylog = self.cb_log.isChecked()
         iscum = self.cb_cum.isChecked()
@@ -858,13 +919,13 @@ class PlotHist(ContextModule):
         None.
 
         """
-        if 'Raster' in self.indata:
-            data = self.indata['Raster']
+        if "Raster" in self.indata:
+            data = self.indata["Raster"]
         else:
             return
 
-        if self.indata['Raster'][0].isrgb:
-            self.showlog('RGB images cannot be used in this module.')
+        if self.indata["Raster"][0].isrgb:
+            self.showlog("RGB images cannot be used in this module.")
             return
 
         self.show()
@@ -933,7 +994,7 @@ def corr2d(dat1, dat2):
         mdat1 = dat1 - dat1.mean()
         mdat2 = dat2 - dat2.mean()
         numerator = (mdat1 * mdat2).sum()
-        denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
+        denominator = np.sqrt((mdat1**2).sum() * (mdat2**2).sum())
         out = numerator / denominator
 
     return out
@@ -942,19 +1003,20 @@ def corr2d(dat1, dat2):
 def _testfn():
     """Test."""
     import sys
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     data = get_raster(ifile)
-    data[0].units = 'hope'
+    data[0].units = "hope"
 
     tmp = PlotRaster()
-    tmp.indata['Raster'] = data
+    tmp.indata["Raster"] = data
     tmp.run()
     tmp.exec()
 

@@ -24,22 +24,24 @@
 # -----------------------------------------------------------------------------
 """Raster menu routines."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
-from pygmi.raster import smooth
-from pygmi.raster import equation_editor
-from pygmi.raster import normalisation
-from pygmi.raster import cooper
-from pygmi.raster import ginterp
-from pygmi.raster import graphs
-from pygmi.raster import show_table
-from pygmi.raster import dataprep
-from pygmi.raster import iodefs
-from pygmi.raster import anaglyph
-from pygmi.raster import cliptozoom
+from pygmi.raster import (
+    anaglyph,
+    cliptozoom,
+    cooper,
+    dataprep,
+    equation_editor,
+    ginterp,
+    graphs,
+    iodefs,
+    normalisation,
+    show_table,
+    smooth,
+)
 
 
-class MenuWidget():
+class MenuWidget:
     """
     Widget class to call the main interface.
 
@@ -55,148 +57,145 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Raster')
-        self.parent.add_to_context('inRaster')
+        self.parent.add_to_context("Raster")
+        self.parent.add_to_context("inRaster")
         context_menu = self.parent.context_menu
 
         # Normal menus
-        self.menu = QtWidgets.QMenu('Raster')
+        self.menu = QtWidgets.QMenu("Raster")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtGui.QAction('Import Raster Data')
+        self.action_import_data = QtGui.QAction("Import Raster Data")
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-        self.action_import_rgb_data = QtGui.QAction('Import RGB Image')
+        self.action_import_rgb_data = QtGui.QAction("Import RGB Image")
         self.menu.addAction(self.action_import_rgb_data)
         self.action_import_rgb_data.triggered.connect(self.import_rgb_data)
 
         self.menu.addSeparator()
 
-        self.action_equation_editor = QtGui.QAction('Equation Editor')
+        self.action_equation_editor = QtGui.QAction("Equation Editor")
         self.menu.addAction(self.action_equation_editor)
         self.action_equation_editor.triggered.connect(self.equation_editor)
 
-        self.action_smoothing = QtGui.QAction('Smoothing')
+        self.action_smoothing = QtGui.QAction("Smoothing")
         self.menu.addAction(self.action_smoothing)
         self.action_smoothing.triggered.connect(self.smoothing)
 
-        self.action_agc = QtGui.QAction('Automatic Gain Control')
+        self.action_agc = QtGui.QAction("Automatic Gain Control")
         self.menu.addAction(self.action_agc)
         self.action_agc.triggered.connect(self.agc)
 
-        self.action_normalisation = QtGui.QAction('Normalisation')
+        self.action_normalisation = QtGui.QAction("Normalisation")
         self.menu.addAction(self.action_normalisation)
         self.action_normalisation.triggered.connect(self.norm_data)
 
-        self.action_gradients = QtGui.QAction('Gradients')
+        self.action_gradients = QtGui.QAction("Gradients")
         self.menu.addAction(self.action_gradients)
         self.action_gradients.triggered.connect(self.gradients)
 
-        self.action_visibility = QtGui.QAction('Visibility')
+        self.action_visibility = QtGui.QAction("Visibility")
         self.menu.addAction(self.action_visibility)
         self.action_visibility.triggered.connect(self.visibility)
 
-        self.action_cont = QtGui.QAction('Continuation')
+        self.action_cont = QtGui.QAction("Continuation")
         self.menu.addAction(self.action_cont)
         self.action_cont.triggered.connect(self.cont)
 
         self.menu.addSeparator()
 
-        self.action_lstack = QtGui.QAction('Layer Stack and Resampling')
+        self.action_lstack = QtGui.QAction("Layer Stack and Resampling")
         self.menu.addAction(self.action_lstack)
         self.action_lstack.triggered.connect(self.lstack)
 
-        self.action_merge = QtGui.QAction('Dataset Mosaic')
+        self.action_merge = QtGui.QAction("Dataset Mosaic")
         self.menu.addAction(self.action_merge)
         self.action_merge.triggered.connect(self.merge)
 
-        self.action_reproj = QtGui.QAction('Reprojection')
+        self.action_reproj = QtGui.QAction("Reprojection")
         self.menu.addAction(self.action_reproj)
         self.action_reproj.triggered.connect(self.reproj)
 
-        self.action_cut_data = QtGui.QAction('Cut Raster using Polygon')
+        self.action_cut_data = QtGui.QAction("Cut Raster using Polygon")
         self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
-        self.action_clip_zoom = QtGui.QAction('Clip Raster to '
-                                              'Zoom Extents')
+        self.action_clip_zoom = QtGui.QAction("Clip Raster to Zoom Extents")
         self.menu.addAction(self.action_clip_zoom)
         self.action_clip_zoom.triggered.connect(self.clip_zoom)
 
         self.menu.addSeparator()
 
-        self.action_get_prof = QtGui.QAction('Extract Profile from Raster')
+        self.action_get_prof = QtGui.QAction("Extract Profile from Raster")
         self.menu.addAction(self.action_get_prof)
         self.action_get_prof.triggered.connect(self.get_prof)
 
-        self.action_get_vector = QtGui.QAction('Convert Raster to Vector '
-                                               'Points')
+        self.action_get_vector = QtGui.QAction("Convert Raster to Vector Points")
         self.menu.addAction(self.action_get_vector)
         self.action_get_vector.triggered.connect(self.get_vector)
 
-        self.action_get_vectorb = QtGui.QAction('Convert Raster to Vector '
-                                                '(Dataset Boundary)')
+        self.action_get_vectorb = QtGui.QAction(
+            "Convert Raster to Vector (Dataset Boundary)"
+        )
         self.menu.addAction(self.action_get_vectorb)
         self.action_get_vectorb.triggered.connect(self.get_vectorb)
 
         self.menu.addSeparator()
 
-        self.action_raster_data_interp = QtGui.QAction('Raster Data '
-                                                       'Display')
+        self.action_raster_data_interp = QtGui.QAction("Raster Data Display")
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
         # Context menus
-        context_menu['inRaster'].addSeparator()
+        context_menu["inRaster"].addSeparator()
 
-        self.action_bandselect = QtGui.QAction('Select Input Raster Bands')
-        context_menu['inRaster'].addAction(self.action_bandselect)
+        self.action_bandselect = QtGui.QAction("Select Input Raster Bands")
+        context_menu["inRaster"].addAction(self.action_bandselect)
         self.action_bandselect.triggered.connect(self.bandselect)
 
-        context_menu['Raster'].addSeparator()
+        context_menu["Raster"].addSeparator()
 
-        self.action_metadata = QtGui.QAction('Display/Edit Metadata')
-        context_menu['Raster'].addAction(self.action_metadata)
+        self.action_metadata = QtGui.QAction("Display/Edit Metadata")
+        context_menu["Raster"].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
-        self.action_basic_statistics = QtGui.QAction('Basic Statistics')
-        context_menu['Raster'].addAction(self.action_basic_statistics)
+        self.action_basic_statistics = QtGui.QAction("Basic Statistics")
+        context_menu["Raster"].addAction(self.action_basic_statistics)
         self.action_basic_statistics.triggered.connect(self.basic_stats)
 
-        self.action_show_raster_data = QtGui.QAction('Show Raster Data '
-                                                     '(Simple)')
-        context_menu['Raster'].addAction(self.action_show_raster_data)
+        self.action_show_raster_data = QtGui.QAction("Show Raster Data (Simple)")
+        context_menu["Raster"].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_raster_data2 = QtGui.QAction('Show Raster Data '
-                                                      '(Advanced)')
-        context_menu['Raster'].addAction(self.action_show_raster_data2)
+        self.action_show_raster_data2 = QtGui.QAction("Show Raster Data (Advanced)")
+        context_menu["Raster"].addAction(self.action_show_raster_data2)
         self.action_show_raster_data2.triggered.connect(self.show_raster_data2)
 
-        self.action_show_anaglyph = QtGui.QAction('Show Anaglyph')
-        context_menu['Raster'].addAction(self.action_show_anaglyph)
+        self.action_show_anaglyph = QtGui.QAction("Show Anaglyph")
+        context_menu["Raster"].addAction(self.action_show_anaglyph)
         self.action_show_anaglyph.triggered.connect(self.show_anaglyph)
 
-        self.action_show_surface = QtGui.QAction('Show Surface')
-        context_menu['Raster'].addAction(self.action_show_surface)
+        self.action_show_surface = QtGui.QAction("Show Surface")
+        context_menu["Raster"].addAction(self.action_show_surface)
         self.action_show_surface.triggered.connect(self.show_surface)
 
-        self.action_show_scatter_plot = QtGui.QAction('Show Hexbin Plot')
-        context_menu['Raster'].addAction(self.action_show_scatter_plot)
+        self.action_show_scatter_plot = QtGui.QAction("Show Hexbin Plot")
+        context_menu["Raster"].addAction(self.action_show_scatter_plot)
         self.action_show_scatter_plot.triggered.connect(self.show_scatter_plot)
 
-        self.action_show_histogram = QtGui.QAction('Show Histogram')
-        context_menu['Raster'].addAction(self.action_show_histogram)
+        self.action_show_histogram = QtGui.QAction("Show Histogram")
+        context_menu["Raster"].addAction(self.action_show_histogram)
         self.action_show_histogram.triggered.connect(self.show_histogram)
 
-        self.action_show_2d_corr_coef = QtGui.QAction('Show 2D Correlation'
-                                                      ' Coefficients')
-        context_menu['Raster'].addAction(self.action_show_2d_corr_coef)
+        self.action_show_2d_corr_coef = QtGui.QAction(
+            "Show 2D Correlation Coefficients"
+        )
+        context_menu["Raster"].addAction(self.action_show_2d_corr_coef)
         self.action_show_2d_corr_coef.triggered.connect(self.show_ccoef)
 
-        self.action_export_data = QtGui.QAction('Export Raster Data')
-        context_menu['Raster'].addAction(self.action_export_data)
+        self.action_export_data = QtGui.QAction("Export Raster Data")
+        context_menu["Raster"].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 
     def metadata(self):
@@ -209,8 +208,9 @@ class MenuWidget():
 
     def equation_editor(self):
         """Equation Editor."""
-        self.parent.item_insert('Step', 'Equation Editor',
-                                equation_editor.EquationEditor)
+        self.parent.item_insert(
+            "Step", "Equation Editor", equation_editor.EquationEditor
+        )
 
     def export_data(self):
         """Export raster data."""
@@ -218,43 +218,41 @@ class MenuWidget():
 
     def cut_data(self):
         """Cut data."""
-        self.parent.item_insert('Step', 'Cut Data', dataprep.DataCut)
+        self.parent.item_insert("Step", "Cut Data", dataprep.DataCut)
 
     def clip_zoom(self):
         """Clip to zoom."""
-        self.parent.item_insert('Step', 'Clip to Zoom', cliptozoom.ClipToZoom)
+        self.parent.item_insert("Step", "Clip to Zoom", cliptozoom.ClipToZoom)
 
     def get_prof(self):
         """Get profile."""
-        self.parent.item_insert('Step', 'Get Profile', dataprep.GetProf)
+        self.parent.item_insert("Step", "Get Profile", dataprep.GetProf)
 
     def get_vector(self):
         """Raster to vector."""
-        self.parent.item_insert('Step', 'Raster to Vector',
-                                dataprep.RasterToVector)
+        self.parent.item_insert("Step", "Raster to Vector", dataprep.RasterToVector)
 
     def get_vectorb(self):
         """Raster to vector."""
-        self.parent.item_insert('Step', 'Raster to Vector (Boundary)',
-                                dataprep.RasterToVectorBoundary)
+        self.parent.item_insert(
+            "Step", "Raster to Vector (Boundary)", dataprep.RasterToVectorBoundary
+        )
 
     def gradients(self):
         """Compute different gradients."""
-        self.parent.item_insert('Step', 'Gradients', cooper.Gradients)
+        self.parent.item_insert("Step", "Gradients", cooper.Gradients)
 
     def norm_data(self):
         """Normalisation of data."""
-        self.parent.item_insert('Step', 'Normalisation',
-                                normalisation.Normalisation)
+        self.parent.item_insert("Step", "Normalisation", normalisation.Normalisation)
 
     def raster_interp(self):
         """Show raster data."""
-        self.parent.item_insert('Step', 'Raster Data Display',
-                                ginterp.PlotInterp)
+        self.parent.item_insert("Step", "Raster Data Display", ginterp.PlotInterp)
 
     def cont(self):
         """Compute Continuation."""
-        self.parent.item_insert('Step', 'Continuation', dataprep.Continuation)
+        self.parent.item_insert("Step", "Continuation", dataprep.Continuation)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""
@@ -286,37 +284,35 @@ class MenuWidget():
 
     def smoothing(self):
         """Smoothing of Data."""
-        self.parent.item_insert('Step', 'Smoothing', smooth.Smooth)
+        self.parent.item_insert("Step", "Smoothing", smooth.Smooth)
 
     def agc(self):
         """Compute AGC."""
-        self.parent.item_insert('Step', 'AGC', cooper.AGC)
+        self.parent.item_insert("Step", "AGC", cooper.AGC)
 
     def visibility(self):
         """Compute visibility."""
-        self.parent.item_insert('Step', 'Visibility', cooper.Visibility2d)
+        self.parent.item_insert("Step", "Visibility", cooper.Visibility2d)
 
     def reproj(self):
         """Reproject a dataset."""
-        self.parent.item_insert('Step', 'Data Reprojection',
-                                dataprep.DataReproj)
+        self.parent.item_insert("Step", "Data Reprojection", dataprep.DataReproj)
 
     def merge(self):
         """Merge datasets."""
-        self.parent.item_insert('Io', 'Data Mosaic', dataprep.DataMerge)
+        self.parent.item_insert("Io", "Data Mosaic", dataprep.DataMerge)
 
     def lstack(self):
         """Layer stack datasets."""
-        self.parent.item_insert('Step', 'Data Layer Stack',
-                                dataprep.DataLayerStack)
+        self.parent.item_insert("Step", "Data Layer Stack", dataprep.DataLayerStack)
 
     def import_data(self):
         """Import data."""
-        self.parent.item_insert('Io', 'Import Raster Data', iodefs.ImportData)
+        self.parent.item_insert("Io", "Import Raster Data", iodefs.ImportData)
 
     def import_rgb_data(self):
         """Import RGB data."""
-        self.parent.item_insert('Io', 'Import RGB Image', iodefs.ImportRGBData)
+        self.parent.item_insert("Io", "Import RGB Image", iodefs.ImportRGBData)
 
     def bandselect(self):
         """Select bands."""

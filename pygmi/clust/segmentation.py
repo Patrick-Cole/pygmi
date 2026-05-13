@@ -25,11 +25,11 @@
 """Image segmentation routines, following Baatz and Schäpe (2000)."""
 
 import numpy as np
-from sklearn.cluster import KMeans
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtCore, QtGui, QtWidgets
+from sklearn.cluster import KMeans
 
 from pygmi.misc import BasicModule
 
@@ -48,11 +48,11 @@ class ImageSeg(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.le_scale = QtWidgets.QLineEdit('1000')
-        self.le_wcompact = QtWidgets.QLineEdit('0.5')
-        self.le_wcolor = QtWidgets.QLineEdit('0.9')
-        self.cb_optics = QtWidgets.QCheckBox('Use K-Means to group segments')
-        self.le_numclust = QtWidgets.QLineEdit('8')
+        self.le_scale = QtWidgets.QLineEdit("1000")
+        self.le_wcompact = QtWidgets.QLineEdit("0.5")
+        self.le_wcolor = QtWidgets.QLineEdit("0.9")
+        self.cb_optics = QtWidgets.QCheckBox("Use K-Means to group segments")
+        self.le_numclust = QtWidgets.QLineEdit("8")
 
         self.setupui()
 
@@ -66,12 +66,12 @@ class ImageSeg(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = 'cluster.dm.seg'
+        self.buttonbox.htmlfile = "cluster.dm.seg"
 
-        lbl_wcompact = QtWidgets.QLabel('Compactness weight')
-        lbl_wcolor = QtWidgets.QLabel('Colour weight')
-        lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
-        lbl_numclust = QtWidgets.QLabel('Number of clusters')
+        lbl_wcompact = QtWidgets.QLabel("Compactness weight")
+        lbl_wcolor = QtWidgets.QLabel("Colour weight")
+        lbl_scale = QtWidgets.QLabel("Maximum allowable cost function")
+        lbl_numclust = QtWidgets.QLabel("Number of clusters")
 
         val = QtGui.QDoubleValidator(0.0, 1.0, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.StandardNotation)
@@ -86,7 +86,7 @@ class ImageSeg(BasicModule):
         self.le_scale.setValidator(val)
         self.le_numclust.setValidator(QtGui.QIntValidator(1, 2147483647))
 
-        self.setWindowTitle(r'Image Segmentation')
+        self.setWindowTitle(r"Image Segmentation")
 
         gl_main.addWidget(lbl_wcompact, 0, 0, 1, 1)
         gl_main.addWidget(self.le_wcompact, 0, 1, 1, 1)
@@ -119,12 +119,12 @@ class ImageSeg(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showlog('No Raster Data.')
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
             return False
 
         data1 = []
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             data1.append(None)
             data1[-1] = 255 * (i.data - i.data.min()) / np.ma.ptp(i.data)
             # data1[-1] = 255*(data1[-1] - data1[-1].min())/np.ma.ptp(data1[-1])
@@ -148,16 +148,22 @@ class ImageSeg(BasicModule):
 
         doshape = True
 
-        omap = segment1(data1, scale=scale, wcolor=wcolor,
-                        wcompact=wcompact, doshape=doshape,
-                        showlog=self.showlog, piter=self.piter)
+        omap = segment1(
+            data1,
+            scale=scale,
+            wcolor=wcolor,
+            wcompact=wcompact,
+            doshape=doshape,
+            showlog=self.showlog,
+            piter=self.piter,
+        )
 
-        odat = self.indata['Raster'][0].copy(resetmeta=True)
-        odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
-        odat.dataid = 'Segments'
+        odat = self.indata["Raster"][0].copy(resetmeta=True)
+        odat.data = np.ma.array(omap, mask=self.indata["Raster"][0].data.mask)
+        odat.dataid = "Segments"
         odat.data = odat.data + 1
 
-        self.outdata['Raster'] = [odat]
+        self.outdata["Raster"] = [odat]
 
         if not self.cb_optics.isChecked():
             return True
@@ -172,8 +178,10 @@ class ImageSeg(BasicModule):
             uvals.append(i)
 
         if numclust > len(means):
-            self.showlog('Aborting K-Means, you have fewer segments than '
-                         'your required clusters. Outputting segents only.')
+            self.showlog(
+                "Aborting K-Means, you have fewer segments than "
+                "your required clusters. Outputting segents only."
+            )
             return True
 
         means = np.array(means)
@@ -183,11 +191,11 @@ class ImageSeg(BasicModule):
         data2 = odat.data.copy()
 
         for i, val in enumerate(dbout):
-            filt = (odat.data == uvals[i])
+            filt = odat.data == uvals[i]
             data2[filt] = val
 
         odat.data = data2 + 1
-        self.outdata['Raster'] = [odat]
+        self.outdata["Raster"] = [odat]
 
         return True
 
@@ -207,8 +215,16 @@ class ImageSeg(BasicModule):
         self.saveobj(self.cb_optics)
 
 
-def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,
-             doshape=True, showlog=print, piter=iter):
+def segment1(
+    data,
+    *,
+    scale=500,
+    wcolor=0.5,
+    wcompact=0.5,
+    doshape=True,
+    showlog=print,
+    piter=iter,
+):
     """
     Perform image segmentation.
 
@@ -237,7 +253,7 @@ def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,
     """
     rows, cols, bands = data.shape
 
-    showlog('Initialising...')
+    showlog("Initialising...")
 
     olist = {}
     slist = {}
@@ -260,13 +276,24 @@ def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,
                 nlist[(k, i * cols + j)] = 1
             omap[i, j] = i * cols + j
 
-    showlog('merging...')
+    showlog("merging...")
 
-    omap = _segment2(omap, olist, slist, mlist, nlist, bands,
-                     doshape=doshape, wcompact=wcompact,
-                     wcolor=wcolor, scale=scale, showlog=showlog, piter=piter)
+    omap = _segment2(
+        omap,
+        olist,
+        slist,
+        mlist,
+        nlist,
+        bands,
+        doshape=doshape,
+        wcompact=wcompact,
+        wcolor=wcolor,
+        scale=scale,
+        showlog=showlog,
+        piter=piter,
+    )
 
-    showlog('renumbering...')
+    showlog("renumbering...")
     tmp = np.unique(omap)
 
     for i, val in enumerate(tmp):
@@ -275,9 +302,21 @@ def segment1(data, *, scale=500, wcolor=0.5, wcompact=0.5,
     return omap.astype(int)
 
 
-def _segment2(omap, olist, slist, mlist, nlist, bands, *,
-              doshape=True, wcompact=0.5, wcolor=0.5, scale=500,
-              showlog=print, piter=iter):
+def _segment2(
+    omap,
+    olist,
+    slist,
+    mlist,
+    nlist,
+    bands,
+    *,
+    doshape=True,
+    wcompact=0.5,
+    wcolor=0.5,
+    scale=500,
+    showlog=print,
+    piter=iter,
+):
     """
     Segment Part 2.
 
@@ -330,7 +369,7 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
 
         clen = len(elist)
         pbar = piter(range(clen))
-        showlog('Iteration number: ' + str(cnt))
+        showlog("Iteration number: " + str(cnt))
 
         olist3 = olist.copy()
 
@@ -340,7 +379,7 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
             if not olist3[i]:
                 continue
 
-            hcolor = 0.
+            hcolor = 0.0
             sm2 = []
             nm2 = []
             mean2 = []
@@ -357,11 +396,13 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
                 n1 = nlist[(k, i)]
                 x1 = mlist[(k, i)]
                 s1 = slist[(k, i)]
-                nm = (n1 + n2)
+                nm = n1 + n2
 
                 mean = (n1 * x1 + n2 * x2) / nm
-                sm = np.sqrt((n1 * (s1**2 + (x1 - mean)**2) +
-                              n2 * (s2**2 + (x2 - mean)**2)) / nm)
+                sm = np.sqrt(
+                    (n1 * (s1**2 + (x1 - mean) ** 2) + n2 * (s2**2 + (x2 - mean) ** 2))
+                    / nm
+                )
                 hcolor += np.abs(wband[k] * (nm * sm - (n1 * s1 + n2 * s2)))
 
                 sm2.append(sm)
@@ -372,8 +413,7 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
                 rmin, rmax = rminmax[i]
                 cmin, cmax = cminmax[i]
 
-                somap = omap[max(0, rmin - 1):rmax + 2,
-                             max(0, cmin - 1):cmax + 2]
+                somap = omap[max(0, rmin - 1) : rmax + 2, max(0, cmin - 1) : cmax + 2]
 
                 l1 = get_l(somap == i)
                 b1 = (rmax - rmin + cmax - cmin + 2) * 2
@@ -389,8 +429,9 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
                     rmin1, rmax1 = rminmax[ol]
                     cmin1, cmax1 = cminmax[ol]
 
-                    somap = omap[max(0, rmin1 - 1):rmax1 + 2,
-                                 max(0, cmin1 - 1):cmax1 + 2]
+                    somap = omap[
+                        max(0, rmin1 - 1) : rmax1 + 2, max(0, cmin1 - 1) : cmax1 + 2
+                    ]
 
                     ltmp = get_l(somap == ol)
                     btmp = (rmax1 - rmin1 + cmax1 - cmin1 + 2) * 2
@@ -405,8 +446,9 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
                     cmin2 = min(cmin1, cmin)
                     cmax2 = max(cmax1, cmax)
 
-                    somap = omap[max(0, rmin2 - 1):rmax2 + 2,
-                                 max(0, cmin2 - 1):cmax2 + 2]
+                    somap = omap[
+                        max(0, rmin2 - 1) : rmax2 + 2, max(0, cmin2 - 1) : cmax2 + 2
+                    ]
 
                     filt = (somap == ol) + (somap == i)
                     ltmp2 = get_l(filt)
@@ -423,8 +465,7 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
                 bm = np.array(bm)
 
                 hsmooth = nm * lm / bm - (n1 * l1 / b1 + n2 * l2 / b2)
-                hcompact = np.sqrt(nm) * lm - (np.sqrt(n1) *
-                                               l1 + np.sqrt(n2) * l2)
+                hcompact = np.sqrt(nm) * lm - (np.sqrt(n1) * l1 + np.sqrt(n2) * l2)
 
                 hshape = wcompact * hcompact + (1 - wcompact) * hsmooth
                 hdiff = wcolor * hcolor + (1 - wcolor) * hshape
@@ -477,8 +518,9 @@ def _segment2(omap, olist, slist, mlist, nlist, bands, *,
             rmin, rmax = rminmax[i]
             cmin, cmax = cminmax[i]
 
-            omap[rmin:rmax + 1, cmin:cmax + 1][omap[rmin:rmax + 1,
-                                                    cmin:cmax + 1] == hind] = i
+            omap[rmin : rmax + 1, cmin : cmax + 1][
+                omap[rmin : rmax + 1, cmin : cmax + 1] == hind
+            ] = i
 
     return omap
 
@@ -515,19 +557,21 @@ def get_l(data):
 def _testfn():
     """Test routine."""
     import sys
-    import matplotlib.pyplot as plt
-    from pygmi.raster.datatypes import Data
-    from pygmi.misc import getinfo
 
-    getinfo('Start')
+    import matplotlib.pyplot as plt
+
+    from pygmi.misc import getinfo
+    from pygmi.raster.datatypes import Data
+
+    getinfo("Start")
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     data1 = skimage.data.coffee()
 
     plt.imshow(data1)
-    plt.axis('off')
+    plt.axis("off")
     plt.show()
 
     b1 = Data()
@@ -540,47 +584,49 @@ def _testfn():
     data = [b1, b2, b3]
 
     IS = ImageSeg()
-    IS.indata = {'Raster': data}
+    IS.indata = {"Raster": data}
     IS.settings()
 
-    odata = IS.outdata['Raster'][0]
+    odata = IS.outdata["Raster"][0]
 
     plt.imshow(odata.data)
-    plt.axis('off')
+    plt.axis("off")
     plt.show()
 
-    getinfo('Finished')
+    getinfo("Finished")
 
 
 def _testfn2():
     """Test routine."""
     import sys
+
     import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Segmentation\Test_20010213_bands.tif"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     data = get_raster(ifile)
 
     for i, datai in enumerate(data):
         vmin, vmax = datai.get_vmin_vmax()
 
-        plt.title(f'{i}')
+        plt.title(f"{i}")
         plt.imshow(datai.data, vmin=vmin, vmax=vmax)
-        plt.axis('off')
+        plt.axis("off")
         plt.show()
 
     IS = ImageSeg()
-    IS.indata = {'Raster': data}
+    IS.indata = {"Raster": data}
     IS.settings()
 
-    odata = IS.outdata['Raster'][0]
+    odata = IS.outdata["Raster"][0]
 
     plt.imshow(odata.data)
-    plt.axis('off')
+    plt.axis("off")
     plt.colorbar()
     plt.show()
 

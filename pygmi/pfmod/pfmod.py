@@ -24,17 +24,12 @@
 # -----------------------------------------------------------------------------
 """The main program for the potential field 3D modelling package."""
 
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.pfmod import misc
-from pygmi.pfmod import tab_prof
-from pygmi.pfmod import tab_param
-from pygmi.pfmod import tab_mext
-from pygmi.pfmod import grvmag3d
-from pygmi.pfmod import iodefs
-from pygmi.pfmod.datatypes import LithModel
-from pygmi import menu_default
 import pygmi.misc as pmisc
+from pygmi import menu_default
+from pygmi.pfmod import grvmag3d, iodefs, misc, tab_mext, tab_param, tab_prof
+from pygmi.pfmod.datatypes import LithModel
 
 
 class MainWidget(QtWidgets.QMainWindow):
@@ -56,7 +51,7 @@ class MainWidget(QtWidgets.QMainWindow):
         else:
             self.showlog = parent.showlog
 
-        self.indata = {'tmp': True}
+        self.indata = {"tmp": True}
         self.inraster = {}
         self.outdata = {}
         self.parent = parent
@@ -64,7 +59,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.is_import = False
 
         # General
-        self.txtmsg = ''
+        self.txtmsg = ""
 
         self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
@@ -72,11 +67,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
-        self.actionsave = QtGui.QAction('Save Model')
+        self.actionsave = QtGui.QAction("Save Model")
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
         tmp = list(set(self.lmod1.griddata.values()))
-        self.outdata['Raster'] = tmp
+        self.outdata["Raster"] = tmp
 
         self.mext = tab_mext.MextDisplay(self)
         self.param = tab_param.ParamDisplay(self)
@@ -84,20 +79,20 @@ class MainWidget(QtWidgets.QMainWindow):
         self.profile = tab_prof.ProfileDisplay(self)
 
         # Toolbars
-        self.action_mext = QtGui.QAction('Model\nExtent\nParameters')
+        self.action_mext = QtGui.QAction("Model\nExtent\nParameters")
         self.toolbardock.addAction(self.action_mext)
         self.action_mext.triggered.connect(self.mext.tab_activate)
 
-        self.action_param = QtGui.QAction('Geophysical\nParameters')
+        self.action_param = QtGui.QAction("Geophysical\nParameters")
         self.toolbardock.addAction(self.action_param)
         self.action_param.triggered.connect(self.param.tab_activate)
 
-        self.action_lnotes = QtGui.QAction('Lithology\nNotes')
+        self.action_lnotes = QtGui.QAction("Lithology\nNotes")
         self.toolbardock.addAction(self.action_lnotes)
         self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
 
         # Dock Widgets
-        dock = QtWidgets.QDockWidget('Editor')
+        dock = QtWidgets.QDockWidget("Editor")
         dock.setWidget(self.profile)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.TopDockWidgetArea, dock)
         self.toolbardock.addAction(dock.toggleViewAction())
@@ -119,7 +114,7 @@ class MainWidget(QtWidgets.QMainWindow):
         vbl = QtWidgets.QVBoxLayout(centralwidget)
         hbl = QtWidgets.QHBoxLayout()
 
-        helpdocs = menu_default.HelpButton('pfmod.dm.mc.editor')
+        helpdocs = menu_default.HelpButton("pfmod.dm.mc.editor")
 
         self.setStatusBar(self.statusbar)
         self.setCentralWidget(centralwidget)
@@ -128,7 +123,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.toolbardock.addAction(self.actionsave)
 
-        self.setWindowTitle('Potential Field Modelling')
+        self.setWindowTitle("Potential Field Modelling")
 
         hbl.addWidget(self.textbrowser)
         hbl.addWidget(helpdocs)
@@ -152,13 +147,13 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-        self.showtext('Saving model, please do not close the interface...')
+        self.showtext("Saving model, please do not close the interface...")
         tmp = iodefs.ExportMod3D(self.parent)
         tmp.indata = self.outdata
         tmp.run()
 
         del tmp
-        self.showtext('Model save complete!')
+        self.showtext("Model save complete!")
 
     def help_docs(self):
         """
@@ -169,7 +164,7 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-        menu_default.HelpDocs(self, 'pygmi.pfmod.prof')
+        menu_default.HelpDocs(self, "pygmi.pfmod.prof")
 
     def settings(self, nodialog=False):
         """
@@ -188,23 +183,23 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         datatmp = list(set(self.lmod1.griddata.values()))
 
-        if 'Raster' not in self.indata:
-            self.indata['Raster'] = datatmp
+        if "Raster" not in self.indata:
+            self.indata["Raster"] = datatmp
 
         self.inraster = {}
-        for i in self.indata['Raster']:
+        for i in self.indata["Raster"]:
             self.inraster[i.dataid] = i
-        if 'Model3D' in self.indata:
-            self.lmod1 = self.indata['Model3D'][0]
+        if "Model3D" in self.indata:
+            self.lmod1 = self.indata["Model3D"][0]
 
-        self.outdata['Model3D'] = [self.lmod1]
+        self.outdata["Model3D"] = [self.lmod1]
         self.mext.update_combos()
         self.mext.tab_activate()
 
         self.profile.change_defs()
         self.profile.tab_activate()
 
-        self.outdata['Raster'] = datatmp
+        self.outdata["Raster"] = datatmp
 
         self.show()
 
@@ -229,8 +224,8 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-        if 'Model3D' in self.indata:
-            self.lmod1 = self.indata['Model3D'][0]
+        if "Model3D" in self.indata:
+            self.lmod1 = self.indata["Model3D"][0]
         self.lmod1.griddata = {}
         self.lmod1.init_calc_grids()
 
@@ -251,10 +246,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         if replacelast is True:
-            self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]
-            self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]
-            self.txtmsg += '\n'
-        self.txtmsg += txt + '\n'
+            self.txtmsg = self.txtmsg[: self.txtmsg.rfind("\n")]
+            self.txtmsg = self.txtmsg[: self.txtmsg.rfind("\n")]
+            self.txtmsg += "\n"
+        self.txtmsg += txt + "\n"
         self.textbrowser.setPlainText(self.txtmsg)
         tmp = self.textbrowser.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
@@ -264,10 +259,12 @@ class MainWidget(QtWidgets.QMainWindow):
 def _testfn():
     """Test routine."""
     import sys
+
     from pygmi.pfmod.iodefs import ImportMod3D
     from pygmi.pfmod.misc import MergeMod3D
+
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"
@@ -280,14 +277,16 @@ def _testfn():
     IO2.ifile = ifile2
     IO2.settings(True)
 
-    data = {'Model3D': IO1.outdata['Model3D'] + IO2.outdata['Model3D'],
-            'Raster': IO1.outdata['Raster'] + IO2.outdata['Raster']}
+    data = {
+        "Model3D": IO1.outdata["Model3D"] + IO2.outdata["Model3D"],
+        "Raster": IO1.outdata["Raster"] + IO2.outdata["Raster"],
+    }
 
     MM = MergeMod3D()
     MM.indata = data
     MM.settings(True)
 
-    for i in MM.outdata['Raster']:
+    for i in MM.outdata["Raster"]:
         print(i.dataid)
 
     PF = MainWidget()
@@ -300,9 +299,11 @@ def _testfn():
 def _testfn2():
     """Test routine."""
     import sys
+
     from pygmi.pfmod.iodefs import ImportMod3D
+
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile = r"D:\workdata\modelling\regional\Model_1.npz"
