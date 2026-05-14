@@ -25,24 +25,24 @@
 """Plot vector data using Matplotlib."""
 
 import math
-import numpy as np
-from PySide6 import QtWidgets, QtCore
-from scipy.stats import median_abs_deviation
+
 import matplotlib.collections as mc
-from matplotlib import colormaps
+import numpy as np
+import pandas as pd
+from matplotlib import colormaps, rcParams
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import BoundaryNorm
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import StrMethodFormatter
-from matplotlib import rcParams
-import pandas as pd
+from PySide6 import QtCore, QtWidgets
+from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.misc import frm, ContextModule, discrete_colorbar
+from pygmi.misc import ContextModule, discrete_colorbar, frm
 from pygmi.raster.colormaps import *
 
-rcParams['savefig.dpi'] = 300
+rcParams["savefig.dpi"] = 300
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -53,13 +53,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(layout='tight')
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
         self.background = None
         self.pickevents = False
-        self.cmap = colormaps['viridis']
+        self.cmap = colormaps["viridis"]
 
         self.ccoeflbls = []
         self.dmat = np.array([])
@@ -114,9 +114,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             ylbl = self.ccoeflbls[::-1][row]
             z = self.dmat[row, col]
             if np.ma.is_masked(z):
-                return ''
+                return ""
 
-            return f'{xlbl}, {ylbl} correlation: {z}%'
+            return f"{xlbl}, {ylbl} correlation: {z}%"
 
     def motion_notify_callback(self, event):
         """
@@ -223,7 +223,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             else:
                 i.set_visible(False)
 
-    def update_ccoef(self, data, style='Normal'):
+    def update_ccoef(self, data, style="Normal"):
         """
         Update the plot from point data.
 
@@ -241,21 +241,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
 
-        self.axes = self.figure.add_subplot(111, label='map')
+        self.axes = self.figure.add_subplot(111, label="map")
         cb_registry = self.axes.callbacks
-        cb_registry.connect('ylim_changed', self.textresize)
-        cb_registry.connect('xlim_changed', self.textresize)
+        cb_registry.connect("ylim_changed", self.textresize)
+        cb_registry.connect("xlim_changed", self.textresize)
 
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-        self.axes.axis('scaled')
-        self.axes.set_title('Correlation Coefficients')
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
+        self.axes.axis("scaled")
+        self.axes.set_title("Correlation Coefficients")
 
         # calculate correlations
         corr = data.corr(numeric_only=True)
         corr = (corr * 100).round(0)
 
-        corr = corr.dropna(axis=0, how='all').dropna(axis=1, how='all')
+        corr = corr.dropna(axis=0, how="all").dropna(axis=1, how="all")
         corr = corr.replace(np.nan, 0)
         corr = corr.astype(int)
 
@@ -268,22 +268,28 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         annot_kws = {"size": 35 / np.sqrt(len(corr))}
 
-        if style == 'Normal':
-            cmap = colormaps['jet']
+        if style == "Normal":
+            cmap = colormaps["jet"]
             norm = None
         else:
-            cmap = colormaps['jet']
-            cmap.set_under('w')
-            cmap.set_over('w')
+            cmap = colormaps["jet"]
+            cmap.set_under("w")
+            cmap.set_over("w")
 
             bounds = [50, 60, 70, 80, 90, 99]
-            norm = BoundaryNorm(bounds, cmap.N, extend='min')
+            norm = BoundaryNorm(bounds, cmap.N, extend="min")
 
-        im, _ = heatmap(self.dmat, self.ccoeflbls[::-1], self.ccoeflbls,
-                        self.axes, cmap=cmap, cbarlabel='Correlation',
-                        norm=norm)
+        im, _ = heatmap(
+            self.dmat,
+            self.ccoeflbls[::-1],
+            self.ccoeflbls,
+            self.axes,
+            cmap=cmap,
+            cbarlabel="Correlation",
+            norm=norm,
+        )
 
-        im.format_cursor_data = lambda x: ''
+        im.format_cursor_data = lambda x: ""
 
         self.texts = annotate_heatmap(im, valfmt="{x:.0f}", **annot_kws)
 
@@ -306,24 +312,26 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         if self.pickevents is False:
-            self.figure.canvas.mpl_connect('pick_event', self.onpick)
-            self.figure.canvas.mpl_connect('button_release_event',
-                                           self.button_release_callback)
-            self.figure.canvas.mpl_connect('motion_notify_event',
-                                           self.motion_notify_callback)
-            self.figure.canvas.mpl_connect('resize_event', self.resizeline)
+            self.figure.canvas.mpl_connect("pick_event", self.onpick)
+            self.figure.canvas.mpl_connect(
+                "button_release_event", self.button_release_callback
+            )
+            self.figure.canvas.mpl_connect(
+                "motion_notify_event", self.motion_notify_callback
+            )
+            self.figure.canvas.mpl_connect("resize_event", self.resizeline)
             self.pickevents = True
 
         self.figure.clear()
 
-        self.axes = self.figure.add_subplot(111, label='Profile')
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes = self.figure.add_subplot(111, label="Profile")
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
         # self.axes.axis('equal')
 
-        self.axes.set_title('Profile')
-        self.axes.set_xlabel('Distance')
-        self.axes.set_ylabel('Value')
+        self.axes.set_title("Profile")
+        self.axes.set_xlabel("Distance")
+        self.axes.set_ylabel("Value")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -331,7 +339,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
-        self.line, = self.axes.plot(r, data, '.-')
+        (self.line,) = self.axes.plot(r, data, ".-")
         self.line.set_picker(True)
         self.line.set_pickradius(5)
 
@@ -358,13 +366,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        ax1 = self.figure.add_subplot(111, label='Map')
+        ax1 = self.figure.add_subplot(111, label="Map")
 
         self.axes = ax1
-        self.axes.ticklabel_format(useOffset=False, style='plain')
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-        self.axes.axis('equal')
+        self.axes.ticklabel_format(useOffset=False, style="plain")
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
+        self.axes.axis("equal")
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -379,7 +387,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # Get average spacing between 2 points over the entire survey.
         spcing = np.array([])
 
-        datagrp = data.groupby('line')
+        datagrp = data.groupby("line")
         datagrp = list(datagrp)
         data1 = datagrp[0][1]
 
@@ -393,7 +401,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if x.size < 2:
                 continue
 
-            spcing = np.append(spcing, np.sqrt(np.diff(x)**2 + np.diff(y)**2))
+            spcing = np.append(spcing, np.sqrt(np.diff(x) ** 2 + np.diff(y) ** 2))
 
         spcing = spcing.mean()
 
@@ -416,7 +424,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             elif np.ptp(y) > np.ptp(x) and (y[-1] - y[0]) < 0:
                 ang += np.pi
 
-            py = spcing * scale * (z - med) / std / 100.
+            py = spcing * scale * (z - med) / std / 100.0
 
             qx = x - np.sin(ang) * py
             qy = y + np.cos(ang) * py
@@ -424,18 +432,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if uselabels:
                 textang = np.rad2deg(ang[0])
                 ax1.text(x[0], y[0], line[0], rotation=textang)
-            ax1.plot(x, y, 'c')
-            ax1.plot(qx, qy, 'k')
+            ax1.plot(x, y, "c")
+            ax1.plot(qx, qy, "k")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
         if data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         self.figure.canvas.draw()
 
@@ -459,13 +467,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
 
-        self.axes = self.figure.add_subplot(111, label='map')
-        self.axes.ticklabel_format(style='plain')
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-        self.axes.axis('equal')
+        self.axes = self.figure.add_subplot(111, label="map")
+        self.axes.ticklabel_format(style="plain")
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
+        self.axes.axis("equal")
 
-        if 'LineString' in data.geom_type.iloc[0]:
+        if "LineString" in data.geom_type.iloc[0]:
             tmp = []
             for i in data.geometry:
                 tmp.append(np.transpose(i.coords.xy))
@@ -474,7 +482,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.add_collection(lcol)
             self.axes.autoscale()
 
-        elif 'Polygon' in data.geom_type.iloc[0]:
+        elif "Polygon" in data.geom_type.iloc[0]:
             tmp = []
             for j in data.geometry:
                 tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
@@ -483,8 +491,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.add_collection(lcol)
             self.axes.autoscale()
 
-        elif 'Point' in data.geom_type.iloc[0]:
-            if col != '' and style is None or 'Normal' in style:
+        elif "Point" in data.geom_type.iloc[0]:
+            if col != "" and style is None or "Normal" in style:
                 dstd = data[col].std()
                 dmean = data[col].mean()
                 vmin = max(dmean - 2 * dstd, data[col].min())
@@ -494,12 +502,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 #           legend=True, cmap=self.cmap, vmin=vmin,
                 #           vmax=vmax)
 
-                scat = self.axes.scatter(data.geometry.x,
-                                         data.geometry.y,
-                                         c=data[col], vmin=vmin, vmax=vmax,
-                                         cmap=self.cmap, marker='.')
+                scat = self.axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=data[col],
+                    vmin=vmin,
+                    vmax=vmax,
+                    cmap=self.cmap,
+                    marker=".",
+                )
                 self.figure.colorbar(scat, ax=self.axes, format=frm)
-            elif col != '' and 'Standard' in style:
+            elif col != "" and "Standard" in style:
                 m3 = data[col].mean()
                 s3 = data[col].std()
                 x1 = data[col].min()
@@ -510,31 +523,39 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 r2 = min(3, r2)
 
                 bnds = [m3 + i * s3 for i in range(0, r2 + 1)]
-                lbls = [f'{i} to {i + 1}' for i in range(0, r2)]
+                lbls = [f"{i} to {i + 1}" for i in range(0, r2)]
                 bnds = [x1 - eps] + bnds + [x2]
-                lbls[0] = 'mean' + lbls[0][1:]
-                lbls = ['min to mean'] + lbls + [f'{r2} to max']
+                lbls[0] = "mean" + lbls[0][1:]
+                lbls = ["min to mean"] + lbls + [f"{r2} to max"]
 
                 z3 = pd.cut(data[col], bnds, labels=False)
-                scat = self.axes.scatter(data.geometry.x,
-                                         data.geometry.y,
-                                         c=z3, cmap=self.cmap, marker='.')
+                scat = self.axes.scatter(
+                    data.geometry.x, data.geometry.y, c=z3, cmap=self.cmap, marker="."
+                )
                 discrete_colorbar(self.axes, scat, z3, lbls)
 
-            elif col != '' and 'Quartile' in style:
-                z3 = pd.qcut(data[col], 4, labels=False, duplicates='drop')
+            elif col != "" and "Quartile" in style:
+                z3 = pd.qcut(data[col], 4, labels=False, duplicates="drop")
 
-                scat = self.axes.scatter(data.geometry.x,
-                                         data.geometry.y,
-                                         c=z3 + 1, cmap=self.cmap, marker='.')
+                scat = self.axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=z3 + 1,
+                    cmap=self.cmap,
+                    marker=".",
+                )
                 discrete_colorbar(self.axes, scat, z3 + 1)
 
-            elif col != '' and 'K-Means' in style:
+            elif col != "" and "K-Means" in style:
                 z1 = np.array(data[col]).reshape(-1, 1)
-                z3 = KMeans(n_clusters=5, n_init='auto').fit_predict(z1)
-                scat = self.axes.scatter(data.geometry.x,
-                                         data.geometry.y,
-                                         c=z3 + 1, cmap=self.cmap, marker='.')
+                z3 = KMeans(n_clusters=5, n_init="auto").fit_predict(z1)
+                scat = self.axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=z3 + 1,
+                    cmap=self.cmap,
+                    marker=".",
+                )
                 discrete_colorbar(self.axes, scat, z3 + 1)
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
@@ -543,15 +564,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.yaxis.set_major_formatter(frm)
 
         if data.crs is not None and data.crs.is_geographic:
-            self.axes.set_xlabel('Longitude')
-            self.axes.set_ylabel('Latitude')
+            self.axes.set_xlabel("Longitude")
+            self.axes.set_ylabel("Latitude")
         else:
-            self.axes.set_xlabel('Eastings')
-            self.axes.set_ylabel('Northings')
+            self.axes.set_xlabel("Eastings")
+            self.axes.set_ylabel("Northings")
 
         self.figure.canvas.draw()
 
-    def update_rose(self, data, rtype, nbins=8, equal=False):
+    def update_rose(self, data, rtype, nbins=8, equal=False, mono=False):
         """
         Update the rose diagram plot using vector data.
 
@@ -573,18 +594,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(121, polar=True, label='Rose')
+        ax1 = self.figure.add_subplot(121, polar=True, label="Rose")
         ax1.set_theta_direction(-1)
-        ax1.set_theta_zero_location('N')
+        ax1.set_theta_zero_location("N")
         ax1.yaxis.set_ticklabels([])
 
         self.axes = ax1
 
-        ax2 = self.figure.add_subplot(122, label='Map')
-        ax2.set_aspect('equal')
-        ax2.ticklabel_format(useOffset=False, style='plain')
-        ax2.tick_params(axis='x', rotation=90)
-        ax2.tick_params(axis='y', rotation=0)
+        ax2 = self.figure.add_subplot(122, label="Map")
+        ax2.set_aspect("equal")
+        ax2.ticklabel_format(useOffset=False, style="plain")
+        ax2.tick_params(axis="x", rotation=90)
+        ax2.tick_params(axis="y", rotation=0)
         ax2.xaxis.set_major_formatter(frm)
         ax2.yaxis.set_major_formatter(frm)
 
@@ -594,7 +615,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         allcrds = []
         for i in data.geometry:
-            if i.geom_type == 'MultiLineString':
+            if i.geom_type == "MultiLineString":
                 for j in i:
                     allcrds.append(np.transpose(j.coords.xy))
             else:
@@ -617,46 +638,40 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi / nbins
-        Set1 = colormaps['Set1']
+        Set1 = colormaps["Set1"]
         bcols = Set1(np.arange(nbins + 1) / nbins)
         np.random.shuffle(bcols)
 
         if rtype == 0:
             # Draw rose diagram base on one angle per linear feature
 
-            radii, theta = np.histogram(fangle, bins=np.arange(0,
-                                                               np.pi + bwidth,
-                                                               bwidth))
-
-            if equal is True:
-                radii = .01 * radii.max() * np.sqrt(100 * radii / radii.max())
-
-            xtheta = theta[:-1]
-            bcols2 = bcols[(xtheta / bwidth).astype(int)]
-            ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
-            ax1.bar(xtheta + np.pi, radii, width=bwidth, color=bcols2)
-
-            bcols2 = bcols[(fangle / bwidth).astype(int)]
-            lcol = mc.LineCollection(allcrds, color=bcols2)
-            ax2.add_collection(lcol)
-            ax2.autoscale(enable=True)  # , tight=True)
-
+            radii, theta = np.histogram(
+                fangle, bins=np.arange(0, np.pi + bwidth, bwidth)
+            )
+            tmp = fangle
         else:
             # Draw rose diagram base on one angle per linear segment, normed
-            radii, theta = histogram(fcnt, y=flen, xmin=0., xmax=np.pi,
-                                     bins=nbins)
-            if equal is True:
-                radii = .01 * radii.max() * np.sqrt(100 * radii / radii.max())
+            radii, theta = histogram(fcnt, y=flen, xmin=0.0, xmax=np.pi, bins=nbins)
+            tmp = fcnt
 
-            xtheta = theta[:-1]
-            bcols2 = bcols[(xtheta / bwidth).astype(int)]
+        if equal is True:
+            radii = 0.01 * radii.max() * np.sqrt(100 * radii / radii.max())
+
+        xtheta = theta[:-1]
+        bcols2 = bcols[(xtheta / bwidth).astype(int)]
+        bcols2b = bcols[(tmp / bwidth).astype(int)]
+
+        if mono is True:
+            ax1.bar(xtheta, radii, width=bwidth, color="#1f77b4")
+            ax1.bar(xtheta + np.pi, radii, width=bwidth, color="#1f77b4")
+            lcol = mc.LineCollection(allcrds)
+        else:
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
             ax1.bar(xtheta + np.pi, radii, width=bwidth, color=bcols2)
+            lcol = mc.LineCollection(allcrds, color=bcols2b)
 
-            bcols2 = bcols[(fcnt / bwidth).astype(int)]
-            lcol = mc.LineCollection(allcrds, color=bcols2)
-            ax2.add_collection(lcol)
-            ax2.autoscale(enable=True)
+        ax2.add_collection(lcol)
+        ax2.autoscale(enable=True)
 
         self.figure.canvas.draw()
 
@@ -682,22 +697,23 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
+        self.axes.tick_params(axis="x", rotation=90)
+        self.axes.tick_params(axis="y", rotation=0)
 
         dattmp = data.loc[:, col]
 
-        self.axes.hist(dattmp, bins='sqrt', cumulative=iscum,
-                       histtype='stepfilled', edgecolor='k')
+        self.axes.hist(
+            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
+        )
         self.axes.set_title(col)
-        self.axes.set_xlabel('Data Value')
-        self.axes.set_ylabel('Counts')
+        self.axes.set_xlabel("Data Value")
+        self.axes.set_ylabel("Counts")
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
         if ylog is True:
-            self.axes.set_yscale('log')
+            self.axes.set_yscale("log")
 
         self.figure.canvas.draw()
 
@@ -716,7 +732,7 @@ class PlotCCoef(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Vector Plot')
+        self.setWindowTitle("Vector Plot")
 
         self.data = None
 
@@ -727,11 +743,11 @@ class PlotCCoef(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Style:')
+        lbl_1 = QtWidgets.QLabel("Style:")
 
-        self.cmb_1.addItems(['Normal', 'Positive correlation highlights'])
+        self.cmb_1.addItems(["Normal", "Positive correlation highlights"])
 
-        self.buttonbox.htmlfile = 'vector.cm.pltcorr'
+        self.buttonbox.htmlfile = "vector.cm.pltcorr"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -769,7 +785,7 @@ class PlotCCoef(ContextModule):
         None.
 
         """
-        self.data = self.indata['Vector'][0]
+        self.data = self.indata["Vector"][0]
 
         self.change_band()
         self.show()
@@ -789,7 +805,7 @@ class PlotHist(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Histogram')
+        self.setWindowTitle("Histogram")
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -797,11 +813,11 @@ class PlotHist(ContextModule):
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Bands:')
-        self.cb_log = QtWidgets.QCheckBox('Log Y Axis:')
-        self.cb_cum = QtWidgets.QCheckBox('Cumulative:')
+        lbl_1 = QtWidgets.QLabel("Bands:")
+        self.cb_log = QtWidgets.QCheckBox("Log Y Axis:")
+        self.cb_cum = QtWidgets.QCheckBox("Cumulative:")
 
-        self.buttonbox.htmlfile = 'vector.cm.showhist'
+        self.buttonbox.htmlfile = "vector.cm.showhist"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -829,7 +845,7 @@ class PlotHist(ContextModule):
         None.
 
         """
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
         col = self.cmb_1.currentText()
         ylog = self.cb_log.isChecked()
         iscum = self.cb_cum.isChecked()
@@ -844,11 +860,11 @@ class PlotHist(ContextModule):
         None.
 
         """
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
         cols = data.select_dtypes(include=np.number).columns.tolist()
 
         if not cols:
-            self.showlog('No numerical columns.')
+            self.showlog("No numerical columns.")
             return
 
         self.show()
@@ -873,7 +889,7 @@ class PlotLines(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle('Plot Profiles')
+        self.setWindowTitle("Plot Profiles")
 
         self.data = None
 
@@ -885,10 +901,10 @@ class PlotLines(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel('Line:')
-        lbl_2 = QtWidgets.QLabel('Column:')
+        lbl_1 = QtWidgets.QLabel("Line:")
+        lbl_2 = QtWidgets.QLabel("Column:")
 
-        self.buttonbox.htmlfile = 'vector.cm.showprof'
+        self.buttonbox.htmlfile = "vector.cm.showprof"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -906,8 +922,8 @@ class PlotLines(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
 
-        self.xcol = ''
-        self.ycol = ''
+        self.xcol = ""
+        self.ycol = ""
 
     def change_band(self):
         """
@@ -931,9 +947,9 @@ class PlotLines(ContextModule):
 
         data2 = data2[col].values
 
-        r = np.sqrt((x[1:] - x[:-1])**2 + (y[1:] - y[:-1])**2)
+        r = np.sqrt((x[1:] - x[:-1]) ** 2 + (y[1:] - y[:-1]) ** 2)
         r = np.cumsum(r)
-        r = np.concatenate(([0.], r))
+        r = np.concatenate(([0.0], r))
 
         self.mmc.update_lines(r, data2)
 
@@ -947,13 +963,13 @@ class PlotLines(ContextModule):
 
         """
         self.data = None
-        for i in self.indata['Vector']:
-            if i.geom_type.iloc[0] == 'Point':
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "Point":
                 self.data = i
                 break
 
         if self.data is None:
-            self.showlog('No point type data.')
+            self.showlog("No point type data.")
             return
 
         self.cmb_1.currentIndexChanged.disconnect()
@@ -961,10 +977,9 @@ class PlotLines(ContextModule):
 
         self.show()
 
-        filt = ((self.data.columns != 'geometry') &
-                (self.data.columns != 'line'))
+        filt = (self.data.columns != "geometry") & (self.data.columns != "line")
         cols = list(self.data.columns[filt])
-        lines = self.data.line[self.data.line != 'nan'].unique()
+        lines = self.data.line[self.data.line != "nan"].unique()
 
         self.cmb_1.clear()
         self.cmb_2.clear()
@@ -993,7 +1008,7 @@ class PlotLineMap(ContextModule):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Profile Map')
+        self.setWindowTitle("Profile Map")
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
         self.data = None
@@ -1006,11 +1021,11 @@ class PlotLineMap(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel('Column:')
-        self.lbl_3 = QtWidgets.QLabel('Scale:')
-        self.cb_1 = QtWidgets.QCheckBox('Show Line Labels:')
+        self.lbl_1 = QtWidgets.QLabel("Column:")
+        self.lbl_3 = QtWidgets.QLabel("Scale:")
+        self.cb_1 = QtWidgets.QCheckBox("Show Line Labels:")
 
-        self.buttonbox.htmlfile = 'vector.cm.showmapprof'
+        self.buttonbox.htmlfile = "vector.cm.showmapprof"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -1058,13 +1073,13 @@ class PlotLineMap(ContextModule):
 
         """
         self.data = None
-        for i in self.indata['Vector']:
-            if i.geom_type.iloc[0] == 'Point':
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "Point":
                 self.data = i
                 break
 
         if self.data is None:
-            self.showlog('No point type data.')
+            self.showlog("No point type data.")
             return
 
         self.cmb_1.currentIndexChanged.disconnect()
@@ -1073,9 +1088,8 @@ class PlotLineMap(ContextModule):
 
         self.show()
 
-        data = self.indata['Vector'][0]
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line'))
+        data = self.indata["Vector"][0]
+        filt = (data.columns != "geometry") & (data.columns != "line")
         cols = list(data.columns[filt])
         self.cmb_1.clear()
         self.cmb_1.addItems(cols)
@@ -1118,11 +1132,12 @@ class PlotRose(ContextModule):
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel('Rose Diagram Type:')
-        self.lbl_3 = QtWidgets.QLabel('Value:')
-        self.cb_1 = QtWidgets.QCheckBox('Equal Area Rose Diagram')
+        self.lbl_1 = QtWidgets.QLabel("Rose Diagram Type:")
+        self.lbl_3 = QtWidgets.QLabel("Value:")
+        self.cb_1 = QtWidgets.QCheckBox("Equal Area Rose Diagram")
+        self.cb_2 = QtWidgets.QCheckBox("Use one colour only")
 
-        self.buttonbox.htmlfile = 'vector.cm.showrose'
+        self.buttonbox.htmlfile = "vector.cm.showrose"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -1134,6 +1149,7 @@ class PlotRose(ContextModule):
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
         vbl.addWidget(self.cb_1)
+        vbl.addWidget(self.cb_2)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -1141,12 +1157,13 @@ class PlotRose(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
         self.cb_1.stateChanged.connect(self.change_band)
+        self.cb_2.stateChanged.connect(self.change_band)
 
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
 
-        self.setWindowTitle('Rose Diagram')
+        self.setWindowTitle("Rose Diagram")
 
     def change_band(self):
         """
@@ -1162,8 +1179,9 @@ class PlotRose(ContextModule):
 
         i = self.cmb_1.currentIndex()
         equal = self.cb_1.isChecked()
+        mono = self.cb_2.isChecked()
 
-        self.mmc.update_rose(self.data, i, self.spinbox.value(), equal)
+        self.mmc.update_rose(self.data, i, self.spinbox.value(), equal, mono)
 
     def run(self):
         """
@@ -1175,20 +1193,20 @@ class PlotRose(ContextModule):
 
         """
         self.data = None
-        if 'Vector' not in self.indata:
+        if "Vector" not in self.indata:
             return
-        for i in self.indata['Vector']:
-            if i.geom_type.iloc[0] == 'LineString':
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "LineString":
                 self.data = i
                 break
 
         if self.data is None:
-            self.showlog('No line type data.')
+            self.showlog("No line type data.")
             return
 
         self.show()
-        self.cmb_1.addItem('Average Angle per Feature')
-        self.cmb_1.addItem('Angle per segment in Feature')
+        self.cmb_1.addItem("Average Angle per Feature")
+        self.cmb_1.addItem("Angle per segment in Feature")
         self.cmb_1.setCurrentIndex(0)
 
 
@@ -1219,27 +1237,31 @@ class PlotVector(ContextModule):
         self.cmb_2 = QtWidgets.QComboBox()
         self.cmb_c = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel('Channel:')
-        self.lbl_2 = QtWidgets.QLabel('Style:')
-        self.lbl_c = QtWidgets.QLabel('Colour Bar:')
+        self.lbl_1 = QtWidgets.QLabel("Channel:")
+        self.lbl_2 = QtWidgets.QLabel("Style:")
+        self.lbl_c = QtWidgets.QLabel("Colour Bar:")
 
-        self.cmb_2.addItems(['Normal',
-                             'Group using Standard Deviations above Mean (0)',
-                             'Group by Quartile',
-                             'Group into K-Means Classes'])
+        self.cmb_2.addItems(
+            [
+                "Normal",
+                "Group using Standard Deviations above Mean (0)",
+                "Group by Quartile",
+                "Group into K-Means Classes",
+            ]
+        )
 
         tmp = sorted(m for m in colormaps())
 
-        self.cmb_c.addItem('jet')
-        self.cmb_c.addItem('viridis')
-        self.cmb_c.addItem('terrain')
-        self.cmb_c.addItem('Floyd')
-        self.cmb_c.addItem('MarineCopper')
-        self.cmb_c.addItem('Splash')
-        self.cmb_c.addItem('Wheel')
+        self.cmb_c.addItem("jet")
+        self.cmb_c.addItem("viridis")
+        self.cmb_c.addItem("terrain")
+        self.cmb_c.addItem("Floyd")
+        self.cmb_c.addItem("MarineCopper")
+        self.cmb_c.addItem("Splash")
+        self.cmb_c.addItem("Wheel")
         self.cmb_c.addItems(tmp)
 
-        self.buttonbox.htmlfile = 'vector.cm.showvector'
+        self.buttonbox.htmlfile = "vector.cm.showvector"
         self.buttonbox.buttonbox.hide()
         hbl.addWidget(self.buttonbox)
 
@@ -1260,7 +1282,7 @@ class PlotVector(ContextModule):
         self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.cmb_c.currentIndexChanged.connect(self.change_band)
 
-        self.setWindowTitle('Vector Plot')
+        self.setWindowTitle("Vector Plot")
 
     def change_band(self):
         """
@@ -1276,12 +1298,12 @@ class PlotVector(ContextModule):
 
         i = self.cmb_1.currentText()
 
-        if i == '':
+        if i == "":
             data = self.data
         else:
             data = self.data.dropna(subset=i)
         if data.size == 0:
-            i = ''
+            i = ""
             data = self.data
 
         style = self.cmb_2.currentText()
@@ -1300,10 +1322,10 @@ class PlotVector(ContextModule):
         None.
 
         """
-        self.data = self.indata['Vector'][0]
+        self.data = self.indata["Vector"][0]
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
-        if len(cols) > 0 and 'Point' in self.data.geom_type.iloc[0]:
+        if len(cols) > 0 and "Point" in self.data.geom_type.iloc[0]:
             self.cmb_1.clear()
             self.cmb_1.addItems(cols)
             self.cmb_1.setCurrentIndex(0)
@@ -1320,8 +1342,7 @@ class PlotVector(ContextModule):
         self.change_band()
 
 
-def heatmap(data, row_labels, col_labels, ax, *,
-            cbar_kw=None, cbarlabel="", **kwargs):
+def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **kwargs):
     """
     Create a heatmap from a numpy array and two lists of labels.
 
@@ -1366,8 +1387,7 @@ def heatmap(data, row_labels, col_labels, ax, *,
     ax.set_yticks(np.arange(data.shape[0]), labels=row_labels)
 
     # Let the horizontal axes labeling appear on top.
-    ax.tick_params(top=False, bottom=True,
-                   labeltop=False, labelbottom=True)
+    ax.tick_params(top=False, bottom=True, labeltop=False, labelbottom=True)
 
     # Rotate the tick labels and set their alignment.
     # plt.setp(ax.get_xticklabels(), rotation=-30, ha="right",
@@ -1376,17 +1396,22 @@ def heatmap(data, row_labels, col_labels, ax, *,
     # Turn spines off and create white grid.
     ax.spines[:].set_visible(False)
 
-    ax.set_xticks(np.arange(data.shape[1] + 1) - .5, minor=True)
-    ax.set_yticks(np.arange(data.shape[0] + 1) - .5, minor=True)
+    ax.set_xticks(np.arange(data.shape[1] + 1) - 0.5, minor=True)
+    ax.set_yticks(np.arange(data.shape[0] + 1) - 0.5, minor=True)
     # ax.grid(which="minor", color="w", linestyle='-', linewidth=3)
     ax.tick_params(which="minor", bottom=False, left=False)
 
     return im, cbar
 
 
-def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
-                     textcolors=("black", "white"),
-                     threshold=None, **textkw):
+def annotate_heatmap(
+    im,
+    data=None,
+    valfmt="{x:.2f}",
+    textcolors=("black", "white"),
+    threshold=None,
+    **textkw,
+):
     """
     Annotate a heatmap.
 
@@ -1426,12 +1451,11 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
     if threshold is not None:
         threshold = im.norm(threshold)
     else:
-        threshold = im.norm(data.max()) / 2.
+        threshold = im.norm(data.max()) / 2.0
 
     # Set default alignment to center, but allow it to be
     # overwritten by textkw.
-    kw = {'horizontalalignment': 'center',
-          'verticalalignment': 'center'}
+    kw = {"horizontalalignment": "center", "verticalalignment": "center"}
     kw.update(textkw)
 
     # Get the formatter in case a string is supplied
@@ -1545,20 +1569,21 @@ def rotate(origin, point, angle):
 
 def _testfn():
     """Test."""
-    import sys
     import os
+    import sys
+
     from pygmi.vector.iodefs import ImportXYZ
 
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(sfile))
 
     IO = ImportXYZ()
     IO.ifile = sfile
-    IO.le_nodata.setText('-99999')
+    IO.le_nodata.setText("-99999")
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
@@ -1571,15 +1596,15 @@ def _testfn():
 
 def _testfn2():
     """Test."""
-    import sys
     import os
-    from pygmi.vector.iodefs import ImportVector
-    from pygmi.cgs.misc import SurveyPlan
+    import sys
 
-    sfile = r"D:\temp\Murchison_area.shp"
+    from pygmi.vector.iodefs import ImportVector
+
+    sfile = r"C:\Work\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(sfile))
 
@@ -1588,12 +1613,8 @@ def _testfn2():
     IO.ifile = sfile
     IO.settings(True)
 
-    SP = SurveyPlan()
-    SP.indata = IO.outdata
-    SP.settings(True)
-
-    SC = PlotVector()
-    SC.indata = SP.outdata
+    SC = PlotRose()
+    SC.indata = IO.outdata
     SC.run()
 
     app.exec()
