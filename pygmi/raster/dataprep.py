@@ -1917,6 +1917,7 @@ def mosaic(
     for dataid in bandlist:
         showlog("Extracting " + dataid + "...")
 
+        ofile = ""
         if bandstofiles:
             odir = os.path.join(idir, "mosaic")
             os.makedirs(odir, exist_ok=True)
@@ -1935,7 +1936,6 @@ def mosaic(
         geomlist = []
         metadata = {}
         datetime = None
-        ofile = ""
 
         for i in piter(indata):
             if i.dataid != dataid and singleband is False:
@@ -2380,10 +2380,10 @@ def _testfn():
 
 def _testmosaic():
     """Test."""
-    idir = r"D:\tmp"
+    idir = r"C:\Work\PyGMI Test Data\Raster\mosaic"
     dat = {}
 
-    mosaic(dat, idir=idir)
+    mosaic(dat, idir=idir, bandstofiles=True)
 
 
 if __name__ == "__main__":
