@@ -995,7 +995,7 @@ def calcfeatures(
         xval.append(refl)
 
     dorder = [i for _, i in natsorted(zip(xval, range(len(xval))))]
-    dat = [dat[i] for i in dorder]
+    dat2 = [dat2[i] for i in dorder]
     xval = [xval[i] for i in dorder]
 
     xval = np.array(xval)
