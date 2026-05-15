@@ -531,6 +531,15 @@ def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
     # Get azimuth and dip of second plane
     s2, d2, _ = auxplane(s1, d1, r1)
 
+    S1 = s1[0]
+    D1 = d1[0]
+    S2 = s2[0]
+    D2 = d2[0]
+    P = r1[0]
+    CX = centerx[0]
+    CY = centery[0]
+    D = diam[0]
+    M = mech[0]
     for ev in range(ne1):
         S1 = s1[ev]
         D1 = d1[ev]
@@ -888,7 +897,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = ImportSeisan()
-    tmp.ifile = r"D:\workdata\PyGMI Test Data\Seismology\collect2.out"
+    tmp.ifile = r"C:\Work\PyGMI Test Data\Seismology\collect2.out"
     tmp.settings(True)
 
     outdata = tmp.outdata
