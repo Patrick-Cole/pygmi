@@ -80,11 +80,7 @@ product["Nd 580"] = ["f580"]
 product["Nd 740"] = ["f740"]
 product["Nd 800"] = ["f800"]
 product["Nd 865"] = ["f865"]
-# product['white mica feature only'] = ['f2200']
-# product['chlorite-2250 feature only'] = ['f2250']
-# product['chlorite-2330 feature only'] = ['f2330']
-# product['1960 feature only'] = ['f1960']
-# product['2000 feature only'] = ['f2000']
+
 # product['white micanew'] = ['f2200', 'f2350 > 0.1', 'f2160 < f2200',
 #                             'f2200 > .01']
 product["smectite"] = ["f2200", "r2350De < 1.0", "r2160D2190 < 1.005", "r2200D > 1.01"]
@@ -118,12 +114,11 @@ product["amphibole"] = [
     "r2200D < 1.01",
     "r2250D < 1.01",
 ]
-product["pyrophyllite"] = ["f2160", "r2160D2190 < 1.005"]
 # product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
 
 # product['gypsum'] = ['r1750D', 'r1750D > 1.0'] #, 'r1950D > 1.001']
 # product['gypsum'] = ['f1760']
-# product['alunite'] = ['f1480', 'r1750D > 1.1']
+product["alunite"] = ["f1480", "r1750D > 1.1"]
 # product['carbonate'] = ['r2330D']
 # product['carbonate_w'] = ['f2330', 'r2330D > 1.1']
 
