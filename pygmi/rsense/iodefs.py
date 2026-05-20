@@ -3966,7 +3966,7 @@ def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False
 
     # Fix for holes in some band due to shadows.
     if metaonly is False:
-        dat = lstack(dat)
+        dat = lstack(dat, piter=piter, showlog=showlog)
         mask = ~dat[0].data.mask
         for i in dat:
             mask = mask | ~i.data.mask
@@ -3975,6 +3975,9 @@ def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False
 
         for i in dat:
             i.data.mask = mask
+            i.data = i.data.filled(1e20)
+            i.data = np.ma.masked_equal(i.data, 1e20)
+            i.nodata = 1e20
     return dat
 
 
