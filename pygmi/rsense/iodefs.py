@@ -3964,6 +3964,17 @@ def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False
         dataset.close()
         dataset1.close()
 
+    # Fix for holes in some band due to shadows.
+    if metaonly is False:
+        dat = lstack(dat)
+        mask = ~dat[0].data.mask
+        for i in dat:
+            mask = mask | ~i.data.mask
+
+        mask = ~mask
+
+        for i in dat:
+            i.data.mask = mask
     return dat
 
 
@@ -4825,6 +4836,7 @@ def _testfn3():
     # ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
     # ifile = r"D:\temp\patrick.cole\AST_07XT_004-20260313_053451\AST_05_00409272006084535_20250531031504_SRE_TIR_B10.tif"
     ifile = r"C:\Work\EMITL2BMIN_001-20260414_132443\EMIT_L2B_MIN_001_20250316T123747_2507508_005.nc"
+    ifile = r"C:\Work\ASTER\AST_07XT_00408072006081314_20250529202332_SRF_VNIR_B01.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -4835,8 +4847,6 @@ def _testfn3():
     tmp1.settings()
 
     dat = tmp1.outdata["Raster"]
-
-    # print(dat[-1].metadata)
 
     for i in dat:
         plt.figure(dpi=150)

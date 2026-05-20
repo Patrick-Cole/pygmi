@@ -901,7 +901,6 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
 
     if lbls is not None:
         cbar.ax.set_yticklabels(lbls)
-        # print('sssssssssssss')
     else:
         cbar.ax.set_yticklabels(vals)
 
