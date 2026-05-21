@@ -526,6 +526,7 @@ class ImportXYZ(BasicModule):
             exactpairs = [
                 ["lon", "lat"],
                 ["long", "lat"],
+                ["long e", "lat n"],
                 ["longitude", "latitude"],
                 ["x", "y"],
                 ["e", "n"],
@@ -575,9 +576,20 @@ class ImportXYZ(BasicModule):
         x = gdf[xcol]
         y = gdf[ycol]
 
-        if x.dtype == "O" or y.dtype == "O":
-            self.showlog("Error: You have text in your coordinates.")
-            return False
+        if x.dtype == "O":
+            self.showlog(
+                "Error: You have text in your X coordinates. Will attempt to fix but "
+                "invalid entries will be converted to NaN."
+            )
+            x = x.astype(str).str.strip()
+            x = pd.to_numeric(x, errors="coerce")
+        if y.dtype == "O":
+            self.showlog(
+                "Error: You have text in your Y coordinates. Will attempt to fix but "
+                "invalid entries will be converted to NaN."
+            )
+            y = y.astype(str).str.strip()
+            y = pd.to_numeric(y, errors="coerce")
 
         gdf = gpd.GeoDataFrame(gdf, geometry=gpd.points_from_xy(x, y))
 
@@ -1267,14 +1279,15 @@ def _test():
     import sys
 
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
+    ifile = r"C:\Work\Stress\focala.xlsx"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(ifile))
 
-    # tmp1 = ImportVector()
-    # tmp1.settings()
+    tmp1 = ImportXYZ()
+    tmp1.settings()
 
     # dat = tmp1.outdata['Vector'][0]
 
@@ -1284,7 +1297,7 @@ def _test():
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
 
-    df = get_GXYZ(ifile)
+    # df = get_GXYZ(ifile)
 
     pass
 
