@@ -283,11 +283,14 @@ class SatRatios(BasicModule):
         rlist += [
             r"B2/B1 Ferric Iron Fe3+",
             r"B2/B0 Iron Oxide",
+            r"B0/B2 Inverse Iron Oxide",
             r"B5/B3+B1/B2 Ferrous Iron Fe2+",
             r"B4/B5 Laterite or Alteration",
             r"B4/B2 Gossan",
             r"B5/B4 Ferrous Silicates (biotite, chloride, amphibole)",
             r"B4/B3 Ferric Oxides (can be ambiguous)",
+            r"B4/B3A Mafic or Ultramafic Enhancement",
+            r"B5/B3A Ferrous Iron Fe2+",
         ]  # lsat ferrous?
 
         # silicates bands
