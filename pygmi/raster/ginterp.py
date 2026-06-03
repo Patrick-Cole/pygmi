@@ -41,12 +41,14 @@ supports GeoTIFF files.
 """
 
 import copy
+import io
 import os
 import sys
 from math import cos
 
 import matplotlib.colorbar as mcolorbar
 import matplotlib.colors as mcolors
+import matplotlib.image as mpimg
 import numpy as np
 from matplotlib import gridspec
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -1998,49 +2000,32 @@ class PlotInterp(BasicModule):
             img = img.astype(np.uint8)
 
         elif dtype == "Contour":
-            # clippercu = self.mmc.clippercu[self.mmc.hband[0]]
-            # clippercl = self.mmc.clippercl[self.mmc.hband[0]]
-
-            # pseudo = self.mmc.image._full_res.copy()
-            # if htype == 'Histogram Equalization':
-            #     pseudo = histeq(pseudo)
-            # elif clippercl > 0. or clippercu > 0.:
-            #     pseudo, _, _ = histcomp(pseudo, perc=clippercl,
-            #                             uperc=clippercu)
-
-            # cmin = pseudo.min()
-            # cmax = pseudo.max()
-
             cmin = self.mmc.cnt.zmin
             cmax = self.mmc.cnt.zmax
 
-            if self.mmc.ccbar is not None:
-                self.mmc.ccbar.remove()
-                self.mmc.ccbar = None
+            # if self.mmc.ccbar is not None:
+            #     self.mmc.ccbar.remove()
+            #     self.mmc.ccbar = None
 
-            self.mmc.figure.set_frameon(False)
-            # self.mmc.axes.set_axis_off()
-            self.mmc.axes.spines["bottom"].set_color("white")
-            self.mmc.axes.spines["top"].set_color("white")
-            self.mmc.axes.spines["left"].set_color("white")
-            self.mmc.axes.spines["right"].set_color("white")
+            self.mmc.axes.set_axis_off()
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize * 3)
             self.mmc.figure.canvas.draw()
-            img = np.frombuffer(self.mmc.figure.canvas.tostring_argb(), dtype=np.uint8)
-            w, h = self.mmc.figure.canvas.get_width_height()
+
+            buf = io.BytesIO()
+            extent = self.mmc.axes.get_window_extent().transformed(
+                self.mmc.figure.dpi_scale_trans.inverted()
+            )
+            self.mmc.figure.savefig(buf, format="png", bbox_inches=extent, pad_inches=0)
+
+            # buf.seek(0)
+            # img = mpimg.imread(buf)
+
+            img = np.asarray(self.mmc.figure.canvas.buffer_rgba())
 
             self.mmc.figure.set_size_inches(tmpsize)
-            self.mmc.figure.set_frameon(True)
-            # self.mmc.axes.set_axis_on()
-            self.mmc.axes.spines["bottom"].set_color("black")
-            self.mmc.axes.spines["top"].set_color("black")
-            self.mmc.axes.spines["left"].set_color("black")
-            self.mmc.axes.spines["right"].set_color("black")
+            self.mmc.axes.set_axis_on()
             self.mmc.figure.canvas.draw()
-
-            img = img.reshape(h, w, 4)
-            img = np.roll(img, 3, axis=2)
 
             cmask = np.ones(img.shape[1], dtype=bool)
             for i in range(img.shape[1]):
@@ -2316,9 +2301,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    # ifile = r"D:\temp\Hydrogen_RegionalGravity_utm35s.hdr"
-    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\change\mosaic\S2B_20220329_mosaic.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"C:\Work\PyGMI Test Data\Raster\testdata.tif"
 
     data = iodefs.get_raster(ifile)
 
@@ -2327,6 +2311,15 @@ def _testfn():
     tmp.data_init()
 
     tmp.settings()
+
+    import matplotlib.pyplot as plt
+
+    from pygmi.raster.iodefs import get_raster
+
+    dat = get_raster(r"c:/work/aaa.tif")
+
+    plt.imshow(dat[0].data, extent=dat[0].extent)
+    plt.show()
 
 
 if __name__ == "__main__":

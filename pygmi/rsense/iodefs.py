@@ -1873,7 +1873,7 @@ def get_data(
     #             dat += tmp
     #     if dat == []:
     #         dat = None
-    if "AST_" in bfile and ext == ".tif" and "stack" not in bfile:
+    if "AST_" in bfile[:4] and ext == ".tif" and "stack" not in bfile:
         idir = os.path.dirname(ifile)
         adate = os.path.basename(ifile).split("_")[2]
         ifiles = glob.glob(os.path.join(idir, "*" + adate + "*.tif"))
