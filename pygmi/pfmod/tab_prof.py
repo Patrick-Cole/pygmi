@@ -39,7 +39,7 @@ from scipy import interpolate, ndimage
 
 import pygmi.raster.iodefs as ir
 from pygmi import menu_default
-from pygmi.misc import frm
+from pygmi.maps import frm
 from pygmi.pfmod import grvmag3d, misc
 from pygmi.raster.iodefs import get_raster
 from pygmi.raster.reproj import data_reproject

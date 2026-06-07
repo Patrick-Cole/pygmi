@@ -37,7 +37,8 @@ from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 from shapely import Polygon
 
-from pygmi.misc import BasicModule, frm
+from pygmi.maps import frm
+from pygmi.misc import BasicModule
 from pygmi.raster.misc import cut_raster
 from pygmi.raster.modest_image import imshow
 

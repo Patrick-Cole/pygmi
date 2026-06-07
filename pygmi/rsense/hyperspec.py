@@ -41,7 +41,8 @@ from PySide6 import QtCore, QtWidgets
 from scipy.interpolate import interp1d
 from scipy.spatial import ConvexHull
 
-from pygmi.misc import BasicModule, frm
+from pygmi.maps import frm
+from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.modest_image import imshow

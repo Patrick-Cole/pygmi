@@ -485,7 +485,7 @@ def _testfn():
     # import rasterio
     import matplotlib.pyplot as plt
 
-    from pygmi.misc import frm
+    from pygmi.maps import frm
     from pygmi.raster.misc import norm2
 
     # ifile1 = r"D:\Landslides\old\JTNdem.tif"

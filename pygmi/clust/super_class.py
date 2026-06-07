@@ -45,7 +45,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from pygmi.misc import BasicModule, frm
+from pygmi.maps import frm
+from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
 

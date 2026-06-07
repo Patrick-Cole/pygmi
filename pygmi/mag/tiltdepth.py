@@ -46,7 +46,8 @@ from numba import jit
 from PySide6 import QtWidgets
 
 from pygmi.mag.dataprep import rtp
-from pygmi.misc import BasicModule, ProgressBar, ProgressBarText, frm
+from pygmi.maps import frm
+from pygmi.misc import BasicModule, ProgressBar, ProgressBarText
 from pygmi.raster.dataprep import verticalp
 from pygmi.raster.misc import lstack
 

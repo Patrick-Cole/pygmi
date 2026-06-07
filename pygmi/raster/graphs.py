@@ -38,15 +38,16 @@ menu. The following are supported:
 import matplotlib.colors as mcolors
 import numpy as np
 import pyvista as pv
-from matplotlib import colormaps, colors
+from matplotlib import colors
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 
-from pygmi.misc import ContextModule, frm
-from pygmi.raster.colormaps import *
+from pygmi.maps import frm, set_axes
+from pygmi.misc import ContextModule
+from pygmi.raster.colormaps import colormaps
 from pygmi.raster.modest_image import imshow
 
 
@@ -163,9 +164,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-
         if data1.isrgb is True:
             rdata = imshow(
                 self.axes,
@@ -212,16 +210,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.set_ylabel("Elevation")
             self.axes.format_coord = self.format_coord
             rdata.format_cursor_data = lambda x: f"Data: {x}"
-        elif data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
+        # elif data1.crs is not None and data1.crs.is_geographic:
+        #     self.axes.set_xlabel("Longitude")
+        #     self.axes.set_ylabel("Latitude")
+        # else:
+        #     self.axes.set_xlabel("Eastings")
+        #     self.axes.set_ylabel("Northings")
 
-        self.axes.ticklabel_format(style="plain", axis="both")
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
+        # self.axes.ticklabel_format(style="plain", axis="both")
+        # self.axes.tick_params(axis="x", rotation=90)
+        # self.axes.tick_params(axis="y", rotation=0)
+
+        # self.axes.xaxis.set_major_formatter(frm)
+        # self.axes.yaxis.set_major_formatter(frm)
+
+        set_axes(self.axes, data1.crs)
 
         self.figure.canvas.draw()
 
@@ -1006,8 +1009,8 @@ def _testfn():
 
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\UBC_Files\section.tif"
+    ifile = r"c:\work\PyGMI Test Data\Raster\testdata.tif"
+    # ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

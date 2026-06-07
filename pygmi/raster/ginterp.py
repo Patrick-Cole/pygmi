@@ -57,14 +57,14 @@ from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
-from matplotlib.pyplot import colormaps
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import ndimage
 
-from pygmi.misc import BasicModule, frm
+from pygmi.maps import frm
+from pygmi.misc import BasicModule
 from pygmi.raster import dataprep, iodefs
-from pygmi.raster.colormaps import *
+from pygmi.raster.colormaps import colormaps
 from pygmi.raster.misc import (
     currentshader,
     histcomp,

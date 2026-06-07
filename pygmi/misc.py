@@ -34,7 +34,7 @@ import webbrowser
 import geopandas as gpd
 import numpy as np
 import psutil
-from matplotlib import cm, colors, ticker
+from matplotlib import cm, colors
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QRegularExpression
 from PySide6.QtGui import QRegularExpressionValidator
@@ -1005,34 +1005,6 @@ def textwrap2(text, width, placeholder="...", max_lines=None):
     text2 = "\n".join(text2)
 
     return text2
-
-
-def tick_formatter(x, pos):
-    """
-    Format thousands separator in ticks for plots.
-
-    Parameters
-    ----------
-    x : float/int
-        Number to be formatted.
-    pos : int
-        Position of tick.
-
-    Returns
-    -------
-    newx : str
-        Formatted coordinate.
-
-    """
-    if np.ma.is_masked(x):
-        return "--"
-
-    newx = f"{x:,.5f}".rstrip("0").rstrip(".")
-
-    return newx
-
-
-frm = ticker.FuncFormatter(tick_formatter)
 
 
 def _testfn():

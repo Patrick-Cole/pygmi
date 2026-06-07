@@ -32,7 +32,8 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.misc import ContextModule, frm
+from pygmi.maps import frm
+from pygmi.misc import ContextModule
 from pygmi.raster.modest_image import imshow
 
 

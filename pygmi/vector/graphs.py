@@ -29,7 +29,7 @@ import math
 import matplotlib.collections as mc
 import numpy as np
 import pandas as pd
-from matplotlib import colormaps, rcParams
+from matplotlib import rcParams
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import BoundaryNorm
@@ -39,8 +39,9 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.misc import ContextModule, discrete_colorbar, frm
-from pygmi.raster.colormaps import *
+from pygmi.maps import frm
+from pygmi.misc import ContextModule, discrete_colorbar
+from pygmi.raster.colormaps import colormaps
 
 rcParams["savefig.dpi"] = 300
 
@@ -1574,7 +1575,7 @@ def _testfn():
 
     from pygmi.vector.iodefs import ImportXYZ
 
-    sfile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
+    sfile = r"C:\Work\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1587,7 +1588,7 @@ def _testfn():
     # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotLineMap()
+    SC = PlotVector()
     SC.indata = IO.outdata
     SC.run()
 
@@ -1621,4 +1622,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

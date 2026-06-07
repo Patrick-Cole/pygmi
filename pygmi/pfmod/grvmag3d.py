@@ -46,7 +46,8 @@ from matplotlib.figure import Figure
 from numba import jit, prange
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.misc import ContextModule, PTime, frm
+from pygmi.maps import frm
+from pygmi.misc import ContextModule, PTime
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.reproj import data_reproject
 
