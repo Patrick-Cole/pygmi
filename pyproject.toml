@@ -55,6 +55,8 @@ dependencies = [
                 'beautifulsoup4>=4.14.3',
                 'pyyaml>=6.0.3',
                 'pwlf>=2.5.2',
+                'contextily>=1.7.0',
+                'matplotlib-map-utils>=4.1.0',
                 ]
 
 [project.urls]
