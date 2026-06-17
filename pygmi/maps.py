@@ -24,14 +24,61 @@
 # -----------------------------------------------------------------------------
 """A collection of functions for maps."""
 
-import contextily as cx
+# import contextily as cx
 import geopandas as gpd
+import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 import pyproj
+from matplotlib import rcParams
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 from matplotlib.ticker import FixedFormatter, FixedLocator, FuncFormatter, MaxNLocator
-from matplotlib_map_utils.core.north_arrow import NorthArrow, north_arrow
+from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
+from PySide6 import QtCore, QtWidgets
+
+rcParams["savefig.dpi"] = 300
+
+
+class CanvasModule(FigureCanvasQTAgg):
+    """Canvas Module."""
+
+    def __init__(self):
+        fig = Figure()
+        self.axes = fig.add_subplot(111)
+        super().__init__(fig)
+
+        self.resize_timer = QtCore.QTimer(self)
+        self.resize_timer.setSingleShot(True)
+        self.resize_timer.timeout.connect(self._delayed_resize)
+        self.custom_resize = False
+
+        self._pending_size = None
+
+    def resizeEvent(self, event):
+        """Overrides Qt's default resize event to suppress immediate rendering."""
+
+        # QtWidgets.QWidget.resizeEvent(self, event)
+        if self.custom_resize is True:
+            QtWidgets.QWidget.resizeEvent(self, event)
+            self._pending_size = event.size()
+            self.resize_timer.start(200)
+        else:
+            super().resizeEvent(event)
+
+    def _delayed_resize(self):
+        """Triggers the expensive Matplotlib layout calculations and draw exactly once."""
+        if self._pending_size is not None:
+            w = self._pending_size.width()
+            h = self._pending_size.height()
+
+            self.figure.set_size_inches(
+                w / self.figure.dpi, h / self.figure.dpi, forward=True
+            )
+
+            self.draw_idle()
+            self._pending_size = None
 
 
 def tick_formatter(x, pos):
@@ -71,7 +118,7 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 
     # Round step down to the nearest degree or minute fraction
     minutes_step = interval_size * 60
-    neat_steps = [1, 5, 10, 15, 30, 60]
+    neat_steps = [1, 2, 5, 10, 15, 30, 60]
     neat_minute = min(neat_steps, key=lambda x: abs(x - minutes_step))
 
     # Recalculate range with the neat step to find the adjusted end point
@@ -144,50 +191,79 @@ def set_axes(ax, crs):
         label.set_horizontalalignment("center")
         label.set_verticalalignment("center")
 
-    # north_arrow(
-    #     ax,
-    #     scale=0.2,
-    #     location="upper left",
-    #     label={"fontsize": 10},
-    #     aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
-    # )
-    na = NorthArrow(
+
+def set_northscale(ax, crs):
+    """Sets the north arrow and the scale bar."""
+
+    north_arrow(
         ax,
         scale=0.2,
-        location="upper left",
-        label={"fontsize": 10},
-        aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
-    )
-
-    na.set_in_layout(True)
-    ax.add_artist(na)
-
-    scale_bar(
-        ax,
         location="upper right",
-        style="ticks",
-        bar={"projection": crs},
-        text={"fontsize": 7},
-        aob={"bbox_to_anchor": (0.5, -0.05), "bbox_transform": ax.transAxes, "pad": 1},
+        label={"fontsize": 10},
+        aob={
+            "bbox_to_anchor": (0.05, -0.05),
+            "bbox_transform": ax.transAxes,
+            "pad": 0.0,
+        },
+        shadow=False,
     )
+
+    if not crs.is_geographic:
+        scale_bar(
+            ax,
+            location="upper left",
+            style="ticks",
+            bar={"projection": crs},
+            text={"fontsize": 7},
+            aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
+        )
+
+    tmp = patches.Rectangle(
+        (0, -0.25),
+        0.1,
+        0.1,
+        transform=ax.transAxes,
+        color="white",
+        zorder=0,
+        clip_on=False,
+    )
+    ax.add_patch(tmp)
+
+    # fig = ax.figure
+    # fig.canvas.draw()
+    # renderer = fig.canvas.get_renderer()
+    # bbox = sb.get_window_extent(renderer=renderer)
+    # tight_bbox = sb.get_tightbbox(fig.canvas.get_renderer())
+
+    # ax_bbox = ax.get_position()
+    # fig_w, fig_h = fig.get_size_inches()
+
+    # ax_height_in = ax_bbox.height * fig_h
+    # pct_height = 100 * na.scale / ax_height_in
+    # clip_box = TransformedBbox(na.clipbox, ax.transAxes)
+    # naclip = na.clipbox
+    # sbclip = sb.clipbox
+    # aa = TransformedBbox(Bbox([[0, 0], [1, 1]]), ax.transAxes)
+    # pass
 
 
 def main():
 
-    sfile = r"C:\Work\minerals\MinRan_Structures_forML.shp"
+    sfile = r"D:\workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
 
     gdfs = gpd.read_file(sfile)
 
     crs = gdfs.crs
 
-    plt.figure(figsize=(8, 6))
+    fig, ax = plt.subplots()
+    # plt.figure(figsize=(8, 6))
 
     ax = plt.gca()
     ax.set_aspect("equal")
 
     gdfs.plot(ax=ax)
 
-    set_axes(ax, crs)
+    # fig.canvas.draw()
     # north_arrow(
     #     ax,
     #     scale=0.2,
@@ -205,12 +281,12 @@ def main():
     #     aob={"bbox_to_anchor": (0.5, -0.05), "bbox_transform": ax.transAxes, "pad": 1},
     # )
 
-    cx.add_basemap(
-        ax,
-        crs=crs,
-        source=cx.providers.Esri.WorldImagery,
-        attribution="",
-    )
+    # cx.add_basemap(
+    #     ax,
+    #     crs=crs,
+    #     source=cx.providers.Esri.WorldImagery,
+    #     attribution="",
+    # )
 
     ax.plot(
         [],
@@ -224,7 +300,9 @@ def main():
 
     ax.legend(loc="lower left", fontsize="small")
 
-    # plt.tight_layout()
+    set_axes(ax, crs)
+    set_northscale(ax, crs)
+    plt.tight_layout()
     plt.show()
 
 

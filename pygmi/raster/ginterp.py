@@ -48,7 +48,6 @@ from math import cos
 
 import matplotlib.colorbar as mcolorbar
 import matplotlib.colors as mcolors
-import matplotlib.image as mpimg
 import numpy as np
 from matplotlib import gridspec
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -61,7 +60,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import ndimage
 
-from pygmi.maps import frm
+from pygmi.maps import set_axes, set_northscale
 from pygmi.misc import BasicModule
 from pygmi.raster import dataprep, iodefs
 from pygmi.raster.colormaps import colormaps
@@ -250,9 +249,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = self.figure.add_subplot(gspc[0:, 1:])
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-        self.axes.ticklabel_format(style="plain", axis="both")
+        # self.axes.tick_params(axis="x", rotation=90)
+        # self.axes.tick_params(axis="y", rotation=0)
+        # self.axes.ticklabel_format(style="plain", axis="both")
         self.axes.xaxis.set_visible(False)
         self.axes.yaxis.set_visible(False)
 
@@ -1609,7 +1608,7 @@ class PlotInterp(BasicModule):
 
     def save_png(self):
         """
-        Save image as a GeoTIFF.
+        Save image as a PNG.
 
         Returns
         -------
@@ -1618,6 +1617,7 @@ class PlotInterp(BasicModule):
 
         """
         ext = "PNG (*.png)"
+
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, "Save File", ".", ext
         )
@@ -1628,17 +1628,20 @@ class PlotInterp(BasicModule):
 
         fig = self.mmc.figure
         axes = self.mmc.axes
+        crs = self.mmc.data[0].crs
 
         divider = make_axes_locatable(axes)
         axes.xaxis.set_visible(True)
         axes.yaxis.set_visible(True)
-        axes.set_xlabel("Eastings")
-        axes.set_ylabel("Northings")
-        axes.xaxis.set_major_formatter(frm)
-        axes.yaxis.set_major_formatter(frm)
+        # axes.set_xlabel("Eastings")
+        # axes.set_ylabel("Northings")
+        # axes.xaxis.set_major_formatter(frm)
+        # axes.yaxis.set_major_formatter(frm)
+        set_axes(axes, crs)
+        set_northscale(axes, crs)
 
         if dtype == "Single Colour Map":
-            cax = divider.append_axes("right", size="7%", pad=0.05)
+            cax = divider.append_axes("right", size="7%", pad=0.25)
             cbar = fig.colorbar(self.mmc.image, cax=cax)
 
             text = self.mmc.argbunit[0]
@@ -1789,7 +1792,6 @@ class PlotInterp(BasicModule):
         fig.tight_layout()
 
         fig.savefig(filename, bbox_inches="tight", dpi=300)
-
         self.change_dtype()
 
         return
@@ -2017,9 +2019,6 @@ class PlotInterp(BasicModule):
                 self.mmc.figure.dpi_scale_trans.inverted()
             )
             self.mmc.figure.savefig(buf, format="png", bbox_inches=extent, pad_inches=0)
-
-            # buf.seek(0)
-            # img = mpimg.imread(buf)
 
             img = np.asarray(self.mmc.figure.canvas.buffer_rgba())
 
@@ -2301,8 +2300,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    # ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"C:\Work\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
 
     data = iodefs.get_raster(ifile)
 
@@ -2311,15 +2309,6 @@ def _testfn():
     tmp.data_init()
 
     tmp.settings()
-
-    import matplotlib.pyplot as plt
-
-    from pygmi.raster.iodefs import get_raster
-
-    dat = get_raster(r"c:/work/aaa.tif")
-
-    plt.imshow(dat[0].data, extent=dat[0].extent)
-    plt.show()
 
 
 if __name__ == "__main__":

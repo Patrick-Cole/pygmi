@@ -39,14 +39,14 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
 from pygmi.misc import ContextModule, discrete_colorbar
 from pygmi.raster.colormaps import colormaps
 
 rcParams["savefig.dpi"] = 300
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
+class MyMplCanvas(CanvasModule):
     """
     Matplotlib canvas widget for the actual plot.
 
@@ -54,8 +54,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
+        super().__init__()
+
         self.line = None
         self.ind = None
         self.background = None
@@ -65,8 +65,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ccoeflbls = []
         self.dmat = np.array([])
         self.texts = None
-
-        super().__init__(fig)
 
     def button_release_callback(self, event):
         """
@@ -466,13 +464,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        self.custom_resize = True
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(111, label="map")
-        self.axes.ticklabel_format(style="plain")
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-        self.axes.axis("equal")
+        # self.axes.ticklabel_format(style="plain")
+        # self.axes.tick_params(axis="x", rotation=90)
+        # self.axes.tick_params(axis="y", rotation=0)
+        # self.axes.axis("equal")
 
         if "LineString" in data.geom_type.iloc[0]:
             tmp = []
@@ -498,10 +497,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 dmean = data[col].mean()
                 vmin = max(dmean - 2 * dstd, data[col].min())
                 vmax = min(dmean + 2 * dstd, data[col].max())
-
-                # data.plot(ax=self.axes, column=col, aspect='equal',
-                #           legend=True, cmap=self.cmap, vmin=vmin,
-                #           vmax=vmax)
 
                 scat = self.axes.scatter(
                     data.geometry.x,
@@ -561,15 +556,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
+        # self.axes.xaxis.set_major_formatter(frm)
+        # self.axes.yaxis.set_major_formatter(frm)
 
-        if data.crs is not None and data.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
+        # if data.crs is not None and data.crs.is_geographic:
+        #     self.axes.set_xlabel("Longitude")
+        #     self.axes.set_ylabel("Latitude")
+        # else:
+        #     self.axes.set_xlabel("Eastings")
+        #     self.axes.set_ylabel("Northings")
+
+        set_axes(self.axes, data.crs)
+        set_northscale(self.axes, data.crs)
 
         self.figure.canvas.draw()
 
@@ -1575,7 +1573,7 @@ def _testfn():
 
     from pygmi.vector.iodefs import ImportXYZ
 
-    sfile = r"C:\Work\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
+    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1602,7 +1600,7 @@ def _testfn2():
 
     from pygmi.vector.iodefs import ImportVector
 
-    sfile = r"C:\Work\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

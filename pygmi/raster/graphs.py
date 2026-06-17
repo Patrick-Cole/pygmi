@@ -40,30 +40,25 @@ import numpy as np
 import pyvista as pv
 from matplotlib import colors
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 
-from pygmi.maps import frm, set_axes
+from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 from pygmi.raster.modest_image import imshow
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
+class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
-        super().__init__(fig)
-
+        super().__init__()
         self.data = None
 
     def format_coord(self, x, y):
         """
-        Set format coordinate for correlation coefficient plot.
+        Set format coordinate for section plot.
 
         Parameters
         ----------
@@ -163,6 +158,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.data = data1
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        self.custom_resize = True
 
         if data1.isrgb is True:
             rdata = imshow(
@@ -191,17 +187,26 @@ class MyMplCanvas(FigureCanvasQTAgg):
             )
             rdata.set_clim_std(2.5)
 
+        location = "right"
         if not data1.isrgb:
             rows, cols = data1.data.shape
-            if cols > 2 * rows:
+            if cols > 1.8 * rows:
                 location = "bottom"
-                shrink = 0.5
+                shrink = 0.4
+                anchor = (0.85, 1.0)
             else:
                 location = "right"
                 shrink = 1.0
+                anchor = (0.0, 0.5)
 
             cbar = self.figure.colorbar(
-                rdata, format=frm, location=location, aspect=30, pad=0.2, shrink=shrink
+                rdata,
+                format=frm,
+                location=location,
+                aspect=30,
+                shrink=shrink,
+                anchor=anchor,
+                pad=0.1,
             )
             cbar.set_label(data1.units)
 
@@ -210,23 +215,24 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.set_ylabel("Elevation")
             self.axes.format_coord = self.format_coord
             rdata.format_cursor_data = lambda x: f"Data: {x}"
-        # elif data1.crs is not None and data1.crs.is_geographic:
-        #     self.axes.set_xlabel("Longitude")
-        #     self.axes.set_ylabel("Latitude")
-        # else:
-        #     self.axes.set_xlabel("Eastings")
-        #     self.axes.set_ylabel("Northings")
+            # elif data1.crs is not None and data1.crs.is_geographic:
+            #     self.axes.set_xlabel("Longitude")
+            #     self.axes.set_ylabel("Latitude")
+            # else:
+            #     self.axes.set_xlabel("Eastings")
+            #     self.axes.set_ylabel("Northings")
 
-        # self.axes.ticklabel_format(style="plain", axis="both")
-        # self.axes.tick_params(axis="x", rotation=90)
-        # self.axes.tick_params(axis="y", rotation=0)
+            self.axes.ticklabel_format(style="plain", axis="both")
+            self.axes.tick_params(axis="x", rotation=90)
+            self.axes.tick_params(axis="y", rotation=0)
 
-        # self.axes.xaxis.set_major_formatter(frm)
-        # self.axes.yaxis.set_major_formatter(frm)
+            self.axes.xaxis.set_major_formatter(frm)
+            self.axes.yaxis.set_major_formatter(frm)
+        else:
+            set_axes(self.axes, data1.crs)
+            set_northscale(self.axes, data1.crs)
 
-        set_axes(self.axes, data1.crs)
-
-        self.figure.canvas.draw()
+        self.draw()
 
     def update_hexbin(self, data1, data2):
         """
@@ -1009,7 +1015,8 @@ def _testfn():
 
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"c:\work\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
     # ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
