@@ -364,14 +364,15 @@ class MyMplCanvas(CanvasModule):
         None.
 
         """
+        self.custom_resize = True
         self.figure.clear()
         ax1 = self.figure.add_subplot(111, label="Map")
 
         self.axes = ax1
-        self.axes.ticklabel_format(useOffset=False, style="plain")
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-        self.axes.axis("equal")
+        # self.axes.ticklabel_format(useOffset=False, style="plain")
+        # self.axes.tick_params(axis="x", rotation=90)
+        # self.axes.tick_params(axis="y", rotation=0)
+        # self.axes.axis("equal")
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -434,16 +435,18 @@ class MyMplCanvas(CanvasModule):
             ax1.plot(x, y, "c")
             ax1.plot(qx, qy, "k")
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
+        # self.axes.xaxis.set_major_formatter(frm)
+        # self.axes.yaxis.set_major_formatter(frm)
 
-        if data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
+        # if data1.crs is not None and data1.crs.is_geographic:
+        #     self.axes.set_xlabel("Longitude")
+        #     self.axes.set_ylabel("Latitude")
+        # else:
+        #     self.axes.set_xlabel("Eastings")
+        #     self.axes.set_ylabel("Northings")
 
+        set_axes(self.axes, data.crs)
+        set_northscale(self.axes, data.crs)
         self.figure.canvas.draw()
 
     def update_vector(self, data, col, style=None):
@@ -591,6 +594,7 @@ class MyMplCanvas(CanvasModule):
         None.
 
         """
+        self.custom_resize = True
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(121, polar=True, label="Rose")
@@ -601,12 +605,12 @@ class MyMplCanvas(CanvasModule):
         self.axes = ax1
 
         ax2 = self.figure.add_subplot(122, label="Map")
-        ax2.set_aspect("equal")
-        ax2.ticklabel_format(useOffset=False, style="plain")
-        ax2.tick_params(axis="x", rotation=90)
-        ax2.tick_params(axis="y", rotation=0)
-        ax2.xaxis.set_major_formatter(frm)
-        ax2.yaxis.set_major_formatter(frm)
+        # ax2.set_aspect("equal")
+        # ax2.ticklabel_format(useOffset=False, style="plain")
+        # ax2.tick_params(axis="x", rotation=90)
+        # ax2.tick_params(axis="y", rotation=0)
+        # ax2.xaxis.set_major_formatter(frm)
+        # ax2.yaxis.set_major_formatter(frm)
 
         fangle = []
         fcnt = []
@@ -671,6 +675,9 @@ class MyMplCanvas(CanvasModule):
 
         ax2.add_collection(lcol)
         ax2.autoscale(enable=True)
+
+        set_axes(ax2, data.crs)
+        set_northscale(ax2, data.crs)
 
         self.figure.canvas.draw()
 
@@ -1571,22 +1578,20 @@ def _testfn():
     import os
     import sys
 
-    from pygmi.vector.iodefs import ImportXYZ
+    from pygmi.vector.iodefs import ImportVector
 
-    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.csv"
+    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(sfile))
 
-    IO = ImportXYZ()
+    IO = ImportVector()
     IO.ifile = sfile
-    IO.le_nodata.setText("-99999")
-    # IO.cmb_bounds.setCurrentText('SA Mapsheet')
     IO.settings(True)
 
-    SC = PlotVector()
+    SC = PlotLineMap()
     SC.indata = IO.outdata
     SC.run()
 
@@ -1620,4 +1625,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
