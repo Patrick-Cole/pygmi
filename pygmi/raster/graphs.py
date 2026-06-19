@@ -1016,7 +1016,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    # ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
     # ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)

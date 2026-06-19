@@ -45,7 +45,7 @@ class CanvasModule(FigureCanvasQTAgg):
     """Canvas Module."""
 
     def __init__(self):
-        fig = Figure()
+        fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
