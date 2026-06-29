@@ -256,11 +256,7 @@ def main():
 
     crs = gdfs.crs
 
-    fig, ax = plt.subplots()
-    # plt.figure(figsize=(8, 6))
-
     ax = plt.gca()
-    ax.set_aspect("equal")
 
     gdfs.plot(ax=ax)
 
@@ -286,8 +282,10 @@ def main():
     #     ax,
     #     crs=crs,
     #     source=cx.providers.Esri.WorldImagery,
-    #     attribution="",
+    #     attribution=False,
     # )
+    # atxt = cx.providers.Esri.WorldImagery.attribution
+    # cx.add_attribution(ax, atxt, font_size=6)
 
     ax.plot(
         [],
