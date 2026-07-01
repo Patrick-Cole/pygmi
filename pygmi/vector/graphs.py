@@ -446,7 +446,7 @@ class MyMplCanvas(CanvasModule):
         #     self.axes.set_ylabel("Northings")
 
         set_axes(self.axes, data.crs)
-        set_northscale(self.axes, data.crs)
+        set_northscale(self.axes, data.crs, self.showlog)
         self.figure.canvas.draw()
 
     def update_vector(self, data, col, style=None):
@@ -570,7 +570,7 @@ class MyMplCanvas(CanvasModule):
         #     self.axes.set_ylabel("Northings")
 
         set_axes(self.axes, data.crs)
-        set_northscale(self.axes, data.crs)
+        set_northscale(self.axes, data.crs, self.showlog)
 
         self.figure.canvas.draw()
 
@@ -677,7 +677,7 @@ class MyMplCanvas(CanvasModule):
         ax2.autoscale(enable=True)
 
         set_axes(ax2, data.crs)
-        set_northscale(ax2, data.crs)
+        set_northscale(ax2, data.crs, self.showlog)
 
         self.figure.canvas.draw()
 

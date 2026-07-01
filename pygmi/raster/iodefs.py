@@ -788,14 +788,15 @@ def get_raster(
             # Set Null Value
             if nval is None:
                 nval = dataset.nodata
-            if dtype == "float32":
-                nval = np.float32(nval)
 
             if nval is not None and np.isnan(nval):
                 nval = None
 
             if "int" not in dataset.meta["dtype"] and nval is None and ext == "ers":
                 nval = 1e20
+
+            if dtype == "float32":
+                nval = np.float32(nval)
 
             if "int" not in dataset.meta["dtype"] and nval is not None:
                 # nval = float(nval)
