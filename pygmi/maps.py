@@ -36,6 +36,7 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import FixedFormatter, FixedLocator, FuncFormatter, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
+from matplotlib_map_utils.validation.scale_bar import units_standard
 from PySide6 import QtCore, QtWidgets
 
 rcParams["savefig.dpi"] = 300
@@ -44,7 +45,22 @@ rcParams["savefig.dpi"] = 300
 class CanvasModule(FigureCanvasQTAgg):
     """Canvas Module."""
 
-    def __init__(self):
+    def __init__(self, parent=None):
+
+        if parent is None:
+            # self.stdout_redirect = sys.stdout
+            self.showlog = print
+            # self.pbar = ProgressBarText()
+            # self.process_is_active = lambda *args, **kwargs: None
+        else:
+            # self.stdout_redirect = EmittingStream(parent.showlog)
+            self.showlog = parent.showlog
+            # self.pbar = parent.pbar
+            # if hasattr(parent, "process_is_active"):
+            #     self.process_is_active = parent.process_is_active
+            # else:
+            #     self.process_is_active = lambda *args, **kwargs: None
+
         fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
@@ -157,11 +173,16 @@ def set_axes(ax, crs):
     ax.xaxis.set_major_locator(MaxNLocator(4))
     ax.yaxis.set_major_locator(MaxNLocator(4))
     ax.tick_params(axis="y", labelrotation=90)
-    ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
+
+    if not crs.is_geographic:
+        ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
 
     for label in ax.yaxis.get_majorticklabels():
         label.set_horizontalalignment("left")
         label.set_verticalalignment("center")
+
+    if crs.to_epsg() is None or crs.is_engineering:
+        return
 
     transformer = pyproj.Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
     transformeri = pyproj.Transformer.from_crs("EPSG:4326", crs, always_xy=True)
@@ -180,6 +201,11 @@ def set_axes(ax, crs):
     secax.xaxis.set_major_formatter(FixedFormatter(deg_txt))
     secax.tick_params(axis="x", labelsize=9)
 
+    if crs.is_geographic:
+        ax.xaxis.set_major_locator(FixedLocator(meter_ticks))
+        ax.xaxis.set_major_formatter(FixedFormatter(deg_txt))
+        ax.tick_params(axis="x", labelsize=9)
+
     deg_ticks, deg_txt = get_neat_intervals(ymind, ymaxd, 3, False)
     meter_ticks = [transformeri.transform(xmind, y)[1] for y in deg_ticks]
 
@@ -192,8 +218,13 @@ def set_axes(ax, crs):
         label.set_horizontalalignment("center")
         label.set_verticalalignment("center")
 
+    if crs.is_geographic:
+        ax.yaxis.set_major_locator(FixedLocator(meter_ticks))
+        ax.yaxis.set_major_formatter(FixedFormatter(deg_txt))
+        ax.tick_params(axis="y", labelrotation=90, labelsize=9)
 
-def set_northscale(ax, crs):
+
+def set_northscale(ax, crs, showlog=print):
     """Sets the north arrow and the scale bar."""
 
     north_arrow(
@@ -209,16 +240,6 @@ def set_northscale(ax, crs):
         shadow=False,
     )
 
-    if not crs.is_geographic:
-        scale_bar(
-            ax,
-            location="upper left",
-            style="ticks",
-            bar={"projection": crs},
-            text={"fontsize": 7},
-            aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
-        )
-
     tmp = patches.Rectangle(
         (0, -0.25),
         0.1,
@@ -230,29 +251,32 @@ def set_northscale(ax, crs):
     )
     ax.add_patch(tmp)
 
-    # fig = ax.figure
-    # fig.canvas.draw()
-    # renderer = fig.canvas.get_renderer()
-    # bbox = sb.get_window_extent(renderer=renderer)
-    # tight_bbox = sb.get_tightbbox(fig.canvas.get_renderer())
+    if crs.axis_info[0].unit_name not in units_standard:
+        showlog("Problem with projection unit. Try redefining the projection.")
+        return
 
-    # ax_bbox = ax.get_position()
-    # fig_w, fig_h = fig.get_size_inches()
-
-    # ax_height_in = ax_bbox.height * fig_h
-    # pct_height = 100 * na.scale / ax_height_in
-    # clip_box = TransformedBbox(na.clipbox, ax.transAxes)
-    # naclip = na.clipbox
-    # sbclip = sb.clipbox
-    # aa = TransformedBbox(Bbox([[0, 0], [1, 1]]), ax.transAxes)
-    # pass
+    if not crs.is_geographic:
+        scale_bar(
+            ax,
+            location="upper left",
+            style="ticks",
+            bar={"projection": crs},
+            text={"fontsize": 7},
+            aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
+        )
 
 
 def main():
+    # from pygmi.raster.iodefs import get_raster
 
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
+
+    # dataset = get_raster(ifile)
 
     gdfs = gpd.read_file(sfile)
+
+    gdfs = gdfs.to_crs(4326)
 
     crs = gdfs.crs
 

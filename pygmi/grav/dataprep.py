@@ -328,31 +328,7 @@ class ProcessData(BasicModule):
 
 
 def gravcor(pdat, basethres, kstat="", absbase=978032.67715, dens=2670, showlog=print):
-    (
-        """
-    _summary_
-
-    Parameters
-    ----------
-    pdat : _type_
-        _description_
-    basethres : _type_
-        _description_
-    kstat : str, optional
-        _description_, by default ''
-    absbase : float, optional
-        _description_, by default 978032.67715
-    dens : int, optional
-        _description_, by default 2670
-    showlog : _type_, optional
-        _description_, by default print
-
-    Returns
-    -------
-    _type_
-        _description_
     """
-        """
     Gravity corrections.
 
     Parameters
@@ -378,7 +354,7 @@ def gravcor(pdat, basethres, kstat="", absbase=978032.67715, dens=2670, showlog=
         Dictionary containing information for drift plots.
 
     """
-    )
+
     pdat.sort_values(by=["DECTIMEDATE"], inplace=True)
 
     if kstat == "":
@@ -649,8 +625,8 @@ def _testfn():
 
     grvfile = r"D:\workdata\PyGMI Test Data\Gravity\Skeifontein 2018.txt"
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
-    grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
-    gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
+    # grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
+    # gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
     kbase = "77777"
     bthres = "10000"
 

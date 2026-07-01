@@ -2625,25 +2625,25 @@ class MyToolbar(NavigationToolbar2QT):
 
     """
 
-    toolitems = copy.copy(NavigationToolbar2QT.toolitems)
-    toolitems += (
-        (None, None, None, None),
-        ("Field\nDisplay\nLimits", "Axis Scale", "Axis Scale", "axis_scale"),
-        (
-            "View\nMagnetic\nProfile",
-            "Magnetic Profile",
-            "Magnetic Profile",
-            "mag_profile",
-        ),
-        ("View\nGravity\nProfile", "Gravity Profile", "Gravity Profile", "grv_profile"),
-        ("Import\nBorehole\nLogs", "Borehole Logs", "Borehole Logs", "b_logs"),
-        #   ('Calculate\nDip',
-        #    'Dip', 'Dip', 'dip'),
-    )
-
     def __init__(self, parent=None):
         super().__init__(parent.mmc, parent)
         self.pparent = parent
+
+        tmp = QtGui.QAction("Field\nDisplay\nLimits", parent)
+        tmp.triggered.connect(self.axis_scale)
+        self.insertAction(self.actions()[-1], tmp)
+
+        tmp = QtGui.QAction("View\nMagnetic\nProfile", parent)
+        tmp.triggered.connect(self.mag_profile)
+        self.insertAction(self.actions()[-1], tmp)
+
+        tmp = QtGui.QAction("View\nGravity\nProfile", parent)
+        tmp.triggered.connect(self.grv_profile)
+        self.insertAction(self.actions()[-1], tmp)
+
+        tmp = QtGui.QAction("Import\nBorehole\nLogs", parent)
+        tmp.triggered.connect(self.b_logs)
+        self.insertAction(self.actions()[-1], tmp)
 
         self._my_toggle_action = QtGui.QAction("Calculate\nDip", parent)
         self._my_toggle_action.setCheckable(True)  # Make it a toggle button

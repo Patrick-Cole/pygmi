@@ -2075,6 +2075,7 @@ def _filespeedtest():
     ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
     ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
     ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 
     dataset = get_raster(ifile)
 
@@ -2168,5 +2169,5 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    # _filespeedtest()
-    _testfn2()
+    _filespeedtest()
+    # _testfn2()

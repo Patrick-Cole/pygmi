@@ -556,6 +556,8 @@ def merge_gpsmag(cg5file, gpsfile, basethres=10000.0, cren=None, showlog=print):
     dfmerge.attrs["Gravity"] = True
     dfmerge.attrs["source"] = str(cg5file)
 
+    dfmerge = dfmerge.set_crs(4326)
+
     return dfmerge
 
 

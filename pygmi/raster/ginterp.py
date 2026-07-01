@@ -1638,7 +1638,7 @@ class PlotInterp(BasicModule):
         # axes.xaxis.set_major_formatter(frm)
         # axes.yaxis.set_major_formatter(frm)
         set_axes(axes, crs)
-        set_northscale(axes, crs)
+        set_northscale(axes, crs, self.showlog)
 
         if dtype == "Single Colour Map":
             cax = divider.append_axes("right", size="7%", pad=0.25)

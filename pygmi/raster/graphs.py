@@ -52,8 +52,8 @@ from pygmi.raster.modest_image import imshow
 class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.data = None
 
     def format_coord(self, x, y):
@@ -230,7 +230,7 @@ class MyMplCanvas(CanvasModule):
             self.axes.yaxis.set_major_formatter(frm)
         else:
             set_axes(self.axes, data1.crs)
-            set_northscale(self.axes, data1.crs)
+            set_northscale(self.axes, data1.crs, self.showlog)
 
         self.draw()
 
@@ -489,7 +489,7 @@ class PlotRaster(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(parent)
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
         # self.mmc.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
@@ -1017,6 +1017,7 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
     # ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
