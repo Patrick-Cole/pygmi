@@ -600,6 +600,19 @@ class PlotVRCetc(ContextModule):
             y = [k.metadata["Cluster"]["vrc"] for k in data]
             self.mmc.update_scatter(x, y)
 
+        if (
+            j == "Davies-Bouldin Score"
+            and data[0].metadata["Cluster"]["dbs"] is not None
+        ):
+            x = [k.metadata["Cluster"]["no_clusters"] for k in data]
+            y = [k.metadata["Cluster"]["dbs"] for k in data]
+            self.mmc.update_scatter(x, y)
+
+        if j == "Silhouette Score" and data[0].metadata["Cluster"]["sil"] is not None:
+            x = [k.metadata["Cluster"]["no_clusters"] for k in data]
+            y = [k.metadata["Cluster"]["sil"] for k in data]
+            self.mmc.update_scatter(x, y)
+
         # nce and xbi are fuzzy clustering only.
         if (
             j == "Normalized Class Entropy"
@@ -631,6 +644,12 @@ class PlotVRCetc(ContextModule):
 
         if "vrc" in meta and len(data) > 1:
             items += ["Variance Ratio Criterion"]
+
+        # if "sil" in meta and len(data) > 1:
+        #     items += ["Silhouette Score"]
+
+        # if "dbs" in meta and len(data) > 1:
+        #     items += ["Davies-Bouldin Score"]
 
         if "nce" in meta and len(data) > 1:
             items += ["Normalized Class Entropy"]

@@ -35,7 +35,11 @@ import numpy as np
 import sklearn.cluster as skc
 import sklearn.preprocessing as skp
 from PySide6 import QtWidgets
-from sklearn.metrics import calinski_harabasz_score
+from sklearn.metrics import (
+    calinski_harabasz_score,
+    davies_bouldin_score,
+    silhouette_score,
+)
 
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
@@ -514,8 +518,11 @@ def cluster(
             dat_out[-1].metadata["Cluster"]["vrc"] = calinski_harabasz_score(
                 X, cfit.labels_
             )
-
-        # Reloading this hear to save memory. Need unscaled values.
+        if cfit.labels_.max() > 0:
+            dat_out[-1].metadata["Cluster"]["dbs"] = davies_bouldin_score(
+                X, cfit.labels_
+            )
+        # Reloading this here to save memory. Need unscaled values.
         X = []
         for band in data:
             tmp = band.copy()
