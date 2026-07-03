@@ -73,7 +73,19 @@ class CanvasModule(FigureCanvasQTAgg):
         self._pending_size = None
 
     def resizeEvent(self, event):
-        """Overrides Qt's default resize event to suppress immediate rendering."""
+        """
+        Overrides Qt's default resize event to suppress immediate rendering.
+
+        Parameters
+        ----------
+        event : event
+            Event variable, used to estimate size.
+
+        Returns
+        -------
+        None.
+
+        """
 
         # QtWidgets.QWidget.resizeEvent(self, event)
         if self.custom_resize is True:
@@ -128,6 +140,24 @@ frm = FuncFormatter(tick_formatter)
 def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
     """
     Divides a decimal degree range into neat minute/degree intervals.
+
+    Parameters
+    ----------
+    start_dd : float
+        Minimum coordinate in decimal degrees.
+    end_dd : float
+        Maximum coordinate in decimal degrees.
+    num_intervals : int
+        Number of intervals
+    islon : bool, optional
+        Coordinates are longitudes, by default True
+
+    Returns
+    -------
+    intervals : list
+        Tick coordinates.
+    txt : list of str
+        List of coordinates in degrees and minutes.
     """
     total_range = end_dd - start_dd
     interval_size = total_range / num_intervals
@@ -225,7 +255,18 @@ def set_axes(ax, crs):
 
 
 def set_northscale(ax, crs, showlog=print):
-    """Sets the north arrow and the scale bar."""
+    """
+    Sets the north arrow and the scale bar.
+
+    Parameters
+    ----------
+    ax : Matplotlib axes
+        Primary Matplotlib axes.
+    crs : CRS
+        rasterio crs of data
+    showlog : function, optional
+        _Show information using a function, by default print
+    """
 
     north_arrow(
         ax,
@@ -266,8 +307,8 @@ def set_northscale(ax, crs, showlog=print):
         )
 
 
-def main():
-    # from pygmi.raster.iodefs import get_raster
+def _testfn():
+    """Test function"""
 
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
@@ -330,4 +371,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _testfn()

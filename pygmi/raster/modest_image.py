@@ -423,7 +423,7 @@ class ModestImage(mi.AxesImage):
             self._A = norm2(self._A, datmin, datmax)
 
         cell, theta, phi, alpha = self.shade
-        sunshader = currentshader(sun.data, cell, theta, phi, alpha)
+        sunshader = currentshader(sun, cell, theta, phi, alpha)
         snorm = norm2(sunshader)
 
         if "Ternary" not in self.rgbmode:

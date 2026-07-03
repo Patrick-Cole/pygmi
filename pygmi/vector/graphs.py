@@ -53,8 +53,8 @@ class MyMplCanvas(CanvasModule):
     This routine will also allow the picking and movement of nodes of data.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
         self.line = None
         self.ind = None

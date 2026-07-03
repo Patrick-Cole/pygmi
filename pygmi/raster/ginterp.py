@@ -431,8 +431,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if "Ternary" in self.gmode:
             self.update_rgb()
 
-        if self.gmode == "Sunshade":
-            self.update_shade_plot()
+        # if self.gmode == "Sunshade":
+        #     self.update_shade_plot()
 
     def update_hist_rgb(self, zval):
         """
@@ -846,7 +846,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[3]:
                 sun = i.data
 
-        sunshader = currentshader(sun.data, self.cell, self.theta, self.phi, self.alpha)
+        sunshader = currentshader(sun, self.cell, self.theta, self.phi, self.alpha)
 
         snorm = norm2(sunshader)
 
@@ -1806,7 +1806,6 @@ class PlotInterp(BasicModule):
             True if successful, False otherwise.
 
         """
-        snorm = self.mmc.update_shade_plot()
 
         ext = "GeoTIFF (*.tif)"
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -1917,6 +1916,7 @@ class PlotInterp(BasicModule):
             if not okay:
                 return False
 
+        snorm = self.mmc.update_shade_plot()
         htype = str(self.cmb_htype.currentText())
         cmin = None
         cmax = None
@@ -2300,7 +2300,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\ratios\AST_07102005_081903_ratio.tif"
 
     data = iodefs.get_raster(ifile)
 

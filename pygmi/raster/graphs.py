@@ -52,7 +52,7 @@ from pygmi.raster.modest_image import imshow
 class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.data = None
 

@@ -4621,7 +4621,7 @@ def get_ternary(
     theta = np.pi / 4.0
 
     if sundata is not None:
-        sunshader = currentshader(sdata.data, cell, theta, phi, alpha)
+        sunshader = currentshader(sdata, cell, theta, phi, alpha)
 
         snorm = norm2(sunshader)
 

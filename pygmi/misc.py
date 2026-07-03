@@ -905,7 +905,7 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
         cbar.ax.set_yticklabels(vals)
 
 
-def getinfo(txt=None, reset=False):
+def getinfo(txt=None, reset=False, hide=False):
     """
     Get time and memory info.
 
@@ -915,6 +915,8 @@ def getinfo(txt=None, reset=False):
         Descriptor used for headings. The default is None.
     reset : bool
         Flag used to reset the time difference to zero.
+    hide : bool
+        Hide the output text. Useful if you don't want to show the initialising reading.
 
     Returns
     -------
@@ -939,7 +941,8 @@ def getinfo(txt=None, reset=False):
     mem = psutil.virtual_memory()
     memtxt = f"RAM memory used: {mem.used:,.1f} B ({mem.percent}%)"
 
-    print(heading + memtxt + f" Time(s): {tdiff:.3f}")
+    if hide is False:
+        print(heading + memtxt + f" Time(s): {tdiff:.3f}")
 
 
 # def limit_memory(memory_limit):

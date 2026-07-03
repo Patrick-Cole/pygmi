@@ -37,6 +37,7 @@ from pyproj.exceptions import ProjError
 from rasterio.mask import mask as riomask
 from rasterio.warp import reproject
 from scipy import ndimage
+from scipy.ndimage import distance_transform_edt
 from shapely import Polygon
 
 from pygmi.misc import ProgressBarText
@@ -140,6 +141,13 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
 
 
     """
+    if np.ma.is_masked(data):
+        from pygmi.misc import getinfo
+
+        getinfo(hide=True)
+        data = fill_nd_closest(data)
+        getinfo(2)
+
     local = {}
 
     _, pinit, qinit = aspect2(data)
@@ -276,6 +284,20 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
     # data = trim_raster(data)
 
     return data
+
+
+def fill_nd_closest(arr):
+    mask = np.ma.getmaskarray(arr)
+
+    # distance_transform_edt finds distance/index to the nearest ZERO (False) element.
+    # We pass the mask directly, so masked elements (True) lookup the nearest unmasked (False) elements.
+    indices = distance_transform_edt(mask, return_distances=False, return_indices=True)
+
+    # Extract data using the mapped coordinates
+    # indices shape: (ndim, dim1, dim2, ...)
+    filled_data = arr.data[tuple(indices)]
+
+    return filled_data
 
 
 def histcomp(img, perc=5.0, uperc=None):
