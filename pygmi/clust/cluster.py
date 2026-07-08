@@ -35,11 +35,7 @@ import numpy as np
 import sklearn.cluster as skc
 import sklearn.preprocessing as skp
 from PySide6 import QtWidgets
-from sklearn.metrics import (
-    calinski_harabasz_score,
-    davies_bouldin_score,
-    silhouette_score,
-)
+from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
 
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data

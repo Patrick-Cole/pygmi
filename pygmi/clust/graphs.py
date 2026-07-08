@@ -648,8 +648,8 @@ class PlotVRCetc(ContextModule):
         # if "sil" in meta and len(data) > 1:
         #     items += ["Silhouette Score"]
 
-        # if "dbs" in meta and len(data) > 1:
-        #     items += ["Davies-Bouldin Score"]
+        if "dbs" in meta and len(data) > 1:
+            items += ["Davies-Bouldin Score"]
 
         if "nce" in meta and len(data) > 1:
             items += ["Normalized Class Entropy"]
@@ -816,16 +816,15 @@ def _testfn():
     data = get_raster(ifile)
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     DM = Cluster()
     DM.indata["Raster"] = data
     DM.settings()
 
     dat = DM.outdata
-    # dat['Cluster'][0].metadata['Cluster']['labels'] = ['a', 'b', 'c', 'd',
-    #                                                    'e']
 
-    tmp2 = PlotBars()
+    tmp2 = PlotVRCetc()
     tmp2.indata = dat
     tmp2.run()
 

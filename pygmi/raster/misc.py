@@ -142,11 +142,7 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
 
     """
     if np.ma.is_masked(data):
-        from pygmi.misc import getinfo
-
-        getinfo(hide=True)
         data = fill_nd_closest(data)
-        getinfo(2)
 
     local = {}
 

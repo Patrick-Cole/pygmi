@@ -1374,16 +1374,20 @@ class ExportData(ContextModule):
                     bandsort=self.cb_bandsort.isChecked(),
                 )
         if "GeoTIFF" in filt:
+            gdrv = "GTiff"
             if "ZSTD" in filt:
                 compression = "ZSTD"
             elif "DEFLATE" in filt:
+                compression = "DEFLATE"
+            elif "Cloud" in filt:
+                gdrv = "COG"
                 compression = "DEFLATE"
             else:
                 compression = "NONE"
             export_raster(
                 self.ofile,
                 data,
-                drv="GTiff",
+                drv=gdrv,
                 piter=self.piter,
                 compression=compression,
                 showlog=self.showlog,
@@ -1687,6 +1691,7 @@ class ExportData(ContextModule):
             "GeoTIFF compressed using DEFLATE (*.tif);;"
             "GeoTIFF compressed using ZSTD (*.tif);;"
             "GeoTIFF (*.tif);;"
+            "Cloud Optimized GeoTIFF using DEFLATE(*.tif);;"
             "ENVI (*.hdr);;"
             "ERMapper (*.ers);;"
             "Geosoft (*.gxf);;"

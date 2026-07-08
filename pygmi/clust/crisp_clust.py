@@ -30,8 +30,8 @@ This uses standard statistical methods, as opposed to fuzzy methods.
 
 import numpy as np
 from PySide6 import QtWidgets
+from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
 
-import pygmi.clust.var_ratio as vr
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 
@@ -56,10 +56,10 @@ class CrispClust(BasicModule):
         self.sb_repeatedruns = QtWidgets.QSpinBox()
         self.sb_minclusters = QtWidgets.QSpinBox()
         self.gbox = QtWidgets.QGroupBox()
+        self.lbl_6 = QtWidgets.QLabel()
         self.lbl_7 = QtWidgets.QLabel()
         self.dsb_constraincluster = QtWidgets.QDoubleSpinBox()
         self.rb_random = QtWidgets.QRadioButton()
-        self.rb_manual = QtWidgets.QRadioButton()
         self.rb_datadriven = QtWidgets.QRadioButton()
 
         self.setupui()
@@ -77,6 +77,7 @@ class CrispClust(BasicModule):
 
         self.cmb_alg.addItems(["k-means", "advanced k-means", "w-means"])
         self.cmb_alg.currentIndexChanged.connect(self.combo)
+        self.rb_datadriven.toggled.connect(self.initchange)
         self.combo()
 
     def setupui(self):
@@ -97,7 +98,6 @@ class CrispClust(BasicModule):
         lbl_3 = QtWidgets.QLabel()
         lbl_4 = QtWidgets.QLabel()
         lbl_5 = QtWidgets.QLabel()
-        lbl_6 = QtWidgets.QLabel()
 
         self.sb_minclusters.setMinimum(1)
         self.sb_minclusters.setProperty("value", 5)
@@ -111,7 +111,6 @@ class CrispClust(BasicModule):
         self.sb_repeatedruns.setMinimum(1)
 
         self.rb_random.setChecked(True)
-        self.gbox.hide()
 
         self.setWindowTitle("Crisp Clustering")
         lbl_1.setText("Cluster Algorithm:")
@@ -119,11 +118,10 @@ class CrispClust(BasicModule):
         lbl_3.setText("Maximum Clusters")
         lbl_4.setText("Maximum Iterations:")
         lbl_5.setText("Terminate if relative change per iteration is less than:")
-        lbl_6.setText("Repeated Runs:")
+        self.lbl_6.setText("Repeated Runs:")
         self.lbl_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
         self.gbox.setTitle("Initial Guess")
         self.rb_random.setText("Random")
-        self.rb_manual.setText("Manual")
         self.rb_datadriven.setText("Data Driven")
 
         gl_1.addWidget(lbl_1, 0, 0, 1, 1)
@@ -136,7 +134,7 @@ class CrispClust(BasicModule):
         gl_1.addWidget(self.sb_maxiterations, 3, 1, 1, 1)
         gl_1.addWidget(lbl_5, 4, 0, 1, 1)
         gl_1.addWidget(self.dsb_maxerror, 4, 1, 1, 1)
-        gl_1.addWidget(lbl_6, 5, 0, 1, 1)
+        gl_1.addWidget(self.lbl_6, 5, 0, 1, 1)
         gl_1.addWidget(self.sb_repeatedruns, 5, 1, 1, 1)
         gl_1.addWidget(self.lbl_7, 6, 0, 1, 1)
         gl_1.addWidget(self.dsb_constraincluster, 6, 1, 1, 1)
@@ -144,7 +142,6 @@ class CrispClust(BasicModule):
         gl_1.addWidget(self.buttonbox, 9, 0, 1, 2)
 
         vbl.addWidget(self.rb_random)
-        vbl.addWidget(self.rb_manual)
         vbl.addWidget(self.rb_datadriven)
 
     def combo(self):
@@ -163,6 +160,22 @@ class CrispClust(BasicModule):
         else:
             self.lbl_7.hide()
             self.dsb_constraincluster.hide()
+
+    def initchange(self):
+        """
+        Set up radio button to choose initialisation type.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.rb_datadriven.isChecked():
+            self.sb_repeatedruns.hide()
+            self.lbl_6.hide()
+        else:
+            self.sb_repeatedruns.show()
+            self.lbl_6.show()
 
     def settings(self, nodialog=False):
         """
@@ -203,21 +216,6 @@ class CrispClust(BasicModule):
         data = [i.copy() for i in self.indata["Raster"]]
         self.update_vars()
 
-        ifiles = []
-        if self.init_type == "manual":
-            ext = "ASCII matrix (*.txt);;ASCII matrix (*.asc);;ASCII matrix (*.dat)"
-            filename = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, "Read Cluster Centers", ".", ext
-            )
-            if filename == "":
-                return False
-            ifiles.append(filename)
-
-            filename = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, "Read Cluster Center Constraints", ".", ext
-            )
-            ifiles.append(filename)
-
         dat_out = crispclust(
             data,
             self.cltype,
@@ -228,7 +226,6 @@ class CrispClust(BasicModule):
             self.max_iter,
             self.term_thresh,
             self.init_type,
-            ifiles,
             self.showlog,
             self.piter,
         )
@@ -260,7 +257,6 @@ class CrispClust(BasicModule):
         self.saveobj(self.sb_minclusters)
         self.saveobj(self.dsb_constraincluster)
         self.saveobj(self.rb_random)
-        self.saveobj(self.rb_manual)
         self.saveobj(self.rb_datadriven)
 
         self.saveobj(self.cltype)
@@ -293,8 +289,6 @@ class CrispClust(BasicModule):
 
         if self.rb_datadriven.isChecked():
             self.init_type = "data driven"
-        elif self.rb_manual.isChecked():
-            self.init_type = "manual"
         else:
             self.init_type = "random"
 
@@ -309,7 +303,6 @@ def crispclust(
     max_iter=100,
     term_thresh=0.00001,
     init_type="random",
-    ifiles=None,
     showlog=print,
     piter=iter,
 ):
@@ -329,15 +322,13 @@ def crispclust(
     cov_constr : _type_, optional
         scalar between [0 1], by default 0.
     no_runs : int, optional
-        number of runs, by default 1
+        number of runs, used in random guess, by default 1
     max_iter : int, optional
         maximum iterations, by default 100
     term_thresh : float, optional
         terminating threshold, by default 0.00001
     init_type : str, optional
         initial guess, by default 'random'
-    ifiles : list, optional
-        Files used in 'manual' initial guess, by default None
     showlog : function, optional
         Show information using a function. The default is print.
     piter : function, optional
@@ -352,63 +343,18 @@ def crispclust(
     showlog("Crisp Clustering started")
     no_clust = np.array([min_cluster, max_cluster])
 
-    # #############################################################################
-    # Section to deal with different bands having different null values.
-    # Start with the first entry
-    #         masktmp = data[0].data.mask
-    #   Add the all the masks to this. This promotes False values to True.
-    #         for i in data:
-    #             masktmp += i.data.mask
-    #         for i, _ in enumerate(data):    # Apply this to all the bands
-    #             data[i].data.mask = masktmp
-
     masktmp = ~data[0].data.mask
     for i in data:
         masktmp += ~i.data.mask
     masktmp = ~masktmp
-    for datai in data:
-        if datai.nodata != 0.0:
-            showlog("Setting " + datai.dataid + " nodata to 0.")
-            datai.data = np.ma.array(datai.data.filled(0))
-        datai.data.mask = masktmp
 
-    # #############################################################################
-
-    dat_in = np.array([i.data.compressed() for i in data]).T
-
-    if init_type == "manual":
-        ifile = ifiles[0]
-
-        dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
-        [ro0, co0] = np.shape(dummy_mod)
-        ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
-        if dat_in.shape[1] != co0 or ro0 != ro1:
-            showlog("Warning: Incorrect matrix size!")
-        cnt = -1
-        for i in range(no_clust[0], no_clust[1] + 1):
-            smtmp = np.zeros(i)
-            for j in range(i):
-                cnt = cnt + 1
-                smtmp[j] = dummy_mod[cnt]
-            startmdat = {i: smtmp}
-            startmfix = {i: []}
-
-        if ifiles[1] == "":
-            showlog("Warning :Running cluster analysis without constraints")
-        else:
-            ifile = ifiles[1]
-            dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
-            [ro0, co0] = np.shape(dummy_mod)
-            ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
-            if dat_in.shape[1] != co0 or ro0 != ro1:
-                showlog("Warning:  Incorrect matrix size!")
-            cnt = -1
-            for i in range(no_clust[0], no_clust[1] + 1):
-                smtmp = np.zeros(i)
-                for j in range(i):
-                    cnt = cnt + 1
-                    smtmp = dummy_mod[cnt]
-                startmfix = {i: smtmp}
+    X = []
+    for band in data:
+        tmp = band.copy()
+        tmp.data.mask = masktmp
+        X.append(tmp.data.compressed())
+        del tmp
+    dat_in = np.transpose(X)
 
     cnt = -1
     dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
@@ -416,6 +362,7 @@ def crispclust(
     clidx = None
     clcent = None
     clvrc = None
+    cldbs = None
     startmdat = {}
     startmfix = {}
     clobj_fcn = None
@@ -427,7 +374,7 @@ def crispclust(
             showlog("Initial guess: data driven")
             no_samp = dat_in.shape[0]
             dno_samp = no_samp / i
-            idx = np.arange(0, no_samp + dno_samp, dno_samp)
+            idx = np.arange(0, no_samp + dno_samp, dno_samp, dtype=int)
             idx[0] = 1
             startmdat = {i: np.zeros([i, dat_in.shape[1]])}
             dat_in1 = dat_in
@@ -439,23 +386,7 @@ def crispclust(
             startmfix = {i: []}
             del dat_in1
 
-            clidx, clcent, clobj_fcn, clvrc = crisp_means(
-                dat_in,
-                i,
-                startmdat[i],
-                startmfix[i],
-                max_iter,
-                term_thresh,
-                cltype,
-                cov_constr,
-                showlog,
-                piter,
-            )
-
-        elif init_type == "manual":
-            showlog("Initial guess: manual")
-
-            clidx, clcent, clobj_fcn, clvrc = crisp_means(
+            clidx, clcent, clobj_fcn = crisp_means(
                 dat_in,
                 i,
                 startmdat[i],
@@ -483,7 +414,7 @@ def crispclust(
                     )
                 }
                 startmfix = {i: np.array([])}
-                clidx1, clcent1, clobj_fcn1, clvrc1 = crisp_means(
+                clidx1, clcent1, clobj_fcn1 = crisp_means(
                     dat_in,
                     i,
                     startm1dat[i],
@@ -500,14 +431,13 @@ def crispclust(
                     clidx = clidx1
                     clcent = clcent1
                     clobj_fcn = clobj_fcn1
-                    clvrc = clvrc1
                     startmdat = {i: startm1dat[i]}
 
         zonal = np.ma.masked_all(data[0].data.shape)
+        zonal[~masktmp] = clidx + 1
 
-        alpha = data[0].data.mask == 0
-        zonal[alpha == 1] = clidx
-
+        clvrc = calinski_harabasz_score(dat_in, clidx)
+        cldbs = davies_bouldin_score(dat_in, clidx)
         cent_std = np.array([np.std(dat_in[clidx == k], 0) for k in range(i)])
 
         dat_out[cnt].metadata["Cluster"]["input_type"] = []
@@ -521,6 +451,7 @@ def crispclust(
         dat_out[cnt].metadata["Cluster"]["center_std"] = cent_std
         dat_out[cnt].metadata["Cluster"]["obj_fcn"] = clobj_fcn
         dat_out[cnt].metadata["Cluster"]["vrc"] = clvrc
+        dat_out[cnt].metadata["Cluster"]["dbs"] = cldbs
 
     for i in dat_out:
         i.dataid = "Crisp Cluster: " + str(i.metadata["Cluster"]["no_clusters"])
@@ -529,11 +460,6 @@ def crispclust(
         i.crs = data[0].crs
 
     showlog(f"Crisp Cluster complete ({cltype} {init_type})")
-
-    for i in dat_out:
-        i.data += 1
-        i.data = np.ma.masked_equal(i.data.filled(0).astype(int), 0)
-        i.nodata = 0
 
     return dat_out
 
@@ -605,8 +531,6 @@ def crisp_means(
         cluster centre per row
     obj_fcn : numpy array
         Vector, size of the objective function after each iteration
-    vrc : numpy array
-        Variance Ratio Criterion
     """
     showlog(" ")
 
@@ -644,8 +568,7 @@ def crisp_means(
         dist_prev = edist
         # calc new cluster centre positions
         cent, idx = gcentroids(data, idx, no_clust, mindist)
-        # constrain the cluster center positions to keep it in  the given
-        # interval
+        # constrain the cluster center positions to keep it in  the given interval
         if centfix.size > 0:
             # constrain the center positions within the given limits
             cent_idx = cent > (cent_orig + centfix)
@@ -669,8 +592,7 @@ def crisp_means(
             obj_fcn_dif = 100 * ((obj_fcn_prev - obj_fcn[i]) / obj_fcn[i])
 
         showlog(f"Iteration: {i} Threshold: {term_thresh} Current: {obj_fcn_dif:.2e}")
-        # if no termination threshold provided, ignore this and do all
-        # iterations
+        # if no termination threshold provided, ignore this and do all iterations
         if term_thresh > 0:
             # if the improvement between the last two iterations was less
             # than a defined threshold in percent
@@ -686,8 +608,8 @@ def crisp_means(
                     obj_fcn = np.delete(obj_fcn, np.s_[i::])
                 break  # and stop the clustering right now
         obj_fcn_prev = obj_fcn[i]
-    vrc = vr.var_ratio(data, idx, cent, edist)
-    return idx, cent, obj_fcn, vrc
+
+    return idx, cent, obj_fcn
 
 
 def gcentroids(data, index, no_clust, mindist):
@@ -847,8 +769,7 @@ def _testfn():
 
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
-    # ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dat = get_raster(ifile)
 
