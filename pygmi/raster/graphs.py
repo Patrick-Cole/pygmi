@@ -137,7 +137,7 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_raster(self, data1, cmap, plotlog):
+    def update_raster(self, data1, cmap, plotlog, aspect=1):
         """
         Update the raster plot.
 
@@ -159,6 +159,7 @@ class MyMplCanvas(CanvasModule):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         self.custom_resize = True
+        is_section = data1.metadata["Raster"]["Section"]
 
         if data1.isrgb is True:
             rdata = imshow(
@@ -190,6 +191,8 @@ class MyMplCanvas(CanvasModule):
         location = "right"
         if not data1.isrgb:
             rows, cols = data1.data.shape
+            pad = 0.1
+            caspect = 30
             if cols > 1.8 * rows:
                 location = "bottom"
                 shrink = 0.4
@@ -199,35 +202,37 @@ class MyMplCanvas(CanvasModule):
                 shrink = 1.0
                 anchor = (0.0, 0.5)
 
+            if is_section is True:
+                location = "bottom"
+                shrink = 1.0
+                pad = 0.15
+                anchor = (0.5, 1.0)
+                caspect = 40
+
             cbar = self.figure.colorbar(
                 rdata,
                 format=frm,
                 location=location,
-                aspect=30,
+                aspect=caspect,
                 shrink=shrink,
                 anchor=anchor,
-                pad=0.1,
+                pad=pad,
             )
             cbar.set_label(data1.units)
 
-        if data1.metadata["Raster"]["Section"] is True:
+        if is_section is True:
             self.axes.set_xlabel("Distance")
             self.axes.set_ylabel("Elevation")
             self.axes.format_coord = self.format_coord
             rdata.format_cursor_data = lambda x: f"Data: {x}"
-            # elif data1.crs is not None and data1.crs.is_geographic:
-            #     self.axes.set_xlabel("Longitude")
-            #     self.axes.set_ylabel("Latitude")
-            # else:
-            #     self.axes.set_xlabel("Eastings")
-            #     self.axes.set_ylabel("Northings")
 
             self.axes.ticklabel_format(style="plain", axis="both")
-            self.axes.tick_params(axis="x", rotation=90)
+            self.axes.tick_params(axis="x", rotation=0)
             self.axes.tick_params(axis="y", rotation=0)
 
             self.axes.xaxis.set_major_formatter(frm)
             self.axes.yaxis.set_major_formatter(frm)
+            self.axes.set_aspect(aspect)
         else:
             set_axes(self.axes, data1.crs)
             set_northscale(self.axes, data1.crs, self.showlog)
@@ -503,6 +508,14 @@ class PlotRaster(ContextModule):
         self.cb_log = QtWidgets.QCheckBox("Log Colour Scale")
         hbl.addWidget(self.cb_log)
 
+        self.sb_aspect = QtWidgets.QSpinBox()
+        self.sb_aspect.setMinimum(1)
+        self.lbl_a = QtWidgets.QLabel("Aspect:")
+        hbl.addWidget(self.lbl_a)
+        hbl.addWidget(self.sb_aspect)
+        self.lbl_a.hide()
+        self.sb_aspect.hide()
+
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Bands:")
         hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
@@ -530,6 +543,7 @@ class PlotRaster(ContextModule):
         vbl.addLayout(hbl)
 
         self.setFocus()
+        self.sb_aspect.valueChanged.connect(self.change_band)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
         self.cb_log.checkStateChanged.connect(self.change_band)
@@ -546,10 +560,19 @@ class PlotRaster(ContextModule):
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
         plotlog = self.cb_log.isChecked()
+        aspect = self.sb_aspect.value()
 
         if "Raster" in self.indata:
             data = self.indata["Raster"]
-            self.mmc.update_raster(data[i], cmap, plotlog)
+            is_section = data[i].metadata["Raster"]["Section"]
+            if is_section is True:
+                self.sb_aspect.show()
+                self.lbl_a.show()
+            else:
+                self.lbl_a.hide()
+                self.sb_aspect.hide()
+
+            self.mmc.update_raster(data[i], cmap, plotlog, aspect)
 
     def run(self):
         """
@@ -569,12 +592,6 @@ class PlotRaster(ContextModule):
         for i in data:
             self.cmb_1.addItem(i.dataid)
 
-        # rows, cols = data[0].data.shape
-        # aspect = cols/rows
-        # height = 4.8
-        # width = aspect*height
-
-        # self.mmc.figure.set_size_inches(width, height)
         self.show()
 
 
@@ -1018,7 +1035,7 @@ def _testfn():
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
-    # ifile = r"D:\UBC_Files\section.tif"
+    ifile = r"D:\UBC_Files\section.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

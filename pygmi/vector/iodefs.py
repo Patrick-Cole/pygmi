@@ -29,10 +29,10 @@ import os
 import re
 from io import StringIO
 
-import fiona
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import pyogrio
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule, ContextModule
@@ -255,9 +255,12 @@ class ImportVector(BasicModule):
         os.chdir(os.path.dirname(self.ifile))
 
         if "KML" in ext or ".kml" in self.ifile or ".kmz" in self.ifile:
-            gdf = gpd.read_file(
-                self.ifile, bbox=bounds, engine="fiona", allow_unsupported_drivers=True
-            )
+            layers = gpd.list_layers(self.ifile)
+
+            gdf_list = [
+                gpd.read_file(self.ifile, layer=layer) for layer in layers["name"]
+            ]
+            gdf = pd.concat(gdf_list, ignore_index=True)
         else:
             gdf = gpd.read_file(self.ifile, bbox=bounds, engine="pyogrio")
 
@@ -269,6 +272,12 @@ class ImportVector(BasicModule):
 
         if gdf.size == 0:
             self.showlog("Unable to load data. Check file or bounds.")
+            return False
+
+        if len(gdf.geom_type.unique()) > 1:
+            self.showlog(
+                "Your input data has multiple vector types, which is not supported."
+            )
             return False
 
         if gdf.geom_type.loc[0] == "Point":
@@ -325,11 +334,9 @@ class ImportVector(BasicModule):
         self.le_sfile.setText("")
 
         ext = (
-            "Shapefile (*.shp);;"
-            "Zipped Shapefile (*.shp.zip);;"
-            "GeoPackage (*.gpkg);;"
+            "Shapefile (*.shp);;Zipped Shapefile (*.shp.zip);;GeoPackage (*.gpkg);;"
             "KML (*.kml);;"
-            "KMZ (*.kmz)"
+            # "KMZ (*.kmz)"
         )
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -340,14 +347,10 @@ class ImportVector(BasicModule):
             return False
 
         self.le_sfile.setText(self.ifile)
+        info = pyogrio.read_info(self.ifile)
+        bounds = info["total_bounds"]
 
-        with fiona.open(self.ifile, allow_unsupported_drivers=True) as fio:
-            self.crs = fio.crs
-            xmin, ymin, xmax, ymax = fio.bounds
-
-        # tmp = read_info(self.ifile, force_total_bounds=True)
-        # self.crs = tmp['crs']
-        # xmin, ymin, xmax, ymax = tmp['total_bounds']
+        xmin, ymin, xmax, ymax = bounds
 
         self.le_xmin.setText(str(xmin))
         self.le_xmax.setText(str(xmax))
@@ -1280,13 +1283,14 @@ def _test():
 
     ifile = r"D:/Work/Programming/geochem/all_geochem.shp"
     ifile = r"C:\Work\Stress\focala.xlsx"
+    ifile = r"D:\workdata\PyGMI Test Data\Vector\gmap.kml"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(os.path.dirname(ifile))
 
-    tmp1 = ImportXYZ()
+    tmp1 = ImportVector()
     tmp1.settings()
 
     # dat = tmp1.outdata['Vector'][0]
