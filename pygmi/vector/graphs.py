@@ -369,10 +369,6 @@ class MyMplCanvas(CanvasModule):
         ax1 = self.figure.add_subplot(111, label="Map")
 
         self.axes = ax1
-        # self.axes.ticklabel_format(useOffset=False, style="plain")
-        # self.axes.tick_params(axis="x", rotation=90)
-        # self.axes.tick_params(axis="y", rotation=0)
-        # self.axes.axis("equal")
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -471,10 +467,6 @@ class MyMplCanvas(CanvasModule):
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(111, label="map")
-        # self.axes.ticklabel_format(style="plain")
-        # self.axes.tick_params(axis="x", rotation=90)
-        # self.axes.tick_params(axis="y", rotation=0)
-        # self.axes.axis("equal")
 
         if "LineString" in data.geom_type.iloc[0]:
             tmp = []
@@ -605,12 +597,6 @@ class MyMplCanvas(CanvasModule):
         self.axes = ax1
 
         ax2 = self.figure.add_subplot(122, label="Map")
-        # ax2.set_aspect("equal")
-        # ax2.ticklabel_format(useOffset=False, style="plain")
-        # ax2.tick_params(axis="x", rotation=90)
-        # ax2.tick_params(axis="y", rotation=0)
-        # ax2.xaxis.set_major_formatter(frm)
-        # ax2.yaxis.set_major_formatter(frm)
 
         fangle = []
         fcnt = []

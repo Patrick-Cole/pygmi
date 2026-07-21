@@ -226,7 +226,7 @@ class MyMplCanvas(CanvasModule):
             self.axes.format_coord = self.format_coord
             rdata.format_cursor_data = lambda x: f"Data: {x}"
 
-            self.axes.ticklabel_format(style="plain", axis="both")
+            self.axes.ticklabel_format(style="plain", axis="both", useOffset=False)
             self.axes.tick_params(axis="x", rotation=0)
             self.axes.tick_params(axis="y", rotation=0)
 
@@ -1036,6 +1036,7 @@ def _testfn():
     ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
     ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
     ifile = r"D:\UBC_Files\section.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\GeoTIFF\Geoscience_000001.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

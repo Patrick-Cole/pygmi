@@ -249,9 +249,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = self.figure.add_subplot(gspc[0:, 1:])
-        # self.axes.tick_params(axis="x", rotation=90)
-        # self.axes.tick_params(axis="y", rotation=0)
-        # self.axes.ticklabel_format(style="plain", axis="both")
         self.axes.xaxis.set_visible(False)
         self.axes.yaxis.set_visible(False)
 

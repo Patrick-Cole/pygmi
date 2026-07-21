@@ -198,11 +198,11 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 def set_axes(ax, crs):
     """Setup the axes."""
     ax.set_aspect("equal")
-    ax.ticklabel_format(style="plain", axis="both")
     ax.yaxis.tick_right()
     ax.xaxis.set_major_locator(MaxNLocator(4))
     ax.yaxis.set_major_locator(MaxNLocator(4))
     ax.tick_params(axis="y", labelrotation=90)
+    ax.ticklabel_format(style="plain", axis="both", useOffset=False)
 
     if not crs.is_geographic:
         ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
