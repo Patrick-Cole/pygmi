@@ -10,6 +10,7 @@ _modules/
 .spyproject/
 .vscode/
 build/
+catboost_info/
 data/
 dist/
 docs/

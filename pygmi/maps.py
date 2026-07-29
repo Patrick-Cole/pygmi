@@ -197,6 +197,9 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 
 def set_axes(ax, crs):
     """Setup the axes."""
+
+    crs = pyproj.CRS.from_wkt(crs.to_wkt())
+
     ax.set_aspect("equal")
     ax.yaxis.tick_right()
     ax.xaxis.set_major_locator(MaxNLocator(4))
@@ -267,6 +270,8 @@ def set_northscale(ax, crs, showlog=print):
     showlog : function, optional
         _Show information using a function, by default print
     """
+
+    crs = pyproj.CRS.from_wkt(crs.to_wkt())
 
     north_arrow(
         ax,
