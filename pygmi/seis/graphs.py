@@ -454,15 +454,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     A1mean = 0
                 else:
                     A1mean = np.nanmean(list(A1.values()))
-            for i in A1:
+            for i, A1i in A1.items():
                 if i not in A:
                     A[i] = []
-                A[i].append(A1[i] - A1mean)
+                A[i].append(A1i - A1mean)
 
-            for i in T1:
+            for i, T1i in T1.items():
                 if i not in T:
                     T[i] = []
-                T[i].append(T1[i])
+                T[i].append(T1i)
 
         dmean = {}
         dstd = {}
@@ -533,10 +533,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             # Make sure P and S times are from same stations
             P2 = []
             S2 = []
-            for i in P:
+            for i, Pi in P.items():
                 if i not in S:
                     continue
-                P2.append(P[i])
+                P2.append(Pi)
                 S2.append(S[i])
 
             if len(P2) <= min_wad:
@@ -1163,7 +1163,7 @@ class PlotTempB(ContextModule):
             )
             edate.append(txt)
 
-        seq = sorted(list(zip(edate, dat2["1_ML"])))
+        seq = sorted(zip(edate, dat2["1_ML"]))
         tseq = list(zip(*seq))
         dates, ml = tseq
 

@@ -869,7 +869,7 @@ class MagInvert(BasicModule):
         )
         update_jacobi = directives.UpdatePreconditioner()
 
-        target_misfit = directives.TargetMisfit(chifact=1)
+        _target_misfit = directives.TargetMisfit(chifact=1)
         sensitivity_weights = directives.UpdateSensitivityWeights(every_iteration=False)
         directives_list = [
             sensitivity_weights,

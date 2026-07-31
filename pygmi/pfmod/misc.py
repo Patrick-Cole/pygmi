@@ -137,10 +137,8 @@ class ProgressBar:
         time1 = self.otime
         time2 = self.otime
 
-        i = 0
-        for obj in iterable:
+        for i, obj in enumerate(iterable):
             yield obj
-            i += 1
 
             time2 = time.perf_counter()
             if time2 - time1 > 1:

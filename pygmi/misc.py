@@ -34,11 +34,13 @@ import webbrowser
 import geopandas as gpd
 import numpy as np
 import psutil
+import requests
 from matplotlib import cm, colors
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QRegularExpression
 from PySide6.QtGui import QRegularExpressionValidator
 
+from pygmi import __version__
 from pygmi.raster.reproj import GroupProj
 
 # if os.name == 'nt':
@@ -209,10 +211,11 @@ class BasicModule(QtWidgets.QDialog):
         """
 
         for value in vars(self).values():
-            if isinstance(value, QtWidgets.QLineEdit):
-                if not value.hasAcceptableInput():
-                    self.showlog("One of your inputs is incorrect. Please check.")
-                    return False
+            if isinstance(value, QtWidgets.QLineEdit) and (
+                not value.hasAcceptableInput()
+            ):
+                self.showlog("One of your inputs is incorrect. Please check.")
+                return False
 
         return True
 
@@ -495,10 +498,11 @@ class ContextModule(QtWidgets.QDialog):
         """
 
         for value in vars(self).values():
-            if isinstance(value, QtWidgets.QLineEdit):
-                if not value.hasAcceptableInput():
-                    self.showlog("One of your inputs is incorrect. Please check.")
-                    return False
+            if isinstance(value, QtWidgets.QLineEdit) and (
+                not value.hasAcceptableInput()
+            ):
+                self.showlog("One of your inputs is incorrect. Please check.")
+                return False
 
         return True
 
@@ -734,10 +738,8 @@ class ProgressBar(QtWidgets.QProgressBar):
         time1 = self.otime
         time2 = self.otime
 
-        i = 0
-        for obj in iterable:
+        for i, obj in enumerate(iterable):
             yield obj
-            i += 1
 
             time2 = time.perf_counter()
             if time2 - time1 > 1:
@@ -794,19 +796,17 @@ class ProgressBarText:
 
         self.otime = time.perf_counter()
 
-        i = 0
         oldperc = 0
         gottototal = False
-        for obj in iterable:
+        for i, obj in enumerate(iterable):
             yield obj
-            i += 1
 
             time2 = time.perf_counter()
             curperc = int(i * 100 / self.total)
             if curperc > oldperc or oldperc == 0:
                 oldperc = curperc
 
-                tleft = (self.total - i) * (time2 - self.otime) / i
+                tleft = (self.total - i) * (time2 - self.otime) / (i + 1)
                 if tleft > 60:
                     timestr = f" {tleft // 60:.0f} min left "
                 else:
@@ -859,6 +859,40 @@ class ProgressBarText:
     def to_max(self):
         """Set the progress to maximum."""
         self.printprogressbar(self.total)
+
+
+def check_for_updates():
+    """Check github for updates."""
+    # GitHub API endpoint for the latest release
+    url = "https://api.github.com/repos/Patrick-Cole/pygmi/releases/latest"
+
+    verpath = ""
+
+    try:
+        response = requests.get(url, timeout=10)
+
+        # Handle successful response
+        if response.status_code == 200:
+            release_data = response.json()
+            # Extract version tag (e.g., "v2.1.0") and strip 'v' if present
+            latest_version_str = release_data["tag_name"].lstrip("v")
+
+            versions = [__version__, latest_version_str]
+
+            versions.sort()
+
+            if versions[-1] != __version__:
+                verpath = f"<a href={release_data['html_url']}>v{versions[-1]}</a>"
+
+        elif response.status_code == 404:
+            print("❌ Repository or release not found.")
+        else:
+            print(f"⚠️ Failed to check updates. Status code: {response.status_code}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"📡 Network error occurred: {e}")
+
+    return verpath
 
 
 def discrete_colorbar(axes, csp, cdat, lbls=None):
@@ -1045,4 +1079,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    # _testfn()
+    check_for_updates()

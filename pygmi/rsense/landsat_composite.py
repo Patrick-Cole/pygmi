@@ -165,7 +165,7 @@ class LandsatComposite(BasicModule):
         allday = []
         for ifile in ifiles:
             sdate = os.path.basename(ifile).split("_")[3]
-            sdate = datetime.strptime(sdate, "%Y%m%d")
+            sdate = datetime.strptime(sdate, "%Y%m%d").astimezone(datetime.UTC)
             datday = sdate.timetuple().tm_yday
             allday.append(datday)
             self.showlog(f"Scene name: {os.path.basename(ifile)}")
@@ -224,7 +224,7 @@ def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
     allday = []
     for ifile in ifiles:
         sdate = os.path.basename(ifile).split("_")[3]
-        sdate = datetime.strptime(sdate, "%Y%m%d")
+        sdate = datetime.strptime(sdate, "%Y%m%d").astimezone(datetime.UTC)
         allday.append(sdate.timetuple().tm_yday)
 
     allday = np.array(allday)
@@ -322,7 +322,7 @@ def import_and_score(ifile, dreq, mean, std, *, showlog=print, piter=None):
 
     # Get day of year
     sdate = os.path.basename(ifile).split("_")[3]
-    sdate = datetime.strptime(sdate, "%Y%m%d")
+    sdate = datetime.strptime(sdate, "%Y%m%d").astimezone(datetime.UTC)
     datday = sdate.timetuple().tm_yday
     cdistscore = dat["cdist"].copy()
     cdistscore.data = np.ma.masked_equal(cdist2.filled(0), 0)

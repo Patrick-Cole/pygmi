@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Equation editor for vector data."""
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
 
@@ -59,8 +59,8 @@ class EquationEditor(BasicModule):
 
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
-        self.lbl_bands = QtWidgets.QLabel(': i0')
-        self.le_name = QtWidgets.QLineEdit('Column1')
+        self.lbl_bands = QtWidgets.QLabel(": i0")
+        self.le_name = QtWidgets.QLineEdit("Column1")
 
         self.setupui()
 
@@ -75,49 +75,57 @@ class EquationEditor(BasicModule):
         """
         gl_1 = QtWidgets.QGridLayout(self)
 
-        lbl_1 = QtWidgets.QLabel('Data Band Key:')
-        lbl_2 = QtWidgets.QLabel('Output Equation:')
-        lbl_3 = QtWidgets.QLabel('New Column Name:')
-        self.buttonbox.htmlfile = 'vector.dm.equationeditor'
+        lbl_1 = QtWidgets.QLabel("Data Band Key:")
+        lbl_2 = QtWidgets.QLabel("Output Equation:")
+        lbl_3 = QtWidgets.QLabel("New Column Name:")
+        self.buttonbox.htmlfile = "vector.dm.equationeditor"
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
 
         ptmp = self.textbrowser2.palette()
 
-        ptmp.setColor(ptmp.ColorGroup.Active,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
-        ptmp.setColor(ptmp.ColorGroup.Disabled,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
-        ptmp.setColor(ptmp.ColorGroup.Inactive,
-                      ptmp.ColorRole.Base,
-                      ptmp.color(QtGui.QPalette.ColorRole.Window))
+        ptmp.setColor(
+            ptmp.ColorGroup.Active,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
+        ptmp.setColor(
+            ptmp.ColorGroup.Disabled,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
+        ptmp.setColor(
+            ptmp.ColorGroup.Inactive,
+            ptmp.ColorRole.Base,
+            ptmp.color(QtGui.QPalette.ColorRole.Window),
+        )
 
         self.textbrowser2.setPalette(ptmp)
         self.textbrowser2.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
 
-        self.setWindowTitle('Vector Equation Editor')
-        self.textbrowser.setText('i0')
-        tmp = ('<h1>Instructions:</h1>'
-               '<p>Equation editor uses the numexpr library. Use the variables'
-               ' i0, i1, i2 etc in formulas. The combobox above shows which '
-               'band is assigned to each variable.</p>'
-               '<h2>Examples</h2>'
-               '<p>Sum:</p>'
-               '<pre>    i1 + 1000</pre>'
-               '</pre>'
-               '<h2>Commands</h2>'
-               '<ul>'
-               ' <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;'
-               '</li>'
-               ' <li> Arithmetic operators: +, -, *, /, **, %</li>'
-               ' <li> sin, cos, tan, arcsin, arccos, arctan, '
-               'sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</li>'
-               ' <li> log, log10, log1p, exp, expm1</li>'
-               ' <li> sqrt, abs</li>'
-               '</ul>')
+        self.setWindowTitle("Vector Equation Editor")
+        self.textbrowser.setText("i0")
+        tmp = (
+            "<h1>Instructions:</h1>"
+            "<p>Equation editor uses the numexpr library. Use the variables"
+            " i0, i1, i2 etc in formulas. The combobox above shows which "
+            "band is assigned to each variable.</p>"
+            "<h2>Examples</h2>"
+            "<p>Sum:</p>"
+            "<pre>    i1 + 1000</pre>"
+            "</pre>"
+            "<h2>Commands</h2>"
+            "<ul>"
+            " <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;"
+            "</li>"
+            " <li> Arithmetic operators: +, -, *, /, **, %</li>"
+            " <li> sin, cos, tan, arcsin, arccos, arctan, "
+            "sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</li>"
+            " <li> log, log10, log1p, exp, expm1</li>"
+            " <li> sqrt, abs</li>"
+            "</ul>"
+        )
         self.textbrowser2.setHtml(tmp)
 
         gl_1.addWidget(lbl_2, 0, 0, 1, 1)
@@ -144,8 +152,8 @@ class EquationEditor(BasicModule):
         if self.bands == {}:
             return
         txt = self.cmb_1.currentText()
-        if txt != '':
-            self.lbl_bands.setText(': ' + self.bands[txt])
+        if txt != "":
+            self.lbl_bands.setText(": " + self.bands[txt])
 
     def settings(self, nodialog=False):
         """
@@ -162,19 +170,19 @@ class EquationEditor(BasicModule):
             True if successful, False otherwise.
 
         """
-        if 'Vector' not in self.indata:
-            self.showlog('No vector data.')
+        if "Vector" not in self.indata:
+            self.showlog("No vector data.")
             return False
 
         self.bands = {}
 
-        indata = self.indata['Vector'][0].copy()
+        indata = self.indata["Vector"][0].copy()
         items = []
         for j, i in enumerate(indata.columns):
             if indata[i].dtype == object:
                 continue
             items.append(i)
-            self.bands[i] = 'i' + str(j)
+            self.bands[i] = "i" + str(j)
 
         self.cmb_update(self.cmb_1, items)
         self.combo()
@@ -187,18 +195,17 @@ class EquationEditor(BasicModule):
 
             self.equation = self.textbrowser.toPlainText()
 
-        if self.equation == '':
-            self.showlog('Error: You need to enter an equation.')
+        if self.equation == "":
+            self.showlog("Error: You need to enter an equation.")
             return False
 
-        if self.le_name.text() == '':
-            self.showlog('Error: You must have a colum name.')
+        if self.le_name.text() == "":
+            self.showlog("Error: You must have a colum name.")
             return False
 
-        outdata = eqedit(indata, self.equation, self.le_name.text(),
-                         self.showlog)
+        outdata = eqedit(indata, self.equation, self.le_name.text(), self.showlog)
 
-        self.outdata['Vector'] = [outdata]
+        self.outdata["Vector"] = [outdata]
 
         return True
 
@@ -247,11 +254,11 @@ def eqedit(data, equation, colname, showlog=print):
             cols.append(i)
         else:
             ii += 1
-            cols.append('i' + str(ii))
+            cols.append("i" + str(ii))
 
     indata.columns = cols
 
-    if equation == '':
+    if equation == "":
         return None
 
     try:
@@ -260,8 +267,7 @@ def eqedit(data, equation, colname, showlog=print):
         findat = None
 
     if findat is None:
-        showlog('Error: Nothing processed! '
-                'Your equation most likely had an error.')
+        showlog("Error: Nothing processed! Your equation most likely had an error.")
         return False
 
     outdata[colname] = findat
@@ -272,12 +278,13 @@ def eqedit(data, equation, colname, showlog=print):
 def _test():
     """Test."""
     import sys
+
     from pygmi.vector.iodefs import ImportVector
 
-    print('Starting')
+    print("Starting")
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Geochem\geochem_tzaneen.shp"
 

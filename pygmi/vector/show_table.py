@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """Routine which displays a table graphically with various statistics."""
 
+import pandas as pd
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-import pandas as pd
 
 from pygmi.misc import ContextModule
 
@@ -50,7 +50,7 @@ class BasicStats(ContextModule):
         self.resize(640, 480)
 
         self.tablewidget = QtWidgets.QTableWidget()
-        self.pushbutton_save = QtWidgets.QPushButton('Save')
+        self.pushbutton_save = QtWidgets.QPushButton("Save")
 
         self.setupui()
 
@@ -65,7 +65,7 @@ class BasicStats(ContextModule):
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
-        self.buttonbox.htmlfile = 'vector.cm.stats'
+        self.buttonbox.htmlfile = "vector.cm.stats"
         self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
@@ -73,7 +73,7 @@ class BasicStats(ContextModule):
         hbl.addWidget(self.tablewidget)
         hbl.addLayout(vbl)
 
-        self.setWindowTitle('Basic Vector Statistics')
+        self.setWindowTitle("Basic Vector Statistics")
 
         self.pushbutton_save.clicked.connect(self.save)
 
@@ -86,14 +86,14 @@ class BasicStats(ContextModule):
         None.
 
         """
-        gdf = self.indata['Vector'][0]
+        gdf = self.indata["Vector"][0]
 
         stats1 = {}
-        stats1['mean'] = gdf.mean(numeric_only=True)
-        stats1['std'] = gdf.std(numeric_only=True)
-        stats1['median'] = gdf.median(numeric_only=True)
-        stats1['min'] = gdf.min(numeric_only=True)
-        stats1['max'] = gdf.max(numeric_only=True)
+        stats1["mean"] = gdf.mean(numeric_only=True)
+        stats1["std"] = gdf.std(numeric_only=True)
+        stats1["median"] = gdf.median(numeric_only=True)
+        stats1["min"] = gdf.min(numeric_only=True)
+        stats1["max"] = gdf.max(numeric_only=True)
 
         dfstats = pd.DataFrame(stats1)
         self.data = dfstats
@@ -121,7 +121,7 @@ class BasicStats(ContextModule):
 
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
-                txt = f' {data[row, col]:,.5f}'
+                txt = f" {data[row, col]:,.5f}"
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignmentFlag.AlignRight)
 
@@ -140,10 +140,9 @@ class BasicStats(ContextModule):
             True if successful, False otherwise.
 
         """
-        ext = 'CSV Format (*.csv)'
-        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
-                                                         '.', ext)
-        if ifile == '':
+        ext = "CSV Format (*.csv)"
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Table", ".", ext)
+        if ifile == "":
             return False
 
         self.data.to_csv(ifile)
@@ -154,12 +153,13 @@ class BasicStats(ContextModule):
 def _testfn():
     """Calculate structural complexity."""
     import sys
+
     from pygmi.vector.iodefs import ImportVector
 
-    sfile = r'D:\Work\Programming\geochem\all_geochem.shp'
+    sfile = r"D:\Work\Programming\geochem\all_geochem.shp"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp1 = ImportVector()
     tmp1.ifile = sfile

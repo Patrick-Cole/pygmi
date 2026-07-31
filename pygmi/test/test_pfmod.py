@@ -127,7 +127,7 @@ def main():
     print("mag height", mht)
 
     # quick model initialises a model with all the variables we have defined.
-    print("")
+    print()
 
     lmod = quick_model(
         numx,
@@ -281,7 +281,7 @@ def test():
     tlz = 0
 
     # quick model initialises a model with all the variables we have defined.
-    print("")
+    print()
 
     lmod = quick_model(
         numx,

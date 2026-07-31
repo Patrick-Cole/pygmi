@@ -646,7 +646,7 @@ def gradient2D(daty, datx):
     dx : numpy array
         output gradient array
     """
-    rows, cols = daty.data.shape
+    rows, _ = daty.data.shape
 
     dx = daty.copy()
     for i in range(rows):
@@ -718,7 +718,7 @@ def _testfn():
     dat = rtp(dat1, -62.08, -14.23)
     # dat = dat1
 
-    t1, th, t2, ta, tdx, tahg, ehga = tilt1(dat, 75, 0)
+    t1, _th, _t2, _ta, _tdx, _tahg, _ehga = tilt1(dat, 75, 0)
 
     # dy, dx = np.gradient(dat.data, dat.ydim, dat.xdim)
     # dxtot = np.ma.sqrt(dx * dx + dy * dy)
@@ -781,8 +781,8 @@ def _testfn2():
 
     dat = calc_igrf(datd, 2007 + 335 / 365, igrfonly=False, sen_alt=80)
 
-    igrf, inc, dec = dat[0]
-    fmean, imean, dmean = dat[1:]
+    _igrf, inc, dec = dat[0]
+    _fmean, imean, dmean = dat[1:]
 
     dinc = inc.data - imean
     ddec = dec.data - dmean
@@ -817,8 +817,6 @@ def _testfn2():
     plt.imshow(rtpx)
     plt.colorbar()
     plt.show()
-
-    pass
 
 
 if __name__ == "__main__":

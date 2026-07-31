@@ -92,7 +92,7 @@ def test_raps():
     datin.set_transform(10, 100, 10, 100)
 
     dat2 = np.array([36.0])
-    k_centers, raps, k_radial, F = fft.calculate_raps(datin)
+    _k_centers, raps, _k_radial, _F = fft.calculate_raps(datin)
     np.testing.assert_array_almost_equal(raps, dat2)
 
 

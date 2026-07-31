@@ -212,9 +212,7 @@ class ImportData(BasicModule):
             dat = get_geopak(self.ifile)
         elif self.filt == "Geosoft UNCOMPRESSED grid (*.grd)":
             dat = get_geosoft(self.ifile)
-        elif self.filt == "ASCII with .hdr header (*.asc)":
-            dat = get_ascii(self.ifile)
-        elif self.filt == "ESRI ASCII (*.asc)":
+        elif self.filt in ["ASCII with .hdr header (*.asc)", "ESRI ASCII (*.asc)"]:
             dat = get_ascii(self.ifile)
         elif self.filt == "ASCII XYZ (*.xyz)":
             nval = 0.0
@@ -632,7 +630,8 @@ def get_raster(
                     )
 
     envimeta = {}
-    rdate = datetime.datetime(1900, 1, 1)
+    local_tz = datetime.datetime.now().astimezone().tzinfo
+    rdate = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
     try:
         with rasterio.open(ifile, driver=driver) as dataset:
             if dataset is None:
@@ -644,7 +643,10 @@ def get_raster(
             driver = dataset.driver
             if "TIFFTAG_DATETIME" in gmeta:
                 dtimestr = gmeta["TIFFTAG_DATETIME"]
-                rdate = datetime.datetime.strptime(dtimestr, "%Y:%m:%d %H:%M:%S")
+                local_tz = datetime.datetime.now().astimezone().tzinfo
+                rdate = datetime.datetime.strptime(
+                    dtimestr, "%Y:%m:%d %H:%M:%S"
+                ).astimezone(local_tz)
 
             if driver == "ENVI":
                 envimeta = dataset.tags(ns="ENVI")
@@ -754,7 +756,10 @@ def get_raster(
 
             if "AcquisitionDate" in dest:
                 dtimestr = dest["AcquisitionDate"]
-                rdate = datetime.datetime.strptime(dtimestr, "%Y-%m-%d %H:%M:%S")
+                local_tz = datetime.datetime.now().astimezone().tzinfo
+                rdate = datetime.datetime.strptime(
+                    dtimestr, "%Y-%m-%d %H:%M:%S"
+                ).astimezone(local_tz)
 
             if bandid == "" or bandid is None:
                 bandid = "Band " + str(index) + " " + bname
@@ -840,20 +845,23 @@ def get_raster(
             else:
                 dat[-1].set_transform(transform=dataset.transform, rows=rows, cols=cols)
 
-            if driver == "netCDF" and dataset.crs is None:
-                if "x#actual_range" in gmeta and "y#actual_range" in gmeta:
-                    xrng = gmeta["x#actual_range"]
-                    xrng = xrng.strip("}{").split(",")
-                    xrng = [float(i) for i in xrng]
-                    xmin = min(xrng)
-                    xdim = (xrng[1] - xrng[0]) / cols
+            if (
+                driver == "netCDF"
+                and dataset.crs is None
+                and ("x#actual_range" in gmeta and "y#actual_range" in gmeta)
+            ):
+                xrng = gmeta["x#actual_range"]
+                xrng = xrng.strip("}{").split(",")
+                xrng = [float(i) for i in xrng]
+                xmin = min(xrng)
+                xdim = (xrng[1] - xrng[0]) / cols
 
-                    yrng = gmeta["y#actual_range"]
-                    yrng = yrng.strip("}{").split(",")
-                    yrng = [float(i) for i in yrng]
-                    ymin = min(yrng)
-                    ydim = (yrng[1] - yrng[0]) / rows
-                    dat[-1].set_transform(xdim, xmin, ydim, ymin)
+                yrng = gmeta["y#actual_range"]
+                yrng = yrng.strip("}{").split(",")
+                yrng = [float(i) for i in yrng]
+                ymin = min(yrng)
+                ydim = (yrng[1] - yrng[0]) / rows
+                dat[-1].set_transform(xdim, xmin, ydim, ymin)
 
             dat[-1].dataid = bandid
             dat[-1].nodata = nval
@@ -950,7 +958,7 @@ def get_bil(
 
     icount = count // 10
     datin = []
-    for _ in piter(range(0, 10)):
+    for _ in piter(range(10)):
         tmp = np.fromfile(ifile, dtype=dtype, sep="", count=icount, offset=offset)
         offset += icount * dsize
         datin.append(tmp)
@@ -1106,39 +1114,39 @@ def get_geosoft(hfile):
     """
     with open(hfile, mode="rb") as f:
         es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
-        sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
         # ne - number of elements per vector or ncols
         ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol/ne
         # nv - number of vectors or nrows
         nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow/nv
-        kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1 kx
 
         dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
         dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
         x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
         y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
-        rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
+        _ = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
         zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
         zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
 
-        label = np.fromfile(f, dtype="a48", count=1)[0]
-        mapno = np.fromfile(f, dtype="a16", count=1)[0]
+        _ = np.fromfile(f, dtype="a48", count=1)[0]  # label
+        _ = np.fromfile(f, dtype="a16", count=1)[0]  # mapno
 
-        proj = np.fromfile(f, dtype=np.int32, count=1)[0]
-        unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
-        unity = np.fromfile(f, dtype=np.int32, count=1)[0]
-        unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
-        nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
-        izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
-        izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
-        izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
-        izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # proj
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # unitx
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # unity
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # unitz
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # nvpts
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # izmin
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # izmax
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # izmed
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # izmea
 
-        zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
+        _ = np.fromfile(f, dtype=np.float64, count=1)[0]  # zvar
 
-        prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
+        _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # prcs
 
-        temspc = np.fromfile(f, dtype="a324", count=1)[0]
+        _ = np.fromfile(f, dtype="a324", count=1)[0]  # temspc
 
         if es == 2:
             nval = -32767
@@ -1916,7 +1924,8 @@ def export_raster(
                 #     out.update_tags(i+1,
                 #                     WavelengthMax=str(rmeta['WavelengthMax']))
 
-                if datai.datetime != datetime.datetime(1900, 1, 1):
+                local_tz = datetime.datetime.now().astimezone().tzinfo
+                if datai.datetime != datetime.datetime(1900, 1, 1, tzinfo=local_tz):
                     adatetxt = datai.datetime.strftime("%Y-%m-%d %H:%M:%S")
                     out.update_tags(i + 1, AcquisitionDate=adatetxt)
 
@@ -2078,12 +2087,12 @@ def _filespeedtest():
     print("Starting")
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
-    ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
-    ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
+    # ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
+    # ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
+    # ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 
-    dataset = get_raster(ifile)
+    _dataset = get_raster(ifile)
 
     # getinfo('Start')
 
@@ -2151,8 +2160,6 @@ def _testfn():
 
     smod2 = np.moveaxis(smod, [0, 1, 2], [1, 0, 2]).flatten()
     np.savetxt(ofile[:-3] + "mod", smod2)
-
-    pass
 
 
 def _testfn2():

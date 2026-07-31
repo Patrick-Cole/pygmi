@@ -117,7 +117,7 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
     out_xr.attrs["granule_id"] = granule_id
 
     if band := product_band_map.get(
-        next((k for k in product_band_map.keys() if k in granule_id), "unknown"), None
+        next((k for k in product_band_map if k in granule_id), "unknown"), None
     ):
         if "minerals" in list(out_xr.dims):
             out_xr = out_xr.swap_dims({"minerals": band})

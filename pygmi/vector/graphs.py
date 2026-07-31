@@ -31,9 +31,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import rcParams
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import BoundaryNorm
-from matplotlib.figure import Figure
 from matplotlib.ticker import StrMethodFormatter
 from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
@@ -414,10 +412,9 @@ class MyMplCanvas(CanvasModule):
             ang = np.arctan2((y[1:] - y[:-1]), (x[1:] - x[:-1]))
             ang = np.append(ang, ang[-1])
 
-            if np.ptp(x) > np.ptp(y) and (x[-1] - x[0]) < 0:
-                ang += np.pi
-
-            elif np.ptp(y) > np.ptp(x) and (y[-1] - y[0]) < 0:
+            if (np.ptp(x) > np.ptp(y) and (x[-1] - x[0]) < 0) or (
+                np.ptp(y) > np.ptp(x) and (y[-1] - y[0]) < 0
+            ):
                 ang += np.pi
 
             py = spcing * scale * (z - med) / std / 100.0
@@ -513,8 +510,8 @@ class MyMplCanvas(CanvasModule):
                 r2 = int((x2 - m3) // s3)
                 r2 = min(3, r2)
 
-                bnds = [m3 + i * s3 for i in range(0, r2 + 1)]
-                lbls = [f"{i} to {i + 1}" for i in range(0, r2)]
+                bnds = [m3 + i * s3 for i in range(r2 + 1)]
+                lbls = [f"{i} to {i + 1}" for i in range(r2)]
                 bnds = [x1 - eps] + bnds + [x2]
                 lbls[0] = "mean" + lbls[0][1:]
                 lbls = ["min to mean"] + lbls + [f"{r2} to max"]

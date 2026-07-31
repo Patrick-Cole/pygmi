@@ -6,8 +6,6 @@ set_extent as well as better integration into PyGMI. It is changed to read data
 directly from disk.
 """
 
-from __future__ import division, print_function
-
 import matplotlib.colors as mcolors
 import matplotlib.image as mi
 import numpy as np

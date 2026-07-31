@@ -24,14 +24,14 @@
 # -----------------------------------------------------------------------------
 """Structure complexity routines."""
 
-from PySide6 import QtWidgets, QtCore, QtGui
-import numpy as np
 import geopandas as gpd
-from scipy.signal import correlate
-import shapely
-from shapely.geometry import LineString
-from rasterio.features import rasterize
 import numexpr as ne
+import numpy as np
+import shapely
+from PySide6 import QtCore, QtGui, QtWidgets
+from rasterio.features import rasterize
+from scipy.signal import correlate
+from shapely.geometry import LineString
 
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, bounds_to_transform
@@ -51,17 +51,16 @@ class StructComp(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.le_dxy = QtWidgets.QLineEdit('500.0')
-        self.le_wsize = QtWidgets.QLineEdit('3')
-        self.le_std = QtWidgets.QLineEdit('500.0')
-        self.le_extend = QtWidgets.QLineEdit('500.0')
+        self.le_dxy = QtWidgets.QLineEdit("500.0")
+        self.le_wsize = QtWidgets.QLineEdit("3")
+        self.le_std = QtWidgets.QLineEdit("500.0")
+        self.le_extend = QtWidgets.QLineEdit("500.0")
 
         self.cmb_method = QtWidgets.QComboBox()
 
-        self.lbl_wsize = QtWidgets.QLabel('Window Size:')
-        self.lbl_std = QtWidgets.QLabel('Intersection Density Std Deviation:')
-        self.lbl_extend = QtWidgets.QLabel('Intersection Density Line '
-                                           'Extension:')
+        self.lbl_wsize = QtWidgets.QLabel("Window Size:")
+        self.lbl_std = QtWidgets.QLabel("Intersection Density Std Deviation:")
+        self.lbl_extend = QtWidgets.QLabel("Intersection Density Line Extension:")
 
         self.setupui()
 
@@ -76,9 +75,9 @@ class StructComp(BasicModule):
         """
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = 'vector.dm.structcomp'
-        lbl_dxy = QtWidgets.QLabel('Cell Size:')
-        lbl_method = QtWidgets.QLabel('Method:')
+        self.buttonbox.htmlfile = "vector.dm.structcomp"
+        lbl_dxy = QtWidgets.QLabel("Cell Size:")
+        lbl_method = QtWidgets.QLabel("Method:")
 
         val = QtGui.QDoubleValidator(1e-300, np.inf, -1)
         val.setNotation(QtGui.QDoubleValidator.Notation.ScientificNotation)
@@ -89,12 +88,16 @@ class StructComp(BasicModule):
         self.le_extend.setValidator(val)
         self.le_wsize.setValidator(QtGui.QIntValidator(3, 2147483647))
 
-        self.cmb_method.addItems(['Feature Intersection Density',
-                                  'Feature Orientation Diversity',
-                                  'Circular Variance and Dispersion',
-                                  'Feature Fractal Dimension'])
+        self.cmb_method.addItems(
+            [
+                "Feature Intersection Density",
+                "Feature Orientation Diversity",
+                "Circular Variance and Dispersion",
+                "Feature Fractal Dimension",
+            ]
+        )
 
-        self.setWindowTitle('Structure Complexity')
+        self.setWindowTitle("Structure Complexity")
 
         gl_main.addWidget(lbl_method, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_method, 0, 1, 1, 1)
@@ -121,7 +124,7 @@ class StructComp(BasicModule):
         """
         method = self.cmb_method.currentText()
 
-        if method == 'Feature Intersection Density':
+        if method == "Feature Intersection Density":
             self.lbl_std.show()
             self.le_std.show()
             self.lbl_extend.show()
@@ -152,19 +155,19 @@ class StructComp(BasicModule):
 
         """
         tmp = []
-        if 'Vector' not in self.indata:
-            self.showlog('No Point Data')
+        if "Vector" not in self.indata:
+            self.showlog("No Point Data")
             return False
 
-        data = self.indata['Vector'][0]
+        data = self.indata["Vector"][0]
 
         if data.crs.is_geographic:
-            self.le_dxy.setText('0.005')
-            self.le_std.setText('0.005')
-            self.le_extend.setText('0.005')
+            self.le_dxy.setText("0.005")
+            self.le_std.setText("0.005")
+            self.le_extend.setText("0.005")
 
-        if data.geom_type.iloc[0] != 'LineString':
-            self.showlog('No Line Data')
+        if data.geom_type.iloc[0] != "LineString":
+            self.showlog("No Line Data")
             return False
 
         self.method_change()
@@ -180,7 +183,7 @@ class StructComp(BasicModule):
         wsize = int(self.le_wsize.text())
 
         if (wsize % 2) == 0:
-            self.showlog('Only odd windows sizes allowed')
+            self.showlog("Only odd windows sizes allowed")
             return False
 
         self.acceptall()
@@ -214,39 +217,38 @@ class StructComp(BasicModule):
 
         """
         method = self.cmb_method.currentText()
-        gdf = self.indata['Vector'][0]
+        gdf = self.indata["Vector"][0]
 
         dxy = float(self.le_dxy.text())
         wsize = int(self.le_wsize.text())
-        var = float(self.le_std.text())**2
+        var = float(self.le_std.text()) ** 2
         extend = float(self.le_extend.text())
 
         newdat = []
         geom = None
 
-        if method == 'Feature Intersection Density':
-            geom, dat = feature_intersection_density(gdf, dxy, var, extend,
-                                                     piter=self.piter)
+        if method == "Feature Intersection Density":
+            geom, dat = feature_intersection_density(
+                gdf, dxy, var, extend, piter=self.piter
+            )
             newdat.append(dat)
 
-        if method == 'Feature Orientation Diversity':
-            dat = feature_orientation_diversity(gdf, dxy, wsize,
-                                                piter=self.piter)
+        if method == "Feature Orientation Diversity":
+            dat = feature_orientation_diversity(gdf, dxy, wsize, piter=self.piter)
             newdat.append(dat)
 
-        if method == 'Circular Variance and Dispersion':
-            Vdat, Ddat = feature_circular_stats(gdf, dxy, wsize,
-                                                piter=self.piter)
+        if method == "Circular Variance and Dispersion":
+            Vdat, Ddat = feature_circular_stats(gdf, dxy, wsize, piter=self.piter)
             newdat.append(Vdat)
             newdat.append(Ddat)
 
-        if method == 'Feature Fractal Dimension':
+        if method == "Feature Fractal Dimension":
             dat = feature_fracdim(gdf, dxy, wsize, piter=self.piter)
             newdat.append(dat)
 
-        self.outdata['Raster'] = newdat
+        self.outdata["Raster"] = newdat
         if geom is not None:
-            self.outdata['Vector'] = [geom]
+            self.outdata["Vector"] = [geom]
 
 
 def extendlines(gdf, length=500, piter=iter):
@@ -286,7 +288,7 @@ def extendlines(gdf, length=500, piter=iter):
         dx = length * np.cos(theta)
         line[-1] = (p2[0] + dx, p2[1] + dy)
 
-        gdf2.loc[i, 'geometry'] = shapely.LineString(line)
+        gdf2.loc[i, "geometry"] = shapely.LineString(line)
 
     return gdf2
 
@@ -324,11 +326,11 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     geom1 = gdf.geometry
 
     for i, line1 in enumerate(piter(geom1)):
-        geom2 = gdf.loc[i + 1:, 'geometry']
+        geom2 = gdf.loc[i + 1 :, "geometry"]
         pnts1 = geom2.intersection(line1)
         pnts1 = pnts1[~pnts1.is_empty]
         for pnt in pnts1:
-            if 'Point' in pnt.geom_type:
+            if "Point" in pnt.geom_type:
                 pnts.append(pnt)
 
     gdf2 = gpd.GeoDataFrame(geometry=pnts)
@@ -342,27 +344,28 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     H = np.zeros((ycoords.size, xcoords.size))
 
     for pnt in piter(geom2):
-        xdiff = np.exp(-(xcoords - pnt.x)**2 / (2 * var))
-        ydiff = np.exp(-(ycoords - pnt.y)**2 / (2 * var))
+        xdiff = np.exp(-((xcoords - pnt.x) ** 2) / (2 * var))
+        ydiff = np.exp(-((ycoords - pnt.y) ** 2) / (2 * var))
         x1, y1 = np.meshgrid(xdiff, ydiff, copy=False)
-        H = ne.evaluate('H+x1*y1')
+        local = {"x1": x1, "y1": y1}
+        H = ne.evaluate("H+x1*y1", local_dict=local)
 
     G = 1 / np.sqrt(2 * np.pi * var)
     H = G * H
 
     dat = Data()
-    dat.dataid = 'Feature Intersection Density'
+    dat.dataid = "Feature Intersection Density"
     dat.data = np.ma.array(H[::-1])
-    dat.data[np.isclose(dat.data, 0.)] = 1e+20
-    dat.data = np.ma.masked_equal(dat.data, 1e+20)
+    dat.data[np.isclose(dat.data, 0.0)] = 1e20
+    dat.data = np.ma.masked_equal(dat.data, 1e20)
     xmin = xcoords[0] - dxy / 2
     ymax = ycoords[-1] + dxy / 2
     dat.set_transform(dxy, xmin, dxy, ymax)
     dat.crs = gdf.crs
-    dat.nodata = 1e+20
+    dat.nodata = 1e20
 
     geom2 = gpd.GeoDataFrame(geometry=geom2)
-    geom2['Intersection'] = geom2.index + 1
+    geom2["Intersection"] = geom2.index + 1
 
     return geom2, dat
 
@@ -398,30 +401,29 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
         lines = gdf3.loc[gdf3.angle == i]
         if lines.size == 0:
             continue
-        dat = rasterize(lines.geometry,
-                        out_shape=oshape,
-                        transform=transform,
-                        all_touched=True)
+        dat = rasterize(
+            lines.geometry, out_shape=oshape, transform=transform, all_touched=True
+        )
         datall[i] = dat
         linepix += dat.sum()
 
     # Filter
     fmat = np.ones((wsize, wsize))
     E = np.zeros(oshape)
-    for i in datall:
-        pi = correlate(datall[i], fmat, 'same', 'direct')
+    for i, datalli in datall.items():
+        pi = correlate(datalli, fmat, "same", "direct")
         pi = 100 * pi / linepix
         E += pi * np.log(pi, where=pi != 0)
     E = -E
 
     dat = Data()
-    dat.dataid = 'Feature Orientation Diversity'
+    dat.dataid = "Feature Orientation Diversity"
     dat.data = np.ma.array(E)
-    dat.data[np.isclose(dat.data, 0.)] = 1e+20
-    dat.data = np.ma.masked_equal(dat.data, 1e+20)
+    dat.data[np.isclose(dat.data, 0.0)] = 1e20
+    dat.data = np.ma.masked_equal(dat.data, 1e20)
     dat.crs = gdf.crs
     dat.set_transform(transform=transform)
-    dat.nodata = 1e+20
+    dat.nodata = 1e20
 
     return dat
 
@@ -456,10 +458,9 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
         lines = gdf3.loc[gdf3.angle == i]
         if lines.size == 0:
             continue
-        dat = rasterize(lines.geometry,
-                        out_shape=oshape,
-                        transform=transform,
-                        all_touched=True)
+        dat = rasterize(
+            lines.geometry, out_shape=oshape, transform=transform, all_touched=True
+        )
         datall[i] = dat
 
     # Filter
@@ -469,8 +470,8 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     c2 = np.zeros(oshape)
     s2 = np.zeros(oshape)
     numall = np.zeros(oshape)
-    for ai in datall:
-        num = correlate(datall[ai], fmat, 'same', 'direct')
+    for ai, datallai in datall.items():
+        num = correlate(datallai, fmat, "same", "direct")
         c1 += num * np.cos(np.deg2rad(ai))
         s1 += num * np.sin(np.deg2rad(ai))
 
@@ -482,7 +483,7 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     numall[numall == 0] = 1
     r1 = np.sqrt(c1**2 + s1**2) / numall
     v1 = 1 - r1
-    v1[v1 == 1] = 0.
+    v1[v1 == 1] = 0.0
     c2 = c2 / numall
     s2 = s2 / numall
 
@@ -491,22 +492,22 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     d1 = (1 - t2) / (2 * r1**2)
 
     vdat = Data()
-    vdat.dataid = 'Circular Variance'
+    vdat.dataid = "Circular Variance"
     vdat.data = np.ma.array(v1)
-    vdat.data[np.isclose(vdat.data, 0.)] = 1e+20
-    vdat.data = np.ma.masked_equal(vdat.data, 1e+20)
+    vdat.data[np.isclose(vdat.data, 0.0)] = 1e20
+    vdat.data = np.ma.masked_equal(vdat.data, 1e20)
     vdat.crs = gdf.crs
     vdat.set_transform(transform=transform)
-    vdat.nodata = 1e+20
+    vdat.nodata = 1e20
 
     ddat = Data()
-    ddat.dataid = 'Circular Dispersion'
+    ddat.dataid = "Circular Dispersion"
     ddat.data = np.ma.masked_invalid(d1)
-    ddat.data[np.isclose(ddat.data, 0.)] = 1e+20
-    ddat.data = np.ma.masked_equal(ddat.data, 1e+20)
+    ddat.data[np.isclose(ddat.data, 0.0)] = 1e20
+    ddat.data = np.ma.masked_equal(ddat.data, 1e20)
     ddat.crs = gdf.crs
     ddat.set_transform(transform=transform)
-    ddat.nodata = 1e+20
+    ddat.nodata = 1e20
 
     return vdat, ddat
 
@@ -534,10 +535,9 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
     """
     transform, oshape = bounds_to_transform(gdf.total_bounds, dxy)
 
-    dat = rasterize(gdf.geometry,
-                    out_shape=oshape,
-                    transform=transform,
-                    all_touched=True)
+    dat = rasterize(
+        gdf.geometry, out_shape=oshape, transform=transform, all_touched=True
+    )
 
     d1 = np.zeros(oshape) + np.nan
     w = wsize // 2
@@ -545,23 +545,24 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
 
     for i in piter(range(w, rows - w)):
         for j in range(w, cols - w):
-            wdat = dat[i - w:i + w + 1, j - w:j + w + 1]
+            wdat = dat[i - w : i + w + 1, j - w : j + w + 1]
             d1[i, j] = fractal_dimension(wdat)
 
     fdat = Data()
-    fdat.dataid = 'Feature Fractal Dimension'
+    fdat.dataid = "Feature Fractal Dimension"
     fdat.data = np.ma.masked_invalid(d1)
-    fdat.data[np.isclose(fdat.data, 0.)] = 1e+20
-    fdat.data = np.ma.masked_equal(fdat.data, 1e+20)
+    fdat.data[np.isclose(fdat.data, 0.0)] = 1e20
+    fdat.data = np.ma.masked_equal(fdat.data, 1e20)
     fdat.crs = gdf.crs
     fdat.set_transform(transform=transform)
-    fdat.nodata = 1e+20
+    fdat.nodata = 1e20
 
     return fdat
 
 
-def fractal_dimension(warray, max_box_size=None, min_box_size=1,
-                      n_samples=20, n_offsets=0):
+def fractal_dimension(
+    warray, max_box_size=None, min_box_size=1, n_samples=20, n_offsets=0
+):
     """
     Calculate the fractal dimension of a 3D numpy array.
 
@@ -597,8 +598,7 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         # default max size is the largest power of 2 that fits in the
         # smallest dimension of the array:
         max_box_size = int(np.floor(np.log2(np.min(warray.shape))))
-    scales = np.floor(np.logspace(max_box_size, min_box_size, num=n_samples,
-                                  base=2))
+    scales = np.floor(np.logspace(max_box_size, min_box_size, num=n_samples, base=2))
     # remove duplicates that could occur as a result of the floor
     scales = np.unique(scales)
 
@@ -621,8 +621,7 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
         # search over all offsets
         for offset in offsets:
             bin_edges = [np.arange(0, i, scale) for i in warray.shape]
-            bin_edges = [np.hstack([0 - offset, x + offset])
-                         for x in bin_edges]
+            bin_edges = [np.hstack([0 - offset, x + offset]) for x in bin_edges]
             H1, _ = np.histogramdd(voxels, bins=bin_edges)
 
             touched.append(np.sum(H1 > 0))
@@ -637,7 +636,7 @@ def fractal_dimension(warray, max_box_size=None, min_box_size=1,
 
     Ns = np.unique(Ns)
     Ns = Ns[Ns > 0]
-    scales = scales[:len(Ns)]
+    scales = scales[: len(Ns)]
 
     if Ns.size == 1:
         return np.nan
@@ -686,7 +685,7 @@ def segments_to_angles(gdf, piter=iter):
     for row in piter(gdf.geometry):
         segments += linesplit(row)
     gdf2 = gpd.GeoDataFrame(geometry=segments)
-    gdf2['angle'] = np.nan
+    gdf2["angle"] = np.nan
 
     for i, row in enumerate(piter(gdf2.geometry)):
         line = np.array(row.coords)
@@ -701,7 +700,7 @@ def segments_to_angles(gdf, piter=iter):
             theta += 180
         theta = int(theta)
 
-        gdf2.loc[i, 'angle'] = theta
+        gdf2.loc[i, "angle"] = theta
 
     gdf2 = gdf2.dropna()
 
@@ -712,13 +711,14 @@ def _testfn():
     """Calculate structural complexity."""
 
     import sys
+
     from pygmi.vector.iodefs import ImportVector
 
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     IO = ImportVector()
     IO.ifile = sfile
@@ -734,8 +734,8 @@ def _testfn():
 
     import matplotlib.pyplot as plt
 
-    gdf = IO.outdata['Vector'][0]
-    dat = SC.outdata['Raster'][0]
+    gdf = IO.outdata["Vector"][0]
+    dat = SC.outdata["Raster"][0]
 
     plt.figure(dpi=150)
     ax = plt.gca()

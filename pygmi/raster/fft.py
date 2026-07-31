@@ -51,7 +51,7 @@ def fftprep(data):
     datamedian = np.ma.median(data.data)
 
     nr, nc = data.data.shape
-    xmin, xmax, ymin, ymax = data.extent
+    xmin, _xmax, _ymin, ymax = data.extent
 
     nmax = np.max([nr, nc])
     npts = int(2 ** nextpow2(nmax))

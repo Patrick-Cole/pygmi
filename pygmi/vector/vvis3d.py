@@ -26,11 +26,10 @@
 
 import os
 import sys
+
 import numpy as np
-
-from PySide6 import QtWidgets
-
 import pyvista as pv
+from PySide6 import QtWidgets
 from pyvistaqt import QtInteractor
 
 from pygmi.misc import ContextModule
@@ -53,17 +52,17 @@ class Mod3dDisplay(ContextModule):
         self.lmod1 = None
         self.outdata = self.indata
 
-        if hasattr(parent, 'showtext'):
+        if hasattr(parent, "showtext"):
             self.showtext = parent.showtext
         else:
             self.showtext = sys.stdout
 
-        self.setWindowTitle('3D Voxel Model Display')
+        self.setWindowTitle("3D Voxel Model Display")
 
         # Back to normal stuff
-        self.pb_save = QtWidgets.QPushButton('Save to Image File (JPG or PNG)')
+        self.pb_save = QtWidgets.QPushButton("Save to Image File (JPG or PNG)")
         self.plotter = QtInteractor(self)
-        self.cb_volume = QtWidgets.QCheckBox('Slice in Opaque Volume')
+        self.cb_volume = QtWidgets.QCheckBox("Slice in Opaque Volume")
 
         self.setupui()
 
@@ -77,17 +76,16 @@ class Mod3dDisplay(ContextModule):
 
         """
         self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = 'vector.cm.displayvoxel'
+        self.buttonbox.htmlfile = "vector.cm.displayvoxel"
         hbl = QtWidgets.QHBoxLayout(self)
         vbl_cmodel = QtWidgets.QVBoxLayout()
         vbl = QtWidgets.QVBoxLayout()
 
-        vbl_cmodel.setSizeConstraint(
-            QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
+        vbl_cmodel.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
 
         sizepolicy_pb = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Maximum,
-            QtWidgets.QSizePolicy.Policy.Maximum)
+            QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum
+        )
 
         self.pb_save.setSizePolicy(sizepolicy_pb)
 
@@ -128,8 +126,9 @@ class Mod3dDisplay(ContextModule):
 
         """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
-        if filename == '':
+            self.parent, "Save File", ".", "JPG (*.jpg);;PNG (*.png)"
+        )
+        if filename == "":
             return
         os.chdir(os.path.dirname(filename))
 
@@ -160,9 +159,8 @@ class Mod3dDisplay(ContextModule):
             True if successful, False otherwise.
 
         """
-        if 'Voxel' not in self.indata:
-            self.showlog('No 3D voxel model. You may need to execute that '
-                         'module first')
+        if "Voxel" not in self.indata:
+            self.showlog("No 3D voxel model. You may need to execute that module first")
             return False
 
         self.show()
@@ -181,7 +179,7 @@ class Mod3dDisplay(ContextModule):
         """
         QtWidgets.QApplication.processEvents()
 
-        vdat = self.indata['Voxel'][0]
+        vdat = self.indata["Voxel"][0]
 
         # Update 3D model
         self.spacing = vdat.spacing
@@ -202,20 +200,19 @@ class Mod3dDisplay(ContextModule):
         grid.spacing = vdat.spacing  # These are the cell sizes along each axis
 
         # Add the data values to the cell data
-        grid.cell_data['values'] = values.flatten(
-            order='F')  # Flatten the array
+        grid.cell_data["values"] = values.flatten(order="F")  # Flatten the array
 
         # Get rid of nan values
         grid = grid.threshold()
 
         # Now plot the grid
         # grid.plot(show_edges=True)
-        sargs = dict(
-            title="",
-            fmt="%.2f",
-            interactive=True,
-            vertical=False,
-        )
+        sargs = {
+            "title": "",
+            "fmt": "%.2f",
+            "interactive": True,
+            "vertical": False,
+        }
         self.plotter.clear()
 
         if self.cb_volume.isChecked():
@@ -224,7 +221,8 @@ class Mod3dDisplay(ContextModule):
             self.plotter.add_mesh_slice(grid, scalar_bar_args=sargs)
         else:
             self.plotter.add_mesh_clip_plane(
-                grid, normal=[-1, 0, 0], scalar_bar_args=sargs)
+                grid, normal=[-1, 0, 0], scalar_bar_args=sargs
+            )
 
         self.plotter.add_axes()
         # self.plotter.show_grid()
@@ -238,7 +236,7 @@ def _testfn():
     from pygmi.vector.iodefs import import_ubc
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\UBC_Files\voxel.msh"
 
@@ -248,10 +246,10 @@ def _testfn():
     # IM.ifile = ifile
     # IM.settings(True)
 
-    print('Model loaded')
+    print("Model loaded")
 
     M3D = Mod3dDisplay()
-    M3D.indata['Voxel'] = [vdat]
+    M3D.indata["Voxel"] = [vdat]
     M3D.data_init()
     M3D.run()
     M3D.exec()

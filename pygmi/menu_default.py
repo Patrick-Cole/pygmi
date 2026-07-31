@@ -30,7 +30,7 @@ It also includes the about box.
 
 import os
 import webbrowser
-from datetime import date
+from datetime import datetime
 
 from PySide6 import QtGui, QtWidgets
 
@@ -101,17 +101,17 @@ class HelpMenu:
 
     def about(self):
         """About box for PyGMI."""
-        year = str(date.today().year)
+        local_tz = datetime.now().astimezone().tzinfo
+        year = datetime.now(local_tz).year
 
         msg = (
             "<p>Name: PyGMI - Python Geoscience Modelling and "
             "Interpretation</p>"
-            "Version: " + self.parent.__version__ + "<br>"
+            f"Version: {self.parent.__version__}<br>"
             "Author: Patrick Cole<br>"
             "E-Mail: pcole@geoscience.org.za<br>"
-            "Copyright: \xa9 2013-"
-            + year
-            + ' <a href="https://www.geoscience.org.za/">'
+            f"Copyright: \xa9 2013-{year}"
+            ' <a href="https://www.geoscience.org.za/">'
             "Council for Geoscience</a><br>"
             'Licence: <a href="http://www.gnu.org/licenses/gpl-3.0.html">'
             "GPL-3.0</a></p>"

@@ -24,13 +24,11 @@
 # -----------------------------------------------------------------------------
 """A collection of functions for maps."""
 
-# import contextily as cx
 import geopandas as gpd
-import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 import pyproj
-from matplotlib import rcParams
+from matplotlib import patches, rcParams
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import FixedFormatter, FixedLocator, FuncFormatter, MaxNLocator

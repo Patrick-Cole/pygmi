@@ -593,20 +593,19 @@ def crisp_means(
 
         showlog(f"Iteration: {i} Threshold: {term_thresh} Current: {obj_fcn_dif:.2e}")
         # if no termination threshold provided, ignore this and do all iterations
-        if term_thresh > 0:
+        if term_thresh > 0 and (obj_fcn_dif < term_thresh or obj_fcn[i] > obj_fcn_prev):
             # if the improvement between the last two iterations was less
             # than a defined threshold in percent
-            if obj_fcn_dif < term_thresh or obj_fcn[i] > obj_fcn_prev:
-                # go back to the results of the previous iteration
-                idx = idx_prev
-                cent = cent_prev
-                edist = dist_prev
-                if i == 0:
-                    obj_fcn = obj_fcn_prev
-                else:
-                    # changed from i-1 to i for w-means
-                    obj_fcn = np.delete(obj_fcn, np.s_[i::])
-                break  # and stop the clustering right now
+            # go back to the results of the previous iteration
+            idx = idx_prev
+            cent = cent_prev
+            edist = dist_prev
+            if i == 0:
+                obj_fcn = obj_fcn_prev
+            else:
+                # changed from i-1 to i for w-means
+                obj_fcn = np.delete(obj_fcn, np.s_[i::])
+            break  # and stop the clustering right now
         obj_fcn_prev = obj_fcn[i]
 
     return idx, cent, obj_fcn

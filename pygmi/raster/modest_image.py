@@ -7,8 +7,6 @@ set_extent as well as better integration into PyGMI
 pcole, 2021  - Bug fix to allow for correct zooming if origin is set to 'upper'
 """
 
-from __future__ import division, print_function
-
 import matplotlib.colors as mcolors
 import matplotlib.image as mi
 import numpy as np
@@ -463,10 +461,8 @@ class ModestImage(mi.AxesImage):
         vmin = vmean - mult * vstd
         vmax = vmean + mult * vstd
 
-        if vmin < self._A.min():
-            vmin = self._A.min()
-        if vmax > self._A.max():
-            vmax = self._A.max()
+        vmin = max(vmin, self._A.min())
+        vmax = min(vmax, self._A.max())
 
         self.set_clim(vmin, vmax)
         self.set_clim(vmin, vmax)
@@ -643,7 +639,6 @@ def _testfn():
     ax.grid(True)
 
     plt.subplot(122)
-    numrows, numcols = cdat.shape
 
     im = plt.imshow(cdat, extent=extent)
 

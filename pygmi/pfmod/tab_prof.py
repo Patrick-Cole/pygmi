@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """Profile display routines for 3D modelling."""
 
-import copy
 import os
 import random
 
@@ -544,8 +543,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                         lithfin[j].append(lith[i])
 
             lithlist = []
-            for i in lithfin:
-                lithfin[i] = list(set(lithfin[i]))
+            for i, value in lithfin.items():
+                lithfin[i] = list(set(value))
                 lithfin[i].sort()
                 lithfin[i] = "".join(i + "/" for i in lithfin[i])[:-1]
                 lithlist.append(lithfin[i])
@@ -816,10 +815,10 @@ class ProfileDisplay(QtWidgets.QWidget):
             lstart, lend = lend, lstart
 
         viewlim = self.mmc.laxes.viewLim
-        x0 = int(round((viewlim.x0 - self.lmod1.xrange[0]) / self.lmod1.dxy))
-        x1 = int(round((viewlim.x1 - self.lmod1.xrange[0]) / self.lmod1.dxy))
-        y0 = int(round((viewlim.y0 - self.lmod1.yrange[0]) / self.lmod1.dxy))
-        y1 = int(round((viewlim.y1 - self.lmod1.yrange[0]) / self.lmod1.dxy))
+        x0 = round((viewlim.x0 - self.lmod1.xrange[0]) / self.lmod1.dxy)
+        x1 = round((viewlim.x1 - self.lmod1.xrange[0]) / self.lmod1.dxy)
+        y0 = round((viewlim.y0 - self.lmod1.yrange[0]) / self.lmod1.dxy)
+        y1 = round((viewlim.y1 - self.lmod1.yrange[0]) / self.lmod1.dxy)
         if x0 == 0:
             x0 = None
         if y0 == 0:
@@ -892,10 +891,10 @@ class ProfileDisplay(QtWidgets.QWidget):
                         udatad[ref] = []
                     udatad[ref].append(ltmp[zz, self.ipdx1 + ixy])
 
-            for i2 in udatad:
-                if 0 in udatad[i2]:
-                    zcnt = udatad[i2].count(0)
-                    if (zcnt / len(udatad[i2])) <= 0.8:
+            for i2, val2 in udatad.items():
+                if 0 in val2:
+                    zcnt = val2.count(0)
+                    if (zcnt / len(val2)) <= 0.8:
                         udatad[i2] = [j for j in udatad[i2] if j != 0]
 
                 udatadmode = max(set(udatad[i2]), key=udatad[i2].count)  # mode
@@ -1499,9 +1498,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                     min(extent[0], data2.data.min()),
                     max(extent[1], data2.data.max()),
                 ]
-            elif self.pscale_type == "profmax":
-                if tmpprof2.size > 0:
-                    extent = [tmpprof2.min(), tmpprof2.max()]
+            elif self.pscale_type == "profmax" and tmpprof2.size > 0:
+                extent = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
             self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
@@ -1871,10 +1869,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ystart = max(0, ydata - hwidth)
         yend = min(mdata.shape[0], ydata + hwidth)
 
-        xstart = int(round(xstart))
-        xend = int(round(xend))
-        ystart = int(round(ystart))
-        yend = int(round(yend))
+        xstart = round(xstart)
+        xend = round(xend)
+        ystart = round(ystart)
+        yend = round(yend)
 
         if xstart < xend and ystart < yend:
             mtmp = mdata[ystart:yend, xstart:xend]

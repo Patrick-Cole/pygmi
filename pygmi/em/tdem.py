@@ -731,10 +731,7 @@ class TDEM1D(BasicModule):
 
         tmp = self.exec()
 
-        if tmp != 1:
-            return False
-
-        return True
+        return tmp == 1
 
     def saveproj(self):
         """

@@ -258,7 +258,8 @@ class Data:
         self.filename = ""
         self.transform = None
         self.crs = None
-        self.datetime = datetime.datetime(1900, 1, 1)
+        local_tz = datetime.datetime.now().astimezone().tzinfo
+        self.datetime = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
         self.geometry = None
 
         self.set_transform(1, 0, 1, 0)
@@ -318,10 +319,7 @@ class Data:
         xmin, ymin, xmax, ymax = self.bounds
         xmin1, ymin1, xmax1, ymax1 = bounds
 
-        if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
-            return False
-
-        return True
+        return not (xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin)
 
     def meta_from_rasterio(self, dataset, bounds=None):
         """
@@ -614,7 +612,8 @@ class RasterMeta:
         self.tnames = []
         self.banddata = []
         self.to_sutm = False
-        self.datetime = datetime.datetime(1900, 1, 1)
+        local_tz = datetime.datetime.now().astimezone().tzinfo
+        self.datetime = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
         self.nodata = None
 
     def fromData(self, dat):

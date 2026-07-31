@@ -1815,15 +1815,5 @@ def _testfn_vol():
     p.show()
 
 
-def _testfn():
-    """Test."""
-
-    lat = -29.5
-    lon = 28.7
-    sheet = lltomap(lat, lon)
-
-    pass
-
-
 if __name__ == "__main__":
     _testfn()

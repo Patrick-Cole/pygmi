@@ -943,8 +943,7 @@ class GetProf(BasicModule):
         dxy = min(data[0].xdim, data[0].ydim)
         ogdf2 = None
 
-        icnt = 0
-        for line in gdf.geometry:
+        for icnt, line in enumerate(gdf.geometry):
             line2 = redistribute_vertices(line, dxy)
             x, y = line2.coords.xy
             xy = np.transpose([x, y])
@@ -966,8 +965,7 @@ class GetProf(BasicModule):
 
                 ogdf[idata.dataid] = z
 
-            icnt += 1
-            ogdf["line"] = str(icnt)
+            ogdf["line"] = str(icnt + 1)
             ogdf.crs = icrs
 
             if ogdf2 is None:
@@ -1841,8 +1839,7 @@ def mosaic(
 
     indata = []
     if "Raster" in dat:
-        for i in dat["Raster"]:
-            indata.append(i)
+        indata = dat["Raster"].copy()
 
     if "RasterFileList" in dat:
         for i in dat["RasterFileList"]:
@@ -2123,7 +2120,7 @@ def redistribute_vertices(geom, distance):
 
     """
     if geom.geom_type == "LineString":
-        num_vert = int(round(geom.length / distance))
+        num_vert = round(geom.length / distance)
         if num_vert == 0:
             num_vert = 1
         return LineString(

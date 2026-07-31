@@ -118,9 +118,11 @@ class MNF(BasicModule):
             self.showlog("No Satellite Data")
             return False
 
-        if "RasterFileList" in self.indata:
-            if len(self.indata["RasterFileList"][0].bands) > 5:
-                self.sb_comps.setValue(5)
+        if (
+            "RasterFileList" in self.indata
+            and len(self.indata["RasterFileList"][0].bands) > 5
+        ):
+            self.sb_comps.setValue(5)
 
         if "Raster" in self.indata:
             indata = self.indata["Raster"]
@@ -1026,7 +1028,7 @@ def blockwise_cov(A):
     return ncov
 
 
-def blockwise_dot(A, B, max_elements=int(2**27)):
+def blockwise_dot(A, B, max_elements=2**27):
     """
     Compute the dot product of two matrices in a block-wise fashion.
 

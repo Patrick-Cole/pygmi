@@ -219,7 +219,6 @@ class Mod3dDisplay(ContextModule):
             self.pb_resetlight.hide()
             self.msc.hide()
             self.lbl_light.hide()
-        pass
 
     def save(self):
         """
@@ -254,7 +253,7 @@ class Mod3dDisplay(ContextModule):
         self.gnorms = self.norms
         self.gfaces = {}
 
-        if list(self.faces.values())[0].shape[1] == 4:
+        if next(iter(self.faces.values())).shape[1] == 4:  # Get first value.
             for i in self.faces:
                 self.gfaces[i] = np.append(
                     self.faces[i][:, :-1], self.faces[i][:, [0, 2, 3]]

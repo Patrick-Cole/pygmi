@@ -372,7 +372,8 @@ class SceneViewer(BasicModule):
 
             dt = dattmp[0].datetime
             if dt is None:
-                dt = datetime.datetime(1900, 1, 1)
+                local_tz = datetime.datetime.now().astimezone().tzinfo
+                dt = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
                 nodates = True
 
             dtime.append(dt)

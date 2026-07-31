@@ -310,9 +310,9 @@ def calc_mean(flist, showlog=print, piter=iter):
     cnt = {}
     M = {}
 
-    for i in meandat:
-        cnt[i] = meandat[i].copy()
-        M[i] = meandat[i].copy()
+    for i, value in meandat.items():
+        cnt[i] = value.copy()
+        M[i] = value.copy()
         cnt[i].data = np.ones_like(cnt[i].data)
         M[i].data = np.zeros_like(M[i].data)
 
@@ -323,20 +323,20 @@ def calc_mean(flist, showlog=print, piter=iter):
         for val in tmp:
             dat[val.dataid] = val
 
-        for i in meandat:
+        for i, meandati in meandat.items():
             if i not in dat:
                 showlog(f"{i} not in new dataset, skipping.")
                 continue
 
-            ltmp = [meandat[i], dat[i], cnt[i], M[i]]
+            ltmp = [meandati, dat[i], cnt[i], M[i]]
             ltmp = lstack(ltmp, showlog=showlog, piter=piter, checkdataid=False)
             meandat[i], dat[i], cnt[i], M[i] = ltmp
 
-            tmp = imean(meandat[i].data, dat[i].data, cnt[i].data, M[i].data)
+            tmp = imean(meandati.data, dat[i].data, cnt[i].data, M[i].data)
             meandat[i].data, cnt[i].data, M[i].data = tmp
 
-    for i in cnt:
-        cnt[i] = cnt[i].data
+    for i, cnti in cnt.items():
+        cnt[i] = cnti.data
         M[i] = M[i].data
 
     return meandat, cnt, M

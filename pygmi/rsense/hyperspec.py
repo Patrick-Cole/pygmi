@@ -1063,9 +1063,9 @@ def calcfeatures(
     for i in product:
         if i.count("f") > 1:
             dattmp = {}
-            for j in datcalc:
+            for j, datcalcj in datcalc.items():
                 if j in i:
-                    dattmp[j] = datcalc[j] * dmax[j]
+                    dattmp[j] = datcalcj * dmax[j]
             tmp = ne.evaluate(i, dattmp)
         else:
             tmp = ne.evaluate(i, datcalc)
@@ -1099,9 +1099,9 @@ def calcfeatures(
     for i in cryst:
         if i.count("f") > 1:
             dattmp = {}
-            for j in datcalc:
+            for j, datcalcj in datcalc.items():
                 if j in i:
-                    dattmp[j] = datcalc[j] * dmax[j]
+                    dattmp[j] = datcalcj * dmax[j]
             tmp = ne.evaluate(i, dattmp)
         else:
             tmp = ne.evaluate(i, datcalc)
@@ -1141,7 +1141,7 @@ def indexcalc(formula, dat):
     """
     out = ne.evaluate(formula, dat)
 
-    key = list(dat.keys())[0]
+    key = next(iter(dat.keys()))
 
     if np.ma.isMaskedArray(dat[key]):
         mask = dat[key].mask
@@ -1470,9 +1470,9 @@ def readsli(ifile):
         if len(tmp) > 1:
             hdr3[tmp[0].strip()] = tmp[1].strip()
 
-    for i in hdr3:
+    for i, hdr3i in hdr3.items():
         if i in ["samples", "lines", "bands", "header offset", "data type"]:
-            hdr3[i] = int(hdr3[i])
+            hdr3[i] = int(hdr3i)
             continue
         if i in ["reflectance scale factor"]:
             hdr3[i] = float(hdr3[i])
@@ -1556,7 +1556,6 @@ def _testfn():
 
     ofile = ifile[:-4] + "_features.tif"
     export_raster(ofile, datfin, compression="DEFLATE")
-    pass
 
 
 def _testfn2():

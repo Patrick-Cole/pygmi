@@ -683,7 +683,7 @@ def _test_lacoste():
     # kbase = '88888'
     bthres = 10000
 
-    out, drft = gravcor(dfg, bthres)
+    out, _ = gravcor(dfg, bthres)
 
     out.to_csv(ofile, index=False)
 

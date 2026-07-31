@@ -1450,7 +1450,6 @@ def quick_model(
     lmod.lith_list["Background"].mdec = fdec
     lmod.lith_list["Background"].hintn = hintn
 
-    j = 0
     if len(inputliths) == 1:
         clrtmp = np.array([0])
     else:
@@ -1460,21 +1459,20 @@ def quick_model(
     clrtmp = clrtmp.astype(int)
     clrtmp = clrtmp.tolist()
 
-    for i in inputliths:
-        j += 1
-        lmod.mlut[j] = clrtmp[j - 1]
+    for j, i in enumerate(inputliths):
+        lmod.mlut[j] = clrtmp[j]
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
-        lmod.lith_list[i].susc = susc[j - 1]
-        lmod.lith_list[i].density = dens[j - 1]
-        lmod.lith_list[i].lith_index = j
+        lmod.lith_list[i].susc = susc[j]
+        lmod.lith_list[i].density = dens[j]
+        lmod.lith_list[i].lith_index = j + 1
         lmod.lith_list[i].finc = finc
         lmod.lith_list[i].fdec = fdec
         lmod.lith_list[i].hintn = hintn
         if mstrength is not None:
-            lmod.lith_list[i].minc = minc[j - 1]
-            lmod.lith_list[i].mdec = mdec[j - 1]
-            lmod.lith_list[i].mstrength = mstrength[j - 1]
+            lmod.lith_list[i].minc = minc[j]
+            lmod.lith_list[i].mdec = mdec[j]
+            lmod.lith_list[i].mstrength = mstrength[j]
 
     return lmod
 

@@ -29,8 +29,8 @@ import os
 import numpy as np
 from PySide6 import QtWidgets
 
-import pygmi.mt.mtpyold.core.mt as mt
 from pygmi.misc import BasicModule, ContextModule
+from pygmi.mt.mtpyold.core import mt
 
 # The lines below are a temporary fix for pygmi.mt.mtpyold. Removed in future.
 np.float = float

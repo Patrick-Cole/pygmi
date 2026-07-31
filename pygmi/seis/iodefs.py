@@ -387,13 +387,13 @@ def importnordic(ifile, showlog=print):
             tmp = read_record_type[ltype](i)
         except KeyError:
             errs = [
-                "Error: Invalid line type: " + str(ltype) + " on line " + str(iii + 1),
+                f"Error: Invalid line type: {ltype} on line {iii + 1}",
                 i,
             ]
             file_errors.append(errs)
             continue
         except ValueError:
-            errs = ["Error: Problem on line: " + str(iii + 1), i]
+            errs = [f"Error: Problem on line: {iii + 1}", i]
             file_errors.append(errs)
             continue
 
@@ -407,8 +407,10 @@ def importnordic(ifile, showlog=print):
 
         if ltype == "1" and (np.isnan(tmp.latitude) or np.isnan(tmp.longitude)):
             errs = [
-                "Warning: Incomplete data (not latitude or longitude) "
-                f"on line: {iii + 1}",
+                (
+                    "Warning: Incomplete data (not latitude or longitude) "
+                    f"on line: {iii + 1}"
+                ),
                 i,
             ]
             file_errors.append(errs)
@@ -425,11 +427,13 @@ def importnordic(ifile, showlog=print):
                 event[ltype] = tmp
                 if tmp.region not in rnames:
                     errs = [
-                        "Warning: Possible spelling error on on "
-                        "line: " + str(iii + 1) + ". Make sure the region "
-                        "spelling, case and punctuation "
-                        "matches exactly the definitions "
-                        "in " + tfile,
+                        (
+                            "Warning: Possible spelling error on on "
+                            f"line: {iii + 1}. Make sure the region "
+                            "spelling, case and punctuation "
+                            "matches exactly the definitions "
+                            f"in {tfile}"
+                        ),
                         i,
                     ]
                     file_errors.append(errs)
@@ -439,59 +443,58 @@ def importnordic(ifile, showlog=print):
         # IP errors
         if ltype == "4" and tmp.quality == "I":
             if tmp.phase_id[0] == "S":
-                errs = ["Warning: IP error on line: " + str(iii + 1), i]
+                errs = ["Warning: IP error on line: {iii + 1}", i]
                 file_errors.append(errs)
             elif tmp.phase_id[0] == "P" and tmp.first_motion not in ["C", "D"]:
                 errs = [
-                    "Warning: IP error (first motion must be C or D)"
-                    " on line: " + str(iii + 1),
+                    (
+                        "Warning: IP error (first motion must be C or D)"
+                        f" on line: {iii + 1}"
+                    ),
                     i,
                 ]
                 file_errors.append(errs)
 
         # EP/S phase errors
-        if ltype == "4" and tmp.quality == "E":
-            if tmp.first_motion in ["C", "D"]:
-                errs = [
+        if ltype == "4" and tmp.quality == "E" and (tmp.first_motion in ["C", "D"]):
+            errs = [
+                (
                     r"Warning: EP/S error (first motion must be empty)"
-                    " on line: " + str(iii + 1),
-                    i,
-                ]
-                file_errors.append(errs)
+                    f" on line: {iii + 1}"
+                ),
+                i,
+            ]
+            file_errors.append(errs)
 
         # High time residuals
-        if ltype == "4" and tmp.quality == "E":
-            if tmp.travel_time_residual > 3:
-                errs = [
-                    r"Warning: Travel time residual > 3 on "
-                    "line: " + str(iii + 1),
-                    i,
-                ]
-                file_errors.append(errs)
+        if ltype == "4" and tmp.quality == "E" and tmp.travel_time_residual > 3:
+            errs = [
+                f"Warning: Travel time residual > 3 on line: {iii + 1}",
+                i,
+            ]
+            file_errors.append(errs)
 
         if ltype == "4" and len(event["4"]) > 1:
             dat1 = event["4"][-2]
             dat2 = event["4"][-1]
-            if dat1.station_name == dat2.station_name:
-                if "AML" in dat1.phase_id and dat2.phase_id[0] != " ":
-                    errs = [
-                        r"Warning: Phases may be out of order on "
-                        "line: " + str(iii + 1),
-                        i,
-                    ]
-                    file_errors.append(errs)
+            if dat1.station_name == dat2.station_name and (
+                "AML" in dat1.phase_id and dat2.phase_id[0] != " "
+            ):
+                errs = [
+                    f"Warning: Phases may be out of order on line: {iii + 1}",
+                    i,
+                ]
+                file_errors.append(errs)
 
     has_errors = any("Error" in s for s in file_errors)
 
     if file_errors:
         if has_errors is False:
             showlog("Warning: Problem with file")
-            showlog(
-                "Process will continue, but please see warnings in " + ifile + ".log"
-            )
+            showlog(f"Process will continue, but please see warnings in {ifile}.log")
         else:
             showlog("Error: Problem with file")
-            showlog("Process stopping, please see errors in " + ifile + ".log")
+            showlog(f"Process stopping, please see errors in {ifile}.log")
         with open(ifile + ".log", "w", encoding="utf-8") as fout:
             for i in file_errors:
                 fout.write(i[0] + "\n")
@@ -2739,10 +2742,9 @@ class ExportSummary(ContextModule):
                 df.loc[i, "LongitudeError"] = dat.longitude_error
                 df.loc[i, "DepthError"] = dat.depth_error
 
-            if "3" in idat:
-                if idat["3"] != "":
-                    dat = idat["3"]
-                    df.loc[i, "Description"] = dat.region
+            if "3" in idat and idat["3"] != "":
+                dat = idat["3"]
+                df.loc[i, "Description"] = dat.region
 
         if filt == "csv (*.csv)":
             df.to_csv(filename, index=False)
@@ -3073,8 +3075,8 @@ class FilterSeisan(BasicModule):
                             datd[newkey].append(tmp[j])
 
         slist = []
-        for event in datd:
-            datd[event] = [min(datd[event]), max(datd[event])]
+        for event, datdevent in datd.items():
+            datd[event] = [min(datdevent), max(datdevent)]
             if isinstance(datd[event][0], str):
                 slist.append(event)
 
@@ -3227,7 +3229,7 @@ def _testfn2():
 
     ifile = r"D:\seis\Lesotho_catalog.xlsx"
 
-    data = importxlsx(ifile)
+    _data = importxlsx(ifile)
 
 
 if __name__ == "__main__":

@@ -190,11 +190,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for i, _ in enumerate(lithd):
             lithd[i] = commentprep(lithd[i])
-            if lithdpos[i] > yfin:
-                lithdpos[i] = yfin
-            if i < len(lithd) - 1:
-                if depthfrom[i] != depthfrom[i + 1]:
-                    yfin = lithdpos[i] - dpi * (1 + lithd[i].count("\n")) * 1.4
+            lithdpos[i] = min(lithdpos[i], yfin)
+            if i < len(lithd) - 1 and (depthfrom[i] != depthfrom[i + 1]):
+                yfin = lithdpos[i] - dpi * (1 + lithd[i].count("\n")) * 1.4
 
         # Start creating plots
         ax.set_ylim((-dpp * numpages, 0.0))
@@ -205,9 +203,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for i in range(depthfrom.size):
             # This next line is to skip summary lines for a group.
-            if i + 1 < depthfrom.size - 1:
-                if depthfrom[i] == depthfrom[i + 1]:
-                    continue
+            if i + 1 < depthfrom.size - 1 and (depthfrom[i] == depthfrom[i + 1]):
+                continue
 
             patches = []
             if lith[i] in hatch:
@@ -224,7 +221,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             ax.text(
                 5.2,
                 texty,
-                "{0:.2f}".format(dfrom) + " " + lithd[i],
+                f"{dfrom:.2f} {lithd[i]}",
                 va="center",
                 size=fontsize,
             )
@@ -358,7 +355,7 @@ class PlotLog(ContextModule):
             hrow["Company"] + "\n" + hrow["Farmname"] + " (" + hrow["Farmno"] + ")"
         )
         topright = "Hole no: " + hrow["Companyno"] + "\n Sheet 1 of 1"
-        if hrow["Drill date"] is np.nan:
+        if np.isnan(hrow["Drill date"]):
             bottomleft = "Drill date: None"
         else:
             bottomleft = "Drill date: " + hrow["Drill date"].split()[0]
@@ -548,8 +545,8 @@ def gethatch(svgfile):
             pverts[style[idx]["fill"]] += verts
             pcodes[style[idx]["fill"]] += codes
 
-    for i in pverts:
-        pverts[i] = np.array(pverts[i])
+    for i, value in pverts.items():
+        pverts[i] = np.array(value)
         pverts[i] /= np.max(pverts[i])
         pverts[i] *= 4
 

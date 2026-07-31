@@ -1247,7 +1247,7 @@ def get_intrepid(ifile, showlog=print, piter=iter):
     data.pop("linetype", None)
     indx = data.pop("index", None)
 
-    i = list(data.keys())[0]
+    i = next(iter(data.keys()))
     tmp = data[i].shape
     linenumber = np.zeros(tmp, dtype=int) + nodata[linename]
 
@@ -1302,8 +1302,6 @@ def _test():
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
 
     # df = get_GXYZ(ifile)
-
-    pass
 
 
 if __name__ == "__main__":

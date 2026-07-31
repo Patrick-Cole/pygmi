@@ -2257,10 +2257,7 @@ class PlotInterp(BasicModule):
 
         tmp = self.exec()
 
-        if tmp == 0:
-            return False
-
-        return True
+        return tmp != 0
 
     def saveproj(self):
         """

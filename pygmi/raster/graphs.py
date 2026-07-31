@@ -673,7 +673,7 @@ class PlotSurface(ContextModule):
         dat = self.indata["Raster"][i]
         dat.data = dat.data.astype(float)
 
-        rows, cols = dat.data.shape
+        # rows, cols = dat.data.shape
         # dxy = dat.xdim
 
         xmin, xmax, ymin, ymax = dat.extent
@@ -706,17 +706,17 @@ class PlotSurface(ContextModule):
 
         # bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
 
-        sargs = dict(
-            title_font_size=20,
-            label_font_size=16,
-            shadow=True,
-            n_labels=5,
-            italic=True,
-            fmt="%.1f",
-            font_family="arial",
-            vertical=True,
-            title=dat.units,
-        )
+        sargs = {
+            "title_font_size": 20,
+            "label_font_size": 16,
+            "shadow": True,
+            "n_labels": 5,
+            "italic": True,
+            "fmt": "%.1f",
+            "font_family": "arial",
+            "vertical": True,
+            "title": dat.units,
+        }
 
         self.plotter.clear()
         self.plotter.add_mesh(

@@ -619,7 +619,7 @@ def _test_marinda():
         num = dat.metadata["Cluster"]["no_clusters"]
         centers[num] = dat.metadata["Cluster"]["center"]
 
-    icenter = sorted(list(centers.keys()))
+    icenter = sorted(centers.keys())
 
     # Master center is dataset with most classes..
     master = icenter[-1]

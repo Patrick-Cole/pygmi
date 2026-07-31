@@ -510,12 +510,10 @@ class PolygonInteractor(QtCore.QObject):
                 s1tmp = xys[i + 1]
                 dtmp = dist_point_to_segment(ptmp, s0tmp, s1tmp)
 
-                if dmin == -1:
+                if dmin == -1 or dtmp < dmin:
                     dmin = dtmp
                     imin = i
-                elif dtmp < dmin:
-                    dmin = dtmp
-                    imin = i
+
             i = imin
 
             if np.array_equal(self.poly.xy, np.ones((2, 2))):

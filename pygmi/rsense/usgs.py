@@ -332,8 +332,7 @@ def SPECPR(ifile):
     # Now reorganise the records
     spec = {}
     chapter = None
-    for recnum in recs:
-        rec = recs[recnum]
+    for rec in recs.values():
         if "Chapter" in rec["ititle"] and ":" in rec["ititle"]:
             chapter = rec["ititle"]
         if chapter is None:
@@ -345,8 +344,6 @@ def SPECPR(ifile):
             rec["fwhm"] = recs[rec["irespt"]]["data"]
             rec["text"] = recs[rec["itpntr"]]["itext"]
             spec[rec["ititle"]] = rec
-
-            # if 'BECK' in rec['ititle']:
 
     return spec
 

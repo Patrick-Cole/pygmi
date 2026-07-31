@@ -914,7 +914,7 @@ def _testfn2():
 
     np1 = [20.77, 25, 0]
     # np1 = [150, 87, 1]
-    xxx, yyy, xxx2, yyy2 = beachball(np1, 30, -30, 1, True)
+    xxx, yyy, _xxx2, _yyy2 = beachball(np1, 30, -30, 1, True)
 
     pvert1 = np.transpose([yyy, xxx])
     # pvert0 = np.transpose([xxx2, yyy2])

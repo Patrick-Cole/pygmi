@@ -48,6 +48,8 @@ import webbrowser
 import numpy as np
 import psutil
 from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtWidgets import QMessageBox
 
 import pygmi
 from pygmi import menu_default
@@ -665,7 +667,7 @@ class MainWidget(QtWidgets.QMainWindow):
     context_menu : dictionary
     """
 
-    def __init__(self, nocgs=True):
+    def __init__(self):
         super().__init__()
 
         ipth = os.path.dirname(menu_default.__file__) + r"/images/"
@@ -726,9 +728,6 @@ class MainWidget(QtWidgets.QMainWindow):
         ):
             menus.append(modname)
 
-        if nocgs is True and "pygmi.cgs.menu" in menus:
-            menus.pop(menus.index("pygmi.cgs.menu"))
-
         raster_menu = menus.pop(menus.index("pygmi.raster.menu"))
         vector_menu = menus.pop(menus.index("pygmi.vector.menu"))
         menus = [raster_menu, vector_menu] + menus
@@ -769,6 +768,15 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_bring_to_front.triggered.connect(self.bring_to_front)
         self.action_send_to_back.triggered.connect(self.send_to_back)
         self.action_help.triggered.connect(self.help_docs)
+
+        if "pygmi.cgs.menu" in menus:
+            from pygmi.cgs.misc import check_for_updates
+        else:
+            from pygmi.misc import check_for_updates
+
+        self.verpath = check_for_updates()
+
+        QTimer.singleShot(0, self.run_on_startup)
 
     # Start of Functions
     def setupui(self):
@@ -1370,6 +1378,16 @@ class MainWidget(QtWidgets.QMainWindow):
         self.repaint()
         QtWidgets.QApplication.processEvents()
 
+    def run_on_startup(self):
+        """Run on startup."""
+
+        if self.verpath != "":
+            msg = QMessageBox(self)
+            msg.setWindowTitle("Update available")
+            msg.setText(f"Download it here: {self.verpath}")
+            msg.setTextInteractionFlags(Qt.TextBrowserInteraction)
+            msg.exec()
+
     def update_pdlg(self, dlg):
         """
         Clean deleted objects in self.pdlg and appends a new object.
@@ -1448,27 +1466,10 @@ def main(nocgs=False):
     # The line below is to fix a problem in windows with loky library.
     os.environ["LOKY_MAX_CPU_COUNT"] = str(psutil.cpu_count(logical=False))
 
-    # if 'GDAL_DATA' not in os.environ:
-    #     import rasterio
-    #     gdalpath = os.path.join(rasterio.__path__[0], r'gdal_data')
-    #     if os.path.exists(gdalpath):
-    #         os.environ['GDAL_DATA'] = gdalpath
-    #     else:
-    #         print('GDAL_PATH not set.')
-
-    # if 'PROJ_DATA' not in os.environ:
-    #     import pyproj
-    #     projpath = os.path.join(pyproj.__path__[0], r'proj_dir\share\proj')
-    #     if os.path.exists(projpath):
-    #         os.environ['PROJ_DATA'] = projpath
-    #     else:
-    #         print('PROJ_DATA not set.')
-
     # Start program.
-    if len(sys.argv) > 0:
-        if sys.argv[-1] == "--help" or sys.argv[-1] == "--version":
-            print(f"PyGMI version: {pygmi.__version__}")
-            return
+    if len(sys.argv) > 0 and (sys.argv[-1] == "--help" or sys.argv[-1] == "--version"):
+        print(f"PyGMI version: {pygmi.__version__}")
+        return
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1479,7 +1480,7 @@ def main(nocgs=False):
     width = int(width * 0.75)
     height = int(height * 0.75)
 
-    wid = MainWidget(nocgs=nocgs)
+    wid = MainWidget()
     wid.resize(width, height)
 
     wid.setWindowState(
@@ -1487,7 +1488,6 @@ def main(nocgs=False):
         | QtCore.Qt.WindowState.WindowActive
     )
 
-    # this will activate the window
     wid.show()
     wid.activateWindow()
 

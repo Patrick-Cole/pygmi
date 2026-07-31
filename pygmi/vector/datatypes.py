@@ -29,7 +29,7 @@ This module contains custom vector data types.
 """
 
 
-class VoxModel():
+class VoxModel:
     """
     Voxel Model Data.
 

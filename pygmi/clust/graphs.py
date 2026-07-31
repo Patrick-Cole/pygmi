@@ -147,14 +147,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         x = np.arange(len(dataids))
         width = 0.8 / cnr
-        multiplier = 0
 
-        for attribute, measurement in cdata.items():
+        for multiplier, (attribute, measurement) in enumerate(cdata.items()):
             bottom = cdatab[attribute]
             offset = width * multiplier
             self.axes.bar(x + offset, measurement, width, bottom, label=attribute)
-
-            multiplier += 1
 
         # Add some text for labels, title and custom x-axis tick labels, etc.
         self.axes.set_ylabel("Value")
@@ -691,9 +688,6 @@ def _testfn_bars():
     dat = DM.outdata
     dat["Cluster"][0].metadata["Cluster"]["labels"] = ["a", "b", "c", "d", "e"]
 
-    width = 0.25
-    multiplier = 0
-
     cdat = dat["Cluster"][0]
 
     cnr = cdat.metadata["Cluster"]["no_clusters"]
@@ -716,16 +710,13 @@ def _testfn_bars():
 
     x = np.arange(len(dataids))
     width = 0.8 / cnr
-    multiplier = 0
 
-    fig, ax = plt.subplots(layout="constrained")
+    _, ax = plt.subplots(layout="constrained")
 
-    for attribute, measurement in cdata.items():
+    for multiplier, (attribute, measurement) in enumerate(cdata.items()):
         bottom = cdatab[attribute]
         offset = width * multiplier
         ax.bar(x + offset, measurement, width, bottom, label=attribute)
-
-        multiplier += 1
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel("Value")
@@ -776,11 +767,10 @@ def _testfn_viol():
 
     x = np.arange(len(dataids))
     width = 0.8 / cnr
-    multiplier = 0
 
-    fig, ax = plt.subplots(layout="constrained")
+    _, ax = plt.subplots(layout="constrained")
 
-    for rdat in dat["Raster"]:
+    for multiplier, rdat in enumerate(dat["Raster"]):
         offset = 1 * multiplier
         for i in range(cnr):
             data = rdat.data[cdat.data == (i + 1)].compressed()
@@ -792,7 +782,6 @@ def _testfn_viol():
                 showmedians=False,
                 showextrema=False,
             )
-        multiplier += 1
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel("Value")
@@ -832,4 +821,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_bars()

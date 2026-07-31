@@ -203,7 +203,7 @@ class ImportData(BasicModule):
     def cmb_settext(self, obj, list_a):
         """Set the text in a combobox."""
         list_b = [obj.itemText(i) for i in range(obj.count())]
-        set_a_folded = set(item.casefold() for item in list_a)
+        set_a_folded = {item.casefold() for item in list_a}
 
         matches_b = [item for item in list_b if item.casefold() in set_a_folded]
 

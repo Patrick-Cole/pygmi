@@ -50,7 +50,7 @@ def test_change():
         "Spectral Angle Mapper",
     ]
 
-    bands, tnames, filelist = iodefs.files_to_rastermeta([file1, file2])
+    _bands, _tnames, filelist = iodefs.files_to_rastermeta([file1, file2])
 
     dat = change.calc_change(filelist, ilist)
 

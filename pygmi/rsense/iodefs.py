@@ -458,9 +458,7 @@ class ImportBatch(BasicModule):
 
         for i in range(self.lw_tnames.count()):
             item = self.lw_tnames.item(i)
-            if sensor == "Generic":
-                item.setSelected(True)
-            elif item.text() in self.tnames[sensor]:
+            if sensor == "Generic" or item.text() in self.tnames[sensor]:
                 item.setSelected(True)
 
         self.oldsensor = sensor
@@ -1697,9 +1695,12 @@ def export_batch(
 
     if sunfile == "None":
         sunfile = None
-    elif tnames is not None and otype == "RGB":
-        if sunfile in ifiles[0].bands and sunfile not in tnames:
-            tnames += [sunfile]
+    elif (
+        tnames is not None
+        and otype == "RGB"
+        and (sunfile in ifiles[0].bands and sunfile not in tnames)
+    ):
+        tnames += [sunfile]
 
     filt2gdal = {
         "GeoTIFF compressed using ZSTD": "GTiff",
@@ -2123,7 +2124,7 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
         bandid = dataset.descriptions[0]
         nval = dataset.nodata
         datetxt = meta["RANGEBEGINNINGDATE"]
-        date = datetime.datetime.strptime(datetxt, "%Y-%m-%d")
+        date = datetime.datetime.strptime(datetxt, "%Y-%m-%d").astimezone(datetime.UTC)
 
         if bandid is None and ":" in ifile2:
             bandid = ifile2[ifile2.rindex(":") + 1 :]
@@ -2295,7 +2296,9 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None, metaonly=False):
             zenith = 90 - float(i.split("=")[1].strip())
         if "DATE_ACQUIRED" in i:
             datetxt = i.split("=")[1][:-1].strip()
-            date = datetime.datetime.strptime(datetxt, "%Y-%m-%d")
+            date = datetime.datetime.strptime(datetxt, "%Y-%m-%d").astimezone(
+                datetime.UTC
+            )
         if "REFLECTANCE_MULT_BAND" in i:
             tmp = i.split("=")
             tmp1 = "B" + tmp[0].split("_")[-1].strip()
@@ -3256,14 +3259,14 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
             txt = headerfile.read()
 
         txt = txt.split("\n")
-        scale_vnir = [i for i in txt if "SCALING_FACTOR_VNIR" in i][0]
-        scale_swir = [i for i in txt if "SCALING_FACTOR_SWIR" in i][0]
-        datetxt = [i for i in txt if "ACQUISITION_DATE" in i][0]
+        scale_vnir = next(i for i in txt if "SCALING_FACTOR_VNIR" in i)
+        scale_swir = next(i for i in txt if "SCALING_FACTOR_SWIR" in i)
+        datetxt = next(i for i in txt if "ACQUISITION_DATE" in i)
 
         scale_vnir = float(scale_vnir.split(" = ")[-1])
         scale_swir = float(scale_swir.split(" = ")[-1])
         datetxt = datetxt.split(" = ")[-1].strip()
-        date = datetime.datetime.strptime(datetxt, "%Y-%m-%d")
+        date = datetime.datetime.strptime(datetxt, "%Y-%m-%d").astimezone(datetime.UTC)
 
     showlog("Importing Hyperion data...")
 
@@ -3570,7 +3573,7 @@ def get_sentinel2_metadata(ifile):
         if ifile.lower()[-3:] == "zip":
             with zipfile.ZipFile(ifile) as zfile:
                 zipnames = zfile.namelist()
-                gfile = [i for i in zipnames if mfile in i][0]
+                gfile = next(i for i in zipnames if mfile in i)
                 with zfile.open(gfile) as myfile:
                     gmeta = myfile.read()
             root = ET.fromstring(gmeta)
@@ -3739,7 +3742,7 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
 
     # Get Date
     datetxt = os.path.basename(ifile).split("_")[2][3:]
-    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S")
+    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S").astimezone(datetime.UTC)
 
     showlog("Extracting zip...")
 
@@ -3883,7 +3886,7 @@ def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False
 
     # Get Date
     datetxt = os.path.basename(ifile).split("_")[2][3:]
-    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S")
+    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S").astimezone(datetime.UTC)
 
     zipnames = ifiles
 
@@ -4097,7 +4100,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
 
     # Get Date
     datetxt = os.path.basename(ifile).split("_")[2][3:]
-    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S")
+    date = datetime.datetime.strptime(datetxt, "%m%d%Y%H%M%S").astimezone(datetime.UTC)
 
     try:
         with rasterio.open(ifile) as dataset:
@@ -4140,7 +4143,7 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
         fmt = "%Y%m%d"
     else:
         fmt = "%Y-%m-%d"
-    dte = datetime.datetime.strptime(cdate, fmt)
+    dte = datetime.datetime.strptime(cdate, fmt).astimezone(datetime.UTC)
     jdate = dte.timetuple().tm_yday
 
     if ptype == "07":

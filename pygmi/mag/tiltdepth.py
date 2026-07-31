@@ -350,10 +350,7 @@ class TiltDepth(BasicModule):
         else:
             tmp = 1
 
-        if tmp != 1:
-            return False
-
-        return True
+        return tmp == 1
 
     def saveproj(self):
         """

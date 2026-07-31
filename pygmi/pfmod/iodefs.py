@@ -203,9 +203,7 @@ class ImportMod3D(BasicModule):
         lmod.yrange = [y_u.min() - lmod.dxy / 2.0, y_u.max() + lmod.dxy / 2.0]
         lmod.zrange = [z_u.min() - lmod.d_z / 2.0, z_u.max() + lmod.d_z / 2.0]
 
-        lindx = 0
-        for itxt in labelu:
-            lindx += 1
+        for lindx, itxt in enumerate(labelu):
             if itxt == "Background":
                 lmod.lith_list[itxt] = grvmag3d.GeoData(
                     self.parent,
@@ -230,7 +228,7 @@ class ImportMod3D(BasicModule):
                     dxy=lmod.dxy,
                     d_z=lmod.d_z,
                 )
-                lmod.lith_list[itxt].lith_index = lindx
+                lmod.lith_list[itxt].lith_index = lindx + 1
                 lmod.mlut[lindx] = [
                     np.random.randint(0, 255),
                     np.random.randint(0, 255),
@@ -325,9 +323,9 @@ class ImportMod3D(BasicModule):
         lmod.numz = int(np.ptp(lmod.zrange) / lmod.d_z + 1)
 
         # Section to load lithologies.
-        lindx = 0
-        for itxt in labelu:
-            lindx += 1
+        # lindx = 0
+        for lindx, itxt in enumerate(labelu):
+            # lindx += 1
             lmod.mlut[lindx] = [
                 np.random.randint(0, 255),
                 np.random.randint(0, 255),
@@ -342,7 +340,7 @@ class ImportMod3D(BasicModule):
                 d_z=lmod.d_z,
             )
 
-            lmod.lith_list[itxt].lith_index = lindx
+            lmod.lith_list[itxt].lith_index = lindx + 1
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
 
@@ -437,7 +435,10 @@ class ImportMod3D(BasicModule):
         # This gets rid of a legacy variable names and updates to new ones
         for i in lmod.griddata:
             if not hasattr(lmod.griddata[i], "datetime"):
-                lmod.griddata[i].datetime = datetime.datetime(1900, 1, 1)
+                local_tz = datetime.datetime.now().astimezone().tzinfo
+                lmod.griddata[i].datetime = datetime.datetime(
+                    1900, 1, 1, tzinfo=local_tz
+                )
             if not hasattr(lmod.griddata[i], "units"):
                 lmod.griddata[i].units = ""
             if not hasattr(lmod.griddata[i], "isrgb"):
@@ -560,7 +561,8 @@ class ExportMod3D(ContextModule):
             self.showlog("Error: You need to have a model first!")
             return
 
-        for self.lmod in self.indata["Model3D"]:
+        for lmod in self.indata["Model3D"]:
+            self.lmod = lmod
             self.ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self.parent,
                 "Save File",

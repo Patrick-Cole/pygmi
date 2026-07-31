@@ -355,8 +355,6 @@ def _testfn():
 
     export_raster(ofile, dat2)
 
-    pass
-
 
 if __name__ == "__main__":
     _testfn()

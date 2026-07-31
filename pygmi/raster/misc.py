@@ -707,7 +707,7 @@ def _testfn():
     dat1 = get_raster(ifile1)
     dat2 = get_raster(ifile2)
 
-    dat3 = lstack(dat1 + dat2, dxy=10, commonmask=True)
+    _dat3 = lstack(dat1 + dat2, dxy=10, commonmask=True)
 
 
 if __name__ == "__main__":
