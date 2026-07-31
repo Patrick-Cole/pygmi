@@ -1010,7 +1010,7 @@ def get_geopak(hfile):
         if breclen == 130:
             break
 
-        reclen = breclen
+        reclen = int(breclen)
 
         if breclen == 129:
             reclen = 128
@@ -2087,12 +2087,14 @@ def _filespeedtest():
     print("Starting")
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geopak\Westgpk.grd"
     # ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
     # ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
     # ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 
-    _dataset = get_raster(ifile)
+    # _dataset = get_raster(ifile)
+    _dataset = get_geopak(ifile)
 
     # getinfo('Start')
 

@@ -24,6 +24,8 @@
 # -----------------------------------------------------------------------------
 """A collection of functions for maps."""
 
+from math import modf
+
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -162,7 +164,7 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 
     # Round step down to the nearest degree or minute fraction
     minutes_step = interval_size * 60
-    neat_steps = [1, 2, 5, 10, 15, 30, 60, 120, 240, 480]
+    neat_steps = [0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 240, 480]
     neat_minute = min(neat_steps, key=lambda x: abs(x - minutes_step))
 
     # Recalculate range with the neat step to find the adjusted end point
@@ -185,10 +187,16 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
     else:
         sign = {-1: "S", 1: "N"}
 
-    txt = [
-        f"{int(d):d}°{int(m):02d}'{sign[si]}"
-        for d, m, si in zip(degs, mins, np.sign(intervals))
-    ]
+    if neat_minute < 1:
+        txt = [
+            f"{int(d):d}°{int(m):02d}'{int(modf(m)[0] * 60):02d}\"{sign[si]}"
+            for d, m, si in zip(degs, mins, np.sign(intervals))
+        ]
+    else:
+        txt = [
+            f"{int(d):d}°{int(m):02d}'{sign[si]}"
+            for d, m, si in zip(degs, mins, np.sign(intervals))
+        ]
 
     return intervals, txt
 
