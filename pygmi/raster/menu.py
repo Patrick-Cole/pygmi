@@ -99,10 +99,6 @@ class MenuWidget:
         self.menu.addAction(self.action_visibility)
         self.action_visibility.triggered.connect(self.visibility)
 
-        self.action_cont = QtGui.QAction("Continuation")
-        self.menu.addAction(self.action_cont)
-        self.action_cont.triggered.connect(self.cont)
-
         self.menu.addSeparator()
 
         self.action_lstack = QtGui.QAction("Layer Stack and Resampling")
@@ -249,10 +245,6 @@ class MenuWidget:
     def raster_interp(self):
         """Show raster data."""
         self.parent.item_insert("Step", "Raster Data Display", ginterp.PlotInterp)
-
-    def cont(self):
-        """Compute Continuation."""
-        self.parent.item_insert("Step", "Continuation", dataprep.Continuation)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""

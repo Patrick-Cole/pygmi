@@ -80,7 +80,7 @@ class MatchedFilt(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = "mag.dm.match"
+        self.buttonbox.htmlfile = "maggrv.dm.match"
 
         lbl_1 = QtWidgets.QLabel("Band to perform Filtering:")
         lbl_3 = QtWidgets.QLabel("Number of depth slices:")

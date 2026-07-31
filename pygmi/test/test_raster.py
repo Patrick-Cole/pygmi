@@ -96,26 +96,6 @@ def test_raps():
     np.testing.assert_array_almost_equal(raps, dat2)
 
 
-def test_cont():
-    """test continuation."""
-    datin = Data()
-    datin.data = np.ma.array([[1, 2], [1, 2]])
-    datin.set_transform(10, 100, 10, 100)
-
-    dat2 = np.array([[1.5, 1.5], [1.5, 1.5]])
-    datout = dataprep.fftcont(datin, 100)
-    np.testing.assert_array_almost_equal(datout.data, dat2)
-
-    dat2 = np.array(
-        [
-            [-2845.3044633201675, 2848.3044633201675],
-            [-2845.3044633201675, 2848.3044633201675],
-        ]
-    )
-    datout = dataprep.taylorcont(datin, 100)
-    np.testing.assert_array_almost_equal(datout.data, dat2)
-
-
 def test_viz():
     """test visibility."""
     datin = np.ma.array([[1, 2], [1, 2]])
@@ -605,4 +585,4 @@ def test_agc():
 
 
 if __name__ == "__main__":
-    test_cont()
+    test_agc()

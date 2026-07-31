@@ -103,7 +103,7 @@ class IGRF(BasicModule):
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = "mag.dm.igrf"
+        self.buttonbox.htmlfile = "maggrv.dm.igrf"
 
         lbl_0 = QtWidgets.QLabel("Sensor clearance above ground (m):")
         lbl_1 = QtWidgets.QLabel("Date:")

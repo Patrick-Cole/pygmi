@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; PyGMI 3.3.0.13 documentation</title>
+    <title>Index &#8212; PyGMI 3.3.0.14 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=f72b56b0"></script>
+    <script src="_static/documentation_options.js?v=623ed461"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="3.3.0.13" />
+  <meta name="docsearch:version" content="3.3.0.14" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -209,7 +209,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.3.0.13 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.14 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -283,7 +283,6 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.norm.html">Normalisation/Scaling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.grad.html">Gradients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.visibility.html">Visibility Calculation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="raster.dm.cont.html">Continuation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.mosaic.html">Dataset Mosaic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.reproj.html">Dataset Reprojection</a></li>
@@ -354,18 +353,16 @@
 <li class="toctree-l3"><a class="reference internal" href="em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="maggrv.html">Magnetics and Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.asig.html">Analytic Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.match.html">Matched Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.importgravity.html">Import CG-5 or CG-6 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.processgravity.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -463,18 +460,14 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/em/tdem/index.html">pygmi.em.tdem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/menu/index.html">pygmi.grav.menu</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/maggrv/index.html">pygmi.maggrv</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/dataprep/index.html">pygmi.maggrv.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/gravproc/index.html">pygmi.maggrv.gravproc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/igrf/index.html">pygmi.maggrv.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/iodefs/index.html">pygmi.maggrv.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/matchedfilt/index.html">pygmi.maggrv.matchedfilt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/menu/index.html">pygmi.maggrv.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/tiltdepth/index.html">pygmi.maggrv.tiltdepth</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/main/index.html">pygmi.main</a></li>
@@ -554,8 +547,7 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_maggrv/index.html">pygmi.test.test_maggrv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
@@ -721,10 +713,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/menu_default/index.html#pygmi.menu_default.HelpMenu.about">about() (pygmi.menu_default.HelpMenu method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData.acceptall">acceptall() (pygmi.grav.dataprep.ProcessData method)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Continuation.acceptall">acceptall() (pygmi.maggrv.dataprep.Continuation method)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.RTP.acceptall">(pygmi.mag.dataprep.RTP method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.RTP.acceptall">(pygmi.maggrv.dataprep.RTP method)</a>
+</li>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData.acceptall">(pygmi.maggrv.gravproc.ProcessData method)</a>
 </li>
         <li><a href="autoapi/pygmi/mt/dataprep/index.html#pygmi.mt.dataprep.EditEDI.acceptall">(pygmi.mt.dataprep.EditEDI method)</a>
 </li>
@@ -741,8 +735,6 @@
         <li><a href="autoapi/pygmi/pfmod/misc/index.html#pygmi.pfmod.misc.MergeMod3D.acceptall">(pygmi.pfmod.misc.MergeMod3D method)</a>
 </li>
         <li><a href="autoapi/pygmi/pfmod/pfinvert/index.html#pygmi.pfmod.pfinvert.MagInvert.acceptall">(pygmi.pfmod.pfinvert.MagInvert method)</a>
-</li>
-        <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.Continuation.acceptall">(pygmi.raster.dataprep.Continuation method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.DataLayerStack.acceptall">(pygmi.raster.dataprep.DataLayerStack method)</a>
 </li>
@@ -849,17 +841,17 @@
 </li>
       <li><a href="autoapi/pygmi/main/index.html#pygmi.main.DiagramItem.arrows">arrows (pygmi.main.DiagramItem attribute)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.ASig">ASig (class in pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.ASig">ASig (class in pygmi.maggrv.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.asig">asig() (in module pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.asig">asig() (in module pygmi.maggrv.dataprep)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.asig">(pygmi.mag.menu.MenuWidget method)</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.asig">(pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       </ul></li>
       <li><a href="autoapi/pygmi/raster/misc/index.html#pygmi.raster.misc.aspect2">aspect2() (in module pygmi.raster.misc)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.atmospheric_correction">atmospheric_correction() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.atmospheric_correction">atmospheric_correction() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/seis/beachball/index.html#pygmi.seis.beachball.auxplane">auxplane() (in module pygmi.seis.beachball)</a>
 </li>
@@ -873,7 +865,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.MyToolbar.axis_scale">axis_scale() (pygmi.pfmod.tab_prof.MyToolbar method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1.azi">azi (pygmi.mag.dataprep.Tilt1 attribute)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1.azi">azi (pygmi.maggrv.dataprep.Tilt1 attribute)</a>
 
       <ul>
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Gradients.azi">(pygmi.raster.cooper.Gradients attribute)</a>
@@ -1047,7 +1039,7 @@
 </li>
       <li><a href="autoapi/pygmi/pfmod/grvmag3d/index.html#pygmi.pfmod.grvmag3d.GravMag.calc_field_mag_changes">calc_field_mag_changes() (pygmi.pfmod.grvmag3d.GravMag method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.calc_igrf">calc_igrf() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.calc_igrf">calc_igrf() (in module pygmi.maggrv.igrf)</a>
 </li>
       <li><a href="autoapi/pygmi/rsense/change/index.html#pygmi.rsense.change.calc_mean">calc_mean() (in module pygmi.rsense.change)</a>
 </li>
@@ -1071,7 +1063,7 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/change/index.html#pygmi.rsense.change.calc_sam">calc_sam() (in module pygmi.rsense.change)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData.calcbase">calcbase() (pygmi.grav.dataprep.ProcessData method)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData.calcbase">calcbase() (pygmi.maggrv.gravproc.ProcessData method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/iodefs/index.html#pygmi.raster.iodefs.calccov">calccov() (in module pygmi.raster.iodefs)</a>
 </li>
@@ -1084,9 +1076,9 @@
       <li><a href="autoapi/pygmi/clust/super_class/index.html#pygmi.clust.super_class.SuperClass.calculate">calculate() (pygmi.clust.super_class.SuperClass method)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.calculate">(pygmi.mag.matchedfilt.MatchedFilt method)</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.calculate">(pygmi.maggrv.matchedfilt.MatchedFilt method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.calculate">(pygmi.mag.tiltdepth.TiltDepth method)</a>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.calculate">(pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
         <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.PlotSpatialB.calculate">(pygmi.seis.graphs.PlotSpatialB method)</a>
 </li>
@@ -1177,7 +1169,7 @@
 </li>
       <li><a href="autoapi/pygmi/vector/iodefs/index.html#pygmi.vector.iodefs.ImportVector.change_bounds">change_bounds() (pygmi.vector.iodefs.ImportVector method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.change_cbar">change_cbar() (pygmi.mag.tiltdepth.TiltDepth method)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.change_cbar">change_cbar() (pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 
       <ul>
         <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.change_cbar">(pygmi.raster.ginterp.PlotInterp method)</a>
@@ -1223,10 +1215,10 @@
 </li>
       <li><a href="autoapi/pygmi/pfmod/tab_param/index.html#pygmi.pfmod.tab_param.ParamDisplay.change_rmi">change_rmi() (pygmi.pfmod.tab_param.ParamDisplay method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/em/tdem/index.html#pygmi.em.tdem.TDEM1D.change_source">change_source() (pygmi.em.tdem.TDEM1D method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.change_sun">change_sun() (pygmi.raster.ginterp.PlotInterp method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.change_sun_checkbox">change_sun_checkbox() (pygmi.raster.ginterp.PlotInterp method)</a>
@@ -1244,6 +1236,8 @@
       <li><a href="autoapi/pygmi/raster/graphs/index.html#pygmi.raster.graphs.check_bands">check_bands() (in module pygmi.raster.graphs)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/misc/index.html#pygmi.raster.misc.check_dataid">check_dataid() (in module pygmi.raster.misc)</a>
+</li>
+      <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.check_for_updates">check_for_updates() (in module pygmi.misc)</a>
 </li>
       <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.BasicModule.check_validation">check_validation() (pygmi.misc.BasicModule method)</a>
 
@@ -1367,7 +1361,7 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/iodefs/index.html#pygmi.rsense.iodefs.consolidate_aster_list">consolidate_aster_list() (in module pygmi.rsense.iodefs)</a>
 </li>
-      <li><a href="autoapi/pygmi/raster/menu/index.html#pygmi.raster.menu.MenuWidget.cont">cont() (pygmi.raster.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.cont">cont() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/main/index.html#pygmi.main.DiagramItem.context_menu">context_menu (pygmi.main.DiagramItem attribute)</a>
 
@@ -1379,7 +1373,7 @@
 </li>
       <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.ContextModule">ContextModule (class in pygmi.misc)</a>
 </li>
-      <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.Continuation">Continuation (class in pygmi.raster.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Continuation">Continuation (class in pygmi.maggrv.dataprep)</a>
 </li>
       <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.contourtopoly">contourtopoly() (in module pygmi.seis.graphs)</a>
 </li>
@@ -1509,7 +1503,7 @@
 </li>
       <li><a href="autoapi/pygmi/seis/del_rec/index.html#pygmi.seis.del_rec.DeleteRecord.delrec">delrec() (pygmi.seis.del_rec.DeleteRecord method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.depth_susc">depth_susc() (pygmi.mag.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.depth_susc">depth_susc() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.derivative_ratio">derivative_ratio() (in module pygmi.raster.cooper)</a>
 </li>
@@ -1527,7 +1521,7 @@
 </li>
       <li><a href="autoapi/pygmi/pfmod/iodefs/index.html#pygmi.pfmod.iodefs.ImportMod3D.dict2lmod">dict2lmod() (pygmi.pfmod.iodefs.ImportMod3D method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.dihf">dihf() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.dihf">dihf() (in module pygmi.maggrv.igrf)</a>
 </li>
       <li><a href="autoapi/pygmi/seis/iodefs/index.html#pygmi.seis.iodefs.FilterSeisan.dind_click">dind_click() (pygmi.seis.iodefs.FilterSeisan method)</a>
 </li>
@@ -1555,7 +1549,7 @@
         <li><a href="autoapi/pygmi/clust/super_class/index.html#pygmi.clust.super_class.dist_point_to_segment">(in module pygmi.clust.super_class)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.distpc">distpc() (in module pygmi.mag.tiltdepth)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.distpc">distpc() (in module pygmi.maggrv.tiltdepth)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/modest_image/index.html#pygmi.raster.modest_image.ModestImage.draw">draw() (pygmi.raster.modest_image.ModestImage method)</a>
 
@@ -1729,7 +1723,7 @@
         <li><a href="autoapi/pygmi/raster/modest_ioimage/index.html#pygmi.raster.modest_ioimage.extract_matched_slices">(in module pygmi.raster.modest_ioimage)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.extrapsh">extrapsh() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.extrapsh">extrapsh() (in module pygmi.maggrv.igrf)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1753,12 +1747,12 @@
 </li>
       <li><a href="autoapi/pygmi/raster/fft/index.html#pygmi.raster.fft.fft_getkxy">fft_getkxy() (in module pygmi.raster.fft)</a>
 </li>
-      <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.fftcont">fftcont() (in module pygmi.raster.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.fftcont">fftcont() (in module pygmi.maggrv.dataprep)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/fft/index.html#pygmi.raster.fft.fftprep">fftprep() (in module pygmi.raster.fft)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.fftprep">(pygmi.mag.matchedfilt.MatchedFilt method)</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.fftprep">(pygmi.maggrv.matchedfilt.MatchedFilt method)</a>
 </li>
       </ul></li>
       <li><a href="autoapi/pygmi/vector/menu/index.html#pygmi.vector.menu.MenuWidget.file_split">file_split() (pygmi.vector.menu.MenuWidget method)</a>
@@ -1833,7 +1827,7 @@
 </li>
       <li><a href="autoapi/pygmi/clust/crisp_clust/index.html#pygmi.clust.crisp_clust.gdist">gdist() (in module pygmi.clust.crisp_clust)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.geocentric_radius">geocentric_radius() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.geocentric_radius">geocentric_radius() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/grvmag3d/index.html#pygmi.pfmod.grvmag3d.GeoData">GeoData (class in pygmi.pfmod.grvmag3d)</a>
 </li>
@@ -1875,13 +1869,13 @@
 </li>
       <li><a href="autoapi/pygmi/raster/datatypes/index.html#pygmi.raster.datatypes.Data.get_boundary">get_boundary() (pygmi.raster.datatypes.Data method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.get_cg5">get_cg5() (in module pygmi.grav.iodefs)</a>
+      <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.get_cg5">get_cg5() (in module pygmi.maggrv.iodefs)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5.get_cg5">(pygmi.grav.iodefs.ImportCG5 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5.get_cg5">(pygmi.maggrv.iodefs.ImportCG5 method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.get_cg6">get_cg6() (in module pygmi.grav.iodefs)</a>
+      <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.get_cg6">get_cg6() (in module pygmi.maggrv.iodefs)</a>
 </li>
       <li><a href="autoapi/pygmi/bholes/iodefs/index.html#pygmi.bholes.iodefs.get_CGS">get_CGS() (in module pygmi.bholes.iodefs)</a>
 </li>
@@ -1921,10 +1915,10 @@
 </li>
       <li><a href="autoapi/pygmi/raster/iodefs/index.html#pygmi.raster.iodefs.get_geosoft">get_geosoft() (in module pygmi.raster.iodefs)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.get_gps">get_gps() (in module pygmi.grav.iodefs)</a>
+      <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.get_gps">get_gps() (in module pygmi.maggrv.iodefs)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5.get_gps">(pygmi.grav.iodefs.ImportCG5 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5.get_gps">(pygmi.maggrv.iodefs.ImportCG5 method)</a>
 </li>
       </ul></li>
       <li><a href="autoapi/pygmi/vector/iodefs/index.html#pygmi.vector.iodefs.get_GXYZ">get_GXYZ() (in module pygmi.vector.iodefs)</a>
@@ -2041,7 +2035,7 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/iodefs/index.html#pygmi.rsense.iodefs.get_worldview">get_worldview() (in module pygmi.rsense.iodefs)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.getbutter">getbutter() (in module pygmi.mag.matchedfilt)</a>
+      <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.getbutter">getbutter() (in module pygmi.maggrv.matchedfilt)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.ImportPicture.getcoords">getcoords() (pygmi.pfmod.tab_prof.ImportPicture method)</a>
 </li>
@@ -2053,7 +2047,7 @@
 </li>
       <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.GetProf">GetProf (class in pygmi.raster.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.getshc">getshc() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.getshc">getshc() (in module pygmi.maggrv.igrf)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/mvis3d/index.html#pygmi.pfmod.mvis3d.GetTables">GetTables() (in module pygmi.pfmod.mvis3d)</a>
 </li>
@@ -2063,7 +2057,7 @@
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.MyMplCanvas.gmode">gmode (pygmi.raster.ginterp.MyMplCanvas attribute)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.gradient2D">gradient2D() (in module pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.gradient2D">gradient2D() (in module pygmi.maggrv.dataprep)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Gradients">Gradients (class in pygmi.raster.cooper)</a>
 </li>
@@ -2083,7 +2077,7 @@
         <li><a href="autoapi/pygmi/rsense/hyperspec/index.html#pygmi.rsense.hyperspec.GraphMap">(class in pygmi.rsense.hyperspec)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.gravcor">gravcor() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.gravcor">gravcor() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/grvmag3d/index.html#pygmi.pfmod.grvmag3d.GravMag">GravMag (class in pygmi.pfmod.grvmag3d)</a>
 </li>
@@ -2121,7 +2115,7 @@
 </li>
       <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.heatmap">heatmap() (in module pygmi.vector.graphs)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.height_correction">height_correction() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.height_correction">height_correction() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/main/index.html#pygmi.main.MainWidget.help_docs">help_docs() (pygmi.main.MainWidget method)</a>
 
@@ -2175,9 +2169,9 @@
 </li>
       <li><a href="autoapi/pygmi/mt/iodefs/index.html#pygmi.mt.iodefs.ImportEDI.ifilelist">ifilelist (pygmi.mt.iodefs.ImportEDI attribute)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.IGRF">IGRF (class in pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.IGRF">IGRF (class in pygmi.maggrv.igrf)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.igrf">igrf() (pygmi.mag.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.igrf">igrf() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.MyMplCanvas.image">image (pygmi.raster.ginterp.MyMplCanvas attribute)</a>
 </li>
@@ -2196,7 +2190,7 @@
       <li><a href="autoapi/pygmi/bholes/menu/index.html#pygmi.bholes.menu.MenuWidget.import_data">import_data() (pygmi.bholes.menu.MenuWidget method)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/menu/index.html#pygmi.grav.menu.MenuWidget.import_data">(pygmi.grav.menu.MenuWidget method)</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.import_data">(pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
         <li><a href="autoapi/pygmi/mt/menu/index.html#pygmi.mt.menu.MenuWidget.import_data">(pygmi.mt.menu.MenuWidget method)</a>
 </li>
@@ -2235,7 +2229,7 @@
 </li>
       <li><a href="autoapi/pygmi/mt/birrp/index.html#pygmi.mt.birrp.BIRRP.importbirrp">importbirrp() (pygmi.mt.birrp.BIRRP method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5">ImportCG5 (class in pygmi.grav.iodefs)</a>
+      <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5">ImportCG5 (class in pygmi.maggrv.iodefs)</a>
 </li>
       <li><a href="autoapi/pygmi/bholes/iodefs/index.html#pygmi.bholes.iodefs.ImportData">ImportData (class in pygmi.bholes.iodefs)</a>
 
@@ -2343,7 +2337,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/pfmod/mvis3d/index.html#pygmi.pfmod.mvis3d.InterpolateVertices">InterpolateVertices() (in module pygmi.pfmod.mvis3d)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.interpsh">interpsh() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.interpsh">interpsh() (in module pygmi.maggrv.igrf)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/modest_image/index.html#pygmi.raster.modest_image.ModestImage.invalidate_cache">invalidate_cache() (pygmi.raster.modest_image.ModestImage method)</a>
 
@@ -2501,7 +2495,7 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/change/index.html#pygmi.rsense.change.match_data">match_data() (in module pygmi.rsense.change)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt">MatchedFilt (class in pygmi.mag.matchedfilt)</a>
+      <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt">MatchedFilt (class in pygmi.maggrv.matchedfilt)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/misc/index.html#pygmi.pfmod.misc.ProgressBar.maxall">maxall() (pygmi.pfmod.misc.ProgressBar method)</a>
 </li>
@@ -2520,9 +2514,7 @@
 </li>
         <li><a href="autoapi/pygmi/em/menu/index.html#pygmi.em.menu.MenuWidget">(class in pygmi.em.menu)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/menu/index.html#pygmi.grav.menu.MenuWidget">(class in pygmi.grav.menu)</a>
-</li>
-        <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget">(class in pygmi.mag.menu)</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget">(class in pygmi.maggrv.menu)</a>
 </li>
         <li><a href="autoapi/pygmi/mt/menu/index.html#pygmi.mt.menu.MenuWidget">(class in pygmi.mt.menu)</a>
 </li>
@@ -2545,7 +2537,7 @@
 </li>
       <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.DataMerge.merge_different">merge_different() (pygmi.raster.dataprep.DataMerge method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.merge_gpsmag">merge_gpsmag() (in module pygmi.grav.iodefs)</a>
+      <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.merge_gpsmag">merge_gpsmag() (in module pygmi.maggrv.iodefs)</a>
 </li>
       <li><a href="autoapi/pygmi/seis/iodefs/index.html#pygmi.seis.iodefs.merge_m">merge_m() (in module pygmi.seis.iodefs)</a>
 </li>
@@ -2595,7 +2587,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/pfmod/tab_mext/index.html#pygmi.pfmod.tab_mext.MextDisplay">MextDisplay (class in pygmi.pfmod.tab_mext)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.mfilt">mfilt() (pygmi.mag.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.mfilt">mfilt() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/datatypes/index.html#pygmi.pfmod.datatypes.LithModel.mht">mht (pygmi.pfmod.datatypes.LithModel attribute)</a>
 </li>
@@ -2607,10 +2599,10 @@
 </li>
       <li><a href="autoapi/pygmi/pfmod/datatypes/index.html#pygmi.pfmod.datatypes.LithModel.mlut">mlut (pygmi.pfmod.datatypes.LithModel attribute)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.self.mmc">mmc (pygmi.mag.matchedfilt.MatchedFilt.self attribute)</a>
+      <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.self.mmc">mmc (pygmi.maggrv.matchedfilt.MatchedFilt.self attribute)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.self.mmc">(pygmi.mag.tiltdepth.TiltDepth.self attribute)</a>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.self.mmc">(pygmi.maggrv.tiltdepth.TiltDepth.self attribute)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.self.mmc">(pygmi.raster.ginterp.PlotInterp.self attribute)</a>
 </li>
@@ -2683,25 +2675,21 @@
 </li>
         <li><a href="autoapi/pygmi/em/tdem/index.html#module-pygmi.em.tdem">pygmi.em.tdem</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/index.html#module-pygmi.grav">pygmi.grav</a>
+        <li><a href="autoapi/pygmi/maggrv/index.html#module-pygmi.maggrv">pygmi.maggrv</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#module-pygmi.grav.dataprep">pygmi.grav.dataprep</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#module-pygmi.maggrv.dataprep">pygmi.maggrv.dataprep</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#module-pygmi.grav.iodefs">pygmi.grav.iodefs</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#module-pygmi.maggrv.gravproc">pygmi.maggrv.gravproc</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/menu/index.html#module-pygmi.grav.menu">pygmi.grav.menu</a>
+        <li><a href="autoapi/pygmi/maggrv/igrf/index.html#module-pygmi.maggrv.igrf">pygmi.maggrv.igrf</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/index.html#module-pygmi.mag">pygmi.mag</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#module-pygmi.maggrv.iodefs">pygmi.maggrv.iodefs</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#module-pygmi.mag.dataprep">pygmi.mag.dataprep</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#module-pygmi.maggrv.matchedfilt">pygmi.maggrv.matchedfilt</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/igrf/index.html#module-pygmi.mag.igrf">pygmi.mag.igrf</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#module-pygmi.maggrv.menu">pygmi.maggrv.menu</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#module-pygmi.mag.matchedfilt">pygmi.mag.matchedfilt</a>
-</li>
-        <li><a href="autoapi/pygmi/mag/menu/index.html#module-pygmi.mag.menu">pygmi.mag.menu</a>
-</li>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#module-pygmi.mag.tiltdepth">pygmi.mag.tiltdepth</a>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#module-pygmi.maggrv.tiltdepth">pygmi.maggrv.tiltdepth</a>
 </li>
         <li><a href="autoapi/pygmi/main/index.html#module-pygmi.main">pygmi.main</a>
 </li>
@@ -2837,9 +2825,7 @@
 </li>
         <li><a href="autoapi/pygmi/test/test_cluster/index.html#module-pygmi.test.test_cluster">pygmi.test.test_cluster</a>
 </li>
-        <li><a href="autoapi/pygmi/test/test_gravity/index.html#module-pygmi.test.test_gravity">pygmi.test.test_gravity</a>
-</li>
-        <li><a href="autoapi/pygmi/test/test_mag/index.html#module-pygmi.test.test_mag">pygmi.test.test_mag</a>
+        <li><a href="autoapi/pygmi/test/test_maggrv/index.html#module-pygmi.test.test_maggrv">pygmi.test.test_maggrv</a>
 </li>
         <li><a href="autoapi/pygmi/test/test_pfmod/index.html#module-pygmi.test.test_pfmod">pygmi.test.test_pfmod</a>
 </li>
@@ -2941,7 +2927,7 @@
       <ul>
         <li><a href="autoapi/pygmi/clust/graphs/index.html#pygmi.clust.graphs.MyMplCanvas">(class in pygmi.clust.graphs)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.MyMplCanvas">(class in pygmi.grav.dataprep)</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.MyMplCanvas">(class in pygmi.maggrv.gravproc)</a>
 </li>
         <li><a href="autoapi/pygmi/mt/dataprep/index.html#pygmi.mt.dataprep.MyMplCanvas">(class in pygmi.mt.dataprep)</a>
 </li>
@@ -3006,7 +2992,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/rsense/change_viewer/index.html#pygmi.rsense.change_viewer.SceneViewer.newdata">newdata() (pygmi.rsense.change_viewer.SceneViewer method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.nextpow2">nextpow2() (in module pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.nextpow2">nextpow2() (in module pygmi.maggrv.dataprep)</a>
 
       <ul>
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.nextpow2">(in module pygmi.raster.cooper)</a>
@@ -3206,7 +3192,7 @@
         <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.PlotCCoef">(class in pygmi.vector.graphs)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.PlotDrift">PlotDrift (class in pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.PlotDrift">PlotDrift (class in pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/graphs/index.html#pygmi.raster.graphs.PlotHist">PlotHist (class in pygmi.raster.graphs)</a>
 
@@ -3288,11 +3274,11 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/menu/index.html#pygmi.rsense.menu.MenuWidget.proc_features">proc_features() (pygmi.rsense.menu.MenuWidget method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/menu/index.html#pygmi.grav.menu.MenuWidget.process_data">process_data() (pygmi.grav.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.process_data">process_data() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/main/index.html#pygmi.main.MainWidget.process_is_active">process_is_active() (pygmi.main.MainWidget method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData">ProcessData (class in pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData">ProcessData (class in pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/rsense/hyperspec/index.html#pygmi.rsense.hyperspec.ProcFeatures">ProcFeatures (class in pygmi.rsense.hyperspec)</a>
 </li>
@@ -3438,73 +3424,59 @@
 </li>
       </ul></li>
       <li>
-    pygmi.grav
+    pygmi.maggrv
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/index.html#module-pygmi.grav">module</a>
+        <li><a href="autoapi/pygmi/maggrv/index.html#module-pygmi.maggrv">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.grav.dataprep
+    pygmi.maggrv.dataprep
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#module-pygmi.grav.dataprep">module</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#module-pygmi.maggrv.dataprep">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.grav.iodefs
+    pygmi.maggrv.gravproc
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#module-pygmi.grav.iodefs">module</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#module-pygmi.maggrv.gravproc">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.grav.menu
+    pygmi.maggrv.igrf
 
       <ul>
-        <li><a href="autoapi/pygmi/grav/menu/index.html#module-pygmi.grav.menu">module</a>
+        <li><a href="autoapi/pygmi/maggrv/igrf/index.html#module-pygmi.maggrv.igrf">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.mag
+    pygmi.maggrv.iodefs
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/index.html#module-pygmi.mag">module</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#module-pygmi.maggrv.iodefs">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.mag.dataprep
+    pygmi.maggrv.matchedfilt
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#module-pygmi.mag.dataprep">module</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#module-pygmi.maggrv.matchedfilt">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.mag.igrf
+    pygmi.maggrv.menu
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/igrf/index.html#module-pygmi.mag.igrf">module</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#module-pygmi.maggrv.menu">module</a>
 </li>
       </ul></li>
       <li>
-    pygmi.mag.matchedfilt
+    pygmi.maggrv.tiltdepth
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#module-pygmi.mag.matchedfilt">module</a>
-</li>
-      </ul></li>
-      <li>
-    pygmi.mag.menu
-
-      <ul>
-        <li><a href="autoapi/pygmi/mag/menu/index.html#module-pygmi.mag.menu">module</a>
-</li>
-      </ul></li>
-      <li>
-    pygmi.mag.tiltdepth
-
-      <ul>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#module-pygmi.mag.tiltdepth">module</a>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#module-pygmi.maggrv.tiltdepth">module</a>
 </li>
       </ul></li>
       <li>
@@ -3979,17 +3951,10 @@
 </li>
       </ul></li>
       <li>
-    pygmi.test.test_gravity
+    pygmi.test.test_maggrv
 
       <ul>
-        <li><a href="autoapi/pygmi/test/test_gravity/index.html#module-pygmi.test.test_gravity">module</a>
-</li>
-      </ul></li>
-      <li>
-    pygmi.test.test_mag
-
-      <ul>
-        <li><a href="autoapi/pygmi/test/test_mag/index.html#module-pygmi.test.test_mag">module</a>
+        <li><a href="autoapi/pygmi/test/test_maggrv/index.html#module-pygmi.test.test_maggrv">module</a>
 </li>
       </ul></li>
       <li>
@@ -4232,25 +4197,25 @@
 </li>
       <li><a href="autoapi/pygmi/raster/anaglyph/index.html#pygmi.raster.anaglyph.rot_and_clean">rot_and_clean() (in module pygmi.raster.anaglyph)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/vector/graphs/index.html#pygmi.vector.graphs.rotate">rotate() (in module pygmi.vector.graphs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.rotate2d">rotate2d() (in module pygmi.pfmod.tab_prof)</a>
 </li>
       <li><a href="autoapi/pygmi/mt/menu/index.html#pygmi.mt.menu.MenuWidget.rotate_data">rotate_data() (pygmi.mt.menu.MenuWidget method)</a>
 </li>
       <li><a href="autoapi/pygmi/mt/dataprep/index.html#pygmi.mt.dataprep.RotateEDI">RotateEDI (class in pygmi.mt.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.RTP">RTP (class in pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.RTP">RTP (class in pygmi.maggrv.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.rtp">rtp() (in module pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.rtp">rtp() (in module pygmi.maggrv.dataprep)</a>
 
       <ul>
-        <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.rtp">(pygmi.mag.menu.MenuWidget method)</a>
+        <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.rtp">(pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.rtp_choice">rtp_choice() (pygmi.mag.tiltdepth.TiltDepth method)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.rtp_choice">rtp_choice() (pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
       <li><a href="autoapi/pygmi/bholes/graphs/index.html#pygmi.bholes.graphs.PlotLog.run">run() (pygmi.bholes.graphs.PlotLog method)</a>
 
@@ -4346,6 +4311,8 @@
         <li><a href="autoapi/pygmi/vector/vvis3d/index.html#pygmi.vector.vvis3d.Mod3dDisplay.run">(pygmi.vector.vvis3d.Mod3dDisplay method)</a>
 </li>
       </ul></li>
+      <li><a href="autoapi/pygmi/main/index.html#pygmi.main.MainWidget.run_on_startup">run_on_startup() (pygmi.main.MainWidget method)</a>
+</li>
       <li><a href="autoapi/pygmi/mt/birrp/index.html#pygmi.mt.birrp.BIRRP.runbirrp">runbirrp() (pygmi.mt.birrp.BIRRP method)</a>
 </li>
   </ul></td>
@@ -4374,7 +4341,7 @@
         <li><a href="autoapi/pygmi/vector/vvis3d/index.html#pygmi.vector.vvis3d.Mod3dDisplay.save">(pygmi.vector.vvis3d.Mod3dDisplay method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.save_depths">save_depths() (pygmi.mag.tiltdepth.TiltDepth method)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.save_depths">save_depths() (pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.PlotInterp.save_img">save_img() (pygmi.raster.ginterp.PlotInterp method)</a>
 </li>
@@ -4417,21 +4384,23 @@
 </li>
         <li><a href="autoapi/pygmi/em/tdem/index.html#pygmi.em.tdem.TDEM1D.saveproj">(pygmi.em.tdem.TDEM1D method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData.saveproj">(pygmi.grav.dataprep.ProcessData method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.ASig.saveproj">(pygmi.maggrv.dataprep.ASig method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5.saveproj">(pygmi.grav.iodefs.ImportCG5 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Continuation.saveproj">(pygmi.maggrv.dataprep.Continuation method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.ASig.saveproj">(pygmi.mag.dataprep.ASig method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.RTP.saveproj">(pygmi.maggrv.dataprep.RTP method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.RTP.saveproj">(pygmi.mag.dataprep.RTP method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1.saveproj">(pygmi.maggrv.dataprep.Tilt1 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1.saveproj">(pygmi.mag.dataprep.Tilt1 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData.saveproj">(pygmi.maggrv.gravproc.ProcessData method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.IGRF.saveproj">(pygmi.mag.igrf.IGRF method)</a>
+        <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.IGRF.saveproj">(pygmi.maggrv.igrf.IGRF method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.saveproj">(pygmi.mag.matchedfilt.MatchedFilt method)</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5.saveproj">(pygmi.maggrv.iodefs.ImportCG5 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.saveproj">(pygmi.mag.tiltdepth.TiltDepth method)</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.saveproj">(pygmi.maggrv.matchedfilt.MatchedFilt method)</a>
+</li>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.saveproj">(pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
         <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.BasicModule.saveproj">(pygmi.misc.BasicModule method)</a>
 </li>
@@ -4466,8 +4435,6 @@
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Gradients.saveproj">(pygmi.raster.cooper.Gradients method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Visibility2d.saveproj">(pygmi.raster.cooper.Visibility2d method)</a>
-</li>
-        <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.Continuation.saveproj">(pygmi.raster.dataprep.Continuation method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.DataCut.saveproj">(pygmi.raster.dataprep.DataCut method)</a>
 </li>
@@ -4699,21 +4666,23 @@
 </li>
         <li><a href="autoapi/pygmi/em/tdem/index.html#pygmi.em.tdem.TDEM1D.settings">(pygmi.em.tdem.TDEM1D method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData.settings">(pygmi.grav.dataprep.ProcessData method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.ASig.settings">(pygmi.maggrv.dataprep.ASig method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5.settings">(pygmi.grav.iodefs.ImportCG5 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Continuation.settings">(pygmi.maggrv.dataprep.Continuation method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.ASig.settings">(pygmi.mag.dataprep.ASig method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.RTP.settings">(pygmi.maggrv.dataprep.RTP method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.RTP.settings">(pygmi.mag.dataprep.RTP method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1.settings">(pygmi.maggrv.dataprep.Tilt1 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1.settings">(pygmi.mag.dataprep.Tilt1 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData.settings">(pygmi.maggrv.gravproc.ProcessData method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.IGRF.settings">(pygmi.mag.igrf.IGRF method)</a>
+        <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.IGRF.settings">(pygmi.maggrv.igrf.IGRF method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.settings">(pygmi.mag.matchedfilt.MatchedFilt method)</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5.settings">(pygmi.maggrv.iodefs.ImportCG5 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.settings">(pygmi.mag.tiltdepth.TiltDepth method)</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.settings">(pygmi.maggrv.matchedfilt.MatchedFilt method)</a>
+</li>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.settings">(pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
         <li><a href="autoapi/pygmi/main/index.html#pygmi.main.DiagramItem.settings">(pygmi.main.DiagramItem method)</a>
 </li>
@@ -4748,8 +4717,6 @@
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Gradients.settings">(pygmi.raster.cooper.Gradients method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Visibility2d.settings">(pygmi.raster.cooper.Visibility2d method)</a>
-</li>
-        <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.Continuation.settings">(pygmi.raster.dataprep.Continuation method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.DataCut.settings">(pygmi.raster.dataprep.DataCut method)</a>
 </li>
@@ -4861,21 +4828,23 @@
 </li>
         <li><a href="autoapi/pygmi/clust/super_class/index.html#pygmi.clust.super_class.SuperClass.setupui">(pygmi.clust.super_class.SuperClass method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.ProcessData.setupui">(pygmi.grav.dataprep.ProcessData method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.ASig.setupui">(pygmi.maggrv.dataprep.ASig method)</a>
 </li>
-        <li><a href="autoapi/pygmi/grav/iodefs/index.html#pygmi.grav.iodefs.ImportCG5.setupui">(pygmi.grav.iodefs.ImportCG5 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Continuation.setupui">(pygmi.maggrv.dataprep.Continuation method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.ASig.setupui">(pygmi.mag.dataprep.ASig method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.RTP.setupui">(pygmi.maggrv.dataprep.RTP method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.RTP.setupui">(pygmi.mag.dataprep.RTP method)</a>
+        <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1.setupui">(pygmi.maggrv.dataprep.Tilt1 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1.setupui">(pygmi.mag.dataprep.Tilt1 method)</a>
+        <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.ProcessData.setupui">(pygmi.maggrv.gravproc.ProcessData method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.IGRF.setupui">(pygmi.mag.igrf.IGRF method)</a>
+        <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.IGRF.setupui">(pygmi.maggrv.igrf.IGRF method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/matchedfilt/index.html#pygmi.mag.matchedfilt.MatchedFilt.setupui">(pygmi.mag.matchedfilt.MatchedFilt method)</a>
+        <li><a href="autoapi/pygmi/maggrv/iodefs/index.html#pygmi.maggrv.iodefs.ImportCG5.setupui">(pygmi.maggrv.iodefs.ImportCG5 method)</a>
 </li>
-        <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth.setupui">(pygmi.mag.tiltdepth.TiltDepth method)</a>
+        <li><a href="autoapi/pygmi/maggrv/matchedfilt/index.html#pygmi.maggrv.matchedfilt.MatchedFilt.setupui">(pygmi.maggrv.matchedfilt.MatchedFilt method)</a>
+</li>
+        <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth.setupui">(pygmi.maggrv.tiltdepth.TiltDepth method)</a>
 </li>
         <li><a href="autoapi/pygmi/main/index.html#pygmi.main.MainWidget.setupui">(pygmi.main.MainWidget method)</a>
 </li>
@@ -4922,8 +4891,6 @@
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Gradients.setupui">(pygmi.raster.cooper.Gradients method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/cooper/index.html#pygmi.raster.cooper.Visibility2d.setupui">(pygmi.raster.cooper.Visibility2d method)</a>
-</li>
-        <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.Continuation.setupui">(pygmi.raster.dataprep.Continuation method)</a>
 </li>
         <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.DataLayerStack.setupui">(pygmi.raster.dataprep.DataLayerStack method)</a>
 </li>
@@ -5080,7 +5047,7 @@
         <li><a href="autoapi/pygmi/rsense/hyperspec/index.html#pygmi.rsense.hyperspec.AnalSpec.showtext">(pygmi.rsense.hyperspec.AnalSpec method)</a>
 </li>
       </ul></li>
-      <li><a href="autoapi/pygmi/mag/igrf/index.html#pygmi.mag.igrf.shval3">shval3() (in module pygmi.mag.igrf)</a>
+      <li><a href="autoapi/pygmi/maggrv/igrf/index.html#pygmi.maggrv.igrf.shval3">shval3() (in module pygmi.maggrv.igrf)</a>
 </li>
       <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.PTime.since_first_call">since_first_call() (pygmi.misc.PTime method)</a>
 </li>
@@ -5100,7 +5067,7 @@
 </li>
       <li><a href="autoapi/pygmi/raster/smooth/index.html#pygmi.raster.smooth.Smooth">Smooth (class in pygmi.raster.smooth)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1.smooth">smooth (pygmi.mag.dataprep.Tilt1 attribute)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1.smooth">smooth (pygmi.maggrv.dataprep.Tilt1 attribute)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/menu/index.html#pygmi.raster.menu.MenuWidget.smoothing">smoothing() (pygmi.raster.menu.MenuWidget method)</a>
 </li>
@@ -5110,7 +5077,7 @@
 </li>
       <li><a href="autoapi/pygmi/rsense/usgs/index.html#pygmi.rsense.usgs.SPECPR">SPECPR() (in module pygmi.rsense.usgs)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.spherical_bouguer">spherical_bouguer() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.spherical_bouguer">spherical_bouguer() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.ProfileDisplay.sprofdir">sprofdir() (pygmi.pfmod.tab_prof.ProfileDisplay method)</a>
 </li>
@@ -5174,7 +5141,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/pfmod/tab_prof/index.html#pygmi.pfmod.tab_prof.RangedCopy.target_update">target_update() (pygmi.pfmod.tab_prof.RangedCopy method)</a>
 </li>
-      <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.taylorcont">taylorcont() (in module pygmi.raster.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.taylorcont">taylorcont() (in module pygmi.maggrv.dataprep)</a>
 </li>
       <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.PTime.tchk">tchk (pygmi.misc.PTime attribute)</a>
 </li>
@@ -5188,7 +5155,7 @@
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_agc">test_agc() (in module pygmi.test.test_raster)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_mag/index.html#pygmi.test.test_mag.test_asig">test_asig() (in module pygmi.test.test_mag)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_asig">test_asig() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_aspect">test_aspect() (in module pygmi.test.test_raster)</a>
 </li>
@@ -5198,7 +5165,7 @@
 </li>
       <li><a href="autoapi/pygmi/test/test_cluster/index.html#pygmi.test.test_cluster.test_cluster">test_cluster() (in module pygmi.test.test_cluster)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_cont">test_cont() (in module pygmi.test.test_raster)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_cont">test_cont() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_corr2d">test_corr2d() (in module pygmi.test.test_raster)</a>
 </li>
@@ -5218,7 +5185,7 @@
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_hmode">test_hmode() (in module pygmi.test.test_raster)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_mag/index.html#pygmi.test.test_mag.test_IGRF">test_IGRF() (in module pygmi.test.test_mag)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_IGRF">test_IGRF() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_img2rgb">test_img2rgb() (in module pygmi.test.test_raster)</a>
 </li>
@@ -5234,7 +5201,7 @@
 </li>
       <li><a href="autoapi/pygmi/test/test_rsense/index.html#pygmi.test.test_rsense.test_pca">test_pca() (in module pygmi.test.test_rsense)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_gravity/index.html#pygmi.test.test_gravity.test_process_data">test_process_data() (in module pygmi.test.test_gravity)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_process_data">test_process_data() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_raps">test_raps() (in module pygmi.test.test_raster)</a>
 </li>
@@ -5242,7 +5209,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autoapi/pygmi/test/test_mag/index.html#pygmi.test.test_mag.test_rtp">test_rtp() (in module pygmi.test.test_mag)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_rtp">test_rtp() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_cluster/index.html#pygmi.test.test_cluster.test_segment">test_segment() (in module pygmi.test.test_cluster)</a>
 </li>
@@ -5252,9 +5219,9 @@
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_thgrad">test_thgrad() (in module pygmi.test.test_raster)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_mag/index.html#pygmi.test.test_mag.test_tilt">test_tilt() (in module pygmi.test.test_mag)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_tilt">test_tilt() (in module pygmi.test.test_maggrv)</a>
 </li>
-      <li><a href="autoapi/pygmi/test/test_mag/index.html#pygmi.test.test_mag.test_tilt1">test_tilt1() (in module pygmi.test.test_mag)</a>
+      <li><a href="autoapi/pygmi/test/test_maggrv/index.html#pygmi.test.test_maggrv.test_tilt1">test_tilt1() (in module pygmi.test.test_maggrv)</a>
 </li>
       <li><a href="autoapi/pygmi/test/test_raster/index.html#pygmi.test.test_raster.test_trimraster">test_trimraster() (in module pygmi.test.test_raster)</a>
 </li>
@@ -5270,7 +5237,7 @@
 </li>
       <li><a href="autoapi/pygmi/misc/index.html#pygmi.misc.textwrap2">textwrap2() (in module pygmi.misc)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.theoretical_gravity">theoretical_gravity() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.theoretical_gravity">theoretical_gravity() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/ginterp/index.html#pygmi.raster.ginterp.MyMplCanvas.theta">theta (pygmi.raster.ginterp.MyMplCanvas attribute)</a>
 </li>
@@ -5278,17 +5245,17 @@
 </li>
       <li><a href="autoapi/pygmi/maps/index.html#pygmi.maps.tick_formatter">tick_formatter() (in module pygmi.maps)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/menu/index.html#pygmi.mag.menu.MenuWidget.tilt">tilt() (pygmi.mag.menu.MenuWidget method)</a>
+      <li><a href="autoapi/pygmi/maggrv/menu/index.html#pygmi.maggrv.menu.MenuWidget.tilt">tilt() (pygmi.maggrv.menu.MenuWidget method)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.Tilt1">Tilt1 (class in pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.Tilt1">Tilt1 (class in pygmi.maggrv.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/dataprep/index.html#pygmi.mag.dataprep.tilt1">tilt1() (in module pygmi.mag.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/dataprep/index.html#pygmi.maggrv.dataprep.tilt1">tilt1() (in module pygmi.maggrv.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.TiltDepth">TiltDepth (class in pygmi.mag.tiltdepth)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.TiltDepth">TiltDepth (class in pygmi.maggrv.tiltdepth)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.tiltdepth">tiltdepth() (in module pygmi.mag.tiltdepth)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.tiltdepth">tiltdepth() (in module pygmi.maggrv.tiltdepth)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.time_convert">time_convert() (in module pygmi.grav.dataprep)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.time_convert">time_convert() (in module pygmi.maggrv.gravproc)</a>
 </li>
       <li><a href="autoapi/pygmi/raster/datatypes/index.html#pygmi.raster.datatypes.RasterMeta.tnames">tnames (pygmi.raster.datatypes.RasterMeta attribute)</a>
 </li>
@@ -5510,7 +5477,7 @@
       </ul></li>
       <li><a href="autoapi/pygmi/seis/graphs/index.html#pygmi.seis.graphs.MyMplCanvas.update_pres">update_pres() (pygmi.seis.graphs.MyMplCanvas method)</a>
 </li>
-      <li><a href="autoapi/pygmi/grav/dataprep/index.html#pygmi.grav.dataprep.MyMplCanvas.update_raster">update_raster() (pygmi.grav.dataprep.MyMplCanvas method)</a>
+      <li><a href="autoapi/pygmi/maggrv/gravproc/index.html#pygmi.maggrv.gravproc.MyMplCanvas.update_raster">update_raster() (pygmi.maggrv.gravproc.MyMplCanvas method)</a>
 
       <ul>
         <li><a href="autoapi/pygmi/pfmod/grvmag3d/index.html#pygmi.pfmod.grvmag3d.MyMplCanvas.update_raster">(pygmi.pfmod.grvmag3d.MyMplCanvas method)</a>
@@ -5586,7 +5553,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autoapi/pygmi/raster/dataprep/index.html#pygmi.raster.dataprep.verticalp">verticalp() (in module pygmi.raster.dataprep)</a>
 </li>
-      <li><a href="autoapi/pygmi/mag/tiltdepth/index.html#pygmi.mag.tiltdepth.vgrad">vgrad() (in module pygmi.mag.tiltdepth)</a>
+      <li><a href="autoapi/pygmi/maggrv/tiltdepth/index.html#pygmi.maggrv.tiltdepth.vgrad">vgrad() (in module pygmi.maggrv.tiltdepth)</a>
 </li>
       <li><a href="autoapi/pygmi/rsense/menu/index.html#pygmi.rsense.menu.MenuWidget.view_change">view_change() (pygmi.rsense.menu.MenuWidget method)</a>
 </li>

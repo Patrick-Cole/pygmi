@@ -26,7 +26,7 @@
 
 from PySide6 import QtGui, QtWidgets
 
-from pygmi.mag import dataprep, igrf, matchedfilt, tiltdepth
+from pygmi.maggrv import dataprep, gravproc, igrf, iodefs, matchedfilt, tiltdepth
 
 
 class MenuWidget:
@@ -50,16 +50,8 @@ class MenuWidget:
         self.parent.add_to_context("inRaster")
 
         # Normal menus
-        self.menu = QtWidgets.QMenu("Magnetics")
+        self.menu = QtWidgets.QMenu("Magnetics and Gravity")
         parent.menubar.addAction(self.menu.menuAction())
-
-        self.action_asig = QtGui.QAction("Analytic Signal")
-        self.menu.addAction(self.action_asig)
-        self.action_asig.triggered.connect(self.asig)
-
-        self.action_tilt = QtGui.QAction("Tilt Angle and Related Edge Filters")
-        self.menu.addAction(self.action_tilt)
-        self.action_tilt.triggered.connect(self.tilt)
 
         self.action_rtp = QtGui.QAction("Reduction to the Pole")
         self.menu.addAction(self.action_rtp)
@@ -69,6 +61,20 @@ class MenuWidget:
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
 
+        self.menu.addSeparator()
+
+        self.action_asig = QtGui.QAction("Analytic Signal")
+        self.menu.addAction(self.action_asig)
+        self.action_asig.triggered.connect(self.asig)
+
+        self.action_cont = QtGui.QAction("Continuation")
+        self.menu.addAction(self.action_cont)
+        self.action_cont.triggered.connect(self.cont)
+
+        self.action_tilt = QtGui.QAction("Tilt Angle and Related Edge Filters")
+        self.menu.addAction(self.action_tilt)
+        self.action_tilt.triggered.connect(self.tilt)
+
         self.action_mfilt = QtGui.QAction("Matched Filtering")
         self.menu.addAction(self.action_mfilt)
         self.action_mfilt.triggered.connect(self.mfilt)
@@ -76,6 +82,20 @@ class MenuWidget:
         self.action_depth_susc = QtGui.QAction("Tilt Depth Interpretation")
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
+
+        self.menu.addSeparator()
+
+        self.action_import_data = QtGui.QAction("Import CG-5 or CG-6 Data")
+        self.menu.addAction(self.action_import_data)
+        self.action_import_data.triggered.connect(self.import_data)
+
+        self.action_process = QtGui.QAction("Process Gravity Data")
+        self.menu.addAction(self.action_process)
+        self.action_process.triggered.connect(self.process_data)
+
+    def cont(self):
+        """Compute Continuation."""
+        self.parent.item_insert("Step", "Continuation", dataprep.Continuation)
 
     def depth_susc(self):
         """Depth and Susceptibility calculations."""
@@ -102,3 +122,11 @@ class MenuWidget:
     def mfilt(self):
         """Compute Matched Filtering."""
         self.parent.item_insert("Step", "Matched Filtering", matchedfilt.MatchedFilt)
+
+    def import_data(self):
+        """Import data."""
+        self.parent.item_insert("Io", "Import CG-5 or CG-6 Data", iodefs.ImportCG5)
+
+    def process_data(self):
+        """Process data."""
+        self.parent.item_insert("Step", "Process Gravity Data", gravproc.ProcessData)

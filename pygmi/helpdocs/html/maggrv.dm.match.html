@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Calculate IGRF Corrected Data &#8212; PyGMI 3.3.0.13 documentation</title>
+    <title>Matched Filtering &#8212; PyGMI 3.3.0.14 documentation</title>
   
   
   
@@ -40,20 +40,20 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=f72b56b0"></script>
+    <script src="_static/documentation_options.js?v=623ed461"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'mag.dm.igrf';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'maggrv.dm.match';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Matched Filtering" href="mag.dm.match.html" />
-    <link rel="prev" title="Reduction to the Pole" href="mag.dm.rtp.html" />
+    <link rel="next" title="Tilt Depth Interpretation" href="maggrv.dm.tiltdepth.html" />
+    <link rel="prev" title="Tilt Angle and Related Edge Filters" href="maggrv.dm.tilt.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="3.3.0.13" />
+  <meta name="docsearch:version" content="3.3.0.14" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -214,7 +214,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.3.0.13 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.14 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -288,7 +288,6 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.norm.html">Normalisation/Scaling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.grad.html">Gradients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.visibility.html">Visibility Calculation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="raster.dm.cont.html">Continuation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.mosaic.html">Dataset Mosaic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.reproj.html">Dataset Reprojection</a></li>
@@ -359,18 +358,16 @@
 <li class="toctree-l3"><a class="reference internal" href="em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="mag.html">Magnetics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Calculate IGRF Corrected Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="maggrv.html">Magnetics and Gravity</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.asig.html">Analytic Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Matched Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.importgravity.html">Import CG-5 or CG-6 Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.processgravity.html">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -468,18 +465,14 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/em/tdem/index.html">pygmi.em.tdem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/menu/index.html">pygmi.grav.menu</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/maggrv/index.html">pygmi.maggrv</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/dataprep/index.html">pygmi.maggrv.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/gravproc/index.html">pygmi.maggrv.gravproc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/igrf/index.html">pygmi.maggrv.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/iodefs/index.html">pygmi.maggrv.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/matchedfilt/index.html">pygmi.maggrv.matchedfilt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/menu/index.html">pygmi.maggrv.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/tiltdepth/index.html">pygmi.maggrv.tiltdepth</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/main/index.html">pygmi.main</a></li>
@@ -559,8 +552,7 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_maggrv/index.html">pygmi.test.test_maggrv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
@@ -642,7 +634,7 @@
       
       
       
-      <li><a href="_sources/mag.dm.igrf.rst" target="_blank"
+      <li><a href="_sources/maggrv.dm.match.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -725,7 +717,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Calculate IGRF Corrected Data</h1>
+    <h1>Matched Filtering</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -747,62 +739,30 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="calculate-igrf-corrected-data">
-<h1>Calculate IGRF Corrected Data<a class="headerlink" href="#calculate-igrf-corrected-data" title="Link to this heading">#</a></h1>
-<p>This function removes the International Geomagnetic Reference Field (IGRF) from the total magnetic intensity (TMI) data (Alken et al., 2021). It requires, as input, a magnetic dataset and a digital elevation model for an area. The two datasets must be in the same projection. The IGRF correction is a translated version of the correction supplied at: <a class="reference external" href="http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html</a> (IGRF Code, n.d.).</p>
-<p>The two input datasets must both be connected to the <strong>Remove IGRF</strong> module. Alternatively, the data can be combined in a multiband raster before removing the IGRF.</p>
-<figure class="align-default" id="id1">
-<img alt="_images/igrf.png" src="_images/igrf.png" />
-<figcaption>
-<p><span class="caption-text">Connecting the input raster datasets to the Remove IGRF module.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>The IGRF correction interface requires the following inputs:</p>
+  <section id="matched-filtering">
+<h1>Matched Filtering<a class="headerlink" href="#matched-filtering" title="Link to this heading">#</a></h1>
+<p>Matched filtering is a technique which seeks to separate out magnetic ensembles based on features present in the frequency domain (Spector and Grant, 1970). The filter fits linear sections to the log of the magnetic power spectrum, and calculates the depth of that section based on the fit. An FFT filter is also calculated for that linear section. The output is a series of magnetic images, each representing a depth slice.</p>
+<p>The interface has the following options:</p>
 <ol class="arabic simple">
-<li><p><strong>Input Projection</strong> - Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. Under the first dropdown list the Datum can be selected, and the projection is selected under the second dropdown list. If the data sets have projections these will be imported automatically, but the user must confirm that it is correct.</p></li>
-<li><p>Survey information:</p></li>
+<li><p><strong>Band to perform filtering</strong> - This is the raster magnetic band.</p></li>
+<li><p><strong>Number of depth slices</strong> - this is the number of depth slices to split the data into.</p></li>
+<li><p><strong>Recalculate</strong> - option to recalculate.</p></li>
 </ol>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Sensor clearance above ground</strong> - the height of the magnetic sensor above the ground in metres.</p></li>
-<li><p><strong>Date</strong> - The magnetic survey date. For large surveys that lasted for multiple or weeks, any date during the survey can be entered since the changes in the geomagnetic field will be negligible on this time scale.</p></li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="3">
-<li><p>Input data:</p></li>
+<p>The interface displays the following:</p>
+<ol class="arabic simple" start="4">
+<li><p><strong>Piecewise Linear Fit</strong> - linear fit to sections of the FFT.</p></li>
+<li><p><strong>FFT Filters</strong> - the actual FFT filters used are displayed here.</p></li>
 </ol>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Digital Elevation Model</strong> - Raster grid of the terrain in height above sea level.</p></li>
-<li><p><strong>Magnetic Data</strong> - Raster grid of the magnetic data to be corrected.</p></li>
-</ul>
-</div></blockquote>
-<figure class="align-default" id="id2">
-<img alt="_images/igrf2.png" src="_images/igrf2.png" />
+<figure class="align-default" id="id1">
+<img alt="_images/magmatch.png" src="_images/magmatch.png" />
 <figcaption>
-<p><span class="caption-text">IGRF correction interface.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-text">Matched Filtering interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
-<p>The result of the calculation is a four-band raster dataset with the following bands:</p>
-<ul class="simple">
-<li><p><em>IGRF</em> - The total intensity of the IGRF in nT.</p></li>
-<li><p><em>Inclination</em> - The inclination of the IGRF.</p></li>
-<li><p><em>Declination</em> - The declination of the IGRF</p></li>
-<li><p><em>Magnetic data</em> - The IGRF-corrected magnetic data. The IGRF parameters are included in the band name.</p></li>
-</ul>
-<p>The IGRF parameters are also shown in the <strong>Process Log</strong> window of the main PyGMI interface</p>
-<figure class="align-default" id="id3">
-<img alt="_images/igrf3.png" src="_images/igrf3.png" />
-<figcaption>
-<p><span class="caption-text">IGRF parameters listed in the Process Log window.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<p>The resulting dataset can be exported by right-clicking on the function and selecting <a class="reference internal" href="raster.cm.export.html"><span class="doc">Export Raster</span></a>.</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>Alken, P., Thébault, E., Beggan, C.D., Amit, H., Aubert, J., Baerenzung, J., Bondar, T.N., Brown, W.J., Califf, S., Chambodut, A., Chulliat, A., Cox, G.A., Finlay, C.C., Fournier, A., Gillet, N., Grayver, A., Hammer, M.D., Holschneider, M., Huder, L., Hulot, G., Jager, T., Kloss, C., Korte, M., Kuang, W., Kuvshinov, A., Langlais, B., Léger, J.-M., Lesur, V., Livermore, P.W., Lowes, F.J., Macmillan, S., Magnes, W., Mandea, M., Marsal, S., Matzka, J., Metman, M.C., Minami, T., Morschhauser, A., Mound, J.E., Nair, M., Nakano, S., Olsen, N., Pavón-Carrasco, F.J., Petrov, V.G., Ropp, G., Rother, M., Sabaka, T.J., Sanchez, S., Saturnino, D., Schnepf, N.R., Shen, X., Stolle, C., Tangborn, A., Tøffner-Clausen, L., Toh, H., Torta, J.M., Varner, J., Vervelidou, F., Vigneron, P., Wardinski, I., Wicht, J., Woods, A., Yang, Y., Zeren, Z. and Zhou, B. 2021. International Geomagnetic Reference Field: the thirteenth generation. Earth, Planets and Space, 73, 49, <a class="reference external" href="https://doi.org/10.1186/s40623-020-01288-x">https://doi.org/10.1186/s40623-020-01288-x</a>.</p>
-<p>IGRF Code (Accessed 28 March, 2014, <a class="reference external" href="http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html</a>), originally written in FORTRAN, was developed using subroutines written by A. Zunde (USGS), S.R.C. Malin &amp; D.R. Barraclough (Institute of Geological Sciences, United Kingdom). Translated into C by Craig H. Shaffer. Rewritten by David Owens and maintained by: Stefan Maus (NOAA)</p>
+<div><p>Spector, A., &amp; Grant, F. S. (1970). Statistical models for interpreting aeromagnetic data. Geophysics, 35, 293-3020.</p>
 </div></blockquote>
 </section>
 </section>
@@ -819,20 +779,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mag.dm.rtp.html"
+       href="maggrv.dm.tilt.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Reduction to the Pole</p>
+        <p class="prev-next-title">Tilt Angle and Related Edge Filters</p>
       </div>
     </a>
     <a class="right-next"
-       href="mag.dm.match.html"
+       href="maggrv.dm.tiltdepth.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Matched Filtering</p>
+        <p class="prev-next-title">Tilt Depth Interpretation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

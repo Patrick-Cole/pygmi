@@ -32,7 +32,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.grav import iodefs
+from pygmi.maggrv import iodefs
 from pygmi.misc import BasicModule, ContextModule
 
 
@@ -153,7 +153,7 @@ class ProcessData(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = "gravity.dm.process"
+        self.buttonbox.htmlfile = "maggrv.dm.processgravity"
 
         lbl_density = QtWidgets.QLabel("Background Density (kg/m<sup>3</sup>):")
         lbl_absbase = QtWidgets.QLabel("Local Base Station Absolute Gravity (mGal):")

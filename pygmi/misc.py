@@ -862,7 +862,14 @@ class ProgressBarText:
 
 
 def check_for_updates():
-    """Check github for updates."""
+    """
+    Check GitHub for updates.
+
+    Returns
+    -------
+    verpath : str
+        Version path, embedded in an html string.
+    """
     # GitHub API endpoint for the latest release
     url = "https://api.github.com/repos/Patrick-Cole/pygmi/releases/latest"
 

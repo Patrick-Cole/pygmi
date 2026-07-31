@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Continuation &#8212; PyGMI 3.3.0.13 documentation</title>
+    <title>Process Gravity Data &#8212; PyGMI 3.3.0.14 documentation</title>
   
   
   
@@ -40,20 +40,20 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=f72b56b0"></script>
+    <script src="_static/documentation_options.js?v=623ed461"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'raster.dm.cont';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'maggrv.dm.processgravity';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Layer Stack and Resampling" href="raster.dm.layerstack.html" />
-    <link rel="prev" title="Visibility Calculation" href="raster.dm.visibility.html" />
+    <link rel="next" title="Magnetotellurics" href="mt.html" />
+    <link rel="prev" title="Import CG-5 or CG-6 Data" href="maggrv.dm.importgravity.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="3.3.0.13" />
+  <meta name="docsearch:version" content="3.3.0.14" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -174,6 +174,10 @@
   
 
   
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
 </div>
 
     </header>
@@ -210,7 +214,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.3.0.13 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.0.14 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -275,7 +279,7 @@
 <li class="toctree-l2"><a class="reference internal" href="interface.html">User Interface Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Getting Started Guide: Example Of A Basic Workflow In PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="raster.html">Raster Data Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrasterdata.html">Import Raster Data</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.importrgbimage.html">Import RGB Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.equationeditor.html">Equation Editor</a></li>
@@ -284,7 +288,6 @@
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.norm.html">Normalisation/Scaling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.grad.html">Gradients</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.visibility.html">Visibility Calculation</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Continuation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.layerstack.html">Layer Stack and Resampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.mosaic.html">Dataset Mosaic</a></li>
 <li class="toctree-l3"><a class="reference internal" href="raster.dm.reproj.html">Dataset Reprojection</a></li>
@@ -355,18 +358,16 @@
 <li class="toctree-l3"><a class="reference internal" href="em.dm.tdem1dinv.html">TDEM 1D Inversion</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="gravity.html">Gravity</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.import.html">Import CG-5 or CG-6 Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gravity.dm.process.html">Process Gravity Data</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="mag.html">Magnetics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.asig.html">Analytic Signal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.rtp.html">Reduction to the Pole</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.match.html">Matched Filtering</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mag.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="maggrv.html">Magnetics and Gravity</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.rtp.html">Reduction to the Pole</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.igrf.html">Calculate IGRF Corrected Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.asig.html">Analytic Signal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.cont.html">Continuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tilt.html">Tilt Angle and Related Edge Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.match.html">Matched Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.tiltdepth.html">Tilt Depth Interpretation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="maggrv.dm.importgravity.html">Import CG-5 or CG-6 Data</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Process Gravity Data</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="mt.html">Magnetotellurics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -464,18 +465,14 @@
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/em/tdem/index.html">pygmi.em.tdem</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/grav/index.html">pygmi.grav</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/dataprep/index.html">pygmi.grav.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/iodefs/index.html">pygmi.grav.iodefs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/grav/menu/index.html">pygmi.grav.menu</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/mag/index.html">pygmi.mag</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/dataprep/index.html">pygmi.mag.dataprep</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/igrf/index.html">pygmi.mag.igrf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/matchedfilt/index.html">pygmi.mag.matchedfilt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/menu/index.html">pygmi.mag.menu</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/mag/tiltdepth/index.html">pygmi.mag.tiltdepth</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/maggrv/index.html">pygmi.maggrv</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/dataprep/index.html">pygmi.maggrv.dataprep</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/gravproc/index.html">pygmi.maggrv.gravproc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/igrf/index.html">pygmi.maggrv.igrf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/iodefs/index.html">pygmi.maggrv.iodefs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/matchedfilt/index.html">pygmi.maggrv.matchedfilt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/menu/index.html">pygmi.maggrv.menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/maggrv/tiltdepth/index.html">pygmi.maggrv.tiltdepth</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/pygmi/main/index.html">pygmi.main</a></li>
@@ -555,8 +552,7 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/pygmi/test/index.html">pygmi.test</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_cluster/index.html">pygmi.test.test_cluster</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_gravity/index.html">pygmi.test.test_gravity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_mag/index.html">pygmi.test.test_mag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_maggrv/index.html">pygmi.test.test_maggrv</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_pfmod/index.html">pygmi.test.test_pfmod</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_raster/index.html">pygmi.test.test_raster</a></li>
 <li class="toctree-l4"><a class="reference internal" href="autoapi/pygmi/test/test_rsense/index.html">pygmi.test.test_rsense</a></li>
@@ -638,7 +634,7 @@
       
       
       
-      <li><a href="_sources/raster.dm.cont.rst" target="_blank"
+      <li><a href="_sources/maggrv.dm.processgravity.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -708,7 +704,9 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -719,11 +717,19 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Continuation</h1>
+    <h1>Process Gravity Data</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -733,21 +739,53 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="continuation">
-<h1>Continuation<a class="headerlink" href="#continuation" title="Link to this heading">#</a></h1>
-<p>This function performs an upward and downward continuation for Magnetic and Gravity data. Upward continuation is achieved using the standard Fast Fourier transform (FFT), while downward continuation uses a Taylor expansion for extra stability.</p>
-<p>Options:</p>
-<ul class="simple">
-<li><p><strong>Band to perform continuation</strong> - This should be magnetic or gravity data.</p></li>
-<li><p><strong>Continuation type</strong> - This can be upward or downward.</p></li>
-<li><p><strong>Continuation distance</strong> - a positive number denoting the continuation distance in metres. The dataset must be in a projection, not in geographic/geodetic coordinates.</p></li>
-</ul>
+  <section id="process-gravity-data">
+<h1>Process Gravity Data<a class="headerlink" href="#process-gravity-data" title="Link to this heading">#</a></h1>
+<p>This is a module used to process gravity data, assuming a single base station. It does so according to the North American gravity database standards, as described by Hinze et al (2005)</p>
+<p>The input is a line dataset, imported via the <strong>Import CG-5 or CG-6 Data</strong> function. Coordinates must be in latitude and longitude, with elevation in meters.</p>
+<p>The processing interface has the following parameters :</p>
+<ol class="arabic simple">
+<li><p><strong>Known Base Station Number</strong> - This is the station number for a base station with a known absolute gravity value.</p></li>
+<li><p><strong>Known Base Station Absolute Gravity</strong> - This is the known absolute gravity in mGal for the station above.</p></li>
+<li><p><strong>Calculate local base value</strong> - Use this option to tie in the local base station to a nearby base station with known absolute gravity. Note that the local station number must be different from the known station number. There must also be at least one local base station between successive known base station values.</p></li>
+<li><p><strong>Background Density</strong> - This is the background density in kg/m<sup>3</sup> .</p></li>
+<li><p><strong>Base Station Absolute Gravity</strong> - This is the absolute gravity value of the local base station used to correct for drift in the survey. It can be calculated by PyGMI or manually entered.</p></li>
+<li><p><strong>Minimum Base Station Number</strong> - All station numbers greater than this will be considered base stations.</p></li>
+</ol>
 <figure class="align-default" id="id1">
-<img alt="_images/rastercont.png" src="_images/rastercont.png" />
+<img alt="_images/gravproc.png" src="_images/gravproc.png" />
 <figcaption>
-<p><span class="caption-text">Continuation options.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-text">Gravity Processing interface.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
+<p>Once the calculation has been completed a window showing the gravimeter drift will appear for quality control (QC) purposes. The <strong>Process Log</strong> window on the main PyGMI interface lists the calculated drift values.</p>
+<figure class="align-default" id="id2">
+<img alt="_images/gravproc2.png" src="_images/gravproc2.png" />
+<figcaption>
+<p><span class="caption-text">Gravimeter drift graphs for QC.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id3">
+<img alt="_images/gravproc3.png" src="_images/gravproc3.png" />
+<figcaption>
+<p><span class="caption-text">Process Log window after gravity processing.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The processed data can be viewed and exported using the context menus. It consists of the following fields (all in mGal):</p>
+<ul class="simple">
+<li><p><em>gobs_drift</em> - the observed drift,</p></li>
+<li><p><em>gT</em> - theoretical gravity value,</p></li>
+<li><p><em>gATM</em> - atmospheric effect,</p></li>
+<li><p><em>gHC</em> - height correction,</p></li>
+<li><p><em>gSB</em> - spherical Bouguer correction,</p></li>
+<li><p><em>BOUGUER</em> - Bouguer gravity anomaly.</p></li>
+</ul>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<blockquote>
+<div><p>Hinze, W.J., Aiken, C., Brozena, J., Coakley, B., Dater, D., Flanagan, G., Forsberg, R., Hildenbrand, T., Kaller, G.R., Kellogg, J., Kucks, R., Li, X., Mainville, A., Moring, R., Pilkington, M., Plouff, D., Ravat, D., Roman, D., Urrutia-Fucugauchi, J., Veronneau, M., Webring, M., Winester, D. 2005. New standards for reducing gravity data: the North American gravity database. Geophysics, 70, J25-J32.</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -762,20 +800,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="raster.dm.visibility.html"
+       href="maggrv.dm.importgravity.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Visibility Calculation</p>
+        <p class="prev-next-title">Import CG-5 or CG-6 Data</p>
       </div>
     </a>
     <a class="right-next"
-       href="raster.dm.layerstack.html"
+       href="mt.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Layer Stack and Resampling</p>
+        <p class="prev-next-title">Magnetotellurics</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -785,6 +823,23 @@
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

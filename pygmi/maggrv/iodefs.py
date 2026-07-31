@@ -75,7 +75,7 @@ class ImportCG5(BasicModule):
 
         """
         gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = "gravity.dm.import"
+        self.buttonbox.htmlfile = "maggrv.dm.importgravity"
 
         lbl_line = QtWidgets.QLabel("Line:")
         lbl_station = QtWidgets.QLabel("Station:")

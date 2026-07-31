@@ -25,7 +25,6 @@
 """A set of raster data preparation routines."""
 
 import glob
-import math
 import os
 import tempfile
 
@@ -47,131 +46,6 @@ from pygmi.raster.misc import cut_raster, lstack
 from pygmi.raster.reproj import GroupProj, data_reproject
 from pygmi.rsense.iodefs import get_data, get_from_rastermeta
 from pygmi.vector.dataprep import reprojxy
-
-
-class Continuation(BasicModule):
-    """
-    GUI to perform upward and downward continuation on potential field data.
-
-    Parameters
-    ----------
-    parent : pygmi.main.MainWidget, optional
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.cmb_dataid = QtWidgets.QComboBox()
-        self.cmb_cont = QtWidgets.QComboBox()
-        self.dsb_height = QtWidgets.QDoubleSpinBox()
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gl_main = QtWidgets.QGridLayout(self)
-        self.buttonbox.htmlfile = "raster.dm.cont"
-        lbl_band = QtWidgets.QLabel("Band to perform continuation:")
-        lbl_cont = QtWidgets.QLabel("Continuation type:")
-        lbl_height = QtWidgets.QLabel("Continuation distance:")
-
-        self.dsb_height.setMaximum(1000000.0)
-        self.dsb_height.setMinimum(0.0)
-        self.dsb_height.setValue(0.0)
-        self.cmb_cont.clear()
-        self.cmb_cont.addItems(["Upward", "Downward"])
-
-        self.setWindowTitle("Continuation")
-
-        gl_main.addWidget(lbl_band, 0, 0, 1, 1)
-        gl_main.addWidget(self.cmb_dataid, 0, 1, 1, 1)
-
-        gl_main.addWidget(lbl_cont, 1, 0, 1, 1)
-        gl_main.addWidget(self.cmb_cont, 1, 1, 1, 1)
-        gl_main.addWidget(lbl_height, 2, 0, 1, 1)
-        gl_main.addWidget(self.dsb_height, 2, 1, 1, 1)
-        gl_main.addWidget(self.buttonbox, 3, 0, 1, 2)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Parameters
-        ----------
-        nodialog : bool, optional
-            Run settings without a dialog. The default is False.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if "Raster" not in self.indata:
-            self.showlog("No Raster Data.")
-            return False
-
-        items = [i.dataid for i in self.indata["Raster"]]
-        self.cmb_update(self.cmb_dataid, items)
-
-        if not nodialog:
-            tmp = self.exec()
-
-            if tmp != 1:
-                return False
-
-        self.acceptall()
-
-        return True
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.saveobj(self.cmb_dataid)
-        self.saveobj(self.cmb_cont)
-        self.saveobj(self.dsb_height)
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        h = self.dsb_height.value()
-        ctype = self.cmb_cont.currentText()
-        data = None
-
-        # Get data
-        for i in self.indata["Raster"]:
-            if i.dataid == self.cmb_dataid.currentText():
-                data = i
-                break
-
-        if ctype == "Downward":
-            dat = taylorcont(data, h, self.showlog, self.piter)
-        else:
-            dat = fftcont(data, h, self.showlog, self.piter)
-
-        self.outdata["Raster"] = [dat]
 
 
 class DataCut(BasicModule):
@@ -1516,53 +1390,6 @@ def cluster_to_raster(indata):
     return indata
 
 
-def fftcont(data, h, showlog=print, piter=iter):
-    """
-    Continuation.
-
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        PyGMI raster data.
-    h : float
-        Height.
-    showlog : function, optional
-        Function for printing text. The default is print.
-    piter : function, optional
-        Progress bar iterable. The default is iter.
-
-    Returns
-    -------
-    dat : pygmi.raster.datatypes.Data
-        PyGMI raster data.
-
-    """
-    xdim = data.xdim
-    ydim = data.ydim
-
-    ndat, datamedian = fftprep(data)
-
-    fftmod = np.fft.fft2(ndat.data)
-
-    KX, KY = fft_getkxy(fftmod, xdim, ydim)
-    k = np.sqrt(KX**2 + KY**2)
-    k[0, 0] = 1e-10  # to avoid division by zero
-
-    filt = np.exp(-np.abs(k) * h)
-
-    zout = np.real(np.fft.ifft2(fftmod * filt))
-
-    zout = zout + datamedian
-    dat = ndat.copy()
-    dat.data = np.ma.array(zout)
-    dat.dataid = "Upward_" + str(h) + "_" + data.dataid
-    dat = lstack(
-        [dat, data], piter=piter, showlog=showlog, masterid=data.dataid, commonmask=True
-    )[0]
-
-    return dat
-
-
 def get_shape_bounds(sfile, crs=None, showlog=print):
     """
     Get bounds from a shape file.
@@ -2135,47 +1962,6 @@ def redistribute_vertices(geom, distance):
     raise ValueError(f"unhandled geometry {geom.geom_type}")
 
 
-def taylorcont(data, h, showlog=print, piter=iter):
-    """
-    Taylor Continuation.
-
-    Parameters
-    ----------
-    data : pygmi.raster.datatypes.Data
-        PyGMI raster data.
-    h : float
-        Height.
-    showlog : function, optional
-        Function for printing text. The default is print.
-    piter : function, optional
-        Progress bar iterable. The default is iter.
-
-    Returns
-    -------
-    dat : pygmi.raster.datatypes.Data
-        PyGMI raster data.
-
-    """
-    dz = verticalp(data, order=1, showlog=showlog, piter=piter)
-    dz2 = verticalp(data, order=2, showlog=showlog, piter=piter)
-    dz3 = verticalp(data, order=3, showlog=showlog, piter=piter)
-    zout = (
-        data.data
-        + h * dz
-        + h**2 * dz2 / math.factorial(2)
-        + h**3 * dz3 / math.factorial(3)
-    )
-
-    dat = Data()
-    dat.data = np.ma.masked_invalid(zout)
-    dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nodata = data.data.fill_value
-    dat.dataid = "Downward_" + str(h) + "_" + data.dataid
-    dat.set_transform(transform=data.transform)
-    dat.crs = data.crs
-    return dat
-
-
 def trim_raster(olddata):
     """
     Trim nulls from a raster dataset.
@@ -2278,73 +2064,6 @@ def verticalp(data, order=1, showlog=print, piter=iter):
     zout = dat.data
 
     return zout
-
-
-def _testdown():
-    """Continuation testing routine."""
-    import matplotlib.pyplot as plt
-
-    from pygmi.pfmod.grvmag3d import calc_field, quick_model
-    # from IPython import get_ipython
-    # get_ipython().run_line_magic('matplotlib', 'inline')
-
-    h = 4.0
-    dxy = 1.0
-    magcalc = True
-
-    # quick model
-    lmod = quick_model(
-        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000.0
-    )
-    lmod.lith_index[45:55, :, 1] = 1
-    lmod.lith_index[45:50, :, 0] = 1
-    lmod.ght = 10
-    lmod.mht = 10
-    calc_field(lmod, magcalc=magcalc)
-    if magcalc:
-        z = lmod.griddata["Calculated Magnetics"]
-        z.data = z.data + 5
-    else:
-        z = lmod.griddata["Calculated Gravity"]
-
-    # Calculate the field
-    lmod = quick_model(
-        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000
-    )
-    lmod.lith_index[45:55, :, 1] = 1
-    lmod.lith_index[45:50, :, 0] = 1
-    lmod.ght = 10 - h
-    lmod.mht = 10 - h
-    calc_field(lmod, magcalc=magcalc)
-    if magcalc:
-        downz0 = lmod.griddata["Calculated Magnetics"]
-        downz0.data = downz0.data + 5
-    else:
-        downz0 = lmod.griddata["Calculated Gravity"]
-
-    # downz0, z = z, downz0
-
-    dz = verticalp(z, order=1)
-    dz2 = verticalp(z, order=2)
-    dz3 = verticalp(z, order=3)
-
-    # normal downward
-    zdownn = fftcont(z, h)
-
-    # downward, taylor
-    # h = -h
-    zdown = (
-        z.data
-        + h * dz
-        + h**2 * dz2 / math.factorial(2)
-        + h**3 * dz3 / math.factorial(3)
-    )
-
-    # Plotting
-    plt.plot(downz0.data[50], "r")
-    plt.plot(zdown.data[50], "b")
-    plt.plot(zdownn.data[50], "k+")
-    plt.show()
 
 
 def _testfn():

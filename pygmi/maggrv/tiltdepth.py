@@ -45,7 +45,7 @@ from matplotlib.figure import Figure
 from numba import jit
 from PySide6 import QtWidgets
 
-from pygmi.mag.dataprep import rtp
+from pygmi.maggrv.dataprep import rtp
 from pygmi.maps import frm
 from pygmi.misc import BasicModule, ProgressBar, ProgressBarText
 from pygmi.raster.dataprep import verticalp
@@ -107,7 +107,7 @@ class TiltDepth(BasicModule):
         None.
 
         """
-        self.buttonbox.htmlfile = "mag.dm.tiltdepth"
+        self.buttonbox.htmlfile = "maggrv.dm.tiltdepth"
         self.buttonbox.buttonbox.hide()
         lbl_2 = QtWidgets.QLabel("Band to perform Tilt Depth:")
         lbl_c = QtWidgets.QLabel("Colour Bar:")

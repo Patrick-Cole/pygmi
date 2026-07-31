@@ -646,7 +646,7 @@ def get_raster(
                 local_tz = datetime.datetime.now().astimezone().tzinfo
                 rdate = datetime.datetime.strptime(
                     dtimestr, "%Y:%m:%d %H:%M:%S"
-                ).astimezone(local_tz)
+                ).replace(tzinfo=local_tz)
 
             if driver == "ENVI":
                 envimeta = dataset.tags(ns="ENVI")
@@ -759,7 +759,7 @@ def get_raster(
                 local_tz = datetime.datetime.now().astimezone().tzinfo
                 rdate = datetime.datetime.strptime(
                     dtimestr, "%Y-%m-%d %H:%M:%S"
-                ).astimezone(local_tz)
+                ).replace(tzinfo=local_tz)
 
             if bandid == "" or bandid is None:
                 bandid = "Band " + str(index) + " " + bname
