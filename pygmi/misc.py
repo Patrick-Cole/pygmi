@@ -744,7 +744,7 @@ class ProgressBar(QtWidgets.QProgressBar):
             time2 = time.perf_counter()
             if time2 - time1 > 1:
                 self.setValue(i)
-                tleft = (self.total - i) * (time2 - self.otime) / i
+                tleft = (self.total - i) * (time2 - self.otime) / (i + 1)
                 if tleft > 60:
                     tleft = int(tleft // 60)
                     self.setFormat("%p% " + str(tleft) + "min left ")

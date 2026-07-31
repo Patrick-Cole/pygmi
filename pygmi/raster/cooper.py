@@ -392,7 +392,7 @@ class Visibility2d(BasicModule):
         data2 = []
 
         for i, datai in enumerate(data):
-            self.showlog(datai.dataid + ":")
+            self.showlog(f"Processing {datai.dataid}")
 
             vtot, vstd, vsum = visibility2d(
                 datai.data, self.wsize, self.dh * datai.data.std() / 100.0, self.piter
@@ -423,7 +423,7 @@ class Visibility2d(BasicModule):
                 data2[i].data = np.ma.array(data2[i].data, mask=mask)
 
         self.outdata["Raster"] = data2
-        self.showlog("Finished!")
+        # self.showlog("Finished!")
 
         return True
 
@@ -813,7 +813,7 @@ class AGC(BasicModule):
         data2 = []
 
         for datai in data:
-            self.showlog(datai.dataid + ":")
+            self.showlog(f"Processing {datai.dataid}")
 
             agcdata = agc(
                 datai.data, self.wsize, atype, nodata=datai.nodata, piter=self.piter

@@ -1234,6 +1234,7 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             self.le_contours.hide()
             self.cmb_bandh.hide()
+            self.gbox_sun.show()
 
         if txt == "Contour":
             self.lbl_k.hide()
@@ -1246,6 +1247,7 @@ class PlotInterp(BasicModule):
             self.aslider.hide()
             self.kslider.hide()
             self.gbox_sun.setChecked(False)
+            self.gbox_sun.hide()
             self.le_contours.show()
             self.cmb_bandh.hide()
 
@@ -1266,6 +1268,7 @@ class PlotInterp(BasicModule):
             self.kslider.hide()
             self.le_contours.hide()
             self.cmb_bandh.show()
+            self.gbox_sun.show()
             if "CMY" in txt:
                 self.kslider.show()
                 self.lbl_k.show()
@@ -1653,7 +1656,7 @@ class PlotInterp(BasicModule):
 
                 if not okay:
                     self.change_dtype()
-                    return
+                    return False
 
             cbar.set_label(text)
         elif "Ternary" in dtype:
@@ -1682,7 +1685,7 @@ class PlotInterp(BasicModule):
 
                 if not okay:
                     self.change_dtype()
-                    return
+                    return False
             if gtext == "":
                 if "RGB" in dtype:
                     gtext, okay = QtWidgets.QInputDialog.getText(
@@ -1703,7 +1706,7 @@ class PlotInterp(BasicModule):
 
                 if not okay:
                     self.change_dtype()
-                    return
+                    return False
 
             if btext == "":
                 if "RGB" in dtype:
@@ -1725,7 +1728,7 @@ class PlotInterp(BasicModule):
 
                 if not okay:
                     self.change_dtype()
-                    return
+                    return False
 
             tmp = np.array([[list(range(255))] * 255])
             tmp = tmp.reshape(255, 255)
@@ -1791,7 +1794,14 @@ class PlotInterp(BasicModule):
         fig.savefig(filename, bbox_inches="tight", dpi=300)
         self.change_dtype()
 
-        return
+        QtWidgets.QMessageBox.information(
+            self,
+            "Information",
+            "Save to PNG is complete!",
+            QtWidgets.QMessageBox.StandardButton.Ok,
+        )
+
+        return True
 
     def save_img(self):
         """
@@ -2295,7 +2305,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\ratios\AST_07102005_081903_ratio.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\ratios\AST_07102005_081903_ratio.tif"
 
     data = iodefs.get_raster(ifile)
 

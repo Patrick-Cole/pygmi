@@ -179,7 +179,9 @@ class Smooth(BasicModule):
         rad = self.sb_radius.value()
         sigma = self.sb_stddev.value()
 
+        self.showlog(f"Calculating {filt}...")
         for dat in data:
+            self.showlog(f"Processing {dat.dataid}")
             dat.data = mov_win_filt(
                 dat.data,
                 self.fmtype,
@@ -197,7 +199,7 @@ class Smooth(BasicModule):
             self.parent.process_is_active(False)
 
         self.outdata["Raster"] = data
-        self.showlog("Finished!", True)
+        # self.showlog("Finished!", True)
 
         return True
 
@@ -423,7 +425,7 @@ def mov_win_filt(
         out = ssig.correlate(dat, fmat, "same", method="direct")
 
     elif itype == "2D Median":
-        showlog("Calculating Median...")
+        # showlog("Calculating Median...")
         out = np.ma.zeros([rowd, cold]) * np.nan
         out.mask = np.ma.getmaskarray(dat)
         fmat = fmat.astype(bool)
