@@ -506,7 +506,7 @@ class ContextModule(QtWidgets.QDialog):
 
         return True
 
-    def cmb_update(self, obj, txtlist):
+    def cmb_update(self, obj, txtlist, curindex=0):
         """
         Update combo box.
 
@@ -520,6 +520,7 @@ class ContextModule(QtWidgets.QDialog):
         obj.blockSignals(True)
         obj.clear()
         obj.addItems(txtlist)
+        obj.setCurrentIndex(curindex)
         obj.blockSignals(False)
 
     def run(self):

@@ -727,7 +727,7 @@ class PlotCCoef(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -798,7 +798,7 @@ class PlotHist(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -856,12 +856,10 @@ class PlotHist(ContextModule):
             self.showlog("No numerical columns.")
             return
 
-        self.show()
-        self.cmb_1.clear()
-        self.cmb_1.addItems(cols)
+        self.cmb_update(self.cmb_1, cols)
 
-        self.cmb_1.setCurrentIndex(0)
         self.change_band()
+        self.show()
 
 
 class PlotLines(ContextModule):
@@ -884,7 +882,7 @@ class PlotLines(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1004,7 +1002,7 @@ class PlotLineMap(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1115,7 +1113,7 @@ class PlotRose(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1193,10 +1191,12 @@ class PlotRose(ContextModule):
             self.showlog("No line type data.")
             return
 
+        cols = ["Average Angle per Feature", "Angle per segment in Feature"]
+        self.cmb_update(self.cmb_1, cols)
+
+        self.change_band()
+
         self.show()
-        self.cmb_1.addItem("Average Angle per Feature")
-        self.cmb_1.addItem("Angle per segment in Feature")
-        self.cmb_1.setCurrentIndex(0)
 
 
 class PlotVector(ContextModule):
@@ -1218,7 +1218,7 @@ class PlotVector(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1315,9 +1315,7 @@ class PlotVector(ContextModule):
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
         if len(cols) > 0 and "Point" in self.data.geom_type.iloc[0]:
-            self.cmb_1.clear()
-            self.cmb_1.addItems(cols)
-            self.cmb_1.setCurrentIndex(0)
+            self.cmb_update(self.cmb_1, cols)
         else:
             self.cmb_1.hide()
             self.lbl_1.hide()
@@ -1326,9 +1324,9 @@ class PlotVector(ContextModule):
             self.cmb_c.hide()
             self.lbl_c.hide()
 
-        self.show()
-
         self.change_band()
+
+        self.show()
 
 
 def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **kwargs):

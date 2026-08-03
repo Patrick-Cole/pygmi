@@ -422,7 +422,7 @@ class PlotCCoef(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showcorr"
@@ -589,9 +589,10 @@ class PlotRaster(ContextModule):
         elif "Cluster" in self.indata:
             data = self.indata["Cluster"]
 
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
 
+        self.change_band()
         self.show()
 
 
@@ -765,10 +766,11 @@ class PlotSurface(ContextModule):
             self.showlog("RGB images cannot be used in this module.")
             return
 
-        self.show()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
+
         self.change_band()
+        self.show()
 
     def slider(self):
         """Vertical slider used to scale 3d view."""
@@ -795,7 +797,7 @@ class PlotScatter(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
@@ -869,13 +871,13 @@ class PlotScatter(ContextModule):
             self.showlog("RGB images cannot be used in this module.")
             return
 
-        self.show()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
-            self.cmb_2.addItem(i.dataid)
+        cols = [i.dataid for i in data]
 
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_2.setCurrentIndex(1)
+        self.cmb_update(self.cmb_1, cols)
+        self.cmb_update(self.cmb_2, cols, 1)
+
+        self.change_band()
+        self.show()
 
 
 class PlotHist(ContextModule):
@@ -895,7 +897,7 @@ class PlotHist(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
@@ -954,12 +956,11 @@ class PlotHist(ContextModule):
             self.showlog("RGB images cannot be used in this module.")
             return
 
-        self.show()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
 
-        self.cmb_1.setCurrentIndex(0)
         self.change_band()
+        self.show()
 
 
 def check_bands(data):

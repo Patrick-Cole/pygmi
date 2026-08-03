@@ -276,7 +276,6 @@ def set_northscale(ax, crs, showlog=print):
     showlog : function, optional
         _Show information using a function, by default print
     """
-
     crs = pyproj.CRS.from_wkt(crs.to_wkt())
 
     north_arrow(
@@ -303,7 +302,7 @@ def set_northscale(ax, crs, showlog=print):
     )
     ax.add_patch(tmp)
 
-    if crs.axis_info[0].unit_name not in units_standard:
+    if crs.axis_info[0].unit_name not in units_standard and not crs.is_geographic:
         showlog("Problem with projection unit. Try redefining the projection.")
         return
 

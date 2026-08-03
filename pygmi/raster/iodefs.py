@@ -709,8 +709,10 @@ def get_raster(
     if custom_wkt != "":
         crs = CRS.from_string(custom_wkt)
     else:
-        # showlog('Warning: Your data does not have a projection. '
-        #         'Assigning local coordinate system.')
+        showlog(
+            "Warning: Your data does not have a projection. "
+            "Assigning local coordinate system."
+        )
         crs = CRS.from_string(
             'LOCAL_CS["Arbitrary",UNIT["metre",1,'
             'AUTHORITY["EPSG","9001"]],'

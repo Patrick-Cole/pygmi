@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """Equation editor for vector data."""
 
+import pandas as pd
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
@@ -174,17 +175,11 @@ class EquationEditor(BasicModule):
             self.showlog("No vector data.")
             return False
 
-        self.bands = {}
-
         indata = self.indata["Vector"][0].copy()
-        items = []
-        for j, i in enumerate(indata.columns):
-            if indata[i].dtype == object:
-                continue
-            items.append(i)
-            self.bands[i] = "i" + str(j)
+        indata = indata.select_dtypes(include=["number"])
+        self.bands = {col: f"i{i}" for i, col in enumerate(indata.columns)}
 
-        self.cmb_update(self.cmb_1, items)
+        self.cmb_update(self.cmb_1, self.bands.keys())
         self.combo()
 
         if not nodialog:
@@ -200,10 +195,21 @@ class EquationEditor(BasicModule):
             return False
 
         if self.le_name.text() == "":
-            self.showlog("Error: You must have a colum name.")
+            self.showlog("Error: You must have a column name.")
             return False
 
-        outdata = eqedit(indata, self.equation, self.le_name.text(), self.showlog)
+        indata = indata.rename(columns=self.bands)
+
+        try:
+            outcol = indata.eval(self.equation)
+        except pd.errors.UndefinedVariableError:
+            self.showlog(
+                "Error: Nothing processed! Your equation most likely had an error."
+            )
+            return False
+
+        outdata = self.indata["Vector"][0].copy()
+        outdata[self.le_name.text()] = outcol
 
         self.outdata["Vector"] = [outdata]
 
@@ -224,57 +230,6 @@ class EquationEditor(BasicModule):
         self.saveobj(self.le_name)
 
 
-def eqedit(data, equation, colname, showlog=print):
-    """
-    Use equations on raster data.
-
-    Parameters
-    ----------
-    data : GeoDataFrame
-        A GeoDataFrame containing columns of data
-    equation : str
-        Equation to compute.
-    colname : str
-        New column name.
-    showlog : function, optional
-        Show information using a function. The default is print.
-
-    Returns
-    -------
-    outdata : GeoDataFrame
-        Output GeoDataFrame containing columns of data
-
-    """
-    outdata = data.copy()
-    indata = data.copy()
-    cols = []
-    ii = -1
-    for j, i in enumerate(data):
-        if data[i].dtype == object:
-            cols.append(i)
-        else:
-            ii += 1
-            cols.append("i" + str(ii))
-
-    indata.columns = cols
-
-    if equation == "":
-        return None
-
-    try:
-        findat = indata.eval(equation)
-    except Exception:
-        findat = None
-
-    if findat is None:
-        showlog("Error: Nothing processed! Your equation most likely had an error.")
-        return False
-
-    outdata[colname] = findat
-
-    return outdata
-
-
 def _test():
     """Test."""
     import sys
@@ -286,7 +241,7 @@ def _test():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Vector\Geochem\geochem_tzaneen.shp"
+    ifile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.shp"
 
     IO = ImportVector()
     IO.ifile = ifile
