@@ -47,7 +47,6 @@ class MenuWidget:
 
         self.parent = parent
         self.parent.add_to_context("Raster")
-        self.parent.add_to_context("inRaster")
 
         # Normal menus
         self.menu = QtWidgets.QMenu("Magnetics and Gravity")

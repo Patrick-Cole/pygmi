@@ -354,6 +354,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             and "RasterFileList" not in self.my_class.indata
         ):
             tmp += self.context_menu["inRaster"].actions()
+        if "Vector" in self.my_class.indata:
+            tmp += self.context_menu["inVector"].actions()
 
         tmplist = list(self.my_class.outdata.keys())
         for i in tmplist:
@@ -550,57 +552,62 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         if not tmp:
             return
 
-        if not hasattr(tmp[0], "my_class"):
+        item = tmp[0]
+        if not hasattr(item, "my_class"):
             return
 
         text = ""
 
-        if hasattr(tmp[0].my_class, "indata"):
-            idata = tmp[0].my_class.indata
+        idata = item.my_class.indata
+        for i in idata:
+            text += "\nInput " + i + " dataset: "
+            if i in ("Raster", "Cluster"):
+                text += "\nFilename: " + os.path.basename(idata[i][0].filename)
+            if i in ["Raster", "Vector", "Cluster"]:
+                text += "\nProjection: " + get_crs_label(idata[i][0].crs)
+            if i in ("Raster", "Cluster"):
+                text += "\nBands: \n "
+                text += "\n ".join([j.dataid for j in idata[i]]) + "\n"
 
-            for i in idata:
-                text += "\nInput " + i + " dataset: "
-                if i in ("Raster", "Cluster"):
-                    text += "\nFilename: " + os.path.basename(idata[i][0].filename)
-                if i in ["Raster", "Vector", "Cluster"]:
-                    text += "\nProjection: " + get_crs_label(idata[i][0].crs)
-                if i in ("Raster", "Cluster"):
-                    text += "\nBands: \n"
-                    for j in idata[i]:
-                        text += "  " + j.dataid + "\n"
-                if i == "Vector":
-                    text += "\nColumns: \n"
-                    text += ", ".join(idata[i][0].columns) + "\n"
+            if i == "Vector":
+                text += "\nColumns: \n"
+                cols = [i for i in idata[i][0].columns if i != "geometry"]
+                text += ", ".join(cols) + "\n"
 
-        if hasattr(tmp[0].my_class, "outdata"):
-            odata = tmp[0].my_class.outdata
+        odata = item.my_class.outdata
+        for i in odata:
+            text += "\nOutput " + i + " dataset: "
+            if i == "RasterFileList":
+                text += i + "\n"
+                for j in odata[i]:
+                    text += os.path.basename(j.filename) + "\n"
 
-            for i in odata:
-                text += "\nOutput " + i + " dataset: "
-                if i == "RasterFileList":
-                    text += i + "\n"
-                    for j in odata[i]:
-                        text += os.path.basename(j.filename) + "\n"
-                if i in ("Raster", "Cluster", "Vector"):
-                    text += "\nProjection: " + get_crs_label(odata[i][0].crs)
+            if i in ("Raster", "Cluster", "Vector"):
+                text += "\nProjection: " + get_crs_label(odata[i][0].crs)
 
-                if i in ("Raster", "Cluster"):
-                    text += "\nBands: \n"
-                    for j in odata[i]:
-                        text += "  " + j.dataid + "\n"
+            if i in ("Raster", "Cluster"):
+                text += "\nBands: \n "
+                text += "\n ".join([j.dataid for j in odata[i]]) + "\n"
+                # for j in odata[i]:
+                #     text += "  " + j.dataid + "\n"
 
-                if i == "Vector":
-                    text += "\nColumns: \n"
-                    text += ", ".join(odata[i][0].columns) + "\n"
+            if i == "Vector":
+                text += "\nColumns: \n"
+                cols = [i for i in odata[i][0].columns if i != "geometry"]
+                text += ", ".join(cols) + "\n"
 
-                if i == "Model3D":
-                    text += i + "\n"
-                    for j in odata[i][0].lith_list:
-                        text += "  " + j + "\n"
-                if i == "MT - EDI":
-                    text += i + "\n"
-                    for j in odata[i]:
-                        text += "  " + j + "\n"
+            if i == "Model3D":
+                text += i + "\n"
+                for j in odata[i][0].lith_list:
+                    text += "  " + j + "\n"
+
+            if i == "MT - EDI":
+                text += i + "\n"
+                for j in odata[i]:
+                    text += "  " + j + "\n"
+
+        if not odata:
+            item.setBrush(self.my_item_color)
 
         self.parent.showdatainfo(text)
 

@@ -32,22 +32,18 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
 from pygmi.misc import ContextModule
 from pygmi.raster.modest_image import imshow
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
+class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self):
-        # figure stuff
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.line = None
         self.ind = None
-
-        super().__init__(fig)
 
     def update_classes(self, data1):
         """
@@ -63,11 +59,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        self.custom_resize = True
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, label="map")
-
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
 
         cdat = data1.data
         # csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
@@ -92,16 +86,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cbar = self.axes.figure.colorbar(csp, boundaries=bnds)
             cbar.set_ticks(vals, labels=lbls)
 
-        if data1.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
+        set_axes(self.axes, data1.crs)
+        set_northscale(self.axes, data1.crs, self.showlog)
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-        self.figure.canvas.draw()
+        self.draw()
 
     def update_bars(self, data1, rdata):
         """
@@ -236,11 +224,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        self.custom_resize = True
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
+        # self.axes.tick_params(axis="x", rotation=90)
+        # self.axes.tick_params(axis="y", rotation=0)
 
         rdata = imshow(
             self.axes,
@@ -253,17 +242,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.colorbar(rdata)
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
+        # self.axes.xaxis.set_major_formatter(frm)
+        # self.axes.yaxis.set_major_formatter(frm)
 
-        if data1.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
+        # if data1.crs.is_geographic:
+        #     self.axes.set_xlabel("Longitude")
+        #     self.axes.set_ylabel("Latitude")
+        # else:
+        #     self.axes.set_xlabel("Eastings")
+        #     self.axes.set_ylabel("Northings")
 
-        self.figure.canvas.draw()
+        # self.figure.canvas.draw()
+        set_axes(self.axes, data1.crs)
+        set_northscale(self.axes, data1.crs, self.showlog)
+
+        self.draw()
 
 
 class PlotRaster(ContextModule):
@@ -330,14 +323,18 @@ class PlotRaster(ContextModule):
         """
         data = self.indata["Cluster"]
 
-        self.cmb_1.currentIndexChanged.disconnect()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
+        # self.cmb_1.currentIndexChanged.disconnect()
+        # for i in data:
+        #     self.cmb_1.addItem(i.dataid)
 
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        # self.cmb_1.currentIndexChanged.connect(self.change_band)
 
-        self.show()
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
+
+        # self.show()
         self.change_band()
+        self.show()
 
 
 class PlotBars(ContextModule):
@@ -470,13 +467,20 @@ class PlotMembership(ContextModule):
         """
         data = self.indata["Cluster"]
         i = self.cmb_1.currentIndex()
-        self.cmb_2.clear()
-        self.cmb_2.currentIndexChanged.disconnect()
 
-        for j in range(data[i].metadata["Cluster"]["no_clusters"]):
-            self.cmb_2.addItem("Membership Map for Cluster " + str(j + 1))
+        cols = [
+            "Membership Map for Cluster " + str(j + 1)
+            for j in range(data[i].metadata["Cluster"]["no_clusters"])
+        ]
+        self.cmb_update(self.cmb_2, cols)
 
-        self.cmb_2.currentIndexChanged.connect(self.change_band_two)
+        # self.cmb_2.clear()
+        # self.cmb_2.currentIndexChanged.disconnect()
+
+        # for j in range(data[i].metadata["Cluster"]["no_clusters"]):
+        #     self.cmb_2.addItem("Membership Map for Cluster " + str(j + 1))
+
+        # self.cmb_2.currentIndexChanged.connect(self.change_band_two)
         self.change_band_two()
 
     def run(self):
@@ -496,11 +500,11 @@ class PlotMembership(ContextModule):
             self.showlog("No membership data.")
             return
 
-        self.show()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
 
         self.change_band()
+        self.show()
 
     def change_band_two(self):
         """Combo box to choose band."""
@@ -801,6 +805,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\landscape.tif"
 
     data = get_raster(ifile)
 
@@ -813,7 +818,7 @@ def _testfn():
 
     dat = DM.outdata
 
-    tmp2 = PlotVRCetc()
+    tmp2 = PlotRaster()
     tmp2.indata = dat
     tmp2.run()
 
@@ -821,4 +826,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn_bars()
+    _testfn()

@@ -54,6 +54,7 @@ class MenuWidget:
 
         self.parent = parent
         self.parent.add_to_context("Vector")
+        self.parent.add_to_context("inVector")
         self.parent.add_to_context("pntVector")
         self.parent.add_to_context("lineVector")
         self.parent.add_to_context("Voxel")
@@ -108,6 +109,12 @@ class MenuWidget:
         self.action_scomp.triggered.connect(self.scomp)
 
         # Context menus
+        context_menu["inVector"].addSeparator()
+
+        self.action_bandselect = QtGui.QAction("Select Input Columns")
+        context_menu["inVector"].addAction(self.action_bandselect)
+        self.action_bandselect.triggered.connect(self.colselect2)
+
         context_menu["Vector"].addSeparator()
 
         self.action_metadata = QtGui.QAction("Display/Edit Vector Metadata")
@@ -160,8 +167,12 @@ class MenuWidget:
         context_menu["Voxel"].addAction(self.action_display_voxel)
         self.action_display_voxel.triggered.connect(self.display_voxel)
 
+    def colselect2(self):
+        """Select columns via context menu."""
+        self.parent.launch_context_item_indata(iodefs.ColumnSelect)
+
     def colselect(self):
-        """Select bands."""
+        """Select columns."""
         self.parent.item_insert("Step", "Column Select", iodefs.ColumnSelect)
 
     def grid(self):

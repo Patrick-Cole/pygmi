@@ -190,17 +190,21 @@ class MyMplCanvas(CanvasModule):
 
         location = "right"
         if not data1.isrgb:
-            rows, cols = data1.data.shape
+            # rows, cols = data1.data.shape
             pad = 0.1
             caspect = 30
-            if cols > 1.8 * rows:
-                location = "bottom"
-                shrink = 0.4
-                anchor = (0.85, 1.0)
-            else:
-                location = "right"
-                shrink = 1.0
-                anchor = (0.0, 0.5)
+            # if cols > 1.8 * rows:
+            #     location = "bottom"
+            #     shrink = 0.4
+            #     anchor = (0.85, 1.0)
+            # else:
+            #     location = "right"
+            #     shrink = 1.0
+            #     anchor = (0.0, 0.5)
+
+            location = "right"
+            shrink = 1.0
+            anchor = (0.0, 0.5)
 
             if is_section is True:
                 location = "bottom"

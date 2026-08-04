@@ -48,20 +48,11 @@ class CanvasModule(FigureCanvasQTAgg):
     def __init__(self, parent=None):
 
         if parent is None:
-            # self.stdout_redirect = sys.stdout
             self.showlog = print
-            # self.pbar = ProgressBarText()
-            # self.process_is_active = lambda *args, **kwargs: None
         else:
-            # self.stdout_redirect = EmittingStream(parent.showlog)
             self.showlog = parent.showlog
-            # self.pbar = parent.pbar
-            # if hasattr(parent, "process_is_active"):
-            #     self.process_is_active = parent.process_is_active
-            # else:
-            #     self.process_is_active = lambda *args, **kwargs: None
 
-        fig = Figure(layout="tight")
+        fig = Figure(layout="compressed")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
@@ -87,7 +78,6 @@ class CanvasModule(FigureCanvasQTAgg):
 
         """
 
-        # QtWidgets.QWidget.resizeEvent(self, event)
         if self.custom_resize is True:
             QtWidgets.QWidget.resizeEvent(self, event)
             self._pending_size = event.size()

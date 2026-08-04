@@ -121,6 +121,8 @@ class BandSelect(ContextModule):
         if hasattr(my_class, "data_init"):
             my_class.data_init()
 
+        my_class.outdata = {}
+
         self.parent.scene.selected_item_info()
         return True
 

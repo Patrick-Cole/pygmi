@@ -116,6 +116,39 @@ class ColumnSelect(BasicModule):
 
         return True
 
+    def run(self):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.parent.scene.selectedItems()[0].update_indata()
+        my_class = self.parent.scene.selectedItems()[0].my_class
+
+        self.indata = my_class.indata.copy()
+
+        chk = self.settings()
+
+        self.indata["Vector"] = self.outdata["Vector"]
+        del self.outdata["Vector"]
+
+        my_class.indata = self.indata
+        if hasattr(my_class, "data_reset"):
+            my_class.data_reset()
+
+        if hasattr(my_class, "data_init"):
+            my_class.data_init()
+
+        my_class.outdata = {}
+
+        self.parent.scene.selected_item_info()
+
+        return chk
+
     def saveproj(self):
         """
         Save project data from class.
