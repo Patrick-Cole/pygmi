@@ -560,15 +560,17 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
             for i in idata:
                 text += "\nInput " + i + " dataset: "
-                if i in "Raster":
-                    text += "\nProjection: " + get_crs_label(idata[i][0].crs) + "\n"
-                    if idata[i] and hasattr(idata[i][0], "filename"):
-                        file = idata[i][0].filename
-                    else:
-                        file = i
-                    text += os.path.basename(file) + "\n"
+                if i in ("Raster", "Cluster"):
+                    text += "\nFilename: " + os.path.basename(idata[i][0].filename)
+                if i in ["Raster", "Vector", "Cluster"]:
+                    text += "\nProjection: " + get_crs_label(idata[i][0].crs)
+                if i in ("Raster", "Cluster"):
+                    text += "\nBands: \n"
                     for j in idata[i]:
                         text += "  " + j.dataid + "\n"
+                if i == "Vector":
+                    text += "\nColumns: \n"
+                    text += ", ".join(idata[i][0].columns) + "\n"
 
         if hasattr(tmp[0].my_class, "outdata"):
             odata = tmp[0].my_class.outdata
@@ -579,15 +581,18 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                     text += i + "\n"
                     for j in odata[i]:
                         text += os.path.basename(j.filename) + "\n"
+                if i in ("Raster", "Cluster", "Vector"):
+                    text += "\nProjection: " + get_crs_label(odata[i][0].crs)
+
                 if i in ("Raster", "Cluster"):
-                    text += "\nProjection: " + get_crs_label(odata[i][0].crs) + "\n"
-                    if hasattr(odata[i][0], "filename"):
-                        file = odata[i][0].filename
-                    else:
-                        file = i
-                    text += os.path.basename(file) + "\n"
+                    text += "\nBands: \n"
                     for j in odata[i]:
                         text += "  " + j.dataid + "\n"
+
+                if i == "Vector":
+                    text += "\nColumns: \n"
+                    text += ", ".join(odata[i][0].columns) + "\n"
+
                 if i == "Model3D":
                     text += i + "\n"
                     for j in odata[i][0].lith_list:
@@ -1460,20 +1465,22 @@ class Startup(QtWidgets.QDialog):
 
 
 def get_crs_label(crs_input):
+    if crs_input is None:
+        return "Unknown"
     crs = CRS.from_user_input(crs_input)
 
     # Safe extraction with fallbacks
     name = crs.name
     datum = getattr(crs.datum, "name", "N/A")
-    ellipsoid_ = (
-        getattr(crs.ellipsoid, "name", "N/A") if hasattr(crs, "ellipsoid") else "N/A"
-    )
-    units_ = crs.axis_info[0].unit_name if crs.axis_info else "unknown units"
+    # ellipsoid = (
+    #     getattr(crs.ellipsoid, "name", "N/A") if hasattr(crs, "ellipsoid") else "N/A"
+    # )
+    # units = crs.axis_info[0].unit_name if crs.axis_info else "unknown units"
 
-    return f"{name} ({datum})\n"
+    return f"{name} ({datum})"
 
 
-def main(nocgs=False):
+def main():
     """Entry point for the PyGMI software."""
     # Set environment variables.
     # The line below is to fix a problem in windows with loky library.
@@ -1511,4 +1518,4 @@ def main(nocgs=False):
 
 
 if __name__ == "__main__":
-    main(nocgs=False)
+    main()

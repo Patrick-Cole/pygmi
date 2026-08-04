@@ -347,7 +347,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
         xdiff = np.exp(-((xcoords - pnt.x) ** 2) / (2 * var))
         ydiff = np.exp(-((ycoords - pnt.y) ** 2) / (2 * var))
         x1, y1 = np.meshgrid(xdiff, ydiff, copy=False)
-        local = {"x1": x1, "y1": y1}
+        local = {"x1": x1, "y1": y1, "H": H}
         H = ne.evaluate("H+x1*y1", local_dict=local)
 
     G = 1 / np.sqrt(2 * np.pi * var)
@@ -364,7 +364,7 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     dat.crs = gdf.crs
     dat.nodata = 1e20
 
-    geom2 = gpd.GeoDataFrame(geometry=geom2)
+    geom2 = gpd.GeoDataFrame(geometry=geom2, crs=gdf.crs)
     geom2["Intersection"] = geom2.index + 1
 
     return geom2, dat
@@ -714,8 +714,9 @@ def _testfn():
 
     from pygmi.vector.iodefs import ImportVector
 
+    # sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    # sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
