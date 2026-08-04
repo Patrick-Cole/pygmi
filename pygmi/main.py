@@ -47,6 +47,7 @@ import webbrowser
 
 import numpy as np
 import psutil
+from pyproj import CRS
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QMessageBox
@@ -560,12 +561,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             for i in idata:
                 text += "\nInput " + i + " dataset: "
                 if i in "Raster":
+                    text += "\nProjection: " + get_crs_label(idata[i][0].crs) + "\n"
                     if idata[i] and hasattr(idata[i][0], "filename"):
                         file = idata[i][0].filename
                     else:
                         file = i
-                    if ".SAFE" in file:
-                        file = file.split(".SAFE")[0] + ".SAFE"
                     text += os.path.basename(file) + "\n"
                     for j in idata[i]:
                         text += "  " + j.dataid + "\n"
@@ -580,12 +580,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                     for j in odata[i]:
                         text += os.path.basename(j.filename) + "\n"
                 if i in ("Raster", "Cluster"):
+                    text += "\nProjection: " + get_crs_label(odata[i][0].crs) + "\n"
                     if hasattr(odata[i][0], "filename"):
                         file = odata[i][0].filename
                     else:
                         file = i
-                    if ".SAFE" in file:
-                        file = file.split(".SAFE")[0] + ".SAFE"
                     text += os.path.basename(file) + "\n"
                     for j in odata[i]:
                         text += "  " + j.dataid + "\n"
@@ -1458,6 +1457,20 @@ class Startup(QtWidgets.QDialog):
         """Update the text on the dialog."""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
+
+
+def get_crs_label(crs_input):
+    crs = CRS.from_user_input(crs_input)
+
+    # Safe extraction with fallbacks
+    name = crs.name
+    datum = getattr(crs.datum, "name", "N/A")
+    ellipsoid_ = (
+        getattr(crs.ellipsoid, "name", "N/A") if hasattr(crs, "ellipsoid") else "N/A"
+    )
+    units_ = crs.axis_info[0].unit_name if crs.axis_info else "unknown units"
+
+    return f"{name} ({datum})\n"
 
 
 def main(nocgs=False):

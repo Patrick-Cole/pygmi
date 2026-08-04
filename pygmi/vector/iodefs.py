@@ -619,6 +619,19 @@ class ImportXYZ(BasicModule):
             gdf = gdf.set_crs(self.proj.wkt)
 
         gdf.attrs["source"] = os.path.basename(self.ifile)
+        if gdf.crs is None:
+            self.showlog(
+                "Warning: Your data does not have a projection. "
+                "Assigning local coordinate system."
+            )
+            crs = CRS.from_string(
+                'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                'AUTHORITY["EPSG","9001"]],'
+                'AXIS["Easting",EAST],'
+                'AXIS["Northing",NORTH]]'
+            )
+            gdf = gdf.set_crs(crs)
+
         self.outdata["Vector"] = [gdf]
 
         return True

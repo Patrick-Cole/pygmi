@@ -139,10 +139,6 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
-        # self.lw_tnames.clear()
-        self.indata["Raster"] = []
-        # self.le_sfile.setText('')
-        # self.lbl_ftype.setText('File Type:')
 
         if not nodialog:
             tmp = self.exec()
@@ -184,7 +180,6 @@ class ImportData(BasicModule):
     def get_sfile(self):
         """Get the satellite filename."""
         self.lw_tnames.clear()
-        self.indata["Raster"] = []
         self.le_sfile.setText("")
         self.lbl_ftype.setText("File Type:")
 
@@ -199,18 +194,18 @@ class ImportData(BasicModule):
 
         self.le_sfile.setText(self.ifile)
 
-        self.indata["Raster"] = get_data(
+        indata = get_data(
             self.ifile, piter=self.piter, showlog=self.showlog, metaonly=True
         )
 
-        if self.indata["Raster"] is None:
+        if indata is None:
             self.showlog("Error: could not import data.")
             self.le_sfile.setText("")
             self.lbl_ftype.setText("File Type: Unknown")
             return False
 
         tmp = []
-        for i in self.indata["Raster"]:
+        for i in indata:
             tmp.append(i.dataid)
 
         self.lw_tnames.clear()
@@ -227,7 +222,7 @@ class ImportData(BasicModule):
             for i in range(self.lw_tnames.count()):
                 self.lw_tnames.item(i).setSelected(True)
 
-        instr = self.indata["Raster"][0].metadata["Raster"]["Sensor"]
+        instr = indata[0].metadata["Raster"]["Sensor"]
 
         self.lbl_ftype.setText(f" File Type: {instr}")
 
@@ -4847,12 +4842,7 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\GED\AG100.v003.-27.022.0001.h5"
-    # ifile = r"D:\Onshore\giyani\ASTER\AST_05_00406122003081300_20250310192417_SRE_TIR_B10.tif"
-    # ifile = r"D:\Onshore\giyani\ASTER\AST_05_00308312003081203_20251029145423_163475.hdf"
-    # ifile = r"D:\temp\patrick.cole\AST_07XT_004-20260313_053451\AST_05_00409272006084535_20250531031504_SRE_TIR_B10.tif"
-    ifile = r"C:\Work\EMITL2BMIN_001-20260414_132443\EMIT_L2B_MIN_001_20250316T123747_2507508_005.nc"
-    ifile = r"C:\Work\ASTER\AST_07XT_00408072006081314_20250529202332_SRF_VNIR_B01.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
