@@ -583,7 +583,13 @@ def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
     dxtot = np.ma.sqrt(dx * dx + dy * dy)
     dz = verticalp(data1, showlog=showlog, piter=piter)
     t1 = np.ma.arctan2(dz, dxtot)
-    th = np.real(np.arctanh(np.nan_to_num(dz / dxtot) + (0 + 0j)))
+
+    eps = np.finfo(dxtot.dtype).eps * 10  # choos eps which will work with clip below
+    thdr = np.where(dxtot == 0, eps, dxtot)
+    thdr = dxtot
+    ratio = dz / thdr
+    ratio = np.clip(ratio, -1.0 + eps, 1.0 - eps)
+    th = np.ma.arctanh(ratio)
 
     tdx = np.real(np.ma.arctan2(dxtot, abs(dz)))
 
@@ -922,7 +928,7 @@ def _testfn_rtp():
 
 
 def _testfn():
-    """RTP testing routine."""
+    """Testing routine."""
     import matplotlib.pyplot as plt
 
     from pygmi.raster.iodefs import get_raster
@@ -934,173 +940,15 @@ def _testfn():
     dat = rtp(dat1, -62.08, -14.23)
     # dat = dat1
 
-    t1, _th, _t2, _ta, _tdx, _tahg, _ehga = tilt1(dat, 75, 0)
-
-    # dy, dx = np.gradient(dat.data, dat.ydim, dat.xdim)
-    # dxtot = np.ma.sqrt(dx * dx + dy * dy)
-    # dz = verticalp(dat)
-    # t1 = np.ma.arctan2(dz, dxtot)
+    _t1, th, _t2, _ta, _tdx, _tahg, _ehga = tilt1(dat, 75, 0)
 
     plt.figure()
-    # ax = plt.subplot(221)
-    # dat1.plot(ax)
-    # ax = plt.subplot(222)
-    # dat.plot(ax)
-    # plt.subplot(223)
-    # vmin = dz.mean() - dz.std()
-    # vmax = dz.mean() + dz.std()
-    # plt.imshow(dz, interpolation='none', vmin=vmin, vmax=vmax)
-    # plt.subplot(224)
-    # vmin = dxtot.mean() - dxtot.std()
-    # vmax = dxtot.mean() + dxtot.std()
-    # plt.imshow(dxtot, interpolation='none', vmin=vmin, vmax=vmax)
-    # plt.subplot(224)
     ax = plt.gca()
-    vmin = t1.mean() - 2.5 * t1.std()
-    vmax = t1.mean() + 2.5 * t1.std()
-    imshow(ax, t1, extent=dat.extent, interpolation="none", vmin=vmin, vmax=vmax)
-    plt.show()
-
-
-def _testfn_vert():
-    """RTP testing routine."""
-    import matplotlib.pyplot as plt
-
-    from pygmi.raster.dataprep import verticalp
-    from pygmi.raster.iodefs import get_raster
-
-    ifile = r"D:\Workdata\PyGMI Test Data\Magnetics\tilt\tilt.tif"
-    ifile = r"D:\mergemag5_IGRFremoved_RTP.hdr"
-
-    zout = get_raster(ifile)[0]
-
-    dzp = verticalp(zout)
-
-    plt.figure(dpi=150)
-    plt.imshow(dzp, interpolation="none", vmin=-1, vmax=1.5)
-    plt.colorbar()
-
-
-def _testfn2():
-    import matplotlib.pyplot as plt
-
-    from pygmi.maggrv.igrf import calc_igrf
-    from pygmi.raster.iodefs import get_raster
-
-    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
-    dfile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Areas_A_and_B_DTM_utm35s.hdr"
-
-    datm = get_raster(ifile)[0]
-    datd = get_raster(dfile)[0]
-    # dat = rtp(dat1, -62.5, -16.75)
-    # sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
-
-    dat = calc_igrf(datd, 2007 + 335 / 365, igrfonly=False, sen_alt=80)
-
-    _igrf, inc, dec = dat[0]
-    _fmean, imean, dmean = dat[1:]
-
-    dinc = inc.data - imean
-    ddec = dec.data - dmean
-
-    datr = rtp(datm, imean, dmean)
-    datr.nodata = 0
-    datr.set_mask()
-    dinc = dinc.filled(0)
-    dinc = np.ma.array(dinc, mask=datr.data.mask)
-    ddec = ddec.filled(0)
-    ddec = np.ma.array(ddec, mask=datr.data.mask)
-
-    drdix = gradient2D(datr.data, inc.data)
-    # drdiy = gradient2D(datr.data.T, inc.data.T)
-    d2rdi2x = gradient2D(drdix, inc.data)
-    # d2rdi2y = gradient2D(drdiy, inc.data.T)
-
-    drddx = gradient2D(datr.data, dec.data)
-    # drddy = gradient2D(datr.data.T, dec.data.T)
-    d2rdd2x = gradient2D(drddx, dec.data)
-    # d2rdd2y = gradient2D(drddy, dec.data.T)
-
-    rtpx = datr.data + (
-        dinc * drdix + 0.5 * dinc**2 * d2rdi2x + ddec * drddx + 0.5 * ddec**2 * d2rdd2x
-    )
-
-    plt.figure()
-    plt.subplot(121)
-    plt.imshow(datr.data)
-    plt.colorbar()
-    plt.subplot(122)
-    plt.imshow(rtpx)
-    plt.colorbar()
-    plt.show()
-
-
-def _testdown():
-    """Continuation testing routine."""
-    import matplotlib.pyplot as plt
-
-    from pygmi.pfmod.grvmag3d import calc_field, quick_model
-    # from IPython import get_ipython
-    # get_ipython().run_line_magic('matplotlib', 'inline')
-
-    h = 4.0
-    dxy = 1.0
-    magcalc = True
-
-    # quick model
-    lmod = quick_model(
-        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000.0
-    )
-    lmod.lith_index[45:55, :, 1] = 1
-    lmod.lith_index[45:50, :, 0] = 1
-    lmod.ght = 10
-    lmod.mht = 10
-    calc_field(lmod, magcalc=magcalc)
-    if magcalc:
-        z = lmod.griddata["Calculated Magnetics"]
-        z.data = z.data + 5
-    else:
-        z = lmod.griddata["Calculated Gravity"]
-
-    # Calculate the field
-    lmod = quick_model(
-        numx=100, numy=100, numz=10, dxy=dxy, d_z=1, tlx=1000.0, tly=1000
-    )
-    lmod.lith_index[45:55, :, 1] = 1
-    lmod.lith_index[45:50, :, 0] = 1
-    lmod.ght = 10 - h
-    lmod.mht = 10 - h
-    calc_field(lmod, magcalc=magcalc)
-    if magcalc:
-        downz0 = lmod.griddata["Calculated Magnetics"]
-        downz0.data = downz0.data + 5
-    else:
-        downz0 = lmod.griddata["Calculated Gravity"]
-
-    # downz0, z = z, downz0
-
-    dz = verticalp(z, order=1)
-    dz2 = verticalp(z, order=2)
-    dz3 = verticalp(z, order=3)
-
-    # normal downward
-    zdownn = fftcont(z, h)
-
-    # downward, taylor
-    # h = -h
-    zdown = (
-        z.data
-        + h * dz
-        + h**2 * dz2 / math.factorial(2)
-        + h**3 * dz3 / math.factorial(3)
-    )
-
-    # Plotting
-    plt.plot(downz0.data[50], "r")
-    plt.plot(zdown.data[50], "b")
-    plt.plot(zdownn.data[50], "k+")
+    vmin = th.mean() - 2.5 * th.std()
+    vmax = th.mean() + 2.5 * th.std()
+    imshow(ax, th, extent=dat.extent, interpolation="none", vmin=vmin, vmax=vmax)
     plt.show()
 
 
 if __name__ == "__main__":
-    _testfn_vert()
+    _testfn()
