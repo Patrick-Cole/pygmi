@@ -213,7 +213,6 @@ def _testfft():
     vmin, vmax = datm.get_vmin_vmax()
     plt.imshow(datm.data, vmin=vmin, vmax=vmax)
 
-    plt.tight_layout()
     plt.show()
 
     xm, ym, _, _ = calculate_raps(datm)
@@ -221,7 +220,6 @@ def _testfft():
     plt.figure()
     plt.title("datm")
     plt.semilogy(xm, ym, "b")
-    plt.tight_layout()
     plt.show()
 
 

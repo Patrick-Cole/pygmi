@@ -366,7 +366,6 @@ def _testfn():
 
     set_axes(ax, crs)
     set_northscale(ax, crs)
-    plt.tight_layout()
     plt.show()
 
 

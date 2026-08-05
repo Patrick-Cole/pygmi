@@ -46,7 +46,7 @@ from numba import jit
 from PySide6 import QtWidgets
 
 from pygmi.maggrv.dataprep import rtp
-from pygmi.maps import frm
+from pygmi.maps import frm, set_axes, set_northscale
 from pygmi.misc import BasicModule, ProgressBar, ProgressBarText
 from pygmi.raster.dataprep import verticalp
 from pygmi.raster.misc import lstack
@@ -83,7 +83,7 @@ class TiltDepth(BasicModule):
         self.y1 = None
         self.y2 = None
 
-        self.figure = Figure()
+        self.figure = Figure(layout="compressed")
         self.mmc = FigureCanvasQTAgg(self.figure)
         self.axes = self.figure.add_subplot(111)
 
@@ -226,18 +226,11 @@ class TiltDepth(BasicModule):
             if i.dataid == txt:
                 zout = i
                 break
-        # if 'Vector' not in self.outdata:
-        #     return
-
-        # gdf = self.outdata['Vector'][0]
 
         txt = str(self.cmb_cbar.currentText())
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
 
         cmap = colormaps[txt]
 
@@ -264,19 +257,8 @@ class TiltDepth(BasicModule):
             ims = self.axes.scatter(gdf["x"], gdf["y"], c=gdf["depth"], cmap=cmap)
             self.figure.colorbar(ims, format=frm, label="Depth (m)")
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        if zout.crs is not None and zout.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
-
-        # self.figure.colorbar(ims, format=frm, label='Depth (m)')
-
-        self.figure.tight_layout()
+        set_axes(self.axes, zout.crs)
+        set_northscale(self.axes, zout.crs, self.showlog)
 
         self.figure.canvas.draw()
 

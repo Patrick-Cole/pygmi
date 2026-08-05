@@ -584,7 +584,7 @@ def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
     dz = verticalp(data1, showlog=showlog, piter=piter)
     t1 = np.ma.arctan2(dz, dxtot)
 
-    eps = np.finfo(dxtot.dtype).eps * 10  # choos eps which will work with clip below
+    eps = np.finfo(dxtot.dtype).eps * 10  # choose eps which will work with clip below
     thdr = np.where(dxtot == 0, eps, dxtot)
     thdr = dxtot
     ratio = dz / thdr
