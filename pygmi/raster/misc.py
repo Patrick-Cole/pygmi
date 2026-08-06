@@ -469,7 +469,6 @@ def lstack(
     needsmerge = False
     rows, cols = dat[0].data.shape
 
-    # dtypes = []
     for i in dat:
         irows, icols = i.data.shape
         if irows != rows or icols != cols:
@@ -480,27 +479,6 @@ def lstack(
             needsmerge = True
         if i.extent != dat[0].extent:
             needsmerge = True
-        # dtypes.append(i.data.dtype)
-
-    # dtypes = np.unique(dtypes)
-    # dtype = None
-    # nodata = None
-    # if len(dtypes) > 1:
-    #     needsmerge = True
-    # for i in dtypes:
-    #     if np.issubdtype(i, np.floating):
-    #         dtype = np.float64
-    #         nodata = 1e+20
-    #     elif dtype is None:
-    #         dtype = np.int32
-    #         nodata = 999999
-    # else:
-    #     if np.issubdtype(dtypes[0], np.floating):
-    #         dtype = np.float64
-    #         nodata = 1e+20
-    #     elif dtype is None:
-    #         dtype = np.int32
-    #         nodata = 999999
 
     if needsmerge is False:
         if not nodeepcopy:
@@ -610,11 +588,6 @@ def lstack(
 
             dat2[-1].metadata = data.metadata
             dat2[-1].data = dat2[-1].data + doffset
-
-            # dat2[-1].nodata = data.nodata
-            # dat2[-1].data.set_fill_value(data.nodata)
-            # dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
-            #                             mask=dat2[-1].data.mask)
 
             data.data[data.data == 0] = data.nodata
             data.data = np.ma.masked_equal(data.data, data.nodata)

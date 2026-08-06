@@ -620,6 +620,8 @@ def time_convert(x):
 
 def _testfn():
     """Test routine."""
+    import matplotlib.pyplot as plt
+
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
@@ -627,7 +629,7 @@ def _testfn():
     gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Skei_DGPS.csv"
     # grvfile = r"D:\workdata\PyGMI Test Data\Gravity\CG-6_Gravity Data for Dr Cole.txt"
     # gpsfile = r"D:\workdata\PyGMI Test Data\Gravity\Kuruman DGPS_for Dr Cole.csv"
-    kbase = "77777"
+    kbase = "88888"
     bthres = "10000"
 
     # Import Data
@@ -645,6 +647,13 @@ def _testfn():
     PD.le_knownbase.setText("978794.53")
 
     PD.settings()
+
+    out = PD.outdata["Vector"][0]
+
+    out.plot("BOUGUER")
+    plt.show()
+
+    pass
 
 
 def _test_lacoste():

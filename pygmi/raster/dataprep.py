@@ -262,9 +262,6 @@ class DataLayerStack(BasicModule):
             for ifile in ifiles:
                 self.showlog("Processing " + os.path.basename(ifile))
                 dat = get_data(ifile, piter=self.piter, showlog=self.showlog)
-                # for i in dat:
-                #     i.data = i.data.astype(np.float32)
-                #     i.nodata = np.float32(i.nodata)
                 self.indata["Raster"] += dat
 
         if "Raster" not in self.indata:

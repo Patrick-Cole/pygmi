@@ -1562,7 +1562,7 @@ class Occam1D(BasicModule):
 
     def apply(self):
         """
-        Apply.
+        Invert.
 
         Returns
         -------

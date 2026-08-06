@@ -40,11 +40,9 @@ from shapely.geometry import Polygon
 
 import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule, ContextModule
-
-# This is necessary for loading npz files, since I moved the location of
-# datatypes.
 from pygmi.pfmod import datatypes, grvmag3d, mvis3d
 from pygmi.pfmod.datatypes import LithModel
+from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import reprojxy
 
 sys.modules["datatypes"] = datatypes
@@ -432,8 +430,11 @@ class ImportMod3D(BasicModule):
                 if lmod.profpics[i] is not None:
                     lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
 
-        # This gets rid of a legacy variable names and updates to new ones
+        # This gets rid of legacy variable names and updates to new ones
         for i in lmod.griddata:
+            # for name, attr in Data.__dict__.items():
+            #     if not name.startswith("__"):  # Skip built-in magic attributes
+            #         setattr(lmod.griddata[i], name, attr)
             if not hasattr(lmod.griddata[i], "datetime"):
                 local_tz = datetime.datetime.now().astimezone().tzinfo
                 lmod.griddata[i].datetime = datetime.datetime(
@@ -441,10 +442,19 @@ class ImportMod3D(BasicModule):
                 )
             if not hasattr(lmod.griddata[i], "units"):
                 lmod.griddata[i].units = ""
+            if not hasattr(lmod.griddata[i], "meta"):
+                lmod.griddata[i].meta = {}
+            if not hasattr(lmod.griddata[i], "geometry"):
+                lmod.griddata[i].geometry = None
             if not hasattr(lmod.griddata[i], "isrgb"):
                 lmod.griddata[i].isrgb = False
             if not hasattr(lmod.griddata[i], "metadata"):
-                lmod.griddata[i].metadata = {"Cluster": {}, "Raster": {}}
+                lmod.griddata[i].metadata = {
+                    "Cluster": {},
+                    "Raster": {"Sensor": "Generic", "Section": False},
+                }
+            if "Section" not in lmod.griddata[i].metadata["Raster"]:
+                lmod.griddata[i].metadata["Raster"]["Section"] = False
             if not hasattr(lmod.griddata[i], "filename"):
                 lmod.griddata[i].filename = ""
 
@@ -1363,8 +1373,9 @@ class MessageCombo(QtWidgets.QDialog):
 
 def _testfn():
     """Test."""
-    ifile = r"d:\Workdata\modelling\small_upper.npz"
-    ofile = r"d:\Workdata\modelling\hope2.shp"
+    # ifile = r"d:\Workdata\modelling\small_upper.npz"
+    ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\hope.npz"
+    # ofile = r"d:\Workdata\modelling\hope2.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1373,11 +1384,11 @@ def _testfn():
     DM.ifile = ifile
     DM.settings(nodialog=True)
 
-    EM = ExportMod3D()
-    EM.indata = DM.outdata
-    EM.ofile = ofile
-    EM.lmod = EM.indata["Model3D"][0]
-    EM.mod3dtoshp(nodialog=False)
+    # EM = ExportMod3D()
+    # EM.indata = DM.outdata
+    # EM.ofile = ofile
+    # EM.lmod = EM.indata["Model3D"][0]
+    # EM.mod3dtoshp(nodialog=False)
     # EM.exec()
 
 

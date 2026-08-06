@@ -568,7 +568,10 @@ class PlotRaster(ContextModule):
 
         if "Raster" in self.indata:
             data = self.indata["Raster"]
-            is_section = data[i].metadata["Raster"]["Section"]
+            if "Section" in data[i].metadata["Raster"]:
+                is_section = data[i].metadata["Raster"]["Section"]
+            else:
+                is_section = False
             if is_section is True:
                 self.sb_aspect.show()
                 self.lbl_a.show()

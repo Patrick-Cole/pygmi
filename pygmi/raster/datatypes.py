@@ -376,6 +376,7 @@ class Data:
         else:
             self.data.mask = np.logical_and(self.data.mask, mask)
 
+        self.nodata = self.data.dtype.type(self.nodata)
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)
 

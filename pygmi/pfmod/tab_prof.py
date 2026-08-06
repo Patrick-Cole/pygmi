@@ -1472,7 +1472,9 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         if data2 is not None:
             data2.data = np.pad(data2.data, 1, "edge")
-            data2.data = np.ma.masked_equal(data2.data, data2.nodata)
+            data2.data = np.ma.masked_equal(
+                data2.data, data2.data.dtype.type(data2.nodata)
+            )
 
             dtlx = data.extent[0]
             d2tlx = data2.extent[0]
