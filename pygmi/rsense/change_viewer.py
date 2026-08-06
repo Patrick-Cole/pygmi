@@ -33,7 +33,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule, frm, set_axes
+from pygmi.maps import set_axes
 from pygmi.misc import BasicModule
 from pygmi.raster.modest_ioimage import imshow
 
