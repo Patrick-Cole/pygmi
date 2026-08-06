@@ -183,7 +183,16 @@ class ImportData(BasicModule):
         self.le_sfile.setText("")
         self.lbl_ftype.setText("File Type:")
 
-        ext = "Common formats (*.zip *.tar *.tar.gz *.xml *.h5 *.nc *.tif);;"
+        ext = (
+            "Common formats (*.zip *.tar *.tar.gz *.xml *.h5 *.nc *.tif);;"
+            "ASTER (AST*.tif AST*.zip AG1*.h5);;"
+            "EMIT (EMIT*.nc);;"
+            "Hyperion (EO1H*.zip);;"
+            "Landsat (L*.tar L*.tar.gz L*_MTL.txt);;"
+            "Sentinel-2 (S2*.zip S2*.SAFE);;"
+            "SPOT (DIM*.xml);;"
+            "WorldView (*.xml);;"
+        )
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, "Open File", ".", ext
@@ -4842,12 +4851,12 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    idir = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    os.chdir(os.path.dirname(ifile))
+    os.chdir(idir)
     # tmp1 = ImportBatch()
     tmp1 = ImportData()
     tmp1.settings()
@@ -4860,6 +4869,7 @@ def _testfn3():
         plt.imshow(i.data, extent=i.extent)
         plt.colorbar()
         plt.show()
+        break
 
 
 def _testfn4():
