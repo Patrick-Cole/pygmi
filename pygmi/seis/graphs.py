@@ -37,6 +37,7 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.patches import Ellipse
+from pyproj.crs import CRS
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy.spatial import ConvexHull
 from scipy.spatial.distance import cdist, pdist
@@ -44,6 +45,7 @@ from scipy.stats import kstest, linregress, zscore
 from shapely.geometry import Polygon
 from shapelysmooth import catmull_rom_smooth
 
+from pygmi.maps import set_axes
 from pygmi.misc import ContextModule
 from pygmi.vector.dataprep import gridxyz
 
@@ -156,6 +158,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
 
+        set_axes(self.axes, CRS.from_epsg(4326))
         self.figure.canvas.draw()
 
     def update_hexbin(
@@ -1805,5 +1808,5 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn1()
     # _testiso()

@@ -27,6 +27,7 @@
 import os
 import re
 
+import chardet
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -325,7 +326,7 @@ def importnordic(ifile, showlog=print):
 
     rnames = rnames.split("\n")
 
-    with open(ifile) as pntfile:
+    with open(ifile, encoding="latin-1") as pntfile:
         ltmp = pntfile.readlines()
 
     if len(ltmp[0]) < 80:
@@ -3197,6 +3198,16 @@ class FilterSeisan(BasicModule):
         self.outdata["Seis"] = newdat
 
 
+def detect_file_encoding(ifile):
+    """Detect file encoding."""
+
+    with open(ifile, "rb") as f:
+        raw_data = f.read()
+
+    result = chardet.detect(raw_data)
+    return result["encoding"]
+
+
 def _testfn():
     """Test."""
     import sys
@@ -3220,18 +3231,13 @@ def _testfn():
 
 def _testfn2():
     """Test."""
-    ifile = r"D:\workdata\seismology\seiscomp\events.txt"
-    ifile = r"D:\workdata\PyGMI Test Data\Seismology\events.txt"
-    ifile = r"D:\May2024.txt"
-    ifile = r"D:\seis\events.txt"
+    ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
 
-    # data = importseiscomp(ifile)
+    data = importnordic(ifile)
 
-    ifile = r"D:\seis\Lesotho_catalog.xlsx"
-
-    _data = importxlsx(ifile)
+    # ifile = r"D:\seis\Lesotho_catalog.xlsx"
+    # _data = importxlsx(ifile)
 
 
 if __name__ == "__main__":
-    _testfn()
-    # _testxlstomacro()
+    _testfn2()

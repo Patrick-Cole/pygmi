@@ -154,7 +154,24 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 
     # Round step down to the nearest degree or minute fraction
     minutes_step = interval_size * 60
-    neat_steps = [0.25, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 240, 480]
+    neat_steps = [
+        0.25,
+        0.5,
+        1,
+        2,
+        5,
+        10,
+        15,
+        30,
+        60,
+        120,
+        240,
+        480,
+        960,
+        1920,
+        3840,
+        7680,
+    ]
     neat_minute = min(neat_steps, key=lambda x: abs(x - minutes_step))
 
     # Recalculate range with the neat step to find the adjusted end point

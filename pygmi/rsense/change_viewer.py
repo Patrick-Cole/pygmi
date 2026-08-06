@@ -33,7 +33,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule, frm, set_axes
 from pygmi.misc import BasicModule
 from pygmi.raster.modest_ioimage import imshow
 
@@ -136,8 +136,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.im1.rgbmode = self.manip
         self.im1.rgbclip = None
         self.cbar = None
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        set_axes(self.ax1, data[0].crs)
 
         self.fig.suptitle(dates)
 
@@ -177,8 +178,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.im1.set_extent(extent)
         self.im1.rgbclip = None
         self.fig.suptitle(dates)
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        set_axes(self.ax1, data[0].crs)
 
         self.fig.canvas.draw()
 
