@@ -423,7 +423,7 @@ def lstack(
     commonmask=False,
     masterid=None,
     nodeepcopy=False,
-    resampling="nearest",
+    resampling="cubic_spline",  # "nearest",
     checkdataid=True,
 ):
     """
@@ -487,7 +487,6 @@ def lstack(
             dat = check_dataid(dat)
         return dat
 
-    # showlog('Merging data...')
     if masterid is not None:
         data = dat[0]
         for i in dat:
@@ -557,7 +556,7 @@ def lstack(
                 data.data = data.data - doffset
             # height, width = data.data.shape
 
-            data.data = data.data.filled(0)
+            # data.data = data.data.filled(0)
             odata = np.zeros((rows, cols), dtype=data.data.dtype)
             odata, _ = reproject(
                 source=data.data,
@@ -571,7 +570,7 @@ def lstack(
             )
 
             data2 = Data()
-            odata[odata == 0] = data.nodata
+            # odata[odata == 0] = data.nodata
             data2.data = np.ma.masked_equal(odata, data.nodata)
             # data2.data.set_fill_value(data.nodata)
             # data2.data = np.ma.array(data2.data.filled(), mask=data2.data.mask)
@@ -672,15 +671,18 @@ def norm255(dat):
 
 def _testfn():
     """Test."""
+    import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
-    ifile1 = r"D:\Landslides\old\JTNdem.tif"
-    ifile2 = r"D:\Landslides\GeoTiff\S2B_T36JTN_R092_20220428_stack.tif"
+    ifile1 = r"D:\Workdata\Mosaic\3122DC_RegMag_hbhk94tm23.hdr"
 
     dat1 = get_raster(ifile1)
-    dat2 = get_raster(ifile2)
 
-    _dat3 = lstack(dat1 + dat2, dxy=10, commonmask=True)
+    dat3 = lstack(dat1, dxy=100, commonmask=True, resampling="cubic")
+
+    plt.imshow(dat3[0].data)
+    plt.show()
 
 
 if __name__ == "__main__":

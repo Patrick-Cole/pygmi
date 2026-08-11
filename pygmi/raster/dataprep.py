@@ -173,6 +173,7 @@ class DataLayerStack(BasicModule):
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.lbl_rows = QtWidgets.QLabel("Rows: 0")
         self.lbl_cols = QtWidgets.QLabel("Columns: 0")
+        self.cmb_resample = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -189,6 +190,7 @@ class DataLayerStack(BasicModule):
 
         self.buttonbox.htmlfile = "raster.dm.layerstack"
         lbl_dxy = QtWidgets.QLabel("Cell Size:")
+        lbl_resample = QtWidgets.QLabel("Resampling Method:")
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
@@ -197,14 +199,28 @@ class DataLayerStack(BasicModule):
 
         self.cb_cmask.setChecked(True)
 
+        self.cmb_resample.addItems(
+            [
+                "nearest",
+                "bilinear",
+                "cubic",
+                "cubic_spline",
+                "lanczos",
+                "average",
+                "mode",
+            ]
+        )
+
         self.setWindowTitle("Dataset Layer Stack and Resample")
 
         gl_main.addWidget(lbl_dxy, 0, 0, 1, 1)
         gl_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gl_main.addWidget(self.lbl_rows, 1, 0, 1, 2)
-        gl_main.addWidget(self.lbl_cols, 2, 0, 1, 2)
-        gl_main.addWidget(self.cb_cmask, 3, 0, 1, 2)
-        gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
+        gl_main.addWidget(lbl_resample, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_resample, 1, 1, 1, 1)
+        gl_main.addWidget(self.lbl_rows, 2, 0, 1, 2)
+        gl_main.addWidget(self.lbl_cols, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_cmask, 4, 0, 1, 2)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
 
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
@@ -315,6 +331,7 @@ class DataLayerStack(BasicModule):
         None.
 
         """
+        resampling = self.cmb_resample.currentText()
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
         dat = lstack(
@@ -323,6 +340,7 @@ class DataLayerStack(BasicModule):
             dxy=dxy,
             showlog=self.showlog,
             commonmask=self.cb_cmask.isChecked(),
+            resampling=resampling,
         )
         self.outdata["Raster"] = dat
 
@@ -361,10 +379,12 @@ class DataMerge(BasicModule):
         self.rb_max = QtWidgets.QRadioButton(
             "Max - copy pixel wise maximum at overlap."
         )
-        self.rb_median = QtWidgets.QRadioButton(
-            "Median - shift last file to median overlap value and copy over first file at overlap."
+        self.rb_median_last = QtWidgets.QRadioButton(
+            "Median - shift LAST file to median overlap value and copy over FIRST file at overlap."
         )
-
+        self.rb_median_first = QtWidgets.QRadioButton(
+            "Median - shift FIRST file to median overlap value and copy over LAST file at overlap."
+        )
         self.le_idirlist = QtWidgets.QLineEdit("")
         self.le_sfile = QtWidgets.QLineEdit("")
         self.le_nodata = QtWidgets.QLineEdit("")
@@ -381,6 +401,7 @@ class DataMerge(BasicModule):
         self.cb_bands_to_files = QtWidgets.QCheckBox(
             'Save each band separately in a "mosaic" subdirectory.'
         )
+        self.cmb_resample = QtWidgets.QComboBox()
         self.forcetype = None
         self.singleband = False
         self.setupui()
@@ -407,14 +428,25 @@ class DataMerge(BasicModule):
         pb_idirlist.setStyleSheet("text-align:left;")
 
         self.cb_shift_to_median.setChecked(False)
-        self.rb_median.setChecked(True)
-
+        self.rb_median_last.setChecked(True)
+        self.cmb_resample.addItems(
+            [
+                "nearest",
+                "bilinear",
+                "cubic",
+                "cubic_spline",
+                "lanczos",
+                "average",
+                "mode",
+            ]
+        )
         self.setWindowTitle("Dataset Mosaic")
 
         gbox_merge_method = QtWidgets.QGroupBox("Mosiac method")
         vbl_merge_method = QtWidgets.QVBoxLayout(gbox_merge_method)
 
-        vbl_merge_method.addWidget(self.rb_median)
+        vbl_merge_method.addWidget(self.rb_median_last)
+        vbl_merge_method.addWidget(self.rb_median_first)
         vbl_merge_method.addWidget(self.rb_first)
         vbl_merge_method.addWidget(self.rb_last)
         vbl_merge_method.addWidget(self.rb_min)
@@ -428,11 +460,14 @@ class DataMerge(BasicModule):
         gl_main.addWidget(self.le_nodata, 3, 1, 1, 1)
         gl_main.addWidget(QtWidgets.QLabel("Output Resolution (optional):"), 4, 0, 1, 1)
         gl_main.addWidget(self.le_res, 4, 1, 1, 1)
+        gl_main.addWidget(QtWidgets.QLabel("Resampling Method:"), 5, 0, 1, 1)
+        gl_main.addWidget(self.cmb_resample, 5, 1, 1, 1)
 
-        gl_main.addWidget(self.cb_shift_to_median, 5, 0, 1, 2)
-        gl_main.addWidget(gbox_merge_method, 6, 0, 1, 2)
-        gl_main.addWidget(self.cb_bands_to_files, 7, 0, 1, 2)
-        gl_main.addWidget(self.buttonbox, 8, 0, 1, 2)
+        gl_main.addWidget(self.cb_shift_to_median, 6, 0, 1, 2)
+        gl_main.addWidget(gbox_merge_method, 7, 0, 1, 2)
+        gl_main.addWidget(self.cb_bands_to_files, 8, 0, 1, 2)
+
+        gl_main.addWidget(self.buttonbox, 9, 0, 1, 2)
 
         pb_idirlist.pressed.connect(self.get_idir)
         pb_sfile.pressed.connect(self.get_sfile)
@@ -441,7 +476,8 @@ class DataMerge(BasicModule):
         self.rb_last.clicked.connect(self.method_change)
         self.rb_min.clicked.connect(self.method_change)
         self.rb_max.clicked.connect(self.method_change)
-        self.rb_median.clicked.connect(self.method_change)
+        self.rb_median_last.clicked.connect(self.method_change)
+        self.rb_median_first.clicked.connect(self.method_change)
 
     def method_change(self):
         """
@@ -457,11 +493,13 @@ class DataMerge(BasicModule):
         if self.rb_last.isChecked():
             self.method = "last"
         if self.rb_min.isChecked():
-            self.method = "merge_min"
+            self.method = "min"
         if self.rb_max.isChecked():
-            self.method = "merge_max"
-        if self.rb_median.isChecked():
-            self.method = "merge_median"
+            self.method = "max"
+        if self.rb_median_last.isChecked():
+            self.method = "merge_median_last"
+        if self.rb_median_first.isChecked():
+            self.method = "merge_median_first"
 
     def get_idir(self):
         """
@@ -568,6 +606,7 @@ class DataMerge(BasicModule):
             Success of routine.
 
         """
+        resampling = self.cmb_resample.currentText()
         bfile = self.le_sfile.text()
         bandstofiles = self.cb_bands_to_files.isChecked()
         shifttomedian = self.cb_shift_to_median.isChecked()
@@ -595,6 +634,7 @@ class DataMerge(BasicModule):
             nodata=nodata,
             method=self.method,
             res=res,
+            resampling=resampling,
         )
 
         if outdat:
@@ -1434,7 +1474,7 @@ def get_shape_bounds(sfile, crs=None, showlog=print):
     return bounds
 
 
-def merge_median(
+def merge_median_last(
     merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
 ):
     """
@@ -1480,11 +1520,11 @@ def merge_median(
     merged_data[:] = tmp1
 
 
-def merge_min(
+def merge_median_first(
     merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
 ):
     """
-    Merge using minimum for rasterio, taking minimum value.
+    Merge using median for rasterio, taking minimum value.
 
     Parameters
     ----------
@@ -1509,50 +1549,19 @@ def merge_min(
     None.
 
     """
-    tmp = np.logical_and(~merged_mask, ~new_mask)
+    merged_data = np.ma.array(merged_data, mask=merged_mask)
+    new_data = np.ma.array(new_data, mask=new_mask)
 
-    tmp1 = merged_data.copy()
-    tmp1[~new_mask] = new_data[~new_mask]
-    tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
+    mtmp1 = np.logical_and(~merged_mask, ~new_mask)
+    mtmp2 = ~merged_mask
 
-    merged_data[:] = tmp1
+    tmp1 = new_data.copy()
 
+    if True in mtmp1:
+        tmp1 = tmp1 - np.ma.median(new_data[mtmp1])
+        tmp1 = tmp1 + np.ma.median(merged_data[mtmp1])
 
-def merge_max(
-    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
-):
-    """
-    Merge using maximum for rasterio, taking maximum value.
-
-    Parameters
-    ----------
-    merged_data : numpy array
-        Old data.
-    new_data : numpy array
-        New data to merge to old data.
-    merged_mask : float
-        Old mask.
-    new_mask : float
-        New mask.
-    index : int, optional
-        index of the current dataset within the merged dataset collection.
-        The default is None.
-    roff : int, optional
-        row offset in base array. The default is None.
-    coff : int, optional
-        col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
-
-    """
-    tmp = np.logical_and(~merged_mask, ~new_mask)
-
-    tmp1 = merged_data.copy()
-    tmp1[~new_mask] = new_data[~new_mask]
-    tmp1[tmp] = np.maximum(merged_data[tmp], new_data[tmp])
-
+    tmp1[mtmp2] = merged_data[mtmp2]
     merged_data[:] = tmp1
 
 
@@ -1609,6 +1618,7 @@ def mosaic(
     method="first",
     res=None,
     ifiles=None,
+    resampling="nearest",
 ):
     """
     Merge files with different numbers of bands and/or band order.
@@ -1641,8 +1651,8 @@ def mosaic(
     nodata : float, optional
         Nodata value. The default is None.
     method : str, optional
-        Mosaic method. Can be 'first', 'last', 'merge_min', 'merge_max' or
-        'merge_median'. The default is 'first'.
+        Mosaic method. Can be 'first', 'last', 'min', 'max',
+        'merge_median_last' or 'merge_median_first. The default is 'first'.
     res : float, optional
         Output resolution. Can be a tuple. The default is None.
     ifiles : list, optional
@@ -1654,12 +1664,20 @@ def mosaic(
         Output mosaiced dataset.
 
     """
-    if method == "merge_min":
-        method = merge_min
-    if method == "merge_max":
-        method = merge_max
-    if method == "merge_median":
-        method = merge_median
+    resdict = {
+        "nearest": 0,
+        "bilinear": 1,
+        "cubic": 2,
+        "cubic_spline": 3,
+        "lanczos": 4,
+        "average": 5,
+        "mode": 6,
+    }
+
+    if method == "merge_median_last":
+        method = merge_median_last
+    if method == "merge_median_first":
+        method = merge_median_first
 
     indata = []
     if "Raster" in dat:
@@ -1680,7 +1698,7 @@ def mosaic(
             return False
 
         for ifile in piter(ifiles):
-            indata += get_data(ifile, piter=iter, metaonly=True)
+            indata += get_data(ifile, piter=iter, metaonly=True, showlog=showlog)
 
         if len(indata) == len(ifiles):
             singleband = True
@@ -1699,7 +1717,6 @@ def mosaic(
 
         wkt.append(i.crs.to_wkt())
         crs.append(i.crs)
-        # nodata = i.nodata
 
     wkt, iwkt, numwkt = np.unique(wkt, return_index=True, return_counts=True)
     if len(wkt) > 1:
@@ -1714,7 +1731,7 @@ def mosaic(
     elif bfile[-3:] == "shp":
         bounds = get_shape_bounds(bfile, crs, showlog)
     else:
-        dattmp = get_data(bfile, piter=iter, metaonly=True)
+        dattmp = get_data(bfile, piter=iter, metaonly=True, showlog=showlog)
         if dattmp is None:
             bounds = None
         else:
@@ -1794,9 +1811,9 @@ def mosaic(
                 except rasterio.errors.CRSError:
                     showlog("Problem with projection,aborting....")
                     return False
-                i2 = data_reproject(i2, crs, transform, height, width)
+                i2 = data_reproject(i2, crs, transform, height, width, showlog=showlog)
 
-            if method == "merge_median":
+            if method in ["merge_median_last", "merge_median_first"]:
                 i2.get_boundary()
                 geomlist.append(i2.geometry)
 
@@ -1837,17 +1854,6 @@ def mosaic(
             if i2.data.dtype == np.int16:
                 i2.data = i2.data.astype(np.int32)
 
-            raster = rasterio.open(
-                tmpfile,
-                "w",
-                driver="GTiff",
-                height=i2.data.shape[0],
-                width=i2.data.shape[1],
-                count=1,
-                dtype=i2.data.dtype,
-                transform=trans,
-            )
-
             if nodata is None and np.issubdtype(i2.data.dtype, np.floating):
                 nodata = 1.0e20
             elif nodata is None:
@@ -1861,10 +1867,20 @@ def mosaic(
             tmpdat = np.ma.masked_equal(tmpdat, nodata)
             tmpdat = tmpdat - mval
 
-            raster.write(tmpdat, 1)
-            raster.write_mask(~np.ma.getmaskarray(i2.data))
+            with rasterio.open(
+                tmpfile,
+                "w",
+                driver="GTiff",
+                height=i2.data.shape[0],
+                width=i2.data.shape[1],
+                count=1,
+                dtype=i2.data.dtype,
+                transform=trans,
+                nodata=nodata,
+            ) as raster:
+                raster.write(tmpdat, 1)
+                raster.write_mask(~np.ma.getmaskarray(i2.data))
 
-            raster.close()
             ifiles.append(tmpfile)
             del i2
 
@@ -1874,11 +1890,23 @@ def mosaic(
 
         if geomlist:
             ifiles = merge_order(ifiles, geomlist)
+
+        if res is None:
+            use_highest_res = True
+        else:
+            use_highest_res = False
+
         showlog("Mosaicing " + dataid + "...")
 
         with rasterio.Env(CPL_DEBUG=True):
             datmos, otrans = rasterio.merge.merge(
-                ifiles, nodata=nodata, method=method, res=res, bounds=bounds
+                ifiles,
+                nodata=nodata,
+                method=method,
+                res=res,
+                bounds=bounds,
+                resampling=rasterio.enums.Resampling(resdict[resampling]),
+                use_highest_res=use_highest_res,
             )
 
         for j in ifiles:
@@ -2094,9 +2122,10 @@ def _testfn():
 def _testmosaic():
     """Test."""
     idir = r"C:\Work\PyGMI Test Data\Raster\mosaic"
+    idir = r"D:\Workdata\Mosaic"
     dat = {}
 
-    mosaic(dat, idir=idir, bandstofiles=True)
+    mosaic(dat, idir=idir, method="merge_median_last", resampling="cubic_spline")
 
 
 if __name__ == "__main__":

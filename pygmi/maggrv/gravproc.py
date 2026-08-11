@@ -653,8 +653,6 @@ def _testfn():
     out.plot("BOUGUER")
     plt.show()
 
-    pass
-
 
 def _test_lacoste():
     """Test for lacoste data"""
