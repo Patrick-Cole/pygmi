@@ -237,6 +237,8 @@ def _testfn():
     """Test."""
     import sys
 
+    import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     app = QtWidgets.QApplication(sys.argv)
@@ -250,6 +252,10 @@ def _testfn():
     tmp.indata["Raster"] = data
 
     tmp.settings()
+
+    dat = tmp.outdata["Raster"]
+    plt.imshow(dat[0].data)
+    plt.show()
 
 
 if __name__ == "__main__":

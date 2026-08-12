@@ -271,7 +271,7 @@ def cut_raster(data, ibnd, showlog=print, deepcopy=True):
         # This section converts PolygonZ to Polygon, and takes first polygon.
         coords = gdf["geometry"]
 
-        dat, trans = riomask(idata.to_mem(), coords, crop=True)
+        dat, trans = riomask(idata.to_mem(), coords, crop=True, all_touched=True)
 
         idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
 

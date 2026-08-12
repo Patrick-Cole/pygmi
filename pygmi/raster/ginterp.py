@@ -135,7 +135,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(figsize=(12, 8))
+        fig = Figure(figsize=(12, 8), layout="compressed")
         super().__init__(fig)
 
         # figure stuff
@@ -172,6 +172,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
         self.levels = 10
+        self.interp = "auto"
 
         # gspc = gridspec.GridSpec(3, 4)
         # self.axes = fig.add_subplot(gspc[0:, 1:])
@@ -231,7 +232,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.flagresize = True
 
-    def init_graph(self):
+    def init_graph(self, interp="auto"):
         """
         Initialize the graph.
 
@@ -246,8 +247,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.mpl_disconnect(self.cid)
         self.figure.clear()
+        self.figure.set_layout_engine("tight")
 
-        gspc = gridspec.GridSpec(3, 4)
+        gspc = self.figure.add_gridspec(3, 4)
         self.axes = self.figure.add_subplot(gspc[0:, 1:])
         self.axes.xaxis.set_visible(False)
         self.axes.yaxis.set_visible(False)
@@ -265,7 +267,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylim(y_1, y_2)
         self.axes.set_aspect("equal")
 
-        self.figure.tight_layout()
         self.figure.canvas.draw()
 
         self.bgrgb[0] = self.figure.canvas.copy_from_bbox(self.argb[0].bbox)
@@ -275,7 +276,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         tmp = np.ma.array([[np.nan]])
-        self.image = imshow(self.axes, tmp, origin="upper", extent=(x_1, x_2, y_1, y_2))
+        self.image = imshow(
+            self.axes,
+            tmp,
+            origin="upper",
+            extent=(x_1, x_2, y_1, y_2),
+            interpolation=interp,
+        )
 
         # This line prevents imshow from generating colour values on the
         # toolbar
@@ -355,8 +362,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+
+        self.figure.canvas.mpl_disconnect(self.cid)
+        self.figure.clear()
+        self.figure.set_layout_engine("compressed")
+
+        self.axes = self.figure.add_subplot(111)
+        self.axes.xaxis.set_visible(False)
+        self.axes.yaxis.set_visible(False)
+
         x1, x2, y1, y2 = self.data[0].extent
-        self.image.set_visible(False)
+
+        self.axes.set_xlim(x1, x2)
+        self.axes.set_ylim(y1, y2)
+        self.axes.set_aspect("equal")
+        self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
+
         clippercu = self.clippercu[self.hband[0]]
         clippercl = self.clippercl[self.hband[0]]
 
@@ -393,6 +414,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.ccbar = self.figure.colorbar(self.cntf, ax=self.axes)
         self.figure.canvas.draw()
 
+        self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
+
     def update_graph(self):
         """
         Update plot.
@@ -427,9 +450,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if "Ternary" in self.gmode:
             self.update_rgb()
-
-        # if self.gmode == "Sunshade":
-        #     self.update_shade_plot()
 
     def update_hist_rgb(self, zval):
         """
@@ -863,7 +883,7 @@ class MySunCanvas(FigureCanvasQTAgg):
     """
 
     def __init__(self):
-        fig = Figure(layout="tight")
+        fig = Figure(layout="compressed")
         super().__init__(fig)
 
         self.sun = None
@@ -950,6 +970,7 @@ class PlotInterp(BasicModule):
         self.lbl_c = QtWidgets.QLabel("Colour Bar:")
         self.lbl_k = QtWidgets.QLabel("K value:")
         self.gbox_sun = QtWidgets.QGroupBox("Sunshading")
+        self.cmb_interp = QtWidgets.QComboBox()
 
         self.btn_allclipperc = QtWidgets.QPushButton(
             "Set current exclusion % to all bands"
@@ -1003,6 +1024,10 @@ class PlotInterp(BasicModule):
         gbox_3 = QtWidgets.QGroupBox("Histogram Stretch")
         vbl_3 = QtWidgets.QVBoxLayout()
         gbox_3.setLayout(vbl_3)
+
+        gbox_i = QtWidgets.QGroupBox("Interpolation")
+        vbl_i = QtWidgets.QVBoxLayout()
+        gbox_i.setLayout(vbl_i)
 
         vbl_4 = QtWidgets.QVBoxLayout()
         self.gbox_sun.setLayout(vbl_4)
@@ -1063,6 +1088,29 @@ class PlotInterp(BasicModule):
         self.cmb_htype.addItems(
             ["Linear with Percent Clip", "Linear with Range", "Histogram Equalization"]
         )
+        self.cmb_interp.addItems(
+            [
+                "auto",
+                "none",
+                "nearest",
+                "bilinear",
+                "bicubic",
+                "spline16",
+                "spline36",
+                "hanning",
+                "hamming",
+                "hermite",
+                "kaiser",
+                "quadric",
+                "catrom",
+                "gaussian",
+                "bessel",
+                "mitchell",
+                "sinc",
+                "lanczos",
+                "blackman",
+            ]
+        )
 
         self.setWindowTitle("Raster Data Display")
         self.dsb_lineclipl.setPrefix("Low Exclude %: ")
@@ -1107,6 +1155,10 @@ class PlotInterp(BasicModule):
         vbl_4.addWidget(self.sslider)
         vbl_4.addWidget(self.lbl_a)
         vbl_4.addWidget(self.aslider)
+
+        vbl_i.addWidget(self.cmb_interp)
+        vbl_raster.addWidget(gbox_i)
+
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveimg)
         vbl_raster.addWidget(self.btn_savepng)
@@ -1138,6 +1190,7 @@ class PlotInterp(BasicModule):
         self.cmb_band3.currentIndexChanged.connect(self.change_blue)
         self.cmb_bands.currentIndexChanged.connect(self.change_sun)
         self.cmb_bandh.currentIndexChanged.connect(self.change_clipband)
+        self.cmb_interp.currentIndexChanged.connect(self.change_interp)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -1175,7 +1228,7 @@ class PlotInterp(BasicModule):
         txt = str(self.cmb_band3.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[2] = txt
-        self.mmc.init_graph()
+        self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_cbar(self):
         """
@@ -1297,7 +1350,21 @@ class PlotInterp(BasicModule):
         self.mmc.cid = self.mmc.figure.canvas.mpl_connect(
             "resize_event", self.mmc.revent
         )
-        self.mmc.init_graph()
+        if txt == "Contour":
+            self.mmc.update_contour()
+        else:
+            self.mmc.init_graph(self.cmb_interp.currentText())
+
+    def change_interp(self):
+        """
+        Change the interpolation method.
+
+        Returns
+        -------
+        None.
+        """
+
+        self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_green(self):
         """
@@ -1311,7 +1378,7 @@ class PlotInterp(BasicModule):
         txt = str(self.cmb_band2.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[1] = txt
-        self.mmc.init_graph()
+        self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_htype(self):
         """
@@ -1411,7 +1478,7 @@ class PlotInterp(BasicModule):
         txt = str(self.cmb_band1.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[0] = txt
-        self.mmc.init_graph()
+        self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_sun(self):
         """
@@ -1633,16 +1700,21 @@ class PlotInterp(BasicModule):
         divider = make_axes_locatable(axes)
         axes.xaxis.set_visible(True)
         axes.yaxis.set_visible(True)
-        # axes.set_xlabel("Eastings")
-        # axes.set_ylabel("Northings")
-        # axes.xaxis.set_major_formatter(frm)
-        # axes.yaxis.set_major_formatter(frm)
+
         set_axes(axes, crs)
         set_northscale(axes, crs, self.showlog)
 
         if dtype == "Single Colour Map":
             cax = divider.append_axes("right", size="7%", pad=0.25)
-            cbar = fig.colorbar(self.mmc.image, cax=cax)
+            cbar = fig.colorbar(
+                self.mmc.image,
+                cax=cax,
+                pad=0.1,
+                aspect=30,
+                shrink=1.0,
+                anchor=(0.0, 0.5),
+                location="right",
+            )
 
             text = self.mmc.argbunit[0]
             if text == "":
@@ -1766,8 +1838,15 @@ class PlotInterp(BasicModule):
             ax.add_patch(patch)
 
             data = data.astype(int)
+            interp = self.cmb_interp.currentText()
 
-            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
+            im = ax.imshow(
+                data,
+                extent=(0, 255, 0, 222),
+                clip_path=patch,
+                clip_on=True,
+                interpolation=interp,
+            )
             im.set_clip_path(patch)
 
             ax.text(0, -5, gtext, horizontalalignment="center", verticalalignment="top")
@@ -1789,9 +1868,9 @@ class PlotInterp(BasicModule):
         for i in range(3):
             self.mmc.argb[i].set_visible(False)
 
-        fig.tight_layout()
+        # fig.tight_layout()
 
-        fig.savefig(filename, bbox_inches="tight", dpi=300)
+        fig.savefig(filename, bbox_inches="tight", pad_inches="layout", dpi=300)
         self.change_dtype()
 
         QtWidgets.QMessageBox.information(
@@ -2012,10 +2091,6 @@ class PlotInterp(BasicModule):
             cmin = self.mmc.cnt.zmin
             cmax = self.mmc.cnt.zmax
 
-            # if self.mmc.ccbar is not None:
-            #     self.mmc.ccbar.remove()
-            #     self.mmc.ccbar = None
-
             self.mmc.axes.set_axis_off()
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize * 3)
@@ -2110,7 +2185,7 @@ class PlotInterp(BasicModule):
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
             # Horizontal Bar
-            fig = Figure(layout="tight")
+            fig = Figure(layout="compressed")
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
             fig.set_figheight(bwid + 0.75)
@@ -2128,7 +2203,7 @@ class PlotInterp(BasicModule):
             canvas.print_figure(fname, dpi=300)
 
             # Vertical Bar
-            fig = Figure(layout="tight")
+            fig = Figure(layout="compressed")
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid + 1)
             fig.set_figheight(blen)
@@ -2144,7 +2219,7 @@ class PlotInterp(BasicModule):
             fname = filename[:-4] + "_vcbar.png"
             canvas.print_figure(fname, dpi=300)
         else:
-            fig = Figure(figsize=[blen, blen], layout="tight")
+            fig = Figure(figsize=[blen, blen], layout="compressed")
             canvas = FigureCanvasQTAgg(fig)
 
             tmp = np.array([[list(range(255))] * 255])
@@ -2183,8 +2258,14 @@ class PlotInterp(BasicModule):
             ax.add_patch(patch)
 
             data = data.astype(int)
-
-            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
+            interp = self.cmb_interp.currentText()
+            im = ax.imshow(
+                data,
+                extent=(0, 255, 0, 222),
+                clip_path=patch,
+                clip_on=True,
+                interpolation=interp,
+            )
             im.set_clip_path(patch)
 
             ax.text(
@@ -2260,7 +2341,7 @@ class PlotInterp(BasicModule):
 
         self.change_dtype()
 
-        self.mmc.init_graph()
+        self.mmc.init_graph(self.cmb_interp.currentText())
         self.msc.init_graph()
 
         self.set_minmax()
@@ -2304,7 +2385,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Raster\small.tif"
     # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\ratios\AST_07102005_081903_ratio.tif"
 
     data = iodefs.get_raster(ifile)
