@@ -27,6 +27,7 @@
 import glob
 import os
 import tempfile
+from collections.abc import Callable
 
 import geopandas as gpd
 import numpy as np
@@ -65,7 +66,7 @@ class DataCut(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -143,10 +144,6 @@ class DataCut(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
 
@@ -180,10 +177,6 @@ class DataLayerStack(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_main = QtWidgets.QGridLayout(self)
@@ -230,10 +223,6 @@ class DataLayerStack(BasicModule):
 
         This is the size of a grid cell in the x and y directions.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["Raster"][0]
         dxy = self.dsb_dxy.value()
@@ -254,7 +243,7 @@ class DataLayerStack(BasicModule):
         self.lbl_rows.setText("Rows: " + str(rows))
         self.lbl_cols.setText("Columns: " + str(cols))
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -311,10 +300,6 @@ class DataLayerStack(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.dxy)
         self.saveobj(self.dsb_dxy)
@@ -325,10 +310,6 @@ class DataLayerStack(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         resampling = self.cmb_resample.currentText()
@@ -410,10 +391,6 @@ class DataMerge(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.mosaic"
@@ -483,10 +460,6 @@ class DataMerge(BasicModule):
         """
         Change method.
 
-        Returns
-        -------
-        None.
-
         """
         if self.rb_first.isChecked():
             self.method = "first"
@@ -505,10 +478,6 @@ class DataMerge(BasicModule):
         """
         Get the input directory.
 
-        Returns
-        -------
-        None.
-
         """
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Directory"
@@ -522,10 +491,6 @@ class DataMerge(BasicModule):
     def get_sfile(self):
         """
         Get the input shapefile.
-
-        Returns
-        -------
-        None.
 
         """
         ext = "Common formats (*.shp *.hdr *.tif);;"
@@ -541,7 +506,7 @@ class DataMerge(BasicModule):
 
         return True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -571,10 +536,6 @@ class DataMerge(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.idir)
@@ -670,10 +631,6 @@ class DataReproj(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -690,10 +647,6 @@ class DataReproj(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         if self.in_proj.wkt == "Unknown" or self.out_proj.wkt == "Unknown":
@@ -738,7 +691,7 @@ class DataReproj(BasicModule):
         self.targ_wkt = self.out_proj.wkt
         self.outdata["Raster"] = dat
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -784,10 +737,6 @@ class DataReproj(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.orig_wkt)
         self.saveobj(self.targ_wkt)
@@ -809,7 +758,7 @@ class GetProf(BasicModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -892,10 +841,6 @@ class GetProf(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
 
@@ -955,10 +900,6 @@ class Metadata(ContextModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_main = QtWidgets.QGridLayout(self)
@@ -1034,10 +975,6 @@ class Metadata(ContextModule):
         """
         Accept option.
 
-        Returns
-        -------
-        None.
-
         """
         wkt = self.proj.wkt
 
@@ -1063,10 +1000,6 @@ class Metadata(ContextModule):
         """
         Rename the band name.
 
-        Returns
-        -------
-        None.
-
         """
         ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
@@ -1090,10 +1023,6 @@ class Metadata(ContextModule):
     def update_vals(self):
         """
         Update the values on the interface.
-
-        Returns
-        -------
-        None.
 
         """
         tmp = self.check_validation()
@@ -1231,10 +1160,6 @@ class RasterToVector(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -1244,7 +1169,7 @@ class RasterToVector(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1303,10 +1228,6 @@ class RasterToVector(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
 
 
@@ -1330,10 +1251,6 @@ class RasterToVectorBoundary(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -1343,7 +1260,7 @@ class RasterToVectorBoundary(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1389,10 +1306,6 @@ class RasterToVectorBoundary(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
 
 
@@ -1427,7 +1340,7 @@ def cluster_to_raster(indata):
     return indata
 
 
-def get_shape_bounds(sfile, crs=None, showlog=print):
+def get_shape_bounds(sfile, crs=None, showlog: Callable[..., None] = print):
     """
     Get bounds from a shape file.
 
@@ -1609,7 +1522,7 @@ def mosaic(
     bfile=None,
     bandstofiles=False,
     piter=iter,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     singleband=False,
     forcetype=None,
     shifttomedian=False,
@@ -2044,7 +1957,7 @@ def trim_raster(olddata):
     return olddata
 
 
-def verticalp(data, order=1, showlog=print, piter=iter):
+def verticalp(data, order=1, showlog: Callable[..., None] = print, piter=iter):
     """
     Vertical derivative.
 

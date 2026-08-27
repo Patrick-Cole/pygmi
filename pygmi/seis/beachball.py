@@ -30,6 +30,7 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
 """
 
 import os
+from collections.abc import Callable
 
 import geopandas as gpd
 import numexpr as ne
@@ -93,10 +94,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
     def init_graph(self):
         """
         Initialize the graph.
-
-        Returns
-        -------
-        None.
 
         """
         self.axes.clear()
@@ -225,10 +222,6 @@ class BeachBall(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         self.buttonbox.buttonbox.hide()
@@ -361,10 +354,6 @@ class BeachBall(BasicModule):
         """
         Change algorithm.
 
-        Returns
-        -------
-        None.
-
         """
         txt = str(self.cmb_alg.currentText())
         self.algorithm = txt
@@ -389,7 +378,7 @@ class BeachBall(BasicModule):
         self.mmc.pwidth = self.dsb_dist.value()
         self.mmc.init_graph()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -423,10 +412,6 @@ class BeachBall(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.algorithm)
         self.saveobj(self.nofps)
@@ -437,7 +422,9 @@ class BeachBall(BasicModule):
         self.saveobj(self.rb_proj)
 
 
-def beachball(fm, centerx, centery, diam, isgeog, *, showlog=print):
+def beachball(
+    fm, centerx, centery, diam, isgeog, *, showlog: Callable[..., None] = print
+):
     """
     Beachball.
 

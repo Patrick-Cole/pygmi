@@ -25,6 +25,7 @@
 """Miscellaneous functions for raster data."""
 
 from collections import Counter
+from collections.abc import Callable
 from math import cos, sin, tan
 
 import geopandas as gpd
@@ -197,7 +198,7 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
     return R
 
 
-def cut_raster(data, ibnd, showlog=print, deepcopy=True):
+def cut_raster(data, ibnd, showlog: Callable[..., None] = print, deepcopy=True):
     """
     Cut a raster dataset.
 
@@ -419,7 +420,7 @@ def lstack(
     *,
     piter=None,
     dxy=None,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     commonmask=False,
     masterid=None,
     nodeepcopy=False,

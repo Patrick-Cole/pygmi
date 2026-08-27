@@ -69,10 +69,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         lmod2 : PyGMI lithology data
             Lithology dataset to be used.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
 
@@ -181,10 +177,6 @@ class GravMag:
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.cb_demag.setChecked(False)
 
@@ -208,10 +200,6 @@ class GravMag:
         """
         Pre field-calculation routine.
 
-        Returns
-        -------
-        None.
-
         """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
@@ -230,10 +218,6 @@ class GravMag:
     def calc_field_grav(self):
         """
         Pre field-calculation routine.
-
-        Returns
-        -------
-        None.
 
         """
         # Update this
@@ -254,10 +238,6 @@ class GravMag:
         """
         Calculate only magnetic field changes.
 
-        Returns
-        -------
-        None.
-
         """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
@@ -270,10 +250,6 @@ class GravMag:
     def calc_field_grav_changes(self):
         """
         Calculate only gravity field changes.
-
-        Returns
-        -------
-        None.
 
         """
         self.lmod1 = self.parent.lmod1
@@ -294,10 +270,6 @@ class GravMag:
             Flag for showing reports. The default is False.
         magcalc : bool, optional
             Flag for choosing the magnetic calculation. The default is False.
-
-        Returns
-        -------
-        None.
 
         """
         demag = self.cb_demag.isChecked()
@@ -325,10 +297,6 @@ class GravMag:
             REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
 
         This routine calculates the last term.
-
-        Returns
-        -------
-        None.
 
         """
         ltmp = list(self.lmod1.lith_list.keys())
@@ -415,10 +383,6 @@ class GravMag:
         idea about how reliable the calculated field on the edge of the model
         is.
 
-        Returns
-        -------
-        None.
-
         """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
@@ -440,10 +404,6 @@ class GravMag:
             Array of magnetic values.
         modind : numpy array
             Model indices.
-
-        Returns
-        -------
-        None.
 
         """
         indx = self.parent.tabwidget.currentIndex()
@@ -553,10 +513,6 @@ class GeoData:
         hcor : numpy array or None, optional
             Height corrections. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         if self.modified is True:
             numx = self.g_cols * self.g_dxy
@@ -589,10 +545,6 @@ class GeoData:
         ----------
         hcor : numpy array or None, optional
             Height corrections. The default is None.
-
-        Returns
-        -------
-        None.
 
         """
         if self.modified is True:
@@ -658,10 +610,6 @@ class GeoData:
         modified : bool, optional
             Whether the model was modified. The default is True.
 
-        Returns
-        -------
-        None.
-
         """
         self.modified = modified
         self.g_cols = ncols * 2 + 1
@@ -684,10 +632,6 @@ class GeoData:
         Set x12, y12, z12.
 
         This is the limits of the cubes for the model
-
-        Returns
-        -------
-        None.
 
         """
         numx = self.g_cols * self.g_dxy
@@ -732,10 +676,6 @@ class GeoData:
             Observation Z coordinates.
         hcor : numpy array
             Height corrections.
-
-        Returns
-        -------
-        None.
 
         """
         glayers = []
@@ -832,10 +772,6 @@ class GeoData:
             Observation Z coordinates.
         hcor : numpy array
             Height corrections.
-
-        Returns
-        -------
-        None.
 
         """
         mlayers = []
@@ -1242,7 +1178,7 @@ def calc_field(
     for i in lmod.tmpfiles:
         lmod.tmpfiles[i].close()
 
-    mgvalin.resize([numx, numy])
+    mgvalin = np.resize(mgvalin, [numx, numy])
     mgvalin = mgvalin.T
     mgvalin = mgvalin[::-1]
     mgvalin = np.ma.array(mgvalin)

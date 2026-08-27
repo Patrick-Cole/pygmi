@@ -26,6 +26,7 @@
 
 import os
 import sys
+from collections.abc import Callable
 
 import numpy as np
 import pyvista as pv
@@ -111,10 +112,6 @@ class Mod3dDisplay(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "pfmod.cm.show3dmodel"
@@ -196,10 +193,6 @@ class Mod3dDisplay(ContextModule):
         QCloseEvent : TYPE
             Close event.
 
-        Returns
-        -------
-        None.
-
         """
         super().closeEvent(QCloseEvent)
         self.plotter.close()
@@ -224,10 +217,6 @@ class Mod3dDisplay(ContextModule):
         """
         Save a jpg.
 
-        Returns
-        -------
-        None.
-
         """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, "Save File", ".", "JPG (*.jpg);;PNG (*.png)"
@@ -241,10 +230,6 @@ class Mod3dDisplay(ContextModule):
     def update_for_kmz(self):
         """
         Update for the kmz file.
-
-        Returns
-        -------
-        None.
 
         """
         # self.update_plot()
@@ -270,10 +255,6 @@ class Mod3dDisplay(ContextModule):
         """
         List widget routine.
 
-        Returns
-        -------
-        None.
-
         """
         if not self.lmod1.lith_list:
             return
@@ -285,20 +266,12 @@ class Mod3dDisplay(ContextModule):
         """
         Initialise data.
 
-        Returns
-        -------
-        None.
-
         """
         self.outdata = self.indata
 
     def set_selected_liths(self):
         """
         Set the selected lithologies.
-
-        Returns
-        -------
-        None.
 
         """
         item = self.lw_3dmod_defs.currentItem()
@@ -326,10 +299,6 @@ class Mod3dDisplay(ContextModule):
     def resetlight(self):
         """
         Reset light to the current model position.
-
-        Returns
-        -------
-        None.
 
         """
         self.msc.init_graph()
@@ -360,10 +329,6 @@ class Mod3dDisplay(ContextModule):
     def update_color(self):
         """
         Update colour only.
-
-        Returns
-        -------
-        None.
 
         """
         liths = np.unique(self.gdata)
@@ -440,10 +405,6 @@ class Mod3dDisplay(ContextModule):
         """
         Update 3D model.
 
-        Returns
-        -------
-        None.
-
         """
         QtWidgets.QApplication.processEvents()
 
@@ -518,10 +479,6 @@ class Mod3dDisplay(ContextModule):
         ----------
         issmooth : bool, optional
             Flag to indicate a smooth model. The default is None.
-
-        Returns
-        -------
-        None.
 
         """
         QtWidgets.QApplication.processEvents()
@@ -636,10 +593,6 @@ class Mod3dDisplay(ContextModule):
         """
         Update the 3d model part 2.
 
-        Returns
-        -------
-        None.
-
         """
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
@@ -732,10 +685,6 @@ class MySunCanvas(FigureCanvasQTAgg):
     def init_graph(self):
         """
         Initialise graph.
-
-        Returns
-        -------
-        None.
 
         """
         self.axes.clear()
@@ -902,7 +851,7 @@ def normalize_v3(arr):
     return arr
 
 
-def MarchingCubes(x, y, z, c, iso, *, showlog=print):
+def MarchingCubes(x, y, z, c, iso, *, showlog: Callable[..., None] = print):
     """
     Marching cubes.
 

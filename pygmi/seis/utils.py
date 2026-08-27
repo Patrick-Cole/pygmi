@@ -60,10 +60,6 @@ class CorrectDescriptions(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "seis.dm.corrtyp3"
         gl_main = QtWidgets.QGridLayout(self)
@@ -87,10 +83,6 @@ class CorrectDescriptions(BasicModule):
         filename : str, optional
             Filename submitted for testing. The default is ''.
 
-        Returns
-        -------
-        None.
-
         """
         ext = "Description list (*.txt)"
 
@@ -103,7 +95,7 @@ class CorrectDescriptions(BasicModule):
 
         self.le_textfile.setText(filename)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -134,10 +126,6 @@ class CorrectDescriptions(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.le_textfile)
 
@@ -146,10 +134,6 @@ class CorrectDescriptions(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         filename = self.le_textfile.text()

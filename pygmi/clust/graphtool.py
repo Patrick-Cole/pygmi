@@ -120,10 +120,6 @@ class GraphHist(FigureCanvasQTAgg):
         """
         Initialize the Graph.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clf()
 
@@ -165,10 +161,6 @@ class GraphHist(FigureCanvasQTAgg):
         """
         Polygon Interactor routine.
 
-        Returns
-        -------
-        None.
-
         """
         pntxy = np.transpose([self.xcoord, self.ycoord])
         self.polyi = PolygonInteractor(self.axscatter, pntxy)
@@ -177,10 +169,6 @@ class GraphHist(FigureCanvasQTAgg):
     def setup_coords(self):
         """
         Routine to setup the coordinates for the scattergram.
-
-        Returns
-        -------
-        None.
 
         """
         self.xcoord = self.data[self.cindx[0]].data.flatten()
@@ -200,10 +188,6 @@ class GraphHist(FigureCanvasQTAgg):
     def setup_hist(self):
         """
         Routine to setup the 1D histograms.
-
-        Returns
-        -------
-        None.
 
         """
         self.axhistx.xaxis.set_major_formatter(self.nullfmt)
@@ -227,10 +211,6 @@ class GraphHist(FigureCanvasQTAgg):
         ----------
         clearaxis : bool, optional
             True to clear the axis. The default is False.
-
-        Returns
-        -------
-        None.
 
         """
         if clearaxis is True:
@@ -276,10 +256,6 @@ class GraphMap(FigureCanvasQTAgg):
         """
         Initialize the Graph.
 
-        Returns
-        -------
-        None.
-
         """
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
@@ -297,10 +273,6 @@ class GraphMap(FigureCanvasQTAgg):
     def polyint(self):
         """
         Polygon Integrator.
-
-        Returns
-        -------
-        None.
 
         """
         mtmp = self.mindx
@@ -322,10 +294,6 @@ class GraphMap(FigureCanvasQTAgg):
     def update_graph(self):
         """
         Draw routine.
-
-        Returns
-        -------
-        None.
 
         """
         mtmp = self.mindx
@@ -403,10 +371,6 @@ class PolygonInteractor(QtCore.QObject):
         """
         Draw callback.
 
-        Returns
-        -------
-        None.
-
         """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         QtWidgets.QApplication.processEvents()
@@ -424,10 +388,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         npoly : list
             New polygon coordinates.
-
-        Returns
-        -------
-        None.
 
         """
         self.poly.set_xy(npoly)
@@ -472,10 +432,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes is None:
@@ -541,10 +497,6 @@ class PolygonInteractor(QtCore.QObject):
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
 
-        Returns
-        -------
-        None.
-
         """
         if event.button != 1:
             return
@@ -554,10 +506,6 @@ class PolygonInteractor(QtCore.QObject):
     def update_plots(self):
         """
         Update plots.
-
-        Returns
-        -------
-        None.
 
         """
         self.polymask = Path(self.poly.xy).contains_points(self.pntxy)
@@ -571,10 +519,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
-
-        Returns
-        -------
-        None.
 
         """
         if self._ind is None:
@@ -632,10 +576,6 @@ class ScatterPlot(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         gbox_cp = QtWidgets.QGroupBox("Cross Plot Settings")
@@ -684,10 +624,6 @@ class ScatterPlot(BasicModule):
         """
         On cross plot, delete polygon.
 
-        Returns
-        -------
-        None.
-
         """
         self.hist.polyi.new_poly([[1, 1]])
 
@@ -703,10 +639,6 @@ class ScatterPlot(BasicModule):
         """
         On map delete polygon.
 
-        Returns
-        -------
-        None.
-
         """
         self.map.polyi.new_poly([[1, 1]])
         dattmp = self.hist.csp.get_array()
@@ -717,10 +649,6 @@ class ScatterPlot(BasicModule):
     def on_cp_combo(self):
         """
         On cross plot, combo.
-
-        Returns
-        -------
-        None.
 
         """
         gstmp = self.cp_combo.currentIndex()
@@ -734,10 +662,6 @@ class ScatterPlot(BasicModule):
         """
         On cross plot, combo 2.
 
-        Returns
-        -------
-        None.
-
         """
         gstmp = self.cp_combo2.currentIndex()
         if gstmp != self.c[1]:
@@ -750,10 +674,6 @@ class ScatterPlot(BasicModule):
         """
         On cross plot, combo 3.
 
-        Returns
-        -------
-        None.
-
         """
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
@@ -762,10 +682,6 @@ class ScatterPlot(BasicModule):
     def on_map_combo(self):
         """
         On map combo.
-
-        Returns
-        -------
-        None.
 
         """
         self.m[0] = self.map_combo.currentIndex()
@@ -776,15 +692,11 @@ class ScatterPlot(BasicModule):
         """
         On map combo 2.
 
-        Returns
-        -------
-        None.
-
         """
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -856,10 +768,6 @@ class ScatterPlot(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.m1)
         self.saveobj(self.c)
@@ -873,10 +781,6 @@ class ScatterPlot(BasicModule):
     def update_map(self):
         """
         Update map.
-
-        Returns
-        -------
-        None.
 
         """
         polymask = self.hist.polyi.polymask
@@ -899,10 +803,6 @@ class ScatterPlot(BasicModule):
     def update_hist(self):
         """
         Update histogram.
-
-        Returns
-        -------
-        None.
 
         """
         polymask = self.map.polyi.polymask

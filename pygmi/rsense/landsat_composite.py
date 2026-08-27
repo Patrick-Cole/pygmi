@@ -26,6 +26,7 @@
 
 import glob
 import os
+from collections.abc import Callable
 from datetime import datetime
 
 import numpy as np
@@ -66,10 +67,6 @@ class LandsatComposite(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.ltc"
         gl_main = QtWidgets.QGridLayout(self)
@@ -91,7 +88,7 @@ class LandsatComposite(BasicModule):
 
         pb_idirlist.pressed.connect(self.get_idir)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -141,10 +138,6 @@ class LandsatComposite(BasicModule):
         """
         Get the input directory.
 
-        Returns
-        -------
-        None.
-
         """
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Directory"
@@ -182,17 +175,15 @@ class LandsatComposite(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.idir)
         self.saveobj(self.sb_tday)
         self.saveobj(self.le_idirlist)
 
 
-def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
+def composite(
+    idir, dreq=10, mean=None, showlog: Callable[..., None] = print, piter=None
+):
     """
     Create a Landsat composite.
 
@@ -269,7 +260,9 @@ def composite(idir, dreq=10, mean=None, showlog=print, piter=None):
     return datfin
 
 
-def import_and_score(ifile, dreq, mean, std, *, showlog=print, piter=None):
+def import_and_score(
+    ifile, dreq, mean, std, *, showlog: Callable[..., None] = print, piter=None
+):
     """
     Import data and score it.
 

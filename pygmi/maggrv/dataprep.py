@@ -25,6 +25,7 @@
 """A set of Magnetic Data routines."""
 
 import math
+from collections.abc import Callable
 
 import numpy as np
 from PySide6 import QtWidgets
@@ -57,10 +58,6 @@ class ASig(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.asig"
@@ -69,7 +66,7 @@ class ASig(BasicModule):
 
         gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -114,17 +111,13 @@ class ASig(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.sb_s)
         self.saveobj(self.sb_azi)
         self.saveobj(self.sb_k)
 
 
-def asig(data1, showlog=print, piter=iter):
+def asig(data1, showlog: Callable[..., None] = print, piter=iter):
     """
     Tilt angle calculations.
 
@@ -184,10 +177,6 @@ class Continuation(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.cont"
@@ -212,7 +201,7 @@ class Continuation(BasicModule):
         gl_main.addWidget(self.dsb_height, 2, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -248,10 +237,6 @@ class Continuation(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_dataid)
         self.saveobj(self.cmb_cont)
@@ -262,10 +247,6 @@ class Continuation(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         h = self.dsb_height.value()
@@ -286,7 +267,7 @@ class Continuation(BasicModule):
         self.outdata["Raster"] = [dat]
 
 
-def fftcont(data, h, showlog=print, piter=iter):
+def fftcont(data, h, showlog: Callable[..., None] = print, piter=iter):
     """
     Continuation.
 
@@ -333,7 +314,7 @@ def fftcont(data, h, showlog=print, piter=iter):
     return dat
 
 
-def taylorcont(data, h, showlog=print, piter=iter):
+def taylorcont(data, h, showlog: Callable[..., None] = print, piter=iter):
     """
     Taylor Continuation.
 
@@ -411,10 +392,6 @@ class Tilt1(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.tilt"
@@ -443,7 +420,7 @@ class Tilt1(BasicModule):
         gl_1.addWidget(self.sb_k, 2, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -512,17 +489,13 @@ class Tilt1(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.sb_s)
         self.saveobj(self.sb_azi)
         self.saveobj(self.sb_k)
 
 
-def tilt1(data1, azi, s, k=2, showlog=print, piter=iter):
+def tilt1(data1, azi, s, k=2, showlog: Callable[..., None] = print, piter=iter):
     """
     Tilt angle calculations.
 
@@ -679,10 +652,6 @@ class RTP(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.rtp"
@@ -717,7 +686,7 @@ class RTP(BasicModule):
         gl_main.addWidget(self.dsb_inca, 3, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -756,10 +725,6 @@ class RTP(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_dataid)
         self.saveobj(self.dsb_inc)
@@ -770,10 +735,6 @@ class RTP(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         I_deg = self.dsb_inc.value()
@@ -790,7 +751,7 @@ class RTP(BasicModule):
         self.outdata["Raster"] = newdat
 
 
-def rtp(data, I_deg, D_deg, Ia=20, showlog=print, piter=iter):
+def rtp(data, I_deg, D_deg, Ia=20, showlog: Callable[..., None] = print, piter=iter):
     """
     Reduction to the pole.
 

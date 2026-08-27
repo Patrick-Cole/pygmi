@@ -76,10 +76,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         nodepth : bool, optional
             Flag to determine if there are depths. The default is False.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -182,10 +178,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         xrng : list, optional
             X-range. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -263,10 +255,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         rng : tuple or None, optional
             Bin range. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -309,10 +297,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         bins : int or str, optional
             Number of bins or binning strategy. See matplotlib.pyplot.hist.
             The default is 'doane'.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -367,10 +351,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         phase : str, optional
             Phase. The default is 'P'.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -415,10 +395,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Data array.
         res : str, optional
             Response type. The default is 'ML'.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -509,10 +485,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         max_vps : float, optional
             Maximum VPS. The default is 1.93.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -586,10 +558,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         datd : GeoDatFrame
             Macroseismic data.
 
-        Returns
-        -------
-        None.
-
         """
         df1 = datd
 
@@ -634,10 +602,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         datd : GeoDatFrame
             Macroseismic data.
-
-        Returns
-        -------
-        None.
 
         """
         df1 = datd
@@ -702,10 +666,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         datetot : list
             list of dates.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -730,10 +690,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Array of y values.
         bval : numpy array
             Array of b values.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -795,10 +751,6 @@ class PlotQC(ContextModule):
     def change_band(self):
         """
         Combo box to choose band.
-
-        Returns
-        -------
-        None.
 
         """
         self.btn_saveshp.hide()
@@ -879,10 +831,6 @@ class PlotQC(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         self.show()
@@ -1015,10 +963,6 @@ class PlotIso(ContextModule):
         """
         Combo box to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         if i == "Convex Hull Method":
@@ -1029,10 +973,6 @@ class PlotIso(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "MacroSeis" not in self.indata:
@@ -1133,10 +1073,6 @@ class PlotTempB(ContextModule):
         """
         Edit box to change window length.
 
-        Returns
-        -------
-        None.
-
         """
         dat2 = self.data
         numrecs = len(dat2["1_year"])
@@ -1190,10 +1126,6 @@ class PlotTempB(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         dat1 = self.indata["Seis"]
@@ -1260,10 +1192,6 @@ class PlotSpatialB(ContextModule):
         """
         Edit box to change window length.
 
-        Returns
-        -------
-        None.
-
         """
         if not self.check_validation():
             return
@@ -1325,10 +1253,6 @@ class PlotSpatialB(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         dat1 = self.indata["Seis"]

@@ -81,10 +81,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         rotang : float, optional
             Rotation in degrees. The default is 10.
 
-        Returns
-        -------
-        None.
-
         """
         self.scale = scale
         self.rotang = rotang
@@ -192,10 +188,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         shade : bool, optional
             Option to choose sunshading. The default is False.
 
-        Returns
-        -------
-        None.
-
         """
         self.scale = scale
         self.rotang = rotang
@@ -225,10 +217,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Matplotlib colormap. The default is jet.
         atype : str, optional
             Anaglyph type. The default is 'dubois'.
-
-        Returns
-        -------
-        None.
 
         """
         if not doshade:
@@ -268,10 +256,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         atype : str, optional
             Anaglyph type. The default is 'dubois'.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -414,10 +398,6 @@ class PlotAnaglyph(ContextModule):
         """
         Update from all combos.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         txt = str(self.cmb_cbar.currentText())
@@ -444,10 +424,6 @@ class PlotAnaglyph(ContextModule):
         """
         Update colour bar.
 
-        Returns
-        -------
-        None.
-
         """
         txt = str(self.cmb_cbar.currentText())
         cbar = colormaps[txt]
@@ -459,20 +435,12 @@ class PlotAnaglyph(ContextModule):
         """
         Update anaglyph type.
 
-        Returns
-        -------
-        None.
-
         """
         self.mmc.update_atype(atype=self.cmb_2.currentText())
 
     def change_contours(self):
         """
         Update contours.
-
-        Returns
-        -------
-        None.
 
         """
         self.rb_docontour.setChecked(True)
@@ -495,10 +463,6 @@ class PlotAnaglyph(ContextModule):
         """
         Change Image, setting defaults.
 
-        Returns
-        -------
-        None.
-
         """
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
@@ -512,10 +476,6 @@ class PlotAnaglyph(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Raster" in self.indata:

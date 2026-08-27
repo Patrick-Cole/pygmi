@@ -27,6 +27,7 @@
 import os
 import re
 import sys
+from collections.abc import Callable
 
 import numexpr as ne
 import numpy as np
@@ -60,10 +61,6 @@ class SatRatios(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         self.buttonbox.htmlfile = "rsense.dm.ratios"
@@ -103,7 +100,7 @@ class SatRatios(BasicModule):
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -166,10 +163,6 @@ class SatRatios(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_sensor)
         self.saveobj(self.lw_ratios)
@@ -179,10 +172,6 @@ class SatRatios(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         sensor = self.cmb_sensor.currentText()
@@ -259,10 +248,6 @@ class SatRatios(BasicModule):
 
         The ratio definitions are for the ASTER satellite. Band 0 refers to
         an imaginary blue band.
-
-        Returns
-        -------
-        None.
 
         """
         sensor = self.cmb_sensor.currentText()
@@ -369,10 +354,6 @@ class SatRatios(BasicModule):
         """
         Invert the selected ratios.
 
-        Returns
-        -------
-        None.
-
         """
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
@@ -423,10 +404,6 @@ class ConditionIndices(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.calccondind"
         gl_main = QtWidgets.QGridLayout(self)
@@ -470,7 +447,7 @@ class ConditionIndices(BasicModule):
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -535,10 +512,6 @@ class ConditionIndices(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_sensor)
         self.saveobj(self.cmb_index)
@@ -549,10 +522,6 @@ class ConditionIndices(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         index = self.cmb_index.currentText()
@@ -751,10 +720,6 @@ class ConditionIndices(BasicModule):
         """
         Set the available indices.
 
-        Returns
-        -------
-        None.
-
         """
         sensor = self.cmb_sensor.currentText()
         rlist = []
@@ -776,10 +741,6 @@ class ConditionIndices(BasicModule):
         """
         Invert the selected ratios.
 
-        Returns
-        -------
-        None.
-
         """
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
@@ -790,10 +751,6 @@ class ConditionIndices(BasicModule):
     def set_selected_ratios(self):
         """
         Set the selected ratios.
-
-        Returns
-        -------
-        None.
 
         """
         currentitem = self.lw_ratios.currentItem()
@@ -817,7 +774,9 @@ class ConditionIndices(BasicModule):
         #         item.setText(' ' + item.text()[1:])
 
 
-def calc_ratios(dat, rlist, showlog=print, piter=iter, sensor=None):
+def calc_ratios(
+    dat, rlist, showlog: Callable[..., None] = print, piter=iter, sensor=None
+):
     """
     Calculate Band ratios.
 
@@ -1343,7 +1302,7 @@ def get_VHI(tci, vci, alpha=0.5):
     return vhi
 
 
-def landslide_index(dat, sensor=None, showlog=print, piter=iter):
+def landslide_index(dat, sensor=None, showlog: Callable[..., None] = print, piter=iter):
     """
     Calculate Band ratios.
 

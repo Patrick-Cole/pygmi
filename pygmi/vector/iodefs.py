@@ -27,6 +27,7 @@
 import glob
 import os
 import re
+from collections.abc import Callable
 from io import StringIO
 
 import geopandas as gpd
@@ -70,7 +71,7 @@ class ColumnSelect(BasicModule):
         self.buttonbox.htmlfile = "vector.dm.colsel"
         vbl.addWidget(self.buttonbox)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -153,10 +154,6 @@ class ColumnSelect(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.lw_1)
 
@@ -201,10 +198,6 @@ class ImportVector(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         pb_sfile = QtWidgets.QPushButton(" Filename")
 
@@ -240,7 +233,7 @@ class ImportVector(BasicModule):
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -415,10 +408,6 @@ class ImportVector(BasicModule):
         bounds : list or numpy array
             Bounds defined as (xmin, ymin, xmax, ymax).
 
-        Returns
-        -------
-        None.
-
         """
         self.cmb_bounds.setCurrentText("Manual")
 
@@ -432,10 +421,6 @@ class ImportVector(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifile)
@@ -479,10 +464,6 @@ class ImportXYZ(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.dm.importxyzdata"
@@ -508,7 +489,7 @@ class ImportXYZ(BasicModule):
 
         gl_main.addWidget(self.proj, 3, 0, 1, 4)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -673,10 +654,6 @@ class ImportXYZ(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.proj)
         self.saveobj(self.ifile)
@@ -763,7 +740,7 @@ class ImportVoxel(ContextModule):
         self.filt = ""
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -801,10 +778,6 @@ class ImportVoxel(ContextModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifile)
@@ -1122,7 +1095,7 @@ def export_ubc(ofile, data):
     np.savetxt(ofile[:-3] + "mod", smod2)
 
 
-def get_GXYZ(ifile, showlog=print, piter=iter):
+def get_GXYZ(ifile, showlog: Callable[..., None] = print, piter=iter):
     """
     Get Geosoft XYZ.
 
@@ -1218,7 +1191,7 @@ def get_GXYZ(ifile, showlog=print, piter=iter):
     return df2
 
 
-def get_intrepid(ifile, showlog=print, piter=iter):
+def get_intrepid(ifile, showlog: Callable[..., None] = print, piter=iter):
     """
     Get Intrepid Database.
 

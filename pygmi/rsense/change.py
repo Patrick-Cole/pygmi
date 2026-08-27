@@ -27,6 +27,7 @@
 import math
 import os
 import sys
+from collections.abc import Callable
 
 import numpy as np
 from numba import jit
@@ -59,10 +60,6 @@ class CalculateChange(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.change.html#calculate-change-indices"
         gl_main = QtWidgets.QGridLayout(self)
@@ -94,7 +91,7 @@ class CalculateChange(BasicModule):
         # self.lw_indices.clicked.connect(self.set_selected_indices)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -130,10 +127,6 @@ class CalculateChange(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.lw_indices)
 
@@ -142,10 +135,6 @@ class CalculateChange(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         flist = self.indata["RasterFileList"]
@@ -171,17 +160,13 @@ class CalculateChange(BasicModule):
         """
         Invert the selected indices.
 
-        Returns
-        -------
-        None.
-
         """
         for i in range(self.lw_indices.count()):
             item = self.lw_indices.item(i)
             item.setSelected(not item.isSelected())
 
 
-def calc_change(flist, ilist=None, showlog=print, piter=iter):
+def calc_change(flist, ilist=None, showlog: Callable[..., None] = print, piter=iter):
     """
     Calculate Change Indices.
 
@@ -276,7 +261,7 @@ def calc_change(flist, ilist=None, showlog=print, piter=iter):
     return datfin
 
 
-def calc_mean(flist, showlog=print, piter=iter):
+def calc_mean(flist, showlog: Callable[..., None] = print, piter=iter):
     """
     Load data and calculate iterative Mean.
 
@@ -342,7 +327,7 @@ def calc_mean(flist, showlog=print, piter=iter):
     return meandat, cnt, M
 
 
-def calc_sam(flist, showlog=print, piter=iter):
+def calc_sam(flist, showlog: Callable[..., None] = print, piter=iter):
     """
     Load data and calculate spectral angle between two times.
 
@@ -475,7 +460,7 @@ def imean(mean, newdat, cnt=None, M=None):
     return mean, cnt, M
 
 
-def match_data(flist, showlog=print, piter=iter):
+def match_data(flist, showlog: Callable[..., None] = print, piter=iter):
     """
     Match two datasets.
 

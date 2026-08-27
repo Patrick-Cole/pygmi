@@ -80,10 +80,6 @@ class Gradients(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.grad"
@@ -113,7 +109,7 @@ class Gradients(BasicModule):
         self.rb_vgrad.clicked.connect(self.radiochange)
         self.rb_thg.clicked.connect(self.radiochange)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -175,10 +171,6 @@ class Gradients(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.azi)
         self.saveobj(self.order)
@@ -192,10 +184,6 @@ class Gradients(BasicModule):
     def radiochange(self):
         """
         Check radio button state.
-
-        Returns
-        -------
-        None.
 
         """
         self.dsb_order.hide()
@@ -336,10 +324,6 @@ class Visibility2d(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.visibility"
@@ -361,7 +345,7 @@ class Visibility2d(BasicModule):
         gl_1.addWidget(self.sb_dh, 1, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 2, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -430,10 +414,6 @@ class Visibility2d(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.sb_wsize)
@@ -752,10 +732,6 @@ class AGC(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.agc"
@@ -777,7 +753,7 @@ class AGC(BasicModule):
         gl_1.addWidget(self.sb_wsize, 3, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -830,10 +806,6 @@ class AGC(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.sb_wsize)

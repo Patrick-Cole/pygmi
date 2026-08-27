@@ -56,10 +56,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         df : Pandas DataFrame
             Dataframe containing the data.
 
-        Returns
-        -------
-        None.
-
         """
         fig = self.figure
         fig.clear()
@@ -152,10 +148,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         df : Pandas DataFrame
             Dataframe containing the data.
-
-        Returns
-        -------
-        None.
 
         """
         fig = self.figure
@@ -333,10 +325,6 @@ class PlotLog(ContextModule):
         """
         Combo box to choose the borehole to display.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
 
@@ -375,10 +363,6 @@ class PlotLog(ContextModule):
     def load_hatch(self):
         """
         Load all hatchings.
-
-        Returns
-        -------
-        None.
 
         """
         idir = __file__.rpartition("\\")[0]
@@ -419,10 +403,6 @@ class PlotLog(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = []

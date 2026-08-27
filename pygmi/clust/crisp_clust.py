@@ -28,6 +28,8 @@ Crisp clustering is a set of clustering routines.
 This uses standard statistical methods, as opposed to fuzzy methods.
 """
 
+from collections.abc import Callable
+
 import numpy as np
 from PySide6 import QtWidgets
 from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
@@ -83,10 +85,6 @@ class CrispClust(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         self.buttonbox.htmlfile = "cluster.dm.crisp"
@@ -148,10 +146,6 @@ class CrispClust(BasicModule):
         """
         Set up combo box to choose algorithm.
 
-        Returns
-        -------
-        None.
-
         """
         i = str(self.cmb_alg.currentText())
         if i == "w-means":
@@ -165,10 +159,6 @@ class CrispClust(BasicModule):
         """
         Set up radio button to choose initialisation type.
 
-        Returns
-        -------
-        None.
-
         """
         if self.rb_datadriven.isChecked():
             self.sb_repeatedruns.hide()
@@ -177,7 +167,7 @@ class CrispClust(BasicModule):
             self.sb_repeatedruns.show()
             self.lbl_6.show()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -242,10 +232,6 @@ class CrispClust(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.update_vars()
 
@@ -274,10 +260,6 @@ class CrispClust(BasicModule):
         """
         Update the variables.
 
-        Returns
-        -------
-        None.
-
         """
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
@@ -303,7 +285,7 @@ def crispclust(
     max_iter=100,
     term_thresh=0.00001,
     init_type="random",
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """
@@ -473,7 +455,7 @@ def crisp_means(
     term_thresh,
     cltype,
     cov_constr,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """

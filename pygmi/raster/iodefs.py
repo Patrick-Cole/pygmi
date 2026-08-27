@@ -29,6 +29,7 @@ import datetime
 import os
 import warnings
 import xml.etree.ElementTree as ET
+from collections.abc import Callable
 from io import StringIO
 
 import numpy as np
@@ -149,7 +150,7 @@ class ImportData(BasicModule):
         self.filt = filt
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -294,7 +295,7 @@ class ImportRGBData(BasicModule):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -364,10 +365,6 @@ class ImportRGBData(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifile)
@@ -508,7 +505,7 @@ def get_raster(
     *,
     nval=None,
     piter=None,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     iraster=None,
     driver=None,
     bounds=None,
@@ -1240,10 +1237,6 @@ class ExportData(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.cm.export"
@@ -1427,10 +1420,6 @@ class ExportData(ContextModule):
         data : PyGMI raster Data
             dataset to export
 
-        Returns
-        -------
-        None.
-
         """
         data = data[0]
         if data.metadata["Raster"]["Section"] is False:
@@ -1495,10 +1484,6 @@ class ExportData(ContextModule):
         data : PyGMI raster Data
             dataset to export
 
-        Returns
-        -------
-        None.
-
         """
         if len(data) > 1:
             self.showlog(
@@ -1560,10 +1545,6 @@ class ExportData(ContextModule):
         data : PyGMI raster Data
             dataset to export
 
-        Returns
-        -------
-        None.
-
         """
         if len(data) > 1:
             self.showlog(
@@ -1591,10 +1572,6 @@ class ExportData(ContextModule):
         ----------
         data : PyGMI raster Data
             dataset to export
-
-        Returns
-        -------
-        None.
 
         """
         if len(data) > 1:
@@ -1637,10 +1614,6 @@ class ExportData(ContextModule):
         ----------
         data : PyGMI raster Data
             dataset to export
-
-        Returns
-        -------
-        None.
 
         """
         if len(data) > 1:
@@ -1734,7 +1707,7 @@ def export_raster(
     piter=None,
     compression="NONE",
     bandsort=True,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     updatestats=True,
 ):
     """
@@ -2034,7 +2007,7 @@ def export_raster(
             myfile.write(wout)
 
 
-def calccov(data, showlog=print):
+def calccov(data, showlog: Callable[..., None] = print):
     """
     Calculate covariance from PyGMI Data.
 

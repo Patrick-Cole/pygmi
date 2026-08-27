@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """A collection of functions for maps."""
 
+from collections.abc import Callable
 from math import modf
 
 import geopandas as gpd
@@ -31,12 +32,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pyproj
 from matplotlib import patches, rcParams
+from matplotlib.axes import Axes
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import FixedFormatter, FixedLocator, FuncFormatter, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
 from matplotlib_map_utils.validation.scale_bar import units_standard
+from numpy.typing import NDArray
+from pyproj.crs import CRS
 from PySide6 import QtCore, QtWidgets
 
 rcParams["savefig.dpi"] = 300
@@ -65,19 +69,13 @@ class CanvasModule(FigureCanvasQTAgg):
 
     def resizeEvent(self, event):
         """
-        Overrides Qt's default resize event to suppress immediate rendering.
+        Override Qt's default resize event to suppress immediate rendering.
 
         Parameters
         ----------
         event : event
             Event variable, used to estimate size.
-
-        Returns
-        -------
-        None.
-
         """
-
         if self.custom_resize is True:
             QtWidgets.QWidget.resizeEvent(self, event)
             self._pending_size = event.size()
@@ -99,13 +97,13 @@ class CanvasModule(FigureCanvasQTAgg):
             self._pending_size = None
 
 
-def tick_formatter(x, pos):
+def tick_formatter(x: float, pos: int) -> str:
     """
     Format thousands separator in ticks for plots.
 
     Parameters
     ----------
-    x : float/int
+    x : float
         Number to be formatted.
     pos : int
         Position of tick.
@@ -127,7 +125,9 @@ def tick_formatter(x, pos):
 frm = FuncFormatter(tick_formatter)
 
 
-def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
+def get_neat_intervals(
+    start_dd: float, end_dd: float, num_intervals: int, islon: bool = True
+) -> tuple[NDArray, list[str]]:
     """
     Divides a decimal degree range into neat minute/degree intervals.
 
@@ -144,7 +144,7 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
 
     Returns
     -------
-    intervals : list
+    intervals : NDArray
         Tick coordinates.
     txt : list of str
         List of coordinates in degrees and minutes.
@@ -208,9 +208,17 @@ def get_neat_intervals(start_dd, end_dd, num_intervals, islon=True):
     return intervals, txt
 
 
-def set_axes(ax, crs):
-    """Setup the axes."""
+def set_axes(ax: Axes, crs: CRS):
+    """
+    Set the axes.
 
+    Parameters
+    ----------
+    ax : Axes
+        Primary Matplotlib axes.
+    crs : CRS
+        pyproj crs of data
+    """
     crs = pyproj.CRS.from_wkt(crs.to_wkt())
 
     ax.set_aspect("equal")
@@ -270,18 +278,18 @@ def set_axes(ax, crs):
         ax.tick_params(axis="y", labelrotation=90, labelsize=9)
 
 
-def set_northscale(ax, crs, showlog=print):
+def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
     """
-    Sets the north arrow and the scale bar.
+    Set the north arrow and the scale bar.
 
     Parameters
     ----------
-    ax : Matplotlib axes
+    ax : Axes
         Primary Matplotlib axes.
     crs : CRS
-        rasterio crs of data
+        pyproj crs of data
     showlog : function, optional
-        _Show information using a function, by default print
+        Show information using a function, by default print
     """
     crs = pyproj.CRS.from_wkt(crs.to_wkt())
 
@@ -325,8 +333,7 @@ def set_northscale(ax, crs, showlog=print):
 
 
 def _testfn():
-    """Test function"""
-
+    """Test function."""
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 

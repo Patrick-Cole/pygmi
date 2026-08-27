@@ -64,10 +64,6 @@ class ModestImage(mi.AxesImage):
         TypeError
             Error when data has incorrect dimensions.
 
-        Returns
-        -------
-        None.
-
         """
         self._full_res = A
         self._A = A
@@ -103,10 +99,6 @@ class ModestImage(mi.AxesImage):
         alpha : float, optional
             Light reflectance, between 0 and 1. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         if doshade is True:
             self.shade = [cell, theta, phi, alpha]
@@ -120,10 +112,6 @@ class ModestImage(mi.AxesImage):
     def invalidate_cache(self):
         """
         Invalidate cache.
-
-        Returns
-        -------
-        None.
 
         """
         self._bounds = None
@@ -143,10 +131,6 @@ class ModestImage(mi.AxesImage):
         ----------
         extent : tuple
             Extent of data.
-
-        Returns
-        -------
-        None.
 
         """
         self._full_extent = extent
@@ -369,10 +353,6 @@ class ModestImage(mi.AxesImage):
         """
         Draw ternary.
 
-        Returns
-        -------
-        None.
-
         """
         colormap = np.ma.ones((self._A.shape[0], self._A.shape[1], 4))
         if self.dohisteq:
@@ -405,10 +385,6 @@ class ModestImage(mi.AxesImage):
     def draw_sunshade(self, colormap=None):
         """
         Apply sunshading.
-
-        Returns
-        -------
-        None.
 
         """
         sun = self._A[:, :, -1]
@@ -445,10 +421,6 @@ class ModestImage(mi.AxesImage):
         ----------
         mult : float
             Multiplier.
-
-        Returns
-        -------
-        None.
 
         """
         self._scale_to_res()

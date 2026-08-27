@@ -95,10 +95,6 @@ class ProgressBar:
         """
         Increase value by one.
 
-        Returns
-        -------
-        None.
-
         """
         if self.value < self.max:
             self.value += 1
@@ -169,10 +165,6 @@ class ProgressBar:
         i : int, optional
             Iteration step. The default is 1.
 
-        Returns
-        -------
-        None.
-
         """
         self.mvalue += i
         self.pbarmain.setValue(self.mvalue)
@@ -192,10 +184,6 @@ class ProgressBar:
         """
         Set all progress bars to maximum value.
 
-        Returns
-        -------
-        None.
-
         """
         self.mvalue = self.mmax
         self.value = self.max
@@ -214,10 +202,6 @@ class ProgressBar:
             Maximum value. The default is 1.
         mmax : int, optional
             Maximum value. The default is 1.
-
-        Returns
-        -------
-        None.
 
         """
         self.pbar.setFormat("%p%")
@@ -244,10 +228,6 @@ class ProgressBar:
         maximum : int, optional
             Maximum value. The default is 1.
 
-        Returns
-        -------
-        None.
-
         """
         self.pbar.setFormat("%p%")
         self.max = maximum
@@ -259,10 +239,6 @@ class ProgressBar:
     def busysub(self):
         """
         Busy.
-
-        Returns
-        -------
-        None.
 
         """
         self.pbar.setMinimum(0)
@@ -294,10 +270,6 @@ class MergeMod3D(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "pfmod.dm.merge3dmodels"
@@ -314,7 +286,7 @@ class MergeMod3D(BasicModule):
         gl_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 3, 0, 1, 4)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -360,10 +332,6 @@ class MergeMod3D(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_master)

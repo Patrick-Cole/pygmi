@@ -75,10 +75,6 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         zpred : numpy array
             Predicted dBz/dt.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
 
@@ -130,10 +126,6 @@ class MyMplCanvas2(FigureCanvasQTAgg):
             Waveform amplitude.
         title : str
             Title.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -311,10 +303,6 @@ class TDEM1D(BasicModule):
     def apply(self):
         """
         Invert the data.
-
-        Returns
-        -------
-        None.
 
         """
         if self.times is None:
@@ -532,10 +520,6 @@ class TDEM1D(BasicModule):
         """
         Change Source.
 
-        Returns
-        -------
-        None.
-
         """
         stype = self.cmb_stype.currentText()
 
@@ -551,10 +535,6 @@ class TDEM1D(BasicModule):
     def disp_wave(self):
         """
         Display the waveform.
-
-        Returns
-        -------
-        None.
 
         """
         offtime = float(self.le_txofftime.text())
@@ -640,10 +620,6 @@ class TDEM1D(BasicModule):
         filename : str, optional
             filename (txt). The default is ''.
 
-        Returns
-        -------
-        None.
-
         """
         ext = "Text file (*.txt)"
 
@@ -663,10 +639,6 @@ class TDEM1D(BasicModule):
         """
         Combo to change line.
 
-        Returns
-        -------
-        None.
-
         """
         self.cmb_fid.clear()
 
@@ -675,7 +647,7 @@ class TDEM1D(BasicModule):
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -736,10 +708,6 @@ class TDEM1D(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_stype)

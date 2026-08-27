@@ -142,10 +142,6 @@ class BIRRP(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         buttonbox = QtWidgets.QDialogButtonBox()
         pb_importbirrp = QtWidgets.QPushButton("Import BIRRP configuration file")
@@ -275,10 +271,6 @@ class BIRRP(BasicModule):
     def importbirrp(self):
         """
         Import a BIRRP config file.
-
-        Returns
-        -------
-        None.
 
         """
         ext = "*.birrp (*.birrp)"
@@ -417,10 +409,6 @@ class BIRRP(BasicModule):
         """
         Save and runs a birrp config file.
 
-        Returns
-        -------
-        None.
-
         """
         ext = "*.birrp (*.birrp)"
 
@@ -494,10 +482,6 @@ class BIRRP(BasicModule):
         widget : widget
             widget whose text is set to filename..
 
-        Returns
-        -------
-        None.
-
         """
         ext = "*.* (*.*)"
 
@@ -512,10 +496,6 @@ class BIRRP(BasicModule):
     def nar_changed(self):
         """
         Value of nar changed.
-
-        Returns
-        -------
-        None.
 
         """
         text = self.le_nar.text()
@@ -537,10 +517,6 @@ class BIRRP(BasicModule):
     def nfil_changed(self):
         """
         Value of nfil changed.
-
-        Returns
-        -------
-        None.
 
         """
         for i in ["ex", "ey", "hz", "hx", "hy", "rx", "ry"]:
@@ -577,10 +553,6 @@ class BIRRP(BasicModule):
         indx : int
             Index.
 
-        Returns
-        -------
-        None.
-
         """
         row1, _ = self.lay.getWidgetPosition(self.nfil)
         row2, _ = self.lay.getWidgetPosition(self.cpar)
@@ -596,10 +568,6 @@ class BIRRP(BasicModule):
     def jmode_changed(self):
         """
         Value of jmode changed.
-
-        Returns
-        -------
-        None.
 
         """
         row, _ = self.lay.getWidgetPosition(self.cmb_jmode)
@@ -641,10 +609,6 @@ class BIRRP(BasicModule):
     def nout_changed(self):
         """
         Value of nout changed.
-
-        Returns
-        -------
-        None.
 
         """
         row, _ = self.lay.getWidgetPosition(self.le_c2threshe)
@@ -715,10 +679,6 @@ class BIRRP(BasicModule):
         lay : QtWidgets.QFormLayout
             Form Layout.
 
-        Returns
-        -------
-        None.
-
         """
         if lay.getWidgetPosition(widget)[0] == -1:
             lay.insertRow(row, label, widget)
@@ -735,17 +695,13 @@ class BIRRP(BasicModule):
         lay : QtWidgets.QFormLayout
             Form Layout.
 
-        Returns
-        -------
-        None.
-
         """
         if lay.getWidgetPosition(widget)[0] > -1:
             widget.hide()
             lay.labelForField(widget).hide()
             lay.takeRow(widget)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -771,9 +727,5 @@ class BIRRP(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """

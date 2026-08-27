@@ -26,6 +26,7 @@
 
 import datetime
 import warnings
+from collections.abc import Callable
 from copy import deepcopy
 
 import numpy as np
@@ -146,7 +147,7 @@ def bounds_to_transform(bounds, dxy):
     return transform, shape
 
 
-def bounds_intersection(dataset, bounds, showlog=print):
+def bounds_intersection(dataset, bounds, showlog: Callable[..., None] = print):
     """
     Find the intersection between some bounds and a dataset.
 
@@ -332,10 +333,6 @@ class Data:
         bounds : tuple, optional
             Bounds of data as (left, bottom, right, top). The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         self.xdim = dataset.transform[0]
         self.ydim = abs(dataset.transform[4])
@@ -366,10 +363,6 @@ class Data:
             Logical operation to be performed between masks. Can be 'or' or
             'and'. The default is 'or'.
 
-        Returns
-        -------
-        None.
-
         """
         if oper == "or":
             self.data.mask = np.logical_or(self.data.mask, mask)
@@ -389,10 +382,6 @@ class Data:
         ax : Matplotlib axes
             Matplotlib axes for plot.
 
-        Returns
-        -------
-        None.
-
         """
         vmin, vmax = self.get_vmin_vmax()
         im = ax.imshow(
@@ -410,10 +399,6 @@ class Data:
         ----------
         mask : array
             Boolean array of new mask to modify old one.
-
-        Returns
-        -------
-        None.
 
         """
         if mask is not None:
@@ -457,10 +442,6 @@ class Data:
             rows in dataset. The default is None.
         cols : int, optional
             columns in dataset. The default is None.
-
-        Returns
-        -------
-        None.
 
         """
         if transform is not None:
@@ -625,10 +606,6 @@ class RasterMeta:
         ----------
         dat : pygmi.raster.datatypes.Data
             PyGMI data object.
-
-        Returns
-        -------
-        None.
 
         """
         data = dat[0]

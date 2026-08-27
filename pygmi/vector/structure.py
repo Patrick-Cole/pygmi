@@ -68,10 +68,6 @@ class StructComp(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -117,10 +113,6 @@ class StructComp(BasicModule):
         """
         When method is changed, this updated hidden controls.
 
-        Returns
-        -------
-        None.
-
         """
         method = self.cmb_method.currentText()
 
@@ -139,7 +131,7 @@ class StructComp(BasicModule):
             self.lbl_wsize.show()
             self.le_wsize.show()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -194,10 +186,6 @@ class StructComp(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.le_dxy)
         self.saveobj(self.le_std)
@@ -210,10 +198,6 @@ class StructComp(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         method = self.cmb_method.currentText()

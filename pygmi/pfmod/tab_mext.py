@@ -76,10 +76,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.setWindowTitle("Model Extent Parameters")
         helpdocs = menu_default.HelpButton("pfmod.dm.modelcreate")
@@ -249,10 +245,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Apply changes.
 
-        Returns
-        -------
-        None.
-
         """
         self.showtext("Working...")
 
@@ -297,10 +289,6 @@ class MextDisplay(QtWidgets.QDialog):
         dtxt : str
             Text to describe new raster data entry.
 
-        Returns
-        -------
-        None.
-
         """
         ctxt = str(combo.currentText())
         if ctxt not in ("None", ""):
@@ -311,10 +299,6 @@ class MextDisplay(QtWidgets.QDialog):
     def choose_dtm(self):
         """
         Combo box to choose current DTM.
-
-        Returns
-        -------
-        None.
 
         """
         ctxt = str(self.cmb_dtm.currentText())
@@ -331,10 +315,6 @@ class MextDisplay(QtWidgets.QDialog):
     def choose_model(self):
         """
         Choose model file.
-
-        Returns
-        -------
-        None.
 
         """
         ctxt = str(self.cmb_model.currentText())
@@ -387,10 +367,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Get current grid extents and parameters.
 
-        Returns
-        -------
-        None.
-
         """
         ctxt = str(self.cmb_dataset.currentText())
         if ctxt not in ("None", ""):
@@ -416,10 +392,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Initialise parameters.
 
-        Returns
-        -------
-        None.
-
         """
         # Extent Parameters
         self.dsb_utlx.setValue(0.0)
@@ -438,10 +410,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Update layers.
 
-        Returns
-        -------
-        None.
-
         """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
@@ -459,10 +427,6 @@ class MextDisplay(QtWidgets.QDialog):
     def update_model_combos(self):
         """
         Update model combos.
-
-        Returns
-        -------
-        None.
 
         """
         modnames = ["None"]
@@ -484,10 +448,6 @@ class MextDisplay(QtWidgets.QDialog):
     def update_combos(self):
         """
         Update combos.
-
-        Returns
-        -------
-        None.
 
         """
         self.cmb_dataset.currentIndexChanged.disconnect()
@@ -568,10 +528,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         Update the visible model extent parameters.
 
-        Returns
-        -------
-        None.
-
         """
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
@@ -601,10 +557,6 @@ class MextDisplay(QtWidgets.QDialog):
         dxy : float
             Cell dimension.
 
-        Returns
-        -------
-        None.
-
         """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
@@ -628,10 +580,6 @@ class MextDisplay(QtWidgets.QDialog):
         d_z : float
             Layer thickness.
 
-        Returns
-        -------
-        None.
-
         """
         zextent = self.dsb_zextent.value()
 
@@ -644,10 +592,6 @@ class MextDisplay(QtWidgets.QDialog):
     def tab_activate(self):
         """
         Entry point.
-
-        Returns
-        -------
-        None.
 
         """
         self.update_model_combos()

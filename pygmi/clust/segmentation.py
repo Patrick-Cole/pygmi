@@ -24,6 +24,8 @@
 # -----------------------------------------------------------------------------
 """Image segmentation routines, following Baatz and Schäpe (2000)."""
 
+from collections.abc import Callable
+
 import numpy as np
 import skimage
 import sklearn.preprocessing as skp
@@ -59,10 +61,6 @@ class ImageSeg(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_main = QtWidgets.QGridLayout(self)
@@ -104,7 +102,7 @@ class ImageSeg(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 5, 0, 1, 4)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -203,10 +201,6 @@ class ImageSeg(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.le_scale)
         self.saveobj(self.le_wcolor)
@@ -222,7 +216,7 @@ def segment1(
     wcolor=0.5,
     wcompact=0.5,
     doshape=True,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """
@@ -314,7 +308,7 @@ def _segment2(
     wcompact=0.5,
     wcolor=0.5,
     scale=500,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """

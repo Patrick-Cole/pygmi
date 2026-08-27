@@ -24,11 +24,14 @@
 # -----------------------------------------------------------------------------
 """Raster reprojection functions."""
 
+from collections.abc import Callable
+
 import numpy as np
 import pyproj
 import rasterio
 from pyproj.crs import CRS, ProjectedCRS
 from pyproj.crs.coordinate_operation import TransverseMercatorConversion
+from pyproj.transformer import TransformerGroup
 from PySide6 import QtGui, QtWidgets
 from rasterio.warp import calculate_default_transform, reproject
 
@@ -109,10 +112,6 @@ class GroupProj(QtWidgets.QWidget):
         wkt : str
             Well Known Text descriptions for coordinates (WKT).
 
-        Returns
-        -------
-        None.
-
         """
         if wkt in ["", "None"]:
             self.cmb_datum.setCurrentText("None")
@@ -125,10 +124,6 @@ class GroupProj(QtWidgets.QWidget):
     def combo_datum_change(self):
         """
         Change datum combo.
-
-        Returns
-        -------
-        None.
 
         """
         indx = self.cmb_datum.currentIndex()
@@ -146,10 +141,6 @@ class GroupProj(QtWidgets.QWidget):
     def combo_change(self):
         """
         Change Combo.
-
-        Returns
-        -------
-        None.
 
         """
         dtxt = self.cmb_datum.currentText()
@@ -179,7 +170,7 @@ def data_reproject(
     orows=None,
     ocolumns=None,
     icrs=None,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     forcereproj=False,
 ):
     """
@@ -218,6 +209,10 @@ def data_reproject(
         return data
 
     ocrs = CRS.from_user_input(ocrs)
+
+    if not transform_exists(icrs, ocrs):
+        showlog("No projection transform exists, aborting...")
+        return None
 
     if otransform is None:
         src_height, src_width = data.data.shape
@@ -307,6 +302,20 @@ def getepsgcodes():
             pcodes[f"{geog_crs.name} / TM{clong}"] = proj_crs.to_wkt(pretty=True)
 
     return pcodes
+
+
+def transform_exists(crs_from_id, crs_to_id):
+    try:
+        crs_from = CRS.from_user_input(crs_from_id)
+        crs_to = CRS.from_user_input(crs_to_id)
+
+        # Query available transformations
+        tg = TransformerGroup(crs_from, crs_to)
+
+        # If the list of available transformers is empty, no transformation exists
+        return len(tg.transformers) > 0
+    except Exception:
+        return False
 
 
 def _testfn():

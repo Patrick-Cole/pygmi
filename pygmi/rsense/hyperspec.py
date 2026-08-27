@@ -83,10 +83,6 @@ class GraphMap(FigureCanvasQTAgg):
         """
         Initialise the graph.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clf()
 
@@ -103,10 +99,6 @@ class GraphMap(FigureCanvasQTAgg):
     def update_graph(self):
         """
         Initialise the graph.
-
-        Returns
-        -------
-        None.
 
         """
         self.compute_spectra()
@@ -262,10 +254,6 @@ class AnalSpec(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = r"rsense.dm.hyper.html#analyse-spectra"
         gl_main = QtWidgets.QGridLayout(self)
@@ -311,10 +299,6 @@ class AnalSpec(BasicModule):
         event : matplotlib.backend_bases.MouseEvent
             Mouse Event.
 
-        Returns
-        -------
-        None.
-
         """
         if event.inaxes is None:
             return
@@ -340,10 +324,6 @@ class AnalSpec(BasicModule):
         row : int
             row of table, unused.
 
-        Returns
-        -------
-        None.
-
         """
         self.map.currentspectra = self.lw_speclib.currentItem().text()
 
@@ -352,10 +332,6 @@ class AnalSpec(BasicModule):
     def feature_change(self):
         """
         Change depth marker combo.
-
-        Returns
-        -------
-        None.
 
         """
         txt = self.cmb_feature.currentText()
@@ -366,10 +342,6 @@ class AnalSpec(BasicModule):
     def hull(self):
         """
         Change whether hull is removed or not.
-
-        Returns
-        -------
-        None.
 
         """
         self.map.remhull = self.cb_hull.isChecked()
@@ -385,10 +357,6 @@ class AnalSpec(BasicModule):
             Set check state of button. Default is False.
         nofile : bool, optional
             No input filename. The default is True.
-
-        Returns
-        -------
-        None.
 
         """
         if nofile is True:
@@ -420,10 +388,6 @@ class AnalSpec(BasicModule):
         """
         On combo.
 
-        Returns
-        -------
-        None.
-
         """
         self.map.mindx = self.cmb_1.currentIndex()
         self.map.init_graph()
@@ -431,10 +395,6 @@ class AnalSpec(BasicModule):
     def toggle_rgb_view(self):
         """
         Toggle RGB view and single band view.
-
-        Returns
-        -------
-        None.
 
         """
         self.map.rgb = self.cb_rgb.isChecked()
@@ -445,7 +405,7 @@ class AnalSpec(BasicModule):
 
         self.map.init_graph()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -548,10 +508,6 @@ class AnalSpec(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_feature)
@@ -564,10 +520,6 @@ class AnalSpec(BasicModule):
     def showtext(self):
         """
         Show spectrum description in browser.
-
-        Returns
-        -------
-        None.
 
         """
         if self.lw_speclib.currentItem() is None:
@@ -623,10 +575,6 @@ class ProcFeatures(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.hyper.html#process-features"
         gl_main = QtWidgets.QGridLayout(self)
@@ -657,10 +605,6 @@ class ProcFeatures(BasicModule):
     def product_change(self):
         """
         Change product combo.
-
-        Returns
-        -------
-        None.
 
         """
         txt = self.cmb_ratios.currentText()
@@ -727,7 +671,7 @@ class ProcFeatures(BasicModule):
 
         self.tablewidget.resizeColumnsToContents()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -789,10 +733,6 @@ class ProcFeatures(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_ratios)
         self.saveobj(self.cb_rfiltcheck)
@@ -803,10 +743,6 @@ class ProcFeatures(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         datfin = []
@@ -909,7 +845,7 @@ def calcfeatures(
     cryst=None,
     rfilt=True,
     piter=iter,
-    showlog=print,
+    showlog: Callable[..., None] = print,
 ):
     """
     Calculate feature dataset.

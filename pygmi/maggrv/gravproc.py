@@ -25,6 +25,7 @@
 """A set of data processing routines for gravity."""
 
 import sys
+from collections.abc import Callable
 
 import numpy as np
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -52,10 +53,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         drift : dict
             Dictionary containing information for drift plots.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -147,10 +144,6 @@ class ProcessData(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.processgravity"
@@ -181,7 +174,7 @@ class ProcessData(BasicModule):
 
         pb_calcbase.pressed.connect(self.calcbase)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -230,10 +223,6 @@ class ProcessData(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.le_density)
         self.saveobj(self.le_knownstat)
@@ -246,10 +235,6 @@ class ProcessData(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         pdat = self.gdata
@@ -270,10 +255,6 @@ class ProcessData(BasicModule):
         Calculate local base station value.
 
         Ties in the local base station to a known absolute base station.
-
-        Returns
-        -------
-        None.
 
 
         """
@@ -327,7 +308,14 @@ class ProcessData(BasicModule):
         self.le_absbase.setText(str(absbase.iloc[0]))
 
 
-def gravcor(pdat, basethres, kstat="", absbase=978032.67715, dens=2670, showlog=print):
+def gravcor(
+    pdat,
+    basethres,
+    kstat="",
+    absbase=978032.67715,
+    dens=2670,
+    showlog: Callable[..., None] = print,
+):
     """
     Gravity corrections.
 
@@ -354,7 +342,6 @@ def gravcor(pdat, basethres, kstat="", absbase=978032.67715, dens=2670, showlog=
         Dictionary containing information for drift plots.
 
     """
-
     pdat.sort_values(by=["DECTIMEDATE"], inplace=True)
 
     if kstat == "":

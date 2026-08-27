@@ -30,12 +30,15 @@ import textwrap
 import time
 import types
 import webbrowser
+from collections.abc import Iterable
 
 import geopandas as gpd
 import numpy as np
 import psutil
 import requests
 from matplotlib import cm, colors
+from matplotlib.axes import Axes
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QRegularExpression
 from PySide6.QtGui import QRegularExpressionValidator
@@ -77,7 +80,7 @@ class EmittingStream(QtCore.QObject):
     def __init__(self, textWritten):
         self.textWritten = textWritten
 
-    def write(self, text):
+    def write(self, text: str):
         """
         Write text.
 
@@ -85,23 +88,11 @@ class EmittingStream(QtCore.QObject):
         ----------
         text : str
             Text to write.
-
-        Returns
-        -------
-        None.
-
         """
         self.textWritten(str(text))
 
     def flush(self):
-        """
-        Flush.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Flush."""
 
     def fileno(self):
         """
@@ -183,7 +174,7 @@ class BasicModule(QtWidgets.QDialog):
         self.buttonbox.buttonbox.accepted.connect(self.accept)
         self.buttonbox.buttonbox.rejected.connect(self.reject)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -204,12 +195,11 @@ class BasicModule(QtWidgets.QDialog):
         """
         Check a widget's validation.
 
-        Parameters
-        ----------
-        obj : QtWidgets.QComboBox
-            Combo box to add data to.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
-
         for value in vars(self).values():
             if isinstance(value, QtWidgets.QLineEdit) and (
                 not value.hasAcceptableInput()
@@ -219,7 +209,7 @@ class BasicModule(QtWidgets.QDialog):
 
         return True
 
-    def cmb_update(self, obj, txtlist):
+    def cmb_update(self, obj: QtWidgets.QComboBox, txtlist: list[str]):
         """
         Update combo box.
 
@@ -247,27 +237,21 @@ class BasicModule(QtWidgets.QDialog):
         Entry point into routine. This entry point exists for
         the case  where data must be initialised before entering at the
         standard 'settings' sub module.
-
-        Returns
-        -------
-        None.
-
         """
 
-    def loadproj(self, projdata):
+    def loadproj(self, projdata: dict) -> bool:
         """
         Load project data into class.
 
         Parameters
         ----------
-        projdata : dictionary
+        projdata : dict
             Project data loaded from JSON project file.
 
         Returns
         -------
         chk : bool
             A check to see if settings was successfully run.
-
         """
         self.projdata = projdata
 
@@ -352,16 +336,9 @@ class BasicModule(QtWidgets.QDialog):
         return chk
 
     def saveproj(self):
-        """
-        Save project data from class.
+        """Save project data from class."""
 
-        Returns
-        -------
-        None.
-
-        """
-
-    def saveobj(self, obj):
+    def saveobj(self, obj: object):
         """
         Save an object to a dictionary.
 
@@ -369,13 +346,8 @@ class BasicModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        obj : variable
+        obj : object
             A variable to be saved.
-
-        Returns
-        -------
-        None.
-
         """
         otxt = None
         for name in vars(self):
@@ -426,8 +398,6 @@ class BasicModule(QtWidgets.QDialog):
                 "datum": obj.cmb_datum.currentText(),
                 "proj": obj.cmb_proj.currentText(),
             }
-
-        return
 
 
 class ContextModule(QtWidgets.QDialog):
@@ -487,16 +457,15 @@ class ContextModule(QtWidgets.QDialog):
         self.buttonbox.buttonbox.accepted.connect(self.accept)
         self.buttonbox.buttonbox.rejected.connect(self.reject)
 
-    def check_validation(self):
+    def check_validation(self) -> bool:
         """
         Check a widget's validation.
 
-        Parameters
-        ----------
-        obj : QtWidgets.QComboBox
-            Combo box to add data to.
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
-
         for value in vars(self).values():
             if isinstance(value, QtWidgets.QLineEdit) and (
                 not value.hasAcceptableInput()
@@ -506,7 +475,9 @@ class ContextModule(QtWidgets.QDialog):
 
         return True
 
-    def cmb_update(self, obj, txtlist, curindex=0):
+    def cmb_update(
+        self, obj: QtWidgets.QComboBox, txtlist: list[str], curindex: int = 0
+    ):
         """
         Update combo box.
 
@@ -516,6 +487,8 @@ class ContextModule(QtWidgets.QDialog):
             Combo box to add data to.
         txtlist : list
             List of strings to add to combo box.
+        curindex : int
+            Current index.
         """
         obj.blockSignals(True)
         obj.clear()
@@ -524,14 +497,7 @@ class ContextModule(QtWidgets.QDialog):
         obj.blockSignals(False)
 
     def run(self):
-        """
-        Run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Run context menu item."""
 
 
 class PButtonBox(QtWidgets.QWidget):
@@ -606,7 +572,7 @@ class QVStack2Layout(QtWidgets.QGridLayout):
         self.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.indx = 0
 
-    def addWidget(self, widget1, widget2):
+    def addWidget(self, widget1: str | QtWidgets.QWidget, widget2: QtWidgets.QWidget):
         """
         Add two widgets on a row, widget can also be text.
 
@@ -616,10 +582,6 @@ class QVStack2Layout(QtWidgets.QGridLayout):
             First Widget or Label on the row.
         widget2 : QWidget
             Last Widget.
-
-        Returns
-        -------
-        None.
 
         """
         if isinstance(widget1, str):
@@ -654,7 +616,9 @@ class PTime:
     def __init__(self):
         self.tchk = [time.perf_counter()]
 
-    def since_first_call(self, msg="since first call", show=True):
+    def since_first_call(
+        self, msg: str = "since first call", show: bool = True
+    ) -> float:
         """
         Time lapsed since first call.
 
@@ -664,7 +628,14 @@ class PTime:
         Parameters
         ----------
         msg : str
-            Optional message
+            Optional message, by default "since first call"
+        show : bool
+            Show output, by default True.
+
+        Returns
+        -------
+        float
+            Time difference.
         """
         self.tchk.append(time.perf_counter())
         tdiff = self.tchk[-1] - self.tchk[0]
@@ -677,7 +648,7 @@ class PTime:
                 print(msg, "time (s): ", mins, " minutes ", secs, " seconds")
         return tdiff
 
-    def since_last_call(self, msg="since last call", show=True):
+    def since_last_call(self, msg: str = "since last call", show: bool = True) -> float:
         """
         Time lapsed since last call.
 
@@ -688,6 +659,13 @@ class PTime:
         ----------
         msg : str
             Optional message
+        show : bool
+            Show output, by default True.
+
+        Returns
+        -------
+        float
+            Time difference.
         """
         self.tchk.append(time.perf_counter())
         tdiff = self.tchk[-1] - self.tchk[-2]
@@ -726,8 +704,20 @@ class ProgressBar(QtWidgets.QProgressBar):
         self.setStyleSheet(PBAR_STYLE)
         self.total = 100
 
-    def iter(self, iterable):
-        """Iterate Routine."""
+    def iter(self, iterable: Iterable):
+        """
+        Iterate Routine.
+
+        Parameters
+        ----------
+        iterable : Iterable
+            Ierable for progress bar to track.
+
+        Yields
+        ------
+        object
+            Object in iterable.
+        """
         if not isinstance(iterable, types.GeneratorType):
             self.total = len(iterable)
 
@@ -776,7 +766,6 @@ class ProgressBarText:
         This is the original time recorded when the progress bar starts.
     total : int
         Maximum progress bar value. The default is 100.
-
     """
 
     def __init__(self):
@@ -787,8 +776,20 @@ class ProgressBarText:
         self.fill = "#"
         self.prefix = "Progress:"
 
-    def iter(self, iterable):
-        """Iterate Routine."""
+    def iter(self, iterable: Iterable):
+        """
+        Iterate Routine.
+
+        Parameters
+        ----------
+        iterable : Iterable
+            Ierable for progress bar to track.
+
+        Yields
+        ------
+        object
+            Object in iterable.
+        """
         if not isinstance(iterable, types.GeneratorType):
             self.total = len(iterable)
 
@@ -821,7 +822,7 @@ class ProgressBarText:
         if not gottototal:
             self.printprogressbar(self.total)
 
-    def printprogressbar(self, iteration, suffix=""):
+    def printprogressbar(self, iteration: int, suffix: str = ""):
         """
         Call in a loop to create terminal progress bar.
 
@@ -833,11 +834,6 @@ class ProgressBarText:
             current iteration
         suffix : str, optional
             Suffix string. The default is ''.
-
-        Returns
-        -------
-        None.
-
         """
         perc = 100 * (iteration / float(self.total))
         percent = f"{perc:.{self.decimals}f}"
@@ -849,12 +845,26 @@ class ProgressBarText:
         if iteration == self.total:
             print()
 
-    def setMaximum(self, val):
-        """Set the maximum value."""
+    def setMaximum(self, val: int):
+        """
+        Set the maximum value.
+
+        Parameters
+        ----------
+        val : int
+            Maximum value of progressbar.
+        """
         self.total = int(val)
 
-    def setValue(self, val):
-        """Set the progressbar value."""
+    def setValue(self, val: int):
+        """
+        Set the progressbar value.
+
+        Parameters
+        ----------
+        val : int
+            Value of progressbar.
+        """
         self.printprogressbar(int(val))
 
     def to_max(self):
@@ -862,7 +872,7 @@ class ProgressBarText:
         self.printprogressbar(self.total)
 
 
-def check_for_updates():
+def check_for_updates() -> str:
     """
     Check GitHub for updates.
 
@@ -903,24 +913,20 @@ def check_for_updates():
     return verpath
 
 
-def discrete_colorbar(axes, csp, cdat, lbls=None):
+def discrete_colorbar(axes: Axes, csp, cdat: NDArray, lbls: list[str] | None = None):
     """
     Plot colour bar using discrete colours for a small range of values.
 
     Parameters
     ----------
-    axes : Matplotlib axes
+    axes : Axes
         Current axes.
     csp : Plot routine
         Handle to Matplotlib plotting routine.
-    cdat : numpy array
+    cdat : NDArray
         Array of values.
-    lbls : y tick labels (optional)
-
-    Returns
-    -------
-    None.
-
+    lbls : list[str] | None, optional
+        y tick labels, by default None
     """
     vals = np.unique(cdat)
     if np.ma.isMaskedArray(vals):
@@ -947,23 +953,18 @@ def discrete_colorbar(axes, csp, cdat, lbls=None):
         cbar.ax.set_yticklabels(vals)
 
 
-def getinfo(txt=None, reset=False, hide=False):
+def getinfo(txt: str | float | None = None, reset: bool = False, hide: bool = False):
     """
     Get time and memory info.
 
     Parameters
     ----------
-    txt : str/int/float, optional
-        Descriptor used for headings. The default is None.
-    reset : bool
-        Flag used to reset the time difference to zero.
-    hide : bool
-        Hide the output text. Useful if you don't want to show the initialising reading.
-
-    Returns
-    -------
-    None.
-
+    txt : str | float | None, optional
+        Descriptor used for headings, by default None
+    reset : bool, optional
+        Flag used to reset the time difference to zero, by default False
+    hide : bool, optional
+        Hide the output text. Useful if you don't want to show the initialising reading, by default False
     """
     global PTIME
 
@@ -1017,7 +1018,9 @@ def getinfo(txt=None, reset=False, hide=False):
 #         hjob, win32job.JobObjectExtendedLimitInformation, info)
 
 
-def textwrap2(text, width, placeholder="...", max_lines=None):
+def textwrap2(
+    text: str, width: int, placeholder: str = "...", max_lines: int | None = None
+) -> str:
     """
     Provide slightly different placeholder functionality to textwrap.
 
@@ -1029,7 +1032,7 @@ def textwrap2(text, width, placeholder="...", max_lines=None):
         Text to wrap.
     width : int
         Maximum line length.
-    placeholder : sre, optional
+    placeholder : str, optional
         Placeholder when lines exceed max_lines. The default is '...'.
     max_lines : int, optional
         Maximum number of lines. The default is None.

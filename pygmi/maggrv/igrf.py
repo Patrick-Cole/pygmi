@@ -51,6 +51,7 @@ translated into Python from the GEOMAG code.
 """
 
 import os
+from collections.abc import Callable
 from math import atan2, cos, sin, sqrt
 
 import numpy as np
@@ -97,10 +98,6 @@ class IGRF(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.igrf"
@@ -125,7 +122,7 @@ class IGRF(BasicModule):
         gl_1.addWidget(self.cmb_mag, 5, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -214,10 +211,6 @@ class IGRF(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.wkt)
         self.saveobj(self.dsb_alt)
@@ -227,7 +220,14 @@ class IGRF(BasicModule):
 
 
 def calc_igrf(
-    data, sdate, *, sen_alt=100, wkt=None, igrfonly=True, piter=iter, showlog=print
+    data,
+    sdate,
+    *,
+    sen_alt=100,
+    wkt=None,
+    igrfonly=True,
+    piter=iter,
+    showlog: Callable[..., None] = print,
 ):
     """
     Calculate IGRF.

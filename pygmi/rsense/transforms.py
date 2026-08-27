@@ -25,6 +25,7 @@
 """Transforms such as PCA and MNF."""
 
 import os
+from collections.abc import Callable
 
 import matplotlib.pyplot as plt
 import numexpr as ne
@@ -72,10 +73,6 @@ class MNF(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.mnf"
         gl_main = QtWidgets.QGridLayout(self)
@@ -97,7 +94,7 @@ class MNF(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -166,10 +163,6 @@ class MNF(BasicModule):
         """
         Change the interface to reflect whether full calculation is needed.
 
-        Returns
-        -------
-        None.
-
         """
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
@@ -177,10 +170,6 @@ class MNF(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.sb_comps)
@@ -194,10 +183,6 @@ class MNF(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         if "RasterFileList" in self.indata:
@@ -285,10 +270,6 @@ class PCA(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.pca"
         gl_main = QtWidgets.QGridLayout(self)
@@ -309,7 +290,7 @@ class PCA(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -377,10 +358,6 @@ class PCA(BasicModule):
         """
         Change the interface to reflect whether full calculation is needed.
 
-        Returns
-        -------
-        None.
-
         """
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
@@ -388,10 +365,6 @@ class PCA(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.sb_comps)
@@ -403,10 +376,6 @@ class PCA(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         ncmps = self.sb_comps.value()
@@ -602,7 +571,13 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
 
 
 def mnf_calc(
-    dat, *, ncmps=None, noisetxt="hv average", showlog=print, piter=iter, fwdonly=True
+    dat,
+    *,
+    ncmps=None,
+    noisetxt="hv average",
+    showlog: Callable[..., None] = print,
+    piter=iter,
+    fwdonly=True,
 ):
     """
     MNF Calculation.
@@ -722,7 +697,9 @@ def mnf_calc(
     return odata, ev
 
 
-def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
+def pca_calc(
+    dat, ncmps=None, showlog: Callable[..., None] = print, piter=iter, fwdonly=True
+):
     """
     PCA Calculation.
 
@@ -826,7 +803,9 @@ def pca_calc(dat, ncmps=None, showlog=print, piter=iter, fwdonly=True):
     return odata, ev
 
 
-def pca_calc_fitlist(flist, ncmps=None, showlog=print, piter=iter, fwdonly=True):
+def pca_calc_fitlist(
+    flist, ncmps=None, showlog: Callable[..., None] = print, piter=iter, fwdonly=True
+):
     """
     PCA Calculation with using list of files in common fit.
 

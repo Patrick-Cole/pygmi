@@ -54,10 +54,6 @@ class MyMplCanvas(CanvasModule):
         data1 : pygmi.raster.datatypes.Data
             Input raster dataset.
 
-        Returns
-        -------
-        None.
-
         """
         self.custom_resize = True
         self.figure.clear()
@@ -101,10 +97,6 @@ class MyMplCanvas(CanvasModule):
             Input raster dataset containing classes.
         rdata : pygmi.raster.datatypes.Data
             Input raster dataset containing data.
-
-        Returns
-        -------
-        None.
 
         """
         cnr = data1.metadata["Cluster"]["no_clusters"]
@@ -160,10 +152,6 @@ class MyMplCanvas(CanvasModule):
         y : numpy array
             Y Coordinates.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -192,10 +180,6 @@ class MyMplCanvas(CanvasModule):
         z : numpy array
             z coordinate.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection="3d")
@@ -218,10 +202,6 @@ class MyMplCanvas(CanvasModule):
             Raster dataset.
         mem : int
             Membership.
-
-        Returns
-        -------
-        None.
 
         """
         self.custom_resize = True
@@ -303,10 +283,6 @@ class PlotRaster(ContextModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         data = self.indata["Cluster"]
@@ -315,10 +291,6 @@ class PlotRaster(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Cluster"]
@@ -381,10 +353,6 @@ class PlotBars(ContextModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         data = self.indata["Cluster"]
@@ -393,10 +361,6 @@ class PlotBars(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Cluster"]
@@ -460,10 +424,6 @@ class PlotMembership(ContextModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["Cluster"]
         i = self.cmb_1.currentIndex()
@@ -486,10 +446,6 @@ class PlotMembership(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Cluster"]
@@ -560,10 +516,6 @@ class PlotVRCetc(ContextModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["Cluster"]
 
@@ -630,10 +582,6 @@ class PlotVRCetc(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         items = []

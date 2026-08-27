@@ -60,10 +60,6 @@ class BasicStats3D(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
@@ -86,10 +82,6 @@ class BasicStats3D(ContextModule):
         """
         Combo.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         data = self.data[i][:, 1:]
@@ -106,10 +98,6 @@ class BasicStats3D(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Model3D"]

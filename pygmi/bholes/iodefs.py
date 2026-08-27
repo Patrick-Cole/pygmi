@@ -69,10 +69,6 @@ class ImportData(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.importdata"
         lbl_companyno = QtWidgets.QLabel("Company number:")
@@ -134,7 +130,7 @@ class ImportData(BasicModule):
         pb_lithfile.pressed.connect(self.get_lithfile)
         pb_headfile.pressed.connect(self.get_headfile)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -191,10 +187,6 @@ class ImportData(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         # self.saveobj(self.ifile)

@@ -25,6 +25,7 @@
 """Routines to import gravity data and associated GPS data."""
 
 import os
+from collections.abc import Callable
 
 import geopandas as gpd
 import numpy as np
@@ -68,10 +69,6 @@ class ImportCG5(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_main = QtWidgets.QGridLayout(self)
@@ -130,7 +127,7 @@ class ImportCG5(BasicModule):
         pb_cg5.pressed.connect(self.get_cg5)
         pb_gps.pressed.connect(self.get_gps)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -212,10 +209,6 @@ class ImportCG5(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_line)
         self.saveobj(self.cmb_station)
@@ -235,10 +228,6 @@ class ImportCG5(BasicModule):
         ----------
         filename : str, optional
             CG-5 filename submitted for testing. The default is ''.
-
-        Returns
-        -------
-        None.
 
         """
         ext = "CG-5/CG-6 ASCII (*.txt *.xyz *.dat)"
@@ -260,10 +249,6 @@ class ImportCG5(BasicModule):
         ----------
         filename : str, optional
             GPS filename (csv). The default is ''.
-
-        Returns
-        -------
-        None.
 
         """
         ext = "GPS comma delimited (*.csv)"
@@ -454,7 +439,9 @@ def get_gps(filename):
     return df2
 
 
-def merge_gpsmag(cg5file, gpsfile, basethres=10000.0, cren=None, showlog=print):
+def merge_gpsmag(
+    cg5file, gpsfile, basethres=10000.0, cren=None, showlog: Callable[..., None] = print
+):
     """
     Import and merge GPS and gravity data.
 

@@ -30,6 +30,7 @@ It uses code by Erik Bolch, ebolch@contractor.usgs.gov
 
 import datetime
 import os
+from collections.abc import Callable
 
 import numpy as np
 import xarray as xr
@@ -322,7 +323,9 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
     return out_xr
 
 
-def xr_to_pygmi(xrds, piter=iter, showlog=print, tnames=None, metaonly=False):
+def xr_to_pygmi(
+    xrds, piter=iter, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Xarray to PyGMI dataset.
 

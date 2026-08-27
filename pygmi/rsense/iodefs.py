@@ -34,6 +34,7 @@ import warnings
 import xml.etree.ElementTree as ET
 import zipfile
 from collections import defaultdict
+from collections.abc import Callable
 
 import geopandas as gpd
 import numexpr as ne
@@ -93,10 +94,6 @@ class ImportData(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.importdata"
         pb_sfile = QtWidgets.QPushButton(" Filename")
@@ -124,7 +121,7 @@ class ImportData(BasicModule):
 
         pb_sfile.pressed.connect(self.get_sfile)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -241,10 +238,6 @@ class ImportData(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
@@ -297,10 +290,6 @@ class ImportBatch(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.createbatchlist"
         pb_sfile = QtWidgets.QPushButton(" Directory")
@@ -330,7 +319,7 @@ class ImportBatch(BasicModule):
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -434,10 +423,6 @@ class ImportBatch(BasicModule):
         """
         Set the sensor band data.
 
-        Returns
-        -------
-        None.
-
         """
         sensor = self.cmb_sensor.currentText()
         if self.oldsensor == sensor:
@@ -470,10 +455,6 @@ class ImportBatch(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.oldsensor = self.cmb_sensor.currentText()
@@ -537,10 +518,6 @@ class ImportSentinel5P(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.imports5p"
         gl_main = QtWidgets.QGridLayout(self)
@@ -583,7 +560,7 @@ class ImportSentinel5P(BasicModule):
         self.rb_sclip.clicked.connect(self.clipchoice)
         self.lbl_sfile.clicked.connect(self.loadshp)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -652,10 +629,6 @@ class ImportSentinel5P(BasicModule):
         """
         Choose clip style.
 
-        Returns
-        -------
-        None.
-
         """
         if self.rb_cclip.isChecked():
             self.lbl_sfile.hide()
@@ -684,10 +657,6 @@ class ImportSentinel5P(BasicModule):
         """
         Load shapefile filename.
 
-        Returns
-        -------
-        None.
-
         """
         ext = "Shapefile (*.shp)"
 
@@ -700,10 +669,6 @@ class ImportSentinel5P(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifile)
@@ -887,10 +852,6 @@ class ExportBatch(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.cm.exportdata"
 
@@ -958,10 +919,6 @@ class ExportBatch(ContextModule):
     def click_ternary(self):
         """
         Click ternary event.
-
-        Returns
-        -------
-        None.
 
         """
         if self.cb_ternary.isChecked():
@@ -1092,10 +1049,6 @@ class ExportBatch(ContextModule):
         odir : str, optional
             Output directory submitted for testing. The default is ''.
 
-        Returns
-        -------
-        None.
-
         """
         if odir == "":
             odir = QtWidgets.QFileDialog.getExistingDirectory(
@@ -1108,7 +1061,7 @@ class ExportBatch(ContextModule):
         self.le_odir.setText(odir)
 
 
-def calculate_toa(dat, showlog=print):
+def calculate_toa(dat, showlog: Callable[..., None] = print):
     """
     Top of atmosphere correction.
 
@@ -1653,7 +1606,7 @@ def export_batch(
     *,
     tnames=None,
     piter=None,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     otype=None,
     sunfile=None,
     cell=25.0,
@@ -1780,7 +1733,7 @@ def export_batch(
             )
 
 
-def files_to_rastermeta(allfiles, piter=iter, showlog=print):
+def files_to_rastermeta(allfiles, piter=iter, showlog: Callable[..., None] = print):
     """
     Import files to a RasterMeta item.
 
@@ -1827,7 +1780,13 @@ def files_to_rastermeta(allfiles, piter=iter, showlog=print):
 
 
 def get_data(
-    ifile, *, piter=None, showlog=print, tnames=None, metaonly=False, bounds=None
+    ifile,
+    *,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+    bounds=None,
 ):
     """
     Load a raster dataset off the disk using the rasterio libraries.
@@ -1952,7 +1911,13 @@ def get_data(
 
 
 def get_from_rastermeta(
-    ldata, *, piter=None, showlog=print, tnames=None, metaonly=False, bounds=None
+    ldata,
+    *,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+    bounds=None,
 ):
     """
     Import data from a RasterMeta item.
@@ -2006,7 +1971,9 @@ def get_from_rastermeta(
     return dat
 
 
-def get_emit(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_emit(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get EMIT Data.
 
@@ -2063,7 +2030,9 @@ def get_emit(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
     return dat
 
 
-def get_modisv6(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_modisv6(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get MODIS v006 data.
 
@@ -2196,7 +2165,13 @@ def get_modisv6(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
     return dat
 
 
-def get_landsat(ifilet, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_landsat(
+    ifilet,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+):
     """
     Get Landsat Data.
 
@@ -2479,7 +2454,13 @@ def get_landsat(ifilet, piter=None, showlog=print, tnames=None, metaonly=False):
     return dat
 
 
-def get_worldview(ifilet, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_worldview(
+    ifilet,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+):
     """
     Get WorldView Data.
 
@@ -2726,7 +2707,9 @@ def get_worldview(ifilet, piter=None, showlog=print, tnames=None, metaonly=False
     return dat
 
 
-def get_hyperion(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_hyperion(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get Hyperion Data.
 
@@ -3360,7 +3343,9 @@ def get_hyperion(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
     return dat
 
 
-def get_sentinel1(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_sentinel1(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get Sentinel-1 Data.
 
@@ -3444,7 +3429,13 @@ def get_sentinel1(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
 
 
 def get_sentinel2(
-    ifile, *, piter=None, showlog=print, tnames=None, metaonly=False, bounds=None
+    ifile,
+    *,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+    bounds=None,
 ):
     """
     Get Sentinel-2 Data.
@@ -3609,7 +3600,9 @@ def get_sentinel2_metadata(ifile):
     return meta
 
 
-def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_spot(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get Spot DIMAP Data.
 
@@ -3693,7 +3686,9 @@ def get_spot(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
     return dat
 
 
-def get_aster_zip(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_aster_zip(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get ASTER zip Data.
 
@@ -3837,7 +3832,13 @@ def get_aster_zip(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
     return dat
 
 
-def get_aster_tif(ifiles, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_aster_tif(
+    ifiles,
+    piter=None,
+    showlog: Callable[..., None] = print,
+    tnames=None,
+    metaonly=False,
+):
     """
     Get ASTER tif Data.
 
@@ -4052,7 +4053,9 @@ def get_aster_metadata(ifile):
     return meta
 
 
-def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_aster_hdf(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get ASTER hdf Data.
 
@@ -4267,7 +4270,9 @@ def get_aster_hdf(ifile, piter=None, showlog=print, tnames=None, metaonly=False)
     return dat
 
 
-def get_aster_ged(ifile, piter=None, showlog=print, tnames=None, metaonly=False):
+def get_aster_ged(
+    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
+):
     """
     Get ASTER GED data.
 
@@ -4546,7 +4551,7 @@ def get_ternary(
     cell=25.0,
     alpha=0.75,
     piter=iter,
-    showlog=print,
+    showlog: Callable[..., None] = print,
 ):
     """
     Create a ternary image, with optional sunshading.

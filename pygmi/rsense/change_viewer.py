@@ -82,10 +82,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         Capture.
 
-        Returns
-        -------
-        None.
-
         """
         self.capture_active = not self.capture_active
 
@@ -113,10 +109,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             PyGMI dataset.
         dates : str
             Dates to show on title.
-
-        Returns
-        -------
-        None.
 
         """
         if "Ternary" in self.manip:
@@ -152,10 +144,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             PyGMI dataset.
         dates : str
             Dates to show on title.
-
-        Returns
-        -------
-        None.
 
         """
         if self.im1 is None:
@@ -222,10 +210,6 @@ class SceneViewer(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "rsense.dm.change.html#view-change-data"
@@ -289,7 +273,7 @@ class SceneViewer(BasicModule):
         self.cmb_band2.currentIndexChanged.connect(self.manip_change)
         self.cmb_band3.currentIndexChanged.connect(self.manip_change)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -396,10 +380,6 @@ class SceneViewer(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_band1)
         self.saveobj(self.cmb_band2)
@@ -409,10 +389,6 @@ class SceneViewer(BasicModule):
     def manip_change(self):
         """
         Change manipulation or bands.
-
-        Returns
-        -------
-        None.
 
         """
         maniptxt = self.cmb_manip.currentText()
@@ -437,20 +413,12 @@ class SceneViewer(BasicModule):
         """
         Get next scene.
 
-        Returns
-        -------
-        None.
-
         """
         self.slider.setValue(self.slider.value() + 1)
 
     def prevscene(self):
         """
         Get previous scene.
-
-        Returns
-        -------
-        None.
 
         """
         self.slider.setValue(self.slider.value() - 1)
@@ -463,10 +431,6 @@ class SceneViewer(BasicModule):
         ----------
         indx : int
             Current index.
-
-        Returns
-        -------
-        None.
 
         """
         self.curimage = indx
@@ -486,10 +450,6 @@ class SceneViewer(BasicModule):
     def capture(self):
         """
         Capture all scenes in the current view as an animation.
-
-        Returns
-        -------
-        None.
 
         """
         self.showlog("Starting capture...")

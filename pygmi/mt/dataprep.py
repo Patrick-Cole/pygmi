@@ -92,10 +92,6 @@ class Metadata(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "mt.cm.meta"
@@ -147,10 +143,6 @@ class Metadata(ContextModule):
         """
         Accept option. Updates self.indata.
 
-        Returns
-        -------
-        None.
-
         """
         self.update_vals()
         self.indata["MT - EDI"] = self.banddata
@@ -158,10 +150,6 @@ class Metadata(ContextModule):
     def rename_id(self):
         """
         Rename station name.
-
-        Returns
-        -------
-        None.
 
         """
         ctxt = str(self.cmb_bandid.currentText())
@@ -186,10 +174,6 @@ class Metadata(ContextModule):
     def update_vals(self):
         """
         Update the values on the interface.
-
-        Returns
-        -------
-        None.
 
         """
         odata = self.banddata[self.oldtxt]
@@ -296,10 +280,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dictionary key.
         itype : str
             dictionary key.
-
-        Returns
-        -------
-        None.
 
         """
         data1 = data[ival]
@@ -485,20 +465,12 @@ class StaticShiftEDI(BasicModule):
 
         Updates self.outdata, which is used as input to other modules.
 
-        Returns
-        -------
-        None.
-
         """
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
         Apply static shift.
-
-        Returns
-        -------
-        None.
 
         """
         ssx = self.dsb_shiftx.value()
@@ -517,10 +489,6 @@ class StaticShiftEDI(BasicModule):
         """
         Reset data.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
 
@@ -535,16 +503,12 @@ class StaticShiftEDI(BasicModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -583,10 +547,6 @@ class StaticShiftEDI(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.dsb_shiftx)
@@ -664,20 +624,12 @@ class RotateEDI(BasicModule):
 
         Updates self.outdata, which is used as input to other modules.
 
-        Returns
-        -------
-        None.
-
         """
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
         Apply rotation to data.
-
-        Returns
-        -------
-        None.
 
         """
         rotZ = self.dsb_rotangle.value()
@@ -697,10 +649,6 @@ class RotateEDI(BasicModule):
         """
         Reset data.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
 
@@ -717,16 +665,12 @@ class RotateEDI(BasicModule):
         """
         Combo to change band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -768,10 +712,6 @@ class RotateEDI(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cb_applyall)
@@ -822,10 +762,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         event : event
             event variable.
 
-        Returns
-        -------
-        None.
-
         """
         if event.inaxes is None:
             return
@@ -842,10 +778,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         event : event
             event variable.
 
-        Returns
-        -------
-        None.
-
         """
         if event.inaxes is None:
             return
@@ -861,10 +793,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         ----------
         event : event
             event variable.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes is None:
@@ -934,10 +862,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         width : event
             unused.
 
-        Returns
-        -------
-        None.
-
         """
         if self.data is None:
             return
@@ -955,10 +879,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             dictionary key.
         itype : str
             dictionary key.
-
-        Returns
-        -------
-        None.
 
         """
         self.ival = ival
@@ -1142,20 +1062,12 @@ class EditEDI(BasicModule):
 
         Updates self.outdata, which is used as input to other modules.
 
-        Returns
-        -------
-        None.
-
         """
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
         Apply edited data.
-
-        Returns
-        -------
-        None.
 
         """
         if self.mmc.maskrange is None:
@@ -1196,10 +1108,6 @@ class EditEDI(BasicModule):
         """
         Reset data.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
@@ -1209,16 +1117,12 @@ class EditEDI(BasicModule):
         """
         Combo to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1258,10 +1162,6 @@ class EditEDI(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_2)
@@ -1287,10 +1187,6 @@ class MySlider(QtWidgets.QSlider):
         event : event
             event variable.
 
-        Returns
-        -------
-        None.
-
         """
         xpos = int(event.position().x())
         self.setValue(
@@ -1307,10 +1203,6 @@ class MySlider(QtWidgets.QSlider):
         ----------
         event : event
             event variable.
-
-        Returns
-        -------
-        None.
 
         """
         xpos = int(event.position().x())
@@ -1346,10 +1238,6 @@ class MyMplCanvas2(FigureCanvasQTAgg):
             Resistivities. The default is None.
         title : str or None, optional
             Title text. The default is None.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -1539,10 +1427,6 @@ class Occam1D(BasicModule):
         """
         Change solution graph.
 
-        Returns
-        -------
-        None.
-
         """
         self.lbl_profnum.setText("Solution: " + str(self.hs_profnum.sliderPosition()))
         self.change_band()
@@ -1553,20 +1437,12 @@ class Occam1D(BasicModule):
 
         Updates self.outdata, which is used as input to other modules.
 
-        Returns
-        -------
-        None.
-
         """
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
         """
         Invert.
-
-        Returns
-        -------
-        None.
 
         """
         if not self.check_validation():
@@ -1678,10 +1554,6 @@ class Occam1D(BasicModule):
         filename : str, optional
             Occam executable filename. The default is ''.
 
-        Returns
-        -------
-        None.
-
         """
         ext = "Occam executable (*.exe *.)"
 
@@ -1700,10 +1572,6 @@ class Occam1D(BasicModule):
         """
         Reset data.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
@@ -1712,10 +1580,6 @@ class Occam1D(BasicModule):
     def change_band(self):
         """
         Combo to change band.
-
-        Returns
-        -------
-        None.
 
         """
         i = self.cmb_1.currentText()
@@ -1769,7 +1633,7 @@ class Occam1D(BasicModule):
 
         self.mmc.update_line(x, pdata, rdata, depths=depths, res=res, title=title)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1826,10 +1690,6 @@ class Occam1D(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.le_targetdepth)

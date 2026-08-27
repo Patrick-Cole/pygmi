@@ -26,6 +26,7 @@
 
 import os
 import re
+from collections.abc import Callable
 
 import chardet
 import geopandas as gpd
@@ -153,7 +154,7 @@ class ImportSeisan(BasicModule):
 
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -202,10 +203,6 @@ class ImportSeisan(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifile)
@@ -301,7 +298,7 @@ def importmacro(ifile):
     return gdf1
 
 
-def importnordic(ifile, showlog=print):
+def importnordic(ifile, showlog: Callable[..., None] = print):
     """
     Import Nordic and Nordic2 data.
 
@@ -512,7 +509,7 @@ def importnordic(ifile, showlog=print):
     return dat
 
 
-def importseiscomp(ifile, showlog=print, prefmag="MLv"):
+def importseiscomp(ifile, showlog: Callable[..., None] = print, prefmag="MLv"):
     """
     Import SeisComp data.
 
@@ -769,7 +766,7 @@ def importseiscomp(ifile, showlog=print, prefmag="MLv"):
     return sdat
 
 
-def importxlsx(ifile, showlog=print):
+def importxlsx(ifile, showlog: Callable[..., None] = print):
     """
     Import Excel summary.
 
@@ -1367,7 +1364,7 @@ class ImportGenericFPS(BasicModule):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1458,10 +1455,6 @@ class ImportGenericFPS(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
 
@@ -1486,10 +1479,6 @@ class ExportSeisan(ContextModule):
     def run(self, filename=None):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Seis" not in self.indata:
@@ -1546,10 +1535,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "1" not in data:
             return
@@ -1596,10 +1581,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "2" not in data:
             return
@@ -1641,10 +1622,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "3" not in data:
             return
@@ -1665,10 +1642,6 @@ class ExportSeisan(ContextModule):
         ----------
         data : Dictionary
             Dictionary of record types.
-
-        Returns
-        -------
-        None.
 
         """
         if "4" not in data or not data["4"]:
@@ -1712,10 +1685,6 @@ class ExportSeisan(ContextModule):
         ----------
         data : Dictionary
             Dictionary of record types.
-
-        Returns
-        -------
-        None.
 
         """
         if "4" not in data or not data["4"]:
@@ -1784,10 +1753,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "5" not in data:
             return
@@ -1808,10 +1773,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "6" not in data:
             return
@@ -1826,10 +1787,6 @@ class ExportSeisan(ContextModule):
     def write_record_type_7(self):
         """
         Write record type 7.
-
-        Returns
-        -------
-        None.
 
         """
         tmp = (
@@ -1846,10 +1803,6 @@ class ExportSeisan(ContextModule):
         ----------
         data : Dictionary
             Dictionary of record types.
-
-        Returns
-        -------
-        None.
 
         """
         if "E" not in data:
@@ -1881,10 +1834,6 @@ class ExportSeisan(ContextModule):
         ----------
         data : Dictionary
             Dictionary of record types.
-
-        Returns
-        -------
-        None.
 
         """
         if "F" not in data:
@@ -1919,10 +1868,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "H" not in data:
             return
@@ -1954,10 +1899,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "I" not in data:
             return
@@ -1988,10 +1929,6 @@ class ExportSeisan(ContextModule):
         ----------
         data : Dictionary
             Dictionary of record types.
-
-        Returns
-        -------
-        None.
 
         """
         if "M" not in data:
@@ -2049,10 +1986,6 @@ class ExportSeisan(ContextModule):
         data : Dictionary
             Dictionary of record types.
 
-        Returns
-        -------
-        None.
-
         """
         if "P" not in data:
             return
@@ -2086,10 +2019,6 @@ class ExportCSV(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Seis" not in self.indata:
@@ -2645,10 +2574,6 @@ class ExportSummary(ContextModule):
         """
         Entry point into the routine, used to run context menu item.
 
-        Returns
-        -------
-        None.
-
         """
         if "Seis" not in self.indata:
             self.showlog("Error: You need to have a SEISAN data first!")
@@ -2840,10 +2765,6 @@ class FilterSeisan(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "seis.dm.sfilt"
         gl_main = QtWidgets.QGridLayout(self)
@@ -2955,10 +2876,6 @@ class FilterSeisan(BasicModule):
         state : int
             State of checkbox.
 
-        Returns
-        -------
-        None.
-
         """
         self.dind = ""
         if self.cb_dind_L.isChecked():
@@ -2987,10 +2904,6 @@ class FilterSeisan(BasicModule):
         txt : str
             Text.
 
-        Returns
-        -------
-        None.
-
         """
         tmp = list(self.datlimits.keys())
         tmp = [i[2:] for i in tmp if i[0] == txt]
@@ -3006,10 +2919,6 @@ class FilterSeisan(BasicModule):
         ----------
         txt : str
             Text.
-
-        Returns
-        -------
-        None.
 
         """
         if txt == "":
@@ -3029,10 +2938,6 @@ class FilterSeisan(BasicModule):
     def get_limits(self):
         """
         Get limits for SEISAN data.
-
-        Returns
-        -------
-        None.
 
         """
         dat = self.indata["Seis"]
@@ -3086,7 +2991,7 @@ class FilterSeisan(BasicModule):
 
         self.datlimits = datd
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -3116,10 +3021,6 @@ class FilterSeisan(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.dsb_from)
         self.saveobj(self.dsb_to)
@@ -3136,10 +3037,6 @@ class FilterSeisan(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Seis"]

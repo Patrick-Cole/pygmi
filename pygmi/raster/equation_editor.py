@@ -24,6 +24,8 @@
 # -----------------------------------------------------------------------------
 """Equation editor for raster data."""
 
+from collections.abc import Callable
+
 import numexpr as ne
 import numpy as np
 from PySide6 import QtGui, QtWidgets
@@ -70,10 +72,6 @@ class EquationEditor(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
@@ -165,16 +163,12 @@ class EquationEditor(BasicModule):
         """
         Update combo information.
 
-        Returns
-        -------
-        None.
-
         """
         txt = self.cmb_1.currentText()
         if txt != "":
             self.lbl_bands.setText(": " + self.bands[txt])
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -236,10 +230,6 @@ class EquationEditor(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
@@ -247,7 +237,9 @@ class EquationEditor(BasicModule):
         self.saveobj(self.cmb_1)
 
 
-def eqedit(data, equation, dtype="auto", showlog=print, piter=iter):
+def eqedit(
+    data, equation, dtype="auto", showlog: Callable[..., None] = print, piter=iter
+):
     """
     Use equations on raster data.
 
@@ -356,7 +348,7 @@ def eqedit(data, equation, dtype="auto", showlog=print, piter=iter):
     return outdata
 
 
-def eq_fix(indata, equation, showlog=print):
+def eq_fix(indata, equation, showlog: Callable[..., None] = print):
     """
     Corrects names in equation to variable names.
 

@@ -31,6 +31,7 @@ Briggs, I. C., 1974, Machine contouring using minimum curvature, Geophysics
 vol. 39, No. 1, pp. 39-48
 """
 
+from collections.abc import Callable
 from operator import itemgetter
 
 import numpy as np
@@ -39,7 +40,17 @@ from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 
 
-def minc(x, y, z, dxy, *, showlog=print, extent=None, bdist=None, maxiters=100):
+def minc(
+    x,
+    y,
+    z,
+    dxy,
+    *,
+    showlog: Callable[..., None] = print,
+    extent=None,
+    bdist=None,
+    maxiters=100,
+):
     """
     Minimum Curvature Gridding.
 

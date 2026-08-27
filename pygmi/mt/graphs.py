@@ -83,10 +83,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         event : event
             event variable.
 
-        Returns
-        -------
-        None.
-
         """
         if event.inaxes is None:
             return
@@ -102,10 +98,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         event : event
             event variable.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes is None:
@@ -162,10 +154,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dictionary key.
         itype : str
             dictionary key.
-
-        Returns
-        -------
-        None.
 
         """
         data1 = data[ival]
@@ -320,10 +308,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         itype : str
             dictionary key.
 
-        Returns
-        -------
-        None.
-
         """
         edicol = EdiCollection(edi_list)
         ptdict = edicol.get_phase_tensor_tippers(1 / plot_freq)
@@ -424,10 +408,6 @@ class PlotPoints(ContextModule):
         """
         Combo to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["MT - EDI"]
         i = self.cmb_1.currentText()
@@ -437,10 +417,6 @@ class PlotPoints(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         self.show()
@@ -567,10 +543,6 @@ class PlotPhaseTensor(ContextModule):
         """
         Reset data.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
@@ -579,10 +551,6 @@ class PlotPhaseTensor(ContextModule):
     def change_band(self):
         """
         Combo to change band.
-
-        Returns
-        -------
-        None.
 
         """
         freq = float(self.cmb_1.currentText())
@@ -628,10 +596,6 @@ class PlotPhaseTensor(ContextModule):
         """
         Entry point into the routine, used to run context menu item.
 
-        Returns
-        -------
-        None.
-
         """
         if "MT - EDI" in self.indata:
             self.data = copy.deepcopy(self.indata["MT - EDI"])
@@ -658,10 +622,6 @@ class PlotPhaseTensor(ContextModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_1)

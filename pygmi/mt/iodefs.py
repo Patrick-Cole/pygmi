@@ -52,7 +52,7 @@ class ImportEDI(BasicModule):
         self.ifilelist = []
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -99,10 +99,6 @@ class ImportEDI(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.ifilelist)
@@ -204,10 +200,6 @@ class ExportEDI(ContextModule):
         ----------
         dat : EDI Data
             dataset to export
-
-        Returns
-        -------
-        None.
 
         """
         savepath = os.path.dirname(self.ofile)

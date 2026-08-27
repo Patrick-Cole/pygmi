@@ -94,3 +94,11 @@ reportIndexIssue = false
 reportOptionalIterable = false
 reportOptionalOperand = false
 # reportPrivateImportUsage = false
+
+[tool.ruff.lint]
+# Add "D" to enable all pydocstyle rules
+extend-select = ["D"] 
+
+[tool.ruff.lint.pydocstyle]
+# Choose your preferred docstring convention: "google", "numpy", or "pep257"
+convention = "numpy"

@@ -29,10 +29,16 @@ import math
 import matplotlib.collections as mc
 import numpy as np
 import pandas as pd
+from geopandas import GeoDataFrame
 from matplotlib import rcParams
+from matplotlib.axes import Axes
+from matplotlib.backend_bases import MouseEvent, PickEvent, ResizeEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.colorbar import Colorbar
 from matplotlib.colors import BoundaryNorm
-from matplotlib.ticker import StrMethodFormatter
+from matplotlib.image import AxesImage
+from matplotlib.ticker import Formatter, StrMethodFormatter
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
@@ -64,7 +70,7 @@ class MyMplCanvas(CanvasModule):
         self.dmat = np.array([])
         self.texts = None
 
-    def button_release_callback(self, event):
+    def button_release_callback(self, event: MouseEvent):
         """
         Mouse button release callback.
 
@@ -73,10 +79,6 @@ class MyMplCanvas(CanvasModule):
         event : matplotlib.backend_bases.MouseEvent
             Button release event.
 
-        Returns
-        -------
-        None.
-
         """
         if event.inaxes is None:
             return
@@ -84,7 +86,7 @@ class MyMplCanvas(CanvasModule):
             return
         self.ind = None
 
-    def format_coord(self, x, y):
+    def format_coord(self, x: float, y: float) -> str | None:
         """
         Set format coordinate for correlation coefficient plot.
 
@@ -97,7 +99,7 @@ class MyMplCanvas(CanvasModule):
 
         Returns
         -------
-        str
+        str | None
             Output string to display.
 
         """
@@ -115,7 +117,7 @@ class MyMplCanvas(CanvasModule):
 
             return f"{xlbl}, {ylbl} correlation: {z}%"
 
-    def motion_notify_callback(self, event):
+    def motion_notify_callback(self, event: MouseEvent):
         """
         Move mouse callback.
 
@@ -123,10 +125,6 @@ class MyMplCanvas(CanvasModule):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Motion notify event.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes is None:
@@ -144,7 +142,7 @@ class MyMplCanvas(CanvasModule):
         self.axes.draw_artist(self.line)
         self.figure.canvas.update()
 
-    def onpick(self, event):
+    def onpick(self, event: PickEvent) -> bool:
         """
         Picker event.
 
@@ -171,7 +169,7 @@ class MyMplCanvas(CanvasModule):
 
         return True
 
-    def resizeline(self, event):
+    def resizeline(self, event: ResizeEvent):
         """
         Resize event.
 
@@ -180,26 +178,18 @@ class MyMplCanvas(CanvasModule):
         event : matplotlib.backend_bases.ResizeEvent
             Resize event.
 
-        Returns
-        -------
-        None.
-
         """
         r, data = self.line.get_data()
         self.update_lines(r, data)
 
-    def textresize(self, axes):
+    def textresize(self, axes: Axes):
         """
         Resize the text on a correlation plot when zooming.
 
         Parameters
         ----------
-        axes : Matplotlib axes
+        axes : Axes
             Current Matplotlib axes.
-
-        Returns
-        -------
-        None.
 
         """
         if self.texts is None:
@@ -220,20 +210,16 @@ class MyMplCanvas(CanvasModule):
             else:
                 i.set_visible(False)
 
-    def update_ccoef(self, data, style="Normal"):
+    def update_ccoef(self, data: GeoDataFrame, style: str = "Normal"):
         """
         Update the plot from point data.
 
         Parameters
         ----------
-        data : dictionary
+        data : GeoDataFrame
             GeoPandas data in a dictionary.
         style : str
             Style of colour mapping.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -292,20 +278,16 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_lines(self, r, data):
+    def update_lines(self, r: NDArray, data: NDArray):
         """
         Update the plot from point data.
 
         Parameters
         ----------
-        r : numpy array
+        r : NDArray
             array of distances, for the x-axis
-        data : numpy array
+        data : NDArray
             array of data to be plotted on the y-axis
-
-        Returns
-        -------
-        None.
 
         """
         if self.pickevents is False:
@@ -324,7 +306,6 @@ class MyMplCanvas(CanvasModule):
         self.axes = self.figure.add_subplot(111, label="Profile")
         self.axes.tick_params(axis="x", rotation=90)
         self.axes.tick_params(axis="y", rotation=0)
-        # self.axes.axis('equal')
 
         self.axes.set_title("Profile")
         self.axes.set_xlabel("Distance")
@@ -342,7 +323,7 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_lmap(self, data, ival, scale, uselabels):
+    def update_lmap(self, data, ival, scale: float, uselabels: bool):
         """
         Update the plot from line data.
 
@@ -356,10 +337,6 @@ class MyMplCanvas(CanvasModule):
             scale of exaggeration for the profile data on the map.
         uselabels: bool
             boolean choice whether to use labels or not.
-
-        Returns
-        -------
-        None.
 
         """
         self.custom_resize = True
@@ -428,36 +405,22 @@ class MyMplCanvas(CanvasModule):
             ax1.plot(x, y, "c")
             ax1.plot(qx, qy, "k")
 
-        # self.axes.xaxis.set_major_formatter(frm)
-        # self.axes.yaxis.set_major_formatter(frm)
-
-        # if data1.crs is not None and data1.crs.is_geographic:
-        #     self.axes.set_xlabel("Longitude")
-        #     self.axes.set_ylabel("Latitude")
-        # else:
-        #     self.axes.set_xlabel("Eastings")
-        #     self.axes.set_ylabel("Northings")
-
         set_axes(self.axes, data.crs)
         set_northscale(self.axes, data.crs, self.showlog)
         self.figure.canvas.draw()
 
-    def update_vector(self, data, col, style=None):
+    def update_vector(self, data: GeoDataFrame, col: str, style: bool | None = None):
         """
         Update the plot from vector data.
 
         Parameters
         ----------
-        data : dictionary
-            GeoPandas data in a dictionary.
+        data : GeoDataFrame
+            GeoPandas data.
         col : str
             Label for column to extract.
         style : str or None
             Style of colour mapping.
-
-        Returns
-        -------
-        None.
 
         """
         self.custom_resize = True
@@ -548,39 +511,34 @@ class MyMplCanvas(CanvasModule):
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
 
-        # self.axes.xaxis.set_major_formatter(frm)
-        # self.axes.yaxis.set_major_formatter(frm)
-
-        # if data.crs is not None and data.crs.is_geographic:
-        #     self.axes.set_xlabel("Longitude")
-        #     self.axes.set_ylabel("Latitude")
-        # else:
-        #     self.axes.set_xlabel("Eastings")
-        #     self.axes.set_ylabel("Northings")
-
         set_axes(self.axes, data.crs)
         set_northscale(self.axes, data.crs, self.showlog)
 
         self.figure.canvas.draw()
 
-    def update_rose(self, data, rtype, nbins=8, equal=False, mono=False):
+    def update_rose(
+        self,
+        data: GeoDataFrame,
+        rtype: int,
+        nbins: int = 8,
+        equal: bool = False,
+        mono: bool = False,
+    ):
         """
         Update the rose diagram plot using vector data.
 
         Parameters
         ----------
-        data : dictionary
-            GeoPandas data in a dictionary. It should be 'LineString'
+        data : GeoDataFrame
+            GeoPandas data.
         rtype : int
             Rose diagram type. Can be either 0 or 1.
         nbins : int, optional
             Number of bins used in rose diagram. The default is 8.
         equal : bool, optional
             Option for an equal area rose diagram. The default is False.
-
-        Returns
-        -------
-        None.
+        mono : bool, optional
+            Option for a monochrome rose diagram. The default is False.
 
         """
         self.custom_resize = True
@@ -664,24 +622,20 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data, col, ylog, iscum):
+    def update_hist(self, data: GeoDataFrame, col: str, ylog: bool, iscum: bool):
         """
         Update the histogram plot.
 
         Parameters
         ----------
-        data : dictionary
-            GeoPandas data in a dictionary.
+        data : GeoDataFrame
+            GeoPandas data.
         col : str
             Label for column to extract.
         ylog : bool
             Boolean for a log scale on y-axis.
         iscum : bool
             Boolean for a cumulative distribution.
-
-        Returns
-        -------
-        None.
 
         """
         self.figure.clear()
@@ -751,14 +705,7 @@ class PlotCCoef(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         if self.data is None:
             return
 
@@ -766,14 +713,7 @@ class PlotCCoef(ContextModule):
         self.mmc.update_ccoef(self.data, style)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.data = self.indata["Vector"][0]
 
         self.change_band()
@@ -826,14 +766,7 @@ class PlotHist(ContextModule):
         self.cb_cum.stateChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         data = self.indata["Vector"][0]
         col = self.cmb_1.currentText()
         ylog = self.cb_log.isChecked()
@@ -841,14 +774,7 @@ class PlotHist(ContextModule):
         self.mmc.update_hist(data, col, ylog, iscum)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Vector"][0]
         cols = data.select_dtypes(include=np.number).columns.tolist()
 
@@ -913,14 +839,7 @@ class PlotLines(ContextModule):
         self.ycol = ""
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         if self.data is None:
             return
 
@@ -941,14 +860,7 @@ class PlotLines(ContextModule):
         self.mmc.update_lines(r, data2)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.data = None
         for i in self.indata["Vector"]:
             if i.geom_type.iloc[0] == "Point":
@@ -1033,14 +945,7 @@ class PlotLineMap(ContextModule):
         self.spinbox.valueChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         if self.data is None:
             return
 
@@ -1051,14 +956,7 @@ class PlotLineMap(ContextModule):
         self.mmc.update_lmap(data, i, scale, self.cb_1.isChecked())
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.data = None
         for i in self.indata["Vector"]:
             if i.geom_type.iloc[0] == "Point":
@@ -1153,14 +1051,7 @@ class PlotRose(ContextModule):
         self.setWindowTitle("Rose Diagram")
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         if self.data is None:
             return
 
@@ -1171,14 +1062,7 @@ class PlotRose(ContextModule):
         self.mmc.update_rose(self.data, i, self.spinbox.value(), equal, mono)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.data = None
         if "Vector" not in self.indata:
             return
@@ -1274,14 +1158,7 @@ class PlotVector(ContextModule):
         self.setWindowTitle("Vector Plot")
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Combo box to choose band."""
         if self.data is None:
             return
 
@@ -1303,14 +1180,7 @@ class PlotVector(ContextModule):
         self.mmc.update_vector(data, i, style)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.data = self.indata["Vector"][0]
 
         cols = list(self.data.select_dtypes(include=np.number).columns)
@@ -1329,7 +1199,16 @@ class PlotVector(ContextModule):
         self.show()
 
 
-def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **kwargs):
+def heatmap(
+    data: NDArray,
+    row_labels: list | NDArray,
+    col_labels: list | NDArray,
+    ax: Axes,
+    *,
+    cbar_kw: dict | None = None,
+    cbarlabel: str = "",
+    **kwargs,
+) -> tuple[AxesImage, Colorbar]:
     """
     Create a heatmap from a numpy array and two lists of labels.
 
@@ -1337,11 +1216,11 @@ def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **k
 
     Parameters
     ----------
-    data : numpy array
+    data : NDArray
         A 2D numpy array of shape (M, N).
-    row_labels : list or numpy array
+    row_labels : list or NDArray
         A list or array of length M with the labels for the rows.
-    col_labels : list or numpy array
+    col_labels : list or NDArray
         A list or array of length N with the labels for the columns.
     ax : matplotlib.axes.Axes
         A `matplotlib.axes.Axes` instance to which the heatmap is plotted.
@@ -1356,7 +1235,7 @@ def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **k
     -------
     im : matplotlib.image.AxesImage
         Image for map.
-    cbar : matplotlib.Figure.colorbar
+    cbar : matplotlib.colorbar.Colorbar
         Colour bar for map
     """
     if cbar_kw is None:
@@ -1392,13 +1271,13 @@ def heatmap(data, row_labels, col_labels, ax, *, cbar_kw=None, cbarlabel="", **k
 
 
 def annotate_heatmap(
-    im,
-    data=None,
-    valfmt="{x:.2f}",
-    textcolors=("black", "white"),
-    threshold=None,
+    im: AxesImage,
+    data: list | NDArray | None = None,
+    ivalfmt: str | Formatter = "{x:.2f}",
+    textcolors: list[str] | tuple[str] = ("black", "white"),
+    ithreshold: float | None = None,
     **textkw,
-):
+) -> list[str]:
     """
     Annotate a heatmap.
 
@@ -1406,18 +1285,18 @@ def annotate_heatmap(
 
     Parameters
     ----------
-    im : matplotlib.image.AxesImage
+    im : AxesImage
         The AxesImage to be labelled.
     data : list or numpy array
         Data used to annotate.  If None, the image's data is used.  Optional.
-    valfmt : format string
+    ivalfmt : format string
         The format of the annotations inside the heatmap.  This should either
         use the string format method, e.g. "$ {x:.2f}", or be a
         `matplotlib.ticker.Formatter`.  Optional.
     textcolors : list
         A pair of colours.  The first is used for values below a threshold,
         the second for those above.  Optional.
-    threshold : float
+    ithreshold : float
         Value in data units according to which the colours from textcolors are
         applied.  If None (the default) uses the middle of the colormap as
         separation.  Optional.
@@ -1427,16 +1306,16 @@ def annotate_heatmap(
 
     Returns
     -------
-    im : matplotlib.image.AxesImage
-        Image for map.
+    texts : list[str]
+        List of text
 
     """
     if not isinstance(data, (list, np.ndarray)):
         data = im.get_array()
 
     # Normalize the threshold to the images color range.
-    if threshold is not None:
-        threshold = im.norm(threshold)
+    if ithreshold is not None:
+        threshold = im.norm(ithreshold)
     else:
         threshold = im.norm(data.max()) / 2.0
 
@@ -1446,8 +1325,10 @@ def annotate_heatmap(
     kw.update(textkw)
 
     # Get the formatter in case a string is supplied
-    if isinstance(valfmt, str):
-        valfmt = StrMethodFormatter(valfmt)
+    if isinstance(ivalfmt, str):
+        valfmt = StrMethodFormatter(ivalfmt)
+    else:
+        valfmt = ivalfmt
 
     # Loop over the data and create a `Text` for each "pixel".
     # Change the text's color depending on the data.
@@ -1465,7 +1346,13 @@ def annotate_heatmap(
     return texts
 
 
-def histogram(x, y=None, xmin=None, xmax=None, bins=10):
+def histogram(
+    x: NDArray,
+    y: NDArray | None = None,
+    xmin: float | None = None,
+    xmax: float | None = None,
+    bins: int = 10,
+) -> tuple[NDArray, NDArray]:
     """
     Histogram.
 
@@ -1476,9 +1363,9 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
 
     Parameters
     ----------
-    x : numpy array
+    x : NDArray
         Input data
-    y : numpy array
+    y : NDArray
         Input data weights. The default is None.
     xmin : float
         Lower value for the bins. The default is None.
@@ -1523,7 +1410,9 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     return hist, bin_edges
 
 
-def rotate(origin, point, angle):
+def rotate(
+    origin: list[float], point: list[float], angle: float
+) -> tuple[float, float]:
     """
     Rotate a point counterclockwise by a given angle around a given origin.
 
@@ -1531,9 +1420,9 @@ def rotate(origin, point, angle):
 
     Parameters
     ----------
-    origin : list
+    origin : list[float]
         List containing origin point (ox, oy)
-    point : list
+    point : list[float]
         List containing point to be rotated (px, py)
     angle : float
         Angle in radians.

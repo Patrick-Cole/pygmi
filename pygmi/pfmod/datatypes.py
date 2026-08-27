@@ -127,10 +127,6 @@ class LithModel:
         pbar : pygmi.misc.ProgressBar, optional
             Progressbar. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         if self.olith_index is None:
             return
@@ -189,10 +185,6 @@ class LithModel:
         ----------
         pbar : pygmi.misc.ProgressBar, optional
             Progressbar. The default is None.
-
-        Returns
-        -------
-        None.
 
         """
         if "DTM Dataset" not in self.griddata:
@@ -268,10 +260,6 @@ class LithModel:
         """
         Initialize mag and gravity from the model.
 
-        Returns
-        -------
-        None.
-
         """
         tmp = np.ma.zeros([self.numy, self.numx])
         self.griddata["Calculated Magnetics"] = self.init_grid(tmp.copy())
@@ -290,10 +278,6 @@ class LithModel:
         modified : bool, optional
             Flag for whether the lithology has been modified. The default is
             True.
-
-        Returns
-        -------
-        None.
 
         """
         for i in self.lith_list:
@@ -344,10 +328,6 @@ class LithModel:
         pbar : pygmi.misc.ProgressBar, optional
             Progressbar. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         if mht != -1:
             self.mht = mht
@@ -395,10 +375,6 @@ class LithModel:
         """
         Update lith_list from local variables.
 
-        Returns
-        -------
-        None.
-
         """
         for i in self.lith_list:
             self.lith_list[i].set_xyz(
@@ -417,10 +393,6 @@ class LithModel:
         Update the lith_list reverse lookup.
 
         It must be run at least once before using lith_list_reverse.
-
-        Returns
-        -------
-        None.
 
         """
         keys = list(self.lith_list.keys())

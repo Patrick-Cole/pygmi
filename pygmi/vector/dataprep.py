@@ -27,10 +27,12 @@
 import copy
 import glob
 import os
+from collections.abc import Callable, Iterable
 from functools import partial
 
 import geopandas as gpd
 import numpy as np
+from numpy.typing import NDArray
 from pyproj import CRS, Transformer
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy.interpolate import RBFInterpolator, griddata
@@ -63,7 +65,7 @@ class PointCut(BasicModule):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -108,10 +110,6 @@ class PointCut(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
 
@@ -154,14 +152,7 @@ class DataGrid(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "vector.dm.gridding"
@@ -227,14 +218,7 @@ class DataGrid(BasicModule):
         self.cmb_grid_type.currentIndexChanged.connect(self.grid_type_change)
 
     def dxy_change(self):
-        """
-        When dxy is changed on the interface, this updates rows and columns.
-
-        Returns
-        -------
-        None.
-
-        """
+        """When dxy is changed on the interface, this updates rows and columns."""
         txt = str(self.le_dxy.text())
         if txt.replace(".", "", 1).isdigit():
             self.dxy = float(self.le_dxy.text())
@@ -272,14 +256,7 @@ class DataGrid(BasicModule):
         self.lbl_layers.setText("Layers: " + str(layers))
 
     def grid_method_change(self):
-        """
-        When grid method is changed, this updated hidden controls.
-
-        Returns
-        -------
-        None.
-
-        """
+        """When grid method is changed, this updated hidden controls."""
         txt = self.cmb_grid_type.currentText()
 
         if txt != "Voxel":
@@ -326,7 +303,7 @@ class DataGrid(BasicModule):
 
         self.dxy_change()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -398,10 +375,6 @@ class DataGrid(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.dxy)
         self.saveobj(self.le_dxy)
@@ -419,10 +392,6 @@ class DataGrid(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         dxy = float(self.le_dxy.text())
@@ -546,10 +515,6 @@ class DataReproj(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.dm.reproj"
@@ -560,7 +525,7 @@ class DataReproj(BasicModule):
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -616,10 +581,6 @@ class DataReproj(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.orig_wkt)
         self.saveobj(self.targ_wkt)
@@ -657,10 +618,6 @@ class Metadata(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.cm.meta"
@@ -679,10 +636,6 @@ class Metadata(ContextModule):
     def acceptall(self):
         """
         Accept option.
-
-        Returns
-        -------
-        None.
 
         """
         wkt = self.proj.wkt
@@ -755,10 +708,6 @@ class TextFileSplit(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         pb_ifile = QtWidgets.QPushButton(" Filename")
@@ -856,14 +805,7 @@ class TextFileSplit(BasicModule):
         self.le_bytes.blockSignals(False)
 
     def get_ifile(self):
-        """
-        Get input file information.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Get input file information."""
         ext = "Common formats (*.txt *.xyz *.csv);;"
 
         self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -886,7 +828,7 @@ class TextFileSplit(BasicModule):
 
         self.change_method()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -911,14 +853,7 @@ class TextFileSplit(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_ifile)
         self.saveobj(self.le_files)
         self.saveobj(self.le_lines)
@@ -933,11 +868,6 @@ class TextFileSplit(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
         """
         method = self.cmb_method.currentText()
 
@@ -969,19 +899,27 @@ class TextFileSplit(BasicModule):
             )
 
 
-def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
+def blanking(
+    gdat: NDArray,
+    x: NDArray,
+    y: NDArray,
+    bdist: int | None,
+    extent: list[float],
+    dxy: float,
+    nullvalue: float,
+) -> NDArray:
     """
     Blanks area further than a defined number of cells from input data.
 
     Parameters
     ----------
-    gdat : numpy array
+    gdat : :NDArray
         grid data to blank.
-    x : numpy array
+    x : :NDArray
         x coordinates.
-    y : numpy array
+    y : :NDArray
         y coordinates.
-    bdist : int
+    bdist : int | None
         Blanking distance in units for cell.
     extent : list
         extent of grid.
@@ -1017,7 +955,9 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
     return gdat
 
 
-def cut_point(data, ifile, showlog=print):
+def cut_point(
+    data: gpd.GeoDataFrame, ifile: str, showlog: Callable[..., None] = print
+) -> gpd.GeoDataFrame | None:
     """
     Cuts a point dataset.
 
@@ -1073,7 +1013,7 @@ def cut_point(data, ifile, showlog=print):
     return data
 
 
-def txtlinecnt(filename):
+def txtlinecnt(filename: str) -> int:
     """
     Count lines in text file.
 
@@ -1094,7 +1034,13 @@ def txtlinecnt(filename):
     return linecnt
 
 
-def filesplit(ifile, num, mode="bytes", showlog=print, piter=None):
+def filesplit(
+    ifile: str,
+    num: int,
+    mode: str = "bytes",
+    showlog: Callable[..., None] = print,
+    piter: Iterable = ProgressBarText().iter,
+):
     """
     Split an input file into a number of output files.
 
@@ -1108,17 +1054,9 @@ def filesplit(ifile, num, mode="bytes", showlog=print, piter=None):
         Can be 'bytes', 'files' or 'lines'. The default is 'bytes'.
     showlog : function, optional
         Display information. The default is print.
-    piter : function, optional
+    piter : Iterable | None, optional
         Progress iterator. The default is None.
-
-    Returns
-    -------
-    None.
-
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     fsize = os.path.getsize(ifile)
     fname, fext = os.path.splitext(ifile)
     numfiles = 0
@@ -1156,16 +1094,16 @@ def filesplit(ifile, num, mode="bytes", showlog=print, piter=None):
 
 
 def gridxyz(
-    x,
-    y,
-    z,
-    dxy,
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    dxy: float,
     *,
-    nullvalue=1e20,
-    method="Nearest Neighbour",
-    bdist=4.0,
-    showlog=print,
-):
+    nullvalue: float = 1e20,
+    method: str = "Nearest Neighbour",
+    bdist: float = 4.0,
+    showlog: Callable[..., None] = print,
+) -> Data:
     """
     Grid xyz data.
 
@@ -1239,19 +1177,28 @@ def gridxyz(
     return dat
 
 
-def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
+def gridvolume(
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    val: NDArray,
+    dxy: float,
+    *,
+    dat: Data | None = None,
+    showlog: Callable[..., None] = print,
+) -> Data:
     """
     Grid volume data.
 
     Parameters
     ----------
-    x : numpy array
+    x : NDArray
         X coordinate values.
-    y : numpy array
+    y : NDArray
         Y coordinate values.
-    z : numpy array
+    z : NDArray
         Z coordinate values.
-    val : numpy array
+    val : NDArray
         Data values.
     dxy : float
         Grid cell size, in distance units.
@@ -1306,7 +1253,7 @@ def gridvolume(x, y, z, val, dxy, *, dat=None, showlog=print):
     return out
 
 
-def lltomap(lat, lon):
+def lltomap(lat: float, lon: float) -> str:
     """
     Convert a latitude and longitude to a 1:50,000 map sheet name.
 
@@ -1348,7 +1295,9 @@ def lltomap(lat, lon):
     return mapsheet
 
 
-def maptobounds(mapsheet, crs_to=None, showlog=print):
+def maptobounds(
+    mapsheet: str, crs_to: CRS = None, showlog: Callable[..., None] = print
+) -> list[float] | None:
     """
     Convert a South African map sheet name to bounds.
 
@@ -1365,7 +1314,7 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
 
     Returns
     -------
-    bounds : list
+    bounds : tuple[float]
         output bounds.
 
     """
@@ -1417,13 +1366,13 @@ def maptobounds(mapsheet, crs_to=None, showlog=print):
     return bounds
 
 
-def maptovector(maplist):
+def maptovector(maplist: list[str]) -> gpd.GeoDataFrame:
     """
     Create a vector layer from map numbers.
 
     Parameters
     ----------
-    maplist : list
+    maplist : list[str]
         List of strings containing map sheet numbers.
 
     Returns
@@ -1450,17 +1399,25 @@ def maptovector(maplist):
     return data
 
 
-def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
+def quickgrid(
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    dxy: float,
+    *,
+    numits: int = 4,
+    showlog: Callable[..., None] = print,
+) -> NDArray:
     """
     Do a quick grid.
 
     Parameters
     ----------
-    x : numpy array
+    x : NDArray
         array of x coordinates
-    y : numpy array
+    y : NDArray
         array of y coordinates
-    z : numpy array
+    z : NDArray
         array of z values - this is the column being gridded
     dxy : float
         cell size for the grid, in both the x and y direction.
@@ -1472,7 +1429,7 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
 
     Returns
     -------
-    newz : numpy array
+    newz : NDArray
         M x N array of z values
     """
     showlog("Creating Grid")
@@ -1535,7 +1492,13 @@ def quickgrid(x, y, z, dxy, *, numits=4, showlog=print):
     return newz
 
 
-def reprojxy(x, y, iwkt, owkt, showlog=print):
+def reprojxy(
+    x: NDArray,
+    y: NDArray,
+    iwkt: str | int | CRS,
+    owkt: str | int | CRS,
+    showlog: Callable[..., None] = print,
+) -> tuple[NDArray | None, NDArray | None]:
     """
     Reproject x and y coordinates.
 
@@ -1554,9 +1517,9 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
 
     Returns
     -------
-    xout : numpy array
+    xout : NDArray | None
         x coordinates.
-    yout : numpy array
+    yout : NDArray | None
         y coordinates.
 
     """
@@ -1585,7 +1548,7 @@ def reprojxy(x, y, iwkt, owkt, showlog=print):
     return xout, yout
 
 
-def xy_to_r(x, y, piter=iter):
+def xy_to_r(x: NDArray | float, y: NDArray | float, piter: Iterable = iter) -> NDArray:
     """
     Convert x an y values on a section to r.
 
@@ -1593,14 +1556,16 @@ def xy_to_r(x, y, piter=iter):
 
     Parameters
     ----------
-    x : numpy array or float
+    x : NDArray or float
         x coordinates
-    y : numpy array or float
+    y : NDArray or float
         y coordinates
+    piter : Iterable, optional
+        Progress bar iterable, default is iter.
 
     Returns
     -------
-    r : numpy array
+    r : NDArray
         r coordinates.
     """
     r1 = np.sqrt(x**2 + y**2)
@@ -1645,23 +1610,23 @@ def xy_to_r(x, y, piter=iter):
     return r
 
 
-def fast_sort(points, piter=iter):
+def fast_sort(pointsin: NDArray, piter: Iterable = iter) -> list:
     """
     Fast sort of coordinate pairs.
 
     Parameters
     ----------
-    points : numpy array
+    pointsin : NDArray
         Coordinates.
-    piter : function, optional
-        progress bar iterable, default is iter.
+    piter : Iterable, optional
+        Progress bar iterable, default is iter.
 
     Returns
     -------
     sorted_pts : list
         Sorted coordinates.
     """
-    points = list(points)
+    points = list(pointsin)
     sorted_pts = [points.pop(0)]
 
     num = len(points)

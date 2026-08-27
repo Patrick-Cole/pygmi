@@ -64,10 +64,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         cmap : str
             Matplotlib colormap description
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         # self.figure.set_figwidth(self.fwidth)
@@ -162,10 +158,6 @@ class ClipToZoom(BasicModule):
         """
         Combo box to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
@@ -173,13 +165,9 @@ class ClipToZoom(BasicModule):
             data = self.indata["Raster"]
             self.mmc.update_raster(data[i], cmap)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Run.
-
-        Returns
-        -------
-        None.
 
         """
         data = []
@@ -223,10 +211,6 @@ class ClipToZoom(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_1)

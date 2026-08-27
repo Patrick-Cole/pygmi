@@ -69,10 +69,6 @@ class EquationEditor(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
 
@@ -145,10 +141,6 @@ class EquationEditor(BasicModule):
         """
         Update combo information.
 
-        Returns
-        -------
-        None.
-
         """
         if self.bands == {}:
             return
@@ -156,7 +148,7 @@ class EquationEditor(BasicModule):
         if txt != "":
             self.lbl_bands.setText(": " + self.bands[txt])
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -218,10 +210,6 @@ class EquationEditor(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.equation)

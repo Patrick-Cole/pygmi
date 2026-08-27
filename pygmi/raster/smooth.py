@@ -25,6 +25,7 @@
 """Routines to smooth raster data."""
 
 import warnings
+from collections.abc import Callable
 
 import numpy as np
 import scipy.signal as ssig
@@ -73,10 +74,6 @@ class Smooth(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_1 = QtWidgets.QGridLayout(self)
@@ -139,7 +136,7 @@ class Smooth(BasicModule):
         self.sb_radius.valueChanged.connect(self.choosefilter)
         self.sb_stddev.valueChanged.connect(self.choosefilter)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -207,10 +204,6 @@ class Smooth(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.sb_x)
         self.saveobj(self.sb_y)
@@ -226,10 +219,6 @@ class Smooth(BasicModule):
     def choosefilter(self):
         """
         Section to choose the filter.
-
-        Returns
-        -------
-        None.
 
         """
         # Do not need to check whether inputs are greater than zero,
@@ -299,10 +288,6 @@ class Smooth(BasicModule):
         """
         Update table.
 
-        Returns
-        -------
-        None.
-
         """
         if self.fmat is None:
             return
@@ -345,10 +330,6 @@ class Smooth(BasicModule):
         message : str
             Text for message box.
 
-        Returns
-        -------
-        None.
-
         """
         QtWidgets.QMessageBox.warning(
             self.parent, title, message, QtWidgets.QMessageBox.StandardButton.Ok
@@ -356,7 +337,15 @@ class Smooth(BasicModule):
 
 
 def mov_win_filt(
-    dat, fmat, itype, box_x=5, box_y=5, rad=5, sigma=5, showlog=print, piter=iter
+    dat,
+    fmat,
+    itype,
+    box_x=5,
+    box_y=5,
+    rad=5,
+    sigma=5,
+    showlog: Callable[..., None] = print,
+    piter=iter,
 ):
     """
     Apply moving window filter function to data.

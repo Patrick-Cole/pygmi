@@ -102,10 +102,6 @@ class MagInvert(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.setWindowTitle("Inverse Modelling Parameters")
         self.buttonbox.htmlfile = "pfmod.dm.inv3d"
@@ -285,10 +281,6 @@ class MagInvert(BasicModule):
         """
         Apply changes.
 
-        Returns
-        -------
-        None.
-
         """
         self.showlog("Working...")
 
@@ -330,10 +322,6 @@ class MagInvert(BasicModule):
         dtxt : str
             Text to describe new raster data entry.
 
-        Returns
-        -------
-        None.
-
         """
         ctxt = str(combo.currentText())
         if ctxt not in ("None", ""):
@@ -344,10 +332,6 @@ class MagInvert(BasicModule):
     def choose_dtm(self):
         """
         Combo box to choose current DTM.
-
-        Returns
-        -------
-        None.
 
         """
         ctxt = str(self.cmb_dtm.currentText())
@@ -364,10 +348,6 @@ class MagInvert(BasicModule):
     def choose_model(self):
         """
         Choose model file.
-
-        Returns
-        -------
-        None.
 
         """
         ctxt = str(self.cmb_model.currentText())
@@ -419,10 +399,6 @@ class MagInvert(BasicModule):
         """
         Get current grid extents and parameters.
 
-        Returns
-        -------
-        None.
-
         """
         ctxt = str(self.cmb_dataset.currentText())
         if ctxt not in ("None", ""):
@@ -450,10 +426,6 @@ class MagInvert(BasicModule):
         """
         Initialise parameters.
 
-        Returns
-        -------
-        None.
-
         """
         # Extent Parameters
         self.dsb_utlx.setValue(self.lmod1.xrange[0])
@@ -472,10 +444,6 @@ class MagInvert(BasicModule):
         """
         Update layers.
 
-        Returns
-        -------
-        None.
-
         """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
@@ -493,10 +461,6 @@ class MagInvert(BasicModule):
     def update_model_combos(self):
         """
         Update model combos.
-
-        Returns
-        -------
-        None.
 
         """
         modnames = ["None"]
@@ -518,10 +482,6 @@ class MagInvert(BasicModule):
     def update_combos(self):
         """
         Update combos.
-
-        Returns
-        -------
-        None.
 
         """
         self.cmb_dataset.currentIndexChanged.disconnect()
@@ -584,10 +544,6 @@ class MagInvert(BasicModule):
         """
         Update the visible model extent parameters.
 
-        Returns
-        -------
-        None.
-
         """
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
@@ -617,10 +573,6 @@ class MagInvert(BasicModule):
         dxy : float
             Cell dimension.
 
-        Returns
-        -------
-        None.
-
         """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
@@ -644,10 +596,6 @@ class MagInvert(BasicModule):
         d_z : float
             Layer thickness.
 
-        Returns
-        -------
-        None.
-
         """
         zextent = self.dsb_zextent.value()
 
@@ -657,13 +605,9 @@ class MagInvert(BasicModule):
 
         self.upd_layers()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point.
-
-        Returns
-        -------
-        None.
 
         """
         datatmp = list(set(self.lmod1.griddata.values()))
@@ -703,10 +647,6 @@ class MagInvert(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_model)
         self.saveobj(self.cmb_other)
@@ -738,10 +678,6 @@ class MagInvert(BasicModule):
         Accept All.
 
         Based on the SimPEG example.
-
-        Returns
-        -------
-        None.
 
         """
         dat = [

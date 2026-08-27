@@ -156,7 +156,7 @@ class HelpButton(QtWidgets.QPushButton):
         HTML help file name.
     """
 
-    def __init__(self, htmlfile=None):
+    def __init__(self, htmlfile: str | None = None):
         super().__init__()
 
         self.htmlfile = htmlfile

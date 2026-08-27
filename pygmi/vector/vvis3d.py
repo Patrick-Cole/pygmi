@@ -70,10 +70,6 @@ class Mod3dDisplay(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "vector.cm.displayvoxel"
@@ -108,10 +104,6 @@ class Mod3dDisplay(ContextModule):
         QCloseEvent : TYPE
             Close event.
 
-        Returns
-        -------
-        None.
-
         """
         super().closeEvent(QCloseEvent)
         self.plotter.close()
@@ -119,10 +111,6 @@ class Mod3dDisplay(ContextModule):
     def save(self):
         """
         Save a jpg.
-
-        Returns
-        -------
-        None.
 
         """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -141,10 +129,6 @@ class Mod3dDisplay(ContextModule):
         Entry point into routine. This entry point exists for
         the case  where data must be initialised before entering at the
         standard 'settings' sub module.
-
-        Returns
-        -------
-        None.
 
         """
         self.outdata = self.indata
@@ -171,10 +155,6 @@ class Mod3dDisplay(ContextModule):
     def update_plot(self):
         """
         Update 3D model.
-
-        Returns
-        -------
-        None.
 
         """
         QtWidgets.QApplication.processEvents()

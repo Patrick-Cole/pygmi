@@ -105,10 +105,6 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         GUI setup.
 
-        Returns
-        -------
-        None.
-
         """
         centralwidget = QtWidgets.QWidget(self)
         vbl = QtWidgets.QVBoxLayout(centralwidget)
@@ -142,10 +138,6 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Save model.
 
-        Returns
-        -------
-        None.
-
         """
         self.showtext("Saving model, please do not close the interface...")
         tmp = iodefs.ExportMod3D(self.parent)
@@ -159,14 +151,10 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Help documentation.
 
-        Returns
-        -------
-        None.
-
         """
         menu_default.HelpDocs(self, "pygmi.pfmod.prof")
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -209,19 +197,11 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
 
     def data_reset(self):
         """
         Reset the data.
-
-        Returns
-        -------
-        None.
 
         """
         if "Model3D" in self.indata:
@@ -239,10 +219,6 @@ class MainWidget(QtWidgets.QMainWindow):
             Text to display.
         replacelast : bool, optional
             Whether to replace the last text written. The default is False.
-
-        Returns
-        -------
-        None.
 
         """
         if replacelast is True:

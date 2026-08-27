@@ -55,6 +55,7 @@ from PySide6.QtWidgets import QMessageBox
 import pygmi
 from pygmi import menu_default
 from pygmi.misc import ProgressBar, textwrap2
+from pygmi.raster.datatypes import Data
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
@@ -84,7 +85,12 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         Color
     """
 
-    def __init__(self, start_item, end_item, parent=None):
+    def __init__(
+        self,
+        start_item: pygmi.main.DiagramItem,
+        end_item: pygmi.main.DiagramItem,
+        parent=None,
+    ):
         super().__init__(parent)
 
         app = QtWidgets.QApplication.instance()
@@ -109,7 +115,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
             )
         )
 
-    def boundingRect(self):
+    def boundingRect(self) -> QtCore.QRectF:
         """
         Bounding Rectangle.
 
@@ -127,15 +133,23 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
         return tmp.normalized().adjusted(-extra, -extra, extra, extra)
 
-    def paint(self, painter, option, widget=None):
+    def paint(
+        self,
+        painter: QtGui.QPainter,
+        option: QtWidgets.QStyleOptionGraphicsItem,
+        widget: QtWidgets.QWidget | None = None,
+    ):
         """
         Overloaded paint method.
 
         Parameters
         ----------
-        painter : QPainter
-        option : QStyleOptionGraphicsItem
-        widget : QWidget, optional
+        painter : QtGui.QPainter
+            Painter routine.
+        option : QtWidgets.QStyleOptionGraphicsItem
+            Style options
+        widget : QtWidgets.QWidget, optional
+            Widget, the default is None.
         """
         pi = math.pi
         if self.my_start_item.collidesWithItem(self.my_end_item):
@@ -232,7 +246,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         Class name being referenced
     """
 
-    def __init__(self, diagram_type, context_menu, my_class, parent):
+    def __init__(self, diagram_type: str, context_menu: dict, my_class: object, parent):
         super().__init__()
 
         self.arrows = []
@@ -309,7 +323,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
         self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
 
-    def add_arrow(self, arrow):
+    def add_arrow(self, arrow: Arrow):
         """Add Arrow.
 
         Parameters
@@ -418,7 +432,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         else:
             self.setBrush(self.scene().my_item_color)
 
-    def remove_arrow(self, arrow):
+    def remove_arrow(self, arrow: Arrow):
         """
         Remove a single Arrow.
 
@@ -439,7 +453,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             arrow.my_end_item.remove_arrow(arrow)
             self.scene().removeItem(arrow)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Routine Settings.
 
@@ -450,10 +464,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         Returns
         -------
-        iflag : bool
-            Returns a boolean reflecting success of the my_class.settings()
-            method.
-
+        bool
+            Returns a boolean reflecting success of the my_class.settings() method.
         """
         if self.my_class.indata == {} and self.my_class.is_import is False:
             QtWidgets.QMessageBox.warning(
@@ -500,7 +512,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         Item menu.
     """
 
-    def __init__(self, item_menu, parent=None):
+    def __init__(self, item_menu: QtWidgets.QMenu, parent=None):
         super().__init__(parent)
         app = QtWidgets.QApplication.instance()
         isdark = app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark
@@ -521,13 +533,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         self.my_font = QtGui.QFont()
         self.parent = parent
 
-    def mousePressEvent(self, mouse_event):
+    def mousePressEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
         """
         Overloaded Mouse Press Event.
 
         Parameters
         ----------
-        mouse_event: QGraphicsSceneMouseEvent
+        mouse_event : QtWidgets.QGraphicsSceneMouseEvent
             mouse event.
         """
         if mouse_event.button() != QtCore.Qt.MouseButton.LeftButton:
@@ -611,13 +623,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         self.parent.showdatainfo(text)
 
-    def mouseMoveEvent(self, mouse_event):
+    def mouseMoveEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
         """
         Overloaded Mouse Move Event.
 
         Parameters
         ----------
-        mouse_event: QGraphicsSceneMouseEvent
+        mouse_event : QtWidgets.QGraphicsSceneMouseEvent
             mouse event.
         """
         if self.my_mode == "InsertLine" and self.line:
@@ -626,13 +638,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         elif self.my_mode == "MoveItem":
             super().mouseMoveEvent(mouse_event)
 
-    def mouseReleaseEvent(self, mouse_event):
+    def mouseReleaseEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
         """
         Overloaded Mouse Release Event.
 
         Parameters
         ----------
-        mouse_event: QGraphicsSceneMouseEvent
+        mouse_event: QtWidgets.QGraphicsSceneMouseEvent
             mouse event.
         """
         if self.line and self.my_mode == "InsertLine":
@@ -791,14 +803,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     # Start of Functions
     def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Set up UI."""
         self.resize(800, 600)
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Preferred,
@@ -865,7 +870,7 @@ class MainWidget(QtWidgets.QMainWindow):
         item_menu.addAction(self.action_bring_to_front)
         item_menu.addAction(self.action_send_to_back)
 
-    def add_to_context(self, txt):
+    def add_to_context(self, txt: str):
         """
         Add to a context menu.
 
@@ -915,26 +920,21 @@ class MainWidget(QtWidgets.QMainWindow):
                     item.setBrush(self.scene.my_item_color)
         gc.collect()
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QtGui.QKeyEvent):
         """
         Intercept key press for custom key presses.
 
         Parameters
         ----------
-        event : QKeyEvent
+        event : QtGui.QKeyEvent
             Key press event object.
-
-        Returns
-        -------
-        None.
-
         """
         if event.key() == QtCore.Qt.Key.Key_Delete:
             self.delete_item()
 
         event.accept()
 
-    def get_indata(self):
+    def get_indata(self) -> list[Data]:
         """
         Get input data from the selected item on the main interface.
 
@@ -949,7 +949,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 idata.append(item.my_class.indata)
         return idata
 
-    def get_outdata(self):
+    def get_outdata(self) -> list[Data]:
         """
         Get output data from the selected item on the main interface.
 
@@ -970,7 +970,14 @@ class MainWidget(QtWidgets.QMainWindow):
         hfile = os.path.join(ipth, "interface.html")
         webbrowser.open(hfile)
 
-    def item_insert(self, item_type, item_name, class_name, projimport=False, **kwargs):
+    def item_insert(
+        self,
+        item_type: str,
+        item_name: str,
+        class_name: object,
+        projimport=False,
+        **kwargs,
+    ) -> DiagramItem | None:
         """
         Item insert.
 
@@ -989,7 +996,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        item : DiagramItem
+        item : DiagramItem | None
             Return a DiagramItem object
         """
         if "nodialog" in kwargs:
@@ -1004,9 +1011,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item_color = self.scene.my_item_color
 
-        item_name = textwrap.wrap(item_name, width=13, break_long_words=False)
-        item_name = [f"{i: <13}" for i in item_name]
-        item_name = "\n".join(item_name)
+        item_name_list = textwrap.wrap(item_name, width=13, break_long_words=False)
+        item_name_list = [f"{i: <13}" for i in item_name_list]
+        item_name = "\n".join(item_name_list)
         item_name = item_name.strip()
 
         item.my_class_name = item_name
@@ -1068,7 +1075,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.scene.my_mode = "MoveItem"
         return item
 
-    def launch_context_item(self, newitem, option=None):
+    def launch_context_item(self, newitem, option: str | None = None):
         """
         Launch a context menu item, using output data.
 
@@ -1122,14 +1129,14 @@ class MainWidget(QtWidgets.QMainWindow):
         """Select pointer."""
         self.scene.my_mode = "MoveItem"
 
-    def process_is_active(self, isactive=True):
+    def process_is_active(self, isactive: bool = True):
         """
         Change process log colour when a process is active.
 
         Parameters
         ----------
         isactive : bool, optional
-            boolean variable indicating if a process is active.
+            boolean variable indicating if a process is active, by default True.
         """
         if isactive is True:
             self.textbrowser_processlog.setStyleSheet(
@@ -1143,14 +1150,14 @@ class MainWidget(QtWidgets.QMainWindow):
 
         QtWidgets.QApplication.processEvents()
 
-    def load(self):
+    def load(self) -> bool:
         """
         Load project state from JSON file.
 
         Returns
         -------
-        None.
-
+        bool
+            True if successful, False otherwise.
         """
         self.process_is_active()
         self.showlog("Project load busy...")
@@ -1215,14 +1222,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.showlog("Project load completed.")
         return True
 
-    def save(self):
+    def save(self) -> bool:
         """
         Save project state to a JSON file.
 
         Returns
         -------
-        None.
-
+        bool
+            True if successful, False otherwise.
         """
         ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
             self, "Save Project", ".", "PyGMI project (*.json);;"
@@ -1257,14 +1264,7 @@ class MainWidget(QtWidgets.QMainWindow):
         return True
 
     def run(self):
-        """
-        Run entire script.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Run entire script."""
         # get all arrows
         alist = {}
         for item in self.scene.items():
@@ -1348,7 +1348,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 zvalue = item.zValue() - 0.1
         selected_item.setZValue(zvalue)
 
-    def showdatainfo(self, txt):
+    def showdatainfo(self, txt: str):
         """
         Show text in the dataset information panel.
 
@@ -1362,7 +1362,7 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
 
-    def showlog(self, txt, replacelast=False):
+    def showlog(self, txt: str, replacelast: bool = False):
         """
         Show text on the process log.
 
@@ -1372,7 +1372,7 @@ class MainWidget(QtWidgets.QMainWindow):
             Message to be displayed in the process log
         replacelast : bool, optional
             flag to indicate whether the last row on the log should be
-            overwritten.
+            overwritten, by default False.
         """
         txtobj = self.textbrowser_processlog
 
@@ -1391,7 +1391,6 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def run_on_startup(self):
         """Run on startup."""
-
         if self.verpath != "":
             msg = QMessageBox(self)
             msg.setWindowTitle("Update available")
@@ -1399,7 +1398,7 @@ class MainWidget(QtWidgets.QMainWindow):
             msg.setTextInteractionFlags(Qt.TextBrowserInteraction)
             msg.exec()
 
-    def update_pdlg(self, dlg):
+    def update_pdlg(self, dlg: object):
         """
         Clean deleted objects in self.pdlg and appends a new object.
 
@@ -1434,7 +1433,7 @@ class Startup(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, pbarmax):
+    def __init__(self, pbarmax: int):
         super().__init__()
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
 
@@ -1471,7 +1470,20 @@ class Startup(QtWidgets.QDialog):
         QtWidgets.QApplication.processEvents()
 
 
-def get_crs_label(crs_input):
+def get_crs_label(crs_input: str | int | CRS) -> str:
+    """
+    Get CRS label.
+
+    Parameters
+    ----------
+    crs_input : str | int | CRS
+        CRS input
+
+    Returns
+    -------
+    str
+        CRS simple label
+    """
     if crs_input is None:
         return "Unknown"
     crs = CRS.from_user_input(crs_input)

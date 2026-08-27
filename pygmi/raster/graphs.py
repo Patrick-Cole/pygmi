@@ -94,10 +94,6 @@ class MyMplCanvas(CanvasModule):
         dmat : numpy array
             dummy matrix of numbers to be plotted using pcolor.
 
-        Returns
-        -------
-        None.
-
         """
         cmap = colormaps["viridis"]
 
@@ -149,10 +145,6 @@ class MyMplCanvas(CanvasModule):
             Matplotlib colormap description
         plotlog : bool
             Use a logarithmic colour scale.
-
-        Returns
-        -------
-        None.
 
         """
         self.data = data1
@@ -254,10 +246,6 @@ class MyMplCanvas(CanvasModule):
         data2 : PyGMI raster Data
             raster dataset to be used
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -307,10 +295,6 @@ class MyMplCanvas(CanvasModule):
             raster dataset to be used
         cmap : str
             Matplotlib colormap description
-
-        Returns
-        -------
-        None.
 
         """
         rows, cols = data.data.shape
@@ -379,10 +363,6 @@ class MyMplCanvas(CanvasModule):
         iscum : bool
             Boolean for a cumulative distribution.
 
-        Returns
-        -------
-        None.
-
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -443,10 +423,6 @@ class PlotCCoef(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Raster" in self.indata:
@@ -556,10 +532,6 @@ class PlotRaster(ContextModule):
         """
         Combo box to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
@@ -584,10 +556,6 @@ class PlotRaster(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = []
@@ -667,10 +635,6 @@ class PlotSurface(ContextModule):
     def change_band(self):
         """
         Combo box to choose band.
-
-        Returns
-        -------
-        None.
 
         """
         i = self.cmb_1.currentIndex()
@@ -755,10 +719,6 @@ class PlotSurface(ContextModule):
         """
         Entry point into the routine, used to run context menu item.
 
-        Returns
-        -------
-        None.
-
         """
         if "Raster" in self.indata:
             data = self.indata["Raster"]
@@ -833,10 +793,6 @@ class PlotScatter(ContextModule):
         """
         Combo box to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
@@ -859,10 +815,6 @@ class PlotScatter(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Raster" in self.indata:
@@ -934,10 +886,6 @@ class PlotHist(ContextModule):
         """
         Combo box to choose band.
 
-        Returns
-        -------
-        None.
-
         """
         data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
@@ -948,10 +896,6 @@ class PlotHist(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         if "Raster" in self.indata:

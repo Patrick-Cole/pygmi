@@ -225,22 +225,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         event : matplotlib.backend_bases.ResizeEvent
             Resize event.
 
-        Returns
-        -------
-        None.
-
         """
         self.flagresize = True
 
     def init_graph(self, interp="auto"):
-        """
-        Initialize the graph.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Initialize the graph."""
         if self.ccbar is not None:
             self.ccbar.remove()
             self.ccbar = None
@@ -300,10 +289,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
 
-        Returns
-        -------
-        None.
-
         """
         if not self.data or self.gmode == "Contour":
             return
@@ -354,15 +339,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.figure.canvas.update()
 
     def update_contour(self):
-        """
-        Update contours.
-
-        Returns
-        -------
-        None.
-
-        """
-
+        """Update contours."""
         self.figure.canvas.mpl_disconnect(self.cid)
         self.figure.clear()
         self.figure.set_layout_engine("compressed")
@@ -417,14 +394,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
 
     def update_graph(self):
-        """
-        Update plot.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Update plot."""
         if self.ccbar is not None:
             self.ccbar.remove()
             self.ccbar = None
@@ -550,10 +520,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         zval : float
             Data value.
 
-        Returns
-        -------
-        None.
-
         """
         xmin, xmax, ymin, ymax = hst.axes.axis()
         xnew = 0.95 * (xmax - xmin) + xmin
@@ -566,14 +532,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             hst.set_text(f"{zval:.4f}")
 
     def update_rgb(self):
-        """
-        Update the RGB Ternary Map.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Update the RGB Ternary Map."""
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
 
@@ -705,14 +664,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.flush_events()
 
     def update_single_color_map(self):
-        """
-        Update the single colour map.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Update the single colour map."""
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
         self.image.rgbmode = self.gmode
@@ -814,14 +766,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.update()
 
     def update_shade(self):
-        """
-        Update sun shade plot.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Update sun shade plot."""
         pseudo = self.image._full_res
         sun = None
 
@@ -893,14 +838,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.setMinimumSize(120, 120)
 
     def init_graph(self):
-        """
-        Initialise graph.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Initialise graph."""
         self.axes.clear()
         self.axes.tick_params(labelleft=False, labelright=False)
         self.axes.set_autoscaley_on(False)
@@ -998,14 +936,7 @@ class PlotInterp(BasicModule):
         self.cmb_bands.hide()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Set up UI."""
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.dm.rasterdisplay"
         btn_apply = QtWidgets.QPushButton("Apply Histogram")
@@ -1196,14 +1127,7 @@ class PlotInterp(BasicModule):
             self.resize(self.parent.width(), self.parent.height())
 
     def change_allclip(self):
-        """
-        Change all clip percentages to the current one.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change all clip percentages to the current one."""
         uclip = self.dsb_lineclipu.value()
         lclip = self.dsb_lineclipl.value()
 
@@ -1217,41 +1141,20 @@ class PlotInterp(BasicModule):
         self.change_lclip()
 
     def change_blue(self):
-        """
-        Change the blue or third display band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the blue or third display band."""
         txt = str(self.cmb_band3.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[2] = txt
         self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_cbar(self):
-        """
-        Change the colour map for the colour bar.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the colour map for the colour bar."""
         txt = str(self.cmb_cbar.currentText())
         self.mmc.cbar = colormaps[txt]
         self.mmc.update_graph()
 
     def change_clipband(self):
-        """
-        Change the clip percentage band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the clip percentage band."""
         dattxt = self.cmb_bandh.currentText()
 
         self.dsb_lineclipu.setValue(self.clippercu[dattxt])
@@ -1260,14 +1163,7 @@ class PlotInterp(BasicModule):
         self.set_minmax()
 
     def change_dtype(self):
-        """
-        Change display type.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change display type."""
         self.mmc.figure.canvas.mpl_disconnect(self.mmc.cid)
 
         txt = str(self.cmb_dtype.currentText())
@@ -1356,39 +1252,18 @@ class PlotInterp(BasicModule):
             self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_interp(self):
-        """
-        Change the interpolation method.
-
-        Returns
-        -------
-        None.
-        """
-
+        """Change the interpolation method."""
         self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_green(self):
-        """
-        Change the green or second band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the green or second band."""
         txt = str(self.cmb_band2.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[1] = txt
         self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_htype(self):
-        """
-        Change the histogram stretch to apply to the normal data.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the histogram stretch to apply to the normal data."""
         txt = str(self.cmb_htype.currentText())
 
         if txt == "Histogram Equalization":
@@ -1420,26 +1295,12 @@ class PlotInterp(BasicModule):
         self.mmc.update_graph()
 
     def change_kval(self):
-        """
-        Change the CMYK K value.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the CMYK K value."""
         self.mmc.kval = float(self.kslider.value()) / 100.0
         self.mmc.update_graph()
 
     def change_lclip(self):
-        """
-        Change the linear clip percentage.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the linear clip percentage."""
         dattxt = self.cmb_bandh.currentText()
 
         uclip = self.dsb_lineclipu.value()
@@ -1467,41 +1328,20 @@ class PlotInterp(BasicModule):
         # self.set_minmax()
 
     def change_red(self):
-        """
-        Change the red or first band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the red or first band."""
         txt = str(self.cmb_band1.currentText())
         self.cmb_bandh.setCurrentText(txt)
         self.mmc.hband[0] = txt
         self.mmc.init_graph(self.cmb_interp.currentText())
 
     def change_sun(self):
-        """
-        Change the sunshade band.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the sunshade band."""
         txt = str(self.cmb_bands.currentText())
         self.mmc.hband[3] = txt
         self.mmc.update_graph()
 
     def change_sun_checkbox(self):
-        """
-        Use when sunshading checkbox is clicked.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Use when sunshading checkbox is clicked."""
         self.mmc.figure.canvas.mpl_disconnect(self.mmc.cid)
 
         if self.gbox_sun.isChecked():
@@ -1534,14 +1374,7 @@ class PlotInterp(BasicModule):
         )
 
     def change_sunsliders(self):
-        """
-        Change the sun shading sliders.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Change the sun shading sliders."""
         self.mmc.cell = self.sslider.value()
         self.mmc.alpha = float(self.aslider.value()) / 100.0
         self.mmc.update_shade()
@@ -1553,10 +1386,6 @@ class PlotInterp(BasicModule):
         Entry point into routine. This entry point exists for
         the case  where data must be initialised before entering at the
         standard 'settings' sub module.
-
-        Returns
-        -------
-        None.
 
         """
         if "Cluster" in self.indata:
@@ -1651,10 +1480,6 @@ class PlotInterp(BasicModule):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes == self.msc.axes:
@@ -1892,7 +1717,6 @@ class PlotInterp(BasicModule):
             True if successful, False otherwise.
 
         """
-
         ext = "GeoTIFF (*.tif)"
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, "Save File", ".", ext
@@ -2184,43 +2008,39 @@ class PlotInterp(BasicModule):
             cmap = colormaps[txt]
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
+            caspect = blen / bwid
             # Horizontal Bar
-            fig = Figure(layout="compressed")
-            canvas = FigureCanvasQTAgg(fig)
-            fig.set_figwidth(blen)
-            fig.set_figheight(bwid + 0.75)
-            ax = fig.gca()
+            fig = Figure(figsize=[blen, blen])
+
+            ax1 = fig.gca()
+            ax1.set_visible(False)
+            ax, kw = mcolorbar.make_axes(ax1, orientation="horizontal", aspect=caspect)
 
             if "Contour" in dtype:
-                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, orientation="horizontal")
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, **kw)
             else:
-                cb = mcolorbar.ColorbarBase(
-                    ax, cmap=cmap, norm=norm, orientation="horizontal"
-                )
+                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm, **kw)
             cb.set_label(text)
 
             fname = filename[:-4] + "_hcbar.png"
-            canvas.print_figure(fname, dpi=300)
+            fig.savefig(fname, dpi=300, bbox_inches="tight")
 
             # Vertical Bar
-            fig = Figure(layout="compressed")
-            canvas = FigureCanvasQTAgg(fig)
-            fig.set_figwidth(bwid + 1)
-            fig.set_figheight(blen)
-            ax = fig.gca()
+            fig = Figure(figsize=[blen, blen])
+
+            ax1 = fig.gca()
+            ax1.set_visible(False)
+            ax, kw = mcolorbar.make_axes(ax1, orientation="vertical", aspect=caspect)
             if "Contour" in dtype:
-                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, orientation="vertical")
+                cb = mcolorbar.ColorbarBase(ax, self.mmc.cntf, **kw)
             else:
-                cb = mcolorbar.ColorbarBase(
-                    ax, cmap=cmap, norm=norm, orientation="vertical"
-                )
+                cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm, **kw)
             cb.set_label(text)
 
             fname = filename[:-4] + "_vcbar.png"
-            canvas.print_figure(fname, dpi=300)
+            fig.savefig(fname, dpi=300, bbox_inches="tight")
         else:
-            fig = Figure(figsize=[blen, blen], layout="compressed")
-            canvas = FigureCanvasQTAgg(fig)
+            fig = Figure(figsize=[blen, blen])
 
             tmp = np.array([[list(range(255))] * 255])
             tmp = tmp.reshape(255, 255)
@@ -2298,7 +2118,7 @@ class PlotInterp(BasicModule):
 
             ax.axis("off")
             fname = filename[:-4] + "_tern.png"
-            canvas.print_figure(fname, dpi=300)
+            fig.savefig(fname, dpi=300, bbox_inches="tight")
 
         QtWidgets.QMessageBox.information(
             self,
@@ -2309,7 +2129,7 @@ class PlotInterp(BasicModule):
 
         return True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -2351,14 +2171,7 @@ class PlotInterp(BasicModule):
         return tmp != 0
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_dtype)
         self.saveobj(self.cmb_band1)
         self.saveobj(self.cmb_band2)
@@ -2380,7 +2193,6 @@ class PlotInterp(BasicModule):
 
 def _testfn():
     """Test routine."""
-
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..//..")))
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

@@ -62,10 +62,6 @@ class Normalisation(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         vbl_1 = QtWidgets.QVBoxLayout(self)
 
@@ -86,7 +82,7 @@ class Normalisation(BasicModule):
 
         self.setWindowTitle("Normalisation")
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -136,10 +132,6 @@ class Normalisation(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.rb_interval)

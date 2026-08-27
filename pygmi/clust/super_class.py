@@ -79,10 +79,6 @@ class GraphMap(FigureCanvasQTAgg):
         """
         Polygon integrator.
 
-        Returns
-        -------
-        None.
-
         """
         dat = dat[self.bands[0]].data
 
@@ -106,10 +102,6 @@ class GraphMap(FigureCanvasQTAgg):
         ----------
         dat : dict
             PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
-
-        Returns
-        -------
-        None.
 
         """
         clippercu = 1
@@ -176,10 +168,6 @@ class GraphMap(FigureCanvasQTAgg):
         dat : dict
             PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
 
-        Returns
-        -------
-        None.
-
         """
         clippercu = 1
         clippercl = 1
@@ -238,10 +226,6 @@ class GraphMap(FigureCanvasQTAgg):
         ----------
         dat : dict
             PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
-
-        Returns
-        -------
-        None.
 
         """
         clippercu = 0
@@ -322,10 +306,6 @@ class PolygonInteractor(QtCore.QObject):
         event : matplotlib.backend_bases.DrawEvent, optional
             Draw event object. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
 
@@ -343,10 +323,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         npoly : list or None, optional
             New polygon coordinates.
-
-        Returns
-        -------
-        None.
 
         """
         if npoly is None:
@@ -393,10 +369,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
-
-        Returns
-        -------
-        None.
 
         """
         if event.inaxes is None:
@@ -463,10 +435,6 @@ class PolygonInteractor(QtCore.QObject):
         event : matplotlib.backend_bases.MouseEvent
             Mouse Event.
 
-        Returns
-        -------
-        None.
-
         """
         if event.button != 1:
             return
@@ -478,10 +446,6 @@ class PolygonInteractor(QtCore.QObject):
     def update_plots(self):
         """
         Update plots.
-
-        Returns
-        -------
-        None.
 
         """
         if self.poly.xy.size < 8:
@@ -496,10 +460,6 @@ class PolygonInteractor(QtCore.QObject):
         ----------
         event : matplotlib.backend_bases.MouseEvent
             Mouse event.
-
-        Returns
-        -------
-        None.
 
         """
         if self._ind is None:
@@ -566,10 +526,6 @@ class SuperClass(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         self.buttonbox.htmlfile = "cluster.dm.super"
@@ -685,10 +641,6 @@ class SuperClass(BasicModule):
         """
         Calculate new clusters.
 
-        Returns
-        -------
-        None.
-
         """
         if self.df is None:
             return
@@ -731,10 +683,6 @@ class SuperClass(BasicModule):
         """
         Routine called when current classification choice changes.
 
-        Returns
-        -------
-        None.
-
         """
         ctext = self.cmb_class.currentText()
 
@@ -759,10 +707,6 @@ class SuperClass(BasicModule):
     def calc_metrics(self):
         """
         Calculate metrics.
-
-        Returns
-        -------
-        None.
 
         """
         if self.df is None:
@@ -810,10 +754,6 @@ class SuperClass(BasicModule):
         xycoords : numpy array, optional
             x, y coordinates. The default is None.
 
-        Returns
-        -------
-        None.
-
         """
         row = self.tablewidget.currentRow()
         if row == -1:
@@ -838,10 +778,6 @@ class SuperClass(BasicModule):
         col : int
             Current column.
 
-        Returns
-        -------
-        None.
-
         """
         if self.tablewidget.currentItem() is None or col != 0:
             return
@@ -858,10 +794,6 @@ class SuperClass(BasicModule):
             current item.
         previous : QTableWidgetItem
             previous item.
-
-        Returns
-        -------
-        None.
 
         """
         if previous is None or current is None:
@@ -881,10 +813,6 @@ class SuperClass(BasicModule):
     def on_apoly(self):
         """
         On add polygon.
-
-        Returns
-        -------
-        None.
 
         """
         if self.df is None:
@@ -914,10 +842,6 @@ class SuperClass(BasicModule):
         """
         On delete polygon.
 
-        Returns
-        -------
-        None.
-
         """
         row = self.tablewidget.currentRow()
         self.tablewidget.removeRow(self.tablewidget.currentRow())
@@ -932,10 +856,6 @@ class SuperClass(BasicModule):
     def on_combo(self):
         """
         On combo to choose type of plot for data.
-
-        Returns
-        -------
-        None.
 
         """
         maniptxt = self.cmb_manip.currentText()
@@ -960,10 +880,6 @@ class SuperClass(BasicModule):
     def on_radio(self):
         """
         On radiobutton to choose type of plot for data.
-
-        Returns
-        -------
-        None.
 
         """
         if self.rb_data.isChecked():
@@ -1033,7 +949,7 @@ class SuperClass(BasicModule):
         self.df.to_file(filename)
         return True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -1158,10 +1074,6 @@ class SuperClass(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_class)

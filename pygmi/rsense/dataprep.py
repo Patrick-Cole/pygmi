@@ -34,6 +34,7 @@ import glob
 import os
 import platform
 import sys
+from collections.abc import Callable
 from subprocess import PIPE, Popen
 
 import numpy as np
@@ -71,10 +72,6 @@ class TopoCorrect(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.topo"
         gl_main = QtWidgets.QGridLayout(self)
@@ -94,7 +91,7 @@ class TopoCorrect(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -155,10 +152,6 @@ class TopoCorrect(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_dem)
         self.saveobj(self.le_azi)
@@ -169,10 +162,6 @@ class TopoCorrect(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         data = []
@@ -234,10 +223,6 @@ class Sen2Cor(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "rsense.dm.sen2cor"
         gl_main = QtWidgets.QGridLayout(self)
@@ -262,7 +247,7 @@ class Sen2Cor(BasicModule):
         self.pb_sdir.pressed.connect(self.get_sdir)
         self.pb_sen2cor.pressed.connect(self.get_sen2cor)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -338,10 +323,6 @@ class Sen2Cor(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.le_sdir)
         self.saveobj(self.le_sen2cor)
@@ -351,10 +332,6 @@ class Sen2Cor(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
 
         """
         sen2cor = os.path.join(self.le_sen2cor.text(), "L2A_Process")
@@ -387,7 +364,9 @@ class Sen2Cor(BasicModule):
         return True
 
 
-def c_correction(data, dem, azimuth, zenith, *, showlog=print, piter=iter):
+def c_correction(
+    data, dem, azimuth, zenith, *, showlog: Callable[..., None] = print, piter=iter
+):
     """
     Calculate C correction.
 

@@ -33,6 +33,7 @@ Salem et al., 2007, Leading Edge, Dec,p1502-5
 """
 
 import os
+from collections.abc import Callable
 from math import pi
 
 import geopandas as gpd
@@ -102,10 +103,6 @@ class TiltDepth(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "maggrv.dm.tiltdepth"
         self.buttonbox.buttonbox.hide()
@@ -170,10 +167,6 @@ class TiltDepth(BasicModule):
         """
         Check if RTP must be done.
 
-        Returns
-        -------
-        None.
-
         """
         if self.cb_rtp.isChecked():
             self.dsb_inc.setEnabled(True)
@@ -213,10 +206,6 @@ class TiltDepth(BasicModule):
     def change_cbar(self):
         """
         Change the colour map for the colour bar.
-
-        Returns
-        -------
-        None.
 
         """
         txt = str(self.cmb_band1.currentText())
@@ -266,10 +255,6 @@ class TiltDepth(BasicModule):
         """
         Routine which occurs when apply button is pressed.
 
-        Returns
-        -------
-        None.
-
         """
 
         self.btn_apply.setText("Calculating...")
@@ -297,7 +282,7 @@ class TiltDepth(BasicModule):
         self.btn_apply.setEnabled(True)
         self.btn_apply.setText("Calculate Tilt Depth")
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -338,10 +323,6 @@ class TiltDepth(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.cmb_band1)
         self.saveobj(self.cmb_cbar)
@@ -350,7 +331,9 @@ class TiltDepth(BasicModule):
         self.saveobj(self.cb_rtp)
 
 
-def tiltdepth(data, inc=None, dec=None, pbar=None, showlog=print):
+def tiltdepth(
+    data, inc=None, dec=None, pbar=None, showlog: Callable[..., None] = print
+):
     """
     Calculate tilt depth.
 

@@ -61,10 +61,6 @@ class BasicStats(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
@@ -86,10 +82,6 @@ class BasicStats(ContextModule):
     def combo(self):
         """
         Combo.
-
-        Returns
-        -------
-        None.
 
         """
         i = self.cmb_1.currentIndex()
@@ -113,10 +105,6 @@ class BasicStats(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         data = self.indata["Raster"]
@@ -257,10 +245,6 @@ class ClusterStats(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
@@ -282,10 +266,6 @@ class ClusterStats(ContextModule):
     def combo(self):
         """
         Combo.
-
-        Returns
-        -------
-        None.
 
         """
         i = self.cmb_1.currentIndex()

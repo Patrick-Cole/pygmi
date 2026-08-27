@@ -28,6 +28,8 @@ Fuzzy clustering is a set of clustering routines.
 This makes use of fuzzy logic.
 """
 
+from collections.abc import Callable
+
 import numpy as np
 from PySide6 import QtWidgets
 from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
@@ -87,10 +89,6 @@ class FuzzyClust(BasicModule):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         self.buttonbox.htmlfile = "cluster.dm.fuzzy"
@@ -159,10 +157,6 @@ class FuzzyClust(BasicModule):
         """
         Set up combo box to choose algorithm.
 
-        Returns
-        -------
-        None.
-
         """
         i = str(self.cmb_alg.currentText())
         if i in ("Gath-Geva", "Gustafson-Kessel"):
@@ -176,10 +170,6 @@ class FuzzyClust(BasicModule):
         """
         Set up radio button to choose initialisation type.
 
-        Returns
-        -------
-        None.
-
         """
         if self.rb_datadriven.isChecked():
             self.sb_repeatedruns.hide()
@@ -188,7 +178,7 @@ class FuzzyClust(BasicModule):
             self.sb_repeatedruns.show()
             self.lbl_6.show()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -254,10 +244,6 @@ class FuzzyClust(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.update_vars()
 
@@ -289,10 +275,6 @@ class FuzzyClust(BasicModule):
         """
         Update the variables.
 
-        Returns
-        -------
-        None.
-
         """
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
@@ -320,7 +302,7 @@ def fuzzyclust(
     expo=1.5,
     term_thresh=0.00001,
     init_type="random",
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """
@@ -513,7 +495,7 @@ def fuzzy_means(
     expo,
     cltype,
     cov_constr,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """

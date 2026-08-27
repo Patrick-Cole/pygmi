@@ -52,7 +52,7 @@ class DeleteRecord(BasicModule):
 
         self.settings()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -82,10 +82,6 @@ class DeleteRecord(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
 
     def delrec(self, ifile):
@@ -96,10 +92,6 @@ class DeleteRecord(BasicModule):
         ----------
         ifile : str
             Input filename.
-
-        Returns
-        -------
-        None.
 
         """
         ofile = ifile[:-4] + "_new.out"
@@ -154,7 +146,7 @@ class Quarry(BasicModule):
         self.day = [10, 16]  # daytime start at 6am and ends at 7pm
         self.day = [9, 19]  # daytime start at 6am and ends at 7pm
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -200,10 +192,6 @@ class Quarry(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
 

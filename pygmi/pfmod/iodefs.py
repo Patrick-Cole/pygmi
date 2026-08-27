@@ -66,7 +66,7 @@ class ImportMod3D(BasicModule):
         self.filt = ""
         self.is_import = True
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -127,10 +127,6 @@ class ImportMod3D(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
@@ -143,10 +139,6 @@ class ImportMod3D(BasicModule):
         ----------
         filename : str
             Input filename.
-
-        Returns
-        -------
-        None.
 
         """
         with open(filename, encoding="utf-8") as fno:
@@ -271,10 +263,6 @@ class ImportMod3D(BasicModule):
         filename : str
             Input filename.
 
-        Returns
-        -------
-        None.
-
         """
         names = ["x", "y", "z", "label"]
         try:
@@ -371,10 +359,6 @@ class ImportMod3D(BasicModule):
             Imported dictionary.
         pre : str, optional
             Text. The default is ''.
-
-        Returns
-        -------
-        None.
 
         """
         lithkeys = indict[pre + "lithkeys"]
@@ -562,10 +546,6 @@ class ExportMod3D(ContextModule):
         """
         Entry point into the routine, used to run context menu item.
 
-        Returns
-        -------
-        None.
-
         """
         if "Model3D" not in self.indata:
             self.showlog("Error: You need to have a model first!")
@@ -603,10 +583,6 @@ class ExportMod3D(ContextModule):
     def savemodel(self):
         """
         Save model.
-
-        Returns
-        -------
-        None.
 
         """
         # Construct output dictionary
@@ -694,10 +670,6 @@ class ExportMod3D(ContextModule):
         """
         Save the 3D model in a csv file.
 
-        Returns
-        -------
-        None.
-
         """
         self.showlog("csv export starting...")
 
@@ -755,10 +727,6 @@ class ExportMod3D(ContextModule):
 
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
-
-        Returns
-        -------
-        None.
 
         """
         mvis_3d = mvis3d.Mod3dDisplay()
@@ -1117,10 +1085,6 @@ class ExportMod3D(ContextModule):
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
 
-        Returns
-        -------
-        None.
-
         """
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
@@ -1286,10 +1250,6 @@ class Exportkmz(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "pfmod.cm.export3dmodel"
@@ -1335,10 +1295,6 @@ class MessageCombo(QtWidgets.QDialog):
     def setupui(self):
         """
         Set up UI.
-
-        Returns
-        -------
-        None.
 
         """
         gl_main = QtWidgets.QGridLayout(self)

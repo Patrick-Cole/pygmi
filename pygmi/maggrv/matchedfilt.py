@@ -75,10 +75,6 @@ class MatchedFilt(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "maggrv.dm.match"
 
@@ -122,7 +118,7 @@ class MatchedFilt(BasicModule):
         self.cmb_band1.currentIndexChanged.connect(self.fftprep)
         pb_calculate.pressed.connect(self.calculate)
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -282,10 +278,6 @@ class MatchedFilt(BasicModule):
     def saveproj(self):
         """
         Save project data from class.
-
-        Returns
-        -------
-        None.
 
         """
         self.saveobj(self.cmb_band1)

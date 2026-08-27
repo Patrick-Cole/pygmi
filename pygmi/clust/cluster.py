@@ -30,6 +30,7 @@ scikit-learn library.
 """
 
 import os
+from collections.abc import Callable
 
 import numpy as np
 import sklearn.cluster as skc
@@ -108,10 +109,6 @@ class Cluster(BasicModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         self.buttonbox.htmlfile = "cluster.dm.clust"
         gl_1 = QtWidgets.QGridLayout(self)
@@ -175,10 +172,6 @@ class Cluster(BasicModule):
         """
         Set up combo box, used to choose clustering algorithm.
 
-        Returns
-        -------
-        None.
-
         """
         i = str(self.cmb_alg.currentText())
 
@@ -230,7 +223,7 @@ class Cluster(BasicModule):
             self.lbl_bthres.show()
             self.dsb_bthres.show()
 
-    def settings(self, nodialog=False):
+    def settings(self, nodialog: bool = False) -> bool:
         """
         Entry point into item.
 
@@ -302,10 +295,6 @@ class Cluster(BasicModule):
         """
         Save project data from class.
 
-        Returns
-        -------
-        None.
-
         """
         self.update_vars()
 
@@ -341,10 +330,6 @@ class Cluster(BasicModule):
         """
         Update the variables.
 
-        Returns
-        -------
-        None.
-
         """
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
@@ -372,7 +357,7 @@ def cluster(
     branchfac=50,
     xi=0.05,
     min_samples=5,
-    showlog=print,
+    showlog: Callable[..., None] = print,
     piter=iter,
 ):
     """

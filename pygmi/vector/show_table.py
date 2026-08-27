@@ -58,10 +58,6 @@ class BasicStats(ContextModule):
         """
         Set up UI.
 
-        Returns
-        -------
-        None.
-
         """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
@@ -80,10 +76,6 @@ class BasicStats(ContextModule):
     def run(self):
         """
         Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        None.
 
         """
         gdf = self.indata["Vector"][0]
