@@ -472,7 +472,7 @@ def match_data(
     flist: list[Data | RasterMeta],
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> tuple(list[Data], list[Data]):
+) -> tuple[list[Data], list[Data]]:
     """
     Match two datasets.
 
