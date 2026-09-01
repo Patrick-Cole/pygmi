@@ -38,84 +38,6 @@ from rasterio.io import MemoryFile
 from rasterio.windows import Window
 from shapely.geometry import Polygon, shape
 
-from pygmi.raster.datatypes import Data
-
-
-def numpy_to_pygmi(
-    data: NDArray, pdata: Data | None = None, dataid: str | None = None
-) -> Data:
-    """
-    Convert an MxN numpy array into a PyGMI data object.
-
-    For convenience, if pdata is defined, parameters from another dataset
-    will be used (such as xdim, ydim etc).
-
-    Parameters
-    ----------
-    data
-        MxN array
-
-    pdata
-        PyGMI raster dataset
-
-    dataid
-        name for the band of data.
-
-    Returns
-    -------
-    tmp : Data
-        PyGMI raster dataset
-    """
-    if data.ndim != 2:
-        warnings.warn("Error: you need 2 dimensions")
-        return None
-
-    tmp = Data()
-    if np.ma.isMaskedArray(data):
-        tmp.data = data
-    else:
-        tmp.data = np.ma.array(data)
-
-    if isinstance(pdata, Data):
-        if pdata.data.shape != data.shape:
-            warnings.warn(
-                "Error: you need your data and pygmi data shape to be the same"
-            )
-            return None
-        tmp.extent = pdata.extent
-        tmp.bounds = pdata.bounds
-        tmp.xdim = pdata.xdim
-        tmp.ydim = pdata.ydim
-        tmp.dataid = pdata.dataid
-        tmp.nodata = pdata.nodata
-        tmp.crs = pdata.crs
-        tmp.transform = pdata.transform
-        tmp.units = pdata.units
-        tmp.isrgb = pdata.isrgb
-        tmp.metadata = pdata.metadata
-
-    if dataid is not None:
-        tmp.dataid = str(dataid)
-
-    return tmp
-
-
-def pygmi_to_numpy(tmp: Data) -> NDArray:
-    """
-    Convert a PyGMI data object into an MxN numpy array.
-
-    Parameters
-    ----------
-    tmp
-        PyGMI raster dataset
-
-    Returns
-    -------
-    ndarray
-        MxN numpy array
-    """
-    return np.array(tmp.data)
-
 
 def bounds_to_transform(
     bounds: tuple[float, float, float, float], dxy: float
@@ -276,7 +198,7 @@ class Data:
 
         self.set_transform(1, 0, 1, 0)
 
-    def copy(self, data0: NDArray | None = None, resetmeta: bool = False) -> Data:
+    def copy(self, data0: NDArray | None = None, resetmeta: bool = False):
         """
         Make a deepcopy of the function.
 
@@ -642,3 +564,79 @@ class RasterMeta:
 
         if "ASTER" in self.sensor:
             self.sensor = "ASTER"
+
+
+def numpy_to_pygmi(
+    data: NDArray, pdata: Data | None = None, dataid: str | None = None
+) -> Data:
+    """
+    Convert an MxN numpy array into a PyGMI data object.
+
+    For convenience, if pdata is defined, parameters from another dataset
+    will be used (such as xdim, ydim etc).
+
+    Parameters
+    ----------
+    data
+        MxN array
+
+    pdata
+        PyGMI raster dataset
+
+    dataid
+        name for the band of data.
+
+    Returns
+    -------
+    tmp : Data
+        PyGMI raster dataset
+    """
+    if data.ndim != 2:
+        warnings.warn("Error: you need 2 dimensions")
+        return None
+
+    tmp = Data()
+    if np.ma.isMaskedArray(data):
+        tmp.data = data
+    else:
+        tmp.data = np.ma.array(data)
+
+    if isinstance(pdata, Data):
+        if pdata.data.shape != data.shape:
+            warnings.warn(
+                "Error: you need your data and pygmi data shape to be the same"
+            )
+            return None
+        tmp.extent = pdata.extent
+        tmp.bounds = pdata.bounds
+        tmp.xdim = pdata.xdim
+        tmp.ydim = pdata.ydim
+        tmp.dataid = pdata.dataid
+        tmp.nodata = pdata.nodata
+        tmp.crs = pdata.crs
+        tmp.transform = pdata.transform
+        tmp.units = pdata.units
+        tmp.isrgb = pdata.isrgb
+        tmp.metadata = pdata.metadata
+
+    if dataid is not None:
+        tmp.dataid = str(dataid)
+
+    return tmp
+
+
+def pygmi_to_numpy(tmp: Data) -> NDArray:
+    """
+    Convert a PyGMI data object into an MxN numpy array.
+
+    Parameters
+    ----------
+    tmp
+        PyGMI raster dataset
+
+    Returns
+    -------
+    ndarray
+        MxN numpy array
+    """
+    return np.array(tmp.data)
