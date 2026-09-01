@@ -73,7 +73,7 @@ class CanvasModule(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : event
+        event
             Event variable, used to estimate size.
         """
         if self.custom_resize is True:
@@ -103,9 +103,9 @@ def tick_formatter(x: float, pos: int) -> str:
 
     Parameters
     ----------
-    x : float
+    x
         Number to be formatted.
-    pos : int
+    pos
         Position of tick.
 
     Returns
@@ -133,18 +133,18 @@ def get_neat_intervals(
 
     Parameters
     ----------
-    start_dd : float
+    start_dd
         Minimum coordinate in decimal degrees.
-    end_dd : float
+    end_dd
         Maximum coordinate in decimal degrees.
-    num_intervals : int
+    num_intervals
         Number of intervals
-    islon : bool, optional
+    islon
         Coordinates are longitudes, by default True
 
     Returns
     -------
-    intervals : NDArray
+    intervals : ndarray
         Tick coordinates.
     txt : list of str
         List of coordinates in degrees and minutes.
@@ -214,9 +214,9 @@ def set_axes(ax: Axes, crs: CRS):
 
     Parameters
     ----------
-    ax : Axes
+    ax
         Primary Matplotlib axes.
-    crs : CRS
+    crs
         pyproj crs of data
     """
     crs = pyproj.CRS.from_wkt(crs.to_wkt())
@@ -284,11 +284,11 @@ def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    ax : Axes
+    ax
         Primary Matplotlib axes.
-    crs : CRS
+    crs
         pyproj crs of data
-    showlog : function, optional
+    showlog
         Show information using a function, by default print
     """
     crs = pyproj.CRS.from_wkt(crs.to_wkt())

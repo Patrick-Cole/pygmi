@@ -25,7 +25,7 @@
 """Routines to smooth raster data."""
 
 import warnings
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 import scipy.signal as ssig
@@ -40,7 +40,7 @@ class Smooth(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -72,10 +72,7 @@ class Smooth(BasicModule):
         self.choosefilter()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox("Filter Size")
         gl_2 = QtWidgets.QGridLayout(gbox)
@@ -201,10 +198,7 @@ class Smooth(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_x)
         self.saveobj(self.sb_y)
         self.saveobj(self.sb_radius)
@@ -345,7 +339,7 @@ def mov_win_filt(
     rad=5,
     sigma=5,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Apply moving window filter function to data.

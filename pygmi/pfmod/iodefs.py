@@ -54,7 +54,7 @@ class ImportMod3D(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -124,10 +124,7 @@ class ImportMod3D(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
 
@@ -525,6 +522,15 @@ class ImportMod3D(BasicModule):
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
 
+        if len(lmod.lith_list) > len(lmod.mlut):
+            for i in range(len(lmod.lith_list)):
+                if i not in lmod.mlut:
+                    lmod.mlut[i] = [
+                        np.random.randint(0, 255),
+                        np.random.randint(0, 255),
+                        np.random.randint(0, 255),
+                    ]
+
 
 class ExportMod3D(ContextModule):
     """
@@ -532,7 +538,7 @@ class ExportMod3D(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
     """
 
@@ -543,10 +549,7 @@ class ExportMod3D(ContextModule):
         self.lmod = None
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Model3D" not in self.indata:
             self.showlog("Error: You need to have a model first!")
             return
@@ -581,10 +584,7 @@ class ExportMod3D(ContextModule):
             self.parent.process_is_active(False)
 
     def savemodel(self):
-        """
-        Save model.
-
-        """
+        """Save model."""
         # Construct output dictionary
         outdict = {}
         outdict = self.lmod2dict(outdict)
@@ -667,10 +667,7 @@ class ExportMod3D(ContextModule):
         return outdict
 
     def mod3dtocsv(self):
-        """
-        Save the 3D model in a csv file.
-
-        """
+        """Save the 3D model in a csv file."""
         self.showlog("csv export starting...")
 
         self.lmod.update_lith_list_reverse()
@@ -1230,7 +1227,7 @@ class Exportkmz(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
     wkt : str
         Well Known Text (wkt) representation of the projection.
@@ -1247,10 +1244,7 @@ class Exportkmz(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "pfmod.cm.export3dmodel"
 
@@ -1268,14 +1262,14 @@ class MessageCombo(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
     combotext : list
         List of text for combo.
 
     Attributes
     ----------
-    parent : parent
+    parent
         Reference to the parent routine.
 
     """
@@ -1293,10 +1287,7 @@ class MessageCombo(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         lbl_master = QtWidgets.QLabel()
@@ -1332,6 +1323,7 @@ def _testfn():
     # ifile = r"d:\Workdata\modelling\small_upper.npz"
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\hope.npz"
     # ofile = r"d:\Workdata\modelling\hope2.shp"
+    ifile = r"C:\temp\250826Modcreate mg only _INV.npz"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

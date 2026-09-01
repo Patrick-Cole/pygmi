@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-These are tests. Run pytest on this file from within this directory to do
-the tests.
-"""
+"""These are tests. Run pytest on this file from within this directory to do the tests."""
 
 import os
 
@@ -37,7 +34,7 @@ from pygmi.raster.datatypes import Data
 
 
 def test_cont():
-    """test continuation."""
+    """Test continuation."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(10, 100, 10, 100)
@@ -57,7 +54,7 @@ def test_cont():
 
 
 def test_process_data():
-    """test process gravity data."""
+    """Test process gravity data."""
 
     idir = os.path.dirname(os.path.realpath(__file__))
 
@@ -107,7 +104,7 @@ def test_process_data():
 
 
 def test_tilt1():
-    """test tilt angle."""
+    """Test tilt angle."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(10, 100, 10, 100)
@@ -187,8 +184,7 @@ def test_IGRF():
 
 
 def test_tilt():
-    """test tilt depth."""
-
+    """Test tilt depth."""
     datin = Data()
     datin.data = np.ma.array(
         [

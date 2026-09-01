@@ -38,7 +38,7 @@ class ImportData(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -66,10 +66,7 @@ class ImportData(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.importdata"
         lbl_companyno = QtWidgets.QLabel("Company number:")
         lbl_boreholeid = QtWidgets.QLabel("Borehole ID:")
@@ -185,10 +182,7 @@ class ImportData(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         # self.saveobj(self.ifile)
         # self.saveobj(self.hfile)
 

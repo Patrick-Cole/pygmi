@@ -245,7 +245,7 @@ class PlotRaster(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -289,10 +289,7 @@ class PlotRaster(ContextModule):
         self.mmc.update_classes(data[i])
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Cluster"]
 
         # self.cmb_1.currentIndexChanged.disconnect()
@@ -315,7 +312,7 @@ class PlotBars(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -359,10 +356,7 @@ class PlotBars(ContextModule):
         self.mmc.update_bars(data[i], self.indata["Raster"])
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Cluster"]
 
         self.cmb_1.currentIndexChanged.disconnect()
@@ -381,7 +375,7 @@ class PlotMembership(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -444,10 +438,7 @@ class PlotMembership(ContextModule):
         self.change_band_two()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Cluster"]
         if (
             "memdat" not in data[0].metadata["Cluster"]
@@ -478,7 +469,7 @@ class PlotVRCetc(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -580,10 +571,7 @@ class PlotVRCetc(ContextModule):
             self.mmc.update_scatter(x, y)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         items = []
         data = self.indata["Cluster"]
         meta = data[0].metadata["Cluster"]

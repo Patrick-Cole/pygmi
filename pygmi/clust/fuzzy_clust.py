@@ -28,7 +28,7 @@ Fuzzy clustering is a set of clustering routines.
 This makes use of fuzzy logic.
 """
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 from PySide6 import QtWidgets
@@ -44,7 +44,7 @@ class FuzzyClust(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -87,10 +87,7 @@ class FuzzyClust(BasicModule):
         self.combo()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "cluster.dm.fuzzy"
         gl_1 = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox(self)
@@ -241,10 +238,7 @@ class FuzzyClust(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.update_vars()
 
         self.saveobj(self.cmb_alg)
@@ -303,7 +297,7 @@ def fuzzyclust(
     term_thresh=0.00001,
     init_type="random",
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Fuzzy Clustering.
@@ -496,7 +490,7 @@ def fuzzy_means(
     cltype,
     cov_constr,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Fuzzy clustering.

@@ -72,7 +72,7 @@ class EmittingStream(QtCore.QObject):
 
     Parameters
     ----------
-    textwritten : str
+    textwritten
         Text written to stdout.
 
     """
@@ -86,7 +86,7 @@ class EmittingStream(QtCore.QObject):
 
         Parameters
         ----------
-        text : str
+        text
             Text to write.
         """
         self.textWritten(str(text))
@@ -94,7 +94,7 @@ class EmittingStream(QtCore.QObject):
     def flush(self):
         """Flush."""
 
-    def fileno(self):
+    def fileno(self) -> int:
         """
         File number.
 
@@ -113,28 +113,28 @@ class BasicModule(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
     ----------
-    parent : parent
+    parent
         reference to the parent routine
-    indata : dictionary
+    indata
         dictionary of input datasets
-    outdata : dictionary
+    outdata
         dictionary of output datasets
-    ifile : str
+    ifile
         input file, used in IO routines and to pass filename back to main.py
-    piter : function
+    piter
         reference to a progress bar iterator.
-    pbar : function
+    pbar
         reference to a progress bar.
-    showlog: stdout or alternative
+    showlog
         reference to a way to view messages, normally stdout or a Qt text box.
-    is_import: bool
+    is_import
         used to indicate whether a routine contains an import within.
-    projdata : dictionary
+    projdata
         Project data.
     """
 
@@ -180,14 +180,13 @@ class BasicModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
         -------
         bool
             True if successful, False otherwise.
-
         """
         return True
 
@@ -215,9 +214,9 @@ class BasicModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        obj : QtWidgets.QComboBox
+        obj
             Combo box to add data to.
-        txtlist : list
+        txtlist
             List of strings to add to combo box.
         """
         obj.blockSignals(True)
@@ -234,9 +233,8 @@ class BasicModule(QtWidgets.QDialog):
         """
         Initialise Data.
 
-        Entry point into routine. This entry point exists for
-        the case  where data must be initialised before entering at the
-        standard 'settings' sub module.
+        Entry point into routine. This entry point exists for the case where data must
+        be initialised before entering at the standard 'settings' sub module.
         """
 
     def loadproj(self, projdata: dict) -> bool:
@@ -245,12 +243,12 @@ class BasicModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        projdata : dict
+        projdata
             Project data loaded from JSON project file.
 
         Returns
         -------
-        chk : bool
+        bool
             A check to see if settings was successfully run.
         """
         self.projdata = projdata
@@ -346,7 +344,7 @@ class BasicModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        obj : object
+        obj
             A variable to be saved.
         """
         otxt = None
@@ -406,22 +404,22 @@ class ContextModule(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
     ----------
-    parent : parent
+    parent
         reference to the parent routine
-    indata : dictionary
+    indata
         dictionary of input datasets
-    outdata : dictionary
+    outdata
         dictionary of output datasets
-    piter : function
+    piter
         reference to a progress bar iterator.
-    pbar : function
+    pbar
         reference to a progress bar.
-    showlog: stdout or alternative
+    showlog
         reference to a way to view messages, normally stdout or a Qt text box.
     """
 
@@ -483,11 +481,11 @@ class ContextModule(QtWidgets.QDialog):
 
         Parameters
         ----------
-        obj : QtWidgets.QComboBox
+        obj
             Combo box to add data to.
-        txtlist : list
+        txtlist
             List of strings to add to combo box.
-        curindex : int
+        curindex
             Current index.
         """
         obj.blockSignals(True)
@@ -506,7 +504,7 @@ class PButtonBox(QtWidgets.QWidget):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -562,7 +560,7 @@ class QVStack2Layout(QtWidgets.QGridLayout):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -578,9 +576,9 @@ class QVStack2Layout(QtWidgets.QGridLayout):
 
         Parameters
         ----------
-        widget1 : str or QWidget
+        widget1
             First Widget or Label on the row.
-        widget2 : QWidget
+        widget2
             Last Widget.
 
         """
@@ -609,7 +607,7 @@ class PTime:
 
     Attributes
     ----------
-    tchk : list
+    tchk
         List of times generated by the time.perf_counter routine.
     """
 
@@ -627,9 +625,9 @@ class PTime:
 
         Parameters
         ----------
-        msg : str
+        msg
             Optional message, by default "since first call"
-        show : bool
+        show
             Show output, by default True.
 
         Returns
@@ -657,9 +655,9 @@ class PTime:
 
         Parameters
         ----------
-        msg : str
+        msg
             Optional message
-        show : bool
+        show
             Show output, by default True.
 
         Returns
@@ -684,14 +682,14 @@ class ProgressBar(QtWidgets.QProgressBar):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
     ----------
-    otime : intr
+    otime
         This is the original time recorded when the progress bar starts.
-    total : int
+    total
         Maximum progress bar value. The default is 100.
     """
 
@@ -710,7 +708,7 @@ class ProgressBar(QtWidgets.QProgressBar):
 
         Parameters
         ----------
-        iterable : Iterable
+        iterable
             Ierable for progress bar to track.
 
         Yields
@@ -762,9 +760,9 @@ class ProgressBarText:
 
     Attributes
     ----------
-    otime : int
+    otime
         This is the original time recorded when the progress bar starts.
-    total : int
+    total
         Maximum progress bar value. The default is 100.
     """
 
@@ -782,8 +780,8 @@ class ProgressBarText:
 
         Parameters
         ----------
-        iterable : Iterable
-            Ierable for progress bar to track.
+        iterable
+            Iterable for progress bar to track.
 
         Yields
         ------
@@ -830,9 +828,9 @@ class ProgressBarText:
 
         Parameters
         ----------
-        iteration : int
+        iteration
             current iteration
-        suffix : str, optional
+        suffix
             Suffix string. The default is ''.
         """
         perc = 100 * (iteration / float(self.total))
@@ -851,7 +849,7 @@ class ProgressBarText:
 
         Parameters
         ----------
-        val : int
+        val
             Maximum value of progressbar.
         """
         self.total = int(val)
@@ -862,7 +860,7 @@ class ProgressBarText:
 
         Parameters
         ----------
-        val : int
+        val
             Value of progressbar.
         """
         self.printprogressbar(int(val))
@@ -878,7 +876,7 @@ def check_for_updates() -> str:
 
     Returns
     -------
-    verpath : str
+    str
         Version path, embedded in an html string.
     """
     # GitHub API endpoint for the latest release
@@ -919,13 +917,13 @@ def discrete_colorbar(axes: Axes, csp, cdat: NDArray, lbls: list[str] | None = N
 
     Parameters
     ----------
-    axes : Axes
+    axes
         Current axes.
-    csp : Plot routine
+    csp
         Handle to Matplotlib plotting routine.
-    cdat : NDArray
+    cdat
         Array of values.
-    lbls : list[str] | None, optional
+    lbls
         y tick labels, by default None
     """
     vals = np.unique(cdat)
@@ -959,11 +957,11 @@ def getinfo(txt: str | float | None = None, reset: bool = False, hide: bool = Fa
 
     Parameters
     ----------
-    txt : str | float | None, optional
+    txt
         Descriptor used for headings, by default None
-    reset : bool, optional
+    reset
         Flag used to reset the time difference to zero, by default False
-    hide : bool, optional
+    hide
         Hide the output text. Useful if you don't want to show the initialising reading, by default False
     """
     global PTIME
@@ -1028,18 +1026,18 @@ def textwrap2(
 
     Parameters
     ----------
-    text : str
+    text
         Text to wrap.
-    width : int
+    width
         Maximum line length.
-    placeholder : str, optional
+    placeholder
         Placeholder when lines exceed max_lines. The default is '...'.
-    max_lines : int, optional
+    max_lines
         Maximum number of lines. The default is None.
 
     Returns
     -------
-    text2 : str
+    str
         Output wrapped text.
 
     """

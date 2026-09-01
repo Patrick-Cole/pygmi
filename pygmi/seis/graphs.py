@@ -37,6 +37,7 @@ from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.patches import Ellipse
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy.spatial import ConvexHull
@@ -63,17 +64,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         super().__init__(fig)
 
-    def update_ellipse(self, datd, dats, nodepth=False):
+    def update_ellipse(self, datd: dict, dats: list, nodepth: bool = False):
         """
         Update error ellipse plot.
 
         Parameters
         ----------
-        datd : dictionary
+        datd
             Dictionary containing latitudes and longitudes
-        dats : list
+        dats
             Data list.
-        nodepth : bool, optional
+        nodepth
             Flag to determine if there are depths. The default is False.
 
         """
@@ -158,24 +159,31 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def update_hexbin(
-        self, data1, data2, *, xlbl="Time", ylbl="ML", xbin=None, xrng=None
+        self,
+        data1: NDArray,
+        data2: NDArray,
+        *,
+        xlbl: str = "Time",
+        ylbl: str = "ML",
+        xbin: int | None = None,
+        xrng: tuple[float, float] | None = None,
     ):
         """
         Update the hexbin plot.
 
         Parameters
         ----------
-        data1 : numpy array
+        data1
             raster dataset to be used
-        data2 : numpy array
+        data2
             raster dataset to be used
-        xlbl : str, optional
+        xlbl
             X-axis label. The default is 'Time'.
-        ylbl : str, optional
+        ylbl
             Y-axis label. The default is 'ML'.
-        xbin : int, optional
+        xbin
             Number of bins in the x direction. The default is None.
-        xrng : list, optional
+        xrng
             X-range. The default is None.
 
         """
@@ -231,28 +239,28 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_hist(
         self,
-        data1,
+        data1: NDArray,
         *,
-        xlbl="Data Value",
-        ylbl="Number of Observations",
-        bins="doane",
-        rng=None,
+        xlbl: str = "Data Value",
+        ylbl: str = "Number of Observations",
+        bins: str | int = "doane",
+        rng: tuple[float, float] | None = None,
     ):
         """
         Update the histogram plot.
 
         Parameters
         ----------
-        data1 : numpy array.
+        data1
             raster dataset to be used
-        xlbl : str, optional
+        xlbl
             X-axis label. The default is 'Data Value'.
-        ylbl : str, optional
+        ylbl
             Y-axis label. The default is 'Number of Observations'.
-        bins : int or str, optional
+        bins
             Number of bins or binning strategy. See matplotlib.pyplot.hist.
             The default is 'doane'.
-        rng : tuple or None, optional
+        rng
             Bin range. The default is None.
 
         """
@@ -286,15 +294,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_bvalue(self, data1a, bins="doane"):
+    def update_bvalue(self, data1a: NDArray, bins: str | int = "doane"):
         """
         Update the b value plot.
 
         Parameters
         ----------
-        data1a : numpy array
+        data1a
             Data array.
-        bins : int or str, optional
+        bins
             Number of bins or binning strategy. See matplotlib.pyplot.hist.
             The default is 'doane'.
 
@@ -340,15 +348,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_pres(self, data1, phase="P"):
+    def update_pres(self, data1: NDArray, phase: str = "P"):
         """
         Update the plot.
 
         Parameters
         ----------
-        data1 : numpy array
+        data1
             Data array.
-        phase : str, optional
+        phase
             Phase. The default is 'P'.
 
         """
@@ -385,15 +393,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_residual(self, dat, res="ML"):
+    def update_residual(self, dat: NDArray, res: str = "ML"):
         """
         Update the residual plot.
 
         Parameters
         ----------
-        data1 : numpy array
+        data1
             Data array.
-        res : str, optional
+        res
             Response type. The default is 'ML'.
 
         """
@@ -470,19 +478,21 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_wadati(self, dat, min_wad=5, min_vps=1.53, max_vps=1.93):
+    def update_wadati(
+        self, dat: list, min_wad: int = 5, min_vps: float = 1.53, max_vps: float = 1.93
+    ):
         """
         Update the wadati plot.
 
         Parameters
         ----------
-        dat : list
+        dat
             List of events.
-        min_wad : int, optional
+        min_wad
             Minimum data length for plot. The default is 5.
-        min_vps : float, optional
+        min_vps
             Minimum VPS. The default is 1.53.
-        max_vps : float, optional
+        max_vps
             Maximum VPS. The default is 1.93.
 
         """
@@ -549,13 +559,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_isohull(self, datd):
+    def update_isohull(self, datd: gpd.GeoDataFrame):
         """
         Update isoseismic plot using convex hull method.
 
         Parameters
         ----------
-        datd : GeoDatFrame
+        datd
             Macroseismic data.
 
         """
@@ -594,13 +604,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.isolines = gdf
 
-    def update_isocontour(self, datd):
+    def update_isocontour(self, datd: gpd.GeoDataFrame):
         """
         Update isoseismic plot using contours.
 
         Parameters
         ----------
-        datd : GeoDatFrame
+        datd
             Macroseismic data.
 
         """
@@ -655,15 +665,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.isolines = gdf
 
-    def update_tempb(self, btot, datetot):
+    def update_tempb(self, btot: NDArray, datetot: list):
         """
         Update temporal b value plot.
 
         Parameters
         ----------
-        btot : numpy array
+        btot
             Array of b values.
-        datetot : list
+        datetot
             list of dates.
 
         """
@@ -678,17 +688,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_spatialb(self, x, y, bval):
+    def update_spatialb(self, x: NDArray, y: NDArray, bval: NDArray):
         """
         Update spatial b value plot.
 
         Parameters
         ----------
-        x : numpy array
+        x
             Array of x values.
-        y : numpy array
+        y
             Array of y values.
-        bval : numpy array
+        bval
             Array of b values.
 
         """
@@ -710,7 +720,7 @@ class PlotQC(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -749,10 +759,7 @@ class PlotQC(ContextModule):
         self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         self.btn_saveshp.hide()
 
         i = self.cmb_1.currentText()
@@ -829,10 +836,7 @@ class PlotQC(ContextModule):
             self.mmc.update_wadati(self.indata["Seis"])
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.show()
         data = self.indata["Seis"]
         self.datd = import_for_plots(data)
@@ -921,7 +925,7 @@ class PlotIso(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -960,10 +964,7 @@ class PlotIso(ContextModule):
         self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         i = self.cmb_1.currentText()
         if i == "Convex Hull Method":
             self.mmc.update_isohull(self.datd)
@@ -971,10 +972,7 @@ class PlotIso(ContextModule):
             self.mmc.update_isocontour(self.datd)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "MacroSeis" not in self.indata:
             self.showlog("No macroseismic data")
             return False
@@ -1032,7 +1030,7 @@ class PlotTempB(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1070,10 +1068,7 @@ class PlotTempB(ContextModule):
         btn_apply.clicked.connect(self.change_window)
 
     def change_window(self):
-        """
-        Edit box to change window length.
-
-        """
+        """Edit box to change window length."""
         dat2 = self.data
         numrecs = len(dat2["1_year"])
 
@@ -1124,10 +1119,7 @@ class PlotTempB(ContextModule):
         self.mmc.update_tempb(b2tot, datetot)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         dat1 = self.indata["Seis"]
         self.data = import_for_plots(dat1)
 
@@ -1141,7 +1133,7 @@ class PlotSpatialB(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1189,10 +1181,7 @@ class PlotSpatialB(ContextModule):
         btn_apply.clicked.connect(self.calculate)
 
     def calculate(self):
-        """
-        Edit box to change window length.
-
-        """
+        """Edit box to change window length."""
         if not self.check_validation():
             return
 
@@ -1251,10 +1240,7 @@ class PlotSpatialB(ContextModule):
         self.mmc.update_spatialb(xxx, yyy, bval)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         dat1 = self.indata["Seis"]
         self.data = import_for_plots(dat1)
 
@@ -1262,13 +1248,13 @@ class PlotSpatialB(ContextModule):
         self.calculate()
 
 
-def contourtopoly(cntr):
+def contourtopoly(cntr) -> tuple[list[Polygon], list[float]]:
     """
     Convert Matplotlib contours to Polygons.
 
     Parameters
     ----------
-    cntr : Matplotlib countour
+    cntr : Matplotlib contour
         Contour collection.
 
     Returns
@@ -1301,18 +1287,18 @@ def contourtopoly(cntr):
     return plist, pvals
 
 
-def import_for_plots(dat):
+def import_for_plots(dat: list) -> dict:
     """
     Import data to plot.
 
     Parameters
     ----------
-    dat : list
+    dat
         List of events.
 
     Returns
     -------
-    datd : dictionary
+    dict
         Dictionary of data to plot.
 
     """
@@ -1369,48 +1355,52 @@ def import_for_plots(dat):
     return datd
 
 
-def eigsorted(cov):
+def eigsorted(cov: NDArray) -> tuple[NDArray, NDArray]:
     """
     Calculate and sort eigenvalues.
 
     Parameters
     ----------
-    cov : numpy array
+    cov
         matrix to perform calculations on.
 
     Returns
     -------
-    vals : numpy array
+    vals : ndarray
         Sorted eigenvalues.
-    vecs : numpy array
+    vecs : ndarray
         Sorted eigenvectors.
-
     """
     vals, vecs = np.linalg.eigh(cov)
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]
 
 
-def bvalue(data1a, mbin=0.1, bins="doane", cmax=None):
+def bvalue(
+    data1a: NDArray,
+    mbin: float = 0.1,
+    bins: int | str = "doane",
+    cmax: float | None = None,
+) -> dict:
     """
     Update the b value plot.
 
     Parameters
     ----------
-    data1a : numpy array
+    data1a
         Data array.
-    mbin : float
+    mbin
         Magnitude range bin size. The default is 0.1
-    bins : int or str, optional
+    bins
         Number of bins or binning strategy. See matplotlib.pyplot.hist.
         The default is 'doane'.
-    cmax : float, optional
+    cmax
         Magnitude of completeness. The default is None
 
 
     Returns
     -------
-    out : dict
+    dict
         Dictionary containing 'a-value', 'b-value' etc.
 
     """
@@ -1488,26 +1478,31 @@ def bvalue(data1a, mbin=0.1, bins="doane", cmax=None):
     return out
 
 
-def b_mle(data1a, mbin=0.1, bins="doane", cmax=None):
+def b_mle(
+    data1a: NDArray,
+    mbin: float = 0.1,
+    bins: int | str = "doane",
+    cmax: float | None = None,
+) -> dict:
     """
     Update the maximum likelihood b value.
 
     Parameters
     ----------
-    data1a : numpy array
+    data1a
         Data array.
-    mbin : float
+    mbin
         Magnitude range bin size. The default is 0.1
-    bins : int or str, optional
+    bins
         Number of bins or binning strategy. See matplotlib.pyplot.hist.
         The default is 'doane'.
-    cmax : float, optional
+    cmax
         Magnitude of completeness. The default is None
 
 
     Returns
     -------
-    out : dict
+    dict
         Dictionary containing 'a-value', 'b-value' etc.
 
     """
@@ -1551,7 +1546,7 @@ def b_mle(data1a, mbin=0.1, bins="doane", cmax=None):
     return out
 
 
-def fmd(mag, mbin=0.1):
+def fmd(mag: NDArray, mbin: float = 0.1) -> dict:
     """
     Frequency magnitude distribution.
 
@@ -1561,14 +1556,14 @@ def fmd(mag, mbin=0.1):
 
     Parameters
     ----------
-    mag : numpy array
+    mag
         Data array of magnitudes.
-    mbin : float, optional
+    mbin
         Length of magnitude bin in FMD. The default is 0.1.
 
     Returns
     -------
-    res : dict
+    dict
         Dictionary containing M  vs cumulative and non cumulative counts.
 
     """
@@ -1592,7 +1587,7 @@ def fmd(mag, mbin=0.1):
     return res
 
 
-def maxc(mag, mbin=0.1):
+def maxc(mag: NDArray, mbin: float = 0.1) -> float:
     """
     MAXC method to find magnitude of completeness.
 
@@ -1602,14 +1597,14 @@ def maxc(mag, mbin=0.1):
 
     Parameters
     ----------
-    mag : numpy array
+    mag
         Data array of magnitudes.
-    mbin : float, optional
+    mbin
         Length of magnitude bin in FMD. The default is 0.1.
 
     Returns
     -------
-    Mc : float
+    float
         Magnitude of completeness.
 
     """
@@ -1618,18 +1613,18 @@ def maxc(mag, mbin=0.1):
     return Mc
 
 
-def get_cmax(mag):
+def get_cmax(mag: NDArray) -> float:
     """
     Get magnitude of completeness using method by Wesseloo (2014).
 
     Parameters
     ----------
-    mag : numpy array
+    mag
         Array of magnitudes.
 
     Returns
     -------
-    cmax : float
+    float
         Magnitude of completeness.
     """
     magsort = np.sort(mag)[::-1]

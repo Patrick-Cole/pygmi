@@ -56,7 +56,7 @@ class PointCut(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -71,7 +71,7 @@ class PointCut(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -107,10 +107,7 @@ class PointCut(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
@@ -122,7 +119,7 @@ class DataGrid(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -309,7 +306,7 @@ class DataGrid(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -372,10 +369,7 @@ class DataGrid(BasicModule):
         return flag
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.dxy)
         self.saveobj(self.le_dxy)
         self.saveobj(self.le_null)
@@ -392,7 +386,6 @@ class DataGrid(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
         """
         dxy = float(self.le_dxy.text())
         method = self.cmb_grid_method.currentText()
@@ -496,7 +489,7 @@ class DataReproj(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -512,10 +505,7 @@ class DataReproj(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.dm.reproj"
 
@@ -531,7 +521,7 @@ class DataReproj(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -578,10 +568,7 @@ class DataReproj(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.orig_wkt)
         self.saveobj(self.targ_wkt)
 
@@ -595,15 +582,8 @@ class Metadata(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
-
-    Attributes
-    ----------
-    banddata : dictionary
-        band data
-    bandid : dictionary
-        dictionary of strings containing band names.
     """
 
     def __init__(self, parent=None):
@@ -615,10 +595,7 @@ class Metadata(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.cm.meta"
         lbl_bandid = QtWidgets.QLabel("Source:")
@@ -634,10 +611,7 @@ class Metadata(ContextModule):
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
     def acceptall(self):
-        """
-        Accept option.
-
-        """
+        """Accept option."""
         wkt = self.proj.wkt
 
         for tmp in self.indata["Vector"]:
@@ -654,7 +628,7 @@ class Metadata(ContextModule):
 
         Returns
         -------
-        tmp : bool
+        bool
             True if successful, False otherwise.
 
         """
@@ -682,7 +656,7 @@ class TextFileSplit(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -706,10 +680,7 @@ class TextFileSplit(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         pb_ifile = QtWidgets.QPushButton(" Filename")
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -834,7 +805,7 @@ class TextFileSplit(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -913,24 +884,24 @@ def blanking(
 
     Parameters
     ----------
-    gdat : :NDArray
+    gdat
         grid data to blank.
-    x : :NDArray
+    x
         x coordinates.
-    y : :NDArray
+    y
         y coordinates.
-    bdist : int | None
+    bdist
         Blanking distance in units for cell.
-    extent : list
+    extent
         extent of grid.
-    dxy : float
+    dxy
         Cell size.
-    nullvalue : float
+    nullvalue
         Null or nodata value.
 
     Returns
     -------
-    gdat : numpy array
+    ndarray
         Masked output array.
 
     """
@@ -959,22 +930,20 @@ def cut_point(
     data: gpd.GeoDataFrame, ifile: str, showlog: Callable[..., None] = print
 ) -> gpd.GeoDataFrame | None:
     """
-    Cuts a point dataset.
-
     Cut a point dataset using a shapefile.
 
     Parameters
     ----------
-    data : GeoDataFrame
+    data
         GeoPandas GeoDataFrame
-    ifile : str
+    ifile
         shapefile used to cut data
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    data : GeoDataFrame
+    GeoDataFrame
         GeoPandas GeoDataFrame
     """
     gdf = gpd.read_file(ifile)
@@ -1019,12 +988,12 @@ def txtlinecnt(filename: str) -> int:
 
     Parameters
     ----------
-    filename : str
+    filename
         filename of text file.
 
     Returns
     -------
-    linecnt : int
+    int
         Total number of lines in a file.
 
     """
@@ -1046,15 +1015,15 @@ def filesplit(
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input filename.
-    num : int
+    num
         Number of bytes or lines to split by.
-    mode : str, optional
+    mode
         Can be 'bytes', 'files' or 'lines'. The default is 'bytes'.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : Iterable | None, optional
+    piter
         Progress iterator. The default is None.
     """
     fsize = os.path.getsize(ifile)
@@ -1101,34 +1070,34 @@ def gridxyz(
     *,
     nullvalue: float = 1e20,
     method: str = "Nearest Neighbour",
-    bdist: float = 4.0,
+    bdist: float | None = 4.0,
     showlog: Callable[..., None] = print,
-) -> Data:
+) -> Data | None:
     """
     Grid xyz data.
 
     Parameters
     ----------
-    x : numpy array
+    x
         X coordinate values.
-    y : numpy array
+    y
         Y coordinate values.
-    z : numpy array
+    z
         Z or data values.
-    dxy : float
+    dxy
         Grid cell size, in distance units.
-    nullvalue : float, optional
+    nullvalue
         null or nodata value. The default is 1e+20.
-    method : str, optional
+    method
         Gridding method. The default is 'Nearest Neighbour'.
-    bdist : float, optional
+    bdist
         Blanking distance. The default is 4.0.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data.
+    Data
         Output raster dataset.
 
     """
@@ -1186,30 +1155,30 @@ def gridvolume(
     *,
     dat: Data | None = None,
     showlog: Callable[..., None] = print,
-) -> Data:
+) -> VoxModel | None:
     """
     Grid volume data.
 
     Parameters
     ----------
-    x : NDArray
+    x
         X coordinate values.
-    y : NDArray
+    y
         Y coordinate values.
-    z : NDArray
+    z
         Z coordinate values.
-    val : NDArray
+    val
         Data values.
-    dxy : float
+    dxy
         Grid cell size, in distance units.
-    dat : pygmi.raster.datatypes.Data
+    dat
         DEM data used to constrain surface. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data.
+    VoxModel
         Output raster dataset.
 
     """
@@ -1217,7 +1186,7 @@ def gridvolume(
     try:
         interpolator = RBFInterpolator(points, val, kernel="linear")
     except np.linalg.LinAlgError:
-        showlog("Problem with coordinates, csnnot calculate.")
+        showlog("Problem with coordinates, cannot calculate.")
         return None
     min_limit = np.min(val)
     max_limit = np.max(val)
@@ -1259,14 +1228,14 @@ def lltomap(lat: float, lon: float) -> str:
 
     Parameters
     ----------
-    lat : float
+    lat
         Latitude.
-    lon : float
+    lon
         Longitude.
 
     Returns
     -------
-    mapsheet : str
+    str
         Map sheet number.
 
     """
@@ -1297,24 +1266,24 @@ def lltomap(lat: float, lon: float) -> str:
 
 def maptobounds(
     mapsheet: str, crs_to: CRS = None, showlog: Callable[..., None] = print
-) -> list[float] | None:
+) -> tuple[float, float, float, float] | None:
     """
     Convert a South African map sheet name to bounds.
 
     Parameters
     ----------
-    mapsheet : str
+    mapsheet
         Map sheet number. Four numbers and up to two letters denoting NE corner
         in latitude and longitude and quadrants (A to D). Eg, 2928AB is
         latitude 29, longitude 28, quadrant B of quadrant A.
-    crs_to : CRS, optional
+    crs_to
         Destination projection. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    bounds : tuple[float]
+    tuple[float]
         output bounds.
 
     """
@@ -1372,12 +1341,12 @@ def maptovector(maplist: list[str]) -> gpd.GeoDataFrame:
 
     Parameters
     ----------
-    maplist : list[str]
+    maplist
         List of strings containing map sheet numbers.
 
     Returns
     -------
-    data : GeoDataFrame
+    GeoDataFrame
         GeoPandas GeoDataFrame
 
     """
@@ -1413,23 +1382,23 @@ def quickgrid(
 
     Parameters
     ----------
-    x : NDArray
+    x
         array of x coordinates
-    y : NDArray
+    y
         array of y coordinates
-    z : NDArray
+    z
         array of z values - this is the column being gridded
-    dxy : float
+    dxy
         cell size for the grid, in both the x and y direction.
-    numits : int
+    numits
         number of iterations. By default its 4. If this is negative, a maximum
         will be calculated and used.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    newz : NDArray
+    ndarray
         M x N array of z values
     """
     showlog("Creating Grid")
@@ -1504,22 +1473,22 @@ def reprojxy(
 
     Parameters
     ----------
-    x : numpy array or float
+    x
         x coordinates
-    y : numpy array or float
+    y
         y coordinates
-    iwkt : str, int, CRS
+    iwkt
         Input wkt description or EPSG code (int) or CRS
-    owkt : str, int, CRS
+    owkt
         Output wkt description or EPSG code (int) or CRS
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    xout : NDArray | None
+    xout : ndarray | None
         x coordinates.
-    yout : NDArray | None
+    yout : ndarray | None
         y coordinates.
 
     """
@@ -1556,16 +1525,16 @@ def xy_to_r(x: NDArray | float, y: NDArray | float, piter: Iterable = iter) -> N
 
     Parameters
     ----------
-    x : NDArray or float
+    x
         x coordinates
-    y : NDArray or float
+    y
         y coordinates
-    piter : Iterable, optional
+    piter
         Progress bar iterable, default is iter.
 
     Returns
     -------
-    r : NDArray
+    ndarray
         r coordinates.
     """
     r1 = np.sqrt(x**2 + y**2)
@@ -1616,14 +1585,14 @@ def fast_sort(pointsin: NDArray, piter: Iterable = iter) -> list:
 
     Parameters
     ----------
-    pointsin : NDArray
+    pointsin
         Coordinates.
-    piter : Iterable, optional
+    piter
         Progress bar iterable, default is iter.
 
     Returns
     -------
-    sorted_pts : list
+    list
         Sorted coordinates.
     """
     points = list(pointsin)

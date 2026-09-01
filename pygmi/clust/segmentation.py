@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """Image segmentation routines, following Baatz and Schäpe (2000)."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 import skimage
@@ -42,7 +42,7 @@ class ImageSeg(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -59,10 +59,7 @@ class ImageSeg(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "cluster.dm.seg"
 
@@ -198,10 +195,7 @@ class ImageSeg(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_scale)
         self.saveobj(self.le_wcolor)
         self.saveobj(self.le_wcompact)
@@ -217,7 +211,7 @@ def segment1(
     wcompact=0.5,
     doshape=True,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Perform image segmentation.
@@ -309,7 +303,7 @@ def _segment2(
     wcolor=0.5,
     scale=500,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Segment Part 2.

@@ -30,7 +30,7 @@ scikit-learn library.
 """
 
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 import sklearn.cluster as skc
@@ -48,7 +48,7 @@ class Cluster(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -106,10 +106,7 @@ class Cluster(BasicModule):
         self.combo()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "cluster.dm.clust"
         gl_1 = QtWidgets.QGridLayout(self)
 
@@ -292,10 +289,7 @@ class Cluster(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.update_vars()
 
         self.saveobj(self.cmb_alg)
@@ -358,7 +352,7 @@ def cluster(
     xi=0.05,
     min_samples=5,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Run the cluster analysis.

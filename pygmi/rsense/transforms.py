@@ -25,15 +25,17 @@
 """Transforms such as PCA and MNF."""
 
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import matplotlib.pyplot as plt
 import numexpr as ne
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from sklearn.decomposition import IncrementalPCA
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_data, get_from_rastermeta, set_export_filename
@@ -45,7 +47,7 @@ class MNF(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -70,10 +72,7 @@ class MNF(BasicModule):
         # self.resize(500, 350)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.mnf"
         gl_main = QtWidgets.QGridLayout(self)
         lbl_comps = QtWidgets.QLabel("Number of components:")
@@ -100,7 +99,7 @@ class MNF(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -160,30 +159,28 @@ class MNF(BasicModule):
         return True
 
     def changeoutput(self):
-        """
-        Change the interface to reflect whether full calculation is needed.
-
-        """
+        """Change the interface to reflect whether full calculation is needed."""
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_comps)
         self.saveobj(self.cb_fwdonly)
         self.saveobj(self.rb_noise_diag)
         self.saveobj(self.rb_noise_hv)
         self.saveobj(self.rb_noise_quad)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         if "RasterFileList" in self.indata:
             flist = self.indata["RasterFileList"]
@@ -248,7 +245,7 @@ class PCA(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -267,10 +264,7 @@ class PCA(BasicModule):
         # self.resize(500, 350)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.pca"
         gl_main = QtWidgets.QGridLayout(self)
         lbl_comps = QtWidgets.QLabel("Number of components:")
@@ -296,7 +290,7 @@ class PCA(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -355,28 +349,26 @@ class PCA(BasicModule):
         return True
 
     def changeoutput(self):
-        """
-        Change the interface to reflect whether full calculation is needed.
-
-        """
+        """Change the interface to reflect whether full calculation is needed."""
         uienabled = not self.cb_fwdonly.isChecked()
         self.sb_comps.setEnabled(uienabled)
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_comps)
         self.saveobj(self.cb_fwdonly)
         self.saveobj(self.cb_fitlist)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         ncmps = self.sb_comps.value()
         fitlist = self.cb_fitlist.isChecked()
@@ -440,7 +432,9 @@ class PCA(BasicModule):
         return True
 
 
-def get_noise(x2d, mask, noisetype="", piter=iter):
+def get_noise(
+    x2d: NDArray, mask: NDArray, noisetype: str = "", piter: Iterable = iter
+) -> tuple[NDArray, NDArray]:
     """
     Calculate noise dataset from original data.
 
@@ -571,39 +565,39 @@ def get_noise(x2d, mask, noisetype="", piter=iter):
 
 
 def mnf_calc(
-    dat,
+    dat: list[Data],
     *,
-    ncmps=None,
-    noisetxt="hv average",
+    ncmps: int | None = None,
+    noisetxt: str = "hv average",
     showlog: Callable[..., None] = print,
-    piter=iter,
-    fwdonly=True,
-):
+    piter: Iterable = iter,
+    fwdonly: bool = True,
+) -> tuple[list[Data], NDArray]:
     """
     MNF Calculation.
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
+    dat
         List of PyGMI Data.
-    ncmps : int or None, optional
+    ncmps
         Number of components to use for filtering. The default is None
         (meaning all).
-    noisetxt : txt, optional
+    noisetxt
         Noise type. Can be 'diagonal', 'hv average' or 'quad'. The default is
         'hv average'.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Iteration function, used for progress bars. The default is iter.
-    fwdonly : bool, optional
+    fwdonly
         Option to perform forward calculation only. The default is True.
 
     Returns
     -------
-    odata : list of pygmi.raster.datatypes.Data.
+    odata : list of Data
         Output list of PyGMI Data. Can be forward or inverse transformed data.
-    ev : numpy array
+    ev : ndarray
         Explained variance, from PCA.
 
     """
@@ -698,30 +692,34 @@ def mnf_calc(
 
 
 def pca_calc(
-    dat, ncmps=None, showlog: Callable[..., None] = print, piter=iter, fwdonly=True
-):
+    dat: list[Data],
+    ncmps: int | None = None,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+    fwdonly: bool = True,
+) -> tuple[list[Data], NDArray]:
     """
     PCA Calculation.
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
+    dat
         List of PyGMI Data.
-    ncmps : int or None, optional
+    ncmps
         Number of components to use for filtering. The default is None
         (meaning all).
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Iteration function, used for progress bars. The default is iter.
-    fwdonly : bool, optional
+    fwdonly
         Option to perform forward calculation only. The default is True.
 
     Returns
     -------
-    odata : list of pygmi.raster.datatypes.Data.
+    odata : list of Data
         Output list of PyGMI Data. Can be forward or inverse transformed data.
-    ev : numpy array
+    ev : ndarray
         Explained variance, from PCA.
 
     """
@@ -804,30 +802,34 @@ def pca_calc(
 
 
 def pca_calc_fitlist(
-    flist, ncmps=None, showlog: Callable[..., None] = print, piter=iter, fwdonly=True
-):
+    flist: list[Data],
+    ncmps: int | None = None,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+    fwdonly: bool = True,
+) -> tuple[list[Data], NDArray]:
     """
     PCA Calculation with using list of files in common fit.
 
     Parameters
     ----------
-    flist : list of pygmi.raster.datatypes.Data.
+    flist
         List of PyGMI Data. Can be 2D for multiple files.
-    ncmps : int or None, optional
+    ncmps
         Number of components to use for filtering. The default is None
         (meaning all).
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Iteration function, used for progress bars. The default is iter.
-    fwdonly : bool, optional
+    fwdonly
         Option to perform forward calculation only. The default is True.
 
     Returns
     -------
-    odata : list of pygmi.raster.datatypes.Data.
+    odata : list of Data
         Output list of PyGMI Data.Can be forward or inverse transformed data.
-    ev : numpy array
+    ev : ndarray
         Explained variance, from PCA.
 
     """
@@ -957,20 +959,20 @@ def pca_calc_fitlist(
     return odata, ev
 
 
-def _block_slices(dim_size, block_size):
+def _block_slices(dim_size: int, block_size: int) -> slice:
     """
     Generate slice objects.
 
-    Generator that yields slice objects for indexing into
-    sequential blocks of an array along a particular axis.
+    Generator that yields slice objects for indexing into sequential blocks of an
+    array along a particular axis.
 
     from: https://stackoverflow.com/questions/20983882/efficient-dot-products-of-large-memory-mapped-arrays
 
     Parameters
     ----------
-    dim_size : int
+    dim_size
         Dimension size.
-    block_size : int
+    block_size
         Block size.
 
     Yields
@@ -986,18 +988,18 @@ def _block_slices(dim_size, block_size):
             break
 
 
-def blockwise_cov(A):
+def blockwise_cov(A: NDArray) -> NDArray:
     """
     Blockwise covariance.
 
     Parameters
     ----------
-    A : numpy array
+    A
         Matrix.
 
     Returns
     -------
-    ncov : numpy array
+    ndarray
         Covariance matrix.
 
     """
@@ -1007,7 +1009,7 @@ def blockwise_cov(A):
     return ncov
 
 
-def blockwise_dot(A, B, max_elements=2**27):
+def blockwise_dot(A: NDArray, B: NDArray, max_elements: int = 2**27) -> NDArray:
     """
     Compute the dot product of two matrices in a block-wise fashion.
 
@@ -1018,16 +1020,16 @@ def blockwise_dot(A, B, max_elements=2**27):
 
     Parameters
     ----------
-    A : numpy array
+    A
         MxN matrix.
-    B : Numpy array
+    B
         NxO matrix.
-    max_elements : int, optional
+    max_elements
         Maximum number of elements in a block. The default is int(2**27).
 
     Returns
     -------
-    out : numpy array
+    ndarray
         Output dot product.
 
     """
@@ -1059,10 +1061,25 @@ def blockwise_dot(A, B, max_elements=2**27):
     return out
 
 
-def standardise_signs(u, vh):
+def standardise_signs(u: NDArray, vh: NDArray) -> tuple[NDArray, NDArray]:
     """
     Standardize the signs of U and Vh matrices from SVD.
+
     Ensures the largest absolute value in each column of U is positive.
+
+    Parameters
+    ----------
+    u
+        U matrix from SVD.
+    vh
+        Vh matrix from SVD.
+
+    Returns
+    -------
+    u_std : ndarray
+        Standardized U matrix.
+    vh_std : ndarray
+        Standardized Vh matrix.
     """
     # Find index of max absolute value for each column in U
     max_abs_indices = np.argmax(np.abs(u), axis=0)

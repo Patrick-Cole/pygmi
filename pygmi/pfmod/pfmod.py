@@ -38,7 +38,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -194,10 +194,7 @@ class MainWidget(QtWidgets.QMainWindow):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
 
     def data_reset(self):
         """

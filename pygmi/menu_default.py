@@ -44,7 +44,7 @@ class FileMenu:
 
     Attributes
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to MainWidget class found in main.py. Default is None.
 
     """
@@ -77,7 +77,7 @@ class HelpMenu:
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -152,7 +152,7 @@ class HelpButton(QtWidgets.QPushButton):
 
     Parameters
     ----------
-    htmlfile : str
+    htmlfile
         HTML help file name.
     """
 

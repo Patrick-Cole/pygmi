@@ -51,7 +51,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -109,10 +109,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         sizepolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed
         )
@@ -1459,7 +1456,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2070,7 +2067,7 @@ class MySlider(QtWidgets.QSlider):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2142,10 +2139,7 @@ class LithBound(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         lbl_3 = QtWidgets.QLabel("Lithologies Above Layer")
         lbl_4 = QtWidgets.QLabel("Lithologies Below Layer")
@@ -2219,7 +2213,7 @@ class PlotScale(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
     lmod : pygmi.pfmod.datatypes.LithModel
         Reference to the lithology model.
@@ -2242,10 +2236,7 @@ class PlotScale(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.setWindowTitle("Field Display Limits")
 
         self.rb_axis_allmax.setChecked(True)
@@ -2290,7 +2281,7 @@ class RangedCopy(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2312,10 +2303,7 @@ class RangedCopy(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.setWindowTitle("Ranged Copy")
 
         gl_1 = QtWidgets.QGridLayout(self)
@@ -2412,7 +2400,7 @@ class MyToolbar(NavigationToolbar2QT):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2523,7 +2511,7 @@ class ImportPicture(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : ProfileDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2558,10 +2546,7 @@ class ImportPicture(QtWidgets.QDialog):
         self.getcoords()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gbox = QtWidgets.QGroupBox("Profile Coordinates")
         gl_2 = QtWidgets.QGridLayout(self)
         gl_3 = QtWidgets.QGridLayout(gbox)
@@ -2777,10 +2762,7 @@ class ImportPicture(QtWidgets.QDialog):
         return curline
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
 
 
 def gridmatch2(cgrv, rgrv):

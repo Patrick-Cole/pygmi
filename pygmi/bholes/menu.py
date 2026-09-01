@@ -38,7 +38,7 @@ class MenuWidget:
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+
         Reference to MainWidget class found in main.py. Default is None.
     """
 

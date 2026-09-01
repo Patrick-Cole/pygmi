@@ -51,7 +51,7 @@ translated into Python from the GEOMAG code.
 """
 
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from math import atan2, cos, sin, sqrt
 
 import numpy as np
@@ -77,7 +77,7 @@ class IGRF(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -95,10 +95,7 @@ class IGRF(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.igrf"
 
@@ -208,10 +205,7 @@ class IGRF(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.wkt)
         self.saveobj(self.dsb_alt)
         self.saveobj(self.dateedit)
@@ -226,7 +220,7 @@ def calc_igrf(
     sen_alt=100,
     wkt=None,
     igrfonly=True,
-    piter=iter,
+    piter: Iterable = iter,
     showlog: Callable[..., None] = print,
 ):
     """

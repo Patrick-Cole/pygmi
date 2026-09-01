@@ -38,7 +38,7 @@ class MextDisplay(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -73,10 +73,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.init()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.setWindowTitle("Model Extent Parameters")
         helpdocs = menu_default.HelpButton("pfmod.dm.modelcreate")
 

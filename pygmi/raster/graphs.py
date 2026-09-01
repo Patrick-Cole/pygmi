@@ -393,7 +393,7 @@ class PlotCCoef(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -421,10 +421,7 @@ class PlotCCoef(ContextModule):
         self.setFocus()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
             data = self.indata["Raster"]
         else:
@@ -462,7 +459,7 @@ class PlotRaster(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -554,10 +551,7 @@ class PlotRaster(ContextModule):
             self.mmc.update_raster(data[i], cmap, plotlog, aspect)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = []
         if "Raster" in self.indata:
             data = self.indata["Raster"]
@@ -577,7 +571,7 @@ class PlotSurface(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -716,10 +710,7 @@ class PlotSurface(ContextModule):
         self.plotter.set_scale(zscale=20)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
             data = self.indata["Raster"]
         else:
@@ -752,7 +743,7 @@ class PlotScatter(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -813,10 +804,7 @@ class PlotScatter(ContextModule):
         self.mmc.update_hexbin(x, y)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
             data = self.indata["Raster"]
         else:
@@ -845,7 +833,7 @@ class PlotHist(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
     """
 
@@ -894,10 +882,7 @@ class PlotHist(ContextModule):
         self.mmc.update_hist(data[i], ylog, iscum)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
             data = self.indata["Raster"]
         else:
@@ -920,7 +905,7 @@ def check_bands(data):
 
     Parameters
     ----------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         PyGMI raster dataset.
 
     Returns

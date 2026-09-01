@@ -255,18 +255,18 @@ import struct
 import numpy as np
 
 
-def SPECPR(ifile):
+def SPECPR(ifile: str) -> dict:
     """
     SPECPR import function.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file.
 
     Returns
     -------
-    spec : dict
+    dict
         Output spectra.
 
     """
@@ -348,18 +348,18 @@ def SPECPR(ifile):
     return spec
 
 
-def case1(dat):
+def case1(dat: bytes) -> dict:
     """
     Case 1.
 
     Parameters
     ----------
-    dat : bytes
+    dat
         Binary record.
 
     Returns
     -------
-    rec : dict
+    dict
         Output record.
     """
     rec = {}
@@ -401,18 +401,18 @@ def case1(dat):
     return rec
 
 
-def unpack_icflag(icflag):
+def unpack_icflag(icflag: bytes) -> list:
     """
     Unpack the bits from icflag.
 
     Parameters
     ----------
-    icflag : bytes
+    icflag
         Binary icflag.
 
     Returns
     -------
-    b : list
+    list
         Unpacked bits.
 
     """

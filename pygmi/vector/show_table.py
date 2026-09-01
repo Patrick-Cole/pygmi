@@ -37,7 +37,7 @@ class BasicStats(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -55,10 +55,7 @@ class BasicStats(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
         self.buttonbox.htmlfile = "vector.cm.stats"
@@ -74,10 +71,7 @@ class BasicStats(ContextModule):
         self.pushbutton_save.clicked.connect(self.save)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         gdf = self.indata["Vector"][0]
 
         stats1 = {}
@@ -130,7 +124,6 @@ class BasicStats(ContextModule):
         -------
         bool
             True if successful, False otherwise.
-
         """
         ext = "CSV Format (*.csv)"
         ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save Table", ".", ext)

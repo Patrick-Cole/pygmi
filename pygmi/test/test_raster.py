@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-These are tests. Run pytest on this file from within this directory to do
-the tests.
-"""
+"""These are tests. Run pytest on this file from within this directory to do the tests."""
 
 import numpy as np
 import pytest
@@ -46,7 +43,7 @@ from pygmi.raster.misc import aspect2, check_dataid
 
 
 def test_gradients():
-    """test directional derivative."""
+    """Test directional derivative."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[-1, -1], [-1, -1]]
     dat = cooper.gradients(datin, 0, 1, 1)
@@ -54,7 +51,7 @@ def test_gradients():
 
 
 def test_dratio():
-    """test derivative ratio."""
+    """Test derivative ratio."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[-np.pi / 2, -np.pi / 2], [-np.pi / 2, -np.pi / 2]]
     dat = cooper.derivative_ratio(datin, 90, 1)
@@ -62,7 +59,7 @@ def test_dratio():
 
 
 def test_thgrad():
-    """test total horizontal gradient."""
+    """Test total horizontal gradient."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[0.1, 0.1], [0.1, 0.1]]
     dat = cooper.thgrad(datin, 10, 10)
@@ -70,7 +67,7 @@ def test_thgrad():
 
 
 def test_vertical():
-    """test vertical derivative."""
+    """Test vertical derivative."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(10, 100, 10, 100)
@@ -86,7 +83,7 @@ def test_vertical():
 
 
 def test_raps():
-    """test raps."""
+    """Test raps."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     datin.set_transform(10, 100, 10, 100)
@@ -97,7 +94,7 @@ def test_raps():
 
 
 def test_viz():
-    """test visibility."""
+    """Test visibility."""
     datin = np.ma.array([[1, 2], [1, 2]])
     vtot2 = [[4.0, 4.0], [4.0, 4.0]]
     vstd2 = [
@@ -116,7 +113,7 @@ def test_viz():
 
 
 def test_check_dataid():
-    """test check dataid."""
+    """Test check dataid."""
     datin = [Data(), Data()]
 
     dat = check_dataid(datin)
@@ -125,7 +122,7 @@ def test_check_dataid():
 
 
 def test_trimraster():
-    """test trim raster."""
+    """Test trim raster."""
     datin = Data()
     datin.data = np.ma.masked_equal(
         [[0, 0, 0, 0], [0, 1, 2, 0], [0, 1, 2, 0], [0, 0, 0, 0]], 0
@@ -139,7 +136,7 @@ def test_trimraster():
 
 
 def test_equation():
-    """tests equation editor."""
+    """Tests equation editor."""
     datin = Data()
     datin.data = np.ma.array([[1.0, 2.0], [1.0, 2.0]])
     datout = datin.data * 2
@@ -152,7 +149,7 @@ def test_equation():
 
 
 def test_hmode():
-    """tests hmode."""
+    """Tests hmode."""
     datin = [1, 2, 3, 3, 4, 5, 6]
     dat = equation_editor.hmode(datin)
     dat2 = 3.0000384467512493
@@ -160,8 +157,7 @@ def test_hmode():
 
 
 def test_aspect():
-    """tests aspect."""
-
+    """Tests aspect."""
     data = np.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -192,8 +188,7 @@ def test_aspect():
 
 
 def test_shader():
-    """tests shader."""
-
+    """Tests shader."""
     data = np.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -233,8 +228,7 @@ def test_shader():
 
 
 def test_histcomp():
-    """tests histogram compaction."""
-
+    """Tests histogram compaction."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -249,8 +243,7 @@ def test_histcomp():
 
 
 def test_histeq():
-    """tests histogram equalisation."""
-
+    """Tests histogram equalisation."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -265,8 +258,7 @@ def test_histeq():
 
 
 def test_img2rgb():
-    """tests img to RGB."""
-
+    """Tests img to RGB."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -301,8 +293,7 @@ def test_img2rgb():
 
 
 def test_norm():
-    """tests norm2."""
-
+    """Tests norm2."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -317,8 +308,7 @@ def test_norm():
 
 
 def test_norm255():
-    """tests norm255."""
-
+    """Tests norm255."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = [
@@ -333,8 +323,7 @@ def test_norm255():
 
 
 def test_corr2d():
-    """tests corr2d."""
-
+    """Tests corr2d."""
     data = np.ma.array([[0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1], [0, 1, 2, 1]])
 
     dat2 = 1.0
@@ -359,7 +348,6 @@ def smalldata():
 
 def test_normalisation():
     """Tests for normalisation."""
-
     datin = Data()
     datin.data = np.ma.array([[1.0, 2.0], [1.0, 2.0]])
     indata = [datin, datin]

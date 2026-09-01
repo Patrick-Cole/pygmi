@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-These are pfmod tests. Run this file from within this directory to do the
-tests.
-"""
+"""These are pfmod tests. Run this file from within this directory to do the tests."""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,20 +34,14 @@ from pygmi.pfmod.grvmag3d import calc_field, quick_model
 
 def main():
     """
-    Main test function
+    Test function.
 
     This test function compares the calculations performed by PyGMI to
-    calculations performed by a external software - GM-SYS
+    calculations performed by a external software - GM-SYS.
 
     A series of graphs are produced. If the test is successful, points and
     lines on the graphs will coincide.
-
-    Returns
-    -------
-    None.
-
     """
-
     print("Testing modelling of gravity and potential field data")
 
     ifile = "testdata/block"
@@ -258,9 +249,7 @@ def main():
 
 
 def test():
-    """
-    Test function using pytest.
-    """
+    """Test function using pytest."""
     dens = 2.8
     minc = 35.0
     mdec = 80.0

@@ -34,7 +34,7 @@ import warnings
 import xml.etree.ElementTree as ET
 import zipfile
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import geopandas as gpd
 import numexpr as ne
@@ -70,7 +70,7 @@ class ImportData(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -91,10 +91,7 @@ class ImportData(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.importdata"
         pb_sfile = QtWidgets.QPushButton(" Filename")
 
@@ -127,7 +124,7 @@ class ImportData(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -136,7 +133,6 @@ class ImportData(BasicModule):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             tmp = self.exec()
 
@@ -175,7 +171,14 @@ class ImportData(BasicModule):
         return True
 
     def get_sfile(self):
-        """Get the satellite filename."""
+        """
+        Get the satellite filename.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
         self.lw_tnames.clear()
         self.le_sfile.setText("")
         self.lbl_ftype.setText("File Type:")
@@ -235,10 +238,7 @@ class ImportData(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
         self.saveobj(self.le_sfile)
@@ -256,7 +256,7 @@ class ImportBatch(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -269,7 +269,6 @@ class ImportBatch(BasicModule):
         super().__init__(parent)
 
         self.idir = ""
-        # self.tnames = None
         self.filelist = []
         self.bands = {}
         self.tnames = {}
@@ -287,10 +286,7 @@ class ImportBatch(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.createbatchlist"
         pb_sfile = QtWidgets.QPushButton(" Directory")
 
@@ -325,7 +321,7 @@ class ImportBatch(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -364,8 +360,20 @@ class ImportBatch(BasicModule):
 
         return True
 
-    def get_sfile(self, nodialog=False):
-        """Get the satellite filenames."""
+    def get_sfile(self, nodialog: bool = False) -> bool:
+        """
+        Get the satellite filenames.
+
+        Parameters
+        ----------
+        nodialog
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
         if not nodialog:
             self.idir = QtWidgets.QFileDialog.getExistingDirectory(
                 self.parent, "Select Directory"
@@ -400,7 +408,7 @@ class ImportBatch(BasicModule):
 
         if not self.tnames:
             self.tnames = tnames
-            # else:
+
             for sensor in self.tnames:
                 tmp = []
                 for i in self.tnames[sensor]:
@@ -420,10 +428,7 @@ class ImportBatch(BasicModule):
         return True
 
     def setsensor(self):
-        """
-        Set the sensor band data.
-
-        """
+        """Set the sensor band data."""
         sensor = self.cmb_sensor.currentText()
         if self.oldsensor == sensor:
             return
@@ -453,10 +458,7 @@ class ImportBatch(BasicModule):
         self.oldsensor = sensor
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.oldsensor = self.cmb_sensor.currentText()
 
         self.saveobj(self.idir)
@@ -478,7 +480,7 @@ class ImportSentinel5P(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -515,10 +517,7 @@ class ImportSentinel5P(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.imports5p"
         gl_main = QtWidgets.QGridLayout(self)
         lbl_subdata = QtWidgets.QLabel("Product:")
@@ -566,7 +565,7 @@ class ImportSentinel5P(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -626,10 +625,7 @@ class ImportSentinel5P(BasicModule):
         return True
 
     def clipchoice(self):
-        """
-        Choose clip style.
-
-        """
+        """Choose clip style."""
         if self.rb_cclip.isChecked():
             self.lbl_sfile.hide()
             self.le_shpfile.hide()
@@ -654,10 +650,7 @@ class ImportSentinel5P(BasicModule):
             self.le_shpfile.show()
 
     def loadshp(self):
-        """
-        Load shapefile filename.
-
-        """
+        """Load shapefile filename."""
         ext = "Shapefile (*.shp)"
 
         self.sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -667,10 +660,7 @@ class ImportSentinel5P(BasicModule):
         self.le_shpfile.setText(self.sfile)
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
         self.saveobj(self.sfile)
@@ -685,13 +675,13 @@ class ImportSentinel5P(BasicModule):
         self.saveobj(self.rb_cclip)
         self.saveobj(self.rb_sclip)
 
-    def get_5P_meta(self):
+    def get_5P_meta(self) -> dict:
         """
         Get 5P metadata.
 
         Returns
         -------
-        meta : Dictionary
+        dict
             Dictionary containing metadata.
 
         """
@@ -722,18 +712,18 @@ class ImportSentinel5P(BasicModule):
 
         return meta
 
-    def get_5P_data(self, meta):
+    def get_5P_data(self, meta: dict) -> pd.DataFrame | None:
         """
         Get 5P data.
 
         Parameters
         ----------
-        meta : Dictionary
+        meta
             Dictionary containing metadata.
 
         Returns
         -------
-        gdf : DataFrame
+        DataFrame
             geopandas dataframe.
 
         """
@@ -829,7 +819,7 @@ class ExportBatch(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -849,10 +839,7 @@ class ExportBatch(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.cm.exportdata"
 
         gl_main = QtWidgets.QGridLayout(self)
@@ -917,10 +904,7 @@ class ExportBatch(ContextModule):
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
     def click_ternary(self):
-        """
-        Click ternary event.
-
-        """
+        """Click ternary event."""
         if self.cb_ternary.isChecked():
             self.cmb_red.setEnabled(True)
             self.cmb_green.setEnabled(True)
@@ -1040,13 +1024,13 @@ class ExportBatch(ContextModule):
 
         self.accept()
 
-    def get_odir(self, odir=""):
+    def get_odir(self, odir: str = ""):
         """
         Get output directory.
 
         Parameters
         ----------
-        odir : str, optional
+        odir
             Output directory submitted for testing. The default is ''.
 
         """
@@ -1061,7 +1045,7 @@ class ExportBatch(ContextModule):
         self.le_odir.setText(odir)
 
 
-def calculate_toa(dat, showlog: Callable[..., None] = print):
+def calculate_toa(dat: Data, showlog: Callable[..., None] = print) -> Data:
     """
     Top of atmosphere correction.
 
@@ -1069,14 +1053,14 @@ def calculate_toa(dat, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    dat : pygmi.raster.datatypes.Data
+    dat
         PyGMI raster dataset
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    out : pygmi.raster.datatypes.Data
+    Data
         PyGMI raster dataset
     """
     EDIST = {
@@ -1484,19 +1468,19 @@ def calculate_toa(dat, showlog: Callable[..., None] = print):
     return out
 
 
-def consolidate_aster_list(flist):
+def consolidate_aster_list(flist: list[str]) -> list[str]:
     """
     Consolidate ASTER files from a file list, getting rid of extra files.
 
     Parameters
     ----------
-    flist : list
-        List of filenames.
+    flist
+        List of all filenames.
 
     Returns
     -------
-    flist : list
-        List of filenames.
+    list[str]
+        List of consolidated filenames.
 
     """
     # asterhfiles = []
@@ -1533,7 +1517,7 @@ def consolidate_aster_list(flist):
     return flist
 
 
-def convert_ll_to_utm(lon, lat):
+def convert_ll_to_utm(lon: float, lat: float) -> str:
     """
     Convert latitude and longitude to UTM EPSG code.
 
@@ -1541,14 +1525,14 @@ def convert_ll_to_utm(lon, lat):
 
     Parameters
     ----------
-    lon : float
+    lon
         Longitude.
-    lat : float
+    lat
         latitude.
 
     Returns
     -------
-    epsg_code : str
+    str
         EPSG code.
 
     """
@@ -1562,7 +1546,7 @@ def convert_ll_to_utm(lon, lat):
     return epsg_code
 
 
-def etree_to_dict(t):
+def etree_to_dict(t: ET) -> dict:
     """
     Convert an ElementTree to dictionary.
 
@@ -1570,12 +1554,12 @@ def etree_to_dict(t):
 
     Parameters
     ----------
-    t : Elementtree
+    t
         Root.
 
     Returns
     -------
-    d : dictionary
+    dict
         Dictionary of ElementTree items.
 
     """
@@ -1600,49 +1584,44 @@ def etree_to_dict(t):
 
 
 def export_batch(
-    indata,
-    odir,
-    filt,
+    indata: dict[str, list],
+    odir: str,
+    filt: str,
     *,
-    tnames=None,
-    piter=None,
+    tnames: list[str] | None = None,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    otype=None,
-    sunfile=None,
-    cell=25.0,
-    alpha=0.75,
+    otype: str | None = None,
+    sunfile: str | None = None,
+    cell: float = 25.0,
+    alpha: float = 0.75,
 ):
     """
     Export a batch of files directly from satellite format to disk.
 
     Parameters
     ----------
-    indata : dictionary
+    indata
         Dictionary containing 'RasterFileList' as one of its keys.
-    odir : str
+    odir
         Output Directory.
-    filt : str
+    filt
         type of file to export.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. the default is None.
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    otype : str
+    otype
         output type of file, regular or RGB ternary (with possible sunshading)
-    sunfile : str
+    sunfile
         either a filename of an external file to be used for sunshading, or an
         existing band name. the default is None.
-    cell : float
+    cell
         Between 1 and 100 - controls sunshade detail. The default is 25.
-    alpha : float
+    alpha
         How much incident light is reflected (0 to 1). The default is .75.
-
-    Returns
-    -------
-    None.
-
     """
     if "RasterFileList" not in indata:
         showlog("You need a raster file list")
@@ -1733,17 +1712,19 @@ def export_batch(
             )
 
 
-def files_to_rastermeta(allfiles, piter=iter, showlog: Callable[..., None] = print):
+def files_to_rastermeta(
+    allfiles: list[str], piter=iter, showlog: Callable[..., None] = print
+) -> tuple[dict[str, list], dict[str, list], list[str]]:
     """
     Import files to a RasterMeta item.
 
     Parameters
     ----------
-    allfiles : list
+    allfiles
         List of filenames.
-    piter : function, optional
+    piter
         Progress bar iterable. Default is iter.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
@@ -1780,14 +1761,13 @@ def files_to_rastermeta(allfiles, piter=iter, showlog: Callable[..., None] = pri
 
 
 def get_data(
-    ifile,
-    *,
-    piter=None,
+    ifile: str,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-    bounds=None,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+    bounds: tuple[float, float, float, float] | None = None,
+) -> Data:
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1795,23 +1775,23 @@ def get_data(
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
-    bounds : tuple
+    bounds
         Bounds of data to import as (left, bottom, right, top)
 
     Returns
     -------
-    dat : list of pygmi.raster.datatypes.Data
-        Dataset imported
+    Data
+        dataset imported
     """
     ifile = ifile[:]
     bfile = os.path.basename(ifile)
@@ -1911,14 +1891,13 @@ def get_data(
 
 
 def get_from_rastermeta(
-    ldata,
-    *,
-    piter=None,
+    ldata: RasterMeta | Data,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-    bounds=None,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+    bounds: tuple[float, float, float, float] | None = None,
+) -> Data:
     """
     Import data from a RasterMeta item.
 
@@ -1926,23 +1905,23 @@ def get_from_rastermeta(
 
     Parameters
     ----------
-    ldata : RasterMeta or pygmi.raster.datatypes.Data
-        RasterMeta item.
-    piter : function, optional
+    ldata
+        RasterMeta or Data item.
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the files. The default is False.
-    bounds : tuple
+    bounds
         Bounds of data to import as (left, bottom, right, top)
 
     Returns
     -------
-    dat : list  of pygmi.raster.datatypes.Data
-        List of data.
+    Data
+        list of Data
 
     """
     if isinstance(ldata, list):
@@ -1972,28 +1951,32 @@ def get_from_rastermeta(
 
 
 def get_emit(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get EMIT Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -2031,28 +2014,32 @@ def get_emit(
 
 
 def get_modisv6(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get MODIS v006 data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -2166,32 +2153,32 @@ def get_modisv6(
 
 
 def get_landsat(
-    ifilet,
-    piter=None,
+    ifilet: str,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get Landsat Data.
 
     Parameters
     ----------
-    ifilet : str
+    ifilet
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
-        PyGMI raster dataset
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -2455,32 +2442,32 @@ def get_landsat(
 
 
 def get_worldview(
-    ifilet,
-    piter=None,
+    ifilet: str,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get WorldView Data.
 
     Parameters
     ----------
-    ifilet : str
+    ifilet
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
-        PyGMI raster dataset
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -2708,28 +2695,32 @@ def get_worldview(
 
 
 def get_hyperion(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get Hyperion Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
-        PyGMI raster dataset
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -3344,28 +3335,32 @@ def get_hyperion(
 
 
 def get_sentinel1(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get Sentinel-1 Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -3429,35 +3424,34 @@ def get_sentinel1(
 
 
 def get_sentinel2(
-    ifile,
-    *,
-    piter=None,
+    ifile: str,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-    bounds=None,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+    bounds: tuple[float, float, float, float] | None = None,
+) -> Data:
     """
     Get Sentinel-2 Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
-    bounds : tuple
+    bounds
         Bounds of data to import as (left, bottom, right, top)
 
     Returns
     -------
-    dat : PyGMI raster Data
+    Data
         dataset imported
     """
     ext = os.path.splitext(ifile)[1].lower()
@@ -3552,18 +3546,18 @@ def get_sentinel2(
     return dat
 
 
-def get_sentinel2_metadata(ifile):
+def get_sentinel2_metadata(ifile: str) -> dict:
     """
     Get extra metadata from xml files which rasterio does not access.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input filename.
 
     Returns
     -------
-    meta : dictionary
+    dict
         Output metadata.
 
     """
@@ -3601,28 +3595,32 @@ def get_sentinel2_metadata(ifile):
 
 
 def get_spot(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get Spot DIMAP Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -3687,28 +3685,32 @@ def get_spot(
 
 
 def get_aster_zip(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get ASTER zip Data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -3833,31 +3835,31 @@ def get_aster_zip(
 
 
 def get_aster_tif(
-    ifiles,
-    piter=None,
+    ifiles: str,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    tnames=None,
-    metaonly=False,
-):
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get ASTER tif Data.
 
     Parameters
     ----------
-    ifile : str
-        filename to import
-    piter : function, optional
+    ifiles
+        filenames to import
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
+    Data
         dataset imported
     """
     if piter is None:
@@ -3997,18 +3999,18 @@ def get_aster_tif(
     return dat
 
 
-def get_aster_metadata(ifile):
+def get_aster_metadata(ifile: str) -> dict:
     """
     Get extra metadata from met files which rasterio does not access.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input filename.
 
     Returns
     -------
-    meta : dictionary
+    dict
         Output metadata.
 
     """
@@ -4054,8 +4056,12 @@ def get_aster_metadata(ifile):
 
 
 def get_aster_hdf(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get ASTER hdf Data.
 
@@ -4063,20 +4069,20 @@ def get_aster_hdf(
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
+    Data
         dataset imported
     """
     if piter is None:
@@ -4271,28 +4277,32 @@ def get_aster_hdf(
 
 
 def get_aster_ged(
-    ifile, piter=None, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    ifile: str,
+    piter: Iterable | None = None,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> Data:
     """
     Get ASTER GED data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    Data
+        Dataset imported
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -4404,7 +4414,7 @@ def get_aster_ged(
     return dat
 
 
-def get_aster_ged_bin(ifile):
+def get_aster_ged_bin(ifile: str) -> Data:
     """
     Get ASTER GED binary format.
 
@@ -4429,12 +4439,12 @@ def get_aster_ged_bin(ifile):
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
 
     Returns
     -------
-    dat : PyGMI raster Data
+    pygmi.raster.datatypes.Data
         dataset imported
     """
     dat = []
@@ -4544,40 +4554,40 @@ def get_aster_ged_bin(ifile):
 
 
 def get_ternary(
-    dat,
-    sunfile=None,
-    clippercl=1.0,
-    clippercu=1.0,
-    cell=25.0,
-    alpha=0.75,
-    piter=iter,
+    dat: list[Data],
+    sunfile: str | None = None,
+    clippercl: float = 1.0,
+    clippercu: float = 1.0,
+    cell: float = 25.0,
+    alpha: float = 0.75,
+    piter: Iterable = iter,
     showlog: Callable[..., None] = print,
-):
+) -> list[Data]:
     """
     Create a ternary image, with optional sunshading.
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data
-        PyGMI Data.
-    sunfile : str, optional
+    dat
+        PyGMI Data list.
+    sunfile
         Sunshading band or filename. The default is None.
-    clippercl : float, optional
+    clippercl
         Lower clip percentage for colour bar. The default is 1.
-    clippercu : float, optional
+    clippercu
         Upper clip percentage for colour bar. The default is 1.
-    cell : float, optional
+    cell
         Between 1 and 100 - controls sunshade detail. The default is 25.
-    alpha : float, optional
+    alpha
         How much incident light is reflected (0 to 1). The default is .75.
-    piter : function, optional
+    piter
         Progress bar iterable. Default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    newimg : list of pygmi.raster.datatypes.Data.
+    list of Data
         list of PyGMI data.
 
     """
@@ -4681,7 +4691,7 @@ def get_ternary(
     return newimg
 
 
-def set_export_filename(dat, odir, otype=None):
+def set_export_filename(dat: list[Data], odir: str, otype: str | None = None) -> str:
     """
     Set the export filename according to convention.
 
@@ -4690,16 +4700,16 @@ def set_export_filename(dat, odir, otype=None):
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
+    dat
         List of PyGMI data.
-    odir : str
+    odir
         Output directory.
-    otype : str, optional.
+    otype
         Output file type. Default is None.
 
     Returns
     -------
-    ofile : str
+    str
         Output file name.
 
     """
@@ -4764,19 +4774,19 @@ def set_export_filename(dat, odir, otype=None):
     return ofile
 
 
-def utm_to_south(dat):
+def utm_to_south(dat: list[Data]) -> list[Data]:
     """
     Make sure all UTM labels are for southern hemisphere.
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data
-        List of Data.
+    dat
+        list of Data
 
     Returns
     -------
-    dat : list of pygmi.raster.datatypes.Data
-        List of Data.
+    list of Data
+        list of Data
 
     """
     for band in dat:
@@ -4862,8 +4872,8 @@ def _testfn3():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     os.chdir(idir)
-    # tmp1 = ImportBatch()
-    tmp1 = ImportData()
+    tmp1 = ImportBatch()
+    # tmp1 = ImportData()
     tmp1.settings()
 
     dat = tmp1.outdata["Raster"]
@@ -4878,7 +4888,7 @@ def _testfn3():
 
 
 def _testfn4():
-
+    """Test routine."""
     idir = r"D:/DRC"
     odir = r"D:/DRC/stack"
 

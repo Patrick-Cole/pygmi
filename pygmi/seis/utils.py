@@ -41,7 +41,7 @@ class CorrectDescriptions(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -57,10 +57,7 @@ class CorrectDescriptions(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "seis.dm.corrtyp3"
         gl_main = QtWidgets.QGridLayout(self)
         pb_textfile = QtWidgets.QPushButton("Load Description List")
@@ -74,13 +71,13 @@ class CorrectDescriptions(BasicModule):
 
         pb_textfile.pressed.connect(self.get_textfile)
 
-    def get_textfile(self, filename=""):
+    def get_textfile(self, filename: str = ""):
         """
         Get description list filename.
 
         Parameters
         ----------
-        filename : str, optional
+        filename
             Filename submitted for testing. The default is ''.
 
         """
@@ -101,7 +98,7 @@ class CorrectDescriptions(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -123,10 +120,7 @@ class CorrectDescriptions(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_textfile)
 
     def acceptall(self):

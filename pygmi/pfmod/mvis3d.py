@@ -48,7 +48,7 @@ class Mod3dDisplay(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -109,10 +109,7 @@ class Mod3dDisplay(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "pfmod.cm.show3dmodel"
         hbl = QtWidgets.QHBoxLayout(self)
@@ -658,7 +655,7 @@ class MySunCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes

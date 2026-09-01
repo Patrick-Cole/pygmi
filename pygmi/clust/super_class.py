@@ -57,7 +57,7 @@ class GraphMap(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : SuperClass, optional
+    parent : SuperClass, optionalparent
         Reference to the parent routine. The default is None.
 
     """
@@ -488,7 +488,7 @@ class SuperClass(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -524,10 +524,7 @@ class SuperClass(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "cluster.dm.super"
 
         gl_main = QtWidgets.QGridLayout(self)
@@ -1072,10 +1069,7 @@ class SuperClass(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_class)
         self.saveobj(self.cmb_KNalgorithm)
         self.saveobj(self.cmb_DTcriterion)

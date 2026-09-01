@@ -30,18 +30,22 @@ It uses code by Erik Bolch, ebolch@contractor.usgs.gov
 
 import datetime
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 import xarray as xr
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 
 from pygmi.raster.datatypes import Data
 
-# needs xarray, h5netcdf, rioxarray
 
-
-def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
+def emit_xarray(
+    filepath: str,
+    ortho: bool = False,
+    qmask: NDArray | None = None,
+    unpackedbmask: NDArray | None = None,
+) -> xr.Dataset:
     """
     EMIT xarray.
 
@@ -50,23 +54,23 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
 
     Parameters
     ----------
-    filepath : str
+    filepath
         a file path to an EMIT netCDF file.
-    ortho : bool, optional
+    ortho
         Whether to orthorectify the dataset or leave in crosstrack/downtrack
         coordinates. The default is False.
-    qmask : numpy array, optional
+    qmask
         Output from the quality_mask function used to mask
         pixels based on quality flags selected in that function. Any
         non-orthorectified array with the proper crosstrack and downtrack
         dimensions can also be used. The default is None.
-    unpackedbmask : numpy array, optional
+    unpackedbmask
         From the band_mask function, used to mask band-specific pixels that
         have been interpolated. The default is None.
 
     Returns
     -------
-    out_xr : xarray.Dataset
+    xarray.Dataset
         Dataset constructed based on the parameters provided.
 
     """
@@ -141,7 +145,12 @@ def emit_xarray(filepath, ortho=False, qmask=None, unpackedbmask=None):
     return out_xr
 
 
-def apply_glt(ds_array, glt_array, fill_value=-9999, GLT_NODATA_VALUE=0):
+def apply_glt(
+    ds_array: NDArray,
+    glt_array: NDArray,
+    fill_value: int = -9999,
+    GLT_NODATA_VALUE: int = 0,
+) -> NDArray:
     """
     Apply GLT.
 
@@ -150,18 +159,18 @@ def apply_glt(ds_array, glt_array, fill_value=-9999, GLT_NODATA_VALUE=0):
 
     Parameters
     ----------
-    ds_array : numpy array
+    ds_array
         A numpy array of the desired variable.
-    glt_array : GLT array
+    glt_array
         A GLT array constructed from EMIT GLT data.
-    fill_value : int, optional
+    fill_value
         Fill value. The default is -9999.
-    GLT_NODATA_VALUE : int, optional
+    GLT_NODATA_VALUE
         GLT nodata value. The default is 0.
 
     Returns
     -------
-    out_ds : numpy array
+    ndarray
         a numpy array of orthorectified data.
 
     """
@@ -185,7 +194,7 @@ def apply_glt(ds_array, glt_array, fill_value=-9999, GLT_NODATA_VALUE=0):
     return out_ds
 
 
-def coord_vects(ds):
+def coord_vects(ds: xr.Dataset) -> tuple[NDArray, NDArray]:
     """
     Calculate the Lat and Lon Vectors/Coordinate Grid.
 
@@ -194,15 +203,15 @@ def coord_vects(ds):
 
     Parameters
     ----------
-    ds : xarray.Dataset
+    ds
         an xarray.Dataset containing the root variable and metadata of an EMIT
         dataset.
 
     Returns
     -------
-    lon : numpy array
+    lon : ndarray
         Longitude.
-    lat : numpy array
+    lat : ndarray
         Latitude.
 
     """
@@ -224,22 +233,24 @@ def coord_vects(ds):
     return lon, lat
 
 
-def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
+def ortho_xr(
+    ds: xr.Dataset, GLT_NODATA_VALUE: int = 0, fill_value: int = -9999
+) -> xr.Dataset:
     """
     Use `apply_glt` to create an orthorectified xarray dataset.
 
     Parameters
     ----------
-    ds : xarray.Dataset
+    ds
         Dataset produced by emit_xarray.
-    GLT_NODATA_VALUE : int, optional
+    GLT_NODATA_VALUE
         No data value for the GLT tables. The default is 0.
-    fill_value : int, optional
+    fill_value
         The fill value for EMIT datasets. The default is -9999.
 
     Returns
     -------
-    out_xr : xarray.Dataset
+    xarray.Dataset
         an orthocorrected xarray dataset.
 
     """
@@ -324,8 +335,12 @@ def ortho_xr(ds, GLT_NODATA_VALUE=0, fill_value=-9999):
 
 
 def xr_to_pygmi(
-    xrds, piter=iter, showlog: Callable[..., None] = print, tnames=None, metaonly=False
-):
+    xrds: xr.Dataset,
+    piter: Iterable = iter,
+    showlog: Callable[..., None] = print,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+) -> list[Data]:
     """
     Xarray to PyGMI dataset.
 
@@ -334,21 +349,21 @@ def xr_to_pygmi(
 
     Parameters
     ----------
-    xrds: xarray.Dataset
+    xrds
         an EMIT dataset read into xarray using the emit_xarray function.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    dat: list of pygmi.raster.datatypes.Data
-        list of pygmi.raster.datatypes.Data
+    dat: list of Data
+        list of pygmi raster Data.
 
     """
     dat = []
@@ -460,7 +475,7 @@ def xr_to_pygmi(
     return dat
 
 
-def main():
+def _testfn():
     """EMIT data."""
     import matplotlib.pyplot as plt
     from matplotlib import cm, colors
@@ -515,6 +530,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _testfn()
 
     print("Finished!")

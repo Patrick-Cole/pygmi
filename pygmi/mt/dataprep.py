@@ -89,10 +89,7 @@ class Metadata(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "mt.cm.meta"
         gbox = QtWidgets.QGroupBox("Dataset")
@@ -393,7 +390,7 @@ class StaticShiftEDI(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -545,10 +542,7 @@ class StaticShiftEDI(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.dsb_shiftx)
         self.saveobj(self.dsb_shifty)
         self.saveobj(self.cb_applyall)
@@ -562,7 +556,7 @@ class RotateEDI(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -710,10 +704,7 @@ class RotateEDI(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cb_applyall)
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_2)
@@ -1009,7 +1000,7 @@ class EditEDI(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1159,10 +1150,7 @@ class EditEDI(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_2)
 
@@ -1296,7 +1284,7 @@ class Occam1D(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1688,10 +1676,7 @@ class Occam1D(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_targetdepth)
         self.saveobj(self.le_nlayers)
         self.saveobj(self.le_bottomlayer)

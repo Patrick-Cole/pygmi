@@ -43,7 +43,7 @@ class ImportCG5(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget
+    parent
         Reference to the parent routine.
     """
 
@@ -67,10 +67,7 @@ class ImportCG5(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.importgravity"
 
@@ -206,10 +203,7 @@ class ImportCG5(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_line)
         self.saveobj(self.cmb_station)
         self.saveobj(self.cmb_xchan)

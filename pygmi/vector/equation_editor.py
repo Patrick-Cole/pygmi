@@ -40,14 +40,14 @@ class EquationEditor(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
     ----------
-    equation : str
+    equation
         string with the equation in it
-    bands : dictionary
+    bands
         dictionary of bands
     """
 
@@ -66,10 +66,7 @@ class EquationEditor(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
 
         lbl_1 = QtWidgets.QLabel("Data Band Key:")
@@ -138,10 +135,7 @@ class EquationEditor(BasicModule):
         self.cmb_1.currentIndexChanged.connect(self.combo)
 
     def combo(self):
-        """
-        Update combo information.
-
-        """
+        """Update combo information."""
         if self.bands == {}:
             return
         txt = self.cmb_1.currentText()
@@ -208,10 +202,7 @@ class EquationEditor(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
         self.saveobj(self.cmb_1)

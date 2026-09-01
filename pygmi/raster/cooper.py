@@ -44,7 +44,7 @@ class Gradients(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -77,10 +77,7 @@ class Gradients(BasicModule):
         self.dsb_order.setValue(self.order)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.grad"
 
@@ -168,10 +165,7 @@ class Gradients(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.azi)
         self.saveobj(self.order)
         self.saveobj(self.dsb_order)
@@ -296,7 +290,7 @@ class Visibility2d(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -321,10 +315,7 @@ class Visibility2d(BasicModule):
         self.sb_dh.setValue(self.dh)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.visibility"
         lbl_1 = QtWidgets.QLabel("Viewing Height (% std dev)")
@@ -412,10 +403,7 @@ class Visibility2d(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_wsize)
         self.saveobj(self.sb_dh)
 
@@ -706,7 +694,7 @@ class AGC(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -729,10 +717,7 @@ class AGC(BasicModule):
         self.sb_wsize.setValue(self.wsize)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.agc"
         lbl_2 = QtWidgets.QLabel("Window Size (Odd)")
@@ -804,10 +789,7 @@ class AGC(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_wsize)
         self.saveobj(self.sb_dh)
         self.saveobj(self.rb_mean)

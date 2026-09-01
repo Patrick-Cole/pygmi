@@ -76,7 +76,7 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Button release event.
 
         """
@@ -92,9 +92,9 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        x : float
+        x
             x coordinate.
-        y : float
+        y
             y coordinate.
 
         Returns
@@ -123,7 +123,7 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Motion notify event.
 
         """
@@ -148,7 +148,7 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.PickEvent
+        event
             Pick event.
 
         Returns
@@ -175,7 +175,7 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.ResizeEvent
+        event
             Resize event.
 
         """
@@ -188,7 +188,7 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        axes : Axes
+        axes
             Current Matplotlib axes.
 
         """
@@ -216,10 +216,10 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        data : GeoDataFrame
+        data
             GeoPandas data in a dictionary.
-        style : str
-            Style of colour mapping.
+        style
+            Style of colour mapping, the default is "Normal".
 
         """
         self.figure.clear()
@@ -284,9 +284,9 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        r : NDArray
+        r
             array of distances, for the x-axis
-        data : NDArray
+        data
             array of data to be plotted on the y-axis
 
         """
@@ -323,19 +323,21 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_lmap(self, data, ival, scale: float, uselabels: bool):
+    def update_lmap(
+        self, data: pd.DataFrame, ival: str | float, scale: float, uselabels: bool
+    ):
         """
         Update the plot from line data.
 
         Parameters
         ----------
-        data : Pandas dataframe
+        data
             Line data
-        ival : dictionary key
+        ival
             dictionary key representing the line data channel to be plotted.
-        scale: float
+        scale
             scale of exaggeration for the profile data on the map.
-        uselabels: bool
+        uselabels
             boolean choice whether to use labels or not.
 
         """
@@ -415,11 +417,11 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        data : GeoDataFrame
+        data
             GeoPandas data.
-        col : str
+        col
             Label for column to extract.
-        style : str or None
+        style
             Style of colour mapping.
 
         """
@@ -529,15 +531,15 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        data : GeoDataFrame
+        data
             GeoPandas data.
-        rtype : int
+        rtype
             Rose diagram type. Can be either 0 or 1.
-        nbins : int, optional
+        nbins
             Number of bins used in rose diagram. The default is 8.
-        equal : bool, optional
+        equal
             Option for an equal area rose diagram. The default is False.
-        mono : bool, optional
+        mono
             Option for a monochrome rose diagram. The default is False.
 
         """
@@ -628,13 +630,13 @@ class MyMplCanvas(CanvasModule):
 
         Parameters
         ----------
-        data : GeoDataFrame
-            GeoPandas data.
-        col : str
+        data
+            Input GeoDataFrame.
+        col
             Label for column to extract.
-        ylog : bool
+        ylog
             Boolean for a log scale on y-axis.
-        iscum : bool
+        iscum
             Boolean for a cumulative distribution.
 
         """
@@ -667,7 +669,7 @@ class PlotCCoef(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -726,7 +728,7 @@ class PlotHist(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -794,7 +796,7 @@ class PlotLines(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -900,7 +902,7 @@ class PlotLineMap(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -998,7 +1000,7 @@ class PlotRose(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1089,7 +1091,7 @@ class PlotVector(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1216,17 +1218,17 @@ def heatmap(
 
     Parameters
     ----------
-    data : NDArray
+    data
         A 2D numpy array of shape (M, N).
-    row_labels : list or NDArray
+    row_labels
         A list or array of length M with the labels for the rows.
-    col_labels : list or NDArray
+    col_labels
         A list or array of length N with the labels for the columns.
-    ax : matplotlib.axes.Axes
+    ax
         A `matplotlib.axes.Axes` instance to which the heatmap is plotted.
-    cbar_kw : dict
+    cbar_kw
         A dictionary with arguments to `matplotlib.Figure.colorbar`.  Optional.
-    cbarlabel : str
+    cbarlabel
         The label for the colorbar.  Optional.
     **kwargs
         All other arguments are forwarded to `imshow`.
@@ -1285,18 +1287,18 @@ def annotate_heatmap(
 
     Parameters
     ----------
-    im : AxesImage
+    im
         The AxesImage to be labelled.
-    data : list or numpy array
+    data
         Data used to annotate.  If None, the image's data is used.  Optional.
-    ivalfmt : format string
+    ivalfmt
         The format of the annotations inside the heatmap.  This should either
         use the string format method, e.g. "$ {x:.2f}", or be a
         `matplotlib.ticker.Formatter`.  Optional.
-    textcolors : list
+    textcolors
         A pair of colours.  The first is used for values below a threshold,
         the second for those above.  Optional.
-    ithreshold : float
+    ithreshold
         Value in data units according to which the colours from textcolors are
         applied.  If None (the default) uses the middle of the colormap as
         separation.  Optional.
@@ -1306,7 +1308,7 @@ def annotate_heatmap(
 
     Returns
     -------
-    texts : list[str]
+    list[str]
         List of text
 
     """
@@ -1363,22 +1365,22 @@ def histogram(
 
     Parameters
     ----------
-    x : NDArray
+    x
         Input data
-    y : NDArray
+    y
         Input data weights. The default is None.
-    xmin : float
+    xmin
         Lower value for the bins. The default is None.
-    xmax : float
+    xmax
         Upper value for the bins. The default is None.
-    bins : int
+    bins
         number of bins. The default is 10.
 
     Returns
     -------
-    hist : numpy array
+    hist : ndarray
         The values of the histogram
-    bin_edges : numpy array
+    bin_edges : ndarray
         bin edges of the histogram
 
     """

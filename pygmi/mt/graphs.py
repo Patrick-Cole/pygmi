@@ -52,7 +52,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : PlotPoints, PlotPhaseTensor, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -366,7 +366,7 @@ class PlotPoints(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -415,10 +415,7 @@ class PlotPoints(ContextModule):
         self.mmc.update_line(data, i, i2)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.show()
         data = self.indata["MT - EDI"]
         for i in data:
@@ -436,7 +433,7 @@ class PlotPhaseTensor(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -593,10 +590,7 @@ class PlotPhaseTensor(ContextModule):
         )
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "MT - EDI" in self.indata:
             self.data = copy.deepcopy(self.indata["MT - EDI"])
             self.edi_list = [self.data[i].fn for i in self.data]
@@ -620,10 +614,7 @@ class PlotPhaseTensor(ContextModule):
         self.exec()
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_ecol)
         self.saveobj(self.dsb_esize)

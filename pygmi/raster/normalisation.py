@@ -41,7 +41,7 @@ class Normalisation(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -59,10 +59,7 @@ class Normalisation(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         vbl_1 = QtWidgets.QVBoxLayout(self)
 
         self.buttonbox.htmlfile = "raster.dm.norm"
@@ -130,10 +127,7 @@ class Normalisation(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.rb_interval)
         self.saveobj(self.rb_mean)
         self.saveobj(self.rb_median)
@@ -183,14 +177,14 @@ def norm(data, ntype):
 
     Parameters
     ----------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         PyGMI Data in a list.
     ntype : str
         Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
 
     Returns
     -------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         PyGMI Data in a list.
 
     """

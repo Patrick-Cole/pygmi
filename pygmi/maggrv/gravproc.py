@@ -81,7 +81,7 @@ class PlotDrift(ContextModule):
 
     Parameters
     ----------
-    parent : ProcessData, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -115,7 +115,7 @@ class ProcessData(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -141,10 +141,7 @@ class ProcessData(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.processgravity"
 
@@ -220,10 +217,7 @@ class ProcessData(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_density)
         self.saveobj(self.le_knownstat)
         self.saveobj(self.le_knownbase)

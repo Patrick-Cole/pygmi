@@ -39,7 +39,14 @@ import pygmi.seis.datatypes as sdt
 from pygmi.misc import BasicModule, ContextModule
 
 
-def sform(strform, val, tmp, col1, col2=None, nval=-999):
+def sform(
+    strform: str,
+    val: float | str,
+    tmp: str,
+    col1: int,
+    col2: int | None = None,
+    nval: float = -999,
+) -> str:
     """
     Format strings.
 
@@ -50,22 +57,22 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
 
     Parameters
     ----------
-    strform : python format string
+    strform
         This string must be of the form {0:4.1f}, where 4.1f can be changed.
-    val : float, int, str
+    val
         input value
-    tmp : str
+    tmp
         Input string
-    col1 : int
+    col1
         start column (1 is first column)
-    col2 : int
+    col2
         end column. The default is None.
-    nval : float, int
+    nval
         null value which gets substituted by spaces. The default is -999.
 
     Returns
     -------
-    tmp : str
+    str
         Output formatted string.
     """
     if col2 is None:
@@ -93,18 +100,18 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     return tmp
 
 
-def str2float(inp):
+def str2float(inp: str) -> float:
     """
     Convert a number  float, or returns NaN.
 
     Parameters
     ----------
-    inp : str
+    inp
         string with a float in it
 
     Returns
     -------
-    fval : float
+    float
         float or np.nan
     """
     if inp.strip() == "" or inp.strip() == "*" or inp.strip() == "N/A":
@@ -117,18 +124,18 @@ def str2float(inp):
     return fval
 
 
-def str2int(inp):
+def str2int(inp: str) -> int:
     """
     Convert a number to integer, or returns NaN.
 
     Parameters
     ----------
-    inp : str
+    inp
         string with an integer in it
 
     Returns
     -------
-    inp : int
+    int
         integer or np.nan
     """
     if inp.strip() == "":
@@ -144,7 +151,7 @@ class ImportSeisan(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -160,7 +167,7 @@ class ImportSeisan(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -201,14 +208,11 @@ class ImportSeisan(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
-def importmacro(ifile):
+def importmacro(ifile: str) -> gpd.GeoDataFrame:
     """
     Import macro format.
 
@@ -222,12 +226,12 @@ def importmacro(ifile):
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input macro file.
 
     Returns
     -------
-    gdf1 : GeoPandas dataframe
+    GeoDataFrame
         List of locations with intensities.
 
     """
@@ -298,20 +302,20 @@ def importmacro(ifile):
     return gdf1
 
 
-def importnordic(ifile, showlog: Callable[..., None] = print):
+def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list:
     """
     Import Nordic and Nordic2 data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file to import.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    dat : list
+    dat
         SEISAN Data.
 
     """
@@ -509,22 +513,24 @@ def importnordic(ifile, showlog: Callable[..., None] = print):
     return dat
 
 
-def importseiscomp(ifile, showlog: Callable[..., None] = print, prefmag="MLv"):
+def importseiscomp(
+    ifile: str, showlog: Callable[..., None] = print, prefmag: str = "MLv"
+) -> list:
     """
     Import SeisComp data.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file to import.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    prefmag : str
+    prefmag
         The preferred magnitude. The default is 'MLv'.
 
     Returns
     -------
-    sdat : list
+    list
         SEISAN Data.
 
     """
@@ -766,20 +772,20 @@ def importseiscomp(ifile, showlog: Callable[..., None] = print, prefmag="MLv"):
     return sdat
 
 
-def importxlsx(ifile, showlog: Callable[..., None] = print):
+def importxlsx(ifile: str, showlog: Callable[..., None] = print) -> list:
     """
     Import Excel summary.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file to import.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    sdat : list
+    list
         SEISAN Data.
 
     """
@@ -843,7 +849,7 @@ def importxlsx(ifile, showlog: Callable[..., None] = print):
     return sdat
 
 
-def read_record_type_1(i):
+def read_record_type_1(i: str) -> sdt.seisan_1:
     """
     Read record type 1.
 
@@ -854,7 +860,7 @@ def read_record_type_1(i):
 
     Returns
     -------
-    tmp : sdt.seisan_1
+    sdt.seisan_1
         SEISAN 1 record.
 
     """
@@ -894,18 +900,18 @@ def read_record_type_1(i):
     return tmp
 
 
-def read_record_type_2(i):
+def read_record_type_2(i: str) -> sdt.seisan_2:
     """
     Read record type 2.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_2
+    sdt.seisan_2
         SEISAN 2 record.
 
     """
@@ -934,19 +940,19 @@ def read_record_type_2(i):
     return dat
 
 
-def read_record_type_3(i):
+def read_record_type_3(i: str) -> sdt.seisan_3:
     """
     Read record type 3.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_4
-        SEISAN 4 record.
+    sdt.seisan_3
+        SEISAN 3 record.
 
     """
     dat = sdt.seisan_3()
@@ -957,18 +963,18 @@ def read_record_type_3(i):
     return dat
 
 
-def read_record_type_4(i):
+def read_record_type_4(i: str) -> sdt.seisan_4:
     """
     Read record type 4.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_4
+    sdt.seisan_4
         SEISAN 4 record.
 
     """
@@ -1005,18 +1011,18 @@ def read_record_type_4(i):
     return tmp
 
 
-def read_record_type_phase(i):
+def read_record_type_phase(i: str) -> sdt.seisan_4:
     """
     Read record type phase (nordic2 type 4).
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_4
+    sdt.seisan_4
         SEISAN 4 record.
 
     """
@@ -1071,18 +1077,18 @@ def read_record_type_phase(i):
     return tmp
 
 
-def read_record_type_5(i):
+def read_record_type_5(i: str) -> sdt.seisan_5:
     """
     Read record type 5.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_5
+    sdt.seisan_5
         SEISAN 5 record.
 
     """
@@ -1091,18 +1097,18 @@ def read_record_type_5(i):
     return tmp
 
 
-def read_record_type_6(i):
+def read_record_type_6(i: str) -> sdt.seisan_6:
     """
     Read record type 6.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_6
+    sdt.seisan_6
         SEISAN 6 record.
 
     """
@@ -1112,18 +1118,18 @@ def read_record_type_6(i):
     return tmp
 
 
-def read_record_type_e(i):
+def read_record_type_e(i: str) -> sdt.seisan_E:
     """
     Read record type E.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_E
+    sdt.seisan_E
         SEISAN E record.
 
     """
@@ -1144,18 +1150,18 @@ def read_record_type_e(i):
     return tmp
 
 
-def read_record_type_f(i):
+def read_record_type_f(i: str) -> dict:
     """
     Read record type F.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    out : dictionary
+    dict
         Dictionary with a SEISAN F record.
 
     """
@@ -1185,18 +1191,18 @@ def read_record_type_f(i):
     return out
 
 
-def read_record_type_h(i):
+def read_record_type_h(i: str) -> sdt.seisan_H:
     """
     Read record type H.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_H
+    sdt.seisan_H
         SEISAN H record.
 
     """
@@ -1216,18 +1222,18 @@ def read_record_type_h(i):
     return tmp
 
 
-def read_record_type_i(i):
+def read_record_type_i(i: str) -> sdt.seisan_I:
     """
     Read record type I.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_I
+    sdt.seisan_I
         SEISAN I record.
 
     """
@@ -1244,18 +1250,18 @@ def read_record_type_i(i):
     return tmp
 
 
-def read_record_type_m(i):
+def read_record_type_m(i: str) -> sdt.seisan_M:
     """
     Read record type M.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_M
+    sdt.seisan_M
         SEISAN M record.
 
     """
@@ -1294,20 +1300,20 @@ def read_record_type_m(i):
     return tmp
 
 
-def merge_m(rec1, rec2):
+def merge_m(rec1: sdt.seisan_M, rec2: sdt.seisan_M) -> sdt.seisan_M:
     """
     Merge M records.
 
     Parameters
     ----------
-    rec1 : sdt.seisan_M
+    rec1
         SEISAN M record.
-    rec2 : sdt.seisan_M
+    rec2
         SEISAN M record.
 
     Returns
     -------
-    rec1 : sdt.seisan_M
+    sdt.seisan_M
         SEISAN M record.
 
     """
@@ -1327,18 +1333,18 @@ def merge_m(rec1, rec2):
     return rec1
 
 
-def read_record_type_p(i):
+def read_record_type_p(i: str) -> sdt.seisan_P:
     """
     Read record type P.
 
     Parameters
     ----------
-    i : str
+    i
         String to read from.
 
     Returns
     -------
-    tmp : sdt.seisan_P
+    sdt.seisan_P
         SEISAN P record.
 
     """
@@ -1355,7 +1361,7 @@ class ImportGenericFPS(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1370,7 +1376,7 @@ class ImportGenericFPS(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1452,10 +1458,7 @@ class ImportGenericFPS(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
@@ -1465,7 +1468,7 @@ class ExportSeisan(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1477,10 +1480,7 @@ class ExportSeisan(ContextModule):
         self.fobj = None
 
     def run(self, filename=None):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Seis" not in self.indata:
             self.showlog("Error: You need to have a SEISAN data first!")
             return
@@ -1526,13 +1526,13 @@ class ExportSeisan(ContextModule):
         if self.parent is not None:
             self.parent.process_is_active(False)
 
-    def write_record_type_1(self, data):
+    def write_record_type_1(self, data: dict):
         """
         Write record type 1.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1572,13 +1572,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_2(self, data):
+    def write_record_type_2(self, data: dict):
         """
         Write record type 2.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1611,7 +1611,7 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_3(self, data):
+    def write_record_type_3(self, data: dict):
         """
         Write record type 3.
 
@@ -1619,7 +1619,7 @@ class ExportSeisan(ContextModule):
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1634,13 +1634,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_4(self, data):
+    def write_record_type_4(self, data: dict):
         """
         Write record type 4.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1677,13 +1677,13 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_phase(self, data):
+    def write_record_type_phase(self, data: dict):
         """
         Write record type 4.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1744,13 +1744,13 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_5(self, data):
+    def write_record_type_5(self, data: dict):
         """
         Write record type 5.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1764,13 +1764,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_6(self, data):
+    def write_record_type_6(self, data: dict):
         """
         Write record type 6.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1785,23 +1785,20 @@ class ExportSeisan(ContextModule):
         self.fobj.write(tmp)
 
     def write_record_type_7(self):
-        """
-        Write record type 7.
-
-        """
+        """Write record type 7."""
         tmp = (
             " STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO"
             " AIN AR TRES W  DIS CAZ7\n"
         )
         self.fobj.write(tmp)
 
-    def write_record_type_e(self, data):
+    def write_record_type_e(self, data: dict):
         """
         Write record type E.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1826,13 +1823,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_f(self, data):
+    def write_record_type_f(self, data: dict):
         """
         Write record type F.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1859,13 +1856,13 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_h(self, data):
+    def write_record_type_h(self, data: dict):
         """
         Write record type H.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1890,13 +1887,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_i(self, data):
+    def write_record_type_i(self, data: dict):
         """
         Write record type I.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1921,13 +1918,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_m(self, data):
+    def write_record_type_m(self, data: dict):
         """
         Write record type M.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -1977,13 +1974,13 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_p(self, data):
+    def write_record_type_p(self, data: dict):
         """
         Write record type P.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         """
@@ -2005,7 +2002,7 @@ class ExportCSV(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2017,10 +2014,7 @@ class ExportCSV(ContextModule):
         self.fobj = None
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Seis" not in self.indata:
             self.showlog("Error: You need to have a SEISAN data first!")
             return
@@ -2084,18 +2078,18 @@ class ExportCSV(ContextModule):
         self.showlog("Export to csv Finished!")
         self.parent.process_is_active(False)
 
-    def write_record_type_1(self, data):
+    def write_record_type_1(self, data: dict) -> str:
         """
         Write record type 1.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2134,18 +2128,18 @@ class ExportCSV(ContextModule):
         tmp = tmp.replace("None", "")
         return tmp
 
-    def write_record_type_2(self, data):
+    def write_record_type_2(self, data: dict) -> str:
         """
         Write record type 2.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2179,7 +2173,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_3(self, tmp):
+    def write_record_type_3(self, tmp: str) -> str:
         """
         Write record type 3.
 
@@ -2188,12 +2182,12 @@ class ExportCSV(ContextModule):
 
         Parameters
         ----------
-        tmp : str
+        tmp
             Data string.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2205,18 +2199,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_4(self, data):
+    def write_record_type_4(self, data: dict) -> list[str]:
         """
         Write record type 4.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmpfin : list
+        list
             List of output string.
 
         """
@@ -2257,18 +2251,18 @@ class ExportCSV(ContextModule):
 
         return tmpfin
 
-    def write_record_type_5(self, data):
+    def write_record_type_5(self, data: dict) -> str:
         """
         Write record type 5.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2282,18 +2276,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_6(self, data):
+    def write_record_type_6(self, data: dict) -> str:
         """
         Write record type 6.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2307,14 +2301,9 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_7(self):
+    def write_record_type_7(self) -> str:
         """
         Write record type 7.
-
-        Parameters
-        ----------
-        data : Dictionary
-            Dictionary of record types.
 
         Returns
         -------
@@ -2328,18 +2317,18 @@ class ExportCSV(ContextModule):
         )
         return tmp
 
-    def write_record_type_e(self, data):
+    def write_record_type_e(self, data: dict) -> str:
         """
         Write record type E.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2363,18 +2352,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_f(self, data):
+    def write_record_type_f(self, data: dict) -> str:
         """
         Write record type F.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2402,18 +2391,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_h(self, data):
+    def write_record_type_h(self, data: dict) -> str:
         """
         Write record type H.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2438,18 +2427,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_i(self, data):
+    def write_record_type_i(self, data: dict) -> str:
         """
         Write record type I.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2468,18 +2457,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_m(self, data):
+    def write_record_type_m(self, data: dict) -> str:
         """
         Write record type M.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2527,18 +2516,18 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_p(self, data):
+    def write_record_type_p(self, data: dict) -> str:
         """
         Write record type P.
 
         Parameters
         ----------
-        data : Dictionary
+        data
             Dictionary of record types.
 
         Returns
         -------
-        tmp : str
+        str
             Output string.
 
         """
@@ -2559,7 +2548,7 @@ class ExportSummary(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2571,10 +2560,7 @@ class ExportSummary(ContextModule):
         self.fobj = None
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Seis" not in self.indata:
             self.showlog("Error: You need to have a SEISAN data first!")
             return
@@ -2686,18 +2672,18 @@ class ExportSummary(ContextModule):
         self.parent.process_is_active(False)
 
 
-def mercalli(mag):
+def mercalli(mag: float) -> str:
     """
     Return Mercalli index.
 
     Parameters
     ----------
-    mag : float
+    mag
         Local magnitude.
 
     Returns
     -------
-    merc : str
+    str
         Mercalli index
 
     """
@@ -2737,7 +2723,7 @@ class FilterSeisan(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -2762,10 +2748,7 @@ class FilterSeisan(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "seis.dm.sfilt"
         gl_main = QtWidgets.QGridLayout(self)
         lbl_rectype = QtWidgets.QLabel("Record Type:")
@@ -2867,13 +2850,13 @@ class FilterSeisan(BasicModule):
         tmp = [i[2:] for i in tmp if i[0] == self.cmb_rectype.currentText()]
         self.cmb_update(self.cmb_recdesc, tmp)
 
-    def dind_click(self, state):
+    def dind_click(self, state: int):
         """
         Check checkboxes.
 
         Parameters
         ----------
-        state : int
+        state
             State of checkbox.
 
         """
@@ -2895,13 +2878,13 @@ class FilterSeisan(BasicModule):
             self.recdesc_init("")
             self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
 
-    def rectype_init(self, txt):
+    def rectype_init(self, txt: str):
         """
         Change combo.
 
         Parameters
         ----------
-        txt : str
+        txt
             Text.
 
         """
@@ -2911,13 +2894,13 @@ class FilterSeisan(BasicModule):
 
         self.recdesc_init(self.cmb_recdesc.currentText())
 
-    def recdesc_init(self, txt):
+    def recdesc_init(self, txt: str):
         """
         Change Description.
 
         Parameters
         ----------
-        txt : str
+        txt
             Text.
 
         """
@@ -2936,10 +2919,7 @@ class FilterSeisan(BasicModule):
         self.dsb_to.setValue(maxval)
 
     def get_limits(self):
-        """
-        Get limits for SEISAN data.
-
-        """
+        """Get limits for SEISAN data."""
         dat = self.indata["Seis"]
         datd = {}
 
@@ -2997,7 +2977,7 @@ class FilterSeisan(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -3006,7 +2986,6 @@ class FilterSeisan(BasicModule):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             tmp = self.exec()
 
@@ -3018,10 +2997,7 @@ class FilterSeisan(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.dsb_from)
         self.saveobj(self.dsb_to)
         self.saveobj(self.cmb_rectype)
@@ -3095,9 +3071,20 @@ class FilterSeisan(BasicModule):
         self.outdata["Seis"] = newdat
 
 
-def detect_file_encoding(ifile):
-    """Detect file encoding."""
+def detect_file_encoding(ifile) -> str:
+    """
+    Detect file encoding.
 
+    Parameters
+    ----------
+    ifile
+        Input file name.
+
+    Returns
+    -------
+    str
+        Encoding result.
+    """
     with open(ifile, "rb") as f:
         raw_data = f.read()
 

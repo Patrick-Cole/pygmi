@@ -89,12 +89,12 @@ def check_dataid(out):
 
     Parameters
     ----------
-    out : list of pygmi.raster.datatypes.Data
+    out : list of Data
         PyGMI raster data.
 
     Returns
     -------
-    out : list of pygmi.raster.datatypes.Data
+    out : list of Data
         PyGMI raster data.
 
     """
@@ -204,7 +204,7 @@ def cut_raster(data, ibnd, showlog: Callable[..., None] = print, deepcopy=True):
 
     Parameters
     ----------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         PyGMI Dataset
     ibnd : str or GeoDataFrame, or tuple of bounds
         shapefile or GeoDataFrame used to cut data.
@@ -215,7 +215,7 @@ def cut_raster(data, ibnd, showlog: Callable[..., None] = print, deepcopy=True):
 
     Returns
     -------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         PyGMI Dataset
     """
     if ibnd is None:
@@ -435,7 +435,7 @@ def lstack(
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data
+    dat : list of Data
         data object which stores datasets
     piter : function, optional
         Progress bar iterator. The default is None.
@@ -456,7 +456,7 @@ def lstack(
 
     Returns
     -------
-    out : list of pygmi.raster.datatypes.Data
+    out : list of Data
         data object which stores datasets
 
     """

@@ -40,7 +40,7 @@ class DeleteRecord(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -58,7 +58,7 @@ class DeleteRecord(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -79,18 +79,15 @@ class DeleteRecord(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
+        """Save project data from class."""
 
-        """
-
-    def delrec(self, ifile):
+    def delrec(self, ifile: str):
         """
         Delete record.
 
         Parameters
         ----------
-        ifile : str
+        ifile
             Input filename.
 
         """
@@ -134,7 +131,7 @@ class Quarry(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -152,7 +149,7 @@ class Quarry(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -190,10 +187,7 @@ class Quarry(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
 
     def calcrq2(self):
         """
@@ -201,7 +195,7 @@ class Quarry(BasicModule):
 
         Returns
         -------
-        newevents : list
+        list
             New events
 
         """
@@ -312,7 +306,7 @@ class Quarry(BasicModule):
 
         Returns
         -------
-        newevents : list
+        list
             New events
 
         """
@@ -396,26 +390,7 @@ class Quarry(BasicModule):
         return newevents.tolist()
 
     def randrq(self, nmax, nstep, nrange, day):
-        """
-        Calculate random Rq values.
-
-        Parameters
-        ----------
-        nmax : int
-            DESCRIPTION.
-        nstep : int
-            DESCRIPTION.
-        nrange : list
-            DESCRIPTION.
-        day : tuple
-            DESCRIPTION.
-
-        Returns
-        -------
-        rperc : list
-            Percentiles
-
-        """
+        """Calculate random Rq values."""
         rperc = [
             1.97435897,
             1.64253394,
@@ -449,24 +424,7 @@ class Quarry(BasicModule):
         return rperc
 
     def randrqb(self, N1, day, num):
-        """
-        Calculate random Rq values.
-
-        Parameters
-        ----------
-        N1 : TYPE
-            DESCRIPTION.
-        day : tuple
-            DESCRIPTION.
-        num : int
-            DESCRIPTION.
-
-        Returns
-        -------
-        rperc : list
-            Percentiles
-
-        """
+        """Calculate random Rq values."""
         self.showlog("Calculating random Rq values for calibration")
         elist = [50, 100, 150, 200]
         rperc = None
@@ -502,20 +460,20 @@ class Quarry(BasicModule):
         return rperc
 
 
-def import_for_plots(ifile, dind="R"):
+def import_for_plots(ifile: str, dind: str = "R") -> dict:
     """
     Import data to plot.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file name.
-    dind : str, optional
+    dind
         Distance indicator. The default is 'R'.
 
     Returns
     -------
-    datd : dictionary
+    dict
         Output data.
 
     """

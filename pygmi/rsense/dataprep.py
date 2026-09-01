@@ -34,13 +34,15 @@ import glob
 import os
 import platform
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from subprocess import PIPE, Popen
 
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.iodefs import get_raster
 from pygmi.raster.misc import aspect2, lstack
 
@@ -51,7 +53,7 @@ class TopoCorrect(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -69,10 +71,7 @@ class TopoCorrect(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.topo"
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -97,7 +96,7 @@ class TopoCorrect(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -149,20 +148,21 @@ class TopoCorrect(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_dem)
         self.saveobj(self.le_azi)
         self.saveobj(self.le_zen)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         data = []
         dem = None
@@ -203,7 +203,7 @@ class Sen2Cor(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -220,10 +220,7 @@ class Sen2Cor(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.sen2cor"
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -253,7 +250,7 @@ class Sen2Cor(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -278,9 +275,15 @@ class Sen2Cor(BasicModule):
 
         return True
 
-    def get_sdir(self):
-        """Get the satellite directory."""
+    def get_sdir(self) -> bool:
+        """
+        Get the satellite directory.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
         idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Sentinel 2 L1A Data Directory"
         )
@@ -297,9 +300,15 @@ class Sen2Cor(BasicModule):
 
         return True
 
-    def get_sen2cor(self):
-        """Get the sen2cor directory."""
+    def get_sen2cor(self) -> bool:
+        """
+        Get the sen2cor directory.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+        """
         idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Sen2Cor Directory"
         )
@@ -320,19 +329,20 @@ class Sen2Cor(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_sdir)
         self.saveobj(self.le_sen2cor)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         sen2cor = os.path.join(self.le_sen2cor.text(), "L2A_Process")
         if platform.system() == "Windows":
@@ -365,29 +375,35 @@ class Sen2Cor(BasicModule):
 
 
 def c_correction(
-    data, dem, azimuth, zenith, *, showlog: Callable[..., None] = print, piter=iter
-):
+    data: Data,
+    dem: Data,
+    azimuth: float,
+    zenith: float,
+    *,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> list[NDArray]:
     """
     Calculate C correction.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         Data to be corrected.
-    dem : pygmi.raster.datatypes.Data
+    dem
         DEM data used in correction.
-    azimuth : float
+    azimuth
         Solar azimuth in degrees.
-    zenith : float
+    zenith
         Solar zenith in degrees.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    data2 : list
+    list of ndarray
         List of c-corrected data arrays.
 
     """

@@ -547,7 +547,7 @@ class ScatterPlot(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -573,10 +573,7 @@ class ScatterPlot(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         gbox_cp = QtWidgets.QGroupBox("Cross Plot Settings")
         gl_left = QtWidgets.QGridLayout(gbox_cp)
@@ -765,10 +762,7 @@ class ScatterPlot(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.m1)
         self.saveobj(self.c)
         self.saveobj(self.m)

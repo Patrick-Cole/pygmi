@@ -44,7 +44,7 @@ class EquationEditor(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -70,10 +70,7 @@ class EquationEditor(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
 
         lbl_1 = QtWidgets.QLabel("Data Band Key:")
@@ -227,10 +224,7 @@ class EquationEditor(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.equation)
         self.saveobj(self.textbrowser)
         self.saveobj(self.cmb_dtype)
@@ -354,7 +348,7 @@ def eq_fix(indata, equation, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    indata : list of pygmi.raster.datatypes.Data.
+    indata : list of Data
         PyGMI raster dataset.
     equation : str
         Equation to fix.

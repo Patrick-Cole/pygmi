@@ -38,7 +38,7 @@ class BasicStats(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -58,10 +58,7 @@ class BasicStats(ContextModule):
         self.data = None
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
         self.buttonbox.htmlfile = "raster.cm.stats"
@@ -103,10 +100,7 @@ class BasicStats(ContextModule):
         self.tablewidget.resizeColumnsToContents()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Raster"]
         self.bands, self.cols, self.data = basicstats_calc(data)
 
@@ -223,7 +217,7 @@ class ClusterStats(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -242,10 +236,7 @@ class ClusterStats(ContextModule):
         self.bands = None
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
         self.buttonbox.htmlfile = "cluster.cm.stat"

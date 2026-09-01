@@ -27,23 +27,26 @@
 import os
 import re
 import sys
+from collections.abc import Callable, Iterable
 
 import matplotlib.patches as mpatches
 import numexpr as ne
 import numpy as np
 from bs4 import BeautifulSoup
+from matplotlib.backend_bases import MouseEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from natsort import natsorted
 from numba import njit
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from scipy.interpolate import interp1d
 from scipy.spatial import ConvexHull
 
 from pygmi.maps import frm
 from pygmi.misc import BasicModule
-from pygmi.raster.datatypes import numpy_to_pygmi
+from pygmi.raster.datatypes import Data, numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.modest_image import imshow
 from pygmi.rsense import features
@@ -80,10 +83,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.im1 = None
 
     def init_graph(self):
-        """
-        Initialise the graph.
-
-        """
+        """Initialise the graph."""
         self.figure.clf()
 
         ax1 = self.figure.add_subplot(211)
@@ -97,16 +97,12 @@ class GraphMap(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def update_graph(self):
-        """
-        Initialise the graph.
-
-        """
+        """Update the graph."""
         self.compute_spectra()
         self.figure.canvas.draw()
 
     def compute_spectra(self):
         """Compute the spectra."""
-
         ax2 = self.ax2
         ax2.cla()
         prof = [i.data[self.row, self.col] for i in self.datarr]
@@ -221,7 +217,7 @@ class AnalSpec(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -251,10 +247,7 @@ class AnalSpec(BasicModule):
         self.canvas.mpl_connect("button_press_event", self.button_press_callback)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = r"rsense.dm.hyper.html#analyse-spectra"
         gl_main = QtWidgets.QGridLayout(self)
 
@@ -290,13 +283,13 @@ class AnalSpec(BasicModule):
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
         self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
-    def button_press_callback(self, event):
+    def button_press_callback(self, event: MouseEvent):
         """
         Button press callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse Event.
 
         """
@@ -316,46 +309,32 @@ class AnalSpec(BasicModule):
         self.map.update_graph()
 
     def disp_splib(self):
-        """
-        Change library spectra for display.
-
-        Parameters
-        ----------
-        row : int
-            row of table, unused.
-
-        """
+        """Change library spectra for display."""
         self.map.currentspectra = self.lw_speclib.currentItem().text()
 
         self.map.update_graph()
 
     def feature_change(self):
-        """
-        Change depth marker combo.
-
-        """
+        """Change depth marker combo."""
         txt = self.cmb_feature.currentText()
         self.map.feature = [int(txt[1:].replace("p", ""))] + self.feature[txt]
 
         self.map.update_graph()
 
     def hull(self):
-        """
-        Change whether hull is removed or not.
-
-        """
+        """Change whether hull is removed or not."""
         self.map.remhull = self.cb_hull.isChecked()
         self.map.update_graph()
 
-    def load_splib(self, checked=False, nofile=True):
+    def load_splib(self, checked: bool = False, nofile: bool = True):
         """
         Load ENVI spectral library data.
 
         Parameters
         ----------
-        checked : bool, optional
+        checked
             Set check state of button. Default is False.
-        nofile : bool, optional
+        nofile
             No input filename. The default is True.
 
         """
@@ -385,18 +364,12 @@ class AnalSpec(BasicModule):
         self.map.spectra = self.spectra
 
     def on_combo(self):
-        """
-        On combo.
-
-        """
+        """On combo."""
         self.map.mindx = self.cmb_1.currentIndex()
         self.map.init_graph()
 
     def toggle_rgb_view(self):
-        """
-        Toggle RGB view and single band view.
-
-        """
+        """Toggle RGB view and single band view."""
         self.map.rgb = self.cb_rgb.isChecked()
         if self.cb_rgb.isChecked():
             self.cmb_1.setDisabled(True)
@@ -411,7 +384,7 @@ class AnalSpec(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -505,10 +478,7 @@ class AnalSpec(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_feature)
         self.saveobj(self.cb_hull)
@@ -518,10 +488,7 @@ class AnalSpec(BasicModule):
         self.saveobj(self.filt)
 
     def showtext(self):
-        """
-        Show spectrum description in browser.
-
-        """
+        """Show spectrum description in browser."""
         if self.lw_speclib.currentItem() is None:
             return
 
@@ -547,7 +514,7 @@ class ProcFeatures(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -572,10 +539,7 @@ class ProcFeatures(BasicModule):
         self.resize(500, 350)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.hyper.html#process-features"
         gl_main = QtWidgets.QGridLayout(self)
         lbl_ratios = QtWidgets.QLabel("Product:")
@@ -603,10 +567,7 @@ class ProcFeatures(BasicModule):
         self.cb_filtercheck.stateChanged.connect(self.product_change)
 
     def product_change(self):
-        """
-        Change product combo.
-
-        """
+        """Change product combo."""
         txt = self.cmb_ratios.currentText()
         self.tablewidget.clear()
 
@@ -677,7 +638,7 @@ class ProcFeatures(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -730,20 +691,21 @@ class ProcFeatures(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_ratios)
         self.saveobj(self.cb_rfiltcheck)
         self.saveobj(self.cb_filtercheck)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         datfin = []
 
@@ -836,45 +798,45 @@ class ProcFeatures(BasicModule):
 
 
 def calcfeatures(
-    dat,
-    mineral,
-    feature,
-    ratio,
-    product,
+    dat: list[Data],
+    mineral: str,
+    feature: dict[str, list[int]],
+    ratio: dict[str, str],
+    product: dict[str, list[str]],
     *,
-    cryst=None,
-    rfilt=True,
-    piter=iter,
+    cryst: dict | None = None,
+    rfilt: bool = True,
+    piter: Iterable = iter,
     showlog: Callable[..., None] = print,
-):
+) -> list[Data]:
     """
     Calculate feature dataset.
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data
+    dat
         Input PyGMI data.
-    mineral : str
+    mineral
         Mineral description.
-    feature : dictionary
+    feature
         Dictionary containing the hyperspectral features.
-    ratio : dictionary
+    ratio
         Dictionary containing string definitions of ratios.
-    product : dictionary
+    product
         Final hyperspectral products. Each dictionary value, is a list of
         features or ratios with thresholds to be combined.
-    cryst : dictionary, optional
+    cryst
         Crystallinity of the product, if available
-    rfilt : bool
+    rfilt
         Flag to decide whether to filter final ratio products less than 1.0
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    datfin : list of pygmi.raster.datatypes.Data.
+    list of Data
         Output datasets.
 
     """
@@ -1058,20 +1020,20 @@ def calcfeatures(
     return datfin
 
 
-def indexcalc(formula, dat):
+def indexcalc(formula: str, dat: dict[str, NDArray]) -> NDArray:
     """
     Calculate an index using numexpr.
 
     Parameters
     ----------
-    formula : str
+    formula
         string expression containing index formula.
-    dat : dict
+    dat
         Dictionary of variables to be used in calculation.
 
     Returns
     -------
-    out : numpy array
+    out : ndarray
         This can be a masked array.
 
     """
@@ -1087,7 +1049,15 @@ def indexcalc(formula, dat):
 
 
 @njit
-def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
+def fproc(
+    fdat: NDArray,
+    ptmp: NDArray,
+    dtmp: NDArray,
+    i1a: int,
+    i2a: int,
+    xdat: NDArray,
+    mtmp: NDArray,
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Feature process.
 
@@ -1095,28 +1065,28 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
 
     Parameters
     ----------
-    fdat : numpy array
+    fdat
         Feature data
-    ptmp : numpy array
+    ptmp
         Feature wavelengths.
-    dtmp : numpy array
+    dtmp
         Feature depths.
-    i1a : int
+    i1a
         Start index of feature definition.
-    i2a : int
+    i2a
         End Index of feature definition.
-    xdat : numpy array
+    xdat
         Wavelengths of feature definition.
-    mtmp : numpy array
+    mtmp
         Used in crystallinity calculation.
 
     Returns
     -------
-    ptmp : numpy array
+    ptmp : ndarray
         Feature wavelengths.
-    dtmp : numpy array
+    dtmp : ndarray
         Feature depths.
-    mtmp : numpy array
+    mtmp : ndarray
         Used in crystallinity calculation.
 
     """
@@ -1147,17 +1117,17 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat, mtmp):
 
 
 @njit
-def cubic_calc(xdat, crem, imin):
+def cubic_calc(xdat: NDArray, crem: NDArray, imin: int) -> tuple[float, float]:
     """
     Find minimum of function using an analytic cubic calculation for speed.
 
     Parameters
     ----------
-    xdat : numpy array
+    xdat
         wavelengths - x data.
-    crem : numpy array
+    crem
         continuum removed data - y data.
-    imin : int
+    imin
         Index for estimated minimum.
 
     Returns
@@ -1290,7 +1260,7 @@ def cubic_calc(xdat, crem, imin):
 
 
 @njit
-def phulljit(sample1):
+def phulljit(sample1: NDArray) -> NDArray:
     """
     Hull Calculation.
 
@@ -1298,12 +1268,12 @@ def phulljit(sample1):
 
     Parameters
     ----------
-    sample1 : numpy array
+    sample1
         Sample to create a hull for.
 
     Returns
     -------
-    out : numpy array
+    ndarray
         Output hull.
 
     """
@@ -1335,7 +1305,7 @@ def phulljit(sample1):
     return out
 
 
-def phull(y):
+def phull(y: NDArray) -> NDArray:
     """
     Calculate Continuum/hull.
 
@@ -1343,12 +1313,12 @@ def phull(y):
 
     Parameters
     ----------
-    y : numpy array
+    y
         Sample to create a hull for.
 
     Returns
     -------
-    out : numpy array
+    ndarray
         Output hull.
 
     """
@@ -1367,18 +1337,18 @@ def phull(y):
     return out
 
 
-def readsli(ifile):
+def readsli(ifile: str) -> dict[str, NDArray]:
     """
     Read an ENVI sli file.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input sli spectra file.
 
     Returns
     -------
-    spectra : dictionary
+    dict
         Dictionary of spectra with wavelengths and reflectances.
     """
     with open(ifile[:-4] + ".hdr", encoding="utf-8") as file:

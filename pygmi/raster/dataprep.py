@@ -27,7 +27,7 @@
 import glob
 import os
 import tempfile
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import geopandas as gpd
 import numpy as np
@@ -58,7 +58,7 @@ class DataCut(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -141,10 +141,7 @@ class DataCut(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
@@ -157,7 +154,7 @@ class DataLayerStack(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -175,10 +172,7 @@ class DataLayerStack(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "raster.dm.layerstack"
@@ -297,10 +291,7 @@ class DataLayerStack(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.dxy)
         self.saveobj(self.dsb_dxy)
         self.saveobj(self.cb_cmask)
@@ -335,7 +326,7 @@ class DataMerge(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -388,10 +379,7 @@ class DataMerge(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.dm.mosaic"
         pb_idirlist = QtWidgets.QPushButton("Batch Directory")
@@ -534,10 +522,7 @@ class DataMerge(BasicModule):
         return tmp
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.idir)
         self.saveobj(self.le_idirlist)
         self.saveobj(self.le_nodata)
@@ -612,7 +597,7 @@ class DataReproj(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -628,10 +613,7 @@ class DataReproj(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "raster.dm.reproj"
@@ -734,10 +716,7 @@ class DataReproj(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.orig_wkt)
         self.saveobj(self.targ_wkt)
 
@@ -750,7 +729,7 @@ class GetProf(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -838,10 +817,7 @@ class GetProf(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
@@ -854,7 +830,7 @@ class Metadata(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -898,10 +874,7 @@ class Metadata(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         gbox = QtWidgets.QGroupBox("Dataset")
         self.buttonbox.htmlfile = "raster.cm.meta"
@@ -1146,7 +1119,7 @@ class RasterToVector(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1157,10 +1130,7 @@ class RasterToVector(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "raster.dm.rtov"
@@ -1225,10 +1195,7 @@ class RasterToVector(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
 
 
 class RasterToVectorBoundary(BasicModule):
@@ -1237,7 +1204,7 @@ class RasterToVectorBoundary(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1248,10 +1215,7 @@ class RasterToVectorBoundary(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "raster.dm.rtov"
@@ -1303,10 +1267,7 @@ class RasterToVectorBoundary(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
 
 
 def cluster_to_raster(indata):
@@ -1521,7 +1482,7 @@ def mosaic(
     idir=None,
     bfile=None,
     bandstofiles=False,
-    piter=iter,
+    piter: Iterable = iter,
     showlog: Callable[..., None] = print,
     singleband=False,
     forcetype=None,
@@ -1910,12 +1871,12 @@ def trim_raster(olddata):
 
     Parameters
     ----------
-    olddata : list of pygmi.raster.datatypes.Data
+    olddata : list of Data
         PyGMI dataset.
 
     Returns
     -------
-    olddata : list of pygmi.raster.datatypes.Data
+    olddata : list of Data
         PyGMI dataset.
     """
     for data in olddata:

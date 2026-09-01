@@ -257,10 +257,7 @@ class LithModel:
         return grid
 
     def init_calc_grids(self):
-        """
-        Initialize mag and gravity from the model.
-
-        """
+        """Initialize mag and gravity from the model."""
         tmp = np.ma.zeros([self.numy, self.numx])
         self.griddata["Calculated Magnetics"] = self.init_grid(tmp.copy())
         self.griddata["Calculated Magnetics"].dataid = "Calculated Magnetics"
@@ -372,10 +369,7 @@ class LithModel:
         self.is_modified()
 
     def update_lithlist(self):
-        """
-        Update lith_list from local variables.
-
-        """
+        """Update lith_list from local variables."""
         for i in self.lith_list:
             self.lith_list[i].set_xyz(
                 self.numx,

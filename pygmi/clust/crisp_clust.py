@@ -28,7 +28,7 @@ Crisp clustering is a set of clustering routines.
 This uses standard statistical methods, as opposed to fuzzy methods.
 """
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 from PySide6 import QtWidgets
@@ -44,7 +44,7 @@ class CrispClust(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -83,10 +83,7 @@ class CrispClust(BasicModule):
         self.combo()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "cluster.dm.crisp"
         gl_1 = QtWidgets.QGridLayout(self)
         vbl = QtWidgets.QVBoxLayout(self.gbox)
@@ -229,10 +226,7 @@ class CrispClust(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.update_vars()
 
         self.saveobj(self.sb_maxclusters)
@@ -286,7 +280,7 @@ def crispclust(
     term_thresh=0.00001,
     init_type="random",
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Crisp Clustering.
@@ -456,7 +450,7 @@ def crisp_means(
     cltype,
     cov_constr,
     showlog: Callable[..., None] = print,
-    piter=iter,
+    piter: Iterable = iter,
 ):
     """
     Script enables the crisp clustering of COMPLETE multi-variate datasets.

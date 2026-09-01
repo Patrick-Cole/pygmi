@@ -27,13 +27,14 @@
 import os
 import re
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numexpr as ne
 import numpy as np
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_from_rastermeta, set_export_filename
@@ -45,7 +46,7 @@ class SatRatios(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -59,10 +60,7 @@ class SatRatios(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.ratios"
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton("Invert Selection")
@@ -106,7 +104,7 @@ class SatRatios(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -160,19 +158,20 @@ class SatRatios(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_sensor)
         self.saveobj(self.lw_ratios)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         sensor = self.cmb_sensor.currentText()
 
@@ -345,37 +344,11 @@ class SatRatios(BasicModule):
         self.lw_ratios.addItems(rlist2)
         self.lw_ratios.selectAll()
 
-        # for i in range(self.lw_ratios.count()):
-        #     item = self.lw_ratios.item(i)
-        #     item.setSelected(True)
-        #     item.setText('\u2713 ' + item.text())
-
     def invert_selection(self):
-        """
-        Invert the selected ratios.
-
-        """
+        """Invert the selected ratios."""
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
             item.setSelected(not item.isSelected())
-
-        # self.set_selected_ratios()
-
-    # def set_selected_ratios(self):
-    #     """
-    #     Set the selected ratios.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     for i in range(self.lw_ratios.count()):
-    #         item = self.lw_ratios.item(i)
-    #         if item.isSelected():
-    #             item.setText('\u2713' + item.text()[1:])
-    #         else:
-    #             item.setText(' ' + item.text()[1:])
 
 
 class ConditionIndices(BasicModule):
@@ -384,7 +357,7 @@ class ConditionIndices(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -401,10 +374,7 @@ class ConditionIndices(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.calccondind"
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton("Invert Selection")
@@ -453,7 +423,7 @@ class ConditionIndices(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -509,20 +479,21 @@ class ConditionIndices(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_sensor)
         self.saveobj(self.cmb_index)
         self.saveobj(self.lw_ratios)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         index = self.cmb_index.currentText()
         sensor = self.cmb_sensor.currentText()
@@ -717,10 +688,7 @@ class ConditionIndices(BasicModule):
         return True
 
     def setratios(self):
-        """
-        Set the available indices.
-
-        """
+        """Set the available indices."""
         sensor = self.cmb_sensor.currentText()
         rlist = []
 
@@ -738,10 +706,7 @@ class ConditionIndices(BasicModule):
             item.setSelected(True)
 
     def invert_selection(self):
-        """
-        Invert the selected ratios.
-
-        """
+        """Invert the selected ratios."""
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
             item.setSelected(not item.isSelected())
@@ -749,10 +714,7 @@ class ConditionIndices(BasicModule):
         self.set_selected_ratios()
 
     def set_selected_ratios(self):
-        """
-        Set the selected ratios.
-
-        """
+        """Set the selected ratios."""
         currentitem = self.lw_ratios.currentItem()
 
         idict = {}
@@ -766,17 +728,14 @@ class ConditionIndices(BasicModule):
         elif not currentitem.isSelected() and "VHI" in idict:
             self.lw_ratios.item(idict["VHI"]).setSelected(False)
 
-        # for i in range(self.lw_ratios.count()):
-        #     item = self.lw_ratios.item(i)
-        #     if item.isSelected():
-        #         item.setText('\u2713' + item.text()[1:])
-        #     else:
-        #         item.setText(' ' + item.text()[1:])
-
 
 def calc_ratios(
-    dat, rlist, showlog: Callable[..., None] = print, piter=iter, sensor=None
-):
+    dat: list[Data],
+    rlist: list[str],
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+    sensor: str | None = None,
+) -> list[Data]:
     """
     Calculate Band ratios.
 
@@ -785,20 +744,20 @@ def calc_ratios(
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
+    dat
         List of PyGMI Data.
-    rlist : list
+    rlist
         List of strings, containing ratios to calculate..
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
-    sensor : str
+    sensor
         The sensor being processed. The default is None.
 
     Returns
     -------
-    datfin : list of pygmi.raster.datatypes.Data.
+    list of Data
         List of PyGMI Data.
 
     """
@@ -907,7 +866,7 @@ def calc_ratios(
     return datfin
 
 
-def correct_bands(rlist, sensor, bfile=None):
+def correct_bands(rlist: list[str], sensor: str, bfile: str | None = None) -> list[str]:
     """
     Correct the band designations.
 
@@ -916,16 +875,16 @@ def correct_bands(rlist, sensor, bfile=None):
 
     Parameters
     ----------
-    rlist : list
+    rlist
         List of input ratios.
-    sensor : str
+    sensor
         Target sensor.
-    bfile : str
+    bfile
         Data filename. The default is None.
 
     Returns
     -------
-    rlist2 : list
+    list of str
         List of converted ratios.
 
     """
@@ -1046,9 +1005,22 @@ def correct_bands(rlist, sensor, bfile=None):
     return rlist2
 
 
-def correct_EMIT_bands(rlist, dat):
-    """Correct EMIT band names."""
+def correct_EMIT_bands(rlist: list[str], dat: list[Data]) -> list[Data]:
+    """
+    Correct EMIT band names.
 
+    Parameters
+    ----------
+    rlist
+        List of ratios.
+    dat
+        List of Data.
+
+    Returns
+    -------
+    list of Data
+        list of EMIT data bands.
+    """
     blist1 = []
     for i in rlist:
         formula = i.split(" ")[0]
@@ -1080,18 +1052,18 @@ def correct_EMIT_bands(rlist, dat):
     return dat2
 
 
-def get_aster_list(flist):
+def get_aster_list(flist: list[str]) -> list[str]:
     """
     Get ASTER files from a file list.
 
     Parameters
     ----------
-    flist : list
+    flist
         List of filenames.
 
     Returns
     -------
-    flist2 : list
+    list of str
         List of filenames.
 
     """
@@ -1104,18 +1076,18 @@ def get_aster_list(flist):
     return flist2
 
 
-def get_EMIT_list(flist):
+def get_EMIT_list(flist: list[str]) -> list[str]:
     """
     Get EMIT files from a file list.
 
     Parameters
     ----------
-    flist : list
+    flist
         List of filenames.
 
     Returns
     -------
-    flist2 : list
+    list of str
         List of filenames.
 
     """
@@ -1128,18 +1100,25 @@ def get_EMIT_list(flist):
     return flist2
 
 
-def get_landsat_list(flist, sensor=None, allsats=False):
+def get_landsat_list(
+    flist: list[str], sensor: str | None = None, allsats: bool = False
+) -> list[str]:
     """
     Get Landsat files from a file list.
 
     Parameters
     ----------
-    flist : list
+    flist
         List of filenames.
+    sensor
+        Landsat satellite sensor, by default None.
+    allsats
+        use all Landsat sensors, by default False.
+
 
     Returns
     -------
-    flist2 : list
+    list of str
         List of filenames.
 
     """
@@ -1172,18 +1151,18 @@ def get_landsat_list(flist, sensor=None, allsats=False):
     return flist2
 
 
-def get_sentinel_list(flist):
+def get_sentinel_list(flist: list[str]) -> list[str]:
     """
     Get Sentinel-2 files from a file list.
 
     Parameters
     ----------
-    flist : list
+    flist
         List of filenames.
 
     Returns
     -------
-    flist2 : list
+    list of str
         List of filenames.
 
     """
@@ -1196,18 +1175,18 @@ def get_sentinel_list(flist):
     return flist2
 
 
-def get_TCI(lst):
+def get_TCI(lst: list[Data]) -> list[Data]:
     """
     Calculate TCI.
 
     Parameters
     ----------
-    lst : list of pygmi.raster.datatypes.Data.
+    lst
         list of PyGMI datasets - land surface temperatures.
 
     Returns
     -------
-    tci : list of pygmi.raster.datatypes.Data.
+    list of Data
         output TCI datasets.
 
     """
@@ -1232,20 +1211,20 @@ def get_TCI(lst):
     return tci
 
 
-def get_VCI(evi, index):
+def get_VCI(evi: list[Data], index: str) -> list[Data]:
     """
     Calculate VCI.
 
     Parameters
     ----------
-    evi : list of pygmi.raster.datatypes.Data
+    evi
         list of EVI datasets.
-    index : str
+    index
         index for dataid.
 
     Returns
     -------
-    vci : list of pygmi.raster.datatypes.Data
+    list of Data
         output VCI datasets.
 
     """
@@ -1270,22 +1249,22 @@ def get_VCI(evi, index):
     return vci
 
 
-def get_VHI(tci, vci, alpha=0.5):
+def get_VHI(tci: list[Data], vci: list[Data], alpha: float = 0.5) -> list[Data]:
     """
     Calculate VHI.
 
     Parameters
     ----------
-    tci : list
+    tci
         TCI dataset list.
-    vci : list
+    vci
         VCI dataset list.
-    alpha : float, optional
+    alpha
         Weight for proportion of TCI and VCI. The default is 0.5.
 
     Returns
     -------
-    vhi : list of pygmi.raster.datatypes.Data
+    list of Data
         Output VHI datasets.
 
     """
@@ -1302,7 +1281,12 @@ def get_VHI(tci, vci, alpha=0.5):
     return vhi
 
 
-def landslide_index(dat, sensor=None, showlog: Callable[..., None] = print, piter=iter):
+def landslide_index(
+    dat: list[Data],
+    sensor: str | None = None,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> list[Data]:
     """
     Calculate Band ratios.
 
@@ -1311,18 +1295,18 @@ def landslide_index(dat, sensor=None, showlog: Callable[..., None] = print, pite
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data.
+    dat
         List of PyGMI Data.
-    sensor : str
+    sensor
         The sensor being processed. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    datfin : list of pygmi.raster.datatypes.Data.
+    list of Data
         Red, green and blue PyGMI Data.
 
     """

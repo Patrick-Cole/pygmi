@@ -6,7 +6,7 @@ set_extent as well as better integration into PyGMI. It is changed to read data
 directly from disk.
 """
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import matplotlib.colors as mcolors
 import matplotlib.image as mi
@@ -474,7 +474,7 @@ def imshow(
     suntheta=None,
     sunphi=None,
     sunalpha=None,
-    piter=iter,
+    piter: Iterable = iter,
     showlog: Callable[..., None] = print,
     **kwargs,
 ):

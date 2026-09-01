@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-These are tests. Run pytest on this file from within this directory to do
-the tests.
-"""
+"""These are tests. Run pytest on this file from within this directory to do the tests."""
 
 import os
 
@@ -39,8 +36,7 @@ os.environ["LOKY_MAX_CPU_COUNT"] = str(psutil.cpu_count(logical=False))
 
 
 def test_cluster():
-    """test cluster."""
-
+    """Test cluster."""
     dat1 = Data()
     dat1.data = np.ma.identity(3)
     dat1.data.mask = np.zeros([3, 3])
@@ -64,8 +60,7 @@ def test_cluster():
 
 
 def test_crisp():
-    """test crisp cluster."""
-
+    """Test crisp cluster."""
     dat1 = Data()
     dat1.data = np.ma.identity(3)
     dat1.data.mask = np.zeros([3, 3])
@@ -86,8 +81,7 @@ def test_crisp():
 
 
 def test_fuzzy():
-    """test fuzzy cluster."""
-
+    """Test fuzzy cluster."""
     dat1 = Data()
     dat1.data = np.ma.identity(3)
     dat1.data.mask = np.zeros([3, 3])

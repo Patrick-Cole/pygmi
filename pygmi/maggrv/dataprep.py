@@ -44,7 +44,7 @@ class ASig(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -55,10 +55,7 @@ class ASig(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.asig"
 
@@ -108,10 +105,7 @@ class ASig(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_s)
         self.saveobj(self.sb_azi)
         self.saveobj(self.sb_k)
@@ -160,7 +154,7 @@ class Continuation(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -174,10 +168,7 @@ class Continuation(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.cont"
         lbl_band = QtWidgets.QLabel("Band to perform continuation:")
@@ -234,10 +225,7 @@ class Continuation(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_dataid)
         self.saveobj(self.cmb_cont)
         self.saveobj(self.dsb_height)
@@ -361,7 +349,7 @@ class Tilt1(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -389,10 +377,7 @@ class Tilt1(BasicModule):
         self.sb_k.setValue(2)
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.tilt"
 
@@ -486,10 +471,7 @@ class Tilt1(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.sb_s)
         self.saveobj(self.sb_azi)
         self.saveobj(self.sb_k)
@@ -633,7 +615,7 @@ class RTP(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -649,10 +631,7 @@ class RTP(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "maggrv.dm.rtp"
 
@@ -722,10 +701,7 @@ class RTP(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_dataid)
         self.saveobj(self.dsb_inc)
         self.saveobj(self.dsb_dec)

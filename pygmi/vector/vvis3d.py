@@ -41,7 +41,7 @@ class Mod3dDisplay(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -67,10 +67,7 @@ class Mod3dDisplay(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "vector.cm.displayvoxel"
         hbl = QtWidgets.QHBoxLayout(self)
@@ -101,7 +98,7 @@ class Mod3dDisplay(ContextModule):
 
         Parameters
         ----------
-        QCloseEvent : TYPE
+        QCloseEvent
             Close event.
 
         """
@@ -109,10 +106,7 @@ class Mod3dDisplay(ContextModule):
         self.plotter.close()
 
     def save(self):
-        """
-        Save a jpg.
-
-        """
+        """Save a JPG or PNG."""
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, "Save File", ".", "JPG (*.jpg);;PNG (*.png)"
         )
@@ -129,7 +123,6 @@ class Mod3dDisplay(ContextModule):
         Entry point into routine. This entry point exists for
         the case  where data must be initialised before entering at the
         standard 'settings' sub module.
-
         """
         self.outdata = self.indata
 
@@ -153,10 +146,7 @@ class Mod3dDisplay(ContextModule):
         return True
 
     def update_plot(self):
-        """
-        Update 3D model.
-
-        """
+        """Update 3D model."""
         QtWidgets.QApplication.processEvents()
 
         vdat = self.indata["Voxel"][0]

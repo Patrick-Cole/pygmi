@@ -113,7 +113,7 @@ class ClipToZoom(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -209,10 +209,7 @@ class ClipToZoom(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_2)
 

@@ -40,6 +40,7 @@ from matplotlib import colormaps, patches
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from shapely import Polygon, make_valid
 
@@ -52,7 +53,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : BeachBall, optional
+    parent
         Reference to the parent routine. The default is None.
     """
 
@@ -92,10 +93,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         FigureCanvasQTAgg.updateGeometry(self)
 
     def init_graph(self):
-        """
-        Initialize the graph.
-
-        """
+        """Initialize the graph."""
         self.axes.clear()
         self.axes.set_aspect("equal")
 
@@ -139,7 +137,7 @@ class BeachBall(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -164,9 +162,8 @@ class BeachBall(BasicModule):
         """
         Initialise Data.
 
-        Entry point into routine. This entry point exists for
-        the case  where data must be initialised before entering at the
-        standard 'settings' sub module.
+        Entry point into routine. This entry point exists for the case where data must
+        be initialised before entering at the standard 'settings' sub module.
 
         Returns
         -------
@@ -220,10 +217,7 @@ class BeachBall(BasicModule):
         return True
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "seis.dm.fps"
 
@@ -351,10 +345,7 @@ class BeachBall(BasicModule):
         return True
 
     def change_alg(self):
-        """
-        Change algorithm.
-
-        """
+        """Change algorithm."""
         txt = str(self.cmb_alg.currentText())
         self.algorithm = txt
         data = self.indata[self.stype]
@@ -384,7 +375,7 @@ class BeachBall(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -409,10 +400,7 @@ class BeachBall(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.algorithm)
         self.saveobj(self.nofps)
         self.saveobj(self.stype)
@@ -423,8 +411,14 @@ class BeachBall(BasicModule):
 
 
 def beachball(
-    fm, centerx, centery, diam, isgeog, *, showlog: Callable[..., None] = print
-):
+    fm: NDArray,
+    centerx: float,
+    centery: float,
+    diam: float,
+    isgeog: bool,
+    *,
+    showlog: Callable[..., None] = print,
+) -> tuple[NDArray, NDArray, NDArray, NDArray]:
     """
     Beachball.
 
@@ -438,7 +432,7 @@ def beachball(
 
     Parameters
     ----------
-    fm : numpy array
+    fm
         focal mechanism that is either number of mechanisms (NM) by 3
         (strike, dip, and rake) or NM x 6 (mxx, myy, mzz, mxy, mxz, myz -
         the six independent components of the moment tensor). The strike is
@@ -449,26 +443,26 @@ def beachball(
         (thrust), 0 moves it in the strike direction (left-lateral), -90 moves
         it down-dip (normal), and 180 moves it opposite to strike
         (right-lateral).
-    centerx : float
+    centerx
         place beachball(s) at position centerx
-    centery : float
+    centery
         place beachball(s) at position centery
-    diam : float
+    diam
         draw beachball with this diameter.
-    isgeog : bool
+    isgeog
         True if in geographic coordinates, False otherwise.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
 
     Returns
     -------
-    X : numpy array
+    X : ndarray
         array of x coordinates for vertices
-    Y : numpy array
+    Y : ndarray
         array of y coordinates for vertices
-    xx : numpy array
+    xx : ndarray
         array of x coordinates for vertices
-    yy : numpy array
+    yy : ndarray
         array of y coordinates for vertices
     """
     fm = np.array(fm)
@@ -605,22 +599,22 @@ def beachball(
     return X, Y, xx, yy
 
 
-def pol2cart(phi, rho):
+def pol2cart(phi: NDArray, rho: NDArray) -> tuple[NDArray, NDArray]:
     """
     Polar to cartesian coordinates.
 
     Parameters
     ----------
-    phi : numpy array
+    phi
         Polar angles in radians.
-    rho : numpy array
+    rho
         Polar r values.
 
     Returns
     -------
-    xxx : numpy array
+    xxx : ndarray
         X values.
-    yyy : numpy array
+    yyy : ndarray
         Y values.
 
     """
@@ -629,7 +623,7 @@ def pol2cart(phi, rho):
     return xxx, yyy
 
 
-def auxplane(s1, d1, r1):
+def auxplane(s1: NDArray, d1: NDArray, r1: NDArray) -> tuple[NDArray, NDArray, NDArray]:
     """
     Get Strike and dip of second plane.
 
@@ -637,20 +631,20 @@ def auxplane(s1, d1, r1):
 
     Parameters
     ----------
-    s1 : numpy array
+    s1
         Strike 1.
-    d1 : numpy array
+    d1
         Dip 1.
-    r1 : numpy array
+    r1
         Rake 1.
 
     Returns
     -------
-    strike : numpy array
+    strike : ndarray
         Strike of second plane.
-    dip : numpy array
+    dip : ndarray
         Dip of second plane.
-    rake : numpy array
+    rake : ndarray
         Rake of second plane.
     """
     r2d = 180 / np.pi
@@ -684,7 +678,7 @@ def auxplane(s1, d1, r1):
     return strike, dip, rake
 
 
-def strikedip(n, e, u):
+def strikedip(n: NDArray, e: NDArray, u: NDArray) -> tuple[NDArray, NDArray]:
     """
     Find strike and dip of plane given normal vector.
 
@@ -692,18 +686,18 @@ def strikedip(n, e, u):
 
     Parameters
     ----------
-    n : numpy array
+    n
         North coordinates for normal vector.
-    e : numpy array
+    e
         East coordinate for normal vector.
-    u : numpy array
+    u
         Up coordinate for normal vector.
 
     Returns
     -------
-    strike : numpy array
+    strike : ndarray
         Strike of plane.
-    dip : numpy array
+    dip : ndarray
         Dip of plane.
 
     """
@@ -726,23 +720,25 @@ def strikedip(n, e, u):
     return strike, dip
 
 
-def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
+def mij2sdr(
+    mxx: float, myy: float, mzz: float, mxy: float, mxz: float, myz: float
+) -> tuple[float, float, float]:
     """
     Adapted from code, mij2d.f, created by Chen Ji.
 
     Parameters
     ----------
-    mxx - float
+    mxx
         independent component of the moment tensor
-    myy - float
+    myy
         independent component of the moment tensor
-    mzz - float
+    mzz
         independent component of the moment tensor
-    mxy - float
+    mxy
         independent component of the moment tensor
-    mxz - float
+    mxz
         independent component of the moment tensor
-    myz - float
+    myz
         independent component of the moment tensor
 
     Returns
@@ -788,15 +784,15 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     return strike, dip, rake
 
 
-def TDL(AN, BN):
+def TDL(AN: NDArray, BN: NDArray) -> tuple[float, float, float]:
     """
     TDL.
 
     Parameters
     ----------
-    AN : numpy array
+    AN
         array comprising XN, YN, ZN
-    BN : numpy array
+    BN
         array comprising XE, YE, ZE
 
     Returns

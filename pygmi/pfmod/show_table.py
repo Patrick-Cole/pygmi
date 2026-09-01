@@ -37,7 +37,7 @@ class BasicStats3D(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -57,10 +57,7 @@ class BasicStats3D(ContextModule):
         self.data = None
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
 
@@ -96,10 +93,7 @@ class BasicStats3D(ContextModule):
         self.tablewidget.resizeColumnsToContents()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = self.indata["Model3D"]
         self.bands, self.cols, self.data = basicstats3d_calc(data)
 

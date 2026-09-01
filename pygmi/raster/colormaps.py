@@ -30,8 +30,8 @@ https://github.com/uekstrom/colorwheel/blob/main/colorwheel.py
 """
 
 import numpy as np
+from matplotlib import colormaps
 from matplotlib.colors import LinearSegmentedColormap, ListedColormap
-from matplotlib.pyplot import colormaps
 
 # This is the Colorwheel colour map in sRGB float format
 wheel_colors = [

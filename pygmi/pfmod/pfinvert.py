@@ -58,7 +58,7 @@ class MagInvert(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -99,10 +99,7 @@ class MagInvert(BasicModule):
         self.init()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.setWindowTitle("Inverse Modelling Parameters")
         self.buttonbox.htmlfile = "pfmod.dm.inv3d"
 
@@ -644,10 +641,7 @@ class MagInvert(BasicModule):
         return tmp
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_model)
         self.saveobj(self.cmb_other)
         self.saveobj(self.cmb_dtm)

@@ -139,10 +139,7 @@ class BIRRP(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         buttonbox = QtWidgets.QDialogButtonBox()
         pb_importbirrp = QtWidgets.QPushButton("Import BIRRP configuration file")
         pb_runbirrp = QtWidgets.QPushButton("Save BIRRP configuration file")
@@ -725,7 +722,4 @@ class BIRRP(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""

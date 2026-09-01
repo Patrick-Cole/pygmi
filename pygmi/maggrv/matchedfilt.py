@@ -44,7 +44,7 @@ class MatchedFilt(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -72,10 +72,7 @@ class MatchedFilt(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "maggrv.dm.match"
 
         lbl_1 = QtWidgets.QLabel("Band to perform Filtering:")
@@ -276,10 +273,7 @@ class MatchedFilt(BasicModule):
         self.calculate()
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_band1)
         self.saveobj(self.sb_nsegs)
 

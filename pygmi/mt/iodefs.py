@@ -97,10 +97,7 @@ class ImportEDI(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifilelist)
 
 

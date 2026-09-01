@@ -38,7 +38,7 @@ class MenuWidget:
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to MainWidget class found in main.py. The default is None.
     """
 
@@ -76,9 +76,9 @@ class MenuWidget:
         self.menu.addAction(self.action_beachball)
         self.action_beachball.triggered.connect(self.beachball)
 
-        self.action_quarry = QtGui.QAction("Remove Quarry Events")
-        self.menu.addAction(self.action_quarry)
-        self.action_quarry.triggered.connect(self.quarry)
+        # self.action_quarry = QtGui.QAction("Remove Quarry Events")
+        # self.menu.addAction(self.action_quarry)
+        # self.action_quarry.triggered.connect(self.quarry)
 
         # Context menus
 

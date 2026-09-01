@@ -66,23 +66,23 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget optional
+    parent
         Reference to the parent routine. The default is None.
-    start_item : DiagramItem
+    start_item
         Starting DiagramItem object.
-    end_item : DiagramItem
+    end_item
         End DiagramItem object.
 
     Attributes
     ----------
-    arrow_head : QPolygonF
+    arrow_head
         Arrow head polygon.
-    my_start_item : DiagramItem
+    my_start_item
         Starting DiagramItem object. This will send information to my_end_item
-    my_end_item : DiagramItem
+    my_end_item
         End DiagramItem object. This will get information from my_start_item
-    my_color : QtCore colour
-        Color
+    my_color
+        Colour
     """
 
     def __init__(
@@ -124,7 +124,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
         Returns
         -------
-        tmp : QtCore.QRectF
+        QtCore.QRectF
+            Bounding rectangle.
         """
         extra = (self.pen().width() + 20) / 2.0
         p1 = self.line().p1()
@@ -144,11 +145,11 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
         Parameters
         ----------
-        painter : QtGui.QPainter
+        painter
             Painter routine.
-        option : QtWidgets.QStyleOptionGraphicsItem
+        option
             Style options
-        widget : QtWidgets.QWidget, optional
+        widget
             Widget, the default is None.
         """
         pi = math.pi
@@ -219,30 +220,30 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
-    diagram_type : str
+    diagram_type
         string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
-    context_menu : dict
+    context_menu
         Dictionary of context menu options
-    my_class : object
+    my_class
         Class that the diagram item is linked to.
 
     Attributes
     ----------
-    arrows : list
+    arrows
         list of Arrow objects
-    diagram_type : str
+    diagram_type
         string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
-    context_menu : dict
+    context_menu
         Dictionary of context menu options
-    my_class : object
+    my_class
         Class that the diagram item is linked to.
-    text_item : None or QtWidgets.QGraphicsTextItem
+    text_item
         Text label associated with item.
-    my_class_name : str
+    my_class_name
         Class name being referenced
     """
 
@@ -328,7 +329,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         Parameters
         ----------
-        arrow : Arrow
+        arrow
             Arrow object to add.
         """
         self.arrows.append(arrow)
@@ -357,7 +358,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         Parameters
         ----------
-        event : N/A
+        event
+            Context menu event.
         """
         self.scene().clearSelection()
         self.setSelected(True)
@@ -438,7 +440,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         Parameters
         ----------
-        arrow : Arrow
+        arrow
             Arrow object to remove.
         """
         try:
@@ -459,7 +461,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -506,9 +508,9 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
-    item_menu : QtWidgets.QMenu
+    item_menu
         Item menu.
     """
 
@@ -539,8 +541,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         Parameters
         ----------
-        mouse_event : QtWidgets.QGraphicsSceneMouseEvent
-            mouse event.
+        mouse_event
+            Mouse event.
         """
         if mouse_event.button() != QtCore.Qt.MouseButton.LeftButton:
             return
@@ -629,8 +631,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         Parameters
         ----------
-        mouse_event : QtWidgets.QGraphicsSceneMouseEvent
-            mouse event.
+        mouse_event
+            Mouse event.
         """
         if self.my_mode == "InsertLine" and self.line:
             new_line = QtCore.QLineF(self.line.line().p1(), mouse_event.scenePos())
@@ -644,8 +646,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         Parameters
         ----------
-        mouse_event: QtWidgets.QGraphicsSceneMouseEvent
-            mouse event.
+        mouse_event
+            Mouse event.
         """
         if self.line and self.my_mode == "InsertLine":
             start_items = self.items(self.line.line().p1())
@@ -686,8 +688,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
     Attributes
     ----------
-    pdlg : list
-    context_menu : dictionary
+    pdlg
+    context_menu
     """
 
     def __init__(self):
@@ -880,7 +882,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        txt : str
+        txt
             Label for a group of context menu items
         """
         if self.context_menu.get(txt) is not None:
@@ -926,7 +928,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        event : QtGui.QKeyEvent
+        event
             Key press event object.
         """
         if event.key() == QtCore.Qt.Key.Key_Delete:
@@ -940,7 +942,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        idata : list of pygmi.raster.datatypes.Data
+        idata
             Input list of PyGMI Data.
         """
         idata = []
@@ -955,7 +957,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        odata : list of pygmi.raster.datatypes.Data
+        odata
             Output list of PyGMI Data.
         """
         odata = []
@@ -987,16 +989,16 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        item_type : str
+        item_type
             str describing the shape of the graphic used to describe the item.
-        item_name : str
+        item_name
             str describing the name of the item to be displayed.
-        class_name : object
+        class_name
             class to be called when double clicking on the item.
 
         Returns
         -------
-        item : DiagramItem | None
+        DiagramItem | None
             Return a DiagramItem object
         """
         if "nodialog" in kwargs:
@@ -1081,9 +1083,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        newitem : custom class
+        newitem
             newitem is the class to be called by the context menu item
-        option : str
+        option
             A string option. The default is None.
 
         """
@@ -1107,7 +1109,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        newitem : custom class
+        newitem
             newitem is the class to be called by the context menu item
         """
         self.process_is_active(True)
@@ -1135,7 +1137,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        isactive : bool, optional
+        isactive
             boolean variable indicating if a process is active, by default True.
         """
         if isactive is True:
@@ -1354,7 +1356,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        txt : str
+        txt
             Message to be displayed in the datainfo panel
         """
         self.textbrowser_datainfo.setPlainText(txt)
@@ -1368,9 +1370,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        txt : str
+        txt
             Message to be displayed in the process log
-        replacelast : bool, optional
+        replacelast
             flag to indicate whether the last row on the log should be
             overwritten, by default False.
         """
@@ -1407,7 +1409,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Parameters
         ----------
-        dlg : object
+        dlg
             Object to be appended to self.pdlg
         """
         for i in range(len(self.pdlg) - 1, -1, -1):
@@ -1428,7 +1430,7 @@ class Startup(QtWidgets.QDialog):
 
     Parameters
     ----------
-    pbarmax : int
+    pbarmax
         Progress bar maximum value.
 
     """
@@ -1476,7 +1478,7 @@ def get_crs_label(crs_input: str | int | CRS) -> str:
 
     Parameters
     ----------
-    crs_input : str | int | CRS
+    crs_input
         CRS input
 
     Returns

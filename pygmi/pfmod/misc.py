@@ -57,6 +57,7 @@ def update_lith_lw(lmod, lwidget):
     for i in range(lwidget.count()):
         tmp = lwidget.item(i)
         tindex = lmod.lith_list[str(tmp.text())].lith_index
+
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
@@ -92,10 +93,7 @@ class ProgressBar:
         self.resetall()
 
     def incr(self):
-        """
-        Increase value by one.
-
-        """
+        """Increase value by one."""
         if self.value < self.max:
             self.value += 1
             if self.value == self.max and self.mvalue < self.mmax:
@@ -181,10 +179,7 @@ class ProgressBar:
         QtWidgets.QApplication.processEvents()
 
     def maxall(self):
-        """
-        Set all progress bars to maximum value.
-
-        """
+        """Set all progress bars to maximum value."""
         self.mvalue = self.mmax
         self.value = self.max
         self.pbarmain.setValue(self.mvalue)
@@ -237,10 +232,7 @@ class ProgressBar:
         self.pbar.setValue(self.value)
 
     def busysub(self):
-        """
-        Busy.
-
-        """
+        """Busy."""
         self.pbar.setMinimum(0)
         self.pbar.setMaximum(0)
         self.pbar.setValue(-1)
@@ -253,7 +245,7 @@ class MergeMod3D(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -267,10 +259,7 @@ class MergeMod3D(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "pfmod.dm.merge3dmodels"
 
@@ -330,10 +319,7 @@ class MergeMod3D(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_master)
         self.saveobj(self.cmb_slave)
 

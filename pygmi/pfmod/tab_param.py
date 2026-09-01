@@ -37,7 +37,7 @@ class MergeLith(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : ParamDisplay, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -51,10 +51,7 @@ class MergeLith(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
@@ -90,7 +87,7 @@ class LithNotes(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -111,10 +108,7 @@ class LithNotes(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_1 = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
 
@@ -157,10 +151,7 @@ class LithNotes(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
-        """
-        Apply changes.
-
-        """
+        """Apply changes."""
         i = self.lw_param_defs.currentRow()
         if i == -1:
             i = 0
@@ -175,10 +166,7 @@ class LithNotes(QtWidgets.QDialog):
         self.accept()
 
     def lw_index_change(self):
-        """
-        List box in parameter tab for definitions.
-
-        """
+        """List box in parameter tab for definitions."""
         if self.oldrowtext is not None:
             self.codelist[self.oldrowtext] = self.lithcode.value()
             self.noteslist[self.oldrowtext] = self.notes.toPlainText()
@@ -193,10 +181,7 @@ class LithNotes(QtWidgets.QDialog):
         self.oldrowtext = itxt
 
     def tab_activate(self):
-        """
-        Entry point.
-
-        """
+        """Entry point."""
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
         # Need this to init the first values.
@@ -215,7 +200,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -255,10 +240,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.init()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.setWindowTitle("Geophysical Parameters")
         helpdocs = menu_default.HelpButton("pfmod.dm.modelcreate")
 
@@ -485,10 +467,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.lw_index_change()
 
     def apply_lith(self):
-        """
-        Apply lithological changes.
-
-        """
+        """Apply lithological changes."""
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
         if lith == self.lmod1.lith_list["Background"]:
@@ -508,10 +487,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.showtext("Lithological changes applied.")
 
     def apply_changes(self):
-        """
-        Apply geophysical properties.
-
-        """
+        """Apply geophysical properties."""
         self.lmod1.gregional = self.dsb_gregional.value()
         self.lmod1.mht = self.dsb_mht.value()
         self.lmod1.ght = self.dsb_ght.value()
@@ -527,10 +503,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.accept()
 
     def change_rmi(self):
-        """
-        Update spinboxes when rmi is changed.
-
-        """
+        """Update spinboxes when rmi is changed."""
         rmi = self.dsb_rmi.value()
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
@@ -547,10 +520,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.connect_spin()
 
     def change_magnetization(self):
-        """
-        Update spinboxes when magnetization is changed.
-
-        """
+        """Update spinboxes when magnetization is changed."""
         mstrength = self.dsb_magnetization.value()
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
@@ -568,10 +538,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.connect_spin()
 
     def change_qratio(self):
-        """
-        Update spinboxes when qratio is changed.
-
-        """
+        """Update spinboxes when qratio is changed."""
         qratio = self.dsb_qratio.value()
         susc = self.dsb_susc.value()
         hintn = self.dsb_hint.value()
@@ -585,20 +552,14 @@ class ParamDisplay(QtWidgets.QDialog):
         self.connect_spin()
 
     def disconnect_spin(self):
-        """
-        Disconnect spin boxes.
-
-        """
+        """Disconnect spin boxes."""
         self.dsb_susc.valueChanged.disconnect()
         self.dsb_rmi.valueChanged.disconnect()
         self.dsb_magnetization.valueChanged.disconnect()
         self.dsb_qratio.valueChanged.disconnect()
 
     def connect_spin(self):
-        """
-        Connect spin boxes.
-
-        """
+        """Connect spin boxes."""
         self.dsb_susc.valueChanged.connect(self.change_qratio)
         self.dsb_rmi.valueChanged.connect(self.change_rmi)
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
@@ -650,10 +611,7 @@ class ParamDisplay(QtWidgets.QDialog):
         return lith
 
     def init(self):
-        """
-        Initialize parameters.
-
-        """
+        """Initialize parameters."""
         # Magetic Parameters
         self.dsb_hdec.setValue(-17.5)
         self.dsb_hinc.setValue(-62.9)
@@ -675,10 +633,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_minc.setValue(0.0)
 
     def lw_color_change(self):
-        """
-        Routine to allow lithologies to have their colors changed.
-
-        """
+        """Routine to allow lithologies to have their colors changed."""
         ctxt = str(self.lw_param_defs.currentItem().text())
         col = QtWidgets.QColorDialog.getColor()
 
@@ -688,10 +643,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.set_lw_colors(self.lw_param_defs)
 
     def lw_index_change(self):
-        """
-        List widget in parameter tab for definitions.
-
-        """
+        """List widget in parameter tab for definitions."""
         i = self.lw_param_defs.currentRow()
         if i == -1:
             i = 0
@@ -708,17 +660,11 @@ class ParamDisplay(QtWidgets.QDialog):
         self.gbox_lithprops.setTitle(itxt)
 
     def add_def(self):
-        """
-        Add geophysical definition.
-
-        """
+        """Add geophysical definition."""
         self.add_defs(getcol=True)
 
     def rem_defs(self):
-        """
-        Remove geophysical definition.
-
-        """
+        """Remove geophysical definition."""
         crow = self.lw_param_defs.currentRow()
         if crow == -1:
             return
@@ -739,10 +685,7 @@ class ParamDisplay(QtWidgets.QDialog):
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
 
     def merge_defs(self):
-        """
-        Merge geophysical definitions.
-
-        """
+        """Merge geophysical definitions."""
         mlith = MergeLith(self)
         for i in self.lmod1.lith_list:
             mlith.lw_lithmaster.addItem(i)
@@ -769,10 +712,7 @@ class ParamDisplay(QtWidgets.QDialog):
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
 
     def rename_defs(self):
-        """
-        Rename a definition.
-
-        """
+        """Rename a definition."""
         crow = self.lw_param_defs.currentRow()
         if crow == -1:
             return
@@ -813,10 +753,7 @@ class ParamDisplay(QtWidgets.QDialog):
             tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
     def tab_activate(self):
-        """
-        Entry point.
-
-        """
+        """Entry point."""
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
         # Need this to init the first values.

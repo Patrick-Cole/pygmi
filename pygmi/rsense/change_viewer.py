@@ -35,6 +35,7 @@ from PySide6 import QtCore, QtWidgets
 
 from pygmi.maps import set_axes
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_ioimage import imshow
 
 
@@ -44,18 +45,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : SceneViewer
+    parent
         Reference to the parent routine. The default is None.
-    width : float
+    width
         Width of the plot.
-    height : float
+    height
         Height of the plot.
-    dpi : int
+    dpi
         Dots per inch of the plot
 
     """
 
-    def __init__(self, parent, width=10, height=8, dpi=100):
+    def __init__(self, parent, width: float = 10, height: float = 8, dpi: int = 100):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
 
         self.ax1 = self.fig.add_subplot(111)
@@ -79,10 +80,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         FigureCanvasQTAgg.updateGeometry(self)
 
     def capture(self):
-        """
-        Capture.
-
-        """
+        """Capture."""
         self.capture_active = not self.capture_active
 
         if self.capture_active:
@@ -99,15 +97,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             self.writer.finish()
 
-    def compute_initial_figure(self, dat, dates):
+    def compute_initial_figure(self, dat: Data, dates: str):
         """
         Compute initial figure.
 
         Parameters
         ----------
-        dat : pygmi.raster.datatypes.Data
+        dat
             PyGMI dataset.
-        dates : str
+        dates
             Dates to show on title.
 
         """
@@ -128,13 +126,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.im1.rgbmode = self.manip
         self.im1.rgbclip = None
         self.cbar = None
-        # self.ax1.xaxis.set_major_formatter(frm)
-        # self.ax1.yaxis.set_major_formatter(frm)
+
         set_axes(self.ax1, data[0].crs)
 
         self.fig.suptitle(dates)
 
-    def update_plot(self, dat, dates):
+    def update_plot(self, dat: Data, dates: str):
         """
         Update plot.
 
@@ -166,8 +163,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.im1.set_extent(extent)
         self.im1.rgbclip = None
         self.fig.suptitle(dates)
-        # self.ax1.xaxis.set_major_formatter(frm)
-        # self.ax1.yaxis.set_major_formatter(frm)
+
         set_axes(self.ax1, data[0].crs)
 
         self.fig.canvas.draw()
@@ -179,7 +175,7 @@ class SceneViewer(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -207,10 +203,7 @@ class SceneViewer(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "rsense.dm.change.html#view-change-data"
         vbl_1 = QtWidgets.QVBoxLayout()
@@ -279,7 +272,7 @@ class SceneViewer(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -377,20 +370,14 @@ class SceneViewer(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_band1)
         self.saveobj(self.cmb_band2)
         self.saveobj(self.cmb_band3)
         self.saveobj(self.cmb_manip)
 
     def manip_change(self):
-        """
-        Change manipulation or bands.
-
-        """
+        """Change manipulation or bands."""
         maniptxt = self.cmb_manip.currentText()
 
         if "Ternary" in maniptxt:
@@ -410,26 +397,20 @@ class SceneViewer(BasicModule):
         self.newdata(self.curimage)
 
     def nextscene(self):
-        """
-        Get next scene.
-
-        """
+        """Get next scene."""
         self.slider.setValue(self.slider.value() + 1)
 
     def prevscene(self):
-        """
-        Get previous scene.
-
-        """
+        """Get previous scene."""
         self.slider.setValue(self.slider.value() - 1)
 
-    def newdata(self, indx):
+    def newdata(self, indx: int):
         """
         Get new dataset.
 
         Parameters
         ----------
-        indx : int
+        indx
             Current index.
 
         """
@@ -448,10 +429,7 @@ class SceneViewer(BasicModule):
         self.canvas.update_plot(dat, dates)
 
     def capture(self):
-        """
-        Capture all scenes in the current view as an animation.
-
-        """
+        """Capture all scenes in the current view as an animation."""
         self.showlog("Starting capture...")
         self.slider.valueChanged.disconnect()
 

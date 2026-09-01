@@ -258,7 +258,7 @@ class PlotLog(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -401,10 +401,7 @@ class PlotLog(ContextModule):
         self.stratcol = stratcol
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         data = []
         if "Borehole" in self.indata:
             data = self.indata["Borehole"]

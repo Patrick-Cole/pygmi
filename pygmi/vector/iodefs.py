@@ -27,13 +27,14 @@
 import glob
 import os
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from io import StringIO
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pyogrio
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 from PySide6 import QtGui, QtWidgets
 
@@ -49,7 +50,7 @@ class ColumnSelect(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -77,7 +78,7 @@ class ColumnSelect(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -151,10 +152,7 @@ class ColumnSelect(BasicModule):
         return chk
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.lw_1)
 
 
@@ -164,7 +162,7 @@ class ImportVector(BasicModule):
 
     Parameters
     ----------
-    parent : ppygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -195,10 +193,7 @@ class ImportVector(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         pb_sfile = QtWidgets.QPushButton(" Filename")
 
         pixmapi = QtWidgets.QStyle.StandardPixmap.SP_DialogOpenButton
@@ -239,7 +234,7 @@ class ImportVector(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -399,13 +394,13 @@ class ImportVector(BasicModule):
 
         return True
 
-    def set_bounds(self, bounds):
+    def set_bounds(self, bounds: tuple | list | NDArray):
         """
         Set the bounds.
 
         Parameters
         ----------
-        bounds : list or numpy array
+        bounds
             Bounds defined as (xmin, ymin, xmax, ymax).
 
         """
@@ -419,10 +414,7 @@ class ImportVector(BasicModule):
         self.le_ymax.setText(str(ymax))
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.cmb_bounds)
         self.saveobj(self.le_sfile)
@@ -441,7 +433,7 @@ class ImportXYZ(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -461,10 +453,7 @@ class ImportXYZ(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "vector.dm.importxyzdata"
         lbl_xchan = QtWidgets.QLabel("X Channel:")
@@ -495,7 +484,7 @@ class ImportXYZ(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -651,10 +640,7 @@ class ImportXYZ(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.proj)
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
@@ -662,13 +648,13 @@ class ImportXYZ(BasicModule):
         self.saveobj(self.cmb_ychan)
         self.saveobj(self.le_nodata)
 
-    def get_GXYZ(self):
+    def get_GXYZ(self) -> pd.DataFrame:
         """
         Get Geosoft XYZ.
 
         Returns
         -------
-        df : DataFrame
+        DataFrame
             Pandas dataframe.
 
         """
@@ -676,52 +662,52 @@ class ImportXYZ(BasicModule):
 
         return df
 
-    def get_delimited(self, delimiter=","):
+    def get_delimited(self, delimiter: str = ",") -> pd.DataFrame:
         """
         Get a delimited file.
 
         Parameters
         ----------
-        delimiter : str, optional
+        delimiter
             Delimiter type. The default is ','.
 
         Returns
         -------
-        gdf : Dataframe
+        DataFrame
             Pandas dataframe.
 
         """
         try:
-            gdf = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
+            df = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
         except Exception:
             self.showlog("Error reading file.")
             return None
 
-        gdf.columns = gdf.columns.str.lower()
+        df.columns = df.columns.str.lower()
 
-        if "line" not in gdf.columns:
-            gdf["line"] = "None"
+        if "line" not in df.columns:
+            df["line"] = "None"
 
-        return gdf
+        return df
 
-    def get_excel(self):
+    def get_excel(self) -> pd.DataFrame:
         """
         Get an Excel spreadsheet.
 
         Returns
         -------
-        gdf : Dataframe
+        df
             Pandas dataframe.
 
         """
-        gdf = pd.read_excel(self.ifile)
+        df = pd.read_excel(self.ifile)
 
-        gdf.columns = gdf.columns.str.lower()
+        df.columns = df.columns.str.lower()
 
-        if "line" not in gdf.columns:
-            gdf["line"] = "None"
+        if "line" not in df.columns:
+            df["line"] = "None"
 
-        return gdf
+        return df
 
 
 class ImportVoxel(ContextModule):
@@ -730,7 +716,7 @@ class ImportVoxel(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -746,7 +732,7 @@ class ImportVoxel(ContextModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -776,10 +762,7 @@ class ImportVoxel(ContextModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
 
@@ -790,7 +773,7 @@ class ExportXYZ(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -875,7 +858,7 @@ class ExportVector(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -959,7 +942,7 @@ class ExportVoxel(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -1007,18 +990,18 @@ class ExportVoxel(ContextModule):
         return True
 
 
-def import_ubc(ifile):
+def import_ubc(ifile: str) -> VoxModel:
     """
     Import a 3D UBC mesh and model.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file name.
 
     Returns
     -------
-    vdat : pygmi.vector.datatypes.VoxModel
+    VoxModel
         Imported voxel model.
 
     """
@@ -1060,19 +1043,16 @@ def import_ubc(ifile):
     return vdat
 
 
-def export_ubc(ofile, data):
+def export_ubc(ofile: str, data: VoxModel):
     """
     Export a section to a 3D UBC mesh and model.
 
     Parameters
     ----------
-    data : pygmi.vector.datatypes.VoxModel
-        Dataset to export
-
-    Returns
-    -------
-    None.
-
+    ofile
+        Output file name.
+    data
+        Dataset to export.
     """
     ofile = ofile.rpartition(".")[0] + ".msh"
 
@@ -1095,22 +1075,24 @@ def export_ubc(ofile, data):
     np.savetxt(ofile[:-3] + "mod", smod2)
 
 
-def get_GXYZ(ifile, showlog: Callable[..., None] = print, piter=iter):
+def get_GXYZ(
+    ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
+) -> pd.DataFrame:
     """
     Get Geosoft XYZ.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file name.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    piter : function, optional
+    piter
         progress bar iterable, default is iter.
 
     Returns
     -------
-    df2 : DataFrame
+    DataFrame
         Pandas dataframe.
 
     """
@@ -1191,22 +1173,24 @@ def get_GXYZ(ifile, showlog: Callable[..., None] = print, piter=iter):
     return df2
 
 
-def get_intrepid(ifile, showlog: Callable[..., None] = print, piter=iter):
+def get_intrepid(
+    ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
+) -> pd.DataFrame:
     """
     Get Intrepid Database.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input file name.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    piter : function, optional
+    piter
         progress bar iterable, default is iter.
 
     Returns
     -------
-    df : DataFrame
+    DataFrame
         Pandas Dataframe.
 
     """

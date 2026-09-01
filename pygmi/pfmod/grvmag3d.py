@@ -146,7 +146,7 @@ class GravMag:
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -174,10 +174,7 @@ class GravMag:
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.cb_demag.setChecked(False)
 
         self.parent.toolbardock.addSeparator()
@@ -432,7 +429,7 @@ class GeoData:
 
     Parameters
     ----------
-    parent : pygmi.pfmod.pfmod.MainWidget
+    parent
         Reference to the parent routine.
     ncols : int
         Number of columns in the model.

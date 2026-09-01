@@ -29,7 +29,7 @@ import datetime
 import os
 import warnings
 import xml.etree.ElementTree as ET
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from io import StringIO
 
 import numpy as np
@@ -56,7 +56,7 @@ class BandSelect(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -134,7 +134,7 @@ class ImportData(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
     ifile : str, optional
         Input file. The default is ''.
@@ -286,7 +286,7 @@ class ImportRGBData(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -363,10 +363,7 @@ class ImportRGBData(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
 
 
@@ -376,12 +373,12 @@ def clusterprep(dat):
 
     Parameters
     ----------
-    dat : list of pygmi.raster.datatypes.Data
+    dat : list of Data
         List of PyGMI datasets.
 
     Returns
     -------
-    dat2 : list of pygmi.raster.datatypes.Data
+    dat2 : list of Data
         List of PyGMI datasets.
 
     """
@@ -545,7 +542,7 @@ def get_raster(
 
     Returns
     -------
-    dat : list of pygmi.raster.datatypes.Data
+    dat : list of Data
         Raster dataset imported
     """
     # Exclusions
@@ -910,7 +907,15 @@ def get_raster(
 
 
 def get_bil(
-    ifile, bands, cols, rows, dtype, *, piter=iter, iraster=None, interleave="LINE"
+    ifile,
+    bands,
+    cols,
+    rows,
+    dtype,
+    *,
+    piter: Iterable = iter,
+    iraster=None,
+    interleave="LINE",
 ):
     """
     Get BIL format file.
@@ -995,7 +1000,7 @@ def get_geopak(hfile):
 
     Returns
     -------
-    dat : list of pygmi.raster.datatypes.Data
+    dat : list of Data
         PyGMI raster dataset.
 
     """
@@ -1110,7 +1115,7 @@ def get_geosoft(hfile):
 
     Returns
     -------
-    dat : list of pygmi.raster.datatypes.Data
+    dat : list of Data
         Dataset imported
     """
     with open(hfile, mode="rb") as f:
@@ -1210,7 +1215,7 @@ class ExportData(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -1234,10 +1239,7 @@ class ExportData(ContextModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "raster.cm.export"
         pb_ofile = QtWidgets.QPushButton("Output File")
@@ -2016,7 +2018,7 @@ def calccov(data, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         List of PyGMI data.
     showlog : function, optional
         Show information using a function. The default is print.

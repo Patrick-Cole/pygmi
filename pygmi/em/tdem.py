@@ -149,7 +149,7 @@ class TDEM1D(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -706,10 +706,7 @@ class TDEM1D(BasicModule):
         return tmp == 1
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_stype)
         self.saveobj(self.cmb_wtype)
         self.saveobj(self.cmb_txori)

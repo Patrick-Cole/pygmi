@@ -59,7 +59,7 @@ class TiltDepth(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -100,10 +100,7 @@ class TiltDepth(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "maggrv.dm.tiltdepth"
         self.buttonbox.buttonbox.hide()
         lbl_2 = QtWidgets.QLabel("Band to perform Tilt Depth:")
@@ -320,10 +317,7 @@ class TiltDepth(BasicModule):
         return tmp == 1
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.cmb_band1)
         self.saveobj(self.cmb_cbar)
         self.saveobj(self.dsb_inc)

@@ -282,7 +282,7 @@ class PlotAnaglyph(ContextModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -474,10 +474,7 @@ class PlotAnaglyph(ContextModule):
         self.change_all()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
             data = self.indata["Raster"]
         else:

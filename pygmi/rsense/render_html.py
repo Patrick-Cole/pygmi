@@ -43,11 +43,21 @@ def _open_in_browser(file_path: str, browser: str | None = None) -> None:
     """
     Open the specified file path in a web browser.
 
-    Args:
-        file_path (str): The path of the file to open.
-        browser (str | None, optional): The web browser to use (i.e. "chrome", "safari").
-            If provided, the HTML content will be opened using the specified browser.
-            If not provided or set to None, the default browser will be used.
+    Parameters
+    ----------
+    file_path
+        The path of the file to open.
+    browser
+        The web browser to use (i.e. "chrome", "safari"), by default None.
+        If provided, the HTML content will be opened using the specified browser.
+        If not provided or set to None, the default browser will be used.
+
+    Raises
+    ------
+    BrowserNotFoundException
+        No browser found exception.
+    UnknownBrowserException
+        Unknown browser exception.
     """
     if browser:
         try:
@@ -67,11 +77,14 @@ def _handle_open_from_temp(html_string: str, browser: str | None = None) -> None
     """
     Handle opening HTML content from a temporary file in a web browser.
 
-    Args:
-        html_string (str): The HTML content as a string.
-        browser (str | None, optional): The web browser to use (i.e. "chrome", "safari").
-            If provided, the HTML content will be opened using the specified browser.
-            If not provided or set to None, the default browser will be used.
+    Parameters
+    ----------
+    html_string
+        The HTML content as a string.
+    browser
+        The web browser to use (i.e. "chrome", "safari"), by default None.
+        If provided, the HTML content will be opened using the specified browser.
+        If not provided or set to None, the default browser will be used.
     """
     # Set delete parameter depending on the platform
     autodelete = platform.system() != "Windows"
@@ -98,12 +111,16 @@ def _handle_open_from_regular_file(
     """
     Handle opening HTML content from a regular file in a web browser.
 
-    Args:
-        html_string (str): The HTML content as a string.
-        save_path (str): The path to save the HTML content as a file.
-        browser (str | None, optional): The executable path of the web browser to use.
-            If provided, the HTML content will be opened using the specified browser.
-            If not provided or set to None, the default browser will be used.
+    Parameters
+    ----------
+    html_string
+        The HTML content as a string.
+    save_path
+        The path to save the HTML content as a file.
+    browser
+        The executable path of the web browser to use., by default None.
+        If provided, the HTML content will be opened using the specified browser.
+        If not provided or set to None, the default browser will be used.
     """
     with open(save_path, "w") as f:
         f.write(html_string)
@@ -116,17 +133,21 @@ def render_in_browser(
     """
     Render the HTML content in a web browser.
 
-    Args:
-        html_string (str): The HTML content as a string.
-        save_path (str | None, optional): The path to save the HTML content as a file.
-            If provided, the HTML content will be saved to the specified file
-            and opened from it. If not provided or set to None, a temporary file
-            will be created in the operating system's default temporary directory.
-            The temporary file will be removed once the rendering is complete.
-            IMPORTANT: Please provide an absolute path to your file.
-        browser (str | None, optional): The web browser to use (i.e. "chrome", "safari").
-            If provided, the HTML content will be opened using the specified browser.
-            If not provided or set to None, the default browser will be used.
+    Parameters
+    ----------
+    html_string
+        The HTML content as a string.
+    save_path
+        The path to save the HTML content as a file., by default None.
+        If provided, the HTML content will be saved to the specified file
+        and opened from it. If not provided or set to None, a temporary file
+        will be created in the operating system's default temporary directory.
+        The temporary file will be removed once the rendering is complete.
+        IMPORTANT: Please provide an absolute path to your file.
+    browser
+        The web browser to use (i.e. "chrome", "safari"), by default None.
+        If provided, the HTML content will be opened using the specified browser.
+        If not provided or set to None, the default browser will be used.
     """
     if save_path:
         _handle_open_from_regular_file(html_string, save_path, browser)

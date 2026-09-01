@@ -24,10 +24,13 @@
 # -----------------------------------------------------------------------------
 """Structure complexity routines."""
 
+from collections.abc import Iterable
+
 import geopandas as gpd
 import numexpr as ne
 import numpy as np
 import shapely
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from rasterio.features import rasterize
 from scipy.signal import correlate
@@ -43,7 +46,7 @@ class StructComp(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -65,10 +68,7 @@ class StructComp(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
         self.buttonbox.htmlfile = "vector.dm.structcomp"
@@ -110,10 +110,7 @@ class StructComp(BasicModule):
         self.cmb_method.currentIndexChanged.connect(self.method_change)
 
     def method_change(self):
-        """
-        When method is changed, this updated hidden controls.
-
-        """
+        """When method is changed, this updated hidden controls."""
         method = self.cmb_method.currentText()
 
         if method == "Feature Intersection Density":
@@ -137,7 +134,7 @@ class StructComp(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -183,10 +180,7 @@ class StructComp(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.le_dxy)
         self.saveobj(self.le_std)
         self.saveobj(self.le_wsize)
@@ -198,7 +192,6 @@ class StructComp(BasicModule):
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
-
         """
         method = self.cmb_method.currentText()
         gdf = self.indata["Vector"][0]
@@ -235,23 +228,25 @@ class StructComp(BasicModule):
             self.outdata["Vector"] = [geom]
 
 
-def extendlines(gdf, length=500, piter=iter):
+def extendlines(
+    gdf: gpd.GeoDataFrame, length: float = 500.0, piter: Iterable = iter
+) -> gpd.GeoDataFrame:
     """
     Extent lines from GeoPandas dataframe.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         A dataframe containing LINESTRINGs.
-    length : float, optional
+    length
         distance in metres to extend the line on either side. The default is
         500.
-    piter : function, optional
+    piter
         Progressbar iterable. The default is iter.
 
     Returns
     -------
-    gdf2 : GeoDataFrame
+    GeoDataFrame
         A dataframe containing extended LINESTRINGs.
 
     """
@@ -277,29 +272,35 @@ def extendlines(gdf, length=500, piter=iter):
     return gdf2
 
 
-def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
+def feature_intersection_density(
+    gdf: gpd.GeoDataFrame,
+    dxy: float,
+    var: float,
+    extend: float = 500.0,
+    piter: Iterable = iter,
+) -> tuple[gpd.GeoDataFrame, Data]:
     """
     Feature intersection density.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         GeoDataframe of linear features.
-    dxy : float
+    dxy
         Raster cell size
-    var : float
+    var
         Variance.
-    extend : float, optional
+    extend
         Distance to extend linear features. The default is 500.
-    piter : function, optional
+    piter
         Progressbar iterable. The default is iter.
 
     Returns
     -------
     geom2 : GeoDataFrame
         New geometry with intersection points.
-    dat : pygmi.raster.datatypes.Data
-        Output raster data
+    dat : Data
+        Output featue intersection density raster data
 
     """
     # Extend lines to make sure almost intersections are found
@@ -354,25 +355,27 @@ def feature_intersection_density(gdf, dxy, var, extend=500, piter=iter):
     return geom2, dat
 
 
-def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
+def feature_orientation_diversity(
+    gdf: gpd.GeoDataFrame, dxy: float, wsize: int = 3, piter: Iterable = iter
+) -> Data:
     """
     Feature orientation diversity.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         GeoDataframe of linear features.
-    dxy : float
+    dxy
         Raster cell size
-    wsize : int, optional
+    wsize
         Window size (must be odd). The default is 3.
-    piter : function, optional
+    piter
         Progressbar iterable. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
-        Output raster data
+    Data
+        Output feature orientation diversity raster data
 
     """
     transform, oshape = bounds_to_transform(gdf.total_bounds, dxy)
@@ -412,25 +415,27 @@ def feature_orientation_diversity(gdf, dxy, wsize=3, piter=iter):
     return dat
 
 
-def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
+def feature_circular_stats(
+    gdf: gpd.GeoDataFrame, dxy: float, wsize: int = 3, piter: Iterable = iter
+) -> tuple[Data, Data]:
     """
     Feature circular variance.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         GeoDataframe of linear features.
-    dxy : float
+    dxy
         Raster cell size
-    wsize : int, optional
+    wsize
         Window size (must be odd). The default is 3.
-    piter : function, optional
+    piter
         Progressbar iterable. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
-        Output raster data
+    tuple[Data, Data]
+        Output circular variance and circular dispersion raster data.
 
     """
     transform, oshape = bounds_to_transform(gdf.total_bounds, dxy)
@@ -496,24 +501,26 @@ def feature_circular_stats(gdf, dxy, wsize=3, piter=iter):
     return vdat, ddat
 
 
-def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
+def feature_fracdim(
+    gdf: gpd.GeoDataFrame, dxy: float, wsize: int = 21, piter: Iterable = iter
+) -> Data:
     """
     Feature fractal dimension.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         GeoDataframe of linear features.
-    dxy : float
+    dxy
         Raster cell size
-    wsize : int, optional
+    wsize
         Window size (must be odd). The default is 21.
-    piter : function, optional
+    piter
         Progressbar iterable. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
+    Data
         Output raster data
 
     """
@@ -545,8 +552,12 @@ def feature_fracdim(gdf, dxy, wsize=21, piter=iter):
 
 
 def fractal_dimension(
-    warray, max_box_size=None, min_box_size=1, n_samples=20, n_offsets=0
-):
+    warray: NDArray,
+    max_box_size: int | None = None,
+    min_box_size: int = 1,
+    n_samples: int = 20,
+    n_offsets: int = 0,
+) -> float:
     """
     Calculate the fractal dimension of a 3D numpy array.
 
@@ -554,23 +565,23 @@ def fractal_dimension(
 
     Parameters
     ----------
-    warray : np.array
+    warray
         The array to calculate the fractal dimension of.
-    max_box_size : int, optional
+    max_box_size
         The largest box size, given as the power of 2 so that 2**max_box_size
         gives the side length of the largest box. The default is None.
-    min_box_size : int, optional
+    min_box_size
         The smallest box size, given as the power of 2 so that 2**min_box_size
         gives the side length of the smallest box. The default is 1.
-    n_samples : int, optional
+    n_samples
         number of scales to measure over. The default is 20.
-    n_offsets : int, optional
+    n_offsets
         number of offsets to search over to find the smallest set N(s) to
         cover all voxels>0. The default is 0.
 
     Returns
     -------
-    coeffs[0] : float
+    float
         Fractal dimension
 
     """
@@ -631,13 +642,13 @@ def fractal_dimension(
     return coeffs[0]
 
 
-def linesplit(curve):
+def linesplit(curve: LineString) -> list:
     """
     Split LineString into segments.
 
     Parameters
     ----------
-    curve : LineString
+    curve
         LineString to be split.
 
     Returns
@@ -648,20 +659,22 @@ def linesplit(curve):
     return list(map(LineString, zip(curve.coords[:-1], curve.coords[1:])))
 
 
-def segments_to_angles(gdf, piter=iter):
+def segments_to_angles(
+    gdf: gpd.GeoDataFrame, piter: Iterable = iter
+) -> gpd.GeoDataFrame:
     """
     Get line segment angles.
 
     Parameters
     ----------
-    gdf : GeoDataFrame
+    gdf
         GeoDataFrame with line segments.
-    piter : iter
+    piter
         Progressbar iterable.
 
     Returns
     -------
-    gdf2 : GeoDataFrame
+    GeoDataFrame
         GeoDataFrame with angles added.
 
     """
@@ -693,7 +706,6 @@ def segments_to_angles(gdf, piter=iter):
 
 def _testfn():
     """Calculate structural complexity."""
-
     import sys
 
     from pygmi.vector.iodefs import ImportVector

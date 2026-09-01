@@ -26,13 +26,14 @@
 
 import glob
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from datetime import datetime
 
 import numpy as np
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule, ProgressBarText
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_data
 
@@ -43,7 +44,7 @@ class LandsatComposite(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
@@ -64,10 +65,7 @@ class LandsatComposite(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.ltc"
         gl_main = QtWidgets.QGridLayout(self)
         pb_idirlist = QtWidgets.QPushButton("Batch Directory")
@@ -94,7 +92,7 @@ class LandsatComposite(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -135,10 +133,7 @@ class LandsatComposite(BasicModule):
         return True
 
     def get_idir(self):
-        """
-        Get the input directory.
-
-        """
+        """Get the input directory."""
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Directory"
         )
@@ -172,38 +167,39 @@ class LandsatComposite(BasicModule):
         self.sb_tday.setValue(mean)
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.idir)
         self.saveobj(self.sb_tday)
         self.saveobj(self.le_idirlist)
 
 
 def composite(
-    idir, dreq=10, mean=None, showlog: Callable[..., None] = print, piter=None
-):
+    idir: str,
+    dreq: int = 10,
+    mean: float | None = None,
+    showlog: Callable[..., None] = print,
+    piter: Iterable | None = None,
+) -> list[Data]:
     """
     Create a Landsat composite.
 
     Parameters
     ----------
-    idir : str
+    idir
         Input directory.
-    dreq : int, optional
+    dreq
         Distance to cloud in pixels. The default is 10.
-    mean : float, optional
+    mean
         The mean or target day. If not specified, it is calculated
         automatically. The default is None.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is None.
 
     Returns
     -------
-    datfin : list of pygmi.raster.datatypes.Data.
+    list of Data
         List of PyGMI Data.
 
     """
@@ -238,8 +234,8 @@ def composite(
 
         filt = tmp1["score"].data < tmp2["score"].data
 
-        for band in tmp1:
-            tmp1[band].data[filt] = tmp2[band].data[filt]
+        for band, bdata in tmp1.items():
+            bdata.data[filt] = tmp2[band].data[filt]
 
         dat1 = tmp1
         del tmp1
@@ -261,29 +257,35 @@ def composite(
 
 
 def import_and_score(
-    ifile, dreq, mean, std, *, showlog: Callable[..., None] = print, piter=None
-):
+    ifile: str,
+    dreq: int,
+    mean: float,
+    std: float,
+    *,
+    showlog: Callable[..., None] = print,
+    piter: Iterable | None = None,
+) -> dict[str, Data]:
     """
     Import data and score it.
 
     Parameters
     ----------
-    ifile : str
+    ifile
         Input filename.
-    dreq : int, optional
+    dreq
         Distance to cloud in pixels. The default is 10.
-    mean : float
+    mean
         The mean or target day.
-    std : float
+    std
         The standard deviation of all days.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is None.
 
     Returns
     -------
-    dat : dictionary.
+    dict
         Dictionary of bands imported.
 
     """

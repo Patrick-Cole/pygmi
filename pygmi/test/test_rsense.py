@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-These are tests. Run pytest on this file from within this directory to do
-the tests.
-"""
+"""These are tests. Run pytest on this file from within this directory to do the tests."""
 
 import os
 
@@ -35,7 +32,7 @@ from pygmi.rsense import change, iodefs, ratios, transforms
 
 
 def test_change():
-    """test change detection."""
+    """Test change detection."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r"testdata/rsense1.tif")
@@ -64,7 +61,7 @@ def test_change():
 
 
 def test_pca():
-    """test PCA."""
+    """Test PCA."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r"testdata/rsense1.tif")
@@ -84,7 +81,7 @@ def test_pca():
 
 
 def test_mnf():
-    """test MNF."""
+    """Test MNF."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r"testdata/rsense1.tif")
@@ -104,7 +101,7 @@ def test_mnf():
 
 
 def test_ratios():
-    """test ratios."""
+    """Test ratios."""
     idir = os.path.dirname(os.path.realpath(__file__))
 
     file1 = os.path.join(idir, r"testdata/rsense1.tif")

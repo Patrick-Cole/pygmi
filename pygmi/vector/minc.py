@@ -36,46 +36,47 @@ from operator import itemgetter
 
 import numpy as np
 from numba import jit
+from numpy.typing import NDArray
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 
 
 def minc(
-    x,
-    y,
-    z,
-    dxy,
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    dxy: float,
     *,
     showlog: Callable[..., None] = print,
-    extent=None,
-    bdist=None,
-    maxiters=100,
-):
+    extent: list | None = None,
+    bdist: float | None = None,
+    maxiters: int = 100,
+) -> NDArray:
     """
     Minimum Curvature Gridding.
 
     Parameters
     ----------
-    x : numpy array
+    x
         1D array with x coordinates.
-    y : numpy array
+    y
         1D array with y coordinates.
-    z : numpy array
+    z
         1D array with z coordinates.
-    dxy : float
+    dxy
         Cell x and y dimension.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    extent : list, optional
+    extent
         Extent defined as (left, right, bottom, top). The default is None.
-    bdist : float, optional
+    bdist
         Blanking distance in units of cell. The default is None.
-    maxiters : int, optional
+    maxiters
         Maximum number of iterations. The default is 100.
 
     Returns
     -------
-    u : numpy array
+    ndarray
         2D numpy array with gridding z values.
 
     """
@@ -154,17 +155,17 @@ def minc(
         showlog(str(excludedpnts) + " point(s) excluded.")
     # Choose only the closest coordinate per cell
     ijxyz = []
-    for key in coords:
+    for key, values in coords.items():
         iint, jint = key
-        coords[key].sort(key=itemgetter(1))
-        _, r, zval, _ = coords[key][0]
+        values.sort(key=itemgetter(1))
+        _, r, zval, _ = values[0]
         if r < 0.05:
             u[iint, jint] = zval
             ufixed[iint, jint] = True
             continue
         if 1 < iint < rows - 2 and 1 < jint < cols - 2:
-            coords[key].sort()
-            _, _, zval, b = coords[key][0]
+            values.sort()
+            _, _, zval, b = values[0]
             ijxyz.append([iint, jint, zval, b])
 
     showlog("Creating minimum curvature grid...")
@@ -221,7 +222,7 @@ def minc(
 
 
 @jit(nopython=True)
-def u_normal(u, i, j):
+def u_normal(u: NDArray, i: int, j: int) -> float:
     """
     Minimum curvature smoothing for normal cases.
 
@@ -233,16 +234,16 @@ def u_normal(u, i, j):
 
     Parameters
     ----------
-    u : numpy array
-        2D grid of z values.
-    i : int
+    u
+        2D array of z values.
+    i
         Current row.
-    j : int
+    j
         Current Column.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -262,7 +263,7 @@ def u_normal(u, i, j):
 
 
 @jit(nopython=True)
-def u_edge(u, i):
+def u_edge(u: NDArray, i: int) -> float:
     """
     Minimum curvature smoothing for edges.
 
@@ -273,14 +274,14 @@ def u_edge(u, i):
 
     Parameters
     ----------
-    u : numpy array
-        2D grid of z values.
-    i : int
+    u
+        2D array of z values.
+    i
         Current row.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -299,7 +300,7 @@ def u_edge(u, i):
 
 
 @jit(nopython=True)
-def u_one_row_from_edge(u, i):
+def u_one_row_from_edge(u: NDArray, i: int) -> float:
     """
     Minimum curvature smoothing for one row from edge.
 
@@ -311,14 +312,14 @@ def u_one_row_from_edge(u, i):
 
     Parameters
     ----------
-    u : numpy array
+    u
         2D grid of z values.
-    i : int
+    i
         Current row.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -339,7 +340,7 @@ def u_one_row_from_edge(u, i):
 
 
 @jit(nopython=True)
-def u_corner(u):
+def u_corner(u: NDArray) -> float:
     """
     Minimum curvature smoothing for corner point.
 
@@ -349,12 +350,12 @@ def u_corner(u):
 
     Parameters
     ----------
-    u : numpy array
+    u
         2D grid of z values.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -363,7 +364,7 @@ def u_corner(u):
 
 
 @jit(nopython=True)
-def u_next_to_corner(u):
+def u_next_to_corner(u: NDArray) -> float:
     """
     Minimum curvature smoothing for next to corner.
 
@@ -374,12 +375,12 @@ def u_next_to_corner(u):
 
     Parameters
     ----------
-    u : numpy array
-        2D grid of z values.
+    u
+        2D array of z values.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -399,7 +400,7 @@ def u_next_to_corner(u):
 
 
 @jit(nopython=True)
-def u_edge_next_to_corner(u):
+def u_edge_next_to_corner(u: NDArray) -> float:
     """
     Minimum curvature smoothing for edge next to corner.
 
@@ -410,12 +411,12 @@ def u_edge_next_to_corner(u):
 
     Parameters
     ----------
-    u : numpy array
+    u
         2D grid of z values.
 
     Returns
     -------
-    uij : float
+    float
         Smoothed value to replace in master grid.
 
     """
@@ -426,26 +427,26 @@ def u_edge_next_to_corner(u):
     return uij
 
 
-def off_grid(u, i, j, wn, b):
+def off_grid(u: NDArray, i: int, j: int, wn: float, b: list) -> float:
     """
     Node value calculation when data value is too far from node.
 
     Parameters
     ----------
-    u : numpy array
+    u
         2D grid of z values.
-    i : int
+    i
         Current row.
-    j : int
+    j
         Current Column.
-    wn : float
+    wn
         Data value.
-    b : list
+    b
         List of b values for calculation.
 
     Returns
     -------
-    uij : float
+    float
         Output value.
 
     """
@@ -507,7 +508,7 @@ def off_grid(u, i, j, wn, b):
 
 
 @jit(nopython=True)
-def get_b(e5, n5):
+def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float]:
     """
     Get b values for input data.
 
@@ -516,9 +517,9 @@ def get_b(e5, n5):
 
     Parameters
     ----------
-    e5 : float
+    e5
         x distance error.
-    n5 : float
+    n5
         y distance error.
 
     Returns
@@ -551,7 +552,7 @@ def get_b(e5, n5):
 
 
 @jit(nopython=True)
-def mcurv(u, ufixed):
+def mcurv(u: NDArray, ufixed: NDArray) -> NDArray:
     """
     Minimum curvature smoothing.
 
@@ -559,14 +560,14 @@ def mcurv(u, ufixed):
 
     Parameters
     ----------
-    u : numpy array
+    u
         2D grid of z values.
-    ufixed : numpy array
+    ufixed
         2D grid of fixed node values.
 
     Returns
     -------
-    u : numpy array
+    ndarray
         2D grid of z values.
 
     """
@@ -635,25 +636,33 @@ def mcurv(u, ufixed):
 
 
 @jit(nopython=True)
-def morg(x2, y2, z2, extent, dxy, rows, cols):
+def morg(
+    x2: NDArray,
+    y2: NDArray,
+    z2: NDArray,
+    extent: list,
+    dxy: float,
+    rows: int,
+    cols: int,
+) -> tuple[list, list]:
     """
     Organise coordinates and calculate b values.
 
     Parameters
     ----------
-    x2 : numpy array
+    x2
         1D array with x coordinates.
-    y2 : numpy array
+    y2
         1D array with y coordinates.
-    z2 : numpy array
+    z2
         1D array with z coordinates.
-    extent : list
+    extent
         Extent defined as (left, right, bottom, top).
-    dxy : float
+    dxy
         Cell x and y dimension.
-    rows : int
+    rows
         Number of rows.
-    cols : int
+    cols
         Number of columns.
 
     Returns
@@ -733,7 +742,7 @@ def _testfn():
     x = dat.geometry.x.to_numpy()
     y = dat.geometry.y.to_numpy()
     # z = dat['MAGMICROLEVEL'].to_numpy()
-    z = dat["bouguer_new"].values
+    z = dat["bouguernew"].values
 
     dxy = 0.01
 

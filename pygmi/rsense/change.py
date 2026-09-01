@@ -27,13 +27,15 @@
 import math
 import os
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data, RasterMeta
 from pygmi.raster.misc import lstack
 from pygmi.rsense.iodefs import get_from_rastermeta
 
@@ -44,7 +46,7 @@ class CalculateChange(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -57,10 +59,7 @@ class CalculateChange(BasicModule):
         self.setupui()
 
     def setupui(self):
-        """
-        Set up UI.
-
-        """
+        """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.change.html#calculate-change-indices"
         gl_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton("Invert Selection")
@@ -97,7 +96,7 @@ class CalculateChange(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -124,10 +123,7 @@ class CalculateChange(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        """
+        """Save project data from class."""
         self.saveobj(self.lw_indices)
 
     def acceptall(self):
@@ -157,33 +153,35 @@ class CalculateChange(BasicModule):
         return True
 
     def invert_selection(self):
-        """
-        Invert the selected indices.
-
-        """
+        """Invert the selected indices."""
         for i in range(self.lw_indices.count()):
             item = self.lw_indices.item(i)
             item.setSelected(not item.isSelected())
 
 
-def calc_change(flist, ilist=None, showlog: Callable[..., None] = print, piter=iter):
+def calc_change(
+    flist: list[RasterMeta],
+    ilist: list[str] | None = None,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> list[Data]:
     """
     Calculate Change Indices.
 
     Parameters
     ----------
-    flist : list of RasterMeta.
+    flist
         List of batch file list data.
-    ilist : list, optional
+    ilist
         List of strings describing index to calculate.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    datfin : list of pygmi.raster.datatypes.Data
+    list of Data
         List of PyGMI Data.
 
     """
@@ -261,26 +259,30 @@ def calc_change(flist, ilist=None, showlog: Callable[..., None] = print, piter=i
     return datfin
 
 
-def calc_mean(flist, showlog: Callable[..., None] = print, piter=iter):
+def calc_mean(
+    flist: list[RasterMeta],
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> tuple[dict[str, Data], dict[str, NDArray], dict[str, NDArray]]:
     """
     Load data and calculate iterative Mean.
 
     Parameters
     ----------
-    flist : list of RasterMeta
-        List of batch file list data.
-    showlog : function, optional
+    flist
+        List of batch file data.
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
     meandat : dictionary of pygmi.raster.datatypes.Data.
         PyGMI Data representing means.
-    cnt : dictionary of numpy arrays
+    cnt : dictionary of ndarrays
         Count of values which made up mean.
-    M : dictionary of numpy arrays
+    M : dictionary of ndarrays
         Variance parameter, where Variance = M/cnt.
 
     """
@@ -327,22 +329,26 @@ def calc_mean(flist, showlog: Callable[..., None] = print, piter=iter):
     return meandat, cnt, M
 
 
-def calc_sam(flist, showlog: Callable[..., None] = print, piter=iter):
+def calc_sam(
+    flist: list[RasterMeta],
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> Data:
     """
     Load data and calculate spectral angle between two times.
 
     Parameters
     ----------
-    flist : list of RasterMeta.
+    flist
         List of batch file list data.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    angle : pygmi.raster.datatypes.Data
+    pygmi.raster.datatypes.Data
         PyGMI Data of SAM angles.
 
     """
@@ -386,20 +392,20 @@ def calc_sam(flist, showlog: Callable[..., None] = print, piter=iter):
     return angle
 
 
-def coefv(mean, std):
+def coefv(mean: NDArray, std: NDArray) -> NDArray:
     """
     Calculate coefficient of variation.
 
     Parameters
     ----------
-    mean : numpy array
+    mean
         numpy array of mean values.
-    std : numpy array
+    std
         numpy array of standard deviation values.
 
     Returns
     -------
-    cv : numpy array
+    ndarray
         Array of coefficient of variation values.
 
     """
@@ -416,28 +422,30 @@ def coefv(mean, std):
     return cv
 
 
-def imean(mean, newdat, cnt=None, M=None):
+def imean(
+    mean: NDArray, newdat: NDArray, cnt: NDArray | None = None, M: NDArray | None = None
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Calculate mean and variance parameters.
 
     Parameters
     ----------
-    mean : numpy array
+    mean
         existing mean values.
-    newdat : numpy array
+    newdat
         new data to be added to mean..
-    cnt : numpy array, optional
+    cnt
         cnt of values which made up mean. The default is None.
-    M : numpy array, optional
+    M
         Variance parameter, where Variance = M/cnt. The default is None.
 
     Returns
     -------
-    mean : numpy array
+    mean : ndarray
         Updated mean of data.
-    cnt : numpy array
+    cnt : ndarray
         Updated cnt of values which made up mean.
-    M : numpy array
+    M : ndarray
         Updated variance parameter, where Variance = M/cnt.
 
     """
@@ -460,7 +468,11 @@ def imean(mean, newdat, cnt=None, M=None):
     return mean, cnt, M
 
 
-def match_data(flist, showlog: Callable[..., None] = print, piter=iter):
+def match_data(
+    flist: list[Data | RasterMeta],
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> tuple(list[Data], list[Data]):
     """
     Match two datasets.
 
@@ -468,18 +480,18 @@ def match_data(flist, showlog: Callable[..., None] = print, piter=iter):
 
     Parameters
     ----------
-    flist : list of RasterMeta or Data lists
+    flist
         List of batch file list data.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    dat1 : list of pygmi.raster.datatypes.Data
+    dat1 : list of Data
         First dataset with matched bands only.
-    dat2 : list of pygmi.raster.datatypes.Data
+    dat2 : list of Data
         Second dataset with matched bands only.
 
     """
@@ -515,20 +527,20 @@ def match_data(flist, showlog: Callable[..., None] = print, piter=iter):
 
 
 @jit(nopython=True)
-def sam(s1, s2):
+def sam(s1: NDArray, s2: NDArray) -> NDArray:
     """
     Calculate Spectral Angle Mapper (SAM).
 
     Parameters
     ----------
-    s1 : numpy array
+    s1
         Spectrum 1.
-    s2 : numpy array
+    s2
         Spectrum 2.
 
     Returns
     -------
-    result : numpy array
+    ndarray
         Output angles.
 
     """
@@ -546,20 +558,20 @@ def sam(s1, s2):
     return result
 
 
-def scm(s1, s2):
+def scm(s1: NDArray, s2: NDArray) -> NDArray:
     """
     SCM or MSAM.
 
     Parameters
     ----------
-    s1 : numpy array
+    s1
         Spectrum 1.
-    s2 : numpy array
+    s2
         Spectrum 2.
 
     Returns
     -------
-    result : numpy array
+    ndarray
         Output angles.
 
     """
@@ -580,20 +592,20 @@ def scm(s1, s2):
     return result
 
 
-def stddev(M, cnt):
+def stddev(M: NDArray, cnt: NDArray) -> NDArray:
     """
     Calculate std deviation.
 
     Parameters
     ----------
-    M : numpy array
+    M
         Variance parameter, where Variance = M/cnt.
-    cnt : numpy array
+    cnt
         cnt of values which made up mean.
 
     Returns
     -------
-    std : numpy array
+    ndarray
         Calculated standard deviation.
 
     """

@@ -49,7 +49,6 @@ from math import cos
 import matplotlib.colorbar as mcolorbar
 import matplotlib.colors as mcolors
 import numpy as np
-from matplotlib import gridspec
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import ListedColormap
@@ -86,9 +85,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         string indicating the histogram stretch to apply to the data
     cbar : matplotlib colour map
         colour map to be used for pseudo colour bars
-    data : list of pygmi.raster.datatypes.Data
+    data : list of Data
         list of PyGMI raster data objects - used for colour images
-    sdata : list of pygmi.raster.datatypes.Data
+    sdata : list of Data
         list of PyGMI raster data objects - used for shaded images
     gmode : str
         string containing the graphics mode - Contour, Ternary, Sunshade,
@@ -862,7 +861,7 @@ class PlotInterp(BasicModule):
 
     Parameters
     ----------
-    parent : pygmi.main.MainWidget, optional
+    parent
         Reference to the parent routine. The default is None.
 
     Attributes
