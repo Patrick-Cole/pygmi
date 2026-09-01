@@ -25,7 +25,7 @@
 """Miscellaneous functions for raster data."""
 
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from math import cos, sin, tan
 
 import geopandas as gpd
@@ -33,6 +33,7 @@ import numexpr as ne
 import numpy as np
 import rasterio
 from matplotlib.pyplot import colormaps
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 from pyproj.exceptions import ProjError
 from rasterio.mask import mask as riomask
@@ -45,22 +46,22 @@ from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import Data
 
 
-def aspect2(data):
+def aspect2(data: NDArray) -> tuple[NDArray, NDArray, NDArray]:
     """
     Aspect of a dataset.
 
     Parameters
     ----------
-    data : numpy MxN array
-        input data used for the aspect calculation
+    data
+        Input data used for the aspect calculation
 
     Returns
     -------
-    adeg : numpy masked array
+    adeg : ndarray
         aspect in degrees
-    dzdx : numpy array
+    dzdx : ndarray
         gradient in x direction
-    dzdy : numpy array
+    dzdy : ndarray
         gradient in y direction
     """
     cdy = np.array([[1.0, 2.0, 1.0], [0.0, 0.0, 0.0], [-1.0, -2.0, -1.0]])
@@ -83,18 +84,18 @@ def aspect2(data):
     return adeg, dzdx, dzdy
 
 
-def check_dataid(out):
+def check_dataid(out: list[Data]) -> list[Data]:
     """
     Check dataid for duplicates and renames where necessary.
 
     Parameters
     ----------
-    out : list of Data
+    out
         PyGMI raster data.
 
     Returns
     -------
-    out : list of Data
+    list of Data
         PyGMI raster data.
 
     """
@@ -113,34 +114,33 @@ def check_dataid(out):
     return out
 
 
-def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0):
+def currentshader(
+    data: NDArray,
+    cell: float = 1.0,
+    theta: float = np.pi / 4.0,
+    phi: float = -np.pi / 4.0,
+    alpha: float = 1.0,
+) -> NDArray:
     """
     Blinn shader - used for sun shading.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Dataset to be shaded.
-    cell : float
+    cell
         between 1 and 100 - controls sunshade detail.
-    theta : float
+    theta
         sun elevation (also called g in code below)
-    phi : float
+    phi
         azimuth
-    alpha : float
+    alpha
         how much incident light is reflected (0 to 1)
 
     Returns
     -------
-    R : numpy array
+    ndarray
         array containing the shaded results.
-
-        self.phi = -np.pi/4.
-        self.theta = np.pi/4.
-        self.cell = 100.
-        self.alpha = .0
-
-
     """
     if np.ma.is_masked(data):
         data = fill_nd_closest(data)
@@ -198,25 +198,30 @@ def currentshader(data, cell=1.0, theta=np.pi / 4.0, phi=-np.pi / 4.0, alpha=1.0
     return R
 
 
-def cut_raster(data, ibnd, showlog: Callable[..., None] = print, deepcopy=True):
+def cut_raster(
+    data: list[Data],
+    ibnd: str | gpd.GeoDataFrame | tuple,
+    showlog: Callable[..., None] = print,
+    deepcopy: bool = True,
+) -> list[Data]:
     """
     Cut a raster dataset.
 
     Parameters
     ----------
-    data : list of Data
-        PyGMI Dataset
-    ibnd : str or GeoDataFrame, or tuple of bounds
-        shapefile or GeoDataFrame used to cut data.
-    showlog : function, optional
+    data
+        |Input PyGMI Dataset
+    ibnd
+        shapefile or GeoDataFrame or tuple of bounds used to cut data.
+    showlog
         Function for printing text. The default is print.
-    deepcopy : bool
-        Make a copy of the data array before use.
+    deepcopy
+        Make a copy of the data array before use, by default True.
 
     Returns
     -------
-    data : list of Data
-        PyGMI Dataset
+    list of Data
+        Cut version of Dataset
     """
     if ibnd is None:
         return data
@@ -283,7 +288,20 @@ def cut_raster(data, ibnd, showlog: Callable[..., None] = print, deepcopy=True):
     return data
 
 
-def fill_nd_closest(arr):
+def fill_nd_closest(arr: NDArray) -> NDArray:
+    """
+    Fill array using closest value.
+
+    Parameters
+    ----------
+    arr
+        Input array.
+
+    Returns
+    -------
+    NDArray
+        Filled array.
+    """
     mask = np.ma.getmaskarray(arr)
 
     # distance_transform_edt finds distance/index to the nearest ZERO (False) element.
@@ -385,7 +403,7 @@ def histeq(img, nbrbins=32768):
     return im2
 
 
-def img2rgb(img, cbar=colormaps["jet"]):
+def img2rgb(img: NDArray, cbar: colormaps = colormaps["jet"]) -> NDArray:
     """
     Image to RGB.
 
@@ -393,15 +411,15 @@ def img2rgb(img, cbar=colormaps["jet"]):
 
     Parameters
     ----------
-    img : numpy array
+    img
         array to be converted to rgba image.
     cbar : matplotlib colour map
         colormap to apply to the image, default is jet.
 
     Returns
     -------
-    im2 : numpy array
-        output rgba image
+    ndarray
+        Output RGBA image.
     """
     im2 = img.copy()
     im2 = norm255(im2)
@@ -416,17 +434,17 @@ def img2rgb(img, cbar=colormaps["jet"]):
 
 
 def lstack(
-    dat,
+    dat: list[Data],
     *,
-    piter=None,
-    dxy=None,
+    piter: Iterable | None = None,
+    dxy: float | None = None,
     showlog: Callable[..., None] = print,
-    commonmask=False,
-    masterid=None,
-    nodeepcopy=False,
-    resampling="cubic_spline",  # "nearest",
-    checkdataid=True,
-):
+    commonmask: bool = False,
+    masterid: str | None = None,
+    nodeepcopy: bool = False,
+    resampling: str = "cubic_spline",  # "nearest",
+    checkdataid: bool = True,
+) -> list[Data]:
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -435,29 +453,29 @@ def lstack(
 
     Parameters
     ----------
-    dat : list of Data
+    dat
         data object which stores datasets
-    piter : function, optional
+    piter
         Progress bar iterator. The default is None.
-    dxy : float, optional
+    dxy
         Cell size. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    commonmask : bool, optional
+    commonmask
         Create a common mask for all bands. The default is False.
-    masterid : str, optional
+    masterid
         ID of master dataset. The default is None.
-    nodeepcopy : bool
+    nodeepcopy
         Flag to avoid making a copy of the input data, by default False.
-    resampling : str
+    resampling
         The resampling to be used on output date. The default is 'nearest'.
-    checkdataid : bool
+    checkdataid
         Check to make sure there are no duplicate data ids. The default is True
 
     Returns
     -------
-    out : list of Data
-        data object which stores datasets
+    list of Data
+        list of raster data.
 
     """
     if piter is None:
@@ -613,22 +631,24 @@ def lstack(
     return out
 
 
-def norm2(dat, datmin=None, datmax=None):
+def norm2(
+    dat: NDArray, datmin: float | None = None, datmax: float | None = None
+) -> NDArray:
     """
     Normalise array vector between 0 and 1.
 
     Parameters
     ----------
-    dat : numpy array
+    dat
         array to be normalised
-    datmin : float
+    datmin
         data minimum, default is None
-    datmax : float
+    datmax
         data maximum, default is None
 
     Returns
     -------
-    out : numpy array of floats
+    out : ndarray of floats
         normalised array
     """
     if datmin is None:
@@ -645,18 +665,18 @@ def norm2(dat, datmin=None, datmax=None):
     return out
 
 
-def norm255(dat):
+def norm255(dat: NDArray) -> NDArray:
     """
     Normalise array vector between 1 and 255.
 
     Parameters
     ----------
-    dat : numpy array
+    dat
         array to be normalised.
 
     Returns
     -------
-    out : numpy array of 8 bit integers
+    ndarray of 8 bit integers
         normalised array
     """
     datmin = float(dat.min())

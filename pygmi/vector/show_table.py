@@ -116,7 +116,7 @@ class BasicStats(ContextModule):
         self.tablewidget.resizeColumnsToContents()
         self.show()
 
-    def save(self):
+    def save(self) -> bool:
         """
         Save Table.
 

@@ -280,10 +280,7 @@ class PlotRaster(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         i = self.cmb_1.currentIndex()
         data = self.indata["Cluster"]
         self.mmc.update_classes(data[i])

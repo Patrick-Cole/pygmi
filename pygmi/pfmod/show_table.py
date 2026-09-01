@@ -136,7 +136,7 @@ class BasicStats3D(ContextModule):
 
         self.combo()
 
-    def save(self):
+    def save(self) -> bool:
         """
         Save Table.
 

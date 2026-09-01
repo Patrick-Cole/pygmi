@@ -126,12 +126,16 @@ class CalculateChange(BasicModule):
         """Save project data from class."""
         self.saveobj(self.lw_indices)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         flist = self.indata["RasterFileList"]
 

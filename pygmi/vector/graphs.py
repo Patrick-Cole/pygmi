@@ -418,7 +418,7 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         data
-            GeoPandas data.
+            GeoDataFrame.
         col
             Label for column to extract.
         style
@@ -1308,7 +1308,7 @@ def annotate_heatmap(
 
     Returns
     -------
-    list[str]
+    list of str
         List of text
 
     """

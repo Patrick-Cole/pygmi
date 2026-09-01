@@ -29,6 +29,7 @@ from collections.abc import Callable, Iterable
 
 import numpy as np
 import scipy.signal as ssig
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
@@ -139,7 +140,7 @@ class Smooth(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -193,7 +194,6 @@ class Smooth(BasicModule):
             self.parent.process_is_active(False)
 
         self.outdata["Raster"] = data
-        # self.showlog("Finished!", True)
 
         return True
 
@@ -211,10 +211,7 @@ class Smooth(BasicModule):
         self.saveobj(self.rb_gaussian)
 
     def choosefilter(self):
-        """
-        Section to choose the filter.
-
-        """
+        """Section to choose the filter."""
         # Do not need to check whether inputs are greater than zero,
         # since the spinboxes will not permit it.
 
@@ -279,10 +276,7 @@ class Smooth(BasicModule):
         self.updatetable()
 
     def updatetable(self):
-        """
-        Update table.
-
-        """
+        """Update table."""
         if self.fmat is None:
             return
 
@@ -313,15 +307,15 @@ class Smooth(BasicModule):
 
         self.tablewidget.resizeColumnsToContents()
 
-    def msgbox(self, title, message):
+    def msgbox(self, title: str, message: str):
         """
         Message box.
 
         Parameters
         ----------
-        title : str
+        title
             Title for message box.
-        message : str
+        message
             Text for message box.
 
         """
@@ -331,43 +325,43 @@ class Smooth(BasicModule):
 
 
 def mov_win_filt(
-    dat,
-    fmat,
-    itype,
-    box_x=5,
-    box_y=5,
-    rad=5,
-    sigma=5,
+    dat: NDArray,
+    fmat: str,
+    itype: str,
+    box_x: int = 5,
+    box_y: int = 5,
+    rad: int = 5,
+    sigma: int = 5,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> NDArray:
     """
     Apply moving window filter function to data.
 
     Parameters
     ----------
-    dat : numpy masked array.
+    dat
         Data for a PyGMI raster dataset.
-    fmat : str
+    fmat
         Filter matrix type.
-    itype : str
+    itype
         Filter type. Can be '2D Mean' or '2D Median'.
-    box_x : int, optional
+    box_x
         number of columns for box, by default 5
-    box_y : int, optional
+    box_y
         number of rows for box, by default 5
-    rad : int, optional
+    rad
         Radius of disc window, by default 5
-    sigma : int, optional
+    sigma
         Standard deviation, by default 5
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    piter : function, optional
+    piter
         progress bar iterable, default is iter.
 
     Returns
     -------
-    out : numpy masked array
+    ndarray
         Data for a PyGMI raster dataset.
 
     """
@@ -431,7 +425,7 @@ def mov_win_filt(
     return out
 
 
-def filters2d(filtertype, sze, *sigma):
+def filters2d(filtertype: str, sze: NDArray | int, *sigma: NDArray) -> NDArray:
     """
     Filter 2D.
 
@@ -482,17 +476,17 @@ def filters2d(filtertype, sze, *sigma):
 
     Parameters
     ----------
-    filtertype : str
+    filtertype
         Type of filter. Can be 'average', 'disc' or 'gaussian'.
-    sze : numpy array or integer)
+    sze
         This is a integer radius for 'disc' or a vector containing rows and
         columns otherwise.
-    sigma : numpy array
+    sigma
         numpy array containing std deviation. Used in 'gaussian'.
 
     Returns
     -------
-    f : numpy array
+    ndarray
         Returns the filter to be used.
 
     """

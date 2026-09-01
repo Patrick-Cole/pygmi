@@ -34,11 +34,14 @@ from matplotlib import collections as mc
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
 from pygmi.maps import frm
 from pygmi.misc import ContextModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import currentshader, histcomp, norm2
 
 
@@ -68,17 +71,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
         )
         FigureCanvasQTAgg.updateGeometry(self)
 
-    def update_contours(self, data1, scale=7, rotang=10):
+    def update_contours(self, data1: Data, scale: float = 7, rotang: float = 10):
         """
         Update the contour plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster data.
+        data1
             raster dataset to be used in contouring.
-        scale : float, optional
+        scale
             Scale. The default is 7.
-        rotang : float, optional
+        rotang
             Rotation in degrees. The default is 10.
 
         """
@@ -162,30 +165,30 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_raster(
         self,
-        data1,
+        data1: Data,
         *,
-        scale=7,
-        rotang=10,
-        atype="dubois",
-        cmap=colormaps["jet"],
-        shade=False,
+        scale: float = 7,
+        rotang: float = 10,
+        atype: str = "dubois",
+        cmap: LinearSegmentedColormap = colormaps["jet"],
+        shade: bool = False,
     ):
         """
         Update the raster plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used in contouring
-        scale : float, optional
+        data1
+            Raster dataset to be used in contouring
+        scale
             Scale. The default is 7.
-        rotang : float, optional
+        rotang
             Rotation in degrees. The default is 10.
-        atype : str, optional
+        atype
             Anaglyph type. The default is 'dubois'.
-        cmap : matplotlib.colors.LinearSegmentedColormap, optional
+        cmap
             Matplotlib colormap. The default is jet.
-        shade : bool, optional
+        shade
             Option to choose sunshading. The default is False.
 
         """
@@ -205,17 +208,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.update_colors(shade, cmap, atype)
 
-    def update_colors(self, doshade=False, cmap=colormaps["jet"], atype="dubois"):
+    def update_colors(
+        self,
+        doshade: bool = False,
+        cmap: LinearSegmentedColormap = colormaps["jet"],
+        atype: str = "dubois",
+    ):
         """
         Update colors.
 
         Parameters
         ----------
-        doshade : bool, optional
+        doshade
             Option to choose sunshading. The default is False.
-        cmap : matplotlib.colors.LinearSegmentedColormap, optional
+        cmap
             Matplotlib colormap. The default is jet.
-        atype : str, optional
+        atype
             Anaglyph type. The default is 'dubois'.
 
         """
@@ -248,13 +256,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.update_atype(atype)
 
-    def update_atype(self, atype="dubois"):
+    def update_atype(self, atype: str = "dubois"):
         """
         Update anaglyph type.
 
         Parameters
         ----------
-        atype : str, optional
+        atype
             Anaglyph type. The default is 'dubois'.
 
         """
@@ -395,10 +403,7 @@ class PlotAnaglyph(ContextModule):
         self.slider_cnt.sliderReleased.connect(self.change_contours)
 
     def change_all(self):
-        """
-        Update from all combos.
-
-        """
+        """Update from all combos."""
         i = self.cmb_1.currentIndex()
         txt = str(self.cmb_cbar.currentText())
         cbar = colormaps[txt]
@@ -421,10 +426,7 @@ class PlotAnaglyph(ContextModule):
             )
 
     def change_colors(self):
-        """
-        Update colour bar.
-
-        """
+        """Update colour bar."""
         txt = str(self.cmb_cbar.currentText())
         cbar = colormaps[txt]
         shade = self.cb_shade.isChecked()
@@ -432,17 +434,11 @@ class PlotAnaglyph(ContextModule):
         self.mmc.update_colors(atype=self.cmb_2.currentText(), cmap=cbar, doshade=shade)
 
     def change_atype(self):
-        """
-        Update anaglyph type.
-
-        """
+        """Update anaglyph type."""
         self.mmc.update_atype(atype=self.cmb_2.currentText())
 
     def change_contours(self):
-        """
-        Update contours.
-
-        """
+        """Update contours."""
         self.rb_docontour.setChecked(True)
 
         i = self.cmb_1.currentIndex()
@@ -460,10 +456,7 @@ class PlotAnaglyph(ContextModule):
         self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
 
     def change_image(self):
-        """
-        Change Image, setting defaults.
-
-        """
+        """Change Image, setting defaults."""
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
         self.cb_shade.setEnabled(True)
@@ -492,36 +485,36 @@ class PlotAnaglyph(ContextModule):
 
 
 def sunshade(
-    data,
+    data: NDArray,
     *,
-    azim=-np.pi / 4.0,
-    elev=np.pi / 4.0,
-    alpha=1,
-    cell=100,
-    cmap=colormaps["terrain"],
-):
+    azim: float = -np.pi / 4.0,
+    elev: float = np.pi / 4.0,
+    alpha: float = 1,
+    cell: float = 100,
+    cmap: LinearSegmentedColormap = colormaps["terrain"],
+) -> NDArray:
     """
     Perform Sunshading on data.
 
     Parameters
     ----------
-    data : numpy array
+    data
         input MxN data to be imaged.
-    azim : float, optional
+    azim
         Sun azimuth. The default is -np.pi/4..
-    elev : float, optional
+    elev
         Sun elevation. The default is np.pi/4..
-    alpha : float, optional
+    alpha
         how much incident light is reflected (0 to 1). The default is 1.
-    cell : float, optional
+    cell
         between 1 and 100 - controls sunshade detail. The default is 100.
-    cmap : matplotlib.colors.LinearSegmentedColormap, optional
+    cmap
         Matplotlib colormap.
 
 
     Returns
     -------
-    colormap : numpy array
+    ndarray
         Output colour mapped array (MxNx4).
 
     """
@@ -540,22 +533,22 @@ def sunshade(
     return colormap
 
 
-def anaglyph(red, blue, atype="dubois"):
+def anaglyph(red: NDArray, blue: NDArray, atype: str = "dubois") -> NDArray:
     """
     Colour Anaglyph.
 
     Parameters
     ----------
-    red : numpy array
+    red
         Dataset for red channel.
-    blue : numpy array
+    blue
         Dataset for blue channel.
-    atype : str, optional
+    atype
         Anaglyph type. The default is 'dubois'.
 
     Returns
     -------
-    rgb : numpy array
+    ndarray
         Output dataset.
 
     """
@@ -652,26 +645,28 @@ def anaglyph(red, blue, atype="dubois"):
     return rgb
 
 
-def rot_and_clean(x, y, z, rotang=5, rtype="red"):
+def rot_and_clean(
+    x: NDArray, y: NDArray, z: NDArray, rotang: float = 5, rtype: str = "red"
+) -> NDArray:
     """
     Rotate and clean rotated data for 2d view.
 
     Parameters
     ----------
-    x : numpy array
+    x
         X coordinates.
-    y : numpy array
+    y
         Y coordinates.
-    z : numpy array
+    z
         Z coordinates (or data values).
-    rotang : float, optional
+    rotang
         Rotation angle. The default is 5.
-    rtype : str, optional
+    rtype
         Rotation type. The default is 'red'.
 
     Returns
     -------
-    zmap : numpy array
+    ndarray
         Output data.
 
     """

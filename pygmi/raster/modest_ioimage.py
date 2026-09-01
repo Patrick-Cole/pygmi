@@ -12,6 +12,7 @@ import matplotlib.colors as mcolors
 import matplotlib.image as mi
 import numpy as np
 from matplotlib import rcParams
+from matplotlib.axes import Axes
 from matplotlib.transforms import Affine2D, IdentityTransform
 
 from pygmi.raster.iodefs import get_raster
@@ -120,10 +121,7 @@ class ModestImage(mi.AxesImage):
             self.shade = None
 
     def invalidate_cache(self):
-        """
-        Invalidate cache.
-
-        """
+        """Invalidate cache."""
         self._bounds = None
         self._imcache = None
         self._rgbacache = None
@@ -366,10 +364,7 @@ class ModestImage(mi.AxesImage):
         super().draw(renderer, *args, **kwargs)
 
     def draw_ternary(self):
-        """
-        Draw ternary.
-
-        """
+        """Draw ternary."""
         colormap = np.ma.ones((self._A.shape[0], self._A.shape[1], 4))
         if self.dohisteq:
             colormap[:, :, 0] = norm2(histeq(self._A[:, :, 0]))
@@ -398,10 +393,7 @@ class ModestImage(mi.AxesImage):
         return colormap
 
     def draw_sunshade(self, colormap=None):
-        """
-        Apply sunshading.
-
-        """
+        """Apply sunshading."""
         sun = self._A[:, :, -1]
         self._A = self._A[:, :, :-1]
         self._A = self._A.squeeze()
@@ -540,7 +532,9 @@ def imshow(
     return im
 
 
-def extract_matched_slices(axes=None, shape=None, transform=IDENTITY_TRANSFORM):
+def extract_matched_slices(
+    axes: Axes | None = None, shape: tuple | None = None, transform=IDENTITY_TRANSFORM
+) -> tuple[int, int, int, int, int, int]:
     """
     Determine the slice parameters to use, matched to the screen.
 
@@ -549,13 +543,13 @@ def extract_matched_slices(axes=None, shape=None, transform=IDENTITY_TRANSFORM):
 
     Parameters
     ----------
-    axes : Axes, optional
+    axes
         Axes object to query. It's extent and pixel size determine the slice
         parameters. The default is None.
-    shape : tuple, optional
+    shape
         Tuple of the full image shape to slice into. Upper boundaries for
         slices will be cropped to fit within this shape. The default is None.
-    transform : rasterio transform, optional
+    transform
         Rasterio transform. The default is IDENTITY_TRANSFORM.
 
     Returns

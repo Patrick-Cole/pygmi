@@ -923,15 +923,7 @@ class ExportBatch(ContextModule):
             self.cmb_slvl.setEnabled(False)
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         self.process_is_active(True)
 
         if "RasterFileList" not in self.indata:

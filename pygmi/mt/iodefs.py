@@ -143,7 +143,7 @@ class ExportEDI(ContextModule):
 
         self.ofile = ""
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 

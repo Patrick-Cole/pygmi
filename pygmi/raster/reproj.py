@@ -33,6 +33,7 @@ from pyproj.crs import CRS, ProjectedCRS
 from pyproj.crs.coordinate_operation import TransverseMercatorConversion
 from pyproj.transformer import TransformerGroup
 from PySide6 import QtGui, QtWidgets
+from rasterio import Affine
 from rasterio.warp import calculate_default_transform, reproject
 
 from pygmi.raster.datatypes import Data
@@ -46,12 +47,12 @@ class GroupProj(QtWidgets.QWidget):
     ----------
     parent
         Reference to the parent routine. The default is None.
-    title : str
+    title
         Title for QGroupBox - self.gbox.
 
     """
 
-    def __init__(self, title="Projection", parent=None):
+    def __init__(self, title: str = "Projection", parent=None):
         super().__init__(parent)
 
         self.wkt = ""
@@ -103,13 +104,13 @@ class GroupProj(QtWidgets.QWidget):
         self.cmb_datum.currentIndexChanged.connect(self.combo_datum_change)
         self.cmb_proj.currentIndexChanged.connect(self.combo_change)
 
-    def set_current(self, wkt):
+    def set_current(self, wkt: str):
         """
         Set new WKT for current option.
 
         Parameters
         ----------
-        wkt : str
+        wkt
             Well Known Text descriptions for coordinates (WKT).
 
         """
@@ -122,10 +123,7 @@ class GroupProj(QtWidgets.QWidget):
         self.combo_change()
 
     def combo_datum_change(self):
-        """
-        Change datum combo.
-
-        """
+        """Change datum combo."""
         indx = self.cmb_datum.currentIndex()
         txt = self.cmb_datum.itemText(indx)
 
@@ -139,10 +137,7 @@ class GroupProj(QtWidgets.QWidget):
         self.combo_change()
 
     def combo_change(self):
-        """
-        Change Combo.
-
-        """
+        """Change Combo."""
         dtxt = self.cmb_datum.currentText()
         ptxt = self.cmb_proj.currentText()
 
@@ -164,40 +159,40 @@ class GroupProj(QtWidgets.QWidget):
 
 
 def data_reproject(
-    data,
-    ocrs,
-    otransform=None,
-    orows=None,
-    ocolumns=None,
-    icrs=None,
+    data: Data,
+    ocrs: CRS,
+    otransform: Affine | None = None,
+    orows: int | None = None,
+    ocolumns: int | None = None,
+    icrs: CRS | None = None,
     showlog: Callable[..., None] = print,
-    forcereproj=False,
-):
+    forcereproj: bool = False,
+) -> Data:
     """
     Reproject dataset.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         PyGMI dataset.
-    ocrs : CRS
+    ocrs
         output crs.
-    otransform : Affine, optional
+    otransform
         Output affine transform. The default is None.
-    orows : int, optional
+    orows
         output rows. The default is None.
-    ocolumns : int, optional
+    ocolumns
         output columns. The default is None.
-    icrs : CRS, optional
+    icrs
         input crs. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    forcereproj : bool, optional
+    forcereproj
         Force a reprojection, the default is False.
 
     Returns
     -------
-    data2 : pygmi.raster.datatypes.Data
+    Data
         Reprojected dataset.
 
     """
@@ -263,13 +258,13 @@ def data_reproject(
     return data2
 
 
-def getepsgcodes():
+def getepsgcodes() -> dict:
     """
     Routine used to get a list of EPSG codes.
 
     Returns
     -------
-    pcodes : dictionary
+    dict
         Dictionary of codes per projection in WKT format.
 
     """
@@ -304,7 +299,22 @@ def getepsgcodes():
     return pcodes
 
 
-def transform_exists(crs_from_id, crs_to_id):
+def transform_exists(crs_from_id: str | int | CRS, crs_to_id: str | int | CRS) -> bool:
+    """
+    Check if transform exists.
+
+    Parameters
+    ----------
+    crs_from_id
+        CRS input definition.
+    crs_to_id
+        CRS output definition.
+
+    Returns
+    -------
+    bool
+        True if a transformation exists, False otherwise.
+    """
     try:
         crs_from = CRS.from_user_input(crs_from_id)
         crs_to = CRS.from_user_input(crs_to_id)

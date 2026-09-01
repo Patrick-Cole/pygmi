@@ -203,7 +203,7 @@ class Metadata(ContextModule):
         self.le_utmzone.setText(str(idata.utm_zone))
         self.le_rot.setText(str(idata.rotation_angle))
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 

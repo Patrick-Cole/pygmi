@@ -126,7 +126,7 @@ class Mod3dDisplay(ContextModule):
         """
         self.outdata = self.indata
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 

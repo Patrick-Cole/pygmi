@@ -110,10 +110,7 @@ class ModestImage(mi.AxesImage):
             self.shade = None
 
     def invalidate_cache(self):
-        """
-        Invalidate cache.
-
-        """
+        """Invalidate cache."""
         self._bounds = None
         self._imcache = None
         self._rgbacache = None
@@ -350,10 +347,7 @@ class ModestImage(mi.AxesImage):
         super().draw(renderer, *args, **kwargs)
 
     def draw_ternary(self):
-        """
-        Draw ternary.
-
-        """
+        """Draw ternary."""
         colormap = np.ma.ones((self._A.shape[0], self._A.shape[1], 4))
         if self.dohisteq:
             colormap[:, :, 0] = norm2(histeq(self._A[:, :, 0]))
@@ -383,10 +377,7 @@ class ModestImage(mi.AxesImage):
         return colormap
 
     def draw_sunshade(self, colormap=None):
-        """
-        Apply sunshading.
-
-        """
+        """Apply sunshading."""
         sun = self._A[:, :, -1]
         self._A = self._A[:, :, :-1]
         self._A = self._A.squeeze()

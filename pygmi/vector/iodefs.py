@@ -118,7 +118,7 @@ class ColumnSelect(BasicModule):
 
         return True
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -696,7 +696,7 @@ class ImportXYZ(BasicModule):
 
         Returns
         -------
-        df
+        DataFrame
             Pandas dataframe.
 
         """
@@ -781,7 +781,7 @@ class ExportXYZ(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -866,7 +866,7 @@ class ExportVector(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -950,7 +950,7 @@ class ExportVoxel(ContextModule):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 

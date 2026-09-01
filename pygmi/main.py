@@ -683,14 +683,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
 
 class MainWidget(QtWidgets.QMainWindow):
-    """
-    Widget class to call the main interface.
-
-    Attributes
-    ----------
-    pdlg
-    context_menu
-    """
+    """Widget class to call the main interface."""
 
     def __init__(self):
         super().__init__()
@@ -998,7 +991,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         Returns
         -------
-        DiagramItem | None
+        DiagramItem or None
             Return a DiagramItem object
         """
         if "nodialog" in kwargs:

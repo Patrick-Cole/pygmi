@@ -211,10 +211,7 @@ class Mod3dDisplay(ContextModule):
             self.lbl_light.hide()
 
     def save(self):
-        """
-        Save a jpg.
-
-        """
+        """Save a JPG or PNG."""
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, "Save File", ".", "JPG (*.jpg);;PNG (*.png)"
         )
@@ -249,10 +246,7 @@ class Mod3dDisplay(ContextModule):
         self.glutlith = range(1, len(self.gfaces) + 1)
 
     def change_defs(self):
-        """
-        List widget routine.
-
-        """
+        """List widget routine."""
         if not self.lmod1.lith_list:
             return
         self.set_selected_liths()
@@ -260,17 +254,11 @@ class Mod3dDisplay(ContextModule):
         QtWidgets.QApplication.processEvents()
 
     def data_init(self):
-        """
-        Initialise data.
-
-        """
+        """Initialise data."""
         self.outdata = self.indata
 
     def set_selected_liths(self):
-        """
-        Set the selected lithologies.
-
-        """
+        """Set the selected lithologies."""
         item = self.lw_3dmod_defs.currentItem()
 
         if item.text()[0] == " ":

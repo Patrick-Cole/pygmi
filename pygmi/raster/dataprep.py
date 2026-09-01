@@ -34,10 +34,12 @@ import numpy as np
 import pandas as pd
 import rasterio
 import rasterio.merge
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 from PySide6 import QtGui, QtWidgets
 from rasterio.warp import calculate_default_transform
 from shapely import LineString, unary_union
+from shapely.geometry.base import BaseGeometry
 
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.raster.datatypes import Data, numpy_to_pygmi
@@ -72,7 +74,7 @@ class DataCut(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -243,7 +245,7 @@ class DataLayerStack(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -445,10 +447,7 @@ class DataMerge(BasicModule):
         self.rb_median_first.clicked.connect(self.method_change)
 
     def method_change(self):
-        """
-        Change method.
-
-        """
+        """Change method."""
         if self.rb_first.isChecked():
             self.method = "first"
         if self.rb_last.isChecked():
@@ -463,10 +462,7 @@ class DataMerge(BasicModule):
             self.method = "merge_median_first"
 
     def get_idir(self):
-        """
-        Get the input directory.
-
-        """
+        """Get the input directory."""
         self.idir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Directory"
         )
@@ -476,10 +472,14 @@ class DataMerge(BasicModule):
         if self.idir == "":
             self.idir = None
 
-    def get_sfile(self):
+    def get_sfile(self) -> bool:
         """
         Get the input shapefile.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         ext = "Common formats (*.shp *.hdr *.tif);;"
 
@@ -540,7 +540,7 @@ class DataMerge(BasicModule):
         self.saveobj(self.forcetype)
         self.saveobj(self.singleband)
 
-    def merge_different(self):
+    def merge_different(self) -> bool:
         """
         Merge files with different numbers of bands and/or band order.
 
@@ -679,7 +679,7 @@ class DataReproj(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -743,7 +743,7 @@ class GetProf(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -945,10 +945,7 @@ class Metadata(ContextModule):
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
-        """
-        Accept option.
-
-        """
+        """Accept option."""
         wkt = self.proj.wkt
 
         self.update_vals()
@@ -970,10 +967,7 @@ class Metadata(ContextModule):
         self.accept()
 
     def rename_id(self):
-        """
-        Rename the band name.
-
-        """
+        """Rename the band name."""
         ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent,
@@ -994,10 +988,7 @@ class Metadata(ContextModule):
             self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
-        """
-        Update the values on the interface.
-
-        """
+        """Update the values on the interface."""
         tmp = self.check_validation()
         if not tmp:
             self.cmb_bandid.blockSignals(True)
@@ -1050,13 +1041,13 @@ class Metadata(ContextModule):
         self.lbl_dtype.setText(str(idata.data.dtype))
         self.date.setDate(idata.datetime)
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
         Returns
         -------
-        tmp : bool
+        bool
             True if successful, False otherwise.
 
         """
@@ -1145,7 +1136,7 @@ class RasterToVector(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1230,7 +1221,7 @@ class RasterToVectorBoundary(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1270,7 +1261,7 @@ class RasterToVectorBoundary(BasicModule):
         """Save project data from class."""
 
 
-def cluster_to_raster(indata):
+def cluster_to_raster(indata: dict) -> dict:
     """
     Convert cluster datasets to raster datasets.
 
@@ -1280,13 +1271,13 @@ def cluster_to_raster(indata):
 
     Parameters
     ----------
-    indata : dict
-        Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
+    indata
+        Dictionary of PyGMI datasets (Data).
 
     Returns
     -------
-    indata : dict
-        Dictionary of PyGMI datasets (pygmi.raster.datatypes.Data).
+    dict
+        Dictionary of PyGMI datasets (Data).
 
     """
     if "Cluster" not in indata:
@@ -1301,22 +1292,24 @@ def cluster_to_raster(indata):
     return indata
 
 
-def get_shape_bounds(sfile, crs=None, showlog: Callable[..., None] = print):
+def get_shape_bounds(
+    sfile: str, crs: int | str | CRS | None = None, showlog: Callable[..., None] = print
+) -> tuple[float, float, float, float]:
     """
     Get bounds from a shape file.
 
     Parameters
     ----------
-    sfile : str
+    sfile
         Filename for shapefile.
-    crs : rasterio CRS
-        target crs for shapefile
-    showlog : function, optional
+    crs
+        Target CRS for shapefile
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    bounds : list
+    tuple of floats
         Rasterio bounds.
 
     """
@@ -1349,32 +1342,34 @@ def get_shape_bounds(sfile, crs=None, showlog: Callable[..., None] = print):
 
 
 def merge_median_last(
-    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
+    merged_data: NDArray,
+    new_data: NDArray,
+    merged_mask: NDArray,
+    new_mask: NDArray,
+    index: int | None = None,
+    roff: int | None = None,
+    coff: int | None = None,
 ):
     """
     Merge using median for rasterio, taking minimum value.
 
     Parameters
     ----------
-    merged_data : numpy array
+    merged_data
         Old data.
-    new_data : numpy array
+    new_data
         New data to merge to old data.
-    merged_mask : float
+    merged_mask
         Old mask.
-    new_mask : float
+    new_mask
         New mask.
-    index : int, optional
+    index
         index of the current dataset within the merged dataset collection.
         The default is None.
-    roff : int, optional
+    roff
         row offset in base array. The default is None.
-    coff : int, optional
+    coff
         col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
 
     """
     merged_data = np.ma.array(merged_data, mask=merged_mask)
@@ -1395,7 +1390,13 @@ def merge_median_last(
 
 
 def merge_median_first(
-    merged_data, new_data, merged_mask, new_mask, index=None, roff=None, coff=None
+    merged_data: NDArray,
+    new_data: NDArray,
+    merged_mask: NDArray,
+    new_mask: NDArray,
+    index: int | None = None,
+    roff: int | None = None,
+    coff: int | None = None,
 ):
     """
     Merge using median for rasterio, taking minimum value.
@@ -1417,11 +1418,6 @@ def merge_median_first(
         row offset in base array. The default is None.
     coff : int, optional
         col offset in base array. The default is None.
-
-    Returns
-    -------
-    None.
-
     """
     merged_data = np.ma.array(merged_data, mask=merged_mask)
     new_data = np.ma.array(new_data, mask=new_mask)
@@ -1439,20 +1435,20 @@ def merge_median_first(
     merged_data[:] = tmp1
 
 
-def merge_order(ifiles, igeoms):
+def merge_order(ifiles: list[str], igeoms: list[BaseGeometry]) -> list[str]:
     """
     Sort data in an order which ensures overlaps.
 
     Parameters
     ----------
-    ifiles : list
+    ifiles
         list of filenames
-    igeoms : list
+    igeoms
         list of geometries
 
     Returns
     -------
-    ofiles : list
+    list of str
         list of filenames
     """
     ofiles = []
@@ -1477,23 +1473,23 @@ def merge_order(ifiles, igeoms):
 
 
 def mosaic(
-    dat,
+    dat: list[Data],
     *,
-    idir=None,
-    bfile=None,
-    bandstofiles=False,
+    idir: str | None = None,
+    bfile: str | None = None,
+    bandstofiles: bool = False,
     piter: Iterable = iter,
     showlog: Callable[..., None] = print,
-    singleband=False,
-    forcetype=None,
-    shifttomedian=False,
-    tmpdir=None,
-    nodata=None,
-    method="first",
-    res=None,
-    ifiles=None,
-    resampling="nearest",
-):
+    singleband: bool = False,
+    forcetype: bool | None = None,
+    shifttomedian: bool = False,
+    tmpdir: str | None = None,
+    nodata: float | None = None,
+    method: str = "first",
+    res: float | None = None,
+    ifiles: list[str] | None = None,
+    resampling: str = "nearest",
+) -> list[Data]:
     """
     Merge files with different numbers of bands and/or band order.
 
@@ -1501,40 +1497,42 @@ def mosaic(
 
     Parameters
     ----------
-    dat : list
+    dat
         List of PyGMI data bands to be merged. Can be empty if idir is
         provided.
-    idir : str, optional
+    idir
         Directory where file to be mosaiced are found. The default is None.
-    bfile : str, optional
+    bfile
         Path to boundary file. Can be shapefile or raster. The default is None.
-    bandstofiles : bool, optional
+    bandstofiles
         Export output bands to files. The default is False.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    singleband : bool, optional
+    singleband
         Ignore band names, since there is only one band. The default is False.
-    forcetype : bool, optional
+    forcetype
         Force input data type. The default is None.
-    shifttomedian : bool, optional
+    shifttomedian
         Shift bands to median value. The default is False.
-    tmpdir : str, optional
+    tmpdir
         Alternate directory for temporary files. The default is None.
-    nodata : float, optional
+    nodata
         Nodata value. The default is None.
-    method : str, optional
+    method
         Mosaic method. Can be 'first', 'last', 'min', 'max',
         'merge_median_last' or 'merge_median_first. The default is 'first'.
-    res : float, optional
+    res
         Output resolution. Can be a tuple. The default is None.
-    ifiles : list, optional
+    ifiles
         List of input files.
+    resampling
+        Resampling type to use.
 
     Returns
     -------
-    outdat : PyGMI raster data
+    list of Data
         Output mosaiced dataset.
 
     """
@@ -1819,7 +1817,7 @@ def mosaic(
     return outdat
 
 
-def redistribute_vertices(geom, distance):
+def redistribute_vertices(geom: BaseGeometry, distance: float) -> BaseGeometry:
     """
     Redistribute vertices in a geometry.
 
@@ -1829,9 +1827,9 @@ def redistribute_vertices(geom, distance):
 
     Parameters
     ----------
-    geom : shapely geometry
+    geom
         Geometry from geopandas.
-    distance : float
+    distance
         sampling distance.
 
     Raises
@@ -1841,7 +1839,7 @@ def redistribute_vertices(geom, distance):
 
     Returns
     -------
-    shapely geometry
+    BaseGeometry
         New geometry.
 
     """
@@ -1861,7 +1859,7 @@ def redistribute_vertices(geom, distance):
     raise ValueError(f"unhandled geometry {geom.geom_type}")
 
 
-def trim_raster(olddata):
+def trim_raster(olddata: list[Data]) -> list[Data]:
     """
     Trim nulls from a raster dataset.
 
@@ -1871,13 +1869,13 @@ def trim_raster(olddata):
 
     Parameters
     ----------
-    olddata : list of Data
+    olddata
         PyGMI dataset.
 
     Returns
     -------
-    olddata : list of Data
-        PyGMI dataset.
+    list of Data
+        Trimmed PyGMI dataset.
     """
     for data in olddata:
         mask = np.ma.getmaskarray(data.data)
@@ -1918,24 +1916,29 @@ def trim_raster(olddata):
     return olddata
 
 
-def verticalp(data, order=1, showlog: Callable[..., None] = print, piter=iter):
+def verticalp(
+    data: Data,
+    order: float = 1,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> NDArray:
     """
     Vertical derivative.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
-        Input data.
-    order : float, optional
+    data
+        Input raster data.
+    order
         Order. The default is 1.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    dout : numpy array
+    ndarray
         Output data
 
     """

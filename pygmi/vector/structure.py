@@ -434,8 +434,10 @@ def feature_circular_stats(
 
     Returns
     -------
-    tuple[Data, Data]
-        Output circular variance and circular dispersion raster data.
+    vdat : Data
+        Output circular variance raster data.
+    ddat : Data
+        Output circular dispersion raster data.
 
     """
     transform, oshape = bounds_to_transform(gdf.total_bounds, dxy)

@@ -25,8 +25,7 @@
 """
 Plot seismology data.
 
-This module provides a variety of methods to plot seismology data via the
-context menu.
+This module provides a variety of methods to plot seismology data via the context menu.
 """
 
 import os
@@ -878,7 +877,7 @@ class PlotQC(ContextModule):
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
 
-    def save_shp(self):
+    def save_shp(self) -> bool:
         """
         Save shapefile.
 
@@ -988,7 +987,7 @@ class PlotIso(ContextModule):
         self.change_band()
         self.show()
 
-    def save_shp(self):
+    def save_shp(self) -> bool:
         """
         Save shapefile.
 
@@ -1259,9 +1258,9 @@ def contourtopoly(cntr) -> tuple[list[Polygon], list[float]]:
 
     Returns
     -------
-    plist : list
+    plist : list of Polygon
         List of Polygon objects.
-    pvals : list
+    pvals : list of float
         List of contour levels.
 
     """

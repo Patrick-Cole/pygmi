@@ -405,10 +405,7 @@ class PlotPoints(ContextModule):
         self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo to choose band.
-
-        """
+        """Combo to choose band."""
         data = self.indata["MT - EDI"]
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()

@@ -30,8 +30,11 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
+from collections.abc import Iterable
+
 import numpy as np
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule, ProgressBarText
@@ -112,7 +115,7 @@ class Gradients(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -176,10 +179,7 @@ class Gradients(BasicModule):
         self.saveobj(self.rb_thg)
 
     def radiochange(self):
-        """
-        Check radio button state.
-
-        """
+        """Check radio button state."""
         self.dsb_order.hide()
         self.lbl_or.hide()
         self.sb_azi.hide()
@@ -195,27 +195,26 @@ class Gradients(BasicModule):
             self.lbl_az.show()
 
 
-def gradients(data, azi, xint, yint):
+def gradients(data: NDArray, azi: float, xint: float, yint: float) -> float:
     """
     Gradients.
 
-    Compute directional derivative of image data. Based on code by
-    Gordon Cooper.
+    Compute directional derivative of image data. Based on code by Gordon Cooper.
 
     Parameters
     ----------
-    data : numpy array
+    data
         input numpy data array
-    azi : float
+    azi
         Filter direction (degrees)
-    xint : float
+    xint
         X interval/distance.
-    yint : float
+    yint
         Y interval/distance.
 
     Returns
     -------
-    dt1 : float
+    float
         returns directional derivative
     """
     azi = np.deg2rad(azi)
@@ -225,7 +224,7 @@ def gradients(data, azi, xint, yint):
     return dt1
 
 
-def thgrad(data, xint, yint):
+def thgrad(data: NDArray, xint: float, yint: float) -> float:
     """
     Gradients.
 
@@ -233,17 +232,17 @@ def thgrad(data, xint, yint):
 
     Parameters
     ----------
-    data : numpy array
+    data
         input numpy data array
-    xint : float
+    xint
         X interval/distance.
-    yint : float
+    yint
         Y interval/distance.
 
     Returns
     -------
-    dt1 : float
-        returns gradient.
+    float
+        returns total horizontal gradient.
     """
     dy, dx = np.gradient(data, yint, xint)
     dt1 = np.sqrt(dx**2 + dy**2)
@@ -251,22 +250,22 @@ def thgrad(data, xint, yint):
     return dt1
 
 
-def derivative_ratio(data, azi, order):
+def derivative_ratio(data: NDArray, azi: float, order: float) -> float:
     """
     Compute derivative ratio of image data. Based on code by Gordon Cooper.
 
     Parameters
     ----------
-    data : numpy array
+    data
         input numpy data array
-    azi : float
+    azi
         Filter direction (degrees)
-    order : float
+    order
         Order of DR filter - see paper. Try 1 first.
 
     Returns
     -------
-    dr : float
+    float
         returns derivative ratio
     """
     # Directional derivative
@@ -342,7 +341,7 @@ class Visibility2d(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -408,7 +407,9 @@ class Visibility2d(BasicModule):
         self.saveobj(self.sb_dh)
 
 
-def visibility2d(data, wsize, dh, piter=iter):
+def visibility2d(
+    data: NDArray, wsize: int, dh: float, piter: Iterable = iter
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Compute visibility as a textural measure.
 
@@ -417,22 +418,22 @@ def visibility2d(data, wsize, dh, piter=iter):
 
     Parameters
     ----------
-    data : numpy array
+    data
         input dataset - numpy MxN array
-    wsize : int
+    wsize
         window size, must be odd
-    dh : float
+    dh
         height of observer above surface
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    vtot : numpy array
+    vtot : ndarray
         Total visibility.
-    vstd : numpy array
+    vstd : ndarray
         Visibility variation.
-    vsum : numpy array
+    vsum : ndarray
         Visibility vector resultant.
 
     """
@@ -528,7 +529,9 @@ def visibility2d(data, wsize, dh, piter=iter):
 
 
 @jit(nopython=True)
-def visibilitytot(data, wsize, dh):
+def visibilitytot(
+    data: NDArray, wsize: int, dh: float
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Compute visibility as a textural measure.
 
@@ -537,20 +540,20 @@ def visibilitytot(data, wsize, dh):
 
     Parameters
     ----------
-    data : numpy array
+    data
         input dataset - numpy MxN array
-    wsize : int
+    wsize
         window size, must be odd
-    dh : float
+    dh
         height of observer above surface
 
     Returns
     -------
-    vtot : numpy array
+    vtot : ndarray
         Total visibility.
-    vstd : numpy array
+    vstd : ndarray
         Visibility variation.
-    vsum : numpy array
+    vsum : ndarray
         Visibility vector resultant.
 
     """
@@ -599,24 +602,24 @@ def visibilitytot(data, wsize, dh):
 
 
 @jit(nopython=True, fastmath=True)
-def __visible1(dat, nr, cp, dh):
+def __visible1(dat: NDArray, nr: int, cp: int, dh: float) -> int:
     """
     Visible 1.
 
     Parameters
     ----------
-    dat : numpy array
+    dat
         Input vector.
-    nr : int
+    nr
         Window size. Must be odd.
-    cp : int
+    cp
         Center point.
-    dh : float
+    dh
         Observer height.
 
     Returns
     -------
-    num : int
+    int
         Output.
 
     """
@@ -636,22 +639,22 @@ def __visible1(dat, nr, cp, dh):
 
 
 @jit(nopython=True, fastmath=True)
-def __visible2(dat, cp, dh):
+def __visible2(dat: NDArray, cp: int, dh: float) -> int:
     """
     Visible 2.
 
     Parameters
     ----------
-    dat : numpy array
+    dat
         Input vector.
-    cp : int
+    cp
         Center point.
-    dh : float
+    dh
         Observer height.
 
     Returns
     -------
-    num : int
+    int
         Output.
 
     """
@@ -669,18 +672,18 @@ def __visible2(dat, cp, dh):
     return num
 
 
-def nextpow2(n):
+def nextpow2(n: float | NDArray) -> float | NDArray:
     """
     Next power of 2.
 
     Parameters
     ----------
-    n : float or numpy array
-        Current value.
+    n
+        Current value, can be float or array.
 
     Returns
     -------
-    m_i : float or numpy array
+    float or numpy array
         Output.
 
     """
@@ -744,7 +747,7 @@ class AGC(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -797,26 +800,32 @@ class AGC(BasicModule):
         self.saveobj(self.rb_rms)
 
 
-def agc(data, wsize, atype="mean", nodata=0.0, piter=iter):
+def agc(
+    data: NDArray,
+    wsize: int,
+    atype: str = "mean",
+    nodata: float = 0.0,
+    piter: Iterable = iter,
+) -> NDArray:
     """
     AGC for map data, based on code by Gordon Cooper.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Raster data.
-    wsize : int
+    wsize
         Window size, must be odd.
-    atype : str, optional
+    atype
         AGC type - can be median, rms or mean, default is 'mean'.
-    nodata : float, optional
+    nodata
         no data value, default is 0.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    agcdata : numpy array
+    ndarray
         Output AGC data
     """
     data = data.copy() - data.min()

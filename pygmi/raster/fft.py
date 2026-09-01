@@ -25,11 +25,14 @@
 """A set of FFT routines."""
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy.fft import fft2, fftfreq, fftshift, rfft, rfftfreq
 from scipy.stats import binned_statistic
 
+from pygmi.raster.datatypes import Data
 
-def fftprep(data):
+
+def fftprep(data: Data) -> tuple[NDArray, float]:
     """
     FFT preparation.
 
@@ -37,12 +40,12 @@ def fftprep(data):
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         Input dataset.
 
     Returns
     -------
-    zfin : numpy array.
+    zfin : ndarray.
         Output prepared data.
     datamedian : float
         Median of data.
@@ -84,24 +87,24 @@ def fftprep(data):
     return zfin, datamedian
 
 
-def fft_getkxy(fftmod, xdim, ydim):
+def fft_getkxy(fftmod: NDArray, xdim: float, ydim: float) -> tuple[NDArray, NDArray]:
     """
     Get KX and KY.
 
     Parameters
     ----------
-    fftmod : numpy array
+    fftmod
         FFT data.
-    xdim : float
+    xdim
         cell x dimension.
-    ydim : float
+    ydim
         cell y dimension.
 
     Returns
     -------
-    KX : numpy array
+    KX : ndarray
         x sample frequencies.
-    KY : numpy array
+    KY : ndarray
         y sample frequencies.
 
     """
@@ -114,39 +117,39 @@ def fft_getkxy(fftmod, xdim, ydim):
     return KX, KY
 
 
-def nextpow2(n):
+def nextpow2(n: float | NDArray) -> float | NDArray:
     """
     Next power of 2.
 
     Parameters
     ----------
-    n : float or numpy array
+    n
         Current value.
 
     Returns
     -------
-    m_i : float or numpy array
-        Output.
+    float or numpy array
+        Output next power of 2.
 
     """
     m_i = np.ceil(np.log2(np.abs(n)))
     return m_i
 
 
-def calculate_raps(dat):
+def calculate_raps(dat: Data) -> tuple[NDArray, NDArray]:
     """
-    Calculates the Radially Averaged Power Spectrum (RAPS) of a 2D dataset.
+    Calculate the Radially Averaged Power Spectrum (RAPS) of a 2D dataset.
 
     Parameters
     ----------
-    dat : pygmi.raster.datatypes.Data
+    dat
         Input dataset.
 
     Returns
     -------
-    k : np.ndarray
+    k : ndarray
         The 1D array of radial wavenumbers.
-    raps : np.ndarray
+    raps : ndarray
         The 1D array of radially averaged power spectrum values.
     """
     data = dat.data

@@ -30,6 +30,7 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
 from pygmi.misc import ContextModule
+from pygmi.raster.datatypes import Data
 
 
 class BasicStats(ContextModule):
@@ -77,10 +78,7 @@ class BasicStats(ContextModule):
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
-        """
-        Combo.
-
-        """
+        """Combo."""
         i = self.cmb_1.currentIndex()
         data = self.data[i][:, 1:]
 
@@ -133,7 +131,7 @@ class BasicStats(ContextModule):
         self.combo()
         self.show()
 
-    def save(self):
+    def save(self) -> bool:
         """
         Save Table.
 
@@ -153,13 +151,13 @@ class BasicStats(ContextModule):
         return True
 
 
-def basicstats_calc(data):
+def basicstats_calc(data: Data) -> tuple[list, list, list]:
     """
     Calculate statistics.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data.
+    data
         PyGMI raster dataset.
 
     Returns
@@ -255,10 +253,7 @@ class ClusterStats(ContextModule):
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
-        """
-        Combo.
-
-        """
+        """Combo."""
         i = self.cmb_1.currentIndex()
         data = self.data[i]
         data1 = self.indata["Cluster"][i]
@@ -279,7 +274,7 @@ class ClusterStats(ContextModule):
 
         self.tablewidget.resizeColumnsToContents()
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -344,7 +339,7 @@ class ClusterStats(ContextModule):
         self.combo()
         return True
 
-    def save(self):
+    def save(self) -> bool:
         """
         Save Table.
 
@@ -364,7 +359,7 @@ class ClusterStats(ContextModule):
         return True
 
 
-def savetable(ofile, bands, cols, data):
+def savetable(ofile: str, bands: list, cols: list, data: list):
     """
     Save tabular data.
 
@@ -378,11 +373,6 @@ def savetable(ofile, bands, cols, data):
         List of column headings.
     data : list
         List of arrays containing statistics.
-
-    Returns
-    -------
-    None.
-
     """
     with open(ofile, "a", encoding="utf-8") as fobj:
         htmp = cols[0]

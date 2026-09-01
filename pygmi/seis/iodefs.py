@@ -315,7 +315,7 @@ def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list:
 
     Returns
     -------
-    dat
+    list
         SEISAN Data.
 
     """
@@ -1479,8 +1479,15 @@ class ExportSeisan(ContextModule):
         self.lmod = None
         self.fobj = None
 
-    def run(self, filename=None):
-        """Entry point into the routine, used to run context menu item."""
+    def run(self, filename: str | None = None):
+        """
+        Entry point into the routine, used to run context menu item.
+
+        Parameters
+        ----------
+        filename
+            File name, by default None
+        """
         if "Seis" not in self.indata:
             self.showlog("Error: You need to have a SEISAN data first!")
             return
@@ -2210,7 +2217,7 @@ class ExportCSV(ContextModule):
 
         Returns
         -------
-        list
+        list of str
             List of output string.
 
         """
@@ -2791,7 +2798,7 @@ class FilterSeisan(BasicModule):
         self.cb_dind_R.stateChanged.connect(self.dind_click)
         self.cb_dind_D.stateChanged.connect(self.dind_click)
 
-    def data_init(self):
+    def data_init(self) -> bool:
         """
         Initialise Data.
 

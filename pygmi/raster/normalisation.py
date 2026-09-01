@@ -27,9 +27,11 @@
 import warnings
 
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import histeq
 
 warnings.simplefilter("always", RuntimeWarning)
@@ -85,7 +87,7 @@ class Normalisation(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -134,25 +136,25 @@ class Normalisation(BasicModule):
         self.saveobj(self.rb_8bit)
 
 
-def datacommon(data, tmp1, tmp2):
+def datacommon(data: Data, tmp1: float, tmp2: float) -> tuple[Data, NDArray]:
     """
     Variables used in the process routine.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data.
+    data
         PyGMI raster dataset.
-    tmp1 : float
+    tmp1
         Parameter 1. Can be min, mean or median of the data.
-    tmp2 : float
+    tmp2
         Parameter 2. Can be range, std, or Median Absolute Deviation (MAD) of
         the data.
 
     Returns
     -------
-    data : pygmi.raster.datatypes.Data
+    data : Data
         PyGMI raster dataset.
-    transform : numpy array.
+    transform : ndarray.
         Transformation applied to data.
 
     """
@@ -171,20 +173,20 @@ def datacommon(data, tmp1, tmp2):
     return data, transform
 
 
-def norm(data, ntype):
+def norm(data: list[Data], ntype: str) -> list[Data]:
     """
     Normalise data.
 
     Parameters
     ----------
-    data : list of Data
+    data
         PyGMI Data in a list.
-    ntype : str
+    ntype
         Normalisation type.Can be 'interval', 'mean', 'median' or '8bit'.
 
     Returns
     -------
-    data : list of Data
+    list of Data
         PyGMI Data in a list.
 
     """

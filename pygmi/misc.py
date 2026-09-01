@@ -260,47 +260,47 @@ class BasicModule(QtWidgets.QDialog):
                 )
                 return False
 
-        for otxt in projdata:
+        for otxt, pdata in projdata.items():
             obj = vars(self)[otxt]
 
             if obj is None:
-                vars(self)[otxt] = projdata[otxt]
+                vars(self)[otxt] = pdata
 
             if isinstance(obj, (float, int, bool, list, np.ndarray, tuple, str, dict)):
-                vars(self)[otxt] = projdata[otxt]
+                vars(self)[otxt] = pdata
 
             if isinstance(obj, gpd.GeoDataFrame):
-                vars(self)[otxt] = gpd.read_file(projdata[otxt], driver="GeoJSON")
+                vars(self)[otxt] = gpd.read_file(pdata, driver="GeoJSON")
 
             if isinstance(obj, QtWidgets.QComboBox):
                 obj.blockSignals(True)
                 if obj.count() == 0:
-                    obj.addItem(projdata[otxt])
-                obj.setCurrentText(projdata[otxt])
+                    obj.addItem(pdata)
+                obj.setCurrentText(pdata)
                 obj.blockSignals(False)
 
             if isinstance(obj, (QtWidgets.QLineEdit, QtWidgets.QTextEdit)):
                 obj.blockSignals(True)
-                obj.setText(projdata[otxt])
+                obj.setText(pdata)
                 obj.blockSignals(False)
 
             if isinstance(
                 obj, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox, QtWidgets.QSlider)
             ):
                 obj.blockSignals(True)
-                obj.setValue(projdata[otxt])
+                obj.setValue(pdata)
                 obj.blockSignals(False)
 
             if isinstance(
                 obj, (QtWidgets.QRadioButton, QtWidgets.QCheckBox, QtWidgets.QGroupBox)
             ):
                 obj.blockSignals(True)
-                obj.setChecked(projdata[otxt])
+                obj.setChecked(pdata)
                 obj.blockSignals(False)
 
             if isinstance(obj, QtWidgets.QDateEdit):
                 obj.blockSignals(True)
-                date = obj.date().fromString(projdata[otxt])
+                date = obj.date().fromString(pdata)
                 obj.setDate(date)
                 obj.blockSignals(False)
 
@@ -317,12 +317,12 @@ class BasicModule(QtWidgets.QDialog):
 
             if isinstance(obj, GroupProj):
                 obj.cmb_datum.blockSignals(True)
-                obj.cmb_datum.setCurrentText(projdata[otxt]["datum"])
+                obj.cmb_datum.setCurrentText(pdata["datum"])
                 obj.cmb_datum.blockSignals(False)
                 obj.combo_datum_change()
 
                 obj.cmb_proj.blockSignals(True)
-                obj.cmb_proj.setCurrentText(projdata[otxt]["proj"])
+                obj.cmb_proj.setCurrentText(pdata["proj"])
                 obj.cmb_proj.blockSignals(False)
                 obj.combo_change()
 

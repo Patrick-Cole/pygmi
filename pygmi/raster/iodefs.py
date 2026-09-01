@@ -35,6 +35,7 @@ from io import StringIO
 import numpy as np
 import rasterio
 from natsort import natsorted
+from numpy.typing import NDArray
 from pyproj.crs import CRS
 from PySide6 import QtWidgets
 from rasterio.windows import Window
@@ -78,7 +79,7 @@ class BandSelect(ContextModule):
 
         self.vbl.addWidget(self.buttonbox)
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -156,7 +157,7 @@ class ImportData(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -268,14 +269,7 @@ class ImportData(BasicModule):
         return True
 
     def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        None
-
-        """
+        """Save project data from class."""
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
 
@@ -301,7 +295,7 @@ class ImportRGBData(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -367,18 +361,18 @@ class ImportRGBData(BasicModule):
         self.saveobj(self.ifile)
 
 
-def clusterprep(dat):
+def clusterprep(dat: list[Data]) -> list[Data]:
     """
     Prepare Cluster data from raster data.
 
     Parameters
     ----------
-    dat : list of Data
+    dat
         List of PyGMI datasets.
 
     Returns
     -------
-    dat2 : list of Data
+    list of Data
         List of PyGMI datasets.
 
     """
@@ -397,19 +391,19 @@ def clusterprep(dat):
     return dat2
 
 
-def get_ascii(ifile):
+def get_ascii(ifile: str) -> list[Data]:
     """
     Import ascii raster dataset.
 
     Parameters
     ----------
-    ifile : str
-        filename to import
+    ifile
+        Filename to import.
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     isESRI = False
 
@@ -498,18 +492,18 @@ def get_ascii(ifile):
 
 
 def get_raster(
-    ifile,
+    ifile: str,
     *,
-    nval=None,
-    piter=None,
+    nval: float | None = None,
+    piter: Iterable | None = None,
     showlog: Callable[..., None] = print,
-    iraster=None,
-    driver=None,
-    bounds=None,
-    tnames=None,
-    metaonly=False,
-    out_shape=None,
-):
+    iraster: tuple[float, float, float, float] | None = None,
+    driver: str | None = None,
+    bounds: tuple[float, float, float, float] | None = None,
+    tnames: list[str] | None = None,
+    metaonly: bool = False,
+    out_shape: tuple | None = None,
+) -> list[Data]:
     """
     Get raster dataset.
 
@@ -518,31 +512,31 @@ def get_raster(
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    nval : float, optional
+    nval
         Nodata/null value. The default is None.
-    piter : function, optional
+    piter
         progress bar iterable, default is None.
-    showlog : function, optional
+    showlog
         Routine to show text messages. The default is print.
-    iraster : None or tuple
+    iraster
         Incremental raster import, to import a section of a file.
         The tuple is (xoff, yoff, xsize, ysize). The default is None.
-    driver : str
+    driver
         GDAL raster driver name. The default is None.
-    bounds : tuple
+    bounds
         Bounds of data to import as (left, bottom, right, top)
-    tnames : list, optional
+    tnames
         list of band names to import, in order. The default is None.
-    metaonly : bool, optional
+    metaonly
         Retrieve only the metadata for the file. The default is False.
-    out_shape : tuple, optional
+    out_shape
         Tuple describing the output array's shape.
 
     Returns
     -------
-    dat : list of Data
+    list of Data
         Raster dataset imported
     """
     # Exclusions
@@ -907,15 +901,15 @@ def get_raster(
 
 
 def get_bil(
-    ifile,
-    bands,
-    cols,
-    rows,
-    dtype,
+    ifile: str,
+    bands: int,
+    cols: int,
+    rows: int,
+    dtype: np.dtype,
     *,
     piter: Iterable = iter,
-    iraster=None,
-    interleave="LINE",
+    iraster: tuple[float, float, float, float] | None = None,
+    interleave: str = "LINE",
 ):
     """
     Get BIL format file.
@@ -924,22 +918,22 @@ def get_bil(
 
     Parameters
     ----------
-    ifile : str
+    ifile
         filename to import
-    bands : int
+    bands
         Number of bands.
-    cols : int
+    cols
         Number of columns.
-    rows : int
+    rows
         Number of rows.
-    dtype : data type
+    dtype
         Data type.
-    piter : function
-        progress bar iterable.
-    iraster : None or tuple
+    piter
+        Progress bar iterable.
+    iraster
         Incremental raster import, to import a section of a file.
         The tuple is (xoff, yoff, xsize, ysize). The default is None.
-    interleave : str
+    interleave
         Band interleave. Default is 'LINE'
 
     Returns
@@ -989,18 +983,18 @@ def get_bil(
     return datin
 
 
-def get_geopak(hfile):
+def get_geopak(hfile: str) -> list[Data]:
     """
     Geopak Import.
 
     Parameters
     ----------
-    hfile : str
+    hfile
         filename to import
 
     Returns
     -------
-    dat : list of Data
+    list of Data
         PyGMI raster dataset.
 
     """
@@ -1104,18 +1098,18 @@ def get_geopak(hfile):
     return dat
 
 
-def get_geosoft(hfile):
+def get_geosoft(hfile: str) -> list[Data]:
     """
     Get Geosoft file (uncompressed).
 
     Parameters
     ----------
-    hfile : str
+    hfile
         filename to import
 
     Returns
     -------
-    dat : list of Data
+    list of Data
         Dataset imported
     """
     with open(hfile, mode="rb") as f:
@@ -1263,15 +1257,13 @@ class ExportData(ContextModule):
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
         pb_ofile.pressed.connect(self.get_ofile)
 
-    def run(self, option=None):
+    def run(self, option: str | None = None):
         """
         Entry point into the routine, used to run context menu item.
 
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-        option : str
+        Parameters
+        ----------
+        option
             A string option. The default is None.
 
         """
@@ -1413,14 +1405,14 @@ class ExportData(ContextModule):
 
         self.accept()
 
-    def export_ubc(self, data):
+    def export_ubc(self, data: Data):
         """
         Export a section to a 3D UBC mesh and model.
 
         Parameters
         ----------
-        data : PyGMI raster Data
-            dataset to export
+        data
+            Dataset to export.
 
         """
         data = data[0]
@@ -1477,14 +1469,14 @@ class ExportData(ContextModule):
         smod2 = np.moveaxis(smod, [0, 1, 2], [1, 0, 2]).flatten()
         np.savetxt(ofile[:-3] + "mod", smod2)
 
-    def export_gxf(self, data):
+    def export_gxf(self, data: Data):
         """
         Export GXF data.
 
         Parameters
         ----------
-        data : PyGMI raster Data
-            dataset to export
+        data
+            Dataset to export.
 
         """
         if len(data) > 1:
@@ -1538,13 +1530,13 @@ class ExportData(ContextModule):
                         fno.write(str(tmp[i, j]) + "  ")
                         kkk += 1
 
-    def export_surfer(self, data):
+    def export_surfer(self, data: Data):
         """
         Routine to export a surfer binary grid.
 
         Parameters
         ----------
-        data : PyGMI raster Data
+        data
             dataset to export
 
         """
@@ -1566,14 +1558,14 @@ class ExportData(ContextModule):
 
             export_raster(file_out, [k], drv="GS7BG", piter=self.piter)
 
-    def export_ascii(self, data):
+    def export_ascii(self, data: Data):
         """
         Export ASCII file.
 
         Parameters
         ----------
-        data : PyGMI raster Data
-            dataset to export
+        data
+            Dataset to export
 
         """
         if len(data) > 1:
@@ -1604,18 +1596,19 @@ class ExportData(ContextModule):
                 krows, kcols = k.data.shape
 
                 for j in range(krows):
-                    fno.write("\n")
-                    for i in range(kcols):
-                        fno.write(str(tmp[j, i]) + " ")
+                    fno.writeslines([f"\n{tmp[j, i]} " for i in range[kcols]])
+                    # fno.write("\n")
+                    # for i in range(kcols):
+                    #     fno.write(str(tmp[j, i]) + " ")
 
-    def export_ascii_xyz(self, data):
+    def export_ascii_xyz(self, data: Data):
         """
-        Export and xyz file.
+        Export an ASCII xyz file.
 
         Parameters
         ----------
-        data : PyGMI raster Data
-            dataset to export
+        data
+            Dataset to export.
 
         """
         if len(data) > 1:
@@ -1637,30 +1630,38 @@ class ExportData(ContextModule):
                 krows, kcols = k.data.shape
 
                 for j in range(krows):
-                    for i in range(kcols):
-                        fno.write(
-                            str(xmin + (i + 0.5) * k.xdim)
-                            + " "
-                            + str(ymax - (j + 0.5) * k.ydim)
-                            + " "
-                            + str(tmp[j, i])
-                            + "\n"
-                        )
+                    # for i in range(kcols):
+                    #     fno.write(
+                    #         str(xmin + (i + 0.5) * k.xdim)
+                    #         + " "
+                    #         + str(ymax - (j + 0.5) * k.ydim)
+                    #         + " "
+                    #         + str(tmp[j, i])
+                    #         + "\n"
+                    #     )
+                    fno.writelines(
+                        [
+                            f"{xmin + (i + 0.5) * k.xdim} "
+                            f"{ymax - (j + 0.5) * k.ydim} "
+                            f"{tmp[j, i]}\n"
+                            for i in range(kcols)
+                        ]
+                    )
 
-    def get_filename(self, data, ext):
+    def get_filename(self, data: Data, ext: str) -> str:
         """
         Get a valid filename in the case of multi band image.
 
         Parameters
         ----------
-        data : PyGMI raster Data
+        data
             dataset to get filename from
-        ext : str
+        ext
             filename extension to use
 
         Returns
         -------
-        file_out : str
+        str
             Output filename.
 
         """
@@ -1702,43 +1703,37 @@ class ExportData(ContextModule):
 
 
 def export_raster(
-    ofile,
-    dat,
+    ofile: str,
+    dat: list[Data] | dict[str, Data],
     *,
-    drv="GTiff",
-    piter=None,
-    compression="NONE",
-    bandsort=True,
+    drv: str = "GTiff",
+    piter: Iterable | None = None,
+    compression: str = "NONE",
+    bandsort: bool = True,
     showlog: Callable[..., None] = print,
-    updatestats=True,
+    updatestats: bool = True,
 ):
     """
     Export to rasterio format.
 
     Parameters
     ----------
-    ofile : str
+    ofile
         Output file name.
-    dat : list or dictionary of PyGMI raster Data
-        dataset to export
-    drv : str
+    dat
+        Dataset to export
+    drv
         name of the rasterio driver to use
-    piter : function, optional
+    piter
         Progressbar iterable. The default is None.
-    compression : str, optional
-        Compression for GeoTIFF. Can be NONE, DEFLATE or ZSTD. The default is
-        NONE.
-    bandsort : bool, optional
+    compression
+        Compression for GeoTIFF. Can be NONE, DEFLATE or ZSTD. The default is NONE.
+    bandsort
         sort the bands by dataid. The default is True
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    updatestats : bool, optional
+    updatestats
         Update statistics in exported file.
-
-    Returns
-    -------
-    None.
-
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -2009,7 +2004,7 @@ def export_raster(
             myfile.write(wout)
 
 
-def calccov(data, showlog: Callable[..., None] = print):
+def calccov(data: list[Data], showlog: Callable[..., None] = print) -> NDArray:
     """
     Calculate covariance from PyGMI Data.
 
@@ -2018,14 +2013,14 @@ def calccov(data, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    data : list of Data
+    data
         List of PyGMI data.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
 
     Returns
     -------
-    dcov : numpy array
+    ndarray
         Covariances.
 
     """

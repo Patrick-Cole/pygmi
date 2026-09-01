@@ -30,14 +30,20 @@ from collections.abc import Callable
 from copy import deepcopy
 
 import numpy as np
+from matplotlib.axes import Axes
+from numpy.typing import NDArray
 from rasterio import Affine
 from rasterio.features import shapes, sieve
 from rasterio.io import MemoryFile
 from rasterio.windows import Window
 from shapely.geometry import Polygon, shape
 
+from pygmi.raster.datatypes import Data
 
-def numpy_to_pygmi(data, pdata=None, dataid=None):
+
+def numpy_to_pygmi(
+    data: NDArray, pdata: Data | None = None, dataid: str | None = None
+) -> Data:
     """
     Convert an MxN numpy array into a PyGMI data object.
 
@@ -46,18 +52,18 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
 
     Parameters
     ----------
-    data : numpy array
+    data
         MxN array
 
-    pdata : pygmi.raster.datatypes.Data
+    pdata
         PyGMI raster dataset
 
-    dataid: str or None
+    dataid
         name for the band of data.
 
     Returns
     -------
-    tmp : pygmi.raster.datatypes.Data
+    tmp : Data
         PyGMI raster dataset
     """
     if data.ndim != 2:
@@ -94,24 +100,26 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
     return tmp
 
 
-def pygmi_to_numpy(tmp):
+def pygmi_to_numpy(tmp: Data) -> NDArray:
     """
     Convert a PyGMI data object into an MxN numpy array.
 
     Parameters
     ----------
-    tmp : pygmi.raster.datatypes.Data
+    tmp
         PyGMI raster dataset
 
     Returns
     -------
-    numpy array
+    ndarray
         MxN numpy array
     """
     return np.array(tmp.data)
 
 
-def bounds_to_transform(bounds, dxy):
+def bounds_to_transform(
+    bounds: tuple[float, float, float, float], dxy: float
+) -> tuple[Affine, tuple[float, float]]:
     """
     Create a raster transform from vector grid bounds and dxy.
 
@@ -121,14 +129,14 @@ def bounds_to_transform(bounds, dxy):
 
     Parameters
     ----------
-    bounds : tuple
+    bounds
         Bounds of data as (left, bottom, right, top)
-    dxy : float
+    dxy
         Raster pixel size.
 
     Returns
     -------
-    transform : list of Affine
+    transform : Affine
         rasterio transform.
     shape : tuple
         tuple of rows, cols.
@@ -147,22 +155,26 @@ def bounds_to_transform(bounds, dxy):
     return transform, shape
 
 
-def bounds_intersection(dataset, bounds, showlog: Callable[..., None] = print):
+def bounds_intersection(
+    dataset,
+    bounds: tuple[float, float, float, float],
+    showlog: Callable[..., None] = print,
+) -> tuple[Window, tuple[float, float, float, float]]:
     """
     Find the intersection between some bounds and a dataset.
 
     Parameters
     ----------
-    dataset : rasterio dataset
+    dataset
         Rasterio dataset.
-    bounds : tuple
+    bounds
         Bounds of data as (left, bottom, right, top).
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    window : rasterio window
+    window : Windows
         Intersection area as window.
     newbounds : tuple
         Intersection area as bounds.
@@ -188,7 +200,6 @@ def bounds_intersection(dataset, bounds, showlog: Callable[..., None] = print):
         xsize = int((xmax2 - xmin2) // xdim)
         ysize = int((ymax2 - ymin2) // xdim)
 
-        # iraster = (xoff, yoff, xsize, ysize)
         newbounds = (
             xmin + xoff * xdim,
             ymax - yoff * ydim - ysize * ydim,
@@ -265,20 +276,20 @@ class Data:
 
         self.set_transform(1, 0, 1, 0)
 
-    def copy(self, data0=None, resetmeta=False):
+    def copy(self, data0: NDArray | None = None, resetmeta: bool = False) -> Data:
         """
         Make a deepcopy of the function.
 
         Parameters
         ----------
-        data0 : numpy arraay
+        data0
             Input data to replace old data. Must have same shape.
-        resetmeta : bool, optional
+        resetmeta
             This will clear metadata during copy. The default is False.
 
         Returns
         -------
-        data : pygmi.raster.datatypes.Data
+        Data
             PyGMI data type.
 
         """
@@ -299,13 +310,13 @@ class Data:
 
         return data
 
-    def in_bounds(self, bounds):
+    def in_bounds(self, bounds: tuple[float, float, float, float]) -> bool:
         """
         Check if dataset is in bounds supplied.
 
         Parameters
         ----------
-        bounds : tuple
+        bounds
             Bounds of data as (left, bottom, right, top)
 
         Returns
@@ -322,15 +333,17 @@ class Data:
 
         return not (xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin)
 
-    def meta_from_rasterio(self, dataset, bounds=None):
+    def meta_from_rasterio(
+        self, dataset, bounds: tuple[float, float, float, float] | None = None
+    ):
         """
         Set transform, bounds, extent, xdim and ydim from a rasterio dataset.
 
         Parameters
         ----------
-        dataset : rasterio dataset
+        dataset
             Rasterio dataset.
-        bounds : tuple, optional
+        bounds
             Bounds of data as (left, bottom, right, top). The default is None.
 
         """
@@ -349,7 +362,7 @@ class Data:
         self.extent = (left, right, bottom, top)
         self.bounds = (left, bottom, right, top)
 
-    def modify_mask(self, mask, oper="or"):
+    def modify_mask(self, mask: NDArray, oper: str = "or"):
         """
         Modify the existing mask with a new one.
 
@@ -357,9 +370,9 @@ class Data:
 
         Parameters
         ----------
-        mask : array
+        mask
             Boolean array of new mask to modify old one.
-        oper : str, optional
+        oper
             Logical operation to be performed between masks. Can be 'or' or
             'and'. The default is 'or'.
 
@@ -373,13 +386,13 @@ class Data:
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)
 
-    def plot(self, ax):
+    def plot(self, ax: Axes):
         """
-        Simple data plot.
+        Plot data.
 
         Parameters
         ----------
-        ax : Matplotlib axes
+        ax
             Matplotlib axes for plot.
 
         """
@@ -389,7 +402,7 @@ class Data:
         )
         return im
 
-    def set_mask(self, mask=None):
+    def set_mask(self, mask: NDArray = None):
         """
         Replace the existing mask with a new one.
 
@@ -397,7 +410,7 @@ class Data:
 
         Parameters
         ----------
-        mask : array
+        mask
             Boolean array of new mask to modify old one.
 
         """
@@ -409,14 +422,14 @@ class Data:
 
     def set_transform(
         self,
-        xdim=None,
-        xmin=None,
-        ydim=None,
-        ymax=None,
-        transform=None,
-        iraster=None,
-        rows=None,
-        cols=None,
+        xdim: float | None = None,
+        xmin: float | None = None,
+        ydim: float | None = None,
+        ymax: float | None = None,
+        transform: list[float] | Affine | None = None,
+        iraster: tuple[float, float, float, float] | None = None,
+        rows: int | None = None,
+        cols: int | None = None,
     ):
         """
         Set the transform, xdim, ydim, extent and bounds.
@@ -425,22 +438,22 @@ class Data:
 
         Parameters
         ----------
-        xdim : float, optional
+        xdim
             x dimension. The default is None.
-        xmin : float, optional
+        xmin
             x minimum. The default is None.
-        ydim : float, optional
+        ydim
             y dimension. The default is None.
-        ymax : float, optional
+        ymax
             y maximum. The default is None.
-        transform : list of Affine, optional
+        transform
             transform. The default is None.
-        iraster : None or tuple
+        iraster
             Incremental raster import, to import a section of a file.
             The tuple is (xoff, yoff, xsize, ysize). The default is None.
-        rows : int, optional
+        rows
             rows in dataset. The default is None.
-        cols : int, optional
+        cols
             columns in dataset. The default is None.
 
         """
@@ -476,13 +489,13 @@ class Data:
         self.extent = (left, right, bottom, top)
         self.bounds = (left, bottom, right, top)
 
-    def to_mem(self):
+    def to_mem(self) -> MemoryFile:
         """
         Create a rasterio memory file from one band.
 
         Returns
         -------
-        raster : MemoryFile
+        MemoryFile
             rasterio memory file.
 
         """
@@ -499,13 +512,13 @@ class Data:
         raster.write(self.data, 1)
         return raster
 
-    def get_vmin_vmax(self, std=2.5):
+    def get_vmin_vmax(self, std: float = 2.5) -> tuple[float, float]:
         """
         Get vmin and vmax for use in imshow.
 
         Parameters
         ----------
-        std : float, optional
+        std
             Multiplier for standard deviations to include about mean.
             The default is 2.5.
 
@@ -598,13 +611,13 @@ class RasterMeta:
         self.datetime = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
         self.nodata = None
 
-    def fromData(self, dat):
+    def fromData(self, dat: Data):
         """
         Populate class from a Data class.
 
         Parameters
         ----------
-        dat : pygmi.raster.datatypes.Data
+        dat
             PyGMI data object.
 
         """

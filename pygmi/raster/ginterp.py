@@ -49,6 +49,7 @@ from math import cos
 import matplotlib.colorbar as mcolorbar
 import matplotlib.colors as mcolors
 import numpy as np
+from matplotlib.backend_bases import MouseEvent, ResizeEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import ListedColormap
@@ -56,6 +57,7 @@ from matplotlib.figure import Figure
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import ndimage
 
@@ -173,27 +175,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.levels = 10
         self.interp = "auto"
 
-        # gspc = gridspec.GridSpec(3, 4)
-        # self.axes = fig.add_subplot(gspc[0:, 1:])
-        # self.axes.tick_params(axis='x', rotation=90)
-        # self.axes.tick_params(axis='y', rotation=0)
-        # self.axes.ticklabel_format(style='plain', axis='both')
-        # self.axes.xaxis.set_visible(False)
-        # self.axes.yaxis.set_visible(False)
-
-        # for i in range(3):
-        #     self.argb[i] = fig.add_subplot(gspc[i, 0])
-        #     self.argb[i].xaxis.set_visible(False)
-        #     self.argb[i].yaxis.set_visible(False)
-        #     self.argb[i].autoscale(False)
-
-        # fig.subplots_adjust(bottom=0.05)
-        # fig.subplots_adjust(top=.95)
-        # fig.subplots_adjust(left=0.05)
-        # fig.subplots_adjust(right=.95)
-        # fig.subplots_adjust(wspace=0.05)
-        # fig.subplots_adjust(hspace=0.05)
-
         FigureCanvasQTAgg.setSizePolicy(
             self,
             QtWidgets.QSizePolicy.Policy.Expanding,
@@ -215,13 +196,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # cmyk stuff
         self.kval = 0.01
 
-    def revent(self, event):
+    def revent(self, event: ResizeEvent):
         """
         Resize event.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.ResizeEvent
+        event
             Resize event.
 
         """
@@ -272,20 +253,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
             interpolation=interp,
         )
 
-        # This line prevents imshow from generating colour values on the
-        # toolbar
+        # This line prevents imshow from generating colour values on the toolbar
         self.image.format_cursor_data = lambda x: ""
         self.update_graph()
 
         self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
 
-    def move(self, event):
+    def move(self, event: MouseEvent):
         """
         Mouse is moving over canvas.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event : MouseEvent
             Mouse event.
 
         """
@@ -420,19 +400,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if "Ternary" in self.gmode:
             self.update_rgb()
 
-    def update_hist_rgb(self, zval):
+    def update_hist_rgb(self, zval: NDArray) -> list:
         """
         Update the rgb histograms.
 
         Parameters
         ----------
-        zval : numpy array
+        zval
             Data values.
 
         Returns
         -------
-        bnum : list
-            Bin numbers.
+        list
+            list of bin numbers.
 
         """
         hcol = ["r", "g", "b"]
@@ -462,20 +442,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.update_hist_text(self.htxt[i], zval[i])
         return bnum
 
-    def update_hist_single(self, zval=None, hno=0):
+    def update_hist_single(self, zval: float | None = None, hno: int = 0) -> int:
         """
         Update the colour on a single histogram.
 
         Parameters
         ----------
-        zval : float
+        zval
             Data value.
-        hno : int, optional
+        hno
             Histogram number. The default is 0.
 
         Returns
         -------
-        binnum : int
+        int
             Number of bins.
 
         """
@@ -508,15 +488,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         return binnum
 
-    def update_hist_text(self, hst, zval):
+    def update_hist_text(self, hst, zval: float):
         """
         Update the value on the histogram.
 
         Parameters
         ----------
-        hst : histogram
+        hst
             Histogram.
-        zval : float
+        zval
             Data value.
 
         """
@@ -789,13 +769,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.draw_artist(self.image)
         self.figure.canvas.update()
 
-    def update_shade_plot(self):
+    def update_shade_plot(self) -> NDArray:
         """
         Update shade plot for export.
 
         Returns
         -------
-        numpy array
+        ndarray
             Sunshader data.
 
         """
@@ -815,16 +795,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class MySunCanvas(FigureCanvasQTAgg):
-    """
-    Canvas widget for the sunshading tool.
-
-    Attributes
-    ----------
-    sun: matplotlib plot instance
-        plot of a circle 'o' showing where the sun is
-    axes: matplotlib axes instance
-        axes on which the sun is drawn
-    """
+    """Canvas widget for the sunshading tool."""
 
     def __init__(self):
         fig = Figure(layout="compressed")
@@ -866,9 +837,9 @@ class PlotInterp(BasicModule):
 
     Attributes
     ----------
-    self.mmc : pygmi.raster.ginterp.MyMplCanvas, FigureCanvas
+    self.mmc : MyMplCanvas
         main canvas containing the image
-    self.msc : pygmi.raster.ginterp.MySunCanvas, FigureCanvas
+    self.msc : MySunCanvas
         small canvas containing the sunshading control
     """
 
@@ -1097,7 +1068,6 @@ class PlotInterp(BasicModule):
         vbl_right.addWidget(mpl_toolbar)
 
         hbl_all.addWidget(scroll)
-        # hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
         self.cmb_cbar.currentIndexChanged.connect(self.change_cbar)
@@ -1324,7 +1294,6 @@ class PlotInterp(BasicModule):
         self.mmc.clipmin = self.clipmin
 
         self.change_dtype()
-        # self.set_minmax()
 
     def change_red(self):
         """Change the red or first band."""
@@ -1471,13 +1440,13 @@ class PlotInterp(BasicModule):
         self.dsb_linemin.setValue(lmin)
         self.dsb_linemax.setValue(lmax)
 
-    def move(self, event):
+    def move(self, event: MouseEvent):
         """
         Move event is used to track changes to the sunshading.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -1497,7 +1466,7 @@ class PlotInterp(BasicModule):
         self.data_init()
         self.settings()
 
-    def save_png(self):
+    def save_png(self) -> bool:
         """
         Save image as a PNG.
 
@@ -1706,7 +1675,7 @@ class PlotInterp(BasicModule):
 
         return True
 
-    def save_img(self):
+    def save_img(self) -> bool:
         """
         Save image as a GeoTIFF.
 
@@ -2134,7 +2103,7 @@ class PlotInterp(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns

@@ -381,11 +381,16 @@ class DataGrid(BasicModule):
         self.saveobj(self.cmb_grid_dem)
         self.saveobj(self.cmb_z)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         dxy = float(self.le_dxy.text())
         method = self.cmb_grid_method.currentText()
@@ -623,15 +628,7 @@ class Metadata(ContextModule):
         self.accept()
 
     def run(self):
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
+        """Entry point into the routine, used to run context menu item."""
         bandid = []
         if self.indata["Vector"][0].crs is None:
             self.proj.set_current("None")
@@ -1283,8 +1280,8 @@ def maptobounds(
 
     Returns
     -------
-    tuple[float]
-        output bounds.
+    tuple of float
+        output bounds, defined as (xmin, ymin, xmax, ymax).
 
     """
     i = mapsheet
@@ -1486,9 +1483,9 @@ def reprojxy(
 
     Returns
     -------
-    xout : ndarray | None
+    xout : ndarray or None
         x coordinates.
-    yout : ndarray | None
+    yout : ndarray or None
         y coordinates.
 
     """

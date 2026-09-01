@@ -158,7 +158,7 @@ class BeachBall(BasicModule):
 
         self.setupui()
 
-    def data_init(self):
+    def data_init(self) -> bool:
         """
         Initialise Data.
 
@@ -263,7 +263,7 @@ class BeachBall(BasicModule):
         self.rb_geog.toggled.connect(self.change_alg)
         self.cmb_alg.currentIndexChanged.connect(self.change_alg)
 
-    def save_shp(self):
+    def save_shp(self) -> bool:
         """
         Save Beachballs.
 

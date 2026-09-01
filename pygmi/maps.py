@@ -110,7 +110,7 @@ def tick_formatter(x: float, pos: int) -> str:
 
     Returns
     -------
-    newx : str
+    str
         Formatted coordinate.
 
     """

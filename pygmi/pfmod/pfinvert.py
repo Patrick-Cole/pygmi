@@ -667,12 +667,16 @@ class MagInvert(BasicModule):
         self.saveobj(self.dsb_hint)
         self.saveobj(self.dsb_hinc)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept All.
 
         Based on the SimPEG example.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
         """
         dat = [
             self.lmod1.griddata["Magnetic Dataset"],

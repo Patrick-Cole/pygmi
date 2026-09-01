@@ -25,8 +25,7 @@
 """
 Clip to zoom.
 
-This module allows a raster dataset to be clipped to the current zoomed
-extents.
+This module allows a raster dataset to be clipped to the current zoomed extents.
 """
 
 import geopandas as gpd
@@ -39,6 +38,7 @@ from shapely import Polygon
 
 from pygmi.maps import frm
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import cut_raster
 from pygmi.raster.modest_image import imshow
 
@@ -50,24 +50,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure(layout="tight")
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
-        # self.fwidth = self.figure.get_figwidth()
-        # self.fheight = self.figure.get_figheight()
 
-    def update_raster(self, data1, cmap):
+    def update_raster(self, data1: Data, cmap: str):
         """
         Update the raster plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used in contouring
-        cmap : str
+        data1
+            Raster dataset to be used
+        cmap
             Matplotlib colormap description
 
         """
         self.figure.clear()
-        # self.figure.set_figwidth(self.fwidth)
-        # self.figure.set_figheight(self.fheight)
 
         self.axes = self.figure.add_subplot(111)
         self.axes.tick_params(axis="x", rotation=90)
@@ -83,8 +79,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if not data1.isrgb:
             rdata.set_clim_std(2.5)
-        #     cbar = self.figure.colorbar(rdata, format=frm)
-        #     cbar.set_label(data1.units)
 
         if data1.crs is not None and data1.crs.is_geographic:
             self.axes.set_xlabel("Longitude")
@@ -95,14 +89,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
-
-        # bbox = self.axes.get_window_extent()
-        # dpi = self.figure.dpi
-        # awidth = bbox.width / dpi
-        # aheight = bbox.height / dpi
-
-        # self.figure.set_figwidth(awidth)
-        # self.figure.set_figheight(aheight)
 
         self.figure.canvas.draw()
 
@@ -155,10 +141,7 @@ class ClipToZoom(BasicModule):
         self.btn_clip.clicked.connect(self.accept)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
         if "Raster" in self.indata:
@@ -167,7 +150,17 @@ class ClipToZoom(BasicModule):
 
     def settings(self, nodialog: bool = False) -> bool:
         """
-        Run.
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
 
         """
         data = []

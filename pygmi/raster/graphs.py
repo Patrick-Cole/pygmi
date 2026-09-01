@@ -40,12 +40,14 @@ import numpy as np
 import pyvista as pv
 from matplotlib import colors
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 
 from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
+from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
 
 
@@ -56,15 +58,15 @@ class MyMplCanvas(CanvasModule):
         super().__init__(parent)
         self.data = None
 
-    def format_coord(self, x, y):
+    def format_coord(self, x: float, y: float) -> str:
         """
         Set format coordinate for section plot.
 
         Parameters
         ----------
-        x : float
+        x
             x coordinate.
-        y : float
+        y
             y coordinate.
 
         Returns
@@ -83,15 +85,15 @@ class MyMplCanvas(CanvasModule):
         text = f"X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}"
         return text
 
-    def update_ccoef(self, data1, dmat):
+    def update_ccoef(self, data1: Data, dmat: NDArray):
         """
         Update the correlation coefficient plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
+        data1
             raster dataset to be used.
-        dmat : numpy array
+        dmat
             dummy matrix of numbers to be plotted using pcolor.
 
         """
@@ -133,18 +135,20 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_raster(self, data1, cmap, plotlog, aspect=1):
+    def update_raster(self, data1: Data, cmap: str, plotlog: bool, aspect: int = 1):
         """
         Update the raster plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
+        data1
             raster dataset to be used in contouring
-        cmap : str
+        cmap
             Matplotlib colormap description
-        plotlog : bool
+        plotlog
             Use a logarithmic colour scale.
+        aspect
+            Aspect ratio of colour bar.
 
         """
         self.data = data1
@@ -182,17 +186,8 @@ class MyMplCanvas(CanvasModule):
 
         location = "right"
         if not data1.isrgb:
-            # rows, cols = data1.data.shape
             pad = 0.1
             caspect = 30
-            # if cols > 1.8 * rows:
-            #     location = "bottom"
-            #     shrink = 0.4
-            #     anchor = (0.85, 1.0)
-            # else:
-            #     location = "right"
-            #     shrink = 1.0
-            #     anchor = (0.0, 0.5)
 
             location = "right"
             shrink = 1.0
@@ -235,16 +230,16 @@ class MyMplCanvas(CanvasModule):
 
         self.draw()
 
-    def update_hexbin(self, data1, data2):
+    def update_hexbin(self, data1: Data, data2: Data):
         """
         Update the hexbin plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
-        data2 : PyGMI raster Data
-            raster dataset to be used
+        data1
+            Raster dataset to be used
+        data2
+            Raster dataset to be used
 
         """
         self.figure.clear()
@@ -285,15 +280,15 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_surface(self, data, cmap):
+    def update_surface(self, data: Data, cmap: str):
         """
         Update the surface plot.
 
         Parameters
         ----------
-        data : PyGMI raster Data
+        data
             raster dataset to be used
-        cmap : str
+        cmap
             Matplotlib colormap description
 
         """
@@ -350,17 +345,17 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data1, ylog, iscum):
+    def update_hist(self, data1: Data, ylog: bool, iscum: bool):
         """
         Update the histogram plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
+        data1
             raster dataset to be used
-        ylog : bool
+        ylog
             Boolean for a log scale on y-axis.
-        iscum : bool
+        iscum
             Boolean for a cumulative distribution.
 
         """
@@ -474,9 +469,6 @@ class PlotRaster(ContextModule):
         self.mmc = MyMplCanvas(parent)
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
-        # self.mmc.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum,
-        #                        QtWidgets.QSizePolicy.Policy.Preferred)
-
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showsimple"
 
@@ -526,10 +518,7 @@ class PlotRaster(ContextModule):
         self.cb_log.checkStateChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
         plotlog = self.cb_log.isChecked()
@@ -627,10 +616,7 @@ class PlotSurface(ContextModule):
         self.vslider.valueChanged.connect(self.slider)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
         if "Raster" not in self.indata:
@@ -638,9 +624,6 @@ class PlotSurface(ContextModule):
 
         dat = self.indata["Raster"][i]
         dat.data = dat.data.astype(float)
-
-        # rows, cols = dat.data.shape
-        # dxy = dat.xdim
 
         xmin, xmax, ymin, ymax = dat.extent
 
@@ -650,27 +633,10 @@ class PlotSurface(ContextModule):
         x, y = np.meshgrid(x, y)
         z = dat.data.astype(float)
 
-        # zmin = z.min()
-        # zmax = z.max()
-
         z = z.filled(np.nan)
 
         grid = pv.StructuredGrid(x, y, z)
         grid["values"] = z.T.flatten()
-
-        # xptp = xmax - xmin
-        # yptp = ymax - ymin
-        # zptp = zmax - zmin
-
-        # ptp = max(xptp, yptp, zptp)
-        # n_labels = 5
-        # label_dist = ptp / 5
-
-        # n_xlabels = max(2, round(xptp / label_dist))
-        # n_ylabels = max(2, round(yptp / label_dist))
-        # n_zlabels = max(2, round(zptp / label_dist))
-
-        # bounds = [xmin, xmax, ymin, ymax, zmin, zmax]
 
         sargs = {
             "title_font_size": 20,
@@ -691,22 +657,7 @@ class PlotSurface(ContextModule):
             scalars="values",
             scalar_bar_args=sargs,
         )
-        # self.plotter.show_grid(xtitle='Eastings (m)',
-        #                        ytitle='Northings (m)',
-        #                        ztitle='',
-        #                        fmt='{:,.1f}',
-        #                        axes_ranges=bounds,
-        #                        # n_xlabels=n_xlabels,
-        #                        # n_ylabels=n_ylabels,
-        #                        # n_zlabels=n_zlabels,
-        #                        font_family='times',
-        #                        font_size=4,
-        #                        bold=False,
-        #                        padding=.1,
-        #                        use_3d_text=False,
-        #                        grid='back',
-        #                        location='outer'
-        # )
+
         self.plotter.set_scale(zscale=20)
 
     def run(self):
@@ -781,10 +732,7 @@ class PlotScatter(ContextModule):
         self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
         j = self.cmb_2.currentIndex()
@@ -871,10 +819,7 @@ class PlotHist(ContextModule):
         self.cb_cum.stateChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose band.
-
-        """
+        """Combo box to choose band."""
         data = self.indata["Raster"]
         i = self.cmb_1.currentIndex()
         ylog = self.cb_log.isChecked()
@@ -899,13 +844,13 @@ class PlotHist(ContextModule):
         self.show()
 
 
-def check_bands(data):
+def check_bands(data: list[Data]) -> bool:
     """
     Check that band sizes are the same.
 
     Parameters
     ----------
-    data : list of Data
+    data
         PyGMI raster dataset.
 
     Returns
@@ -924,20 +869,20 @@ def check_bands(data):
     return chk
 
 
-def corr2d(dat1, dat2):
+def corr2d(dat1: NDArray, dat2: NDArray) -> NDArray:
     """
     Calculate the 2D correlation.
 
     Parameters
     ----------
-    dat1 : numpy array
+    dat1
         dataset 1 for use in correlation calculation.
-    dat2 : numpy array
+    dat2
         dataset 2 for use in correlation calculation.
 
     Returns
     -------
-    out : numpy array
+    ndarray
         array of correlation coefficients
     """
     out = None

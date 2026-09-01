@@ -24,13 +24,15 @@
 # -----------------------------------------------------------------------------
 """Equation editor for raster data."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numexpr as ne
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import lstack
 
 
@@ -157,10 +159,7 @@ class EquationEditor(BasicModule):
         self.cmb_1.currentIndexChanged.connect(self.combo)
 
     def combo(self):
-        """
-        Update combo information.
-
-        """
+        """Update combo information."""
         txt = self.cmb_1.currentText()
         if txt != "":
             self.lbl_bands.setText(": " + self.bands[txt])
@@ -171,7 +170,7 @@ class EquationEditor(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -232,27 +231,31 @@ class EquationEditor(BasicModule):
 
 
 def eqedit(
-    data, equation, dtype="auto", showlog: Callable[..., None] = print, piter=iter
-):
+    data: list[Data],
+    equation: str,
+    dtype: str = "auto",
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> list[Data]:
     """
     Use equations on raster data.
 
     Parameters
     ----------
-    data : list
+    data
         List of PyGMI raster data.
-    equation : str
+    equation
         Equation to compute.
-    dtype : str, optional
+    dtype
         The data type of the output dataset. The default is 'auto'.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    list
+    list of Data
         List of PyGMI raster data.
 
     """
@@ -342,22 +345,24 @@ def eqedit(
     return outdata
 
 
-def eq_fix(indata, equation, showlog: Callable[..., None] = print):
+def eq_fix(
+    indata: list[Data], equation: str, showlog: Callable[..., None] = print
+) -> str:
     """
     Corrects names in equation to variable names.
 
     Parameters
     ----------
-    indata : list of Data
+    indata
         PyGMI raster dataset.
-    equation : str
+    equation
         Equation to fix.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
 
     Returns
     -------
-    neweq : str
+    str
         Corrected equation.
 
     """
@@ -377,18 +382,18 @@ def eq_fix(indata, equation, showlog: Callable[..., None] = print):
     return neweq
 
 
-def hmode(data):
+def hmode(data: list[float]) -> float:
     """
     Use a histogram to generate a fast mode estimate.
 
     Parameters
     ----------
-    data : list
+    list
         list of values to generate the mode from.
 
     Returns
     -------
-    mode2 : float
+    float
         mode value.
     """
     mmin = np.min(data)
@@ -405,20 +410,20 @@ def hmode(data):
     return mode2
 
 
-def mosaic(eq, localdict):
+def mosaic(eq: str, localdict: dict) -> NDArray:
     """
     Mosaics data into a single band dataset.
 
     Parameters
     ----------
-    eq : str
+    eq
         Equation with mosaic command.
-    localdict : dictionary
+    localdict
         Dictionary of data.
 
     Returns
     -------
-    master : numpy array
+    ndarray
         Output array.
 
     """
@@ -466,20 +471,20 @@ def mosaic(eq, localdict):
     return master
 
 
-def mean(eq, localdict):
+def mean(eq: str, localdict: dict) -> NDArray:
     """
     Get mean pixel value of all input bands.
 
     Parameters
     ----------
-    eq : str
+    eq
         Equation with std command.
-    localdict : dictionary
+    localdict
         Dictionary of data.
 
     Returns
     -------
-    findat : numpy array
+    ndarray
         Output array.
 
     """
@@ -492,18 +497,18 @@ def mean(eq, localdict):
 
     stack = []
     mask = None
-    for i in localdict:
+    for i, localdicti in localdict.items():
         if i not in eq3:
             continue
         if mask is None:
-            mask = localdict[i].mask
+            mask = localdicti.mask
         else:
-            mask = np.logical_and(mask, localdict[i].mask)
+            mask = np.logical_and(mask, localdicti.mask)
 
         if i == "iall":
-            stack.append(localdict[i])
+            stack.append(localdicti)
         else:
-            stack.append([localdict[i]])
+            stack.append([localdicti])
 
     stack = np.ma.vstack(stack)
     findat = np.ma.mean(stack, 0)
@@ -512,20 +517,20 @@ def mean(eq, localdict):
     return findat
 
 
-def detrend(eq, localdict):
+def detrend(eq: str, localdict: dict) -> NDArray:
     """
     Get mean pixel value of all input bands.
 
     Parameters
     ----------
-    eq : str
+    eq
         Equation with std command.
-    localdict : dictionary
+    localdict
         Dictionary of data.
 
     Returns
     -------
-    findat : numpy array
+    ndarray
         Output array.
 
     """
@@ -541,18 +546,18 @@ def detrend(eq, localdict):
 
     stack = []
     mask = None
-    for i in localdict:
+    for i, localdicti in localdict.items():
         if i not in eq3:
             continue
         if mask is None:
-            mask = localdict[i].mask
+            mask = localdicti.mask
         else:
-            mask = np.logical_and(mask, localdict[i].mask)
+            mask = np.logical_and(mask, localdicti.mask)
 
         if i == "iall":
-            stack.append(localdict[i])
+            stack.append(localdicti)
         else:
-            stack.append([localdict[i]])
+            stack.append([localdicti])
 
     stack = np.ma.vstack(stack)
     stack = stack[0]
@@ -575,20 +580,20 @@ def detrend(eq, localdict):
     return findat
 
 
-def std(eq, localdict):
+def std(eq: str, localdict: dict) -> NDArray:
     """
     Get standard deviation pixel value of all input bands.
 
     Parameters
     ----------
-    eq : str
+    eq
         Equation with std command.
-    localdict : dictionary
+    localdict
         Dictionary of data.
 
     Returns
     -------
-    findat : numpy array
+    ndarray
         Output array.
 
     """
@@ -601,18 +606,18 @@ def std(eq, localdict):
 
     stack = []
     mask = None
-    for i in localdict:
+    for i, localdicti in localdict.items():
         if i not in eq3:
             continue
         if mask is None:
-            mask = localdict[i].mask
+            mask = localdicti.mask
         else:
-            mask = np.logical_and(mask, localdict[i].mask)
+            mask = np.logical_and(mask, localdicti.mask)
 
         if i == "iall":
-            stack.append(localdict[i])
+            stack.append(localdicti)
         else:
-            stack.append([localdict[i]])
+            stack.append([localdicti])
 
     stack = np.ma.vstack(stack)
     findat = np.ma.std(stack, 0)
