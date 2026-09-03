@@ -563,7 +563,7 @@ def get_noise(
 
 
 def mnf_calc(
-    dat: list[Data],
+    idat: list[Data],
     *,
     ncmps: int | None = None,
     noisetxt: str = "hv average",
@@ -576,7 +576,7 @@ def mnf_calc(
 
     Parameters
     ----------
-    dat
+    idat
         List of PyGMI Data.
     ncmps
         Number of components to use for filtering. The default is None
@@ -603,7 +603,7 @@ def mnf_calc(
     maskall = []
 
     dat2 = []
-    for band in dat:
+    for band in idat:
         if band.data.mask.min() == np.False_:
             dat2.append(band)
 
@@ -690,7 +690,7 @@ def mnf_calc(
 
 
 def pca_calc(
-    dat: list[Data],
+    idat: list[Data],
     ncmps: int | None = None,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
@@ -701,7 +701,7 @@ def pca_calc(
 
     Parameters
     ----------
-    dat
+    idat
         List of PyGMI Data.
     ncmps
         Number of components to use for filtering. The default is None
@@ -725,7 +725,7 @@ def pca_calc(
     maskall = []
 
     dat2 = []
-    for band in dat:
+    for band in idat:
         if band.data.mask.min() == np.False_:
             dat2.append(band)
 
