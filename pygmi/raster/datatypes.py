@@ -81,7 +81,7 @@ def bounds_intersection(
     dataset,
     bounds: tuple[float, float, float, float] | None,
     showlog: Callable[..., None] = print,
-) -> tuple[Window | bool | None, tuple[float, float, float, float] | False | None]:
+) -> tuple[Window | bool | None, tuple[float, float, float, float] | bool | None]:
     """
     Find the intersection between some bounds and a dataset.
 
