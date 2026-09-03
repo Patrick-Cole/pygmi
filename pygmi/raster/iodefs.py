@@ -494,8 +494,8 @@ def get_ascii(ifile: str) -> list[Data]:
 def get_raster(
     ifile: str,
     *,
-    nval: float | None = None,
-    piter: Iterable | None = None,
+    nval: float | np.floating | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     iraster: tuple[float, float, float, float] | None = None,
     driver: str | None = None,
@@ -503,7 +503,7 @@ def get_raster(
     tnames: list[str] | None = None,
     metaonly: bool = False,
     out_shape: tuple | None = None,
-) -> list[Data]:
+) -> list[Data] | None:
     """
     Get raster dataset.
 
@@ -542,9 +542,6 @@ def get_raster(
     # Exclusions
     if "AG1" in ifile and "h5" in ifile.lower():
         return None
-
-    if piter is None:
-        piter = ProgressBarText().iter
 
     dat = []
     bname = os.path.basename(ifile).rpartition(".")[0]
@@ -1098,7 +1095,7 @@ def get_geopak(hfile: str) -> list[Data]:
     return dat
 
 
-def get_geosoft(hfile: str) -> list[Data]:
+def get_geosoft(hfile: str) -> list[Data] | None:
     """
     Get Geosoft file (uncompressed).
 
@@ -1596,7 +1593,7 @@ class ExportData(ContextModule):
                 krows, kcols = k.data.shape
 
                 for j in range(krows):
-                    fno.writeslines([f"\n{tmp[j, i]} " for i in range[kcols]])
+                    fno.writeslines([f"\n{tmp[j, i]} " for i in range(kcols)])
                     # fno.write("\n")
                     # for i in range(kcols):
                     #     fno.write(str(tmp[j, i]) + " ")
@@ -1707,7 +1704,7 @@ def export_raster(
     dat: list[Data] | dict[str, Data],
     *,
     drv: str = "GTiff",
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     compression: str = "NONE",
     bandsort: bool = True,
     showlog: Callable[..., None] = print,
@@ -1735,9 +1732,6 @@ def export_raster(
     updatestats
         Update statistics in exported file.
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     if isinstance(dat, dict):
         dat2 = []
         for i in dat:
@@ -2004,7 +1998,7 @@ def export_raster(
             myfile.write(wout)
 
 
-def calccov(data: list[Data], showlog: Callable[..., None] = print) -> NDArray:
+def calccov(data: list[Data], showlog: Callable[..., None] = print) -> NDArray | None:
     """
     Calculate covariance from PyGMI Data.
 
@@ -2061,14 +2055,14 @@ def _filespeedtest():
     print("Starting")
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geopak\Westgpk.grd"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\Geopak\Westgpk.grd"
     # ifile = r"D:\temp\RegGrav_BA_Up50000_REs.tif"
     # ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
     # ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 
-    # _dataset = get_raster(ifile)
-    _dataset = get_geopak(ifile)
+    _dataset = get_raster(ifile)
+    # _dataset = get_geopak(ifile)
 
     # getinfo('Start')
 

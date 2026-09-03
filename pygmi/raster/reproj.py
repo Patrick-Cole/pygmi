@@ -167,7 +167,7 @@ def data_reproject(
     icrs: CRS | None = None,
     showlog: Callable[..., None] = print,
     forcereproj: bool = False,
-) -> Data:
+) -> Data | None:
     """
     Reproject dataset.
 

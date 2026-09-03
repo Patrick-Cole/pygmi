@@ -1069,7 +1069,7 @@ def gridxyz(
     method: str = "Nearest Neighbour",
     bdist: float | None = 4.0,
     showlog: Callable[..., None] = print,
-) -> Data | None:
+) -> Data:
     """
     Grid xyz data.
 
@@ -1373,7 +1373,7 @@ def quickgrid(
     *,
     numits: int = 4,
     showlog: Callable[..., None] = print,
-) -> NDArray:
+) -> np.ma.MaskedArray:
     """
     Do a quick grid.
 
@@ -1395,7 +1395,7 @@ def quickgrid(
 
     Returns
     -------
-    ndarray
+    MaskedArray
         M x N array of z values
     """
     showlog("Creating Grid")

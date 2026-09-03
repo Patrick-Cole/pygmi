@@ -280,7 +280,7 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_surface(self, data: Data, cmap: str):
+    def update_surface(self, data: Data, icmap: str):
         """
         Update the surface plot.
 
@@ -288,7 +288,7 @@ class MyMplCanvas(CanvasModule):
         ----------
         data
             raster dataset to be used
-        cmap
+        icmap
             Matplotlib colormap description
 
         """
@@ -308,7 +308,7 @@ class MyMplCanvas(CanvasModule):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        cmap = colormaps[cmap]
+        cmap = colormaps[icmap]
 
         norml = mcolors.Normalize(vmin=vmin, vmax=vmax)
 
@@ -869,15 +869,15 @@ def check_bands(data: list[Data]) -> bool:
     return chk
 
 
-def corr2d(dat1: NDArray, dat2: NDArray) -> NDArray:
+def corr2d(idat1: np.ma.MaskedArray, idat2: np.ma.MaskedArray) -> NDArray | None:
     """
     Calculate the 2D correlation.
 
     Parameters
     ----------
-    dat1
+    idat1
         dataset 1 for use in correlation calculation.
-    dat2
+    idat2
         dataset 2 for use in correlation calculation.
 
     Returns
@@ -888,8 +888,8 @@ def corr2d(dat1: NDArray, dat2: NDArray) -> NDArray:
     out = None
 
     # These next two lines are critical to keep original data safe.
-    dat1 = dat1.copy()
-    dat2 = dat2.copy()
+    dat1 = idat1.copy()
+    dat2 = idat2.copy()
 
     if dat1.shape == dat2.shape:
         # These line are to avoid warnings due to powers of large fill values

@@ -769,14 +769,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.draw_artist(self.image)
         self.figure.canvas.update()
 
-    def update_shade_plot(self) -> NDArray:
+    def update_shade_plot(self) -> NDArray | int:
         """
         Update shade plot for export.
 
         Returns
         -------
-        ndarray
-            Sunshader data.
+        ndarray or int
+            Sunshader data, or 1 if nor sun shading.
 
         """
         if self.shade is not True:

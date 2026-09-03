@@ -326,7 +326,7 @@ class Smooth(BasicModule):
 
 def mov_win_filt(
     dat: NDArray,
-    fmat: str,
+    ifmat: str,
     itype: str,
     box_x: int = 5,
     box_y: int = 5,
@@ -334,7 +334,7 @@ def mov_win_filt(
     sigma: int = 5,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> NDArray:
+) -> NDArray | None:
     """
     Apply moving window filter function to data.
 
@@ -342,7 +342,7 @@ def mov_win_filt(
     ----------
     dat
         Data for a PyGMI raster dataset.
-    fmat
+    ifmat
         Filter matrix type.
     itype
         Filter type. Can be '2D Mean' or '2D Median'.
@@ -365,20 +365,21 @@ def mov_win_filt(
         Data for a PyGMI raster dataset.
 
     """
+    fmat = 1
     if itype == "2D Mean":
-        if fmat == "box":
+        if ifmat == "box":
             fmat = filters2d("average", [box_y, box_x])
-        elif fmat == "disc":
+        elif ifmat == "disc":
             fmat = filters2d("disc", rad)
-        elif fmat == "gaussian":
+        elif ifmat == "gaussian":
             fmat = filters2d("gaussian", [box_x, box_y], sigma)
     else:
-        if fmat == "gaussian":
+        if ifmat == "gaussian":
             showlog("2D Median cannnot have a gaussian matrix")
             return None
-        if fmat == "box":
+        if ifmat == "box":
             fmat = np.ones((box_y, box_x))
-        elif fmat == "disc":
+        elif ifmat == "disc":
             fmat = filters2d("disc", rad)
             fmat[fmat > 0] = 1
 
@@ -425,7 +426,7 @@ def mov_win_filt(
     return out
 
 
-def filters2d(filtertype: str, sze: NDArray | int, *sigma: NDArray) -> NDArray:
+def filters2d(filtertype: str, sze: list | int, *sigma: NDArray) -> NDArray:
     """
     Filter 2D.
 

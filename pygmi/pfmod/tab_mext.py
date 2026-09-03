@@ -239,10 +239,7 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
-        """
-        Apply changes.
-
-        """
+        """Apply changes."""
         self.showtext("Working...")
 
         self.choose_combo(self.cmb_dtm, "DTM Dataset")
@@ -275,15 +272,15 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.accept()
 
-    def choose_combo(self, combo, dtxt):
+    def choose_combo(self, combo: QtWidgets.QComboBox, dtxt: str):
         """
         Combo box choice routine.
 
         Parameters
         ----------
-        combo : QComboBox
+        combo
             Combo box.
-        dtxt : str
+        dtxt
             Text to describe new raster data entry.
 
         """
@@ -294,10 +291,7 @@ class MextDisplay(QtWidgets.QDialog):
             self.lmod1.griddata.pop(dtxt)
 
     def choose_dtm(self):
-        """
-        Combo box to choose current DTM.
-
-        """
+        """Combo box to choose current DTM."""
         ctxt = str(self.cmb_dtm.currentText())
         if ctxt not in ("None", ""):
             curgrid = self.parent.inraster[ctxt]
@@ -310,10 +304,7 @@ class MextDisplay(QtWidgets.QDialog):
             self.upd_layers()
 
     def choose_model(self):
-        """
-        Choose model file.
-
-        """
+        """Choose model file."""
         ctxt = str(self.cmb_model.currentText())
         if ctxt == "None" or "Model3D" not in self.parent.indata:
             return
@@ -324,7 +315,7 @@ class MextDisplay(QtWidgets.QDialog):
                 self.update_vals()
                 self.update_combos()
 
-    def extgrid(self, gdata):
+    def extgrid(self, gdata: np.ma.MaskedArray) -> np.ma.MaskedArray:
         """
         Extrapolates the grid to get rid of nulls.
 
@@ -332,12 +323,12 @@ class MextDisplay(QtWidgets.QDialog):
 
         Parameters
         ----------
-        gdata : numpy array
+        gdata
             Raster dataset.
 
         Returns
         -------
-        numpy masked array
+        MaskedArray
             Output dataset.
 
         """
@@ -352,7 +343,6 @@ class MextDisplay(QtWidgets.QDialog):
         outg = np.ones_like(gtmp)
         points2 = np.where(outg)
         outg = si.griddata(points1, z, points2, method="nearest")
-
         outg = outg.reshape(gtmp.shape)
         outg[gmask] = gdata[gmask]
         outg = np.ma.array(outg)
@@ -361,10 +351,7 @@ class MextDisplay(QtWidgets.QDialog):
         return outg
 
     def get_area(self):
-        """
-        Get current grid extents and parameters.
-
-        """
+        """Get current grid extents and parameters."""
         ctxt = str(self.cmb_dataset.currentText())
         if ctxt not in ("None", ""):
             curgrid = self.parent.inraster[ctxt]
@@ -386,10 +373,7 @@ class MextDisplay(QtWidgets.QDialog):
             self.sb_rows.setValue(rows)
 
     def init(self):
-        """
-        Initialise parameters.
-
-        """
+        """Initialise parameters."""
         # Extent Parameters
         self.dsb_utlx.setValue(0.0)
         self.dsb_utly.setValue(0.0)
@@ -404,10 +388,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.sb_layers.setValue(self.lmod1.numz)
 
     def upd_layers(self):
-        """
-        Update layers.
-
-        """
+        """Update layers."""
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
         zextent = self.dsb_zextent.value()
@@ -422,10 +403,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.sb_layers.setValue(numz)
 
     def update_model_combos(self):
-        """
-        Update model combos.
-
-        """
+        """Update model combos."""
         modnames = ["None"]
         if "Model3D" in self.parent.indata:
             for i in self.parent.indata["Model3D"]:
@@ -443,10 +421,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.cmb_model.currentIndexChanged.connect(self.choose_model)
 
     def update_combos(self):
-        """
-        Update combos.
-
-        """
+        """Update combos."""
         self.cmb_dataset.currentIndexChanged.disconnect()
 
         gkeys = list(self.parent.inraster.keys())
@@ -522,10 +497,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.cmb_dataset.currentIndexChanged.connect(self.get_area)
 
     def update_vals(self):
-        """
-        Update the visible model extent parameters.
-
-        """
+        """Update the visible model extent parameters."""
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
         utlz = self.lmod1.zrange[1]
@@ -545,13 +517,13 @@ class MextDisplay(QtWidgets.QDialog):
         self.dsb_zextent.setValue(zextent)
         self.dsb_zcell.setValue(self.lmod1.d_z)
 
-    def xycell(self, dxy):
+    def xycell(self, dxy: float):
         """
         Adjust XY dimensions when cell size changes.
 
         Parameters
         ----------
-        dxy : float
+        dxy
             Cell dimension.
 
         """
@@ -568,13 +540,13 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.upd_layers()
 
-    def zcell(self, d_z):
+    def zcell(self, d_z: float):
         """
         Adjust Z dimension when cell size changes.
 
         Parameters
         ----------
-        d_z : float
+        d_z
             Layer thickness.
 
         """
@@ -587,10 +559,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.upd_layers()
 
     def tab_activate(self):
-        """
-        Entry point.
-
-        """
+        """Entry point."""
         self.update_model_combos()
         self.choose_model()
         self.update_vals()

@@ -1102,7 +1102,7 @@ def get_EMIT_list(flist: list[str]) -> list[str]:
 
 def get_landsat_list(
     flist: list[str], sensor: str | None = None, allsats: bool = False
-) -> list[str]:
+) -> list[str] | None:
     """
     Get Landsat files from a file list.
 

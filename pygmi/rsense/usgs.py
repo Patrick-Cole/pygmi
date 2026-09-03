@@ -401,7 +401,7 @@ def case1(dat: bytes) -> dict:
     return rec
 
 
-def unpack_icflag(icflag: bytes) -> list:
+def unpack_icflag(icflag: int) -> list:
     """
     Unpack the bits from icflag.
 

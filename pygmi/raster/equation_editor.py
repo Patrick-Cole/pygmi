@@ -236,7 +236,7 @@ def eqedit(
     dtype: str = "auto",
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> list[Data]:
+) -> list[Data] | None | bool:
     """
     Use equations on raster data.
 
@@ -293,16 +293,16 @@ def eqedit(
 
     if "mosaic" in neweq:
         findat = mosaic(neweq, localdict)
-        mask = findat.mask
+        # mask = findat.mask
     elif "mean" in neweq:
         findat = mean(neweq, localdict)
-        mask = findat.mask
+        # mask = findat.mask
     elif "std" in neweq:
         findat = std(neweq, localdict)
-        mask = findat.mask
+        # mask = findat.mask
     elif "detrend" in neweq:
         findat = detrend(neweq, localdict)
-        mask = findat.mask
+        # mask = findat.mask
     else:
         try:
             findat = ne.evaluate(neweq, localdict)
@@ -312,6 +312,8 @@ def eqedit(
     if findat is None:
         showlog("Error: Nothing processed! Your equation most likely had an error.")
         return False
+
+    mask = np.ma.getmaskarray(findat)
 
     outdata = []
 
@@ -410,7 +412,7 @@ def hmode(data: list[float]) -> float:
     return mode2
 
 
-def mosaic(eq: str, localdict: dict) -> NDArray:
+def mosaic(eq: str, localdict: dict) -> NDArray | None:
     """
     Mosaics data into a single band dataset.
 
@@ -517,7 +519,7 @@ def mean(eq: str, localdict: dict) -> NDArray:
     return findat
 
 
-def detrend(eq: str, localdict: dict) -> NDArray:
+def detrend(eq: str, localdict: dict) -> NDArray | None:
     """
     Get mean pixel value of all input bands.
 
@@ -541,8 +543,11 @@ def detrend(eq: str, localdict: dict) -> NDArray:
     eq2 = eq2.replace(" ", "")
     eq3 = eq2.split(",")
 
-    top = float(eq3[1])
-    bottom = float(eq3[2])
+    try:
+        top = float(eq3[1])
+        bottom = float(eq3[2])
+    except ValueError:
+        return None
 
     stack = []
     mask = None
@@ -630,8 +635,7 @@ def _test():
     """Test."""
     import sys
 
-    import matplotlib.pyplot as plt
-
+    # import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
 
     print("Starting")
@@ -651,9 +655,9 @@ def _test():
 
     out = EE.outdata["Raster"]
 
-    plt.figure(dpi=300)
-    plt.imshow(out[0].data)
-    plt.show()
+    # plt.figure(dpi=300)
+    # plt.imshow(out[0].data)
+    # plt.show()
 
 
 if __name__ == "__main__":

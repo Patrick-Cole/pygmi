@@ -25,7 +25,7 @@
 """Transforms such as PCA and MNF."""
 
 import os
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Generator, Iterable
 
 import matplotlib.pyplot as plt
 import numexpr as ne
@@ -434,7 +434,7 @@ class PCA(BasicModule):
 
 def get_noise(
     x2d: NDArray, mask: NDArray, noisetype: str = "", piter: Iterable = iter
-) -> tuple[NDArray, NDArray]:
+) -> NDArray:
     """
     Calculate noise dataset from original data.
 
@@ -452,10 +452,8 @@ def get_noise(
 
     Returns
     -------
-    nevals : numpy array
-        Noise eigenvalues.
-    nevecs : numpy array
-        Noise eigenvectors.
+    ndarray
+        W array.
 
     """
     mask = ~mask
@@ -959,7 +957,7 @@ def pca_calc_fitlist(
     return odata, ev
 
 
-def _block_slices(dim_size: int, block_size: int) -> slice:
+def _block_slices(dim_size: int, block_size: int) -> Generator:
     """
     Generate slice objects.
 

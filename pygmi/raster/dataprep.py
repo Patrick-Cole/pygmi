@@ -1041,16 +1041,8 @@ class Metadata(ContextModule):
         self.lbl_dtype.setText(str(idata.data.dtype))
         self.date.setDate(idata.datetime)
 
-    def run(self) -> bool:
-        """
-        Entry point into the routine, used to run context menu item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
         bandid = []
         if self.indata["Raster"][0].crs is None:
             self.proj.set_current("None")
@@ -1294,7 +1286,7 @@ def cluster_to_raster(indata: dict) -> dict:
 
 def get_shape_bounds(
     sfile: str, crs: int | str | CRS | None = None, showlog: Callable[..., None] = print
-) -> tuple[float, float, float, float]:
+) -> tuple[float, float, float, float] | None:
     """
     Get bounds from a shape file.
 
@@ -1484,12 +1476,12 @@ def mosaic(
     forcetype: bool | None = None,
     shifttomedian: bool = False,
     tmpdir: str | None = None,
-    nodata: float | None = None,
-    method: str = "first",
+    nodata: float | np.floating | None = None,
+    method: str | object = "first",
     res: float | None = None,
     ifiles: list[str] | None = None,
     resampling: str = "nearest",
-) -> list[Data]:
+) -> list[Data] | bool | None:
     """
     Merge files with different numbers of bands and/or band order.
 

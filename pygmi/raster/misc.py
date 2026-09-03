@@ -203,14 +203,14 @@ def cut_raster(
     ibnd: str | gpd.GeoDataFrame | tuple,
     showlog: Callable[..., None] = print,
     deepcopy: bool = True,
-) -> list[Data]:
+) -> list[Data] | None:
     """
     Cut a raster dataset.
 
     Parameters
     ----------
     data
-        |Input PyGMI Dataset
+        Input PyGMI Dataset
     ibnd
         shapefile or GeoDataFrame or tuple of bounds used to cut data.
     showlog
@@ -288,7 +288,7 @@ def cut_raster(
     return data
 
 
-def fill_nd_closest(arr: NDArray) -> NDArray:
+def fill_nd_closest(arr: np.ma.MaskedArray) -> NDArray:
     """
     Fill array using closest value.
 
@@ -403,7 +403,7 @@ def histeq(img, nbrbins=32768):
     return im2
 
 
-def img2rgb(img: NDArray, cbar: colormaps = colormaps["jet"]) -> NDArray:
+def img2rgb(img: NDArray, cbar=colormaps["jet"]) -> NDArray:
     """
     Image to RGB.
 
@@ -436,7 +436,7 @@ def img2rgb(img: NDArray, cbar: colormaps = colormaps["jet"]) -> NDArray:
 def lstack(
     dat: list[Data],
     *,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     dxy: float | None = None,
     showlog: Callable[..., None] = print,
     commonmask: bool = False,
@@ -444,7 +444,7 @@ def lstack(
     nodeepcopy: bool = False,
     resampling: str = "cubic_spline",  # "nearest",
     checkdataid: bool = True,
-) -> list[Data]:
+) -> list[Data] | None:
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -478,9 +478,6 @@ def lstack(
         list of raster data.
 
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     if dat[0].isrgb:
         return dat
 

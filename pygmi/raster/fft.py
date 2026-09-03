@@ -32,7 +32,7 @@ from scipy.stats import binned_statistic
 from pygmi.raster.datatypes import Data
 
 
-def fftprep(data: Data) -> tuple[NDArray, float]:
+def fftprep(data: Data) -> tuple[Data, float]:
     """
     FFT preparation.
 
@@ -136,7 +136,7 @@ def nextpow2(n: float | NDArray) -> float | NDArray:
     return m_i
 
 
-def calculate_raps(dat: Data) -> tuple[NDArray, NDArray]:
+def calculate_raps(dat: Data) -> tuple[NDArray, NDArray, NDArray, tuple]:
     """
     Calculate the Radially Averaged Power Spectrum (RAPS) of a 2D dataset.
 

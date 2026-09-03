@@ -605,7 +605,7 @@ class ImportSentinel5P(BasicModule):
                 return False
 
         if not self.check_validation():
-            return
+            return False
 
         gdf = self.get_5P_data(meta)
 
@@ -1037,7 +1037,7 @@ class ExportBatch(ContextModule):
         self.le_odir.setText(odir)
 
 
-def calculate_toa(dat: Data, showlog: Callable[..., None] = print) -> Data:
+def calculate_toa(dat: Data, showlog: Callable[..., None] = print) -> list[Data]:
     """
     Top of atmosphere correction.
 
@@ -1052,7 +1052,7 @@ def calculate_toa(dat: Data, showlog: Callable[..., None] = print) -> Data:
 
     Returns
     -------
-    Data
+    list of Data
         PyGMI raster dataset
     """
     EDIST = {
@@ -1581,7 +1581,7 @@ def export_batch(
     filt: str,
     *,
     tnames: list[str] | None = None,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     otype: str | None = None,
     sunfile: str | None = None,
@@ -1625,6 +1625,7 @@ def export_batch(
         sunfile = None
     elif (
         tnames is not None
+        and sunfile is not None
         and otype == "RGB"
         and (sunfile in ifiles[0].bands and sunfile not in tnames)
     ):
@@ -1754,12 +1755,12 @@ def files_to_rastermeta(
 
 def get_data(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
     bounds: tuple[float, float, float, float] | None = None,
-) -> Data:
+) -> list[Data] | None:
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1782,7 +1783,7 @@ def get_data(
 
     Returns
     -------
-    Data
+    List of Data
         dataset imported
     """
     ifile = ifile[:]
@@ -1884,12 +1885,12 @@ def get_data(
 
 def get_from_rastermeta(
     ldata: RasterMeta | Data,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
     bounds: tuple[float, float, float, float] | None = None,
-) -> Data:
+) -> list[Data] | None:
     """
     Import data from a RasterMeta item.
 
@@ -1944,11 +1945,11 @@ def get_from_rastermeta(
 
 def get_emit(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get EMIT Data.
 
@@ -1967,12 +1968,9 @@ def get_emit(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     ds = emit_xarray(ifile, ortho=(not metaonly))
     dat = xr_to_pygmi(ds, piter, showlog, tnames, metaonly)
 
@@ -2007,11 +2005,11 @@ def get_emit(
 
 def get_modisv6(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get MODIS v006 data.
 
@@ -2030,12 +2028,9 @@ def get_modisv6(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     dat = []
     ifile = ifile[:]
 
@@ -2146,11 +2141,11 @@ def get_modisv6(
 
 def get_landsat(
     ifilet: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get Landsat Data.
 
@@ -2172,9 +2167,6 @@ def get_landsat(
     Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     platform = os.path.basename(ifilet)[2:4]
     satbands = None
     lstband = None
@@ -2435,11 +2427,11 @@ def get_landsat(
 
 def get_worldview(
     ifilet: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get WorldView Data.
 
@@ -2458,12 +2450,9 @@ def get_worldview(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     dtree = etree_to_dict(ET.parse(ifilet).getroot())
 
     if "isd" not in dtree:
@@ -2688,11 +2677,11 @@ def get_worldview(
 
 def get_hyperion(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get Hyperion Data.
 
@@ -2711,12 +2700,9 @@ def get_hyperion(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     wavelength = [
         355.59,
         365.76,
@@ -3328,11 +3314,11 @@ def get_hyperion(
 
 def get_sentinel1(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get Sentinel-1 Data.
 
@@ -3351,12 +3337,9 @@ def get_sentinel1(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     ifile = ifile[:]
 
     with rasterio.open(ifile) as dataset:
@@ -3417,12 +3400,12 @@ def get_sentinel1(
 
 def get_sentinel2(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
     bounds: tuple[float, float, float, float] | None = None,
-) -> Data:
+) -> list[Data] | None:
     """
     Get Sentinel-2 Data.
 
@@ -3443,7 +3426,7 @@ def get_sentinel2(
 
     Returns
     -------
-    Data
+    List of Data
         dataset imported
     """
     ext = os.path.splitext(ifile)[1].lower()
@@ -3451,9 +3434,6 @@ def get_sentinel2(
     if ext == ".safe":
         lvl = os.path.basename(ifile)[7:10]
         ifile = ifile + f"/MTD_MSI{lvl}.xml"
-
-    if piter is None:
-        piter = ProgressBarText().iter
 
     ifile = ifile[:]
     gmeta = get_sentinel2_metadata(ifile)
@@ -3588,11 +3568,11 @@ def get_sentinel2_metadata(ifile: str) -> dict:
 
 def get_spot(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get Spot DIMAP Data.
 
@@ -3611,12 +3591,9 @@ def get_spot(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     ifile = ifile[:]
     nval = 0
     dat = []
@@ -3678,11 +3655,11 @@ def get_spot(
 
 def get_aster_zip(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get ASTER zip Data.
 
@@ -3701,12 +3678,9 @@ def get_aster_zip(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     satbands = {
         "1": [520, 600],
         "2": [630, 690],
@@ -3828,11 +3802,11 @@ def get_aster_zip(
 
 def get_aster_tif(
     ifiles: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get ASTER tif Data.
 
@@ -3851,12 +3825,9 @@ def get_aster_tif(
 
     Returns
     -------
-    Data
+    List of Data
         dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     satbands = {
         "1": [520, 600],
         "2": [630, 690],
@@ -4049,11 +4020,11 @@ def get_aster_metadata(ifile: str) -> dict:
 
 def get_aster_hdf(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data] | None:
     """
     Get ASTER hdf Data.
 
@@ -4074,12 +4045,9 @@ def get_aster_hdf(
 
     Returns
     -------
-    Data
+    List of Data
         dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     satbands = {
         "1": [520, 600],
         "2": [630, 690],
@@ -4270,11 +4238,11 @@ def get_aster_hdf(
 
 def get_aster_ged(
     ifile: str,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
     showlog: Callable[..., None] = print,
     tnames: list[str] | None = None,
     metaonly: bool = False,
-) -> Data:
+) -> list[Data]:
     """
     Get ASTER GED data.
 
@@ -4293,12 +4261,9 @@ def get_aster_ged(
 
     Returns
     -------
-    Data
+    List of Data
         Dataset imported
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     dat = []
     ifile = ifile[:]
     bandid = None
@@ -4406,7 +4371,7 @@ def get_aster_ged(
     return dat
 
 
-def get_aster_ged_bin(ifile: str) -> Data:
+def get_aster_ged_bin(ifile: str) -> list[Data]:
     """
     Get ASTER GED binary format.
 
@@ -4436,7 +4401,7 @@ def get_aster_ged_bin(ifile: str) -> Data:
 
     Returns
     -------
-    pygmi.raster.datatypes.Data
+    List of Data
         dataset imported
     """
     dat = []

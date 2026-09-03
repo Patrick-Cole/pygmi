@@ -79,9 +79,9 @@ def bounds_to_transform(
 
 def bounds_intersection(
     dataset,
-    bounds: tuple[float, float, float, float],
+    bounds: tuple[float, float, float, float] | None,
     showlog: Callable[..., None] = print,
-) -> tuple[Window, tuple[float, float, float, float]]:
+) -> tuple[Window | False | None, tuple[float, float, float, float] | False | None]:
     """
     Find the intersection between some bounds and a dataset.
 
@@ -568,7 +568,7 @@ class RasterMeta:
 
 def numpy_to_pygmi(
     data: NDArray, pdata: Data | None = None, dataid: str | None = None
-) -> Data:
+) -> Data | None:
     """
     Convert an MxN numpy array into a PyGMI data object.
 

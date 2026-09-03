@@ -55,7 +55,6 @@ def test_cont():
 
 def test_process_data():
     """Test process gravity data."""
-
     idir = os.path.dirname(os.path.realpath(__file__))
 
     grvfile = os.path.join(idir, r"testdata/GravityCG5.txt")

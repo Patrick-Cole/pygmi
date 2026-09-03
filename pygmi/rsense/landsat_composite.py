@@ -178,7 +178,7 @@ def composite(
     dreq: int = 10,
     mean: float | None = None,
     showlog: Callable[..., None] = print,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
 ) -> list[Data]:
     """
     Create a Landsat composite.
@@ -203,9 +203,6 @@ def composite(
         List of PyGMI Data.
 
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     ifiles = glob.glob(os.path.join(idir, "**/*MTL.txt"), recursive=True)
 
     allday = []
@@ -263,7 +260,7 @@ def import_and_score(
     std: float,
     *,
     showlog: Callable[..., None] = print,
-    piter: Iterable | None = None,
+    piter: Iterable = ProgressBarText().iter,
 ) -> dict[str, Data]:
     """
     Import data and score it.
@@ -289,9 +286,6 @@ def import_and_score(
         Dictionary of bands imported.
 
     """
-    if piter is None:
-        piter = ProgressBarText().iter
-
     bands = [f"B{i + 1}" for i in range(11)]
 
     dat = {}

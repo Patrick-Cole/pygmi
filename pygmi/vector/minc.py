@@ -48,10 +48,10 @@ def minc(
     dxy: float,
     *,
     showlog: Callable[..., None] = print,
-    extent: list | None = None,
+    extent: list | NDArray | None = None,
     bdist: float | None = None,
     maxiters: int = 100,
-) -> NDArray:
+) -> np.ma.MaskedArray:
     """
     Minimum Curvature Gridding.
 
@@ -508,7 +508,7 @@ def off_grid(u: NDArray, i: int, j: int, wn: float, b: list) -> float:
 
 
 @jit(nopython=True)
-def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float]:
+def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float] | None:
     """
     Get b values for input data.
 

@@ -492,7 +492,7 @@ def sunshade(
     alpha: float = 1,
     cell: float = 100,
     cmap: LinearSegmentedColormap = colormaps["terrain"],
-) -> NDArray:
+) -> tuple[float, float, float, float] | NDArray:
     """
     Perform Sunshading on data.
 

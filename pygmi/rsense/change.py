@@ -168,7 +168,7 @@ def calc_change(
     ilist: list[str] | None = None,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> list[Data]:
+) -> list[Data] | None:
     """
     Calculate Change Indices.
 
@@ -337,7 +337,7 @@ def calc_sam(
     flist: list[RasterMeta],
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> Data:
+) -> Data | list:
     """
     Load data and calculate spectral angle between two times.
 
@@ -476,7 +476,7 @@ def match_data(
     flist: list[Data | RasterMeta],
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> tuple[list[Data], list[Data]]:
+) -> tuple[list[Data] | None, list[Data] | None]:
     """
     Match two datasets.
 
@@ -531,7 +531,7 @@ def match_data(
 
 
 @jit(nopython=True)
-def sam(s1: NDArray, s2: NDArray) -> NDArray:
+def sam(s1: NDArray, s2: NDArray) -> float:
     """
     Calculate Spectral Angle Mapper (SAM).
 
@@ -544,8 +544,8 @@ def sam(s1: NDArray, s2: NDArray) -> NDArray:
 
     Returns
     -------
-    ndarray
-        Output angles.
+    float
+        Output angle.
 
     """
     s1a = s1.astype("d")
@@ -562,7 +562,7 @@ def sam(s1: NDArray, s2: NDArray) -> NDArray:
     return result
 
 
-def scm(s1: NDArray, s2: NDArray) -> NDArray:
+def scm(s1: NDArray, s2: NDArray) -> float:
     """
     SCM or MSAM.
 
@@ -575,8 +575,8 @@ def scm(s1: NDArray, s2: NDArray) -> NDArray:
 
     Returns
     -------
-    ndarray
-        Output angles.
+    float
+        Output angle.
 
     """
     s1 = s1.astype("d")

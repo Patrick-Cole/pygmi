@@ -124,7 +124,7 @@ def str2float(inp: str) -> float:
     return fval
 
 
-def str2int(inp: str) -> int:
+def str2int(inp: str) -> int | float:
     """
     Convert a number to integer, or returns NaN.
 
@@ -302,7 +302,7 @@ def importmacro(ifile: str) -> gpd.GeoDataFrame:
     return gdf1
 
 
-def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list:
+def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list | False:
     """
     Import Nordic and Nordic2 data.
 
@@ -2135,7 +2135,7 @@ class ExportCSV(ContextModule):
         tmp = tmp.replace("None", "")
         return tmp
 
-    def write_record_type_2(self, data: dict) -> str:
+    def write_record_type_2(self, data: dict) -> str | None:
         """
         Write record type 2.
 
@@ -2180,7 +2180,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_3(self, tmp: str) -> str:
+    def write_record_type_3(self, tmp: str) -> str | None:
         """
         Write record type 3.
 
@@ -2258,7 +2258,7 @@ class ExportCSV(ContextModule):
 
         return tmpfin
 
-    def write_record_type_5(self, data: dict) -> str:
+    def write_record_type_5(self, data: dict) -> str | None:
         """
         Write record type 5.
 
@@ -2283,7 +2283,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_6(self, data: dict) -> str:
+    def write_record_type_6(self, data: dict) -> str | None:
         """
         Write record type 6.
 
@@ -2359,7 +2359,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_f(self, data: dict) -> str:
+    def write_record_type_f(self, data: dict) -> str | None:
         """
         Write record type F.
 
@@ -2398,7 +2398,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_h(self, data: dict) -> str:
+    def write_record_type_h(self, data: dict) -> str | None:
         """
         Write record type H.
 
@@ -2464,7 +2464,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_m(self, data: dict) -> str:
+    def write_record_type_m(self, data: dict) -> str | None:
         """
         Write record type M.
 
@@ -2523,7 +2523,7 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_p(self, data: dict) -> str:
+    def write_record_type_p(self, data: dict) -> str | None:
         """
         Write record type P.
 
@@ -2856,6 +2856,7 @@ class FilterSeisan(BasicModule):
         tmp = list(self.datlimits.keys())
         tmp = [i[2:] for i in tmp if i[0] == self.cmb_rectype.currentText()]
         self.cmb_update(self.cmb_recdesc, tmp)
+        return True
 
     def dind_click(self, state: int):
         """
@@ -3078,7 +3079,7 @@ class FilterSeisan(BasicModule):
         self.outdata["Seis"] = newdat
 
 
-def detect_file_encoding(ifile) -> str:
+def detect_file_encoding(ifile) -> str | None:
     """
     Detect file encoding.
 

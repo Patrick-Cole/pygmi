@@ -461,7 +461,7 @@ def visibility2d(
     vstd = np.zeros([nr, nc])
     mask = np.ma.getmaskarray(data)
     mean = data.mean()
-    data = data.data
+    data = data.filled()
     data[mask] = mean
 
     for j in piter(range(nc)):  # Columns
@@ -529,9 +529,7 @@ def visibility2d(
 
 
 @jit(nopython=True)
-def visibilitytot(
-    data: NDArray, wsize: int, dh: float
-) -> tuple[NDArray, NDArray, NDArray]:
+def visibilitytot(data: NDArray, wsize: int, dh: float) -> NDArray:
     """
     Compute visibility as a textural measure.
 
@@ -549,23 +547,14 @@ def visibilitytot(
 
     Returns
     -------
-    vtot : ndarray
+    ndarray
         Total visibility.
-    vstd : ndarray
-        Visibility variation.
-    vsum : ndarray
-        Visibility vector resultant.
 
     """
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
     w2 = int(np.floor(wsize / 2))
     vtot = np.zeros_like(data)
-
-    # mask = np.ma.getmaskarray(data)
-    # mean = data.mean()
-    # data = data.data
-    # data[mask] = mean
 
     for j in range(nc):  # Columns
         for i in range(w2, nr - w2):
@@ -592,11 +581,7 @@ def visibilitytot(
             vtot[i, j] += __visible1(dtmp, wsize, w2 + 1, dh)
             vtot[i, j] += __visible2(dtmp, w2 + 1, dh)
 
-    # vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2 : nr - w2, w2 : nc - w2]
-
-    # vtot = np.ma.array(vtot)
-    # vtot.mask = mask[w2:-w2, w2:-w2]
 
     return vtot
 

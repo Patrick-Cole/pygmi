@@ -804,7 +804,7 @@ def calcfeatures(
     ratio: dict[str, str],
     product: dict[str, list[str]],
     *,
-    cryst: dict | None = None,
+    cryst: list | None = None,
     rfilt: bool = True,
     piter: Iterable = iter,
     showlog: Callable[..., None] = print,
@@ -1020,7 +1020,7 @@ def calcfeatures(
     return datfin
 
 
-def indexcalc(formula: str, dat: dict[str, NDArray]) -> NDArray:
+def indexcalc(formula: str, dat: dict[str, NDArray]) -> NDArray | np.ma.MaskedArray:
     """
     Calculate an index using numexpr.
 
@@ -1033,7 +1033,7 @@ def indexcalc(formula: str, dat: dict[str, NDArray]) -> NDArray:
 
     Returns
     -------
-    out : ndarray
+    out : ndarray or MaskedArray
         This can be a masked array.
 
     """
@@ -1337,7 +1337,7 @@ def phull(y: NDArray) -> NDArray:
     return out
 
 
-def readsli(ifile: str) -> dict[str, NDArray]:
+def readsli(ifile: str) -> dict[str, NDArray] | None:
     """
     Read an ENVI sli file.
 

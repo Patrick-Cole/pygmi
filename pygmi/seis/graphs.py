@@ -1378,9 +1378,8 @@ def eigsorted(cov: NDArray) -> tuple[NDArray, NDArray]:
 def bvalue(
     data1a: NDArray,
     mbin: float = 0.1,
-    bins: int | str = "doane",
     cmax: float | None = None,
-) -> dict:
+) -> dict | None:
     """
     Update the b value plot.
 
@@ -1390,9 +1389,6 @@ def bvalue(
         Data array.
     mbin
         Magnitude range bin size. The default is 0.1
-    bins
-        Number of bins or binning strategy. See matplotlib.pyplot.hist.
-        The default is 'doane'.
     cmax
         Magnitude of completeness. The default is None
 
@@ -1480,7 +1476,6 @@ def bvalue(
 def b_mle(
     data1a: NDArray,
     mbin: float = 0.1,
-    bins: int | str = "doane",
     cmax: float | None = None,
 ) -> dict:
     """
@@ -1492,9 +1487,6 @@ def b_mle(
         Data array.
     mbin
         Magnitude range bin size. The default is 0.1
-    bins
-        Number of bins or binning strategy. See matplotlib.pyplot.hist.
-        The default is 'doane'.
     cmax
         Magnitude of completeness. The default is None
 

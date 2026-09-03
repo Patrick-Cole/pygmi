@@ -412,13 +412,13 @@ class BeachBall(BasicModule):
 
 def beachball(
     fm: NDArray,
-    centerx: float,
-    centery: float,
-    diam: float,
+    icenterx: float,
+    icentery: float,
+    idiam: float,
     isgeog: bool,
     *,
     showlog: Callable[..., None] = print,
-) -> tuple[NDArray, NDArray, NDArray, NDArray]:
+) -> tuple[NDArray, NDArray, NDArray | None, NDArray | None] | None:
     """
     Beachball.
 
@@ -443,11 +443,11 @@ def beachball(
         (thrust), 0 moves it in the strike direction (left-lateral), -90 moves
         it down-dip (normal), and 180 moves it opposite to strike
         (right-lateral).
-    centerx
+    icenterx
         place beachball(s) at position centerx
-    centery
+    icentery
         place beachball(s) at position centery
-    diam
+    idiam
         draw beachball with this diameter.
     isgeog
         True if in geographic coordinates, False otherwise.
@@ -466,9 +466,9 @@ def beachball(
         array of y coordinates for vertices
     """
     fm = np.array(fm)
-    diam = np.array([diam])
-    centerx = np.array([centerx])
-    centery = np.array([centery])
+    diam = np.array([idiam])
+    centerx = np.array([icenterx])
+    centery = np.array([icentery])
 
     if fm.ndim == 1:
         ne1 = 1
@@ -784,7 +784,7 @@ def mij2sdr(
     return strike, dip, rake
 
 
-def TDL(AN: NDArray, BN: NDArray) -> tuple[float, float, float]:
+def TDL(AN: NDArray, BN: NDArray) -> tuple[float, float, float] | None:
     """
     TDL.
 

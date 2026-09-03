@@ -648,7 +648,7 @@ class ImportXYZ(BasicModule):
         self.saveobj(self.cmb_ychan)
         self.saveobj(self.le_nodata)
 
-    def get_GXYZ(self) -> pd.DataFrame:
+    def get_GXYZ(self) -> pd.DataFrame | None:
         """
         Get Geosoft XYZ.
 
@@ -662,7 +662,7 @@ class ImportXYZ(BasicModule):
 
         return df
 
-    def get_delimited(self, delimiter: str = ",") -> pd.DataFrame:
+    def get_delimited(self, delimiter: str = ",") -> pd.DataFrame | None:
         """
         Get a delimited file.
 
@@ -1077,7 +1077,7 @@ def export_ubc(ofile: str, data: VoxModel):
 
 def get_GXYZ(
     ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
-) -> pd.DataFrame:
+) -> pd.DataFrame | None:
     """
     Get Geosoft XYZ.
 
@@ -1175,7 +1175,7 @@ def get_GXYZ(
 
 def get_intrepid(
     ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
-) -> pd.DataFrame:
+) -> pd.DataFrame | None:
     """
     Get Intrepid Database.
 

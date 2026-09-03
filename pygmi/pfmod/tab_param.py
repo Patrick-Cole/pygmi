@@ -29,6 +29,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi import menu_default
 from pygmi.pfmod import grvmag3d, misc
+from pygmi.pfmod.datatypes import LithModel
 
 
 class MergeLith(QtWidgets.QDialog):
@@ -398,17 +399,17 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
 
-    def add_defs(self, deftxt="", getcol=False, lmod=None):
+    def add_defs(self, deftxt: str = "", getcol: bool = False, lmod: LithModel = None):
         """
         Add geophysical definitions and make them editable.
 
         Parameters
         ----------
-        deftxt : str, optional
+        deftxt
             Definition text. The default is ''.
-        getcol : bool, optional
+        getcol
             Get column. The default is False.
-        lmod : LithModel, optional
+        lmod
             3D model. The default is None.
 
         """
@@ -565,7 +566,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
         self.dsb_qratio.valueChanged.connect(self.change_qratio)
 
-    def change_defs(self, item):
+    def change_defs(self, item: QtWidgets.QListWidget):
         """
         Change geophysical definitions.
 
@@ -732,15 +733,15 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.change_defs(self.lw_param_defs.currentItem())
 
-    def set_lw_colors(self, lwidget, lmod=None):
+    def set_lw_colors(self, lwidget: QtWidgets.QListWidget, lmod: LithModel = None):
         """
         Set list widget colors.
 
         Parameters
         ----------
-        lwidget : QListWidget
-            Lithology list widget..
-        lmod : LithModel, optional
+        lwidget
+            Lithology list widget.
+        lmod
             3D Model. The default is None.
 
         """
