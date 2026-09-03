@@ -115,12 +115,12 @@ def check_dataid(out: list[Data]) -> list[Data]:
 
 
 def currentshader(
-    data: NDArray,
+    data: NDArray | np.ma.MaskedArray,
     cell: float = 1.0,
     theta: float = np.pi / 4.0,
     phi: float = -np.pi / 4.0,
     alpha: float = 1.0,
-) -> NDArray:
+) -> np.ma.MaskedArray:
     """
     Blinn shader - used for sun shading.
 
@@ -139,7 +139,7 @@ def currentshader(
 
     Returns
     -------
-    ndarray
+    MaskedArray
         array containing the shaded results.
     """
     if np.ma.is_masked(data):

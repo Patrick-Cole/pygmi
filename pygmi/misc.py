@@ -911,7 +911,9 @@ def check_for_updates() -> str:
     return verpath
 
 
-def discrete_colorbar(axes: Axes, csp, cdat: NDArray, lbls: list[str] | None = None):
+def discrete_colorbar(
+    axes: Axes, csp, cdat: np.ma.MaskedArray | NDArray, lbls: list[str] | None = None
+):
     """
     Plot colour bar using discrete colours for a small range of values.
 

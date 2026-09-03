@@ -334,7 +334,7 @@ def mov_win_filt(
     sigma: int = 5,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> NDArray | None:
+) -> np.ma.MaskedArray | None:
     """
     Apply moving window filter function to data.
 
@@ -361,7 +361,7 @@ def mov_win_filt(
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Data for a PyGMI raster dataset.
 
     """

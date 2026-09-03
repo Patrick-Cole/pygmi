@@ -485,7 +485,7 @@ class PlotAnaglyph(ContextModule):
 
 
 def sunshade(
-    data: NDArray,
+    data: np.ma.MaskedArray,
     *,
     azim: float = -np.pi / 4.0,
     elev: float = np.pi / 4.0,

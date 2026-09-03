@@ -567,7 +567,9 @@ class RasterMeta:
 
 
 def numpy_to_pygmi(
-    data: NDArray, pdata: Data | None = None, dataid: str | None = None
+    data: NDArray | np.ma.MaskedArray,
+    pdata: Data | None = None,
+    dataid: str | None = None,
 ) -> Data | None:
     """
     Convert an MxN numpy array into a PyGMI data object.

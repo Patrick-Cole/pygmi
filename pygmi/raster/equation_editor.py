@@ -28,7 +28,6 @@ from collections.abc import Callable, Iterable
 
 import numexpr as ne
 import numpy as np
-from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
@@ -412,7 +411,7 @@ def hmode(data: list[float]) -> float:
     return mode2
 
 
-def mosaic(eq: str, localdict: dict) -> NDArray | None:
+def mosaic(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
     """
     Mosaics data into a single band dataset.
 
@@ -425,7 +424,7 @@ def mosaic(eq: str, localdict: dict) -> NDArray | None:
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Output array.
 
     """
@@ -473,7 +472,7 @@ def mosaic(eq: str, localdict: dict) -> NDArray | None:
     return master
 
 
-def mean(eq: str, localdict: dict) -> NDArray:
+def mean(eq: str, localdict: dict) -> np.ma.MaskedArray:
     """
     Get mean pixel value of all input bands.
 
@@ -486,7 +485,7 @@ def mean(eq: str, localdict: dict) -> NDArray:
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Output array.
 
     """
@@ -519,7 +518,7 @@ def mean(eq: str, localdict: dict) -> NDArray:
     return findat
 
 
-def detrend(eq: str, localdict: dict) -> NDArray | None:
+def detrend(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
     """
     Get mean pixel value of all input bands.
 
@@ -532,7 +531,7 @@ def detrend(eq: str, localdict: dict) -> NDArray | None:
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Output array.
 
     """
@@ -585,7 +584,7 @@ def detrend(eq: str, localdict: dict) -> NDArray | None:
     return findat
 
 
-def std(eq: str, localdict: dict) -> NDArray:
+def std(eq: str, localdict: dict) -> np.ma.MaskedArray:
     """
     Get standard deviation pixel value of all input bands.
 
@@ -598,7 +597,7 @@ def std(eq: str, localdict: dict) -> NDArray:
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Output array.
 
     """
@@ -653,10 +652,10 @@ def _test():
 
     EE.settings()
 
-    out = EE.outdata["Raster"]
+    _out = EE.outdata["Raster"]
 
     # plt.figure(dpi=300)
-    # plt.imshow(out[0].data)
+    # plt.imshow(_out[0].data)
     # plt.show()
 
 

@@ -38,7 +38,6 @@ from collections.abc import Callable, Iterable
 from subprocess import PIPE, Popen
 
 import numpy as np
-from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
@@ -382,7 +381,7 @@ def c_correction(
     *,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-) -> list[NDArray]:
+) -> list[np.ma.MaskedArray]:
     """
     Calculate C correction.
 
@@ -403,7 +402,7 @@ def c_correction(
 
     Returns
     -------
-    list of ndarray
+    list of MaskedArray
         List of c-corrected data arrays.
 
     """

@@ -408,8 +408,8 @@ class Visibility2d(BasicModule):
 
 
 def visibility2d(
-    data: NDArray, wsize: int, dh: float, piter: Iterable = iter
-) -> tuple[NDArray, NDArray, NDArray]:
+    idata: np.ma.MaskedArray, wsize: int, dh: float, piter: Iterable = iter
+) -> tuple[np.ma.MaskedArray, np.ma.MaskedArray, np.ma.MaskedArray]:
     """
     Compute visibility as a textural measure.
 
@@ -429,39 +429,30 @@ def visibility2d(
 
     Returns
     -------
-    vtot : ndarray
+    vtot : MaskedArray
         Total visibility.
-    vstd : ndarray
+    vstd : MaskedArray
         Visibility variation.
-    vsum : ndarray
+    vsum : MaskedArray
         Visibility vector resultant.
 
     """
-    nr, nc = np.shape(data)
+    nr, nc = np.shape(idata)
     wsize = abs(np.real(wsize))
     w2 = int(np.floor(wsize / 2))
-    vn = np.zeros_like(data)
-    vs = np.zeros_like(data)
-    ve = np.zeros_like(data)
-    vw = np.zeros_like(data)
-    vd1 = np.zeros_like(data)
-    vd2 = np.zeros_like(data)
-    vd3 = np.zeros_like(data)
-    vd4 = np.zeros_like(data)
-    # vstd = np.zeros_like(data)
+    vn = np.zeros_like(idata)
+    vs = np.zeros_like(idata)
+    ve = np.zeros_like(idata)
+    vw = np.zeros_like(idata)
+    vd1 = np.zeros_like(idata)
+    vd2 = np.zeros_like(idata)
+    vd3 = np.zeros_like(idata)
+    vd4 = np.zeros_like(idata)
 
-    # vn = np.zeros([nr, nc])
-    # vs = np.zeros([nr, nc])
-    # ve = np.zeros([nr, nc])
-    # vw = np.zeros([nr, nc])
-    # vd1 = np.zeros([nr, nc])
-    # vd2 = np.zeros([nr, nc])
-    # vd3 = np.zeros([nr, nc])
-    # vd4 = np.zeros([nr, nc])
     vstd = np.zeros([nr, nc])
-    mask = np.ma.getmaskarray(data)
-    mean = data.mean()
-    data = data.filled()
+    mask = np.ma.getmaskarray(idata)
+    mean = idata.mean()
+    data = idata.filled()
     data[mask] = mean
 
     for j in piter(range(nc)):  # Columns
@@ -786,18 +777,18 @@ class AGC(BasicModule):
 
 
 def agc(
-    data: NDArray,
+    idata: np.ma.MaskedArray,
     wsize: int,
     atype: str = "mean",
     nodata: float = 0.0,
     piter: Iterable = iter,
-) -> NDArray:
+) -> np.ma.MaskedArray:
     """
     AGC for map data, based on code by Gordon Cooper.
 
     Parameters
     ----------
-    data
+    idata
         Raster data.
     wsize
         Window size, must be odd.
@@ -810,10 +801,10 @@ def agc(
 
     Returns
     -------
-    ndarray
+    MaskedArray
         Output AGC data
     """
-    data = data.copy() - data.min()
+    data = idata.copy() - idata.min()
     data = np.abs(data)
     data = data.astype(float)
     nr, nc = data.shape

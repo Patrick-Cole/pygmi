@@ -1020,7 +1020,9 @@ def calcfeatures(
     return datfin
 
 
-def indexcalc(formula: str, dat: dict[str, NDArray]) -> NDArray | np.ma.MaskedArray:
+def indexcalc(
+    formula: str, dat: dict[str, NDArray | np.ma.MaskedArray]
+) -> NDArray | np.ma.MaskedArray:
     """
     Calculate an index using numexpr.
 
