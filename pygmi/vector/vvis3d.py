@@ -120,9 +120,8 @@ class Mod3dDisplay(ContextModule):
         """
         Initialise Data.
 
-        Entry point into routine. This entry point exists for
-        the case  where data must be initialised before entering at the
-        standard 'settings' sub module.
+        Entry point into routine. This entry point exists for the case where data
+        must be initialised before entering at the standard 'settings' sub module.
         """
         self.outdata = self.indata
 

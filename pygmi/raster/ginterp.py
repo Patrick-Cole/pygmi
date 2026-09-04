@@ -84,53 +84,53 @@ class MyMplCanvas(FigureCanvasQTAgg):
     Attributes
     ----------
     htype : str
-        string indicating the histogram stretch to apply to the data
+        String indicating the histogram stretch to apply to the data
     cbar : matplotlib colour map
-        colour map to be used for pseudo colour bars
+        Colour map to be used for pseudo colour bars
     data : list of Data
-        list of PyGMI raster data objects - used for colour images
+        List of PyGMI raster data objects - used for colour images
     sdata : list of Data
-        list of PyGMI raster data objects - used for shaded images
+        List of PyGMI raster data objects - used for shaded images
     gmode : str
-        string containing the graphics mode - Contour, Ternary, Sunshade,
+        String containing the graphics mode - Contour, Ternary, Sunshade,
         Single Colour Map.
     argb : list
-        list of matplotlib subplots. There are up to three.
+        List of matplotlib subplots. There are up to three.
     hhist : list
-        matplotlib hist associated with argb
+        Matplotlib hist associated with argb
     hband: list
-        list of strings containing the band names to be used.
+        List of strings containing the band names to be used.
     htxt : list
-        list of strings associated with hhist, denoting a raster value (where
+        List of strings associated with hhist, denoting a raster value (where
         mouse is currently hovering over on image)
     image : imshow
-        imshow instance - this is the primary way of displaying an image.
+        Imshow instance - this is the primary way of displaying an image.
     cnt : matplotlib contour
-        contour instance - used for the contour image
+        Contour instance - used for the contour image
     cntf : matplotlib contourf
-        contourf instance - used for the contour image
+        Contourf instance - used for the contour image
     background : matplotlib bounding box
-        image bounding box - used in blitting
+        Image bounding box - used in blitting
     bbox_hist_red :  matplotlib bounding box
-        red histogram bounding box
+        Red histogram bounding box
     bbox_hist_green :  matplotlib bounding box
-        green histogram bounding box
+        Green histogram bounding box
     bbox_hist_blue :  matplotlib bounding box
-        blue histogram bounding box
+        Blue histogram bounding box
     axes : matplotlib axes
-        axes for the plot
+        Axes for the plot
     pinit : numpy array
-        calculated with aspect - used in sunshading
+        Calculated with aspect - used in sunshading
     qinit : numpy array
-        calculated with aspect - used in sunshading
+        Calculated with aspect - used in sunshading
     phi : float
-        azimuth (sunshading)
+        Azimuth (sunshading)
     theta : float
-        sun elevation (sunshading)
+        Sun elevation (sunshading)
     cell : float
         between 1 and 100 - controls sunshade detail.
     alpha : float
-        how much incident light is reflected (0 to 1)
+        How much incident light is reflected (0 to 1)
     kval : float
         k value for CMYK mode
     """
@@ -412,7 +412,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Returns
         -------
         list
-            list of bin numbers.
+            List of bin numbers.
 
         """
         hcol = ["r", "g", "b"]
@@ -838,9 +838,9 @@ class PlotInterp(BasicModule):
     Attributes
     ----------
     self.mmc : MyMplCanvas
-        main canvas containing the image
+        Main canvas containing the image.
     self.msc : MySunCanvas
-        small canvas containing the sunshading control
+        Small canvas containing the sunshading control.
     """
 
     def __init__(self, parent=None):
@@ -1351,9 +1351,8 @@ class PlotInterp(BasicModule):
         """
         Initialise Data.
 
-        Entry point into routine. This entry point exists for
-        the case  where data must be initialised before entering at the
-        standard 'settings' sub module.
+        Entry point into routine. This entry point exists for the case where data must
+        be initialised before entering at the standard 'settings' sub module.
 
         """
         if "Cluster" in self.indata:
@@ -1660,8 +1659,6 @@ class PlotInterp(BasicModule):
 
         for i in range(3):
             self.mmc.argb[i].set_visible(False)
-
-        # fig.tight_layout()
 
         fig.savefig(filename, bbox_inches="tight", pad_inches="layout", dpi=300)
         self.change_dtype()

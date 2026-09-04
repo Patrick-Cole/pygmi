@@ -40,16 +40,19 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colormaps
+from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.maggrv.dataprep import rtp
 from pygmi.maps import frm, set_axes, set_northscale
 from pygmi.misc import BasicModule, ProgressBar, ProgressBarText
 from pygmi.raster.dataprep import verticalp
+from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import lstack
 
 
@@ -62,10 +65,6 @@ class TiltDepth(BasicModule):
     parent
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    self.mmc : FigureCanvas
-        main canvas containing the image
     """
 
     def __init__(self, parent=None):
@@ -161,10 +160,7 @@ class TiltDepth(BasicModule):
         self.cb_rtp.clicked.connect(self.rtp_choice)
 
     def rtp_choice(self):
-        """
-        Check if RTP must be done.
-
-        """
+        """Check if RTP must be done."""
         if self.cb_rtp.isChecked():
             self.dsb_inc.setEnabled(True)
             self.dsb_dec.setEnabled(True)
@@ -172,7 +168,7 @@ class TiltDepth(BasicModule):
             self.dsb_inc.setEnabled(False)
             self.dsb_dec.setEnabled(False)
 
-    def save_depths(self):
+    def save_depths(self) -> bool:
         """
         Save depths.
 
@@ -201,10 +197,7 @@ class TiltDepth(BasicModule):
         return True
 
     def change_cbar(self):
-        """
-        Change the colour map for the colour bar.
-
-        """
+        """Change the colour map for the colour bar."""
         txt = str(self.cmb_band1.currentText())
 
         zout = self.indata["Raster"][0]
@@ -249,11 +242,7 @@ class TiltDepth(BasicModule):
         self.figure.canvas.draw()
 
     def calculate(self):
-        """
-        Routine which occurs when apply button is pressed.
-
-        """
-
+        """Routine which occurs when apply button is pressed."""
         self.btn_apply.setText("Calculating...")
         self.btn_apply.setEnabled(False)
 
@@ -285,7 +274,7 @@ class TiltDepth(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -326,8 +315,12 @@ class TiltDepth(BasicModule):
 
 
 def tiltdepth(
-    data, inc=None, dec=None, pbar=None, showlog: Callable[..., None] = print
-):
+    data: Data,
+    inc: float | None = None,
+    dec: float | None = None,
+    pbar: object | None = None,
+    showlog: Callable[..., None] = print,
+) -> gpd.GeoDataFrame:
     """
     Calculate tilt depth.
 
@@ -335,20 +328,20 @@ def tiltdepth(
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         PyGMI raster dataset.
-    inc : float
+    inc
         Magnetic inclination, by default None.
-    dec : float
+    dec
         Magnetic declination, by default None.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    gdf : GeoDataFrame
+    GeoDataFrame
         Resulting depths and coordinates.
 
     """
@@ -447,26 +440,26 @@ def tiltdepth(
 
 
 @jit(nopython=True)
-def distpc(dx, dy, dx0, dy0, dcnt):
+def distpc(dx: NDArray, dy: NDArray, dx0: float, dy0: float, dcnt: int) -> int:
     """
     Find closest distances.
 
     Parameters
     ----------
-    dx : numpy array
+    dx
         X array.
-    dy : numpy array
+    dy
         Y array.
-    dx0 : float
+    dx0
         X point to measure distance from.
-    dy0 : float
+    dy0
         Y point to measure distance from.
-    dcnt : int
+    dcnt
         Starting index to measure distance from.
 
     Returns
     -------
-    dcnt : int
+    int
         Index of closest distance found in x and y arrays.
 
     """
@@ -482,24 +475,24 @@ def distpc(dx, dy, dx0, dy0, dcnt):
     return dcnt
 
 
-def vgrad(cnt):
+def vgrad(cnt: Axes.contour) -> tuple[NDArray, NDArray, NDArray, NDArray]:
     """
     Get contour gradients at vertices.
 
     Parameters
     ----------
-    cnt : axes.contour
+    cnt
         Output from Matplotlib's axes.contour.
 
     Returns
     -------
-    gx : numpy array
+    gx : ndarray
         X gradients.
-    gy : numpy array
+    gy : ndarray
         Y gradients.
-    cgrad : numpy array
+    cgrad : ndarray
         Contour gradient.
-    cntid : numpy array
+    cntid : ndarray
         Contour index.
 
     """

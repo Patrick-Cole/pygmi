@@ -25,9 +25,11 @@
 """A set of Magnetic Data routines."""
 
 import math
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
+from numba import njit, prange
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from scipy import signal
 
@@ -69,7 +71,7 @@ class ASig(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -111,7 +113,9 @@ class ASig(BasicModule):
         self.saveobj(self.sb_k)
 
 
-def asig(data1, showlog: Callable[..., None] = print, piter=iter):
+def asig(
+    data1: Data, showlog: Callable[..., None] = print, piter: Iterable = iter
+) -> np.ma.MaskedArray:
     """
     Tilt angle calculations.
 
@@ -120,16 +124,16 @@ def asig(data1, showlog: Callable[..., None] = print, piter=iter):
 
     Parameters
     ----------
-    data1 : pygmi.raster.datatypes.Data
-        data with matrix of double to be filtered
-    showlog : function, optional
+    data1
+        PyGMI data with matrix of double to be filtered.
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    asig1 : numpy masked array
+    MaskedArray
         Analytic signal
     """
     data = data1.data
@@ -198,7 +202,7 @@ class Continuation(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -255,24 +259,26 @@ class Continuation(BasicModule):
         self.outdata["Raster"] = [dat]
 
 
-def fftcont(data, h, showlog: Callable[..., None] = print, piter=iter):
+def fftcont(
+    data: Data, h: float, showlog: Callable[..., None] = print, piter: Iterable = iter
+) -> Data:
     """
     Continuation.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         PyGMI raster data.
-    h : float
+    h
         Height.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
+    Data
         PyGMI raster data.
 
     """
@@ -302,24 +308,26 @@ def fftcont(data, h, showlog: Callable[..., None] = print, piter=iter):
     return dat
 
 
-def taylorcont(data, h, showlog: Callable[..., None] = print, piter=iter):
+def taylorcont(
+    data: Data, h: float, showlog: Callable[..., None] = print, piter: Iterable = iter
+) -> Data:
     """
     Taylor Continuation.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         PyGMI raster data.
-    h : float
+    h
         Height.
-    showlog : function, optional
+    showlog
         Function for printing text. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterable. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
+    Data
         PyGMI raster data.
 
     """
@@ -352,12 +360,6 @@ class Tilt1(BasicModule):
     parent
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    azi : float
-        directional filter azimuth in degrees from East
-    smooth : int
-        size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
 
     def __init__(self, parent=None):
@@ -411,7 +413,7 @@ class Tilt1(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -477,7 +479,22 @@ class Tilt1(BasicModule):
         self.saveobj(self.sb_k)
 
 
-def tilt1(data1, azi, s, k=2, showlog: Callable[..., None] = print, piter=iter):
+def tilt1(
+    data1: Data,
+    azi: float,
+    s: int,
+    k: int = 2,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> tuple[
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+    np.ma.MaskedArray,
+]:
     """
     Tilt angle calculations.
 
@@ -486,34 +503,34 @@ def tilt1(data1, azi, s, k=2, showlog: Callable[..., None] = print, piter=iter):
 
     Parameters
     ----------
-    data1 : pygmi.raster.datatypes.Data
+    data1
         data with matrix of double to be filtered
-    azi : float
+    azi
         directional filter azimuth in degrees from East
-    s : int
+    s
         size of smoothing matrix to use - must be odd input 0 for no smoothing
-    k : int
+    k
         Factor for EHGA filter. Must be > 0. Optional.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    t1 : numpy masked array
+    t1 : MaskedArray
         Standard tilt angle
-    th : numpy masked array
+    th : MaskedArray
         Hyperbolic tilt angle
-    t2 : numpy masked array
+    t2 : MaskedArray
         Second order tilt angle
-    ta : numpy masked array
+    ta : MaskedArray
         Tilt Based Directional Derivative
-    tdx : numpy masked array
+    tdx : MaskedArray
         Total Derivative
-    tahg : numpy masked array
+    tahg : MaskedArray
         Tilt Angle of the Horizontal Gradient
-    ehga : numpy masked array
+    ehga : MaskedArray
         Enhanced Horizontal Gradient Amplitude
     """
     data = data1.data
@@ -587,7 +604,7 @@ def tilt1(data1, azi, s, k=2, showlog: Callable[..., None] = print, piter=iter):
     return t1, th, t2, ta, tdx, tahg, ehga
 
 
-def nextpow2(n):
+def nextpow2(n: float | NDArray) -> float | NDArray:
     """
     Next power of 2.
 
@@ -596,13 +613,13 @@ def nextpow2(n):
 
     Parameters
     ----------
-    n : float or numpy array
+    n
         Current value.
 
     Returns
     -------
-    m_i : float or numpy array
-        Output.
+    float or ndarray
+        Next power of 2 output.
 
     """
     m_i = np.ceil(np.log2(np.abs(n)))
@@ -671,7 +688,7 @@ class RTP(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -727,28 +744,35 @@ class RTP(BasicModule):
         self.outdata["Raster"] = newdat
 
 
-def rtp(data, I_deg, D_deg, Ia=20, showlog: Callable[..., None] = print, piter=iter):
+def rtp(
+    data: Data,
+    I_deg: float,
+    D_deg: float,
+    Ia: float = 20,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
+) -> Data:
     """
     Reduction to the pole.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         PyGMI raster data.
-    I_deg : float
+    I_deg
         Magnetic inclination.
-    D_deg : float
+    D_deg
         Magnetic declination.
-    Ia : float
+    Ia
         Amplitude correction inclination Ia in degree. The default is 20.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    dat : pygmi.raster.datatypes.Data
+    Data
         PyGMI raster data.
 
     """
@@ -789,45 +813,76 @@ def rtp(data, I_deg, D_deg, Ia=20, showlog: Callable[..., None] = print, piter=i
     return dat
 
 
-def gradient2D(daty, datx):
+@njit(parallel=True, cache=True)
+def mlv_filter(image: NDArray, win_size: int = 5) -> NDArray:
     """
-    Perform 2D gradient where spacing is inconsistent in 2D.
+    Apply a 2D Mean of Least Variance (MLV) Edge Preserving Filter.
 
     Parameters
     ----------
-    daty : numpy array
-        _description_
-    datx : numpy array
-        _description_
+    image
+        2D grayscale input image (float32 or float64).
+    win_size
+        Size of the square window (must be an odd integer), by default 5
 
     Returns
     -------
-    dx : numpy array
-        output gradient array
+    ndarray
+        Filtered 2D image.
     """
-    rows, _ = daty.data.shape
+    rows, cols = image.shape
+    output = image.copy()
+    h = win_size // 2  # Half-window size
 
-    dx = daty.copy()
-    for i in range(rows):
-        mask = daty[i].mask
-        tmpy = daty[i].compressed()
-        if tmpy.size == 0:
-            continue
-        elif tmpy.size == 1:
-            dx[i][~mask] = 0
-            continue
-        tmpx = datx[i][~mask]
-        dx[i][~mask] = np.gradient(tmpy, tmpx)
+    # Pre-calculate relative quadrant boundaries to avoid list creation in loops
+    # Format: (row_start, row_end, col_start, col_end) relative to center pixel
+    quad_offsets = np.array(
+        [
+            [-h, 0, -h, 0],  # Top-Left
+            [-h, 0, 0, h],  # Top-Right
+            [0, h, -h, 0],  # Bottom-Left
+            [0, h, 0, h],  # Bottom-Right
+        ],
+        dtype=np.int32,
+    )
 
-    # dx = np.ma.array(dx)
+    # Parallel outer loop for maximum performance on multi-core CPUs
+    for r in prange(h, rows - h):
+        for c in range(h, cols - h):
+            min_variance = 1e15
+            best_mean = image[r, c]
 
-    # for i in range(cols):
-    #     dy.append(np.gradient(daty.data[:, i], datx[:, i]))
+            # Evaluate each of the 4 overlapping sub-windows (quadrants)
+            for q in range(4):
+                r_start_off = quad_offsets[q, 0]
+                r_end_off = quad_offsets[q, 1]
+                c_start_off = quad_offsets[q, 2]
+                c_end_off = quad_offsets[q, 3]
 
-    # dy = np.ma.masked_invalid(dy)
+                sum_val = 0.0
+                sum_sq_val = 0.0
+                count = 0
 
-    # return dx, dy
-    return dx
+                # Iterate through pixels in the current quadrant
+                for dr in range(r_start_off, r_end_off + 1):
+                    for dc in range(c_start_off, c_end_off + 1):
+                        pixel_val = image[r + dr, c + dc]
+                        sum_val += pixel_val
+                        sum_sq_val += pixel_val * pixel_val
+                        count += 1
+
+                # Calculate statistical mean and variance
+                mean = sum_val / count
+                variance = (sum_sq_val / count) - (mean * mean)
+
+                # Select the mean of the region with the most uniform texture (least variance)
+                if variance < min_variance:
+                    min_variance = variance
+                    best_mean = mean
+
+            output[r, c] = best_mean
+
+    return output
 
 
 def _testfn_rtp():
@@ -865,7 +920,7 @@ def _testfn_rtp():
 
 
 def _testfn():
-    """Testing routine."""
+    """Test routine."""
     import matplotlib.pyplot as plt
 
     from pygmi.raster.iodefs import get_raster

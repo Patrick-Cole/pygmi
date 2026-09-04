@@ -32,10 +32,12 @@ import sys
 from contextlib import redirect_stdout
 
 import numpy as np
+from matplotlib.backend_bases import MouseEvent, PickEvent, ResizeEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.misc import BasicModule, ContextModule
@@ -54,12 +56,11 @@ class Metadata(ContextModule):
 
     This class allows the editing of the metadata for MT data using a GUI.
 
-    Attributes
+    Parameters
     ----------
-    banddata : dictionary
-        band data
-    bandid : dictionary
-        dictionary of strings containing band names.
+    parent
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -137,18 +138,12 @@ class Metadata(ContextModule):
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
-        """
-        Accept option. Updates self.indata.
-
-        """
+        """Accept option. Updates self.indata."""
         self.update_vals()
         self.indata["MT - EDI"] = self.banddata
 
     def rename_id(self):
-        """
-        Rename station name.
-
-        """
+        """Rename station name."""
         ctxt = str(self.cmb_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent,
@@ -169,10 +164,7 @@ class Metadata(ContextModule):
             self.cmb_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
-        """
-        Update the values on the interface.
-
-        """
+        """Update the values on the interface."""
         odata = self.banddata[self.oldtxt]
 
         odata.lat = float(self.le_lat.text())
@@ -265,18 +257,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure(layout="tight")
         super().__init__(fig)
 
-    def update_line(self, data, ival, itype):
+    def update_line(self, data: dict, ival: str, itype: str):
         """
         Update the plot from point data.
 
         Parameters
         ----------
-        data : EDI data object
-            EDI data.
-        ival : str
-            dictionary key.
-        itype : str
-            dictionary key.
+        data
+            Dictionary of EDI data.
+        ival
+            EDI data dictionary key.
+        itype
+            Graph type.
 
         """
         data1 = data[ival]
@@ -466,10 +458,7 @@ class StaticShiftEDI(BasicModule):
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
-        """
-        Apply static shift.
-
-        """
+        """Apply static shift."""
         ssx = self.dsb_shiftx.value()
         ssy = self.dsb_shifty.value()
 
@@ -483,10 +472,7 @@ class StaticShiftEDI(BasicModule):
         self.change_band()
 
     def reset_data(self):
-        """
-        Reset data.
-
-        """
+        """Reset data."""
         i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
@@ -497,10 +483,7 @@ class StaticShiftEDI(BasicModule):
         self.change_band()
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -511,7 +494,7 @@ class StaticShiftEDI(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -622,10 +605,7 @@ class RotateEDI(BasicModule):
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
-        """
-        Apply rotation to data.
-
-        """
+        """Apply rotation to data."""
         rotZ = self.dsb_rotangle.value()
 
         if self.cb_applyall.isChecked():
@@ -640,10 +620,7 @@ class RotateEDI(BasicModule):
         self.change_band()
 
     def reset_data(self):
-        """
-        Reset data.
-
-        """
+        """Reset data."""
         i = self.cmb_1.currentText()
 
         if self.cb_applyall.isChecked():
@@ -656,10 +633,7 @@ class RotateEDI(BasicModule):
         self.change_band()
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -670,7 +644,7 @@ class RotateEDI(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -744,13 +718,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         )
         self.figure.canvas.mpl_connect("resize_event", self.revent)
 
-    def button_press_callback(self, event):
+    def button_press_callback(self, event: MouseEvent):
         """
         Mouse button release callback.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -760,13 +734,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def button_release_callback(self, event):
+    def button_release_callback(self, event: MouseEvent):
         """
         Mouse button release callback.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -776,13 +750,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def motion_notify_callback(self, event):
+    def motion_notify_callback(self, event: MouseEvent):
         """
         Move mouse callback.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -817,13 +791,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def onpick(self, event):
+    def onpick(self, event: PickEvent):
         """
         Picker event.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         Returns
@@ -844,13 +818,13 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         return True
 
-    def revent(self, width):
+    def revent(self, event: ResizeEvent):
         """
         Resize event.
 
         Parameters
         ----------
-        width : event
+        event
             unused.
 
         """
@@ -858,18 +832,20 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.update_line(self.data, self.ival, self.itype)
 
-    def update_line(self, data, ival=None, itype=None):
+    def update_line(
+        self, data: dict, ival: str | None = None, itype: str | None = None
+    ):
         """
         Update the plot from point data.
 
         Parameters
         ----------
-        data : EDI data object
-            EDI data.
-        ival : str
-            dictionary key.
-        itype : str
-            dictionary key.
+        data
+            Dictionary of EDI data.
+        ival
+            EDI data dictionary key.
+        itype
+            Graph type.
 
         """
         self.ival = ival
@@ -1057,10 +1033,7 @@ class EditEDI(BasicModule):
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
-        """
-        Apply edited data.
-
-        """
+        """Apply edited data."""
         if self.mmc.maskrange is None:
             return
 
@@ -1096,19 +1069,13 @@ class EditEDI(BasicModule):
         self.change_band()
 
     def reset_data(self):
-        """
-        Reset data.
-
-        """
+        """Reset data."""
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
         self.change_band()
 
     def change_band(self):
-        """
-        Combo to choose band.
-
-        """
+        """Combo to choose band."""
         i = self.cmb_1.currentText()
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -1119,7 +1086,7 @@ class EditEDI(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1166,13 +1133,13 @@ class MySlider(QtWidgets.QSlider):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: MouseEvent):
         """
         Mouse press event.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -1183,13 +1150,13 @@ class MySlider(QtWidgets.QSlider):
             )
         )
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: MouseEvent):
         """
         Jump to pointer position while moving.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -1208,7 +1175,16 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         fig = Figure(layout="tight")
         super().__init__(fig)
 
-    def update_line(self, x, pdata, rdata, *, depths=None, res=None, title=None):
+    def update_line(
+        self,
+        x: NDArray,
+        pdata: NDArray,
+        rdata: NDArray,
+        *,
+        depths: NDArray | None = None,
+        res: NDArray | None = None,
+        title: str | None = None,
+    ):
         """
         Update the plot from data.
 
@@ -1412,10 +1388,7 @@ class Occam1D(BasicModule):
         self.hs_profnum.valueChanged.connect(self.snum)
 
     def snum(self):
-        """
-        Change solution graph.
-
-        """
+        """Change solution graph."""
         self.lbl_profnum.setText("Solution: " + str(self.hs_profnum.sliderPosition()))
         self.change_band()
 
@@ -1429,10 +1402,7 @@ class Occam1D(BasicModule):
         self.outdata["MT - EDI"] = self.data
 
     def apply(self):
-        """
-        Invert.
-
-        """
+        """Invert the data."""
         if not self.check_validation():
             return
         parm = {}
@@ -1533,13 +1503,13 @@ class Occam1D(BasicModule):
 
         self.change_band()
 
-    def get_occfile(self, filename=""):
+    def get_occfile(self, filename: str = ""):
         """
         Get Occam executable filename.
 
         Parameters
         ----------
-        filename : str, optional
+        filename
             Occam executable filename. The default is ''.
 
         """
@@ -1557,19 +1527,13 @@ class Occam1D(BasicModule):
         self.le_occfile.setText(filename)
 
     def reset_data(self):
-        """
-        Reset data.
-
-        """
+        """Reset data."""
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
         self.change_band()
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         i = self.cmb_1.currentText()
         mode = self.cmb_mode.currentText()
         n = self.hs_profnum.value()
@@ -1627,7 +1591,7 @@ class Occam1D(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1694,15 +1658,15 @@ class Occam1D(BasicModule):
         self.saveobj(self.cmb_2)
 
 
-def tonumber(test, alttext=None):
+def tonumber(test: str, alttext: str | None = None) -> str | float:
     """
     Check if something is a number or matches alttext.
 
     Parameters
     ----------
-    test : str
+    test
         Text to test.
-    alttext : str, optional
+    alttext
         Alternate text to test. The default is None.
 
     Returns

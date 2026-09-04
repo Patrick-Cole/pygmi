@@ -576,9 +576,9 @@ def fractal_dimension(
         The smallest box size, given as the power of 2 so that 2**min_box_size
         gives the side length of the smallest box. The default is 1.
     n_samples
-        number of scales to measure over. The default is 20.
+        Number of scales to measure over. The default is 20.
     n_offsets
-        number of offsets to search over to find the smallest set N(s) to
+        Number of offsets to search over to find the smallest set N(s) to
         cover all voxels>0. The default is 0.
 
     Returns

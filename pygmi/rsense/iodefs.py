@@ -724,7 +724,7 @@ class ImportSentinel5P(BasicModule):
         Returns
         -------
         DataFrame
-            geopandas dataframe.
+            GeoPandas dataframe.
 
         """
         thres = int(self.le_qathres.text())
@@ -1471,7 +1471,7 @@ def consolidate_aster_list(flist: list[str]) -> list[str]:
 
     Returns
     -------
-    list[str]
+    list of str
         List of consolidated filenames.
 
     """
@@ -1520,7 +1520,7 @@ def convert_ll_to_utm(lon: float, lat: float) -> str:
     lon
         Longitude.
     lat
-        latitude.
+        Latitude.
 
     Returns
     -------
@@ -1598,17 +1598,17 @@ def export_batch(
     odir
         Output Directory.
     filt
-        type of file to export.
+        Type of file to export.
     tnames
-        list of band names to import, in order. the default is None.
+        List of band names to import, in order. the default is None.
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     otype
-        output type of file, regular or RGB ternary (with possible sunshading)
+        Output type of file, regular or RGB ternary (with possible sunshading)
     sunfile
-        either a filename of an external file to be used for sunshading, or an
+        Either a filename of an external file to be used for sunshading, or an
         existing band name. the default is None.
     cell
         Between 1 and 100 - controls sunshade detail. The default is 25.
@@ -1769,13 +1769,13 @@ def get_data(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
     bounds
@@ -1783,8 +1783,8 @@ def get_data(
 
     Returns
     -------
-    List of Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     ifile = ifile[:]
     bfile = os.path.basename(ifile)
@@ -1905,7 +1905,7 @@ def get_from_rastermeta(
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the files. The default is False.
     bounds
@@ -1913,8 +1913,8 @@ def get_from_rastermeta(
 
     Returns
     -------
-    Data
-        list of Data
+    list of Data
+        List of Data
 
     """
     if isinstance(ldata, list):
@@ -1956,19 +1956,19 @@ def get_emit(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     ds = emit_xarray(ifile, ortho=(not metaonly))
@@ -2016,19 +2016,19 @@ def get_modisv6(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     dat = []
@@ -2152,20 +2152,20 @@ def get_landsat(
     Parameters
     ----------
     ifilet
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    Data
-        Dataset imported
+    list of Data
+        Dataset imported.
     """
     platform = os.path.basename(ifilet)[2:4]
     satbands = None
@@ -2438,19 +2438,19 @@ def get_worldview(
     Parameters
     ----------
     ifilet
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     dtree = etree_to_dict(ET.parse(ifilet).getroot())
@@ -2688,19 +2688,19 @@ def get_hyperion(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     wavelength = [
@@ -3325,19 +3325,19 @@ def get_sentinel1(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     ifile = ifile[:]
@@ -3412,13 +3412,13 @@ def get_sentinel2(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
     bounds
@@ -3426,8 +3426,8 @@ def get_sentinel2(
 
     Returns
     -------
-    List of Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     ext = os.path.splitext(ifile)[1].lower()
 
@@ -3579,19 +3579,19 @@ def get_spot(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     ifile = ifile[:]
@@ -3666,19 +3666,19 @@ def get_aster_zip(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     satbands = {
@@ -3813,20 +3813,20 @@ def get_aster_tif(
     Parameters
     ----------
     ifiles
-        filenames to import
+        Filenames to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     satbands = {
         "1": [520, 600],
@@ -4033,20 +4033,20 @@ def get_aster_hdf(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     satbands = {
         "1": [520, 600],
@@ -4249,19 +4249,19 @@ def get_aster_ged(
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
     piter
         Progress bar iterable. Default is None.
     showlog
         Routine to show text messages. The default is print.
     tnames
-        list of band names to import, in order. The default is None.
+        List of band names to import, in order. The default is None.
     metaonly
         Retrieve only the metadata for the file. The default is False.
 
     Returns
     -------
-    List of Data
+    list of Data
         Dataset imported
     """
     dat = []
@@ -4397,12 +4397,12 @@ def get_aster_ged_bin(ifile: str) -> list[Data]:
     Parameters
     ----------
     ifile
-        filename to import
+        Filename to import
 
     Returns
     -------
-    List of Data
-        dataset imported
+    list of Data
+        Dataset imported
     """
     dat = []
     nval = -9999
@@ -4545,7 +4545,7 @@ def get_ternary(
     Returns
     -------
     list of Data
-        list of PyGMI data.
+        List of PyGMI data.
 
     """
     data = lstack(dat, nodeepcopy=True, checkdataid=False, piter=piter, showlog=showlog)
@@ -4738,12 +4738,12 @@ def utm_to_south(dat: list[Data]) -> list[Data]:
     Parameters
     ----------
     dat
-        list of Data
+        List of Data
 
     Returns
     -------
     list of Data
-        list of Data
+        List of Data
 
     """
     for band in dat:

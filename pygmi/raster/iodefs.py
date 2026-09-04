@@ -907,7 +907,7 @@ def get_bil(
     piter: Iterable = iter,
     iraster: tuple[float, float, float, float] | None = None,
     interleave: str = "LINE",
-):
+) -> NDArray:
     """
     Get BIL format file.
 
@@ -935,8 +935,8 @@ def get_bil(
 
     Returns
     -------
-    datin : PyGMI raster Data
-        dataset imported
+    ndarray
+        Dataset imported
 
     """
     if iraster is not None:

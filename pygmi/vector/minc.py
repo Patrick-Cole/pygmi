@@ -518,9 +518,9 @@ def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float] | No
     Parameters
     ----------
     e5
-        x distance error.
+        X distance error.
     n5
-        y distance error.
+        Y distance error.
 
     Returns
     -------

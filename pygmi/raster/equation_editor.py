@@ -51,9 +51,9 @@ class EquationEditor(BasicModule):
     Attributes
     ----------
     equation : str
-        string with the equation in it
+        String with the equation in it
     bands : dictionary
-        dictionary of bands
+        Dictionary of bands
     """
 
     def __init__(self, parent=None):
@@ -390,12 +390,12 @@ def hmode(data: list[float]) -> float:
     Parameters
     ----------
     list
-        list of values to generate the mode from.
+        List of values to generate the mode from.
 
     Returns
     -------
     float
-        mode value.
+        Mode value.
     """
     mmin = np.min(data)
     mmax = np.max(data)

@@ -173,9 +173,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         data1
-            raster dataset to be used
+            Raster dataset to be used
         data2
-            raster dataset to be used
+            Raster dataset to be used
         xlbl
             X-axis label. The default is 'Time'.
         ylbl
@@ -251,7 +251,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         data1
-            raster dataset to be used
+            Raster dataset to be used
         xlbl
             X-axis label. The default is 'Data Value'.
         ylbl
@@ -673,7 +673,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         btot
             Array of b values.
         datetot
-            list of dates.
+            List of dates.
 
         """
         self.figure.clear()
@@ -1361,7 +1361,7 @@ def eigsorted(cov: NDArray) -> tuple[NDArray, NDArray]:
     Parameters
     ----------
     cov
-        matrix to perform calculations on.
+        Matrix to perform calculations on.
 
     Returns
     -------

@@ -25,7 +25,9 @@
 """Class for potential field modelling data types."""
 
 import numpy as np
+from numpy.typing import NDArray
 
+from pygmi.misc import ProgressBar
 from pygmi.raster.datatypes import Data
 
 
@@ -116,15 +118,15 @@ class LithModel:
         self.onumy = None
         self.onumz = None
 
-    def lithold_to_lith(self, nodtm=False, pbar=None):
+    def lithold_to_lith(self, nodtm: bool = False, pbar: ProgressBar | None = None):
         """
         Transfers an old lithology to the new one, using update parameters.
 
         Parameters
         ----------
-        nodtm : bool, optional
+        nodtm
             Flag for a DTM. The default is False.
-        pbar : pygmi.misc.ProgressBar, optional
+        pbar
             Progressbar. The default is None.
 
         """
@@ -174,7 +176,7 @@ class LithModel:
                     ) or nodtm:
                         self.lith_index[i, j, k] = self.olith_index[o_i, o_j, o_k]
 
-    def dtm_to_lith(self, pbar=None):
+    def dtm_to_lith(self, pbar: ProgressBar | None = None):
         """
         Assign the DTM to the model.
 
@@ -183,7 +185,7 @@ class LithModel:
 
         Parameters
         ----------
-        pbar : pygmi.misc.ProgressBar, optional
+        pbar
             Progressbar. The default is None.
 
         """
@@ -229,18 +231,18 @@ class LithModel:
                     k_2 = int((utlz - alt) / self.d_z)
                     self.lith_index[i, j, :k_2] = -1
 
-    def init_grid(self, data):
+    def init_grid(self, data: NDArray) -> Data:
         """
         Initialize raster variables in the Data class.
 
         Parameters
         ----------
-        data : numpy array
+        data
              Masked array containing raster data.
 
         Returns
         -------
-        grid : pygmi.raster.datatypes.Data
+        Data
             PyGMI raster dataset.
 
         """
@@ -282,17 +284,17 @@ class LithModel:
 
     def update(
         self,
-        cols,
-        rows,
-        layers,
-        utlx,
-        utly,
-        utlz,
-        dxy,
-        d_z,
-        mht=-1,
-        ght=-1,
-        usedtm=True,
+        cols: int,
+        rows: int,
+        layers: int,
+        utlx: float,
+        utly: float,
+        utlz: float,
+        dxy: float,
+        d_z: float,
+        mht: float = -1,
+        ght: float = -1,
+        usedtm: bool = True,
         pbar=None,
     ):
         """
@@ -300,29 +302,29 @@ class LithModel:
 
         Parameters
         ----------
-        cols : int
+        cols
             Number of columns per layer in model.
-        rows : int
+        rows
             Number of rows per layer in model.
-        layers : int
+        layers
             Number of layers in model.
-        utlx : float
+        utlx
             Upper top left (NW) x coordinate.
-        utly : float
+        utly
             Upper top left (NW) y coordinate.
-        utlz : float
+        utlz
             Upper top left (NW) z coordinate.
-        dxy : float
+        dxy
             Dimension of cubes in the x and y directions.
-        d_z : float
+        d_z
             Dimension of cubes in the z direction.
-        mht : float, optional
+        mht
             Height of magnetic sensor. The default is -1.
-        ght : float, optional
+        ght
             Height of gravity sensor. The default is -1.
-        usedtm : bool, optional
+        usedtm
             Flag to use a DTM. The default is True.
-        pbar : pygmi.misc.ProgressBar, optional
+        pbar
             Progressbar. The default is None.
 
         """

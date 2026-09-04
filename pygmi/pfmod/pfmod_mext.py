@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        tab_mext.py (part of PyGMI)
+# Name:        pfmod_mext.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -558,7 +558,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.upd_layers()
 
-    def tab_activate(self):
+    def activate(self):
         """Entry point."""
         self.update_model_combos()
         self.choose_model()
@@ -568,4 +568,4 @@ class MextDisplay(QtWidgets.QDialog):
         self.exec()
 
         # The next line is necessary to update any dataset changes.
-        self.parent.profile.tab_activate()  # Link to tab_prof
+        self.parent.profile.activate()  # Link to pfmod_prof

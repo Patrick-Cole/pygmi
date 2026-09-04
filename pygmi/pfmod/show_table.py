@@ -25,10 +25,12 @@
 """Routine which displays a table graphically with various statistics."""
 
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
 from pygmi.misc import ContextModule
+from pygmi.pfmod.datatypes import LithModel
 
 
 class BasicStats3D(ContextModule):
@@ -76,10 +78,7 @@ class BasicStats3D(ContextModule):
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
-        """
-        Combo.
-
-        """
+        """Combo."""
         i = self.cmb_1.currentIndex()
         data = self.data[i][:, 1:]
 
@@ -156,13 +155,13 @@ class BasicStats3D(ContextModule):
         return True
 
 
-def basicstats3d_calc(lmod):
+def basicstats3d_calc(lmod: LithModel) -> tuple[list[str], list[str], list[NDArray]]:
     """
     Calculate statistics.
 
     Parameters
     ----------
-    lmod : PyGMI LithModel.
+    lmod
         PyGMI lithology model.
 
     Returns
@@ -227,19 +226,19 @@ def basicstats3d_calc(lmod):
     return bands, cols, dattmp
 
 
-def savetable(ofile, bands, cols, data):
+def savetable(ofile: str, bands: list, cols: list, data: list):
     """
     Save tabular data.
 
     Parameters
     ----------
-    ofile : str
+    ofile
         Output file name.
-    bands : list
+    bands
         List of bands.
-    cols : list
+    cols
         List of column headings.
-    data : list
+    data
         List of arrays containing statistics.
 
     Returns

@@ -30,7 +30,7 @@ import textwrap
 import time
 import types
 import webbrowser
-from collections.abc import Iterable
+from collections.abc import Generator, Iterable
 
 import geopandas as gpd
 import numpy as np
@@ -119,21 +119,21 @@ class BasicModule(QtWidgets.QDialog):
     Attributes
     ----------
     parent
-        reference to the parent routine
+        Reference to the parent routine
     indata
-        dictionary of input datasets
+        Dictionary of input datasets
     outdata
-        dictionary of output datasets
+        Dictionary of output datasets
     ifile
-        input file, used in IO routines and to pass filename back to main.py
+        Input file, used in IO routines and to pass filename back to main.py
     piter
-        reference to a progress bar iterator.
+        Reference to a progress bar iterator.
     pbar
-        reference to a progress bar.
+        Reference to a progress bar.
     showlog
-        reference to a way to view messages, normally stdout or a Qt text box.
+        Reference to a way to view messages, normally stdout or a Qt text box.
     is_import
-        used to indicate whether a routine contains an import within.
+        Used to indicate whether a routine contains an import within.
     projdata
         Project data.
     """
@@ -410,17 +410,17 @@ class ContextModule(QtWidgets.QDialog):
     Attributes
     ----------
     parent
-        reference to the parent routine
+        Reference to the parent routine
     indata
-        dictionary of input datasets
+        Dictionary of input datasets
     outdata
-        dictionary of output datasets
+        Dictionary of output datasets
     piter
-        reference to a progress bar iterator.
+        Reference to a progress bar iterator.
     pbar
-        reference to a progress bar.
+        Reference to a progress bar.
     showlog
-        reference to a way to view messages, normally stdout or a Qt text box.
+        Reference to a way to view messages, normally stdout or a Qt text box.
     """
 
     def __init__(self, parent=None):
@@ -702,14 +702,14 @@ class ProgressBar(QtWidgets.QProgressBar):
         self.setStyleSheet(PBAR_STYLE)
         self.total = 100
 
-    def iter(self, iterable: Iterable):
+    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
         """
         Iterate Routine.
 
         Parameters
         ----------
         iterable
-            Ierable for progress bar to track.
+            Iterable for progress bar to track.
 
         Yields
         ------
@@ -774,7 +774,7 @@ class ProgressBarText:
         self.fill = "#"
         self.prefix = "Progress:"
 
-    def iter(self, iterable: Iterable):
+    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
         """
         Iterate Routine.
 
@@ -829,7 +829,7 @@ class ProgressBarText:
         Parameters
         ----------
         iteration
-            current iteration
+            Current iteration
         suffix
             Suffix string. The default is ''.
         """

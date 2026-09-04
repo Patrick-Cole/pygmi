@@ -266,10 +266,7 @@ class BIRRP(BasicModule):
             )
 
     def importbirrp(self):
-        """
-        Import a BIRRP config file.
-
-        """
+        """Import a BIRRP config file."""
         ext = "*.birrp (*.birrp)"
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -403,10 +400,7 @@ class BIRRP(BasicModule):
         self.le_thetar.setText(thetar)
 
     def runbirrp(self):
-        """
-        Save and runs a birrp config file.
-
-        """
+        """Save and runs a birrp config file."""
         ext = "*.birrp (*.birrp)"
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -491,10 +485,7 @@ class BIRRP(BasicModule):
         widget.setText(filename)
 
     def nar_changed(self):
-        """
-        Value of nar changed.
-
-        """
+        """Value of nar changed."""
         text = self.le_nar.text()
         val = int(text)
 
@@ -512,10 +503,7 @@ class BIRRP(BasicModule):
                 self.removerow(self.le_arfilnam[i], lay)
 
     def nfil_changed(self):
-        """
-        Value of nfil changed.
-
-        """
+        """Value of nfil changed."""
         for i in ["ex", "ey", "hz", "hx", "hy", "rx", "ry"]:
             if i in ["ex", "ey", "hz"]:
                 lay = self.lay2
@@ -563,10 +551,7 @@ class BIRRP(BasicModule):
             self.removerow(self.nblock, self.lay)
 
     def jmode_changed(self):
-        """
-        Value of jmode changed.
-
-        """
+        """Value of jmode changed."""
         row, _ = self.lay.getWidgetPosition(self.cmb_jmode)
         txt = self.cmb_jmode.currentText()
 
@@ -604,10 +589,7 @@ class BIRRP(BasicModule):
                 )
 
     def nout_changed(self):
-        """
-        Value of nout changed.
-
-        """
+        """Value of nout changed."""
         row, _ = self.lay.getWidgetPosition(self.le_c2threshe)
 
         txt = self.cmb_nout.currentText()

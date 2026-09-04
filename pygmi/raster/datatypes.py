@@ -59,9 +59,9 @@ def bounds_to_transform(
     Returns
     -------
     transform : Affine
-        rasterio transform.
+        Rasterio transform.
     shape : tuple
-        tuple of rows, cols.
+        Tuple of rows, cols.
 
     """
     xmin, ymin, xmax, ymax = bounds
@@ -142,22 +142,22 @@ class Data:
 
     Attributes
     ----------
-    data : numpy masked array
-        array to contain raster data
+    data : MaskedArray
+        Array to contain raster data
     extent : tuple
         Extent of data as (left, right, bottom, top)
     bounds : tuple
         Bounds of data as (left, bottom, right, top)
     xdim : float
-        x-dimension of grid cell
+        X-dimension of grid cell
     ydim : float
-        y-dimension of grid cell
+        Y-dimension of grid cell
     dataid : str
-        band name or id
+        Band name or id
     nodata : float
-        grid null or no data value
+        Grid null or no data value
     units : str
-        description of units to be used with colour bars
+        Description of units to be used with colour bars
     isrgb : bool
         Flag to signify an RGB image.
     metadata : dictionary
@@ -167,9 +167,9 @@ class Data:
     filename : str
         Filename of file.
     transform : list of Affine, optional
-        rasterio transform. The default is None.
+        Rasterio transform. The default is None.
     crs : CRS
-        rasterio crs of data
+        Rasterio crs of data
     datetime : date
         Date of dataset.
     """
@@ -361,22 +361,22 @@ class Data:
         Parameters
         ----------
         xdim
-            x dimension. The default is None.
+            X dimension. The default is None.
         xmin
-            x minimum. The default is None.
+            X minimum. The default is None.
         ydim
-            y dimension. The default is None.
+            Y dimension. The default is None.
         ymax
-            y maximum. The default is None.
+            Y maximum. The default is None.
         transform
-            transform. The default is None.
+            Transform. The default is None.
         iraster
             Incremental raster import, to import a section of a file.
             The tuple is (xoff, yoff, xsize, ysize). The default is None.
         rows
-            rows in dataset. The default is None.
+            Rows in dataset. The default is None.
         cols
-            columns in dataset. The default is None.
+            Columns in dataset. The default is None.
 
         """
         if transform is not None:
@@ -418,7 +418,7 @@ class Data:
         Returns
         -------
         MemoryFile
-            rasterio memory file.
+            Rasterio memory file.
 
         """
         raster = MemoryFile().open(
@@ -505,19 +505,19 @@ class RasterMeta:
     filename : str
         Filename of file.
     crs : CRS
-        rasterio crs of data.
+        Rasterio crs of data.
     bands : list
-        list of bands in dataset.
+        List of bands in dataset.
     tnames : list
-        list fo bands to process.
+        List fo bands to process.
     banddata : list
-        list of band data.
+        List of band data.
     to_sutm : bool
-        flag to convert a file to SUTM.
+        Flag to convert a file to SUTM.
     datetime : date
-        date and time of dataset.
+        Date and time of dataset.
     nodata : float
-        grid null or no data value.
+        Grid null or no data value.
 
     """
 
@@ -586,7 +586,7 @@ def numpy_to_pygmi(
         PyGMI raster dataset
 
     dataid
-        name for the band of data.
+        Name for the band of data.
 
     Returns
     -------

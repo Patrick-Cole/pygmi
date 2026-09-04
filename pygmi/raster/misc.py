@@ -46,7 +46,7 @@ from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import Data
 
 
-def aspect2(data: NDArray) -> tuple[NDArray, NDArray, NDArray]:
+def aspect2(data: NDArray) -> tuple[np.ma.MaskedArray, NDArray, NDArray]:
     """
     Aspect of a dataset.
 
@@ -283,8 +283,6 @@ def cut_raster(
 
         idata.set_transform(transform=trans)
 
-    # data = trim_raster(data)
-
     return data
 
 
@@ -315,7 +313,9 @@ def fill_nd_closest(arr: np.ma.MaskedArray) -> NDArray:
     return filled_data
 
 
-def histcomp(img, perc=5.0, uperc=None):
+def histcomp(
+    img: np.ma.MaskedArray, perc: float = 5.0, uperc: float | None = None
+) -> tuple[np.ma.MaskedArray, float, float]:
     """
     Histogram Compaction.
 
@@ -324,18 +324,18 @@ def histcomp(img, perc=5.0, uperc=None):
 
     Parameters
     ----------
-    img : numpy array
+    img
         data to compact
-    perc : float
+    perc
         percentage of histogram to clip. If uperc is not None, then this is
         the lower percentage, default is 5.
-    uperc : float
+    uperc
         upper percentage to clip. If uperc is None, then it is set to the
         same value as perc, default is None
 
     Returns
     -------
-    img2 : numpy array
+    img2 : MaskedArray
         compacted array
     svalue : float
         Start value
@@ -351,9 +351,6 @@ def histcomp(img, perc=5.0, uperc=None):
 
     svalue, evalue = np.percentile(img.compressed(), (perc, 100 - uperc))
 
-    # img2 = np.empty_like(img, dtype=np.float32)
-    # np.copyto(img2, img)
-
     img2 = img.copy()
 
     filt = np.ma.less(img2, svalue)
@@ -367,7 +364,7 @@ def histcomp(img, perc=5.0, uperc=None):
     return img2, svalue, evalue
 
 
-def histeq(img, nbrbins=32768):
+def histeq(img: np.ma.MaskedArray, nbrbins: int = 32768) -> np.ma.MaskedArray:
     """
     Histogram Equalization.
 
@@ -377,14 +374,14 @@ def histeq(img, nbrbins=32768):
 
     Parameters
     ----------
-    img : numpy array
+    img
         input data to be equalised
-    nbrbins : integer
+    nbrbins
         number of bins to be used in the calculation, default is 32768
 
     Returns
     -------
-    im2 : numpy array
+    MaskedArray
         output data
     """
     # get image histogram
@@ -444,7 +441,7 @@ def lstack(
     nodeepcopy: bool = False,
     resampling: str = "cubic_spline",  # "nearest",
     checkdataid: bool = True,
-) -> list[Data] | None:
+) -> list[Data]:
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -535,8 +532,8 @@ def lstack(
     trans = rasterio.Affine(dxy, 0, float(xmin), 0, -1 * dxy, float(ymax))
 
     if cols == 0 or rows == 0:
-        showlog("Your rows or cols are zero. Your input projection may be wrong")
-        return None
+        showlog("Your rows or cols are zero. Your input projection may be wrong.")
+        return dat
 
     dat2 = []
     cmask = None
@@ -629,8 +626,8 @@ def lstack(
 
 
 def norm2(
-    dat: NDArray, datmin: float | None = None, datmax: float | None = None
-) -> NDArray:
+    dat: np.ma.MaskedArray, datmin: float | None = None, datmax: float | None = None
+) -> np.ma.MaskedArray:
     """
     Normalise array vector between 0 and 1.
 
@@ -645,7 +642,7 @@ def norm2(
 
     Returns
     -------
-    out : ndarray of floats
+    MaskedArray
         normalised array
     """
     if datmin is None:

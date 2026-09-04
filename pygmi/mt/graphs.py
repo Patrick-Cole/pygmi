@@ -29,6 +29,7 @@ import glob
 import os
 
 import numpy as np
+from matplotlib.backend_bases import MouseEvent, PickEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -54,10 +55,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
     ----------
     parent
         Reference to the parent routine. The default is None.
+    width
+        Canvas width.
+    height
+        Canvas height.
+    dpi
+        Canvas dpi.
 
     """
 
-    def __init__(self, width=8, height=6, dpi=100):
+    def __init__(self, width: float = 8, height: float = 6, dpi: int = 100):
         fig = Figure(layout="constrained", figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.line = None
@@ -74,13 +81,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             "motion_notify_event", self.motion_notify_callback
         )
 
-    def button_release_callback(self, event):
+    def button_release_callback(self, event: MouseEvent):
         """
         Mouse button release callback.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -90,13 +97,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def motion_notify_callback(self, event):
+    def motion_notify_callback(self, event: MouseEvent):
         """
         Move mouse callback.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         """
@@ -115,13 +122,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.draw_artist(self.line)
         self.figure.canvas.update()
 
-    def onpick(self, event):
+    def onpick(self, event: PickEvent) -> bool:
         """
         Picker event.
 
         Parameters
         ----------
-        event : event
+        event
             event variable.
 
         Returns
@@ -142,18 +149,18 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         return True
 
-    def update_line(self, data, ival, itype):
+    def update_line(self, data: dict, ival: str, itype: str):
         """
         Update the plot from point data.
 
         Parameters
         ----------
-        data : EDI data object
-            EDI data.
-        ival : str
-            dictionary key.
-        itype : str
-            dictionary key.
+        data
+            Dictionary of EDI data.
+        ival
+            EDI data dictionary key.
+        itype
+            Graph type.
 
         """
         data1 = data[ival]
@@ -287,27 +294,36 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_phase(
         self,
-        edi_list,
-        plot_freq,
-        plot_tipper,
-        ellipse_colorby,
-        ellipse_size,
-        asize,
-        ahwidth,
-        ahlength,
+        edi_list: list[str],
+        plot_freq: float,
+        plot_tipper: str,
+        ellipse_colorby: str,
+        ellipse_size: float,
+        asize: float,
+        ahwidth: float,
+        ahlength: float,
     ):
         """
-        Update the plot from point data.
+        Update phase.
 
         Parameters
         ----------
-        data : EDI data object
-            EDI data.
-        ival : str
-            dictionary key.
-        itype : str
-            dictionary key.
-
+        edi_list
+            list of EDI files.
+        plot_freq
+            Frequency to plot.
+        plot_tipper
+            'y' + 'r' and/or 'i' to plot.
+        ellipse_colorby
+            Colour by "skew", "phimin", "phimax"
+        ellipse_size
+            Scaling factor for the ellipses.
+        asize
+            arrow size.
+        ahwidth
+            arrow head width.
+        ahlength
+            arrow head length.
         """
         edicol = EdiCollection(edi_list)
         ptdict = edicol.get_phase_tensor_tippers(1 / plot_freq)
@@ -332,7 +348,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             # 'y' + 'r' and/or 'i' to plot
             # real and/or imaginary
             plot_tipper=plot_tipper,
-            # a matplotlib colour or None for no
+            # a matplotlib clour or None for no
             # borders
             edgecolor="k",
             lw=0.5,  # linewidth for the ellipses
@@ -534,19 +550,13 @@ class PlotPhaseTensor(ContextModule):
         pb_export.clicked.connect(self.export)
 
     def reset_data(self):
-        """
-        Reset data.
-
-        """
+        """Reset data."""
         i = self.cmb_1.currentText()
         self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
         self.change_band()
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         freq = float(self.cmb_1.currentText())
 
         tipper = ""
@@ -570,7 +580,6 @@ class PlotPhaseTensor(ContextModule):
 
     def export(self):
         """Export to shapefile."""
-
         odir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent, "Select Output Directory"
         )

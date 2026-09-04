@@ -60,15 +60,15 @@ def sform(
     strform
         This string must be of the form {0:4.1f}, where 4.1f can be changed.
     val
-        input value
+        Input value
     tmp
         Input string
     col1
-        start column (1 is first column)
+        Start column (1 is first column)
     col2
-        end column. The default is None.
+        End column. The default is None.
     nval
-        null value which gets substituted by spaces. The default is -999.
+        Null value which gets substituted by spaces. The default is -999.
 
     Returns
     -------
@@ -107,12 +107,12 @@ def str2float(inp: str) -> float:
     Parameters
     ----------
     inp
-        string with a float in it
+        String with a float in it
 
     Returns
     -------
     float
-        float or np.nan
+        Float or np.nan
     """
     if inp.strip() == "" or inp.strip() == "*" or inp.strip() == "N/A":
         return np.nan
@@ -131,12 +131,12 @@ def str2int(inp: str) -> int | float:
     Parameters
     ----------
     inp
-        string with an integer in it
+        String with an integer in it
 
     Returns
     -------
     int
-        integer or np.nan
+        Integer or np.nan
     """
     if inp.strip() == "":
         return np.nan

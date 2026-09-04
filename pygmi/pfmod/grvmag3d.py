@@ -37,18 +37,22 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 """
 
 import tempfile
+from typing import IO
 
 import numpy as np
 from matplotlib import colormaps
+from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from numba import jit, prange
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.maps import frm
 from pygmi.misc import ContextModule, PTime
 from pygmi.pfmod.datatypes import LithModel
+from pygmi.raster.datatypes import Data
 from pygmi.raster.reproj import data_reproject
 
 
@@ -60,13 +64,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_raster(self, lmod2):
+    def update_raster(self, lmod2: LithModel):
         """
         Update the raster plot.
 
         Parameters
         ----------
-        lmod2 : PyGMI lithology data
+        lmod2
             Lithology dataset to be used.
 
         """
@@ -119,16 +123,12 @@ class PlotTest(ContextModule):
         self.setWindowTitle("Test Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)
-        # hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
 
-        # self.buttonbox.buttonbox.hide()
-        # self.buttonbox.htmlfile = 'raster.cm.showsimple'
         self.buttonbox.hide()
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        # vbl.addLayout(hbl)
 
         self.setFocus()
 
@@ -194,10 +194,7 @@ class GravMag:
         self.actioncalculate4.triggered.connect(self.calc_field_mag_changes)
 
     def calc_field_mag(self):
-        """
-        Pre field-calculation routine.
-
-        """
+        """Pre field-calculation routine."""
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
@@ -213,10 +210,7 @@ class GravMag:
         self.actioncalculate4.setEnabled(True)
 
     def calc_field_grav(self):
-        """
-        Pre field-calculation routine.
-
-        """
+        """Pre field-calculation routine."""
         # Update this
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
@@ -232,10 +226,7 @@ class GravMag:
         self.actioncalculate3.setEnabled(True)
 
     def calc_field_mag_changes(self):
-        """
-        Calculate only magnetic field changes.
-
-        """
+        """Calculate only magnetic field changes."""
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
@@ -245,10 +236,7 @@ class GravMag:
         self.parent.profile.update_plot()
 
     def calc_field_grav_changes(self):
-        """
-        Calculate only gravity field changes.
-
-        """
+        """Calculate only gravity field changes."""
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
@@ -257,15 +245,15 @@ class GravMag:
         self.calc_field2(True)
         self.parent.profile.update_plot()
 
-    def calc_field2(self, showreports=False, magcalc=False):
+    def calc_field2(self, showreports: bool = False, magcalc: bool = False):
         """
         Calculate magnetic and gravity field.
 
         Parameters
         ----------
-        showreports : bool, optional
+        showreports
             Flag for showing reports. The default is False.
-        magcalc : bool, optional
+        magcalc
             Flag for choosing the magnetic calculation. The default is False.
 
         """
@@ -389,17 +377,17 @@ class GravMag:
         ptest = PlotTest(data=self.lmod2)
         ptest.exec()
 
-    def update_graph(self, grvval, magval, modind):
+    def update_graph(self, grvval: NDArray, magval: NDArray, modind: NDArray):
         """
         Update the graph.
 
         Parameters
         ----------
-        grvval : numpy array
+        grvval
             Array of gravity values.
-        magval : numpy array
+        magval
             Array of magnetic values.
-        modind : numpy array
+        modind
             Model indices.
 
         """
@@ -431,25 +419,33 @@ class GeoData:
     ----------
     parent
         Reference to the parent routine.
-    ncols : int
+    ncols
         Number of columns in the model.
-    nrows : int
+    nrows
         Number of rows in the model.
-    numz : int
+    numz
         Number of layer in the model.
-    dxy : float
+    dxy
         X and Y size of each voxel.
-    d_z : float
+    d_z
         Layer thickness.
-    mht : float
+    mht
         Magnetic sensor height.
-    ght : float
+    ght
         Gravity sensor height.
 
     """
 
     def __init__(
-        self, parent, ncols=10, nrows=10, numz=10, dxy=10.0, d_z=10.0, mht=80.0, ght=0.0
+        self,
+        parent,
+        ncols: int = 10,
+        nrows: int = 10,
+        numz: int = 10,
+        dxy: int = 10.0,
+        d_z: float = 10.0,
+        mht: float = 80.0,
+        ght: float = 0.0,
     ):
         self.lithcode = 0
         self.lithnotes = ""
@@ -501,13 +497,13 @@ class GeoData:
 
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
-    def calc_origin_grav(self, hcor=None):
+    def calc_origin_grav(self, hcor: NDArray = None):
         """
         Calculate the field values for the lithologies.
 
         Parameters
         ----------
-        hcor : numpy array or None, optional
+        hcor
             Height corrections. The default is None.
 
         """
@@ -534,14 +530,16 @@ class GeoData:
 
             self.modified = False
 
-    def calc_origin_mag(self, hcor=None, demag=False):
+    def calc_origin_mag(self, hcor: NDArray = None, demag: bool = False):
         """
         Calculate the field values for the lithologies.
 
         Parameters
         ----------
-        hcor : numpy array or None, optional
+        hcor
             Height corrections. The default is None.
+        demag
+            Do demagnetization.
 
         """
         if self.modified is True:
@@ -581,7 +579,16 @@ class GeoData:
         return self.density - self.bdensity
 
     def set_xyz(
-        self, ncols, nrows, numz, g_dxy, mht, ght, d_z, dxy=None, modified=True
+        self,
+        ncols: int,
+        nrows: int,
+        numz: int,
+        g_dxy: float,
+        mht: float,
+        ght: float,
+        d_z: float,
+        dxy: float | None = None,
+        modified: bool = True,
     ):
         """
         Sets/updates xyz parameters.
@@ -641,7 +648,7 @@ class GeoData:
         self.y12 = np.array([numy / 2 - dxy / 2, numy / 2 + dxy / 2])
         self.z12 = np.arange(-numz, numz + d_z, d_z)
 
-    def gboxmain(self, xobs, yobs, zobs, hcor):
+    def gboxmain(self, xobs: NDArray, yobs: NDArray, zobs: float, hcor: NDArray):
         """
         Gbox routine by Blakely.
 
@@ -665,13 +672,13 @@ class GeoData:
 
         Parameters
         ----------
-        xobs : numpy array
+        xobs
             Observation X coordinates.
-        yobs : numpy array
+        yobs
             Observation Y coordinates.
-        zobs : numpy array
+        zobs
             Observation Z coordinates.
-        hcor : numpy array
+        hcor
             Height corrections.
 
         """
@@ -726,7 +733,14 @@ class GeoData:
 
         self.glayers = np.array(glayers)
 
-    def mboxmain(self, xobs, yobs, zobs, hcor, demag=False):
+    def mboxmain(
+        self,
+        xobs: NDArray,
+        yobs: NDArray,
+        zobs: float,
+        hcor: NDArray,
+        demag: bool = False,
+    ):
         """
         Mbox routine by Blakely.
 
@@ -761,14 +775,16 @@ class GeoData:
 
         Parameters
         ----------
-        xobs : numpy array
+        xobs
             Observation X coordinates.
-        yobs : numpy array
+        yobs
             Observation Y coordinates.
-        zobs : numpy array
-            Observation Z coordinates.
-        hcor : numpy array
+        zobs
+            Observation coordinate.
+        hcor
             Height corrections.
+        demag
+            Do demagnetization.
 
         """
         mlayers = []
@@ -815,8 +831,8 @@ class GeoData:
         fm5 = mb * fb
         fm6 = mc * fc
 
-        if zobs == 0:
-            zobs = -0.01
+        # if zobs == 0:
+        #     zobs = -0.01
 
         z1122 = np.append(z1122, [2 * z1122[-1] - z1122[-2]])
 
@@ -855,24 +871,24 @@ class GeoData:
         self.mlayers = self.mlayers[:-1] - self.mlayers[1:]
 
 
-def calc_demag(mvec, k, dxy, dz):
+def calc_demag(mvec: NDArray, k: float, dxy: float, dz: float) -> NDArray:
     """
     Calculate demagnetisation correction.
 
     Parameters
     ----------
-    mvec : numpy array
+    mvec
         Body Magnetisation.
-    k : float
+    k
         susceptibility.
-    dxy : float
+    dxy
         cell width.
-    dz : float
+    dz
         cell height.
 
     Returns
     -------
-    outvec : numpy array
+    ndarray
         Corrected magnetisation.
 
     """
@@ -912,18 +928,18 @@ def calc_demag(mvec, k, dxy, dz):
     return outvec
 
 
-def save_layer(mlist):
+def save_layer(mlist: tuple[str, LithModel]) -> IO[bytes]:
     """
     Routine to save the mlayer and glayer to a file.
 
     Parameters
     ----------
-    mlist : list
-        List with 2 elements - lithology name and LithModel.
+    mlist
+        Tuple with 2 elements - lithology name and LithModel.
 
     Returns
     -------
-    outfile : TemporaryFile
+    IO
         Link to a temporary file.
 
     """
@@ -943,22 +959,22 @@ def save_layer(mlist):
     return outfile
 
 
-def gridmatch(lmod, ctxt, rtxt):
+def gridmatch(lmod: LithModel, ctxt: str, rtxt: str) -> NDArray:
     """
     Match the rows and columns of the second grid to the first grid.
 
     Parameters
     ----------
-    lmod : LithModel
+    lmod
         Lithology Model.
-    ctxt : str
+    ctxt
         First grid text label.
-    rtxt : str
+    rtxt
         Second grid text label.
 
     Returns
     -------
-    dat : numpy array
+    ndarray
         Numpy array of data.
 
     """
@@ -975,14 +991,14 @@ def gridmatch(lmod, ctxt, rtxt):
 
 
 def calc_field(
-    lmod,
+    lmod: LithModel,
     pbars=None,
     showtext=None,
     parent=None,
-    showreports=False,
-    magcalc=False,
-    demag=False,
-):
+    showreports: bool = False,
+    magcalc: bool = False,
+    demag: bool = False,
+) -> dict[str, Data] | None:
     """
     Calculate magnetic and gravity field.
 
@@ -992,24 +1008,24 @@ def calc_field(
 
     Parameters
     ----------
-    lmod : LithModel
+    lmod
         PyGMI lithological model
-    pbars : module
+    pbars
         progress bar routine if available. (internal use)
-    showtext : module
+    showtext
         showtext routine if available. (internal use)
-    parent : module
+    parent
         parent routine, the default is None.
-    showreports : bool
+    showreports
         show extra reports, the default is False.
-    magcalc : bool
+    magcalc
         if True, calculates magnetic data, otherwise only gravity.
-    demag : bool
+    demag
         calculate demagnetization. The default is False.
 
     Returns
     -------
-    lmod.griddata : dictionary
+    dict of Data
         dictionary of items of type Data.
     """
     if showtext is None:
@@ -1241,36 +1257,47 @@ def calc_field(
 
 
 @jit(nopython=True, parallel=False)
-def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat, mijk):
+def sum_fields(
+    k: int,
+    mgval: NDArray,
+    numx: int,
+    numy: int,
+    modind: NDArray,
+    aaa0: NDArray,
+    aaa1: NDArray,
+    mlayers: NDArray,
+    hcorflat: NDArray,
+    mijk: int,
+) -> NDArray:
     """
     Sum magnetic and gravity field datasets to produce final model field.
 
     Parameters
     ----------
-    k : int
+    k
         k index.
-    mgval : numpy array
+    mgval
         Magnetic or gravity data being summed.
-    numx : int
+    numx
         Number of x elements.
-    numy : int
+    numy
         Number of y elements.
-    modind : numpy array
+    modind
         model with indices representing lithologies.
-    aaa0 : numpy array
+    aaa0
         x indices for offsets.
-    aaa1 : numpy array
+    aaa1
         y indices for offsets.
-    mlayers : numpy array
+    mlayers
         Layer fields for summation.
-    hcorflat : numpy array
+    hcorflat
         Height correction.
-    mijk : int
+    mijk
         Current lithology index.
 
     Returns
     -------
-    mgval : numpy array
+    ndarray
         Output summed data.
 
     """
@@ -1294,73 +1321,73 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat, mijk
 
 
 def quick_model(
-    numx=50,
-    numy=40,
-    numz=5,
-    dxy=100.0,
-    d_z=100.0,
-    tlx=0.0,
-    tly=0.0,
-    tlz=0.0,
-    mht=100.0,
-    ght=0.0,
-    finc=-67,
-    fdec=-17,
-    inputliths=None,
-    susc=None,
-    dens=None,
-    minc=None,
-    mdec=None,
-    mstrength=None,
-    hintn=30000.0,
-):
+    numx: int = 50,
+    numy: int = 40,
+    numz: int = 5,
+    dxy: float = 100.0,
+    d_z: float = 100.0,
+    tlx: float = 0.0,
+    tly: float = 0.0,
+    tlz: float = 0.0,
+    mht: float = 100.0,
+    ght: float = 0.0,
+    finc: float = -67,
+    fdec: float = -17,
+    inputliths: list[str] | None = None,
+    susc: list[float] | None = None,
+    dens: list[float] | None = None,
+    minc: list[float] | None = None,
+    mdec: list[float] | None = None,
+    mstrength: list[float] | None = None,
+    hintn: float = 30000.0,
+) -> LithModel:
     """
     Quick model function.
 
     Parameters
     ----------
-    numx : int, optional
+    numx
         Number of x elements. The default is 50.
-    numy : int, optional
+    numy
         Number of y elements. The default is 40.
-    numz : int, optional
+    numz
         number of z elements (layers). The default is 5.
-    dxy : float, optional
+    dxy
         Cell size in x and y direction. The default is 100..
-    d_z : float, optional
+    d_z
         Layer thickness. The default is 100..
-    tlx : float, optional
+    tlx
         Top left x coordinate. The default is 0..
-    tly : float, optional
+    tly
         Top left y coordinate. The default is 0..
-    tlz : float, optional
+    tlz
         Top left z coordinate. The default is 0..
-    mht : float, optional
+    mht
         Magnetic sensor height. The default is 100..
-    ght : float, optional
+    ght
         Gravity sensor height. The default is 0..
-    finc : float, optional
+    finc
         Magnetic field inclination (degrees). The default is -67.
-    fdec : float, optional
+    fdec
         Magnetic field declination (degrees). The default is -17.
-    inputliths : list or None, optional
+    inputliths
         List of input lithologies. The default is None.
-    susc : list or None, optional
+    susc
         List of susceptibilities. The default is None.
-    dens : list or None, optional
+    dens
         List of densities. The default is None.
-    minc : list or None, optional
+    minc
         List of remanent inclinations (degrees). The default is None.
-    mdec : list or None, optional
+    mdec
         List of remanent declinations (degrees). The default is None.
-    mstrength : list or None, optional
+    mstrength
         List of remanent magnetisations (A/m). The default is None.
-    hintn : float, optional
+    hintn
         Magnetic field strength (nT). The default is 30000.
 
     Returns
     -------
-    lmod : LithModel
+    LithModel
         Output model.
 
     """
@@ -1412,26 +1439,26 @@ def quick_model(
 
 @jit(nopython=True, parallel=False)
 def _mbox(
-    mval,
-    xobs,
-    yobs,
-    numx,
-    numy,
-    z0,
-    x1,
-    y1,
-    z1,
-    x2,
-    y2,
-    fm1,
-    fm2,
-    fm3,
-    fm4,
-    fm5,
-    fm6,
-    alpha,
-    beta,
-):
+    mval: NDArray,
+    xobs: NDArray,
+    yobs: NDArray,
+    numx: int,
+    numy: int,
+    z0: float,
+    x1: float,
+    y1: float,
+    z1: float,
+    x2: float,
+    y2: float,
+    fm1: float,
+    fm2: float,
+    fm3: float,
+    fm4: float,
+    fm5: float,
+    fm6: float,
+    alpha: NDArray,
+    beta: NDArray,
+) -> NDArray:
     """
     Mbox routine by Blakely, continued from Geodata.mboxmain.
 
@@ -1469,48 +1496,48 @@ def _mbox(
 
     Parameters
     ----------
-    mval : numpy array
+    mval
         Existing magnetic values.
-    xobs : numpy array
+    xobs
         Observation X coordinates.
-    yobs : numpy array
+    yobs
         Observation Y coordinates.
-    numx : int
+    numx
         Number of x elements.
-    numy : int
+    numy
         Number of y elements.
-    z0 : float
+    z0
         Observation height.
-    x1 : float
+    x1
         Prism coordinate.
-    y1 : float
+    y1
         Prism coordinate.
-    z1 : float
+    z1
         Prism coordinate.
-    x2 : float
+    x2
         Prism coordinate.
-    y2 : float
+    y2
         Prism coordinate.
-    fm1 : float
+    fm1
         Calculation value passed from mboxmain.
-    fm2 : float
+    fm2
         Calculation value passed from mboxmain.
-    fm3 : float
+    fm3
         Calculation value passed from mboxmain.
-    fm4 : float
+    fm4
         Calculation value passed from mboxmain.
-    fm5 : float
+    fm5
         Calculation value passed from mboxmain.
-    fm6 : float
+    fm6
         Calculation value passed from mboxmain.
-    alpha : numpy array
+    alpha
         Calculation value passed from mboxmain.
-    beta : numpy array
+    beta
         Calculation value passed from mboxmain.
 
     Returns
     -------
-    mval : numpy array
+    ndarray
         Calculated magnetic values.
 
     """
@@ -1558,8 +1585,23 @@ def _mbox(
 
 @jit(nopython=True, parallel=False)
 def _gbox(
-    gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2, x, y, z, isign
-):
+    gval: NDArray,
+    xobs: NDArray,
+    yobs: NDArray,
+    numx: int,
+    numy: int,
+    z_0: float,
+    x_1: float,
+    y_1: float,
+    z_1: float,
+    x_2: float,
+    y_2: float,
+    z_2: float,
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    isign: NDArray,
+) -> NDArray:
     """
     Gbox routine by Blakely, continued from Geodata.gboxmain.
 
@@ -1585,42 +1627,42 @@ def _gbox(
 
     Parameters
     ----------
-    gval : numpy array
+    gval
         Existing gravity values.
-    xobs : numpy array
+    xobs
         Observation X coordinates.
-    yobs : numpy array
+    yobs
         Observation Y coordinates.
-    numx : int
+    numx
         Number of X.
-    numy : int
+    numy
         Number of Y.
-    z_0 : float
+    z_0
         Observation height.
-    x_1 : float
+    x_1
         Prism coordinate.
-    y_1 : float
+    y_1
         Prism coordinate.
-    z_1 : float
+    z_1
         Prism coordinate.
-    x_2 : float
+    x_2
         Prism coordinate.
-    y_2 : float
+    y_2
         Prism coordinate.
-    z_2 : float
+    z_2
         Prism coordinate.
-    x : numpy array
+    x
         Calculation value passed from gboxmain.
-    y : numpy array
+    y
         Calculation value passed from gboxmain.
-    z : numpy array
+    z
         Calculation value passed from gboxmain.
-    isign : numpy array
+    isign
         Calculation value passed from gboxmain.
 
     Returns
     -------
-    gval : numpy array
+    ndarray
         Calculated gravity values.
 
     """
@@ -1653,17 +1695,17 @@ def _gbox(
     return gval
 
 
-def dircos(incl, decl, azim):
+def dircos(incl: float, decl: float, azim: float) -> tuple[float, float, float]:
     """
     Compute direction cosines from inclination and declination.
 
     Parameters
     ----------
-    incl : float
+    incl
         inclination in degrees positive below horizontal.
-    decl : float
+    decl
         declination in degrees positive east of true north.
-    azim : float
+    azim
         azimuth of x axis in degrees positive east of north.
 
     Returns
@@ -1687,26 +1729,26 @@ def dircos(incl, decl, azim):
     return aaa, bbb, ccc
 
 
-def dat_extent(dat, axes):
+def dat_extent(dat: Data, axes: Axes) -> tuple[float, float, float, float]:
     """
     Get the extent of the dat variable.
 
     Parameters
     ----------
-    dat : pygmi.raster.datatypes.Data
+    dat
         PyGMI raster dataset.
-    axes : matplotlib.axes._subplots.AxesSubplot
+    axes
         Matplotlib axes.
 
     Returns
     -------
-    left : float
+    left
         Left coordinate.
-    right : float
+    right
         Right coordinate.
-    bottom : float
+    bottom
         Bottom coordinate.
-    top : float
+    top
         Top coordinate.
 
     """
@@ -1741,10 +1783,10 @@ def _testfn():
     # calc_field(imod.lmod, magcalc=True)
 
     # quick model
-    lmod = quick_model(numx=300, numy=300, numz=30)
+    lmod = quick_model(numx=300, numy=300, numz=30, mht=0.0)
     lmod.lith_index[:, :, 0] = 1
     # lmod.lith_index[:, :, 10] = 1
-    lmod.mht = 100
+    lmod.mht = 0
     calc_field(lmod, magcalc=True)
 
     # Calculate the field

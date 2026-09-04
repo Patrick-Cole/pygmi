@@ -69,8 +69,6 @@ class MNF(BasicModule):
 
         self.setupui()
 
-        # self.resize(500, 350)
-
     def setupui(self):
         """Set up UI."""
         self.buttonbox.htmlfile = "rsense.dm.mnf"
@@ -704,8 +702,7 @@ def pca_calc(
     idat
         List of PyGMI Data.
     ncmps
-        Number of components to use for filtering. The default is None
-        (meaning all).
+        Number of components to use for filtering. The default is None. (meaning all).
     showlog
         Function for printing text. The default is print.
     piter

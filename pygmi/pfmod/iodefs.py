@@ -42,7 +42,6 @@ import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.pfmod import datatypes, grvmag3d, mvis3d
 from pygmi.pfmod.datatypes import LithModel
-from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import reprojxy
 
 sys.modules["datatypes"] = datatypes
@@ -128,13 +127,13 @@ class ImportMod3D(BasicModule):
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
 
-    def import_leapfrog_csv(self, filename):
+    def import_leapfrog_csv(self, filename: str):
         """
         Import leapfrog csv block models.
 
         Parameters
         ----------
-        filename : str
+        filename
             Input filename.
 
         """
@@ -251,13 +250,13 @@ class ImportMod3D(BasicModule):
             else:
                 lmod.lith_index[col, row, layer] = lmod.lith_list[label[i]].lith_index
 
-    def import_ascii_xyz_model(self, filename):
+    def import_ascii_xyz_model(self, filename: str):
         """
         Use to import ASCII XYZ Models of the form x,y,z,label.
 
         Parameters
         ----------
-        filename : str
+        filename
             Input filename.
 
         """
@@ -346,15 +345,15 @@ class ImportMod3D(BasicModule):
             layer = int((lmod.zrange[1] - z[i]) / lmod.d_z)
             lmod.lith_index[col, row, layer] = lmod.lith_list[label[i]].lith_index
 
-    def dict2lmod(self, indict, pre=""):
+    def dict2lmod(self, indict: dict, pre: str = ""):
         """
         Convert a dictionary to a LithModel.
 
         Parameters
         ----------
-        indict : dictionary
+        indict
             Imported dictionary.
-        pre : str, optional
+        pre
             Text. The default is ''.
 
         """
@@ -596,20 +595,20 @@ class ExportMod3D(ContextModule):
         except Exception:
             self.showlog("ERROR! Model save failed!")
 
-    def lmod2dict(self, outdict, pre=""):
+    def lmod2dict(self, outdict: dict, pre: str = "") -> dict:
         """
         Convert LithModel to a dictionary.
 
         Parameters
         ----------
-        outdict : dictionary
+        outdict
             Output dictionary.
-        pre : str, optional
+        pre
             Text. The default is ''.
 
         Returns
         -------
-        outdict : dictionary
+        dict
             Output dictionary.
 
         """
@@ -1075,13 +1074,17 @@ class ExportMod3D(ContextModule):
 
         self.showlog("kmz export complete!")
 
-    def mod3dtoshp(self, nodialog=False):
+    def mod3dtoshp(self, nodialog: bool = False):
         """
         Save the 3D model and grids in a shapefile file.
 
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
 
+        Parameters
+        ----------
+        nodialog
+            Run without a dialog. The default is False.
         """
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
@@ -1229,12 +1232,12 @@ class Exportkmz(ContextModule):
     ----------
     parent
         Reference to the parent routine. The default is None.
-    wkt : str
+    wkt
         Well Known Text (wkt) representation of the projection.
 
     """
 
-    def __init__(self, wkt, parent=None):
+    def __init__(self, wkt: str, parent=None):
         super().__init__(parent)
 
         self.cb_smooth = QtWidgets.QCheckBox()
@@ -1264,17 +1267,12 @@ class MessageCombo(QtWidgets.QDialog):
     ----------
     parent
         Reference to the parent routine. The default is None.
-    combotext : list
+    combotext
         List of text for combo.
-
-    Attributes
-    ----------
-    parent
-        Reference to the parent routine.
 
     """
 
-    def __init__(self, combotext, parent=None):
+    def __init__(self, combotext: list[str], parent=None):
         super().__init__(parent)
 
         self.indata = {}
@@ -1305,7 +1303,7 @@ class MessageCombo(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
 
-    def acceptall(self):
+    def acceptall(self) -> str:
         """
         Accept option.
 

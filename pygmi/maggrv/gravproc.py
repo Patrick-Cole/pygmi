@@ -28,9 +28,11 @@ import sys
 from collections.abc import Callable
 
 import numpy as np
+import pandas as pd
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.maggrv import iodefs
@@ -45,13 +47,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_raster(self, drift):
+    def update_raster(self, drift: dict):
         """
         Update the raster plot.
 
         Parameters
         ----------
-        drift : dict
+        drift
             Dictionary containing information for drift plots.
 
         """
@@ -177,7 +179,7 @@ class ProcessData(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -303,34 +305,34 @@ class ProcessData(BasicModule):
 
 
 def gravcor(
-    pdat,
-    basethres,
-    kstat="",
-    absbase=978032.67715,
-    dens=2670,
+    pdat: pd.DataFrame,
+    basethres: float,
+    kstat: float | str = "",
+    absbase: float = 978032.67715,
+    dens: float = 2670,
     showlog: Callable[..., None] = print,
-):
+) -> tuple[pd.DataFrame, dict]:
     """
     Gravity corrections.
 
     Parameters
     ----------
-    pdat : Pandas DataFrame
+    pdat
         Gravity data.
-    basethres : float
+    basethres
        Threshold for base station numbers.
-    kstat : float
+    kstat
         Known base station number, by default 'None'
-    absbase : float
+    absbase
         Known base station absolute gravity, by default 978032.67715
-    dens : float
+    dens
         Background Density (kg/m3), by default 2670
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    pdat : Pandas DataFrame
+    pdat : DataFrame
         Gravity data.
     drift : dict
         Dictionary containing information for drift plots.
@@ -438,7 +440,7 @@ def gravcor(
     return pdat, drift
 
 
-def geocentric_radius(lat):
+def geocentric_radius(lat: NDArray) -> NDArray:
     """
     Geocentric radius calculation.
 
@@ -447,12 +449,12 @@ def geocentric_radius(lat):
 
     Parameters
     ----------
-    lat : numpy array
+    lat
         Latitude in radians
 
     Returns
     -------
-    R : Numpy array
+    ndarray
         Array of radii.
 
     """
@@ -467,18 +469,18 @@ def geocentric_radius(lat):
     return R
 
 
-def theoretical_gravity(lat):
+def theoretical_gravity(lat: NDArray) -> NDArray:
     """
     Calculate the theoretical gravity.
 
     Parameters
     ----------
-    lat : numpy array
-        Latitude in radians
+    lat
+        Latitude in radians.
 
     Returns
     -------
-    gT : numpy array
+    ndarray
         Array of theoretical gravity values.
 
     """
@@ -490,18 +492,18 @@ def theoretical_gravity(lat):
     return gT
 
 
-def atmospheric_correction(h):
+def atmospheric_correction(h: NDArray) -> NDArray:
     """
     Calculate the atmospheric correction.
 
     Parameters
     ----------
-    h : numpy array
+    h
         Heights relative to ellipsoid (GPS heights).
 
     Returns
     -------
-    gATM : numpy array.
+    ndarray
         Atmospheric correction
 
     """
@@ -510,20 +512,20 @@ def atmospheric_correction(h):
     return gATM
 
 
-def height_correction(lat, h):
+def height_correction(lat: NDArray, h: NDArray) -> NDArray:
     """
     Calculate height correction.
 
     Parameters
     ----------
-    lat : numpy array
+    lat
         Latitude in radians.
-    h : numpy array
+    h
         Heights relative to ellipsoid (GPS heights).
 
     Returns
     -------
-    gHC : numpy array
+    ndarray
         Height corrections
 
     """
@@ -532,20 +534,20 @@ def height_correction(lat, h):
     return gHC
 
 
-def spherical_bouguer(h, dens):
+def spherical_bouguer(h: NDArray, dens: float) -> NDArray:
     """
     Calculate spherical Bouguer.
 
     Parameters
     ----------
-    h : numpy array
+    h
         Heights relative to ellipsoid (GPS heights).
-    dens : float
+    dens
         Density.
 
     Returns
     -------
-    gSB : numpy array
+    ndarray
         Spherical Bouguer correction.
 
     """
@@ -577,13 +579,13 @@ def spherical_bouguer(h, dens):
     return gSB
 
 
-def time_convert(x):
+def time_convert(x: str) -> float:
     """
     Convert hh:mm:ss to seconds.
 
     Parameters
     ----------
-    x : str
+    x
         Time in hh:mm:ss.
 
     Returns
@@ -636,7 +638,7 @@ def _testfn():
 
 
 def _test_lacoste():
-    """Test for lacoste data"""
+    """Test for lacoste data."""
     import numpy as np
     import pandas as pd
 

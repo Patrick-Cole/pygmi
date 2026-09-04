@@ -25,24 +25,28 @@
 """These are miscellaneous functions for the pfmod routines."""
 
 import time
+from collections.abc import Generator, Iterable
 
 import numpy as np
 import rasterio
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.misc import ProgressBar as mProgressBar
+from pygmi.pfmod.datatypes import LithModel
+from pygmi.raster.datatypes import Data
 from pygmi.raster.reproj import data_reproject
 
 
-def update_lith_lw(lmod, lwidget):
+def update_lith_lw(lmod: LithModel, lwidget: QtWidgets.QListWidget):
     """
     Update the lithology list widget.
 
     Parameters
     ----------
-    lmod : LithModel
+    lmod
         3D model.
-    lwidget : QListWidget
+    lwidget
         List widget.
 
     Returns
@@ -74,14 +78,14 @@ class ProgressBar:
 
     Parameters
     ----------
-    par : pygmi.misc.ProgressBar
+    pbar
         Progress bar.
-    pbarmain : pygmi.misc.ProgressBar
+    pbarmain
         Main progress bar.
 
     """
 
-    def __init__(self, pbar, pbarmain):
+    def __init__(self, pbar: mProgressBar, pbarmain: mProgressBar):
         self.pbar = pbar
         self.pbarmain = pbarmain
         self.max = 1
@@ -106,18 +110,18 @@ class ProgressBar:
 
         QtCore.QCoreApplication.processEvents()
 
-    def iter(self, iterable):
+    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
         """
         Iterate routine.
 
         Parameters
         ----------
-        iterable : iterable
+        iterable
             Iterable.
 
         Yields
         ------
-        obj : object
+        object
             Object in iterable.
 
         """
@@ -154,13 +158,13 @@ class ProgressBar:
         self.value = 0
         QtWidgets.QApplication.processEvents()
 
-    def incrmain(self, i=1):
+    def incrmain(self, i: int = 1):
         """
         Increase value by i.
 
         Parameters
         ----------
-        i : int, optional
+        i
             Iteration step. The default is 1.
 
         """
@@ -187,15 +191,15 @@ class ProgressBar:
         self.pbar.setFormat("%p%")
         self.pbarmain.setFormat("%p%")
 
-    def resetall(self, maximum=1, mmax=1):
+    def resetall(self, maximum: int = 1, mmax: int = 1):
         """
         Set min and max and resets all bars to 0.
 
         Parameters
         ----------
-        maximum : int, optional
+        maximum
             Maximum value. The default is 1.
-        mmax : int, optional
+        mmax
             Maximum value. The default is 1.
 
         """
@@ -214,13 +218,13 @@ class ProgressBar:
         self.pbarmain.setMaximum(self.mmax)
         self.pbarmain.setValue(self.mvalue)
 
-    def resetsub(self, maximum=1):
+    def resetsub(self, maximum: int = 1):
         """
         Set min and max and resets sub bar to 0.
 
         Parameters
         ----------
-        maximum : int, optional
+        maximum
             Maximum value. The default is 1.
 
         """
@@ -323,7 +327,7 @@ class MergeMod3D(BasicModule):
         self.saveobj(self.cmb_master)
         self.saveobj(self.cmb_slave)
 
-    def acceptall(self):
+    def acceptall(self) -> bool:
         """
         Accept option.
 
@@ -433,24 +437,29 @@ class MergeMod3D(BasicModule):
         return True
 
 
-def gmerge(master, slave, xrange=None, yrange=None):
+def gmerge(
+    master: Data,
+    slave: Data,
+    xrange: list[float] | None = None,
+    yrange: list[float] | None = None,
+) -> Data:
     """
     Routine used to merge two grids.
 
     Parameters
     ----------
-    master : pygmi.raster.datatypes.Data
+    master
         PyGMI raster dataset.
-    slave : pygmi.raster.datatypes.Data
+    slave
         PyGMI raster dataset.
-    xrange : list, optional
+    xrange
         List containing range of minimum and maximum X. The default is None.
-    yrange : list, optional
+    yrange
         List containing range of minimum and maximum Y. The default is None.
 
     Returns
     -------
-    pygmi.raster.datatypes.Data
+    Data
         PyGMI raster dataset.
 
     """

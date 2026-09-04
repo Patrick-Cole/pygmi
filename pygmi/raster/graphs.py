@@ -65,9 +65,9 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         x
-            x coordinate.
+            X coordinate.
         y
-            y coordinate.
+            Y coordinate.
 
         Returns
         -------
@@ -92,9 +92,9 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         data1
-            raster dataset to be used.
+            Raster dataset to be used.
         dmat
-            dummy matrix of numbers to be plotted using pcolor.
+            Dummy matrix of numbers to be plotted using pcolor.
 
         """
         cmap = colormaps["viridis"]
@@ -142,7 +142,7 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         data1
-            raster dataset to be used in contouring
+            Raster dataset to be used in contouring
         cmap
             Matplotlib colormap description
         plotlog
@@ -287,7 +287,7 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         data
-            raster dataset to be used
+            Raster dataset to be used
         icmap
             Matplotlib colormap description
 
@@ -352,7 +352,7 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         data1
-            raster dataset to be used
+            Raster dataset to be used
         ylog
             Boolean for a log scale on y-axis.
         iscum
@@ -876,14 +876,14 @@ def corr2d(idat1: np.ma.MaskedArray, idat2: np.ma.MaskedArray) -> NDArray | None
     Parameters
     ----------
     idat1
-        dataset 1 for use in correlation calculation.
+        Dataset 1 for use in correlation calculation.
     idat2
-        dataset 2 for use in correlation calculation.
+        Dataset 2 for use in correlation calculation.
 
     Returns
     -------
     ndarray
-        array of correlation coefficients
+        Array of correlation coefficients
     """
     out = None
 

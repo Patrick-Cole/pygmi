@@ -582,8 +582,7 @@ class Metadata(ContextModule):
     """
     GUI to display and edit vector metadata.
 
-    This class allows the editing of the metadata for a vector dataset using a
-    GUI.
+    This class allows the editing of the metadata for a vector dataset using a GUI.
 
     Parameters
     ----------
@@ -882,15 +881,15 @@ def blanking(
     Parameters
     ----------
     gdat
-        grid data to blank.
+        Grid data to blank.
     x
-        x coordinates.
+        X coordinates.
     y
-        y coordinates.
+        Y coordinates.
     bdist
         Blanking distance in units for cell.
     extent
-        extent of grid.
+        Extent of grid.
     dxy
         Cell size.
     nullvalue
@@ -934,7 +933,7 @@ def cut_point(
     data
         GeoPandas GeoDataFrame
     ifile
-        shapefile used to cut data
+        Shapefile used to cut data
     showlog
         Display information. The default is print.
 
@@ -986,7 +985,7 @@ def txtlinecnt(filename: str) -> int:
     Parameters
     ----------
     filename
-        filename of text file.
+        Filename of text file.
 
     Returns
     -------
@@ -1281,7 +1280,7 @@ def maptobounds(
     Returns
     -------
     tuple of float
-        output bounds, defined as (xmin, ymin, xmax, ymax).
+        Output bounds, defined as (xmin, ymin, xmax, ymax).
 
     """
     i = mapsheet
@@ -1380,15 +1379,15 @@ def quickgrid(
     Parameters
     ----------
     x
-        array of x coordinates
+        Array of x coordinates
     y
-        array of y coordinates
+        Array of y coordinates
     z
-        array of z values - this is the column being gridded
+        Array of z values - this is the column being gridded
     dxy
-        cell size for the grid, in both the x and y direction.
+        Cell size for the grid, in both the x and y direction.
     numits
-        number of iterations. By default its 4. If this is negative, a maximum
+        Number of iterations. By default its 4. If this is negative, a maximum
         will be calculated and used.
     showlog
         Routine to show text messages. The default is print.
@@ -1471,9 +1470,9 @@ def reprojxy(
     Parameters
     ----------
     x
-        x coordinates
+        X coordinates
     y
-        y coordinates
+        Y coordinates
     iwkt
         Input wkt description or EPSG code (int) or CRS
     owkt
@@ -1484,9 +1483,9 @@ def reprojxy(
     Returns
     -------
     xout : ndarray or None
-        x coordinates.
+        X coordinates.
     yout : ndarray or None
-        y coordinates.
+        Y coordinates.
 
     """
     if isinstance(iwkt, int):
@@ -1523,9 +1522,9 @@ def xy_to_r(x: NDArray | float, y: NDArray | float, piter: Iterable = iter) -> N
     Parameters
     ----------
     x
-        x coordinates
+        X coordinates
     y
-        y coordinates
+        Y coordinates
     piter
         Progress bar iterable, default is iter.
 

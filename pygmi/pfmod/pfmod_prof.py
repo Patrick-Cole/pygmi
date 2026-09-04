@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        tab_prof.py (part of PyGMI)
+# Name:        pfmod_prof.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -1452,7 +1452,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.mpl_toolbar.update()  # used to set original view limits.
             self.pic_overview()
 
-    def tab_activate(self):
+    def activate(self):
         """Entry point."""
         self.sb_profnum.valueChanged.disconnect()
         self.hs_profnum.valueChanged.disconnect()

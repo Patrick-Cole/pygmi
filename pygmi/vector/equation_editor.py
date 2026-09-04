@@ -46,9 +46,9 @@ class EquationEditor(BasicModule):
     Attributes
     ----------
     equation
-        string with the equation in it
+        String with the equation in it
     bands
-        dictionary of bands
+        Dictionary of bands
     """
 
     def __init__(self, parent=None):

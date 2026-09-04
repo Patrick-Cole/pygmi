@@ -41,10 +41,11 @@ class ImportEDI(BasicModule):
     """
     Import Data.
 
-    Attributes
+    Parameters
     ----------
-    ifilelist : list
-        list of input file names.
+    parent
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -58,7 +59,7 @@ class ImportEDI(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -101,18 +102,18 @@ class ImportEDI(BasicModule):
         self.saveobj(self.ifilelist)
 
 
-def get_EDI(ifiles):
+def get_EDI(ifiles: list[str]) -> dict:
     """
     EDI Import.
 
     Parameters
     ----------
-    ifiles : list
+    ifiles
         filenames to import
 
     Returns
     -------
-    dat : EDI data.
+    dict
         Dataset imported
     """
     dat = {}
@@ -132,10 +133,11 @@ class ExportEDI(ContextModule):
     """
     Export Data.
 
-    Attributes
+    Parameters
     ----------
-    ofile : str
-        output file name.
+    parent
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(self, parent=None):
@@ -189,20 +191,20 @@ class ExportEDI(ContextModule):
         self.parent.process_is_active(False)
         return True
 
-    def export_edi(self, dat):
+    def export_edi(self, dat: dict):
         """
         Export to EDI format.
 
         Parameters
         ----------
-        dat : EDI Data
+        dict
             dataset to export
 
         """
         savepath = os.path.dirname(self.ofile)
         basename = os.path.basename(self.ofile)[:-4]
-        for i in dat:
-            dat[i].write_mt_file(
+        for i, dati in dat.items():
+            dati.write_mt_file(
                 save_dir=savepath,
                 fn_basename=basename + "_" + i,
                 file_type="edi",

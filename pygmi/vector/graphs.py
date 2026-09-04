@@ -93,9 +93,9 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         x
-            x coordinate.
+            X coordinate.
         y
-            y coordinate.
+            Y coordinate.
 
         Returns
         -------
@@ -285,9 +285,9 @@ class MyMplCanvas(CanvasModule):
         Parameters
         ----------
         r
-            array of distances, for the x-axis
+            Array of distances, for the x-axis
         data
-            array of data to be plotted on the y-axis
+            Array of data to be plotted on the y-axis
 
         """
         if self.pickevents is False:
@@ -334,11 +334,11 @@ class MyMplCanvas(CanvasModule):
         data
             Line data
         ival
-            dictionary key representing the line data channel to be plotted.
+            Dictionary key representing the line data channel to be plotted.
         scale
-            scale of exaggeration for the profile data on the map.
+            Scale of exaggeration for the profile data on the map.
         uselabels
-            boolean choice whether to use labels or not.
+            Boolean choice whether to use labels or not.
 
         """
         self.custom_resize = True
@@ -1374,14 +1374,14 @@ def histogram(
     xmax
         Upper value for the bins. The default is None.
     bins
-        number of bins. The default is 10.
+        Number of bins. The default is 10.
 
     Returns
     -------
     hist : ndarray
         The values of the histogram
     bin_edges : ndarray
-        bin edges of the histogram
+        Bin edges of the histogram
 
     """
     radii = np.zeros(bins)

@@ -217,7 +217,7 @@ def set_axes(ax: Axes, crs: CRS):
     ax
         Primary Matplotlib axes.
     crs
-        pyproj crs of data
+        PyProj crs of data
     """
     crs = pyproj.CRS.from_wkt(crs.to_wkt())
 
@@ -287,7 +287,7 @@ def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
     ax
         Primary Matplotlib axes.
     crs
-        pyproj crs of data
+        PyProj crs of data
     showlog
         Show information using a function, by default print
     """

@@ -30,6 +30,7 @@ from matplotlib import gridspec, style
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from scipy import signal
 
@@ -47,10 +48,6 @@ class MatchedFilt(BasicModule):
     parent
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    self.mmc : FigureCanvas
-        main canvas containing the image
     """
 
     def __init__(self, parent=None):
@@ -121,7 +118,7 @@ class MatchedFilt(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -278,7 +275,9 @@ class MatchedFilt(BasicModule):
         self.saveobj(self.sb_nsegs)
 
 
-def getbutter(lowcut, highcut, f, order=5):
+def getbutter(
+    lowcut: list[float], highcut: list[float], f: NDArray, order: int = 5
+) -> list:
     """
     Create Butterworth bandpass filter.
 
@@ -321,7 +320,7 @@ def getbutter(lowcut, highcut, f, order=5):
 
 
 def _testfn():
-    """Testing routine."""
+    """Test routine."""
     import sys
 
     import matplotlib.pyplot as plt

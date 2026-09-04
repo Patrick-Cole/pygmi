@@ -730,7 +730,7 @@ class ConditionIndices(BasicModule):
 
 
 def calc_ratios(
-    dat: list[Data],
+    idat: list[Data],
     rlist: list[str],
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
@@ -763,7 +763,7 @@ def calc_ratios(
     """
     datsml = []
 
-    for i in dat:
+    for i in idat:
         tmp = i.dataid.split()
         txt = tmp[0]
 
@@ -1019,7 +1019,7 @@ def correct_EMIT_bands(rlist: list[str], dat: list[Data]) -> list[Data]:
     Returns
     -------
     list of Data
-        list of EMIT data bands.
+        List of EMIT data bands.
     """
     blist1 = []
     for i in rlist:
@@ -1113,7 +1113,7 @@ def get_landsat_list(
     sensor
         Landsat satellite sensor, by default None.
     allsats
-        use all Landsat sensors, by default False.
+        Use all Landsat sensors, by default False.
 
 
     Returns
@@ -1182,12 +1182,12 @@ def get_TCI(lst: list[Data]) -> list[Data]:
     Parameters
     ----------
     lst
-        list of PyGMI datasets - land surface temperatures.
+        List of PyGMI datasets - land surface temperatures.
 
     Returns
     -------
     list of Data
-        output TCI datasets.
+        Output TCI datasets.
 
     """
     tci = []
@@ -1218,14 +1218,14 @@ def get_VCI(evi: list[Data], index: str) -> list[Data]:
     Parameters
     ----------
     evi
-        list of EVI datasets.
+        List of EVI datasets.
     index
-        index for dataid.
+        Index for dataid.
 
     Returns
     -------
     list of Data
-        output VCI datasets.
+        Output VCI datasets.
 
     """
     evi2 = []

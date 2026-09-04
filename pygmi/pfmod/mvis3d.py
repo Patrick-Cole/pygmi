@@ -30,9 +30,11 @@ from collections.abc import Callable
 
 import numpy as np
 import pyvista as pv
+from matplotlib.backend_bases import MouseEvent
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 from scipy.ndimage import convolve
@@ -187,7 +189,7 @@ class Mod3dDisplay(ContextModule):
 
         Parameters
         ----------
-        QCloseEvent : TYPE
+        QCloseEvent
             Close event.
 
         """
@@ -195,7 +197,7 @@ class Mod3dDisplay(ContextModule):
         self.plotter.close()
 
     def change_light(self):
-        """Change light type"""
+        """Change light type."""
         text = self.cmb_light.currentText()
 
         if text == "Camera light":
@@ -222,12 +224,7 @@ class Mod3dDisplay(ContextModule):
         self.plotter.screenshot(filename)
 
     def update_for_kmz(self):
-        """
-        Update for the kmz file.
-
-        """
-        # self.update_plot()
-        # self.norms = self.pvmesh.compute_normals()['Normals']
+        """Update for the kmz file."""
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
@@ -282,23 +279,20 @@ class Mod3dDisplay(ContextModule):
         self.plotter.set_scale(zscale=self.vslider_3dmodel.value())
 
     def resetlight(self):
-        """
-        Reset light to the current model position.
-
-        """
+        """Reset light to the current model position."""
         self.msc.init_graph()
 
         elev = 45
         azim = 45
         self.light.set_direction_angle(elev, azim)
 
-    def sunclick(self, event):
+    def sunclick(self, event: MouseEvent):
         """
         Sunclick event is used to track changes to the sunshading.
 
         Parameters
         ----------
-        event - matplotlib button press event
+        event
              event returned by matplotlib when a button is pressed
         """
         if event.inaxes == self.msc.axes:
@@ -312,10 +306,7 @@ class Mod3dDisplay(ContextModule):
             self.light.set_direction_angle(elev, azim)
 
     def update_color(self):
-        """
-        Update colour only.
-
-        """
+        """Update colour only."""
         liths = np.unique(self.gdata)
         liths = liths[liths > 0]
 
@@ -345,7 +336,7 @@ class Mod3dDisplay(ContextModule):
 
         self.pvmesh["clr"] = clr
 
-    def run(self):
+    def run(self) -> bool:
         """
         Entry point into the routine, used to run context menu item.
 
@@ -387,10 +378,7 @@ class Mod3dDisplay(ContextModule):
         return True
 
     def update_plot(self):
-        """
-        Update 3D model.
-
-        """
+        """Update 3D model."""
         QtWidgets.QApplication.processEvents()
 
         # Update 3D model
@@ -453,7 +441,7 @@ class Mod3dDisplay(ContextModule):
             self.plotter.add_light(self.light)
             # self.plotter.show_grid(use_2d=True)
 
-    def update_model(self, issmooth=None):
+    def update_model(self, issmooth: bool | None = None):
         """
         Update the 3d model.
 
@@ -462,7 +450,7 @@ class Mod3dDisplay(ContextModule):
 
         Parameters
         ----------
-        issmooth : bool, optional
+        issmooth
             Flag to indicate a smooth model. The default is None.
 
         """
@@ -575,10 +563,7 @@ class Mod3dDisplay(ContextModule):
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
-        """
-        Update the 3d model part 2.
-
-        """
+        """Update the 3d model part 2."""
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
         liths = liths[liths < 900]
@@ -646,12 +631,6 @@ class MySunCanvas(FigureCanvasQTAgg):
     parent
         Reference to the parent routine. The default is None.
 
-    Attributes
-    ----------
-    sun: matplotlib plot instance
-        plot of a circle 'o' showing where the sun is
-    axes: matplotlib axes instance
-        axes on which the sun is drawn
     """
 
     def __init__(self, parent=None):
@@ -668,10 +647,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.init_graph()
 
     def init_graph(self):
-        """
-        Initialise graph.
-
-        """
+        """Initialise graph."""
         self.axes.clear()
         self.axes.xaxis.set_tick_params(labelsize=6)
         self.axes.tick_params(labelleft=False, labelright=False)
@@ -686,24 +662,24 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-def updatemod(gdat2, cindx, cloc):
+def updatemod(gdat2: NDArray, cindx: NDArray, cloc: NDArray) -> tuple[NDArray, NDArray]:
     """
     Update model without smoothing.
 
     Parameters
     ----------
-    gdat2 : numpy array
+    gdat2
         Model values.
-    cindx : numpy array
+    cindx
         Corner index.
-    cloc : numpy array
+    cloc
         Corner location.
 
     Returns
     -------
-    newcorners : numpy array
+    newcorners : ndarray
         New corner coordinates.
-    newfaces : numpy array
+    newfaces : ndarray
         New face indices.
 
     """
@@ -780,20 +756,20 @@ def updatemod(gdat2, cindx, cloc):
     return newcorners, newfaces
 
 
-def calc_norms(faces, vtx):
+def calc_norms(faces: NDArray, vtx: NDArray) -> NDArray:
     """
     Calculate normals.
 
     Parameters
     ----------
-    faces : numpy array
+    faces
         Array of faces.
-    vtx : numpy array.
+    vtx
         Array of vertices.
 
     Returns
     -------
-    nrm : numpy array
+    ndarray
         output normals.
 
     """
@@ -811,18 +787,18 @@ def calc_norms(faces, vtx):
     return nrm
 
 
-def normalize_v3(arr):
+def normalize_v3(arr: NDArray) -> NDArray:
     """
     Normalize a numpy array of 3 component vectors shape=(n,3).
 
     Parameters
     ----------
-    arr : numpy array
+    arr
         Array of 3 component vectors.
 
     Returns
     -------
-    arr : numpy array
+    ndarray
         Output array of 3 component vectors.
 
     """
@@ -836,7 +812,15 @@ def normalize_v3(arr):
     return arr
 
 
-def MarchingCubes(x, y, z, c, iso, *, showlog: Callable[..., None] = print):
+def MarchingCubes(
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    c: NDArray,
+    iso: float,
+    *,
+    showlog: Callable[..., None] = print,
+) -> tuple[NDArray, NDArray]:
     """
     Marching cubes.
 
@@ -862,24 +846,24 @@ def MarchingCubes(x, y, z, c, iso, *, showlog: Callable[..., None] = print):
 
     Parameters
     ----------
-    x : numpy array
+    x
         X coordinates.
-    y : numpy array
+    y
         Y coordinates.
-    z : numpy array
+    z
         Z coordinates.
-    c : numpy array
+    c
         Data.
-    iso : float
+    iso
         Isosurface level.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    F : numpy array
+    F : ndarray
         Face list.
-    V : numpy array
+    V : ndarray
         Vertex list.
 
     """
@@ -1048,34 +1032,44 @@ def MarchingCubes(x, y, z, c, iso, *, showlog: Callable[..., None] = print):
     return F, V
 
 
-def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
+def InterpolateVertices(
+    isolevel: float,
+    p1x: NDArray,
+    p1y: NDArray,
+    p1z: NDArray,
+    p2x: NDArray,
+    p2y: NDArray,
+    p2z: NDArray,
+    valp1: NDArray,
+    valp2: NDArray,
+) -> NDArray:
     """
     Interpolate vertices.
 
     Parameters
     ----------
-    isolevel : float
+    isolevel
         ISO level.
-    p1x : numpy array
+    p1x
         p1 x coordinate.
-    p1y : numpy array
+    p1y
         p1 y coordinate.
-    p1z : numpy array
+    p1z
         p1 z coordinate.
-    p2x : numpy array
+    p2x
         p2 x coordinate.
-    p2y : numpy array
+    p2y
         p2 y coordinate.
-    p2z : numpy array
+    p2z
         p2 z coordinate.
-    valp1 : numpy array
+    valp1
         p1 value.
-    valp2 : numpy array
+    valp2
         p2 value.
 
     Returns
     -------
-    p : numpy array
+    ndarray
         Interpolated vertices.
 
     """
@@ -1100,26 +1094,28 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
 
 
 @jit(nopython=True)
-def fancyindex(out, var1, ii, jj, kk):
+def fancyindex(
+    out: NDArray, var1: NDArray, ii: NDArray, jj: NDArray, kk: NDArray
+) -> NDArray:
     """
     Fancy index.
 
     Parameters
     ----------
-    out : numpy array
+    out
         Input data.
-    var1 : numpy array
+    var1
         Input data.
-    ii : numpy array
+    ii
         i indices.
-    jj : numpy array
+    jj
         j indices.
-    kk : numpy array
+    kk
         k indices.
 
     Returns
     -------
-    out : numpy array
+    ndarray
         Output data with new values.
 
     """
@@ -1136,15 +1132,15 @@ def fancyindex(out, var1, ii, jj, kk):
     return out
 
 
-def bitget(byteval, idx):
+def bitget(byteval: int, idx: int) -> bool:
     """
     Bit get.
 
     Parameters
     ----------
-    byteval : int
+    byteval
         Input value to get bit from.
-    idx : int
+    idx
         Position of bit to get.
 
     Returns
@@ -1156,15 +1152,15 @@ def bitget(byteval, idx):
     return (byteval & (1 << idx)) != 0
 
 
-def bitset(byteval, idx):
+def bitset(byteval: int, idx: int) -> int:
     """
     Bit set.
 
     Parameters
     ----------
-    byteval : int
+    byteval
         Input value to get bit from.
-    idx : int
+    idx
         Position of bit to get.
 
     Returns
@@ -1176,25 +1172,25 @@ def bitset(byteval, idx):
     return byteval | (1 << idx)
 
 
-def sub2ind(msize, row, col, layer):
+def sub2ind(msize, row: NDArray, col: NDArray, layer: NDArray) -> NDArray:
     """
     Sub to index.
 
     Parameters
     ----------
-    msize : tuple
+    msize
         Tuple with number of rows and columns as first two elements.
-    row : int
-        Row.
-    col : int
-        Column.
-    layer : numpy array
-        Layer.
+    row
+        array of rows.
+    col
+        array of columns
+    layer
+        array of layers
 
     Returns
     -------
-    tmp : numpy array
-        Index returned.
+    ndarray
+        Indices returned.
 
     """
     nrows, ncols, _ = msize
@@ -1202,24 +1198,26 @@ def sub2ind(msize, row, col, layer):
     return tmp.astype(int)
 
 
-def ind2sub(msize, idx):
+def ind2sub(
+    msize: tuple[int, int, int], idx: NDArray
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Index to sub.
 
     Parameters
     ----------
-    msize : tuple
+    msize
         Tuple with number of rows and columns as first two elements.
-    idx : numpy array
+    idx
         Array of indices.
 
     Returns
     -------
-    row : int
+    row : ndarray
         Row.
-    col : int
+    col : ndarray
         Column.
-    layer : numpy array
+    layer : ndarray
         Layer.
 
     """

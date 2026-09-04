@@ -36,8 +36,7 @@ class CorrectDescriptions(BasicModule):
     """
     Correct SEISAN descriptions.
 
-    This compares the descriptions found in SEISAN type 3 lines to a custom
-    list.
+    This compares the descriptions found in SEISAN type 3 lines to a custom list.
 
     Parameters
     ----------

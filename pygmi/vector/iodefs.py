@@ -655,7 +655,7 @@ class ImportXYZ(BasicModule):
         Returns
         -------
         DataFrame
-            Pandas dataframe.
+            Pandas DataFrame.
 
         """
         df = get_GXYZ(self.ifile, self.showlog, self.piter)
@@ -674,7 +674,7 @@ class ImportXYZ(BasicModule):
         Returns
         -------
         DataFrame
-            Pandas dataframe.
+            Pandas DataFrame.
 
         """
         try:
@@ -697,7 +697,7 @@ class ImportXYZ(BasicModule):
         Returns
         -------
         DataFrame
-            Pandas dataframe.
+            Pandas DataFrame.
 
         """
         df = pd.read_excel(self.ifile)
@@ -1088,7 +1088,7 @@ def get_GXYZ(
     showlog
         Routine to show text messages. The default is print.
     piter
-        progress bar iterable, default is iter.
+        Progress bar iterable, default is iter.
 
     Returns
     -------
@@ -1186,7 +1186,7 @@ def get_intrepid(
     showlog
         Routine to show text messages. The default is print.
     piter
-        progress bar iterable, default is iter.
+        Progress bar iterable, default is iter.
 
     Returns
     -------

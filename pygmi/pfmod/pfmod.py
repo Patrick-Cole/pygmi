@@ -28,7 +28,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 import pygmi.misc as pmisc
 from pygmi import menu_default
-from pygmi.pfmod import grvmag3d, iodefs, misc, tab_mext, tab_param, tab_prof
+from pygmi.pfmod import grvmag3d, iodefs, misc, pfmod_mext, pfmod_param, pfmod_prof
 from pygmi.pfmod.datatypes import LithModel
 
 
@@ -73,23 +73,23 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp = list(set(self.lmod1.griddata.values()))
         self.outdata["Raster"] = tmp
 
-        self.mext = tab_mext.MextDisplay(self)
-        self.param = tab_param.ParamDisplay(self)
-        self.lithnotes = tab_param.LithNotes(self)
-        self.profile = tab_prof.ProfileDisplay(self)
+        self.mext = pfmod_mext.MextDisplay(self)
+        self.param = pfmod_param.ParamDisplay(self)
+        self.lithnotes = pfmod_param.LithNotes(self)
+        self.profile = pfmod_prof.ProfileDisplay(self)
 
         # Toolbars
         self.action_mext = QtGui.QAction("Model\nExtent\nParameters")
         self.toolbardock.addAction(self.action_mext)
-        self.action_mext.triggered.connect(self.mext.tab_activate)
+        self.action_mext.triggered.connect(self.mext.activate)
 
         self.action_param = QtGui.QAction("Geophysical\nParameters")
         self.toolbardock.addAction(self.action_param)
-        self.action_param.triggered.connect(self.param.tab_activate)
+        self.action_param.triggered.connect(self.param.activate)
 
         self.action_lnotes = QtGui.QAction("Lithology\nNotes")
         self.toolbardock.addAction(self.action_lnotes)
-        self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
+        self.action_lnotes.triggered.connect(self.lithnotes.activate)
 
         # Dock Widgets
         dock = QtWidgets.QDockWidget("Editor")
@@ -102,10 +102,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setupui()
 
     def setupui(self):
-        """
-        GUI setup.
-
-        """
+        """GUI setup."""
         centralwidget = QtWidgets.QWidget(self)
         vbl = QtWidgets.QVBoxLayout(centralwidget)
         hbl = QtWidgets.QHBoxLayout()
@@ -127,18 +124,13 @@ class MainWidget(QtWidgets.QMainWindow):
         vbl.addWidget(self.pbar_sub)
         vbl.addWidget(self.pbar_main)
 
-        # helpdocs.clicked.disconnect()
-        # helpdocs.clicked.connect(self.help_docs)
         self.actionsave.triggered.connect(self.savemodel)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
 
     def savemodel(self):
-        """
-        Save model.
-
-        """
+        """Save model."""
         self.showtext("Saving model, please do not close the interface...")
         tmp = iodefs.ExportMod3D(self.parent)
         tmp.indata = self.outdata
@@ -148,10 +140,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.showtext("Model save complete!")
 
     def help_docs(self):
-        """
-        Help documentation.
-
-        """
+        """Help documentation."""
         menu_default.HelpDocs(self, "pygmi.pfmod.prof")
 
     def settings(self, nodialog: bool = False) -> bool:
@@ -182,10 +171,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.outdata["Model3D"] = [self.lmod1]
         self.mext.update_combos()
-        self.mext.tab_activate()
+        self.mext.activate()
 
         self.profile.change_defs()
-        self.profile.tab_activate()
+        self.profile.activate()
 
         self.outdata["Raster"] = datatmp
 
@@ -197,24 +186,21 @@ class MainWidget(QtWidgets.QMainWindow):
         """Save project data from class."""
 
     def data_reset(self):
-        """
-        Reset the data.
-
-        """
+        """Reset the data."""
         if "Model3D" in self.indata:
             self.lmod1 = self.indata["Model3D"][0]
         self.lmod1.griddata = {}
         self.lmod1.init_calc_grids()
 
-    def showtext(self, txt, replacelast=False):
+    def showtext(self, txt: str, replacelast: bool = False):
         """
         Show text on the text panel of the main user interface.
 
         Parameters
         ----------
-        txt : str
+        txt
             Text to display.
-        replacelast : bool, optional
+        replacelast
             Whether to replace the last text written. The default is False.
 
         """

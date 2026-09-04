@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        tab_param.py (part of PyGMI)
+# Name:        pfmod_param.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -181,7 +181,7 @@ class LithNotes(QtWidgets.QDialog):
         self.notes.setPlainText(self.noteslist[itxt])
         self.oldrowtext = itxt
 
-    def tab_activate(self):
+    def activate(self):
         """Entry point."""
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
@@ -753,7 +753,7 @@ class ParamDisplay(QtWidgets.QDialog):
             tcol = lmod.mlut[tindex]
             tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
-    def tab_activate(self):
+    def activate(self):
         """Entry point."""
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)

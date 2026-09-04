@@ -130,7 +130,7 @@ class ImportCG5(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -214,13 +214,13 @@ class ImportCG5(BasicModule):
         self.saveobj(self.le_gpsfile)
         self.saveobj(self.le_basethres)
 
-    def get_cg5(self, filename=""):
+    def get_cg5(self, filename: str = ""):
         """
         Get CG-5 filename and load data.
 
         Parameters
         ----------
-        filename : str, optional
+        filename
             CG-5 filename submitted for testing. The default is ''.
 
         """
@@ -235,13 +235,13 @@ class ImportCG5(BasicModule):
 
         self.le_cg5file.setText(filename)
 
-    def get_gps(self, filename=""):
+    def get_gps(self, filename: str = ""):
         """
         Get GPS filename and load data.
 
         Parameters
         ----------
-        filename : str, optional
+        filename
             GPS filename (csv). The default is ''.
 
         """
@@ -311,18 +311,18 @@ class ImportCG5(BasicModule):
         self.cmb_zchan.setEnabled(True)
 
 
-def get_cg5(filename):
+def get_cg5(filename: str) -> pd.DataFrame:
     """
     Get CG-5 filename and load data.
 
     Parameters
     ----------
-    filename : str
+    filename
         CG-5 filename.
 
     Returns
     -------
-    df_cg5 : Pandas DataFrame
+    DataFrame
         Gravity data
 
     """
@@ -368,18 +368,18 @@ def get_cg5(filename):
     return df_cg5
 
 
-def get_cg6(filename):
+def get_cg6(filename: str) -> pd.DataFrame:
     """
     Get CG-6 filename and load data.
 
     Parameters
     ----------
-    filename : str
+    filename
         CG-6 filename.
 
     Returns
     -------
-    df : Pandas DataFrame
+    DataFrame
         Gravity data
 
     """
@@ -410,18 +410,18 @@ def get_cg6(filename):
     return df
 
 
-def get_gps(filename):
+def get_gps(filename: str) -> pd.DataFrame:
     """
     Get GPS filename and load data.
 
     Parameters
     ----------
-    filename : str
+    filename
         GPS filename (csv).
 
     Returns
     -------
-    df2 : Pandas DataFrame
+    DataFrame
         GPS data.
 
     """
@@ -434,27 +434,31 @@ def get_gps(filename):
 
 
 def merge_gpsmag(
-    cg5file, gpsfile, basethres=10000.0, cren=None, showlog: Callable[..., None] = print
-):
+    cg5file: str,
+    gpsfile: str,
+    basethres: float = 10000.0,
+    cren: dict | None = None,
+    showlog: Callable[..., None] = print,
+) -> pd.DataFrame | bool:
     """
     Import and merge GPS and gravity data.
 
     Parameters
     ----------
-    cg5file : str
+    cg5file
         Gravity filename for data in CG format.
-    gpsfile : str
+    gpsfile
         GPS filename in CSV format.
-    basethres : float, optional
+    basethres
         Threshold for base station numbers. The default is 10000.
-    cren : dict
+    cren
         Dictionary of columns to rename. The default is None.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
-    Pandas DataFrame
+    DataFrame
         Dataframe with merged data.
 
     """

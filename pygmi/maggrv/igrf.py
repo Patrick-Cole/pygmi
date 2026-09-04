@@ -56,10 +56,12 @@ from math import atan2, cos, sin, sqrt
 
 import numpy as np
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 import pygmi.raster.dataprep as dp
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import reprojxy
 
 
@@ -125,7 +127,7 @@ class IGRF(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -214,39 +216,39 @@ class IGRF(BasicModule):
 
 
 def calc_igrf(
-    data,
-    sdate,
+    data: Data,
+    sdate: float,
     *,
-    sen_alt=100,
-    wkt=None,
-    igrfonly=True,
+    sen_alt: float = 100,
+    wkt: str | None = None,
+    igrfonly: bool = True,
     piter: Iterable = iter,
     showlog: Callable[..., None] = print,
-):
+) -> tuple[list[Data] | None, float | None, float | None, float | None]:
     """
     Calculate IGRF.
 
     Parameters
     ----------
-    data : pygmi.raster.datatypes.Data
+    data
         Input DTM data.
-    sdate : Date
+    sdate
         Survey date as decimal year.
-    sen_alt : float, optional
+    sen_alt
         Sensor clearance. The default is 100.
-    wkt : str, optional
+    wkt
         WKT projection. The default is None.
-    igrfonly : bool, optional
+    igrfonly
         Output IGRF only. The default is True.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
 
     Returns
     -------
     outdata : list
-        List of output PyGMI Data (pygmi.raster.datatypes.Data).
+        List of output PyGMI Data.
     fmean : float
         Total intensity mean.
     imean : float
@@ -458,7 +460,9 @@ def calc_igrf(
     return outdata, fmean, imean, dmean
 
 
-def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
+def getshc(
+    file: list, iflag: int, strec: int, nmax_of_gh: int, igh: int, gh: NDArray
+) -> NDArray:
     """
     Read spherical harmonic coefficients from the specified model.
 
@@ -471,24 +475,23 @@ def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
 
     Parameters
     ----------
-    file : file
-        reference to a file object
-    iflag :
+    file
+        List of records from a file object
+    iflag
         Flag for SV equal to 1 or not equal to 1 for designated read
         statements
-    strec : int
+    strec
         Starting record number to read from model
-    nmax_of_gh : int
+    nmax_of_gh
         Maximum degree and order of model
-    igh : int
-        Index for Schmidt quasi-normal internal spherical harmonic
-        coefficients.
-    gh : numpy array
+    igh
+        Index for Schmidt quasi-normal internal spherical harmonic coefficients.
+    gh
         Schmidt quasi-normal internal spherical harmonic coefficients.
 
     Returns
     -------
-    gh : numpy array
+    ndarray
         Schmidt quasi-normal internal spherical harmonic coefficients.
     """
     ii = -1
@@ -519,7 +522,9 @@ def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
 
 
 @jit(nopython=True)
-def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
+def extrapsh(
+    date: float, dte1: float, nmax1: int, nmax2: int, igh: int, gh: NDArray
+) -> tuple[int, NDArray]:
     """
     Extrapolate a spherical harmonic model.
 
@@ -533,17 +538,17 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
 
     Parameters
     ----------
-    date : float
+    date
         date of resulting model (in decimal year)
-    dte1 : float
+    dte1
         date of base model
-    nmax1 : int
+    nmax1
         maximum degree and order of base model
-    nmax2 : int
+    nmax2
         maximum degree and order of rate-of-change model
-    igh : int
-        Index of gh.
-    gh  : numpy array
+    igh
+        Index for Schmidt quasi-normal internal spherical harmonic coefficients.
+    gh
         Schmidt quasi-normal internal spherical harmonic coefficients of
         base model and rate-of-change model
 
@@ -551,7 +556,7 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
     -------
     nmax : int
         maximum degree and order of resulting model
-    gh  : numpy array
+    gh  : ndarray
         Schmidt quasi-normal internal spherical harmonic coefficients of
         base model and rate-of-change model
     """
@@ -582,7 +587,9 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
 
 
 @jit(nopython=True)
-def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
+def interpsh(
+    date: float, dte1: float, nmax1: int, dte2: float, nmax2: int, igh: int, gh: NDArray
+) -> tuple[int, NDArray]:
     """
     Temporal Interpolation between two spherical harmonic models.
 
@@ -598,17 +605,19 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
 
     Parameters
     ----------
-    date : float
-        date of resulting model (in decimal year)
-    dte1 : float
+    date
+        Date of resulting model (in decimal year)
+    dte1
         date of earlier model
-    nmax1 : int
+    nmax1
         maximum degree and order of earlier model
-    dte2 : float
+    dte2
         date of later model
-    nmax2 : int
+    nmax2
         maximum degree and order of later model
-    gh : numpy array
+    igh
+        Index for Schmidt quasi-normal internal spherical harmonic coefficients.
+    gh
         Schmidt quasi-normal internal spherical harmonic coefficients of
         earlier model and internal model
 
@@ -616,7 +625,7 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
     -------
     nmax : int
         maximum degree and order of resulting model
-    gh : numpy array
+    gh : ndarray
         Schmidt quasi-normal internal spherical harmonic coefficients of
         earlier model and internal model
 
@@ -647,7 +656,9 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
 
 
 @jit(nopython=True)
-def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
+def shval3(
+    igdgc: int, flat: float, flon: float, elev: float, nmax: int, igh: int, gh: NDArray
+) -> tuple[float, float, float]:
     """
     Calculate field components from spherical harmonic (sh) models.
 
@@ -663,19 +674,21 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
 
     Parameters
     ----------
-    igdgc : int
+    igdgc
         indicates coordinate system used set equal to 1 if geodetic, 2 if
         geocentric
-    flat : float
+    flat
         north latitude, in degrees
-    flon : float
+    flon
         east longitude, in degrees
-    elev : float
+    elev
         WGS84 altitude above ellipsoid (igdgc=1), or radial distance from
         earth's center (igdgc=2)
-    nmax : int
+    nmax
         maximum degree and order of coefficients
-    gh : numpy array
+    igh
+        Index for Schmidt quasi-normal internal spherical harmonic coefficients.
+    gh
         Schmidt quasi-normal internal spherical harmonic coefficients of
         earlier model and internal model
 
@@ -815,7 +828,7 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
 
 
 @jit(nopython=True)
-def dihf(x, y, z):
+def dihf(x: float, y: float, z: float) -> tuple[float, float, float, float]:
     """
     Compute the geomagnetic d, i, h, and f from x, y, and z.
 
@@ -828,11 +841,11 @@ def dihf(x, y, z):
 
     Parameters
     ----------
-    x : float
+    x
         northward component
-    y : float
+    y
         eastward component
-    z : float
+    z
         vertically-downward component
 
     Returns

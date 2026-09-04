@@ -96,16 +96,16 @@ def fft_getkxy(fftmod: NDArray, xdim: float, ydim: float) -> tuple[NDArray, NDAr
     fftmod
         FFT data.
     xdim
-        cell x dimension.
+        Cell x dimension.
     ydim
-        cell y dimension.
+        Cell y dimension.
 
     Returns
     -------
     KX : ndarray
-        x sample frequencies.
+        X sample frequencies.
     KY : ndarray
-        y sample frequencies.
+        Y sample frequencies.
 
     """
     ny, nx = fftmod.shape

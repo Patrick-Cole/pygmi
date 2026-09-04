@@ -223,7 +223,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     parent
         Reference to the parent routine. The default is None.
     diagram_type
-        string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
+        String denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
     context_menu
         Dictionary of context menu options
@@ -233,9 +233,9 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     Attributes
     ----------
     arrows
-        list of Arrow objects
+        List of Arrow objects
     diagram_type
-        string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
+        String denoting the diagram type. Can be 'StartEnd', 'Conditional' or
         'Step'
     context_menu
         Dictionary of context menu options
@@ -983,11 +983,11 @@ class MainWidget(QtWidgets.QMainWindow):
         Parameters
         ----------
         item_type
-            str describing the shape of the graphic used to describe the item.
+            String describing the shape of the graphic used to describe the item.
         item_name
-            str describing the name of the item to be displayed.
+            String describing the name of the item to be displayed.
         class_name
-            class to be called when double clicking on the item.
+            Class to be called when double clicking on the item.
 
         Returns
         -------
@@ -1131,7 +1131,7 @@ class MainWidget(QtWidgets.QMainWindow):
         Parameters
         ----------
         isactive
-            boolean variable indicating if a process is active, by default True.
+            Boolean variable indicating if a process is active, by default True.
         """
         if isactive is True:
             self.textbrowser_processlog.setStyleSheet(
@@ -1366,7 +1366,7 @@ class MainWidget(QtWidgets.QMainWindow):
         txt
             Message to be displayed in the process log
         replacelast
-            flag to indicate whether the last row on the log should be
+            Flag to indicate whether the last row on the log should be
             overwritten, by default False.
         """
         txtobj = self.textbrowser_processlog

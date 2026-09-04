@@ -433,7 +433,7 @@ def beachball(
     Parameters
     ----------
     fm
-        focal mechanism that is either number of mechanisms (NM) by 3
+        Focal mechanism that is either number of mechanisms (NM) by 3
         (strike, dip, and rake) or NM x 6 (mxx, myy, mzz, mxy, mxz, myz -
         the six independent components of the moment tensor). The strike is
         of the first plane, clockwise relative to north. The dip is of the
@@ -444,11 +444,11 @@ def beachball(
         it down-dip (normal), and 180 moves it opposite to strike
         (right-lateral).
     icenterx
-        place beachball(s) at position centerx
+        Place beachball(s) at position centerx
     icentery
-        place beachball(s) at position centery
+        Place beachball(s) at position centery
     idiam
-        draw beachball with this diameter.
+        Draw beachball with this diameter.
     isgeog
         True if in geographic coordinates, False otherwise.
     showlog
@@ -457,13 +457,13 @@ def beachball(
     Returns
     -------
     X : ndarray
-        array of x coordinates for vertices
+        Array of x coordinates for vertices
     Y : ndarray
-        array of y coordinates for vertices
+        Array of y coordinates for vertices
     xx : ndarray
-        array of x coordinates for vertices
+        Array of x coordinates for vertices
     yy : ndarray
-        array of y coordinates for vertices
+        Array of y coordinates for vertices
     """
     fm = np.array(fm)
     diam = np.array([idiam])
@@ -729,26 +729,26 @@ def mij2sdr(
     Parameters
     ----------
     mxx
-        independent component of the moment tensor
+        Independent component of the moment tensor
     myy
-        independent component of the moment tensor
+        Independent component of the moment tensor
     mzz
-        independent component of the moment tensor
+        Independent component of the moment tensor
     mxy
-        independent component of the moment tensor
+        Independent component of the moment tensor
     mxz
-        independent component of the moment tensor
+        Independent component of the moment tensor
     myz
-        independent component of the moment tensor
+        Independent component of the moment tensor
 
     Returns
     -------
     strike : float
-        strike of first focal plane (degrees)
+        Strike of first focal plane (degrees)
     dip : float
-        dip of first focal plane (degrees)
+        Dip of first focal plane (degrees)
     rake : float
-        rake of first focal plane (degrees)
+        Rake of first focal plane (degrees)
     """
     a = np.array([[mxx, mxy, mxz], [mxy, myy, myz], [mxz, myz, mzz]])
     d, V = np.linalg.eig(a)
@@ -791,18 +791,18 @@ def TDL(AN: NDArray, BN: NDArray) -> tuple[float, float, float] | None:
     Parameters
     ----------
     AN
-        array comprising XN, YN, ZN
+        Array comprising XN, YN, ZN
     BN
-        array comprising XE, YE, ZE
+        Array comprising XE, YE, ZE
 
     Returns
     -------
     FT : float
-        relates to strike (360 - ft)
+        Relates to strike (360 - ft)
     FD : float
-        dip
+        Dip
     FL : float
-        relates to rake (180 - fl)
+        Relates to rake (180 - fl)
     """
     XN, YN, ZN = AN.flatten()
     XE, YE, ZE = BN.flatten()
